@@ -21,4 +21,4 @@ if (strpos($path, "/static-assets") === 0) {
 	static_file_serve();
 }
 
-echo file_get_contents("index.html");
+echo file_get_contents("app.html");
