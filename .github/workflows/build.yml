@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - v11-front
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Install dependencies
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - uses: actions/checkout@v2
+      with:
+        ref: v11-front-build-result
+        path: ./build-result
+    - run: rm -rf ./build-result/* && cp -r ./built/client/* ./build-result/
+    - run: |
+        cd build-result
+        git config --local user.email "41898282@users.noreply.github.com"
+        git config --local user.name "GitHub Actions"
+        git commit -m "update" -a
+        git push
