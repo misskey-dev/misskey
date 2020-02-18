@@ -422,6 +422,7 @@ useObjectStorage: "Utiliser le stockage d'objets"
 serverLogs: "Journaux serveur"
 deleteAll: "Supprimer tout"
 showFixedPostForm: "Afficher le formulaire en haut du fil d'actualité"
+newNoteRecived: "Vous avez un nouveau note"
 useNotificationsPopup: "Afficher la liste des notifications dans une fenêtre contextuelle"
 _ago:
   unknown: "Inconnu"
