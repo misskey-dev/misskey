@@ -17,7 +17,8 @@
 					<h1 v-else><img svg-inline src="../../../../assets/title.svg" alt="Misskey"></h1>
 
 					<div class="info">
-						<span><b>{{ host }}</b> - <span v-html="$t('powered-by-misskey')"></span></span>
+						<span><b>{{ host }}</b> - Powered by <b><a href="https://github.com/RinShibuya/misskey-v11-front">misskey-v11-front</a></b></span>
+						<span></span>
 						<span class="stats" v-if="stats">
 							<span><fa icon="user"/> {{ stats.originalUsersCount | number }}</span>
 							<span><fa icon="pencil-alt"/> {{ stats.originalNotesCount | number }}</span>
@@ -25,7 +26,7 @@
 					</div>
 
 					<div class="desc">
-						<span class="desc" v-html="description || $t('@.about')"></span>
+						<span class="desc">misskey-v11-front は、Misskey v11 のフロントエンドを Misskey 本体から切り離し、単独でどのインスタンスでも動くようにした物です。Misskeyについてはここをクリック→</span>
 						<a class="about" @click="about">{{ $t('about') }}</a>
 					</div>
 
@@ -143,7 +144,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import i18n from '../../../i18n';
-import { host, copyright } from '../../../config';
+import { instanceHost , copyright } from '../../../config';
 import { concat } from '../../../../../prelude/array';
 import { toUnicode } from 'punycode';
 
@@ -155,7 +156,7 @@ export default Vue.extend({
 			stats: null,
 			banner: null,
 			copyright,
-			host: toUnicode(host),
+			host: toUnicode(instanceHost),
 			name: null,
 			description: '',
 			announcements: [],
