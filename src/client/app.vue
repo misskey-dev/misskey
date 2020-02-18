@@ -650,18 +650,6 @@ export default Vue.extend({
 	transform: scale(0.9);
 }
 
-.page-enter-active, .page-leave-active {
-	transition: opacity 0.5s, transform 0.5s !important;
-}
-.page-enter {
-	opacity: 0;
-	transform: translateY(-32px);
-}
-.page-leave-to {
-	opacity: 0;
-	transform: translateY(32px);
-}
-
 .nav-enter-active,
 .nav-leave-active {
 	opacity: 1;
