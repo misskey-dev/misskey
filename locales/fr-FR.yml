@@ -492,6 +492,7 @@ _widgets:
   trends: "Tendances"
   clock: "Horloge"
   rss: "Lecteur de flux RSS"
+  activity: "Activités"
 _cw:
   hide: "Masquer"
   show: "Voir plus"

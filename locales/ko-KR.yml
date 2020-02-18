@@ -512,6 +512,7 @@ _widgets:
   trends: "트렌드"
   clock: "시계"
   rss: "RSS 리더"
+  activity: "활동"
 _cw:
   hide: "숨기기"
   show: "더 보기"
