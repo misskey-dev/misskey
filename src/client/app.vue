@@ -608,6 +608,7 @@ export default Vue.extend({
 				'trends',
 				'clock',
 				'activity',
+				'photos',
 			];
 
 			this.$root.menu({

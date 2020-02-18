@@ -527,6 +527,7 @@ _widgets:
   clock: "時計"
   rss: "RSSリーダー"
   activity: "アクティビティ"
+  photos: "フォト"
 
 _cw:
   hide: "隠す"

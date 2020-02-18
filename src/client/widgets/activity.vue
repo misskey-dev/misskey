@@ -4,7 +4,7 @@
 		<template #header><fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
 		<template #func><button @click="toggleView()" class="_button"><fa :icon="faSort"/></button></template>
 
-		<div class="">
+		<div>
 			<mk-loading v-if="fetching"/>
 			<template v-else>
 				<x-calendar v-show="props.view === 0" :data="[].concat(activity)"/>
