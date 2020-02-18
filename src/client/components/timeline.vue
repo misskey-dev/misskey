@@ -1,5 +1,5 @@
 <template>
-<x-notes ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
+<x-notes ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
 </template>
 
 <script lang="ts">

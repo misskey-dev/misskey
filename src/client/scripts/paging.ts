@@ -31,6 +31,10 @@ export default (opts) => ({
 	watch: {
 		pagination() {
 			this.init();
+		},
+
+		queue() {
+			this.$emit('queue', this.queue.length);
 		}
 	},
 

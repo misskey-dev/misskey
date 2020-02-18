@@ -422,6 +422,7 @@ useObjectStorage: "オブジェクトストレージを使用"
 serverLogs: "サーバーログ"
 deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
+newNoteRecived: "新しいノートがあります"
 
 _ago:
   unknown: "謎"
