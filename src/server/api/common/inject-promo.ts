@@ -32,5 +32,4 @@ export async function injectPromo(user: User, timeline: Note[]) {
 
 	// Inject promo
 	timeline.splice(3, 0, note);
-	timeline.pop();
 }

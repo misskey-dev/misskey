@@ -67,7 +67,7 @@ export default (opts) => ({
 				...params,
 				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 			}).then(items => {
-				if (!this.pagination.noPaging && (items.length === (this.pagination.limit || 10) + 1)) {
+				if (!this.pagination.noPaging && (items.length > (this.pagination.limit || 10))) {
 					items.pop();
 					this.items = this.pagination.reversed ? [...items].reverse() : items;
 					this.more = true;
@@ -103,7 +103,7 @@ export default (opts) => ({
 					untilId: this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
-				if (items.length === SECOND_FETCH_LIMIT + 1) {
+				if (items.length > SECOND_FETCH_LIMIT) {
 					items.pop();
 					this.items = this.pagination.reversed ? [...items].reverse().concat(this.items) : this.items.concat(items);
 					this.more = true;
