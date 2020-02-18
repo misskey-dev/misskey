@@ -105,16 +105,6 @@ export default Vue.extend({
 						text: this.$t('delete'),
 						icon: faTrashAlt,
 						action: this.deleteFile
-					}, null, {
-						type: 'nest',
-						text: this.$t('contextmenu.else-files'),
-						menu: [{
-							text: this.$t('contextmenu.set-as-avatar'),
-							action: this.setAsAvatar
-						}, {
-							text: this.$t('contextmenu.set-as-banner'),
-							action: this.setAsBanner
-						}]
 					}],
 					source: ev.currentTarget || ev.target,
 				});
