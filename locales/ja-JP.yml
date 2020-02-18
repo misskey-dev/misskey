@@ -415,6 +415,7 @@ accountSettings: "アカウント設定"
 promotion: "プロモーション"
 promote: "プロモート"
 numberOfDays: "日数"
+hideThisNote: "このノートを非表示"
 
 _ago:
   unknown: "謎"

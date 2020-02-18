@@ -9,8 +9,8 @@
 >
 	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
-	<div class="pinned" v-if="pinned"><fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
-	<div class="pinned" v-if="appearNote._prInjectionId_"><fa :icon="faBullhorn"/> {{ $t('promotion') }}</div>
+	<div class="info" v-if="pinned"><fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
+	<div class="info" v-if="appearNote._prInjectionId_"><fa :icon="faBullhorn"/> {{ $t('promotion') }}<button class="_textButton hide" @click="readPromo()">{{ $t('hideThisNote') }}</button></div>
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa :icon="faRetweet"/>
@@ -264,6 +264,13 @@ export default Vue.extend({
 	},
 
 	methods: {
+		readPromo() {
+			(this as any).$root.api('promo/read', {
+				noteId: this.appearNote.id
+			});
+			this.hideThisNote = true;
+		},
+
 		capture(withHandler = false) {
 			if (this.$store.getters.isSignedIn) {
 				this.connection.send(document.body.contains(this.$el) ? 'sn' : 's', { id: this.appearNote.id });
@@ -744,7 +751,9 @@ export default Vue.extend({
 		border-radius: 0 0 var(--radius) var(--radius);
 	}
 
-	> .pinned {
+	> .info {
+		display: flex;
+		align-items: center;
 		padding: 16px 32px 8px 32px;
 		line-height: 24px;
 		font-size: 90%;
@@ -758,9 +767,14 @@ export default Vue.extend({
 		> [data-icon] {
 			margin-right: 4px;
 		}
+
+		> .hide {
+			margin-left: auto;
+			color: inherit;
+		}
 	}
 
-	> .pinned + .article {
+	> .info + .article {
 		padding-top: 8px;
 	}
 
