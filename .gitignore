@@ -15,7 +15,7 @@
 
 # misskey
 /build
-/built
+/built/*
 /data
 /.cache-loader
 /db
@@ -37,3 +37,7 @@ ormconfig.json
 *.blend3
 *.blend4
 *.blend5
+
+!/built/client
+/built/client/*
+!/built/client/index.*
