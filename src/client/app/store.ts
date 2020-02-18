@@ -360,7 +360,7 @@ export default (os: MiOS) => new Vuex.Store({
 		logout(ctx) {
 			ctx.commit('updateI', null);
 			document.cookie = `i=; max-age=0; domain=${document.location.hostname}`;
-			localStorage.removeItem('i');
+			localStorage.removeItem(`i:${instanceHost}`);
 		},
 
 		mergeMe(ctx, me) {
