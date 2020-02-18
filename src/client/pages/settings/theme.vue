@@ -73,7 +73,6 @@ export default Vue.extend({
 			applyTheme(this.themes.find(x => x.id === this.theme));
 		},
 
-		
 		wallpaper() {
 			if (this.wallpaper == null) {
 				localStorage.removeItem('wallpaper');
