@@ -31,7 +31,7 @@ export default define(meta, async (ps, me) => {
 		throw new Error('user not found');
 	}
 
-	if (me.isModerator && user.isAdmin) {
+	if ((me.isModerator && !me.isAdmin) && user.isAdmin) {
 		throw new Error('cannot show info of admin');
 	}
 
