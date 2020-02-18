@@ -1,6 +1,6 @@
 <?php
 
-$path = $_SERVER["SCRIPT_NAME"];
+$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 function static_file_serve() {
 	global $path;
@@ -19,6 +19,11 @@ if (strpos($path, "/assets") === 0) {
 
 if (strpos($path, "/static-assets") === 0) {
 	static_file_serve();
+}
+
+if ($path === "/") {
+	echo file_get_contents("index.html");
+	exit;
 }
 
 echo file_get_contents("app.html");
