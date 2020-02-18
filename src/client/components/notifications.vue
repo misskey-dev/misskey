@@ -1,7 +1,8 @@
 <template>
 <div class="mk-notifications" :class="{ page }">
 	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
-		<x-notification :notification="notification" :with-time="true" :full="true" class="notification" :class="{ _panel: page }" :key="notification.id"/>
+		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" :key="notification.id"/>
+		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="notification" :class="{ _panel: page }" :key="notification.id"/>
 	</x-list>
 
 	<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
@@ -22,6 +23,7 @@ import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
+import XNote from './note.vue';
 
 export default Vue.extend({
 	i18n,
@@ -29,6 +31,7 @@ export default Vue.extend({
 	components: {
 		XNotification,
 		XList,
+		XNote,
 	},
 
 	mixins: [
