@@ -46,6 +46,7 @@ export default define(meta, async (ps, user) => {
 	const query = Notes.createQueryBuilder('note')
 		.addSelect('note.score')
 		.where('note.userHost IS NULL')
+		.andWhere(`note.score > 0`)
 		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
 		.andWhere(`note.visibility = 'public'`)
 		.leftJoinAndSelect('note.user', 'user');

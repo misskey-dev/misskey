@@ -126,6 +126,10 @@ export const meta = {
 			}
 		},
 
+		injectFeaturedNote: {
+			validator: $.optional.bool,
+		},
+
 		alwaysMarkNsfw: {
 			validator: $.optional.bool,
 			desc: {
@@ -195,6 +199,7 @@ export default define(meta, async (ps, user, app) => {
 	if (typeof ps.autoAcceptFollowed == 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.autoWatch == 'boolean') profileUpdates.autoWatch = ps.autoWatch;
+	if (typeof ps.injectFeaturedNote == 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 	if (typeof ps.alwaysMarkNsfw == 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {

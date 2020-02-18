@@ -88,7 +88,6 @@ export async function signup(username: User['username'], password: UserProfile['
 		await transactionalEntityManager.save(new UserProfile({
 			userId: account.id,
 			autoAcceptFollowed: true,
-			autoWatch: false,
 			password: hash,
 		}));
 

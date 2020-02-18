@@ -15,7 +15,7 @@
 	</div>
 
 	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<x-note :note="note" :detail="detail" :key="note._prInjectionId_ || note.id"/>
+		<x-note :note="note" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</x-list>
 
 	<div class="more" v-if="more && !reversed" style="margin-top: var(--margin);">

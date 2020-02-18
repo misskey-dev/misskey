@@ -416,6 +416,7 @@ promotion: "プロモーション"
 promote: "プロモート"
 numberOfDays: "日数"
 hideThisNote: "このノートを非表示"
+showFeaturedNotesInTimeline: "タイムラインにおすすめのノートを表示する"
 
 _ago:
   unknown: "謎"

@@ -2,7 +2,7 @@
 <sequential-entrance class="sqadhkmv" ref="list" :direction="direction" :reversed="reversed">
 	<template v-for="(item, i) in items">
 		<slot :item="item" :i="i"></slot>
-		<div class="separator" :key="item.id + '_date'" v-if="i != items.length - 1 && new Date(item.createdAt).getDate() != new Date(items[i + 1].createdAt).getDate() && !item._prInjectionId_ && !items[i + 1]._prInjectionId_">
+		<div class="separator" :key="item.id + '_date'" v-if="showDate(i, item)">
 			<p class="date">
 				<span><fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
 				<span>{{ getDateText(items[i + 1].createdAt) }}<fa class="icon" :icon="faAngleDown"/></span>
@@ -50,6 +50,16 @@ export default Vue.extend({
 				month: month.toString(),
 				day: date.toString()
 			});
+		},
+
+		showDate(i, item) {
+			return (
+				i != this.items.length - 1 &&
+				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate() &&
+				!item._prId_ &&
+				!this.items[i + 1]._prId_ &&
+				!item._featuredId_ &&
+				!this.items[i + 1]._featuredId_);
 		},
 
 		focus() {

@@ -13,6 +13,9 @@
 			<mk-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
 				{{ $t('autoNoteWatch') }}<template #desc>{{ $t('autoNoteWatchDescription') }}</template>
 			</mk-switch>
+			<mk-switch v-model="$store.state.i.injectFeaturedNote" @change="onChangeInjectFeaturedNote">
+				{{ $t('showFeaturedNotesInTimeline') }}
+			</mk-switch>
 		</div>
 		<div class="_content">
 			<mk-button @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</mk-button>
@@ -81,6 +84,12 @@ export default Vue.extend({
 		onChangeAutoWatch(v) {
 			this.$root.api('i/update', {
 				autoWatch: v
+			});
+		},
+
+		onChangeInjectFeaturedNote(v) {
+			this.$root.api('i/update', {
+				injectFeaturedNote: v
 			});
 		},
 
