@@ -5,6 +5,38 @@
 
 	<mk-instance-stats style="margin-bottom: var(--margin);"/>
 
+	<section class="_card logs">
+		<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
+		<div class="_content">
+			<div class="_inputs">
+				<mk-input v-model="logDomain" :debounce="true">
+					<span>{{ $t('domain') }}</span>
+				</mk-input>
+				<mk-select v-model="logLevel">
+					<template #label>{{ $t('level') }}</template>
+					<option value="all">{{ $t('levels.all') }}</option>
+					<option value="info">{{ $t('levels.info') }}</option>
+					<option value="success">{{ $t('levels.success') }}</option>
+					<option value="warning">{{ $t('levels.warning') }}</option>
+					<option value="error">{{ $t('levels.error') }}</option>
+					<option value="debug">{{ $t('levels.debug') }}</option>
+				</mk-select>
+			</div>
+
+			<div class="logs">
+				<code v-for="log in logs" :key="log.id" :class="log.level">
+					<details>
+						<summary><mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
+						<vue-json-pretty v-if="log.data" :data="log.data"></vue-json-pretty>
+					</details>
+				</code>
+			</div>
+		</div>
+		<div class="_footer">
+			<mk-button @click="deleteAllLogs()" primary><fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</mk-button>
+		</div>
+	</section>
+
 	<section class="_card chart">
 		<div class="_title"><fa :icon="faMicrochip"/> {{ $t('cpuAndMemory') }}</div>
 		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
@@ -67,9 +99,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faServer, faExchangeAlt, faMicrochip, faHdd } from '@fortawesome/free-solid-svg-icons';
+import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
+import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '../../components/instance-stats.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkSelect from '../../components/ui/select.vue';
+import MkInput from '../../components/ui/input.vue';
 import { version, url } from '../../config';
 import i18n from '../../i18n';
 
@@ -92,6 +128,10 @@ export default Vue.extend({
 
 	components: {
 		MkInstanceStats,
+		MkButton,
+		MkSelect,
+		MkInput,
+		VueJsonPretty
 	},
 
 	data() {
@@ -104,7 +144,10 @@ export default Vue.extend({
 			memUsage: 0,
 			chartCpuMem: null,
 			chartNet: null,
-			faServer, faExchangeAlt, faMicrochip, faHdd
+			logs: [],
+			logLevel: 'all',
+			logDomain: '',
+			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt
 		}
 	},
 
@@ -114,7 +157,20 @@ export default Vue.extend({
 		},
 	},
 
+	watch: {
+		logLevel() {
+			this.logs = [];
+			this.fetchLogs();
+		},
+		logDomain() {
+			this.logs = [];
+			this.fetchLogs();
+		}
+	},
+
 	mounted() {
+		this.fetchLogs();
+	
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 		this.chartCpuMem = new Chart(this.$refs.cpumem, {
@@ -330,6 +386,25 @@ export default Vue.extend({
 	},
 
 	methods: {
+		fetchLogs() {
+			this.$root.api('admin/logs', {
+				level: this.logLevel === 'all' ? null : this.logLevel,
+				domain: this.logDomain === '' ? null : this.logDomain,
+				limit: 30
+			}).then(logs => {
+				this.logs = logs.reverse();
+			});
+		},
+
+		deleteAllLogs() {
+			this.$root.api('admin/delete-logs').then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			});
+		},
+
 		onStats(stats) {
 			const cpu = (stats.cpu * 100).toFixed(0);
 			const memActive = (stats.mem.active / this.serverInfo.mem.total * 100).toFixed(0);
@@ -386,6 +461,37 @@ export default Vue.extend({
 			margin: calc(var(--margin) / 2);
 			box-sizing: border-box;
 			padding: 16px;
+		}
+	}
+
+	> .logs {
+		> ._content {
+			> .logs {
+				padding: 8px;
+				background: #000;
+				color: #fff;
+				font-size: 0.9em;
+
+				> code {
+					display: block;
+
+					&.error {
+						color: #f00;
+					}
+
+					&.warning {
+						color: #ff0;
+					}
+
+					&.success {
+						color: #0f0;
+					}
+
+					&.debug {
+						opacity: 0.7;
+					}
+				}
+			}
 		}
 	}
 

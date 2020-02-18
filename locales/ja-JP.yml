@@ -419,6 +419,8 @@ hideThisNote: "このノートを非表示"
 showFeaturedNotesInTimeline: "タイムラインにおすすめのノートを表示する"
 objectStorage: "オブジェクトストレージ"
 useObjectStorage: "オブジェクトストレージを使用"
+serverLogs: "サーバーログ"
+deleteAll: "全て削除"
 
 _ago:
   unknown: "謎"
