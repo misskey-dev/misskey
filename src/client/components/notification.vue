@@ -113,7 +113,7 @@ export default Vue.extend({
 .mk-notification {
 	position: relative;
 	box-sizing: border-box;
-	padding: 28px 32px;
+	padding: 24px 32px;
 	font-size: 0.9em;
 	overflow-wrap: break-word;
 	display: flex;
