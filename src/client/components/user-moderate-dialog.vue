@@ -3,7 +3,7 @@
 	<template #header><mk-user-name :user="user"/></template>
 	<div class="vrcsvlkm">
 		<mk-button @click="resetPassword()" primary>{{ $t('resetPassword') }}</mk-button>
-		<mk-switch v-if="$store.state.i.isAdmin" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
+		<mk-switch v-if="$store.state.i.isAdmin && !user.isAdmin" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
 		<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
 		<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
 	</div>
@@ -47,7 +47,7 @@ export default Vue.extend({
 				type: 'waiting',
 				iconOnly: true
 			});
-			
+
 			this.$root.api('admin/reset-password', {
 				userId: this.user.id,
 			}).then(({ password }) => {

@@ -32,6 +32,10 @@ export default define(meta, async (ps) => {
 		throw new Error('user not found');
 	}
 
+	if (user.isAdmin) {
+		throw new Error('cannot mark as moderator if admin user');
+	}
+
 	await Users.update(user.id, {
 		isModerator: true
 	});
