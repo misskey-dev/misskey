@@ -98,6 +98,10 @@ export default Vue.extend({
 		}
 	},
 
+	mounted() {
+		this.width = this.$el.offsetWidth
+	},
+
 	methods: {
 		before() {
 			Progress.start();
@@ -108,7 +112,7 @@ export default Vue.extend({
 		},
 
 		queueUpdated(q) {
-			this.width = this.$el.offsetWidth;
+			if (this.$el.offsetWidth !== 0) this.width = this.$el.offsetWidth;
 			this.queue = q;
 		},
 
