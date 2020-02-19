@@ -424,6 +424,11 @@ deleteAll: "Delete all"
 showFixedPostForm: "Display the posting form at the top of the timeline"
 newNoteRecived: "You've got a new note"
 useNotificationsPopup: "Display notification list in popup"
+none: "None"
+_sfx:
+  note: "Notes"
+  notification: "Notifications"
+  chat: "Messaging"
 _ago:
   unknown: "Unknown"
   future: "Future"
