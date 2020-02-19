@@ -626,18 +626,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.header-enter-active, .header-leave-active {
-	transition: opacity 0.5s, transform 0.5s !important;
-}
-.header-enter {
-	opacity: 0;
-	transform: scale(0.9);
-}
-.header-leave-to {
-	opacity: 0;
-	transform: scale(0.9);
-}
-
 .nav-enter-active,
 .nav-leave-active {
 	opacity: 1;
