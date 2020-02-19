@@ -109,6 +109,8 @@ aboutMisskey: "Misskeyってなんや？"
 notFoundDescription: "指定されたURLに該当するページはあらへんやった。"
 close: "さいなら"
 joinedGroups: "参加しとるグループ"
+_sfx:
+  notification: "通知"
 _ago:
   unknown: "謎"
   future: "未来"
