@@ -357,6 +357,9 @@ export default Vue.extend({
 
 	> footer {
 		width: 100%;
+		position: sticky;
+		bottom: 16px;
+		z-index: 2;
 
 		> .new-message {
 			position: absolute;
