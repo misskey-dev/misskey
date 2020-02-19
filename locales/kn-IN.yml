@@ -27,6 +27,8 @@ uploading: "ಅಪ್‌ಲೋಡಾಗುತ್ತಿದೆ"
 save: "ಉಳಿಸಿ"
 users: "ಬಳಕೆದಾರ"
 instances: "ನಿದರ್ಶನ"
+_sfx:
+  notification: "ಅಧಿಸೂಚನೆಗಳು"
 _widgets:
   notifications: "ಅಧಿಸೂಚನೆಗಳು"
   timeline: "ಸಮಯಸಾಲು"
