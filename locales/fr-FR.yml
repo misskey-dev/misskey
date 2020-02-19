@@ -452,6 +452,7 @@ _tutorial:
   step3_3: "Remplissez le cadran et cliquez sur le bouton en haut à droite pour envoyer."
   step3_4: "Vous n'avez rien à dire ? Essayez de dire \"J'ai commencé à utiliser Misskey\"."
   step4_1: "Avez-vous posté votre première notes ?"
+  step4_2: "Votre première note est maintenant affichée sur votre timeline."
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "S’inscrire l'appareil"
