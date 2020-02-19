@@ -431,6 +431,7 @@ volume: "音量"
 
 _sfx:
   note: "ノート"
+  noteMy: "ノート(自分)"
   notification: "通知"
   chat: "チャット"
   chatBg: "チャット(バックグラウンド)"

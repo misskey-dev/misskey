@@ -42,10 +42,11 @@ const defaultDeviceSettings = {
 	showFixedPostForm: false,
 	useNotificationsPopup: true,
 	sfxVolume: 0.3,
-	sfxNote: 'syuilo/pope1',
+	sfxNote: 'syuilo/down',
+	sfxNoteMy: 'syuilo/up',
 	sfxNotification: 'syuilo/pope2',
-	sfxChat: 'syuilo/waon',
-	sfxChatBg: null,
+	sfxChat: 'syuilo/pope1',
+	sfxChatBg: 'syuilo/waon',
 	userData: {},
 };
 

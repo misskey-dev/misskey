@@ -17,6 +17,11 @@
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
 				<template #text><button class="_textButton" @click="listen(sfxNote)" v-if="sfxNote"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
 			</mk-select>
+			<mk-select v-model="sfxNoteMy">
+				<template #label>{{ $t('_sfx.noteMy') }}</template>
+				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
+				<template #text><button class="_textButton" @click="listen(sfxNoteMy)" v-if="sfxNoteMy"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</mk-select>
 			<mk-select v-model="sfxNotification">
 				<template #label>{{ $t('_sfx.notification') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
@@ -87,6 +92,8 @@ import { langs } from '../../config';
 
 const sounds = [
 	null,
+	'syuilo/up',
+	'syuilo/down',
 	'syuilo/pope1',
 	'syuilo/pope2',
 	'syuilo/waon',
@@ -168,6 +175,11 @@ export default Vue.extend({
 		sfxNote: {
 			get() { return this.$store.state.device.sfxNote; },
 			set(value) { this.$store.commit('device/set', { key: 'sfxNote', value }); }
+		},
+
+		sfxNoteMy: {
+			get() { return this.$store.state.device.sfxNoteMy; },
+			set(value) { this.$store.commit('device/set', { key: 'sfxNoteMy', value }); }
 		},
 
 		sfxNotification: {
