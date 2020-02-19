@@ -450,6 +450,8 @@ _tutorial:
   step3_1: "Vous avez fini de créer votre profil ?"
   step3_2: "L’étape suivante consiste à créer une note. Vous pouvez commencer en cliquant sur l’icône crayon sur l’écran."
   step3_3: "Remplissez le cadran et cliquez sur le bouton en haut à droite pour envoyer."
+  step3_4: "Vous n'avez rien à dire ? Essayez de dire \"J'ai commencé à utiliser Misskey\"."
+  step4_1: "Avez-vous posté votre première notes ?"
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "S’inscrire l'appareil"
