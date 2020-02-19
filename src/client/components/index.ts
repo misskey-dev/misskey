@@ -11,6 +11,7 @@ import url from './url.vue';
 import loading from './loading.vue';
 import SequentialEntrance from './sequential-entrance.vue';
 import error from './error.vue';
+import streamIndicator from './stream-indicator.vue';
 
 Vue.component('mfm', mfm);
 Vue.component('mk-acct', acct);
@@ -23,3 +24,4 @@ Vue.component('mk-url', url);
 Vue.component('mk-loading', loading);
 Vue.component('mk-error', error);
 Vue.component('sequential-entrance', SequentialEntrance);
+Vue.component('stream-indicator', streamIndicator);
