@@ -99,7 +99,7 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.width = this.$el.offsetWidth
+		this.width = this.$el.offsetWidth;
 	},
 
 	methods: {
