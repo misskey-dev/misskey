@@ -424,6 +424,11 @@ deleteAll: "Eliminar todos"
 showFixedPostForm: "Mostrar el formulario de las entradas encima de la línea de tiempo"
 newNoteRecived: "Tienes una nota nuevo"
 useNotificationsPopup: "Mostrar lista de notificaciones en ventana emergente"
+none: "Ninguna"
+_sfx:
+  note: "Notas"
+  notification: "Notificaciones"
+  chat: "Chat"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
