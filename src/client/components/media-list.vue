@@ -3,8 +3,8 @@
 	<template v-for="media in mediaList.filter(media => !previewable(media))">
 		<x-banner :media="media" :key="media.id"/>
 	</template>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
-		<div :data-count="mediaList.filter(media => previewable(media)).length" ref="grid">
+	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container" ref="gridOuter">
+		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridInnerStyle">
 			<template v-for="media in mediaList">
 				<x-video :video="media" :key="media.id" v-if="media.type.startsWith('video')"/>
 				<x-image :image="media" :key="media.id" v-else-if="media.type.startsWith('image')" :raw="raw"/>
@@ -32,19 +32,44 @@ export default Vue.extend({
 		},
 		raw: {
 			default: false
+		},
+		// specify the parent element
+		parentElement: {
+			type: Object
+		}
+	},
+	data() {
+		return {
+			gridInnerStyle: {}
 		}
 	},
 	mounted() {
-		//#region for Safari bug
-		if (this.$refs.grid) {
-			this.$refs.grid.style.height = this.$refs.grid.clientHeight ? `${this.$refs.grid.clientHeight}px`
-				: '287px';
-		}
-		//#endregion
+		this.size();
+		window.addEventListener('resize', this.size);
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.size);
 	},
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');
+		},
+		size() {
+			// for Safari bug
+			if (this.$refs.gridOuter) {
+				let height = 287;
+				const parent = this.$props.parentElement || this.$parent.$el;
+
+				if (this.$refs.gridOuter.clientHeight) {
+					height = this.$refs.gridOuter.clientHeight;
+				} else if (parent) {
+					height = parent.getBoundingClientRect().width * 9 / 16;
+				}
+
+				this.gridInnerStyle = { height: `${height}px` };
+			} else {
+				this.gridInnerStyle = {};
+			}
 		}
 	}
 });
