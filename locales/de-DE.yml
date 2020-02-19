@@ -46,6 +46,8 @@ mutedUsers: "Stummgestellte Benutzer"
 blockedUsers: "Blockierte Benutzer"
 noUsers: "Keine Benutzer"
 remove: "Löschen"
+_sfx:
+  notification: "Benachrichtigungen"
 _widgets:
   notifications: "Benachrichtigungen"
   timeline: "Zeitleiste"
