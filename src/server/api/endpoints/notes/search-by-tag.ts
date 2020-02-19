@@ -99,7 +99,8 @@ export default define(meta, async (ps, me) => {
 	if (me) generateMuteQuery(query, me);
 
 	if (ps.tag) {
-		query.andWhere(':tag = ANY(note.tags)', { tag: ps.tag.toLowerCase() });
+		if (/[\0\x08\x09\x1a\n\r"'\\\%]/g.test(ps.tag)) return;
+		query.andWhere(`'{"${ps.tag.toLowerCase()}"}' <@ note.tags`);
 	} else {
 		let i = 0;
 		query.andWhere(new Brackets(qb => {
@@ -143,7 +144,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Search notes
-	const notes = await query.take(ps.limit!).getMany();
+	const notes = await query.take(ps.limit!).printSql().getMany();
 
 	return await Notes.packMany(notes, me);
 });
