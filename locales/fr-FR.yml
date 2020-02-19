@@ -424,6 +424,11 @@ deleteAll: "Supprimer tout"
 showFixedPostForm: "Afficher le formulaire en haut du fil d'actualité"
 newNoteRecived: "Vous avez un nouveau note"
 useNotificationsPopup: "Afficher la liste des notifications dans une fenêtre contextuelle"
+none: "Rien"
+_sfx:
+  note: "Notes"
+  notification: "Notifications"
+  chat: "Discuter"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
