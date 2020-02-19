@@ -196,7 +196,7 @@ export default Vue.extend({
 		> button {
 			display: block;
 			margin: 0 auto;
-			padding: 8px 12px;
+			padding: 8px 16px;
 			border-radius: 32px;
 		}
 	}
