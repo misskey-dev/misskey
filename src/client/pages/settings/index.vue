@@ -11,7 +11,7 @@
 			<mk-switch v-model="autoReload">
 				{{ $t('autoReloadWhenDisconnected') }}
 			</mk-switch>
-						<mk-switch v-model="showReloadDialog" :disabled="autoReload">
+			<mk-switch v-model="showReloadDialog" :disabled="autoReload">
 				{{ $t('showDialogWhenDisconnected') }}
 			</mk-switch>
 		</div>
