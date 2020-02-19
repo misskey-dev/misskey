@@ -1,11 +1,11 @@
 <template>
-	<div class="disconnect-notify" v-if="stream.state == 'connected' && hasDisconnected" @click="resetDisconnected">
-		<div>{{ $t('disconnectedFromServer') }}</div>
-		<div class="command">
-			<button @click="reload">{{ $t('reload') }}</button>
-			<button>{{ $t('doNothing') }}</button>
-		</div>
+<div class="nsbbhtug" v-if="hasDisconnected" @click="resetDisconnected">
+	<div>{{ $t('disconnectedFromServer') }}</div>
+	<div class="command">
+		<button class="_textButton" @click="reload">{{ $t('reload') }}</button>
+		<button class="_textButton">{{ $t('doNothing') }}</button>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -54,7 +54,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.disconnect-notify {
+.nsbbhtug {
 	position: fixed;
 	z-index: 16385;
 	bottom: 8px;
@@ -73,15 +73,7 @@ export default Vue.extend({
 		justify-content: space-around;
 
 		> button {
-			color: #aaa;
 			padding: 0.7em;
-			background: transparent;
-			border: none;
-			cursor: pointer;
-
-			&:hover {
-				color: #fff;
-			}
 		}
 	}
 }
