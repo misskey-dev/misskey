@@ -424,6 +424,11 @@ deleteAll: "모두 삭제"
 showFixedPostForm: "타임라인 상단에 글 작성란을 표시"
 newNoteRecived: "새 노트가 있습니다"
 useNotificationsPopup: "알림 목록을 팝업으로 표시"
+none: "없음"
+_sfx:
+  note: "노트"
+  notification: "알림"
+  chat: "대화"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
