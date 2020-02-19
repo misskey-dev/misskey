@@ -39,11 +39,15 @@ export default {
 				self.hideTimer = setTimeout(self.close, 500);
 			});
 
-			self.checkTimer = setInterval(() => {
-				if (!document.body.contains(el)) self.close();
-			}, 1000);
-
 			document.body.appendChild(self.tag.$el);
+
+			self.checkTimer = setInterval(() => {
+				if (!document.body.contains(el)) {
+					clearTimeout(self.showTimer);
+					clearTimeout(self.hideTimer);
+					self.close();
+				}
+			}, 1000);
 		};
 
 		el.addEventListener('mouseover', () => {
@@ -66,9 +70,6 @@ export default {
 
 	unbind(el, binding, vn) {
 		const self = el._userPreviewDirective_;
-		clearTimeout(self.showTimer);
-		clearTimeout(self.hideTimer);
 		clearInterval(self.checkTimer);
-		self.close();
 	}
 };

@@ -53,6 +53,7 @@ export default Vue.extend({
 		return {
 			u: null,
 			show: false,
+			closed: false,
 			top: 0,
 			left: 0,
 		};
@@ -68,6 +69,7 @@ export default Vue.extend({
 				{ userId: this.user };
 
 			this.$root.api('users/show', query).then(user => {
+				if (this.closed) return;
 				this.u = user;
 				this.show = true;
 			});
@@ -83,6 +85,7 @@ export default Vue.extend({
 
 	methods: {
 		close() {
+			this.closed = true;
 			this.show = false;
 			if (this.$refs.content) (this.$refs.content as any).style.pointerEvents = 'none';
 		}
