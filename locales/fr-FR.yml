@@ -443,6 +443,7 @@ _time:
 _tutorial:
   title: "Comment utiliser Misskey"
   step1_1: "Bienvenue,"
+  step1_2: "Cette page est appelée \"timeline\". Elle montre les \"notes\" des personnes que vous \"suivez\" dans l'ordre chronologique."
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "S’inscrire l'appareil"
