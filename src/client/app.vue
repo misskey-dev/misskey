@@ -159,6 +159,8 @@
 	<transition name="zoom-in-top">
 		<x-notifications v-if="notificationsOpen" class="notifications" ref="notifications"/>
 	</transition>
+
+	<stream-indicator v-if="$store.getters.isSignedIn"/>
 </div>
 </template>
 
@@ -201,7 +203,6 @@ export default Vue.extend({
 			widgetsEditMode: false,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
-			disconnectedDialog: null as Promise<void> | null,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
 		};
@@ -265,30 +266,6 @@ export default Vue.extend({
 				}]);
 			}
 		}
-
-		this.$root.stream.on('_disconnected_', () => {
-			if (this.disconnectedDialog) return;
-			if (this.$store.state.device.autoReload) {
-				location.reload();
-				return;
-			}
-
-			setTimeout(() => {
-				if (this.$root.stream.state !== 'reconnecting') return;
-
-				this.disconnectedDialog = this.$root.dialog({
-					type: 'warning',
-					showCancelButton: true,
-					title: this.$t('disconnectedFromServer'),
-					text: this.$t('reloadConfirm'),
-				}).then(({ canceled }) => {
-					if (!canceled) {
-						location.reload();
-					}
-					this.disconnectedDialog = null;
-				});
-			}, 150)
-		});
 	},
 
 	mounted() {
