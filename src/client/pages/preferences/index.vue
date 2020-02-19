@@ -104,6 +104,8 @@ const sounds = [
 	'syuilo/waon',
 	'syuilo/popo',
 	'syuilo/triple',
+	'syuilo/poi1',
+	'syuilo/poi2',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
