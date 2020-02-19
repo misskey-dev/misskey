@@ -32,6 +32,7 @@ const defaultDeviceSettings = {
 	alwaysShowNsfw: false,
 	useOsNativeEmojis: false,
 	autoReload: false,
+	showReloadDialog: false,
 	accounts: [],
 	recentEmojis: [],
 	themes: [],

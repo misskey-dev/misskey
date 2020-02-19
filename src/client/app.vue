@@ -273,6 +273,8 @@ export default Vue.extend({
 				return;
 			}
 
+			if (!this.$store.state.device.showReloadDialog) return;
+
 			setTimeout(() => {
 				if (this.$root.stream.state !== 'reconnecting') return;
 

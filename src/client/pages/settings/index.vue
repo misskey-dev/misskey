@@ -11,6 +11,9 @@
 			<mk-switch v-model="autoReload">
 				{{ $t('autoReloadWhenDisconnected') }}
 			</mk-switch>
+						<mk-switch v-model="showReloadDialog" :disabled="autoReload">
+				{{ $t('showDialogWhenDisconnected') }}
+			</mk-switch>
 		</div>
 		<div class="_content">
 			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
@@ -86,6 +89,15 @@ export default Vue.extend({
 		autoReload: {
 			get() { return this.$store.state.device.autoReload; },
 			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
+		},
+
+		showReloadDialog: {
+			get() {
+				return this.$store.state.device.showReloadDialog;
+			},
+			set(value) {
+				this.$store.commit("device/set", { key: "showReloadDialog", value });
+			}
 		},
 
 		reduceAnimation: {
