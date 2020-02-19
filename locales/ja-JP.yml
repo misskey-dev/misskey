@@ -437,6 +437,7 @@ _sfx:
   notification: "通知"
   chat: "チャット"
   chatBg: "チャット(バックグラウンド)"
+  antenna: "アンテナ受信"
 
 _ago:
   unknown: "謎"

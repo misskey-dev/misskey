@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
 import initStore from './store';
-import { apiUrl, version, locale } from './config';
+import { apiUrl, version } from './config';
 import Progress from './scripts/loading';
 
 import Stream from './scripts/stream';
@@ -142,98 +142,6 @@ export default class MiOS extends EventEmitter {
 	@autobind
 	private initStream() {
 		this.stream = new Stream(this);
-
-		if (this.store.getters.isSignedIn) {
-			const main = this.stream.useSharedConnection('main');
-
-			// 自分の情報が更新されたとき
-			main.on('meUpdated', i => {
-				this.store.dispatch('mergeMe', i);
-			});
-
-			main.on('readAllNotifications', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadNotification: false
-				});
-			});
-
-			main.on('unreadNotification', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadNotification: true
-				});
-			});
-
-			main.on('unreadMention', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadMentions: true
-				});
-			});
-
-			main.on('readAllUnreadMentions', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadMentions: false
-				});
-			});
-
-			main.on('unreadSpecifiedNote', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadSpecifiedNotes: true
-				});
-			});
-
-			main.on('readAllUnreadSpecifiedNotes', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadSpecifiedNotes: false
-				});
-			});
-
-			main.on('readAllMessagingMessages', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadMessagingMessage: false
-				});
-			});
-
-			main.on('unreadMessagingMessage', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadMessagingMessage: true
-				});
-
-				const audio = new Audio(`/assets/sounds/${this.store.state.device.sfxChatBg}.mp3`);
-				audio.volume = this.store.state.device.sfxVolume;
-				audio.play();
-			});
-
-			main.on('readAllAntennas', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadAntenna: false
-				});
-			});
-
-			main.on('unreadAntenna', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadAntenna: true
-				});
-			});
-
-			main.on('readAllAnnouncements', () => {
-				this.store.dispatch('mergeMe', {
-					hasUnreadAnnouncement: false
-				});
-			});
-
-			main.on('clientSettingUpdated', x => {
-				this.store.commit('settings/set', {
-					key: x.key,
-					value: x.value
-				});
-			});
-
-			// トークンが再生成されたとき
-			// このままではMisskeyが利用できないので強制的にサインアウトさせる
-			main.on('myTokenRegenerated', () => {
-				this.signout();
-			});
-		}
 	}
 
 	/**

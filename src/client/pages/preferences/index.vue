@@ -37,6 +37,11 @@
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
 				<template #text><button class="_textButton" @click="listen(sfxChatBg)" v-if="sfxChatBg"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
 			</mk-select>
+			<mk-select v-model="sfxAntenna">
+				<template #label>{{ $t('_sfx.antenna') }}</template>
+				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
+				<template #text><button class="_textButton" @click="listen(sfxAntenna)" v-if="sfxAntenna"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</mk-select>
 		</div>
 	</section>
 
@@ -97,6 +102,8 @@ const sounds = [
 	'syuilo/pope1',
 	'syuilo/pope2',
 	'syuilo/waon',
+	'syuilo/popo',
+	'syuilo/triple',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
@@ -195,6 +202,11 @@ export default Vue.extend({
 		sfxChatBg: {
 			get() { return this.$store.state.device.sfxChatBg; },
 			set(value) { this.$store.commit('device/set', { key: 'sfxChatBg', value }); }
+		},
+
+		sfxAntenna: {
+			get() { return this.$store.state.device.sfxAntenna; },
+			set(value) { this.$store.commit('device/set', { key: 'sfxAntenna', value }); }
 		},
 	},
 

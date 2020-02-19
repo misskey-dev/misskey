@@ -47,6 +47,7 @@ const defaultDeviceSettings = {
 	sfxNotification: 'syuilo/pope2',
 	sfxChat: 'syuilo/pope1',
 	sfxChatBg: 'syuilo/waon',
+	sfxAntenna: 'syuilo/triple',
 	userData: {},
 };
 

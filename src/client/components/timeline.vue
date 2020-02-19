@@ -53,11 +53,7 @@ export default Vue.extend({
 			(this.$refs.tl as any).prepend(note);
 
 			if (this.sound) {
-				const audio = new Audio(note.userId === this.$store.state.i.id
-					? `/assets/sounds/${this.$store.state.device.sfxNoteMy}.mp3`
-					: `/assets/sounds/${this.$store.state.device.sfxNote}.mp3`);
-				audio.volume = this.$store.state.device.sfxVolume;
-				audio.play();
+				this.$root.sound(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
 			}
 		};
 

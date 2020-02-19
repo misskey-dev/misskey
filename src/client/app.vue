@@ -565,9 +565,7 @@ export default Vue.extend({
 				});
 			}
 
-			const audio = new Audio(`/assets/sounds/${this.$store.state.device.sfxNotification}.mp3`);
-			audio.volume = this.$store.state.device.sfxVolume;
-			audio.play();
+			this.$root.sound('notification');
 		},
 
 		onMousedown(e) {

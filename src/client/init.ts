@@ -189,6 +189,13 @@ os.init(async () => {
 				if (cb) vm.$once('closed', cb);
 				(vm as any).focus();
 			},
+			sound(type: string) {
+				const sound = this.$store.state.device['sfx' + type.substr(0, 1).toUpperCase() + type.substr(1)];
+				if (sound == null) return;
+				const audio = new Audio(`/assets/sounds/${sound}.mp3`);
+				audio.volume = this.$store.state.device.sfxVolume;
+				audio.play();
+			}
 		},
 		router: router,
 		render: createEl => createEl(App)
@@ -198,4 +205,96 @@ os.init(async () => {
 
 	// マウント
 	app.$mount('#app');
+
+	if (app.$store.getters.isSignedIn) {
+		const main = os.stream.useSharedConnection('main');
+
+		// 自分の情報が更新されたとき
+		main.on('meUpdated', i => {
+			app.$store.dispatch('mergeMe', i);
+		});
+
+		main.on('readAllNotifications', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadNotification: false
+			});
+		});
+
+		main.on('unreadNotification', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadNotification: true
+			});
+		});
+
+		main.on('unreadMention', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadMentions: true
+			});
+		});
+
+		main.on('readAllUnreadMentions', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadMentions: false
+			});
+		});
+
+		main.on('unreadSpecifiedNote', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadSpecifiedNotes: true
+			});
+		});
+
+		main.on('readAllUnreadSpecifiedNotes', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadSpecifiedNotes: false
+			});
+		});
+
+		main.on('readAllMessagingMessages', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: false
+			});
+		});
+
+		main.on('unreadMessagingMessage', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: true
+			});
+
+			app.sound('chatBg');
+		});
+
+		main.on('readAllAntennas', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadAntenna: false
+			});
+		});
+
+		main.on('unreadAntenna', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadAntenna: true
+			});
+
+			app.sound('antenna');
+		});
+
+		main.on('readAllAnnouncements', () => {
+			app.$store.dispatch('mergeMe', {
+				hasUnreadAnnouncement: false
+			});
+		});
+
+		main.on('clientSettingUpdated', x => {
+			app.$store.commit('settings/set', {
+				key: x.key,
+				value: x.value
+			});
+		});
+
+		// トークンが再生成されたとき
+		// このままではMisskeyが利用できないので強制的にサインアウトさせる
+		main.on('myTokenRegenerated', () => {
+			os.signout();
+		});
+	}
 });
