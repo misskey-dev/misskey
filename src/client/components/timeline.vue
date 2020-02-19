@@ -21,6 +21,11 @@ export default Vue.extend({
 		},
 		antenna: {
 			required: false
+		},
+		sound: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 
@@ -46,6 +51,12 @@ export default Vue.extend({
 
 		const prepend = note => {
 			(this.$refs.tl as any).prepend(note);
+
+			if (this.sound) {
+				const audio = new Audio(`/assets/sounds/${this.$store.state.device.sfxNote}.mp3`);
+				audio.volume = this.$store.state.device.sfxVolume;
+				audio.play();
+			}
 		};
 
 		const onUserAdded = () => {

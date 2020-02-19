@@ -46,7 +46,7 @@ export const router = new VueRouter({
 		{ path: '/my/groups', component: page('my-groups/index') },
 		{ path: '/my/groups/:group', component: page('my-groups/group') },
 		{ path: '/my/antennas', component: page('my-antennas/index') },
-		{ path: '/settings', component: page('settings/index') },
+		{ path: '/preferences', component: page('preferences/index') },
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },
 		{ path: '/instance/users', component: page('instance/users') },

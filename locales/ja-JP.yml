@@ -424,6 +424,16 @@ deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
 newNoteRecived: "新しいノートがあります"
 useNotificationsPopup: "通知一覧をポップアップで表示"
+sounds: "サウンド"
+listen: "聴く"
+none: "なし"
+volume: "音量"
+
+_sfx:
+  note: "ノート"
+  notification: "通知"
+  chat: "チャット"
+  chatBg: "チャット(バックグラウンド)"
 
 _ago:
   unknown: "謎"

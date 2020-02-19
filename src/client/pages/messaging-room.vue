@@ -185,11 +185,9 @@ export default Vue.extend({
 
 		onMessage(message) {
 			// サウンドを再生する
-			if (this.$store.state.device.enableSounds) {
-				const sound = new Audio(`${url}/assets/message.mp3`);
-				sound.volume = this.$store.state.device.soundVolume;
-				sound.play();
-			}
+			const audio = new Audio(`/assets/sounds/${this.$store.state.device.sfxChat}.mp3`);
+			audio.volume = this.$store.state.device.sfxVolume;
+			audio.play();
 
 			const isBottom = this.isBottom();
 

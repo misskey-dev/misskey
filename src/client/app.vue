@@ -93,7 +93,7 @@
 					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 					<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
 				</button>
-				<router-link class="item" active-class="active" to="/settings">
+				<router-link class="item" active-class="active" to="/preferences">
 					<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
 				</router-link>
 			</div>
@@ -578,13 +578,19 @@ export default Vue.extend({
 
 		onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.$root.stream.send('readNotification', {
-				id: notification.id
-			});
+			if (true) {
+				this.$root.stream.send('readNotification', {
+					id: notification.id
+				});
 
-			this.$root.new(MkToast, {
-				notification
-			});
+				this.$root.new(MkToast, {
+					notification
+				});
+			}
+
+			const audio = new Audio(`/assets/sounds/${this.$store.state.device.sfxNotification}.mp3`);
+			audio.volume = this.$store.state.device.sfxVolume;
+			audio.play();
 		},
 
 		onMousedown(e) {

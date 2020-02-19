@@ -56,7 +56,7 @@ export default Vue.extend({
 			}
 		},
 		filled(): boolean {
-			return this.v != '' && this.v != null;
+			return true;
 		}
 	},
 	mounted() {
@@ -100,6 +100,7 @@ export default Vue.extend({
 
 	> .input {
 		display: flex;
+		position: relative;
 
 		&:before {
 			content: '';

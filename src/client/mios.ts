@@ -197,6 +197,10 @@ export default class MiOS extends EventEmitter {
 				this.store.dispatch('mergeMe', {
 					hasUnreadMessagingMessage: true
 				});
+
+				const audio = new Audio(`/assets/sounds/${this.store.state.device.sfxChatBg}.mp3`);
+				audio.volume = this.store.state.device.sfxVolume;
+				audio.play();
 			});
 
 			main.on('readAllAntennas', () => {

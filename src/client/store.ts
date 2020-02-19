@@ -41,6 +41,11 @@ const defaultDeviceSettings = {
 	imageNewTab: false,
 	showFixedPostForm: false,
 	useNotificationsPopup: true,
+	sfxVolume: 0.3,
+	sfxNote: 'syuilo/pope1',
+	sfxNotification: 'syuilo/pope2',
+	sfxChat: 'syuilo/waon',
+	sfxChatBg: null,
 	userData: {},
 };
 
