@@ -8,9 +8,11 @@ export default {
 		self.tag = null;
 		self.showTimer = null;
 		self.hideTimer = null;
+		self.checkTimer = null;
 
 		self.close = () => {
 			if (self.tag) {
+				clearInterval(self.checkTimer);
 				self.tag.close();
 				self.tag = null;
 			}
@@ -37,6 +39,10 @@ export default {
 				self.hideTimer = setTimeout(self.close, 500);
 			});
 
+			self.checkTimer = setInterval(() => {
+				if (!document.body.contains(el)) self.close();
+			}, 1000);
+
 			document.body.appendChild(self.tag.$el);
 		};
 
@@ -62,6 +68,7 @@ export default {
 		const self = el._userPreviewDirective_;
 		clearTimeout(self.showTimer);
 		clearTimeout(self.hideTimer);
+		clearInterval(self.checkTimer);
 		self.close();
 	}
 };
