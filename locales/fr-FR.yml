@@ -444,6 +444,12 @@ _tutorial:
   title: "Comment utiliser Misskey"
   step1_1: "Bienvenue,"
   step1_2: "Cette page est appelée \"timeline\". Elle montre les \"notes\" des personnes que vous \"suivez\" dans l'ordre chronologique."
+  step1_3: "Vous n'avez pas encore posté de notes ou ne suivez personne, vous ne devriez donc rien voir dans la chronologie."
+  step2_1: "Finissons de créer votre profil avant d'écrire une note ou de suivre quelqu'un."
+  step2_2: "En fournissant quelques informations sur vous, il sera plus facile pour les autres de vous suivre."
+  step3_1: "Vous avez fini de créer votre profil ?"
+  step3_2: "L’étape suivante consiste à créer une note. Vous pouvez commencer en cliquant sur l’icône crayon sur l’écran."
+  step3_3: "Remplissez le cadran et cliquez sur le bouton en haut à droite pour envoyer."
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "S’inscrire l'appareil"
