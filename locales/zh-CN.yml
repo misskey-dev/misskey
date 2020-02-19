@@ -415,6 +415,11 @@ deleteAll: "删除全部"
 showFixedPostForm: "在时间线顶部显示帖子表单"
 newNoteRecived: "有新的帖子"
 useNotificationsPopup: "在弹出窗口中显示通知列表"
+none: "空"
+_sfx:
+  note: "帖子"
+  notification: "通知"
+  chat: "聊天"
 _ago:
   unknown: "未知"
   future: "未来"
