@@ -477,6 +477,7 @@ _auth:
   permissionAsk: "这个应用程序需要以下权限"
 _antennaSources:
   all: "所有帖子"
+  homeTimeline: "已关注用户的帖子"
 _weekday:
   sunday: "星期日"
   monday: "星期一"
