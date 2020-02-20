@@ -70,6 +70,10 @@ export default Vue.extend({
 				't': this.focus
 			};
 		},
+
+		meta() {
+			return this.$store.state.instance.meta;
+		},
 	},
 
 	watch: {
@@ -121,6 +125,7 @@ export default Vue.extend({
 		},
 
 		async choose(ev) {
+			if (this.meta == null) return;
 			this.menuOpened = true;
 			const [antennas, lists] = await Promise.all([
 				this.$root.api('antennas/list'),
@@ -148,15 +153,15 @@ export default Vue.extend({
 					text: this.$t('_timelines.home'),
 					icon: faHome,
 					action: () => { this.setSrc('home') }
-				}, {
+				}, this.meta.disableLocalTimeline ? undefined : {
 					text: this.$t('_timelines.local'),
 					icon: faComments,
 					action: () => { this.setSrc('local') }
-				}, {
+				}, this.meta.disableLocalTimeline ? undefined : {
 					text: this.$t('_timelines.social'),
 					icon: faShareAlt,
 					action: () => { this.setSrc('social') }
-				}, {
+				}, this.meta.disableGlobalTimeline ? undefined : {
 					text: this.$t('_timelines.global'),
 					icon: faGlobe,
 					action: () => { this.setSrc('global') }
