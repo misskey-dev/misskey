@@ -199,6 +199,7 @@ hr {
 ._button {
 	appearance: none;
 	padding: 0;
+	margin: 0; // for Safari
 	background: none;
 	border: none;
 	cursor: pointer;
