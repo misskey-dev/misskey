@@ -21,6 +21,7 @@ export class AntennaRepository extends Repository<Antenna> {
 			createdAt: antenna.createdAt.toISOString(),
 			name: antenna.name,
 			keywords: antenna.keywords,
+			excludeKeywords: antenna.excludeKeywords,
 			src: antenna.src,
 			userListId: antenna.userListId,
 			userGroupId: userGroupJoining ? userGroupJoining.userGroupId : null,

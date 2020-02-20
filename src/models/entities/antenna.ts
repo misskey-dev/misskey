@@ -71,6 +71,11 @@ export class Antenna {
 	})
 	public keywords: string[][];
 
+	@Column('jsonb', {
+		default: []
+	})
+	public excludeKeywords: string[][];
+
 	@Column('boolean', {
 		default: false
 	})

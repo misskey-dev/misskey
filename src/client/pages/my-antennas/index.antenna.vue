@@ -30,6 +30,10 @@
 			<span>{{ $t('antennaKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
 		</mk-textarea>
+		<mk-textarea v-model="excludeKeywords">
+			<span>{{ $t('antennaExcludeKeywords') }}</span>
+			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
+		</mk-textarea>
 		<mk-switch v-model="caseSensitive">{{ $t('caseSensitive') }}</mk-switch>
 		<mk-switch v-model="withFile">{{ $t('withFileAntenna') }}</mk-switch>
 		<mk-switch v-model="notify">{{ $t('notifyAntenna') }}</mk-switch>
@@ -75,6 +79,7 @@ export default Vue.extend({
 			userGroupId: null,
 			users: '',
 			keywords: '',
+			excludeKeywords: '',
 			caseSensitive: false,
 			withReplies: false,
 			withFile: false,
@@ -107,6 +112,7 @@ export default Vue.extend({
 		this.userGroupId = this.antenna.userGroupId;
 		this.users = this.antenna.users.join('\n');
 		this.keywords = this.antenna.keywords.map(x => x.join(' ')).join('\n');
+		this.excludeKeywords = this.antenna.excludeKeywords.map(x => x.join(' ')).join('\n');
 		this.caseSensitive = this.antenna.caseSensitive;
 		this.withReplies = this.antenna.withReplies;
 		this.withFile = this.antenna.withFile;
@@ -126,7 +132,8 @@ export default Vue.extend({
 					notify: this.notify,
 					caseSensitive: this.caseSensitive,
 					users: this.users.trim().split('\n').map(x => x.trim()),
-					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
+					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' ')),
+					excludeKeywords: this.excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
 				});
 				this.$emit('created');
 			} else {
@@ -141,7 +148,8 @@ export default Vue.extend({
 					notify: this.notify,
 					caseSensitive: this.caseSensitive,
 					users: this.users.trim().split('\n').map(x => x.trim()),
-					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' '))
+					keywords: this.keywords.trim().split('\n').map(x => x.trim().split(' ')),
+					excludeKeywords: this.excludeKeywords.trim().split('\n').map(x => x.trim().split(' ')),
 				});
 			}
 

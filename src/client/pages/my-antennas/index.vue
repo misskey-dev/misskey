@@ -53,6 +53,7 @@ export default Vue.extend({
 				userGroupId: null,
 				users: [],
 				keywords: [],
+				excludeKeywords: [],
 				withReplies: false,
 				caseSensitive: false,
 				withFile: false,

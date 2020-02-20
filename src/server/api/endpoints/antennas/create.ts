@@ -33,6 +33,10 @@ export const meta = {
 			validator: $.arr($.arr($.str))
 		},
 
+		excludeKeywords: {
+			validator: $.arr($.arr($.str))
+		},
+
 		users: {
 			validator: $.arr($.str)
 		},
@@ -102,6 +106,7 @@ export default define(meta, async (ps, user) => {
 		userListId: userList ? userList.id : null,
 		userGroupJoiningId: userGroupJoining ? userGroupJoining.id : null,
 		keywords: ps.keywords,
+		excludeKeywords: ps.excludeKeywords,
 		users: ps.users,
 		caseSensitive: ps.caseSensitive,
 		withReplies: ps.withReplies,
