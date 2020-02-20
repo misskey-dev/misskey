@@ -136,6 +136,14 @@ document.body.innerHTML = '<div id="app"></div>';
 const os = new MiOS();
 
 os.init(async () => {
+	window.addEventListener('storage', e => {
+		if (e.key === 'vuex') {
+			os.store.replaceState(JSON.parse(localStorage['vuex']));
+		} else if (e.key === 'i') {
+			location.reload();
+		}
+	}, false)
+
 	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {
