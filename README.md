@@ -151,9 +151,9 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/26340354/08834cf767b3449e93098ef73a434e2f/2.png?token-time=2145916800&token-hash=nyM8DnKRL8hR47HQ619mUzsqVRpkWZjgtgBU9RY15Uc%3D" alt="totokoro" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/19356899/496b4681d33b4520bd7688e0fd19c04d/2.jpeg?token-time=2145916800&token-hash=_sTj3dUBOhn9qwiJ7F19Qd-yWWfUqJC_0jG1h0agEqQ%3D" alt="sheeta.s" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5827393/59893c191dda408f9cabd0f20a3a5627/1.jpeg?token-time=2145916800&token-hash=i9N05vOph-eP1LTLb9_npATjYOpntL0ZsHNaZFSsPmE%3D" alt="motcha" width="100"></td>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/20494440/540beaf2445f408ea6597bc61e077bb3/1.png?token-time=2145916800&token-hash=UJ0JQge64Bx9XmN_qYA1inMQhrWf4U91fqz7VAKJeSg%3D" alt="axtuki1" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13737140/1adf7835017d479280d90fe8d30aade2/1.png?token-time=2145916800&token-hash=0pdle8h5pDZrww0BDOjdz6zO-HudeGTh36a3qi1biVU%3D" alt="Satsuki Yanagi" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/17880724/311738c8a48f4a6b9443c2445a75adde/1.jpg?token-time=2145916800&token-hash=nVAntpybQrznE0rg05keLrSE6ogPKJXB13rmrJng42c%3D" alt="takimura" width="100"></td>
-<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13100201/fc5be4fa90444f09a9c8a06f72385272/1.png?token-time=2145916800&token-hash=i8PjlgfOB2LPEdbtWyx8ZPsBKhGcNZqcw_FQmH71UGU%3D" alt="aqz tamaina" width="100"></td>
 </tr><tr>
 <td><a href="https://www.patreon.com/user?u=16542964">Takumi Sugita</a></td>
 <td><a href="https://www.patreon.com/user?u=17866454">sikyosyounin</a></td>
@@ -161,11 +161,12 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=26340354">totokoro</a></td>
 <td><a href="https://www.patreon.com/user?u=19356899">sheeta.s</a></td>
 <td><a href="https://www.patreon.com/user?u=5827393">motcha</a></td>
+<td><a href="https://www.patreon.com/user?u=20494440">axtuki1</a></td>
 <td><a href="https://www.patreon.com/user?u=13737140">Satsuki Yanagi</a></td>
 <td><a href="https://www.patreon.com/takimura">takimura</a></td>
-<td><a href="https://www.patreon.com/aqz">aqz tamaina</a></td>
 </tr></table>
 <table><tr>
+<td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/13100201/fc5be4fa90444f09a9c8a06f72385272/1.png?token-time=2145916800&token-hash=i8PjlgfOB2LPEdbtWyx8ZPsBKhGcNZqcw_FQmH71UGU%3D" alt="aqz tamaina" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/16900731/619ab87cc08448439222631ebb26802f/1.gif?token-time=2145916800&token-hash=o27K7M02s1z-LkDUEO5Oa7cu-GviRXeOXxryi4o_6VU%3D" alt="Atsuko Tominaga" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4389829/9f709180ac714651a70f74a82f3ffdb9/3.png?token-time=2145916800&token-hash=FTm3WVom4dJ9NwWMU4OpCL_8Yc13WiwEbKrDPyTZTPs%3D" alt="natalie" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/5923936/2a743cbfbff946c2af3f09026047c0da/2.png?token-time=2145916800&token-hash=h6yphW1qnM0n_NOWaf8qtszMRLXEwIxfk5beu4RxdT0%3D" alt="noellabo" width="100"></td>
@@ -174,6 +175,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/24641572/b4fd175424814f15b0ca9178d2d2d2e4/1.png?token-time=2145916800&token-hash=e2fyqdbuJbpCckHcwux7rbuW6OPkKdERcus0u2wIEWU%3D" alt="uroco @99" width="100"></td>
 <td><img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/4503830/ccf2cc867ea64de0b524bb2e24b9a1cb/1.jpeg?token-time=2145916800&token-hash=L55UhJ0rcuNAH3w_ryeeGN4hC6taoOixyAhraEi0bzw%3D" alt="dansup" width="100"></td>
 </tr><tr>
+<td><a href="https://www.patreon.com/aqz">aqz tamaina</a></td>
 <td><a href="https://www.patreon.com/user?u=16900731">Atsuko Tominaga</a></td>
 <td><a href="https://www.patreon.com/user?u=4389829">natalie</a></td>
 <td><a href="https://www.patreon.com/noellabo">noellabo</a></td>
@@ -190,7 +192,7 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 <td><a href="https://www.patreon.com/user?u=23932002">nenohi</a></td>
 </tr></table>
 
-**Last updated:** Wed, 05 Feb 2020 00:42:11 UTC
+**Last updated:** Thu, 20 Feb 2020 16:47:06 UTC
 <!-- PATREON_END -->
 
 :four_leaf_clover: Copyright
