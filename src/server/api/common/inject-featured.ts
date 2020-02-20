@@ -26,6 +26,8 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 		.andWhere(`note.visibility = 'public'`)
 		.leftJoinAndSelect('note.user', 'user');
 
+	if (user) query.andWhere('note.userId != :userId', { userId: user.id });
+
 	if (user) generateMuteQuery(query, user);
 
 	const notes = await query
