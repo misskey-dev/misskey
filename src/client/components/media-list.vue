@@ -50,6 +50,9 @@ export default Vue.extend({
 	beforeDestroy() {
 		window.removeEventListener('resize', this.size);
 	},
+	activated() {
+		this.size();
+	},
 	methods: {
 		previewable(file) {
 			return file.type.startsWith('video') || file.type.startsWith('image');
