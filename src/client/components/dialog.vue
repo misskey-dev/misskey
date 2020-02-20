@@ -55,6 +55,7 @@ import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-i
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
+import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
 import i18n from '../i18n';
 
@@ -65,6 +66,7 @@ export default Vue.extend({
 		MkButton,
 		MkInput,
 		MkSelect,
+		MkSignin,
 	},
 
 	props: {
