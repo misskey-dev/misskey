@@ -28,7 +28,10 @@ users: "Benutzer"
 addUser: "Benutzer hinzufügen"
 favorite: "Favoriten"
 favorites: "Favoriten"
+unfavorite: "Aus Favoriten entfernen"
 pin: "Anheften"
+unpin: "Lösen"
+copyContent: "Inhalt kopieren"
 copyLink: "Link kopieren"
 delete: "Löschen"
 addToList: "Zur Liste hinzufügen"
@@ -40,12 +43,39 @@ youGotNewFollower: "Sie haben einen neuen Follower"
 receiveFollowRequest: "Follow Request erhalten."
 followRequestAccepted: "FollowRequestAkzeptiert"
 mentions: "Erwähnungen"
+directNotes: "Direktnachrichten"
+importAndExport: "Importieren und Exportieren"
+import: "Importieren"
+export: "Exportieren"
+files: "Dateien"
+download: "Download"
+lists: "Listen"
+noLists: "Keine Liste!"
+note: "Noten"
+following: "Folgen"
+followers: "Folgende"
+manageLists: "Liste verwalten"
+error: "Ein Problem ist aufgetreten"
+retry: "Wiederholen"
+privacy: "Privatsphäre"
+defaultNoteVisibility: "Die Standardsichtbarkeit"
+follow: "Folgen"
+followRequest: "Follower-Anfragen"
+followRequests: "Follower-Anfragen"
+unfollow: "Nicht mehr folgen"
+followRequestPending: "Ausstehend"
+clickToShow: "Klicke zum den Inhalt anzusehen"
+sensitive: "Dieser Inhalt ist NSFW"
+add: "Hinzufügen"
+reaction: "Reaktionen"
 selectUser: "Benutzer wählen"
 instances: "Instanz"
 mutedUsers: "Stummgestellte Benutzer"
 blockedUsers: "Blockierte Benutzer"
 noUsers: "Keine Benutzer"
 remove: "Löschen"
+nsfw: "Dieser Inhalt ist NSFW"
+userList: "Listen"
 _sfx:
   notification: "Benachrichtigungen"
 _widgets:
@@ -53,5 +83,29 @@ _widgets:
   timeline: "Zeitleiste"
 _cw:
   show: "Zeige mehr"
+_visibility:
+  followers: "Folgende"
 _profile:
   username: "Benutzername"
+_exportOrImport:
+  followingList: "Folgen"
+  userLists: "Listen"
+_pages:
+  script:
+    categories:
+      list: "Listen"
+    blocks:
+      _join:
+        arg1: "Listen"
+      _randomPick:
+        arg1: "Listen"
+      _dailyRandomPick:
+        arg1: "Listen"
+      _seedRandomPick:
+        arg2: "Listen"
+      _pick:
+        arg1: "Listen"
+      _listLen:
+        arg1: "Listen"
+    types:
+      array: "Listen"
