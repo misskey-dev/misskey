@@ -1,2 +1,13 @@
 ---
 _lang_: "Русский язык"
+search: "Поиск"
+notifications: "Уведомления"
+password: "Пароль"
+ok: "Окей"
+cancel: "Отмена"
+instance: "Экземпляр"
+instances: "Экземпляр"
+_sfx:
+  notification: "Уведомления"
+_widgets:
+  notifications: "Уведомления"
