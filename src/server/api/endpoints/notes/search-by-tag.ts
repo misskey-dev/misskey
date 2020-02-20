@@ -76,7 +76,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.optional.num.range(1, 30),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 	},
