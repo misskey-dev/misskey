@@ -431,10 +431,12 @@ listen: "Écouter"
 none: "Rien"
 volume: "Volume"
 _sfx:
-  note: "Notes"
+  note: "Nouvelle note"
   noteMy: "Ma note"
   notification: "Notifications"
   chat: "Discuter"
+  chatBg: "Discuter (De fond)"
+  antenna: "Réception d'antenne"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
