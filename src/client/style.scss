@@ -18,6 +18,7 @@
 }
 
 html {
+	touch-action: manipulation;
 	background-color: var(--bg);
 	background-attachment: fixed;
 	background-size: cover;
