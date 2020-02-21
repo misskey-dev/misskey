@@ -152,7 +152,7 @@ export default Vue.extend({
 			font-weight: normal;
 			font-size: 16px;
 			height: 32px;
-			background: var(--panel);
+			background: none;
 			border: none;
 			border-radius: 0;
 			outline: none;
