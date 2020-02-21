@@ -310,7 +310,7 @@ export default Vue.extend({
 					}
 
 					> .text {
-						&, * {
+						&, ::v-deep * {
 							color: #fff !important;
 						}
 					}
