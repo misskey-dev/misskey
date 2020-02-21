@@ -431,6 +431,7 @@ sounds: "Sonidos"
 listen: "Escuchar"
 none: "Ninguna"
 volume: "Volumen"
+details: "Detalles"
 _sfx:
   note: "Notas"
   noteMy: "Nota (a mí mismo)"
