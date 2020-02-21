@@ -63,7 +63,7 @@ export default Vue.extend({
 	data() {
 		const particles = [];
 		const origin = 64;
-		const colors = ['#1abc9c', '#3498db', '#f1c40f', '#e74c3c', '#e67e22', '#2ecc71'];
+		const colors = ['#FF1493', '#00FFFF', '#FFE202'];
 
 		for (let i = 0; i < 12; i++) {
 			const angle = Math.random() * (Math.PI * 2);
