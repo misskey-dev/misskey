@@ -1,7 +1,7 @@
 import rndstr from 'rndstr';
 import { Note } from '../../../models/entities/note';
 import { User } from '../../../models/entities/user';
-import { Notes, UserProfiles } from '../../../models';
+import { Notes, UserProfiles, NoteReactions } from '../../../models';
 import { generateMuteQuery } from './generate-mute-query';
 import { ensure } from '../../../prelude/ensure';
 
@@ -26,9 +26,17 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 		.andWhere(`note.visibility = 'public'`)
 		.leftJoinAndSelect('note.user', 'user');
 
-	if (user) query.andWhere('note.userId != :userId', { userId: user.id });
+	if (user) {
+		query.andWhere('note.userId != :userId', { userId: user.id });
 
-	if (user) generateMuteQuery(query, user);
+		generateMuteQuery(query, user);
+
+		const reactionQuery = NoteReactions.createQueryBuilder('reaction')
+			.select('reaction.noteId')
+			.where('reaction.userId = :userId', { userId: user.id });
+
+		query.andWhere(`note.id NOT IN (${ reactionQuery.getQuery() })`);
+	}
 
 	const notes = await query
 		.orderBy('note.score', 'DESC')
