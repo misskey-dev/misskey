@@ -1,6 +1,6 @@
 <template>
 <div class="ulveipglmagnxfgvitaxyszerjwiqmwl">
-	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear>
+	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear @after-leave="$emit('closed');">
 		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
 	</transition>
 	<div class="main" ref="main" @click.self="close()" @keydown="onKeydown">
