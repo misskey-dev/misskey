@@ -50,6 +50,8 @@ import: "ಆಮದು"
 export: "ರಫ್ತು"
 files: "ಕಡತಗಳು"
 download: "ಜಾಲದಿಂದಿಳಿಸು"
+driveFileDeleteConfirm: "\"{name}\" ಕಡತವನ್ನು ಅಳಿಸಲು ನೀವು ಬಯಸುವಿರಾ? ಈ ನೋಡಿರಿ ಲಗತ್ತಿಸಲಾದ ಟಿಪ್ಪಣಿ ಸಹ ಕಣ್ಮರೆಯಾಗುತ್ತದೆ."
+unfollowConfirm: "{name}ಅನ್ನು ಹಿಂಬಾಲಿಸದಿರುವುದೇ?"
 instances: "ನಿದರ್ಶನ"
 remove: "ಅಳಿಸು"
 _sfx:
