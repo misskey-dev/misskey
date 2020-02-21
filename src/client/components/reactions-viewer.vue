@@ -1,5 +1,5 @@
 <template>
-<div class="mk-reactions-viewer" :class="{ isMe }">
+<div class="tdflqwzn" :class="{ isMe }">
 	<x-reaction v-for="(count, reaction) in note.reactions" :reaction="reaction" :count="count" :is-initial="initialReactions.has(reaction)" :note="note" :key="reaction"/>
 </div>
 </template>
@@ -32,7 +32,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-reactions-viewer {
+.tdflqwzn {
 	margin: 4px -2px 0 -2px;
 
 	&:empty {

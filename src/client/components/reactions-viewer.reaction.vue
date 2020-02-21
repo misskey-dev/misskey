@@ -1,16 +1,17 @@
 <template>
-<span
-	class="reaction _button"
+<button
+	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction }"
 	@click="toggleReaction(reaction)"
 	v-if="count > 0"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
 	ref="reaction"
+	v-particle
 >
 	<x-reaction-icon :reaction="reaction" ref="icon"/>
 	<span>{{ count }}</span>
-</span>
+</button>
 </template>
 
 <script lang="ts">
@@ -136,7 +137,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.reaction {
+.hkzvhatu {
 	display: inline-block;
 	height: 32px;
 	margin: 2px;
