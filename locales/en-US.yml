@@ -474,7 +474,7 @@ _tutorial:
   step5_4: "If the other user has a lock icon next to their name, that user will have to manually approve your follow request."
   step6_1: "Now you will be able to see other users' notes on your timeline."
   step6_2: "You can also put \"reactions\" on other people's notes to quickly respond."
-  step6_3: "To attach a \"reaction\", press \"+\" mark on other user's note and choose an emoji you'd like to react with."
+  step6_3: "To attach a \"reaction\", press the \"+\" mark on another user's note and choose an emoji you'd like to react with."
   step7_1: "Congratulations! You have now finished Misskey's basic tutorial."
   step7_2: "If you would like to learn more about Misskey, try the {help} section."
   step7_3: "Good luck and have fun! 🚀"
