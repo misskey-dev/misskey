@@ -431,6 +431,7 @@ sounds: "소리"
 listen: "듣기"
 none: "없음"
 volume: "음량"
+details: "자세히"
 _sfx:
   note: "새 노트"
   noteMy: "내 노트"
