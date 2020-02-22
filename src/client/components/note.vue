@@ -392,7 +392,7 @@ export default Vue.extend({
 				}]
 				source: this.$refs.renoteButton,
 				viaKeyboard
-			}).then(this.focus);
+			});
 		},
 
 		renoteDirectly() {
