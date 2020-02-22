@@ -62,6 +62,7 @@ export default (opts) => ({
 		},
 
 		async init() {
+			this.queue = [];
 			this.fetching = true;
 			if (opts.before) opts.before(this);
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(true) : this.pagination.params;
