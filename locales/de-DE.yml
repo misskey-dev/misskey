@@ -299,9 +299,35 @@ _widgets:
   activity: "Aktivität"
 _cw:
   show: "Zeige mehr"
+_poll:
+  deadlineDate: "Enddatum"
+  duration: "Laufzeit"
+  votesCount: "{n} Stimmen"
+  totalVotes: "Insgesamt {n} Stimmen"
+  vote: "Abstimmen"
+  showResult: "Ergebnis anzeigen"
+  voted: "Abgestimmt"
+  closed: "Beendet"
+  remainingDays: "{d} Tage {h} Stunden verbleibend"
+  remainingHours: "{h} Stunden {m} Minuten verbleibend"
+  remainingMinutes: "{m} Minuten {s} Sekunden verbleibend"
+  remainingSeconds: "{s} Sekunden verbleibend"
 _visibility:
+  public: "Öffentlich"
+  publicDescription: "Deine Notiz wird global sichtbar sein"
   home: "Startseite"
   followers: "Folgende"
+  followersDescription: "Nur für Follower sichtbar"
+  specified: "Direkt"
+  specifiedDescription: "Nur für erwähnte Benutzer sichtbar"
+  localOnly: "Nur Lokal"
+_postForm:
+  replyPlaceholder: "Dieser Notiz antworten..."
+  quotePlaceholder: "Diese Notiz zitieren..."
+  _placeholders:
+    a: "Was machst du momentan?"
+    b: "Was ist um dich herum los?"
+    c: "Was geht dir durch den Kopf?"
 _profile:
   name: "Name"
   username: "Benutzername"
@@ -476,4 +502,5 @@ _pages:
       number: "Nummer"
       array: "Listen"
       stringArray: "Textliste"
-    enviromentVariables: "Umgebungsvariablen"
+    enviromentVariables: "Umgebungsvariable"
+    pageVariables: "Seitenelement"
