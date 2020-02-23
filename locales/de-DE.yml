@@ -444,17 +444,36 @@ _pages:
       _seedRandomPick:
         arg1: "Startwert / Seed"
         arg2: "Listen"
+      DRPWPM: "Zufallswahl aus gewichteter Liste (Läuft für einen Tag)"
       _DRPWPM:
         arg1: "Textliste"
+      pick: "Aus einer Liste wählen"
       _pick:
         arg1: "Listen"
+        arg2: "Position"
+      listLen: "Listenlänge abrufen"
       _listLen:
         arg1: "Listen"
       number: "Nummer"
+      stringToNumber: "Text zu Nummer"
+      _stringToNumber:
+        arg1: "Text"
+      numberToString: "Nummer zu Text"
       _numberToString:
         arg1: "Nummer"
+      splitStrByLine: "Text nach Zeilenumbrüchen aufteilen"
+      _splitStrByLine:
+        arg1: "Text"
       fn: "Funktionen"
+      _fn:
+        arg1: "Ausgabe"
+      for: "Wiederholen"
+      _for:
+        arg1: "Anzahl der Wiederholungen"
+        arg2: "Aktion"
     types:
+      string: "Text"
       number: "Nummer"
       array: "Listen"
       stringArray: "Textliste"
+    enviromentVariables: "Umgebungsvariablen"
