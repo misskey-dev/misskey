@@ -9,9 +9,18 @@ ok: "OK"
 cancel: "取消"
 enterUsername: "輸入用戶名"
 settings: "設定"
+profile: "個人檔案"
+timeline: "時間軸"
+login: "登入"
+loggingIn: "登入中"
+logout: "登出"
+signup: "註冊"
+uploading: "上傳中"
+save: "保存"
 _sfx:
   notification: "通知"
 _widgets:
   notifications: "通知"
+  timeline: "時間軸"
 _profile:
   username: "用戶名"
