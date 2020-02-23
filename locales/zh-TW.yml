@@ -1,2 +1,17 @@
 ---
 _lang_: "中文(繁体)"
+monthAndDay: "{month}月 {day}日"
+search: "搜尋"
+notifications: "通知"
+username: "用戶名"
+password: "密碼"
+ok: "OK"
+cancel: "取消"
+enterUsername: "輸入用戶名"
+settings: "設定"
+_sfx:
+  notification: "通知"
+_widgets:
+  notifications: "通知"
+_profile:
+  username: "用戶名"
