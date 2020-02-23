@@ -47,21 +47,21 @@ export default Vue.extend({
 	},
 
 	computed: {
-		splitedReactions(): any {
+		splited(): any {
 			return this.reactions.match(emojiRegexWithCustom);
 		},
 	},
 
 	methods: {
 		save() {
-			this.$store.dispatch('settings/set', { key: 'reactions', value: this.splitedReactions });
+			this.$store.dispatch('settings/set', { key: 'reactions', value: this.splited });
 			this.changed = false;
 		},
 
 		preview(ev) {
 			const picker = this.$root.new(MkReactionPicker, {
 				source: ev.currentTarget || ev.target,
-				reactions: this.splitedReactions,
+				reactions: this.splited,
 				showFocus: false,
 			});
 			picker.$once('chosen', reaction => {
