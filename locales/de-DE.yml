@@ -315,8 +315,21 @@ _timelines:
 _pages:
   blocks:
     image: "Bilder"
+    radioButton: "Optionsfeld"
+    _radioButton:
+      title: "Titel"
+      values: "Auswahlmöglichkeiten (getrennt durch Zeilenumbrüche)"
+      default: "Standardwert"
   script:
     categories:
+      logical: "Logische Operationen"
+      operation: "Berechnungen"
+      comparison: "Vergleiche"
+      random: "Zufällig"
+      value: "Werte"
+      fn: "Funktionen"
+      text: "Textoperationen"
+      convert: "Konvertierung"
       list: "Listen"
     blocks:
       text: "Text"
@@ -327,8 +340,10 @@ _pages:
       strLen: "Textlänge"
       _strLen:
         arg1: "Text"
+      strPick: "Zeichen extrahieren"
       _strPick:
         arg1: "Text"
+        arg2: "Zeichenposition"
       strReplace: "Textersetzung"
       _strReplace:
         arg1: "Text"
@@ -340,9 +355,12 @@ _pages:
       join: "Text zusammenfügen"
       _join:
         arg1: "Listen"
+        arg2: "Trennzeichen"
+      add: "Addieren"
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "Subtrahieren"
       _subtract:
         arg1: "A"
         arg2: "B"
@@ -361,18 +379,23 @@ _pages:
       round: "Runden"
       _round:
         arg1: "Nummer"
+      eq: "A und B sind gleich"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A und B sind nicht gleich"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A UND B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A ODER B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A ist kleiner als B"
       _lt:
         arg1: "A"
         arg2: "B"
@@ -385,6 +408,7 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      random: "Zufällig"
       _randomPick:
         arg1: "Listen"
       _dailyRandomPick:
@@ -400,6 +424,7 @@ _pages:
       number: "Nummer"
       _numberToString:
         arg1: "Nummer"
+      fn: "Funktionen"
     types:
       number: "Nummer"
       array: "Listen"
