@@ -622,7 +622,7 @@ _pages:
         arg3: "Sonst"
       not: "NICHT"
       _not:
-        arg1: "NOT"
+        arg1: "NICHT"
       random: "Zufällig"
       _random:
         arg1: "Warscheinlichkeit"
