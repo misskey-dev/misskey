@@ -286,6 +286,7 @@ retype: "Erneut eingeben"
 noteOf: "Notiz von {user}"
 inviteToGroup: "Zu Gruppe einladen"
 maxNoteTextLength: "Maximale Länge von Notizen"
+none: "Keine"
 _sfx:
   note: "Notizen"
   notification: "Benachrichtigungen"
@@ -347,31 +348,73 @@ _exportOrImport:
   userLists: "Listen"
 _charts:
   federationInstancesIncDec: "Unterschied in der Anzahl von förderierenden Instanzen"
-  federationInstancesTotal: "Summe aller föderierenden Instanzen"
+  federationInstancesTotal: "Anzahl aller föderierenden Instanzen"
   usersIncDec: "Unterschied in der Anzahl von Benutzern"
-  usersTotal: "Summe aller Benutzer"
+  usersTotal: "Anzahl aller Benutzer"
   activeUsers: "Aktive Benutzer"
   notesIncDec: "Unterschied in der Anzahl von Notizen"
   localNotesIncDec: "Unterschied in der Anzahl von lokalen Notizen"
   notesTotal: "Anzahl aller Notizen"
   filesIncDec: "Unterschied in der Anzahl von Dateien"
-  filesTotal: "Summe aller Dateien"
+  filesTotal: "Anzahl aller Dateien"
   storageUsageIncDec: "Unterschied in der Höhe der Speichernutzung"
   storageUsageTotal: "Gesamte Speichernutzung"
 _instanceCharts:
+  requests: "Anfragen"
   users: "Unterschied in der Anzahl von Benutzern"
+  usersTotal: "Anzahl aller Benutzer"
   notes: "Unterschied in der Anzahl von Notizen"
+  notesTotal: "Anzahl aller Notizen"
 _timelines:
   home: "Startseite"
 _pages:
   blocks:
+    text: "Text"
+    textarea: "Textfeld"
+    section: "Abschnitt"
     image: "Bilder"
+    button: "Knopf"
+    if: "Falls"
+    _if:
+      variable: "Variable"
+    post: "Neue Notiz anfertigen"
     _post:
       text: "Inhalt"
+    textInput: "Texteingabe"
+    _textInput:
+      text: "Titel"
+      default: "Standardwert"
+    textareaInput: "Eingabe des mehrzeiligen Textfelds"
+    _textareaInput:
+      text: "Titel"
+      default: "Standardwert"
+    numberInput: "Nummereingabe"
+    _numberInput:
+      text: "Titel"
+      default: "Standardwert"
+    switch: "Fallunterscheidung"
+    _switch:
+      text: "Titel"
+      default: "Standardwert"
+    counter: "Zähler"
+    _counter:
+      text: "Titel"
+      inc: "Erhöhen um"
     _button:
+      text: "Titel"
+      colored: "Farbig"
+      action: "Aktion, die beim Knopfdruck ausgeführt werden soll"
       _action:
+        dialog: "Zeige ein Dialogfenster"
         _dialog:
           content: "Inhalt"
+        resetRandom: "Setze den Zufallswert zurück"
+        pushEvent: "Sende ein Event"
+        _pushEvent:
+          event: "Eventname"
+          message: "Nachricht, die bei Aktivierung gezeigt werden soll"
+          variable: "Variable, die gesendet werden soll"
+          no-variable: "Keine"
     radioButton: "Optionsfeld"
     _radioButton:
       title: "Titel"
@@ -465,6 +508,8 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      _if:
+        arg1: "Falls"
       not: "NICHT"
       _not:
         arg1: "NOT"
