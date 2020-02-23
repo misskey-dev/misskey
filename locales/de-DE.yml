@@ -173,6 +173,7 @@ remove: "Löschen"
 removed: "Erfolgreich gelöscht"
 removeAreYouSure: "Möchtest du \"{x}\" wirklich löschen?"
 saved: "Gespeichert"
+messaging: "Nachrichten"
 upload: "Hochladen"
 fromDrive: "Aus Drive"
 fromUrl: "Von einer URL"
@@ -288,6 +289,10 @@ maxNoteTextLength: "Maximale Länge von Notizen"
 _sfx:
   note: "Notizen"
   notification: "Benachrichtigungen"
+  chat: "Nachrichten"
+_permissions:
+  "read:messaging": "Nachrichten lesen"
+  "write:messaging": "Nachrichten schicken oder löschen"
 _widgets:
   notifications: "Benachrichtigungen"
   timeline: "Zeitleiste"
@@ -314,17 +319,88 @@ _pages:
     categories:
       list: "Listen"
     blocks:
+      text: "Text"
+      multiLineText: "Text (Mehrzeilig)"
+      textList: "Textliste"
+      _textList:
+        info: "Trenne jeden Eintrag mit einem Zeilenumbruch"
+      strLen: "Textlänge"
+      _strLen:
+        arg1: "Text"
+      _strPick:
+        arg1: "Text"
+      strReplace: "Textersetzung"
+      _strReplace:
+        arg1: "Text"
+        arg2: "Zu ersetzender Text"
+        arg3: "Ersetzen mit"
+      strReverse: "Text umkehren"
+      _strReverse:
+        arg1: "Text"
+      join: "Text zusammenfügen"
       _join:
         arg1: "Listen"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "Multiplizieren"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "Teilen"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      mod: "Rest"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      round: "Runden"
+      _round:
+        arg1: "Nummer"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       _randomPick:
         arg1: "Listen"
       _dailyRandomPick:
         arg1: "Listen"
       _seedRandomPick:
         arg2: "Listen"
+      _DRPWPM:
+        arg1: "Textliste"
       _pick:
         arg1: "Listen"
       _listLen:
         arg1: "Listen"
+      number: "Nummer"
+      _numberToString:
+        arg1: "Nummer"
     types:
+      number: "Nummer"
       array: "Listen"
+      stringArray: "Textliste"
