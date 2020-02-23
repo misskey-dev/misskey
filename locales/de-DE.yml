@@ -328,19 +328,50 @@ _postForm:
     a: "Was machst du momentan?"
     b: "Was ist um dich herum los?"
     c: "Was geht dir durch den Kopf?"
+    d: "Was möchtest du sagen?"
+    e: "Fang an zu schreiben..."
+    f: "Ich warte darauf, dass du schreibst..."
 _profile:
   name: "Name"
   username: "Benutzername"
+  description: "Über mich"
+  youCanIncludeHashtags: "Du kannst auch Hashtags in deiner Beschreibung verwenden."
+  metadata: "Andere Informationen"
+  metadataLabel: "Name"
+  metadataContent: "Inhalt"
 _exportOrImport:
+  allNotes: "Alle Notizen"
   followingList: "Folgen"
   muteList: "Stummschalten"
   blockingList: "Blockieren"
   userLists: "Listen"
+_charts:
+  federationInstancesIncDec: "Unterschied in der Anzahl von förderierenden Instanzen"
+  federationInstancesTotal: "Summe aller föderierenden Instanzen"
+  usersIncDec: "Unterschied in der Anzahl von Benutzern"
+  usersTotal: "Summe aller Benutzer"
+  activeUsers: "Aktive Benutzer"
+  notesIncDec: "Unterschied in der Anzahl von Notizen"
+  localNotesIncDec: "Unterschied in der Anzahl von lokalen Notizen"
+  notesTotal: "Anzahl aller Notizen"
+  filesIncDec: "Unterschied in der Anzahl von Dateien"
+  filesTotal: "Summe aller Dateien"
+  storageUsageIncDec: "Unterschied in der Höhe der Speichernutzung"
+  storageUsageTotal: "Gesamte Speichernutzung"
+_instanceCharts:
+  users: "Unterschied in der Anzahl von Benutzern"
+  notes: "Unterschied in der Anzahl von Notizen"
 _timelines:
   home: "Startseite"
 _pages:
   blocks:
     image: "Bilder"
+    _post:
+      text: "Inhalt"
+    _button:
+      _action:
+        _dialog:
+          content: "Inhalt"
     radioButton: "Optionsfeld"
     _radioButton:
       title: "Titel"
