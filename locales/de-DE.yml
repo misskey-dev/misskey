@@ -408,12 +408,41 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      not: "NICHT"
+      _not:
+        arg1: "NOT"
       random: "Zufällig"
+      _random:
+        arg1: "Warscheinlichkeit"
+      rannum: "Zufallsnummer"
+      _rannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
+      randomPick: "Zufallswahl aus Liste"
       _randomPick:
         arg1: "Listen"
+      dailyRandom: "Zufallswahl (Läuft für einen Tag)"
+      _dailyRandom:
+        arg1: "Warscheinlichkeit"
+      dailyRannum: "Zufallsnummer (Läuft für einen Tag)"
+      _dailyRannum:
+        arg1: "Minimum"
+        arg2: "Maximum"
+      dailyRandomPick: "Zufallswahl aus Liste (Läuft für einen Tag)"
       _dailyRandomPick:
         arg1: "Listen"
+      seedRandom: "Zufällig (mit Startwert / Seed)"
+      _seedRandom:
+        arg1: "Startwert / Seed"
+        arg2: "Warscheinlichkeit"
+      seedRannum: "Zufallsnummer (mit Startwert / Seed)"
+      _seedRannum:
+        arg1: "Startwert / Seed"
+        arg2: "Minimum"
+        arg3: "Maximum"
+      seedRandomPick: "Zufallswahl aus Liste (mit Startwert / Seed)"
       _seedRandomPick:
+        arg1: "Startwert / Seed"
         arg2: "Listen"
       _DRPWPM:
         arg1: "Textliste"
