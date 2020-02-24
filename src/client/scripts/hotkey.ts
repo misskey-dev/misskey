@@ -10,7 +10,7 @@ type pattern = {
 
 type action = {
 	patterns: pattern[];
-	
+
 	callback: Function;
 
 	lastActed: number;
