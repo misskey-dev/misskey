@@ -10,14 +10,17 @@ type pattern = {
 
 type action = {
 	patterns: pattern[];
-
+	
 	callback: Function;
+
+	lastActed: number;
 };
 
 const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): action => {
 	const result = {
 		patterns: [],
-		callback: callback
+		callback: callback,
+		lastActed: 0
 	} as action;
 
 	result.patterns = patterns.split('|').map(part => {
@@ -74,6 +77,9 @@ export default {
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
 
 					for (const action of actions) {
+
+						if(Date.now() - action.lastActed < 500) continue;
+
 						const matched = match(e, action.patterns);
 
 						if (matched) {
@@ -82,6 +88,8 @@ export default {
 							e.preventDefault();
 							e.stopPropagation();
 							action.callback(e);
+
+							action.lastActed = Date.now();
 							break;
 						}
 					}
