@@ -12,15 +12,12 @@ type action = {
 	patterns: pattern[];
 
 	callback: Function;
-
-	lastActed: number;
 };
 
 const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): action => {
 	const result = {
 		patterns: [],
 		callback: callback,
-		lastActed: 0
 	} as action;
 
 	result.patterns = patterns.split('|').map(part => {
@@ -78,18 +75,15 @@ export default {
 
 					for (const action of actions) {
 
-						if(Date.now() - action.lastActed < 500) continue;
-
 						const matched = match(e, action.patterns);
 
-						if (matched) {
+						if (matched && !e.repeat) {
 							if (el._hotkey_global && match(e, targetReservedKeys)) return;
 
 							e.preventDefault();
 							e.stopPropagation();
 							action.callback(e);
 
-							action.lastActed = Date.now();
 							break;
 						}
 					}
