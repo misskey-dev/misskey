@@ -4,7 +4,6 @@ on:
     branches:
       - master
       - develop
-      - mei23-ci
   pull_request:
 
 jobs:
