@@ -1,6 +1,6 @@
 import { Notes } from '../models';
 
-export default async function(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
+export async function countSameRenotes(userId: string, renoteId: string, excludeNoteId: string | undefined): Promise<number> {
 	// 指定したユーザーの指定したノートのリノートがいくつあるか数える
 	const query = Notes.createQueryBuilder('note')
 		.where('note.userId = :userId', { userId })

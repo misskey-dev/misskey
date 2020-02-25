@@ -11,7 +11,7 @@ import { Note } from '../../models/entities/note';
 import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
-import countSameRenotes from '../count-same-renotes';
+import { countSameRenotes } from '../../misc/count-same-renotes';
 
 /**
  * 投稿を削除します。
@@ -21,7 +21,7 @@ import countSameRenotes from '../count-same-renotes';
 export default async function(user: User, note: Note, quiet = false) {
 	const deletedAt = new Date();
 
-	//この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
+	// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 	if (note.renoteId && (await countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
 		Notes.decrement({ id: note.renoteId }, 'renoteCount', 1);
 		Notes.decrement({ id: note.renoteId }, 'score', 1);
