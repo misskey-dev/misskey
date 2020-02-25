@@ -12,13 +12,21 @@ type action = {
 	patterns: pattern[];
 
 	callback: Function;
+
+	allowRepeat: boolean | undefined;
 };
 
 const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): action => {
 	const result = {
 		patterns: [],
-		callback: callback
+		callback: callback,
+		allowRepeat: true
 	} as action;
+
+	if (patterns.match(/^\(.*\)$/) !== null) {
+		result.allowRepeat = false;
+		patterns = patterns.slice(1, -1);
+	}
 
 	result.patterns = patterns.split('|').map(part => {
 		const pattern = {
@@ -76,7 +84,8 @@ export default {
 					for (const action of actions) {
 						const matched = match(e, action.patterns);
 
-						if (matched && !e.repeat) {
+						if (matched) {
+							if (!action.allowRepeat && e.repeat) return;
 							if (el._hotkey_global && match(e, targetReservedKeys)) return;
 
 							e.preventDefault();
