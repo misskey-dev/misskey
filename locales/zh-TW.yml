@@ -283,14 +283,43 @@ volume: "音量"
 details: "詳細資訊"
 _sfx:
   note: "筆記"
+  noteMy: "我的筆記"
   notification: "通知"
   chat: "傳送訊息"
+_ago:
+  unknown: "未知"
+  future: "未來"
+  justNow: "剛剛"
+  secondsAgo: "{n}秒前"
+  minutesAgo: "{n}分鐘前"
+  hoursAgo: "{n}小時前"
+  daysAgo: "{n}天前"
+  weeksAgo: "{n}周前"
+  monthsAgo: "{n}個月前"
+  yearsAgo: "{n}年前"
+_time:
+  second: "秒"
+  minute: "分鐘"
+  hour: "小時"
+  day: "天"
+_tutorial:
+  title: "Misskey使用方法"
+  step1_1: "歡迎！"
+  step1_2: "此為「時間軸」頁面，它會按照時間順序顯示你「追隨」的人的「筆記」"
+  step1_3: "由於你沒有發布任何筆記，也沒有追隨任何人，所以你的時間軸目前是空的。"
+  step2_1: "在發文或追隨某人之前先讓我們設定一下個人資料吧。"
+  step2_2: "提供一些關於自己的資訊來讓其他人更有追隨你的意願。"
+  step3_1: "個人資料都打理好了嗎？"
+  step3_2: "下一步讓我們來試試看發個文，按一下畫面上的鉛筆圖示來開始"
+  step3_3: "輸入完內容後，按視窗右上角的按鈕來發文"
 _widgets:
   notifications: "通知"
   timeline: "時間軸"
   activity: "動態"
 _cw:
   show: "載入更多"
+_poll:
+  deadlineTime: "小時"
 _visibility:
   home: "首頁"
   followers: "追隨者"
