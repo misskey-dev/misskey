@@ -30,6 +30,7 @@ import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-erro
 import { ensure } from '../../prelude/ensure';
 import { checkHitAntenna } from '../../misc/check-hit-antenna';
 import { addNoteToAntenna } from '../add-note-to-antenna';
+import countSameRenotes from '../count-same-renotes';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -236,7 +237,8 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		saveReply(data.reply, note);
 	}
 
-	if (data.renote) {
+	//この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
+	if (data.renote && (await countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
 		incRenoteCount(data.renote);
 	}
 
