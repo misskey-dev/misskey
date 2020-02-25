@@ -17,7 +17,7 @@ type action = {
 const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): action => {
 	const result = {
 		patterns: [],
-		callback: callback,
+		callback: callback
 	} as action;
 
 	result.patterns = patterns.split('|').map(part => {
@@ -74,7 +74,6 @@ export default {
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
 
 					for (const action of actions) {
-
 						const matched = match(e, action.patterns);
 
 						if (matched && !e.repeat) {
@@ -83,7 +82,6 @@ export default {
 							e.preventDefault();
 							e.stopPropagation();
 							action.callback(e);
-
 							break;
 						}
 					}
