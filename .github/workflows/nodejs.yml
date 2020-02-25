@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - develop
+      - explore-github-actions-failing
   pull_request:
 
 jobs:
