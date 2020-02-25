@@ -36,6 +36,7 @@ jobs:
       run: yarn install
     - name: Copy Configure
       run: cp .circleci/misskey/*.yml .config
+    - run: sudo docker logs postgres
     - name: Build
       run: yarn build
     - name: Test
