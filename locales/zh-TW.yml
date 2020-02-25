@@ -6,8 +6,10 @@ notifications: "通知"
 username: "用戶名"
 password: "密碼"
 ok: "OK"
+gotIt: "知道了"
 cancel: "取消"
 enterUsername: "輸入用戶名"
+noNotifications: "沒有通知"
 settings: "設定"
 profile: "個人檔案"
 timeline: "時間軸"
@@ -27,11 +29,49 @@ unpin: "取消置頂"
 copyContent: "複製內容"
 copyLink: "複製連結"
 delete: "刪除"
+addToList: "添加至清單"
+sendMessage: "發送訊息"
+copyUsername: "複製用戶名"
+reply: "回覆"
+loadMore: "載入更多"
+youGotNewFollower: "您有新的追隨者"
+receiveFollowRequest: "收到追隨請求"
+followRequestAccepted: "追隨請求已接受"
+mentions: "提及"
+files: "檔案"
+download: "下載"
+unfollowConfirm: "確定要取消對{name}的追隨嗎？"
+lists: "清單"
+noLists: "沒有清單"
 remove: "刪除"
+userList: "清單"
 _sfx:
   notification: "通知"
 _widgets:
   notifications: "通知"
   timeline: "時間軸"
+_cw:
+  show: "載入更多"
 _profile:
   username: "用戶名"
+_exportOrImport:
+  userLists: "清單"
+_pages:
+  script:
+    categories:
+      list: "清單"
+    blocks:
+      _join:
+        arg1: "清單"
+      _randomPick:
+        arg1: "清單"
+      _dailyRandomPick:
+        arg1: "清單"
+      _seedRandomPick:
+        arg2: "清單"
+      _pick:
+        arg1: "清單"
+      _listLen:
+        arg1: "清單"
+    types:
+      array: "清單"
