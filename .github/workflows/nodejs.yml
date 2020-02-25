@@ -22,6 +22,7 @@ jobs:
           - 5432:5432
         env:
           POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
       redis:
         image: redis:alpine
         ports:
