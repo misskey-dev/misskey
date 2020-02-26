@@ -167,6 +167,7 @@ intro: "¡La instalación de Misskey ha terminado! Crea el usuario administrador
 done: "Terminado"
 processing: "Procesando"
 preview: "Vista previa"
+default: "Predeterminado"
 noCustomEmojis: "No hay emojis personalizados"
 customEmojisOfRemote: "Emojis remotos"
 noJobs: "No hay trabajos"
