@@ -28,8 +28,6 @@ const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): a
 		patterns = patterns.slice(1, -1);
 	}
 
-	console.log(patterns);
-
 	result.patterns = patterns.split('|').map(part => {
 		const pattern = {
 			which: [],
