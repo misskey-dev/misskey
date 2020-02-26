@@ -13,7 +13,7 @@ type action = {
 
 	callback: Function;
 
-	allowRepeat: boolean | undefined;
+	allowRepeat: boolean;
 };
 
 const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): action => {
@@ -27,6 +27,8 @@ const getKeyMap = keymap => Object.entries(keymap).map(([patterns, callback]): a
 		result.allowRepeat = false;
 		patterns = patterns.slice(1, -1);
 	}
+
+	console.log(patterns);
 
 	result.patterns = patterns.split('|').map(part => {
 		const pattern = {
