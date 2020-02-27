@@ -433,6 +433,7 @@ listen: "Écouter"
 none: "Rien"
 volume: "Volume"
 details: "Détails"
+chooseEmoji: "Choisissez des emojis"
 _sfx:
   note: "Nouvelle note"
   noteMy: "Ma note"
