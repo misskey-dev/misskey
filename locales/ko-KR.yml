@@ -433,6 +433,7 @@ listen: "듣기"
 none: "없음"
 volume: "음량"
 details: "자세히"
+chooseEmoji: "이모지 선택"
 _sfx:
   note: "새 노트"
   noteMy: "내 노트"
