@@ -178,7 +178,7 @@ export default Vue.extend({
 
 		sfxVolume: {
 			get() { return this.$store.state.device.sfxVolume; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxVolume', value }); }
+			set(value) { this.$store.commit('device/set', { key: 'sfxVolume', value: parseFloat(value, 10) }); }
 		},
 
 		sfxNote: {
