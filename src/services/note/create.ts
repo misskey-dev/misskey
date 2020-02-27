@@ -223,7 +223,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			.getMany();
 
 		const followers = followings.map(f => f.followerId);
-		
+
 		for (const antenna of antennas) {
 			checkHitAntenna(antenna, note, user, followers).then(hit => {
 				if (hit) {

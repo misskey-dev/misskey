@@ -59,7 +59,7 @@ export default {
 		const ro = new ResizeObserver((entries, observer) => {
 			calc();
 		});
-		
+
 		ro.observe(el);
 
 		el._ro_ = ro;

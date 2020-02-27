@@ -81,14 +81,14 @@ if (lang == null) {
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
-let isMobile = /mobile|iphone|ipad|android/.test(ua);
+const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 // Get the <head> element
 const head = document.getElementsByTagName('head')[0];
 
 // If mobile, insert the viewport meta tag
 if (isMobile || window.innerWidth <= 1024) {
-	const viewport = document.getElementsByName("viewport").item(0);
+	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
 	head.appendChild(viewport);
