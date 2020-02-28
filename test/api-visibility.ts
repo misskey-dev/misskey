@@ -103,10 +103,10 @@ describe('API visibility', () => {
 			speR  = await post(alice, { text: 'x', replyId: tgt.id, visibility: 'specified' });
 
 			// mentions
-			pubM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'public' });
-			homeM = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'home' });
-			folM  = await post(alice, { text: '@target x', replyId: tgt.id, visibility: 'followers' });
-			speM  = await post(alice, { text: '@target2 x', replyId: tgt.id, visibility: 'specified' });
+			pubM  = await post(alice, { text: '@target x', visibility: 'public' });
+			homeM = await post(alice, { text: '@target x', visibility: 'home' });
+			folM  = await post(alice, { text: '@target x', visibility: 'followers' });
+			speM  = await post(alice, { text: '@target2 x', visibility: 'specified' });
 			//#endregion
 		});
 
@@ -398,12 +398,12 @@ describe('API visibility', () => {
 		}));
 
 		it('[show] specified-mentionを指定ユーザーが見れる', async(async () => {
-			const res = await show(speM.id, target);
+			const res = await show(speM.id, target2);
 			assert.strictEqual(res.body.text, '@target2 x');
 		}));
 
 		it('[show] specified-mentionをされた人が指定されてなかったら見れない', async(async () => {
-			const res = await show(speM.id, target2);
+			const res = await show(speM.id, target);
 			assert.strictEqual(res.body.isHidden, true);
 		}));
 
