@@ -187,6 +187,14 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			}
 		}
 
+		// メンションされていれば投稿を読める
+		for (const u of mentionedUsers) {
+			if (!data.visibleUsers.some(x => x.id === u.id)) {
+				data.visibleUsers.push(u);
+			}
+		}
+
+		// リプライされていれば投稿を読める
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
 			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 		}
