@@ -174,6 +174,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
+	// リプライされていればメンションされていることにする
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
 		mentionedUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 	}
@@ -192,11 +193,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			if (!data.visibleUsers.some(x => x.id === u.id)) {
 				data.visibleUsers.push(u);
 			}
-		}
-
-		// リプライされていれば投稿を読める
-		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(ensure));
 		}
 	}
 
