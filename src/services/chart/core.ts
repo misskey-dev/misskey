@@ -291,7 +291,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			// ロック内でもう1回チェックする
 			const currentLog = await this.repository.findOne({
 				span: span,
-				date,
+				date: date,
 				...(group ? { group: group } : {})
 			});
 
@@ -302,7 +302,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			log = await this.repository.save({
 				group: group,
 				span: span,
-				date,
+				date: date,
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 
