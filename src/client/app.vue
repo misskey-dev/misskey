@@ -40,62 +40,67 @@
 	<transition name="nav">
 		<nav class="nav" ref="nav" v-show="showNav">
 			<div>
-				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
-					<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
-				</button>
-				<div class="divider"></div>
-				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
-					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</button>
-				<router-link class="item index" active-class="active" to="/" exact v-else>
-					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</router-link>
-				<template v-if="$store.getters.isSignedIn">
-					<button class="item _button notifications" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.state.device.useNotificationsPopup">
-						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+				<div class="top" v-if="$store.getters.isSignedIn">
+					<button class="item _button account" @click="openAccountMenu">
+						<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
 					</button>
-					<router-link class="item notifications" active-class="active" to="/my/notifications" ref="notificationButton" v-else>
-						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+				</div>
+				<div class="scroll">
+					<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
+						<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
+					</button>
+					<router-link class="item index" active-class="active" to="/" exact v-else>
+						<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 					</router-link>
-					<router-link class="item" active-class="active" to="/my/messaging">
-						<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
-						<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
+					<template v-if="$store.getters.isSignedIn">
+						<button class="item _button notifications" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.state.device.useNotificationsPopup">
+							<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
+							<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+						</button>
+						<router-link class="item notifications" active-class="active" to="/my/notifications" ref="notificationButton" v-else>
+							<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
+							<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
+						</router-link>
+						<router-link class="item" active-class="active" to="/my/messaging">
+							<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
+							<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
+						</router-link>
+						<router-link class="item" active-class="active" to="/my/drive">
+							<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
+						</router-link>
+						<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.state.i.isLocked">
+							<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
+							<i v-if="$store.state.i.hasPendingReceivedFollowRequest"><fa :icon="faCircle"/></i>
+						</router-link>
+					</template>
+					<div class="divider"></div>
+					<router-link class="item" active-class="active" to="/featured">
+						<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
 					</router-link>
-					<router-link class="item" active-class="active" to="/my/drive">
-						<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
+					<router-link class="item" active-class="active" to="/explore">
+						<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
 					</router-link>
-					<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.state.i.isLocked">
-						<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
-						<i v-if="$store.state.i.hasPendingReceivedFollowRequest"><fa :icon="faCircle"/></i>
+					<router-link class="item" active-class="active" to="/announcements">
+						<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
+						<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
 					</router-link>
-				</template>
-				<div class="divider"></div>
-				<router-link class="item" active-class="active" to="/featured">
-					<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
-				</router-link>
-				<router-link class="item" active-class="active" to="/explore">
-					<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
-				</router-link>
-				<router-link class="item" active-class="active" to="/announcements">
-					<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
-					<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
-				</router-link>
-				<button class="item _button" @click="search()">
-					<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
-				</button>
-				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
-					<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
-				</button>
-				<button class="item _button" @click="more">
-					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
-					<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
-				</button>
-				<router-link class="item" active-class="active" to="/preferences">
-					<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
-				</router-link>
+					<button class="item _button" @click="search()">
+						<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
+					</button>
+					<div class="divider"></div>
+					<button class="item _button" @click="more">
+						<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+						<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
+					</button>
+				</div>
+				<div class="bottom">
+					<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
+						<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
+					</button>
+					<router-link class="item" active-class="active" to="/preferences">
+						<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
+					</router-link>
+				</div>
 			</div>
 		</nav>
 	</transition>
@@ -851,30 +856,28 @@ export default Vue.extend({
 			z-index: 1001;
 			width: $nav-width;
 			height: 100vh;
-			padding: 16px 0;
-			padding-bottom: calc(3.7rem + 24px);
+			padding: 0;
 			box-sizing: border-box;
-			overflow: auto;
 			background: var(--navBg);
 			border-right: solid 1px var(--divider);
+			display: flex;
+			flex-direction: column;
 
-			> .divider {
+			.divider {
 				margin: 16px 0;
 				border-top: solid 1px var(--divider);
 			}
 
 			@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
 				width: $nav-icon-only-width;
-				padding: 8px 0;
-				padding-bottom: calc(3.7rem + 24px);
 
-				> .divider {
+				.divider {
 					margin: 8px auto;
 					width: calc(100% - 32px);
 				}
 			}
 
-			> .item {
+			.item {
 				position: relative;
 				display: block;
 				padding-left: 32px;
@@ -921,17 +924,6 @@ export default Vue.extend({
 					color: var(--navActive);
 				}
 
-				&:last-child {
-					position: fixed;
-					bottom: 0;
-					width: inherit;
-					padding-top: 8px;
-					padding-bottom: 8px;
-					background: var(--navBg);
-					border-top: solid 1px var(--divider);
-					border-right: solid 1px var(--divider);
-				}
-
 				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
 					padding-left: 0;
 					width: 100%;
@@ -954,9 +946,36 @@ export default Vue.extend({
 				}
 			}
 
+			.top {
+				width: inherit;
+				padding-top: 16px;
+				padding-bottom: 16px;
+				margin-bottom: 16px;
+				border-bottom: solid 1px var(--divider);
+
+				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
+					padding-top: 8px;
+					padding-bottom: 8px;
+				}
+
+			}
+
+			.scroll {
+				overflow: auto;
+				margin-bottom: 16px;
+			}
+
+			.bottom {
+				width: inherit;
+				margin-top: auto;
+				padding-top: 8px;
+				padding-bottom: 8px;
+				border-top: solid 1px var(--divider);
+			}
+
 			@media (max-width: $nav-hide-threshold) {
-				> .index,
-				> .notifications {
+				.index,
+				.notifications {
 					display: none;
 				}
 			}
