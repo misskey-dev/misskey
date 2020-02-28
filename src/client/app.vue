@@ -947,10 +947,8 @@ export default Vue.extend({
 			}
 
 			.top {
-				width: inherit;
 				padding-top: 16px;
 				padding-bottom: 16px;
-				margin-bottom: 16px;
 				border-bottom: solid 1px var(--divider);
 
 				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
@@ -962,11 +960,16 @@ export default Vue.extend({
 
 			.scroll {
 				overflow: auto;
-				margin-bottom: 16px;
+				padding-top: 16px;
+				padding-bottom: 16px;
+
+				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
+					padding-top: 8px;
+					padding-bottom: 8px;
+				}
 			}
 
 			.bottom {
-				width: inherit;
 				margin-top: auto;
 				padding-top: 8px;
 				padding-bottom: 8px;
