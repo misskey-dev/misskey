@@ -11,7 +11,7 @@ export function DateUTC(time: number[]): Date {
 }
 
 export function isTimeSame(a: Date, b: Date): boolean {
-	return (a.getTime() - b.getTime()) === 0;
+	return a.getTime() === b.getTime();
 }
 
 export function isTimeBefore(a: Date, b: Date): boolean {
