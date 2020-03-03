@@ -179,11 +179,20 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
-			throw new Error('already registered');
-		}
+			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
+			const u = await Users.findOne({
+				uri: person.id
+			});
 
-		logger.error(e);
-		throw e;
+			if (u) {
+				user = u as IRemoteUser;
+			} else {
+				throw new Error('already registered');
+			}
+		} else {
+			logger.error(e);
+			throw e;
+		}
 	}
 
 	// Register host
