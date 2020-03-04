@@ -13,7 +13,7 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 		return children.map(t => handlers[t.node.type](t, opts)).join('');
 	}
 
-	const handlers: { [key: string]: (token: MfmTree, opts?: RestoreOptions) => any } = {
+	const handlers: { [key: string]: (token: MfmTree, opts?: RestoreOptions) => string } = {
 		bold(token, opts) {
 			return `**${appendChildren(token.children, opts)}**`;
 		},
