@@ -1,8 +1,7 @@
 import rndstr from 'rndstr';
 
 export function nyaize(text: string): string {
-	const [toNyaize, exclusionMap] = exclude(text);
-	const nyaized = toNyaize
+	return text
 		// ja-JP
 		.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
 		// en-US
@@ -13,7 +12,6 @@ export function nyaize(text: string): string {
 		))
 		.replace(/(다$)|(다(?=\.))|(다(?= ))|(다(?=!))|(다(?=\?))/gm, '다냥')
 		.replace(/(야(?=\?))|(야$)|(야(?= ))/gm, '냥');
-	return replaceExceptions(nyaized, exclusionMap);
 }
 
 function exclude(text: string): [string, Record<string, string>] {
