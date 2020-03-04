@@ -21,7 +21,7 @@
 		"gulp": "gulp build",
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
-		"lint": "gulp lint",
+		"lint": "tslint 'src/**/*.ts'",
 		"test": "cross-env TS_NODE_FILES=true gulp test",
 		"format": "gulp format"
 	},

@@ -48,7 +48,7 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 					? note.text!.includes(keyword)
 					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
-		
+
 		if (!matched) return false;
 	}
 
@@ -61,7 +61,7 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 					? note.text!.includes(keyword)
 					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
-		
+
 		if (matched) return false;
 	}
 
