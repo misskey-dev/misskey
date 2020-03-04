@@ -30,8 +30,7 @@ function exclude(text: string): [string, Record<string, string>] {
 		.replace(/(https?:\/\/.*?)(?= |$)/gm, match => substitute(match)) // URL
 		.replace(/:([a-z0-9_+-]+):/gim, match => substitute(match)) // emoji
 		.replace(/#([^\s.,!?'"#:\/\[\]【】]+)/gm, match => substitute(match)) // hashtag
-		.replace(/@\w([\w-]*\w)?(?:@[\w.\-]+\w)?/gm, match => substitute(match)) // mention
-		.replace(/^>[^\n]+/gm, match => substitute(match)); // quote
+		.replace(/@\w([\w-]*\w)?(?:@[\w.\-]+\w)?/gm, match => substitute(match)); // mention
 	return [replaced, map];
 }
 
