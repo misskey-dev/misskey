@@ -10,11 +10,7 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 	if (tokens === null) return '';
 
 	function appendChildren(children: MfmForest, opts?: RestoreOptions): string {
-		let str = '';
-		for (const child of children.map(t => handlers[t.node.type](t, opts))) {
-			str += child;
-		}
-		return str;
+		return children.map(t => handlers[t.node.type](t, opts)).join('');
 	}
 
 	const handlers: { [key: string]: (token: MfmTree, opts?: RestoreOptions) => any } = {
