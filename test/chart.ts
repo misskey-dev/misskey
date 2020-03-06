@@ -48,9 +48,9 @@ function initChartDb() {
 }
 
 describe('Chart', () => {
-	let testChart: any;
-	let testGroupedChart: any;
-	let testUniqueChart: any;
+	let testChart: TestChart;
+	let testGroupedChart: TestGroupedChart;
+	let testUniqueChart: TestUniqueChart;
 	let clock: lolex.InstalledClock<lolex.Clock>;
 	let connection: Connection;
 
