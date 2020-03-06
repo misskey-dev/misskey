@@ -309,6 +309,35 @@ describe('Chart', () => {
 		});
 	}));
 
+	it('Can specify offset (floor time)', async(async () => {
+		clock.tick('00:30:00');
+
+		await testChart.increment();
+
+		clock.tick('01:30:00');
+
+		await testChart.increment();
+
+		const chartHours = await testChart.getChart('hour', 3, 1);
+		const chartDays = await testChart.getChart('day', 3, 1);
+
+		assert.deepStrictEqual(chartHours, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [1, 0, 0],
+				total: [1, 0, 0]
+			},
+		});
+
+		assert.deepStrictEqual(chartDays, {
+			foo: {
+				dec: [0, 0, 0],
+				inc: [0, 0, 0],
+				total: [0, 0, 0]
+			},
+		});
+	}));
+
 	describe('Grouped', () => {
 		it('Can updates', async(async () => {
 			await testGroupedChart.increment('alice');
