@@ -382,8 +382,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const [y, m, d, h] = this.getCurrentDate();
 
 		const gt =
-			span == 'day' ? subtractTimespan(DateUTC([y, m, d]), range, 'days') :
-			span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range, 'hours') :
+			span == 'day' ? subtractTimespan(DateUTC([y, m, d]), range - 1, 'days') :
+			span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range - 1, 'hours') :
 			null as never;
 
 		// ログ取得
