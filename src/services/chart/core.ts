@@ -9,8 +9,8 @@ import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
 import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
+import { getChartInsertLock } from '../../misc/app-lock';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
@@ -283,30 +283,35 @@ export default abstract class Chart<T extends Record<string, any>> {
 			logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): Initial commit created`);
 		}
 
+		const date = Chart.dateToTimestamp(current);
+		const lockKey = `${this.name}:${date}:${group}:${span}`;
+
+		const unlock = await getChartInsertLock(lockKey);
 		try {
+			// ロック内でもう1回チェックする
+			const currentLog = await this.repository.findOne({
+				span: span,
+				date: date,
+				...(group ? { group: group } : {})
+			});
+
+			// ログがあればそれを返して終了
+			if (currentLog != null) return currentLog;
+
 			// 新規ログ挿入
 			log = await this.repository.save({
 				group: group,
 				span: span,
-				date: Chart.dateToTimestamp(current),
+				date: date,
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 
 			logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): New commit created`);
-		} catch (e) {
-			// duplicate key error
-			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
-			// その場合は再度最も新しいログを持ってくる
-			if (isDuplicateKeyValueError(e)) {
-				log = await this.getLatestLog(span, group) as Log;
-				logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): Commit duplicated`);
-			} else {
-				logger.error(e);
-				throw e;
-			}
-		}
 
-		return log;
+			return log;
+		} finally {
+			unlock();
+		}
 	}
 
 	@autobind
