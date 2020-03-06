@@ -2,10 +2,10 @@
  * Tests of mute
  *
  * How to run the tests:
- * > npx mocha test/mute.ts --require ts-node/register
+ * > npx cross-env TS_NODE_FILES=true npx mocha test/mute.ts --require ts-node/register
  *
  * To specify test:
- * > npx mocha test/mute.ts --require ts-node/register -g 'test name'
+ * > npx cross-env TS_NODE_FILES=true npx mocha test/mute.ts --require ts-node/register -g 'test name'
  *
  * If the tests not start, try set following enviroment variables:
  * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true
