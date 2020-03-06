@@ -2,10 +2,10 @@
  * Tests of Maybe
  *
  * How to run the tests:
- * > npx cross-env TS_NODE_FILES=true npx mocha test/prelude/maybe.ts --require ts-node/register
+ * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true npx mocha test/prelude/maybe.ts --require ts-node/register
  *
  * To specify test:
- * > npx cross-env TS_NODE_FILES=true npx mocha test/prelude/maybe.ts --require ts-node/register -g 'test name'
+ * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true npx mocha test/prelude/maybe.ts --require ts-node/register -g 'test name'
  */
 
 import * as assert from 'assert';
