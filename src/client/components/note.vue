@@ -684,6 +684,7 @@ export default Vue.extend({
 .note {
 	position: relative;
 	transition: box-shadow 0.1s ease;
+	overflow: hidden;
 
 	&.max-width_500px {
 		font-size: 0.9em;
