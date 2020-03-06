@@ -25,11 +25,16 @@ export const meta = {
 				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
 			}
 		},
+
+		offset: {
+			validator: $.optional.num,
+			default: 0,
+		},
 	},
 
 	res: convertLog(federationChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await federationChart.getChart(ps.span as any, ps.limit!);
+	return await federationChart.getChart(ps.span as any, ps.limit!, ps.offset!);
 });

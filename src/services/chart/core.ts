@@ -8,7 +8,7 @@ import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
-import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
+import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual, Between } from 'typeorm';
 import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
 import { getChartInsertLock } from '../../misc/app-lock';
 
@@ -134,6 +134,21 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
+	private static dateToYMDH(date: Date): [number, number, number, number] {
+		const y = date.getUTCFullYear();
+		const m = date.getUTCMonth();
+		const d = date.getUTCDate();
+		const h = date.getUTCHours();
+
+		return [y, m, d, h];
+	}
+
+	@autobind
+	private static getCurrentDate(): [number, number, number, number] {
+		return Chart.dateToYMDH(new Date());
+	}
+
+	@autobind
 	public static schemaToEntity(name: string, schema: Schema): EntitySchema {
 		return new EntitySchema({
 			name: `__chart__${camelToSnake(name)}`,
@@ -212,18 +227,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private getCurrentDate(): [number, number, number, number] {
-		const now = new Date();
-
-		const y = now.getUTCFullYear();
-		const m = now.getUTCMonth();
-		const d = now.getUTCDate();
-		const h = now.getUTCHours();
-
-		return [y, m, d, h];
-	}
-
-	@autobind
 	private getLatestLog(span: Span, group: string | null = null): Promise<Log | null> {
 		return this.repository.findOne({
 			group: group,
@@ -237,7 +240,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private async getCurrentLog(span: Span, group: string | null = null): Promise<Log> {
-		const [y, m, d, h] = this.getCurrentDate();
+		const [y, m, d, h] = Chart.getCurrentDate();
 
 		const current =
 			span == 'day' ? DateUTC([y, m, d]) :
@@ -378,12 +381,23 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, group: string | null = null): Promise<ArrayValue<T>> {
-		const [y, m, d, h] = this.getCurrentDate();
+	public async getChart(span: Span, range: number, offset: number, group: string | null = null): Promise<ArrayValue<T>> {
+		let [y, m, d, h] = Chart.getCurrentDate();
+
+		let lt: Date = null as never;
+
+		if (offset > 0) {
+			[y, m, d, h] = Chart.dateToYMDH(subtractTimespan(DateUTC([y, m, d, h]), offset, span));
+
+			lt =
+				span === 'day' ? DateUTC([y, m, d]) :
+				span === 'hour' ? DateUTC([y, m, d, h]) :
+				null as never;
+		}
 
 		const gt =
-			span === 'day' ? subtractTimespan(DateUTC([y, m, d]), range - 1, 'days') :
-			span === 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range - 1, 'hours') :
+			span === 'day' ? subtractTimespan(DateUTC([y, m, d]), range - 1, 'day') :
+			span === 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range - 1, 'hour') :
 			null as never;
 
 		// ログ取得
@@ -391,7 +405,9 @@ export default abstract class Chart<T extends Record<string, any>> {
 			where: {
 				group: group,
 				span: span,
-				date: MoreThanOrEqual(Chart.dateToTimestamp(gt))
+				date: offset === 0
+					? MoreThanOrEqual(Chart.dateToTimestamp(gt))
+					: Between(Chart.dateToTimestamp(gt), Chart.dateToTimestamp(lt))
 			},
 			order: {
 				date: -1
@@ -439,8 +455,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 		// 整形
 		for (let i = (range - 1); i >= 0; i--) {
 			const current =
-				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'days') :
-				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hours') :
+				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'day') :
+				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hour') :
 				null as never;
 
 			const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));

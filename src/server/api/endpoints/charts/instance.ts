@@ -26,6 +26,11 @@ export const meta = {
 			}
 		},
 
+		offset: {
+			validator: $.optional.num,
+			default: 0,
+		},
+
 		host: {
 			validator: $.str,
 			desc: {
@@ -39,5 +44,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await instanceChart.getChart(ps.span as any, ps.limit!, ps.host);
+	return await instanceChart.getChart(ps.span as any, ps.limit!, ps.offset!, ps.host);
 });
