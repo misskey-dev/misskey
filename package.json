@@ -213,7 +213,7 @@
 		"sass": "1.25.0",
 		"sass-loader": "8.0.2",
 		"seedrandom": "3.0.5",
-		"sharp": "0.24.0",
+		"sharp": "0.22.1",
 		"showdown": "1.9.1",
 		"showdown-highlightjs-extension": "0.1.2",
 		"speakeasy": "2.0.0",
