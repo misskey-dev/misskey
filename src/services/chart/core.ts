@@ -8,8 +8,8 @@ import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
-import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual, Between } from 'typeorm';
-import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
+import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
+import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '../../prelude/time';
 import { getChartInsertLock } from '../../misc/app-lock';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
@@ -134,18 +134,21 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static dateToYMDH(date: Date): [number, number, number, number] {
+	private static parseDate(date: Date): [number, number, number, number, number, number, number] {
 		const y = date.getUTCFullYear();
 		const m = date.getUTCMonth();
 		const d = date.getUTCDate();
 		const h = date.getUTCHours();
+		const _m = date.getUTCMinutes();
+		const _s = date.getUTCSeconds();
+		const _ms = date.getUTCMilliseconds();
 
-		return [y, m, d, h];
+		return [y, m, d, h, _m, _s, _ms];
 	}
 
 	@autobind
-	private static getCurrentDate(): [number, number, number, number] {
-		return Chart.dateToYMDH(new Date());
+	private static getCurrentDate() {
+		return Chart.parseDate(new Date());
 	}
 
 	@autobind
@@ -243,8 +246,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const [y, m, d, h] = Chart.getCurrentDate();
 
 		const current =
-			span == 'day' ? DateUTC([y, m, d]) :
-			span == 'hour' ? DateUTC([y, m, d, h]) :
+			span == 'day' ? dateUTC([y, m, d, 0]) :
+			span == 'hour' ? dateUTC([y, m, d, h]) :
 			null as never;
 
 		// 現在(今日または今のHour)のログ
@@ -381,23 +384,15 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public async getChart(span: Span, amount: number, offset: number, group: string | null = null): Promise<ArrayValue<T>> {
-		let [y, m, d, h] = Chart.getCurrentDate();
+	public async getChart(span: Span, amount: number, begin: Date | null, group: string | null = null): Promise<ArrayValue<T>> {
+		const [y, m, d, h, _m, _s, _ms] = begin ? Chart.parseDate(subtractTime(addTime(begin, 1, span), 1)) : Chart.getCurrentDate();
+		const [y2, m2, d2, h2] = begin ? Chart.parseDate(addTime(begin, 1, span)) : [] as never;
 
-		let lt: Date = null as never;
-
-		if (offset > 0) {
-			[y, m, d, h] = Chart.dateToYMDH(subtractTimespan(DateUTC([y, m, d, h]), offset, span));
-
-			lt =
-				span === 'day' ? DateUTC([y, m, d]) :
-				span === 'hour' ? DateUTC([y, m, d, h]) :
-				null as never;
-		}
+		const lt = dateUTC([y, m, d, h, _m, _s, _ms]);
 
 		const gt =
-			span === 'day' ? subtractTimespan(DateUTC([y, m, d]), amount - 1, 'day') :
-			span === 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), amount - 1, 'hour') :
+			span === 'day' ? subtractTime(begin ? dateUTC([y2, m2, d2, 0]) : dateUTC([y, m, d, 0]), amount - 1, 'day') :
+			span === 'hour' ? subtractTime(begin ? dateUTC([y2, m2, d2, h2]) : dateUTC([y, m, d, h]), amount - 1, 'hour') :
 			null as never;
 
 		// ログ取得
@@ -405,9 +400,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			where: {
 				group: group,
 				span: span,
-				date: offset === 0
-					? MoreThanOrEqual(Chart.dateToTimestamp(gt))
-					: Between(Chart.dateToTimestamp(gt), Chart.dateToTimestamp(lt))
+				date: Between(Chart.dateToTimestamp(gt), Chart.dateToTimestamp(lt))
 			},
 			order: {
 				date: -1
@@ -455,8 +448,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 		// 整形
 		for (let i = (amount - 1); i >= 0; i--) {
 			const current =
-				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'day') :
-				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hour') :
+				span === 'day' ? subtractTime(dateUTC([y, m, d, 0]), i, 'day') :
+				span === 'hour' ? subtractTime(dateUTC([y, m, d, h]), i, 'hour') :
 				null as never;
 
 			const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));

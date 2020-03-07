@@ -27,8 +27,8 @@ export const meta = {
 		},
 
 		offset: {
-			validator: $.optional.num,
-			default: 0,
+			validator: $.optional.nullable.num,
+			default: null,
 		},
 	},
 
@@ -36,5 +36,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await networkChart.getChart(ps.span as any, ps.limit!, ps.offset!);
+	return await networkChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
 });
