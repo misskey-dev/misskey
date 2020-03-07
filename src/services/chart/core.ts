@@ -381,7 +381,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, offset: number, group: string | null = null): Promise<ArrayValue<T>> {
+	public async getChart(span: Span, amount: number, offset: number, group: string | null = null): Promise<ArrayValue<T>> {
 		let [y, m, d, h] = Chart.getCurrentDate();
 
 		let lt: Date = null as never;
@@ -396,8 +396,8 @@ export default abstract class Chart<T extends Record<string, any>> {
 		}
 
 		const gt =
-			span === 'day' ? subtractTimespan(DateUTC([y, m, d]), range - 1, 'day') :
-			span === 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range - 1, 'hour') :
+			span === 'day' ? subtractTimespan(DateUTC([y, m, d]), amount - 1, 'day') :
+			span === 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), amount - 1, 'hour') :
 			null as never;
 
 		// ログ取得
@@ -453,7 +453,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const chart: T[] = [];
 
 		// 整形
-		for (let i = (range - 1); i >= 0; i--) {
+		for (let i = (amount - 1); i >= 0; i--) {
 			const current =
 				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'day') :
 				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hour') :
