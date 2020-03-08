@@ -12,10 +12,10 @@ const httpsAgent = config.proxy
 
 export function getS3(meta: Meta) {
 	const conf = {
-		endpoint: meta.objectStorageEndpoint?.length ? meta.objectStorageEndpoint : undefined,
+		endpoint: meta.objectStorageEndpoint || undefined,
 		accessKeyId: meta.objectStorageAccessKey,
 		secretAccessKey: meta.objectStorageSecretKey,
-		region: meta.objectStorageRegion?.length ? meta.objectStorageRegion : undefined,
+		region: meta.objectStorageRegion || undefined,
 		sslEnabled: meta.objectStorageUseSSL,
 		s3ForcePathStyle: true,
 		httpOptions: {
