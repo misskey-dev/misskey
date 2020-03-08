@@ -19,8 +19,8 @@
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
-		<x-note-preview class="preview" v-if="reply" :note="reply"/>
-		<x-note-preview class="preview" v-if="renote" :note="renote"/>
+		<x-note-preview class="preview" v-if="attachedReply" :note="attachedReply"/>
+		<x-note-preview class="preview" v-if="attachedRenote" :note="attachedRenote"/>
 		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
@@ -134,6 +134,8 @@ export default Vue.extend({
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
+			attachedReply: null,
+			attachedRenote: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
 			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
 		};
@@ -141,10 +143,10 @@ export default Vue.extend({
 
 	computed: {
 		draftId(): string {
-			return this.renote
-				? `renote:${this.renote.id}`
-				: this.reply
-					? `reply:${this.reply.id}`
+			return this.attachedRenote
+				? `renote:${this.attachedRenote.id}`
+				: this.attachedReply
+					? `reply:${this.attachedReply.id}`
 					: 'note';
 		},
 
@@ -159,24 +161,24 @@ export default Vue.extend({
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
 
-			return this.renote
+			return this.attachedRenote
 				? this.$t('_postForm.quotePlaceholder')
-				: this.reply
+				: this.attachedReply
 					? this.$t('_postForm.replyPlaceholder')
 					: x;
 		},
 
 		submitText(): string {
-			return this.renote
+			return this.attachedRenote
 				? this.$t('quote')
-				: this.reply
+				: this.attachedReply
 					? this.$t('reply')
 					: this.$t('note');
 		},
 
 		canPost(): boolean {
 			return !this.posting &&
-				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
+				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.attachedRenote) &&
 				(length(this.text.trim()) <= this.max) &&
 				(!this.poll || this.pollChoices.length >= 2);
 		},
@@ -202,12 +204,15 @@ export default Vue.extend({
 			this.text += ' ';
 		}
 
-		if (this.reply && this.reply.user.host != null) {
-			this.text = `@${this.reply.user.username}@${toASCII(this.reply.user.host)} `;
+		this.attachedReply = this.reply;
+		this.attachedRenote = this.renote;
+
+		if (this.attachedReply && this.attachedReply.user.host != null) {
+			this.text = `@${this.attachedReply.user.username}@${toASCII(this.attachedReply.user.host)} `;
 		}
 
-		if (this.reply && this.reply.text != null) {
-			const ast = parse(this.reply.text);
+		if (this.attachedReply && this.attachedReply.text != null) {
+			const ast = parse(this.attachedReply.text);
 
 			for (const x of extractMentions(ast)) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
@@ -229,17 +234,17 @@ export default Vue.extend({
 		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
-			this.visibility = this.reply.visibility;
-			if (this.reply.visibility === 'specified') {
+		if (this.attachedReply && ['home', 'followers', 'specified'].includes(this.attachedReply.visibility)) {
+			this.visibility = this.attachedReply.visibility;
+			if (this.attachedReply.visibility === 'specified') {
 				this.$root.api('users/show', {
-					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.reply.userId)
+					userIds: this.attachedReply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.attachedReply.userId)
 				}).then(users => {
 					this.visibleUsers.push(...users);
 				});
 
-				if (this.reply.userId !== this.$store.state.i.id) {
-					this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
+				if (this.attachedReply.userId !== this.$store.state.i.id) {
+					this.$root.api('users/show', { userId: this.attachedReply.userId }).then(user => {
 						this.visibleUsers.push(user);
 					});
 				}
@@ -252,9 +257,9 @@ export default Vue.extend({
 		}
 
 		// keep cw when reply
-		if (this.$store.state.settings.keepCw && this.reply && this.reply.cw) {
+		if (this.$store.state.settings.keepCw && this.attachedReply && this.attachedReply.cw) {
 			this.useCw = true;
-			this.cw = this.reply.cw;
+			this.cw = this.attachedReply.cw;
 		}
 
 		this.focus();
@@ -301,7 +306,8 @@ export default Vue.extend({
 				}
 				this.visibility = init.visibility;
 				this.localOnly = init.localOnly;
-				this.quoteId = init.renote ? init.renote.id : null;
+				this.attachedRenote = init.renote;
+				this.attachedReply = init.reply;
 			}
 
 			this.$nextTick(() => this.watch());
@@ -446,7 +452,7 @@ export default Vue.extend({
 
 			const paste = e.clipboardData.getData('text');
 
-			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
+			if (!this.attachedRenote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
 				this.$root.dialog({
@@ -537,8 +543,8 @@ export default Vue.extend({
 			this.$root.api('notes/create', {
 				text: this.text == '' ? undefined : this.text,
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
-				replyId: this.reply ? this.reply.id : undefined,
-				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
+				replyId: this.attachedReply ? this.attachedReply.id : undefined,
+				renoteId: this.attachedRenote ? this.attachedRenote.id : this.quoteId ? this.quoteId : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
 				localOnly: this.localOnly,
