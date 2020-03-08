@@ -7,10 +7,10 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { UserKeypairs } from '../../models';
 import { ensure } from '../../prelude/ensure';
-import * as httpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const agent = config.proxy
-	? new httpsProxyAgent(config.proxy)
+	? new HttpsProxyAgent(config.proxy)
 	: new https.Agent({
 			lookup: cache.lookup,
 		});
