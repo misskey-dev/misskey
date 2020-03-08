@@ -432,7 +432,7 @@ objectStoragePrefixDesc: "このprefixのディレクトリ下に格納されま
 objectStorageEndpoint: "Endpoint"
 objectStorageEndpointDesc: "S3の場合は空、それ以外の場合は各サービスのendpointを指定してください。'<host>'または'<host>:<port>'のように指定します。"
 objectStorageRegion: "Region"
-objectStorageRegionDesc: "'xx-east-1'のようなRegionを指定してください。使用サービスにリージョンの概念がない場合は、空または'us-east-1'にしてください。"
+objectStorageRegionDesc: "'xx-east-1'のようなregionを指定してください。使用サービスにregionの概念がない場合は、空または'us-east-1'にしてください。"
 objectStorageUseSSL: "SSLを使用する"
 objectStorageUseSSLDesc: "API接続にhttpsを使用しない場合はオフにしてください"
 serverLogs: "サーバーログ"
