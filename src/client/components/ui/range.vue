@@ -2,7 +2,9 @@
 	<div class="range-root" :class="{ focused, disabled }">
 		<div class="icon" ref="icon"><slot name="icon"></slot></div>
 		<span class="title"><slot name="title"></slot></span>
-		<input type="range" ref="input"
+		<input
+			type="range"
+			ref="input"
 			v-model="v"
 			:disabled="disabled"
 			:min="min"
@@ -12,11 +14,11 @@
 			@focus="focused = true"
 			@blur="focused = false"
 			@input="$emit('input', $event.target.value)"
->
+		/>
 	</div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue from "vue";
 export default Vue.extend({
 	props: {
 		value: {
@@ -37,7 +39,7 @@ export default Vue.extend({
 		max: {
 			type: String,
 			required: false,
-			default: "100",
+			default: "100"
 		},
 		step: {
 			type: String,
@@ -52,8 +54,8 @@ export default Vue.extend({
 	data() {
 		return {
 			v: this.value,
-			focused: false,
-		}
+			focused: false
+		};
 	},
 	watch: {
 		value(v) {
@@ -70,67 +72,67 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
-	.range-root {
-		position: relative;
-		margin: 8px;
+.range-root {
+	position: relative;
+	margin: 8px;
 
-		> .icon {
-			display: inline-block;
-			width: 24px;
-			text-align: center;
+	> .icon {
+		display: inline-block;
+		width: 24px;
+		text-align: center;
+	}
+
+	> .title {
+		pointer-events: none;
+		font-size: 16px;
+		color: var(--inputLabel);
+		overflow: hidden;
+	}
+
+	input {
+		-webkit-appearance: none;
+		appearance: none;
+		background: var(--xxubwiul);
+		height: 7px;
+		margin: 0 8px;
+		border-radius: 7px;
+
+		&.disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
 		}
 
-		> .title {
-			pointer-events: none;
-			font-size: 16px;
-			color: var(--inputLabel);
-			overflow: hidden;
+		&:focus,
+		&:active {
+			outline: none;
 		}
 
-		input {
+		&::-webkit-slider-thumb {
 			-webkit-appearance: none;
 			appearance: none;
-			background: var(--xxubwiul);
-			height: 7px;
-			margin: 0 8px;
-			border-radius: 7px;
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			display: block;
+			border-radius: 50%;
+			border: none;
+			background: var(--accent);
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+			box-sizing: content-box;
+		}
 
-			&.disabled {
-				opacity: 0.6;
-				cursor: not-allowed;
-			}
-
-			&:focus,
-			&:active {
-				outline: none;
-			}
-
-			&::-webkit-slider-thumb {
-				-webkit-appearance: none;
-				appearance: none;
-				cursor: pointer;
-				width: 20px;
-				height: 20px;
-				display: block;
-				border-radius: 50%;
-				border: none;
-				background: var(--accent);
-				box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-				box-sizing: content-box;
-			}
-
-			&::-moz-range-thumb {
-				-moz-appearance: none;
-				appearance: none;
-				cursor: pointer;
-				width: 20px;
-				height: 20px;
-				display: block;
-				border-radius: 50%;
-				border: none;
-				background: var(--accent);
-				box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-			}
+		&::-moz-range-thumb {
+			-moz-appearance: none;
+			appearance: none;
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			display: block;
+			border-radius: 50%;
+			border: none;
+			background: var(--accent);
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
 		}
 	}
+}
 </style>
