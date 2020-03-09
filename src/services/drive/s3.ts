@@ -17,7 +17,7 @@ export function getS3(meta: Meta) {
 		secretAccessKey: meta.objectStorageSecretKey,
 		region: meta.objectStorageRegion || undefined,
 		sslEnabled: meta.objectStorageUseSSL,
-		s3ForcePathStyle: true,
+		s3ForcePathStyle: !!meta.objectStorageEndpoint,
 		httpOptions: {
 		}
 	} as S3.ClientConfiguration;
