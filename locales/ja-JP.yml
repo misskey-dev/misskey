@@ -434,6 +434,11 @@ none: "なし"
 volume: "音量"
 details: "詳細"
 chooseEmoji: "絵文字を選択"
+wordMute: "ワードミュート"
+noMutedWord: "ミュートしている単語はありません。"
+wordMuteDescription: "不快に思う話題にお困りですか？この項目にて単語を設定すると、その単語が含まれる投稿がタイムラインなどから表示されないようになります。"
+inputWordToMute: "ミュートしたい単語を入力して下さい..."
+inputWordToMuteDescription: "複数の単語をスペースで区切ることで、それらの単語を全て含む投稿をミュートできます。"
 
 _sfx:
   note: "ノート"

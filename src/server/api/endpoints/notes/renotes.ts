@@ -7,6 +7,7 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
+import { filterNotesByWords } from '../../common/filter-by-words';
 
 export const meta = {
 	desc: {
@@ -73,7 +74,8 @@ export default define(meta, async (ps, user) => {
 	generateVisibilityQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
-	const renotes = await query.take(ps.limit!).getMany();
+	let renotes = await query.take(ps.limit!).getMany();
+	if (user) renotes = await filterNotesByWords(renotes, user);
 
 	return await Notes.packMany(renotes, user);
 });

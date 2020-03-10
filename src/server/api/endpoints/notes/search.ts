@@ -8,6 +8,7 @@ import config from '../../../../config';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { filterNotesByWords } from '../../common/filter-by-words';
 
 export const meta = {
 	desc: {
@@ -124,7 +125,7 @@ export default define(meta, async (ps, me) => {
 		if (hits.length === 0) return [];
 
 		// Fetch found notes
-		const notes = await Notes.find({
+		let notes = await Notes.find({
 			where: {
 				id: In(hits)
 			},
@@ -132,6 +133,8 @@ export default define(meta, async (ps, me) => {
 				id: -1
 			}
 		});
+
+		if (me) notes = await filterNotesByWords(notes, me);
 
 		return await Notes.packMany(notes, me);
 	}

@@ -7,6 +7,7 @@ import { generateMuteQuery } from '../../common/generate-mute-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { Brackets } from 'typeorm';
 import { safeForSql } from '../../../../misc/safe-for-sql';
+import { filterNotesByWords } from '../../common/filter-by-words';
 
 export const meta = {
 	desc: {
@@ -146,7 +147,8 @@ export default define(meta, async (ps, me) => {
 	}
 
 	// Search notes
-	const notes = await query.take(ps.limit!).getMany();
+	let notes = await query.take(ps.limit!).getMany();
+	if (me) notes = await filterNotesByWords(notes, me);
 
 	return await Notes.packMany(notes, me);
 });

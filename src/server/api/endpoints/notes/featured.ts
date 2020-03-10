@@ -1,6 +1,7 @@
 import $ from 'cafy';
 import define from '../../define';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { filterNotesByWords } from '../../common/filter-by-words';
 import { Notes } from '../../../../models';
 
 export const meta = {
@@ -61,6 +62,8 @@ export default define(meta, async (ps, user) => {
 	notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
 	notes = notes.slice(ps.offset, ps.offset + ps.limit);
+
+	if (user) notes = await filterNotesByWords(notes);
 
 	return await Notes.packMany(notes, user);
 });

@@ -5,6 +5,7 @@ import read from '../../../../services/note/read';
 import { Notes, Followings } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMuteQuery } from '../../common/generate-mute-query';
+import { filterNotesByWords } from '../../common/filter-by-words';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
 
@@ -77,11 +78,13 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	const mentions = await query.take(ps.limit!).getMany();
+	let mentions = await query.take(ps.limit!).getMany();
 
 	for (const note of mentions) {
 		read(user.id, note.id);
 	}
+
+	mentions = await filterNotesByWords(mentions, user);
 
 	return await Notes.packMany(mentions, user);
 });

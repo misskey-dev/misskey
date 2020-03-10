@@ -28,6 +28,7 @@ import { UserGroupInvitationRepository } from './repositories/user-group-invitat
 import { FollowRequestRepository } from './repositories/follow-request';
 import { MutingRepository } from './repositories/muting';
 import { BlockingRepository } from './repositories/blocking';
+import { MutedWordRepository } from './repositories/muted-word';
 import { NoteReactionRepository } from './repositories/note-reaction';
 import { NotificationRepository } from './repositories/notification';
 import { NoteFavoriteRepository } from './repositories/note-favorite';
@@ -85,6 +86,7 @@ export const DriveFolders = getCustomRepository(DriveFolderRepository);
 export const Notifications = getCustomRepository(NotificationRepository);
 export const Metas = getRepository(Meta);
 export const Mutings = getCustomRepository(MutingRepository);
+export const MutedWords = getCustomRepository(MutedWordRepository);
 export const Blockings = getCustomRepository(BlockingRepository);
 export const SwSubscriptions = getRepository(SwSubscription);
 export const Hashtags = getCustomRepository(HashtagRepository);

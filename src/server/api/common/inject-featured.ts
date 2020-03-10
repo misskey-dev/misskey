@@ -4,6 +4,8 @@ import { User } from '../../../models/entities/user';
 import { Notes, UserProfiles, NoteReactions } from '../../../models';
 import { generateMuteQuery } from './generate-mute-query';
 import { ensure } from '../../../prelude/ensure';
+import { getMutedList } from './get-muted-list';
+import { shouldBeFilteredNoteByWords, filterNotesByWords } from './filter-by-words';
 
 // TODO: リアクション、Renote、返信などをしたノートは除外する
 
@@ -38,10 +40,12 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 		query.andWhere(`note.id NOT IN (${ reactionQuery.getQuery() })`);
 	}
 
-	const notes = await query
+	let notes = await query
 		.orderBy('note.score', 'DESC')
 		.take(max)
 		.getMany();
+
+	if (user) notes = await filterNotesByWords(notes, user);
 
 	if (notes.length === 0) return;
 

@@ -10,6 +10,7 @@ import { Brackets } from 'typeorm';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { injectPromo } from '../../common/inject-promo';
 import { injectFeatured } from '../../common/inject-featured';
+import { filterNotesByWords } from '../../common/filter-by-words';
 
 export const meta = {
 	desc: {
@@ -155,7 +156,7 @@ export default define(meta, async (ps, user) => {
 	}
 	//#endregion
 
-	const timeline = await query.take(ps.limit!).getMany();
+	const timeline = await filterNotesByWords(await query.take(ps.limit!).getMany(), user);
 
 	await injectPromo(timeline, user);
 	await injectFeatured(timeline, user);
