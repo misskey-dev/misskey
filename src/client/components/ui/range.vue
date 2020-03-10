@@ -1,6 +1,6 @@
 <template>
 	<div class="range-root" :class="{ focused, disabled }">
-		<div class="icon" ref="icon"><slot name="icon"></slot></div>
+		<div class="icon"><slot name="icon"></slot></div>
 		<span class="title"><slot name="title"></slot></span>
 		<input
 			type="range"
@@ -89,22 +89,20 @@ export default Vue.extend({
 		overflow: hidden;
 	}
 
-	input {
+	> input {
 		-webkit-appearance: none;
+		-moz-appearance: none;
 		appearance: none;
 		background: var(--xxubwiul);
 		height: 7px;
 		margin: 0 8px;
+		outline: 0;
+		border: 0;
 		border-radius: 7px;
 
 		&.disabled {
 			opacity: 0.6;
 			cursor: not-allowed;
-		}
-
-		&:focus,
-		&:active {
-			outline: none;
 		}
 
 		&::-webkit-slider-thumb {
