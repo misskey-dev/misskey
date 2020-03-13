@@ -611,7 +611,8 @@ _instanceCharts:
   ff: "关注/被关注：数量变化"
   ffTotal: "关注/被关注：总数"
   cacheSize: "缓存大小：增加/减少"
-  filesTotal: "累计文件数总和"
+  cacheSizeTotal: "累积缓存大小"
+  filesTotal: "累计文件总数"
 _timelines:
   home: "首页"
   local: "本地"
