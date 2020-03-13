@@ -562,6 +562,7 @@ _poll:
   remainingSeconds: "{s}秒后截止"
 _visibility:
   public: "公开"
+  publicDescription: "您的帖子将出现在全局时间线上"
   home: "首页"
   homeDescription: "仅发送至首页的时间线"
   followers: "关注者"
@@ -601,6 +602,8 @@ _charts:
   activeUsers: "活跃用户数"
   notesIncDec: "帖子：增加/减少"
   notesTotal: "帖子总数"
+  filesTotal: "文件总数"
+  storageUsageIncDec: "存储空间用量增减"
   storageUsageTotal: "累计存储使用量"
 _instanceCharts:
   requests: "请求"
@@ -612,6 +615,7 @@ _instanceCharts:
   ffTotal: "关注/被关注：总数"
   cacheSize: "缓存大小：增加/减少"
   cacheSizeTotal: "累积缓存大小"
+  files: "文件总数增减"
   filesTotal: "累计文件总数"
 _timelines:
   home: "首页"
