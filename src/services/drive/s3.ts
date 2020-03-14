@@ -1,23 +1,23 @@
 import * as S3 from 'aws-sdk/clients/s3';
 import config from '../../config';
 import { Meta } from '../../models/entities/meta';
-import * as httpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import * as agentkeepalive from 'agentkeepalive';
 
 const httpsAgent = config.proxy
-	? new httpsProxyAgent(config.proxy)
+	? new HttpsProxyAgent(config.proxy)
 	: new agentkeepalive.HttpsAgent({
 			freeSocketTimeout: 30 * 1000
 		});
 
 export function getS3(meta: Meta) {
 	const conf = {
-		endpoint: meta.objectStorageEndpoint,
+		endpoint: meta.objectStorageEndpoint || undefined,
 		accessKeyId: meta.objectStorageAccessKey,
 		secretAccessKey: meta.objectStorageSecretKey,
-		region: meta.objectStorageRegion,
+		region: meta.objectStorageRegion || undefined,
 		sslEnabled: meta.objectStorageUseSSL,
-		s3ForcePathStyle: true,
+		s3ForcePathStyle: !!meta.objectStorageEndpoint,
 		httpOptions: {
 		}
 	} as S3.ClientConfiguration;
