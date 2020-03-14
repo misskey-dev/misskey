@@ -192,8 +192,7 @@ export default Vue.extend({
 					password: this.password,
 					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
 				}).then(res => {
-					localStorage.setItem('i', res.i);
-					location.reload();
+					this.$emit('login', res);
 				}).catch(() => {
 					this.$root.dialog({
 						type: 'error',
