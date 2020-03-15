@@ -88,7 +88,9 @@ redis:
 #elasticsearch:
 #  host: localhost
 #  port: 9200
-#  pass: null
+#  ssl: false
+#  user: 
+#  pass: 
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
