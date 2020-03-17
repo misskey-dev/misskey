@@ -126,9 +126,8 @@ export default class MiOS extends EventEmitter {
 			let i = localStorage.getItem('i');
 
 			// 連携ログインの場合用にCookieを参照する
-			// Cookieを先に評価すると上位ドメインからiが流れてきた場合に無限ループになる
 			if (i == null || i === 'null') {
-				i = (document.cookie.match(/i=(\w+)/) || [null, null])[1];
+				i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
 			}
 
 			fetchme(i, me => {

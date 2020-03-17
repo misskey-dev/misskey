@@ -12,7 +12,7 @@ import { ILocalUser } from '../../../models/entities/user';
 import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.Context) {
-	return ((ctx.headers['cookie'] || '').match(/i=(\w+)/) || [null, null])[1];
+	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
 }
 
 function compareOrigin(ctx: Koa.Context) {
@@ -102,13 +102,10 @@ router.get('/signin/twitter', async ctx => {
 
 	redis.set(sessid, JSON.stringify(twCtx));
 
-	const expires = 1000 * 60 * 60; // 1h
 	ctx.cookies.set('signin_with_twitter_sid', sessid, {
 		path: '/',
 		secure: config.url.startsWith('https'),
-		httpOnly: true,
-		expires: new Date(Date.now() + expires),
-		maxAge: expires
+		httpOnly: true
 	});
 
 	ctx.redirect(twCtx.url);
