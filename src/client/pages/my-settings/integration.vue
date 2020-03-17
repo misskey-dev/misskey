@@ -71,6 +71,7 @@ export default Vue.extend({
 
 	mounted() {
 		document.cookie = `igi=${this.$store.state.i.token}; path=/;` +
+			` max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');
 
 		this.$watch('integrations', () => {
