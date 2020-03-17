@@ -101,6 +101,8 @@ export default (os: MiOS) => new Vuex.Store({
 			ctx.commit('settings/init', {});
 			ctx.commit('deviceUser/init', {});
 			localStorage.removeItem('i');
+			document.cookie = `i=; path=/`;
+			document.cookie = `i=; domain=${document.location.hostname}; path=/`;	// バグで誤発行したCookieもクリアする
 		},
 
 		async switchAccount(ctx, i) {

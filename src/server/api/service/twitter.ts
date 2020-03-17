@@ -103,9 +103,8 @@ router.get('/signin/twitter', async ctx => {
 	redis.set(sessid, JSON.stringify(twCtx));
 
 	const expires = 1000 * 60 * 60; // 1h
-	ctx.cookies.set('signin_with_twitter_session_id', sessid, {
+	ctx.cookies.set('signin_with_twitter_sid', sessid, {
 		path: '/',
-		domain: config.host,
 		secure: config.url.startsWith('https'),
 		httpOnly: true,
 		expires: new Date(Date.now() + expires),
@@ -121,7 +120,7 @@ router.get('/tw/cb', async ctx => {
 	const twAuth = await getTwAuth();
 
 	if (userToken == null) {
-		const sessid = ctx.cookies.get('signin_with_twitter_session_id');
+		const sessid = ctx.cookies.get('signin_with_twitter_sid');
 
 		if (sessid == null) {
 			ctx.throw(400, 'invalid session');
@@ -139,7 +138,7 @@ router.get('/tw/cb', async ctx => {
 		const result = await twAuth!.done(JSON.parse(twCtx), ctx.query.oauth_verifier);
 
 		const link = await UserProfiles.createQueryBuilder()
-			.where('"integrations"->"twitter"->"userId" = :id', { id: result.userId })
+			.where(`"integrations"->'twitter'->>'userId' = :id`, { id: result.userId })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 

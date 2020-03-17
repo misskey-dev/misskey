@@ -114,9 +114,8 @@ router.get('/signin/discord', async ctx => {
 	};
 
 	const expires = 1000 * 60 * 60; // 1h
-	ctx.cookies.set('signin_with_discord_session_id', sessid, {
+	ctx.cookies.set('signin_with_discord_sid', sessid, {
 		path: '/',
-		domain: config.host,
 		secure: config.url.startsWith('https'),
 		httpOnly: true,
 		expires: new Date(Date.now() + expires),
@@ -135,7 +134,7 @@ router.get('/dc/cb', async ctx => {
 	const oauth2 = await getOAuth2();
 
 	if (!userToken) {
-		const sessid = ctx.cookies.get('signin_with_discord_session_id');
+		const sessid = ctx.cookies.get('signin_with_discord_sid');
 
 		if (!sessid) {
 			ctx.throw(400, 'invalid session');
@@ -199,7 +198,7 @@ router.get('/dc/cb', async ctx => {
 		}
 
 		const profile = await UserProfiles.createQueryBuilder()
-			.where('"integrations"->"discord"->"id" = :id', { id: id })
+			.where(`"integrations"->'discord'->>'id' = :id`, { id: id })
 			.andWhere('"userHost" IS NULL')
 			.getOne();
 
