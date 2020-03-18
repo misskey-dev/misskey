@@ -208,6 +208,7 @@ router.get('/dc/cb', async ctx => {
 			integrations: {
 				...profile.integrations,
 				discord: {
+					id: id,
 					accessToken: accessToken,
 					refreshToken: refreshToken,
 					expiresDate: expiresDate,
