@@ -1,7 +1,12 @@
 <template>
 <div class="mk-note-page">
 	<portal to="avatar" v-if="note"><mk-avatar class="avatar" :user="note.user" :disable-preview="true"/></portal>
-	<portal to="title" v-if="note">{{ $t('noteOf', { user: note.user.name }) }}</portal>
+	<portal to="title" v-if="note">
+		<mfm 
+			:text="$t('noteOf', { user: note.user.name || note.user.username })"
+			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
+		/>
+	</portal>
 
 	<transition :name="$store.state.device.animation ? 'zoom' : ''" mode="out-in">
 		<div v-if="note">
