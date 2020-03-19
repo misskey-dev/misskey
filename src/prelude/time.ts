@@ -5,7 +5,7 @@ const dateTimeIntervals = {
 };
 
 export function dateUTC(time: number[]): Date {
-	return new Date(Date.UTC(...time));
+	return new Date(Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5], time[6]));
 }
 
 export function isTimeSame(a: Date, b: Date): boolean {
