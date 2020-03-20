@@ -750,14 +750,6 @@ export default Vue.extend({
 		opacity: 1;
 	}
 
-	> *:first-child {
-		border-radius: var(--radius) var(--radius) 0 0;
-	}
-
-	> *:last-child {
-		border-radius: 0 0 var(--radius) var(--radius);
-	}
-
 	> .info {
 		display: flex;
 		align-items: center;
@@ -783,6 +775,11 @@ export default Vue.extend({
 
 	> .info + .article {
 		padding-top: 8px;
+	}
+
+	> .reply-to {
+		opacity: 0.7;
+		padding-bottom: 0;
 	}
 
 	> .renote {
