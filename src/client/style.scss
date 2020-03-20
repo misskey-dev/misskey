@@ -279,17 +279,17 @@ hr {
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
-	box-shadow: 0 0 0 1px var(--shadow);
+	box-shadow: 0 0 0 1px var(--divider);
 }
 
 main ._panel {
 	border-radius: 0;
-	box-shadow: 0 1px 0 0 var(--shadow), 0 -1px 0 0 var(--shadow);
+	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
 }
 
 ._panel ._panel {
 	border-radius: 0;
-	box-shadow: 0 1px 0 0 var(--shadow), 0 -1px 0 0 var(--shadow);
+	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
 }
 
 ._card {

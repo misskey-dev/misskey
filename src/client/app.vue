@@ -975,7 +975,7 @@ export default Vue.extend({
 		> main {
 			width: $main-width;
 			min-width: $main-width;
-			box-shadow: 1px 0 0 0 var(--shadow), -1px 0 0 0 var(--shadow);
+			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
 			@media (max-width: $side-hide-threshold) {
 				min-width: 0;
