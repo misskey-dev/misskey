@@ -80,9 +80,9 @@
 	</div>
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
-		<sequential-entrance class="pins">
-			<x-note v-for="(note, i) in user.pinnedNotes" class="note" :note="note" :key="note.id" :detail="true" :pinned="true"/>
-		</sequential-entrance>
+		<div class="pins">
+			<x-note v-for="note in user.pinnedNotes" class="note" :note="note" :key="note.id" :detail="true" :pinned="true"/>
+		</div>
 		<mk-container :body-togglable="true" class="content">
 			<template #header><fa :icon="faImage"/>{{ $t('images') }}</template>
 			<div>

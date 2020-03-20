@@ -6,15 +6,15 @@
 			<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
 		</div>
 
-		<sequential-entrance class="users">
-			<router-link v-for="(item, i) in items" class="user" :key="item.id" :to="extract ? extract(item) : item | userPage">
+		<div class="users">
+			<router-link v-for="item in items" class="user" :key="item.id" :to="extract ? extract(item) : item | userPage">
 				<mk-avatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
 				<div class="body">
 					<mk-user-name :user="extract ? extract(item) : item" class="name"/>
 					<mk-acct :user="extract ? extract(item) : item" class="acct"/>
 				</div>
 			</router-link>
-		</sequential-entrance>
+		</div>
 
 		<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
