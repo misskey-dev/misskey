@@ -51,11 +51,7 @@
 					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 				</router-link>
 				<template v-if="$store.getters.isSignedIn">
-					<button class="item _button notifications" @click="notificationsOpen = !notificationsOpen" ref="notificationButton" v-if="$store.state.device.useNotificationsPopup">
-						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
-					</button>
-					<router-link class="item notifications" active-class="active" to="/my/notifications" ref="notificationButton" v-else>
+					<router-link class="item notifications" active-class="active" to="/my/notifications" ref="notificationButton">
 						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
 						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
 					</router-link>
@@ -149,16 +145,11 @@
 		<button class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadSpecifiedNotes || $store.state.i.hasPendingReceivedFollowRequest || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement)"><fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
-		<button v-if="$store.getters.isSignedIn && $store.state.device.useNotificationsPopup" class="button notifications _button" @click="notificationsOpen = !notificationsOpen" ref="notificationButton2"><fa :icon="notificationsOpen ? faTimes : faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
-		<button v-if="$store.getters.isSignedIn && !$store.state.device.useNotificationsPopup" class="button notifications _button" @click="$router.push('/my/notifications')" ref="notificationButton2"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')" ref="notificationButton2"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
 
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
-
-	<transition name="zoom-in-top">
-		<x-notifications v-if="notificationsOpen" class="notifications" ref="notifications"/>
-	</transition>
 
 	<stream-indicator v-if="$store.getters.isSignedIn"/>
 </div>
@@ -173,7 +164,6 @@ import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
-import contains from './scripts/contains';
 import MkToast from './components/toast.vue';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -183,7 +173,6 @@ export default Vue.extend({
 
 	components: {
 		XClock: () => import('./components/header-clock.vue').then(m => m.default),
-		XNotifications: () => import('./components/notifications.vue').then(m => m.default),
 		MkButton: () => import('./components/ui/button.vue').then(m => m.default),
 		XDraggable: () => import('vuedraggable'),
 	},
@@ -194,7 +183,6 @@ export default Vue.extend({
 			pageKey: 0,
 			showNav: false,
 			searching: false,
-			notificationsOpen: false,
 			accounts: [],
 			lists: [],
 			connection: null,
@@ -226,21 +214,8 @@ export default Vue.extend({
 	watch:{
 		$route(to, from) {
 			this.pageKey++;
-			this.notificationsOpen = false;
 			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
-		},
-
-		notificationsOpen(open) {
-			if (open) {
-				for (const el of Array.from(document.querySelectorAll('*'))) {
-					el.addEventListener('mousedown', this.onMousedown);
-				}
-			} else {
-				for (const el of Array.from(document.querySelectorAll('*'))) {
-					el.removeEventListener('mousedown', this.onMousedown);
-				}
-			}
 		},
 
 		isDesktop() {
@@ -566,15 +541,6 @@ export default Vue.extend({
 			}
 
 			this.$root.sound('notification');
-		},
-
-		onMousedown(e) {
-			e.preventDefault();
-			if (!contains(this.$refs.notifications.$el, e.target) &&
-				!contains(this.$refs.notificationButton, e.target) &&
-				!contains(this.$refs.notificationButton2, e.target)
-				) this.notificationsOpen = false;
-			return false;
 		},
 
 		widgetFunc(id) {
@@ -976,18 +942,20 @@ export default Vue.extend({
 			width: $main-width;
 			min-width: $main-width;
 			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
-			background: var(--mainBg);
 
 			@media (max-width: $side-hide-threshold) {
 				min-width: 0;
 			}
 
 			> .content {
-				padding: 16px 0;
-				box-sizing: border-box;
+				> * {
+					&:not(.full) {
+						padding: var(--margin) 0;
+					}
 
-				@media (max-width: 500px) {
-					padding: 8px 0;
+					&:not(.naked) {
+						background: var(--pageBg);
+					}
 				}
 			}
 
@@ -1176,35 +1144,6 @@ export default Vue.extend({
 					animation: blink 1s infinite;
 				}
 			}
-		}
-	}
-
-	> .notifications {
-		position: fixed;
-		top: 32px;
-		left: 0;
-		right: 0;
-		margin: 0 auto;
-		padding: 8px 8px 0 8px;
-		z-index: 10001;
-		width: 350px;
-		height: 400px;
-		box-sizing: border-box;
-		background: var(--vocsgcxy);
-		-webkit-backdrop-filter: blur(12px);
-		backdrop-filter: blur(12px);
-		border-radius: 6px;
-		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
-		overflow: auto;
-
-		@media (max-width: 800px) {
-			width: 320px;
-			height: 350px;
-		}
-
-		@media (max-width: 500px) {
-			width: 290px;
-			height: 310px;
 		}
 	}
 }

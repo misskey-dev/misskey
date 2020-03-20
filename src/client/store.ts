@@ -40,7 +40,6 @@ const defaultDeviceSettings = {
 	animatedMfm: true,
 	imageNewTab: false,
 	showFixedPostForm: false,
-	useNotificationsPopup: true,
 	sfxVolume: 0.3,
 	sfxNote: 'syuilo/down',
 	sfxNoteMy: 'syuilo/up',
