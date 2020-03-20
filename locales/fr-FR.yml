@@ -484,6 +484,8 @@ _tutorial:
   step5_1: "Ensuite, abonnons-nous d'autres personnes et rendre la fil d'actualité en savoir plus vivante."
   step5_2: "{featured} affiche les notes en tendance sur cette instance. {explore} vous permet de trouver les utilisateur·rice·s en tendance. Essayez de vous abonner aux gens que vous aimez !"
   step5_3: "Pour abonne un utilisateur, cliquez sur l'icône de l'utilisateur pour afficher la page de l'utilisateur et appuyez sur le bouton \"Abonnement\"."
+  step5_4: "Selon l'utilisateur, il peut s'écouler un certain temps avant que la abonner ne soit approuvé."
+  step6_1: "Si vous voyez la notes d'un autre utilisateur sur fil d'actualité, c'était réussi."
   step7_3: "Alors, profitez de Misskey 🚀"
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
