@@ -279,6 +279,7 @@ hr {
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
+	box-shadow: 0 0 0 1px var(--shadow);
 }
 
 main ._panel {

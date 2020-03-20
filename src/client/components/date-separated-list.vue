@@ -1,5 +1,5 @@
 <template>
-<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv" name="list" tag="div" appear :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
+<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
 	<template v-for="(item, i) in items">
 		<slot :item="item" :i="i"></slot>
 		<div class="separator" :key="item.id + '_date'" v-if="showDate(i, item)">
@@ -74,6 +74,10 @@ export default Vue.extend({
 .sqadhkmv {
 	> .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+	}
+
+	> .list-enter-active {
+		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
 	&[data-direction="up"] {
