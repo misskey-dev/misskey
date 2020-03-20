@@ -4,30 +4,12 @@
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 	
 	<div class="remote-caution _panel" v-if="user.host != null"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('showOnRemote') }}</a></div>
-	<transition :name="$store.state.device.animation ? 'zoom' : ''" mode="out-in" appear>
-		<div class="profile _panel" :key="user.id">
-			<div class="banner-container" :style="style">
-				<div class="banner" ref="banner" :style="style"></div>
-				<div class="fade"></div>
-				<div class="title">
-					<mk-user-name class="name" :user="user" :nowrap="true"/>
-					<div class="bottom">
-						<span class="username"><mk-acct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
-						<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
-						<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
-					</div>
-				</div>
-				<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
-				<div class="actions" v-if="$store.getters.isSignedIn">
-					<button @click="menu" class="menu _button" ref="menu"><fa :icon="faEllipsisH"/></button>
-					<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
-				</div>
-			</div>
-			<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+	<div class="profile _panel" :key="user.id">
+		<div class="banner-container" :style="style">
+			<div class="banner" ref="banner" :style="style"></div>
+			<div class="fade"></div>
 			<div class="title">
-				<mk-user-name :user="user" :nowrap="false" class="name"/>
+				<mk-user-name class="name" :user="user" :nowrap="true"/>
 				<div class="bottom">
 					<span class="username"><mk-acct :user="user" :detail="true" /></span>
 					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
@@ -36,50 +18,66 @@
 					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 				</div>
 			</div>
-			<div class="description">
-				<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-				<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
-			</div>
-			<div class="fields system">
-				<dl class="field" v-if="user.location">
-					<dt class="name"><fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
-					<dd class="value">{{ user.location }}</dd>
-				</dl>
-				<dl class="field" v-if="user.birthday">
-					<dt class="name"><fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
-					<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
-				</dl>
-				<dl class="field">
-					<dt class="name"><fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
-					<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<mk-time :time="user.createdAt"/>)</dd>
-				</dl>
-			</div>
-			<div class="fields" v-if="user.fields.length > 0">
-				<dl class="field" v-for="(field, i) in user.fields" :key="i">
-					<dt class="name">
-						<mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
-					</dt>
-					<dd class="value">
-						<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
-					</dd>
-				</dl>
-			</div>
-			<div class="status" v-if="user.host === null">
-				<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
-					<b>{{ user.notesCount | number }}</b>
-					<span>{{ $t('notes') }}</span>
-				</router-link>
-				<router-link :to="user | userPage('following')" :class="{ active: $route.name === 'userFollowing' }">
-					<b>{{ user.followingCount | number }}</b>
-					<span>{{ $t('following') }}</span>
-				</router-link>
-				<router-link :to="user | userPage('followers')" :class="{ active: $route.name === 'userFollowers' }">
-					<b>{{ user.followersCount | number }}</b>
-					<span>{{ $t('followers') }}</span>
-				</router-link>
+			<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
+			<div class="actions" v-if="$store.getters.isSignedIn">
+				<button @click="menu" class="menu _button" ref="menu"><fa :icon="faEllipsisH"/></button>
+				<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 			</div>
 		</div>
-	</transition>
+		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+		<div class="title">
+			<mk-user-name :user="user" :nowrap="false" class="name"/>
+			<div class="bottom">
+				<span class="username"><mk-acct :user="user" :detail="true" /></span>
+				<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
+				<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
+				<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
+				<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
+			</div>
+		</div>
+		<div class="description">
+			<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+			<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
+		</div>
+		<div class="fields system">
+			<dl class="field" v-if="user.location">
+				<dt class="name"><fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
+				<dd class="value">{{ user.location }}</dd>
+			</dl>
+			<dl class="field" v-if="user.birthday">
+				<dt class="name"><fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
+				<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+			</dl>
+			<dl class="field">
+				<dt class="name"><fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
+				<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<mk-time :time="user.createdAt"/>)</dd>
+			</dl>
+		</div>
+		<div class="fields" v-if="user.fields.length > 0">
+			<dl class="field" v-for="(field, i) in user.fields" :key="i">
+				<dt class="name">
+					<mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+				</dt>
+				<dd class="value">
+					<mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
+				</dd>
+			</dl>
+		</div>
+		<div class="status" v-if="user.host === null">
+			<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
+				<b>{{ user.notesCount | number }}</b>
+				<span>{{ $t('notes') }}</span>
+			</router-link>
+			<router-link :to="user | userPage('following')" :class="{ active: $route.name === 'userFollowing' }">
+				<b>{{ user.followingCount | number }}</b>
+				<span>{{ $t('following') }}</span>
+			</router-link>
+			<router-link :to="user | userPage('followers')" :class="{ active: $route.name === 'userFollowers' }">
+				<b>{{ user.followersCount | number }}</b>
+				<span>{{ $t('followers') }}</span>
+			</router-link>
+		</div>
+	</div>
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
 		<sequential-entrance class="pins">
