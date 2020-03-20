@@ -231,7 +231,7 @@ export default Vue.extend({
 		display: block;
 		font-size: 14px;
 		box-shadow: 0 0 0 1px var(--divider);
-		border-radius: 4px;
+		border-radius: 6px;
 		overflow: hidden;
 
 		&:hover {

@@ -33,19 +33,19 @@ export default Vue.extend({
 			default: false
 		},
 		min: {
-			type: String,
+			type: Number,
 			required: false,
-			default: "0"
+			default: 0
 		},
 		max: {
-			type: String,
+			type: Number,
 			required: false,
-			default: "100"
+			default: 100
 		},
 		step: {
-			type: String,
+			type: Number,
 			required: false,
-			default: "1"
+			default: 1
 		},
 		autofocus: {
 			type: Boolean,
