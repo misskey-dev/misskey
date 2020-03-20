@@ -111,7 +111,8 @@ export default Vue.extend({
 	&.max-width_500px {
 		> .notes {
 			> ::v-deep *:not(:last-child) {
-				margin-bottom: var(--marginHalf);
+				//margin-bottom: var(--marginHalf);
+				margin-bottom: 0;
 			}
 		}
 	}

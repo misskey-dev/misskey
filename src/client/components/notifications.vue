@@ -1,8 +1,8 @@
 <template>
-<div class="mk-notifications" :class="{ page }">
+<div class="mk-notifications">
 	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
 		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" :key="notification.id"/>
-		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="notification" :class="{ _panel: page }" :key="notification.id"/>
+		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
 	<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
@@ -43,11 +43,6 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
-		page: {
-			type: Boolean,
-			required: false,
-			default: false
-		}
 	},
 
 	data() {
@@ -94,25 +89,10 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-notifications {
-	&.page {
-		> .notifications {
-			> ::v-deep * {
-				margin-bottom: var(--margin);
-			}
-		}
-	}
-
-	&:not(.page) {
-		> .notifications {
-			> ::v-deep * {
-				margin-bottom: 8px;
-			}
-
-			> .notification {
-				background: var(--panel);
-				border-radius: 6px;
-				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-			}
+	> .notifications {
+		> ::v-deep * {
+			//margin-bottom: var(--margin);
+			margin-bottom: 0;
 		}
 	}
 

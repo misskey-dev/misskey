@@ -110,6 +110,7 @@ export default Vue.extend({
 	> header {
 		position: relative;
 		box-shadow: 0 1px 0 0 var(--divider);
+		z-index: 1;
 
 		> .title {
 			margin: 0;

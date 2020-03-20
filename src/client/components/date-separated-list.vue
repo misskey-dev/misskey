@@ -76,10 +76,6 @@ export default Vue.extend({
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
-	> .list-enter-active {
-		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-	}
-
 	&[data-direction="up"] {
 		> .list-enter {
 			opacity: 0;
@@ -109,8 +105,6 @@ export default Vue.extend({
 			line-height: 32px;
 			text-align: center;
 			font-size: 12px;
-			border-radius: 64px;
-			background: var(--dateLabelBg);
 			color: var(--dateLabelFg);
 
 			> span {

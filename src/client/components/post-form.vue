@@ -586,7 +586,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .gafaadew {
 	background: var(--panel);
-	border-radius: var(--radius);
 
 	> header {
 		z-index: 1000;

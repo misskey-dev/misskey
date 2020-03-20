@@ -287,7 +287,6 @@ export default Vue.extend({
 
 			> .balloon {
 				background: $me-balloon-color;
-				box-shadow: 0 6px 16px var(--accentShadow);
 				text-align: left;
 
 				&[data-no-text] {

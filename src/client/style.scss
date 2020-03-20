@@ -230,7 +230,6 @@ hr {
 	@extend ._button;
 	color: #fff;
 	background: var(--accent);
-	box-shadow: 0 6px 16px var(--accentShadow);
 
 	&:not(:disabled):hover {
 		background: var(--jkhztclx);
@@ -276,23 +275,20 @@ hr {
 	}
 }
 
-._shadow {
-	box-shadow: 0 8px 32px var(--shadow);
-
-	@media (max-width: 700px) {
-		box-shadow: 0 4px 16px var(--shadow);
-	}
-
-	@media (max-width: 500px) {
-		box-shadow: 0 2px 8px var(--shadow);
-	}
-}
-
 ._panel {
-	@extend ._shadow;
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
+}
+
+main ._panel {
+	border-radius: 0;
+	box-shadow: 0 1px 0 0 var(--shadow), 0 -1px 0 0 var(--shadow);
+}
+
+._panel ._panel {
+	border-radius: 0;
+	box-shadow: 0 1px 0 0 var(--shadow), 0 -1px 0 0 var(--shadow);
 }
 
 ._card {

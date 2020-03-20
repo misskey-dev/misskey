@@ -975,17 +975,18 @@ export default Vue.extend({
 		> main {
 			width: $main-width;
 			min-width: $main-width;
+			box-shadow: 1px 0 0 0 var(--shadow), -1px 0 0 0 var(--shadow);
 
 			@media (max-width: $side-hide-threshold) {
 				min-width: 0;
 			}
 
 			> .content {
-				padding: 16px;
+				padding: 16px 0;
 				box-sizing: border-box;
 
 				@media (max-width: 500px) {
-					padding: 8px;
+					padding: 8px 0;
 				}
 			}
 
@@ -1023,6 +1024,7 @@ export default Vue.extend({
 
 		> .widgets {
 			box-sizing: border-box;
+			margin-left: var(--margin);
 
 			@media (max-width: $side-hide-threshold) {
 				display: none;
