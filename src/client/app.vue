@@ -652,7 +652,7 @@ export default Vue.extend({
 	$header-height: 60px;
 	$nav-width: 250px;
 	$nav-icon-only-width: 74px;
-	$main-width: 700px;
+	$main-width: 650px;
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1300px;
 	$nav-hide-threshold: 700px;
@@ -976,6 +976,7 @@ export default Vue.extend({
 			width: $main-width;
 			min-width: $main-width;
 			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
+			background: var(--mainBg);
 
 			@media (max-width: $side-hide-threshold) {
 				min-width: 0;
