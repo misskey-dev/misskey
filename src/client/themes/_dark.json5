@@ -51,6 +51,7 @@
 		driveFolderBg: ':alpha<0.3<@accent',
 		wallpaperOverlay: 'rgba(0, 0, 0, 0.5)',
 		badge: '#31b1ce',
+		messageBg: ':lighten<5<@bg',
 		bonzsgfz: ':alpha<0<@bg',
 		pcncwizz: ':darken<2<@panel',
 		yrnqrguo: 'rgba(255, 255, 255, 0.05)',

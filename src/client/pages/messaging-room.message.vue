@@ -250,7 +250,7 @@ export default Vue.extend({
 			padding-right: 32px;
 
 			> .balloon {
-				$color: var(--panel);
+				$color: var(--messageBg);
 				background: $color;
 
 				&[data-no-text] {
