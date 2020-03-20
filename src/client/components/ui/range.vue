@@ -1,22 +1,23 @@
 <template>
-	<div class="range-root" :class="{ focused, disabled }">
-		<div class="icon"><slot name="icon"></slot></div>
-		<span class="title"><slot name="title"></slot></span>
-		<input
-			type="range"
-			ref="input"
-			v-model="v"
-			:disabled="disabled"
-			:min="min"
-			:max="max"
-			:step="step"
-			:autofocus="autofocus"
-			@focus="focused = true"
-			@blur="focused = false"
-			@input="$emit('input', $event.target.value)"
-		/>
-	</div>
+<div class="timctyfi" :class="{ focused, disabled }">
+	<div class="icon"><slot name="icon"></slot></div>
+	<span class="title"><slot name="title"></slot></span>
+	<input
+		type="range"
+		ref="input"
+		v-model="v"
+		:disabled="disabled"
+		:min="min"
+		:max="max"
+		:step="step"
+		:autofocus="autofocus"
+		@focus="focused = true"
+		@blur="focused = false"
+		@input="$emit('input', $event.target.value)"
+	/>
+</div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({
@@ -71,8 +72,9 @@ export default Vue.extend({
 	}
 });
 </script>
+
 <style lang="scss" scoped>
-.range-root {
+.timctyfi {
 	position: relative;
 	margin: 8px;
 
