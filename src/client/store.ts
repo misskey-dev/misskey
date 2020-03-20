@@ -101,6 +101,7 @@ export default (os: MiOS) => new Vuex.Store({
 			ctx.commit('settings/init', {});
 			ctx.commit('deviceUser/init', {});
 			localStorage.removeItem('i');
+			document.cookie = `igi=; path=/`;
 		},
 
 		async switchAccount(ctx, i) {
