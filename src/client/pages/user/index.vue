@@ -105,7 +105,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH, faRobot, faLock, faBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
@@ -139,7 +139,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faExclamationTriangle, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
+			faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
 		};
 	},
 
