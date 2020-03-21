@@ -15,7 +15,7 @@
 
 		<div class="emojis">
 			<template v-if="categories[0].isActive">
-				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsedEmojis') }}</header>
+				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('_emojis.recentUsed') }}</header>
 				<div class="list">
 					<button v-for="(emoji, i) in ($store.state.device.recentEmojis || [])"
 						class="_button"
@@ -92,47 +92,47 @@ export default Vue.extend({
 			customEmojis: {},
 			faGlobe, faHistory,
 			categories: [{
-				text: this.$t('customEmoji'),
+				text: this.$t('_emojis.customEmoji'),
 				icon: faAsterisk,
 				isActive: true
 			}, {
 				name: 'people',
-				text: this.$t('people'),
+				text: this.$t('_emojis.people'),
 				icon: faLaugh,
 				isActive: false
 			}, {
 				name: 'animals_and_nature',
-				text: this.$t('animals-and-nature'),
+				text: this.$t('_emojis.animalsAndNature'),
 				icon: faLeaf,
 				isActive: false
 			}, {
 				name: 'food_and_drink',
-				text: this.$t('food-and-drink'),
+				text: this.$t('_emojis.foodAndDrink'),
 				icon: faUtensils,
 				isActive: false
 			}, {
 				name: 'activity',
-				text: this.$t('activity'),
+				text: this.$t('_emojis.activity'),
 				icon: faFutbol,
 				isActive: false
 			}, {
 				name: 'travel_and_places',
-				text: this.$t('travel-and-places'),
+				text: this.$t('_emojis.travelAndPlaces'),
 				icon: faCity,
 				isActive: false
 			}, {
 				name: 'objects',
-				text: this.$t('objects'),
+				text: this.$t('_emojis.objects'),
 				icon: faDice,
 				isActive: false
 			}, {
 				name: 'symbols',
-				text: this.$t('symbols'),
+				text: this.$t('_emojis.symbols'),
 				icon: faHeart,
 				isActive: false
 			}, {
 				name: 'flags',
-				text: this.$t('flags'),
+				text: this.$t('_emojis.flags'),
 				icon: faFlag,
 				isActive: false
 			}]

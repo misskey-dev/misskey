@@ -137,14 +137,14 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							this.$root.dialog({
-								title: this.$t('unable-to-process'),
-								text: this.$t('circular-reference-detected')
+								title: this.$t('unableToProcess'),
+								text: this.$t('circularReferenceFolder')
 							});
 							break;
 						default:
 							this.$root.dialog({
 								type: 'error',
-								text: this.$t('unhandled-error')
+								text: this.$t('error')
 							});
 					}
 				});
@@ -206,14 +206,14 @@ export default Vue.extend({
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 						this.$root.dialog({
 							type: 'error',
-							title: this.$t('unable-to-delete'),
-							text: this.$t('has-child-files-or-folders')
+							title: this.$t('unableToDelete'),
+							text: this.$t('hasChildFilesOrFolders')
 						});
 						break;
 					default:
 						this.$root.dialog({
 							type: 'error',
-							text: this.$t('unable-to-delete')
+							text: this.$t('unableToDelete')
 						});
 				}
 			});

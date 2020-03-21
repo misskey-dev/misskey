@@ -145,7 +145,7 @@ export default Vue.extend({
 			if (groups1.length === 0 && groups2.length === 0) {
 				this.$root.dialog({
 					type: 'warning',
-					title: this.$t('noGroups'),
+					title: this.$t('youHaveNoGroups'),
 					text: this.$t('joinOrCreateGroup'),
 				});
 				return;

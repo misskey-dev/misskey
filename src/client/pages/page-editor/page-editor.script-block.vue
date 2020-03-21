@@ -212,7 +212,7 @@ export default Vue.extend({
 		async changeType() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: this.$t('select-type'),
+				title: this.$t('_pages.selectType'),
 				select: {
 					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 				},
