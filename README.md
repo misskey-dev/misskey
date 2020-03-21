@@ -89,6 +89,9 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 		<td><img src="https://avatars1.githubusercontent.com/u/30769358?s=460&v=4" alt="mei23" width="100"></td>
 		<td><img src="https://avatars2.githubusercontent.com/u/20679825?s=460&v=4" alt="acid-chicken" width="100"></td>
 		<td><img src="https://avatars2.githubusercontent.com/u/6533808?s=460&v=4" alt="rinsuki" width="100"></td>
+		<td><img src="https://avatars0.githubusercontent.com/u/7973572?s=460&v=4" alt="tamaina" width="100"></td>
+		<td><img src="https://avatars1.githubusercontent.com/u/7106976?s=460&v=4" alt="Xeltica" width="100"></td>
+		<td><img src="https://avatars1.githubusercontent.com/u/17376330?s=460&v=4" alt="u1-liquid" width="100"></td>
 	</tr>
 	<tr>
 		<td align="center"><a href="https://github.com/syuilo">@syuilo</a></td>
@@ -96,6 +99,9 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 		<td align="center"><a href="https://github.com/mei23">@mei23</a></td>
 		<td align="center"><a href="https://github.com/acid-chicken">@acid-chicken</a></td>
 		<td align="center"><a href="https://github.com/rinsuki">@rinsuki</a></td>
+		<td align="center"><a href="https://github.com/tamaina">@tamaina</a></td>
+		<td align="center"><a href="https://github.com/Xeltica">@Xeltica</a></td>
+		<td align="center"><a href="https://github.com/u1-liquid">@u1-liquid</a></td>
 	</tr>
 </table>
 

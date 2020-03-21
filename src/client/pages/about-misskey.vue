@@ -14,6 +14,8 @@
 				<li><mk-link url="https://github.com/acid-chicken" class="at">@acid-chicken</mk-link></li>
 				<li><mk-link url="https://github.com/tamaina" class="at">@tamaina</mk-link></li>
 				<li><mk-link url="https://github.com/rinsuki" class="at">@rinsuki</mk-link></li>
+				<li><mk-link url="https://github.com/Xeltica" class="at">@Xeltica</mk-link></li>
+				<li><mk-link url="https://github.com/u1-liquid" class="at">@u1-liquid</mk-link></li>
 			</ul>
 			<div style="margin-top: 1em;">📦 {{ $t('misskeySource') }}</div>
 			<mk-url url="https://github.com/syuilo/misskey"/>
