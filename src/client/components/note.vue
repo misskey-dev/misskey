@@ -86,7 +86,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
 import i18n from '../i18n';
@@ -142,7 +142,7 @@ export default Vue.extend({
 			replies: [],
 			showContent: false,
 			hideThisNote: false,
-			faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
 		};
 	},
 
@@ -460,6 +460,22 @@ export default Vue.extend({
 			});
 		},
 
+		delEdit() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('deleteAndEditConfirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.appearNote.id
+				});
+
+				this.$root.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
+			});
+		},
+
 		toggleFavorite(favorite: boolean) {
 			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.appearNote.id
@@ -547,6 +563,11 @@ export default Vue.extend({
 				),
 				...(this.appearNote.userId == this.$store.state.i.id ? [
 					null,
+					{
+						icon: faEdit,
+						text: this.$t('deleteAndEdit'),
+						action: this.delEdit
+					},
 					{
 						icon: faTrashAlt,
 						text: this.$t('delete'),
