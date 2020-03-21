@@ -472,7 +472,7 @@ export default Vue.extend({
 					noteId: this.appearNote.id
 				});
 
-				this.$root.post({ initialNote: this.appearNote });
+				this.$root.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
 			});
 		},
 
