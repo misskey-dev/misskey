@@ -486,6 +486,10 @@ _tutorial:
   step5_3: "Pour abonne un utilisateur, cliquez sur l'icône de l'utilisateur pour afficher la page de l'utilisateur et appuyez sur le bouton \"Abonnement\"."
   step5_4: "Selon l'utilisateur, il peut s'écouler un certain temps avant que la abonner ne soit approuvé."
   step6_1: "Si vous voyez la notes d'un autre utilisateur sur fil d'actualité, c'était réussi."
+  step6_2: "Vous pouvez ajouter des \"réactions\" aux notes des autres afin de pouvoir facilement dire votre émotion."
+  step6_3: "Pour ajouter une réaction, cliquez sur la marque \"+\" sur la note et sélectionnez la réaction souhaitée."
+  step7_1: "Tu as bien travaillé ! Ceci conclut l'explication de l'utilisation de base de Misskey."
+  step7_2: "Pour plus d'informations sur Misskey, voir {help}."
   step7_3: "Alors, profitez de Misskey 🚀"
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
