@@ -5,6 +5,7 @@ const dateTimeIntervals = {
 };
 
 export function dateUTC(time: number[]): Date {
+	//@ts-ignore
 	return new Date(Date.UTC(...time));
 }
 
