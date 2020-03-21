@@ -5,9 +5,9 @@
 		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
-	<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+	<button class="_panel _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-		<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
+		<template v-if="moreFetching"><mk-loading inline/></template>
 	</button>
 
 	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
@@ -55,7 +54,6 @@ export default Vue.extend({
 					includeTypes: this.type ? [this.type] : undefined
 				})
 			},
-			faSpinner
 		};
 	},
 
@@ -93,16 +91,6 @@ export default Vue.extend({
 		> ::v-deep * {
 			//margin-bottom: var(--margin);
 			margin-bottom: 0;
-		}
-	}
-
-	> .more {
-		display: block;
-		width: 100%;
-		padding: 16px;
-
-		> [data-icon] {
-			margin-right: 4px;
 		}
 	}
 

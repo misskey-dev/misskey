@@ -79,7 +79,7 @@
 			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
-	<x-sub v-for="note in replies" :key="note.id" :note="note"/>
+	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply"/>
 </div>
 </template>
 
@@ -934,6 +934,10 @@ export default Vue.extend({
 				opacity: 0.7;
 			}
 		}
+	}
+
+	> .reply {
+		border-top: solid 1px var(--divider);
 	}
 }
 </style>

@@ -7,22 +7,22 @@
 
 	<mk-error v-if="error" @retry="init()"/>
 
-	<div class="more" v-if="more && reversed" style="margin-bottom: var(--margin);">
-		<div class="button _textButton" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
+	<div v-if="more && reversed" style="margin-bottom: var(--margin);">
+		<button class="_panel _button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><mk-loading inline/></template>
-		</div>
+		</button>
 	</div>
 
 	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
 		<x-note :note="note" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</x-list>
 
-	<div class="more" v-if="more && !reversed" style="margin-top: var(--margin);">
-		<div class="button _textButton" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
+	<div v-if="more && !reversed" style="margin-top: var(--margin);">
+		<button class="_panel _button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><mk-loading inline/></template>
-		</div>
+		</button>
 	</div>
 </div>
 </template>
@@ -115,13 +115,6 @@ export default Vue.extend({
 				margin-bottom: 0;
 			}
 		}
-	}
-
-	> .more > .button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 48px;
 	}
 }
 </style>

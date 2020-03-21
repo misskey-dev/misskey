@@ -292,6 +292,14 @@ main ._panel {
 	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
 }
 
+._panel._button {
+	display: flex;
+	width: 100%;
+	min-height: 48px;
+	align-items: center;
+	justify-content: center;
+}
+
 ._card {
 	@extend ._panel;
 
