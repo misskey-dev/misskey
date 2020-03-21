@@ -26,6 +26,11 @@ export const meta = {
 			}
 		},
 
+		offset: {
+			validator: $.optional.nullable.num,
+			default: null,
+		},
+
 		tag: {
 			validator: $.str,
 			desc: {
@@ -38,5 +43,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await hashtagChart.getChart(ps.span as any, ps.limit!, ps.tag);
+	return await hashtagChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, ps.tag);
 });

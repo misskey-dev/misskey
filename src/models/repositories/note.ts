@@ -1,12 +1,13 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
-import { nyaize } from '../../misc/nyaize';
 import { Emojis, Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls } from '..';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions } from '../../misc/reaction-lib';
+import { toString } from '../../mfm/toString';
+import { parse } from '../../mfm/parse';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
@@ -217,7 +218,8 @@ export class NoteRepository extends Repository<Note> {
 		});
 
 		if (packed.user.isCat && packed.text) {
-			packed.text = nyaize(packed.text);
+			const tokens = packed.text ? parse(packed.text) : [];
+			packed.text = toString(tokens, { doNyaize: true });
 		}
 
 		if (!opts.skipHide) {

@@ -1,24 +1,28 @@
 <template>
 <div class="mk-note-page">
 	<portal to="avatar" v-if="note"><mk-avatar class="avatar" :user="note.user" :disable-preview="true"/></portal>
-	<portal to="title" v-if="note">{{ $t('noteOf', { user: note.user.name }) }}</portal>
+	<portal to="title" v-if="note">
+		<mfm 
+			:text="$t('noteOf', { user: note.user.name || note.user.username })"
+			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
+		/>
+	</portal>
 
-	<transition :name="$store.state.device.animation ? 'zoom' : ''" mode="out-in">
-		<div v-if="note">
-			<mk-button v-if="hasNext && !showNext" @click="showNext = true" primary style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></mk-button>
-			<x-notes v-if="showNext" ref="next" :pagination="next"/>
-			<hr v-if="showNext"/>
+	<div v-if="note">
+		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></button>
+		<x-notes v-if="showNext" ref="next" :pagination="next"/>
+		<hr v-if="showNext"/>
 
-			<x-note :note="note" :key="note.id" :detail="true"/>
-			<div v-if="error">
-				<mk-error @retry="fetch()"/>
-			</div>
-
-			<mk-button v-if="hasPrev && !showPrev" @click="showPrev = true" primary style="margin: var(--margin) auto 0 auto;"><fa :icon="faChevronDown"/></mk-button>
-			<hr v-if="showPrev"/>
-			<x-notes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
+		<mk-remote-caution v-if="note.user.host != null" :href="note.uri" style="margin-bottom: var(--margin)"/>
+		<x-note :note="note" :key="note.id" :detail="true"/>
+		<div v-if="error">
+			<mk-error @retry="fetch()"/>
 		</div>
-	</transition>
+
+		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><fa :icon="faChevronDown"/></button>
+		<hr v-if="showPrev"/>
+		<x-notes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
+	</div>
 </div>
 </template>
 
@@ -29,7 +33,7 @@ import i18n from '../i18n';
 import Progress from '../scripts/loading';
 import XNote from '../components/note.vue';
 import XNotes from '../components/notes.vue';
-import MkButton from '../components/ui/button.vue';
+import MkRemoteCaution from '../components/remote-caution.vue';
 
 export default Vue.extend({
 	i18n,
@@ -41,7 +45,7 @@ export default Vue.extend({
 	components: {
 		XNote,
 		XNotes,
-		MkButton,
+		MkRemoteCaution,
 	},
 	data() {
 		return {

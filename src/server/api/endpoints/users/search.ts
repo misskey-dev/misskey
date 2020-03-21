@@ -74,6 +74,7 @@ export default define(meta, async (ps, me) => {
 			.where('user.host IS NULL')
 			.andWhere('user.isSuspended = FALSE')
 			.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+			.orderBy('user.updatedAt', 'DESC')
 			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();
@@ -83,6 +84,7 @@ export default define(meta, async (ps, me) => {
 				.where('user.host IS NOT NULL')
 				.andWhere('user.isSuspended = FALSE')
 				.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+				.orderBy('user.updatedAt', 'DESC')
 				.take(ps.limit! - users.length)
 				.getMany();
 

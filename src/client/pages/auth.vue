@@ -26,7 +26,7 @@
 </div>
 <div class="signin" v-else>
 	<h1>{{ $t('sign-in') }}</h1>
-	<mk-signin/>
+	<mk-signin @login="onLogin"/>
 </div>
 </template>
 
@@ -85,6 +85,9 @@ export default Vue.extend({
 			if (this.session.app.callbackUrl) {
 				location.href = `${this.session.app.callbackUrl}?token=${this.session.token}`;
 			}
+		}, onLogin(res) {
+			localStorage.setItem('i', res.i);
+			location.reload();
 		}
 	}
 });

@@ -217,7 +217,8 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	const upload = s3.upload(params);
 
-	await upload.promise();
+	const result = await upload.promise();
+	if (result) logger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 }
 
 async function deleteOldFile(user: IRemoteUser) {

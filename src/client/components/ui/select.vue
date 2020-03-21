@@ -158,6 +158,11 @@ export default Vue.extend({
 			outline: none;
 			box-shadow: none;
 			color: var(--fg);
+
+			option,
+			optgroup {
+				background: var(--bg);
+			}
 		}
 
 		> .prefix,

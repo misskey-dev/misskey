@@ -1,5 +1,5 @@
 <template>
-<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv" name="list" tag="div" appear :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
+<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
 	<template v-for="(item, i) in items">
 		<slot :item="item" :i="i"></slot>
 		<div class="separator" :key="item.id + '_date'" v-if="showDate(i, item)">
@@ -109,8 +109,6 @@ export default Vue.extend({
 			line-height: 32px;
 			text-align: center;
 			font-size: 12px;
-			border-radius: 64px;
-			background: var(--dateLabelBg);
 			color: var(--dateLabelFg);
 
 			> span {

@@ -8,8 +8,10 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
-			{{ $t('volume') }}
-			<input type="range" v-model="sfxVolume" min="0" max="1" step="0.1"/>
+			<mk-range v-model="sfxVolume" min="0" max="1" step="0.1">
+				<fa slot="icon" :icon="volumeIcon"/>
+				<span slot="title">{{ $t('volume') }}</span>
+			</mk-range>
 		</div>
 		<div class="_content">
 			<mk-select v-model="sfxNote">
@@ -61,7 +63,6 @@
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
 			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
-			<mk-switch v-model="useNotificationsPopup">{{ $t('useNotificationsPopup') }}</mk-switch>
 		</div>
 		<div class="_content">
 			<mk-select v-model="lang">
@@ -85,12 +86,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faImage, faCog, faMusic, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkRadio from '../../components/ui/radio.vue';
+import MkRange from '../../components/ui/range.vue';
 import XTheme from './theme.vue';
 import i18n from '../../i18n';
 import { langs } from '../../config';
@@ -128,6 +130,7 @@ export default Vue.extend({
 		MkSwitch,
 		MkSelect,
 		MkRadio,
+		MkRange
 	},
 
 	data() {
@@ -136,7 +139,7 @@ export default Vue.extend({
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
 			sounds,
-			faImage, faCog, faMusic, faPlay
+			faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute
 		}
 	},
 
@@ -171,14 +174,9 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
 		},
 
-		useNotificationsPopup: {
-			get() { return this.$store.state.device.useNotificationsPopup; },
-			set(value) { this.$store.commit('device/set', { key: 'useNotificationsPopup', value }); }
-		},
-
 		sfxVolume: {
 			get() { return this.$store.state.device.sfxVolume; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxVolume', value }); }
+			set(value) { this.$store.commit('device/set', { key: 'sfxVolume', value: parseFloat(value, 10) }); }
 		},
 
 		sfxNote: {
@@ -210,6 +208,12 @@ export default Vue.extend({
 			get() { return this.$store.state.device.sfxAntenna; },
 			set(value) { this.$store.commit('device/set', { key: 'sfxAntenna', value }); }
 		},
+
+		volumeIcon: {
+			get() {
+				return this.sfxVolume === 0 ? faVolumeMute : faVolumeUp;
+			}
+		}
 	},
 
 	watch: {

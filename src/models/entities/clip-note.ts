@@ -8,7 +8,7 @@ import { id } from '../id';
 export class ClipNote {
 	@PrimaryColumn(id())
 	public id: string;
-	
+
 	@Index()
 	@Column({
 		...id(),

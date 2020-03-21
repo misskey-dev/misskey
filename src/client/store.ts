@@ -40,7 +40,6 @@ const defaultDeviceSettings = {
 	animatedMfm: true,
 	imageNewTab: false,
 	showFixedPostForm: false,
-	useNotificationsPopup: true,
 	sfxVolume: 0.3,
 	sfxNote: 'syuilo/down',
 	sfxNoteMy: 'syuilo/up',
@@ -101,6 +100,7 @@ export default (os: MiOS) => new Vuex.Store({
 			ctx.commit('settings/init', {});
 			ctx.commit('deviceUser/init', {});
 			localStorage.removeItem('i');
+			document.cookie = `igi=; path=/`;
 		},
 
 		async switchAccount(ctx, i) {

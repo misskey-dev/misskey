@@ -102,21 +102,20 @@
 		<div class="_content">
 			<mk-switch v-model="useObjectStorage">{{ $t('useObjectStorage') }}</mk-switch>
 			<template v-if="useObjectStorage">
-				<mk-input v-model="objectStorageBaseUrl" :disabled="!useObjectStorage">URL</mk-input>
+				<mk-input v-model="objectStorageBaseUrl" :disabled="!useObjectStorage">{{ $t('objectStorageBaseUrl') }}<template #desc>{{ $t('objectStorageBaseUrlDesc') }}</template></mk-input>
 				<div class="_inputs">
-					<mk-input v-model="objectStorageBucket" :disabled="!useObjectStorage">Bucket</mk-input>
-					<mk-input v-model="objectStoragePrefix" :disabled="!useObjectStorage">Prefix</mk-input>
+					<mk-input v-model="objectStorageBucket" :disabled="!useObjectStorage">{{ $t('objectStorageBucket') }}<template #desc>{{ $t('objectStorageBucketDesc') }}</template></mk-input>
+					<mk-input v-model="objectStoragePrefix" :disabled="!useObjectStorage">{{ $t('objectStoragePrefix') }}<template #desc>{{ $t('objectStoragePrefixDesc') }}</template></mk-input>
 				</div>
-				<mk-input v-model="objectStorageEndpoint" :disabled="!useObjectStorage">Endpoint</mk-input>
+				<mk-input v-model="objectStorageEndpoint" :disabled="!useObjectStorage">{{ $t('objectStorageEndpoint') }}<template #desc>{{ $t('objectStorageEndpointDesc') }}</template></mk-input>
 				<div class="_inputs">
-					<mk-input v-model="objectStorageRegion" :disabled="!useObjectStorage">Region</mk-input>
-					<mk-input v-model="objectStoragePort" type="number" :disabled="!useObjectStorage">Port</mk-input>
+					<mk-input v-model="objectStorageRegion" :disabled="!useObjectStorage">{{ $t('objectStorageRegion') }}<template #desc>{{ $t('objectStorageRegionDesc') }}</template></mk-input>
 				</div>
 				<div class="_inputs">
 					<mk-input v-model="objectStorageAccessKey" :disabled="!useObjectStorage"><template #icon><fa :icon="faKey"/></template>Access key</mk-input>
 					<mk-input v-model="objectStorageSecretKey" :disabled="!useObjectStorage"><template #icon><fa :icon="faKey"/></template>Secret key</mk-input>
 				</div>
-				<mk-switch v-model="objectStorageUseSSL" :disabled="!useObjectStorage">SSL</mk-switch>
+				<mk-switch v-model="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $t('objectStorageUseSSL') }}<template #desc>{{ $t('objectStorageUseSSLDesc') }}</template></mk-switch>
 			</template>
 		</div>
 		<div class="_footer">

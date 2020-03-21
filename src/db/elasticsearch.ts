@@ -33,6 +33,10 @@ const index = {
 // Init ElasticSearch connection
 const client = config.elasticsearch ? new elasticsearch.Client({
 	node: `${config.elasticsearch.ssl ? 'https://' : 'http://'}${config.elasticsearch.host}:${config.elasticsearch.port}`,
+	auth: (config.elasticsearch.user && config.elasticsearch.pass) ? {
+		username: config.elasticsearch.user,
+		password: config.elasticsearch.pass
+	} : undefined,
 	pingTimeout: 30000
 }) : null;
 

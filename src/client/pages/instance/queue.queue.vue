@@ -11,12 +11,12 @@
 		<canvas ref="chart"></canvas>
 	</div>
 	<div class="_content" style="max-height: 180px; overflow: auto;">
-		<sequential-entrance :delay="15" v-if="jobs.length > 0">
-			<div v-for="(job, i) in jobs" :key="job[0]">
+		<div v-if="jobs.length > 0">
+			<div v-for="job in jobs" :key="job[0]">
 				<span>{{ job[0] }}</span>
 				<span style="margin-left: 8px; opacity: 0.7;">({{ job[1] | number }} jobs)</span>
 			</div>
-		</sequential-entrance>
+		</div>
 		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
 	</div>
 </section>
