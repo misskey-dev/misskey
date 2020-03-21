@@ -13,7 +13,7 @@
 		<x-notes v-if="showNext" ref="next" :pagination="next"/>
 		<hr v-if="showNext"/>
 
-		<mk-remote-caution v-if="note.user.host != null" :href="note.url" style="margin-bottom: var(--margin)"/>
+		<mk-remote-caution v-if="note.user.host != null" :href="note.uri" style="margin-bottom: var(--margin)"/>
 		<x-note :note="note" :key="note.id" :detail="true"/>
 		<div v-if="error">
 			<mk-error @retry="fetch()"/>
