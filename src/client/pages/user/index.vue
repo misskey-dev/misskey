@@ -3,7 +3,7 @@
 	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 	
-	<div class="remote-caution _panel" v-if="user.host != null"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="user.url" rel="nofollow noopener" target="_blank">{{ $t('showOnRemote') }}</a></div>
+	<mk-remote-caution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
 	<div class="profile _panel" :key="user.id">
 		<div class="banner-container" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
@@ -113,6 +113,7 @@ import XUserMenu from '../../components/user-menu.vue';
 import XNote from '../../components/note.vue';
 import MkFollowButton from '../../components/follow-button.vue';
 import MkContainer from '../../components/ui/container.vue';
+import MkRemoteCaution from '../../components/remote-caution.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 
@@ -122,6 +123,7 @@ export default Vue.extend({
 		XNote,
 		MkFollowButton,
 		MkContainer,
+		MkRemoteCaution,
 		XPhotos: () => import('./index.photos.vue').then(m => m.default),
 		XActivity: () => import('./index.activity.vue').then(m => m.default),
 	},
@@ -215,17 +217,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-user-page {
-	> .remote-caution {
-		font-size: 0.8em;
-		padding: 16px;
-		margin-bottom: var(--margin);
-
-		> a {
-			margin-left: 4px;
-			color: var(--accent);
-		}
-	}
-
 	> .profile {
 		position: relative;
 		margin-bottom: var(--margin);

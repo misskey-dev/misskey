@@ -9,6 +9,8 @@
 	</portal>
 
 	<div v-if="note">
+		<mk-remote-caution v-if="note.user.host != null" :href="note.url" style="margin-bottom: var(--margin)"/>
+		
 		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></button>
 		<x-notes v-if="showNext" ref="next" :pagination="next"/>
 		<hr v-if="showNext"/>
@@ -32,6 +34,7 @@ import i18n from '../i18n';
 import Progress from '../scripts/loading';
 import XNote from '../components/note.vue';
 import XNotes from '../components/notes.vue';
+import MkRemoteCaution from '../components/remote-caution.vue';
 
 export default Vue.extend({
 	i18n,
@@ -43,6 +46,7 @@ export default Vue.extend({
 	components: {
 		XNote,
 		XNotes,
+		MkRemoteCaution,
 	},
 	data() {
 		return {
