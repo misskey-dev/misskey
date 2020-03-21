@@ -63,7 +63,7 @@
 				</dd>
 			</dl>
 		</div>
-		<div class="status" v-if="user.host === null">
+		<div class="status">
 			<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
 				<b>{{ user.notesCount | number }}</b>
 				<span>{{ $t('notes') }}</span>
