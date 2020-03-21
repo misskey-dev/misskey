@@ -177,9 +177,9 @@ export default Vue.extend({
 
 		rename() {
 			this.$root.dialog({
-				title: this.$t('contextmenu.rename-folder'),
+				title: this.$t('renameFolder'),
 				input: {
-					placeholder: this.$t('contextmenu.input-new-folder-name'),
+					placeholder: this.$t('inputNewFolderName'),
 					default: this.folder.name
 				}
 			}).then(({ canceled, result: name }) => {

@@ -139,9 +139,9 @@ export default Vue.extend({
 
 		rename() {
 			this.$root.dialog({
-				title: this.$t('contextmenu.rename-file'),
+				title: this.$t('renameFile'),
 				input: {
-					placeholder: this.$t('contextmenu.input-new-file-name'),
+					placeholder: this.$t('inputNewFileName'),
 					default: this.file.name,
 					allowEmpty: false
 				}

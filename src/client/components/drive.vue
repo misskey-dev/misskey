@@ -284,9 +284,9 @@ export default Vue.extend({
 
 		urlUpload() {
 			this.$root.dialog({
-				title: this.$t('url-upload'),
+				title: this.$t('uploadFromUrl'),
 				input: {
-					placeholder: this.$t('url-of-file')
+					placeholder: this.$t('uploadFromUrlDescription')
 				}
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
@@ -296,17 +296,17 @@ export default Vue.extend({
 				});
 
 				this.$root.dialog({
-					title: this.$t('url-upload-requested'),
-					text: this.$t('may-take-time')
+					title: this.$t('uploadFromUrlRequested'),
+					text: this.$t('uploadFromUrlMayTakeTime')
 				});
 			});
 		},
 
 		createFolder() {
 			this.$root.dialog({
-				title: this.$t('create-folder'),
+				title: this.$t('createFolder'),
 				input: {
-					placeholder: this.$t('folder-name')
+					placeholder: this.$t('folderName')
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
@@ -321,9 +321,9 @@ export default Vue.extend({
 
 		renameFolder(folder) {
 			this.$root.dialog({
-				title: this.$t('contextmenu.rename-folder'),
+				title: this.$t('renameFolder'),
 				input: {
-					placeholder: this.$t('contextmenu.input-new-folder-name'),
+					placeholder: this.$t('inputNewFolderName'),
 					default: folder.name
 				}
 			}).then(({ canceled, result: name }) => {
