@@ -1,0 +1,13 @@
+{
+	id: '8c539dc1-0fab-4d47-9194-39c508e9bfe1',
+
+	name: 'Black',
+	author: 'syuilo',
+	desc: '',
+
+	base: 'dark',
+
+	props: {
+		divider: '#2b2b2b',
+	},
+}

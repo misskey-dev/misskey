@@ -35,7 +35,7 @@ const defaultDeviceSettings = {
 	accounts: [],
 	recentEmojis: [],
 	themes: [],
-	theme: 'light',
+	theme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 	animation: true,
 	animatedMfm: true,
 	imageNewTab: false,
