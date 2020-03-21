@@ -9,12 +9,11 @@
 	</portal>
 
 	<div v-if="note">
-		<mk-remote-caution v-if="note.user.host != null" :href="note.url" style="margin-bottom: var(--margin)"/>
-		
 		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></button>
 		<x-notes v-if="showNext" ref="next" :pagination="next"/>
 		<hr v-if="showNext"/>
 
+		<mk-remote-caution v-if="note.user.host != null" :href="note.url" style="margin-bottom: var(--margin)"/>
 		<x-note :note="note" :key="note.id" :detail="true"/>
 		<div v-if="error">
 			<mk-error @retry="fetch()"/>
