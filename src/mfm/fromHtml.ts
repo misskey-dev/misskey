@@ -40,7 +40,7 @@ export function fromHtml(html: string, mentionHrefs?: string[], hashtagHrefs?: s
 				if (hashtagHrefs && href && hashtagHrefs.map(x => x.toLowerCase()).includes((href.value as string).toLowerCase())) {
 					text += txt;
 				// メンション
-			} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
+				} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
 					const part = txt.split('@');
 
 					if (part.length == 2) {
