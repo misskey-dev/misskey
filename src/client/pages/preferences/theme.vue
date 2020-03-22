@@ -63,6 +63,7 @@ import MkSwitch from '../../components/ui/switch.vue';
 import i18n from '../../i18n';
 import { Theme, builtinThemes, applyTheme } from '../../theme';
 import { selectFile } from '../../scripts/select-file';
+import { isDeviceDarkmode } from '../../scripts/is-device-darkmode';
 
 export default Vue.extend({
 	i18n,
@@ -129,6 +130,12 @@ export default Vue.extend({
 		lightTheme() {
 			if (!this.$store.state.device.darkMode) {
 				applyTheme(this.themes.find(x => x.id === this.lightTheme));
+			}
+		},
+
+		syncDeviceDarkMode() {
+			if (this.$store.state.device.syncDeviceDarkMode) {
+				this.$store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
 			}
 		},
 
