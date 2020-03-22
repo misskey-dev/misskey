@@ -6,7 +6,7 @@ import post from '../../../services/note/create';
 import { resolvePerson, updatePerson } from './person';
 import { resolveImage } from './image';
 import { IRemoteUser } from '../../../models/entities/user';
-import { fromHtml } from '../../../mfm/fromHtml';
+import { htmlToMfm } from '../misc/html-to-mfm';
 import { extractApHashtags } from './tag';
 import { unique, toArray, toSingle } from '../../../prelude/array';
 import { extractPollFromQuestion } from './question';
@@ -211,7 +211,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const cw = note.summary === '' ? null : note.summary;
 
 	// テキストのパース
-	const text = note._misskey_content || (note.content ? fromHtml(note.content) : null);
+	const text = note._misskey_content || (note.content ? htmlToMfm(note.content, note.tag) : null);
 
 	// vote
 	if (reply && reply.hasPoll) {

@@ -1,7 +1,6 @@
 import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
-import { urlRegex } from './prelude';
 
-export function fromHtml(html: string): string {
+export function fromHtml(html: string, mentionHrefs?: string[], hashtagHrefs?: string[]): string {
 	const dom = parseFragment(html) as DefaultTreeDocumentFragment;
 
 	let text = '';
@@ -36,14 +35,12 @@ export function fromHtml(html: string): string {
 				const txt = getText(node);
 				const rel = node.attrs.find((x: any) => x.name == 'rel');
 				const href = node.attrs.find((x: any) => x.name == 'href');
-				const _class = node.attrs.find((x: any) => x.name == 'class');
-				const isHashtag = rel?.value?.match('tag') || _class?.value?.match('hashtag');
 
-				// ハッシュタグ / hrefがない / txtがURL
-				if (isHashtag || !href || href.value == txt) {
-					text += isHashtag || txt.match(urlRegex) ? txt : `<${txt}>`;
+				// ハッシュタグ
+				if (hashtagHrefs && href && hashtagHrefs.map(x => x.toLowerCase()).includes((href.value as string).toLowerCase())) {
+					text += txt;
 				// メンション
-				} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
+			} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
 					const part = txt.split('@');
 
 					if (part.length == 2) {
@@ -56,7 +53,7 @@ export function fromHtml(html: string): string {
 					}
 				// その他
 				} else {
-					text += `[${txt}](${href.value})`;
+					text += (!href || txt === href.value) ? `<${txt}>` : `[${txt}](${href.value})`;
 				}
 				break;
 
