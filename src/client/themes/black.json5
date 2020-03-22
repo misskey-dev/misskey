@@ -8,6 +8,7 @@
 	base: 'dark',
 
 	props: {
-		divider: '#2b2b2b',
+		divider: '#2d2d2d',
+		messageBg: '#1d1d1d',
 	},
 }
