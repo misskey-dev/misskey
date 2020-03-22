@@ -675,7 +675,7 @@ _pages:
   created: "La página fue creada"
   updated: "La página fue actualizada"
   deleted: "La página borrada"
-  nameAlreadyExists: "La URL de la página seleccionada ya existe"
+  nameAlreadyExists: "La URL de la página especificada ya existe"
   invalidNameTitle: "URL inválida"
   invalidNameText: "Verifique que no tenga espacios en blanco"
   editThisPage: "Editar esta página"
