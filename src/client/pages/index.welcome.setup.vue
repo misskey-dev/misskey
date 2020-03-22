@@ -61,7 +61,7 @@ export default Vue.extend({
 
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('some-error')
+					text: this.$t('error')
 				});
 			});
 		}

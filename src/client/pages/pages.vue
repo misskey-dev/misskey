@@ -1,7 +1,7 @@
 <template>
 <div>
 	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faEdit" fixed-width/>{{ $t('my-pages') }}</template>
+		<template #header><fa :icon="faEdit" fixed-width/>{{ $t('_pages.my') }}</template>
 		<div class="rknalgpo my">
 			<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
 			<mk-pagination :pagination="myPagesPagination" #default="{items}">
@@ -11,7 +11,7 @@
 	</mk-container>
 
 	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faHeart" fixed-width/>{{ $t('liked-pages') }}</template>
+		<template #header><fa :icon="faHeart" fixed-width/>{{ $t('_pages.liked') }}</template>
 		<div class="rknalgpo">
 			<mk-pagination :pagination="likedPagesPagination" #default="{items}">
 				<mk-page-preview v-for="like in items" class="ckltabjg" :page="like.page" :key="like.page.id"/>

@@ -2,7 +2,7 @@
 <div>
 	<div class="gwbmwxkm _panel">
 		<header>
-			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('readPage') : pageId ? $t('editPage') : $t('newPage') }}</div>
+			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
 			<div class="buttons">
 				<button class="_button" @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
 				<button class="_button" @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
@@ -11,37 +11,37 @@
 		</header>
 
 		<section>
-			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('view-page') }}</router-link>
+			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
 
 			<mk-input v-model="title">
-				<span>{{ $t('title') }}</span>
+				<span>{{ $t('_pages.title') }}</span>
 			</mk-input>
 
 			<template v-if="showOptions">
 				<mk-input v-model="summary">
-					<span>{{ $t('summary') }}</span>
+					<span>{{ $t('_pages.summary') }}</span>
 				</mk-input>
 
 				<mk-input v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-					<span>{{ $t('url') }}</span>
+					<span>{{ $t('_pages.url') }}</span>
 				</mk-input>
 
-				<mk-switch v-model="alignCenter">{{ $t('alignCenter') }}</mk-switch>
+				<mk-switch v-model="alignCenter">{{ $t('_pages.alignCenter') }}</mk-switch>
 
 				<mk-select v-model="font">
-					<template #label>{{ $t('font') }}</template>
-					<option value="serif">{{ $t('fontSerif') }}</option>
-					<option value="sans-serif">{{ $t('fontSansSerif') }}</option>
+					<template #label>{{ $t('_pages.font') }}</template>
+					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
+					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
 				</mk-select>
 
-				<mk-switch v-model="hideTitleWhenPinned">{{ $t('hide-title-when-pinned') }}</mk-switch>
+				<mk-switch v-model="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</mk-switch>
 
 				<div class="eyeCatch">
-					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('set-eye-catching-image') }}</mk-button>
+					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</mk-button>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-						<mk-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('remove-eye-catching-image') }}</mk-button>
+						<mk-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</mk-button>
 					</div>
 				</div>
 			</template>
@@ -53,7 +53,7 @@
 	</div>
 
 	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faMagic"/> {{ $t('variables') }}</template>
+		<template #header><fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
 		<div class="qmuvgica">
 			<x-draggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 				<x-variable v-for="variable in variables"
@@ -70,22 +70,14 @@
 			</x-draggable>
 
 			<mk-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
-
-			<x-info><span v-html="$t('variables-info')"></span><a @click="() => moreDetails = true" style="display:block;">{{ $t('more-details') }}</a></x-info>
-
-			<template v-if="moreDetails">
-				<x-info><span v-html="$t('variables-info2')"></span></x-info>
-				<x-info><span v-html="$t('variables-info3')"></span></x-info>
-				<x-info><span v-html="$t('variables-info4')"></span></x-info>
-			</template>
 		</div>
 	</mk-container>
 
 	<mk-container :body-togglable="true" :expanded="false">
-		<template #header><fa :icon="faCode"/> {{ $t('inspector') }}</template>
+		<template #header><fa :icon="faCode"/> {{ $t('_pages.inspector') }}</template>
 		<div style="padding:0 32px 32px 32px;">
-			<mk-textarea :value="JSON.stringify(content, null, 2)" readonly tall>{{ $t('content') }}</mk-textarea>
-			<mk-textarea :value="JSON.stringify(variables, null, 2)" readonly tall>{{ $t('variables') }}</mk-textarea>
+			<mk-textarea :value="JSON.stringify(content, null, 2)" readonly tall>{{ $t('_pages.content') }}</mk-textarea>
+			<mk-textarea :value="JSON.stringify(variables, null, 2)" readonly tall>{{ $t('_pages.variables') }}</mk-textarea>
 		</div>
 	</mk-container>
 </div>
@@ -152,7 +144,6 @@ export default Vue.extend({
 			variables: [],
 			aiScript: null,
 			showOptions: false,
-			moreDetails: false,
 			url,
 			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode
 		};
@@ -243,14 +234,14 @@ export default Vue.extend({
 					if (err.info.param == 'name') {
 						this.$root.dialog({
 							type: 'error',
-							title: this.$t('title-invalid-name'),
-							text: this.$t('text-invalid-name')
+							title: this.$t('_pages.invalidNameTitle'),
+							text: this.$t('_pages.invalidNameText')
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
 					this.$root.dialog({
 						type: 'error',
-						text: this.$t('name-already-exists')
+						text: this.$t('_pages.nameAlreadyExists')
 					});
 				}
 			};
@@ -262,7 +253,7 @@ export default Vue.extend({
 					this.currentName = this.name.trim();
 					this.$root.dialog({
 						type: 'success',
-						text: this.$t('page-updated')
+						text: this.$t('_pages.updated')
 					});
 				}).catch(onError);
 			} else {
@@ -272,7 +263,7 @@ export default Vue.extend({
 					this.currentName = this.name.trim();
 					this.$root.dialog({
 						type: 'success',
-						text: this.$t('page-created')
+						text: this.$t('_pages.created')
 					});
 					this.$router.push(`/my/pages/edit/${this.pageId}`);
 				}).catch(onError);
@@ -282,7 +273,7 @@ export default Vue.extend({
 		del() {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('are-you-sure-delete'),
+				text: this.$t('removeAreYouSure', { x: this.title.trim() }),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
@@ -291,7 +282,7 @@ export default Vue.extend({
 				}).then(() => {
 					this.$root.dialog({
 						type: 'success',
-						text: this.$t('page-deleted')
+						text: this.$t('_pages.deleted')
 					});
 					this.$router.push(`/my/pages`);
 				});
@@ -301,7 +292,7 @@ export default Vue.extend({
 		async add() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: this.$t('chooseBlock'),
+				title: this.$t('_pages.chooseBlock'),
 				select: {
 					groupedItems: this.getPageBlockList()
 				},
@@ -315,7 +306,7 @@ export default Vue.extend({
 
 		async addVariable() {
 			let { canceled, result: name } = await this.$root.dialog({
-				title: this.$t('enterVariableName'),
+				title: this.$t('_pages.enterVariableName'),
 				input: {
 					type: 'text',
 				},
@@ -328,7 +319,7 @@ export default Vue.extend({
 			if (this.aiScript.isUsedName(name)) {
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('the-variable-name-is-already-used')
+					text: this.$t('_pages.variableNameIsAlreadyUsed')
 				});
 				return;
 			}
@@ -348,7 +339,7 @@ export default Vue.extend({
 
 		getPageBlockList() {
 			return [{
-				label: this.$t('content-blocks'),
+				label: this.$t('_pages.contentBlocks'),
 				items: [
 					{ value: 'section', text: this.$t('_pages.blocks.section') },
 					{ value: 'text', text: this.$t('_pages.blocks.text') },
@@ -356,7 +347,7 @@ export default Vue.extend({
 					{ value: 'textarea', text: this.$t('_pages.blocks.textarea') },
 				]
 			}, {
-				label: this.$t('input-blocks'),
+				label: this.$t('_pages.inputBlocks'),
 				items: [
 					{ value: 'button', text: this.$t('_pages.blocks.button') },
 					{ value: 'radioButton', text: this.$t('_pages.blocks.radioButton') },
@@ -367,7 +358,7 @@ export default Vue.extend({
 					{ value: 'counter', text: this.$t('_pages.blocks.counter') }
 				]
 			}, {
-				label: this.$t('special-blocks'),
+				label: this.$t('_pages.specialBlocks'),
 				items: [
 					{ value: 'if', text: this.$t('_pages.blocks.if') },
 					{ value: 'post', text: this.$t('_pages.blocks.post') }

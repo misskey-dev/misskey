@@ -113,7 +113,7 @@ export default Vue.extend({
 				if (items[0].kind == 'file') {
 					this.$root.dialog({
 						type: 'error',
-						text: this.$t('only-one-file-attached')
+						text: this.$t('onlyOneFileCanBeAttached')
 					});
 				}
 			}
@@ -138,7 +138,7 @@ export default Vue.extend({
 				e.preventDefault();
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('only-one-file-attached')
+					text: this.$t('onlyOneFileCanBeAttached')
 				});
 				return;
 			}
