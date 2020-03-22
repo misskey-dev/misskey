@@ -144,7 +144,7 @@ os.init(async () => {
 		}
 	}, false)
 
-	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', mql => {
+	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
 		if (os.store.state.device.syncDeviceDarkMode) {
 			os.store.commit('device/set', { key: 'darkMode', value: mql.matches });
 		}
