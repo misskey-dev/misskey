@@ -3,7 +3,7 @@
 
 	name: 'White',
 	author: 'syuilo',
-	desc: '',
+	desc: 'Basic light theme',
 
 	base: 'light',
 

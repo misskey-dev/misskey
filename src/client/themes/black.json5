@@ -3,7 +3,7 @@
 
 	name: 'Black',
 	author: 'syuilo',
-	desc: '',
+	desc: 'Basic dark theme',
 
 	base: 'dark',
 
