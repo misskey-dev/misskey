@@ -8,7 +8,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
-			<mk-range v-model="sfxVolume" min="0" max="1" step="0.1">
+			<mk-range v-model="sfxVolume" :min="0" :max="1" :step="0.1">
 				<fa slot="icon" :icon="volumeIcon"/>
 				<span slot="title">{{ $t('volume') }}</span>
 			</mk-range>
