@@ -199,12 +199,12 @@ export default Vue.extend({
 				}
 
 				> .before {
-					left: -60px;
+					left: -70px;
 					color: var(--accent);
 				}
 
 				> .after {
-					right: -58px;
+					right: -68px;
 					color: var(--fg);
 				}
 			}
