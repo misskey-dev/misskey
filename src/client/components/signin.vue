@@ -155,7 +155,7 @@ export default Vue.extend({
 				if (err === null) return;
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('login-failed')
+					text: this.$t('signinFailed')
 				});
 				this.signing = false;
 			});
@@ -176,7 +176,7 @@ export default Vue.extend({
 					}).catch(() => {
 						this.$root.dialog({
 							type: 'error',
-							text: this.$t('login-failed')
+							text: this.$t('signinFailed')
 						});
 						this.challengeData = null;
 						this.totpLogin = false;

@@ -18,7 +18,7 @@ import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
-import { applyTheme, lightTheme } from './theme';
+import { applyTheme, lightTheme, builtinThemes } from './theme';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -162,6 +162,12 @@ os.init(async () => {
 				stream: os.stream,
 				isMobile: isMobile
 			};
+		},
+		watch: {
+			'$store.state.device.darkMode'() {
+				const themes = builtinThemes.concat(this.$store.state.device.themes);
+				applyTheme(themes.find(x => x.id === (this.$store.state.device.darkMode ? this.$store.state.device.darkTheme : this.$store.state.device.lightTheme)));
+			}
 		},
 		methods: {
 			api: os.api,

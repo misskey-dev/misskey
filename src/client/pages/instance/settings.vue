@@ -345,6 +345,20 @@ export default Vue.extend({
 	},
 
 	methods: {
+		invite() {
+			this.$root.api('admin/invite').then(x => {
+				this.$root.dialog({
+					type: 'info',
+					text: x.code
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
 		addPinUser() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
 				this.pinnedUsers = this.pinnedUsers.trim();
