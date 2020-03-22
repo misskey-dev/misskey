@@ -459,6 +459,7 @@ volume: "音量"
 details: "詳細"
 chooseEmoji: "絵文字を選択"
 unableToProcess: "操作を完了できません"
+recentUsed: "最近使用"
 
 _sfx:
   note: "ノート"
@@ -585,18 +586,6 @@ _cw:
   chars: "{count}文字"
   files: "{count}ファイル"
   poll: "アンケート"
-
-_emojis:
-  recentUsed: "最近使用した絵文字"
-  customEmoji: "カスタム絵文字"
-  people: "人"
-  animalsAndNature: "動物&自然"
-  foodAndDrink: "食べ物&飲み物"
-  activity: "アクティビティ"
-  travelAndPlaces: "場所"
-  objects: "物"
-  symbols: "記号"
-  flags: "旗"
 
 _poll:
   noOnlyOneChoice: "選択肢は最低2つ必要です"
