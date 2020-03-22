@@ -70,14 +70,6 @@
 			</x-draggable>
 
 			<mk-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
-
-			<x-info><span v-html="$t('_pages.variablesInfo')"></span><a @click="() => moreDetails = true" style="display:block;">{{ $t('_pages.moreDetails') }}</a></x-info>
-
-			<template v-if="moreDetails">
-				<x-info><span v-html="$t('_pages.variablesInfo2')"></span></x-info>
-				<x-info><span v-html="$t('_pages.variablesInfo3')"></span></x-info>
-				<x-info><span v-html="$t('_pages.variablesInfo4')"></span></x-info>
-			</template>
 		</div>
 	</mk-container>
 
@@ -152,7 +144,6 @@ export default Vue.extend({
 			variables: [],
 			aiScript: null,
 			showOptions: false,
-			moreDetails: false,
 			url,
 			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode
 		};
