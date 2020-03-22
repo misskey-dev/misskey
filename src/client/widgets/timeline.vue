@@ -14,7 +14,7 @@
 			</button>
 		</template>
 
-		<div class="tl">
+		<div>
 			<x-timeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src === 'antenna' ? `antenna:${props.antenna.id}` : props.src" :src="props.src" :list="props.list" :antenna="props.antenna"/>
 		</div>
 	</mk-container>
@@ -147,12 +147,6 @@ export default define({
 			overflow: auto;
 			flex-grow: 1;
 		}
-	}
-
-	.tl {
-		padding: 8px;
-		background: var(--bg);
-		box-sizing: border-box;
 	}
 }
 </style>

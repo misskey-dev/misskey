@@ -18,7 +18,7 @@ import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
-import { applyTheme, lightTheme } from './theme';
+import { applyTheme, lightTheme, builtinThemes } from './theme';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -81,14 +81,14 @@ if (lang == null) {
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
-let isMobile = /mobile|iphone|ipad|android/.test(ua);
+const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 // Get the <head> element
 const head = document.getElementsByTagName('head')[0];
 
 // If mobile, insert the viewport meta tag
 if (isMobile || window.innerWidth <= 1024) {
-	const viewport = document.getElementsByName("viewport").item(0);
+	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
 	head.appendChild(viewport);
@@ -162,6 +162,12 @@ os.init(async () => {
 				stream: os.stream,
 				isMobile: isMobile
 			};
+		},
+		watch: {
+			'$store.state.device.darkMode'() {
+				const themes = builtinThemes.concat(this.$store.state.device.themes);
+				applyTheme(themes.find(x => x.id === (this.$store.state.device.darkMode ? this.$store.state.device.darkTheme : this.$store.state.device.lightTheme)));
+			}
 		},
 		methods: {
 			api: os.api,

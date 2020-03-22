@@ -2,7 +2,7 @@
 <div class="thvuemwp" :data-is-me="isMe">
 	<mk-avatar class="avatar" :user="message.user"/>
 	<div class="content">
-		<div class="balloon _panel" :data-no-text="message.text == null">
+		<div class="balloon" :data-no-text="message.text == null">
 			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
 				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
@@ -243,13 +243,14 @@ export default Vue.extend({
 	}
 
 	&:not([data-is-me]) {
+		padding-left: var(--margin);
 
 		> .content {
 			padding-left: 16px;
 			padding-right: 32px;
 
 			> .balloon {
-				$color: var(--panel);
+				$color: var(--messageBg);
 				background: $color;
 
 				&[data-no-text] {
@@ -279,6 +280,7 @@ export default Vue.extend({
 
 	&[data-is-me] {
 		flex-direction: row-reverse;
+		padding-right: var(--margin);
 
 		> .content {
 			padding-right: 16px;
@@ -287,7 +289,6 @@ export default Vue.extend({
 
 			> .balloon {
 				background: $me-balloon-color;
-				box-shadow: 0 6px 16px var(--accentShadow);
 				text-align: left;
 
 				&[data-no-text] {

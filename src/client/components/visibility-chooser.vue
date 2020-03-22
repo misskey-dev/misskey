@@ -1,6 +1,6 @@
 <template>
 <x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
-	<sequential-entrance class="gqyayizv" :delay="30">
+	<div class="gqyayizv">
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 			<div><fa :icon="faGlobe"/></div>
 			<div>
@@ -29,7 +29,7 @@
 				<span>{{ $t('_visibility.specifiedDescription') }}</span>
 			</div>
 		</button>
-	</sequential-entrance>
+	</div>
 </x-popup>
 </template>
 

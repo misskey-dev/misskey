@@ -1,7 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Users } from '../../../../models';
-import { User } from '../../../../models/entities/user';
 
 export const meta = {
 	desc: {
@@ -73,14 +72,19 @@ export default define(meta, async (ps, me) => {
 			q.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
 		}
 
+		q.andWhere('user.updatedAt IS NOT NULL');
+		q.orderBy('user.updatedAt', 'DESC');
+
 		const users = await q.take(ps.limit!).skip(ps.offset).getMany();
 
 		return await Users.packMany(users, me, { detail: ps.detail });
-	} else {
+	} else if (ps.username) {
 		let users = await Users.createQueryBuilder('user')
 			.where('user.host IS NULL')
 			.andWhere('user.isSuspended = FALSE')
 			.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
+			.andWhere('user.updatedAt IS NOT NULL')
+			.orderBy('user.updatedAt', 'DESC')
 			.take(ps.limit!)
 			.skip(ps.offset)
 			.getMany();
@@ -90,6 +94,8 @@ export default define(meta, async (ps, me) => {
 				.where('user.host IS NOT NULL')
 				.andWhere('user.isSuspended = FALSE')
 				.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
+				.andWhere('user.updatedAt IS NOT NULL')
+				.orderBy('user.updatedAt', 'DESC')
 				.take(ps.limit! - users.length)
 				.getMany();
 

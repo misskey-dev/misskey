@@ -79,14 +79,14 @@
 			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
-	<x-sub v-for="note in replies" :key="note.id" :note="note"/>
+	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
 import i18n from '../i18n';
@@ -142,7 +142,7 @@ export default Vue.extend({
 			replies: [],
 			showContent: false,
 			hideThisNote: false,
-			faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
 		};
 	},
 
@@ -460,6 +460,22 @@ export default Vue.extend({
 			});
 		},
 
+		delEdit() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('deleteAndEditConfirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.appearNote.id
+				});
+
+				this.$root.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
+			});
+		},
+
 		toggleFavorite(favorite: boolean) {
 			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.appearNote.id
@@ -547,6 +563,11 @@ export default Vue.extend({
 				),
 				...(this.appearNote.userId == this.$store.state.i.id ? [
 					null,
+					{
+						icon: faEdit,
+						text: this.$t('deleteAndEdit'),
+						action: this.delEdit
+					},
 					{
 						icon: faTrashAlt,
 						text: this.$t('delete'),
@@ -684,6 +705,7 @@ export default Vue.extend({
 .note {
 	position: relative;
 	transition: box-shadow 0.1s ease;
+	overflow: hidden;
 
 	&.max-width_500px {
 		font-size: 0.9em;
@@ -749,14 +771,6 @@ export default Vue.extend({
 		opacity: 1;
 	}
 
-	> *:first-child {
-		border-radius: var(--radius) var(--radius) 0 0;
-	}
-
-	> *:last-child {
-		border-radius: 0 0 var(--radius) var(--radius);
-	}
-
 	> .info {
 		display: flex;
 		align-items: center;
@@ -782,6 +796,11 @@ export default Vue.extend({
 
 	> .info + .article {
 		padding-top: 8px;
+	}
+
+	> .reply-to {
+		opacity: 0.7;
+		padding-bottom: 0;
 	}
 
 	> .renote {
@@ -936,6 +955,10 @@ export default Vue.extend({
 				opacity: 0.7;
 			}
 		}
+	}
+
+	> .reply {
+		border-top: solid 1px var(--divider);
 	}
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-room"
+<div class="mk-messaging-room naked"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >

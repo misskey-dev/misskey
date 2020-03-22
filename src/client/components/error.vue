@@ -27,8 +27,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mjndxjcg {
-	max-width: 350px;
-	margin: 0 auto;
 	padding: 32px;
 	text-align: center;
 

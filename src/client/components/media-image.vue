@@ -90,7 +90,7 @@ export default Vue.extend({
 	> div {
 		background-color: var(--fg);
 		border-radius: 6px;
-		color: var(--secondary);
+		color: var(--accentLighten);
 		display: inline-block;
 		font-size: 14px;
 		font-weight: bold;

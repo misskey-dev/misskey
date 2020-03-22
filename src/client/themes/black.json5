@@ -1,0 +1,14 @@
+{
+	id: '8c539dc1-0fab-4d47-9194-39c508e9bfe1',
+
+	name: 'Black',
+	author: 'syuilo',
+	desc: 'Basic dark theme',
+
+	base: 'dark',
+
+	props: {
+		divider: '#2d2d2d',
+		messageBg: '#1d1d1d',
+	},
+}

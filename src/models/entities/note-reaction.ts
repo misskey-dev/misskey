@@ -36,7 +36,7 @@ export class NoteReaction {
 	public note: Note | null;
 
 	@Column('varchar', {
-		length: 128
+		length: 130
 	})
 	public reaction: string;
 }

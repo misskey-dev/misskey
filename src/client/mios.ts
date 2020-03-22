@@ -123,8 +123,13 @@ export default class MiOS extends EventEmitter {
 			});
 		} else {
 			// Get token from localStorage
-			const i = localStorage.getItem('i');
-			
+			let i = localStorage.getItem('i');
+
+			// 連携ログインの場合用にCookieを参照する
+			if (i == null || i === 'null') {
+				i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
+			}
+
 			fetchme(i, me => {
 				if (me) {
 					this.store.dispatch('login', me);

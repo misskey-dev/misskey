@@ -171,6 +171,7 @@ declare module 'jsrsasign' {
 
 		public static getTLVbyList(h: ASN1S, currentIndex: Idx<ASN1ObjectString>, nthList: Mutable<Nth[]>, checkingTag?: string): ASN1TLV;
 
+		// tslint:disable-next-line:bool-param-default
 		public static getVbyList(h: ASN1S, currentIndex: Idx<ASN1ObjectString>, nthList: Mutable<Nth[]>, checkingTag?: string, removeUnusedbits?: boolean): ASN1V;
 
 		public static hextooidstr(hex: ASN1OIDV): OID;
@@ -620,9 +621,7 @@ declare module 'jsrsasign' {
 
 		public encrypt(text: string): HexString | null;
 
-		public encryptOAEP(text: string, hash?: string, hashLen?: number): HexString | null;
-
-		public encryptOAEP(text: string, hash?: (s: string) => string, hashLen?: number): HexString | null;
+		public encryptOAEP(text: string, hash?: string | ((s: string) => string), hashLen?: number): HexString | null;
 
 		//// RSA PRIVATE
 
@@ -638,9 +637,7 @@ declare module 'jsrsasign' {
 
 		public decrypt(ctext: HexString): string;
 
-		public decryptOAEP(ctext: HexString, hash?: string, hashLen?: number): string | null;
-
-		public encryptOAEP(ctext: HexString, hash?: (s: string) => string, hashLen?: number): string | null;
+		public decryptOAEP(ctext: HexString, hash?: string | ((s: string) => string), hashLen?: number): string | null;
 
 		//// RSA PEM
 

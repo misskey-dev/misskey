@@ -38,7 +38,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 		if (note.renoteId != null) {
 			_note.renote = await Notes.findOne(note.renoteId).then(ensure);
 		}
-		
+
 		if (shouldMuteThisNote(_note, mutings.map(x => x.muteeId))) {
 			return;
 		}

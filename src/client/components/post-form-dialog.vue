@@ -17,7 +17,8 @@
 				:initial-note="initialNote"
 				:instant="instant"
 				@posted="onPosted"
-				@cancel="onCanceled"/>
+				@cancel="onCanceled"
+				style="border-radius: var(--radius);"/>
 		</transition>
 	</div>
 </div>
