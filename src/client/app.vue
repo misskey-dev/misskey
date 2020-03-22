@@ -622,12 +622,12 @@ export default Vue.extend({
 .mk-app {
 	$header-height: 60px;
 	$nav-width: 250px;
-	$nav-icon-only-width: 74px;
+	$nav-icon-only-width: 80px;
 	$main-width: 650px;
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1300px;
-	$nav-hide-threshold: 700px;
-	$side-hide-threshold: 1100px;
+	$nav-hide-threshold: 650px;
+	$side-hide-threshold: 1070px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
