@@ -44,7 +44,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	const _theme = JSON.parse(JSON.stringify(theme));
 
 	if (_theme.base) {
-		const base = [lightTheme, darkTheme].find(x => x.id == _theme.base);
+		const base = [lightTheme, darkTheme].find(x => x.id === _theme.base);
 		_theme.props = Object.assign({}, base.props, _theme.props);
 	}
 

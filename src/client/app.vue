@@ -164,6 +164,7 @@ import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
+import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import MkToast from './components/toast.vue';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -224,6 +225,10 @@ export default Vue.extend({
 	},
 
 	created() {
+		if (this.$store.state.device.syncDeviceDarkMode) {
+			this.$store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+		}
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
