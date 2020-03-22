@@ -246,7 +246,10 @@ export default Vue.extend({
 		if (this.isDesktop) this.adjustWidgetsWidth();
 
 		const adjustTitlePosition = () => {
-			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
+			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth;
+			if (left >= 0) {
+				this.$refs.title.style.left = left + 'px';
+			}
 		};
 
 		adjustTitlePosition();
