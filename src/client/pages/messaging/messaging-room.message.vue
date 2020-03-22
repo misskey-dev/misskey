@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div></div>
-		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
+		<mk-url-preview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
 		<footer>
 			<template v-if="isGroup">
 				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
@@ -38,12 +38,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
-import { parse } from '../../mfm/parse';
-import { unique } from '../../prelude/array';
+import i18n from '../../i18n';
+import { parse } from '../../../mfm/parse';
+import { unique } from '../../../prelude/array';
+import MkUrlPreview from '../../components/url-preview.vue';
 
 export default Vue.extend({
 	i18n,
+	components: {
+		MkUrlPreview
+	},
 	props: {
 		message: {
 			required: true
@@ -221,10 +225,6 @@ export default Vue.extend({
 					}
 				}
 			}
-		}
-
-		> .mk-url-preview {
-			margin: 8px 0;
 		}
 
 		> footer {
