@@ -1,6 +1,6 @@
 import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
 
-export function fromHtml(html: string, mentionHrefs?: string[], hashtagHrefs?: string[]): string {
+export function fromHtml(html: string, hashtagNames?: string[]): string {
 	const dom = parseFragment(html) as DefaultTreeDocumentFragment;
 
 	let text = '';
@@ -37,7 +37,7 @@ export function fromHtml(html: string, mentionHrefs?: string[], hashtagHrefs?: s
 				const href = node.attrs.find((x: any) => x.name == 'href');
 
 				// ハッシュタグ
-				if (hashtagHrefs && href && hashtagHrefs.map(x => x.toLowerCase()).includes((href.value as string).toLowerCase())) {
+				if (hashtagNames && href && hashtagNames.map(x => x.toLowerCase()).includes(txt.toLowerCase())) {
 					text += txt;
 				// メンション
 				} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
