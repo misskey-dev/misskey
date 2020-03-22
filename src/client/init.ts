@@ -144,6 +144,12 @@ os.init(async () => {
 		}
 	}, false)
 
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', mql => {
+		if (os.store.state.device.syncDeviceDarkMode) {
+			os.store.commit('device/set', { key: 'darkMode', value: mql.matches });
+		}
+	});
+
 	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {
