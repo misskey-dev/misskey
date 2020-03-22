@@ -19,6 +19,7 @@ import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
 import { applyTheme, lightTheme, builtinThemes } from './theme';
+import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -144,11 +145,17 @@ os.init(async () => {
 		}
 	}, false)
 
+	//#region Sync dark mode
+	if (os.store.state.device.syncDeviceDarkMode) {
+		os.store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+	}
+
 	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
 		if (os.store.state.device.syncDeviceDarkMode) {
 			os.store.commit('device/set', { key: 'darkMode', value: mql.matches });
 		}
 	});
+	//#endregion
 
 	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
