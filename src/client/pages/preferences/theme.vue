@@ -42,6 +42,7 @@
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</mk-select>
+		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>
 	</div>
 	<div class="_content">
 		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
@@ -50,18 +51,43 @@
 		<mk-button primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</mk-button>
 		<mk-button primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</mk-button>
 	</div>
+	<div class="_content">
+		<details>
+			<summary><fa :icon="faDownload"/> {{ $t('_theme.install') }}</summary>
+			<mk-textarea v-model="installThemeCode">
+				<span>{{ $t('_theme.code') }}</span>
+			</mk-textarea>
+			<mk-button @click="() => install(this.installThemeCode)" :disabled="installThemeCode == null"><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
+		</details>
+	</div>
+	<div class="_content">
+		<details>
+			<summary><fa :icon="faFolderOpen"/> {{ $t('_theme.manage') }}</summary>
+			<mk-select v-model="selectedThemeId">
+				<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</mk-select>
+			<template v-if="selectedTheme">
+				<mk-textarea readonly tall :value="selectedThemeCode">
+					<span>{{ $t('_theme.code') }}</span>
+				</mk-textarea>
+				<mk-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
+			</template>
+		</details>
+	</div>
 </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPalette } from '@fortawesome/free-solid-svg-icons';
+import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import * as JSON5 from 'json5';
 import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import MkTextarea from '../../components/ui/textarea.vue';
 import i18n from '../../i18n';
-import { Theme, builtinThemes, applyTheme } from '../../theme';
+import { Theme, builtinThemes, applyTheme, validateTheme } from '../../theme';
 import { selectFile } from '../../scripts/select-file';
 import { isDeviceDarkmode } from '../../scripts/is-device-darkmode';
 
@@ -73,12 +99,16 @@ export default Vue.extend({
 		MkButton,
 		MkSelect,
 		MkSwitch,
+		MkTextarea,
 	},
 	
 	data() {
 		return {
+			builtinThemes,
+			installThemeCode: null,
+			selectedThemeId: null,
 			wallpaper: localStorage.getItem('wallpaper'),
-			faPalette
+			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt
 		}
 	},
 
@@ -118,6 +148,16 @@ export default Vue.extend({
 			get() { return this.$store.state.device.syncDeviceDarkMode; },
 			set(value) { this.$store.commit('device/set', { key: 'syncDeviceDarkMode', value }); }
 		},
+
+		selectedTheme() {
+			if (this.selectedThemeId == null) return null;
+			return this.themes.find(x => x.id === this.selectedThemeId);
+		},
+
+		selectedThemeCode() {
+			if (this.selectedTheme == null) return null;
+			return JSON5.stringify(this.selectedTheme, null, '\t');
+		},
 	},
 
 	watch: {
@@ -155,6 +195,53 @@ export default Vue.extend({
 				this.wallpaper = file.url;
 			});
 		},
+
+		install(code) {
+			let theme;
+			try {
+				theme = JSON5.parse(code);
+			} catch (e) {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('_theme.invalid')
+				});
+				return;
+			}
+			if (!validateTheme(theme)) {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('_theme.invalid')
+				});
+				return;
+			}
+			if (this.$store.state.device.themes.some(t => t.id === theme.id)) {
+				this.$root.dialog({
+					type: 'info',
+					text: this.$t('_theme.alreadyInstalled')
+				});
+				return;
+			}
+			const themes = this.$store.state.device.themes.concat(theme);
+			this.$store.commit('device/set', {
+				key: 'themes', value: themes
+			});
+			this.$root.dialog({
+				type: 'success',
+				text: this.$t('_theme.installed', { name: theme.name })
+			});
+		},
+
+		uninstall() {
+			const theme = this.selectedTheme;
+			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
+			this.$store.commit('device/set', {
+				key: 'themes', value: themes
+			});
+			this.$root.dialog({
+				type: 'info',
+				iconOnly: true, autoClose: true
+			});
+		},
 	}
 });
 </script>
@@ -179,7 +266,7 @@ export default Vue.extend({
 				top: 50%;
 				left: 50%;
 				overflow: hidden;
-				padding: 0 200px;
+				padding: 0 100px;
 				transform: translate3d(-50%, -50%, 0);
 
 				input {

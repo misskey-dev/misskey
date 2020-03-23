@@ -178,6 +178,7 @@ os.init(async () => {
 		},
 		watch: {
 			'$store.state.device.darkMode'() {
+				// TODO: このファイルでbuiltinThemesを参照するとcode splittingが効かず、初回読み込み時に全てのテーマコードを読み込むことになってしまい無駄なので何とかする
 				const themes = builtinThemes.concat(this.$store.state.device.themes);
 				applyTheme(themes.find(x => x.id === (this.$store.state.device.darkMode ? this.$store.state.device.darkTheme : this.$store.state.device.lightTheme)));
 			}

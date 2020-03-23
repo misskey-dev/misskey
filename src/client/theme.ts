@@ -102,3 +102,10 @@ function compile(theme: Theme): { [key: string]: string } {
 function genValue(c: tinycolor.Instance): string {
 	return c.toRgbString();
 }
+
+export function validateTheme(theme: Record<string, any>): boolean {
+	if (theme.id == null) return false;
+	if (theme.name == null) return false;
+	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
+	return true;
+}
