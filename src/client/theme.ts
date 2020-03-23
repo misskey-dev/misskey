@@ -104,8 +104,9 @@ function genValue(c: tinycolor.Instance): string {
 }
 
 export function validateTheme(theme: Record<string, any>): boolean {
-	if (theme.id == null) return false;
-	if (theme.name == null) return false;
+	if (theme.id == null || typeof theme.id !== 'string') return false;
+	if (theme.name == null || typeof theme.name !== 'string') return false;
 	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
+	if (theme.props == null || typeof theme.props !== 'object') return false;
 	return true;
 }
