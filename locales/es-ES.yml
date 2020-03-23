@@ -474,6 +474,8 @@ _theme:
   manage: "Gestor de temas"
   code: "Código del tema"
   installed: "{name} ha sido instalado"
+  alreadyInstalled: "Este tema ya está instalado"
+  invalid: "El formato del tema no es válido"
 _sfx:
   note: "Notas"
   noteMy: "Nota (a mí mismo)"
