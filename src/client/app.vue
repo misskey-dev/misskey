@@ -895,24 +895,25 @@ export default Vue.extend({
 					color: var(--navActive);
 				}
 
-				&:first-child {
+				&:first-child, &:last-child {
 					position: sticky;
 					z-index: 1;
-					top: 0;
 					padding-top: 8px;
 					padding-bottom: 8px;
+					background: var(--wboyroyc);
+					-webkit-backdrop-filter: blur(8px);
+					backdrop-filter: blur(8px);
+				}
+
+				&:first-child {
+					top: 0;
 					margin-bottom: 16px;
-					background: var(--navBg);
 					border-bottom: solid 1px var(--divider);
 				}
 
 				&:last-child {
-					position: sticky;
 					bottom: 0;
-					padding-top: 8px;
-					padding-bottom: 8px;
 					margin-top: 16px;
-					background: var(--navBg);
 					border-top: solid 1px var(--divider);
 				}
 
