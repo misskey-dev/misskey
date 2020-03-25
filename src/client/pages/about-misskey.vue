@@ -1,9 +1,14 @@
 <template>
 <div class="znqjceqz">
-	<portal to="title">🍀 {{ $t('aboutMisskey') }}</portal>
+	<portal to="title">{{ $t('aboutMisskey') }}</portal>
 
 	<section class="_card">
-		<div class="_title">🍀 {{ $t('aboutMisskey') }}</div>
+		<div class="_title">{{ $t('aboutMisskey') }}</div>
+		<div class="_content" style="text-align: center;">
+			<img src="/assets/icons/512.png" alt="" style="display: block; width: 100px; margin: 0 auto; border-radius: 16px;"/>
+			<div style="margin-top: 0.75em;">Misskey</div>
+			<div style="opacity: 0.5;">v{{ version }}</div>
+		</div>
 		<div class="_content">
 			<div style="margin-bottom: 1em;">{{ $t('aboutMisskeyText') }}</div>
 			<div>🛠️ {{ $t('misskeyMembers') }}</div>
