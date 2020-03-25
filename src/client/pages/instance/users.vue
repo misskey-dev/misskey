@@ -64,6 +64,9 @@ export default Vue.extend({
 			pagination: {
 				endpoint: 'admin/show-users',
 				limit: 10,
+				params: () => ({
+					sort: '+createdAt'
+				}),
 				offsetMode: true
 			},
 			target: '',
