@@ -38,7 +38,7 @@
 		</mk-input>
 		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
 			<i18n path="agreeTo">
-				<a :href="meta.tosUrl" target="_blank">{{ $t('tos') }}</a>
+				<a :href="meta.tosUrl" target="_blank" style="color: #3CB7B5">{{ $t('tos') }}</a>
 			</i18n>
 		</mk-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
