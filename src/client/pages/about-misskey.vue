@@ -49,6 +49,9 @@
 				<li>wara</li>
 				<li>Takashi Shibuya</li>
 				<li>Noizeman</li>
+				<li>mydarkstar</li>
+				<li>nenohi</li>
+				<li>Eduardo Quiros</li>
 			</ul>
 			<span>{{ $t('morePatrons') }}</span>
 		</div>
