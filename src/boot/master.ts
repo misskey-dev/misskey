@@ -159,7 +159,7 @@ async function init(): Promise<Config> {
 }
 
 async function spawnWorkers(limit: number = 1) {
-	const workers = Math.min(limit, os.cpus().length);
+	const workers = Math.min(limit, os.cpus().length * 2);
 	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
 	await Promise.all([...Array(workers)].map(spawnWorker));
 	bootLogger.succ('All workers started');
