@@ -72,6 +72,9 @@ export default Vue.extend({
 		},
 
 		parse(md: string) {
+			// 変数置換
+			md = md.replace(/\{_URL_\}/g, url);
+
 			// markdown の全容をパースする
 			const parsed = markdown.parse(md, {});
 			if (parsed.length === 0) return;
