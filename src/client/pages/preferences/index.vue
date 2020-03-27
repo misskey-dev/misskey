@@ -3,6 +3,8 @@
 	<portal to="icon"><fa :icon="faCog"/></portal>
 	<portal to="title">{{ $t('clinetSettings') }}</portal>
 
+	<router-link v-if="$store.getters.isSignedIn" class="_panel _buttonPrimary" to="/my/settings" style="margin-bottom: var(--margin);">{{ $t('accountSettings') }}</router-link>
+
 	<x-theme/>
 
 	<section class="_card">

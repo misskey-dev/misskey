@@ -466,6 +466,17 @@ details: "詳細"
 chooseEmoji: "絵文字を選択"
 unableToProcess: "操作を完了できません"
 recentUsed: "最近使用"
+install: "インストール"
+uninstall: "アンインストール"
+
+_theme:
+  explore: "テーマを探す"
+  install: "テーマのインストール"
+  manage: "テーマの管理"
+  code: "テーマコード"
+  installed: "{name}をインストールしました"
+  alreadyInstalled: "そのテーマは既にインストールされています"
+  invalid: "テーマの形式が間違っています"
 
 _sfx:
   note: "ノート"

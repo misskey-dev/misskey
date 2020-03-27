@@ -43,7 +43,6 @@
 				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
 					<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
 				</button>
-				<div class="divider"></div>
 				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
 					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 				</button>
@@ -164,7 +163,6 @@ import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
-import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import MkToast from './components/toast.vue';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -225,10 +223,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.$store.state.device.syncDeviceDarkMode) {
-			this.$store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
-		}
-
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
@@ -252,7 +246,10 @@ export default Vue.extend({
 		if (this.isDesktop) this.adjustWidgetsWidth();
 
 		const adjustTitlePosition = () => {
-			this.$refs.title.style.left = (this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth) + 'px';
+			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth;
+			if (left >= 0) {
+				this.$refs.title.style.left = left + 'px';
+			}
 		};
 
 		adjustTitlePosition();
@@ -622,12 +619,12 @@ export default Vue.extend({
 .mk-app {
 	$header-height: 60px;
 	$nav-width: 250px;
-	$nav-icon-only-width: 74px;
+	$nav-icon-only-width: 80px;
 	$main-width: 650px;
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1300px;
-	$nav-hide-threshold: 700px;
-	$side-hide-threshold: 1100px;
+	$nav-hide-threshold: 650px;
+	$side-hide-threshold: 1070px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
@@ -822,8 +819,6 @@ export default Vue.extend({
 			z-index: 1001;
 			width: $nav-width;
 			height: 100vh;
-			padding: 16px 0;
-			padding-bottom: calc(3.7rem + 24px);
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);
@@ -836,12 +831,20 @@ export default Vue.extend({
 
 			@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
 				width: $nav-icon-only-width;
-				padding: 8px 0;
-				padding-bottom: calc(3.7rem + 24px);
 
 				> .divider {
 					margin: 8px auto;
 					width: calc(100% - 32px);
+				}
+
+				> .item {
+					&:first-child {
+						margin-bottom: 8px;
+					}
+
+					&:last-child {
+						margin-top: 8px;
+					}
 				}
 			}
 
@@ -892,15 +895,26 @@ export default Vue.extend({
 					color: var(--navActive);
 				}
 
-				&:last-child {
-					position: fixed;
-					bottom: 0;
-					width: inherit;
+				&:first-child, &:last-child {
+					position: sticky;
+					z-index: 1;
 					padding-top: 8px;
 					padding-bottom: 8px;
-					background: var(--navBg);
+					background: var(--wboyroyc);
+					-webkit-backdrop-filter: blur(8px);
+					backdrop-filter: blur(8px);
+				}
+
+				&:first-child {
+					top: 0;
+					margin-bottom: 16px;
+					border-bottom: solid 1px var(--divider);
+				}
+
+				&:last-child {
+					bottom: 0;
+					margin-top: 16px;
 					border-top: solid 1px var(--divider);
-					border-right: solid 1px var(--divider);
 				}
 
 				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {

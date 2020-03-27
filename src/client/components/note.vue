@@ -49,7 +49,7 @@
 						<x-media-list :media-list="appearNote.files"/>
 					</div>
 					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<x-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" class="url-preview"/>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><x-note-preview :note="appearNote.renote"/></div>
 				</div>
 			</div>
@@ -97,7 +97,7 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import XUrlPreview from './url-preview.vue';
+import MkUrlPreview from './url-preview.vue';
 import MkReactionPicker from './reaction-picker.vue';
 import pleaseLogin from '../scripts/please-login';
 import { focusPrev, focusNext } from '../scripts/focus';
@@ -115,7 +115,7 @@ export default Vue.extend({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		XUrlPreview,
+		MkUrlPreview,
 	},
 
 	props: {

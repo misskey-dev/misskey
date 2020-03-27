@@ -23,7 +23,7 @@ import Vue from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '../config';
-import XUrlPreview from './url-preview-popup.vue';
+import MkUrlPreview from './url-preview-popup.vue';
 
 export default Vue.extend({
 	props: {
@@ -70,7 +70,7 @@ export default Vue.extend({
 			if (!document.body.contains(this.$el)) return;
 			if (this.preview) return;
 
-			this.preview = new XUrlPreview({
+			this.preview = new MkUrlPreview({
 				parent: this,
 				propsData: {
 					url: this.url,

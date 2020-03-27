@@ -6,7 +6,7 @@
 	<mk-pagination :pagination="pagination" class="mk-follow-requests" ref="list">
 		<template #empty>
 			<div class="tkdrhpxr">
-				<img src="https://xn--931a.moe/assets/info.png" class="_ghost"/>
+				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 				<div>{{ $t('noFollowRequests') }}</div>
 			</div>
 		</template>

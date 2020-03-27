@@ -19,6 +19,7 @@ import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
 import { applyTheme, lightTheme, builtinThemes } from './theme';
+import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -144,6 +145,24 @@ os.init(async () => {
 		}
 	}, false)
 
+	os.store.watch(state => state.device.darkMode, darkMode => {
+		// TODO: このファイルでbuiltinThemesを参照するとcode splittingが効かず、初回読み込み時に全てのテーマコードを読み込むことになってしまい無駄なので何とかする
+		const themes = builtinThemes.concat(os.store.state.device.themes);
+		applyTheme(themes.find(x => x.id === (darkMode ? os.store.state.device.darkTheme : os.store.state.device.lightTheme)));
+	});
+
+	//#region Sync dark mode
+	if (os.store.state.device.syncDeviceDarkMode) {
+		os.store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
+		if (os.store.state.device.syncDeviceDarkMode) {
+			os.store.commit('device/set', { key: 'darkMode', value: mql.matches });
+		}
+	});
+	//#endregion
+
 	if ('Notification' in window && os.store.getters.isSignedIn) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {
@@ -162,12 +181,6 @@ os.init(async () => {
 				stream: os.stream,
 				isMobile: isMobile
 			};
-		},
-		watch: {
-			'$store.state.device.darkMode'() {
-				const themes = builtinThemes.concat(this.$store.state.device.themes);
-				applyTheme(themes.find(x => x.id === (this.$store.state.device.darkMode ? this.$store.state.device.darkTheme : this.$store.state.device.lightTheme)));
-			}
 		},
 		methods: {
 			api: os.api,
