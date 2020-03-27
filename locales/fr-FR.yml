@@ -524,7 +524,7 @@ _tutorial:
   step7_3: "Alors, profitez de Misskey 🚀"
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
-  registerDevice: "S’inscrire l'appareil"
+  registerDevice: "Ajouter un appareil"
   registerKey: "S’inscrire la clé"
   step1: "Tout d'abord, installez une application d'authentification, telle que {a} ou {b}, sur votre appareil."
   step2: "Ensuite, scannez le code QR affiché avec l'application."
