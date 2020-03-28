@@ -412,6 +412,26 @@ main ._panel {
 	}
 }
 
+._fullinfo {
+	padding: 32px;
+	text-align: center;
+
+	> img {
+		vertical-align: bottom;
+		height: 128px;
+		margin-bottom: 16px;
+		border-radius: 16px;
+	}
+}
+
+._keyValue {
+	display: flex;
+
+	> div {
+		flex: 1;
+	}
+}
+
 ._link {
 	color: var(--link);
 }

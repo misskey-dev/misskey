@@ -468,6 +468,10 @@ unableToProcess: "操作を完了できません"
 recentUsed: "最近使用"
 install: "インストール"
 uninstall: "アンインストール"
+installedApps: "インストールされたアプリ"
+nothing: "ありません"
+installedDate: "インストール日時"
+lastUsedDate: "最終使用日時"
 
 _theme:
   explore: "テーマを探す"

@@ -31,7 +31,7 @@
 			</div>
 		</router-link>
 	</div>
-	<div class="no-history" v-if="!fetching && messages.length == 0">
+	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $t('noHistory') }}</div>
 	</div>
@@ -284,18 +284,6 @@ export default Vue.extend({
 					}
 				}
 			}
-		}
-	}
-
-	> .no-history {
-		padding: 32px;
-		text-align: center;
-
-		> img {
-			vertical-align: bottom;
-			height: 128px;
-			margin-bottom: 16px;
-			border-radius: 16px;
 		}
 	}
 
