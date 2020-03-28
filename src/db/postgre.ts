@@ -57,6 +57,7 @@ import { Antenna } from '../models/entities/antenna';
 import { AntennaNote } from '../models/entities/antenna-note';
 import { PromoNote } from '../models/entities/promo-note';
 import { PromoRead } from '../models/entities/promo-read';
+import { program } from '../argv';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -149,13 +150,15 @@ export const entities = [
 	...charts as any
 ];
 
-export function initDb(justBorrow = false, sync = false, log = false, forceRecreate = false) {
+export function initDb(justBorrow = false, sync = false, forceRecreate = false) {
 	if (!forceRecreate) {
 		try {
 			const conn = getConnection();
 			return Promise.resolve(conn);
 		} catch (e) {}
 	}
+
+	const log = program.verbose;
 
 	return createConnection({
 		type: 'postgres',
