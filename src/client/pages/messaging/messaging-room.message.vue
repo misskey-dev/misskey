@@ -214,6 +214,7 @@ export default Vue.extend({
 							width: 100%;
 							max-height: 512px;
 							object-fit: contain;
+							box-sizing: border-box;
 						}
 
 						> p {
