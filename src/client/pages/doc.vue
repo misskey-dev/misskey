@@ -18,12 +18,17 @@
 import Vue from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
+import MarkdownItAnchor from 'markdown-it-anchor';
 import i18n from '../i18n';
 import { url, lang } from '../config';
 import MkLink from '../components/link.vue';
 
 const markdown = MarkdownIt({
 	html: true
+});
+
+markdown.use(MarkdownItAnchor, {
+	slugify: (s) => encodeURIComponent(String(s).trim().replace(/\s+/g, '-'))
 });
 
 export default Vue.extend({
