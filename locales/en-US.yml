@@ -468,6 +468,10 @@ unableToProcess: "The operation could not be completed."
 recentUsed: "Recently used"
 install: "Install"
 uninstall: "Uninstall"
+installedApps: "Authorized Applications"
+nothing: "There's nothing to see here"
+installedDate: "Authorized"
+lastUsedDate: "Last used"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
@@ -560,7 +564,11 @@ _permissions:
   "write:user-groups": "Edit or delete user groups"
 _auth:
   shareAccess: "Would you like to authorize \"{name}\" to access this account?"
+  shareAccessAsk: "Are you sure you want to authorize this application to access your account?"
   permissionAsk: "This application requires following permissions:"
+  pleaseGoBack: "Please go back to the application"
+  callback: "Returning back to the application"
+  denied: "Access Denied"
 _antennaSources:
   all: "All notes"
   homeTimeline: "Notes from following users"
