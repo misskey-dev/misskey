@@ -65,6 +65,9 @@ export default Vue.extend({
 		name(): string {
 			return this.$route.query.name;
 		},
+		icon(): string {
+			return this.$route.query.icon;
+		},
 		permission(): string {
 			return this.$route.query.permission;
 		},
@@ -75,6 +78,7 @@ export default Vue.extend({
 			await this.$root.api('miauth/gen-token', {
 				session: this.session,
 				name: this.name,
+				iconUrl: this.icon,
 				permission: this.permission || [],
 			});
 
