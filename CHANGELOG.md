@@ -11,7 +11,9 @@ ChangeLog
 -------------------
 
 ### ✨Improvements
-* サードパーティーアプリケーションの認証方法にMiAuthを追加 ([Misskey API ドキュメント](https://github.com/syuilo/misskey/blob/b8088dc01a0c53b264c0697082ff5b16b06c4cda/src/docs/api.ja-JP.md#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%81%97%E3%81%A6%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B))
+* サードパーティーアプリケーションの認証方法にMiAuthを追加 ([Misskey API ドキュメント](https://github.com/syuilo/misskey/blob/b8088dc01a0c53b264c0697082ff5b16b06c4cda/src/docs/api.ja-JP.md#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%81%97%E3%81%A6%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B))  
+  従来の、API `app/create` => `auth/session/generate` => `auth/session/userkey` を使用する方法は依然として使用可能です。  
+UIからアプリを作成する画面 (`/dev/apps`) は廃止されました、同等の操作を行いたい場合は API `app/create` で可能です。
 * テーマをインポートする前にプレビューできるように
 * アプリから通知を作成できるように
 * インストールしたアプリを見たり削除したりできるように
