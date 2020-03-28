@@ -55,6 +55,9 @@ export default Vue.extend({
 			pagination: {
 				endpoint: 'i/apps',
 				limit: 100,
+				params: {
+					sort: '+lastUsedAt'
+				}
 			},
 			faTrashAlt, faPlug
 		};
