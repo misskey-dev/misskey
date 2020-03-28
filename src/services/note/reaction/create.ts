@@ -66,7 +66,8 @@ export default async (user: User, note: Note, reaction?: string) => {
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
 	if (note.userHost === null) {
-		createNotification(note.userId, user.id, 'reaction', {
+		createNotification(note.userId, 'reaction', {
+			notifierId: user.id,
 			noteId: note.id,
 			reaction: reaction
 		});
@@ -78,7 +79,8 @@ export default async (user: User, note: Note, reaction?: string) => {
 		userId: Not(user.id)
 	}).then(watchers => {
 		for (const watcher of watchers) {
-			createNotification(watcher.userId, user.id, 'reaction', {
+			createNotification(watcher.userId, 'reaction', {
+				notifierId: user.id,
 				noteId: note.id,
 				reaction: reaction
 			});

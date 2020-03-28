@@ -178,7 +178,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, isSecure) => {
+export default define(meta, async (ps, user, token) => {
+	const isSecure = token == null;
+
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
 

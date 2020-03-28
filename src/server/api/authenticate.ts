@@ -2,12 +2,9 @@ import isNativeToken from './common/is-native-token';
 import { User } from '../../models/entities/user';
 import { Users, AccessTokens, Apps } from '../../models';
 import { ensure } from '../../prelude/ensure';
+import { AccessToken } from '../../models/entities/access-token';
 
-type App = {
-	permission: string[];
-};
-
-export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
+export default async (token: string): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
@@ -45,12 +42,11 @@ export default async (token: string): Promise<[User | null | undefined, App | nu
 				.findOne(accessToken.appId).then(ensure);
 
 			return [user, {
+				id: accessToken.id,
 				permission: app.permission
-			}];
+			} as AccessToken];
 		} else {
-			return [user, {
-				permission: accessToken.permission
-			}];
+			return [user, accessToken];
 		}
 	}
 };

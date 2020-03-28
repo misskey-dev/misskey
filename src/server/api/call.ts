@@ -4,10 +4,7 @@ import { User } from '../../models/entities/user';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
-
-type App = {
-	permission: string[];
-};
+import { AccessToken } from '../../models/entities/access-token';
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -15,8 +12,8 @@ const accessDenied = {
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e'
 };
 
-export default async (endpoint: string, user: User | null | undefined, app: App | null | undefined, data: any, file?: any) => {
-	const isSecure = user != null && app == null;
+export default async (endpoint: string, user: User | null | undefined, token: AccessToken | null | undefined, data: any, file?: any) => {
+	const isSecure = user != null && token == null;
 
 	const ep = endpoints.find(e => e.name === endpoint);
 
@@ -54,7 +51,7 @@ export default async (endpoint: string, user: User | null | undefined, app: App 
 		throw new ApiError(accessDenied, { reason: 'You are not a moderator.' });
 	}
 
-	if (app && ep.meta.kind && !app.permission.some(p => p === ep.meta.kind)) {
+	if (token && ep.meta.kind && !token.permission.some(p => p === ep.meta.kind)) {
 		throw new ApiError({
 			message: 'Your app does not have the necessary permissions to use this endpoint.',
 			code: 'PERMISSION_DENIED',
@@ -76,7 +73,7 @@ export default async (endpoint: string, user: User | null | undefined, app: App 
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, isSecure, file).catch((e: Error) => {
+	return await ep.exec(data, user, token, file).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {

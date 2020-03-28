@@ -28,7 +28,9 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, isSecure) => {
+export default define(meta, async (ps, user, token) => {
+	const isSecure = token == null;
+
 	// Lookup app
 	const ap = await Apps.findOne(ps.appId);
 
