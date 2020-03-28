@@ -127,6 +127,19 @@ export default Vue.extend({
 		color: var(--link);
 	}
 
+	::v-deep blockquote {
+		display: block;
+		margin: 8px;
+		padding: 6px 0 6px 12px;
+		color: var(--fg);
+		border-left: solid 3px var(--fg);
+		opacity: 0.7;
+
+		p {
+			margin: 0;
+		}
+	}
+
 	::v-deep h2 {
 		font-size: 1.25em;
 		padding: 0 0 0.5em 0;
