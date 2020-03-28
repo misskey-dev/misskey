@@ -468,6 +468,10 @@ unableToProcess: "操作を完了できません"
 recentUsed: "最近使用"
 install: "インストール"
 uninstall: "アンインストール"
+installedApps: "インストールされたアプリ"
+nothing: "ありません"
+installedDate: "インストール日時"
+lastUsedDate: "最終使用日時"
 
 _theme:
   explore: "テーマを探す"
@@ -568,7 +572,11 @@ _permissions:
 
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
+  shareAccessAsk: "アカウントへのアクセスを許可しますか？"
   permissionAsk: "このアプリは次の権限を要求しています"
+  pleaseGoBack: "アプリケーションに戻ってやっていってください"
+  callback: "アプリケーションに戻っています"
+  denied: "アクセスを拒否しました"
 
 _antennaSources:
   all: "全てのノート"

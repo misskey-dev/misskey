@@ -78,7 +78,8 @@ class NotificationManager {
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
 			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
-				createNotification(x.target, this.notifier.id, x.reason, {
+				createNotification(x.target, x.reason, {
+					notifierId: this.notifier.id,
 					noteId: this.note.id
 				});
 			}

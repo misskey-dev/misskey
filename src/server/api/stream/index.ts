@@ -7,9 +7,9 @@ import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
-import { App } from '../../../models/entities/app';
 import { Users, Followings, Mutings } from '../../../models';
 import { ApiError } from '../error';
+import { AccessToken } from '../../../models/entities/access-token';
 
 /**
  * Main stream connection
@@ -18,7 +18,7 @@ export default class Connection {
 	public user?: User;
 	public following: User['id'][] = [];
 	public muting: User['id'][] = [];
-	public app: App;
+	public token: AccessToken;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
@@ -30,12 +30,12 @@ export default class Connection {
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User | null | undefined,
-		app: App | null | undefined
+		token: AccessToken | null | undefined
 	) {
 		this.wsConnection = wsConnection;
 		this.subscriber = subscriber;
 		if (user) this.user = user;
-		if (app) this.app = app;
+		if (token) this.token = token;
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
@@ -83,7 +83,7 @@ export default class Connection {
 		const endpoint = payload.endpoint || payload.ep; // alias
 
 		// 呼び出し
-		call(endpoint, user, this.app, payload.data).then(res => {
+		call(endpoint, user, this.token, payload.data).then(res => {
 			this.sendMessageToWs(`api:${payload.id}`, { res });
 		}).catch((e: ApiError) => {
 			this.sendMessageToWs(`api:${payload.id}`, {

@@ -57,7 +57,8 @@
 			<mk-textarea v-model="installThemeCode">
 				<span>{{ $t('_theme.code') }}</span>
 			</mk-textarea>
-			<mk-button @click="() => install(this.installThemeCode)" :disabled="installThemeCode == null"><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
+			<mk-button @click="() => install(this.installThemeCode)" :disabled="installThemeCode == null" primary inline><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
+			<mk-button @click="() => preview(this.installThemeCode)" :disabled="installThemeCode == null" inline><fa :icon="faEye"/> {{ $t('preview') }}</mk-button>
 		</details>
 	</div>
 	<div class="_content">
@@ -79,7 +80,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
@@ -108,7 +109,7 @@ export default Vue.extend({
 			installThemeCode: null,
 			selectedThemeId: null,
 			wallpaper: localStorage.getItem('wallpaper'),
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt
+			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
 		}
 	},
 
@@ -196,8 +197,9 @@ export default Vue.extend({
 			});
 		},
 
-		install(code) {
+		parseThemeCode(code) {
 			let theme;
+
 			try {
 				theme = JSON5.parse(code);
 			} catch (e) {
@@ -205,22 +207,34 @@ export default Vue.extend({
 					type: 'error',
 					text: this.$t('_theme.invalid')
 				});
-				return;
+				return false;
 			}
 			if (!validateTheme(theme)) {
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('_theme.invalid')
 				});
-				return;
+				return false;
 			}
 			if (this.$store.state.device.themes.some(t => t.id === theme.id)) {
 				this.$root.dialog({
 					type: 'info',
 					text: this.$t('_theme.alreadyInstalled')
 				});
-				return;
+				return false;
 			}
+
+			return theme;
+		},
+
+		preview(code) {
+			const theme = this.parseThemeCode(code);
+			if (theme) applyTheme(theme, false);
+		},
+
+		install(code) {
+			const theme = this.parseThemeCode(code);
+			if (!theme) return;
 			const themes = this.$store.state.device.themes.concat(theme);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes

@@ -2,8 +2,8 @@ import * as fs from 'fs';
 import { ILocalUser } from '../../models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
-import { App } from '../../models/entities/app';
 import { SchemaType } from '../../misc/schema';
+import { AccessToken } from '../../models/entities/access-token';
 
 // TODO: defaultが設定されている場合はその型も考慮する
 type Params<T extends IEndpointMeta> = {
@@ -15,12 +15,12 @@ type Params<T extends IEndpointMeta> = {
 export type Response = Record<string, any> | void;
 
 type executor<T extends IEndpointMeta> =
-	(params: Params<T>, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, app: App, file?: any, cleanup?: Function) =>
+	(params: Params<T>, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken, file?: any, cleanup?: Function) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
-		: (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, app: App, file?: any) => Promise<any> {
-	return (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, app: App, file?: any) => {
+		: (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken, file?: any) => Promise<any> {
+	return (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}
@@ -37,7 +37,7 @@ export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 			return Promise.reject(pserr);
 		}
 
-		return cb(ps, user, app, file, cleanup);
+		return cb(ps, user, token, file, cleanup);
 	};
 }
 

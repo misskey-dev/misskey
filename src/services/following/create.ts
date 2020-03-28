@@ -57,7 +57,9 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		});
 
 		// 通知を作成
-		createNotification(follower.id, followee.id, 'followRequestAccepted');
+		createNotification(follower.id, 'followRequestAccepted', {
+			notifierId: followee.id,
+		});
 	}
 
 	if (alreadyFollowed) return;
@@ -95,7 +97,9 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
 
 		// 通知を作成
-		createNotification(followee.id, follower.id, 'follow');
+		createNotification(followee.id, 'follow', {
+			notifierId: follower.id
+		});
 	}
 }
 
