@@ -468,6 +468,9 @@ unableToProcess: "L'opération n'a pas pu être complétée"
 recentUsed: "Récemment utilisé"
 install: "Installation"
 uninstall: "Désinstaller"
+installedApps: "Applications Autorisées"
+nothing: "Il n'y a rien à voir ici"
+installedDate: "Autorisé"
 lastUsedDate: "Dernière utilisation"
 _theme:
   explore: "Explorer les thèmes"
@@ -561,7 +564,11 @@ _permissions:
   "write:user-groups": "Éditer les groupes des utilisateur·rice·s"
 _auth:
   shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
+  shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
   permissionAsk: "Cette application nécessite les autorisations suivantes "
+  pleaseGoBack: "Veillez retourner à l'application"
+  callback: "Retour vers l’application"
+  denied: "Accès refusé"
 _antennaSources:
   all: "Toutes les notes"
   homeTimeline: "Notes de l'utilisateur auquel je m'abonne"
