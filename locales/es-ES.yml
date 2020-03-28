@@ -566,6 +566,9 @@ _auth:
   shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
   shareAccessAsk: "¿Está seguro de que desea autorizar esta aplicación para acceder a su cuenta?"
   permissionAsk: "Esta aplicación requiere los siguientes permisos"
+  pleaseGoBack: "Por favor, vuelve a la aplicación"
+  callback: "Volviendo a la aplicación"
+  denied: "Acceso denegado"
 _antennaSources:
   all: "Todas las notas"
   homeTimeline: "Notas de los usuarios que sigues"
