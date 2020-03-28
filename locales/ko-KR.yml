@@ -468,6 +468,10 @@ unableToProcess: "작업을 완료할 수 없습니다"
 recentUsed: "최근 사용"
 install: "설치"
 uninstall: "삭제"
+installedApps: "인증된 애플리케이션"
+nothing: "아무것도 없습니다"
+installedDate: "승인한 날짜"
+lastUsedDate: "마지막 사용"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
@@ -560,7 +564,11 @@ _permissions:
   "write:user-groups": "유저 그룹을 만들거나, 초대하거나, 이름을 변경하거나, 양도하거나, 삭제합니다"
 _auth:
   shareAccess: "\"{name}\" 이 계정에 접근하는 것을 허용하시겠습니까?"
+  shareAccessAsk: "이 애플리케이션이 계정에 접근하는 것을 허용하시겠습니까?"
   permissionAsk: "이 앱은 다음의 권한을 요청합니다"
+  pleaseGoBack: "앱으로 돌아가서 시도해 주세요"
+  callback: "앱으로 돌아갑니다"
+  denied: "접근이 거부되었습니다"
 _antennaSources:
   all: "모든 노트"
   homeTimeline: "팔로우중인 유저의 노트"
