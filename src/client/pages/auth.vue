@@ -12,20 +12,18 @@
 		@accepted="accepted"
 	/>
 	<div class="denied _panel" v-if="state == 'denied'">
-		<h1>{{ $t('denied') }}</h1>
-		<p>{{ $t('denied-paragraph') }}</p>
+		<h1>{{ $t('_auth.denied') }}</h1>
 	</div>
 	<div class="accepted _panel" v-if="state == 'accepted'">
 		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
-		<p v-if="session.app.callbackUrl">{{ $t('callback-url') }}<mk-ellipsis/></p>
-		<p v-if="!session.app.callbackUrl">{{ $t('please-go-back') }}</p>
+		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<mk-ellipsis/></p>
+		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
 	</div>
 	<div class="error _panel" v-if="state == 'fetch-session-error'">
 		<p>{{ $t('error') }}</p>
 	</div>
 </div>
 <div class="signin" v-else>
-	<h1>{{ $t('sign-in') }}</h1>
 	<mk-signin @login="onLogin"/>
 </div>
 </template>

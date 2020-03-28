@@ -15,7 +15,7 @@ import signin from './private/signin';
 import discord from './service/discord';
 import github from './service/github';
 import twitter from './service/twitter';
-import { Instances } from '../../models';
+import { Instances, AccessTokens, Users } from '../../models';
 
 // Init app
 const app = new Koa();
@@ -71,6 +71,28 @@ router.get('/v1/instance/peers', async ctx => {
 	});
 
 	ctx.body = instances.map(instance => instance.host);
+});
+
+router.post('/miauth/:session/check', async ctx => {
+	const token = await AccessTokens.findOne({
+		session: ctx.params.session
+	});
+
+	if (token && !token.fetched) {
+		AccessTokens.update(token.id, {
+			fetched: true
+		});
+
+		ctx.body = {
+			ok: true,
+			token: token.token,
+			user: await Users.pack(token.userId, null, { detail: true })
+		};
+	} else {
+		ctx.body = {
+			ok: false,
+		};
+	}
 });
 
 // Return 404 for unknown API

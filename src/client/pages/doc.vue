@@ -18,12 +18,17 @@
 import Vue from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
+import MarkdownItAnchor from 'markdown-it-anchor';
 import i18n from '../i18n';
 import { url, lang } from '../config';
 import MkLink from '../components/link.vue';
 
 const markdown = MarkdownIt({
 	html: true
+});
+
+markdown.use(MarkdownItAnchor, {
+	slugify: (s) => encodeURIComponent(String(s).trim().replace(/\s+/g, '-'))
 });
 
 export default Vue.extend({
@@ -72,6 +77,9 @@ export default Vue.extend({
 		},
 
 		parse(md: string) {
+			// 変数置換
+			md = md.replace(/\{_URL_\}/g, url);
+
 			// markdown の全容をパースする
 			const parsed = markdown.parse(md, {});
 			if (parsed.length === 0) return;
@@ -113,6 +121,23 @@ export default Vue.extend({
 
 	> *:last-child {
 		margin-bottom: 0;
+	}
+
+	::v-deep a {
+		color: var(--link);
+	}
+
+	::v-deep blockquote {
+		display: block;
+		margin: 8px;
+		padding: 6px 0 6px 12px;
+		color: var(--fg);
+		border-left: solid 3px var(--fg);
+		opacity: 0.7;
+
+		p {
+			margin: 0;
+		}
 	}
 
 	::v-deep h2 {

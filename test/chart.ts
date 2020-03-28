@@ -63,7 +63,7 @@ describe('Chart', () => {
 
 	after(async(async () => {
 		await connection.close();
-		await initDb(true, undefined, undefined, true);
+		await initDb(true, undefined, true);
 	}));
 
 	beforeEach(done => {

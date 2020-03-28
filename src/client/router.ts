@@ -46,6 +46,7 @@ export const router = new VueRouter({
 		{ path: '/my/groups', component: page('my-groups/index') },
 		{ path: '/my/groups/:group', component: page('my-groups/group') },
 		{ path: '/my/antennas', component: page('my-antennas/index') },
+		{ path: '/my/apps', component: page('apps') },
 		{ path: '/preferences', component: page('preferences/index') },
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },
@@ -58,6 +59,7 @@ export const router = new VueRouter({
 		{ path: '/notes/:note', name: 'note', component: page('note') },
 		{ path: '/tags/:tag', component: page('tag') },
 		{ path: '/auth/:token', component: page('auth') },
+		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
 		{ path: '*', component: page('not-found') }
