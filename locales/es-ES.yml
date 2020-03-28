@@ -468,6 +468,10 @@ unableToProcess: "La operación no se puede llevar a cabo"
 recentUsed: "Usado recientemente"
 install: "Instalación"
 uninstall: "Desinstalar"
+installedApps: "Aplicaciones Autorizadas"
+nothing: "No hay nada que ver aqui"
+installedDate: "Autorizado"
+lastUsedDate: "Utilizado el"
 _theme:
   explore: "Explorar temas"
   install: "Instalar tema"
@@ -560,6 +564,7 @@ _permissions:
   "write:user-groups": "Administrar grupos de usuarios"
 _auth:
   shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
+  shareAccessAsk: "¿Está seguro de que desea autorizar esta aplicación para acceder a su cuenta?"
   permissionAsk: "Esta aplicación requiere los siguientes permisos"
 _antennaSources:
   all: "Todas las notas"
