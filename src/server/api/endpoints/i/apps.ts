@@ -20,7 +20,8 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const query = AccessTokens.createQueryBuilder('token');
+	const query = AccessTokens.createQueryBuilder('token')
+		.where('token.userId = :userId', { userId: user.id });
 
 	switch (ps.sort) {
 		case '+createdAt': query.orderBy('token.createdAt', 'DESC'); break;

@@ -82,7 +82,7 @@ router.post('/miauth/:session/check', async ctx => {
 		AccessTokens.update(token.id, {
 			fetched: true
 		});
-		
+
 		ctx.body = {
 			ok: true,
 			token: token.token,
