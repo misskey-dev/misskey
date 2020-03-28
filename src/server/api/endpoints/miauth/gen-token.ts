@@ -42,6 +42,7 @@ export default define(meta, async (ps, user) => {
 	await AccessTokens.save({
 		id: genId(),
 		createdAt: new Date(),
+		lastUsedAt: new Date(),
 		session: ps.session,
 		userId: user.id,
 		token: accessToken,
