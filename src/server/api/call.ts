@@ -4,7 +4,10 @@ import { User } from '../../models/entities/user';
 import endpoints from './endpoints';
 import { ApiError } from './error';
 import { apiLogger } from './logger';
-import { App } from '../../models/entities/app';
+
+type App = {
+	permission: string[];
+};
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -73,7 +76,7 @@ export default async (endpoint: string, user: User | null | undefined, app: App 
 
 	// API invoking
 	const before = performance.now();
-	return await ep.exec(data, user, app, file).catch((e: Error) => {
+	return await ep.exec(data, user, isSecure, file).catch((e: Error) => {
 		if (e instanceof ApiError) {
 			throw e;
 		} else {

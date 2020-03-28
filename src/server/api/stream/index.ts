@@ -7,9 +7,12 @@ import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
-import { App } from '../../../models/entities/app';
 import { Users, Followings, Mutings } from '../../../models';
 import { ApiError } from '../error';
+
+type App = {
+	permission: string[];
+};
 
 /**
  * Main stream connection

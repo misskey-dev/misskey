@@ -118,6 +118,10 @@ export default Vue.extend({
 		margin-bottom: 0;
 	}
 
+	::v-deep a {
+		color: var(--link);
+	}
+
 	::v-deep h2 {
 		font-size: 1.25em;
 		padding: 0 0 0.5em 0;

@@ -19,9 +19,7 @@ export const meta = {
 	},
 };
 
-export default define(meta, async (ps, user, app) => {
-	const isSecure = user != null && app == null;
-
+export default define(meta, async (ps, user, isSecure) => {
 	return await Users.pack(user, user, {
 		detail: true,
 		includeHasUnreadNotes: true,

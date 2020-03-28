@@ -1,7 +1,11 @@
 import isNativeToken from './common/is-native-token';
 import { User } from '../../models/entities/user';
-import { App } from '../../models/entities/app';
 import { Users, AccessTokens, Apps } from '../../models';
+import { ensure } from '../../prelude/ensure';
+
+type App = {
+	permission: string[];
+};
 
 export default async (token: string): Promise<[User | null | undefined, App | null | undefined]> => {
 	if (token == null) {
@@ -27,14 +31,26 @@ export default async (token: string): Promise<[User | null | undefined, App | nu
 			throw new Error('invalid signature');
 		}
 
-		const app = await Apps
-			.findOne(accessToken.appId);
+		AccessTokens.update(accessToken.id, {
+			lastUsedAt: new Date(),
+		});
 
 		const user = await Users
 			.findOne({
 				id: accessToken.userId // findOne(accessToken.userId) のように書かないのは後方互換性のため
 			});
 
-		return [user, app];
+		if (accessToken.appId) {
+			const app = await Apps
+				.findOne(accessToken.appId).then(ensure);
+
+			return [user, {
+				permission: app.permission
+			}];
+		} else {
+			return [user, {
+				permission: accessToken.permission
+			}];
+		}
 	}
 };

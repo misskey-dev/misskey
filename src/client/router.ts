@@ -58,6 +58,7 @@ export const router = new VueRouter({
 		{ path: '/notes/:note', name: 'note', component: page('note') },
 		{ path: '/tags/:tag', component: page('tag') },
 		{ path: '/auth/:token', component: page('auth') },
+		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
 		{ path: '*', component: page('not-found') }
