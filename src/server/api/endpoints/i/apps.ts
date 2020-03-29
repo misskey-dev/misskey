@@ -20,13 +20,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const query = AccessTokens.createQueryBuilder('token');
+	const query = AccessTokens.createQueryBuilder('token')
+		.where('token.userId = :userId', { userId: user.id });
 
 	switch (ps.sort) {
 		case '+createdAt': query.orderBy('token.createdAt', 'DESC'); break;
 		case '-createdAt': query.orderBy('token.createdAt', 'ASC'); break;
-		case '+lastUsedAt': query.andWhere('token.lastUsedAt IS NOT NULL').orderBy('token.lastUsedAt', 'DESC'); break;
-		case '-lastUsedAt': query.andWhere('token.lastUsedAt IS NOT NULL').orderBy('token.lastUsedAt', 'ASC'); break;
+		case '+lastUsedAt': query.orderBy('token.lastUsedAt', 'DESC'); break;
+		case '-lastUsedAt': query.orderBy('token.lastUsedAt', 'ASC'); break;
 		default: query.orderBy('token.id', 'ASC'); break;
 	}
 
@@ -37,5 +38,6 @@ export default define(meta, async (ps, user) => {
 		name: token.name,
 		createdAt: token.createdAt,
 		lastUsedAt: token.lastUsedAt,
+		permission: token.permission,
 	})));
 });

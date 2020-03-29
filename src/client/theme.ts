@@ -27,7 +27,7 @@ export const builtinThemes = [
 	require('./themes/danboard.json5'),
 	require('./themes/olive.json5'),
 	require('./themes/tweetdeck.json5'),
-];
+] as Theme[];
 
 let timeout = null;
 
@@ -66,16 +66,21 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 }
 
-function compile(theme: Theme): { [key: string]: string } {
-	function getColor(code: string): tinycolor.Instance {
-		// ref
-		if (code[0] == '@') {
-			return getColor(theme.props[code.substr(1)]);
+function compile(theme: Theme): Record<string, string> {
+	function getColor(val: string): tinycolor.Instance {
+		// ref (prop)
+		if (val[0] === '@') {
+			return getColor(theme.props[val.substr(1)]);
+		}
+
+		// ref (const)
+		else if (val[0] === '$') {
+			return getColor(theme.props[val]);
 		}
 
 		// func
-		if (code[0] == ':') {
-			const parts = code.split('<');
+		else if (val[0] === ':') {
+			const parts = val.split('<');
 			const func = parts.shift().substr(1);
 			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
@@ -87,12 +92,15 @@ function compile(theme: Theme): { [key: string]: string } {
 			}
 		}
 
-		return tinycolor(code);
+		// other case
+		return tinycolor(val);
 	}
 
 	const props = {};
 
 	for (const [k, v] of Object.entries(theme.props)) {
+		if (k.startsWith('$')) continue; // ignore const
+
 		props[k] = genValue(getColor(v));
 	}
 

@@ -68,8 +68,8 @@ export default Vue.extend({
 		icon(): string {
 			return this.$route.query.icon;
 		},
-		permission(): string {
-			return this.$route.query.permission;
+		permission(): string[] {
+			return this.$route.query.permission ? this.$route.query.permission.split(',') : [];
 		},
 	},
 	methods: {
@@ -79,7 +79,7 @@ export default Vue.extend({
 				session: this.session,
 				name: this.name,
 				iconUrl: this.icon,
-				permission: this.permission || [],
+				permission: this.permission,
 			});
 
 			this.state = 'accepted';

@@ -442,15 +442,10 @@ _charts:
 _instanceCharts:
   requests: "Anfragen"
   users: "Unterschied in der Anzahl von Benutzern"
-  usersTotal: "Anzahl aller Benutzer"
   notes: "Unterschied in der Anzahl von Notizen"
-  notesTotal: "Anzahl aller Notizen"
   ff: "Unterschied in der Anzahl von Followern"
-  ffTotal: "Gesamtanzahl der Follower"
   cacheSize: "Unterschied in der Größe des Caches"
-  cacheSizeTotal: "Gesamtgröße des Caches"
   files: "Unterschied in der Anzahl der Dateien"
-  filesTotal: "Gesamtanzahl der Dateien"
 _timelines:
   home: "Startseite"
   local: "Lokal"

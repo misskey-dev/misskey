@@ -1,3 +1,3 @@
-import rndstr from 'rndstr';
+import { secureRndstr } from '../../../misc/secure-rndstr';
 
-export default () => rndstr('a-zA-Z0-9', 16);
+export default () => secureRndstr(16, true);

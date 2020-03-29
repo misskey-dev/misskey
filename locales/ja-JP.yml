@@ -472,6 +472,10 @@ installedApps: "インストールされたアプリ"
 nothing: "ありません"
 installedDate: "インストール日時"
 lastUsedDate: "最終使用日時"
+state: "状態"
+sort: "ソート"
+ascendingOrder: "昇順"
+descendingOrder: "降順"
 
 _theme:
   explore: "テーマを探す"
@@ -691,15 +695,15 @@ _charts:
 _instanceCharts:
   requests: "リクエスト"
   users: "ユーザーの増減"
-  usersTotal: "ユーザーの積算"
+  usersTotal: "ユーザーの累積"
   notes: "ノートの増減"
-  notesTotal: "ノートの積算"
+  notesTotal: "ノートの累積"
   ff: "フォロー/フォロワーの増減"
-  ffTotal: "フォロー/フォロワーの積算"
+  ffTotal: "フォロー/フォロワーの累積"
   cacheSize: "キャッシュサイズの増減"
-  cacheSizeTotal: "キャッシュサイズの積算"
+  cacheSizeTotal: "キャッシュサイズの累積"
   files: "ファイル数の増減"
-  filesTotal: "ファイル数の積算"
+  filesTotal: "ファイル数の累積"
 
 _timelines:
   home: "ホーム"

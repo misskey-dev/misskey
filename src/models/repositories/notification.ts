@@ -46,8 +46,8 @@ export class NotificationRepository extends Repository<Notification> {
 			} : {}),
 			...(notification.type === 'app' ? {
 				body: notification.customBody,
-				header: notification.customHeader || token!.name,
-				icon: notification.customIcon || token!.iconUrl,
+				header: notification.customHeader || token?.name,
+				icon: notification.customIcon || token?.iconUrl,
 			} : {}),
 		});
 	}
