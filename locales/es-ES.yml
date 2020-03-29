@@ -468,6 +468,10 @@ unableToProcess: "La operación no se puede llevar a cabo"
 recentUsed: "Usado recientemente"
 install: "Instalación"
 uninstall: "Desinstalar"
+installedApps: "Aplicaciones Autorizadas"
+nothing: "No hay nada que ver aqui"
+installedDate: "Autorizado"
+lastUsedDate: "Utilizado el"
 _theme:
   explore: "Explorar temas"
   install: "Instalar tema"
@@ -560,7 +564,11 @@ _permissions:
   "write:user-groups": "Administrar grupos de usuarios"
 _auth:
   shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
+  shareAccessAsk: "¿Está seguro de que desea autorizar esta aplicación para acceder a su cuenta?"
   permissionAsk: "Esta aplicación requiere los siguientes permisos"
+  pleaseGoBack: "Por favor, vuelve a la aplicación"
+  callback: "Volviendo a la aplicación"
+  denied: "Acceso denegado"
 _antennaSources:
   all: "Todas las notas"
   homeTimeline: "Notas de los usuarios que sigues"
@@ -664,15 +672,10 @@ _charts:
 _instanceCharts:
   requests: "Pedidos"
   users: "Variación de usuarios"
-  usersTotal: "Total de usuarios"
   notes: "Variación de la cantidad de notas"
-  notesTotal: "Estimación de notas"
   ff: "Variación de cantidad de seguidos/seguidores"
-  ffTotal: "Total de seguidos/seguidores"
   cacheSize: "Variación del tamaño de la caché"
-  cacheSizeTotal: "Total del tamaño de la caché"
   files: "Variación de cantidad de archivos"
-  filesTotal: "Total de archivos"
 _timelines:
   home: "Inicio"
   local: "Local"
