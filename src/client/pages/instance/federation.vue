@@ -4,7 +4,6 @@
 	<portal to="title">{{ $t('federation') }}</portal>
 
 	<section class="_card instances">
-		<div class="_title"><fa :icon="faGlobe"/> {{ $t('federation') }}</div>
 		<div class="_content">
 			<mk-input v-model="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
 			<div class="inputs" style="display: flex;">
