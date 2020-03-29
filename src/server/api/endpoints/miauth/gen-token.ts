@@ -1,8 +1,8 @@
-import rndstr from 'rndstr';
 import $ from 'cafy';
 import define from '../../define';
 import { AccessTokens } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
+import { secureRndstr } from '../../../../misc/secure-rndstr';
 
 export const meta = {
 	tags: ['auth'],
@@ -36,7 +36,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Generate access token
-	const accessToken = rndstr('a-zA-Z0-9', 32);
+	const accessToken = secureRndstr(32, true);
 
 	// Insert access token doc
 	await AccessTokens.save({
