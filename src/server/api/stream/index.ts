@@ -117,7 +117,7 @@ export default class Connection {
 
 		this.subscribingNotes[payload.id]++;
 
-		if (this.subscribingNotes[payload.id] == 1) {
+		if (this.subscribingNotes[payload.id] === 1) {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		}
 
