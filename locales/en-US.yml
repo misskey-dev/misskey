@@ -672,15 +672,10 @@ _charts:
 _instanceCharts:
   requests: "Requests"
   users: "Difference in # of users"
-  usersTotal: "Total # of users"
   notes: "Difference in # of notes"
-  notesTotal: "Total # of notes"
   ff: "Difference in # of followers"
-  ffTotal: "Total # of followers"
   cacheSize: "Difference in cache size"
-  cacheSizeTotal: "Total accumulated cache"
   files: "Difference in # of files"
-  filesTotal: "Total # of files"
 _timelines:
   home: "Home"
   local: "Local"
