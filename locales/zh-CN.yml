@@ -672,15 +672,10 @@ _charts:
 _instanceCharts:
   requests: "请求"
   users: "用户数量：增加/减少"
-  usersTotal: "用户总数"
   notes: "帖子：增加/减少"
-  notesTotal: "帖子：总数"
   ff: "关注/被关注：数量变化"
-  ffTotal: "关注/被关注：总数"
   cacheSize: "缓存大小：增加/减少"
-  cacheSizeTotal: "合计缓存大小"
   files: "文件总数增减"
-  filesTotal: "合计文件总数"
 _timelines:
   home: "首页"
   local: "本地"
