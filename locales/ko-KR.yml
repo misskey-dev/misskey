@@ -672,15 +672,10 @@ _charts:
 _instanceCharts:
   requests: "요청"
   users: "유저 수 증감"
-  usersTotal: "누적 유저 수"
   notes: "노트 수 증감"
-  notesTotal: "총 노트 수"
   ff: "팔로잉/팔로워 증감"
-  ffTotal: "팔로잉/팔로워 누적"
   cacheSize: "캐시 용량 증감"
-  cacheSizeTotal: "누적 캐시 용량"
   files: "파일 수 증감"
-  filesTotal: "누적 파일 수"
 _timelines:
   home: "홈"
   local: "로컬"
