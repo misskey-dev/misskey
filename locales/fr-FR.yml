@@ -672,15 +672,10 @@ _charts:
 _instanceCharts:
   requests: "Requêtes"
   users: "Variation du nombre d'utilisateur·rice·s"
-  usersTotal: "Somme du nombre d'utilisateur·rice·s accumulés"
   notes: "Variation du nombre d'notes"
-  notesTotal: "Somme du nombre d’notes accumulés"
   ff: "Variation des abonné·e·s"
-  ffTotal: "Somme du nombre d'abonnements accumulés"
   cacheSize: "Variation de la taille du cache"
-  cacheSizeTotal: "Somme de la taille du cache accumulé"
   files: "Variation du nombre de fichiers"
-  filesTotal: "Somme du nombre de fichiers accumulés"
 _timelines:
   home: "Principal"
   local: "Local"
