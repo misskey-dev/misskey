@@ -29,7 +29,7 @@ export const meta = {
 
 export default define(meta, async (ps, user, token) => {
 	createNotification(user.id, 'app', {
-		appAccessTokenId: token.id,
+		appAccessTokenId: token ? token.id : null,
 		customBody: ps.body,
 		customHeader: ps.header,
 		customIcon: ps.icon,

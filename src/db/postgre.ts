@@ -69,7 +69,9 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query));
+		if (program.verbose) {
+			sqlLogger.info(this.highlight(query));
+		}
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
@@ -158,7 +160,7 @@ export function initDb(justBorrow = false, sync = false, forceRecreate = false) 
 		} catch (e) {}
 	}
 
-	const log = program.verbose;
+	const log = process.env.NODE_ENV != 'production';
 
 	return createConnection({
 		type: 'postgres',

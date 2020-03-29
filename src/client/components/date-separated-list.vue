@@ -1,8 +1,8 @@
 <template>
 <component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
 	<template v-for="(item, i) in items">
-		<slot :item="item" :i="i"></slot>
-		<div class="separator" :key="item.id + '_date'" v-if="showDate(i, item)">
+		<slot :item="item"></slot>
+		<div class="separator" v-if="showDate(i, item)" :key="item.id + '_date'">
 			<p class="date">
 				<span><fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
 				<span>{{ getDateText(items[i + 1].createdAt) }}<fa class="icon" :icon="faAngleDown"/></span>

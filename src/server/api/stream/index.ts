@@ -18,7 +18,7 @@ export default class Connection {
 	public user?: User;
 	public following: User['id'][] = [];
 	public muting: User['id'][] = [];
-	public token: AccessToken;
+	public token?: AccessToken;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
@@ -117,7 +117,7 @@ export default class Connection {
 
 		this.subscribingNotes[payload.id]++;
 
-		if (this.subscribingNotes[payload.id] == 1) {
+		if (this.subscribingNotes[payload.id] === 1) {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		}
 

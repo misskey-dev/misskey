@@ -975,6 +975,10 @@ export default Vue.extend({
 					&:not(.naked) {
 						background: var(--pageBg);
 					}
+
+					&.naked {
+						background: var(--bg);
+					}
 				}
 			}
 
