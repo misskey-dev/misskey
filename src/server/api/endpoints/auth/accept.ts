@@ -60,6 +60,7 @@ export default define(meta, async (ps, user) => {
 		await AccessTokens.save({
 			id: genId(),
 			createdAt: new Date(),
+			lastUsedAt: new Date(),
 			appId: session.appId,
 			userId: user.id,
 			token: accessToken,
