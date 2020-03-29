@@ -209,7 +209,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, app) => {
+export default define(meta, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))
@@ -281,7 +281,6 @@ export default define(meta, async (ps, user, app) => {
 		reply,
 		renote,
 		cw: ps.cw,
-		app,
 		viaMobile: ps.viaMobile,
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,

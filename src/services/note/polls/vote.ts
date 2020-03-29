@@ -48,7 +48,8 @@ export default async function(user: User, note: Note, choice: number) {
 	});
 
 	// Notify
-	createNotification(note.userId, user.id, 'pollVote', {
+	createNotification(note.userId, 'pollVote', {
+		notifierId: user.id,
 		noteId: note.id,
 		choice: choice
 	});
@@ -60,7 +61,8 @@ export default async function(user: User, note: Note, choice: number) {
 	})
 	.then(watchers => {
 		for (const watcher of watchers) {
-			createNotification(watcher.userId, user.id, 'pollVote', {
+			createNotification(watcher.userId, 'pollVote', {
+				notifierId: user.id,
 				noteId: note.id,
 				choice: choice
 			});

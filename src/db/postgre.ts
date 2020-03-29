@@ -57,6 +57,7 @@ import { Antenna } from '../models/entities/antenna';
 import { AntennaNote } from '../models/entities/antenna-note';
 import { PromoNote } from '../models/entities/promo-note';
 import { PromoRead } from '../models/entities/promo-read';
+import { program } from '../argv';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -68,7 +69,9 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query));
+		if (program.verbose) {
+			sqlLogger.info(this.highlight(query));
+		}
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
@@ -149,13 +152,15 @@ export const entities = [
 	...charts as any
 ];
 
-export function initDb(justBorrow = false, sync = false, log = false, forceRecreate = false) {
+export function initDb(justBorrow = false, sync = false, forceRecreate = false) {
 	if (!forceRecreate) {
 		try {
 			const conn = getConnection();
 			return Promise.resolve(conn);
 		} catch (e) {}
 	}
+
+	const log = process.env.NODE_ENV != 'production';
 
 	return createConnection({
 		type: 'postgres',

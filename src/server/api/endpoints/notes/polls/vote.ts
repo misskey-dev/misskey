@@ -132,7 +132,8 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Notify
-	createNotification(note.userId, user.id, 'pollVote', {
+	createNotification(note.userId, 'pollVote', {
+		notifierId: user.id,
 		noteId: note.id,
 		choice: ps.choice
 	});
@@ -143,7 +144,8 @@ export default define(meta, async (ps, user) => {
 		userId: Not(user.id),
 	}).then(watchers => {
 		for (const watcher of watchers) {
-			createNotification(watcher.userId, user.id, 'pollVote', {
+			createNotification(watcher.userId, 'pollVote', {
+				notifierId: user.id,
 				noteId: note.id,
 				choice: ps.choice
 			});

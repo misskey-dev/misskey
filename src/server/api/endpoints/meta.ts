@@ -159,6 +159,7 @@ export default define(meta, async (ps, me) => {
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: instance.enableServiceWorker,
+			miauth: true,
 		};
 	}
 
