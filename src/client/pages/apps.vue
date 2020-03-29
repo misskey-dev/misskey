@@ -27,6 +27,12 @@
 					<div class="actions">
 						<button class="_button" @click="revoke(token)"><fa :icon="faTrashAlt"/></button>
 					</div>
+					<details>
+						<summary>{{ $t('details') }}</summary>
+						<ul>
+							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
+						</ul>
+					</details>
 				</div>
 			</div>
 		</template>

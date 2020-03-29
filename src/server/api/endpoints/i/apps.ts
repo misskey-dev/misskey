@@ -38,5 +38,6 @@ export default define(meta, async (ps, user) => {
 		name: token.name,
 		createdAt: token.createdAt,
 		lastUsedAt: token.lastUsedAt,
+		permission: token.permission,
 	})));
 });
