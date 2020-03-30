@@ -137,7 +137,9 @@ export default define(meta, async (ps, me) => {
 			category: e.category,
 			url: e.url,
 		})),
-		requireSetup: (await Users.count({})) === 0,
+		requireSetup: (await Users.count({
+			host: null,
+		})) === 0,
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,
