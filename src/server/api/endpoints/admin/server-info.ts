@@ -6,7 +6,7 @@ import redis from '../../../../db/redis';
 
 export const meta = {
 	requireCredential: true as const,
-	requireModerator: true,
+	requireAdmin: true,
 
 	desc: {
 	},
