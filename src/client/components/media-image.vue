@@ -82,6 +82,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .gqnyydlzavusgskkfvwvjiattxdzsqlf {
+	position: relative;
+
 	> i {
 		display: block;
 		position: absolute;
