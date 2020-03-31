@@ -1,8 +1,7 @@
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-
-import MiOS from './mios';
+import { apiUrl } from './config';
 
 const defaultSettings = {
 	tutorial: 0,
@@ -57,13 +56,15 @@ function copy<T>(data: T): T {
 	return JSON.parse(JSON.stringify(data));
 }
 
-export default (os: MiOS) => new Vuex.Store({
+export default () => new Vuex.Store({
 	plugins: [createPersistedState({
 		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
 	})],
 
 	state: {
 		i: null,
+		pendingApiRequestsCount: 0,
+		spinner: null
 	},
 
 	getters: {
@@ -121,6 +122,47 @@ export default (os: MiOS) => new Vuex.Store({
 				ctx.commit('settings/init', me.clientData);
 			}
 		},
+
+		api(ctx, { endpoint, data, token }) {
+			if (++ctx.state.pendingApiRequestsCount === 1) {
+				// TODO: spinnerの表示はstoreでやらない
+				ctx.state.spinner = document.createElement('div');
+				ctx.state.spinner.setAttribute('id', 'wait');
+				document.body.appendChild(ctx.state.spinner);
+			}
+	
+			const onFinally = () => {
+				if (--ctx.state.pendingApiRequestsCount === 0) ctx.state.spinner.parentNode.removeChild(ctx.state.spinner);
+			};
+	
+			const promise = new Promise((resolve, reject) => {
+				// Append a credential
+				if (ctx.getters.isSignedIn) (data as any).i = ctx.state.i.token;
+				if (token) (data as any).i = token;
+	
+				// Send request
+				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
+					method: 'POST',
+					body: JSON.stringify(data),
+					credentials: 'omit',
+					cache: 'no-cache'
+				}).then(async (res) => {
+					const body = res.status === 204 ? null : await res.json();
+	
+					if (res.status === 200) {
+						resolve(body);
+					} else if (res.status === 204) {
+						resolve();
+					} else {
+						reject(body.error);
+					}
+				}).catch(reject);
+			});
+	
+			promise.then(onFinally, onFinally);
+	
+			return promise;
+		}
 	},
 
 	modules: {
@@ -139,9 +181,12 @@ export default (os: MiOS) => new Vuex.Store({
 
 			actions: {
 				async fetch(ctx) {
-					const meta = await os.api('meta', {
-						detail: false
-					});
+					const meta = await ctx.dispatch('api', {
+						endpoint: 'meta',
+						data: {
+							detail: false
+						}
+					}, { root: true });
 
 					ctx.commit('set', meta);
 				}
@@ -246,10 +291,13 @@ export default (os: MiOS) => new Vuex.Store({
 					ctx.commit('set', x);
 
 					if (ctx.rootGetters.isSignedIn) {
-						os.api('i/update-client-setting', {
-							name: x.key,
-							value: x.value
-						});
+						ctx.dispatch('api', {
+							endpoint: 'i/update-client-setting',
+							data: {
+								name: x.key,
+								value: x.value
+							}
+						}, { root: true });
 					}
 				},
 			}
