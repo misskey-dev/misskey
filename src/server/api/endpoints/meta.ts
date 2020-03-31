@@ -130,13 +130,7 @@ export default define(meta, async (ps, me) => {
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
-		emojis: emojis.map(e => ({
-			id: e.id,
-			aliases: e.aliases,
-			name: e.name,
-			category: e.category,
-			url: e.url,
-		})),
+		emojis: await Emojis.packMany(emojis),
 		requireSetup: (await Users.count({
 			host: null,
 		})) === 0,
