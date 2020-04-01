@@ -22,12 +22,10 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		if (this.value.hasOwnProperty('fieldId')) {
-			// media
-			this.image = this.page.attachedFiles.find(x => x.id === this.value.fileId);
-		} else {
-			// plain image
-			this.image = this.value
+		this.image = this.page.attachedFiles.find(x => x.id === this.value.fileId);
+
+		if (typeof this.image === "undefined") {
+			this.image = this.value;
 		}
 	}
 });
