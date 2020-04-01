@@ -22,7 +22,13 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		this.image = this.page.attachedFiles.find(x => x.id === this.value.fileId);
+		if (this.value.hasOwnProperty('fieldId')) {
+			// media
+			this.image = this.page.attachedFiles.find(x => x.id === this.value.fileId);
+		} else {
+			// plain image
+			this.image = this.value
+		}
 	}
 });
 </script>
