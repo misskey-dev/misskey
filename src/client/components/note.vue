@@ -585,7 +585,7 @@ export default Vue.extend({
 					icon: faLink,
 					text: this.$t('copyLink'),
 					action: this.copyLink
-				}, this.appearNote.url || this.appearNote.uri ? {
+				}, (this.appearNote.url || this.appearNote.uri) ? {
 					icon: faExternalLinkSquareAlt,
 					text: this.$t('showOnRemote'),
 					action: () => {
