@@ -130,16 +130,16 @@ export default () => new Vuex.Store({
 				ctx.state.spinner.setAttribute('id', 'wait');
 				document.body.appendChild(ctx.state.spinner);
 			}
-	
+
 			const onFinally = () => {
 				if (--ctx.state.pendingApiRequestsCount === 0) ctx.state.spinner.parentNode.removeChild(ctx.state.spinner);
 			};
-	
+
 			const promise = new Promise((resolve, reject) => {
 				// Append a credential
 				if (ctx.getters.isSignedIn) (data as any).i = ctx.state.i.token;
 				if (token) (data as any).i = token;
-	
+
 				// Send request
 				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
 					method: 'POST',
@@ -148,7 +148,7 @@ export default () => new Vuex.Store({
 					cache: 'no-cache'
 				}).then(async (res) => {
 					const body = res.status === 204 ? null : await res.json();
-	
+
 					if (res.status === 200) {
 						resolve(body);
 					} else if (res.status === 204) {
@@ -158,9 +158,9 @@ export default () => new Vuex.Store({
 					}
 				}).catch(reject);
 			});
-	
+
 			promise.then(onFinally, onFinally);
-	
+
 			return promise;
 		}
 	},
