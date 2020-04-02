@@ -8,15 +8,15 @@
  * 
  */
 import * as Koa from 'koa';
-import * as React from "react";
-import { renderToString } from "react-dom/server";
-import { ServerStyleSheet } from "styled-components";
+import * as React from 'react';
+import { renderToString } from 'react-dom/server';
+import { ServerStyleSheet } from 'styled-components';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 
 import { createStore, Redoc } from 'redoc';
 
 module.exports = async (ctx: Koa.Context) => {
-	const store = await createStore(genOpenapiSpec(), "/api.json");
+	const store = await createStore(genOpenapiSpec(), '/api.json');
 	const sheet = new ServerStyleSheet();
 	const html = renderToString(sheet.collectStyles(React.createElement(Redoc, { store })));
 	const css = sheet.getStyleTags();
