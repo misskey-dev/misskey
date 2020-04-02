@@ -171,8 +171,8 @@ export class NoteRepository extends Repository<Note> {
 
 		let text = note.text;
 
-		if (note.name && note.uri) {
-			text = `【${note.name}】\n${(note.text || '').trim()}\n${note.uri}`;
+		if (note.name && (note.url || note.uri)) {
+			text = `【${note.name}】\n${(note.text || '').trim()}\n\n${note.url || note.uri}`;
 		}
 
 		const packed = await awaitAll({
@@ -197,6 +197,7 @@ export class NoteRepository extends Repository<Note> {
 			renoteId: note.renoteId,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri || undefined,
+			url: note.url || undefined,
 			_featuredId_: (note as any)._featuredId_ || undefined,
 			_prId_: (note as any)._prId_ || undefined,
 
