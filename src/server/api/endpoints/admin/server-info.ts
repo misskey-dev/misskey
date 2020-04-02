@@ -11,7 +11,7 @@ export const meta = {
 	desc: {
 	},
 
-	tags: ['meta'],
+	tags: ['admin', 'meta'],
 
 	params: {
 	},
