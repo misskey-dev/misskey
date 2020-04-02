@@ -1,0 +1,24 @@
+doctype html
+
+html
+
+  head
+    meta(charset='utf-8')
+    title Misskey API
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='icon' href= icon || '/favicon.ico')
+    style.
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    !=css
+    script(src="https://unpkg.com/redoc@next/bundles/redoc.standalone.js")
+
+  body
+    #redoc!=html
+
+    script.
+      const __redoc_state = #{redocState};
+      var container = document.getElementById('redoc');
+      Redoc.hydrate(__redoc_state, container);

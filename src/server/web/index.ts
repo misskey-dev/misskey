@@ -91,11 +91,7 @@ router.get('/robots.txt', async ctx => {
 //#endregion
 
 // Docs
-router.get('/api-doc', async ctx => {
-	await send(ctx as any, '/assets/redoc.html', {
-		root: client
-	});
-});
+router.get('/api-doc', require('./redoc'));
 
 // URL preview endpoint
 router.get('/url', require('./url-preview'));
