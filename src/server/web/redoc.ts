@@ -9,22 +9,36 @@
  */
 
 import * as React from 'react';
+import * as pug from 'pug';
+import * as tmp from 'tmp';
+import { join } from 'path';
+import { writeFile, createReadStream } from 'fs';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import { createStore, Redoc } from 'redoc';
 
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 
-let cache: object;
+let cache: string;
 
 module.exports = async (ctx: any) => {
+	ctx.set('Content-Type', 'text/html; charset=utf-8');
+
 	if (cache) {
-		ctx.body = cache;
+		ctx.body = createReadStream(cache);
 		return;
 	}
 
-	await ctx.render('redoc', await bundle());
-	cache = ctx.body;
+	const body = pug.renderFile(join(__dirname, 'views/redoc.pug'), await bundle());
+
+	ctx.body = body;
+
+	tmp.file((err, path, fd, clear) => {
+		if (err) throw new Error(err);
+
+		cache = path;
+		writeFile(path, body, () => {});
+	});
 };
 
 async function bundle() {
