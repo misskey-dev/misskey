@@ -3,7 +3,7 @@
 	<mk-container :show-header="!props.compact" class="container">
 		<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
 
-		<div class="tl">
+		<div>
 			<x-notifications/>
 		</div>
 	</mk-container>
@@ -80,11 +80,6 @@ export default define({
 			overflow: auto;
 			flex-grow: 1;
 		}
-	}
-
-	.tl {
-		background: var(--bg);
-		padding: 8px;
 	}
 }
 </style>

@@ -11,7 +11,8 @@ export default class extends Channel {
 	public async init(params: any) {
 		// Subscribe main stream channel
 		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
-			let { type, body } = data;
+			const { type } = data;
+			let { body } = data;
 
 			switch (type) {
 				case 'notification': {

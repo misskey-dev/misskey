@@ -230,8 +230,8 @@ export default Vue.extend({
 		position: relative;
 		display: block;
 		font-size: 14px;
-		box-shadow: 0 1px 4px var(--tyvedwbe);
-		border-radius: 4px;
+		box-shadow: 0 0 0 1px var(--divider);
+		border-radius: 6px;
 		overflow: hidden;
 
 		&:hover {

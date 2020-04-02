@@ -1,5 +1,5 @@
 <template>
-<div class="zlrxdaqttccpwhpaagdmkawtzklsccam">
+<div class="wrpstxzv" v-size="[{ max: 450 }]">
 	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<x-note-header class="header" :note="note" :mini="true"/>
@@ -56,13 +56,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.zlrxdaqttccpwhpaagdmkawtzklsccam {
+.wrpstxzv {
 	display: flex;
 	padding: 16px 32px;
 	font-size: 0.9em;
-	background: rgba(0, 0, 0, 0.03);
 
-	@media (max-width: 450px) {
+	&.max-width_450px {
 		padding: 14px 16px;
 	}
 

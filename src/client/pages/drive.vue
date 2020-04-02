@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="naked full">
 	<portal to="header">
 		<button @click="menu" class="_button _jmoebdiw_">
 			<fa :icon="faCloud" style="margin-right: 8px;"/>

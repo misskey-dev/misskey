@@ -2,7 +2,7 @@
 <div class="thvuemwp" :data-is-me="isMe">
 	<mk-avatar class="avatar" :user="message.user"/>
 	<div class="content">
-		<div class="balloon _panel" :data-no-text="message.text == null">
+		<div class="balloon" :data-no-text="message.text == null">
 			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
 				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div></div>
-		<mk-url-preview v-for="url in urls" :url="url" :key="url"/>
+		<mk-url-preview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
 		<footer>
 			<template v-if="isGroup">
 				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
@@ -38,12 +38,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
-import { parse } from '../../mfm/parse';
-import { unique } from '../../prelude/array';
+import i18n from '../../i18n';
+import { parse } from '../../../mfm/parse';
+import { unique } from '../../../prelude/array';
+import MkUrlPreview from '../../components/url-preview.vue';
 
 export default Vue.extend({
 	i18n,
+	components: {
+		MkUrlPreview
+	},
 	props: {
 		message: {
 			required: true
@@ -210,6 +214,7 @@ export default Vue.extend({
 							width: 100%;
 							max-height: 512px;
 							object-fit: contain;
+							box-sizing: border-box;
 						}
 
 						> p {
@@ -221,10 +226,6 @@ export default Vue.extend({
 					}
 				}
 			}
-		}
-
-		> .mk-url-preview {
-			margin: 8px 0;
 		}
 
 		> footer {
@@ -243,13 +244,14 @@ export default Vue.extend({
 	}
 
 	&:not([data-is-me]) {
+		padding-left: var(--margin);
 
 		> .content {
 			padding-left: 16px;
 			padding-right: 32px;
 
 			> .balloon {
-				$color: var(--panel);
+				$color: var(--messageBg);
 				background: $color;
 
 				&[data-no-text] {
@@ -279,6 +281,7 @@ export default Vue.extend({
 
 	&[data-is-me] {
 		flex-direction: row-reverse;
+		padding-right: var(--margin);
 
 		> .content {
 			padding-right: 16px;
@@ -287,7 +290,6 @@ export default Vue.extend({
 
 			> .balloon {
 				background: $me-balloon-color;
-				box-shadow: 0 6px 16px var(--accentShadow);
 				text-align: left;
 
 				&[data-no-text] {

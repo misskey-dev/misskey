@@ -13,8 +13,8 @@ export const lightTheme: Theme = require('./themes/_light.json5');
 export const darkTheme: Theme = require('./themes/_dark.json5');
 
 export const builtinThemes = [
-	lightTheme,
-	darkTheme,
+	require('./themes/white.json5'),
+	require('./themes/black.json5'),
 	require('./themes/lavender.json5'),
 	require('./themes/halloween.json5'),
 	require('./themes/garden.json5'),
@@ -27,7 +27,7 @@ export const builtinThemes = [
 	require('./themes/danboard.json5'),
 	require('./themes/olive.json5'),
 	require('./themes/tweetdeck.json5'),
-];
+] as Theme[];
 
 let timeout = null;
 
@@ -44,7 +44,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	const _theme = JSON.parse(JSON.stringify(theme));
 
 	if (_theme.base) {
-		const base = [lightTheme, darkTheme].find(x => x.id == _theme.base);
+		const base = [lightTheme, darkTheme].find(x => x.id === _theme.base);
 		_theme.props = Object.assign({}, base.props, _theme.props);
 	}
 
@@ -66,16 +66,21 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 }
 
-function compile(theme: Theme): { [key: string]: string } {
-	function getColor(code: string): tinycolor.Instance {
-		// ref
-		if (code[0] == '@') {
-			return getColor(theme.props[code.substr(1)]);
+function compile(theme: Theme): Record<string, string> {
+	function getColor(val: string): tinycolor.Instance {
+		// ref (prop)
+		if (val[0] === '@') {
+			return getColor(theme.props[val.substr(1)]);
+		}
+
+		// ref (const)
+		else if (val[0] === '$') {
+			return getColor(theme.props[val]);
 		}
 
 		// func
-		if (code[0] == ':') {
-			const parts = code.split('<');
+		else if (val[0] === ':') {
+			const parts = val.split('<');
 			const func = parts.shift().substr(1);
 			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
@@ -87,12 +92,15 @@ function compile(theme: Theme): { [key: string]: string } {
 			}
 		}
 
-		return tinycolor(code);
+		// other case
+		return tinycolor(val);
 	}
 
 	const props = {};
 
 	for (const [k, v] of Object.entries(theme.props)) {
+		if (k.startsWith('$')) continue; // ignore const
+
 		props[k] = genValue(getColor(v));
 	}
 
@@ -101,4 +109,12 @@ function compile(theme: Theme): { [key: string]: string } {
 
 function genValue(c: tinycolor.Instance): string {
 	return c.toRgbString();
+}
+
+export function validateTheme(theme: Record<string, any>): boolean {
+	if (theme.id == null || typeof theme.id !== 'string') return false;
+	if (theme.name == null || typeof theme.name !== 'string') return false;
+	if (theme.base == null || !['light', 'dark'].includes(theme.base)) return false;
+	if (theme.props == null || typeof theme.props !== 'object') return false;
+	return true;
 }

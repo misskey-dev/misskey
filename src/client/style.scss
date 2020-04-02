@@ -3,7 +3,7 @@
 :root {
 	--radius: 8px;
 	--marginFull: 16px;
-	--marginHalf: 8px;
+	--marginHalf: 10px;
 
 	--margin: var(--marginFull);
 
@@ -230,7 +230,6 @@ hr {
 	@extend ._button;
 	color: #fff;
 	background: var(--accent);
-	box-shadow: 0 6px 16px var(--accentShadow);
 
 	&:not(:disabled):hover {
 		background: var(--jkhztclx);
@@ -276,23 +275,47 @@ hr {
 	}
 }
 
-._shadow {
-	box-shadow: 0 8px 32px var(--shadow);
-
-	@media (max-width: 700px) {
-		box-shadow: 0 4px 16px var(--shadow);
-	}
-
-	@media (max-width: 500px) {
-		box-shadow: 0 2px 8px var(--shadow);
-	}
-}
-
 ._panel {
-	@extend ._shadow;
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
+	box-shadow: 0 0 0 1px var(--divider);
+}
+
+main ._panel {
+	border-radius: 0;
+	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
+}
+
+._panel ._panel {
+	border-radius: 0;
+	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
+}
+
+.__panelButton {
+	display: flex;
+	width: 100%;
+	min-height: 48px;
+	align-items: center;
+	justify-content: center;
+}
+
+._panel._button {
+	@extend .__panelButton;
+}
+
+._panel._buttonPrimary {
+	@extend .__panelButton;
+	color: var(--accent);
+	background: var(--panel);
+
+	&:not(:disabled):hover {
+		background: var(--panel);
+	}
+
+	&:not(:disabled):active {
+		background: var(--panel);
+	}
 }
 
 ._card {
@@ -386,6 +409,26 @@ hr {
 	> ._footer {
 		border-top: solid 1px var(--divider);
 		padding: 16px;
+	}
+}
+
+._fullinfo {
+	padding: 32px;
+	text-align: center;
+
+	> img {
+		vertical-align: bottom;
+		height: 128px;
+		margin-bottom: 16px;
+		border-radius: 16px;
+	}
+}
+
+._keyValue {
+	display: flex;
+
+	> div {
+		flex: 1;
 	}
 }
 

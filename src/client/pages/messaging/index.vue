@@ -5,7 +5,7 @@
 
 	<mk-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</mk-button>
 
-	<sequential-entrance class="history" v-if="messages.length > 0" :delay="30">
+	<div class="history" v-if="messages.length > 0">
 		<router-link v-for="(message, i) in messages"
 			class="message _panel"
 			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
@@ -30,9 +30,9 @@
 				</div>
 			</div>
 		</router-link>
-	</sequential-entrance>
-	<div class="no-history" v-if="!fetching && messages.length == 0">
-		<img src="https://xn--931a.moe/assets/info.png" class="_ghost"/>
+	</div>
+	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
+		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $t('noHistory') }}</div>
 	</div>
 	<mk-loading v-if="fetching"/>
@@ -42,10 +42,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
-import getAcct from '../../misc/acct/render';
-import MkButton from '../components/ui/button.vue';
-import MkUserSelect from '../components/user-select.vue';
+import i18n from '../../i18n';
+import getAcct from '../../../misc/acct/render';
+import MkButton from '../../components/ui/button.vue';
+import MkUserSelect from '../../components/user-select.vue';
 
 export default Vue.extend({
 	i18n,
@@ -145,7 +145,7 @@ export default Vue.extend({
 			if (groups1.length === 0 && groups2.length === 0) {
 				this.$root.dialog({
 					type: 'warning',
-					title: this.$t('noGroups'),
+					title: this.$t('youHaveNoGroups'),
 					text: this.$t('joinOrCreateGroup'),
 				});
 				return;
@@ -284,18 +284,6 @@ export default Vue.extend({
 					}
 				}
 			}
-		}
-	}
-
-	> .no-history {
-		padding: 32px;
-		text-align: center;
-
-		> img {
-			vertical-align: bottom;
-			height: 128px;
-			margin-bottom: 16px;
-			border-radius: 16px;
 		}
 	}
 

@@ -38,13 +38,6 @@ import Vue from 'vue';
 import * as tinycolor from 'tinycolor2';
 
 export default Vue.extend({
-	props: {
-		smooth: {
-			type: Boolean,
-			default: false
-		}
-	},
-
 	data() {
 		return {
 			now: new Date(),
@@ -83,9 +76,6 @@ export default Vue.extend({
 			return tinycolor(this.computedStyle.getPropertyValue('--accent')).toHexString();
 		},
 
-		ms(): number {
-			return this.now.getMilliseconds() * (this.smooth ? 1 : 0);
-		},
 		s(): number {
 			return this.now.getSeconds();
 		},
@@ -97,13 +87,13 @@ export default Vue.extend({
 		},
 
 		hAngle(): number {
-			return Math.PI * (this.h % 12 + (this.m + (this.s + this.ms / 1000) / 60) / 60) / 6;
+			return Math.PI * (this.h % 12 + (this.m + this.s / 60) / 60) / 6;
 		},
 		mAngle(): number {
-			return Math.PI * (this.m + (this.s + this.ms / 1000) / 60) / 30;
+			return Math.PI * (this.m + this.s / 60) / 30;
 		},
 		sAngle(): number {
-			return Math.PI * (this.s + this.ms / 1000) / 30;
+			return Math.PI * this.s / 30;
 		},
 
 		graduations(): any {
@@ -121,7 +111,7 @@ export default Vue.extend({
 		const update = () => {
 			if (this.enabled) {
 				this.tick();
-				requestAnimationFrame(update);
+				setTimeout(update, 1000);
 			}
 		};
 		update();

@@ -24,3 +24,7 @@ export function getApLock(uri: string, timeout = 30 * 1000) {
 export function getNodeinfoLock(host: string, timeout = 30 * 1000) {
 	return lock(`nodeinfo:${host}`, timeout);
 }
+
+export function getChartInsertLock(lockKey: string, timeout = 30 * 1000) {
+	return lock(`chart-insert:${lockKey}`, timeout);
+}

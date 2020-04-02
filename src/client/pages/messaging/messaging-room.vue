@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-room"
+<div class="mk-messaging-room naked"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
@@ -19,7 +19,7 @@
 		<button class="more _button" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
 		</button>
-		<x-list class="messages" :items="messages" v-slot="{ item: message, i }" direction="up" reversed>
+		<x-list class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
 			<x-message :message="message" :is-group="group != null" :key="message.id"/>
 		</x-list>
 	</div>
@@ -37,12 +37,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
-import XList from '../components/date-separated-list.vue';
+import i18n from '../../i18n';
+import XList from '../../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import { url } from '../config';
-import parseAcct from '../../misc/acct/parse';
+import { url } from '../../config';
+import parseAcct from '../../../misc/acct/parse';
 
 export default Vue.extend({
 	i18n,

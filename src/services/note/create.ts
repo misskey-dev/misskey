@@ -78,7 +78,8 @@ class NotificationManager {
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
 			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
-				createNotification(x.target, this.notifier.id, x.reason, {
+				createNotification(x.target, x.reason, {
+					notifierId: this.notifier.id,
 					noteId: this.note.id
 				});
 			}
@@ -103,6 +104,7 @@ type Option = {
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
+	url?: string | null;
 	app?: App | null;
 };
 
@@ -223,7 +225,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			.getMany();
 
 		const followers = followings.map(f => f.followerId);
-		
+
 		for (const antenna of antennas) {
 			checkHitAntenna(antenna, note, user, followers).then(hit => {
 				if (hit) {
@@ -406,6 +408,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	});
 
 	if (data.uri != null) insert.uri = data.uri;
+	if (data.url != null) insert.url = data.url;
 
 	// Append mentions data
 	if (mentionedUsers.length > 0) {

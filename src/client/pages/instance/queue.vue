@@ -1,5 +1,8 @@
 <template>
 <div>
+	<portal to="icon"><fa :icon="faExchangeAlt"/></portal>
+	<portal to="title">{{ $t('jobQueue') }}</portal>
+
 	<x-queue :connection="connection" domain="inbox">
 		<template #title><fa :icon="faExchangeAlt"/> In</template>
 	</x-queue>

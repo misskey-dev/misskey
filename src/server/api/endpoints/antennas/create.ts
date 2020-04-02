@@ -82,7 +82,7 @@ export default define(meta, async (ps, user) => {
 			id: ps.userListId,
 			userId: user.id,
 		});
-	
+
 		if (userList == null) {
 			throw new ApiError(meta.errors.noSuchUserList);
 		}
@@ -91,7 +91,7 @@ export default define(meta, async (ps, user) => {
 			userGroupId: ps.userGroupId,
 			userId: user.id,
 		});
-	
+
 		if (userGroupJoining == null) {
 			throw new ApiError(meta.errors.noSuchUserGroup);
 		}

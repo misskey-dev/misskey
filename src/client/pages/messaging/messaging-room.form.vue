@@ -27,14 +27,14 @@ import Vue from 'vue';
 import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
-import i18n from '../i18n';
-import { formatTimeString } from '../../misc/format-time-string';
-import { selectFile } from '../scripts/select-file';
+import i18n from '../../i18n';
+import { formatTimeString } from '../../../misc/format-time-string';
+import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
 	i18n,
 	components: {
-		XUploader: () => import('../components/uploader.vue').then(m => m.default),
+		XUploader: () => import('../../components/uploader.vue').then(m => m.default),
 	},
 	props: {
 		user: {
@@ -113,7 +113,7 @@ export default Vue.extend({
 				if (items[0].kind == 'file') {
 					this.$root.dialog({
 						type: 'error',
-						text: this.$t('only-one-file-attached')
+						text: this.$t('onlyOneFileCanBeAttached')
 					});
 				}
 			}
@@ -138,7 +138,7 @@ export default Vue.extend({
 				e.preventDefault();
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('only-one-file-attached')
+					text: this.$t('onlyOneFileCanBeAttached')
 				});
 				return;
 			}
@@ -221,7 +221,7 @@ export default Vue.extend({
 		},
 
 		async insertEmoji(ev) {
-			const vm = this.$root.new(await import('../components/emoji-picker.vue').then(m => m.default), {
+			const vm = this.$root.new(await import('../../components/emoji-picker.vue').then(m => m.default), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);

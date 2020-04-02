@@ -27,6 +27,11 @@ export const meta = {
 			}
 		},
 
+		offset: {
+			validator: $.optional.nullable.num,
+			default: null,
+		},
+
 		userId: {
 			validator: $.type(ID),
 			desc: {
@@ -40,5 +45,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await perUserNotesChart.getChart(ps.span as any, ps.limit!, ps.userId);
+	return await perUserNotesChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, ps.userId);
 });
