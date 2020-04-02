@@ -237,6 +237,11 @@ os.init(async () => {
 	// マウント
 	app.$mount('#app');
 
+	os.stream.on('emojiAdded', data => {
+		// TODO
+		//store.commit('instance/set', );
+	});
+
 	if (store.getters.isSignedIn) {
 		const main = os.stream.useSharedConnection('main');
 
