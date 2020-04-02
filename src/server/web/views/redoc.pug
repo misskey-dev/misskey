@@ -19,6 +19,6 @@ html
     #redoc!=html
 
     script.
-      const __redoc_state = #{redocState};
+      const __redoc_state = !{redocState};
       var container = document.getElementById('redoc');
       Redoc.hydrate(__redoc_state, container);
