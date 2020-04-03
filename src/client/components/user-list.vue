@@ -6,7 +6,7 @@
 
 	<div class="efvhhmdq">
 		<div class="no-users" v-if="empty">
-			<p>{{ $t('no-users') }}</p>
+			<p>{{ $t('noUsers') }}</p>
 		</div>
 		<div class="user" v-for="user in users" :key="user.id">
 			<mk-avatar class="avatar" :user="user"/>
