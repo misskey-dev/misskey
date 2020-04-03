@@ -6,26 +6,22 @@ async function main(acct: string): Promise<any> {
 	await resolveUser(username, host, {}, true);
 }
 
-export default () => {
-	// get args
-	const args = process.argv.slice(3);
-	let acct = args[0];
+// get args
+const args = process.argv.slice(2);
+let acct = args[0];
 
-	// normalize args
-	acct = acct.replace(/^@/, '');
+// normalize args
+acct = acct.replace(/^@/, '');
 
-	// check args
-	if (!acct.match(/^\w+@\w/)) {
-		throw `Invalid acct format. Valid format are user@host`;
-	}
-
-	console.log(`resync ${acct}`);
-
-	main(acct).then(() => {
-		console.log('Done');
-		process.exit(0);
-	}).catch(e => {
-		console.warn(e);
-		process.exit(1);
-	});
+// check args
+if (!acct.match(/^\w+@\w/)) {
+	throw `Invalid acct format. Valid format are user@host`;
 }
+
+console.log(`resync ${acct}`);
+
+main(acct).then(() => {
+	console.log('Done');
+}).catch(e => {
+	console.warn(e);
+});

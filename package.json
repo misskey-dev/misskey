@@ -15,7 +15,7 @@
 		"ormconfig": "node ./built/ormconfig.js",
 		"migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
 		"migrateandstart": "npm run migrate && npm run start",
-		"build": "webpack && gulp build && npm run redoc",
+		"build": "webpack && gulp build",
 		"webpack": "webpack",
 		"watch": "webpack --watch",
 		"gulp": "gulp build",
@@ -23,8 +23,7 @@
 		"cleanall": "gulp cleanall",
 		"lint": "tslint 'src/**/*.ts'",
 		"test": "cross-env TS_NODE_FILES=true gulp test",
-		"format": "gulp format",
-		"redoc": "node ./built/tools/ make-api-json && redoc-cli bundle built/client/assets/api.json -o built/client/assets/redoc.html --options.expandResponses '200,204' --options.expandSingleSchemaField true --cdn true"
+		"format": "gulp format"
 	},
 	"resolutions": {
 		"https-proxy-agent": "^3.0.0",
@@ -203,7 +202,6 @@
 		"reconnecting-websocket": "4.4.0",
 		"redis": "3.0.2",
 		"redis-lock": "0.1.4",
-		"redoc-cli": "0.9.7",
 		"reflect-metadata": "0.1.13",
 		"rename": "1.0.4",
 		"request": "2.88.2",
