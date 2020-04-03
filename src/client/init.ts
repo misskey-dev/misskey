@@ -18,7 +18,7 @@ import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
-import { applyTheme, lightTheme, builtinThemes } from './theme';
+import { applyTheme, lightTheme } from './theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import createStore from './store';
 
@@ -149,9 +149,10 @@ os.init(async () => {
 	}, false)
 
 	store.watch(state => state.device.darkMode, darkMode => {
-		// TODO: このファイルでbuiltinThemesを参照するとcode splittingが効かず、初回読み込み時に全てのテーマコードを読み込むことになってしまい無駄なので何とかする
-		const themes = builtinThemes.concat(store.state.device.themes);
-		applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		import('./theme').then(({ builtinThemes }) => {
+			const themes = builtinThemes.concat(store.state.device.themes);
+			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		});
 	});
 
 	//#region Sync dark mode
