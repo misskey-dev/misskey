@@ -1,12 +1,12 @@
 import { Users, Signins } from '../models';
 
-// node built/tools/show-signin-history username
+// node built/tools/ show-signin-history username
 //  => {Success} {Date} {IPAddrsss}
 
-// node built/tools/show-signin-history username user-agent,x-forwarded-for
+// node built/tools/ show-signin-history username user-agent,x-forwarded-for
 //  with user-agent and x-forwarded-for
 
-// node built/tools/show-signin-history username all
+// node built/tools/ show-signin-history username all
 //  with full request headers
 
 async function main(username: string, headers?: string[]) {
@@ -35,22 +35,25 @@ async function main(username: string, headers?: string[]) {
 	}
 }
 
-// get args
-const args = process.argv.slice(2);
+export default () => {
+	// get args
+	const args = process.argv.slice(3);
 
-let username = args[0];
-let headers: string[] | undefined;
+	let username = args[0];
+	let headers: string[] | undefined;
 
-if (args[1] != null) {
-	headers = args[1].split(/,/).map(header => header.toLowerCase());
+	if (args[1] != null) {
+		headers = args[1].split(/,/).map(header => header.toLowerCase());
+	}
+
+	// normalize args
+	username = username.replace(/^@/, '');
+
+	main(username, headers).then(() => {
+		process.exit(0);
+	}).catch(e => {
+		console.warn(e);
+		process.exit(1);
+	});
 }
 
-// normalize args
-username = username.replace(/^@/, '');
-
-main(username, headers).then(() => {
-	process.exit(0);
-}).catch(e => {
-	console.warn(e);
-	process.exit(1);
-});

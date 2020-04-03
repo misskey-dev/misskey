@@ -4,11 +4,15 @@ async function main(uri: string): Promise<any> {
 	return await updateQuestion(uri);
 }
 
-const args = process.argv.slice(2);
-const uri = args[0];
-
-main(uri).then(result => {
-	console.log(`Done: ${result}`);
-}).catch(e => {
-	console.warn(e);
-});
+export default () => {
+	const args = process.argv.slice(3);
+	const uri = args[0];
+	
+	main(uri).then(result => {
+		console.log(`Done: ${result}`);
+		process.exit(0);
+	}).catch(e => {
+		console.warn(e);
+		process.exit(1);
+	});
+}

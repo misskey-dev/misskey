@@ -21,12 +21,14 @@ async function main(username: string) {
 	}
 }
 
-const args = process.argv.slice(2);
+export default () => {
+	const args = process.argv.slice(3);
 
-main(args[0]).then(() => {
-	console.log('Success');
-	process.exit(0);
-}).catch(e => {
-	console.error(`Error: ${e.message || e}`);
-	process.exit(1);
-});
+	main(args[0]).then(() => {
+		console.log('Success');
+		process.exit(0);
+	}).catch(e => {
+		console.error(`Error: ${e.message || e}`);
+		process.exit(1);
+	});
+}

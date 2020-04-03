@@ -15,7 +15,6 @@ import * as MarkdownIt from 'markdown-it';
 
 import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
-import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
 import parseAcct from '../../misc/acct/parse';
@@ -97,12 +96,14 @@ router.get('/api-doc', async ctx => {
 	});
 });
 
+router.get('/api.json', async ctx => {
+	await send(ctx as any, '/assets/api.json', {
+		root: client
+	});
+});
+
 // URL preview endpoint
 router.get('/url', require('./url-preview'));
-
-router.get('/api.json', async ctx => {
-	ctx.body = genOpenapiSpec();
-});
 
 router.get('/docs.json', async ctx => {
 	const lang = ctx.query.lang;
