@@ -77,7 +77,7 @@ export default async (endpoint: string, user: User | null | undefined, token: Ac
 		if (e instanceof ApiError) {
 			throw e;
 		} else {
-			apiLogger.error(`Internal error occurred in ${ep.name}`, {
+			apiLogger.error(`Internal error occurred in ${ep.name}: ${e?.message}`, {
 				ep: ep.name,
 				ps: data,
 				e: {
