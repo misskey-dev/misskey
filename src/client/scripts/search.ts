@@ -47,9 +47,9 @@ export async function search(v: any, q: string) {
 				uri: q
 			});
 			dialog.close();
-			if (res.type == 'User') {
+			if (res.type === 'User') {
 				v.$router.push(`/@${res.object.username}@${res.object.host}`);
-			} else if (res.type == 'Note') {
+			} else if (res.type === 'Note') {
 				v.$router.push(`/notes/${res.object.id}`);
 			}
 		} catch (e) {

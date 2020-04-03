@@ -257,7 +257,7 @@ export default () => new Vuex.Store({
 				},
 
 				updateWidget(state, x) {
-					const w = state.widgets.find(w => w.id == x.id);
+					const w = state.widgets.find(w => w.id === x.id);
 					if (w) {
 						w.data = x.data;
 					}

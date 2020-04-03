@@ -13,7 +13,7 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 	return text.trim();
 
 	function getText(node: any): string {
-		if (node.nodeName == '#text') return node.value;
+		if (node.nodeName === '#text') return node.value;
 
 		if (node.childNodes) {
 			return node.childNodes.map((n: any) => getText(n)).join('');
@@ -34,8 +34,8 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 
 			case 'a':
 				const txt = getText(node);
-				const rel = node.attrs.find((x: any) => x.name == 'rel');
-				const href = node.attrs.find((x: any) => x.name == 'href');
+				const rel = node.attrs.find((x: any) => x.name === 'rel');
+				const href = node.attrs.find((x: any) => x.name === 'href');
 
 				// ハッシュタグ
 				if (hashtagNames && href && hashtagNames.map(x => x.toLowerCase()).includes(txt.toLowerCase())) {
@@ -44,12 +44,12 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 				} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
 					const part = txt.split('@');
 
-					if (part.length == 2) {
+					if (part.length === 2) {
 						//#region ホスト名部分が省略されているので復元する
 						const acct = `${txt}@${(new URL(href.value)).hostname}`;
 						text += acct;
 						//#endregion
-					} else if (part.length == 3) {
+					} else if (part.length === 3) {
 						text += txt;
 					}
 				// その他

@@ -293,7 +293,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
  * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
  */
 export async function resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
-	const uri = typeof value == 'string' ? value : value.id;
+	const uri = typeof value === 'string' ? value : value.id;
 	if (uri == null) throw new Error('missing uri');
 
 	// ブロックしてたら中断

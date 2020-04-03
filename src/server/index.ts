@@ -150,7 +150,7 @@ export default () => new Promise(resolve => {
 
 	// Bulk write
 	setInterval(() => {
-		if (queue.length == 0) return;
+		if (queue.length === 0) return;
 
 		const requests = queue.length;
 		const time = sum(queue.map(x => x.time));

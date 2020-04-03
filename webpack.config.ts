@@ -18,7 +18,7 @@ class WebpackOnBuildPlugin {
 	}
 }
 
-const isProduction = process.env.NODE_ENV == 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 
 const locales = require('./locales');
 const meta = require('./package.json');

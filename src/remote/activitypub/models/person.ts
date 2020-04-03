@@ -136,7 +136,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
-	const isBot = object.type == 'Service';
+	const isBot = object.type === 'Service';
 
 	// Create user
 	let user: IRemoteUser;
@@ -327,7 +327,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		emojis: emojiNames,
 		name: person.name,
 		tags,
-		isBot: object.type == 'Service',
+		isBot: object.type === 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: !!person.manuallyApprovesFollowers,
 	} as Partial<User>;

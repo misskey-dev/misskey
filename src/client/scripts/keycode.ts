@@ -1,5 +1,5 @@
 export default (input: string): string[] => {
-	if (Object.keys(aliases).some(a => a.toLowerCase() == input.toLowerCase())) {
+	if (Object.keys(aliases).some(a => a.toLowerCase() === input.toLowerCase())) {
 		const codes = aliases[input];
 		return Array.isArray(codes) ? codes : [codes];
 	} else {

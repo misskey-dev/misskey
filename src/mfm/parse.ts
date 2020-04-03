@@ -3,7 +3,7 @@ import { MfmForest } from './prelude';
 import { normalize } from './normalize';
 
 export function parse(source: string | null): MfmForest | null {
-	if (source == null || source == '') {
+	if (source == null || source === '') {
 		return null;
 	}
 
@@ -11,7 +11,7 @@ export function parse(source: string | null): MfmForest | null {
 }
 
 export function parsePlain(source: string | null): MfmForest | null {
-	if (source == null || source == '') {
+	if (source == null || source === '') {
 		return null;
 	}
 

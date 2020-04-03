@@ -20,7 +20,7 @@ export default (opts) => ({
 
 	computed: {
 		empty(): boolean {
-			return this.items.length == 0 && !this.fetching && this.inited;
+			return this.items.length === 0 && !this.fetching && this.inited;
 		},
 
 		error(): boolean {

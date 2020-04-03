@@ -39,7 +39,7 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
-		if (packedNote.visibility == 'followers') {
+		if (packedNote.visibility === 'followers') {
 			if (meId == null) {
 				hide = true;
 			} else if (meId === packedNote.userId) {

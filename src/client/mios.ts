@@ -197,7 +197,7 @@ export default class MiOS extends EventEmitter {
 			// When subscribe failed
 			.catch(async (err: Error) => {
 				// 通知が許可されていなかったとき
-				if (err.name == 'NotAllowedError') {
+				if (err.name === 'NotAllowedError') {
 					return;
 				}
 
