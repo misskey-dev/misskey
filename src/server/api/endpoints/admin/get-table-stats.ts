@@ -9,7 +9,7 @@ export const meta = {
 		'en-US': 'Get table stats'
 	},
 
-	tags: ['meta'],
+	tags: ['admin'],
 
 	params: {
 	},

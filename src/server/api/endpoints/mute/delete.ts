@@ -11,7 +11,7 @@ export const meta = {
 		'en-US': 'Unmute a user'
 	},
 
-	tags: ['mute', 'users'],
+	tags: ['account'],
 
 	requireCredential: true as const,
 

@@ -6,6 +6,8 @@ import { getNote } from '../../../common/getters';
 import { PromoNotes } from '../../../../../models';
 
 export const meta = {
+	tags: ['admin'],
+
 	requireCredential: true as const,
 	requireModerator: true,
 
