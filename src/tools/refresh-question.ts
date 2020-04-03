@@ -7,7 +7,7 @@ async function main(uri: string): Promise<any> {
 export default () => {
 	const args = process.argv.slice(3);
 	const uri = args[0];
-	
+
 	main(uri).then(result => {
 		console.log(`Done: ${result}`);
 		process.exit(0);

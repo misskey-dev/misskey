@@ -18,10 +18,10 @@ export default () => {
 	const args = process.argv.slice(3);
 	const name = args[0];
 	const url = args[1];
-	
+
 	if (!name) throw new Error('require name');
 	if (!url) throw new Error('require url');
-	
+
 	main(name, url).then(() => {
 		console.log('success');
 		process.exit(0);

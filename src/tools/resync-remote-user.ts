@@ -10,17 +10,17 @@ export default () => {
 	// get args
 	const args = process.argv.slice(3);
 	let acct = args[0];
-	
+
 	// normalize args
 	acct = acct.replace(/^@/, '');
-	
+
 	// check args
 	if (!acct.match(/^\w+@\w/)) {
 		throw `Invalid acct format. Valid format are user@host`;
 	}
-	
+
 	console.log(`resync ${acct}`);
-	
+
 	main(acct).then(() => {
 		console.log('Done');
 		process.exit(0);
