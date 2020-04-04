@@ -483,8 +483,18 @@ _permissions:
   "write:mutes": "Stummschaltungen bearbeiten"
   "write:notes": "Notizen schreiben oder löschen"
   "read:notifications": "Benachrichtigungen lesen"
+  "write:notifications": "Mit Benachrichtigungen arbeiten"
   "read:reactions": "Reaktionen sehen"
   "write:reactions": "Reaktionen hinzufügen und bearbeiten"
+  "write:votes": "In Umfragen abstimmen"
+  "read:pages": "Deine Seiten lesen"
+  "write:pages": "Deine Seiten bearbeiten oder löschen"
+  "read:page-likes": "Seiten-Likes lesen"
+  "write:page-likes": "Seiten-Likes bearbeiten"
+  "read:user-groups": "Deine Benutzergruppen lesen"
+  "write:user-groups": "Benutzergruppen bearbeiten oder löschen"
+_auth:
+  shareAccess: "Möchtest du \"{name}\" authorisieren, auf dieses Benuzerkonto zugreifen zu können?"
 _weekday:
   sunday: "Sonntag"
   monday: "Montag"
@@ -590,6 +600,7 @@ _timelines:
   social: "Sozial"
   global: "Global"
 _pages:
+  viewPage: "Deine Seiten lesen"
   content: "Inhalt"
   title: "Titel"
   url: "Seiten-URL"
