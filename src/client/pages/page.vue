@@ -5,7 +5,7 @@
 
 	<div class="_card" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>
-		<x-image :value="page.eyeCatchingImage" :key="page.eyeCatchingImage.fileId" :page="page" v-if="page.eyeCatchingImageId" />
+		<img src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId" />
 		<div class="_content">
 			<x-page :page="page"/>
 		</div>
@@ -32,12 +32,10 @@ import Vue from 'vue';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons';
 import XPage from '../components/page/page.vue';
-import XImage from '../components/page/page.image.vue';
 
 export default Vue.extend({
 	components: {
-		XPage,
-		XImage
+		XPage
 	},
 
 	props: {
