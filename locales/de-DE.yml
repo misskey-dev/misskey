@@ -495,6 +495,13 @@ _permissions:
   "write:user-groups": "Benutzergruppen bearbeiten oder löschen"
 _auth:
   shareAccess: "Möchtest du \"{name}\" authorisieren, auf dieses Benuzerkonto zugreifen zu können?"
+  shareAccessAsk: "Bist du dir sicher, dass du diese Anwendung authorisieren möchtest, auf dein Benutzerkonto zugreifen zu können?"
+  permissionAsk: "Diese Anwendung erfordert folgende Berechtigungen:"
+  pleaseGoBack: "Bitte gehe zurück zur Anwendung"
+  callback: "Rückkehr zur Anwendung"
+  denied: "Zugriff verweigert"
+_antennaSources:
+  all: "Alle Notizen"
 _weekday:
   sunday: "Sonntag"
   monday: "Montag"
@@ -606,12 +613,19 @@ _pages:
   url: "Seiten-URL"
   summary: "Zusammenfassung"
   alignCenter: "Mittig ausrichten"
+  hideTitleWhenPinned: "Seitentitel ausblenden, wenn an dein Profil angepinnt "
   font: "Schriftart"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
+  eyeCatchingImageSet: "Vorschaubild festlegen"
+  eyeCatchingImageRemove: "Vorschaubild entfernen"
   chooseBlock: "Block hinzufügen"
   selectType: "Wähle einen Typ"
   enterVariableName: "Gib einen Namen für deine Variable ein"
+  variableNameIsAlreadyUsed: "Dieser Name wird bereits von einer anderen Variable verwendet"
+  contentBlocks: "Inhalt"
+  inputBlocks: "Eingabe"
+  specialBlocks: "Spezial"
   blocks:
     text: "Text"
     textarea: "Textfeld"
@@ -626,22 +640,27 @@ _pages:
       text: "Inhalt"
     textInput: "Texteingabe"
     _textInput:
+      name: "Variablenname"
       text: "Titel"
       default: "Standardwert"
     textareaInput: "Eingabe des mehrzeiligen Textfelds"
     _textareaInput:
+      name: "Variablenname"
       text: "Titel"
       default: "Standardwert"
     numberInput: "Nummereingabe"
     _numberInput:
+      name: "Variablenname"
       text: "Titel"
       default: "Standardwert"
     switch: "Fallunterscheidung"
     _switch:
+      name: "Variablenname"
       text: "Titel"
       default: "Standardwert"
     counter: "Zähler"
     _counter:
+      name: "Variablenname"
       text: "Titel"
       inc: "Erhöhen um"
     _button:
@@ -661,6 +680,7 @@ _pages:
           no-variable: "Keine"
     radioButton: "Optionsfeld"
     _radioButton:
+      name: "Variablenname"
       title: "Titel"
       values: "Auswahlmöglichkeiten (getrennt durch Zeilenumbrüche)"
       default: "Standardwert"
@@ -816,6 +836,7 @@ _pages:
       splitStrByLine: "Text nach Zeilenumbrüchen aufteilen"
       _splitStrByLine:
         arg1: "Text"
+      ref: "Variablen"
       fn: "Funktionen"
       _fn:
         arg1: "Ausgabe"
