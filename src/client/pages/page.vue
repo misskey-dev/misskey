@@ -5,7 +5,7 @@
 
 	<div class="_card" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>
-		<img class="_header_image" :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId" />
+		<img class="header" :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId" />
 		<div class="_content">
 			<x-page :page="page"/>
 		</div>
@@ -116,8 +116,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .xcukqgmh {
-
-	._header_image {
+	> ._card > .header {
 		max-width: 100%;
 	}
 }
