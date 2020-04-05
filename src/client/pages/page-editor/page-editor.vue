@@ -102,6 +102,7 @@ import { blockDefs } from '../../scripts/aiscript/index';
 import { ASTypeChecker } from '../../scripts/aiscript/type-checker';
 import { url } from '../../config';
 import { collectPageVars } from '../../scripts/collect-page-vars';
+import { selectDriveFile } from '../../scripts/select-drive-file';
 
 export default Vue.extend({
 	i18n,
@@ -405,9 +406,7 @@ export default Vue.extend({
 		},
 
 		setEyeCatchingImage() {
-			this.$chooseDriveFile({
-				multiple: false
-			}).then(file => {
+			selectDriveFile(this.$root, false).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},
