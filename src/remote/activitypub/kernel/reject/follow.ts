@@ -5,7 +5,7 @@ import { IFollow } from '../../type';
 import { Users } from '../../../../models';
 
 export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
-	const id = typeof activity.actor == 'string' ? activity.actor : activity.actor.id;
+	const id = typeof activity.actor === 'string' ? activity.actor : activity.actor.id;
 	if (id == null) throw new Error('missing id');
 
 	if (!id.startsWith(config.url + '/')) {

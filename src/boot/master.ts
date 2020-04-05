@@ -99,7 +99,7 @@ async function isPortAvailable(port: number): Promise<boolean> {
 function showEnvironment(): void {
 	const env = process.env.NODE_ENV;
 	const logger = bootLogger.createSubLogger('env');
-	logger.info(typeof env == 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
+	logger.info(typeof env === 'undefined' ? 'NODE_ENV is not set' : `NODE_ENV: ${env}`);
 
 	if (env !== 'production') {
 		logger.warn('The environment is not in production mode.');

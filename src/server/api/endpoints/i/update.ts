@@ -193,14 +193,14 @@ export default define(meta, async (ps, user, token) => {
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
-	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
-	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
-	if (typeof ps.carefulBot == 'boolean') profileUpdates.carefulBot = ps.carefulBot;
-	if (typeof ps.autoAcceptFollowed == 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
-	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch == 'boolean') profileUpdates.autoWatch = ps.autoWatch;
-	if (typeof ps.injectFeaturedNote == 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
-	if (typeof ps.alwaysMarkNsfw == 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
+	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.autoWatch === 'boolean') profileUpdates.autoWatch = ps.autoWatch;
+	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
+	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);

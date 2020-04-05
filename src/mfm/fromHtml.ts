@@ -1,7 +1,7 @@
 import { parseFragment, DefaultTreeDocumentFragment } from 'parse5';
 import { urlRegex } from './prelude';
 
-export function fromHtml(html: string): string {
+export function fromHtml(html: string, hashtagNames?: string[]): string {
 	const dom = parseFragment(html) as DefaultTreeDocumentFragment;
 
 	let text = '';
@@ -13,7 +13,7 @@ export function fromHtml(html: string): string {
 	return text.trim();
 
 	function getText(node: any): string {
-		if (node.nodeName == '#text') return node.value;
+		if (node.nodeName === '#text') return node.value;
 
 		if (node.childNodes) {
 			return node.childNodes.map((n: any) => getText(n)).join('');
@@ -34,29 +34,27 @@ export function fromHtml(html: string): string {
 
 			case 'a':
 				const txt = getText(node);
-				const rel = node.attrs.find((x: any) => x.name == 'rel');
-				const href = node.attrs.find((x: any) => x.name == 'href');
-				const _class = node.attrs.find((x: any) => x.name == 'class');
-				const isHashtag = rel?.value?.match('tag') || _class?.value?.match('hashtag');
+				const rel = node.attrs.find((x: any) => x.name === 'rel');
+				const href = node.attrs.find((x: any) => x.name === 'href');
 
-				// ハッシュタグ / hrefがない / txtがURL
-				if (isHashtag || !href || href.value == txt) {
-					text += isHashtag || txt.match(urlRegex) ? txt : `<${txt}>`;
+				// ハッシュタグ
+				if (hashtagNames && href && hashtagNames.map(x => x.toLowerCase()).includes(txt.toLowerCase())) {
+					text += txt;
 				// メンション
 				} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
 					const part = txt.split('@');
 
-					if (part.length == 2) {
+					if (part.length === 2) {
 						//#region ホスト名部分が省略されているので復元する
 						const acct = `${txt}@${(new URL(href.value)).hostname}`;
 						text += acct;
 						//#endregion
-					} else if (part.length == 3) {
+					} else if (part.length === 3) {
 						text += txt;
 					}
 				// その他
 				} else {
-					text += `[${txt}](${href.value})`;
+					text += (!href || (txt === href.value && txt.match(urlRegex))) ? txt : `[${txt}](${href.value})`;
 				}
 				break;
 

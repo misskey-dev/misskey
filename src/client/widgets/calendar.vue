@@ -65,7 +65,7 @@ export default define({
 	},
 	methods: {
 		func() {
-			if (this.props.design == 2) {
+			if (this.props.design === 2) {
 				this.props.design = 0;
 			} else {
 				this.props.design++;
@@ -102,7 +102,7 @@ export default define({
 			this.monthP = monthNumer / monthDenom * 100;
 			this.yearP  = yearNumer  / yearDenom  * 100;
 
-			this.isHoliday = now.getDay() == 0 || now.getDay() == 6;
+			this.isHoliday = now.getDay() === 0 || now.getDay() === 6;
 		}
 	}
 });

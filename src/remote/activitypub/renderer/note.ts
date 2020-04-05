@@ -63,13 +63,13 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 	let to: string[] = [];
 	let cc: string[] = [];
 
-	if (note.visibility == 'public') {
+	if (note.visibility === 'public') {
 		to = ['https://www.w3.org/ns/activitystreams#Public'];
 		cc = [`${attributedTo}/followers`].concat(mentions);
-	} else if (note.visibility == 'home') {
+	} else if (note.visibility === 'home') {
 		to = [`${attributedTo}/followers`];
 		cc = ['https://www.w3.org/ns/activitystreams#Public'].concat(mentions);
-	} else if (note.visibility == 'followers') {
+	} else if (note.visibility === 'followers') {
 		to = [`${attributedTo}/followers`];
 		cc = mentions;
 	} else {

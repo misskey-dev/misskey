@@ -36,7 +36,7 @@ export default async function(userId: string, type: string, body?: any) {
 			//swLogger.info(err.headers);
 			//swLogger.info(err.body);
 
-			if (err.statusCode == 410) {
+			if (err.statusCode === 410) {
 				SwSubscriptions.delete({
 					userId: userId,
 					endpoint: subscription.endpoint,

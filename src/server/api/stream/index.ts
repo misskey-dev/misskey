@@ -39,6 +39,10 @@ export default class Connection {
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
+		this.subscriber.on('broadcast', async ({ type, body }) => {
+			this.onBroadcastMessage(type, body);
+		});
+
 		if (this.user) {
 			this.updateFollowing();
 			this.followingClock = setInterval(this.updateFollowing, 5000);
@@ -70,6 +74,11 @@ export default class Connection {
 			case 'channel': this.onChannelMessageRequested(body); break;
 			case 'ch': this.onChannelMessageRequested(body); break; // alias
 		}
+	}
+
+	@autobind
+	private onBroadcastMessage(type: string, body: any) {
+		this.sendMessageToWs(type, body);
 	}
 
 	/**
