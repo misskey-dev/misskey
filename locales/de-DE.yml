@@ -1,5 +1,6 @@
 ---
 _lang_: "Deutsch"
+introMisskey: "Willkommen! Misskey ist eine dezentralisierte open-source Microblogging-Platform.\nVerfasse \"Notizen\" um mitzuteilen, was gerade passiert oder um Ereignisse mit Anderen zu teilen. 📡\nMit \"Reaktionen\" kannst du außerdem schnell deine Gefühle über Notizen anderer Benutzer zum Ausdruck bringen. 👍\nLass uns eine neue Welt erforschen! 🚀"
 monthAndDay: "{day}/{month}"
 search: "Suchen"
 notifications: "Benachrichtigungen"
