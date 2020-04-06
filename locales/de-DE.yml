@@ -624,7 +624,7 @@ _visibility:
   followers: "Follower"
   followersDescription: "Nur für Follower sichtbar"
   specified: "Direkt"
-  specifiedDescription: "Nur für erwähnte Benutzer sichtbar"
+  specifiedDescription: "Nur für bestimmte Benutzer sichtbar"
   localOnly: "Nur Lokal"
 _postForm:
   replyPlaceholder: "Dieser Notiz antworten..."
