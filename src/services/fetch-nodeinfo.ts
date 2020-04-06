@@ -1,7 +1,6 @@
-import * as request from 'request-promise-native';
+import { getJson } from '../misc/fetch';
 import { Instance } from '../models/entities/instance';
 import { Instances } from '../models';
-import config from '../config';
 import { getNodeinfoLock } from '../misc/app-lock';
 import Logger from '../services/logger';
 
@@ -20,23 +19,14 @@ export async function fetchNodeinfo(instance: Instance) {
 	logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 
 	try {
-		const wellknown = await request({
-			url: 'https://' + instance.host + '/.well-known/nodeinfo',
-			proxy: config.proxy,
-			timeout: 1000 * 10,
-			forever: true,
-			headers: {
-				'User-Agent': config.userAgent,
-				Accept: 'application/json, */*'
-			},
-			json: true
-		}).catch(e => {
-			if (e.statusCode === 404) {
-				throw 'No nodeinfo provided';
-			} else {
-				throw e.statusCode || e.message;
-			}
-		});
+		const wellknown = await getJson('https://' + instance.host + '/.well-known/nodeinfo')
+			.catch(e => {
+				if (e.statusCode === 404) {
+					throw 'No nodeinfo provided';
+				} else {
+					throw e.statusCode || e.message;
+				}
+			});
 
 		if (wellknown.links == null || !Array.isArray(wellknown.links)) {
 			throw 'No wellknown links';
@@ -53,19 +43,10 @@ export async function fetchNodeinfo(instance: Instance) {
 			throw 'No nodeinfo link provided';
 		}
 
-		const info = await request({
-			url: link.href,
-			proxy: config.proxy,
-			timeout: 1000 * 10,
-			forever: true,
-			headers: {
-				'User-Agent': config.userAgent,
-				Accept: 'application/json, */*'
-			},
-			json: true
-		}).catch(e => {
-			throw e.statusCode || e.message;
-		});
+		const info = await getJson(link.href)
+			.catch(e => {
+				throw e.statusCode || e.message;
+			});
 
 		await Instances.update(instance.id, {
 			infoUpdatedAt: new Date(),
