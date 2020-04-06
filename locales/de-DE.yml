@@ -642,7 +642,7 @@ _timelines:
   social: "Sozial"
   global: "Global"
 _pages:
-  viewPage: "Deine Seiten lesen"
+  viewPage: "Deine Seiten"
   content: "Inhalt"
   title: "Titel"
   url: "Seiten-URL"
