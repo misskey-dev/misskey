@@ -537,6 +537,7 @@ _auth:
   denied: "Zugriff verweigert"
 _antennaSources:
   all: "Alle Notizen"
+  homeTimeline: "Notizen von Benutzern, denen gefolgt wird"
   users: "Notizen von konkreten Benutzern"
   userList: "Notizen von allen Benutzern aus einer Liste"
   userGroup: "Notizen von allen Benutzern aus einer Gruppe"
