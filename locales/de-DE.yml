@@ -537,6 +537,9 @@ _auth:
   denied: "Zugriff verweigert"
 _antennaSources:
   all: "Alle Notizen"
+  users: "Notizen von konkreten Benutzern"
+  userList: "Notizen von allen Benutzern aus einer Liste"
+  userGroup: "Notizen von allen Benutzern aus einer Gruppe"
 _weekday:
   sunday: "Sonntag"
   monday: "Montag"
@@ -644,7 +647,7 @@ _timelines:
 _pages:
   newPage: "Seite erstellen"
   editPage: "Diese Seite bearbeiten"
-  readPage: "Seiten-Quelltext anschauen"
+  readPage: "Quelltext-Ansicht"
   created: "Seite erfolgreich erstellt"
   updated: "Seite erfolgreich aktualisiert"
   deleted: "Seite erfolgreich gelöscht"
@@ -652,6 +655,7 @@ _pages:
   invalidNameTitle: "Die angegebene Seiten-URL ist ungültig"
   invalidNameText: "Überprüfe ob der Seitentitel nicht leer ist"
   editThisPage: "Diese Seite bearbeiten"
+  viewSource: "Quelltext anzeigen"
   viewPage: "Seite anschauen"
   like: "Gefällt mir"
   unlike: "\"Gefällt mir\" entfernen"
@@ -737,6 +741,7 @@ _pages:
       default: "Standardwert"
   script:
     categories:
+      flow: "Steuerung"
       logical: "Logische Operationen"
       operation: "Berechnungen"
       comparison: "Vergleiche"
@@ -890,16 +895,22 @@ _pages:
       ref: "Variablen"
       fn: "Funktionen"
       _fn:
+        slots: "Slots"
+        slots-info: "Trenne jeden Slot mit einem Zeilenumbruch"
         arg1: "Ausgabe"
       for: "Wiederholen"
       _for:
         arg1: "Anzahl der Wiederholungen"
         arg2: "Aktion"
+    typeError: "Slot {slot} akzeptiert Werte vom Typ \"{expect}\", aber es wurde ein \"{actual}\" Wert angegeben!"
+    thereIsEmptySlot: "Slot {slot} ist leer!"
     types:
       string: "Text"
       number: "Nummer"
+      boolean: "Flag"
       array: "Listen"
       stringArray: "Textliste"
     emptySlot: "Leerer Slot"
     enviromentVariables: "Umgebungsvariable"
     pageVariables: "Seitenelement"
+    argVariables: "Eingabe-Slot"
