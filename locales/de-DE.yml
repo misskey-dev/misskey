@@ -490,6 +490,12 @@ _tutorial:
   step3_4: "Gibt es nichts, das du momentan sagen möchtest? Versuch's mit \"Hallo Misskey!\""
   step4_1: "Fertig mit dem Senden deiner ersten Notiz?"
   step5_2: "{featured} zeigt dir beliebte Notizen dieser Instanz. In {explore} kannst du beliebte Benutzer finden. Schau dort, ob du Benutzer findest, die dich interessieren."
+  step5_3: "Um anderen Benutzern zu folgen, klicke auf ihr Profilbild und klicke dann auf den \"Folgen\" Knopf in ihrem Profil."
+  step5_4: "Wenn der Benutzer neben seinem Namen ein Schloss hat, dann muss er deine Follow-Anfrage manuell bestätigen."
+  step6_2: "Du kannst ebenso \"Reaktionen\" verwenden, um schnell auf Notizen anderer Benutzer zu antworten."
+  step6_3: "Um eine \"Reaktion\" anzufügen, klicke auf das \"+\"-Symbol in der Notiz eines anderen Benutzers und wähle ein Emoji, mit dem du reagieren möchtest."
+  step7_1: "Glückwunsch! Du hast die Misskey-Einführung abgeschlossen."
+  step7_2: "Wenn du mehr über Misskey lernen möchtest, schau dich im {help}-Bereich um."
 _2fa:
   alreadyRegistered: "Du hast bereits ein Gerät für Zwei-Faktor-Authentifizierung registriert"
   registerDevice: "Neues Gerät registrieren"
