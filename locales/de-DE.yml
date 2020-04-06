@@ -488,6 +488,7 @@ _tutorial:
   step3_2: "Der nächste Schritt ist das Schreiben einer Notiz. Dies kannst du tun, indem du auf das Stift-Icon auf dem Bildschirm drückst."
   step3_3: "Fülle das Fenster aus und drücke auf den Knopf oben rechts zum Senden."
   step3_4: "Gibt es nichts, das du momentan sagen möchtest? Versuch's mit \"Hallo Misskey!\""
+  step4_1: "Fertig mit dem Senden deiner ersten Notiz?"
 _2fa:
   alreadyRegistered: "Du hast bereits ein Gerät für Zwei-Faktor-Authentifizierung registriert"
   registerDevice: "Neues Gerät registrieren"
