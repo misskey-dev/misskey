@@ -496,6 +496,7 @@ _tutorial:
   step6_3: "Um eine \"Reaktion\" anzufügen, klicke auf das \"+\"-Symbol in der Notiz eines anderen Benutzers und wähle ein Emoji, mit dem du reagieren möchtest."
   step7_1: "Glückwunsch! Du hast die Misskey-Einführung abgeschlossen."
   step7_2: "Wenn du mehr über Misskey lernen möchtest, schau dich im {help}-Bereich um."
+  step7_3: "Und nun, viel Spaß mit Misskey! 🚀"
 _2fa:
   alreadyRegistered: "Du hast bereits ein Gerät für Zwei-Faktor-Authentifizierung registriert"
   registerDevice: "Neues Gerät registrieren"
