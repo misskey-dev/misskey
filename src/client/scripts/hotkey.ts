@@ -57,9 +57,9 @@ const ignoreElemens = ['input', 'textarea'];
 function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
 	const key = e.code.toLowerCase();
 	return patterns.some(pattern => pattern.which.includes(key) &&
-		pattern.ctrl == e.ctrlKey &&
-		pattern.shift == e.shiftKey &&
-		pattern.alt == e.altKey &&
+		pattern.ctrl === e.ctrlKey &&
+		pattern.shift === e.shiftKey &&
+		pattern.alt === e.altKey &&
 		!e.metaKey
 	);
 }

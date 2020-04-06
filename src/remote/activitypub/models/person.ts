@@ -3,12 +3,12 @@ import * as promiseLimit from 'promise-limit';
 import config from '../../../config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId } from '../type';
+import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, IObject, isPropertyValue, IApPropertyValue } from '../type';
 import { fromHtml } from '../../../mfm/fromHtml';
+import { htmlToMfm } from '../misc/html-to-mfm';
 import { resolveNote, extractEmojis } from './note';
 import { registerOrFetchInstanceDoc } from '../../../services/register-or-fetch-instance-doc';
-import { ITag, extractHashtags } from './tag';
-import { IIdentifier } from './identifier';
+import { extractApHashtags } from './tag';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateUsertags } from '../../../services/update-hashtag';
@@ -134,9 +134,9 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
+	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
-	const isBot = object.type == 'Service';
+	const isBot = object.type === 'Service';
 
 	// Create user
 	let user: IRemoteUser;
@@ -165,7 +165,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 			await transactionalEntityManager.save(new UserProfile({
 				userId: user.id,
-				description: person.summary ? fromHtml(person.summary) : null,
+				description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
 				url: person.url,
 				fields,
 				userHost: host
@@ -180,11 +180,20 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
-			throw new Error('already registered');
-		}
+			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
+			const u = await Users.findOne({
+				uri: person.id
+			});
 
-		logger.error(e);
-		throw e;
+			if (u) {
+				user = u as IRemoteUser;
+			} else {
+				throw new Error('already registered');
+			}
+		} else {
+			logger.error(e);
+			throw e;
+		}
 	}
 
 	// Register host
@@ -308,7 +317,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
+	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
 	const updates = {
 		lastFetchedAt: new Date(),
@@ -318,7 +327,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		emojis: emojiNames,
 		name: person.name,
 		tags,
-		isBot: object.type == 'Service',
+		isBot: object.type === 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: !!person.manuallyApprovesFollowers,
 	} as Partial<User>;
@@ -346,7 +355,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	await UserProfiles.update({ userId: exist.id }, {
 		url: person.url,
 		fields,
-		description: person.summary ? fromHtml(person.summary) : null,
+		description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
 	});
 
 	// ハッシュタグ更新
@@ -384,16 +393,6 @@ export async function resolvePerson(uri: string, resolver?: Resolver): Promise<U
 	return await createPerson(uri, resolver);
 }
 
-const isPropertyValue = (x: {
-		type: string,
-		name?: string,
-		value?: string
-	}) =>
-		x &&
-		x.type === 'PropertyValue' &&
-		typeof x.name === 'string' &&
-		typeof x.value === 'string';
-
 const services: {
 		[x: string]: (id: string, username: string) => any
 	} = {
@@ -409,7 +408,7 @@ const $discord = (id: string, name: string) => {
 	return { id, username, discriminator };
 };
 
-function addService(target: { [x: string]: any }, source: IIdentifier) {
+function addService(target: { [x: string]: any }, source: IApPropertyValue) {
 	const service = services[source.name];
 
 	if (typeof source.value !== 'string')
@@ -421,7 +420,7 @@ function addService(target: { [x: string]: any }, source: IIdentifier) {
 		target[source.name.split(':')[2]] = service(id, username);
 }
 
-export function analyzeAttachments(attachments: ITag[]) {
+export function analyzeAttachments(attachments: IObject | IObject[] | undefined) {
 	const fields: {
 		name: string,
 		value: string
@@ -430,12 +429,12 @@ export function analyzeAttachments(attachments: ITag[]) {
 
 	if (Array.isArray(attachments)) {
 		for (const attachment of attachments.filter(isPropertyValue)) {
-			if (isPropertyValue(attachment.identifier!)) {
-				addService(services, attachment.identifier!);
+			if (isPropertyValue(attachment.identifier)) {
+				addService(services, attachment.identifier);
 			} else {
 				fields.push({
-					name: attachment.name!,
-					value: fromHtml(attachment.value!)
+					name: attachment.name,
+					value: fromHtml(attachment.value)
 				});
 			}
 		}

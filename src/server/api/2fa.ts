@@ -78,7 +78,7 @@ function verifyCertificateChain(certificates: string[]) {
 }
 
 function PEMString(pemBuffer: Buffer, type = 'CERTIFICATE') {
-	if (pemBuffer.length == 65 && pemBuffer[0] == 0x04) {
+	if (pemBuffer.length === 65 && pemBuffer[0] === 0x04) {
 		pemBuffer = Buffer.concat([PEM_PRELUDE, pemBuffer], 91);
 		type = 'PUBLIC KEY';
 	}

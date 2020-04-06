@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-container :show-header="props.design === 0" :naked="props.design === 2" :class="$style.root" :data-melt="props.design == 2">
+	<mk-container :show-header="props.design === 0" :naked="props.design === 2" :class="$style.root" :data-melt="props.design === 2">
 		<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
 
 		<div class="">
@@ -66,7 +66,7 @@ export default define({
 		},
 
 		func() {
-			if (this.props.design == 2) {
+			if (this.props.design === 2) {
 				this.props.design = 0;
 			} else {
 				this.props.design++;

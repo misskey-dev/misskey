@@ -26,8 +26,8 @@ export default define(meta, async (ps, user) => {
 	switch (ps.sort) {
 		case '+createdAt': query.orderBy('token.createdAt', 'DESC'); break;
 		case '-createdAt': query.orderBy('token.createdAt', 'ASC'); break;
-		case '+lastUsedAt': query.andWhere('token.lastUsedAt IS NOT NULL').orderBy('token.lastUsedAt', 'DESC'); break;
-		case '-lastUsedAt': query.andWhere('token.lastUsedAt IS NOT NULL').orderBy('token.lastUsedAt', 'ASC'); break;
+		case '+lastUsedAt': query.orderBy('token.lastUsedAt', 'DESC'); break;
+		case '-lastUsedAt': query.orderBy('token.lastUsedAt', 'ASC'); break;
 		default: query.orderBy('token.id', 'ASC'); break;
 	}
 

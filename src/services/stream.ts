@@ -19,6 +19,10 @@ class Publisher {
 		}));
 	}
 
+	public publishBroadcastStream = (type: string, value?: any): void => {
+		this.publish('broadcast', type, typeof value === 'undefined' ? null : value);
+	}
+
 	public publishMainStream = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`mainStream:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -75,6 +79,7 @@ const publisher = new Publisher();
 
 export default publisher;
 
+export const publishBroadcastStream = publisher.publishBroadcastStream;
 export const publishMainStream = publisher.publishMainStream;
 export const publishDriveStream = publisher.publishDriveStream;
 export const publishNoteStream = publisher.publishNoteStream;

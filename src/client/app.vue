@@ -310,7 +310,7 @@ export default Vue.extend({
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query == '') return;
+				if (canceled || query == null || query === '') return;
 
 				this.searching = true;
 				search(this, query).finally(() => {
@@ -320,7 +320,7 @@ export default Vue.extend({
 		},
 
 		searchKeypress(e) {
-			if (e.keyCode == 13) {
+			if (e.keyCode === 13) {
 				this.searchWait = true;
 				search(this, this.searchQuery).finally(() => {
 					this.searchWait = false;
