@@ -67,7 +67,7 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 export const uploadFile = (user: any, path?: string): Promise<any> => new Promise((ok, rej) => {
 		const formData = new FormData();
 		formData.append('i', user.token);
-		formData.append('file',fs.createReadStream(path || __dirname + '/resources/Lenna.png'));
+		formData.append('file', fs.createReadStream(path || __dirname + '/resources/Lenna.png'));
 
 		return fetch('http://localhost:8080/api/drive/files/create', {
 			method: 'post',
