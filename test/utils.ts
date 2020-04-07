@@ -67,7 +67,7 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 	}, user);
 };
 
-export const uploadFile = (user: any, path?: string): Promise<any> => new Promise((ok, rej) => {
+export const uploadFile = (user: any, path?: string): Promise<any> => {
 		const formData = new FormData();
 		formData.append('i', user.token);
 		formData.append('file', fs.createReadStream(path || __dirname + '/resources/Lenna.png'));
@@ -83,7 +83,7 @@ export const uploadFile = (user: any, path?: string): Promise<any> => new Promis
 				return res.json();
 			}
 		});
-});
+};
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
