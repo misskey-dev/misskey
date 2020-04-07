@@ -621,6 +621,7 @@ _visibility:
   public: "Öffentlich"
   publicDescription: "Deine Notiz wird global sichtbar sein"
   home: "Startseite"
+  homeDescription: "Deine Notiz wird nur in der Chronik deiner Instanz angezeigt."
   followers: "Follower"
   followersDescription: "Nur für Follower sichtbar"
   specified: "Direkt"
