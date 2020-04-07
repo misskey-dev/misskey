@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as WebSocket from 'ws';
 import fetch from 'node-fetch';
-import FormData from 'form-data';
+const FormData = require('form-data');
 import * as childProcess from 'child_process';
 
 export const async = (fn: Function) => (done: Function) => {
