@@ -20,6 +20,9 @@ export const request = async (endpoint: string, params: any, me?: any): Promise<
 	try {
 		const res = await fetch('http://localhost:8080/api' + endpoint, {
 			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
 			body: JSON.stringify(Object.assign(auth, params))
 		});
 
