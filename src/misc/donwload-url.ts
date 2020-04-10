@@ -1,9 +1,13 @@
 import * as fs from 'fs';
+import * as stream from 'stream';
+import * as util from 'util';
 import fetch from 'node-fetch';
 import { httpAgent, httpsAgent } from './fetch';
 import config from '../config';
 import * as chalk from 'chalk';
 import Logger from '../services/logger';
+
+const pipeline = util.promisify(stream.pipeline);
 
 export async function downloadUrl(url: string, path: string) {
 	const logger = new Logger('download');
@@ -16,40 +20,14 @@ export async function downloadUrl(url: string, path: string) {
 		},
 		timeout: 10 * 1000,
 		agent: u => u.protocol == 'http:' ? httpAgent : httpsAgent,
-	}).then(response => {
-		if (!response.ok) {
-			logger.error(`Got ${response.status} (${url})`);
-			throw response.status;
-		} else {
-			return response;
-		}
 	});
 
-	await new Promise((res, rej) => {
-		const writable = fs.createWriteStream(path);
+	if (!response.ok) {
+		logger.error(`Got ${response.status} (${url})`);
+		throw response.status;
+	}
 
-		response.body.on('error', (error: any) => {
-			logger.error(`Failed to start download: ${chalk.cyan(url)}: ${error}`, {
-				url: url,
-				e: error
-			});
-			writable.close();
-			rej(error);
-		});
+	await pipeline(response.body, fs.createWriteStream(path));
 
-		writable.on('finish', () => {
-			logger.succ(`Download finished: ${chalk.cyan(url)}`);
-			res();
-		});
-
-		writable.on('error', error => {
-			logger.error(`Download failed: ${chalk.cyan(url)}: ${error}`, {
-				url: url,
-				e: error
-			});
-			rej(error);
-		});
-
-		response.body.pipe(writable);
-	});
+	logger.succ(`Download finished: ${chalk.cyan(url)}`);
 }

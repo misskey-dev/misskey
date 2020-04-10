@@ -1,9 +1,13 @@
 import * as fs from 'fs';
 import * as crypto from 'crypto';
+import * as stream from 'stream';
+import * as util from 'util';
 import * as fileType from 'file-type';
 import isSvg from 'is-svg';
 import * as probeImageSize from 'probe-image-size';
 import * as sharp from 'sharp';
+
+const pipeline = util.promisify(stream.pipeline);
 
 export type FileInfo = {
 	size: number;
@@ -138,32 +142,17 @@ export async function checkSvg(path: string) {
  * Get file size
  */
 export async function getFileSize(path: string): Promise<number> {
-	return new Promise<number>((res, rej) => {
-		fs.stat(path, (err, stats) => {
-			if (err) return rej(err);
-			res(stats.size);
-		});
-	});
+	const getStat = util.promisify(fs.stat);
+	return (await getStat(path)).size;
 }
 
 /**
  * Calculate MD5 hash
  */
 async function calcHash(path: string): Promise<string> {
-	return new Promise<string>((res, rej) => {
-		const readable = fs.createReadStream(path);
-		const hash = crypto.createHash('md5');
-		const chunks: Buffer[] = [];
-		readable
-			.on('error', rej)
-			.pipe(hash)
-			.on('error', rej)
-			.on('data', chunk => chunks.push(chunk))
-			.on('end', () => {
-				const buffer = Buffer.concat(chunks);
-				res(buffer.toString('hex'));
-			});
-	});
+	const hash = crypto.createHash('md5').setEncoding('hex');
+	await pipeline(fs.createReadStream(path), hash);
+	return hash.read();
 }
 
 /**
