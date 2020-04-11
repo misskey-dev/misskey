@@ -17,7 +17,7 @@ import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
 import { Notes, Emojis, Polls, MessagingMessages } from '../../../models';
 import { Note } from '../../../models/entities/note';
-import { IObject, getOneApId, getApId, validPost, IPost, isEmoji } from '../type';
+import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
@@ -282,7 +282,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		apEmojis,
 		poll,
 		uri: note.id,
-		url: note.url,
+		url: getOneApHrefNullable(note.url),
 	}, silent);
 }
 
