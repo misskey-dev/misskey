@@ -1,8 +1,14 @@
 import * as S3 from 'aws-sdk/clients/s3';
 import { Meta } from '../../models/entities/meta';
-import { httpsAgent, httpAgent } from '../../misc/fetch';
+import { getAgentByUrl } from '../../misc/fetch';
 
 export function getS3(meta: Meta) {
+	const u = meta.objectStorageEndpoint != null
+		? `${meta.objectStorageUseSSL ? 'https://' : 'http://'}${meta.objectStorageEndpoint}`
+		: `${meta.objectStorageUseSSL ? 'https://' : 'http://'}example.net`;
+
+	const agent = getAgentByUrl(new URL(u));
+
 	return new S3({
 		endpoint: meta.objectStorageEndpoint || undefined,
 		accessKeyId: meta.objectStorageAccessKey!,
@@ -11,7 +17,7 @@ export function getS3(meta: Meta) {
 		sslEnabled: meta.objectStorageUseSSL,
 		s3ForcePathStyle: !!meta.objectStorageEndpoint,
 		httpOptions: {
-			agent: meta.objectStorageUseSSL ? httpsAgent : httpAgent
+			agent
 		}
 	});
 }

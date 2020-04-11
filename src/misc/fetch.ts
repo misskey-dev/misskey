@@ -13,7 +13,7 @@ export async function getJson(url: string, accept = 'application/json, */*', tim
 			Accept: accept
 		}, headers || {}),
 		timeout,
-		agent: u => u.protocol == 'http:' ? httpAgent : httpsAgent,
+		agent: getAgentByUrl,
 	});
 
 	if (!res.ok) {
@@ -27,17 +27,29 @@ export async function getJson(url: string, accept = 'application/json, */*', tim
 	return await res.json();
 }
 
+const _http = new http.Agent({
+	keepAlive: true,
+	keepAliveMsecs: 30 * 1000,
+});
+
+const _https = new https.Agent({
+	keepAlive: true,
+	keepAliveMsecs: 30 * 1000,
+	lookup: cache.lookup,
+});
+
 export const httpAgent = config.proxy
 	? new HttpProxyAgent(config.proxy)
-	: new http.Agent({
-		keepAlive: true,
-		keepAliveMsecs: 30 * 1000,
-	});
+	: _http;
 
 export const httpsAgent = config.proxy
 	? new HttpsProxyAgent(config.proxy)
-	: new https.Agent({
-		keepAlive: true,
-		keepAliveMsecs: 30 * 1000,
-		lookup: cache.lookup,
-	});
+	: _https;
+
+export function getAgentByUrl(url: URL) {
+	if ((config.proxyBypassHosts || []).includes(url.hostname)) {
+		return url.protocol == 'http:' ? _http : _https;
+	} else {
+		return url.protocol == 'http:' ? httpAgent : httpsAgent;
+	}
+}
