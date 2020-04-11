@@ -102,6 +102,7 @@
 		"@types/websocket": "1.0.0",
 		"@types/ws": "7.2.3",
 		"@typescript-eslint/parser": "2.26.0",
+		"abort-controller": "3.0.0",
 		"animejs": "3.1.0",
 		"apexcharts": "3.17.1",
 		"autobind-decorator": "2.4.0",
