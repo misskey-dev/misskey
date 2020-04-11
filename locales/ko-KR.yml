@@ -476,6 +476,7 @@ state: "상태"
 sort: "정렬"
 ascendingOrder: "오름차순"
 descendingOrder: "내림차순"
+output: "출력"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
