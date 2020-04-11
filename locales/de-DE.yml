@@ -476,6 +476,7 @@ state: "Status"
 sort: "Sortieren"
 ascendingOrder: "Aufsteigende Reihenfolge"
 descendingOrder: "Absteigende Reihenfolge"
+output: "Ausgabe"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
