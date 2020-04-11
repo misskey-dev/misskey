@@ -476,6 +476,7 @@ state: "State"
 sort: "Sort"
 ascendingOrder: "Ascending"
 descendingOrder: "Descending"
+output: "Output"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
