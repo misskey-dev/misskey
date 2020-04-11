@@ -1,5 +1,5 @@
 import { createTemp } from './create-temp';
-import { downloadUrl } from './donwload-url';
+import { downloadUrl } from './download-url';
 import { detectType } from './get-file-info';
 
 export async function detectUrlMime(url: string) {
