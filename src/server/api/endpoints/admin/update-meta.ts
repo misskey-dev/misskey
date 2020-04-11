@@ -394,7 +394,7 @@ export const meta = {
 		objectStorageUseSSL: {
 			validator: $.optional.bool
 		},
-		
+
 		objectStorageUseProxy: {
 			validator: $.optional.bool
 		}
