@@ -48,6 +48,7 @@ export const router = new VueRouter({
 		{ path: '/my/antennas', component: page('my-antennas/index') },
 		{ path: '/my/apps', component: page('apps') },
 		{ path: '/preferences', component: page('preferences/index') },
+		{ path: '/scratchpad', component: page('scratchpad') },
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },
 		{ path: '/instance/users', component: page('instance/users') },
