@@ -5,9 +5,10 @@ import { Emojis, Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls 
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
-import { convertLegacyReaction, convertLegacyReactions } from '../../misc/reaction-lib';
+import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
 import { toString } from '../../mfm/toString';
 import { parse } from '../../mfm/parse';
+import { Emoji } from '../entities/emoji';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
@@ -139,21 +140,28 @@ export class NoteRepository extends Repository<Note> {
 				});
 			}
 
-			reactionNames = reactionNames?.filter(x => x.match(/^:[^:]+:$/)).map(x => x.replace(/:/g, ''));
+			const customReactions = reactionNames?.map(x => decodeReaction(x, noteUserHost)).filter(x => x.name);
 
-			if (reactionNames?.length > 0) {
-				where.push({
-					name: In(reactionNames),
-					host: null
-				});
+			if (customReactions?.length > 0) {
+				for (const customReaction of customReactions) {
+					where.push({
+						name: customReaction.name,
+						host: customReaction.host
+					});
+				}
 			}
 
 			if (where.length === 0) return [];
 
 			return Emojis.find({
 				where,
-				select: ['name', 'host', 'url', 'aliases']
-			});
+				select: ['name', 'host', 'url']
+			}).then(emojis => emojis.map((emoji: Emoji) => {
+				return {
+					name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}`,
+					url: emoji.url,
+				};
+			}));
 		}
 
 		async function populateMyReaction() {
@@ -188,7 +196,7 @@ export class NoteRepository extends Repository<Note> {
 			viaMobile: note.viaMobile || undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
-			reactions: convertLegacyReactions(note.reactions),
+			reactions: convertLegacyReactions(note.reactions, host),
 			tags: note.tags.length > 0 ? note.tags : undefined,
 			emojis: populateEmojis(note.emojis, host, Object.keys(note.reactions)),
 			fileIds: note.fileIds,

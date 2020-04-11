@@ -9,7 +9,7 @@
 	ref="reaction"
 	v-particle
 >
-	<x-reaction-icon :reaction="reaction" ref="icon"/>
+	<x-reaction-icon :reaction="reaction" :customEmojis="note.emojis" ref="icon"/>
 	<span>{{ count }}</span>
 </button>
 </template>
