@@ -40,7 +40,7 @@ export default async (user: User, note: Note) => {
 
 	//#region 配信
 	if (Users.isLocalUser(user) && !note.localOnly) {
-		const content = renderActivity(renderUndo(renderLike(exist, note), user));
+		const content = renderActivity(renderUndo(await renderLike(exist, note), user));
 		const dm = new DeliverManager(user, content);
 		if (note.userHost !== null) {
 			const reactee = await Users.findOne(note.userId)
