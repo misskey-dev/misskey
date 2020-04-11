@@ -6,7 +6,9 @@
 	</div>
 </div>
 <div class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else>
-	<i><fa :icon="faEyeSlash" @click="hide = true"></fa></i>
+	<i v-if="image.isSensitive && !hide && !$store.state.device.alwaysShowNsfw">
+		<fa :icon="faEyeSlash" @click="hide = true"/>
+	</i>
 	<a
 		:href="image.url"
 		:style="style"
