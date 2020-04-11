@@ -394,6 +394,10 @@ export const meta = {
 		objectStorageUseSSL: {
 			validator: $.optional.bool
 		},
+		
+		objectStorageUseProxy: {
+			validator: $.optional.bool
+		}
 	}
 };
 
@@ -630,6 +634,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.objectStorageUseSSL !== undefined) {
 		set.objectStorageUseSSL = ps.objectStorageUseSSL;
+	}
+
+	if (ps.objectStorageUseProxy !== undefined) {
+		set.objectStorageUseProxy = ps.objectStorageUseProxy;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {
