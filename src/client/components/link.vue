@@ -14,7 +14,7 @@ import Vue from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { url as local } from '../config';
 import MkUrlPreview from './url-preview-popup.vue';
-import { isDeviceTouch } from '../scripts/is-device-touch'
+import { isDeviceTouch } from '../scripts/is-device-touch';
 
 export default Vue.extend({
 	props: {
