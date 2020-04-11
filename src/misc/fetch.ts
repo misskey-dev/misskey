@@ -46,8 +46,8 @@ export const httpsAgent = config.proxy
 	? new HttpsProxyAgent(config.proxy)
 	: _https;
 
-export function getAgentByUrl(url: URL) {
-	if ((config.proxyBypassHosts || []).includes(url.hostname)) {
+export function getAgentByUrl(url: URL, bypassProxy = false) {
+	if (bypassProxy || (config.proxyBypassHosts || []).includes(url.hostname)) {
 		return url.protocol == 'http:' ? _http : _https;
 	} else {
 		return url.protocol == 'http:' ? httpAgent : httpsAgent;

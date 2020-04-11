@@ -7,8 +7,6 @@ export function getS3(meta: Meta) {
 		? `${meta.objectStorageUseSSL ? 'https://' : 'http://'}${meta.objectStorageEndpoint}`
 		: `${meta.objectStorageUseSSL ? 'https://' : 'http://'}example.net`;
 
-	const agent = getAgentByUrl(new URL(u));
-
 	return new S3({
 		endpoint: meta.objectStorageEndpoint || undefined,
 		accessKeyId: meta.objectStorageAccessKey!,
@@ -17,7 +15,7 @@ export function getS3(meta: Meta) {
 		sslEnabled: meta.objectStorageUseSSL,
 		s3ForcePathStyle: !!meta.objectStorageEndpoint,
 		httpOptions: {
-			agent
+			agent: getAgentByUrl(new URL(u), !meta.objectStorageUseProxy)
 		}
 	});
 }
