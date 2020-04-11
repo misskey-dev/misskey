@@ -1,12 +1,14 @@
 <template>
-<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
+<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="hide" @click="hide = false">
 	<div>
 		<b><fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
 		<span>{{ $t('clickToShow') }}</span>
 	</div>
 </div>
 <div class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else>
-	<i><fa :icon="faEyeSlash" @click="hide = true"></fa></i>
+	<i v-if="!hide">
+		<fa :icon="faEyeSlash" @click="hide = true"/>
+	</i>
 	<a
 		:href="image.url"
 		:style="style"
@@ -62,6 +64,9 @@ export default Vue.extend({
 				'background-image': url
 			};
 		}
+	},
+	mounted() {
+		this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
 	},
 	methods: {
 		onClick() {
