@@ -72,7 +72,9 @@ export default Vue.extend({
 	methods: {
 		async run() {
 			this.logs = [];
-			const aiscript = new AiScript(createAiScriptEnv(this), {
+			const aiscript = new AiScript(createAiScriptEnv(this, {
+				storageKey: 'scratchpad'
+			}), {
 				in: (q) => {
 					return new Promise(ok => {
 						this.$root.dialog({

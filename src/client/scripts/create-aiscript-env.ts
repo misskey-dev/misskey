@@ -1,6 +1,6 @@
 import { utils, values } from '@syuilo/aiscript';
 
-export function createAiScriptEnv(vm) {
+export function createAiScriptEnv(vm, opts) {
 	return {
 		USER_ID: values.STR(vm.$store.state.i.id),
 		USER_USERNAME: values.STR(vm.$store.state.i.username),
@@ -23,6 +23,15 @@ export function createAiScriptEnv(vm) {
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			const res = await vm.$root.api(ep.value, utils.valToJs(param), token || null);
 			return utils.jsToVal(res);
+		}),
+		'Mk:save': values.FN_NATIVE(([key, value]) => {
+			utils.assertString(key);
+			localStorage.setItem('aiscript:' + opts.storageKey + ':' + key.value, JSON.stringify(utils.valToJs(value)));
+			return values.NULL;
+		}),
+		'Mk:load': values.FN_NATIVE(([key]) => {
+			utils.assertString(key);
+			return utils.jsToVal(JSON.parse(localStorage.getItem('aiscript:' + opts.storageKey + ':' + key.value)));
 		}),
 	};
 }
