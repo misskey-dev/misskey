@@ -59,7 +59,7 @@ import { v4 as uuid } from 'uuid';
 import i18n from '../../i18n';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
-import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/aiscript/index';
+import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/aoiscript/index';
 
 export default Vue.extend({
 	i18n,

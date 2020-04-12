@@ -31,6 +31,7 @@ import { AiScript, parse, utils, values } from '@syuilo/aiscript';
 import i18n from '../i18n';
 import MkContainer from '../components/ui/container.vue';
 import MkButton from '../components/ui/button.vue';
+import { createAiScriptEnv } from '../scripts/create-aiscript-env';
 
 export default Vue.extend({
 	i18n,
@@ -71,24 +72,7 @@ export default Vue.extend({
 	methods: {
 		async run() {
 			this.logs = [];
-			const aiscript = new AiScript({
-				dialog: values.FN_NATIVE(async ([title, text, type]) => {
-					await this.$root.dialog({
-						type: type ? type.value : 'info',
-						title: title.value,
-						text: text.value,
-					});
-				}),
-				confirm: values.FN_NATIVE(async ([title, text]) => {
-					const confirm = await this.$root.dialog({
-						type: 'warning',
-						showCancelButton: true,
-						title: title.value,
-						text: text.value,
-					});
-					return confirm.canceled ? values.FALSE : values.TRUE
-				}),
-			}, {
+			const aiscript = new AiScript(createAiScriptEnv(this), {
 				in: (q) => {
 					return new Promise(ok => {
 						this.$root.dialog({

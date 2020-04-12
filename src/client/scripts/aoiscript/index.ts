@@ -1,5 +1,5 @@
 /**
- * AiScript
+ * AoiScript
  */
 
 import {

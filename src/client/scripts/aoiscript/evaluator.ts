@@ -9,7 +9,7 @@ type Fn = {
 };
 
 /**
- * AiScript evaluator
+ * AoiScript evaluator
  */
 export class ASEvaluator {
 	private variables: Variable[];
@@ -51,7 +51,7 @@ export class ASEvaluator {
 		if (pageVar !== undefined) {
 			pageVar.value = value;
 		} else {
-			throw new AiScriptError(`No such page var '${name}'`);
+			throw new AoiScriptError(`No such page var '${name}'`);
 		}
 	}
 
@@ -206,14 +206,14 @@ export class ASEvaluator {
 		const fnName = block.type;
 		const fn = (funcs as any)[fnName];
 		if (fn == null) {
-			throw new AiScriptError(`No such function '${fnName}'`);
+			throw new AoiScriptError(`No such function '${fnName}'`);
 		} else {
 			return fn(...block.args.map(x => this.evaluate(x, scope)));
 		}
 	}
 }
 
-class AiScriptError extends Error {
+class AoiScriptError extends Error {
 	public info?: any;
 
 	constructor(message: string, info?: any) {
@@ -223,7 +223,7 @@ class AiScriptError extends Error {
 
 		// Maintains proper stack trace for where our error was thrown (only available on V8)
 		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, AiScriptError);
+			Error.captureStackTrace(this, AoiScriptError);
 		}
 	}
 }
@@ -256,7 +256,7 @@ class Scope {
 			}
 		}
 
-		throw new AiScriptError(
+		throw new AoiScriptError(
 			`No such variable '${name}' in scope '${this.name}'`, {
 				scope: this.layerdStates
 			});
