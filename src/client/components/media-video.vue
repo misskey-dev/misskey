@@ -6,9 +6,7 @@
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i v-if="!hide">
-		<fa :icon="faEyeSlash" @click="hide = true"/>
-	</i>
+	<i><fa :icon="faEyeSlash" @click="hide = true"/></i>
 	<a
 		:href="video.url"
 		rel="nofollow noopener"
