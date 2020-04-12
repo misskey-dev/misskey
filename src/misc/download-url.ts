@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as stream from 'stream';
 import * as util from 'util';
 import fetch from 'node-fetch';
-import { httpAgent, httpsAgent } from './fetch';
+import { getAgentByUrl } from './fetch';
 import { AbortController } from 'abort-controller';
 import config from '../config';
 import * as chalk from 'chalk';
@@ -25,7 +25,7 @@ export async function downloadUrl(url: string, path: string) {
 		},
 		timeout: 10 * 1000,
 		signal: controller.signal,
-		agent: u => u.protocol == 'http:' ? httpAgent : httpsAgent,
+		agent: getAgentByUrl,
 	});
 
 	if (!response.ok) {
