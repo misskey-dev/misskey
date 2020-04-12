@@ -65,7 +65,7 @@ export default Vue.extend({
 			};
 		}
 	},
-	mounted() {
+	created() {
 		this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
 	},
 	methods: {

@@ -50,7 +50,7 @@ export default Vue.extend({
 			};
 		}
 	},
-	mounted() {
+	created() {
 		this.hide = this.video.isSensitive && !this.$store.state.device.alwaysShowNsfw;
 	},
 });
