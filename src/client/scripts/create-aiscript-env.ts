@@ -1,6 +1,7 @@
 import { utils, values } from '@syuilo/aiscript';
 
 export function createAiScriptEnv(vm, opts) {
+	let apiRequests = 0;
 	return {
 		USER_ID: values.STR(vm.$store.state.i.id),
 		USER_USERNAME: values.STR(vm.$store.state.i.username),
@@ -21,6 +22,8 @@ export function createAiScriptEnv(vm, opts) {
 			return confirm.canceled ? values.FALSE : values.TRUE
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
+			apiRequests++;
+			if (apiRequests > 16) return values.NULL;
 			const res = await vm.$root.api(ep.value, utils.valToJs(param), token || null);
 			return utils.jsToVal(res);
 		}),

@@ -481,6 +481,8 @@ descendingOrder: "降順"
 scratchpad: "スクラッチパッド"
 scratchpadDescription: "スクラッチパッドは、AiScriptの実験環境を提供します。Misskeyと対話するコードの記述、実行、結果の確認ができます。"
 output: "出力"
+script: "スクリプト"
+disablePagesScript: "Pagesのスクリプトを無効にする"
 
 _theme:
   explore: "テーマを探す"
@@ -813,6 +815,9 @@ _pages:
           message: "押したときに表示するメッセージ"
           variable: "送信する変数"
           no-variable: "なし"
+        callAiScript: "AiScript呼び出し"
+        _callAiScript:
+          functionName: "関数名"
 
     radioButton: "選択肢"
     _radioButton:
@@ -975,6 +980,7 @@ _pages:
       _splitStrByLine:
         arg1: "テキスト"
       ref: "変数"
+      aiScriptVar: "AiScript変数"
       fn: "関数"
       _fn:
         slots: "スロット"

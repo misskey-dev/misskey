@@ -55,6 +55,7 @@ export default Vue.extend({
 		background: transparent;
 		color: var(--fg);
 		font-size: 14px;
+		box-sizing: border-box;
 	}
 }
 </style>

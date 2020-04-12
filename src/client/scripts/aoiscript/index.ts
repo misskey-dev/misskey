@@ -95,6 +95,7 @@ export const literalDefs: Record<string, { out: any; category: string; icon: any
 	textList:      { out: 'stringArray', category: 'value', icon: faList, },
 	number:        { out: 'number',      category: 'value', icon: faSortNumericUp, },
 	ref:           { out: null,          category: 'value', icon: faMagic, },
+	aiScriptVar:   { out: null,          category: 'value', icon: faMagic, },
 	fn:            { out: 'function',    category: 'value', icon: faSquareRootAlt, },
 };
 

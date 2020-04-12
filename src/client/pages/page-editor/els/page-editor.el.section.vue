@@ -11,7 +11,7 @@
 	</template>
 
 	<section class="ilrvjyvi">
-		<x-blocks class="children" v-model="value.children" :ai-script="aiScript"/>
+		<x-blocks class="children" v-model="value.children" :aoi-script="aoiScript"/>
 	</section>
 </x-container>
 </template>
@@ -37,7 +37,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		aiScript: {
+		aoiScript: {
 			required: true,
 		},
 	},

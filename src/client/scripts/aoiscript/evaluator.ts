@@ -2,6 +2,8 @@ import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
 import { version } from '../../config';
+import { AiScript, utils, parse, values } from '@syuilo/aiscript';
+import { createAiScriptEnv } from '../create-aiscript-env';
 
 type Fn = {
 	slots: string[];
@@ -15,15 +17,41 @@ export class ASEvaluator {
 	private variables: Variable[];
 	private pageVars: PageVar[];
 	private envVars: Record<keyof typeof envVarsDef, any>;
+	public aiscript: AiScript;
+	private pageVarUpdatedCallback;
 
 	private opts: {
 		randomSeed: string; visitor?: any; page?: any; url?: string;
 	};
 
-	constructor(variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
+	constructor(vm: any, variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
 		this.variables = variables;
 		this.pageVars = pageVars;
 		this.opts = opts;
+		this.aiscript = new AiScript({ ...createAiScriptEnv(vm, {
+			storageKey: 'pages:' + opts.page.id
+		}), ...{
+			'MkPages:updated': values.FN_NATIVE(([callback]) => {
+				this.pageVarUpdatedCallback = callback;
+			})
+		}}, {
+			in: (q) => {
+				return new Promise(ok => {
+					vm.$root.dialog({
+						title: q,
+						input: {}
+					}).then(({ canceled, result: a }) => {
+						ok(a);
+					});
+				});
+			},
+			out: (value) => {
+				console.log(value);
+			},
+			log: (type, params) => {
+			},
+			maxStep: 16384
+		});
 
 		const date = new Date();
 
@@ -50,6 +78,9 @@ export class ASEvaluator {
 		const pageVar = this.pageVars.find(v => v.name === name);
 		if (pageVar !== undefined) {
 			pageVar.value = value;
+			if (this.pageVarUpdatedCallback) {
+				this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
+			}
 		} else {
 			throw new AoiScriptError(`No such page var '${name}'`);
 		}
@@ -108,6 +139,10 @@ export class ASEvaluator {
 
 		if (block.type === 'ref') {
 			return scope.getState(block.value);
+		}
+
+		if (block.type === 'aiScriptVar') {
+			return utils.valToJs(this.aiscript.scope.get(block.value));
 		}
 
 		if (isFnBlock(block)) { // ユーザー関数定義
