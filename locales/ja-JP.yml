@@ -483,6 +483,7 @@ scratchpadDescription: "スクラッチパッドは、AiScriptの実験環境を
 output: "出力"
 updateRemoteUser: "リモートユーザー情報の更新"
 deleteAllFiles: "すべてのファイルを削除"
+deleteAllFilesConfirm: "すべてのファイルを削除しますか？"
 removeAllFollowing: "フォローを全解除"
 removeAllFollowingDescription: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
 userSuspended: "このユーザーは凍結されています。"

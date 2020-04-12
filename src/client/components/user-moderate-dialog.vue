@@ -156,7 +156,7 @@ export default Vue.extend({
 			const confirm = await this.$root.dialog({
 				type: 'warning',
 				showCancelButton: true,
-				text: this.$t('deleteConfirm'),
+				text: this.$t('deleteAllFilesConfirm'),
 			});
 			if (confirm.canceled) return;
 			const process = async () => {
