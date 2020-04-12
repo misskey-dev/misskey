@@ -561,13 +561,13 @@ export default Vue.extend({
 					}]
 					: []
 				),
-				...(this.appearNote.userId == this.$store.state.i.id ? [
+				...(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isModerator || this.$store.state.i.isAdmin ? [
 					null,
-					{
+					this.appearNote.userId == this.$store.state.i.id ? {
 						icon: faEdit,
 						text: this.$t('deleteAndEdit'),
 						action: this.delEdit
-					},
+					} : undefined,
 					{
 						icon: faTrashAlt,
 						text: this.$t('delete'),
