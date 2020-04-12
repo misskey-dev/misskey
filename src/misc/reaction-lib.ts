@@ -79,10 +79,19 @@ export async function toDbReaction(reaction?: string | null, reacterHost?: strin
 }
 
 type DecodedReaction = {
+	/**
+	 * リアクション名 (Unicode Emoji or ':name@hostname' or ':name@.')
+	 */
 	reaction: string;
-	/** name part on custom */
+
+	/**
+	 * name (カスタム絵文字の場合name, Emojiクエリに使う)
+	 */
 	name?: string;
-	/** host part on custom */
+
+	/**
+	 * host (カスタム絵文字の場合host, Emojiクエリに使う)
+	 */
 	host?: string | null;
 };
 
@@ -91,12 +100,10 @@ export function decodeReaction(str: string, noteOwnerHost?: string | null): Deco
 
 	if (custom) {
 		const name = custom[1];
-		const reacterHost = custom[2] || null;
+		const host = custom[2] || null;
 
-		// リアクションした人のホスト基準で格納されているので、Note所有者のホスト基準に変換する
-		const host = toPunyNullable(reacterHost) == toPunyNullable(noteOwnerHost) ? null : reacterHost;
 		return {
-			reaction: host ? `:${name}@${host}:` : `:${name}:`,
+			reaction: `:${name}@${host || '.'}:`,	// ローカル分は@以降を省略するのではなく.にする
 			name,
 			host
 		};
