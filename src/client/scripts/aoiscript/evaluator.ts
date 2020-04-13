@@ -17,7 +17,7 @@ export class ASEvaluator {
 	private variables: Variable[];
 	private pageVars: PageVar[];
 	private envVars: Record<keyof typeof envVarsDef, any>;
-	public aiscript: AiScript | undefined;
+	public aiscript?: AiScript;
 	private pageVarUpdatedCallback;
 
 	private opts: {
