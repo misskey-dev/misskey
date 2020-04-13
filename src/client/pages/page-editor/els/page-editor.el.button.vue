@@ -10,6 +10,7 @@
 			<option value="dialog">{{ $t('_pages.blocks._button._action.dialog') }}</option>
 			<option value="resetRandom">{{ $t('_pages.blocks._button._action.resetRandom') }}</option>
 			<option value="pushEvent">{{ $t('_pages.blocks._button._action.pushEvent') }}</option>
+			<option value="callAiScript">{{ $t('_pages.blocks._button._action.callAiScript') }}</option>
 		</mk-select>
 		<template v-if="value.action === 'dialog'">
 			<mk-input v-model="value.content"><span>{{ $t('_pages.blocks._button._action._dialog.content') }}</span></mk-input>
@@ -20,14 +21,17 @@
 			<mk-select v-model="value.var">
 				<template #label>{{ $t('_pages.blocks._button._action._pushEvent.variable') }}</template>
 				<option :value="null">{{ $t('_pages.blocks._button._action._pushEvent.no-variable') }}</option>
-				<option v-for="v in aiScript.getVarsByType()" :value="v.name">{{ v.name }}</option>
+				<option v-for="v in aoiScript.getVarsByType()" :value="v.name">{{ v.name }}</option>
 				<optgroup :label="$t('_pages.script.pageVariables')">
-					<option v-for="v in aiScript.getPageVarsByType()" :value="v">{{ v }}</option>
+					<option v-for="v in aoiScript.getPageVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
 				<optgroup :label="$t('_pages.script.enviromentVariables')">
-					<option v-for="v in aiScript.getEnvVarsByType()" :value="v">{{ v }}</option>
+					<option v-for="v in aoiScript.getEnvVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
 			</mk-select>
+		</template>
+		<template v-else-if="value.action === 'callAiScript'">
+			<mk-input v-model="value.fn"><span>{{ $t('_pages.blocks._button._action._callAiScript.functionName') }}</span></mk-input>
 		</template>
 	</section>
 </x-container>
@@ -53,7 +57,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		aiScript: {
+		aoiScript: {
 			required: true,
 		},
 	},
@@ -72,6 +76,7 @@ export default Vue.extend({
 		if (this.value.message == null) Vue.set(this.value, 'message', null);
 		if (this.value.primary == null) Vue.set(this.value, 'primary', false);
 		if (this.value.var == null) Vue.set(this.value, 'var', null);
+		if (this.value.fn == null) Vue.set(this.value, 'fn', null);
 	},
 });
 </script>

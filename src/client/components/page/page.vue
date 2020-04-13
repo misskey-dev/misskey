@@ -6,30 +6,57 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../i18n';
+import { AiScript, parse, values } from '@syuilo/aiscript';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import i18n from '../../i18n';
 import XBlock from './page.block.vue';
-import { ASEvaluator } from '../../scripts/aiscript/evaluator';
+import { ASEvaluator } from '../../scripts/aoiscript/evaluator';
 import { collectPageVars } from '../../scripts/collect-page-vars';
 import { url } from '../../config';
 
 class Script {
-	public aiScript: ASEvaluator;
+	public aoiScript: ASEvaluator;
 	private onError: any;
 	public vars: Record<string, any>;
 	public page: Record<string, any>;
 
-	constructor(page, aiScript, onError) {
+	constructor(page, aoiScript, onError, cb) {
 		this.page = page;
-		this.aiScript = aiScript;
+		this.aoiScript = aoiScript;
 		this.onError = onError;
-		this.eval();
+
+		if (this.page.script) {
+			let ast;
+			try {
+				ast = parse(this.page.script);
+			} catch (e) {
+				console.error(e);
+				/*this.$root.dialog({
+					type: 'error',
+					text: 'Syntax error :('
+				});*/
+				return;
+			}
+			this.aoiScript.aiscript.exec(ast).then(() => {
+				this.eval();
+				cb();
+			}).catch(e => {
+				console.error(e);
+				/*this.$root.dialog({
+					type: 'error',
+					text: e
+				});*/
+			});
+		} else {
+			this.eval();
+			cb();
+		}
 	}
 
 	public eval() {
 		try {
-			this.vars = this.aiScript.evaluateVars();
+			this.vars = this.aoiScript.evaluateVars();
 		} catch (e) {
 			this.onError(e);
 		}
@@ -41,6 +68,10 @@ class Script {
 			const v = this.vars[match.slice(1, -1).trim()];
 			return v == null ? 'NULL' : v.toString();
 		});
+	}
+
+	public callAiScript(fn: string) {
+		this.aoiScript.aiscript.execFn(this.aoiScript.aiscript.scope.get(fn), []);
 	}
 }
 
@@ -67,14 +98,21 @@ export default Vue.extend({
 
 	created() {
 		const pageVars = this.getPageVars();
-		this.script = new Script(this.page, new ASEvaluator(this.page.variables, pageVars, {
+		
+		const s = new Script(this.page, new ASEvaluator(this, this.page.variables, pageVars, {
 			randomSeed: Math.random(),
 			visitor: this.$store.state.i,
 			page: this.page,
 			url: url
 		}), e => {
 			console.dir(e);
+		}, () => {
+			this.script = s;
 		});
+
+		s.aoiScript.aiscript.scope.opts.onUpdated = (name, value) => {
+			s.eval();
+		};
 	},
 
 	methods: {
