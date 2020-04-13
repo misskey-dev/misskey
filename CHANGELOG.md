@@ -1,5 +1,18 @@
 ChangeLog
 =========
+12.30.0 (2020/4/11)
+-------------------
+### ✨Improvements
+* リクエストライブラリをrequestからnode-fetchに変更
+* オブジェクトストレージのhttpスキーマリクエストでもProxyが適用されるように
+* DNSキャッシュとKeep-Alive適用箇所を増やす
+* ドイツ語と中国語（繁体）を有効に
+* NSFWを再度隠せるように
+* Implement AiScript scratchpad (/scratchpad)
+
+### 🐛Fixes
+* APのurl処理の修正
+
 12.29.0 (2020/4/5)
 -------------------
 ### ✨Improvements
