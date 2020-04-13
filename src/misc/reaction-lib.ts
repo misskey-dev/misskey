@@ -22,7 +22,7 @@ export async function getFallbackReaction(): Promise<string> {
 	return meta.useStarForReactionFallback ? '⭐' : '👍';
 }
 
-export function convertLegacyReactions(reactions: Record<string, number>, noteOwnerHost?: string | null) {
+export function convertLegacyReactions(reactions: Record<string, number>) {
 	const _reactions = {} as Record<string, number>;
 
 	for (let reaction of Object.keys(reactions)) {
