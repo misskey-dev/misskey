@@ -50,9 +50,6 @@ export function convertLegacyReactions(reactions: Record<string, number>) {
 	return _reactions2;
 }
 
-
-
-
 export async function toDbReaction(reaction?: string | null, reacterHost?: string | null): Promise<string> {
 	if (reaction == null) return await getFallbackReaction();
 
