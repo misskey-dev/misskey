@@ -91,7 +91,6 @@ import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkPagination from '../../components/ui/pagination.vue';
-import MkUserModerateDialog from '../../components/user-moderate-dialog.vue';
 import MkUserSelect from '../../components/user-select.vue';
 
 export default Vue.extend({
@@ -175,17 +174,13 @@ export default Vue.extend({
 		/** テキストエリアから処理対象ユーザーを設定する */
 		async showUser() {
 			const user = await this.fetchUser();
-			this.$root.api('admin/show-user', { userId: user.id }).then(info => {
-				this.show(user, info);
-			});
+			this.show(user);
 			this.target = '';
 		},
 
 		searchUser() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('admin/show-user', { userId: user.id }).then(info => {
-					this.show(user, info);
-				});
+				this.show(user);
 			});
 		},
 
@@ -226,11 +221,8 @@ export default Vue.extend({
 			});
 		},
 
-		async show(user, info) {
-			if (info == null) info = await this.$root.api('admin/show-user', { userId: user.id });
-			this.$root.new(MkUserModerateDialog, {
-				user, info
-			});
+		async show(user) {
+			this.$router.push('./users/' + user.id);
 		}
 	}
 });

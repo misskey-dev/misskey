@@ -52,6 +52,7 @@ export const router = new VueRouter({
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },
 		{ path: '/instance/users', component: page('instance/users') },
+		{ path: '/instance/users/:user', component: page('instance/users.user') },
 		{ path: '/instance/files', component: page('instance/files') },
 		{ path: '/instance/queue', component: page('instance/queue') },
 		{ path: '/instance/settings', component: page('instance/settings') },

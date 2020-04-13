@@ -1,46 +1,44 @@
 <template>
-<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="vrcsvlkm">
-		<div class="header">
-			<span class="title">
-				<mk-avatar class="avatar" :user="user"/>
-				<mk-user-name class="name" :user="user"/>
-				<span class="acct">@{{ user | acct }}</span>
-				<span class="staff" v-if="user.isAdmin"><fa :icon="faBookmark"/></span>
-				<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
-				<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
-				<span class="punished" v-if="user.isSuspended"><fa :icon="faSnowflake"/></span>
-			</span>
-			<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
+<div class="vrcsvlkm" v-if="user && info">
+	<div class="header">
+		<span class="title">
+			<mk-avatar class="avatar" :user="user"/>
+			<mk-user-name class="name" :user="user"/>
+			<span class="acct">@{{ user | acct }}</span>
+			<span class="staff" v-if="user.isAdmin"><fa :icon="faBookmark"/></span>
+			<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
+			<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
+			<span class="punished" v-if="user.isSuspended"><fa :icon="faSnowflake"/></span>
+		</span>
+		<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
+	</div>
+	<div class="actions">
+		<div style="flex: 1; padding-left: 1em;">
+			<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
+			<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
+			<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
 		</div>
-		<div class="actions">
-			<div style="flex: 1; padding-left: 1em;">
-				<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
-				<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
-				<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
-			</div>
-			<div style="flex: 1; padding-left: 1em;">
-				<mk-button @click="openProfile"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</mk-button>
-				<mk-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</mk-button>
-				<mk-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('resetPassword') }}</mk-button>
-				<mk-button @click="deleteAllFiles"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
-			</div>
-		</div>
-		<div class="rawdata" v-if="info">
-			<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
+		<div style="flex: 1; padding-left: 1em;">
+			<mk-button @click="openProfile"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</mk-button>
+			<mk-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</mk-button>
+			<mk-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('resetPassword') }}</mk-button>
+			<mk-button @click="deleteAllFiles"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
 		</div>
 	</div>
-</x-modal>
+	<div class="rawdata" v-if="info">
+		<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
-import MkButton from './ui/button.vue';
-import MkSwitch from './ui/switch.vue';
-import XModal from './modal.vue';
+import MkButton from '../../components/ui/button.vue';
+import MkSwitch from '../../components/ui/switch.vue';
+import i18n from '../../i18n';
+import Progress from '../../scripts/loading';
 
 export default Vue.extend({
 	i18n,
@@ -48,32 +46,36 @@ export default Vue.extend({
 	components: {
 		MkButton,
 		MkSwitch,
-		XModal,
-	},
-
-	props: {
-		user: {
-			type: Object,
-			required: true
-		},
-		info: {
-			type: Object,
-			required: true
-		}
 	},
 
 	data() {
 		return {
-			moderator: this.info.isModerator,
-			silenced: this.info.isSilenced,
-			suspended: this.info.isSuspended,
+			user: null,
+			info: null,
+			moderator: false,
+			silenced: false,
+			suspended: false,
 			faTimes, faBookmark, farBookmark, faKey, faSync, faMicrophoneSlash, faSnowflake, faTrashAlt, faExternalLinkSquareAlt
 		};
 	},
 
+	watch: {
+		$route: 'fetch'
+	},
+
+	created() {
+		this.fetch();
+	},
+
 	methods: {
-		close() {
-			this.$refs.modal.close();
+		async fetch() {
+			Progress.start();
+			this.user = await this.$root.api('users/show', { userId: this.$route.params.user });
+			this.info = await this.$root.api('admin/show-user', { userId: this.$route.params.user });
+			this.moderator = this.info.isModerator;
+			this.silenced = this.info.isSilenced;
+			this.suspended = this.info.isSuspended;
+			Progress.done();
 		},
 
 		/** 処理対象ユーザーの情報を更新する */
