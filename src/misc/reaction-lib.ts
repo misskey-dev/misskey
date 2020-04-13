@@ -25,9 +25,7 @@ export async function getFallbackReaction(): Promise<string> {
 export function convertLegacyReactions(reactions: Record<string, number>) {
 	const _reactions = {} as Record<string, number>;
 
-	for (let reaction of Object.keys(reactions)) {
-		reaction = decodeReaction(reaction).reaction;
-
+	for (const reaction of Object.keys(reactions)) {
 		if (Object.keys(legacies).includes(reaction)) {
 			if (_reactions[legacies[reaction]]) {
 				_reactions[legacies[reaction]] += reactions[reaction];
@@ -43,8 +41,17 @@ export function convertLegacyReactions(reactions: Record<string, number>) {
 		}
 	}
 
-	return _reactions;
+	const _reactions2 = {} as Record<string, number>;
+
+	for (const reaction of Object.keys(_reactions)) {
+		_reactions2[decodeReaction(reaction).reaction] = _reactions[reaction];
+	}
+
+	return _reactions2;
 }
+
+
+
 
 export async function toDbReaction(reaction?: string | null, reacterHost?: string | null): Promise<string> {
 	if (reaction == null) return await getFallbackReaction();
