@@ -1,7 +1,10 @@
 <template>
 <div class="vrcsvlkm" v-if="user && info">
-	<div class="header">
-		<span class="title">
+	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
+	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
+
+	<section class="_card">
+		<div class="_title">
 			<mk-avatar class="avatar" :user="user"/>
 			<mk-user-name class="name" :user="user"/>
 			<span class="acct">@{{ user | acct }}</span>
@@ -9,25 +12,24 @@
 			<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
 			<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
 			<span class="punished" v-if="user.isSuspended"><fa :icon="faSnowflake"/></span>
-		</span>
-		<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
-	</div>
-	<div class="actions">
-		<div style="flex: 1; padding-left: 1em;">
-			<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
-			<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
-			<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
 		</div>
-		<div style="flex: 1; padding-left: 1em;">
-			<mk-button @click="openProfile"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</mk-button>
-			<mk-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</mk-button>
-			<mk-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('resetPassword') }}</mk-button>
-			<mk-button @click="deleteAllFiles"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
+		<div class="_content actions">
+			<div style="flex: 1; padding-left: 1em;">
+				<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @change="toggleModerator()" v-model="moderator">{{ $t('moderator') }}</mk-switch>
+				<mk-switch @change="toggleSilence()" v-model="silenced">{{ $t('silence') }}</mk-switch>
+				<mk-switch @change="toggleSuspend()" v-model="suspended">{{ $t('suspend') }}</mk-switch>
+			</div>
+			<div style="flex: 1; padding-left: 1em;">
+				<mk-button @click="openProfile"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</mk-button>
+				<mk-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</mk-button>
+				<mk-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('resetPassword') }}</mk-button>
+				<mk-button @click="deleteAllFiles"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
+			</div>
 		</div>
-	</div>
-	<div class="rawdata" v-if="info">
-		<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
-	</div>
+		<div class="_content rawdata">
+			<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
+		</div>
+	</section>
 </div>
 </template>
 
@@ -182,112 +184,25 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .vrcsvlkm {
-	width: 700px;
-	height: 80%;
-	background: var(--panel);
-	border-radius: var(--radius);
-	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 
-	@media (max-width: 500px) {
-		width: 350px;
-		height: 350px;
-	}
-
-	> .header {
-		$height: 58px;
-		$height-narrow: 42px;
-		display: flex;
-		flex-shrink: 0;
-
-		> button {
-			height: $height;
-			width: $height;
-
-			@media (max-width: 500px) {
-				height: $height-narrow;
-				width: $height-narrow;
-			}
+	> ._card {
+		> .actions {
+			display: flex;
+			box-sizing: border-box;
+			text-align: left;
+			align-items: center;
+			margin-top: 16px;
+			margin-bottom: 16px;
 		}
 
-		> .title {
-			flex: 1;
-			line-height: $height;
-			padding-left: 32px;
-			font-weight: bold;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			pointer-events: none;
-
-			@media (max-width: 500px) {
-				line-height: $height-narrow;
-				padding-left: 16px;
+		> .rawdata {
+			> pre > code {
+				display: block;
+				width: 100%;
+				height: 100%;
 			}
-
-			> .avatar {
-				$size: 32px;
-				height: $size;
-				width: $size;
-				margin: (($height - $size) / 2) 8px (($height - $size) / 2) 0;
-
-				@media (max-width: 500px) {
-					$size: 24px;
-					height: $size;
-					width: $size;
-					margin: (($height-narrow - $size) / 2) 8px (($height-narrow - $size) / 2) 0;
-				}
-			}
-
-			> .name {
-				font-weight: bold;
-			}
-
-			> .acct {
-				margin-left: 8px;
-				opacity: 0.7;
-			}
-
-			> .staff {
-				margin-left: 0.5em;
-				color: var(--badge);
-			}
-
-			> .punished {
-				margin-left: 0.5em;
-				color: #4dabf7;
-			}
-		}
-
-		> button + .title {
-			padding-left: 0;
-		}
-	}
-
-	> .actions {
-		display: flex;
-		box-sizing: border-box;
-		text-align: left;
-		align-items: center;
-		margin-top: 16px;
-		margin-bottom: 16px;
-	}
-
-	> .rawdata {
-		padding: 16px 32px 16px 32px;
-		border-top: solid 1px var(--divider);
-		display: block;
-		overflow: scroll;
-
-		@media (max-width: 500px) {
-			padding: 8px 16px 8px 16px;
-		}
-
-		> pre > code {
-			display: block;
-			width: 100%;
-			height: 100%;
 		}
 	}
 }
