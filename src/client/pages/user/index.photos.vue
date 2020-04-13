@@ -8,7 +8,7 @@
 			:href="image.note | notePage"
 		></a>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
 </div>
 </template>
 

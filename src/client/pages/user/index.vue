@@ -2,8 +2,10 @@
 <div class="mk-user-page" v-if="user">
 	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
-	
+
 	<mk-remote-caution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
+	<div class="punished _panel" v-if="user.isSuspended"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div>
+	<div class="punished _panel" v-if="user.isSilenced"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div>
 	<div class="profile _panel" :key="user.id">
 		<div class="banner-container" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
@@ -105,7 +107,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
@@ -139,7 +141,7 @@ export default Vue.extend({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
-			faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
+			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
 		};
 	},
 
@@ -217,6 +219,12 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-user-page {
+
+	> .punished {
+		font-size: 0.8em;
+		padding: 16px;
+	}
+
 	> .profile {
 		position: relative;
 		margin-bottom: var(--margin);
