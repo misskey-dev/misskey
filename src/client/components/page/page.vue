@@ -26,7 +26,7 @@ class Script {
 		this.aoiScript = aoiScript;
 		this.onError = onError;
 
-		if (this.page.script) {
+		if (this.page.script && this.aoiScript.aiscript) {
 			let ast;
 			try {
 				ast = parse(this.page.script);
@@ -49,8 +49,10 @@ class Script {
 				});*/
 			});
 		} else {
-			this.eval();
-			cb();
+			setTimeout(() => {
+				this.eval();
+				cb();
+			}, 1);
 		}
 	}
 
@@ -71,7 +73,7 @@ class Script {
 	}
 
 	public callAiScript(fn: string) {
-		this.aoiScript.aiscript.execFn(this.aoiScript.aiscript.scope.get(fn), []);
+		if (this.aoiScript.aiscript) this.aoiScript.aiscript.execFn(this.aoiScript.aiscript.scope.get(fn), []);
 	}
 }
 
@@ -103,16 +105,21 @@ export default Vue.extend({
 			randomSeed: Math.random(),
 			visitor: this.$store.state.i,
 			page: this.page,
-			url: url
+			url: url,
+			enableAiScript: !this.$store.state.device.disablePagesScript
 		}), e => {
 			console.dir(e);
 		}, () => {
 			this.script = s;
 		});
 
-		s.aoiScript.aiscript.scope.opts.onUpdated = (name, value) => {
+		if (s.aoiScript.aiscript) s.aoiScript.aiscript.scope.opts.onUpdated = (name, value) => {
 			s.eval();
 		};
+	},
+
+	beforeDestroy() {
+		if (this.script.aoiScript.aiscript) this.script.aoiScript.aiscript.abort();
 	},
 
 	methods: {
