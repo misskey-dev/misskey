@@ -484,12 +484,14 @@ scratchpad: "Scratch pad"
 scratchpadDescription: "Scratchpad provides experimental environment for AiScript. You can write, execute, and check the results that interact with Misskey."
 output: "Output"
 script: "Script"
+disablePagesScript: "Disable AiScript on Pages"
 updateRemoteUser: "Update remote user information"
 deleteAllFiles: "Delete All Files"
 deleteAllFilesConfirm: "Are you sure that you want to delete all files?"
 removeAllFollowing: "Withhold All Followings"
 removeAllFollowingDescription: "Unfollow all accounts from {host}. Please run this if the instance no longer exists."
 userSuspended: "This user has been suspended."
+userSilenced: "This user has been silenced."
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
@@ -793,6 +795,9 @@ _pages:
           message: "Message to display when activated"
           variable: "Variable to send"
           no-variable: "None"
+        callAiScript: "Invoke AiScript"
+        _callAiScript:
+          functionName: "Function name"
     radioButton: "Choice"
     _radioButton:
       name: "Variable name"
@@ -953,6 +958,7 @@ _pages:
       _splitStrByLine:
         arg1: "Text"
       ref: "Variables"
+      aiScriptVar: "Variable of AiScript"
       fn: "Functions"
       _fn:
         slots: "Slots"
