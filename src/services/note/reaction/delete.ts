@@ -23,7 +23,7 @@ export default async (user: User, note: Note) => {
 	const result = await NoteReactions.delete(exist.id);
 
 	if (result.affected !== 1) {
-		throw `delete failed`;
+		throw 'delete failed';
 	}
 
 	// Decrement reactions count
