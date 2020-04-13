@@ -161,7 +161,7 @@ export class NoteRepository extends Repository<Note> {
 				all = concat([all, tmp]);
 			}
 
-			const customReactions = reactionNames?.map(x => decodeReaction(x, noteUserHost)).filter(x => x.name);
+			const customReactions = reactionNames?.map(x => decodeReaction(x)).filter(x => x.name);
 
 			if (customReactions?.length > 0) {
 				const where = [] as {}[];

@@ -26,7 +26,7 @@ export function convertLegacyReactions(reactions: Record<string, number>, noteOw
 	const _reactions = {} as Record<string, number>;
 
 	for (let reaction of Object.keys(reactions)) {
-		reaction = decodeReaction(reaction, noteOwnerHost || null).reaction;
+		reaction = decodeReaction(reaction).reaction;
 
 		if (Object.keys(legacies).includes(reaction)) {
 			if (_reactions[legacies[reaction]]) {
@@ -95,7 +95,7 @@ type DecodedReaction = {
 	host?: string | null;
 };
 
-export function decodeReaction(str: string, noteOwnerHost?: string | null): DecodedReaction {
+export function decodeReaction(str: string): DecodedReaction {
 	const custom = str.match(/^:([\w+-]+)(?:@([\w.-]+))?:$/);
 
 	if (custom) {
@@ -116,8 +116,8 @@ export function decodeReaction(str: string, noteOwnerHost?: string | null): Deco
 	};
 }
 
-export function convertLegacyReaction(reaction: string, noteOwnerHost?: string): string {
-	reaction = decodeReaction(reaction, noteOwnerHost || null).reaction;
+export function convertLegacyReaction(reaction: string): string {
+	reaction = decodeReaction(reaction).reaction;
 	if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
 	return reaction;
 }

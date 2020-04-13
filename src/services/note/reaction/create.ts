@@ -60,7 +60,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 	perUserReactionsChart.update(user, note);
 
 	// カスタム絵文字リアクションだったら絵文字情報も送る
-	const decodedReaction = decodeReaction(reaction, note.user?.host);	// :name@noteOwnerHost: | :name: | ...
+	const decodedReaction = decodeReaction(reaction);
 
 	let emoji = await Emojis.findOne({
 		where: {
