@@ -166,6 +166,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		inReplyTo,
 		attachment: files.map(renderDocument),
 		sensitive: note.cw != null || files.some(file => file.isSensitive),
+		likes: `${config.url}/notes/${note.id}/likes`,
 		tag,
 		...asPoll,
 		...asTalk
