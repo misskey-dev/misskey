@@ -68,7 +68,7 @@ export async function toDbReaction(reaction?: string | null, reacterHost?: strin
 		return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
 	}
 
-	const custom = reaction.match(/^:([\w+-]+):$/);
+	const custom = reaction.match(/^:([\w+-]+)(?:@\.)?:$/);
 	if (custom) {
 		const name = custom[1];
 		const emoji = await Emojis.findOne({
