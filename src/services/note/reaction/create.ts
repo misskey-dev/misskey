@@ -72,13 +72,13 @@ export default async (user: User, note: Note, reaction?: string) => {
 
 	if (emoji) {
 		emoji = {
-			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}`,
+			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
 			url: emoji.url
 		} as any;
 	}
 
 	publishNoteStream(note.id, 'reacted', {
-		reaction: reaction,
+		reaction: decodedReaction.reaction,
 		emoji: emoji,
 		userId: user.id
 	});

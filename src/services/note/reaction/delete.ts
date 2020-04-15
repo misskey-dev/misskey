@@ -7,6 +7,7 @@ import { IdentifiableError } from '../../../misc/identifiable-error';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, Notes } from '../../../models';
+import { decodeReaction } from '../../../misc/reaction-lib';
 
 export default async (user: User, note: Note) => {
 	// if already unreacted
@@ -38,7 +39,7 @@ export default async (user: User, note: Note) => {
 	Notes.decrement({ id: note.id }, 'score', 1);
 
 	publishNoteStream(note.id, 'unreacted', {
-		reaction: exist.reaction,
+		reaction: decodeReaction(exist.reaction).reaction,
 		userId: user.id
 	});
 
