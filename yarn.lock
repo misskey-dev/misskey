@@ -144,10 +144,10 @@
   dependencies:
     type-detect "4.0.8"
 
-"@syuilo/aiscript@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@syuilo/aiscript/-/aiscript-0.2.0.tgz#dcb489bca13f6d965ac86034a45fd46514b1487a"
-  integrity sha512-N9fYchn3zjtniG9fNmZ81PwYZFdulk+RSBcjDZWBgHsFJQc1wxOCr9hZux/vSXrZ/ZWEzK0loNz1dorl2jJLeA==
+"@syuilo/aiscript@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@syuilo/aiscript/-/aiscript-0.3.0.tgz#cb0645df40ae97a54eb7e318abef2ccb8045aa14"
+  integrity sha512-jjtcFqnp5ryzAU3mxP25YJEJH/FmIrMycnFwSer/q1BVsAIqHOIhnRTWjxjVI3n1YHIO5DSD4yG/Em6I3bxJow==
   dependencies:
     "@types/seedrandom" "2.4.28"
     autobind-decorator "2.4.0"

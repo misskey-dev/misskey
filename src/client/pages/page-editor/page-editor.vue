@@ -351,6 +351,7 @@ export default Vue.extend({
 					{ value: 'text', text: this.$t('_pages.blocks.text') },
 					{ value: 'image', text: this.$t('_pages.blocks.image') },
 					{ value: 'textarea', text: this.$t('_pages.blocks.textarea') },
+					{ value: 'canvas', text: this.$t('_pages.blocks.canvas') },
 				]
 			}, {
 				label: this.$t('_pages.inputBlocks'),
@@ -428,8 +429,6 @@ export default Vue.extend({
 	margin-bottom: var(--margin);
 
 	> header {
-		background: var(--faceHeader);
-
 		> .title {
 			z-index: 1;
 			margin: 0;
@@ -437,8 +436,7 @@ export default Vue.extend({
 			line-height: 42px;
 			font-size: 0.9em;
 			font-weight: bold;
-			color: var(--faceHeaderText);
-			box-shadow: 0 var(--lineWidth) rgba(#000, 0.07);
+			box-shadow: 0 1px rgba(#000, 0.07);
 
 			> [data-icon] {
 				margin-right: 6px;

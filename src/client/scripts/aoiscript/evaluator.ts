@@ -19,6 +19,7 @@ export class ASEvaluator {
 	private envVars: Record<keyof typeof envVarsDef, any>;
 	public aiscript?: AiScript;
 	private pageVarUpdatedCallback;
+	private canvases: Record<string, HTMLCanvasElement> = {};
 
 	private opts: {
 		randomSeed: string; visitor?: any; page?: any; url?: string;
@@ -36,6 +37,28 @@ export class ASEvaluator {
 			}), ...{
 				'MkPages:updated': values.FN_NATIVE(([callback]) => {
 					this.pageVarUpdatedCallback = callback;
+				}),
+				'MkPages:get_canvas': values.FN_NATIVE(([id]) => {
+					utils.assertString(id);
+					const canvas = this.canvases[id.value];
+					const ctx = canvas.getContext('2d');
+					return values.OBJ(new Map([
+						['clear_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.clearRect(x.value, y.value, width.value, height.value) })],
+						['fill_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.fillRect(x.value, y.value, width.value, height.value) })],
+						['stroke_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.strokeRect(x.value, y.value, width.value, height.value) })],
+						['fill_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.fillText(text.value, x.value, y.value, width ? width.value : undefined) })],
+						['stroke_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.strokeText(text.value, x.value, y.value, width ? width.value : undefined) })],
+						['set_line_width', values.FN_NATIVE(([width]) => { ctx.lineWidth = width.value })],
+						['set_font', values.FN_NATIVE(([font]) => { ctx.font = font.value })],
+						['set_fill_style', values.FN_NATIVE(([style]) => { ctx.fillStyle = style.value })],
+						['set_stroke_style', values.FN_NATIVE(([style]) => { ctx.strokeStyle = style.value })],
+						['begin_path', values.FN_NATIVE(() => { ctx.beginPath() })],
+						['close_path', values.FN_NATIVE(() => { ctx.closePath() })],
+						['move_to', values.FN_NATIVE(([x, y]) => { ctx.moveTo(x.value, y.value) })],
+						['line_to', values.FN_NATIVE(([x, y]) => { ctx.lineTo(x.value, y.value) })],
+						['fill', values.FN_NATIVE(() => { ctx.fill() })],
+						['stroke', values.FN_NATIVE(() => { ctx.stroke() })],
+					]));
 				})
 			}}, {
 				in: (q) => {
@@ -73,8 +96,13 @@ export class ASEvaluator {
 			IS_CAT: opts.visitor ? opts.visitor.isCat : false,
 			SEED: opts.randomSeed ? opts.randomSeed : '',
 			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
+			AISCRIPT_DISABLED: !this.opts.enableAiScript,
 			NULL: null
 		};
+	}
+
+	public registerCanvas(id: string, canvas: any) {
+		this.canvases[id] = canvas;
 	}
 
 	@autobind
@@ -147,7 +175,11 @@ export class ASEvaluator {
 
 		if (block.type === 'aiScriptVar') {
 			if (this.aiscript) {
-				return utils.valToJs(this.aiscript.scope.get(block.value));
+				try {
+					return utils.valToJs(this.aiscript.scope.get(block.value));
+				} catch (e) {
+					return null;
+				}
 			} else {
 				return null;
 			}

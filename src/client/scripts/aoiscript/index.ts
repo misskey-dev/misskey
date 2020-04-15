@@ -128,6 +128,7 @@ export const envVarsDef: Record<string, Type> = {
 	IS_CAT: 'boolean',
 	SEED: null,
 	YMD: 'string',
+	AISCRIPT_DISABLED: 'boolean',
 	NULL: null,
 };
 

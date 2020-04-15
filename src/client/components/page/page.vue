@@ -21,39 +21,11 @@ class Script {
 	public vars: Record<string, any>;
 	public page: Record<string, any>;
 
-	constructor(page, aoiScript, onError, cb) {
+	constructor(page, aoiScript, onError) {
 		this.page = page;
 		this.aoiScript = aoiScript;
 		this.onError = onError;
-
-		if (this.page.script && this.aoiScript.aiscript) {
-			let ast;
-			try {
-				ast = parse(this.page.script);
-			} catch (e) {
-				console.error(e);
-				/*this.$root.dialog({
-					type: 'error',
-					text: 'Syntax error :('
-				});*/
-				return;
-			}
-			this.aoiScript.aiscript.exec(ast).then(() => {
-				this.eval();
-				cb();
-			}).catch(e => {
-				console.error(e);
-				/*this.$root.dialog({
-					type: 'error',
-					text: e
-				});*/
-			});
-		} else {
-			setTimeout(() => {
-				this.eval();
-				cb();
-			}, 1);
-		}
+		this.eval();
 	}
 
 	public eval() {
@@ -67,13 +39,15 @@ class Script {
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/{(.+?)}/g, match => {
-			const v = this.vars[match.slice(1, -1).trim()];
+			const v = this.vars ? this.vars[match.slice(1, -1).trim()] : null;
 			return v == null ? 'NULL' : v.toString();
 		});
 	}
 
 	public callAiScript(fn: string) {
-		if (this.aoiScript.aiscript) this.aoiScript.aiscript.execFn(this.aoiScript.aiscript.scope.get(fn), []);
+		try {
+			if (this.aoiScript.aiscript) this.aoiScript.aiscript.execFn(this.aoiScript.aiscript.scope.get(fn), []);
+		} catch (e) {}
 	}
 }
 
@@ -101,7 +75,7 @@ export default Vue.extend({
 	created() {
 		const pageVars = this.getPageVars();
 		
-		const s = new Script(this.page, new ASEvaluator(this, this.page.variables, pageVars, {
+		this.script = new Script(this.page, new ASEvaluator(this, this.page.variables, pageVars, {
 			randomSeed: Math.random(),
 			visitor: this.$store.state.i,
 			page: this.page,
@@ -109,13 +83,40 @@ export default Vue.extend({
 			enableAiScript: !this.$store.state.device.disablePagesScript
 		}), e => {
 			console.dir(e);
-		}, () => {
-			this.script = s;
 		});
 
-		if (s.aoiScript.aiscript) s.aoiScript.aiscript.scope.opts.onUpdated = (name, value) => {
-			s.eval();
+		if (this.script.aoiScript.aiscript) this.script.aoiScript.aiscript.scope.opts.onUpdated = (name, value) => {
+			this.script.eval();
 		};
+	},
+
+	mounted() {
+		this.$nextTick(() => {
+			if (this.script.page.script && this.script.aoiScript.aiscript) {
+				let ast;
+				try {
+					ast = parse(this.script.page.script);
+				} catch (e) {
+					console.error(e);
+					/*this.$root.dialog({
+						type: 'error',
+						text: 'Syntax error :('
+					});*/
+					return;
+				}
+				this.script.aoiScript.aiscript.exec(ast).then(() => {
+					this.script.eval();
+				}).catch(e => {
+					console.error(e);
+					/*this.$root.dialog({
+						type: 'error',
+						text: e
+					});*/
+				});
+			} else {
+				this.script.eval();
+			}
+		});
 	},
 
 	beforeDestroy() {

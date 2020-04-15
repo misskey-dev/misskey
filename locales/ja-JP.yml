@@ -797,6 +797,12 @@ _pages:
       text: "タイトル"
       default: "デフォルト値"
 
+    canvas: "キャンバス"
+    _canvas:
+      id: "キャンバスID"
+      width: "幅"
+      height: "高さ"
+
     switch: "スイッチ"
     _switch:
       name: "変数名"
