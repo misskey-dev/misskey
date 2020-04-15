@@ -6,7 +6,7 @@ import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { UserKeypairs } from '../../models';
 import { ensure } from '../../prelude/ensure';
-import { httpsAgent } from '../../misc/fetch';
+import { getAgentByUrl } from '../../misc/fetch';
 
 export default async (user: ILocalUser, url: string, object: any) => {
 	const timeout = 10 * 1000;
@@ -25,7 +25,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	await new Promise((resolve, reject) => {
 		const req = https.request({
-			agent: httpsAgent,
+			agent: getAgentByUrl(new URL(`https://example.net`)),
 			protocol,
 			hostname,
 			port,

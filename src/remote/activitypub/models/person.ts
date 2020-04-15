@@ -3,7 +3,7 @@ import * as promiseLimit from 'promise-limit';
 import config from '../../../config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, IObject, isPropertyValue, IApPropertyValue } from '../type';
+import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue } from '../type';
 import { fromHtml } from '../../../mfm/fromHtml';
 import { htmlToMfm } from '../misc/html-to-mfm';
 import { resolveNote, extractEmojis } from './note';
@@ -166,7 +166,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			await transactionalEntityManager.save(new UserProfile({
 				userId: user.id,
 				description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
-				url: person.url,
+				url: getOneApHrefNullable(person.url),
 				fields,
 				userHost: host
 			}));
@@ -353,7 +353,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	});
 
 	await UserProfiles.update({ userId: exist.id }, {
-		url: person.url,
+		url: getOneApHrefNullable(person.url),
 		fields,
 		description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
 	});

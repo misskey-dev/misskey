@@ -301,6 +301,14 @@ export default Vue.extend({
 				case 'reacted': {
 					const reaction = body.reaction;
 
+					if (body.emoji) {
+						const emojis = this.appearNote.emojis || [];
+						if (!emojis.includes(body.emoji)) {
+							emojis.push(body.emoji);
+							Vue.set(this.appearNote, 'emojis', emojis);
+						}
+					}
+
 					if (this.appearNote.reactions == null) {
 						Vue.set(this.appearNote, 'reactions', {});
 					}
@@ -561,13 +569,13 @@ export default Vue.extend({
 					}]
 					: []
 				),
-				...(this.appearNote.userId == this.$store.state.i.id ? [
+				...(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isModerator || this.$store.state.i.isAdmin ? [
 					null,
-					{
+					this.appearNote.userId == this.$store.state.i.id ? {
 						icon: faEdit,
 						text: this.$t('deleteAndEdit'),
 						action: this.delEdit
-					},
+					} : undefined,
 					{
 						icon: faTrashAlt,
 						text: this.$t('delete'),

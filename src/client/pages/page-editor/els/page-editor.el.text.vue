@@ -2,7 +2,7 @@
 <x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faAlignLeft"/> {{ $t('_pages.blocks.text') }}</template>
 
-	<section class="ihymsbbe">
+	<section class="vckmsadr">
 		<textarea v-model="value.text"></textarea>
 	</section>
 </x-container>
@@ -40,7 +40,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.ihymsbbe {
+.vckmsadr {
 	> textarea {
 		display: block;
 		-webkit-appearance: none;
@@ -55,6 +55,7 @@ export default Vue.extend({
 		background: transparent;
 		color: var(--fg);
 		font-size: 14px;
+		box-sizing: border-box;
 	}
 }
 </style>

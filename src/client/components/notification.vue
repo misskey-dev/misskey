@@ -12,7 +12,7 @@
 			<fa :icon="faReply" v-else-if="notification.type === 'reply'"/>
 			<fa :icon="faAt" v-else-if="notification.type === 'mention'"/>
 			<fa :icon="faQuoteLeft" v-else-if="notification.type === 'quote'"/>
-			<x-reaction-icon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :no-style="true"/>
+			<x-reaction-icon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :customEmojis="notification.note.emojis" :no-style="true"/>
 		</div>
 	</div>
 	<div class="tail">

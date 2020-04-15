@@ -1,23 +1,26 @@
 <template>
-<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="image.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
+<div class="qjewsnkgzzxlxtzncydssfbgjibiehcy" v-if="hide" @click="hide = false">
 	<div>
 		<b><fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
 		<span>{{ $t('clickToShow') }}</span>
 	</div>
 </div>
-<a class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else
-	:href="image.url"
-	:style="style"
-	:title="image.name"
-	@click.prevent="onClick"
->
-	<div v-if="image.type === 'image/gif'">GIF</div>
-</a>
+<div class="gqnyydlzavusgskkfvwvjiattxdzsqlf" v-else>
+	<i><fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<a
+		:href="image.url"
+		:style="style"
+		:title="image.name"
+		@click.prevent="onClick"
+	>
+		<div v-if="image.type === 'image/gif'">GIF</div>
+	</a>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import ImageViewer from './image-viewer.vue';
@@ -36,7 +39,8 @@ export default Vue.extend({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle
+			faExclamationTriangle,
+			faEyeSlash
 		};
 	},
 	computed: {
@@ -59,6 +63,9 @@ export default Vue.extend({
 			};
 		}
 	},
+	created() {
+		this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+	},
 	methods: {
 		onClick() {
 			if (this.$store.state.device.imageNewTab) {
@@ -78,28 +85,47 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .gqnyydlzavusgskkfvwvjiattxdzsqlf {
-	display: block;
-	cursor: zoom-in;
-	overflow: hidden;
-	width: 100%;
-	height: 100%;
-	background-position: center;
-	background-size: contain;
-	background-repeat: no-repeat;
+	position: relative;
 
-	> div {
-		background-color: var(--fg);
+	> i {
+		display: block;
+		position: absolute;
 		border-radius: 6px;
+		background-color: var(--fg);
 		color: var(--accentLighten);
-		display: inline-block;
 		font-size: 14px;
-		font-weight: bold;
-		left: 12px;
 		opacity: .5;
-		padding: 0 6px;
+		padding: 3px 6px;
 		text-align: center;
+		cursor: pointer;
 		top: 12px;
-		pointer-events: none;
+		right: 12px;
+	}
+
+	> a {
+		display: block;
+		cursor: zoom-in;
+		overflow: hidden;
+		width: 100%;
+		height: 100%;
+		background-position: center;
+		background-size: contain;
+		background-repeat: no-repeat;
+
+		> div {
+			background-color: var(--fg);
+			border-radius: 6px;
+			color: var(--accentLighten);
+			display: inline-block;
+			font-size: 14px;
+			font-weight: bold;
+			left: 12px;
+			opacity: .5;
+			padding: 0 6px;
+			text-align: center;
+			top: 12px;
+			pointer-events: none;
+		}
 	}
 }
 

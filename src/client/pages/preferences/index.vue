@@ -65,6 +65,7 @@
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
 			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
+			<mk-switch v-model="disablePagesScript">{{ $t('disablePagesScript') }}</mk-switch>
 		</div>
 		<div class="_content">
 			<mk-select v-model="lang">
@@ -169,6 +170,11 @@ export default Vue.extend({
 		imageNewTab: {
 			get() { return this.$store.state.device.imageNewTab; },
 			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
+		},
+
+		disablePagesScript: {
+			get() { return this.$store.state.device.disablePagesScript; },
+			set(value) { this.$store.commit('device/set', { key: 'disablePagesScript', value }); }
 		},
 
 		showFixedPostForm: {

@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.29.0",
+	"version": "12.31.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -42,6 +42,7 @@
 		"@koa/cors": "3.0.0",
 		"@koa/multer": "2.0.2",
 		"@koa/router": "8.0.8",
+		"@syuilo/aiscript": "0.3.0",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.12.1",
 		"@types/cbor": "5.0.0",
@@ -101,6 +102,7 @@
 		"@types/websocket": "1.0.0",
 		"@types/ws": "7.2.3",
 		"@typescript-eslint/parser": "2.26.0",
+		"abort-controller": "3.0.0",
 		"animejs": "3.1.0",
 		"apexcharts": "3.17.1",
 		"autobind-decorator": "2.4.0",
@@ -248,6 +250,7 @@
 		"vue-marquee-text-component": "1.1.1",
 		"vue-meta": "2.3.3",
 		"vue-prism-component": "1.1.1",
+		"vue-prism-editor": "0.5.1",
 		"vue-router": "3.1.6",
 		"vue-style-loader": "4.1.2",
 		"vue-svg-inline-loader": "1.5.0",

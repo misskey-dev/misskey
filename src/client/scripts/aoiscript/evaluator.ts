@@ -2,6 +2,8 @@ import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
 import { version } from '../../config';
+import { AiScript, utils, parse, values } from '@syuilo/aiscript';
+import { createAiScriptEnv } from '../create-aiscript-env';
 
 type Fn = {
 	slots: string[];
@@ -9,21 +11,74 @@ type Fn = {
 };
 
 /**
- * AiScript evaluator
+ * AoiScript evaluator
  */
 export class ASEvaluator {
 	private variables: Variable[];
 	private pageVars: PageVar[];
 	private envVars: Record<keyof typeof envVarsDef, any>;
+	public aiscript?: AiScript;
+	private pageVarUpdatedCallback;
+	private canvases: Record<string, HTMLCanvasElement> = {};
 
 	private opts: {
 		randomSeed: string; visitor?: any; page?: any; url?: string;
+		enableAiScript: boolean;
 	};
 
-	constructor(variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
+	constructor(vm: any, variables: Variable[], pageVars: PageVar[], opts: ASEvaluator['opts']) {
 		this.variables = variables;
 		this.pageVars = pageVars;
 		this.opts = opts;
+
+		if (this.opts.enableAiScript) {
+			this.aiscript = new AiScript({ ...createAiScriptEnv(vm, {
+				storageKey: 'pages:' + opts.page.id
+			}), ...{
+				'MkPages:updated': values.FN_NATIVE(([callback]) => {
+					this.pageVarUpdatedCallback = callback;
+				}),
+				'MkPages:get_canvas': values.FN_NATIVE(([id]) => {
+					utils.assertString(id);
+					const canvas = this.canvases[id.value];
+					const ctx = canvas.getContext('2d');
+					return values.OBJ(new Map([
+						['clear_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.clearRect(x.value, y.value, width.value, height.value) })],
+						['fill_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.fillRect(x.value, y.value, width.value, height.value) })],
+						['stroke_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.strokeRect(x.value, y.value, width.value, height.value) })],
+						['fill_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.fillText(text.value, x.value, y.value, width ? width.value : undefined) })],
+						['stroke_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.strokeText(text.value, x.value, y.value, width ? width.value : undefined) })],
+						['set_line_width', values.FN_NATIVE(([width]) => { ctx.lineWidth = width.value })],
+						['set_font', values.FN_NATIVE(([font]) => { ctx.font = font.value })],
+						['set_fill_style', values.FN_NATIVE(([style]) => { ctx.fillStyle = style.value })],
+						['set_stroke_style', values.FN_NATIVE(([style]) => { ctx.strokeStyle = style.value })],
+						['begin_path', values.FN_NATIVE(() => { ctx.beginPath() })],
+						['close_path', values.FN_NATIVE(() => { ctx.closePath() })],
+						['move_to', values.FN_NATIVE(([x, y]) => { ctx.moveTo(x.value, y.value) })],
+						['line_to', values.FN_NATIVE(([x, y]) => { ctx.lineTo(x.value, y.value) })],
+						['fill', values.FN_NATIVE(() => { ctx.fill() })],
+						['stroke', values.FN_NATIVE(() => { ctx.stroke() })],
+					]));
+				})
+			}}, {
+				in: (q) => {
+					return new Promise(ok => {
+						vm.$root.dialog({
+							title: q,
+							input: {}
+						}).then(({ canceled, result: a }) => {
+							ok(a);
+						});
+					});
+				},
+				out: (value) => {
+					console.log(value);
+				},
+				log: (type, params) => {
+				},
+				maxStep: 16384
+			});
+		}
 
 		const date = new Date();
 
@@ -41,8 +96,13 @@ export class ASEvaluator {
 			IS_CAT: opts.visitor ? opts.visitor.isCat : false,
 			SEED: opts.randomSeed ? opts.randomSeed : '',
 			YMD: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
+			AISCRIPT_DISABLED: !this.opts.enableAiScript,
 			NULL: null
 		};
+	}
+
+	public registerCanvas(id: string, canvas: any) {
+		this.canvases[id] = canvas;
 	}
 
 	@autobind
@@ -50,8 +110,11 @@ export class ASEvaluator {
 		const pageVar = this.pageVars.find(v => v.name === name);
 		if (pageVar !== undefined) {
 			pageVar.value = value;
+			if (this.pageVarUpdatedCallback) {
+				if (this.aiscript) this.aiscript.execFn(this.pageVarUpdatedCallback, [values.STR(name), utils.jsToVal(value)]);
+			}
 		} else {
-			throw new AiScriptError(`No such page var '${name}'`);
+			throw new AoiScriptError(`No such page var '${name}'`);
 		}
 	}
 
@@ -108,6 +171,18 @@ export class ASEvaluator {
 
 		if (block.type === 'ref') {
 			return scope.getState(block.value);
+		}
+
+		if (block.type === 'aiScriptVar') {
+			if (this.aiscript) {
+				try {
+					return utils.valToJs(this.aiscript.scope.get(block.value));
+				} catch (e) {
+					return null;
+				}
+			} else {
+				return null;
+			}
 		}
 
 		if (isFnBlock(block)) { // ユーザー関数定義
@@ -206,14 +281,14 @@ export class ASEvaluator {
 		const fnName = block.type;
 		const fn = (funcs as any)[fnName];
 		if (fn == null) {
-			throw new AiScriptError(`No such function '${fnName}'`);
+			throw new AoiScriptError(`No such function '${fnName}'`);
 		} else {
 			return fn(...block.args.map(x => this.evaluate(x, scope)));
 		}
 	}
 }
 
-class AiScriptError extends Error {
+class AoiScriptError extends Error {
 	public info?: any;
 
 	constructor(message: string, info?: any) {
@@ -223,7 +298,7 @@ class AiScriptError extends Error {
 
 		// Maintains proper stack trace for where our error was thrown (only available on V8)
 		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, AiScriptError);
+			Error.captureStackTrace(this, AoiScriptError);
 		}
 	}
 }
@@ -256,7 +331,7 @@ class Scope {
 			}
 		}
 
-		throw new AiScriptError(
+		throw new AoiScriptError(
 			`No such variable '${name}' in scope '${this.name}'`, {
 				scope: this.layerdStates
 			});

@@ -74,6 +74,7 @@ export class PageRepository extends Repository<Page> {
 			hideTitleWhenPinned: page.hideTitleWhenPinned,
 			alignCenter: page.alignCenter,
 			font: page.font,
+			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
 			eyeCatchingImage: page.eyeCatchingImageId ? await DriveFiles.pack(page.eyeCatchingImageId) : null,
 			attachedFiles: DriveFiles.packMany(await Promise.all(attachedFiles)),
