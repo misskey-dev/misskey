@@ -770,6 +770,11 @@ _pages:
       name: "Nombre de variable"
       text: "Título"
       default: "Valor predeterminado"
+    canvas: "Lienzo"
+    _canvas:
+      id: "Lienzo ID"
+      width: "Ancho"
+      height: "Altura"
     switch: "Interruptor"
     _switch:
       name: "Nombre de variable"
