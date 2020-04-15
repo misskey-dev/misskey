@@ -770,6 +770,11 @@ _pages:
       name: "Variable name"
       text: "Title"
       default: "Default value"
+    canvas: "Canvas"
+    _canvas:
+      id: "Canvas ID"
+      width: "Width"
+      height: "Height"
     switch: "Switch"
     _switch:
       name: "Variable name"

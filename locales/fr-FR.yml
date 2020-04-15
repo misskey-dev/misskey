@@ -491,7 +491,7 @@ deleteAllFilesConfirm: "Êtes vous surs de vouloir supprimer tous les fichiers ?
 removeAllFollowing: "Retenir tous les abonnements"
 removeAllFollowingDescription: "Se désabonner de tous les comptes de {host}. Exécutez cette commande si l'instance n'existe plus."
 userSuspended: "Cette utilisateur·trice a été suspendue."
-userSilenced: "Cette utilisateur·trice a été masquer.\n"
+userSilenced: "Cette utilisateur·trice a été masquer."
 _theme:
   explore: "Explorer les thèmes"
   install: "Installer un thème"
@@ -770,6 +770,11 @@ _pages:
       name: "Nom de la variable"
       text: "Titre"
       default: "Valeur par défaut"
+    canvas: "Toile"
+    _canvas:
+      id: "Toile ID"
+      width: "Largeur"
+      height: "Hauteur"
     switch: "Basculer"
     _switch:
       name: "Nom de la variable"
