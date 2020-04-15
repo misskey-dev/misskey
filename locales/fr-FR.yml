@@ -770,6 +770,11 @@ _pages:
       name: "Nom de la variable"
       text: "Titre"
       default: "Valeur par défaut"
+    canvas: "Toile"
+    _canvas:
+      id: "Toile ID"
+      width: "Largeur"
+      height: "Hauteur"
     switch: "Basculer"
     _switch:
       name: "Nom de la variable"
