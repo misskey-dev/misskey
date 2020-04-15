@@ -770,6 +770,11 @@ _pages:
       name: "변수명"
       text: "제목"
       default: "기본값"
+    canvas: "캔버스"
+    _canvas:
+      id: "캔버스 ID"
+      width: "폭"
+      height: "높이"
     switch: "스위치"
     _switch:
       name: "변수명"
