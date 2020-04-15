@@ -26,6 +26,8 @@ export function convertLegacyReactions(reactions: Record<string, number>) {
 	const _reactions = {} as Record<string, number>;
 
 	for (const reaction of Object.keys(reactions)) {
+		if (reactions[reaction] <= 0) continue;
+
 		if (Object.keys(legacies).includes(reaction)) {
 			if (_reactions[legacies[reaction]]) {
 				_reactions[legacies[reaction]] += reactions[reaction];
