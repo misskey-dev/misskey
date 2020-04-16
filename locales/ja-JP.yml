@@ -476,6 +476,9 @@ state: "状態"
 sort: "ソート"
 ascendingOrder: "昇順"
 descendingOrder: "降順"
+scratchpad: "スクラッチパッド"
+scratchpadDescription: "スクラッチパッドは、AiScriptの実験環境を提供します。Misskeyと対話するコードの記述、実行、結果の確認ができます。"
+output: "出力"
 
 _theme:
   explore: "テーマを探す"

@@ -80,6 +80,7 @@ export default {
 				el._keyHandler = (e: KeyboardEvent) => {
 					const targetReservedKeys = document.activeElement ? ((document.activeElement as any)._misskey_reservedKeys || []) : [];
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
+					if (document.activeElement && document.activeElement.attributes['contenteditable']) return;
 
 					for (const action of actions) {
 						const matched = match(e, action.patterns);

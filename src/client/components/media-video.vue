@@ -5,20 +5,23 @@
 		<span>{{ $t('clickToShow') }}</span>
 	</div>
 </div>
-<a class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else
-	:href="video.url"
-	rel="nofollow noopener"
-	target="_blank"
-	:style="imageStyle"
-	:title="video.name"
->
-	<fa :icon="faPlayCircle"/>
-</a>
+<div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
+	<i><fa :icon="faEyeSlash" @click="hide = true"></fa></i>
+	<a
+		:href="video.url"
+		rel="nofollow noopener"
+		target="_blank"
+		:style="imageStyle"
+		:title="video.name"
+	>
+		<fa :icon="faPlayCircle"/>
+	</a>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
+import { faPlayCircle, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../i18n';
 
 export default Vue.extend({
@@ -32,7 +35,8 @@ export default Vue.extend({
 	data() {
 		return {
 			hide: true,
-			faPlayCircle
+			faPlayCircle,
+			faEyeSlash
 		};
 	},
 	computed: {
@@ -47,16 +51,35 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .kkjnbbplepmiyuadieoenjgutgcmtsvu {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	position: relative;
 
-	font-size: 3.5em;
-	overflow: hidden;
-	background-position: center;
-	background-size: cover;
-	width: 100%;
-	height: 100%;
+	> i {
+		display: block;
+		position: absolute;
+		border-radius: 6px;
+		background-color: var(--fg);
+		color: var(--accentLighten);
+		font-size: 14px;
+		opacity: .5;
+		padding: 3px 6px;
+		text-align: center;
+		cursor: pointer;
+		top: 12px;
+		right: 12px;
+	}
+
+	> a {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		font-size: 3.5em;
+		overflow: hidden;
+		background-position: center;
+		background-size: cover;
+		width: 100%;
+		height: 100%;
+	}
 }
 
 .icozogqfvdetwohsdglrbswgrejoxbdj {
