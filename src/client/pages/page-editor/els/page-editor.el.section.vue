@@ -2,10 +2,10 @@
 <x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faStickyNote"/> {{ value.title }}</template>
 	<template #func>
-		<button @click="rename()">
+		<button @click="rename()" class="_button">
 			<fa :icon="faPencilAlt"/>
 		</button>
-		<button @click="add()">
+		<button @click="add()" class="_button">
 			<fa :icon="faPlus"/>
 		</button>
 	</template>

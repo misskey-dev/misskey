@@ -2,7 +2,7 @@
 <x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faQuestion"/> {{ $t('_pages.blocks.if') }}</template>
 	<template #func>
-		<button @click="add()">
+		<button @click="add()" class="_button">
 			<fa :icon="faPlus"/>
 		</button>
 	</template>
