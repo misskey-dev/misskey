@@ -10,16 +10,16 @@
 	<section class="romcojzs">
 		<mk-select v-model="value.var">
 			<template #label>{{ $t('_pages.blocks._if.variable') }}</template>
-			<option v-for="v in aiScript.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in aoiScript.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('_pages.script.pageVariables')">
-				<option v-for="v in aiScript.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
+				<option v-for="v in aoiScript.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$t('_pages.script.enviromentVariables')">
-				<option v-for="v in aiScript.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
+				<option v-for="v in aoiScript.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 		</mk-select>
 
-		<x-blocks class="children" v-model="value.children" :ai-script="aiScript"/>
+		<x-blocks class="children" v-model="value.children" :aoi-script="aoiScript"/>
 	</section>
 </x-container>
 </template>
@@ -45,7 +45,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		aiScript: {
+		aoiScript: {
 			required: true,
 		},
 	},

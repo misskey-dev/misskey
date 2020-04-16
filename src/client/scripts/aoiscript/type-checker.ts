@@ -8,7 +8,7 @@ type TypeError = {
 };
 
 /**
- * AiScript type checker
+ * AoiScript type checker
  */
 export class ASTypeChecker {
 	public variables: Variable[];

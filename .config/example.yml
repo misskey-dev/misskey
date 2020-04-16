@@ -142,6 +142,11 @@ id: 'aid'
 # Proxy for HTTP/HTTPS
 #proxy: http://127.0.0.1:3128
 
+#proxyBypassHosts: [
+#  'example.com',
+#  '192.0.2.8'
+#]
+
 # Proxy for SMTP/SMTPS
 #proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
 #proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4

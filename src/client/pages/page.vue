@@ -5,7 +5,9 @@
 
 	<div class="_card" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>
-		<img class="header" :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId" />
+		<div class="banner">
+			<img :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId"/>
+		</div>
 		<div class="_content">
 			<x-page :page="page"/>
 		</div>
@@ -116,8 +118,13 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .xcukqgmh {
-	> ._card > .header {
-		max-width: 100%;
+	> ._card > .banner {
+		> img {
+			display: block;
+			width: 100%;
+			height: 120px;
+			object-fit: cover;
+		}
 	}
 }
 </style>

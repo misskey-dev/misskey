@@ -28,7 +28,7 @@ export default Vue.extend({
 					text: this.script.interpolate(this.value.content)
 				});
 			} else if (this.value.action === 'resetRandom') {
-				this.script.aiScript.updateRandomSeed(Math.random());
+				this.script.aoiScript.updateRandomSeed(Math.random());
 				this.script.eval();
 			} else if (this.value.action === 'pushEvent') {
 				this.$root.api('page-push', {
@@ -43,6 +43,8 @@ export default Vue.extend({
 					type: 'success',
 					text: this.script.interpolate(this.value.message)
 				});
+			} else if (this.value.action === 'callAiScript') {
+				this.script.callAiScript(this.value.fn);
 			}
 		}
 	}

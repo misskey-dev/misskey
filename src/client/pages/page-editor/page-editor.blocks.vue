@@ -1,6 +1,6 @@
 <template>
 <x-draggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
-	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @input="updateItem" @remove="() => removeItem(block)" :key="block.id" :ai-script="aiScript"/>
+	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @input="updateItem" @remove="() => removeItem(block)" :key="block.id" :aoi-script="aoiScript"/>
 </x-draggable>
 </template>
 
@@ -20,10 +20,11 @@ import XIf from './els/page-editor.el.if.vue';
 import XPost from './els/page-editor.el.post.vue';
 import XCounter from './els/page-editor.el.counter.vue';
 import XRadioButton from './els/page-editor.el.radio-button.vue';
+import XCanvas from './els/page-editor.el.canvas.vue';
 
 export default Vue.extend({
 	components: {
-		XDraggable, XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton
+		XDraggable, XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas
 	},
 
 	props: {
@@ -31,7 +32,7 @@ export default Vue.extend({
 			type: Array,
 			required: true
 		},
-		aiScript: {
+		aoiScript: {
 			required: true,
 		},
 	},

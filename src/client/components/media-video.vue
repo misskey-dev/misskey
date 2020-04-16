@@ -1,12 +1,12 @@
 <template>
-<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="video.isSensitive && hide && !$store.state.device.alwaysShowNsfw" @click="hide = false">
+<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><fa icon="exclamation-triangle"/> {{ $t('sensitive') }}</b>
+		<b><fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
 		<span>{{ $t('clickToShow') }}</span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><fa :icon="faEyeSlash" @click="hide = true"></fa></i>
+	<i><fa :icon="faEyeSlash" @click="hide = true"/></i>
 	<a
 		:href="video.url"
 		rel="nofollow noopener"
@@ -21,7 +21,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlayCircle, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
+import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../i18n';
 
 export default Vue.extend({
@@ -36,6 +37,7 @@ export default Vue.extend({
 		return {
 			hide: true,
 			faPlayCircle,
+			faExclamationTriangle,
 			faEyeSlash
 		};
 	},
@@ -45,7 +47,10 @@ export default Vue.extend({
 				'background-image': `url(${this.video.thumbnailUrl})`
 			};
 		}
-	}
+	},
+	created() {
+		this.hide = this.video.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+	},
 });
 </script>
 

@@ -27,7 +27,7 @@ export default Vue.extend({
 	},
 	watch: {
 		v() {
-			this.script.aiScript.updatePageVar(this.value.name, this.v);
+			this.script.aoiScript.updatePageVar(this.value.name, this.v);
 			this.script.eval();
 		}
 	},

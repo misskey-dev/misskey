@@ -42,6 +42,7 @@ const defaultDeviceSettings = {
 	animatedMfm: true,
 	imageNewTab: false,
 	showFixedPostForm: false,
+	disablePagesScript: true,
 	sfxVolume: 0.3,
 	sfxNote: 'syuilo/down',
 	sfxNoteMy: 'syuilo/up',
@@ -138,7 +139,7 @@ export default () => new Vuex.Store({
 			const promise = new Promise((resolve, reject) => {
 				// Append a credential
 				if (ctx.getters.isSignedIn) (data as any).i = ctx.state.i.token;
-				if (token) (data as any).i = token;
+				if (token !== undefined) (data as any).i = token;
 
 				// Send request
 				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
