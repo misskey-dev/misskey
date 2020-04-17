@@ -110,6 +110,7 @@ export class ASTypeChecker {
 
 			return null;
 		}
+		if (v.type === 'aiScriptVar') return null;
 		if (v.type === 'fn') return null; // todo
 		if (v.type.startsWith('fn:')) return null; // todo
 

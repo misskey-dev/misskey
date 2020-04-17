@@ -18,7 +18,7 @@
 	</header>
 	<p v-show="showBody" class="error" v-if="error != null">{{ $t('_pages.script.typeError', { slot: error.arg + 1, expect: $t(`script.types.${error.expect}`), actual: $t(`script.types.${error.actual}`) }) }}</p>
 	<p v-show="showBody" class="warn" v-if="warn != null">{{ $t('_pages.script.thereIsEmptySlot', { slot: warn.slot + 1 }) }}</p>
-	<div v-show="showBody">
+	<div v-show="showBody" class="body">
 		<slot></slot>
 	</div>
 </div>
@@ -147,6 +147,18 @@ export default Vue.extend({
 		margin: 0;
 		padding: 16px 16px 0 16px;
 		font-size: 14px;
+	}
+
+	> .body {
+		::v-deep .juejbjww, ::v-deep .eiipwacr {
+			&:not(.inline):first-child {
+				margin-top: 28px;
+			}
+
+			&:not(.inline):last-child {
+				margin-bottom: 20px;
+			}
+		}
 	}
 }
 </style>
