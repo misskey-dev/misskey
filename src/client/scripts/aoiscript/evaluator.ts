@@ -57,6 +57,7 @@ export class ASEvaluator {
 						['move_to', values.FN_NATIVE(([x, y]) => { ctx.moveTo(x.value, y.value) })],
 						['line_to', values.FN_NATIVE(([x, y]) => { ctx.lineTo(x.value, y.value) })],
 						['arc', values.FN_NATIVE(([x, y, radius, startAngle, endAngle]) => { ctx.arc(x.value, y.value, radius.value, startAngle.value, endAngle.value) })],
+						['rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.rect(x.value, y.value, width.value, height.value) })],
 						['fill', values.FN_NATIVE(() => { ctx.fill() })],
 						['stroke', values.FN_NATIVE(() => { ctx.stroke() })],
 					]));
