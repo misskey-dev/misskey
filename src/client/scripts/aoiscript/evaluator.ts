@@ -77,7 +77,6 @@ export class ASEvaluator {
 				},
 				log: (type, params) => {
 				},
-				maxStep: 16384
 			});
 		}
 
