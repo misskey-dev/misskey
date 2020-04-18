@@ -1,9 +1,24 @@
 import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
+import Chart from 'chart.js';
+import * as tinycolor from 'tinycolor2';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
 import { version } from '../../config';
 import { AiScript, utils, parse, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '../create-aiscript-env';
+
+// https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
+Chart.pluginService.register({
+	beforeDraw: function (chart, easing) {
+			if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+					var ctx = chart.chart.ctx;
+					ctx.save();
+					ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+					ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+					ctx.restore();
+			}
+	}
+});
 
 type Fn = {
 	slots: string[];
@@ -61,7 +76,55 @@ export class ASEvaluator {
 						['fill', values.FN_NATIVE(() => { ctx.fill() })],
 						['stroke', values.FN_NATIVE(() => { ctx.stroke() })],
 					]));
-				})
+				}),
+				'MkPages:chart': values.FN_NATIVE(([id, opts]) => {
+					utils.assertString(id);
+					utils.assertObject(opts);
+					const canvas = this.canvases[id.value];
+					const color = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+					const chart = new Chart(canvas, {
+						type: opts.value.get('type').value,
+						data: {
+							labels: opts.value.get('labels').value.map(x => x.value),
+							datasets: opts.value.get('datasets').value.map(x => ({
+								label: x.value.get('label').value,
+								data: x.value.get('data').value.map(x => x.value),
+								pointRadius: 0,
+								lineTension: 0,
+								borderWidth: 2,
+								borderColor: color,
+								backgroundColor: tinycolor(color).setAlpha(0.1).toRgbString(),
+							}))
+						},
+						options: {
+							responsive: false,
+							title: {
+								display: opts.value.has('title'),
+								text: opts.value.has('title') ? opts.value.get('title').value : ''
+							},
+							layout: {
+								padding: {
+									left: 0,
+									right: 0,
+									top: 8,
+									bottom: 0
+								}
+							},
+							legend: {
+								position: 'bottom',
+								labels: {
+									boxWidth: 16,
+								}
+							},
+							tooltips: {
+								enabled: false,
+							},
+							chartArea: {
+								backgroundColor: '#fff'
+							}
+						}
+					});
+				}),
 			}}, {
 				in: (q) => {
 					return new Promise(ok => {
