@@ -42,7 +42,7 @@
 		"@koa/cors": "3.0.0",
 		"@koa/multer": "2.0.2",
 		"@koa/router": "8.0.8",
-		"@syuilo/aiscript": "0.3.2",
+		"@syuilo/aiscript": "0.4.0",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.12.1",
 		"@types/cbor": "5.0.0",
