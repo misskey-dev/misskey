@@ -87,13 +87,13 @@ export class ASEvaluator {
 						data: {
 							labels: opts.value.get('labels').value.map(x => x.value),
 							datasets: opts.value.get('datasets').value.map(x => ({
-								label: x.value.get('label').value,
+								label: x.value.has('label') ? x.value.get('label').value : '',
 								data: x.value.get('data').value.map(x => x.value),
 								pointRadius: 0,
 								lineTension: 0,
 								borderWidth: 2,
-								borderColor: color,
-								backgroundColor: tinycolor(color).setAlpha(0.1).toRgbString(),
+								borderColor: x.value.has('color') ? x.value.get('color') : color,
+								backgroundColor: tinycolor(x.value.has('color') ? x.value.get('color') : color).setAlpha(0.1).toRgbString(),
 							}))
 						},
 						options: {
@@ -111,6 +111,7 @@ export class ASEvaluator {
 								}
 							},
 							legend: {
+								display: opts.value.get('datasets').value.filter(x => x.value.has('label') && x.value.get('label').value).length === 0 ? false : true,
 								position: 'bottom',
 								labels: {
 									boxWidth: 16,
@@ -121,7 +122,22 @@ export class ASEvaluator {
 							},
 							chartArea: {
 								backgroundColor: '#fff'
-							}
+							},
+							...(opts.value.get('type').value === 'rader' ? {
+								scale: {
+									ticks: {
+										beginAtZero: opts.value.has('begin_at_zero') ? opts.value.get('begin_at_zero') : false
+									}
+								}
+							} : {
+								scales: {
+									yAxes: [{
+										ticks: {
+											beginAtZero: opts.value.has('begin_at_zero') ? opts.value.get('begin_at_zero') : false
+										}
+									}]
+								}
+							})
 						}
 					});
 				}),
