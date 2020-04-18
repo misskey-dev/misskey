@@ -79,7 +79,9 @@ export default define(meta, async (ps, user) => {
 	} as DeepPartial<NoteReaction>;
 
 	if (ps.type) {
-		query.reaction = ps.type;
+		const suffix = '@.:';
+		const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
+		query.reaction = type;
 	}
 
 	const reactions = await NoteReactions.find({
