@@ -352,8 +352,6 @@ unregister: "Unregister"
 passwordLessLogin: "Set up password-less login"
 resetPassword: "Reset password"
 newPasswordIs: "The new password is \"{password}\""
-post: "Post"
-posted: "Posted!"
 autoReloadWhenDisconnected: "Auto refresh when disconnected from server"
 autoNoteWatch: "Watch note automatically"
 autoNoteWatchDescription: "Get notified about the notes which you reactioned or replied."
@@ -755,6 +753,7 @@ _pages:
     post: "Compose a note"
     _post:
       text: "Content"
+      attachCanvasImage: "Post with Canvas as Image"
       canvasId: "Canvas ID"
     textInput: "Text input"
     _textInput:
