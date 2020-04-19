@@ -1,12 +1,13 @@
 <template>
 <div class="ngbfujlo">
 	<mk-textarea :value="text" readonly style="margin: 0;"></mk-textarea>
-	<mk-button class="button" primary @click="post()" :disabled="posting || posted">{{ posted ? $t('posted') : $t('post') }}</mk-button>
+	<mk-button class="button" primary @click="post()" :disabled="posting || posted"><fa v-if="posted" :icon="faCheck"/><fa v-else :icon="faPaperPlane"/></mk-button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
@@ -31,6 +32,7 @@ export default Vue.extend({
 			text: this.script.interpolate(this.value.text),
 			posted: false,
 			posting: false,
+			faCheck, faPaperPlane
 		};
 	},
 	watch: {
