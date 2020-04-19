@@ -755,6 +755,7 @@ _pages:
     post: "Neue Notiz anfertigen"
     _post:
       text: "Inhalt"
+      canvasId: "Leinwand-ID"
     textInput: "Texteingabe"
     _textInput:
       name: "Variablenname"
