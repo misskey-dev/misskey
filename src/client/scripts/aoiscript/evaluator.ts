@@ -126,14 +126,16 @@ export class ASEvaluator {
 							...(opts.value.get('type').value === 'radar' ? {
 								scale: {
 									ticks: {
-										beginAtZero: opts.value.has('begin_at_zero') ? opts.value.get('begin_at_zero') : false
+										min: opts.value.has('min') ? opts.value.get('min').value : undefined,
+										max: opts.value.has('max') ? opts.value.get('max').value : undefined,
 									}
 								}
 							} : {
 								scales: {
 									yAxes: [{
 										ticks: {
-											beginAtZero: opts.value.has('begin_at_zero') ? opts.value.get('begin_at_zero') : false
+											min: opts.value.has('min') ? opts.value.get('min').value : undefined,
+											max: opts.value.has('max') ? opts.value.get('max').value : undefined,
 										}
 									}]
 								}
