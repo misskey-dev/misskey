@@ -755,6 +755,7 @@ _pages:
     post: "Formulaire à publier"
     _post:
       text: "Contenu"
+      attachCanvasImage: "Publier avec Toile comme image"
       canvasId: "Toile ID"
     textInput: "Entrée de textuelle"
     _textInput:
