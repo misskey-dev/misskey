@@ -755,6 +755,7 @@ _pages:
     post: "글 입력란"
     _post:
       text: "내용"
+      canvasId: "캔버스 ID"
     textInput: "텍스트 입력"
     _textInput:
       name: "변수명"
