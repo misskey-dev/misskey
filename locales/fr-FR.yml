@@ -755,6 +755,7 @@ _pages:
     post: "Formulaire à publier"
     _post:
       text: "Contenu"
+      canvasId: "Toile ID"
     textInput: "Entrée de textuelle"
     _textInput:
       name: "Nom de la variable"
