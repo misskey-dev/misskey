@@ -75,7 +75,7 @@ export default Vue.extend({
 			this.posting = true;
 			const file = this.value.attachCanvasImage ? await this.upload() : null;
 			this.$root.api('notes/create', {
-				text: this.text,
+				text: this.text === '' ? null : this.text,
 				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
