@@ -98,6 +98,7 @@ export class ASEvaluator {
 						},
 						options: {
 							responsive: false,
+							devicePixelRatio: 1.5,
 							title: {
 								display: opts.value.has('title'),
 								text: opts.value.has('title') ? opts.value.get('title').value : '',
@@ -127,8 +128,10 @@ export class ASEvaluator {
 							...(opts.value.get('type').value === 'radar' ? {
 								scale: {
 									ticks: {
+										display: opts.value.has('show_tick_label') ? opts.value.get('show_tick_label').value : false,
 										min: opts.value.has('min') ? opts.value.get('min').value : undefined,
 										max: opts.value.has('max') ? opts.value.get('max').value : undefined,
+										maxTicksLimit: 8,
 									},
 									pointLabels: {
 										fontSize: 12
@@ -138,6 +141,7 @@ export class ASEvaluator {
 								scales: {
 									yAxes: [{
 										ticks: {
+											display: opts.value.has('show_tick_label') ? opts.value.get('show_tick_label').value : true,
 											min: opts.value.has('min') ? opts.value.get('min').value : undefined,
 											max: opts.value.has('max') ? opts.value.get('max').value : undefined,
 										}
