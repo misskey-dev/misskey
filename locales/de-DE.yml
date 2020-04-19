@@ -755,6 +755,7 @@ _pages:
     post: "Neue Notiz anfertigen"
     _post:
       text: "Inhalt"
+      attachCanvasImage: "Leinwand als Bild anfügen"
       canvasId: "Leinwand-ID"
     textInput: "Texteingabe"
     _textInput:
