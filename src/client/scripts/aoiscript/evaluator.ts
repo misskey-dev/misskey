@@ -34,7 +34,7 @@ export class ASEvaluator {
 	private envVars: Record<keyof typeof envVarsDef, any>;
 	public aiscript?: AiScript;
 	private pageVarUpdatedCallback;
-	private canvases: Record<string, HTMLCanvasElement> = {};
+	public canvases: Record<string, HTMLCanvasElement> = {};
 
 	private opts: {
 		randomSeed: string; visitor?: any; page?: any; url?: string;
@@ -104,10 +104,10 @@ export class ASEvaluator {
 							},
 							layout: {
 								padding: {
-									left: 0,
-									right: 0,
-									top: 8,
-									bottom: 0
+									left: 32,
+									right: 32,
+									top: opts.value.has('title') ? 16 : 32,
+									bottom: 16
 								}
 							},
 							legend: {

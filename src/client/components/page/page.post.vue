@@ -10,6 +10,7 @@ import Vue from 'vue';
 import i18n from '../../i18n';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
+import { apiUrl } from '../../config';
 
 export default Vue.extend({
 	i18n,
@@ -41,10 +42,39 @@ export default Vue.extend({
 		}
 	},
 	methods: {
-		post() {
+		upload() {
+			return new Promise((ok) => {
+				const dialog = this.$root.dialog({
+					type: 'waiting',
+					text: this.$t('uploading') + '...',
+					showOkButton: false,
+					showCancelButton: false,
+					cancelableByBgClick: false
+				});
+				const canvas = this.script.aoiScript.canvases[this.value.canvasId];
+				canvas.toBlob(blob => {
+					const data = new FormData();
+					data.append('file', blob);
+					data.append('i', this.$store.state.i.token);
+
+					fetch(apiUrl + '/drive/files/create', {
+						method: 'POST',
+						body: data
+					})
+					.then(response => response.json())
+					.then(f => {
+						dialog.close();
+						ok(f);
+					})
+				});
+			});
+		},
+		async post() {
 			this.posting = true;
+			const file = this.value.attachCanvasImage ? await this.upload() : null;
 			this.$root.api('notes/create', {
 				text: this.text,
+				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
 				this.$root.dialog({
@@ -59,9 +89,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .ngbfujlo {
+	position: relative;
 	padding: 32px;
 	border-radius: 6px;
 	box-shadow: 0 2px 8px var(--shadow);
+	z-index: 1;
 
 	> .button {
 		margin-top: 32px;

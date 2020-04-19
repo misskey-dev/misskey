@@ -778,6 +778,8 @@ _pages:
     post: "投稿フォーム"
     _post:
       text: "内容"
+      attachCanvasImage: "キャンバスの画像を添付する"
+      canvasId: "キャンバスID"
 
     textInput: "テキスト入力"
     _textInput:
