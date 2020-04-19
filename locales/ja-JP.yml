@@ -352,8 +352,6 @@ unregister: "登録を解除"
 passwordLessLogin: "パスワード無しログイン"
 resetPassword: "パスワードをリセット"
 newPasswordIs: "新しいパスワードは「{password}」です"
-post: "投稿"
-posted: "投稿しました"
 autoReloadWhenDisconnected: "サーバー切断時に自動リロード"
 autoNoteWatch: "ノートの自動ウォッチ"
 autoNoteWatchDescription: "あなたがリアクションしたり返信したりした他のユーザーのノートに関する通知を受け取るようにします。"
@@ -778,6 +776,8 @@ _pages:
     post: "投稿フォーム"
     _post:
       text: "内容"
+      attachCanvasImage: "キャンバスの画像を添付する"
+      canvasId: "キャンバスID"
 
     textInput: "テキスト入力"
     _textInput:

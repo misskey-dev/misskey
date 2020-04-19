@@ -86,7 +86,7 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import "prismjs";
-import "prismjs/themes/prism.css";
+import 'prismjs/themes/prism-okaidia.css';
 import PrismEditor from 'vue-prism-editor';
 import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';

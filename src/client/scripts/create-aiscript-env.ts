@@ -3,8 +3,9 @@ import { utils, values } from '@syuilo/aiscript';
 export function createAiScriptEnv(vm, opts) {
 	let apiRequests = 0;
 	return {
-		USER_ID: values.STR(vm.$store.state.i.id),
-		USER_USERNAME: values.STR(vm.$store.state.i.username),
+		USER_ID: vm.$store.getters.isSignedIn ? values.STR(vm.$store.state.i.id) : values.NULL,
+		USER_NAME: vm.$store.getters.isSignedIn ? values.STR(vm.$store.state.i.name) : values.NULL,
+		USER_USERNAME: vm.$store.getters.isSignedIn ? values.STR(vm.$store.state.i.username) : values.NULL,
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await vm.$root.dialog({
 				type: type ? type.value : 'info',

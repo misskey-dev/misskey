@@ -25,7 +25,7 @@
 import Vue from 'vue';
 import { faTerminal, faPlay } from '@fortawesome/free-solid-svg-icons';
 import "prismjs";
-import "prismjs/themes/prism.css";
+import 'prismjs/themes/prism-okaidia.css';
 import PrismEditor from 'vue-prism-editor';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
 import i18n from '../i18n';
