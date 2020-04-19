@@ -755,6 +755,7 @@ _pages:
     post: "Formulario"
     _post:
       text: "Contenido"
+      attachCanvasImage: "Nota con lienzo como imagen"
       canvasId: "Lienzo ID"
     textInput: "Entrada de texto"
     _textInput:
