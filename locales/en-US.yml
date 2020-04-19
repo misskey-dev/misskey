@@ -755,6 +755,7 @@ _pages:
     post: "Compose a note"
     _post:
       text: "Content"
+      attachCanvasImage: "Post with Canvas as Image"
       canvasId: "Canvas ID"
     textInput: "Text input"
     _textInput:
