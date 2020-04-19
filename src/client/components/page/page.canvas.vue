@@ -26,6 +26,8 @@ export default Vue.extend({
 .ysrxegms {
 	display: inline-block;
 	vertical-align: bottom;
+	overflow: auto;
+	max-width: 100%;
 
 	> canvas {
 		display: block;
