@@ -352,8 +352,6 @@ unregister: "Deaktivieren"
 passwordLessLogin: "Passwortloses Anmelden einrichten"
 resetPassword: "Passwort zurücksetzen"
 newPasswordIs: "Das neue Passwort ist \"{password}\""
-post: "Beitrag"
-posted: "Gesendet"
 autoReloadWhenDisconnected: "Automatisch aktualisieren wenn die Serververbindung getrennt wird"
 autoNoteWatch: "Notizen automatisch beobachten"
 autoNoteWatchDescription: "Werde über Notizen, auf die du reagiert oder geantwortet hast, informiert"
@@ -755,6 +753,7 @@ _pages:
     post: "Neue Notiz anfertigen"
     _post:
       text: "Inhalt"
+      attachCanvasImage: "Leinwand als Bild anfügen"
       canvasId: "Leinwand-ID"
     textInput: "Texteingabe"
     _textInput:
