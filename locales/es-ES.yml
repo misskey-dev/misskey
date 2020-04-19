@@ -755,6 +755,7 @@ _pages:
     post: "Formulario"
     _post:
       text: "Contenido"
+      canvasId: "Lienzo ID"
     textInput: "Entrada de texto"
     _textInput:
       name: "Nombre de variable"
