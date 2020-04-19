@@ -123,7 +123,7 @@ export class ASEvaluator {
 							chartArea: {
 								backgroundColor: '#fff'
 							},
-							...(opts.value.get('type').value === 'rader' ? {
+							...(opts.value.get('type').value === 'radar' ? {
 								scale: {
 									ticks: {
 										beginAtZero: opts.value.has('begin_at_zero') ? opts.value.get('begin_at_zero') : false
