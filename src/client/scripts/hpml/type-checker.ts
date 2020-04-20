@@ -8,13 +8,13 @@ type TypeError = {
 };
 
 /**
- * AoiScript type checker
+ * Hpml type checker
  */
-export class ASTypeChecker {
+export class HpmlTypeChecker {
 	public variables: Variable[];
 	public pageVars: PageVar[];
 
-	constructor(variables: ASTypeChecker['variables'] = [], pageVars: ASTypeChecker['pageVars'] = []) {
+	constructor(variables: HpmlTypeChecker['variables'] = [], pageVars: HpmlTypeChecker['pageVars'] = []) {
 		this.variables = variables;
 		this.pageVars = pageVars;
 	}

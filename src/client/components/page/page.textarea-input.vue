@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-textarea v-model="v">{{ script.interpolate(value.text) }}</mk-textarea>
+	<mk-textarea v-model="v">{{ hpml.interpolate(value.text) }}</mk-textarea>
 </div>
 </template>
 
@@ -16,7 +16,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
@@ -27,8 +27,8 @@ export default Vue.extend({
 	},
 	watch: {
 		v() {
-			this.script.aoiScript.updatePageVar(this.value.name, this.v);
-			this.script.eval();
+			this.hpml.updatePageVar(this.value.name, this.v);
+			this.hpml.eval();
 		}
 	}
 });

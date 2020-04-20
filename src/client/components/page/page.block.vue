@@ -1,5 +1,5 @@
 <template>
-<component :is="'x-' + value.type" :value="value" :page="page" :script="script" :key="value.id" :h="h"/>
+<component :is="'x-' + value.type" :value="value" :page="page" :hpml="hpml" :key="value.id" :h="h"/>
 </template>
 
 <script lang="ts">
@@ -27,7 +27,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		},
 		page: {

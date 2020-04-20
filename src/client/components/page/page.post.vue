@@ -23,22 +23,22 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
 	data() {
 		return {
-			text: this.script.interpolate(this.value.text),
+			text: this.hpml.interpolate(this.value.text),
 			posted: false,
 			posting: false,
 			faCheck, faPaperPlane
 		};
 	},
 	watch: {
-		'script.vars': {
+		'hpml.vars': {
 			handler() {
-				this.text = this.script.interpolate(this.value.text);
+				this.text = this.hpml.interpolate(this.value.text);
 			},
 			deep: true
 		}
@@ -53,7 +53,7 @@ export default Vue.extend({
 					showCancelButton: false,
 					cancelableByBgClick: false
 				});
-				const canvas = this.script.aoiScript.canvases[this.value.canvasId];
+				const canvas = this.hpml.canvases[this.value.canvasId];
 				canvas.toBlob(blob => {
 					const data = new FormData();
 					data.append('file', blob);

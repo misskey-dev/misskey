@@ -11,7 +11,7 @@
 	</template>
 
 	<section class="ilrvjyvi">
-		<x-blocks class="children" v-model="value.children" :aoi-script="aoiScript"/>
+		<x-blocks class="children" v-model="value.children" :hpml="hpml"/>
 	</section>
 </x-container>
 </template>
@@ -37,7 +37,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		aoiScript: {
+		hpml: {
 			required: true,
 		},
 	},
