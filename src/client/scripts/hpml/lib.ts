@@ -7,7 +7,7 @@ import { values, utils } from '@syuilo/aiscript';
 Chart.pluginService.register({
 	beforeDraw: function (chart, easing) {
 			if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
-					var ctx = chart.chart.ctx;
+					const ctx = chart.chart.ctx;
 					ctx.save();
 					ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
 					ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
