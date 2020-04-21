@@ -58,6 +58,9 @@ export default Vue.extend({
 					const data = new FormData();
 					data.append('file', blob);
 					data.append('i', this.$store.state.i.token);
+					if (this.$store.state.settings.uploadFolder) {
+						data.append('folderId', this.$store.state.settings.uploadFolder);
+					}
 
 					fetch(apiUrl + '/drive/files/create', {
 						method: 'POST',

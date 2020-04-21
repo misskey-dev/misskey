@@ -135,7 +135,7 @@ module.exports = {
 	output: {
 		path: __dirname + '/built/client/assets',
 		filename: `[name].${meta.version}.js`,
-		chunkFilename: '[hash:5].[id].js',
+		chunkFilename: '[fullhash].[id].js',
 		publicPath: `/assets/`
 	},
 	resolve: {
@@ -155,7 +155,7 @@ module.exports = {
 	optimization: {
 		minimizer: [new TerserPlugin()]
 	},
-	cache: true,
+	cache: false,
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
 };
