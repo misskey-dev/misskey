@@ -25,7 +25,7 @@ export const meta = {
 		},
 
 		category: {
-			validator: $.optional.str
+			validator: $.optional.nullable.str
 		},
 
 		aliases: {
