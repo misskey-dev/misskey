@@ -157,6 +157,10 @@ export default Vue.extend({
 	&.reacted {
 		background: var(--accent);
 
+		&:hover {
+			background: var(--accent);
+		}
+
 		> span {
 			color: #fff;
 		}

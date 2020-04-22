@@ -1,6 +1,6 @@
 <template>
 <div v-show="script.vars[value.var]">
-	<x-block v-for="child in value.children" :value="child" :page="page" :script="script" :key="child.id" :h="h"/>
+	<x-block v-for="child in value.children" :value="child" :page="page" :hpml="hpml" :key="child.id" :h="h"/>
 </div>
 </template>
 
@@ -12,7 +12,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		},
 		page: {

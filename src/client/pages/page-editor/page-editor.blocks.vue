@@ -1,6 +1,6 @@
 <template>
 <x-draggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
-	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @input="updateItem" @remove="() => removeItem(block)" :key="block.id" :aoi-script="aoiScript"/>
+	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @input="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
 </x-draggable>
 </template>
 
@@ -32,7 +32,7 @@ export default Vue.extend({
 			type: Array,
 			required: true
 		},
-		aoiScript: {
+		hpml: {
 			required: true,
 		},
 	},

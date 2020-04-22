@@ -1,6 +1,6 @@
 <template>
-<div>
-	<canvas ref="canvas" class="ysrxegms" :width="value.width" :height="value.height"/>
+<div class="ysrxegms">
+	<canvas ref="canvas" :width="value.width" :height="value.height"/>
 </div>
 </template>
 
@@ -12,18 +12,25 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
 	mounted() {
-		this.script.aoiScript.registerCanvas(this.value.name, this.$refs.canvas);
+		this.hpml.registerCanvas(this.value.name, this.$refs.canvas);
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .ysrxegms {
-	display: block;
+	display: inline-block;
+	vertical-align: bottom;
+	overflow: auto;
+	max-width: 100%;
+
+	> canvas {
+		display: block;
+	}
 }
 </style>

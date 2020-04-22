@@ -1,6 +1,6 @@
 <template>
 <div>
-	<div>{{ script.interpolate(value.title) }}</div>
+	<div>{{ hpml.interpolate(value.title) }}</div>
 	<mk-radio v-for="x in value.values" v-model="v" :value="x" :key="x">{{ x }}</mk-radio>
 </div>
 </template>
@@ -17,7 +17,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
@@ -28,8 +28,8 @@ export default Vue.extend({
 	},
 	watch: {
 		v() {
-			this.script.aoiScript.updatePageVar(this.value.name, this.v);
-			this.script.eval();
+			this.hpml.updatePageVar(this.value.name, this.v);
+			this.hpml.eval();
 		}
 	}
 });

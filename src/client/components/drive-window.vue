@@ -1,8 +1,11 @@
 <template>
-<x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="selected.length === 0" @ok="ok()">
-	<template #header>{{ multiple ? $t('selectFiles') : $t('selectFile') }}<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length | number }})</span></template>
+<x-window ref="window" :width="800" :height="500" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="(type === 'file') && (selected.length === 0)" @ok="ok()">
+	<template #header>
+		{{ multiple ? ((type === 'file') ? $t('selectFiles') : $t('selectFolders')) : ((type === 'file') ? $t('selectFile') : $t('selectFolder')) }}
+		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length | number }})</span>
+	</template>
 	<div>
-		<x-drive :multiple="multiple" @change-selection="onChangeSelection" :select-mode="true"/>
+		<x-drive :multiple="multiple" @change-selection="onChangeSelection" :select="type"/>
 	</div>
 </x-window>
 </template>
@@ -25,7 +28,7 @@ export default Vue.extend({
 		type: {
 			type: String,
 			required: false,
-			default: undefined 
+			default: 'file' 
 		},
 		multiple: {
 			type: Boolean,
@@ -45,8 +48,8 @@ export default Vue.extend({
 			this.$refs.window.close();
 		},
 
-		onChangeSelection(files) {
-			this.selected = files;
+		onChangeSelection(xs) {
+			this.selected = xs;
 		}
 	}
 });

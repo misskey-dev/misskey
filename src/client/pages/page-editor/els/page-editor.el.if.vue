@@ -2,7 +2,7 @@
 <x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faQuestion"/> {{ $t('_pages.blocks.if') }}</template>
 	<template #func>
-		<button @click="add()">
+		<button @click="add()" class="_button">
 			<fa :icon="faPlus"/>
 		</button>
 	</template>
@@ -10,16 +10,16 @@
 	<section class="romcojzs">
 		<mk-select v-model="value.var">
 			<template #label>{{ $t('_pages.blocks._if.variable') }}</template>
-			<option v-for="v in aoiScript.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('_pages.script.pageVariables')">
-				<option v-for="v in aoiScript.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$t('_pages.script.enviromentVariables')">
-				<option v-for="v in aoiScript.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 		</mk-select>
 
-		<x-blocks class="children" v-model="value.children" :aoi-script="aoiScript"/>
+		<x-blocks class="children" v-model="value.children" :hpml="hpml"/>
 	</section>
 </x-container>
 </template>
@@ -45,7 +45,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		aoiScript: {
+		hpml: {
 			required: true,
 		},
 	},

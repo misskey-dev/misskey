@@ -118,12 +118,20 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .xcukqgmh {
-	> ._card > .banner {
-		> img {
-			display: block;
-			width: 100%;
-			height: 120px;
-			object-fit: cover;
+	> ._card {
+		> .banner {
+			> img {
+				display: block;
+				width: 100%;
+				height: 120px;
+				object-fit: cover;
+			}
+		}
+
+		> ._footer {
+			> * {
+				margin: 0 0.5em;
+			}
 		}
 	}
 }
