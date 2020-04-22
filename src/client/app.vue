@@ -163,7 +163,6 @@ import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
-import MkToast from './components/toast.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -535,14 +534,14 @@ export default Vue.extend({
 			});
 		},
 
-		onNotification(notification) {
+		async onNotification(notification) {
 			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
 			if (true) {
 				this.$root.stream.send('readNotification', {
 					id: notification.id
 				});
 
-				this.$root.new(MkToast, {
+				this.$root.new(await import('./components/toast.vue').then(m => m.default), {
 					notification
 				});
 			}
