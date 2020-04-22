@@ -5,14 +5,14 @@ import { values, utils } from '@syuilo/aiscript';
 
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
 Chart.pluginService.register({
-	beforeDraw: function (chart, easing) {
-			if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
-					const ctx = chart.chart.ctx;
-					ctx.save();
-					ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-					ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-					ctx.restore();
-			}
+	beforeDraw: (chart, easing) => {
+		if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+			const ctx = chart.chart.ctx;
+			ctx.save();
+			ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+			ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+			ctx.restore();
+		}
 	}
 });
 
