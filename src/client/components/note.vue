@@ -24,7 +24,7 @@
 			<span v-if="isMyRenote">
 				<fa :icon="faTimes"/>
 				<span>&nbsp;</span>
-				<a href="#" @click="(e) => { e.preventDefault(); delRenote() }">{{ $t('unrenote') }}</a>
+				<a href="#" @click.prevent="delRenote()">{{ $t('unrenote') }}</a>
 				<span>&nbsp;</span>
 			</span>
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime"><mk-time :time="note.createdAt"/></button>
