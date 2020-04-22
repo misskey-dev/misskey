@@ -21,6 +21,12 @@
 			</router-link>
 		</i18n>
 		<div class="info">
+			<span v-if="isMyRenote">
+				<fa :icon="faTimes"/>
+				<span>&nbsp;</span>
+				<a href="#" @click="(e) => { e.preventDefault(); delRenote() }">{{ $t('unrenote') }}</a>
+				<span>&nbsp;</span>
+			</span>
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime"><mk-time :time="note.createdAt"/></button>
 			<span class="visibility" v-if="note.visibility != 'public'">
 				<fa v-if="note.visibility == 'home'" :icon="faHome"/>
@@ -191,6 +197,10 @@ export default Vue.extend({
 
 		isMyNote(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
+		isMyRenote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
@@ -468,6 +478,22 @@ export default Vue.extend({
 				this.$root.api('notes/delete', {
 					noteId: this.appearNote.id
 				});
+			});
+		},
+
+		delRenote() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('unrenoteConfirm'),
+				showCancelButton: true
+			}).then (({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.note.id
+				});
+
+				Vue.set(this.note, 'deletedAt', new Date());
 			});
 		},
 
