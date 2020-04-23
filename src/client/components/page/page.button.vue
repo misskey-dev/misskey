@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-button class="kudkigyw" @click="click()" :primary="value.primary">{{ script.interpolate(value.text) }}</mk-button>
+	<mk-button class="kudkigyw" @click="click()" :primary="value.primary">{{ hpml.interpolate(value.text) }}</mk-button>
 </div>
 </template>
 
@@ -16,35 +16,35 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
 	methods: {
 		click() {
 			if (this.value.action === 'dialog') {
-				this.script.eval();
+				this.hpml.eval();
 				this.$root.dialog({
-					text: this.script.interpolate(this.value.content)
+					text: this.hpml.interpolate(this.value.content)
 				});
 			} else if (this.value.action === 'resetRandom') {
-				this.script.aoiScript.updateRandomSeed(Math.random());
-				this.script.eval();
+				this.hpml.updateRandomSeed(Math.random());
+				this.hpml.eval();
 			} else if (this.value.action === 'pushEvent') {
 				this.$root.api('page-push', {
-					pageId: this.script.page.id,
+					pageId: this.hpml.page.id,
 					event: this.value.event,
 					...(this.value.var ? {
-						var: this.script.vars[this.value.var]
+						var: this.hpml.vars[this.value.var]
 					} : {})
 				});
 
 				this.$root.dialog({
 					type: 'success',
-					text: this.script.interpolate(this.value.message)
+					text: this.hpml.interpolate(this.value.message)
 				});
 			} else if (this.value.action === 'callAiScript') {
-				this.script.callAiScript(this.value.fn);
+				this.hpml.callAiScript(this.value.fn);
 			}
 		}
 	}

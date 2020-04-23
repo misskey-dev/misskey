@@ -46,7 +46,7 @@
 				</div>
 			</template>
 
-			<x-blocks class="content" v-model="content" :aoi-script="aoiScript"/>
+			<x-blocks class="content" v-model="content" :hpml="hpml"/>
 
 			<mk-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
 		</section>
@@ -62,7 +62,7 @@
 					@input="v => updateVariable(v)"
 					@remove="() => removeVariable(variable)"
 					:key="variable.name"
-					:aoi-script="aoiScript"
+					:hpml="hpml"
 					:name="variable.name"
 					:title="variable.name"
 					:draggable="true"
@@ -100,8 +100,8 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkInput from '../../components/ui/input.vue';
-import { blockDefs } from '../../scripts/aoiscript/index';
-import { ASTypeChecker } from '../../scripts/aoiscript/type-checker';
+import { blockDefs } from '../../scripts/hpml/index';
+import { HpmlTypeChecker } from '../../scripts/hpml/type-checker';
 import { url } from '../../config';
 import { collectPageVars } from '../../scripts/collect-page-vars';
 import { selectDriveFile } from '../../scripts/select-drive-file';
@@ -145,7 +145,7 @@ export default Vue.extend({
 			alignCenter: false,
 			hideTitleWhenPinned: false,
 			variables: [],
-			aoiScript: null,
+			hpml: null,
 			script: '',
 			showOptions: false,
 			url,
@@ -166,14 +166,14 @@ export default Vue.extend({
 	},
 
 	async created() {
-		this.aoiScript = new ASTypeChecker();
+		this.hpml = new HpmlTypeChecker();
 
 		this.$watch('variables', () => {
-			this.aoiScript.variables = this.variables;
+			this.hpml.variables = this.variables;
 		}, { deep: true });
 
 		this.$watch('content', () => {
-			this.aoiScript.pageVars = collectPageVars(this.content);
+			this.hpml.pageVars = collectPageVars(this.content);
 		}, { deep: true });
 
 		if (this.initPageId) {
@@ -322,7 +322,7 @@ export default Vue.extend({
 
 			name = name.trim();
 
-			if (this.aoiScript.isUsedName(name)) {
+			if (this.hpml.isUsedName(name)) {
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('_pages.variableNameIsAlreadyUsed')

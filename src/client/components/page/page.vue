@@ -1,55 +1,18 @@
 <template>
-<div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }" v-if="script">
-	<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :script="script" :key="child.id" :h="2"/>
+<div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }" v-if="hpml">
+	<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :hpml="hpml" :key="child.id" :h="2"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { AiScript, parse, values } from '@syuilo/aiscript';
+import { parse } from '@syuilo/aiscript';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../i18n';
 import XBlock from './page.block.vue';
-import { ASEvaluator } from '../../scripts/aoiscript/evaluator';
-import { collectPageVars } from '../../scripts/collect-page-vars';
+import { Hpml } from '../../scripts/hpml/evaluator';
 import { url } from '../../config';
-
-class Script {
-	public aoiScript: ASEvaluator;
-	private onError: any;
-	public vars: Record<string, any>;
-	public page: Record<string, any>;
-
-	constructor(page, aoiScript, onError) {
-		this.page = page;
-		this.aoiScript = aoiScript;
-		this.onError = onError;
-		this.eval();
-	}
-
-	public eval() {
-		try {
-			this.vars = this.aoiScript.evaluateVars();
-		} catch (e) {
-			this.onError(e);
-		}
-	}
-
-	public interpolate(str: string) {
-		if (str == null) return null;
-		return str.replace(/{(.+?)}/g, match => {
-			const v = this.vars ? this.vars[match.slice(1, -1).trim()] : null;
-			return v == null ? 'NULL' : v.toString();
-		});
-	}
-
-	public callAiScript(fn: string) {
-		try {
-			if (this.aoiScript.aiscript) this.aoiScript.aiscript.execFn(this.aoiScript.aiscript.scope.get(fn), []);
-		} catch (e) {}
-	}
-}
 
 export default Vue.extend({
 	i18n,
@@ -67,35 +30,26 @@ export default Vue.extend({
 
 	data() {
 		return {
-			script: null,
+			hpml: null,
 			faHeartS, faHeart
 		};
 	},
 
 	created() {
-		const pageVars = this.getPageVars();
-		
-		this.script = new Script(this.page, new ASEvaluator(this, this.page.variables, pageVars, {
+		this.hpml = new Hpml(this, this.page, {
 			randomSeed: Math.random(),
 			visitor: this.$store.state.i,
-			page: this.page,
 			url: url,
 			enableAiScript: !this.$store.state.device.disablePagesScript
-		}), e => {
-			console.dir(e);
 		});
-
-		if (this.script.aoiScript.aiscript) this.script.aoiScript.aiscript.scope.opts.onUpdated = (name, value) => {
-			this.script.eval();
-		};
 	},
 
 	mounted() {
 		this.$nextTick(() => {
-			if (this.script.page.script && this.script.aoiScript.aiscript) {
+			if (this.page.script && this.hpml.aiscript) {
 				let ast;
 				try {
-					ast = parse(this.script.page.script);
+					ast = parse(this.page.script);
 				} catch (e) {
 					console.error(e);
 					/*this.$root.dialog({
@@ -104,8 +58,8 @@ export default Vue.extend({
 					});*/
 					return;
 				}
-				this.script.aoiScript.aiscript.exec(ast).then(() => {
-					this.script.eval();
+				this.hpml.aiscript.exec(ast).then(() => {
+					this.hpml.eval();
 				}).catch(e => {
 					console.error(e);
 					/*this.$root.dialog({
@@ -114,20 +68,14 @@ export default Vue.extend({
 					});*/
 				});
 			} else {
-				this.script.eval();
+				this.hpml.eval();
 			}
 		});
 	},
 
 	beforeDestroy() {
-		if (this.script.aoiScript.aiscript) this.script.aoiScript.aiscript.abort();
+		if (this.hpml.aiscript) this.hpml.aiscript.abort();
 	},
-
-	methods: {
-		getPageVars() {
-			return collectPageVars(this.page.content);
-		},
-	}
 });
 </script>
 

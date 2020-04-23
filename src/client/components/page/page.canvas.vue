@@ -12,12 +12,12 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
 	mounted() {
-		this.script.aoiScript.registerCanvas(this.value.name, this.$refs.canvas);
+		this.hpml.registerCanvas(this.value.name, this.$refs.canvas);
 	}
 });
 </script>

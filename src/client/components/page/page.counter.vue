@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-button class="llumlmnx" @click="click()">{{ script.interpolate(value.text) }}</mk-button>
+	<mk-button class="llumlmnx" @click="click()">{{ hpml.interpolate(value.text) }}</mk-button>
 </div>
 </template>
 
@@ -16,7 +16,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
@@ -27,8 +27,8 @@ export default Vue.extend({
 	},
 	watch: {
 		v() {
-			this.script.aoiScript.updatePageVar(this.value.name, this.v);
-			this.script.eval();
+			this.hpml.updatePageVar(this.value.name, this.v);
+			this.hpml.eval();
 		}
 	},
 	methods: {
