@@ -265,6 +265,11 @@
   resolved "https://registry.yarnpkg.com/@types/double-ended-queue/-/double-ended-queue-2.1.1.tgz#f077386134f0f736d927812c85c43a04f21ddc27"
   integrity sha512-O2+umEIlHBVyi+ePmucPjpINqTvSnsz+hAok0D4IpvrOsIsDr6c34B0AbNXW2UDVYuxbv51z5dxnrRt23ohgWg==
 
+"@types/escape-regexp@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@types/escape-regexp/-/escape-regexp-0.0.0.tgz#bff0225f9ef30d0dbdbe0e2a24283ee5342990c3"
+  integrity sha512-HTansGo4tJ7K7W9I9LBdQqnHtPB/Y7tlS+EMrkboaAQLsRPhRpHaqAHe01K1HVXM5e1u1IplRd8EBh+pJrp7Dg==
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"

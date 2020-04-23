@@ -1,28 +1,22 @@
 import { IRemoteUser } from '../../../../models/entities/user';
-import config from '../../../../config';
 import accept from '../../../../services/following/requests/accept';
 import { IFollow } from '../../type';
-import { Users } from '../../../../models';
+import DbResolver from '../../db-resolver';
 
-export default async (actor: IRemoteUser, activity: IFollow): Promise<void> => {
-	const id = typeof activity.actor === 'string' ? activity.actor : activity.actor.id;
-	if (id == null) throw new Error('missing id');
+export default async (actor: IRemoteUser, activity: IFollow): Promise<string> => {
+	// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
-	if (!id.startsWith(config.url + '/')) {
-		return;
-	}
-
-	const follower = await Users.findOne({
-		id: id.split('/').pop()
-	});
+	const dbResolver = new DbResolver();
+	const follower = await dbResolver.getUserFromApId(activity.actor);
 
 	if (follower == null) {
-		throw new Error('follower not found');
+		return `skip: follower not found`;
 	}
 
 	if (follower.host != null) {
-		throw new Error('フォローリクエストしたユーザーはローカルユーザーではありません');
+		return `skip: follower is not a local user`;
 	}
 
 	await accept(actor, follower);
+	return `ok`;
 };
