@@ -183,7 +183,7 @@
 		"os-utils": "0.0.14",
 		"parse5": "5.1.1",
 		"parsimmon": "1.13.0",
-		"pg": "8.0.2",
+		"pg": "8.0.3",
 		"portal-vue": "2.1.7",
 		"portscanner": "2.2.0",
 		"postcss-loader": "3.0.0",
