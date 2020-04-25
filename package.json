@@ -32,8 +32,7 @@
 		"constantinople": "^4.0.1",
 		"core-js": "^3.6.5",
 		"lodash": "^4.17.15",
-		"mocha": "^7.1.1",
-		"is-promise": "2.1.0"
+		"mocha": "^7.1.1"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.9.0",
@@ -220,7 +219,7 @@
 		"style-loader": "1.2.0",
 		"summaly": "2.3.1",
 		"syslog-pro": "1.0.0",
-		"systeminformation": "4.23.5",
+		"systeminformation": "4.23.6",
 		"syuilo-password-strength": "0.0.1",
 		"textarea-caret": "3.1.0",
 		"three": "0.115.0",
