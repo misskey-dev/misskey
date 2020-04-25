@@ -51,7 +51,7 @@ describe('Chart', () => {
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
-	let clock: lolex.InstalledClock<lolex.Clock>;
+	let clock: lolex.InstalledClock;
 	let connection: Connection;
 
 	before(done => {
