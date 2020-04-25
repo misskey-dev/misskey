@@ -49,7 +49,7 @@ module.exports = {
 					}
 				}
 			}, {
-				loader: 'vue-svg-inline-loader'
+				loader: 'vue-svg-inline-loader-corejs3'
 			}]
 		}, {
 			test: /\.scss?$/,
