@@ -24,18 +24,15 @@
 		"clean": "gulp clean",
 		"cleanall": "gulp cleanall",
 		"lint": "tslint 'src/**/*.ts'",
-		"test": "cross-env TS_NODE_FILES=true gulp test",
+		"test": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_COMPILER_OPTIONS=\"{\\\"target\\\":\\\"es2017\\\",\\\"module\\\":\\\"commonjs\\\",\\\"typeRoots\\\":[\\\"node_modules/@types\\\",\\\"src/@types\\\"]}\" mocha",
 		"format": "gulp format"
 	},
 	"resolutions": {
-		"@babel/core": "^7.9.0",
-		"@babel/parser": "^7.9.4",
-		"@babel/runtime": "^7.9.2",
-		"@babel/types": "^7.9.5",
 		"chokidar": "^3.3.1",
 		"constantinople": "^4.0.1",
 		"core-js": "^3.6.5",
-		"lodash": "^4.17.15"
+		"lodash": "^4.17.15",
+		"mocha": "^7.1.1"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.9.0",
@@ -58,7 +55,6 @@
 		"@types/double-ended-queue": "2.1.1",
 		"@types/glob": "7.1.1",
 		"@types/gulp": "4.0.6",
-		"@types/gulp-mocha": "0.0.32",
 		"@types/gulp-rename": "0.0.33",
 		"@types/gulp-replace": "0.0.31",
 		"@types/is-url": "1.2.28",
@@ -118,11 +114,10 @@
 		"bull": "3.13.0",
 		"cafy": "15.2.1",
 		"cbor": "5.0.2",
-		"chai": "4.2.0",
 		"chalk": "4.0.0",
 		"chart.js": "2.9.3",
 		"cli-highlight": "2.1.4",
-		"commander": "5.0.0",
+		"commander": "5.1.0",
 		"content-disposition": "0.5.3",
 		"core-js": "3.6.5",
 		"crc-32": "1.2.0",
@@ -141,8 +136,7 @@
 		"glob": "7.1.6",
 		"gulp": "4.0.2",
 		"gulp-clean-css": "4.3.0",
-		"gulp-dart-sass": "1.0.1",
-		"gulp-mocha": "7.0.2",
+		"gulp-dart-sass": "1.0.2",
 		"gulp-rename": "2.0.0",
 		"gulp-replace": "1.0.0",
 		"gulp-sourcemaps": "2.6.5",
@@ -230,7 +224,7 @@
 		"textarea-caret": "3.1.0",
 		"three": "0.115.0",
 		"tinycolor2": "1.4.1",
-		"tmp": "0.1.0",
+		"tmp": "0.2.0",
 		"ts-loader": "7.0.1",
 		"ts-node": "8.9.0",
 		"tslint": "6.1.1",
@@ -258,17 +252,19 @@
 		"vue-svg-inline-loader-corejs3": "1.5.0",
 		"vue-template-compiler": "2.6.11",
 		"vuedraggable": "2.23.2",
-		"vuex": "3.2.0",
+		"vuex": "3.3.0",
 		"vuex-persistedstate": "3.0.1",
 		"web-push": "3.4.3",
 		"webpack": "5.0.0-beta.15",
 		"webpack-cli": "3.3.11",
 		"websocket": "1.0.31",
-		"ws": "7.2.3",
+		"ws": "7.2.5",
 		"xev": "2.0.1"
 	},
 	"devDependencies": {
+		"@types/chai": "4.2.11",
 		"@types/fluent-ffmpeg": "2.1.14",
+		"chai": "4.2.0",
 		"cross-env": "7.0.2"
 	}
 }
