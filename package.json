@@ -32,7 +32,8 @@
 		"constantinople": "^4.0.1",
 		"core-js": "^3.6.5",
 		"lodash": "^4.17.15",
-		"mocha": "^7.1.1"
+		"mocha": "^7.1.1",
+		"is-promise": "2.1.0"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.9.0",
