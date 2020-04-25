@@ -2579,7 +2579,7 @@ copy-to@^2.0.1:
   resolved "https://registry.yarnpkg.com/copy-to/-/copy-to-2.0.1.tgz#2680fbb8068a48d08656b6098092bdafc906f4a5"
   integrity sha1-JoD7uAaKSNCGVrYJgJK9r8kG9KU=
 
-core-js@^3.6.5:
+core-js@3.6.5, core-js@^3.6.5:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.5.tgz#7395dc273af37fb2e50e9bd3d9fe841285231d1a"
   integrity sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==
@@ -10074,9 +10074,10 @@ vue-style-loader@4.1.2, vue-style-loader@^4.1.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-"vue-svg-inline-loader@git+https://github.com/u1-liquid/vue-svg-inline-loader-corejs3.git":
+vue-svg-inline-loader-corejs3@1.5.0:
   version "1.5.0"
-  resolved "git+https://github.com/u1-liquid/vue-svg-inline-loader-corejs3.git#7117f9b16e44b669aa8fe04aa5bb805f796f71a8"
+  resolved "https://registry.yarnpkg.com/vue-svg-inline-loader-corejs3/-/vue-svg-inline-loader-corejs3-1.5.0.tgz#83408c291e631b48691b3aa51ea02bc689d680be"
+  integrity sha512-kd3vhnrp1h7/XgfxRBMEuSqE0Vb70B9GqxnSBe+ukHmw84og5yCKn5NPi+N3/37Z+2hjNrcrOOr2Cqvx1FGYMw==
   dependencies:
     "@babel/runtime" "^7.9.2"
     core-js "^3.6.5"
