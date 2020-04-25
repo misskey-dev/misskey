@@ -10,21 +10,21 @@ import { instanceChart } from '../../services/chart';
 import { UserPublickey } from '../../models/entities/user-publickey';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
-import { validActor } from '../../remote/activitypub/type';
+import { validActor, getApId, IActivity } from '../../remote/activitypub/type';
 import { ensure } from '../../prelude/ensure';
 import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
+import { InboxJobData } from '..';
 
 const logger = new Logger('inbox');
 
 // ユーザーのinboxにアクティビティが届いた時の処理
-export default async (job: Bull.Job): Promise<void> => {
-	const signature = job.data.signature;
+export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
+	const signature = job.data.signature;	// HTTP-signature
 	const activity = job.data.activity;
 
 	//#region Log
 	const info = Object.assign({}, activity);
 	delete info['@context'];
-	delete info['signature'];
 	logger.debug(JSON.stringify(info, null, 2));
 	//#endregion
 
@@ -33,8 +33,7 @@ export default async (job: Bull.Job): Promise<void> => {
 	let key: UserPublickey;
 
 	if (keyIdLower.startsWith('acct:')) {
-		logger.warn(`Old keyId is no longer supported. ${keyIdLower}`);
-		return;
+		return `Old keyId is no longer supported. ${keyIdLower}`;
 	}
 
 	// アクティビティ内のホストの検証
@@ -42,15 +41,13 @@ export default async (job: Bull.Job): Promise<void> => {
 	try {
 		ValidateActivity(activity, host);
 	} catch (e) {
-		logger.warn(e.message);
-		return;
+		return e.message;
 	}
 
 	// ブロックしてたら中断
 	const meta = await fetchMeta();
 	if (meta.blockedHosts.includes(host)) {
-		logger.info(`Blocked request: ${host}`);
-		return;
+		return `Blocked request: ${host}`;
 	}
 
 	const _key = await UserPublickeys.findOne({
@@ -63,7 +60,7 @@ export default async (job: Bull.Job): Promise<void> => {
 		key = _key;
 	} else {
 		// 未登録ユーザーの場合はリモート解決
-		user = await resolvePerson(activity.actor) as IRemoteUser;
+		user = await resolvePerson(getApId(activity.actor)) as IRemoteUser;
 		if (user == null) {
 			throw new Error('failed to resolve user');
 		}
@@ -73,19 +70,18 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	// Update Person activityの場合は、ここで署名検証/更新処理まで実施して終了
 	if (activity.type === 'Update') {
-		if (activity.object && validActor.includes(activity.object.type)) {
+		if (activity.object && typeof activity.object !== 'string' && validActor.includes(activity.object.type)) {
 			if (!httpSignature.verifySignature(signature, key.keyPem)) {
-				logger.warn('Update activity received, but signature verification failed.');
+				return `skip: Update activity received, but signature verification failed.`;
 			} else {
-				updatePerson(activity.actor, null, activity.object);
+				await updatePerson(getApId(activity.actor), null, activity.object);
+				return `ok: person updated`;
 			}
-			return;
 		}
 	}
 
 	if (!httpSignature.verifySignature(signature, key.keyPem)) {
-		logger.error('signature verification failed');
-		return;
+		return 'signature verification failed';
 	}
 
 	// Update stats
@@ -103,6 +99,7 @@ export default async (job: Bull.Job): Promise<void> => {
 
 	// アクティビティを処理
 	await perform(user, activity);
+	return `ok`;
 };
 
 /**
@@ -110,7 +107,7 @@ export default async (job: Bull.Job): Promise<void> => {
  * @param activity Activity
  * @param host Expect host
  */
-function ValidateActivity(activity: any, host: string) {
+function ValidateActivity(activity: IActivity, host: string) {
 	// id (if exists)
 	if (typeof activity.id === 'string') {
 		const uriHost = toPuny(new URL(activity.id).hostname);
@@ -127,7 +124,7 @@ function ValidateActivity(activity: any, host: string) {
 	}
 
 	// For Create activity
-	if (activity.type === 'Create' && activity.object) {
+	if (activity.type === 'Create' && typeof activity.object !== 'string') {
 		// object.id (if exists)
 		if (typeof activity.object.id === 'string') {
 			const uriHost = toPuny(new URL(activity.object.id).hostname);

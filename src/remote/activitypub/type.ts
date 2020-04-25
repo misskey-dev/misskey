@@ -67,6 +67,15 @@ export interface IActivity extends IObject {
 	actor: IObject | string;
 	object: IObject | string;
 	target?: IObject | string;
+	/** LD-Signature */
+	signature?: {
+		type: string;
+		created: Date;
+		creator: string;
+		domain?: string;
+		nonce?: string;
+		signatureValue: string;
+	};
 }
 
 export interface ICollection extends IObject {
