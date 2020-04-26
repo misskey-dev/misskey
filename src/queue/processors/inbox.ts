@@ -12,7 +12,7 @@ import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
 import { InboxJobData } from '..';
 import DbResolver from '../../remote/activitypub/db-resolver';
 import { resolvePerson } from '../../remote/activitypub/models/person';
-import { verifyRsaSignature2017 } from '../../remote/activitypub/misc/ld-signature';
+import { LdSignature } from '../../remote/activitypub/misc/ld-signature';
 
 const logger = new Logger('inbox');
 
@@ -82,7 +82,8 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			}
 
 			// LD-Signature検証
-			const verified = await verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
+			const ldSignature = new LdSignature();
+			const verified = await ldSignature.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
 			if (!verified) {
 				return `skip: LD-Signatureの検証に失敗しました`;
 			}
