@@ -73,6 +73,8 @@ async function normalize(data: any) {
 
 function getLoader(): (url: string) => Promise<any> {
 	return async (url) => {
+		if (!url.match('^https?\:\/\/')) throw `Invalid URL ${url}`;
+
 		if (url in CONTEXTS) {
 			return {
 				contextUrl: null,
