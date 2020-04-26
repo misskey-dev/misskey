@@ -16,6 +16,10 @@ module.exports = (server: http.Server) => {
 
 	ws.on('request', async (request) => {
 		const q = request.resourceURL.query as ParsedUrlQuery;
+
+		// TODO: トークンが間違ってるなどしてauthenticateに失敗したら
+		// コネクション切断するなりエラーメッセージ返すなりする
+		// (現状はエラーがキャッチされておらずサーバーのログに流れて邪魔なので)
 		const [user, app] = await authenticate(q.i as string);
 
 		const connection = request.accept();
