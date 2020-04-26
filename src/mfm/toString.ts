@@ -79,7 +79,11 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 		},
 
 		link(token, opts) {
-			return `[${appendChildren(token.children, opts)}](${token.node.props.url})`;
+			if (token.node.props.silent) {
+				return `?[${appendChildren(token.children, opts)}](${token.node.props.url})`;
+			} else {
+				return `[${appendChildren(token.children, opts)}](${token.node.props.url})`;
+			}
 		},
 
 		mention(token) {
