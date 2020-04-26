@@ -3,6 +3,7 @@ import * as cluster from 'cluster';
 import * as chalk from 'chalk';
 import * as portscanner from 'portscanner';
 import * as isRoot from 'is-root';
+import { getConnection } from 'typeorm';
 
 import Logger from '../services/logger';
 import loadConfig from '../config/load';
@@ -149,6 +150,8 @@ async function init(): Promise<Config> {
 	try {
 		bootLogger.info('Connecting database...');
 		await initDb();
+		const v = await getConnection().query('SHOW server_version').then(x => x[0].server_version)
+		bootLogger.succ(`Connected to database: v${v}`);
 	} catch (e) {
 		bootLogger.error('Cannot connect to database', null, true);
 		bootLogger.error(e);
