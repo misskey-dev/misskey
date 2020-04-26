@@ -11,6 +11,8 @@ import { getApId } from '../../remote/activitypub/type';
 import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
 import { InboxJobData } from '..';
 import DbResolver from '../../remote/activitypub/db-resolver';
+import { resolvePerson } from '../../remote/activitypub/models/person';
+import { verifyRsaSignature2017 } from '../../remote/activitypub/misc/ld-signature';
 
 const logger = new Logger('inbox');
 
@@ -60,8 +62,36 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 
 	// signatureのsignerは、activity.actorと一致する必要がある
 	if (authUser.user.uri !== activity.actor) {
-		const diag = activity.signature ? '. Has LD-Signature. Forwarded?' : '';
-		throw new Error(`activity.id(${activity.id}) has different host(${host})${diag}`);
+		// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
+		if (activity.signature) {
+			if (activity.signature.type !== 'RsaSignature2017') {
+				return `skip: unsupported LD-signature type ${activity.signature.type}`;
+			}
+
+			// activity.signature.creator: https://example.oom/users/user#main-key
+			// みたいになっててUserを引っ張れば公開キーも入ることを期待する
+			if (activity.signature.creator) {
+				const candicate = activity.signature.creator.replace(/#.*/, '');
+				await resolvePerson(candicate).catch(() => null);
+			}
+
+			// keyIdからLD-Signatureのユーザーを取得
+			authUser = await dbResolver.getAuthUserFromKeyId(activity.signature.creator);
+			if (authUser == null) {
+				return `skip: LD-Signatureのユーザーが取得できませんでした`;
+			}
+
+			// LD-Signature検証
+			const verified = await verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
+			if (!verified) {
+				return `skip: LD-Signatureの検証に失敗しました`;
+			}
+
+			// もう一度actorチェック
+			if (authUser.user.uri !== activity.actor) {
+				return `skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`;
+			}
+		}
 	}
 
 	// activity.idがあればホストが署名者のホストであることを確認する
