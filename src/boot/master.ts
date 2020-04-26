@@ -32,7 +32,7 @@ function greet() {
 		console.log(chalk.keyword('orange')(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
 
 		console.log('');
-		console.log(chalk`< ${os.hostname()} {gray (PID: ${process.pid.toString()})} >`);
+		console.log(chalk`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
 	}
 
 	bootLogger.info('Welcome to Misskey!');
@@ -76,13 +76,13 @@ export async function masterMain() {
 		await spawnWorkers(config.clusterLimit);
 	}
 
+	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
+
 	if (!program.noDaemons) {
 		require('../daemons/server-stats').default();
 		require('../daemons/queue-stats').default();
 		require('../daemons/janitor').default();
 	}
-
-	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
 }
 
 const runningNodejsVersion = process.version.slice(1).split('.').map(x => parseInt(x, 10));
@@ -116,6 +116,8 @@ function showEnvironment(): void {
 async function init(): Promise<Config> {
 	showEnvironment();
 
+	await showMachineInfo(bootLogger);
+
 	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
 	nodejsLogger.info(`Version ${runningNodejsVersion.join('.')}`);
@@ -124,8 +126,6 @@ async function init(): Promise<Config> {
 		nodejsLogger.error(`Node.js version is less than ${requiredNodejsVersion.join('.')}. Please upgrade it.`, null, true);
 		process.exit(1);
 	}
-
-	await showMachineInfo(bootLogger);
 
 	const configLogger = bootLogger.createSubLogger('config');
 	let config;
@@ -146,15 +146,17 @@ async function init(): Promise<Config> {
 
 	configLogger.succ('Loaded');
 
+	const dbLogger = bootLogger.createSubLogger('db');
+
 	// Try to connect to DB
 	try {
-		bootLogger.info('Connecting database...');
+		dbLogger.info('Connecting...');
 		await initDb();
 		const v = await getConnection().query('SHOW server_version').then(x => x[0].server_version)
-		bootLogger.succ(`Connected to database: v${v}`);
+		dbLogger.succ(`Connected: v${v}`);
 	} catch (e) {
-		bootLogger.error('Cannot connect to database', null, true);
-		bootLogger.error(e);
+		dbLogger.error('Cannot connect', null, true);
+		dbLogger.error(e);
 		process.exit(1);
 	}
 
