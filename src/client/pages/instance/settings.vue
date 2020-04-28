@@ -39,6 +39,24 @@
 	</section>
 
 	<section class="_card">
+		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
+		<div class="_content">
+			<mk-switch v-model="enableHcaptcha">{{ $t('enableHcaptcha') }}</mk-switch>
+			<template v-if="enableHcaptcha">
+				<mk-input v-model="hcaptchaSiteKey" :disabled="!enableHcaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('hcaptchaSiteKey') }}</mk-input>
+				<mk-input v-model="hcaptchaSecretKey" :disabled="!enableHcaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('hcaptchaSecretKey') }}</mk-input>
+			</template>
+		</div>
+		<div class="_content" v-if="enableHcaptcha && hcaptchaSiteKey">
+			<header>{{ $t('preview') }}</header>
+			<h-captcha v-if="enableHcaptcha" :sitekey="hcaptchaSiteKey"/>
+		</div>
+		<div class="_footer">
+			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
+
+	<section class="_card">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
@@ -195,6 +213,12 @@ import { url } from '../../config';
 import i18n from '../../i18n';
 import getAcct from '../../../misc/acct/render';
 
+declare global {
+	interface Window {
+		onRecaptchaLoad?: Function;
+	}
+}
+
 export default Vue.extend({
 	i18n,
 
@@ -210,6 +234,7 @@ export default Vue.extend({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
+		hCaptcha: () => import('../../components/hcaptcha.vue').then(x => x.default),
 	},
 
 	data() {
@@ -234,6 +259,9 @@ export default Vue.extend({
 			enableRegistration: false,
 			enableLocalTimeline: false,
 			enableGlobalTimeline: false,
+			enableHcaptcha: false,
+			hcaptchaSiteKey: null,
+			hcaptchaSecretKey: null,
 			enableRecaptcha: false,
 			recaptchaSiteKey: null,
 			recaptchaSecretKey: null,
@@ -282,6 +310,9 @@ export default Vue.extend({
 		this.enableRegistration = !this.meta.disableRegistration;
 		this.enableLocalTimeline = !this.meta.disableLocalTimeline;
 		this.enableGlobalTimeline = !this.meta.disableGlobalTimeline;
+		this.enableHcaptcha = this.meta.enableHcaptcha;
+		this.hcaptchaSiteKey = this.meta.hcaptchaSiteKey;
+		this.hcaptchaSecretKey = this.meta.hcaptchaSecretKey;
 		this.enableRecaptcha = this.meta.enableRecaptcha;
 		this.recaptchaSiteKey = this.meta.recaptchaSiteKey;
 		this.recaptchaSecretKey = this.meta.recaptchaSecretKey;
@@ -327,24 +358,33 @@ export default Vue.extend({
 		const renderRecaptchaPreview = () => {
 			if (!(window as any).grecaptcha) return;
 			if (!this.$refs.recaptcha) return;
+			if (!this.enableRecaptcha) return;
 			if (!this.recaptchaSiteKey) return;
 			(window as any).grecaptcha.render(this.$refs.recaptcha, {
 				sitekey: this.recaptchaSiteKey
 			});
 		};
-		window.onRecaotchaLoad = () => {
-			renderRecaptchaPreview();
+		let recaptchaLoaded: boolean = false;
+		const requestRenderRecaptchaPreview = () => {
+			if (window.onRecaptchaLoad) { // loading
+				return;
+			}
+
+			if (recaptchaLoaded) { // loaded
+				delete window.onRecaptchaLoad;
+				renderRecaptchaPreview();
+			} else { // init
+				window.onRecaptchaLoad = () => {
+					recaptchaLoaded = true;
+					renderRecaptchaPreview();
+				};
+				const script = document.createElement('script');
+				script.setAttribute('src', 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad');
+				document.head.appendChild(script);
+			}
 		};
-		const head = document.getElementsByTagName('head')[0];
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js?onload=onRecaotchaLoad');
-		head.appendChild(script);
-		this.$watch('enableRecaptcha', () => {
-			renderRecaptchaPreview();
-		});
-		this.$watch('recaptchaSiteKey', () => {
-			renderRecaptchaPreview();
-		});
+		this.$watch('enableRecaptcha', requestRenderRecaptchaPreview);
+		this.$watch('recaptchaSiteKey', requestRenderRecaptchaPreview);
 	},
 
 	methods: {
@@ -391,6 +431,9 @@ export default Vue.extend({
 				disableRegistration: !this.enableRegistration,
 				disableLocalTimeline: !this.enableLocalTimeline,
 				disableGlobalTimeline: !this.enableGlobalTimeline,
+				enableHcaptcha: this.enableHcaptcha,
+				hcaptchaSiteKey: this.hcaptchaSiteKey,
+				hcaptchaSecretKey: this.hcaptchaSecretKey,
 				enableRecaptcha: this.enableRecaptcha,
 				recaptchaSiteKey: this.recaptchaSiteKey,
 				recaptchaSecretKey: this.recaptchaSecretKey,

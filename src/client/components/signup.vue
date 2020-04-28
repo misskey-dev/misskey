@@ -42,7 +42,8 @@
 			</i18n>
 		</mk-switch>
 		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<mk-button type="submit" :disabled=" submitting || !(meta.tosUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</mk-button>
+		<h-captcha v-if="meta.enableHcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
+		<mk-button type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</mk-button>
 	</template>
 </form>
 </template>
@@ -65,6 +66,7 @@ export default Vue.extend({
 		MkButton,
 		MkInput,
 		MkSwitch,
+		hCaptcha: () => import('./hcaptcha.vue').then(x => x.default),
 	},
 
 	data() {
@@ -80,6 +82,7 @@ export default Vue.extend({
 			passwordRetypeState: null,
 			submitting: false,
 			ToSAgreement: false,
+			hCaptchaResponse: null,
 			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
 		}
 	},
@@ -96,7 +99,14 @@ export default Vue.extend({
 		meta() {
 			return this.$store.state.instance.meta;
 		},
-		
+
+		shouldDisableSubmitting(): boolean {
+			return this.submitting ||
+				this.meta.tosUrl && !this.ToSAgreement ||
+				this.meta.enableHcaptcha && !this.hCaptchaResponse ||
+				this.passwordRetypeState == 'not-match';
+		},
+
 		shouldShowProfileUrl(): boolean {
 			return (this.username != '' &&
 				this.usernameState != 'invalid-format' &&
@@ -115,10 +125,11 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		const head = document.getElementsByTagName('head')[0];
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-		head.appendChild(script);
+		if (this.meta.enableRecaptcha) {
+			const script = document.createElement('script');
+			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
+			document.head.appendChild(script);
+		}
 	},
 
 	methods: {
@@ -177,6 +188,7 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
+				'hcaptcha-response': this.hCaptchaResponse,
 				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
 			}).then(() => {
 				this.$root.api('signin', {
