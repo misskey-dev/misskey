@@ -40,11 +40,11 @@ export default Vue.extend({
 		if (window.hcaptcha) { // loaded
 			this.available = true;
 		} else {
-			(document.getElementById('hcaptcha') || (x => document.head.appendChild(Object.assign(x, {
+			(document.getElementById('hcaptcha') || document.head.appendChild(Object.assign(document.createElement('script'), {
 				async: true,
 				id: 'hcaptcha',
 				src: 'https://hcaptcha.com/1/api.js?render=explicit',
-			})))(document.createElement('script')))
+			})))
 				.addEventListener('load', () => this.available = true);
 		}
 	},
