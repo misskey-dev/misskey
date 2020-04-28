@@ -239,6 +239,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			loaded: false,
 			url,
 			proxyAccount: null,
 			proxyAccountId: null,
@@ -298,6 +299,41 @@ export default Vue.extend({
 		},
 	},
 
+	watch: {
+		enableHcaptcha(enabled) {
+			if (enabled && this.loaded && this.enableRecaptcha) {
+				this.$root.dialog({
+					type: 'question', // warning だと間違って cancel するかもしれない
+					showCancelButton: true,
+					title: this.$t('settingGuide'),
+					text: this.$t('avoidMultiCaptchaConfirm'),
+				}).then(({ canceled }) => {
+					if (canceled) {
+						return;
+					}
+
+					this.enableRecaptcha = false;
+				});
+			}
+		},
+		enableRecaptcha(enabled) {
+			if (enabled && this.loaded && this.enableHcaptcha) {
+				this.$root.dialog({
+					type: 'question', // warning だと間違って cancel するかもしれない
+					showCancelButton: true,
+					title: this.$t('settingGuide'),
+					text: this.$t('avoidMultiCaptchaConfirm'),
+				}).then(({ canceled }) => {
+					if (canceled) {
+						return;
+					}
+
+					this.enableHcaptcha = false;
+				});
+			}
+		}
+	},
+
 	created() {
 		this.name = this.meta.name;
 		this.description = this.meta.description;
@@ -352,6 +388,8 @@ export default Vue.extend({
 				this.proxyAccount = proxyAccount;
 			});
 		}
+
+		this.loaded = true;
 	},
 
 	mounted() {
