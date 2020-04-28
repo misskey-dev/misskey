@@ -23,7 +23,7 @@ export default Vue.extend({
 	props: {
 		sitekey: {
 			type: String,
-      required: true,
+			required: true,
 		},
 		value: {
 			type: String,
@@ -37,13 +37,22 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (window.hcaptcha) {
+		if (window.hcaptcha) { // loaded
 			this.available = true;
 		} else {
+			const alreadyLoading = document.getElementById('hcaptcha');
+
+			if (alreadyLoading) { // loading
+				alreadyLoading.addEventListener('load', () => this.available = true);
+
+				return;
+			} // init
+
 			const script = document.createElement('script');
 			script.addEventListener('load', () => this.available = true);
-			script.src = 'https://hcaptcha.com/1/api.js?render=explicit';
 			script.async = true;
+			script.id = 'hcaptcha';
+			script.src = 'https://hcaptcha.com/1/api.js?render=explicit';
 			document.head.appendChild(script);
 		}
 	},
