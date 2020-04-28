@@ -371,11 +371,10 @@ export default Vue.extend({
 			}
 
 			if (recaptchaLoaded) { // loaded
-				delete window.onRecaptchaLoad;
 				renderRecaptchaPreview();
 			} else { // init
 				window.onRecaptchaLoad = () => {
-					recaptchaLoaded = true;
+					recaptchaLoaded = delete window.onRecaptchaLoad;
 					renderRecaptchaPreview();
 				};
 				const script = document.createElement('script');

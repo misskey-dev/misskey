@@ -40,20 +40,12 @@ export default Vue.extend({
 		if (window.hcaptcha) { // loaded
 			this.available = true;
 		} else {
-			const alreadyLoading = document.getElementById('hcaptcha');
-
-			if (alreadyLoading) { // loading
-				alreadyLoading.addEventListener('load', () => this.available = true);
-
-				return;
-			} // init
-
-			const script = document.createElement('script');
-			script.addEventListener('load', () => this.available = true);
-			script.async = true;
-			script.id = 'hcaptcha';
-			script.src = 'https://hcaptcha.com/1/api.js?render=explicit';
-			document.head.appendChild(script);
+			(document.getElementById('hcaptcha') || (x => document.head.appendChild(Object.assign(x, {
+				async: true,
+				id: 'hcaptcha',
+				src: 'https://hcaptcha.com/1/api.js?render=explicit',
+			})))(document.createElement('script')))
+				.addEventListener('load', () => this.available = true);
 		}
 	},
 

@@ -14,7 +14,7 @@ export default async (ctx: Koa.Context) => {
 	// ただしテスト時はこの機構は障害となるため無効にする
 	if (process.env.NODE_ENV !== 'test' && instance.enableHcaptcha && instance.hcaptchaSecretKey) {
 		const success = await verify(instance.hcaptchaSecretKey, body['hcaptcha-response']).then(
-			({ 'error-codes': x }) => !x || !x.length,
+			({ success }) => success,
 			() => false,
 		);
 
