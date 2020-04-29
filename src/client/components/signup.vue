@@ -41,8 +41,8 @@
 				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n>
 		</mk-switch>
-		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<h-captcha v-if="meta.enableHcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
+		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
+		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
 		<mk-button type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</mk-button>
 	</template>
 </form>
@@ -66,7 +66,7 @@ export default Vue.extend({
 		MkButton,
 		MkInput,
 		MkSwitch,
-		hCaptcha: () => import('./hcaptcha.vue').then(x => x.default),
+		captcha: () => import('./captcha.vue').then(x => x.default),
 	},
 
 	data() {
@@ -83,6 +83,7 @@ export default Vue.extend({
 			submitting: false,
 			ToSAgreement: false,
 			hCaptchaResponse: null,
+			reCaptchaResponse: null,
 			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
 		}
 	},
@@ -121,14 +122,6 @@ export default Vue.extend({
 				localStorage.setItem('i', res.i);
 				location.reload();
 			});
-		}
-	},
-
-	mounted() {
-		if (this.meta.enableRecaptcha) {
-			const script = document.createElement('script');
-			script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-			document.head.appendChild(script);
 		}
 	},
 
@@ -189,7 +182,7 @@ export default Vue.extend({
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'hcaptcha-response': this.hCaptchaResponse,
-				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
+				'g-recaptcha-response': this.meta.reCaptchaResponse,
 			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,
@@ -199,17 +192,25 @@ export default Vue.extend({
 				});
 			}).catch(() => {
 				this.submitting = false;
+				this.$refs.hcaptcha?.reset?.();
+				this.$refs.recaptcha?.reset?.();
 
 				this.$root.dialog({
 					type: 'error',
 					text: this.$t('error')
 				});
-
-				if (this.meta.enableRecaptcha) {
-					(window as any).grecaptcha.reset();
-				}
 			});
 		}
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.mk-signup {
+	padding: 32px 0 0;
+
+	.captcha {
+		margin: 16px 0;
+	}
+}
+</style>
