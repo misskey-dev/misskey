@@ -41,7 +41,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableHcaptcha" @input="guide('enableHcaptcha')">{{ $t('enableHcaptcha') }}</mk-switch>
+			<mk-switch v-model="enableHcaptcha" ref="enableHcaptcha">{{ $t('enableHcaptcha') }}</mk-switch>
 			<template v-if="enableHcaptcha">
 				<mk-input v-model="hcaptchaSiteKey" :disabled="!enableHcaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('hcaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="hcaptchaSecretKey" :disabled="!enableHcaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('hcaptchaSecretKey') }}</mk-input>
@@ -59,7 +59,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableRecaptcha" @input="guide('enableRecaptcha')">{{ $t('enableRecaptcha') }}</mk-switch>
+			<mk-switch v-model="enableRecaptcha" ref="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
 			<template v-if="enableRecaptcha">
 				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
@@ -348,44 +348,43 @@ export default Vue.extend({
 		}
 	},
 
+	mounted() {
+		this.$refs.enableHcaptcha.$on('change', () => {
+			if (this.enableHcaptcha && this.enableRecaptcha) {
+				this.$root.dialog({
+					type: 'question', // warning だと間違って cancel するかもしれない
+					showCancelButton: true,
+					title: this.$t('settingGuide'),
+					text: this.$t('avoidMultiCaptchaConfirm'),
+				}).then(({ canceled }) => {
+					if (canceled) {
+						return;
+					}
+
+					this.enableRecaptcha = false;
+				});
+			}
+		});
+
+		this.$refs.enableRecaptcha.$on('change', () => {
+			if (this.enableRecaptcha && this.enableHcaptcha) {
+				this.$root.dialog({
+					type: 'question', // warning だと間違って cancel するかもしれない
+					showCancelButton: true,
+					title: this.$t('settingGuide'),
+					text: this.$t('avoidMultiCaptchaConfirm'),
+				}).then(({ canceled }) => {
+					if (canceled) {
+						return;
+					}
+
+					this.enableHcaptcha = false;
+				});
+			}
+		});
+	},
+
 	methods: {
-		guide(key: 'enableHcaptcha' | 'enableRecaptcha') {
-			({
-				enableHcaptcha() {
-					if (this.enableHcaptcha && this.enableRecaptcha) {
-						this.$root.dialog({
-							type: 'question', // warning だと間違って cancel するかもしれない
-							showCancelButton: true,
-							title: this.$t('settingGuide'),
-							text: this.$t('avoidMultiCaptchaConfirm'),
-						}).then(({ canceled }) => {
-							if (canceled) {
-								return;
-							}
-
-							this.enableRecaptcha = false;
-						});
-					}
-				},
-				enableRecaptcha() {
-					if (this.enableRecaptcha && this.enableHcaptcha) {
-						this.$root.dialog({
-							type: 'question', // warning だと間違って cancel するかもしれない
-							showCancelButton: true,
-							title: this.$t('settingGuide'),
-							text: this.$t('avoidMultiCaptchaConfirm'),
-						}).then(({ canceled }) => {
-							if (canceled) {
-								return;
-							}
-
-							this.enableHcaptcha = false;
-						});
-					}
-				},
-			})[key]();
-		},
-
 		invite() {
 			this.$root.api('admin/invite').then(x => {
 				this.$root.dialog({
