@@ -105,6 +105,7 @@ export default Vue.extend({
 			return this.submitting ||
 				this.meta.tosUrl && !this.ToSAgreement ||
 				this.meta.enableHcaptcha && !this.hCaptchaResponse ||
+				this.meta.enableRecaptcha && !this.reCaptchaResponse ||
 				this.passwordRetypeState == 'not-match';
 		},
 
