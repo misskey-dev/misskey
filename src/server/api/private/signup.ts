@@ -12,25 +12,28 @@ export default async (ctx: Koa.Context) => {
 
 	// Verify *Captcha
 	// ただしテスト時はこの機構は障害となるため無効にする
-	if (process.env.NODE_ENV !== 'test' && instance.enableHcaptcha && instance.hcaptchaSecretKey) {
-		const success = await verify(instance.hcaptchaSecretKey, body['hcaptcha-response']).then(
-			({ success }) => success,
-			() => false,
-		);
+	if (process.env.NODE_ENV !== 'test') {
+		if (instance.enableHcaptcha && instance.hcaptchaSecretKey) {	
+			const success = await verify(instance.hcaptchaSecretKey, body['hcaptcha-response']).then(
+				({ success }) => success,
+				() => false,
+			);
 
-		if (!success) {
-			ctx.throw(400, 'hcaptcha-failed');
+			if (!success) {
+				ctx.throw(400, 'hcaptcha-failed');
+			}
 		}
-	}
-	if (process.env.NODE_ENV !== 'test' && instance.enableRecaptcha && instance.recaptchaSecretKey) {
-		recaptcha.init({
-			secret_key: instance.recaptchaSecretKey
-		});
 
-		const success = await recaptcha(body['g-recaptcha-response']);
+		if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
+			recaptcha.init({
+				secret_key: instance.recaptchaSecretKey
+			});
 
-		if (!success) {
-			ctx.throw(400, 'recaptcha-failed');
+			const success = await recaptcha(body['g-recaptcha-response']);
+
+			if (!success) {
+				ctx.throw(400, 'recaptcha-failed');
+			}
 		}
 	}
 
