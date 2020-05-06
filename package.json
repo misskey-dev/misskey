@@ -231,7 +231,7 @@
 		"tslint": "6.1.2",
 		"tslint-sonarts": "1.9.0",
 		"typeorm": "0.2.24",
-		"typescript": "3.8.3",
+		"typescript": "3.9.1-rc",
 		"ulid": "2.3.0",
 		"url-loader": "4.1.0",
 		"uuid": "8.0.0",
