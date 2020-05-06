@@ -16,16 +16,27 @@ export const defaultSettings = {
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 };
 
-const defaultDeviceUserSettings = {
+export const defaultDeviceUserSettings = {
 	visibility: 'public',
 	localOnly: false,
 	widgets: [],
 	tl: {
 		src: 'home'
 	},
+	menu: [
+		'notifications',
+		'messaging',
+		'drive',
+		'-',
+		'followRequests',
+		'featured',
+		'explore',
+		'announcements',
+		'search',
+	],
 };
 
-const defaultDeviceSettings = {
+export const defaultDeviceSettings = {
 	lang: null,
 	loadRawImages: false,
 	alwaysShowNsfw: false,
@@ -235,6 +246,10 @@ export default () => new Vuex.Store({
 						src: x.src,
 						arg: x.arg
 					};
+				},
+
+				setMenu(state, menu) {
+					state.menu = menu;
 				},
 
 				setVisibility(state, visibility) {

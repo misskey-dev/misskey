@@ -498,6 +498,9 @@ removeAllFollowing: "フォローを全解除"
 removeAllFollowingDescription: "{host}からのフォローをすべて解除します。そのインスタンスがもう存在しなくなった場合などに実行してください。"
 userSuspended: "このユーザーは凍結されています。"
 userSilenced: "このユーザーはサイレンスされています。"
+sidebar: "サイドバー"
+divider: "分割線"
+addItem: "項目を追加"
 
 _theme:
   explore: "テーマを探す"

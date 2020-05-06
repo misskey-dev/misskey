@@ -146,13 +146,7 @@ module.exports = {
 	resolveLoader: {
 		modules: ['node_modules']
 	},
-	cache: {
-		type: 'filesystem',
-		
-		buildDependencies: {
-			config: [__filename]
-		}
-	},
+	cache: false,
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
 };
