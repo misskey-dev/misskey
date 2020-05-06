@@ -63,8 +63,6 @@
 </template>
 
 <script lang="ts">
-import 'core-js/es/typed-array/from';
-
 import Vue from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import i18n from '../../i18n';
