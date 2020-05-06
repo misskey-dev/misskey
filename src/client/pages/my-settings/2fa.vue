@@ -208,11 +208,11 @@ export default Vue.extend({
 						challengeId: registration.challengeId,
 						stage: 0,
 						publicKeyOptions: {
-							challenge: Buffer.from(
-								registration.challenge
-									.replace(/\-/g, "+")
-									.replace(/_/g, "/"),
-								'base64'
+							challenge: Uint8Array.from(
+								atob(registration.challenge
+									.replace(/\-/g, '+')
+									.replace(/_/g, '/')),
+								x => x.charCodeAt(0),
 							),
 							rp: {
 								id: hostname,
@@ -223,7 +223,7 @@ export default Vue.extend({
 								name: this.$store.state.i.username,
 								displayName: this.$store.state.i.name,
 							},
-							pubKeyCredParams: [{alg: -7, type: 'public-key'}],
+							pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
 							timeout: 60000,
 							attestation: 'direct'
 						},
