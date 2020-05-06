@@ -2,7 +2,7 @@ import renderImage from './image';
 import renderKey from './key';
 import config from '../../../config';
 import { ILocalUser } from '../../../models/entities/user';
-import { toHtml } from '../../../mfm/toHtml';
+import { toHtml } from '../../../mfm/to-html';
 import { parse } from '../../../mfm/parse';
 import { getEmojis } from './note';
 import renderEmoji from './emoji';

@@ -4,16 +4,16 @@
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
 			<div class="top">
-				<p class="name"><fa icon="spinner" pulse/>{{ ctx.name }}</p>
+				<p class="name"><fa :icon="faSpinner" pulse/>{{ ctx.name }}</p>
 				<p class="status">
-					<span class="initing" v-if="ctx.progress == undefined">{{ $t('waiting') }}<mk-ellipsis/></span>
-					<span class="kb" v-if="ctx.progress != undefined">{{ String(Math.floor(ctx.progress.value / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progress.max / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
-					<span class="percentage" v-if="ctx.progress != undefined">{{ Math.floor((ctx.progress.value / ctx.progress.max) * 100) }}</span>
+					<span class="initing" v-if="ctx.progressValue === undefined">{{ $t('waiting') }}<mk-ellipsis/></span>
+					<span class="kb" v-if="ctx.progressValue !== undefined">{{ String(Math.floor(ctx.progressValue / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progressMax / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
+					<span class="percentage" v-if="ctx.progressValue !== undefined">{{ Math.floor((ctx.progressValue / ctx.progressMax) * 100) }}</span>
 				</p>
 			</div>
-			<progress v-if="ctx.progress != undefined && ctx.progress.value != ctx.progress.max" :value="ctx.progress.value" :max="ctx.progress.max"></progress>
-			<div class="progress initing" v-if="ctx.progress == undefined"></div>
-			<div class="progress waiting" v-if="ctx.progress != undefined && ctx.progress.value == ctx.progress.max"></div>
+			<progress v-if="ctx.progressValue !== undefined && ctx.progressValue !== ctx.progressMax" :value="ctx.progressValue" :max="ctx.progressMax"></progress>
+			<div class="progress initing" v-if="ctx.progressValue === undefined"></div>
+			<div class="progress waiting" v-if="ctx.progressValue !== undefined && ctx.progressValue === ctx.progressMax"></div>
 		</li>
 	</ol>
 </div>
@@ -24,12 +24,14 @@ import Vue from 'vue';
 import i18n from '../i18n';
 import { apiUrl } from '../config';
 //import getMD5 from '../../scripts/get-md5';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	i18n,
 	data() {
 		return {
-			uploads: []
+			uploads: [],
+			faSpinner
 		};
 	},
 	methods: {
@@ -56,7 +58,8 @@ export default Vue.extend({
 				const ctx = {
 					id: id,
 					name: name || file.name || 'untitled',
-					progress: undefined,
+					progressMax: undefined,
+					progressValue: undefined,
 					img: window.URL.createObjectURL(file)
 				};
 
@@ -84,9 +87,8 @@ export default Vue.extend({
 
 				xhr.upload.onprogress = e => {
 					if (e.lengthComputable) {
-						if (ctx.progress == undefined) ctx.progress = {};
-						ctx.progress.max = e.total;
-						ctx.progress.value = e.loaded;
+						ctx.progressMax = e.total;
+						ctx.progressValue = e.loaded;
 					}
 				};
 

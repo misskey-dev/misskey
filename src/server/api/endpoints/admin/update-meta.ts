@@ -145,6 +145,27 @@ export const meta = {
 			}
 		},
 
+		enableHcaptcha: {
+			validator: $.optional.bool,
+			desc: {
+				'ja-JP': 'hCaptchaを使用するか否か'
+			}
+		},
+
+		hcaptchaSiteKey: {
+			validator: $.optional.nullable.str,
+			desc: {
+				'ja-JP': 'hCaptcha site key'
+			}
+		},
+
+		hcaptchaSecretKey: {
+			validator: $.optional.nullable.str,
+			desc: {
+				'ja-JP': 'hCaptcha secret key'
+			}
+		},
+
 		enableRecaptcha: {
 			validator: $.optional.bool,
 			desc: {
@@ -470,6 +491,18 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.proxyRemoteFiles !== undefined) {
 		set.proxyRemoteFiles = ps.proxyRemoteFiles;
+	}
+
+	if (ps.enableHcaptcha !== undefined) {
+		set.enableHcaptcha = ps.enableHcaptcha;
+	}
+
+	if (ps.hcaptchaSiteKey !== undefined) {
+		set.hcaptchaSiteKey = ps.hcaptchaSiteKey;
+	}
+
+	if (ps.hcaptchaSecretKey !== undefined) {
+		set.hcaptchaSecretKey = ps.hcaptchaSecretKey;
 	}
 
 	if (ps.enableRecaptcha !== undefined) {

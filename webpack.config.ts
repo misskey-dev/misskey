@@ -49,7 +49,7 @@ module.exports = {
 					}
 				}
 			}, {
-				loader: 'vue-svg-inline-loader'
+				loader: 'vue-svg-inline-loader-corejs3'
 			}]
 		}, {
 			test: /\.scss?$/,
@@ -99,7 +99,11 @@ module.exports = {
 			loader: 'url-loader'
 		}, {
 			test: /\.json5$/,
-			loader: 'json5-loader'
+			loader: 'json5-loader',
+			options: {
+				esModule: false,
+			},
+			type: 'javascript/auto'
 		}, {
 			test: /\.ts$/,
 			exclude: /node_modules/,
@@ -142,13 +146,7 @@ module.exports = {
 	resolveLoader: {
 		modules: ['node_modules']
 	},
-	cache: {
-		type: 'filesystem',
-		
-		buildDependencies: {
-			config: [__filename]
-		}
-	},
+	cache: false,
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
 };

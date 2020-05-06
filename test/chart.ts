@@ -11,7 +11,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as lolex from 'lolex';
+import * as lolex from '@sinonjs/fake-timers';
 import { async } from './utils';
 import TestChart from '../src/services/chart/charts/classes/test';
 import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
@@ -51,7 +51,7 @@ describe('Chart', () => {
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
-	let clock: lolex.InstalledClock<lolex.Clock>;
+	let clock: lolex.InstalledClock;
 	let connection: Connection;
 
 	before(done => {

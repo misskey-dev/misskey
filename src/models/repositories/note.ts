@@ -6,7 +6,7 @@ import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
-import { toString } from '../../mfm/toString';
+import { toString } from '../../mfm/to-string';
 import { parse } from '../../mfm/parse';
 import { Emoji } from '../entities/emoji';
 import { concat } from '../../prelude/array';
