@@ -41,16 +41,16 @@ export default Vue.extend({
 		}
 	},
 
-	watch: {
-		reactions() {
-			this.changed = true;
-		}
-	},
-
 	computed: {
 		splited(): any {
 			return this.reactions.match(emojiRegexWithCustom);
 		},
+	},
+
+	watch: {
+		reactions() {
+			this.changed = true;
+		}
 	},
 
 	methods: {
