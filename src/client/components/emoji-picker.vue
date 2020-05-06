@@ -126,7 +126,8 @@ export default Vue.extend({
 				name: 'flags',
 				icon: faFlag,
 				isActive: false
-			}]
+			}],
+			faAsterisk
 		};
 	},
 
