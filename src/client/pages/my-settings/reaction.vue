@@ -71,7 +71,7 @@ export default Vue.extend({
 		},
 
 		setDefault() {
-			this.reactions = defaultSettings.reactions;
+			this.reactions = defaultSettings.reactions.join('');
 		},
 
 		async chooseEmoji(ev) {
