@@ -23,6 +23,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkReactionPicker from '../../components/reaction-picker.vue';
 import i18n from '../../i18n';
 import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
+import { defaultSettings } from '../../store';
 
 export default Vue.extend({
 	i18n,
@@ -70,7 +71,7 @@ export default Vue.extend({
 		},
 
 		setDefault() {
-			this.reactions = '👍❤😆🤔😮🎉💢😥😇🍮';
+			this.reactions = defaultSettings.reactions;
 		},
 
 		async chooseEmoji(ev) {

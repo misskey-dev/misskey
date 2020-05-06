@@ -3,7 +3,7 @@ import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { apiUrl } from './config';
 
-const defaultSettings = {
+export const defaultSettings = {
 	tutorial: 0,
 	keepCw: false,
 	showFullAcct: false,
