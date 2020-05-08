@@ -111,10 +111,10 @@ interface IQuestionChoice {
 	_misskey_votes?: number;
 }
 
-export const validActor = ['Person', 'Service', 'Group', 'Organization'];
+export const validActor = ['Person', 'Service', 'Group', 'Organization', 'Application'];
 
 export interface IPerson extends IObject {
-	type: 'Person';
+	type: 'Person' | 'Service' | 'Organization' | 'Group' | 'Application';
 	name?: string;
 	preferredUsername?: string;
 	manuallyApprovesFollowers?: boolean;
@@ -234,6 +234,10 @@ export interface IBlock extends IActivity {
 	type: 'Block';
 }
 
+export interface IFlag extends IActivity {
+	type: 'Flag';
+}
+
 export const isCreate = (object: IObject): object is ICreate => object.type === 'Create';
 export const isDelete = (object: IObject): object is IDelete => object.type === 'Delete';
 export const isUpdate = (object: IObject): object is IUpdate => object.type === 'Update';
@@ -247,3 +251,4 @@ export const isRemove = (object: IObject): object is IRemove => object.type === 
 export const isLike = (object: IObject): object is ILike => object.type === 'Like' || object.type === 'EmojiReaction' || object.type === 'EmojiReact';
 export const isAnnounce = (object: IObject): object is IAnnounce => object.type === 'Announce';
 export const isBlock = (object: IObject): object is IBlock => object.type === 'Block';
+export const isFlag = (object: IObject): object is IFlag => object.type === 'Flag';
