@@ -15,7 +15,7 @@ import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
 import { extractDbHost, toPuny } from '../../../misc/convert-host';
-import { Notes, Emojis, Polls, MessagingMessages } from '../../../models';
+import { Emojis, Polls, MessagingMessages } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
@@ -26,6 +26,7 @@ import { getApLock } from '../../../misc/app-lock';
 import { createMessage } from '../../../services/messages/create';
 import { parseAudience } from '../audience';
 import { extractApMentions } from './mention';
+import DbResolver from '../db-resolver';
 
 const logger = apLogger;
 
@@ -56,24 +57,9 @@ export function validateNote(object: any, uri: string) {
  *
  * Misskeyに対象のNoteが登録されていればそれを返します。
  */
-export async function fetchNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
-	const uri = getApId(value);
-
-	// URIがこのサーバーを指しているならデータベースからフェッチ
-	if (uri.startsWith(config.url + '/')) {
-		const id = uri.split('/').pop();
-		return await Notes.findOne(id).then(x => x || null);
-	}
-
-	//#region このサーバーに既に登録されていたらそれを返す
-	const exist = await Notes.findOne({ uri });
-
-	if (exist) {
-		return exist;
-	}
-	//#endregion
-
-	return null;
+export async function fetchNote(object: string | IObject): Promise<Note | null> {
+	const dbResolver = new DbResolver();
+	return await dbResolver.getNoteFromApId(object);
 }
 
 /**
