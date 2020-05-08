@@ -5,7 +5,6 @@
 import composeNotification from './scripts/compose-notification';
 import { clientDb } from './db';
 
-
 // eslint-disable-next-line no-undef
 const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
