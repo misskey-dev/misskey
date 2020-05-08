@@ -239,7 +239,7 @@ export default Vue.extend({
 			return clientDb.i18nContexts.put({ context: '_version_', translation: `changeLang-${(new Date()).toJSON()}` })
 				.then(() => location.reload())
 				.catch(() => {
-					dialog.close()
+					dialog.close();
 					this.$root.dialog({
 						type: 'error',
 						iconOnly: true,

@@ -16,7 +16,7 @@ const apiUrl = `${location.origin}/api/`;
 self.addEventListener('install', ev => {
 	console.info('installed');
 
-  ev.waitUntil(
+	ev.waitUntil(
 		caches.open(cacheName)
 			.then(cache => {
 				return cache.addAll([
@@ -24,7 +24,7 @@ self.addEventListener('install', ev => {
 				]);
 			})
 			.then(() => self.skipWaiting())
-  );
+	);
 });
 
 self.addEventListener('activate', ev => {

@@ -1,5 +1,5 @@
-import { clientDb } from "./db";
-import { fromEntries } from "../prelude/array";
+import { clientDb } from './db';
+import { fromEntries } from '../prelude/array';
 
 declare const _LANGS_: string[];
 declare const _VERSION_: string;
