@@ -1,8 +1,11 @@
 doctype html
 
 html
+	#msg
 	script.
 		localStorage.removeItem('locale');
+
+		const msg = document.getElementById('msg');
 
 		try {
 			navigator.serviceWorker.controller.postMessage('clear');
@@ -10,12 +13,14 @@ html
 			navigator.serviceWorker.getRegistrations().then(registrations => {
 				return Promise.all(registrations.map(registration => registration.unregister()));
 			}).then(() => {
+				msg.innerText = 'Success Flush! It will move.';
 				setTimeout(() => {
 					location = '/';
-				}, 5000)
+				}, 5000);
 			});
 		} catch (e) {
 			console.error(e);
+			msg.innerText = 'Flush Failed. It will move.';
 			setTimeout(() => {
 				location = '/';
 			}, 10000)
