@@ -11,7 +11,7 @@ export function setI18nContexts(lang: string, version: string, clear: boolean = 
 	.then(([, response]) => response.json())
 	.then(locale => {
 		const flatLocaleEntries = deepEntries(locale, delimitEntry) as [string, string][];
-		clientDb.i18nContexts.bulkPut(flatLocaleEntries.map(e => ({ context: e[0], translation: e[1] })));
+		clientDb.i18nContexts.bulkPut(flatLocaleEntries.map(([context, translation]) => ({ context, translation })));
 		i18n.locale = lang;
 		i18n.setLocaleMessage(lang, fromEntries(flatLocaleEntries));
 	});
