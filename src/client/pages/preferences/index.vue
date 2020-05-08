@@ -101,6 +101,7 @@ import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
 import i18n from '../../i18n';
 import { langs } from '../../config';
+import { clientDb } from '../../db';
 
 const sounds = [
 	null,
@@ -228,9 +229,23 @@ export default Vue.extend({
 
 	watch: {
 		lang() {
+			const dialog = this.$root.dialog({
+				type: 'waiting',
+				iconOnly: true
+			});
+
 			localStorage.setItem('lang', this.lang);
-			localStorage.removeItem('locale');
-			location.reload();
+
+			return clientDb.i18nContexts.put({ context: '_version_', translation: `changeLang-${(new Date()).toJSON()}` })
+				.then(() => location.reload())
+				.catch(() => {
+					dialog.close()
+					this.$root.dialog({
+						type: 'error',
+						iconOnly: true,
+						autoClose: true
+					});
+				});
 		},
 
 		fontSize() {
