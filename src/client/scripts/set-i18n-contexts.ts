@@ -3,7 +3,7 @@ import i18n from '../i18n';
 import { deepEntries, delimitEntry } from 'deep-entries';
 import { fromEntries } from '../../prelude/array';
 
-export function setI18nContexts(lang: string, version: string, clear: boolean = false) {
+export function setI18nContexts(lang: string, version: string, clear = false) {
 	return Promise.all([
 		clear ? clientDb.i18nContexts.clear() : Promise.resolve(),
 		fetch(`/assets/locales/${lang}.${version}.json`)
