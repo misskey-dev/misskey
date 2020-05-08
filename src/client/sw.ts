@@ -4,6 +4,7 @@
 
 import composeNotification from './scripts/compose-notification';
 
+
 // eslint-disable-next-line no-undef
 const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
@@ -68,3 +69,9 @@ self.addEventListener('push', ev => {
 		});
 	}));
 });
+
+self.addEventListener('message', e => {
+	switch (e.data) {
+		case 'clear': clientDb
+	}
+})

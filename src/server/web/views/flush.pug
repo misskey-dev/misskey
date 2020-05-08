@@ -10,7 +10,9 @@ html
 			navigator.serviceWorker.getRegistrations().then(registrations => {
 				return Promise.all(registrations.map(registration => registration.unregister()));
 			}).then(() => {
-				location = '/';
+				setTimeout(() => {
+					location = '/';
+				}, 5000)
 			});
 		} catch (e) {
 			console.error(e);

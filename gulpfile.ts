@@ -32,6 +32,7 @@ gulp.task('build:copy:locales', cb => {
 	fs.mkdirSync('./built/client/assets/locales', { recursive: true });
 
 	for (const [lang, locale] of Object.entries(locales)) {
+		locale['_version_'] = meta.version
 		fs.writeFileSync(`./built/client/assets/locales/${lang}.${meta.version}.json`, JSON.stringify(locale), 'utf-8');
 	}
 
