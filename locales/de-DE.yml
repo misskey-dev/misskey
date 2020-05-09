@@ -414,6 +414,7 @@ passwordMatched: "Stimmt überein"
 passwordNotMatched: "Stimmt nicht überein"
 signinWith: "Mit {x} anmelden"
 signinFailed: "Anmeldung fehlgeschlagen. Überprüfe Benutzername und Passswort."
+tapSecurityKey: "Tippe deinen Sicherheitsschlüssel an"
 or: "Oder"
 uiLanguage: "Sprache der Benutzeroberfläche"
 groupInvited: "Du wurdest in eine Gruppe eingeladen"
@@ -500,6 +501,7 @@ userSilenced: "Dieser Benutzer wurde instanzweit stummgeschaltet."
 sidebar: "Seitenleiste"
 divider: "Trenner"
 addItem: "Element hinzufügen"
+rooms: "Raum"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
@@ -715,6 +717,7 @@ _timelines:
   social: "Sozial"
   global: "Global"
 _rooms:
+  roomOf: "{user}'s Raum"
   _roomType:
     default: "Standard"
   _furnitures:
