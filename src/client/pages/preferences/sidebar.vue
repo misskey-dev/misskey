@@ -21,7 +21,6 @@ import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import i18n from '../../i18n';
 import { defaultDeviceUserSettings } from '../../store';
-import { createMenuDef } from '../../app';
 
 export default Vue.extend({
 	i18n,
@@ -33,7 +32,7 @@ export default Vue.extend({
 	
 	data() {
 		return {
-			menuDef: createMenuDef({}),
+			menuDef: this.$store.getters.nav({}),
 			items: '',
 			faListUl, faSave, faRedo
 		}

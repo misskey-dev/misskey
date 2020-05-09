@@ -51,7 +51,7 @@
 				</router-link>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item].display !== false" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" @click="() => { if (menuDef[item].action) menuDef[item].action() }" :to="menuDef[item].to">
+					<component v-else-if="menuDef[item].show !== false" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" @click="() => { if (menuDef[item].action) menuDef[item].action() }" :to="menuDef[item].to">
 						<fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
 						<i v-if="menuDef[item].indicated"><fa :icon="faCircle"/></i>
 					</component>
@@ -139,7 +139,6 @@ import { v4 as uuid } from 'uuid';
 import i18n from './i18n';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
-import { createMenuDef } from './app';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -164,7 +163,7 @@ export default Vue.extend({
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
-			menuDef: createMenuDef({
+			menuDef: this.$store.getters.nav({
 				search: this.search
 			}),
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
@@ -240,23 +239,6 @@ export default Vue.extend({
 					name: 'trends',
 					id: 'c', data: {}
 				}]);
-			}
-
-			this.$store.watch(state => state.i, i => {
-				for (const def in this.menuDef) {
-					if (this.menuDef[def].indicate) {
-						Vue.set(this.menuDef[def], 'indicated', this.menuDef[def].indicate(this.$store));
-					}
-					if (this.menuDef[def].show) {
-						Vue.set(this.menuDef[def], 'display', this.menuDef[def].show(this.$store));
-					}
-				}
-			}, { immediate: true, deep: true });
-		} else {
-			for (const def in this.menuDef) {
-				if (this.menuDef[def].show) {
-					Vue.set(this.menuDef[def], 'display', this.menuDef[def].show(this.$store));
-				}
 			}
 		}
 	},
@@ -445,13 +427,13 @@ export default Vue.extend({
 		},
 
 		more(ev) {
-			const items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show ? def.show(this.$store) : true).map(def => ({
+			const items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 				type: def.to ? 'link' : 'button',
 				text: this.$t(def.title),
 				icon: def.icon,
 				to: def.to,
 				action: def.action,
-				indicate: def.indicate ? def.indicate(this.$store) : false,
+				indicate: def.indicated,
 			}));
 			this.$root.menu({
 				items: [...items, null, {
