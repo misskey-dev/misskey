@@ -92,6 +92,8 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			if (authUser.user.uri !== activity.actor) {
 				return `skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`;
 			}
+		} else {
+			return 'signature verification failed';
 		}
 	}
 
