@@ -717,7 +717,7 @@ _timelines:
   social: "社交"
   global: "全局"
 _rooms:
-  roomOf: "{user}的帖子"
+  roomOf: "{user}的房间"
   addFurniture: "放置家具"
   translate: "移动"
   rotate: "旋转"
