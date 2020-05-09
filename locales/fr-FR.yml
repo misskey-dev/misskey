@@ -727,6 +727,7 @@ _rooms:
   clearConfirm: "Désirez-vous enlever tout les meubles de votre chambre ?"
   leaveConfirm: "Vous avez des modifications non-sauvegardées. Voulez-vous vraiment quitter ?"
   chooseImage: "Sélectionnez une image"
+  roomType: "Style de pièce"
   carpetColor: "Couleur du tapis"
   _roomType:
     default: "Par défaut"
