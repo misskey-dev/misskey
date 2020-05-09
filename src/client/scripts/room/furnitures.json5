@@ -1,0 +1,397 @@
+// 家具メタデータ
+
+// 家具にはユーザーが設定できるプロパティを設定可能です:
+//
+// props: {
+//   <propname>: <proptype>
+// }
+//
+// proptype一覧:
+// * image ... 画像選択ダイアログを出し、その画像のURLが格納されます
+// * color ... 色選択コントロールを出し、選択された色が格納されます
+
+// 家具にカスタムテクスチャを適用できるようにするには、textureプロパティに以下の追加の情報を含めます:
+// 便宜上そのUVのどの部分にカスタムテクスチャを貼り合わせるかのエリアをテクスチャエリアと呼びます。
+// UVは1024*1024だと仮定します。
+//
+// <key>: {
+//   prop: <プロパティ名>,
+//   uv: {
+//     x: <テクスチャエリアX座標>,
+//     y: <テクスチャエリアY座標>,
+//     width: <テクスチャエリアの幅>,
+//     height: <テクスチャエリアの高さ>,
+//   },
+// }
+//
+// <key>には、カスタムテクスチャを適用したいメッシュ名を指定します
+// <プロパティ名>には、カスタムテクスチャとして使用する画像を格納するプロパティ(前述)名を指定します
+
+// 家具にカスタムカラーを適用できるようにするには、colorプロパティに以下の追加の情報を含めます:
+//
+// <key>: <プロパティ名>
+//
+// <key>には、カスタムカラーを適用したいマテリアル名を指定します
+// <プロパティ名>には、カスタムカラーとして使用する色を格納するプロパティ(前述)名を指定します
+
+[
+	{
+		id: "milk",
+		place: "floor"
+	},
+	{
+		id: "bed",
+		place: "floor"
+	},
+	{
+		id: "low-table",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Table: 'color'
+		}
+	},
+	{
+		id: "desk",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Board: 'color'
+		}
+	},
+	{
+		id: "chair",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Chair: 'color'
+		}
+	},
+	{
+		id: "chair2",
+		place: "floor",
+		props: {
+			color1: 'color',
+			color2: 'color'
+		},
+		color: {
+			Cushion: 'color1',
+			Leg: 'color2'
+		}
+	},
+	{
+		id: "fan",
+		place: "wall"
+	},
+	{
+		id: "pc",
+		place: "floor"
+	},
+	{
+		id: "plant",
+		place: "floor"
+	},
+	{
+		id: "plant2",
+		place: "floor"
+	},
+	{
+		id: "eraser",
+		place: "floor"
+	},
+	{
+		id: "pencil",
+		place: "floor"
+	},
+	{
+		id: "pudding",
+		place: "floor"
+	},
+	{
+		id: "cardboard-box",
+		place: "floor"
+	},
+	{
+		id: "cardboard-box2",
+		place: "floor"
+	},
+	{
+		id: "cardboard-box3",
+		place: "floor"
+	},
+	{
+		id: "book",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Cover: 'color'
+		}
+	},
+	{
+		id: "book2",
+		place: "floor"
+	},
+	{
+		id: "piano",
+		place: "floor"
+	},
+	{
+		id: "facial-tissue",
+		place: "floor"
+	},
+	{
+		id: "server",
+		place: "floor"
+	},
+	{
+		id: "moon",
+		place: "floor"
+	},
+	{
+		id: "corkboard",
+		place: "wall"
+	},
+	{
+		id: "mousepad",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Pad: 'color'
+		}
+	},
+	{
+		id: "monitor",
+		place: "floor",
+		props: {
+			screen: 'image'
+		},
+		texture: {
+			Screen: {
+				prop: 'screen',
+				uv: {
+					x: 0,
+					y: 434,
+					width: 1024,
+					height: 588,
+				},
+			},
+		},
+	},
+	{
+		id: "tv",
+		place: "floor",
+		props: {
+			screen: 'image'
+		},
+		texture: {
+			Screen: {
+				prop: 'screen',
+				uv: {
+					x: 0,
+					y: 434,
+					width: 1024,
+					height: 588,
+				},
+			},
+		},
+	},
+	{
+		id: "keyboard",
+		place: "floor"
+	},
+	{
+		id: "carpet-stripe",
+		place: "floor",
+		props: {
+			color1: 'color',
+			color2: 'color'
+		},
+		color: {
+			CarpetAreaA: 'color1',
+			CarpetAreaB: 'color2'
+		},
+	},
+	{
+		id: "mat",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Mat: 'color'
+		}
+	},
+	{
+		id: "color-box",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			main: 'color'
+		}
+	},
+	{
+		id: "wall-clock",
+		place: "wall"
+	},
+	{
+		id: "cube",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Cube: 'color'
+		}
+	},
+	{
+		id: "photoframe",
+		place: "wall",
+		props: {
+			photo: 'image',
+			color: 'color'
+		},
+		texture: {
+			Photo: {
+				prop: 'photo',
+				uv: {
+					x: 0,
+					y: 342,
+					width: 1024,
+					height: 683,
+				},
+			},
+		},
+		color: {
+			Frame: 'color'
+		}
+	},
+	{
+		id: "pinguin",
+		place: "floor",
+		props: {
+			body: 'color',
+			belly: 'color'
+		},
+		color: {
+			Body: 'body',
+			Belly: 'belly',
+		}
+	},
+	{
+		id: "rubik-cube",
+		place: "floor",
+	},
+	{
+		id: "poster-h",
+		place: "wall",
+		props: {
+			picture: 'image'
+		},
+		texture: {
+			Poster: {
+				prop: 'picture',
+				uv: {
+					x: 0,
+					y: 277,
+					width: 1024,
+					height: 745,
+				},
+			},
+		},
+	},
+	{
+		id: "poster-v",
+		place: "wall",
+		props: {
+			picture: 'image'
+		},
+		texture: {
+			Poster: {
+				prop: 'picture',
+				uv: {
+					x: 0,
+					y: 0,
+					width: 745,
+					height: 1024,
+				},
+			},
+		},
+	},
+	{
+		id: "sofa",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Sofa: 'color'
+		}
+	},
+	{
+		id: "spiral",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Step: 'color'
+		}
+	},
+	{
+		id: "bin",
+		place: "floor",
+		props: {
+			color: 'color'
+		},
+		color: {
+			Bin: 'color'
+		}
+	},
+	{
+		id: "cup-noodle",
+		place: "floor"
+	},
+	{
+		id: "holo-display",
+		place: "floor",
+		props: {
+			image: 'image'
+		},
+		texture: {
+			Image_Front: {
+				prop: 'image',
+				uv: {
+					x: 0,
+					y: 0,
+					width: 1024,
+					height: 1024,
+				},
+			},
+			Image_Back: {
+				prop: 'image',
+				uv: {
+					x: 0,
+					y: 0,
+					width: 1024,
+					height: 1024,
+				},
+			},
+		},
+	},
+	{
+		id: 'energy-drink',
+		place: "floor",
+	}
+]
