@@ -693,7 +693,7 @@ _charts:
   activeUsers: "Aktive Benutzer"
   notesIncDec: "Unterschied in der Anzahl von Notizen"
   localNotesIncDec: "Unterschied in der Anzahl von lokalen Notizen"
-  remoteNotesIncDec: "Differenz in Anzahl der Notizen von anderen Instanzen"
+  remoteNotesIncDec: "Unterschied in Anzahl der Notizen von anderen Instanzen"
   notesTotal: "Anzahl aller Notizen"
   filesIncDec: "Unterschied in der Anzahl von Dateien"
   filesTotal: "Anzahl aller Dateien"
