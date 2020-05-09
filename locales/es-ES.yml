@@ -714,6 +714,11 @@ _timelines:
   local: "Local"
   social: "Social"
   global: "Global"
+_rooms:
+  _roomType:
+    default: "Predeterminado"
+  _furnitures:
+    monitor: "Monitor"
 _pages:
   newPage: "Crear página"
   editPage: "Editar página"
