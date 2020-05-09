@@ -369,6 +369,9 @@ _exportOrImport:
   userLists: "清單"
 _timelines:
   home: "首頁"
+_rooms:
+  _furnitures:
+    monitor: "監視器"
 _pages:
   script:
     categories:
