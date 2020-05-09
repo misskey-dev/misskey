@@ -16,7 +16,7 @@
 				<div v-for="k in Object.keys(selectedFurnitureInfo.props)" :key="k">
 					<p>{{ k }}</p>
 					<template v-if="selectedFurnitureInfo.props[k] === 'image'">
-						<mk-button @click="chooseImage(k)">{{ $t('_rooms.chooseImage') }}</mk-button>
+						<mk-button @click="chooseImage(k, $event)">{{ $t('_rooms.chooseImage') }}</mk-button>
 					</template>
 					<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
 						<input type="color" :value="selectedFurnitureProps ? selectedFurnitureProps[k] : null" @change="updateColor(k, $event)"/>
@@ -69,6 +69,7 @@ import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../prelude/url';
 import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
+import { selectFile } from '../../scripts/select-file';
 
 let room: Room;
 
@@ -224,10 +225,8 @@ export default Vue.extend({
 			});
 		},
 
-		chooseImage(key) {
-			this.$chooseDriveFile({
-				multiple: false
-			}).then(file => {
+		chooseImage(key, e) {
+			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
 				room.updateProp(key, `/proxy/?${urlQuery({ url: file.thumbnailUrl })}`);
 				this.$refs.preview.selected(room.getSelectedObject());
 				this.changed = true;
