@@ -70,6 +70,7 @@ export class LdSignature {
 		const transformedData = { ...data };
 		delete transformedData['signature'];
 		const cannonidedData = await this.normalize(transformedData);
+		if (this.debug) console.debug(`cannonidedData: ${cannonidedData}`);
 		const documentHash = this.sha256(cannonidedData);
 		const verifyData = `${optionsHash}${documentHash}`;
 		return verifyData;
