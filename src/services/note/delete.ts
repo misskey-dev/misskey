@@ -12,6 +12,7 @@ import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 import { countSameRenotes } from '../../misc/count-same-renotes';
+import { deliverToRelays } from '../relay';
 
 /**
  * 投稿を削除します。
@@ -48,6 +49,7 @@ export default async function(user: User, note: Note, quiet = false) {
 				: renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
 			deliverToFollowers(user, content);
+			deliverToRelays(user, content);
 		}
 
 		// also deliever delete activity to cascaded notes

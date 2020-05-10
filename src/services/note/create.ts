@@ -31,6 +31,7 @@ import { ensure } from '../../prelude/ensure';
 import { checkHitAntenna } from '../../misc/check-hit-antenna';
 import { addNoteToAntenna } from '../add-note-to-antenna';
 import { countSameRenotes } from '../../misc/count-same-renotes';
+import { deliverToRelays } from '../relay';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -347,6 +348,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 				// フォロワーに配送
 				if (['public', 'home', 'followers'].includes(note.visibility)) {
 					dm.addFollowersRecipe();
+				}
+
+				if (['public'].includes(note.visibility)) {
+					deliverToRelays(user, noteActivity);
 				}
 
 				dm.execute();

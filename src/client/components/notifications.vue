@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notifications">
+<div class="mfcuwfyp">
 	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
 		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" :key="notification.id"/>
 		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
@@ -86,7 +86,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-notifications {
+.mfcuwfyp {
 	> .notifications {
 		> ::v-deep * {
 			//margin-bottom: var(--margin);

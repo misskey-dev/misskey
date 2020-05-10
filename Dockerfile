@@ -1,4 +1,4 @@
-FROM node:14.0.0-alpine AS base
+FROM node:14.2.0-alpine AS base
 
 ENV NODE_ENV=production
 
@@ -22,7 +22,7 @@ RUN apk add --no-cache \
     python \
     zlib-dev
 
-COPY package.json ./
+COPY package.json yarn.lock ./
 RUN yarn install
 COPY . ./
 RUN yarn build

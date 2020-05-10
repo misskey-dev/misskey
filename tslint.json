@@ -63,7 +63,9 @@
 		"no-useless-cast": false,
 		"no-hardcoded-credentials": false,
 		"no-nested-switch": false,
-		"unified-signatures": false
+		"unified-signatures": false,
+		"no-all-duplicated-branches": false,
+		"semicolon": [true, "always"]
 	},
 	"rulesDirectory": []
 }

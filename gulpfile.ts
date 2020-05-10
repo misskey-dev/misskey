@@ -38,7 +38,11 @@ gulp.task('build:copy:locales', cb => {
 	cb();
 });
 
-gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:locales', () =>
+gulp.task('build:copy:fonts', () =>
+	gulp.src('./node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/client/assets/fonts/'))
+);
+
+gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:locales', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/emojilist.json',
 		'./src/server/web/views/**/*',

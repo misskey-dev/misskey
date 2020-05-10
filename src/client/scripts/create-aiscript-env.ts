@@ -20,7 +20,7 @@ export function createAiScriptEnv(vm, opts) {
 				title: title.value,
 				text: text.value,
 			});
-			return confirm.canceled ? values.FALSE : values.TRUE
+			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
 			apiRequests++;
