@@ -34,6 +34,7 @@ export async function createSystemUser(username: string) {
 			token: secret,
 			isAdmin: false,
 			isLocked: true,
+			isBot: true,
 		}));
 
 		await transactionalEntityManager.save(new UserKeypair({
