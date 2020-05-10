@@ -12,7 +12,8 @@
 			<fa :icon="faReply" v-else-if="notification.type === 'reply'"/>
 			<fa :icon="faAt" v-else-if="notification.type === 'mention'"/>
 			<fa :icon="faQuoteLeft" v-else-if="notification.type === 'quote'"/>
-			<x-reaction-icon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :customEmojis="notification.note.emojis" :no-style="true"/>
+			<fa :icon="faPollH" v-else-if="notification.type === 'pollVote'"/>
+			<x-reaction-icon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
 		</div>
 	</div>
 	<div class="tail">
@@ -40,6 +41,11 @@
 		<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</router-link>
+		<router-link v-if="notification.type === 'pollVote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+			<fa :icon="faQuoteLeft"/>
+			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
+			<fa :icon="faQuoteRight"/>
+		</router-link>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><mk-follow-button :user="notification.user" :full="true"/></div></span>
 		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
 		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
@@ -53,7 +59,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 import getNoteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
@@ -86,7 +92,7 @@ export default Vue.extend({
 			getNoteSummary,
 			followRequestDone: false,
 			groupInviteDone: false,
-			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck
+			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck, faPollH
 		};
 	},
 	methods: {
@@ -199,6 +205,11 @@ export default Vue.extend({
 			}
 
 			&.mention {
+				padding: 3px;
+				background: #88a6b7;
+			}
+
+			&.pollVote {
 				padding: 3px;
 				background: #88a6b7;
 			}
