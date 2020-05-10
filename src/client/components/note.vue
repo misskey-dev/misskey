@@ -48,7 +48,7 @@
 					<div class="files" v-if="appearNote.files.length > 0">
 						<x-media-list :media-list="appearNote.files" :parent-element="noteBody"/>
 					</div>
-					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
+					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><x-note-preview :note="appearNote.renote"/></div>
 				</div>
@@ -920,7 +920,7 @@ export default Vue.extend({
 						margin-top: 8px;
 					}
 
-					> .mk-poll {
+					> .poll {
 						font-size: 80%;
 					}
 
