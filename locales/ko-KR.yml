@@ -502,6 +502,10 @@ sidebar: "사이드바"
 divider: "분할선"
 addItem: "항목 추가"
 rooms: "방"
+relays: "릴레이"
+addRelay: "릴레이 추가"
+inboxUrl: "Inbox 주소"
+addedRelays: "추가된 릴레이"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
@@ -1057,3 +1061,5 @@ _pages:
     enviromentVariables: "환경 변수"
     pageVariables: "페이지 요소"
     argVariables: "입력 슬롯"
+_relayStatus:
+  requesting: "대기 중"
