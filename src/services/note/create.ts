@@ -350,7 +350,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 					dm.addFollowersRecipe();
 				}
 
-				if (['public', 'home'].includes(note.visibility)) {
+				if (['public'].includes(note.visibility)) {
 					deliverToRelays(user, noteActivity);
 				}
 
