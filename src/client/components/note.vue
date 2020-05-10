@@ -79,7 +79,7 @@
 			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
-	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply"/>
+	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
 </template>
 
