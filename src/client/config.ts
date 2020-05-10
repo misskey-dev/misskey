@@ -1,4 +1,5 @@
 import { clientDb, entries } from './db';
+import { fromEntries } from '../prelude/array';
 
 declare const _LANGS_: string[];
 declare const _VERSION_: string;
@@ -14,7 +15,7 @@ export const apiUrl = url + '/api';
 export const wsUrl = url.replace('http://', 'ws://').replace('https://', 'wss://') + '/streaming';
 export const lang = localStorage.getItem('lang');
 export const langs = _LANGS_;
-export const getLocale = () => entries(clientDb.i18nContexts);
+export const getLocale = async () => fromEntries((await entries(clientDb.i18nContexts)) as [string, string][]);
 export const version = _VERSION_;
 export const env = _ENV_;
 export const instanceName = siteName === 'Misskey' ? null : siteName;

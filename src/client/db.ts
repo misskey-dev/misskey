@@ -17,7 +17,7 @@ export function entries(store: Store): Promise<[IDBValidKey, unknown][]> {
 	const entries: [IDBValidKey, unknown][] = [];
 
 	return store._withIDBStore('readonly', store => {
-		store.openCursor().onsuccess = function (e) {
+		store.openCursor().onsuccess = function () {
 			if (!this.result) return;
 			entries.push([this.result.key, this.result.value]);
 			this.result.continue();
