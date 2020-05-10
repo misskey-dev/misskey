@@ -502,6 +502,10 @@ sidebar: "サイドバー"
 divider: "分割線"
 addItem: "項目を追加"
 rooms: "ルーム"
+relays: "リレー"
+addRelay: "リレーの追加"
+inboxUrl: "inboxのURL"
+addedRelays: "追加済みのリレー"
 
 _theme:
   explore: "テーマを探す"
@@ -1090,3 +1094,8 @@ _pages:
     enviromentVariables: "環境変数"
     pageVariables: "ページ要素"
     argVariables: "入力スロット"
+
+_relayStatus:
+  requesting: "承認待ち"
+  accepted: "承認済み"
+  rejected: "拒否済み"

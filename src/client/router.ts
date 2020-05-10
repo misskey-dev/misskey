@@ -58,6 +58,7 @@ export const router = new VueRouter({
 		{ path: '/instance/queue', component: page('instance/queue') },
 		{ path: '/instance/settings', component: page('instance/settings') },
 		{ path: '/instance/federation', component: page('instance/federation') },
+		{ path: '/instance/relays', component: page('instance/relays') },
 		{ path: '/instance/announcements', component: page('instance/announcements') },
 		{ path: '/notes/:note', name: 'note', component: page('note') },
 		{ path: '/tags/:tag', component: page('tag') },
