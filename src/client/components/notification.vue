@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notification" :class="notification.type" v-size="[{ max: 500 }, { max: 600 }]">
+<div class="qglefbjs" :class="notification.type" v-size="[{ max: 500 }, { max: 600 }]">
 	<div class="head">
 		<mk-avatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else class="icon" :src="notification.icon" alt=""/>
@@ -115,7 +115,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-notification {
+.qglefbjs {
 	position: relative;
 	box-sizing: border-box;
 	padding: 24px 32px;
