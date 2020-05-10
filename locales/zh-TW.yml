@@ -235,6 +235,8 @@ iconUrl: "圖像URL"
 bannerUrl: "橫幅圖片URL"
 basicInfo: "基本資訊"
 pinnedUsers: "置頂用戶"
+hcaptchaSiteKey: "網站金鑰"
+hcaptchaSecretKey: "金鑰"
 recaptcha: "reCAPTCHA"
 enableRecaptcha: "啟用 reCAPTCHA"
 recaptchaSiteKey: "網站金鑰"
@@ -367,6 +369,9 @@ _exportOrImport:
   userLists: "清單"
 _timelines:
   home: "首頁"
+_rooms:
+  _furnitures:
+    monitor: "監視器"
 _pages:
   script:
     categories:
