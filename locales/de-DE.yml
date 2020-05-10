@@ -502,6 +502,10 @@ sidebar: "Seitenleiste"
 divider: "Trenner"
 addItem: "Element hinzufügen"
 rooms: "Raum"
+relays: "Relays"
+addRelay: "Relay hinzufügen"
+inboxUrl: "inbox-URL"
+addedRelays: "Hinzugefügte Relays"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
@@ -1057,3 +1061,7 @@ _pages:
     enviromentVariables: "Umgebungsvariable"
     pageVariables: "Seitenelement"
     argVariables: "Eingabe-Slot"
+_relayStatus:
+  requesting: "Ausstehend"
+  accepted: "Akzeptiert"
+  rejected: "Abgelehnt"
