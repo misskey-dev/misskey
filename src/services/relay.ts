@@ -1,6 +1,3 @@
-//import * as mongo from 'mongodb';
-//import User, { ILocalUser } from '../models/user';
-//import Relay, { IRelay } from '../models/relay';
 import { createSystemUser } from './create-system-user';
 import { renderFollowRelay } from '../remote/activitypub/renderer/follow-relay';
 import { renderActivity, attachLdSignature } from '../remote/activitypub/renderer';
@@ -91,9 +88,9 @@ export async function deliverToRelays(user: ILocalUser, activity: any) {
 	const copy = JSON.parse(JSON.stringify(activity));
 	if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 
-	const x = await attachLdSignature(copy, user);
+	const signed = await attachLdSignature(copy, user);
 
 	for (const relay of relays) {
-		deliver(relayActor, x, relay.inbox);
+		deliver(relayActor, signed, relay.inbox);
 	}
 }
