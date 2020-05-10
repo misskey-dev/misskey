@@ -1063,3 +1063,5 @@ _pages:
     argVariables: "입력 슬롯"
 _relayStatus:
   requesting: "대기 중"
+  accepted: "승인됨"
+  rejected: "거절됨"
