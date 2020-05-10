@@ -502,6 +502,10 @@ sidebar: "Barre latérale"
 divider: "Séparateur"
 addItem: "Ajouter élément"
 rooms: "Pièce"
+relays: "Relais"
+addRelay: "Ajouter un relais"
+inboxUrl: "Inbox URL"
+addedRelays: "Relais ajoutés"
 _theme:
   explore: "Explorer les thèmes"
   install: "Installer un thème"
@@ -1057,3 +1061,7 @@ _pages:
     enviromentVariables: "Variables d'environnement"
     pageVariables: "Élément de page"
     argVariables: "Entrée slot"
+_relayStatus:
+  requesting: "En attente"
+  accepted: "Accepté"
+  rejected: "Refusée"
