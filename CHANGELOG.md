@@ -1,18 +1,27 @@
 ChangeLog
 =========
 
-Next
+12.37.0 (2020/5/10)
 -------------------
 ### ✨Improvements
 * Node.js v14をサポート [#6294](https://github.com/syuilo/misskey/pull/6294)
 * 依存パッケージを最新に [#6297](https://github.com/syuilo/misskey/pull/6297)
 * nginxサンプルのSSL/TLS設定の変更 [#6298](https://github.com/syuilo/misskey/pull/6298)
 * DockerイメージでPostgreSQL v12・Node.js v14を使用するように [2bb0a61](https://github.com/syuilo/misskey/commit/2bb0a61a891445df4d78bfc0d4a64551ac9b7a39), [808c680](https://github.com/syuilo/misskey/commit/808c6801843b9e10fa575f5f7fbd3a4a3a80252a)
-* ファイル名をkebab-caseに統一 [69975c2](https://github.com/syuilo/misskey/commit/69975c2fdd1cfa12d86eb51ce0769f17ffd826a5)
+* hCaptchaサポート
+* サイドバーカスタマイズ機能
+* LD-Signatureの検証に対応 [#6300](https://github.com/syuilo/misskey/pull/6300)
+* リモートからの通報の受信に対応 [#6331](https://github.com/syuilo/misskey/pull/6331)
+* Misskey Rooms復活
+* ノートへの返信を再帰的に表示するように(threaded replies)
+* pub-relay [#6341](https://github.com/syuilo/misskey/pull/6341)
 
 ### 🐛Fixes
-- CatだとMFMでURLプレビューを隠しても表示される問題を修正 [7d7c206](https://github.com/syuilo/misskey/commit/7d7c206f245387d32283fbb4e82bd9d526427936)
-- id生成ルーチンにInvald Dateが入力されるとNaN付きのidが生成される [ebdbd6a](https://github.com/syuilo/misskey/commit/ebdbd6a84a39e9b0d9d1cb80b6c340f4f58977fd)
+* CatだとMFMでURLプレビューを隠しても表示される問題を修正 [7d7c206](https://github.com/syuilo/misskey/commit/7d7c206f245387d32283fbb4e82bd9d526427936)
+* アップロードプログレスバーが動かないのを修正 [#6307](https://github.com/syuilo/misskey/pull/6307)
+* WebAuthnでログインできないのを修正 [#6327](https://github.com/syuilo/misskey/pull/6327)
+* あなた宛て/メッセージで個々のノートが展開されるのを修正
+* アンケートへの投票通知が正しく表示されない問題を修正
 
 12.36.1 (2020/4/23)
 -------------------
