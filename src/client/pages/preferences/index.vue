@@ -101,7 +101,7 @@ import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
 import i18n from '../../i18n';
 import { langs } from '../../config';
-import { clientDb } from '../../db';
+import { clientDb, set } from '../../db';
 
 const sounds = [
 	null,
@@ -236,7 +236,7 @@ export default Vue.extend({
 
 			localStorage.setItem('lang', this.lang);
 
-			return clientDb.i18nContexts.put({ context: '_version_', translation: `changeLang-${(new Date()).toJSON()}` })
+			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18nContexts)
 				.then(() => location.reload())
 				.catch(() => {
 					dialog.close();

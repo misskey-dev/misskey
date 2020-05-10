@@ -1,5 +1,4 @@
-import { clientDb } from './db';
-import { fromEntries } from '../prelude/array';
+import { clientDb, entries } from './db';
 
 declare const _LANGS_: string[];
 declare const _VERSION_: string;
@@ -15,7 +14,7 @@ export const apiUrl = url + '/api';
 export const wsUrl = url.replace('http://', 'ws://').replace('https://', 'wss://') + '/streaming';
 export const lang = localStorage.getItem('lang');
 export const langs = _LANGS_;
-export const getLocale = () => clientDb.i18nContexts.toArray().then(locales => fromEntries(locales.map(({ context, translation }) => [context, translation])));
+export const getLocale = () => entries(clientDb.i18nContexts)
 export const version = _VERSION_;
 export const env = _ENV_;
 export const instanceName = siteName === 'Misskey' ? null : siteName;

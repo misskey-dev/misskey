@@ -21,7 +21,7 @@ import { router } from './router';
 import { applyTheme, lightTheme } from './theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import createStore from './store';
-import { clientDb } from './db';
+import { clientDb, get, count } from './db';
 import { setI18nContexts } from './scripts/set-i18n-contexts';
 
 Vue.use(Vuex);
@@ -149,9 +149,9 @@ os.init(async () => {
 	//#endregion
 
 	//#region Fetch locale data
-	await clientDb.i18nContexts.count().then(async n => {
+	await count(clientDb.i18nContexts).then(async n => {
 		if (n === 0) return setI18nContexts(lang, version);
-		if ((await clientDb.i18nContexts.get('_version_')).translation !== version) return setI18nContexts(lang, version, n > 4000);
+		if ((await get('_version_', clientDb.i18nContexts) !== version)) return setI18nContexts(lang, version, n > 4000);
 
 		i18n.locale = lang;
 		i18n.setLocaleMessage(lang, await getLocale());

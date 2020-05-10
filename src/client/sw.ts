@@ -3,7 +3,7 @@
  */
 
 import composeNotification from './scripts/compose-notification';
-import { clientDb } from './db';
+import { clientDb, clear } from './db';
 
 // eslint-disable-next-line no-undef
 const version = _VERSION_;
@@ -72,6 +72,6 @@ self.addEventListener('push', ev => {
 
 self.addEventListener('message', e => {
 	switch (e.data) {
-		case 'clear': return clientDb.i18nContexts.clear();
+		case 'clear': return clear(clientDb.i18nContexts);
 	}
 });

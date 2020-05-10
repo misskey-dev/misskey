@@ -268,6 +268,6 @@
 		"chai": "4.2.0",
 		"cross-env": "7.0.2",
 		"deep-entries": "3.1.0",
-		"dexie": "3.0.1"
+		"idb-keyval": "3.2.0"
 	}
 }
