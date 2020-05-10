@@ -7,7 +7,7 @@
 	v-hotkey="keymap"
 	v-size="[{ max: 500 }, { max: 450 }, { max: 350 }, { max: 300 }]"
 >
-	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
+	<x-sub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="info" v-if="pinned"><fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
 	<div class="info" v-if="appearNote._prId_"><fa :icon="faBullhorn"/> {{ $t('promotion') }}<button class="_textButton hide" @click="readPromo()">{{ $t('hideThisNote') }} <fa :icon="faTimes"/></button></div>
@@ -812,6 +812,10 @@ export default Vue.extend({
 	> .reply-to {
 		opacity: 0.7;
 		padding-bottom: 0;
+	}
+
+	> .reply-to-more {
+		opacity: 0.7;
 	}
 
 	> .renote {
