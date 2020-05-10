@@ -1,23 +1,24 @@
 <template>
 <div class="relaycxt">
-	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
+	<portal to="icon"><fa :icon="faProjectDiagram"/></portal>
 	<portal to="title">{{ $t('relays') }}</portal>
 
-
-	<section class="_card lookup">
-		<mk-input v-model="inbox">
-			<span>{{ $t('inbox') }}</span>
-		</mk-input>
-		<mk-button @click="add(inbox)" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+	<section class="_card add">
+		<div class="_title"><fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
+		<div class="_content">
+			<mk-input v-model="inbox">
+				<span>{{ $t('inboxUrl') }}</span>
+			</mk-input>
+			<mk-button @click="add(inbox)" primary><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+		</div>
 	</section>
 
 	<section class="_card relays">
+		<div class="_title"><fa :icon="faProjectDiagram"/> {{ $t('addedRelays') }}</div>
 		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
 			<div>{{ relay.inbox }}</div>
-			<div>{{ relay.status }}</div>
-			<div class="buttons">
-				<mk-button class="button" inline @click="remove(relay.inbox)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</mk-button>
-			</div>
+			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
+			<mk-button class="button" inline @click="remove(relay.inbox)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</mk-button>
 		</div>
 	</section>
 </div>
@@ -25,12 +26,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
 
 export default Vue.extend({
 	i18n,
@@ -44,29 +44,26 @@ export default Vue.extend({
 	components: {
 		MkButton,
 		MkInput,
-		MkTextarea,
 	},
 
 	data() {
 		return {
 			relays: [],
 			inbox: '',
-			faBroadcastTower, faSave, faTrashAlt, faPlus
+			faPlus, faProjectDiagram, faSave, faTrashAlt
 		}
 	},
 
 	created() {
-		this.$root.api('admin/relays/list').then(relays => {
-			this.relays = relays;
-		});
+		this.refresh();
 	},
 
 	methods: {
 		add(inbox: string) {
 			this.$root.api('admin/relays/add', {
 				inbox
-			}).then(relay => {
-				
+			}).then((relay: any) => {
+				this.refresh();
 			});
 		},
 
@@ -74,24 +71,23 @@ export default Vue.extend({
 			this.$root.api('admin/relays/remove', {
 				inbox
 			}).then(() => {
-				
+				this.refresh();
 			});
 		},
 
+		refresh() {
+			this.$root.api('admin/relays/list').then((relays: any) => {
+				this.relays = relays;
+			});
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.ztgjmzrw {
-	> .relays {
-		> .relay {
-			> .buttons {
-				> .button:first-child {
-					margin-right: 8px;
-				}
-			}
-		}
+._content.relay {
+	div {
+		margin: 0.5em 0;
 	}
 }
 </style>
