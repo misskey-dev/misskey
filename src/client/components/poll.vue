@@ -111,7 +111,6 @@ export default Vue.extend({
 			position: relative;
 			margin: 4px 0;
 			padding: 4px 8px;
-			width: 100%;
 			border: solid 1px var(--divider);
 			border-radius: 4px;
 			overflow: hidden;
