@@ -4,17 +4,20 @@
 	<div class="empty" v-if="empty" key="_empty_">
 		<slot name="empty"></slot>
 	</div>
-	<div class="more" v-if="more" key="_more_">
-		<mk-button class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
-		</mk-button>
+	<div class="more" v-show="more" key="_more_">
+		<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
+			<mk-button class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
+				<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+				<template v-if="moreFetching"><mk-loading inline/></template>
+			</mk-button>
+		</intersect>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import Intersect from 'vue-intersect';
 import MkButton from './button.vue';
 import paging from '../../scripts/paging';
 
@@ -24,7 +27,8 @@ export default Vue.extend({
 	],
 
 	components: {
-		MkButton
+		MkButton,
+		Intersect
 	},
 
 	props: {

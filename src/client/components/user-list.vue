@@ -22,15 +22,18 @@
 			</div>
 			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
-		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
-			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
-		</button>
+		<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
+			<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
+				<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
+			</button>
+		</intersect>
 	</div>
 </mk-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import MkContainer from './ui/container.vue';
@@ -42,6 +45,7 @@ export default Vue.extend({
 	components: {
 		MkContainer,
 		MkFollowButton,
+		Intersect
 	},
 
 	mixins: [

@@ -5,10 +5,12 @@
 		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
-	<button class="_panel _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
-		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-		<template v-if="moreFetching"><mk-loading inline/></template>
-	</button>
+	<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
+		<button class="_panel _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+			<template v-if="moreFetching"><mk-loading inline/></template>
+		</button>
+	</intersect>
 
 	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
 
@@ -18,6 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
@@ -31,6 +34,7 @@ export default Vue.extend({
 		XNotification,
 		XList,
 		XNote,
+		Intersect
 	},
 
 	mixins: [

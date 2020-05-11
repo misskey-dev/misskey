@@ -15,11 +15,12 @@
 				</div>
 			</router-link>
 		</div>
-
-		<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
-		</button>
+		<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
+			<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+				<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+				<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
+			</button>
+		</intersect>
 
 		<p class="empty" v-if="empty">{{ $t('noUsers') }}</p>
 
@@ -31,6 +32,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XModal from './modal.vue';
@@ -40,6 +42,7 @@ export default Vue.extend({
 
 	components: {
 		XModal,
+		Intersect
 	},
 
 	mixins: [

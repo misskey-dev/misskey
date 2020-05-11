@@ -506,6 +506,7 @@ relays: "リレー"
 addRelay: "リレーの追加"
 inboxUrl: "inboxのURL"
 addedRelays: "追加済みのリレー"
+enableInfiniteScroll: "自動でもっと見る"
 
 _theme:
   explore: "テーマを探す"

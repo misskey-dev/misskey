@@ -23,13 +23,17 @@
 				<x-folder v-for="f in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<mk-button v-if="moreFolders">{{ $t('loadMore') }}</mk-button>
+				<intersect>
+					<mk-button v-if="moreFolders">{{ $t('loadMore') }}</mk-button>
+				</intersect>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<mk-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('loadMore') }}</mk-button>
+				<intersect @enter="() => $store.state.device.enableInfiniteScroll && fetchMoreFiles()">
+					<mk-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('loadMore') }}</mk-button>
+				</intersect>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
@@ -48,6 +52,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
@@ -64,6 +69,7 @@ export default Vue.extend({
 		XFile,
 		XUploader,
 		MkButton,
+		Intersect
 	},
 
 	props: {

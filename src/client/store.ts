@@ -56,6 +56,7 @@ export const defaultDeviceSettings = {
 	imageNewTab: false,
 	showFixedPostForm: false,
 	disablePagesScript: true,
+	enableInfiniteScroll: false,
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 	sfxVolume: 0.3,

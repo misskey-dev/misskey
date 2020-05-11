@@ -8,10 +8,12 @@
 	<mk-error v-if="error" @retry="init()"/>
 
 	<div v-if="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_panel _button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
-		</button>
+		<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
+			<button class="_panel _button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()">
+				<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+				<template v-if="moreFetching"><mk-loading inline/></template>
+			</button>
+		</intersect>
 	</div>
 
 	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
@@ -19,16 +21,19 @@
 	</x-list>
 
 	<div v-if="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_panel _button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
-		</button>
+		<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
+			<button class="_panel _button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()">
+				<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+				<template v-if="moreFetching"><mk-loading inline/></template>
+			</button>
+		</intersect>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
@@ -39,7 +44,7 @@ export default Vue.extend({
 	i18n,
 
 	components: {
-		XNote, XList, MkButton
+		XNote, XList, MkButton, Intersect
 	},
 
 	mixins: [
