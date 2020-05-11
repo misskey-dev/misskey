@@ -16,11 +16,9 @@
 		<mk-loading v-if="fetching"/>
 		<p class="empty" v-if="!fetching && messages.length == 0"><fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
 		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
-		<intersect @enter="() => !fetchingMoreMessages && existMoreMessages && $store.state.device.enableInfiniteScroll && fetchMoreMessages()">
-			<button class="more _button" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-				<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
-			</button>
-		</intersect>
+		<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
+			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
+		</button>
 		<x-list class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
 			<x-message :message="message" :is-group="group != null" :key="message.id"/>
 		</x-list>
@@ -39,7 +37,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import Intersect from 'vue-intersect';
 import i18n from '../../i18n';
 import XList from '../../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
@@ -52,8 +49,7 @@ export default Vue.extend({
 	components: {
 		XMessage,
 		XForm,
-		XList,
-		Intersect
+		XList
 	},
 
 	data() {
@@ -67,6 +63,11 @@ export default Vue.extend({
 			connection: null,
 			showIndicator: false,
 			timer: null,
+			ilObserver: new IntersectionObserver(
+				(entries) => entries.some((entry) => entry.isIntersecting)
+				&& !this.fetchingMoreMessages && this.existMoreMessages
+					this.fetchMoreMessages()
+			),
 			faArrowCircleDown, faFlag, faUsers, faInfoCircle
 		};
 	},
@@ -83,6 +84,9 @@ export default Vue.extend({
 
 	mounted() {
 		this.fetch();
+		if (this.$store.state.device.enableInfiniteScroll) {
+			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore));
+		}
 	},
 
 	beforeDestroy() {
@@ -91,6 +95,8 @@ export default Vue.extend({
 		window.removeEventListener('scroll', this.onScroll);
 
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);
+
+		this.ilObserver.disconnect();
 	},
 
 	methods: {

@@ -15,6 +15,12 @@ export default (opts) => ({
 			more: false,
 			backed: false,
 			isBackTop: false,
+			ilObserver: new IntersectionObserver(
+				(entries) => entries.some((entry) => entry.isIntersecting)
+				&& !this.moreFetching && !this.fetching &&
+					this.fetchMore()
+			),
+			loadMoreElement: null as Element
 		};
 	},
 
@@ -49,6 +55,21 @@ export default (opts) => ({
 		this.$on('hook:deactivated', () => {
 			this.isBackTop = window.scrollY === 0;
 		});
+	},
+
+	mounted() {
+		this.$nextTick(() => {
+			if (this.$refs.loadMore) {
+				this.loadMoreElement = this.$refs.loadMore instanceof Element ? this.$refs.loadMore : this.$refs.loadMore.$el;
+				if (this.$store.state.device.enableInfiniteScroll) this.ilObserver.observe(this.loadMoreElement);
+				this.loadMoreElement.addEventListener('click', this.fetchMore());
+			}
+		});
+	},
+
+	beforeDestroy() {
+		this.ilObserver.disconnect();
+		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click')
 	},
 
 	methods: {

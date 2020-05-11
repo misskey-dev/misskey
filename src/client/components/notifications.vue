@@ -5,12 +5,10 @@
 		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
-	<intersect @enter="() => !moreFetching && $store.state.device.enableInfiniteScroll && fetchMore()">
-		<button class="_panel _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
-		</button>
-	</intersect>
+	<button class="_panel _button" ref="loadMore" v-if="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<template v-if="moreFetching"><mk-loading inline/></template>
+	</button>
 
 	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
 
@@ -20,7 +18,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
@@ -33,8 +30,7 @@ export default Vue.extend({
 	components: {
 		XNotification,
 		XList,
-		XNote,
-		Intersect
+		XNote
 	},
 
 	mixins: [
@@ -57,7 +53,7 @@ export default Vue.extend({
 				params: () => ({
 					includeTypes: this.type ? [this.type] : undefined
 				})
-			},
+			}
 		};
 	},
 
@@ -70,6 +66,7 @@ export default Vue.extend({
 	mounted() {
 		this.connection = this.$root.stream.useSharedConnection('main');
 		this.connection.on('notification', this.onNotification);
+		console.log(this.$refs.loadMore)
 	},
 
 	beforeDestroy() {

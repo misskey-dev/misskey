@@ -23,17 +23,15 @@
 				<x-folder v-for="f in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<intersect>
-					<mk-button v-if="moreFolders">{{ $t('loadMore') }}</mk-button>
-				</intersect>
+				<mk-button ref="moreFolders" v-if="moreFolders">{{ $t('loadMore') }}</mk-button>
 			</div>
 			<div class="files" ref="filesContainer" v-if="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<intersect @enter="() => $store.state.device.enableInfiniteScroll && fetchMoreFiles()">
-					<mk-button v-if="moreFiles" @click="fetchMoreFiles">{{ $t('loadMore') }}</mk-button>
-				</intersect>
+				<template v-show="moreFiles">
+					<mk-button ref="loadMoreFiles" @click="fetchMoreFiles">{{ $t('loadMore') }}</mk-button>
+				</template>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
@@ -52,7 +50,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
-import Intersect from 'vue-intersect';
 import i18n from '../i18n';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
@@ -68,8 +65,7 @@ export default Vue.extend({
 		XFolder,
 		XFile,
 		XUploader,
-		MkButton,
-		Intersect
+		MkButton
 	},
 
 	props: {
@@ -125,6 +121,13 @@ export default Vue.extend({
 
 			fetching: true,
 
+			ilFilesObserver: new IntersectionObserver(
+				(entries) => entries.some((entry) => entry.isIntersecting)
+				&& !this.fetching && this.moreFiles &&
+					this.fetchMoreFiles()
+			),
+			moreFilesElement: null as Element,
+
 			faAngleRight
 		};
 	},
@@ -136,6 +139,14 @@ export default Vue.extend({
 	},
 
 	mounted() {
+		console.log(this.$refs.loadMoreFiles)
+		if (this.$store.state.device.enableInfiniteScroll && this.$refs.loadMoreFiles) {
+			this.$nextTick(() => {
+				console.log(this.$refs.loadMoreFiles)
+				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
+			});
+		}
+
 		this.connection = this.$root.stream.useSharedConnection('drive');
 
 		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
@@ -152,8 +163,18 @@ export default Vue.extend({
 		}
 	},
 
+	activated() {
+		if (this.$store.state.device.enableInfiniteScroll) {
+			this.$nextTick(() => {
+				console.log(this.$refs.loadMoreFiles)
+				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
+			});
+		}
+	},
+
 	beforeDestroy() {
 		this.connection.dispose();
+		this.ilFilesObserver.disconnect();
 	},
 
 	methods: {
