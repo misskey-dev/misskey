@@ -499,7 +499,7 @@ removeAllFollowingDescription: "{host}(으)로부터 모든 팔로잉을 해제�
 userSuspended: "이 계정은 정지된 상태입니다."
 userSilenced: "이 계정은 사일런스된 상태입니다."
 sidebar: "사이드바"
-divider: "분할선"
+divider: "구분선"
 addItem: "항목 추가"
 rooms: "방"
 relays: "릴레이"
