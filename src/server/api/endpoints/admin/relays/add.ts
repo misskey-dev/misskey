@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { addRelay } from '../../../../../services/relay';
-import { ApiError } from '../../../error'; 
+import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
