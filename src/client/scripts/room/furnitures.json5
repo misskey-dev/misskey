@@ -395,7 +395,7 @@
 	{
 		id: 'energy-drink',
 		place: "floor",
-	}
+	},
 	{
 		id: 'doll-Ai',
 		place: "floor",
