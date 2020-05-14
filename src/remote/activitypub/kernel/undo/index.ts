@@ -33,6 +33,8 @@ export default async (actor: IRemoteUser, activity: IUndo): Promise<void> => {
 			unblock(actor, object as IBlock);
 			break;
 		case 'Like':
+		case 'EmojiReaction':
+		case 'EmojiReact':
 			undoLike(actor, object as ILike);
 			break;
 		case 'Announce':

@@ -20,7 +20,8 @@ export interface IObject {
 	icon?: any;
 	image?: any;
 	url?: string;
-	tag?: any[];
+	href?: string;
+	tag?: IObject | IObject[];
 	sensitive?: boolean;
 }
 
@@ -50,11 +51,31 @@ export function getApId(value: string | IObject): string {
 	throw new Error(`cannot detemine id`);
 }
 
+export function getOneApHrefNullable(value: ApObject | undefined): string | undefined {
+	const firstOne = Array.isArray(value) ? value[0] : value;
+	return getApHrefNullable(firstOne);
+}
+
+export function getApHrefNullable(value: string | IObject | undefined): string | undefined {
+	if (typeof value === 'string') return value;
+	if (typeof value?.href === 'string') return value.href;
+	return undefined;
+}
+
 export interface IActivity extends IObject {
 	//type: 'Activity';
 	actor: IObject | string;
 	object: IObject | string;
 	target?: IObject | string;
+	/** LD-Signature */
+	signature?: {
+		type: string;
+		created: Date;
+		creator: string;
+		domain?: string;
+		nonce?: string;
+		signatureValue: string;
+	};
 }
 
 export interface ICollection extends IObject {
@@ -99,10 +120,10 @@ interface IQuestionChoice {
 	_misskey_votes?: number;
 }
 
-export const validActor = ['Person', 'Service', 'Group', 'Organization'];
+export const validActor = ['Person', 'Service', 'Group', 'Organization', 'Application'];
 
 export interface IPerson extends IObject {
-	type: 'Person';
+	type: 'Person' | 'Service' | 'Organization' | 'Group' | 'Application';
 	name?: string;
 	preferredUsername?: string;
 	manuallyApprovesFollowers?: boolean;
@@ -129,6 +150,45 @@ export const isOrderedCollection = (object: IObject): object is IOrderedCollecti
 
 export const isCollectionOrOrderedCollection = (object: IObject): object is ICollection | IOrderedCollection =>
 	isCollection(object) || isOrderedCollection(object);
+
+export interface IApPropertyValue extends IObject {
+	type: 'PropertyValue';
+	identifier: IApPropertyValue;
+	name: string;
+	value: string;
+}
+
+export const isPropertyValue = (object: IObject): object is IApPropertyValue =>
+	object &&
+	object.type === 'PropertyValue' &&
+	typeof object.name === 'string' &&
+	typeof (object as any).value === 'string';
+
+export interface IApMention extends IObject {
+	type: 'Mention';
+	href: string;
+}
+
+export const isMention = (object: IObject): object is IApMention =>
+	object.type === 'Mention' &&
+	typeof object.href === 'string';
+
+export interface IApHashtag extends IObject {
+	type: 'Hashtag';
+	name: string;
+}
+
+export const isHashtag = (object: IObject): object is IApHashtag =>
+	object.type === 'Hashtag' &&
+	typeof object.name === 'string';
+
+export interface IApEmoji extends IObject {
+	type: 'Emoji';
+	updated: Date;
+}
+
+export const isEmoji = (object: IObject): object is IApEmoji =>
+	object.type === 'Emoji' && !Array.isArray(object.icon) && object.icon.url != null;
 
 export interface ICreate extends IActivity {
 	type: 'Create';
@@ -171,7 +231,7 @@ export interface IRemove extends IActivity {
 }
 
 export interface ILike extends IActivity {
-	type: 'Like';
+	type: 'Like' | 'EmojiReaction' | 'EmojiReact';
 	_misskey_reaction?: string;
 }
 
@@ -181,6 +241,10 @@ export interface IAnnounce extends IActivity {
 
 export interface IBlock extends IActivity {
 	type: 'Block';
+}
+
+export interface IFlag extends IActivity {
+	type: 'Flag';
 }
 
 export const isCreate = (object: IObject): object is ICreate => object.type === 'Create';
@@ -193,6 +257,7 @@ export const isAccept = (object: IObject): object is IAccept => object.type === 
 export const isReject = (object: IObject): object is IReject => object.type === 'Reject';
 export const isAdd = (object: IObject): object is IAdd => object.type === 'Add';
 export const isRemove = (object: IObject): object is IRemove => object.type === 'Remove';
-export const isLike = (object: IObject): object is ILike => object.type === 'Like';
+export const isLike = (object: IObject): object is ILike => object.type === 'Like' || object.type === 'EmojiReaction' || object.type === 'EmojiReact';
 export const isAnnounce = (object: IObject): object is IAnnounce => object.type === 'Announce';
 export const isBlock = (object: IObject): object is IBlock => object.type === 'Block';
+export const isFlag = (object: IObject): object is IFlag => object.type === 'Flag';

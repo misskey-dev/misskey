@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
-import * as request from 'request';
+import { getJson } from '../../../misc/fetch';
 import { OAuth2 } from 'oauth';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
@@ -172,21 +172,9 @@ router.get('/gh/cb', async ctx => {
 				}
 			}));
 
-		const { login, id } = await new Promise<any>((res, rej) =>
-			request({
-				url: 'https://api.github.com/user',
-				headers: {
-					'Accept': 'application/vnd.github.v3+json',
-					'Authorization': `bearer ${accessToken}`,
-					'User-Agent': config.userAgent
-				}
-			}, (err, response, body) => {
-				if (err)
-					rej(err);
-				else
-					res(JSON.parse(body));
-			}));
-
+		const { login, id } = await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
+			'Authorization': `bearer ${accessToken}`
+		});
 		if (!login || !id) {
 			ctx.throw(400, 'invalid session');
 			return;
@@ -235,20 +223,9 @@ router.get('/gh/cb', async ctx => {
 						res({ accessToken });
 				}));
 
-		const { login, id } = await new Promise<any>((res, rej) =>
-			request({
-				url: 'https://api.github.com/user',
-				headers: {
-					'Accept': 'application/vnd.github.v3+json',
-					'Authorization': `bearer ${accessToken}`,
-					'User-Agent': config.userAgent
-				}
-			}, (err, response, body) => {
-				if (err)
-					rej(err);
-				else
-					res(JSON.parse(body));
-			}));
+		const { login, id } = await getJson('https://api.github.com/user', 'application/vnd.github.v3+json', 10 * 1000, {
+			'Authorization': `bearer ${accessToken}`
+		});
 
 		if (!login || !id) {
 			ctx.throw(400, 'invalid session');

@@ -1191,6 +1191,7 @@ admin/views/index.vue:
   moderators: "Moderators"
   users: "Users"
   federation: "Federation"
+  relays: "Relays"
   announcements: "Announcements"
   abuse: "Abuse"
   queue: "Job Queue"
@@ -1553,6 +1554,16 @@ admin/views/federation.vue:
   blocked-hosts: "Blocking"
   blocked-hosts-info: "List up the hosts delimited by line breaks that you want to block."
   save: "Save"
+admin/views/relay.vue:
+  add-relay: "Add relay"
+  inbox: "inbox URL"
+  add: "Add"
+  remove: "Remove"
+  added-relays: "Added relays"
+  status:
+    requesting: "Requesting"
+    accepted: "Accepted"
+    rejected: "Rejected"
 desktop/views/pages/welcome.vue:
   about: "More details..."
   timeline: "Timeline"

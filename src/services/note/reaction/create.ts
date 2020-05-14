@@ -1,20 +1,18 @@
 import { publishNoteStream } from '../../stream';
 import watch from '../watch';
 import renderLike from '../../../remote/activitypub/renderer/like';
-import { deliver } from '../../../queue';
+import DeliverManager from '../../../remote/activitypub/deliver-manager';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction } from '../../../misc/reaction-lib';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { User } from '../../../models/entities/user';
+import { User, IRemoteUser } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
-import { NoteReaction } from '../../../models/entities/note-reaction';
 import { createNotification } from '../../create-notification';
-import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
+import deleteReaction from './delete';
 
 export default async (user: User, note: Note, reaction?: string) => {
 	// Myself
@@ -22,8 +20,22 @@ export default async (user: User, note: Note, reaction?: string) => {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
 
-	const meta = await fetchMeta();
-	reaction = await toDbReaction(reaction, meta.enableEmojiReaction);
+	reaction = await toDbReaction(reaction);
+
+	const exist = await NoteReactions.findOne({
+		noteId: note.id,
+		userId: user.id,
+	});
+
+	if (exist) {
+		if (exist.reaction !== reaction) {
+			// 別のリアクションがすでにされていたら置き換える
+			await deleteReaction(user, note);
+		} else {
+			// 同じリアクションがすでにされていたら何もしない
+			return;
+		}
+	}
 
 	// Create reaction
 	await NoteReactions.save({
@@ -32,13 +44,6 @@ export default async (user: User, note: Note, reaction?: string) => {
 		noteId: note.id,
 		userId: user.id,
 		reaction
-	} as NoteReaction).catch(e => {
-		// duplicate key error
-		if (isDuplicateKeyValueError(e)) {
-			throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298', 'already reacted');
-		}
-
-		throw e;
 	});
 
 	// Increment reactions count
@@ -88,12 +93,15 @@ export default async (user: User, note: Note, reaction?: string) => {
 	}
 
 	//#region 配信
-	// リアクターがローカルユーザーかつリアクション対象がリモートユーザーの投稿なら配送
-	if (Users.isLocalUser(user) && note.userHost !== null) {
+	if (Users.isLocalUser(user) && !note.localOnly) {
 		const content = renderActivity(renderLike(user, note, reaction));
-		Users.findOne(note.userId).then(u => {
-			deliver(user, content, u!.inbox);
-		});
+		const dm = new DeliverManager(user, content);
+		if (note.userHost !== null) {
+			const reactee = await Users.findOne(note.userId);
+			dm.addDirectRecipe(reactee as IRemoteUser);
+		}
+		dm.addFollowersRecipe();
+		dm.execute();
 	}
 	//#endregion
 };

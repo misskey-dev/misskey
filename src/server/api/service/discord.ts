@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
-import * as request from 'request';
+import { getJson } from '../../../misc/fetch';
 import { OAuth2 } from 'oauth';
 import config from '../../../config';
 import { publishMainStream } from '../../../services/stream';
@@ -182,20 +182,9 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
-			request({
-				url: 'https://discordapp.com/api/users/@me',
-				headers: {
-					'Authorization': `Bearer ${accessToken}`,
-					'User-Agent': config.userAgent
-				}
-			}, (err, response, body) => {
-				if (err) {
-					rej(err);
-				} else {
-					res(JSON.parse(body));
-				}
-			}));
+		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+			'Authorization': `Bearer ${accessToken}`,
+		});
 
 		if (!id || !username || !discriminator) {
 			ctx.throw(400, 'invalid session');
@@ -259,21 +248,9 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await new Promise<any>((res, rej) =>
-			request({
-				url: 'https://discordapp.com/api/users/@me',
-				headers: {
-					'Authorization': `Bearer ${accessToken}`,
-					'User-Agent': config.userAgent
-				}
-			}, (err, response, body) => {
-				if (err) {
-					rej(err);
-				} else {
-					res(JSON.parse(body));
-				}
-			}));
-
+		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+			'Authorization': `Bearer ${accessToken}`,
+		});
 		if (!id || !username || !discriminator) {
 			ctx.throw(400, 'invalid session');
 			return;

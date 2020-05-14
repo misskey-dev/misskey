@@ -1319,6 +1319,7 @@ admin/views/index.vue:
   moderators: "モデレーター"
   users: "ユーザー"
   federation: "連合"
+  relays: "リレー"
   announcements: "お知らせ"
   abuse: "スパム報告"
   queue: "ジョブキュー"
@@ -1695,6 +1696,17 @@ admin/views/federation.vue:
   blocked-hosts: "ブロック"
   blocked-hosts-info: "ブロックしたいホストを改行で区切って記述します。"
   save: "保存"
+
+admin/views/relay.vue:
+  add-relay: "リレーの追加"
+  inbox: "inboxのURL"
+  add: "追加"
+  remove: "削除"
+  added-relays: "追加済みのリレー"
+  status:
+    requesting: "承認待ち"
+    accepted: "承認済み"
+    rejected: "拒否済み"
 
 desktop/views/pages/welcome.vue:
   about: "詳しく..."

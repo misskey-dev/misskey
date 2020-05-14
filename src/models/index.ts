@@ -44,6 +44,7 @@ import { PageRepository } from './repositories/page';
 import { PageLikeRepository } from './repositories/page-like';
 import { ModerationLogRepository } from './repositories/moderation-logs';
 import { UsedUsername } from './entities/used-username';
+import { RelayRepository } from './repositories/relay';
 
 export const Apps = getCustomRepository(AppRepository);
 export const Notes = getCustomRepository(NoteRepository);
@@ -90,3 +91,4 @@ export const Logs = getRepository(Log);
 export const Pages = getCustomRepository(PageRepository);
 export const PageLikes = getCustomRepository(PageLikeRepository);
 export const ModerationLogs = getCustomRepository(ModerationLogRepository);
+export const Relays = getCustomRepository(RelayRepository);

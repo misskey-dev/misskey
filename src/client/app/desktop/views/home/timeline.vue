@@ -27,7 +27,6 @@ import Vue from 'vue';
 import i18n from '../../../i18n';
 import XCore from './timeline.core.vue';
 import Menu from '../../../common/views/components/menu.vue';
-import MkSettingsWindow from '../components/settings-window.vue';
 
 export default Vue.extend({
 	i18n: i18n('desktop/views/components/timeline.vue'),
@@ -163,9 +162,7 @@ export default Vue.extend({
 				icon: 'plus',
 				text: this.$t('add-tag-timeline'),
 				action: () => {
-					this.$root.new(MkSettingsWindow, {
-						initialPage: 'hashtags'
-					});
+					this.$router.push(`/i/settings/hashtags`);
 				}
 			}];
 

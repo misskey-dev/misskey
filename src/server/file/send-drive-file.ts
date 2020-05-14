@@ -7,9 +7,9 @@ import { serverLogger } from '..';
 import { contentDisposition } from '../../misc/content-disposition';
 import { DriveFiles } from '../../models';
 import { InternalStorage } from '../../services/drive/internal-storage';
-import { downloadUrl } from '../../misc/donwload-url';
+import { downloadUrl } from '../../misc/download-url';
 import { detectType } from '../../misc/get-file-info';
-import { convertToJpeg, convertToPng } from '../../services/drive/image-processor';
+import { convertToJpeg, convertToPngOrJpeg } from '../../services/drive/image-processor';
 import { GenerateVideoThumbnail } from '../../services/drive/generate-video-thumbnail';
 
 const assets = `${__dirname}/../../server/file/assets/`;
@@ -59,7 +59,7 @@ export default async function(ctx: Koa.Context) {
 						if (['image/jpeg', 'image/webp'].includes(mime)) {
 							return await convertToJpeg(path, 498, 280);
 						} else if (['image/png'].includes(mime)) {
-							return await convertToPng(path, 498, 280);
+							return await convertToPngOrJpeg(path, 498, 280);
 						} else if (mime.startsWith('video/')) {
 							return await GenerateVideoThumbnail(path);
 						}
