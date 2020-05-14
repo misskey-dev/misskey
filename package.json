@@ -162,6 +162,7 @@
 		"koa-views": "6.2.2",
 		"langmap": "0.0.16",
 		"loader-utils": "2.0.0",
+		"lolex": "6.0.0",
 		"lookup-dns-cache": "2.1.0",
 		"mocha": "7.1.2",
 		"moji": "0.5.1",

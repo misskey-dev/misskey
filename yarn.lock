@@ -141,6 +141,13 @@
     consola "^2.10.1"
     node-fetch "^2.6.0"
 
+"@sinonjs/commons@^1.7.0":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.7.2.tgz#505f55c74e0272b43f6c52d81946bed7058fc0e2"
+  integrity sha512-+DUO6pnp3udV/v2VfUWgaY5BIE1IfT7lLfeDzPVeMT1XKkaAp9LgSI9x5RtrFQoZ9Oi0PgXQQHPaoKu7dCjVxw==
+  dependencies:
+    type-detect "4.0.8"
+
 "@tokenizer/token@^0.1.0", "@tokenizer/token@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.1.1.tgz#f0d92c12f87079ddfd1b29f614758b9696bc29e3"
@@ -6177,6 +6184,13 @@ log-symbols@3.0.0:
   dependencies:
     chalk "^2.4.2"
 
+lolex@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/lolex/-/lolex-6.0.0.tgz#790de1911da46e67e4b60c94859d19e2db0bb7e9"
+  integrity sha512-ad9IBHbfVJ3bPAotDxnCgJgKcNK5/mrRAfbJzXhY5+PEmuBWP7wyHQlA6L8TfSfPlqlDjY4K7IG6mbzsrIBx1A==
+  dependencies:
+    "@sinonjs/commons" "^1.7.0"
+
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -10146,7 +10160,7 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-detect@^4.0.0, type-detect@^4.0.5:
+type-detect@4.0.8, type-detect@^4.0.0, type-detect@^4.0.5:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
