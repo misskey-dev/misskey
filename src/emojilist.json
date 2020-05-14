@@ -1106,7 +1106,7 @@
 	{ "category": "objects", "char": "🪞", "name": "mirror", "keywords": ["household"] },
 	{ "category": "objects", "char": "🪟", "name": "window", "keywords": ["household"] },
 	{ "category": "objects", "char": "🪠", "name": "plunger", "keywords": ["household"] },
-	{ "category": "objects", "char": "🪤", "name": "mouse trap", "keywords": ["household"] },
+	{ "category": "objects", "char": "🪤", "name": "mouse_trap", "keywords": ["household"] },
 	{ "category": "objects", "char": "🪣", "name": "bucket", "keywords": ["household"] },
 	{ "category": "objects", "char": "🪥", "name": "toothbrush", "keywords": ["household"] },
 	{ "category": "objects", "char": "⛱", "name": "parasol_on_ground", "keywords": ["weather", "summer"] },
