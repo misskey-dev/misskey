@@ -22,7 +22,7 @@
 		</i18n>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
-				<fa class="dropdownIcon" :icon="faBars"/>
+				<fa class="dropdownIcon" :icon="faEllipsisH"/>
 				<mk-time :time="note.createdAt"/>
 			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">
@@ -88,7 +88,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
@@ -146,7 +146,7 @@ export default Vue.extend({
 			showContent: false,
 			hideThisNote: false,
 			noteBody: this.$refs.noteBody,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBars
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faEllipsisH
 		};
 	},
 
