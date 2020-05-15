@@ -397,7 +397,7 @@
 		place: "floor",
 	},
 	{
-		id: 'doll-Ai',
+		id: 'doll-ai',
 		place: "floor",
 	}
 ]
