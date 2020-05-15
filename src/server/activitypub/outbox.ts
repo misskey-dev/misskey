@@ -82,7 +82,6 @@ export default async (ctx: Router.RouterContext) => {
 		);
 
 		ctx.body = renderActivity(rendered);
-		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		setResponseType(ctx);
 	} else {
 		// index page
@@ -91,7 +90,7 @@ export default async (ctx: Router.RouterContext) => {
 			`${partOf}?page=true&since_id=000000000000000000000000`
 		);
 		ctx.body = renderActivity(rendered);
-		ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+		ctx.set('Cache-Control', 'public, max-age=180');
 		setResponseType(ctx);
 	}
 };
