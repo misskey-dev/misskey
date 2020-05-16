@@ -13,7 +13,6 @@
 			<mk-time :time="note.createdAt"/>
 		</router-link>
 		<span class="visibility" v-if="note.visibility !== 'public'">
-			<fa v-if="note.visibility === 'public'" :icon="faGlobe"/>
 			<fa v-if="note.visibility === 'home'" :icon="faHome"/>
 			<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
 			<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
