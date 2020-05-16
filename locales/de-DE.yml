@@ -780,6 +780,7 @@ _rooms:
     cup-noodle: "Instantnudeln"
     holo-display: "Holographischer Bildschirm"
     energy-drink: "Energy Drink"
+    doll-ai: "Ai-Puppe"
 _pages:
   newPage: "Seite erstellen"
   editPage: "Diese Seite bearbeiten"
