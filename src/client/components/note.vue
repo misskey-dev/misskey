@@ -621,7 +621,7 @@ export default Vue.extend({
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
-			if (!this.$store.getters.isSignedIn || (this.$store.state.i.id !== this.note.userId)) return;
+			if (!this.isMyRenote) return;
 			this.$root.menu({
 				items: [{
 					text: this.$t('unrenote'),
