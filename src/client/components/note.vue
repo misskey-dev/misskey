@@ -22,7 +22,7 @@
 		</i18n>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
-				<fa class="dropdownIcon" :icon="faEllipsisH"/>
+				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
 				<mk-time :time="note.createdAt"/>
 			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">
@@ -194,6 +194,10 @@ export default Vue.extend({
 
 		isMyNote(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
+		isMyRenote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
