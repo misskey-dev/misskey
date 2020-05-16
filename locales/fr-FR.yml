@@ -553,7 +553,7 @@ _tutorial:
   step5_1: "Maintenant, essayons de nous abonner à d’autres personnes afin de rendre votre fil plus vivant."
   step5_2: "{featured} affiche les notes en tendance sur cette instance. {explore} vous permet de trouver les utilisateur·rice·s en tendance. Essayez de vous abonner aux gens que vous aimez !"
   step5_3: "Pour pouvoir suivre d’autres utilisateur·rice, cliquez sur leur avatar afin d’afficher la page du profil utilisateur ensuite appuyez sur le bouton « S’abonner »."
-  step5_4: "Selon l'utilisateur, il peut s'écouler un certain temps avant que la abonner ne soit approuvé."
+  step5_4: "Si l’autre utilisateur possède une icône sous forme d’un cadenas à côté de son nom, il devra accepter votre demande d’abonnement manuellement."
   step6_1: "Si vous voyez la notes d'un autre utilisateur sur fil d'actualité, c'était réussi."
   step6_2: "Vous pouvez ajouter des \"réactions\" aux notes des autres afin de pouvoir facilement dire votre émotion."
   step6_3: "Pour ajouter une réaction, cliquez sur la marque \"+\" sur la note et sélectionnez la réaction souhaitée."
