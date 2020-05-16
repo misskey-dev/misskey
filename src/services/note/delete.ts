@@ -60,6 +60,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			if (!Users.isLocalUser(cascadingNote.user)) continue;
 			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
 			deliverToFollowers(cascadingNote.user, content);
+			deliverToRelays(cascadingNote.user, content);
 		}
 		//#endregion
 
