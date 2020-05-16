@@ -12,6 +12,7 @@ import renderDelete from '../../remote/activitypub/renderer/delete';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import config from '../../config';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
+import { Brackets } from 'typeorm';
 
 export async function deleteFile(file: DriveFile, isExpired = false) {
 	if (file.storedInternal) {
@@ -145,6 +146,10 @@ async function findCascadingNotes(note: Note) {
 	const recursive = async (noteId: string) => {
 		const query = Notes.createQueryBuilder('note')
 			.where('note.replyId = :noteId', { noteId })
+			.orWhere(new Brackets(q => {
+				q.where('note.renoteId = :noteId', { noteId })
+				.andWhere('note.text IS NOT NULL');
+			}))
 			.leftJoinAndSelect('note.user', 'user');
 		const replies = await query.getMany();
 		for (const reply of replies) {

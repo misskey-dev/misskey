@@ -13,6 +13,7 @@ import { notesChart, perUserNotesChart, instanceChart } from '../chart';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 import { countSameRenotes } from '../../misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
+import { Brackets } from 'typeorm';
 
 /**
  * 投稿を削除します。
@@ -86,6 +87,10 @@ async function findCascadingNotes(note: Note) {
 	const recursive = async (noteId: string) => {
 		const query = Notes.createQueryBuilder('note')
 			.where('note.replyId = :noteId', { noteId })
+			.orWhere(new Brackets(q => {
+				q.where('note.renoteId = :noteId', { noteId })
+				.andWhere('note.text IS NOT NULL');
+			}))
 			.leftJoinAndSelect('note.user', 'user');
 		const replies = await query.getMany();
 		for (const reply of replies) {
