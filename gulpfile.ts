@@ -5,7 +5,6 @@
 import * as fs from 'fs';
 import * as gulp from 'gulp';
 import * as ts from 'gulp-typescript';
-import * as mocha from 'gulp-mocha';
 import * as rimraf from 'rimraf';
 import * as rename from 'gulp-rename';
 const cleanCSS = require('gulp-clean-css');
@@ -39,7 +38,11 @@ gulp.task('build:copy:locales', cb => {
 	cb();
 });
 
-gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:locales', () =>
+gulp.task('build:copy:fonts', () =>
+	gulp.src('./node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/client/assets/fonts/'))
+);
+
+gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:locales', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/emojilist.json',
 		'./src/server/web/views/**/*',
@@ -92,15 +95,5 @@ gulp.task('build', gulp.parallel(
 	'build:copy',
 	'build:client',
 ));
-
-gulp.task('mocha', () =>
-	gulp.src('./test/**/*.ts')
-		.pipe(mocha({
-			exit: true,
-			require: 'ts-node/register'
-		} as any))
-);
-
-gulp.task('test', gulp.task('mocha'));
 
 gulp.task('default', gulp.task('build'));

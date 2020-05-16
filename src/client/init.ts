@@ -146,7 +146,7 @@ os.init(async () => {
 		} else if (e.key === 'i') {
 			location.reload();
 		}
-	}, false)
+	}, false);
 
 	store.watch(state => state.device.darkMode, darkMode => {
 		import('./theme').then(({ builtinThemes }) => {

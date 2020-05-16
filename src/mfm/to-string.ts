@@ -39,7 +39,9 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 		},
 
 		spin(token, opts) {
-			return `<spin>${appendChildren(token.children, opts)}</spin>`;
+			const attr = token.node.props?.attr;
+			const post = attr ? ` ${attr}` : '';
+			return `<spin${post}>${appendChildren(token.children, opts)}</spin>`;
 		},
 
 		jump(token, opts) {
@@ -79,7 +81,11 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 		},
 
 		link(token, opts) {
-			return `[${appendChildren(token.children, opts)}](${token.node.props.url})`;
+			if (token.node.props.silent) {
+				return `?[${appendChildren(token.children, opts)}](${token.node.props.url})`;
+			} else {
+				return `[${appendChildren(token.children, opts)}](${token.node.props.url})`;
+			}
 		},
 
 		mention(token) {

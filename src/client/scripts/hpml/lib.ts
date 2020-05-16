@@ -5,14 +5,14 @@ import { values, utils } from '@syuilo/aiscript';
 
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
 Chart.pluginService.register({
-	beforeDraw: function (chart, easing) {
-			if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
-					const ctx = chart.chart.ctx;
-					ctx.save();
-					ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
-					ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-					ctx.restore();
-			}
+	beforeDraw: (chart, easing) => {
+		if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+			const ctx = chart.chart.ctx;
+			ctx.save();
+			ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+			ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+			ctx.restore();
+		}
 	}
 });
 
@@ -26,23 +26,23 @@ export function initLib(hpml: Hpml) {
 			const canvas = hpml.canvases[id.value];
 			const ctx = canvas.getContext('2d');
 			return values.OBJ(new Map([
-				['clear_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.clearRect(x.value, y.value, width.value, height.value) })],
-				['fill_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.fillRect(x.value, y.value, width.value, height.value) })],
-				['stroke_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.strokeRect(x.value, y.value, width.value, height.value) })],
-				['fill_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.fillText(text.value, x.value, y.value, width ? width.value : undefined) })],
-				['stroke_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.strokeText(text.value, x.value, y.value, width ? width.value : undefined) })],
-				['set_line_width', values.FN_NATIVE(([width]) => { ctx.lineWidth = width.value })],
-				['set_font', values.FN_NATIVE(([font]) => { ctx.font = font.value })],
-				['set_fill_style', values.FN_NATIVE(([style]) => { ctx.fillStyle = style.value })],
-				['set_stroke_style', values.FN_NATIVE(([style]) => { ctx.strokeStyle = style.value })],
-				['begin_path', values.FN_NATIVE(() => { ctx.beginPath() })],
-				['close_path', values.FN_NATIVE(() => { ctx.closePath() })],
-				['move_to', values.FN_NATIVE(([x, y]) => { ctx.moveTo(x.value, y.value) })],
-				['line_to', values.FN_NATIVE(([x, y]) => { ctx.lineTo(x.value, y.value) })],
-				['arc', values.FN_NATIVE(([x, y, radius, startAngle, endAngle]) => { ctx.arc(x.value, y.value, radius.value, startAngle.value, endAngle.value) })],
-				['rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.rect(x.value, y.value, width.value, height.value) })],
-				['fill', values.FN_NATIVE(() => { ctx.fill() })],
-				['stroke', values.FN_NATIVE(() => { ctx.stroke() })],
+				['clear_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.clearRect(x.value, y.value, width.value, height.value); })],
+				['fill_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.fillRect(x.value, y.value, width.value, height.value); })],
+				['stroke_rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.strokeRect(x.value, y.value, width.value, height.value); })],
+				['fill_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.fillText(text.value, x.value, y.value, width ? width.value : undefined); })],
+				['stroke_text', values.FN_NATIVE(([text, x, y, width]) => { ctx.strokeText(text.value, x.value, y.value, width ? width.value : undefined); })],
+				['set_line_width', values.FN_NATIVE(([width]) => { ctx.lineWidth = width.value; })],
+				['set_font', values.FN_NATIVE(([font]) => { ctx.font = font.value; })],
+				['set_fill_style', values.FN_NATIVE(([style]) => { ctx.fillStyle = style.value; })],
+				['set_stroke_style', values.FN_NATIVE(([style]) => { ctx.strokeStyle = style.value; })],
+				['begin_path', values.FN_NATIVE(() => { ctx.beginPath(); })],
+				['close_path', values.FN_NATIVE(() => { ctx.closePath(); })],
+				['move_to', values.FN_NATIVE(([x, y]) => { ctx.moveTo(x.value, y.value); })],
+				['line_to', values.FN_NATIVE(([x, y]) => { ctx.lineTo(x.value, y.value); })],
+				['arc', values.FN_NATIVE(([x, y, radius, startAngle, endAngle]) => { ctx.arc(x.value, y.value, radius.value, startAngle.value, endAngle.value); })],
+				['rect', values.FN_NATIVE(([x, y, width, height]) => { ctx.rect(x.value, y.value, width.value, height.value); })],
+				['fill', values.FN_NATIVE(() => { ctx.fill(); })],
+				['stroke', values.FN_NATIVE(() => { ctx.stroke(); })],
 			]));
 		}),
 		'MkPages:chart': values.FN_NATIVE(([id, opts]) => {

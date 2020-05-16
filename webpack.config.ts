@@ -4,10 +4,7 @@
 
 import * as fs from 'fs';
 import * as webpack from 'webpack';
-import * as chalk from 'chalk';
 const { VueLoaderPlugin } = require('vue-loader');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 
 class WebpackOnBuildPlugin {
 	constructor(readonly callback: (stats: any) => void) {
@@ -52,7 +49,7 @@ module.exports = {
 					}
 				}
 			}, {
-				loader: 'vue-svg-inline-loader'
+				loader: 'vue-svg-inline-loader-corejs3'
 			}]
 		}, {
 			test: /\.scss?$/,
@@ -102,7 +99,11 @@ module.exports = {
 			loader: 'url-loader'
 		}, {
 			test: /\.json5$/,
-			loader: 'json5-loader'
+			loader: 'json5-loader',
+			options: {
+				esModule: false,
+			},
+			type: 'javascript/auto'
 		}, {
 			test: /\.ts$/,
 			exclude: /node_modules/,
@@ -118,10 +119,7 @@ module.exports = {
 		}]
 	},
 	plugins: [
-		new ProgressBarPlugin({
-			format: chalk`  {cyan.bold Yes we can} {bold [}:bar{bold ]} {green.bold :percent} {gray :elapseds}`,
-			clear: false
-		}),
+		new webpack.ProgressPlugin({}),
 		new webpack.DefinePlugin({
 			_VERSION_: JSON.stringify(meta.version),
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]: [string, any]) => [k, v._lang_])),
@@ -135,7 +133,6 @@ module.exports = {
 	output: {
 		path: __dirname + '/built/client/assets',
 		filename: `[name].${meta.version}.js`,
-		chunkFilename: '[fullhash].[id].js',
 		publicPath: `/assets/`
 	},
 	resolve: {
@@ -148,12 +145,6 @@ module.exports = {
 	},
 	resolveLoader: {
 		modules: ['node_modules']
-	},
-	externals: {
-		moment: 'moment'
-	},
-	optimization: {
-		minimizer: [new TerserPlugin()]
 	},
 	cache: false,
 	devtool: false, //'source-map',

@@ -15,6 +15,7 @@
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
+			<button class="_button localOnly" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }"><fa :icon="faBiohazard"/></button>
 			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
@@ -39,11 +40,10 @@
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom"><fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll" :class="{ active: poll }"><fa :icon="faChartPie"/></button>
+			<button class="_button" @click="poll = !poll" :class="{ active: poll }"><fa :icon="faPollH"/></button>
 			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }"><fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="insertMention"><fa :icon="faAt"/></button>
 			<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
-			<button class="_button" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }"><fa :icon="faBiohazard"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
@@ -135,7 +135,7 @@ export default Vue.extend({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
+			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
 		};
 	},
 
@@ -626,6 +626,20 @@ export default Vue.extend({
 				height: 34px;
 				width: 34px;
 				margin: 0 8px;
+
+				& + .localOnly {
+					margin-left: 0 !important;
+				}
+			}
+
+			> .localOnly {
+				height: 34px;
+				width: 34px;
+				margin: 0 8px;
+
+				&.active {
+					color: var(--accent);
+				}
 			}
 
 			> .submit {
