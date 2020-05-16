@@ -12,23 +12,20 @@
 		<router-link class="created-at" :to="note | notePage">
 			<mk-time :time="note.createdAt"/>
 		</router-link>
-		<span class="visibility">
-			<template v-if="note.localOnly">
-				<fa :icon="faBiohazard"/>
-				&nbsp;
-			</template>
-			<fa v-if="note.visibility == 'public'" :icon="faGlobe"/>
-			<fa v-if="note.visibility == 'home'" :icon="faHome"/>
-			<fa v-if="note.visibility == 'followers'" :icon="faUnlock"/>
-			<fa v-if="note.visibility == 'specified'" :icon="faEnvelope"/>
+		<span class="visibility" v-if="note.visibility !== 'public'">
+			<fa v-if="note.visibility === 'public'" :icon="faGlobe"/>
+			<fa v-if="note.visibility === 'home'" :icon="faHome"/>
+			<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
+			<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
 		</span>
+		<span class="localOnly" v-if="note.localOnly"><fa :icon="faBiohazard"/></span>
 	</div>
 </header>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 
 export default Vue.extend({
@@ -41,7 +38,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark, faBiohazard, faGlobe
+			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark, faBiohazard
 		};
 	}
 });
@@ -100,6 +97,10 @@ export default Vue.extend({
 		}
 
 		> .visibility {
+			margin-left: 8px;
+		}
+
+		> .localOnly {
 			margin-left: 8px;
 		}
 	}
