@@ -21,12 +21,11 @@
 			</router-link>
 		</i18n>
 		<div class="info">
-		  <button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
+			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
 				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
 				<mk-time :time="note.createdAt"/>
 			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">
-				<fa v-if="note.visibility === 'public'" :icon="faGlobe"/>
 				<fa v-if="note.visibility === 'home'" :icon="faHome"/>
 				<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
 				<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
