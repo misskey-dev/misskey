@@ -780,6 +780,8 @@ _rooms:
     cup-noodle: "컵라면"
     holo-display: "홀로그램"
     energy-drink: "에너지 드링크"
+    doll-ai: "아이쨩 인형"
+    banknote: "지폐뭉치"
 _pages:
   newPage: "페이지 만들기"
   editPage: "페이지 수정"
