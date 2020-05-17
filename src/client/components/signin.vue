@@ -51,7 +51,7 @@ import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import i18n from '../i18n';
 import { apiUrl, host } from '../config';
-import { hexifyAB } from '../scripts/2fa';
+import { byteify, hexify } from '../scripts/2fa';
 
 export default Vue.extend({
 	i18n,
@@ -121,14 +121,9 @@ export default Vue.extend({
 			this.queryingKey = true;
 			return navigator.credentials.get({
 				publicKey: {
-					challenge: Buffer.from(
-						this.challengeData.challenge
-							.replace(/\-/g, '+')
-							.replace(/_/g, '/'),
-							'base64'
-					),
+					challenge: byteify(this.challengeData.challenge, 'base64'),
 					allowCredentials: this.challengeData.securityKeys.map(key => ({
-						id: Buffer.from(key.id, 'hex'),
+						id: byteify(key.id, 'hex'),
 						type: 'public-key',
 						transports: ['usb', 'nfc', 'ble', 'internal']
 					})),
@@ -143,9 +138,9 @@ export default Vue.extend({
 				return this.$root.api('signin', {
 					username: this.username,
 					password: this.password,
-					signature: hexifyAB(credential.response.signature),
-					authenticatorData: hexifyAB(credential.response.authenticatorData),
-					clientDataJSON: hexifyAB(credential.response.clientDataJSON),
+					signature: hexify(credential.response.signature),
+					authenticatorData: hexify(credential.response.authenticatorData),
+					clientDataJSON: hexify(credential.response.clientDataJSON),
 					credentialId: credential.id,
 					challengeId: this.challengeData.challengeId
 				});

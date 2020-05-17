@@ -48,7 +48,7 @@ export default async (user: User, note: Note) => {
 		const content = renderActivity(renderUndo(await renderLike(exist, note), user));
 		const dm = new DeliverManager(user, content);
 		if (note.userHost !== null) {
-			const reactee = await Users.findOne(note.userId)
+			const reactee = await Users.findOne(note.userId);
 			dm.addDirectRecipe(reactee as IRemoteUser);
 		}
 		dm.addFollowersRecipe();

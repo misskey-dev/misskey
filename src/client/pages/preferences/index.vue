@@ -7,6 +7,8 @@
 
 	<x-theme/>
 
+	<x-sidebar/>
+
 	<section class="_card">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
@@ -90,13 +92,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
-import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkRadio from '../../components/ui/radio.vue';
 import MkRange from '../../components/ui/range.vue';
 import XTheme from './theme.vue';
+import XSidebar from './sidebar.vue';
 import i18n from '../../i18n';
 import { langs } from '../../config';
 
@@ -128,7 +130,7 @@ export default Vue.extend({
 
 	components: {
 		XTheme,
-		MkInput,
+		XSidebar,
 		MkButton,
 		MkSwitch,
 		MkSelect,

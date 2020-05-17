@@ -4,7 +4,7 @@
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
 <div v-else-if="tweetUrl && detail" class="twitter">
-	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkmode ? 'dark' : null">
+	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkMode ? 'dark' : null">
 		<a :href="url"></a>
 	</blockquote>
 </div>

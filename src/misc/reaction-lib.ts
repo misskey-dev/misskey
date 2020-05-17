@@ -78,7 +78,7 @@ export async function toDbReaction(reaction?: string | null, reacterHost?: strin
 			name,
 		});
 
-		if (emoji) return reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`
+		if (emoji) return reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 	}
 
 	return await getFallbackReaction();

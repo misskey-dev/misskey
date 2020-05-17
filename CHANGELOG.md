@@ -1,6 +1,57 @@
 ChangeLog
 =========
 
+12.37.0 (2020/5/10)
+-------------------
+### ✨Improvements
+* Node.js v14をサポート [#6294](https://github.com/syuilo/misskey/pull/6294)
+* 依存パッケージを最新に [#6297](https://github.com/syuilo/misskey/pull/6297)
+* nginxサンプルのSSL/TLS設定の変更 [#6298](https://github.com/syuilo/misskey/pull/6298)
+* DockerイメージでPostgreSQL v12・Node.js v14を使用するように [2bb0a61](https://github.com/syuilo/misskey/commit/2bb0a61a891445df4d78bfc0d4a64551ac9b7a39), [808c680](https://github.com/syuilo/misskey/commit/808c6801843b9e10fa575f5f7fbd3a4a3a80252a)
+* hCaptchaサポート
+* サイドバーカスタマイズ機能
+* LD-Signatureの検証に対応 [#6300](https://github.com/syuilo/misskey/pull/6300)
+* リモートからの通報の受信に対応 [#6331](https://github.com/syuilo/misskey/pull/6331)
+* Misskey Rooms復活
+* ノートへの返信を再帰的に表示するように(threaded replies)
+* pub-relay [#6341](https://github.com/syuilo/misskey/pull/6341)
+
+### 🐛Fixes
+* CatだとMFMでURLプレビューを隠しても表示される問題を修正 [7d7c206](https://github.com/syuilo/misskey/commit/7d7c206f245387d32283fbb4e82bd9d526427936)
+* アップロードプログレスバーが動かないのを修正 [#6307](https://github.com/syuilo/misskey/pull/6307)
+* WebAuthnでログインできないのを修正 [#6327](https://github.com/syuilo/misskey/pull/6327)
+* あなた宛て/メッセージで個々のノートが展開されるのを修正
+* アンケートへの投票通知が正しく表示されない問題を修正
+
+12.36.1 (2020/4/23)
+-------------------
+### 🐛Fixes
+* Pagesのifブロックが機能しない [2ee5835](https://github.com/syuilo/misskey/commit/2ee583518608333312caa4c4303a74835b087069)
+* AiScriptのアップデート
+
+12.36.0 (2020/4/22)
+-------------------
+### ✨Improvements
+* ドライブの画面を広く [1f99816](https://github.com/syuilo/misskey/commit/1f998168e2f6ff94d0119fe5f95ad03b47d19d60)
+* ドライブのデフォルトのアップロード先フォルダを設定できるように [1f99816](https://github.com/syuilo/misskey/commit/1f998168e2f6ff94d0119fe5f95ad03b47d19d60)
+* AiScriptのアップデート
+* Webpackを5に [e72011f](https://github.com/syuilo/misskey/commit/e72011f1dafc11ea70dd60b653d25b0e48832cce)
+
+### 🐛Fixes
+* WebUIでアンテナを保存するとexcludeKeywordsに空文字列が入るせいで動かない [5a9530c](https://github.com/syuilo/misskey/commit/5a9530ccd4249cf37d50769015adbffba34014ab)
+* 管理画面のカスタム絵文字でカテゴリが空だと更新できない [0df3e22](https://github.com/syuilo/misskey/commit/0df3e22e519d854c88ae8f5eabdc8eee4b18aeed)
+
+12.35.2 (2020/4/19)
+-------------------
+### ✨Improvements
+* Pagesの環境変数を調整 [0a1b83c](https://github.com/syuilo/misskey/commit/0a1b83c70fc546d7514176a220e1381ecc0b13ec)
+* Pagesのチャートを調整 [f704e7a](https://github.com/syuilo/misskey/commit/f704e7a6025cb3f8ec7e474df70de1b171722bde)
+* AiScriptのアップデート
+* デザインの調整
+
+### 🐛Fixes
+* 画像のみのノートができない問題を修正 [8cefcaa](https://github.com/syuilo/misskey/commit/8cefcaa55f86e03f3965c5cb419787778681c269)
+
 12.35.1 (2020/4/19)
 -------------------
 ### 🐛Fixes

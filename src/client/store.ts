@@ -1,9 +1,11 @@
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
+import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { apiUrl } from './config';
 
-const defaultSettings = {
+export const defaultSettings = {
 	tutorial: 0,
 	keepCw: false,
 	showFullAcct: false,
@@ -16,16 +18,27 @@ const defaultSettings = {
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 };
 
-const defaultDeviceUserSettings = {
+export const defaultDeviceUserSettings = {
 	visibility: 'public',
 	localOnly: false,
 	widgets: [],
 	tl: {
 		src: 'home'
 	},
+	menu: [
+		'notifications',
+		'messaging',
+		'drive',
+		'-',
+		'followRequests',
+		'featured',
+		'explore',
+		'announcements',
+		'search',
+	],
 };
 
-const defaultDeviceSettings = {
+export const defaultDeviceSettings = {
 	lang: null,
 	loadRawImages: false,
 	alwaysShowNsfw: false,
@@ -43,6 +56,8 @@ const defaultDeviceSettings = {
 	imageNewTab: false,
 	showFixedPostForm: false,
 	disablePagesScript: true,
+	roomGraphicsQuality: 'medium',
+	roomUseOrthographicCamera: true,
 	sfxVolume: 0.3,
 	sfxNote: 'syuilo/down',
 	sfxNoteMy: 'syuilo/up',
@@ -70,6 +85,117 @@ export default () => new Vuex.Store({
 
 	getters: {
 		isSignedIn: state => state.i != null,
+
+		nav: (state, getters) => actions => ({
+			notifications: {
+				title: 'notifications',
+				icon: faBell,
+				get show() { return getters.isSignedIn; },
+				get indicated() { return getters.isSignedIn && state.i.hasUnreadNotification; },
+				to: '/my/notifications',
+			},
+			messaging: {
+				title: 'messaging',
+				icon: faComments,
+				get show() { return getters.isSignedIn; },
+				get indicated() { return getters.isSignedIn && state.i.hasUnreadMessagingMessage; },
+				to: '/my/messaging',
+			},
+			drive: {
+				title: 'drive',
+				icon: faCloud,
+				get show() { return getters.isSignedIn; },
+				to: '/my/drive',
+			},
+			followRequests: {
+				title: 'followRequests',
+				icon: faUserClock,
+				get show() { return getters.isSignedIn && state.i.isLocked; },
+				get indicated() { return getters.isSignedIn && state.i.hasPendingReceivedFollowRequest; },
+				to: '/my/follow-requests',
+			},
+			featured: {
+				title: 'featured',
+				icon: faFireAlt,
+				to: '/featured',
+			},
+			explore: {
+				title: 'explore',
+				icon: faHashtag,
+				to: '/explore',
+			},
+			announcements: {
+				title: 'announcements',
+				icon: faBroadcastTower,
+				get indicated() { return getters.isSignedIn && state.i.hasUnreadAnnouncement; },
+				to: '/announcements',
+			},
+			search: {
+				title: 'search',
+				icon: faSearch,
+				action: () => actions.search(),
+			},
+			lists: {
+				title: 'lists',
+				icon: faListUl,
+				get show() { return getters.isSignedIn; },
+				to: '/my/lists',
+			},
+			groups: {
+				title: 'groups',
+				icon: faUsers,
+				get show() { return getters.isSignedIn; },
+				to: '/my/groups',
+			},
+			antennas: {
+				title: 'antennas',
+				icon: faSatellite,
+				get show() { return getters.isSignedIn; },
+				to: '/my/antennas',
+			},
+			mentions: {
+				title: 'mentions',
+				icon: faAt,
+				get show() { return getters.isSignedIn; },
+				get indicated() { return getters.isSignedIn && state.i.hasUnreadMentions; },
+				to: '/my/mentions',
+			},
+			messages: {
+				title: 'directNotes',
+				icon: faEnvelope,
+				get show() { return getters.isSignedIn; },
+				get indicated() { return getters.isSignedIn && state.i.hasUnreadSpecifiedNotes; },
+				to: '/my/messages',
+			},
+			favorites: {
+				title: 'favorites',
+				icon: faStar,
+				get show() { return getters.isSignedIn; },
+				to: '/my/favorites',
+			},
+			pages: {
+				title: 'pages',
+				icon: faFileAlt,
+				get show() { return getters.isSignedIn; },
+				to: '/my/pages',
+			},
+			games: {
+				title: 'games',
+				icon: faGamepad,
+				to: '/games',
+			},
+			scratchpad: {
+				title: 'scratchpad',
+				icon: faTerminal,
+				to: '/scratchpad',
+			},
+			rooms: {
+				title: 'rooms',
+				icon: faDoorClosed,
+				get show() { return getters.isSignedIn; },
+				get to() { return `/@${state.i.username}/room`; },
+			},
+		}),
 	},
 
 	mutations: {
@@ -235,6 +361,10 @@ export default () => new Vuex.Store({
 						src: x.src,
 						arg: x.arg
 					};
+				},
+
+				setMenu(state, menu) {
+					state.menu = menu;
 				},
 
 				setVisibility(state, visibility) {

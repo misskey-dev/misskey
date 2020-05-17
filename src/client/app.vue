@@ -49,44 +49,20 @@
 				<router-link class="item index" active-class="active" to="/" exact v-else>
 					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 				</router-link>
-				<template v-if="$store.getters.isSignedIn">
-					<router-link class="item notifications" active-class="active" to="/my/notifications" ref="notificationButton">
-						<fa :icon="faBell" fixed-width/><span class="text">{{ $t('notifications') }}</span>
-						<i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i>
-					</router-link>
-					<router-link class="item" active-class="active" to="/my/messaging">
-						<fa :icon="faComments" fixed-width/><span class="text">{{ $t('messaging') }}</span>
-						<i v-if="$store.state.i.hasUnreadMessagingMessage"><fa :icon="faCircle"/></i>
-					</router-link>
-					<router-link class="item" active-class="active" to="/my/drive">
-						<fa :icon="faCloud" fixed-width/><span class="text">{{ $t('drive') }}</span>
-					</router-link>
-					<router-link class="item" active-class="active" to="/my/follow-requests" v-if="$store.state.i.isLocked">
-						<fa :icon="faUserClock" fixed-width/><span class="text">{{ $t('followRequests') }}</span>
-						<i v-if="$store.state.i.hasPendingReceivedFollowRequest"><fa :icon="faCircle"/></i>
-					</router-link>
+				<template v-for="item in menu">
+					<div v-if="item === '-'" class="divider"></div>
+					<component v-else-if="menuDef[item].show !== false" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" @click="() => { if (menuDef[item].action) menuDef[item].action() }" :to="menuDef[item].to">
+						<fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
+						<i v-if="menuDef[item].indicated"><fa :icon="faCircle"/></i>
+					</component>
 				</template>
-				<div class="divider"></div>
-				<router-link class="item" active-class="active" to="/featured">
-					<fa :icon="faFireAlt" fixed-width/><span class="text">{{ $t('featured') }}</span>
-				</router-link>
-				<router-link class="item" active-class="active" to="/explore">
-					<fa :icon="faHashtag" fixed-width/><span class="text">{{ $t('explore') }}</span>
-				</router-link>
-				<router-link class="item" active-class="active" to="/announcements">
-					<fa :icon="faBroadcastTower" fixed-width/><span class="text">{{ $t('announcements') }}</span>
-					<i v-if="$store.getters.isSignedIn && $store.state.i.hasUnreadAnnouncement"><fa :icon="faCircle"/></i>
-				</router-link>
-				<button class="item _button" @click="search()">
-					<fa :icon="faSearch" fixed-width/><span class="text">{{ $t('search') }}</span>
-				</button>
 				<div class="divider"></div>
 				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
 					<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
 				</button>
 				<button class="item _button" @click="more">
 					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
-					<i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadMentions || $store.state.i.hasUnreadSpecifiedNotes)"><fa :icon="faCircle"/></i>
+					<i v-if="otherNavItemIndicated"><fa :icon="faCircle"/></i>
 				</button>
 				<router-link class="item" active-class="active" to="/preferences">
 					<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
@@ -141,10 +117,10 @@
 	</div>
 
 	<div class="buttons">
-		<button class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="$store.getters.isSignedIn && ($store.state.i.hasUnreadSpecifiedNotes || $store.state.i.hasPendingReceivedFollowRequest || $store.state.i.hasUnreadMessagingMessage || $store.state.i.hasUnreadAnnouncement)"><fa :icon="faCircle"/></i></button>
+		<button class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
-		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')" ref="notificationButton2"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
 
@@ -156,7 +132,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTerminal, faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faGamepad, faServer, faFileAlt, faSatellite, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
@@ -187,10 +163,13 @@ export default Vue.extend({
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
+			menuDef: this.$store.getters.nav({
+				search: this.search
+			}),
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer
+			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
 	},
 
@@ -206,6 +185,29 @@ export default Vue.extend({
 
 		widgets(): any[] {
 			return this.$store.state.deviceUser.widgets;
+		},
+
+		menu(): string[] {
+			return this.$store.state.deviceUser.menu;
+		},
+
+		otherNavItemIndicated(): boolean {
+			if (!this.$store.getters.isSignedIn) return false;
+			for (const def in this.menuDef) {
+				if (this.menu.includes(def)) continue;
+				if (this.menuDef[def].indicated) return true;
+			}
+			return false;
+		},
+
+		navIndicated(): boolean {
+			if (!this.$store.getters.isSignedIn) return false;
+			for (const def in this.menuDef) {
+				if (def === 'timeline') continue;
+				if (def === 'notifications') continue;
+				if (this.menuDef[def].indicated) return true;
+			}
+			return false;
 		}
 	},
 
@@ -413,6 +415,11 @@ export default Vue.extend({
 					icon: faGlobe,
 				}, {
 					type: 'link',
+					text: this.$t('relays'),
+					to: '/instance/relays',
+					icon: faProjectDiagram,
+				}, {
+					type: 'link',
 					text: this.$t('announcements'),
 					to: '/instance/announcements',
 					icon: faBroadcastTower,
@@ -425,55 +432,16 @@ export default Vue.extend({
 		},
 
 		more(ev) {
+			const items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
+				type: def.to ? 'link' : 'button',
+				text: this.$t(def.title),
+				icon: def.icon,
+				to: def.to,
+				action: def.action,
+				indicate: def.indicated,
+			}));
 			this.$root.menu({
-				items: [...(this.$store.getters.isSignedIn ? [{
-					type: 'link',
-					text: this.$t('lists'),
-					to: '/my/lists',
-					icon: faListUl,
-				}, {
-					type: 'link',
-					text: this.$t('groups'),
-					to: '/my/groups',
-					icon: faUsers,
-				}, {
-					type: 'link',
-					text: this.$t('antennas'),
-					to: '/my/antennas',
-					icon: faSatellite,
-				}, {
-					type: 'link',
-					text: this.$t('mentions'),
-					to: '/my/mentions',
-					icon: faAt,
-					indicate: this.$store.state.i.hasUnreadMentions
-				}, {
-					type: 'link',
-					text: this.$t('directNotes'),
-					to: '/my/messages',
-					icon: faEnvelope,
-					indicate: this.$store.state.i.hasUnreadSpecifiedNotes
-				}, {
-					type: 'link',
-					text: this.$t('favorites'),
-					to: '/my/favorites',
-					icon: faStar,
-				}, {
-					type: 'link',
-					text: this.$t('pages'),
-					to: '/my/pages',
-					icon: faFileAlt,
-				}, {
-					type: 'link',
-					text: this.$t('games'),
-					to: '/games',
-					icon: faGamepad,
-				}, null] : []), {
-					type: 'link',
-					text: this.$t('scratchpad'),
-					to: '/scratchpad',
-					icon: faTerminal,
-				}, null, {
+				items: [...items, null, {
 					type: 'link',
 					text: this.$t('help'),
 					to: '/docs',
