@@ -802,6 +802,7 @@ _rooms:
     holo-display: "ホログラフィックディスプレイ"
     energy-drink: "エナジードリンク"
     doll-ai: "藍ちゃん人形"
+    banknote: "札束"
 
 _pages:
   newPage: "ページの作成"

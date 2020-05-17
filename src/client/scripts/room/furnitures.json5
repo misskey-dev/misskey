@@ -399,5 +399,9 @@
 	{
 		id: 'doll-ai',
 		place: "floor",
-	}
+	},
+	{
+		id: 'banknote',
+		place: "floor",
+	},
 ]
