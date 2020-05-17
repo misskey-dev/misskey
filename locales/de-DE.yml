@@ -781,6 +781,7 @@ _rooms:
     holo-display: "Holographischer Bildschirm"
     energy-drink: "Energy Drink"
     doll-ai: "Ai-Puppe"
+    banknote: "Geldscheine"
 _pages:
   newPage: "Seite erstellen"
   editPage: "Diese Seite bearbeiten"
