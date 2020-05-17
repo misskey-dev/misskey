@@ -780,6 +780,8 @@ _rooms:
     cup-noodle: "Cup noodle"
     holo-display: "Holographic display"
     energy-drink: "Energy drink"
+    doll-ai: "Ai doll"
+    banknote: "Pile of money"
 _pages:
   newPage: "Create a page"
   editPage: "Edit this page"
