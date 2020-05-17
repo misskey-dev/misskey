@@ -781,6 +781,7 @@ _rooms:
     holo-display: "全息显示器"
     energy-drink: "能量饮料"
     doll-ai: "小蓝的玩偶"
+    banknote: "钞票"
 _pages:
   newPage: "创建页面"
   editPage: "编辑页面"
