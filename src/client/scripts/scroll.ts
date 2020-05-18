@@ -23,5 +23,10 @@ export function onScrollTop(el: Element, cb) {
 			container.removeEventListener('scroll', onscroll);
 		}
 	};
+
 	container.addEventListener('scroll', onScroll, { passive: true });
+
+	return {
+		remove: () => container.removeEventListener('scroll', onscroll)
+	};
 }

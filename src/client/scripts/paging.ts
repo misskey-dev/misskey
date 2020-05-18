@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { getScrollPosition, onScrollTop } from './scroll';
+import { onBecomeVisible } from './page-visibility';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -138,12 +139,21 @@ export default (opts) => ({
 				}
 			} else {
 				this.queue.push(item);
-				onScrollTop(this.$el, () => {
+
+				let scrollListener;
+				let visibleListener;
+
+				const comeback = () => {
+					scrollListener.remove();
+					visibleListener.remove();
 					for (const item of this.queue) {
 						this.prepend(item);
 					}
 					this.queue = [];
-				});
+				};
+
+				scrollListener = onScrollTop(this.$el, comeback);
+				visibleListener = onBecomeVisible(comeback);
 			}
 		},
 
