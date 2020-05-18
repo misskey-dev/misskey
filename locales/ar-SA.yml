@@ -1,1 +1,20 @@
 ---
+_lang_: "العربية"
+monthAndDay: "{day}/{month}"
+search: "البحث"
+notifications: "الإشعارات"
+username: "اسم المستخدم"
+password: "الكلمة السرية"
+fetchingAsApObject: "جارٍ جلبه مِن الفديفرس…"
+ok: " حسناً"
+gotIt: "فهِمت"
+cancel: " إلغاء"
+enterUsername: "أدخِل إسم مسخدم"
+noNotes: "لم يتم العثور على أية ملاحظات"
+noNotifications: "ليس هناك أية اشعارات"
+_sfx:
+  notification: "الإشعارات"
+_widgets:
+  notifications: "الإشعارات"
+_profile:
+  username: "اسم المستخدم"
