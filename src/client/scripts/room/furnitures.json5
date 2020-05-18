@@ -1,5 +1,7 @@
 // 家具メタデータ
 
+// 家具IDはglbファイル及びそのディレクトリ名と一致する必要があります
+
 // 家具にはユーザーが設定できるプロパティを設定可能です:
 //
 // props: {
@@ -393,5 +395,13 @@
 	{
 		id: 'energy-drink',
 		place: "floor",
-	}
+	},
+	{
+		id: 'doll-ai',
+		place: "floor",
+	},
+	{
+		id: 'banknote',
+		place: "floor",
+	},
 ]

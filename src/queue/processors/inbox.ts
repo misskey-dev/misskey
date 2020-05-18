@@ -90,6 +90,12 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			if (authUser.user.uri !== activity.actor) {
 				return `skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`;
 			}
+
+			// ブロックしてたら中断
+			const ldHost = extractDbHost(authUser.user.uri);
+			if (meta.blockedHosts.includes(ldHost)) {
+				return `Blocked request: ${ldHost}`;
+			}
 		} else {
 			throw `skip: http-signature verification failed.`;
 		}
