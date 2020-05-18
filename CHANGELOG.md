@@ -19,8 +19,8 @@ ChangeLog
 * リレーに不正なURLを追加できてしまう問題を修正 [#6351](https://github.com/syuilo/misskey/pull/6351)
 * Pages: Mk:api関数にトークンを渡せない問題を修正 [9244efe](https://github.com/syuilo/misskey/commit/9244efe3513dd72be04d7588dea8ec27509e96d1)
 * nyaizeが適用されるとMFMのオプションが失われるのを修正 [#6371](https://github.com/syuilo/misskey/pull/6371)
-* 上流ノートの削除に伴うノートの削除がリモートに伝達ない問題を修正 [#6374](https://github.com/syuilo/misskey/pull/6374)
-* 引用元の削除に伴う引用RNの削除が連合リレーに伝達ない問題を修正 [#6374](https://github.com/syuilo/misskey/pull/6374)
+* 上流ノートの削除に伴うノートの削除がリモートに伝達されない問題を修正 [#6374](https://github.com/syuilo/misskey/pull/6374)
+* 引用元の削除に伴う引用RNの削除が連合リレーに伝達されない問題を修正 [#6374](https://github.com/syuilo/misskey/pull/6374)
 
 12.37.0 (2020/5/10)
 -------------------
