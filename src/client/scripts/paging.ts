@@ -144,6 +144,8 @@ export default (opts) => ({
 				let visibleListener;
 
 				const comeback = () => {
+					const isTop = this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
+					const isTabVisible = document.visibilityState === 'visible';
 					if (!(isTop && isTabVisible)) return;
 
 					for (const item of this.queue) {
