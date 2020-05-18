@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Build
           command: |
-            docker build -t misskey/misskey .
+            docker build -t hiyuki2578/misskey .
       - when:
           condition: <<parameters.with_deploy>>
           steps:
