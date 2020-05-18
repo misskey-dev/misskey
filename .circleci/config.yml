@@ -29,9 +29,9 @@ jobs:
                   if [ "$DOCKERHUB_USERNAME$DOCKERHUB_PASSWORD" ]
                    then
                     apk update && apk add jq
-                    docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
+                    docker tag hiyuki2578/misskey hiyuki2578/misskey:$(cat package.json | jq -r .version)
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push misskey/misskey
+                    docker push hiyuki2578/misskey
                    else
                     echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
                   fi
@@ -45,4 +45,4 @@ workflows:
           with_deploy: true
           filters:
             branches:
-              only: master
+              only: hiyuki/master
