@@ -125,10 +125,10 @@ export default (opts) => ({
 		},
 
 		prepend(item) {
-			const isTop = this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
-			const isTabVisible = document.visibilityState === 'visible';
+			const isTop = () => this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
+			const isTabVisible = () => document.visibilityState === 'visible';
 
-			if (isTop && isTabVisible) {
+			if (isTop() && isTabVisible()) {
 				// Prepend the item
 				this.items.unshift(item);
 
@@ -144,9 +144,7 @@ export default (opts) => ({
 				let visibleListener;
 
 				const comeback = () => {
-					const isTop = this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
-					const isTabVisible = document.visibilityState === 'visible';
-					if (!(isTop && isTabVisible)) return;
+					if (!(isTop() && isTabVisible())) return;
 
 					for (const item of this.queue) {
 						this.prepend(item);
