@@ -146,12 +146,13 @@ export default (opts) => ({
 				const comeback = () => {
 					if (!(isTop && isTabVisible)) return;
 
-					scrollListener.remove();
-					visibleListener.remove();
 					for (const item of this.queue) {
 						this.prepend(item);
 					}
 					this.queue = [];
+
+					scrollListener.remove();
+					visibleListener.remove();
 				};
 
 				scrollListener = onScrollTop(this.$el, comeback);
