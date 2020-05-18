@@ -43,6 +43,3 @@ workflows:
       - docker:
           name: auto-build
           with_deploy: true
-          filters:
-            branches:
-              only: hiyuki/master
