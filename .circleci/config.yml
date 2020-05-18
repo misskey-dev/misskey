@@ -38,7 +38,7 @@ jobs:
 
 workflows:
   version: 2
-  docker:
+  build-and-test:
     jobs:
       - docker:
           name: auto-build
