@@ -12,21 +12,22 @@ html
 			const delidb = indexedDB.deleteDatabase('MisskeyClient');
 			delidb.onsuccess = () => message('indexedDB cleared');
 
-			navigator.serviceWorker.controller.postMessage('clear');
-			navigator.serviceWorker.getRegistrations()
-				.then(registrations => {
-					return Promise.all(registrations.map(registration => registration.unregister()));
-				})
-				.then(() => {
-					message('Success Flush! It will move.');
-					setTimeout(() => {
-						location = '/';
-					}, 5000);
-				})
+			if (navigator.serviceWorker.controller) {
+				navigator.serviceWorker.controller.postMessage('clear');
+				navigator.serviceWorker.getRegistrations()
+					.then(registrations => {
+						return Promise.all(registrations.map(registration => registration.unregister()));
+					})
+					.then(() => {
+						message('Success Flush! Please reopen Misskey.\n成功しました。Misskeyを開き直してください。');
+					})
+			} else {
+				message('Success Flush! Please reopen Misskey.\n成功しました。Misskeyを開き直してください。');
+			}
 				.catch(e => { throw Error(e) });
 		} catch (e) {
 			console.error(e);
-			message(`${e}¥n¥nFlush Failed. It will move.`);
+			message(`${e}¥n¥nFlush Failed. Please reopen Misskey.\n失敗しました。Misskeyを開き直してください。`);
 			setTimeout(() => {
 				location = '/';
 			}, 10000)
