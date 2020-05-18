@@ -144,6 +144,8 @@ export default (opts) => ({
 				let visibleListener;
 
 				const comeback = () => {
+					if (!isTop || !isTabVisible) return;
+
 					scrollListener.remove();
 					visibleListener.remove();
 					for (const item of this.queue) {
