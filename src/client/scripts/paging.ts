@@ -125,8 +125,9 @@ export default (opts) => ({
 
 		prepend(item) {
 			const isTop = this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
+			const isTabVisible = document.visibilityState === 'visible';
 
-			if (isTop) {
+			if (isTop && isTabVisible) {
 				// Prepend the item
 				this.items.unshift(item);
 
