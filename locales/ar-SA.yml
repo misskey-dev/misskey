@@ -28,11 +28,19 @@ favorite: "إضافة إلى المفضلة"
 favorites: "المفضلات"
 unfavorite: "إزالة من المفضلة"
 pin: "دبّسها على الصفحة الشخصية"
+delete: "حذف"
+deleteAndEdit: "إزالة وإعادة الصياغة"
+reply: "رد"
+loadMore: "عرض المزيد"
+youGotNewFollower: "يتابعك"
 instances: "مثيل الخادم"
+remove: "حذف"
 _sfx:
   notification: "الإشعارات"
 _widgets:
   notifications: "الإشعارات"
   timeline: "الخيط الزمني"
+_cw:
+  show: "عرض المزيد"
 _profile:
   username: "اسم المستخدم"
