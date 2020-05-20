@@ -506,6 +506,7 @@ relays: "リレー"
 addRelay: "リレーの追加"
 inboxUrl: "inboxのURL"
 addedRelays: "追加済みのリレー"
+serviceworkerInfo: "プッシュ通知を行うには有効する必要があります。"
 
 _theme:
   explore: "テーマを探す"
