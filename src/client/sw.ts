@@ -58,7 +58,7 @@ self.addEventListener('push', ev => {
 		includeUncontrolled: true
 	}).then(async clients => {
 		// クライアントがあったらストリームに接続しているということなので通知しない
-		// if (clients.length != 0) return;
+		if (clients.length != 0) return;
 
 		const { type, body } = ev.data.json();
 
