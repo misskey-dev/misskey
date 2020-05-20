@@ -506,6 +506,7 @@ relays: "Relays"
 addRelay: "Add Relay"
 inboxUrl: "Inbox URL"
 addedRelays: "Added Relays"
+serviceworkerInfo: "Must be enabled for push notifications."
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
