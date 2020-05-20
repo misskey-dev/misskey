@@ -3,24 +3,20 @@ import getUserName from '../../misc/get-user-name';
 import { clientDb, get } from '../db';
 import { fromEntries } from '../../prelude/array';
 
-const getTranslation = (text: string): Promise<string> => get(text, clientDb.i18nContexts)
+const getTranslation = (text: string): Promise<string> => get(text, clientDb.i18nContexts);
 
 export default async function(type, data): Promise<[string, NotificationOptions]> {
 	const contexts = ['deletedNote', 'invisibleNote', 'withNFiles', '_cw.poll'];
 	const locale = await Promise.all(contexts.map(c => getTranslation(c)))
 		.then(translations => fromEntries(translations.map((translation, i) => [contexts[i], translation])));
 
-	console.log(type, data)
-
 	switch (type) {
 		case 'driveFileCreated': // TODO (Server Side)
-			console.log(type)
 			return [await getTranslation('fileUploaded'), {
 				body: data.name,
 				icon: data.url
 			}];
 		case 'notification':
-			console.log(type)
 			switch (data.type) {
 				case 'mention':
 					return [(await getTranslation('youGotMention')).replace('{name}', getUserName(data.user)), {
@@ -50,7 +46,6 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 					return null;
 			}
 		case 'unreadMessagingMessage':
-			console.log(type)
 			if (data.groupId === null) {
 				return [(await getTranslation('youGotMessagingMessageFromUser')).replace('{name}', getUserName(data.user)), {
 					icon: data.user.avatarUrl,
@@ -62,7 +57,6 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 				tag: `messaging:group:${data.group.id}`
 			}];
 		default:
-			console.log(null)
 			return null;
 	}
 }
