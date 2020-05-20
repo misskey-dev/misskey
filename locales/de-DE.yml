@@ -506,6 +506,7 @@ relays: "Relays"
 addRelay: "Relay hinzufügen"
 inboxUrl: "inbox-URL"
 addedRelays: "Hinzugefügte Relays"
+serviceworkerInfo: "Muss für Push-Benachrichtigungen aktiviert sein."
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
