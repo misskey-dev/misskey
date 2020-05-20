@@ -25,6 +25,18 @@ export function entries(store: Store): Promise<[IDBValidKey, unknown][]> {
 	}).then(() => entries);
 }
 
+export function bulkGet(keys: IDBValidKey | IDBValidKey[], store: Store): Promise<Map<IDBValidKey, unknown>> {
+	const res: Map<IDBValidKey, unknown> = new Map();
+
+	return store._withIDBStore('readonly', store => {
+		store.openCursor(IDBKeyRange.only(keys)).onsuccess = function () {
+			if (!this.result) return;
+			res.set(this.result.key, this.result.value);
+			this.result.continue();
+		};
+	}).then(() => res);
+}
+
 export async function bulkSet(map: [IDBValidKey, any][], store: Store): Promise<void> {
 	const tx = await openTransaction(store, 'readwrite');
 	const st = tx.objectStore(store.storeName);
