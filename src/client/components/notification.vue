@@ -55,7 +55,7 @@
 import Vue from 'vue';
 import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import getNoteSummary from '../../misc/get-note-summary';
+import noteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import i18n from '../i18n';
@@ -83,7 +83,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			getNoteSummary,
+			getNoteSummary: (text: string) => noteSummary(text, i18n.messages[i18n.locale]),
 			followRequestDone: false,
 			groupInviteDone: false,
 			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck

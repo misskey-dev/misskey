@@ -21,10 +21,10 @@ html
 					.then(() => {
 						message('Success Flush! Please reopen Misskey.\n成功しました。Misskeyを開き直してください。');
 					})
+					.catch(e => { throw Error(e) });
 			} else {
 				message('Success Flush! Please reopen Misskey.\n成功しました。Misskeyを開き直してください。');
 			}
-				.catch(e => { throw Error(e) });
 		} catch (e) {
 			console.error(e);
 			message(`${e}¥n¥nFlush Failed. Please reopen Misskey.\n失敗しました。Misskeyを開き直してください。`);
