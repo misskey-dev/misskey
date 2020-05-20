@@ -7,7 +7,7 @@ const getTranslation = (text: string): Promise<string> => get(text, clientDb.i18
 
 export default async function(type, data): Promise<[string, NotificationOptions]> {
 	const contexts = ['deletedNote', 'invisibleNote', 'withNFiles', '_cw.poll'];
-	const locale = fromEntries([...(await bulkGet(contexts, clientDb.i18nContexts) as Map<string, string>)]);
+	const locale = fromEntries(await bulkGet(contexts, clientDb.i18nContexts) as [string, string][]);
 
 	switch (type) {
 		case 'driveFileCreated': // TODO (Server Side)

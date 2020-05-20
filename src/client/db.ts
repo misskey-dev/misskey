@@ -25,16 +25,26 @@ export function entries(store: Store): Promise<[IDBValidKey, unknown][]> {
 	}).then(() => entries);
 }
 
-export function bulkGet(keys: IDBValidKey | IDBValidKey[], store: Store): Promise<Map<IDBValidKey, unknown>> {
-	const res: Map<IDBValidKey, unknown> = new Map();
+export async function bulkGet(keys: IDBValidKey[], store: Store): Promise<[IDBValidKey, unknown][]> {
+	const valPromises: Promise<[IDBValidKey, unknown]>[] = [];
 
-	return store._withIDBStore('readonly', store => {
-		store.openCursor(IDBKeyRange.only(keys)).onsuccess = function () {
-			if (!this.result) return;
-			res.set(this.result.key, this.result.value);
-			this.result.continue();
-		};
-	}).then(() => res);
+	const tx = await openTransaction(store, 'readwrite');
+	const st = tx.objectStore(store.storeName);
+	for (const key of keys) {
+		valPromises.push(new Promise((resolve, reject) => {
+			const getting = st.get(key);
+			getting.onsuccess = function (e) {
+				return resolve([key, this.result]);
+			};
+			getting.onerror = function (e) {
+				return reject(this.error);
+			};
+		}));
+	}
+	return new Promise((resolve, reject) => {
+		tx.oncomplete = () => resolve(Promise.all(valPromises));
+		tx.abort = tx.onerror = () => reject(tx.error);
+	});
 }
 
 export async function bulkSet(map: [IDBValidKey, any][], store: Store): Promise<void> {
