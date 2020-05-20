@@ -53,6 +53,29 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl
 					}];
 
+				case 'follow':
+					return [await getTranslation('youWereFollowed'), {
+						body: getUserName(data.user),
+						icon: data.user.avatarUrl
+					}];
+
+				case 'receiveFollowRequest':
+					return [await getTranslation('youReceivedFollowRequest'), {
+						body: getUserName(data.user),
+						icon: data.user.avatarUrl
+					}];
+
+				case 'followRequestAccepted':
+					return [await getTranslation('yourFollowRequestAccepted'), {
+						body: getUserName(data.user),
+						icon: data.user.avatarUrl
+					}];
+
+				case 'groupInvited':
+					return [await getTranslation('youWereInvitedToGroup'), {
+						body: data.group.name
+					}];
+
 				default:
 					return null;
 			}
