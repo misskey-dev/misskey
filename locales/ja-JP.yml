@@ -515,7 +515,7 @@ youRenoted: "{name}がRenoteしました"
 youGotPoll: "{name}が投票しました"
 deletedNote: "削除された投稿"
 invisibleNote: "非公開の投稿"
-youGotMessagingMessageFromUser: "{name}さんからのチャットがあります"
+youGotMessagingMessageFromUser: "{name}からのチャットがあります"
 youGotMessagingMessageFromGroup: "{name}のチャットがあります"
 
 _theme:
