@@ -30,6 +30,12 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl
 					}];
 
+				case 'renote':
+					return [(await getTranslation('youRenoted')).replace('{name}', getUserName(data.user)), {
+						body: getNoteSummary(data.note, locale),
+						icon: data.user.avatarUrl
+					}];
+
 				case 'quote':
 					return [(await getTranslation('youGotQuote')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
@@ -38,6 +44,12 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 
 				case 'reaction':
 					return [`${data.reaction} ${getUserName(data.user)}`, {
+						body: getNoteSummary(data.note, locale),
+						icon: data.user.avatarUrl
+					}];
+
+				case 'pollVote':
+					return [(await getTranslation('youGotPoll')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
 						icon: data.user.avatarUrl
 					}];
