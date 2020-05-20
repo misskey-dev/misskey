@@ -506,6 +506,7 @@ relays: "中继"
 addRelay: "添加中继"
 inboxUrl: "Inbox URL"
 addedRelays: "已添加的中继"
+serviceworkerInfo: "您需要启用推送通知"
 _theme:
   explore: "寻找主题"
   install: "安装主题"
