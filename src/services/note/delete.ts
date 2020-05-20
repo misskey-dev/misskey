@@ -12,6 +12,8 @@ import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
 import { countSameRenotes } from '../../misc/count-same-renotes';
+import { deliverToRelays } from '../relay';
+import { Brackets } from 'typeorm';
 
 /**
  * 投稿を削除します。
@@ -48,6 +50,7 @@ export default async function(user: User, note: Note, quiet = false) {
 				: renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
 			deliverToFollowers(user, content);
+			deliverToRelays(user, content);
 		}
 
 		// also deliever delete activity to cascaded notes
@@ -57,6 +60,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			if (!Users.isLocalUser(cascadingNote.user)) continue;
 			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
 			deliverToFollowers(cascadingNote.user, content);
+			deliverToRelays(cascadingNote.user, content);
 		}
 		//#endregion
 
@@ -84,6 +88,10 @@ async function findCascadingNotes(note: Note) {
 	const recursive = async (noteId: string) => {
 		const query = Notes.createQueryBuilder('note')
 			.where('note.replyId = :noteId', { noteId })
+			.orWhere(new Brackets(q => {
+				q.where('note.renoteId = :noteId', { noteId })
+				.andWhere('note.text IS NOT NULL');
+			}))
 			.leftJoinAndSelect('note.user', 'user');
 		const replies = await query.getMany();
 		for (const reply of replies) {

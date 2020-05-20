@@ -183,7 +183,7 @@ export default Vue.extend({
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'hcaptcha-response': this.hCaptchaResponse,
-				'g-recaptcha-response': this.meta.reCaptchaResponse,
+				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,

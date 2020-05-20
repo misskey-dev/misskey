@@ -69,7 +69,7 @@ export default define(meta, async (ps, me) => {
 			.andWhere('user.host LIKE :host', { host: ps.host.toLowerCase() + '%' });
 
 		if (ps.username) {
-			q.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' })
+			q.andWhere('user.usernameLower like :username', { username: ps.username.toLowerCase() + '%' });
 		}
 
 		q.andWhere('user.updatedAt IS NOT NULL');

@@ -7,7 +7,7 @@
 	v-hotkey="keymap"
 	v-size="[{ max: 500 }, { max: 450 }, { max: 350 }, { max: 300 }]"
 >
-	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
+	<x-sub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="info" v-if="pinned"><fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
 	<div class="info" v-if="appearNote._prId_"><fa :icon="faBullhorn"/> {{ $t('promotion') }}<button class="_textButton hide" @click="readPromo()">{{ $t('hideThisNote') }} <fa :icon="faTimes"/></button></div>
@@ -21,12 +21,16 @@
 			</router-link>
 		</i18n>
 		<div class="info">
-			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime"><mk-time :time="note.createdAt"/></button>
-			<span class="visibility" v-if="note.visibility != 'public'">
-				<fa v-if="note.visibility == 'home'" :icon="faHome"/>
-				<fa v-if="note.visibility == 'followers'" :icon="faUnlock"/>
-				<fa v-if="note.visibility == 'specified'" :icon="faEnvelope"/>
+			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
+				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
+				<mk-time :time="note.createdAt"/>
+			</button>
+			<span class="visibility" v-if="note.visibility !== 'public'">
+				<fa v-if="note.visibility === 'home'" :icon="faHome"/>
+				<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
+				<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
 			</span>
+			<span class="localOnly" v-if="note.localOnly"><fa :icon="faBiohazard"/></span>
 		</div>
 	</div>
 	<article class="article">
@@ -48,7 +52,7 @@
 					<div class="files" v-if="appearNote.files.length > 0">
 						<x-media-list :media-list="appearNote.files" :parent-element="noteBody"/>
 					</div>
-					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
+					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><x-note-preview :note="appearNote.renote"/></div>
 				</div>
@@ -79,13 +83,13 @@
 			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
-	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply"/>
+	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
@@ -143,7 +147,7 @@ export default Vue.extend({
 			showContent: false,
 			hideThisNote: false,
 			noteBody: this.$refs.noteBody,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faEllipsisH
 		};
 	},
 
@@ -191,6 +195,10 @@ export default Vue.extend({
 
 		isMyNote(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
+		isMyRenote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
@@ -614,7 +622,7 @@ export default Vue.extend({
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
-			if (!this.$store.getters.isSignedIn || (this.$store.state.i.id !== this.note.userId)) return;
+			if (!this.isMyRenote) return;
 			this.$root.menu({
 				items: [{
 					text: this.$t('unrenote'),
@@ -814,6 +822,10 @@ export default Vue.extend({
 		padding-bottom: 0;
 	}
 
+	> .reply-to-more {
+		opacity: 0.7;
+	}
+
 	> .renote {
 		display: flex;
 		align-items: center;
@@ -853,14 +865,18 @@ export default Vue.extend({
 			> .time {
 				flex-shrink: 0;
 				color: inherit;
+
+				> .dropdownIcon {
+					margin-right: 4px;
+				}
 			}
 
 			> .visibility {
 				margin-left: 8px;
+			}
 
-				[data-icon] {
-					margin-right: 0;
-				}
+			> .localOnly {
+				margin-left: 8px;
 			}
 		}
 	}
@@ -920,7 +936,7 @@ export default Vue.extend({
 						margin-top: 8px;
 					}
 
-					> .mk-poll {
+					> .poll {
 						font-size: 80%;
 					}
 

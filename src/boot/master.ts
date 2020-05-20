@@ -152,7 +152,7 @@ async function init(): Promise<Config> {
 	try {
 		dbLogger.info('Connecting...');
 		await initDb();
-		const v = await getConnection().query('SHOW server_version').then(x => x[0].server_version)
+		const v = await getConnection().query('SHOW server_version').then(x => x[0].server_version);
 		dbLogger.succ(`Connected: v${v}`);
 	} catch (e) {
 		dbLogger.error('Cannot connect', null, true);
