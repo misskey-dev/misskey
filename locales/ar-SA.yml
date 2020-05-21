@@ -33,8 +33,17 @@ deleteAndEdit: "إزالة وإعادة الصياغة"
 reply: "رد"
 loadMore: "عرض المزيد"
 youGotNewFollower: "يتابعك"
+following: "المتابَعون"
+followers: "المتابِعين"
+followsYou: "يتابعك"
+makeFollowManuallyApprove: "القبول يدويا طلبات الإشتراك"
+follow: "تابِع"
+followRequest: "طلب اشتراك"
+followRequests: "طلبات الإشتراك"
 instances: "مثيل الخادم"
 remove: "حذف"
+clinetSettings: "إعدادات التطبيق"
+accountSettings: "إعدادات الحساب"
 _sfx:
   notification: "الإشعارات"
 _widgets:
@@ -42,5 +51,9 @@ _widgets:
   timeline: "الخيط الزمني"
 _cw:
   show: "عرض المزيد"
+_visibility:
+  followers: "المتابِعين"
 _profile:
   username: "اسم المستخدم"
+_exportOrImport:
+  followingList: "المتابَعون"
