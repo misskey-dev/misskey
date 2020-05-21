@@ -30,6 +30,7 @@ unfavorite: "إزالة من المفضلة"
 pin: "دبّسها على الصفحة الشخصية"
 delete: "حذف"
 deleteAndEdit: "إزالة وإعادة الصياغة"
+addToList: "أضفه إلى قائمة"
 reply: "رد"
 loadMore: "عرض المزيد"
 youGotNewFollower: "يتابعك"
@@ -44,6 +45,9 @@ followRequest: "طلب اشتراك"
 followRequests: "طلبات الإشتراك"
 unfollow: "إلغاء الاشتراك"
 followRequestPending: "طلبات الإشتراك المعلّقة"
+add: "إضافة"
+addEmoji: "إضافة إيموجي"
+addAcount: "إضافة حساب"
 searchWith: "البحث: {q}"
 annotation: "التعليقات"
 instances: "مثيل الخادم"
@@ -53,6 +57,9 @@ announcements: "الإعلانات"
 remove: "حذف"
 explore: "استكشاف"
 home: "الرئيسي"
+activity: "النشاط"
+images: "الصور"
+addFile: "إضافة ملف"
 maintainerName: "المدير"
 maintainerEmail: "عنوان بريد المدير الإلكتروني"
 disconnectSerice: "قطع الاتصال"
@@ -62,6 +69,8 @@ uiLanguage: "لغة واجهة المستخدم"
 local: "المحلي"
 clinetSettings: "إعدادات التطبيق"
 accountSettings: "إعدادات الحساب"
+addRelay: "إضافة مُرحّل"
+addedRelays: "المرحلات التي تم إضافتها"
 _theme:
   explore: "استكشف قوالب المظهر"
 _sfx:
@@ -74,6 +83,7 @@ _widgets:
   notifications: "الإشعارات"
   timeline: "الخيط الزمني"
   trends: "المتداوَلة"
+  activity: "النشاط"
 _cw:
   show: "عرض المزيد"
 _visibility:
@@ -89,3 +99,12 @@ _timelines:
   local: "المحلي"
   social: "الاجتماعي"
   global: "الشامل"
+_pages:
+  blocks:
+    image: "الصور"
+  script:
+    blocks:
+      _join:
+        arg1: "القوائم"
+        arg2: "فاصل"
+      add: "إضافة"
