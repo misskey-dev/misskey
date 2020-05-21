@@ -506,6 +506,7 @@ relays: "Relais"
 addRelay: "Ajouter un relais"
 inboxUrl: "Inbox URL"
 addedRelays: "Relais ajoutés"
+serviceworkerInfo: "Devrait être activé pour les notifications push."
 _theme:
   explore: "Explorer les thèmes"
   install: "Installer un thème"
@@ -780,6 +781,8 @@ _rooms:
     cup-noodle: "Bol de nouilles"
     holo-display: "Affichage holographique"
     energy-drink: "Boisson énergétique"
+    doll-ai: "Poupée Ai"
+    banknote: "Billets de banque"
 _pages:
   newPage: "Créer une page"
   editPage: "Modifier une page"
