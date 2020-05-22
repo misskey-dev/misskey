@@ -1,5 +1,5 @@
 import Vue, { VNode } from 'vue';
-import { MfmForest } from '../../mfm/types';
+import { MfmForest } from '../../mfm/prelude';
 import { parse, parsePlain } from '../../mfm/parse';
 import MkUrl from './url.vue';
 import MkLink from './link.vue';
@@ -53,11 +53,11 @@ export default Vue.component('misskey-flavored-markdown', {
 
 					if (!this.plain) {
 						const x = text.split('\n')
-							.map(t => t == '' ? [createElement('br')] : [createElement('span', t), createElement('br')]);
+							.map(t => t == '' ? [createElement('br')] : [this._v(t), createElement('br')]);
 						x[x.length - 1].pop();
 						return x;
 					} else {
-						return [createElement('span', text.replace(/\n/g, ' '))];
+						return [this._v(text.replace(/\n/g, ' '))];
 					}
 				}
 
