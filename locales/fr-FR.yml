@@ -521,7 +521,7 @@ _sfx:
   notification: "Notifications"
   chat: "Discuter"
   chatBg: "Discuter (De fond)"
-  antenna: "Réception d'antenne"
+  antenna: "Réception de l’antenne"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
