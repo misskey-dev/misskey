@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 
 type Captcha = {
 	render(container: string | Node, options: {
@@ -31,7 +30,6 @@ declare global {
 }
 
 export default Vue.extend({
-	i18n,
 	props: {
 		provider: {
 			type: String,

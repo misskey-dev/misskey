@@ -99,7 +99,6 @@ import MkRadio from '../../components/ui/radio.vue';
 import MkRange from '../../components/ui/range.vue';
 import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
-import i18n from '../../i18n';
 import { langs } from '../../config';
 import { clientDb, set } from '../../db';
 
@@ -121,8 +120,6 @@ const sounds = [
 ];
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('settings') as string

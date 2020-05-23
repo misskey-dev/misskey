@@ -24,11 +24,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import { sum } from '../../prelude/array';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		note: {
 			type: Object,

@@ -40,15 +40,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faBolt } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '../../../components/ui/select.vue';
 import MkInput from '../../../components/ui/input.vue';
 import MkSwitch from '../../../components/ui/switch.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkSelect, MkInput, MkSwitch
 	},

@@ -23,7 +23,6 @@
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import i18n from '../i18n';
 import XChart from './trends.chart.vue';
 
 export default define({
@@ -32,7 +31,6 @@ export default define({
 		compact: false
 	})
 }).extend({
-	i18n,
 	components: {
 		MkContainer, XChart
 	},

@@ -28,14 +28,12 @@
 import Vue from 'vue';
 import { faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote, faHeart } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import MkPagePreview from '../components/page-preview.vue';
 import MkPagination from '../components/ui/pagination.vue';
 import MkButton from '../components/ui/button.vue';
 import MkContainer from '../components/ui/container.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkPagePreview, MkPagination, MkButton, MkContainer
 	},

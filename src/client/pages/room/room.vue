@@ -59,7 +59,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../i18n';
 import { Room } from '../../scripts/room/room';
 import parseAcct from '../../../misc/acct/parse';
 import XPreview from './preview.vue';
@@ -74,8 +73,6 @@ import { selectFile } from '../../scripts/select-file';
 let room: Room;
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XPreview,
 		MkButton,

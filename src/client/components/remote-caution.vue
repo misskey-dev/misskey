@@ -5,10 +5,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		href: {
 			type: String,

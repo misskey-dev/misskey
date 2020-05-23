@@ -21,13 +21,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck, faBroadcastTower } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import MkPagination from '../components/ui/pagination.vue';
 import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('announcements') as string

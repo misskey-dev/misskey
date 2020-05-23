@@ -20,10 +20,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		reaction: {
 			type: String,

@@ -64,7 +64,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -73,8 +72,6 @@ import { groupByX } from '../../prelude/array';
 import XPopup from './popup.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XPopup,
 	},

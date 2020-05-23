@@ -19,12 +19,9 @@ import Vue from 'vue';
 import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
-import i18n from '../../i18n';
 import { defaultDeviceUserSettings } from '../../store';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkTextarea,

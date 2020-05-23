@@ -32,12 +32,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import { url as local, lang } from '../config';
 
 export default Vue.extend({
-	i18n,
-
 	props: {
 		url: {
 			type: String,

@@ -51,7 +51,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import { erase } from '../../prelude/array';
 import { addTime } from '../../prelude/time';
 import { formatDateTimeString } from '../../misc/format-time-string';
@@ -61,7 +60,6 @@ import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkInput,
 		MkSelect,

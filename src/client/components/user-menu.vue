@@ -6,15 +6,12 @@
 import Vue from 'vue';
 import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import XMenu from './menu.vue';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 import { host } from '../config';
 import getAcct from '../../misc/acct/render';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XMenu
 	},

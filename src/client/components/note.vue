@@ -93,7 +93,6 @@ import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, f
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
-import i18n from '../i18n';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -109,7 +108,6 @@ import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 
 export default Vue.extend({
-	i18n,
 	
 	components: {
 		XSub,

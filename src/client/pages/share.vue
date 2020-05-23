@@ -18,13 +18,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import PostFormDialog from '../components/post-form-dialog.vue';
 import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('share') as string

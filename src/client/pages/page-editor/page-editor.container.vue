@@ -28,11 +28,8 @@
 import Vue from 'vue';
 import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../i18n';
 
 export default Vue.extend({
-	i18n,
-
 	props: {
 		expanded: {
 			type: Boolean,

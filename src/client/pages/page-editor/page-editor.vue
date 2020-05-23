@@ -91,7 +91,6 @@ import PrismEditor from 'vue-prism-editor';
 import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
-import i18n from '../../i18n';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
@@ -107,8 +106,6 @@ import { collectPageVars } from '../../scripts/collect-page-vars';
 import { selectDriveFile } from '../../scripts/select-drive-file';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput, PrismEditor
 	},

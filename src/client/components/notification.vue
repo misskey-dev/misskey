@@ -64,10 +64,8 @@ import { faClock } from '@fortawesome/free-regular-svg-icons';
 import noteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		XReactionIcon, MkFollowButton
 	},
@@ -89,7 +87,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			getNoteSummary: (text: string) => noteSummary(text, i18n.messages[i18n.locale]),
+			getNoteSummary: (text: string) => noteSummary(text, this.$root.i18n.messages[this.$root.i18n.locale]),
 			followRequestDone: false,
 			groupInviteDone: false,
 			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck, faPollH

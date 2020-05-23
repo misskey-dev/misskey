@@ -87,14 +87,11 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
-import i18n from '../../i18n';
 import { Theme, builtinThemes, applyTheme, validateTheme } from '../../theme';
 import { selectFile } from '../../scripts/select-file';
 import { isDeviceDarkmode } from '../../scripts/is-device-darkmode';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkInput,
 		MkButton,
