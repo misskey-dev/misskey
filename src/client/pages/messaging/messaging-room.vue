@@ -16,7 +16,7 @@
 		<mk-loading v-if="fetching"/>
 		<p class="empty" v-if="!fetching && messages.length == 0"><fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
 		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
-		<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-if="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
+		<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
 			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
 		</button>
 		<x-list class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
@@ -62,8 +62,10 @@ export default Vue.extend({
 			timer: null,
 			ilObserver: new IntersectionObserver(
 				(entries) => entries.some((entry) => entry.isIntersecting)
-				&& !this.fetchingMoreMessages && this.existMoreMessages
-					this.fetchMoreMessages()
+					&& !this.fetching
+					&& !this.fetchingMoreMessages
+					&& this.existMoreMessages
+					&& this.fetchMoreMessages()
 			),
 			faArrowCircleDown, faFlag, faUsers, faInfoCircle
 		};
@@ -82,7 +84,7 @@ export default Vue.extend({
 	mounted() {
 		this.fetch();
 		if (this.$store.state.device.enableInfiniteScroll) {
-			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore));
+			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore as Element));
 		}
 	},
 
@@ -121,8 +123,12 @@ export default Vue.extend({
 			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
 			this.fetchMessages().then(() => {
-				this.fetching = false;
 				this.scrollToBottom();
+
+				// もっと見るの交差検知を発火させないためにfetchは
+				// スクロールが終わるまでfalseにしておく
+				// scrollendのようなイベントはないのでsetTimeoutで
+				setTimeout(() => this.fetching = false, 300);
 			});
 		},
 

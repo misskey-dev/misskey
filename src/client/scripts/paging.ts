@@ -17,9 +17,10 @@ export default (opts) => ({
 			isBackTop: false,
 			ilObserver: new IntersectionObserver(
 				(entries) => entries.some((entry) => entry.isIntersecting)
-				&& !this.moreFetching && !this.fetching &&
-					this.fetchMore()
-			),
+					&& !this.moreFetching
+					&& !this.fetching
+					&& this.fetchMore()
+				),
 			loadMoreElement: null as Element
 		};
 	},
@@ -62,14 +63,14 @@ export default (opts) => ({
 			if (this.$refs.loadMore) {
 				this.loadMoreElement = this.$refs.loadMore instanceof Element ? this.$refs.loadMore : this.$refs.loadMore.$el;
 				if (this.$store.state.device.enableInfiniteScroll) this.ilObserver.observe(this.loadMoreElement);
-				this.loadMoreElement.addEventListener('click', this.fetchMore());
+				this.loadMoreElement.addEventListener('click', this.fetchMore);
 			}
 		});
 	},
 
 	beforeDestroy() {
 		this.ilObserver.disconnect();
-		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click')
+		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click', this.fetchMore);
 	},
 
 	methods: {

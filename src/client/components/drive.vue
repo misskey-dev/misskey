@@ -19,19 +19,17 @@
 		@drop.prevent.stop="onDrop"
 	>
 		<div class="contents" ref="contents">
-			<div class="folders" ref="foldersContainer" v-if="folders.length > 0">
+			<div class="folders" ref="foldersContainer" v-show="folders.length > 0">
 				<x-folder v-for="f in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
 				<mk-button ref="moreFolders" v-if="moreFolders">{{ $t('loadMore') }}</mk-button>
 			</div>
-			<div class="files" ref="filesContainer" v-if="files.length > 0">
+			<div class="files" ref="filesContainer" v-show="files.length > 0">
 				<x-file v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<template v-show="moreFiles">
-					<mk-button ref="loadMoreFiles" @click="fetchMoreFiles">{{ $t('loadMore') }}</mk-button>
-				</template>
+				<mk-button ref="loadMoreFiles" @click="fetchMoreFiles" v-show="moreFiles">{{ $t('loadMore') }}</mk-button>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
@@ -136,10 +134,8 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		console.log(this.$refs.loadMoreFiles)
 		if (this.$store.state.device.enableInfiniteScroll && this.$refs.loadMoreFiles) {
 			this.$nextTick(() => {
-				console.log(this.$refs.loadMoreFiles)
 				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
 			});
 		}
@@ -163,7 +159,6 @@ export default Vue.extend({
 	activated() {
 		if (this.$store.state.device.enableInfiniteScroll) {
 			this.$nextTick(() => {
-				console.log(this.$refs.loadMoreFiles)
 				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
 			});
 		}

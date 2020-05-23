@@ -67,10 +67,6 @@ export default Vue.extend({
 		}
 	},
 
-	mounted() {
-		console.log(this.$refs.loadMore)
-	},
-
 	computed: {
 		notes(): any[] {
 			return this.extract ? this.extract(this.items) : this.items;
