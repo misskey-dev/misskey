@@ -129,21 +129,6 @@ export function cumulativeSum(xs: number[]): number[] {
 	return ys;
 }
 
-// Object.fromEntries()
-export function fromEntries<T extends readonly (readonly [PropertyKey, any])[]>(xs: T):
-	T[number] extends infer U
-		?
-			(
-				U extends readonly any[]
-					? (x: { [_ in U[0]]: U[1] }) => any
-					: never
-			) extends (x: infer V) => any
-				? V
-				: never
-		: never {
-	return xs.reduce((obj, [k, v]) => Object.assign(obj, { [k]: v }), {} as { [x: string]: any; });
-}
-
 export function toArray<T>(x: T | T[] | undefined): T[] {
 	return Array.isArray(x) ? x : x != null ? [x] : [];
 }

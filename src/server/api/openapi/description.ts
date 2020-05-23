@@ -1,7 +1,5 @@
-import config from '../../../config';
 import endpoints from '../endpoints';
 import * as locale from '../../../../locales/';
-import { fromEntries } from '../../../prelude/array';
 import { kinds as kindsList } from '../kinds';
 
 export interface IKindInfo {
@@ -10,11 +8,11 @@ export interface IKindInfo {
 }
 
 export function kinds() {
-	const kinds = fromEntries(
+	const kinds = Object.fromEntries(
 		kindsList
 			.map(k => [k, {
 					endpoints: [],
-					descs: fromEntries(
+					descs: Object.fromEntries(
 						Object.keys(locale)
 							.map(l => [l, locale[l]._permissions[k] as string] as [string, string])
 						) as { [x: string]: string; }

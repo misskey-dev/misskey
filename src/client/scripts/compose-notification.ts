@@ -1,13 +1,12 @@
 import getNoteSummary from '../../misc/get-note-summary';
 import getUserName from '../../misc/get-user-name';
 import { clientDb, get, bulkGet } from '../db';
-import { fromEntries } from '../../prelude/array';
 
 const getTranslation = (text: string): Promise<string> => get(text, clientDb.i18n);
 
 export default async function(type, data): Promise<[string, NotificationOptions]> {
 	const contexts = ['deletedNote', 'invisibleNote', 'withNFiles', '_cw.poll'];
-	const locale = fromEntries(await bulkGet(contexts, clientDb.i18n) as [string, string][]);
+	const locale = Object.fromEntries(await bulkGet(contexts, clientDb.i18n) as [string, string][]);
 
 	switch (type) {
 		case 'driveFileCreated': // TODO (Server Side)
