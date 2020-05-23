@@ -71,7 +71,7 @@ export default (opts) => ({
 
 					if (mutation.payload) return this.ilObserver.observe(this.loadMoreElement);
 					return this.ilObserver.unobserve(this.loadMoreElement);
-				})
+				});
 			}
 		});
 	},
