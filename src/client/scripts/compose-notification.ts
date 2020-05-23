@@ -11,32 +11,32 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 
 	switch (type) {
 		case 'driveFileCreated': // TODO (Server Side)
-			return [await getTranslation('fileUploaded'), {
+			return [await getTranslation('_notification.fileUploaded'), {
 				body: data.name,
 				icon: data.url
 			}];
 		case 'notification':
 			switch (data.type) {
 				case 'mention':
-					return [(await getTranslation('youGotMention')).replace('{name}', getUserName(data.user)), {
+					return [(await getTranslation('_notification.youGotMention')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'reply':
-					return [(await getTranslation('youGotReply')).replace('{name}', getUserName(data.user)), {
+					return [(await getTranslation('_notification.youGotReply')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'renote':
-					return [(await getTranslation('youRenoted')).replace('{name}', getUserName(data.user)), {
+					return [(await getTranslation('_notification.youRenoted')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'quote':
-					return [(await getTranslation('youGotQuote')).replace('{name}', getUserName(data.user)), {
+					return [(await getTranslation('_notification.youGotQuote')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
 						icon: data.user.avatarUrl
 					}];
@@ -48,31 +48,31 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 					}];
 
 				case 'pollVote':
-					return [(await getTranslation('youGotPoll')).replace('{name}', getUserName(data.user)), {
+					return [(await getTranslation('_notification.youGotPoll')).replace('{name}', getUserName(data.user)), {
 						body: getNoteSummary(data.note, locale),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'follow':
-					return [await getTranslation('youWereFollowed'), {
+					return [await getTranslation('_notification.youWereFollowed'), {
 						body: getUserName(data.user),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'receiveFollowRequest':
-					return [await getTranslation('youReceivedFollowRequest'), {
+					return [await getTranslation('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.user),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'followRequestAccepted':
-					return [await getTranslation('yourFollowRequestAccepted'), {
+					return [await getTranslation('_notification.yourFollowRequestAccepted'), {
 						body: getUserName(data.user),
 						icon: data.user.avatarUrl
 					}];
 
 				case 'groupInvited':
-					return [await getTranslation('youWereInvitedToGroup'), {
+					return [await getTranslation('_notification.youWereInvitedToGroup'), {
 						body: data.group.name
 					}];
 
@@ -81,12 +81,12 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 			}
 		case 'unreadMessagingMessage':
 			if (data.groupId === null) {
-				return [(await getTranslation('youGotMessagingMessageFromUser')).replace('{name}', getUserName(data.user)), {
+				return [(await getTranslation('_notification.youGotMessagingMessageFromUser')).replace('{name}', getUserName(data.user)), {
 					icon: data.user.avatarUrl,
 					tag: `messaging:user:${data.user.id}`
 				}];
 			}
-			return [(await getTranslation('youGotMessagingMessageFromGroup')).replace('{name}', data.group.name), {
+			return [(await getTranslation('_notification.youGotMessagingMessageFromGroup')).replace('{name}', data.group.name), {
 				icon: data.user.avatarUrl,
 				tag: `messaging:group:${data.group.id}`
 			}];
