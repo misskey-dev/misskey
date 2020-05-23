@@ -334,6 +334,10 @@ export default () => new Vuex.Store({
 				setUserData(state, x: { userId: string; data: any }) {
 					state.userData[x.userId] = copy(x.data);
 				},
+
+				setInfiniteScrollEnabling(state, x: boolean) {
+					state.enableInfiniteScroll = x;
+				}
 			}
 		},
 
