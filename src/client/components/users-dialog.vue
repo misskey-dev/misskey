@@ -30,13 +30,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XModal from './modal.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XModal
 	},

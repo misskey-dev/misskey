@@ -17,14 +17,11 @@
 import Vue from 'vue';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faImage, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 import MkFileThumbnail from '../../../components/drive-file-thumbnail.vue';
 import { selectDriveFile } from '../../../scripts/select-drive-file';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkFileThumbnail
 	},

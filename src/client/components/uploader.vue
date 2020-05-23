@@ -21,13 +21,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { apiUrl } from '../config';
 //import getMD5 from '../../scripts/get-md5';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n,
 	data() {
 		return {
 			uploads: [],

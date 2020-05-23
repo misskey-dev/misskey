@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import define from './define';
-import i18n from '../i18n';
 
 export default define({
 	name: 'calendar',
@@ -41,7 +40,6 @@ export default define({
 		design: 0
 	})
 }).extend({
-	i18n,
 	data() {
 		return {
 			now: new Date(),

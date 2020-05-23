@@ -21,12 +21,16 @@
 			</router-link>
 		</i18n>
 		<div class="info">
-			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime"><mk-time :time="note.createdAt"/></button>
+			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
+				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
+				<mk-time :time="note.createdAt"/>
+			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">
 				<fa v-if="note.visibility === 'home'" :icon="faHome"/>
 				<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
 				<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
 			</span>
+			<span class="localOnly" v-if="note.localOnly"><fa :icon="faBiohazard"/></span>
 		</div>
 	</div>
 	<article class="article">
@@ -85,11 +89,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
-import i18n from '../i18n';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -105,7 +108,6 @@ import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 
 export default Vue.extend({
-	i18n,
 	
 	components: {
 		XSub,
@@ -143,7 +145,7 @@ export default Vue.extend({
 			showContent: false,
 			hideThisNote: false,
 			noteBody: this.$refs.noteBody,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faEllipsisH
 		};
 	},
 
@@ -191,6 +193,10 @@ export default Vue.extend({
 
 		isMyNote(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
+		isMyRenote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
@@ -614,7 +620,7 @@ export default Vue.extend({
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
-			if (!this.$store.getters.isSignedIn || (this.$store.state.i.id !== this.note.userId)) return;
+			if (!this.isMyRenote) return;
 			this.$root.menu({
 				items: [{
 					text: this.$t('unrenote'),
@@ -857,14 +863,18 @@ export default Vue.extend({
 			> .time {
 				flex-shrink: 0;
 				color: inherit;
+
+				> .dropdownIcon {
+					margin-right: 4px;
+				}
 			}
 
 			> .visibility {
 				margin-left: 8px;
+			}
 
-				[data-icon] {
-					margin-right: 0;
-				}
+			> .localOnly {
+				margin-left: 8px;
 			}
 		}
 	}

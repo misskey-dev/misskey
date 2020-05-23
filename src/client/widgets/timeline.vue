@@ -27,7 +27,6 @@ import { faComments } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XTimeline from '../components/timeline.vue';
 import define from './define';
-import i18n from '../i18n';
 
 const basisSteps = [25, 50, 75, 100]
 const previewHeights = [200, 300, 400, 500]
@@ -41,7 +40,6 @@ export default define({
 		basisStep: 0
 	})
 }).extend({
-	i18n,
 	
 	components: {
 		MkContainer,

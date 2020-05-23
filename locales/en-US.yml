@@ -502,6 +502,10 @@ sidebar: "Sidebar"
 divider: "Divider"
 addItem: "Add Item"
 rooms: "Room"
+relays: "Relays"
+addRelay: "Add Relay"
+inboxUrl: "Inbox URL"
+addedRelays: "Added Relays"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
@@ -1057,3 +1061,7 @@ _pages:
     enviromentVariables: "Environment variable"
     pageVariables: "Page element"
     argVariables: "Input slot"
+_relayStatus:
+  requesting: "Pending"
+  accepted: "Accepted"
+  rejected: "Rejected"

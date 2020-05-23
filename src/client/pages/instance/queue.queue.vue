@@ -25,7 +25,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Chart from 'chart.js';
-import i18n from '../../i18n';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -36,8 +35,6 @@ const alpha = (hex, a) => {
 };
 
 export default Vue.extend({
-	i18n,
-
 	props: {
 		domain: {
 			required: true

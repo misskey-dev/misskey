@@ -1,6 +1,7 @@
 /**
  * Service Worker
  */
+declare var self: ServiceWorkerGlobalScope;
 
 import composeNotification from './scripts/compose-notification';
 
@@ -14,7 +15,7 @@ const apiUrl = `${location.origin}/api/`;
 self.addEventListener('install', ev => {
 	console.info('installed');
 
-  ev.waitUntil(
+	ev.waitUntil(
 		caches.open(cacheName)
 			.then(cache => {
 				return cache.addAll([
@@ -22,7 +23,7 @@ self.addEventListener('install', ev => {
 				]);
 			})
 			.then(() => self.skipWaiting())
-  );
+	);
 });
 
 self.addEventListener('activate', ev => {
@@ -55,16 +56,12 @@ self.addEventListener('push', ev => {
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true
-	}).then(clients => {
+	}).then(async clients => {
 		// クライアントがあったらストリームに接続しているということなので通知しない
 		if (clients.length != 0) return;
 
 		const { type, body } = ev.data.json();
 
-		const n = composeNotification(type, body);
-		return self.registration.showNotification(n.title, {
-			body: n.body,
-			icon: n.icon,
-		});
+		return self.registration.showNotification(...(await composeNotification(type, body)));
 	}));
 });

@@ -107,7 +107,6 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInput from '../../components/ui/input.vue';
 import { version, url } from '../../config';
-import i18n from '../../i18n';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -118,8 +117,6 @@ const alpha = (hex, a) => {
 };
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('instance') as string

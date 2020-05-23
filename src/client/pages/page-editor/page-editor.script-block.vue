@@ -59,14 +59,11 @@
 import Vue from 'vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
-import i18n from '../../i18n';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/hpml/index';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkTextarea
 	},

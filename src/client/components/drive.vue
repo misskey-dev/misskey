@@ -50,7 +50,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
@@ -58,8 +57,6 @@ import XUploader from './uploader.vue';
 import MkButton from './ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNavFolder,
 		XFolder,

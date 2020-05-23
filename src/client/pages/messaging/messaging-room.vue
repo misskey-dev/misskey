@@ -37,15 +37,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
 import XList from '../../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import parseAcct from '../../../misc/acct/parse';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XMessage,
 		XForm,

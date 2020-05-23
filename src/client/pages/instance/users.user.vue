@@ -39,12 +39,9 @@ import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSq
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
-import i18n from '../../i18n';
 import Progress from '../../scripts/loading';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkSwitch,

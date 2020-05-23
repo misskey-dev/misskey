@@ -37,11 +37,9 @@
 import Vue from 'vue';
 import { faGlobe, faUnlock, faHome } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import XPopup from './popup.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		XPopup
 	},

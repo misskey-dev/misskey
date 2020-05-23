@@ -18,15 +18,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNotification,
 		XList,

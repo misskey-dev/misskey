@@ -13,14 +13,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faBolt, faMagic } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 import MkSwitch from '../../../components/ui/switch.vue';
 import MkInput from '../../../components/ui/input.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkSwitch, MkInput
 	},

@@ -29,14 +29,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import Progress from '../scripts/loading';
 import XNote from '../components/note.vue';
 import XNotes from '../components/notes.vue';
 import MkRemoteCaution from '../components/remote-caution.vue';
 
 export default Vue.extend({
-	i18n,
 	metaInfo() {
 		return {
 			title: this.$t('note') as string

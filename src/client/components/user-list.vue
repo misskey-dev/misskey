@@ -31,14 +31,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import MkContainer from './ui/container.vue';
 import MkFollowButton from './follow-button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkContainer,
 		MkFollowButton

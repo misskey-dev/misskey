@@ -19,7 +19,6 @@
 import { faChartBar, faSort } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import i18n from '../i18n';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 
@@ -30,7 +29,6 @@ export default define({
 		view: 0
 	})
 }).extend({
-	i18n,
 	components: {
 		MkContainer,
 		XCalendar,

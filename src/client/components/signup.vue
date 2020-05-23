@@ -53,15 +53,12 @@ import Vue from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
-import i18n from '../i18n';
 import { host, url } from '../config';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkInput,
@@ -183,7 +180,7 @@ export default Vue.extend({
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'hcaptcha-response': this.hCaptchaResponse,
-				'g-recaptcha-response': this.meta.reCaptchaResponse,
+				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,

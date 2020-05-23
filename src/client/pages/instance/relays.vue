@@ -28,13 +28,10 @@
 import Vue from 'vue';
 import { faPlus, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('relays') as string
@@ -64,6 +61,11 @@ export default Vue.extend({
 				inbox
 			}).then((relay: any) => {
 				this.refresh();
+			}).catch((e: any) => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.message || e
+				});
 			});
 		},
 
@@ -72,6 +74,11 @@ export default Vue.extend({
 				inbox
 			}).then(() => {
 				this.refresh();
+			}).catch((e: any) => {
+				this.$root.dialog({
+					type: 'error',
+					text: e.message || e
+				});
 			});
 		},
 

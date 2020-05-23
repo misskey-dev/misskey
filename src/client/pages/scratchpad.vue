@@ -28,14 +28,11 @@ import "prismjs";
 import 'prismjs/themes/prism-okaidia.css';
 import PrismEditor from 'vue-prism-editor';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
-import i18n from '../i18n';
 import MkContainer from '../components/ui/container.vue';
 import MkButton from '../components/ui/button.vue';
 import { createAiScriptEnv } from '../scripts/create-aiscript-env';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('scratchpad') as string

@@ -12,13 +12,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import XDrive from './drive.vue';
 import XWindow from './window.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XDrive,
 		XWindow,
