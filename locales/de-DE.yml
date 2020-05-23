@@ -1068,3 +1068,6 @@ _relayStatus:
   requesting: "Ausstehend"
   accepted: "Akzeptiert"
   rejected: "Abgelehnt"
+_notification:
+  youWereFollowed: "Du hast einen neuen Follower"
+  youWereInvitedToGroup: "Du wurdest in eine Gruppe eingeladen"
