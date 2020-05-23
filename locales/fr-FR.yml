@@ -1068,3 +1068,6 @@ _relayStatus:
   requesting: "En attente"
   accepted: "Accepté"
   rejected: "Refusée"
+_notification:
+  youWereFollowed: "Vous suit"
+  youWereInvitedToGroup: "Invité au groupe"
