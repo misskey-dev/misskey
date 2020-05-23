@@ -429,3 +429,5 @@ _pages:
         arg1: "リスト"
     types:
       array: "リスト"
+_notification:
+  youWereFollowed: "フォローされたで"
