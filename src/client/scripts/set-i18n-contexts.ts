@@ -5,13 +5,13 @@ import { fromEntries } from '../../prelude/array';
 
 export function setI18nContexts(lang: string, version: string, cleardb = false) {
 	return Promise.all([
-		cleardb ? clear(clientDb.i18nContexts) : Promise.resolve(),
+		cleardb ? clear(clientDb.i18n) : Promise.resolve(),
 		fetch(`/assets/locales/${lang}.${version}.json`)
 	])
 	.then(([, response]) => response.json())
 	.then(locale => {
 		const flatLocaleEntries = deepEntries(locale, delimitEntry) as [string, string][];
-		bulkSet(flatLocaleEntries, clientDb.i18nContexts);
+		bulkSet(flatLocaleEntries, clientDb.i18n);
 		i18n.locale = lang;
 		i18n.setLocaleMessage(lang, fromEntries(flatLocaleEntries));
 	});

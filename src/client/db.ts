@@ -4,7 +4,7 @@ export { get, set, del, clear, keys } from 'idb-keyval';
 
 //#region Construct DB
 export const clientDb = {
-	i18nContexts: new Store('MisskeyClient', 'i18nContexts')
+	i18n: new Store('MisskeyClient', 'i18n')
 };
 //#endregion
 

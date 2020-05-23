@@ -149,9 +149,9 @@ os.init(async () => {
 	//#endregion
 
 	//#region Fetch locale data
-	await count(clientDb.i18nContexts).then(async n => {
+	await count(clientDb.i18n).then(async n => {
 		if (n === 0) return setI18nContexts(lang, version);
-		if ((await get('_version_', clientDb.i18nContexts) !== version)) return setI18nContexts(lang, version, n > 4000);
+		if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, n > 4000);
 
 		i18n.locale = lang;
 		i18n.setLocaleMessage(lang, await getLocale());

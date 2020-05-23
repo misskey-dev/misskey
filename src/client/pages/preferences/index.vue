@@ -236,7 +236,7 @@ export default Vue.extend({
 
 			localStorage.setItem('lang', this.lang);
 
-			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18nContexts)
+			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18n)
 				.then(() => location.reload())
 				.catch(() => {
 					dialog.close();
