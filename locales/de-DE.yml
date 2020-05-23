@@ -508,6 +508,7 @@ inboxUrl: "inbox-URL"
 addedRelays: "Hinzugefügte Relays"
 serviceworkerInfo: "Muss für Push-Benachrichtigungen aktiviert sein."
 deletedNote: "Gelöschte Notiz"
+invisibleNote: "Private Notiz"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
