@@ -1068,3 +1068,6 @@ _relayStatus:
   requesting: "待批准"
   accepted: "已批准"
   rejected: "已拒绝"
+_notification:
+  youWereFollowed: "你有新的关注者"
+  youWereInvitedToGroup: "群组招待"
