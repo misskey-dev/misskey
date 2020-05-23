@@ -38,13 +38,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../i18n';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
 import MkUrlPreview from '../../components/url-preview.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkUrlPreview
 	},

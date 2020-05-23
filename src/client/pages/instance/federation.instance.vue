@@ -120,7 +120,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Chart from 'chart.js';
-import i18n from '../../i18n';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '../../components/window.vue';
 import MkUsersDialog from '../../components/users-dialog.vue';
@@ -141,8 +140,6 @@ const alpha = hex => {
 };
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XWindow,
 		MkSelect,

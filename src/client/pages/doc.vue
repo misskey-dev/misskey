@@ -19,7 +19,6 @@ import Vue from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
-import i18n from '../i18n';
 import { url, lang } from '../config';
 import MkLink from '../components/link.vue';
 
@@ -32,8 +31,6 @@ markdown.use(MarkdownItAnchor, {
 });
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.title,

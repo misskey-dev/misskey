@@ -21,12 +21,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import ImageViewer from './image-viewer.vue';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		image: {
 			type: Object,

@@ -40,12 +40,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import MkSignin from '../components/signin.vue';
 import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkSignin,
 		MkButton,

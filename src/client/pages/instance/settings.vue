@@ -210,12 +210,9 @@ import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
 import MkUserSelect from '../../components/user-select.vue';
 import { url } from '../../config';
-import i18n from '../../i18n';
 import getAcct from '../../../misc/acct/render';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('instance') as string

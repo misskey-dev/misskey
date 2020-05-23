@@ -6,12 +6,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import MkUrlPreview from './url-preview.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkUrlPreview
 	},

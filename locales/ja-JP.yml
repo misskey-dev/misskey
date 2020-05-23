@@ -507,6 +507,8 @@ addRelay: "リレーの追加"
 inboxUrl: "inboxのURL"
 addedRelays: "追加済みのリレー"
 serviceworkerInfo: "プッシュ通知を行うには有効する必要があります。"
+deletedNote: "削除された投稿"
+invisibleNote: "非公開の投稿"
 
 _theme:
   explore: "テーマを探す"
@@ -1102,3 +1104,17 @@ _relayStatus:
   requesting: "承認待ち"
   accepted: "承認済み"
   rejected: "拒否済み"
+
+_notification:
+  fileUploaded: "ファイルがアップロードされました"
+  youGotMention: "{name}からのメンション"
+  youGotReply: "{name}からのリプライ"
+  youGotQuote: "{name}による引用"
+  youRenoted: "{name}がRenoteしました"
+  youGotPoll: "{name}が投票しました"
+  youGotMessagingMessageFromUser: "{name}からのチャットがあります"
+  youGotMessagingMessageFromGroup: "{name}のチャットがあります"
+  youWereFollowed: "フォローされました"
+  youReceivedFollowRequest: "フォローリクエストが来ました"
+  yourFollowRequestAccepted: "フォローリクエストが承認されました"
+  youWereInvitedToGroup: "グループに招待されました"
