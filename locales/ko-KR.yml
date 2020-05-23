@@ -1067,3 +1067,6 @@ _relayStatus:
   requesting: "대기 중"
   accepted: "승인됨"
   rejected: "거절됨"
+_notification:
+  youWereFollowed: "새로운 팔로워가 있습니다"
+  youWereInvitedToGroup: "그룹에 초대되었습니다"
