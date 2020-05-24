@@ -56,7 +56,7 @@ export const defaultDeviceSettings = {
 	imageNewTab: false,
 	showFixedPostForm: false,
 	disablePagesScript: true,
-	enableInfiniteScroll: false,
+	enableInfiniteScroll: true,
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 	sfxVolume: 0.3,
@@ -337,7 +337,7 @@ export default () => new Vuex.Store({
 
 				setInfiniteScrollEnabling(state, x: boolean) {
 					state.enableInfiniteScroll = x;
-				}
+				},
 			}
 		},
 

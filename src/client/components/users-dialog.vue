@@ -35,7 +35,7 @@ import XModal from './modal.vue';
 
 export default Vue.extend({
 	components: {
-		XModal
+		XModal,
 	},
 
 	mixins: [

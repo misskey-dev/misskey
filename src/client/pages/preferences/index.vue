@@ -67,7 +67,7 @@
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
 			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
-			<mk-switch v-model="enableInfiniteScroll" :disabled="intersectionObserverUnavailable">{{ $t('enableInfiniteScroll') }}</mk-switch>
+			<mk-switch v-model="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</mk-switch>
 			<mk-switch v-model="disablePagesScript">{{ $t('disablePagesScript') }}</mk-switch>
 		</div>
 		<div class="_content">
@@ -143,7 +143,6 @@ export default Vue.extend({
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
 			sounds,
-			intersectionObserverUnavailable: !('IntersectionObserver' in window),
 			faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute
 		}
 	},

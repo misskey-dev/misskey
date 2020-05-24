@@ -38,7 +38,7 @@ import MkFollowButton from './follow-button.vue';
 export default Vue.extend({
 	components: {
 		MkContainer,
-		MkFollowButton
+		MkFollowButton,
 	},
 
 	mixins: [

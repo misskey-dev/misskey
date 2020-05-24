@@ -46,7 +46,7 @@ export default Vue.extend({
 	components: {
 		XMessage,
 		XForm,
-		XList
+		XList,
 	},
 
 	data() {

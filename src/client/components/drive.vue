@@ -60,7 +60,7 @@ export default Vue.extend({
 		XFolder,
 		XFile,
 		XUploader,
-		MkButton
+		MkButton,
 	},
 
 	props: {

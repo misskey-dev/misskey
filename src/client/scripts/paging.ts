@@ -22,7 +22,7 @@ export default (opts) => ({
 					&& this.fetchMore()
 				),
 			loadMoreElement: null as Element,
-			unsubscribeInfiniteScrollMutation: null as any
+			unsubscribeInfiniteScrollMutation: null as any,
 		};
 	},
 
@@ -33,7 +33,7 @@ export default (opts) => ({
 
 		error(): boolean {
 			return !this.fetching && !this.inited;
-		}
+		},
 	},
 
 	watch: {
