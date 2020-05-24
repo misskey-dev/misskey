@@ -391,3 +391,5 @@ _pages:
         arg1: "清單"
     types:
       array: "清單"
+_notification:
+  youWereFollowed: "您有新的追隨者"
