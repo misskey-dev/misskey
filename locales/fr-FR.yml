@@ -642,7 +642,7 @@ _poll:
   expiration: "Fin du sondage"
   infinite: "Illimité"
   at: "Choisir une date"
-  after: "Chosir une durée"
+  after: "Choisir la durée"
   deadlineDate: "Date de fin"
   deadlineTime: "Heure de fin"
   duration: "Durée"
