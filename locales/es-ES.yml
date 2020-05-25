@@ -783,6 +783,8 @@ _rooms:
     cup-noodle: "Taza de sopa de fideos"
     holo-display: "Poster holográfico"
     energy-drink: "Bebida energética"
+    doll-ai: "Muñeca"
+    banknote: "Billetes"
 _pages:
   newPage: "Crear página"
   editPage: "Editar página"
@@ -1069,5 +1071,11 @@ _relayStatus:
   accepted: "Aceptar"
   rejected: "Rechazada"
 _notification:
+  fileUploaded: "Archivo subido"
+  youGotMention: "Mención de {name}"
+  youGotReply: "Respuesta de {name}"
+  youGotQuote: "Citado por {name}"
+  youRenoted: "Renotado por {name}"
+  youGotPoll: "Encuestado por {name}"
   youWereFollowed: "te ha seguido"
   youWereInvitedToGroup: "Invitado al grupo"
