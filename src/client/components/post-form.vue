@@ -41,7 +41,7 @@
 		<footer>
 			<button class="_button" @click="chooseFileFrom" :title="$t('attachFile')"><fa :icon="faPhotoVideo"/></button>
 			<button class="_button" @click="poll = !poll" :class="{ active: poll }" :title="$t('poll')"><fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" :title="$t('poll')"><fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" :title="$t('useCw')"><fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="insertMention" :title="$t('insertMention')"><fa :icon="faAt"/></button>
 			<button class="_button" @click="insertEmoji" :title="$t('insertEmoji')"><fa :icon="faLaughSquint"/></button>
 		</footer>
