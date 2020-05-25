@@ -1069,5 +1069,10 @@ _relayStatus:
   accepted: "Accepté"
   rejected: "Refusée"
 _notification:
+  fileUploaded: "Le fichier a été téléversé !"
+  youGotMention: "{name} vous a mentionné"
+  youGotReply: "Réponse de {name}"
+  youGotQuote: "Cité·e par {name}"
   youWereFollowed: "Vous suit"
+  youReceivedFollowRequest: "Vous avez reçu une demande d’abonnement"
   youWereInvitedToGroup: "Invité au groupe"
