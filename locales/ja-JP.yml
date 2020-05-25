@@ -509,6 +509,11 @@ addedRelays: "追加済みのリレー"
 serviceworkerInfo: "プッシュ通知を行うには有効する必要があります。"
 deletedNote: "削除された投稿"
 invisibleNote: "非公開の投稿"
+visibility: "公開範囲"
+poll: "アンケート"
+useCw: "内容を隠す"
+insertMention: "メンションを追加"
+insertEmoji: "絵文字を追加"
 
 _theme:
   explore: "テーマを探す"
@@ -647,7 +652,6 @@ _cw:
   show: "もっと見る"
   chars: "{count}文字"
   files: "{count}ファイル"
-  poll: "アンケート"
 
 _poll:
   noOnlyOneChoice: "選択肢は最低2つ必要です"
@@ -1118,3 +1122,4 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "グループに招待されました"
+

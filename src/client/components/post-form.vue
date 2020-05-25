@@ -9,13 +9,13 @@
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
 		<div>
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
-			<button class="_button visibility" @click="setVisibility" ref="visibilityButton">
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" :title="$t('visibility')">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
-			<button class="_button localOnly" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }"><fa :icon="faBiohazard"/></button>
+			<button class="_button localOnly" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }" :title="$t('_visibility.localOnly')"><fa :icon="faBiohazard"/></button>
 			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
@@ -26,7 +26,7 @@
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
-				<span v-for="u in visibleUsers">
+				<span v-for="u in visibleUsers" :key="u.id">
 					<mk-acct :user="u"/>
 					<button class="_button" @click="removeVisibleUser(u)"><fa :icon="faTimes"/></button>
 				</span>
@@ -39,11 +39,11 @@
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom"><fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll" :class="{ active: poll }"><fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }"><fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention"><fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
+			<button class="_button" @click="chooseFileFrom" :title="$t('attachFile')"><fa :icon="faPhotoVideo"/></button>
+			<button class="_button" @click="poll = !poll" :class="{ active: poll }" :title="$t('poll')"><fa :icon="faPollH"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" :title="$t('poll')"><fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="insertMention" :title="$t('insertMention')"><fa :icon="faAt"/></button>
+			<button class="_button" @click="insertEmoji" :title="$t('insertEmoji')"><fa :icon="faLaughSquint"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
