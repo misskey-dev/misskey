@@ -358,6 +358,9 @@ export default Vue.extend({
 			const el = this.$refs[ref] instanceof Element ? this.$refs[ref] : this.$refs[ref].$el;
 			tooltipEvents.map(ev => el.removeEventListener(ev, fn));
 		});
+
+		clearTimeout(this.tooltipTimeoutId);
+		this.closeTooltip();
 	},
 
 	methods: {
