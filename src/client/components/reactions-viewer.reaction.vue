@@ -4,8 +4,10 @@
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction(reaction)"
 	v-if="count > 0"
+	@touchstart="onMouseover"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
+	@touchend="onMouseleave"
 	ref="reaction"
 	v-particle
 >
@@ -90,16 +92,17 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
+			if (this.isHovering) return;
 			this.isHovering = true;
 			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
 		},
 		onMouseleave() {
+			if (!this.isHovering) return;
 			this.isHovering = false;
 			clearTimeout(this.detailsTimeoutId);
 			this.closeDetails();
 		},
 		openDetails() {
-			if (this.$root.isMobile) return;
 			this.$root.api('notes/reactions', {
 				noteId: this.note.id,
 				type: this.reaction,

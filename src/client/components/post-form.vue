@@ -15,7 +15,7 @@
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
-			<button class="_button localOnly" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }" :title="$t('_visibility.localOnly')"><fa :icon="faBiohazard"/></button>
+			<button class="_button localOnly" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }" ref="localOnly"><fa :icon="faBiohazard"/></button>
 			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
@@ -39,11 +39,11 @@
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom" :title="$t('attachFile')"><fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll" :class="{ active: poll }" :title="$t('poll')"><fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" :title="$t('useCw')"><fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention" :title="$t('insertMention')"><fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji" :title="$t('insertEmoji')"><fa :icon="faLaughSquint"/></button>
+			<button class="_button" @click="chooseFileFrom" ref="attachFile"><fa :icon="faPhotoVideo"/></button>
+			<button class="_button" @click="poll = !poll" :class="{ active: poll }" ref="pollButton"><fa :icon="faPollH"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" ref="useCw"><fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="insertMention" ref="insertMention"><fa :icon="faAt"/></button>
+			<button class="_button" @click="insertEmoji" ref="insertEmoji"><fa :icon="faLaughSquint"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
@@ -67,6 +67,10 @@ import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
 import { selectDriveFile } from '../scripts/select-drive-file';
+import MkTooltip from './ui/tooltip.vue';
+import { isDeviceTouch } from '../scripts/is-device-touch';
+
+const tooltipEvents = isDeviceTouch ? ['touchstart', 'touchend'] : ['mouseover', 'mouseleave'];
 
 export default Vue.extend({
 	components: {
@@ -132,6 +136,20 @@ export default Vue.extend({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			tooltipSets: [
+				// ['ref', 'translation entry'],
+				['visibilityButton', 'visibility'],
+				['localOnly', '_visibility.localOnly'],
+				['attachFile', 'attachFile'],
+				['pollButton', 'poll'],
+				['useCw', 'useCw'],
+				['insertMention', 'insertMention'],
+				['insertEmoji', 'insertEmoji'],
+			],
+			tooltipEvents: [],
+			isDescriptionHovering: false,
+			tooltipTimeoutId: null as number | null,
+			tooltip: null,
 			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard
 		};
 	},
@@ -303,6 +321,43 @@ export default Vue.extend({
 
 			this.$nextTick(() => this.watch());
 		});
+
+		// ツールチップ
+		this.$nextTick(() => {
+			this.tooltipEvents = this.tooltipSets.map(([ref, entry]) => {
+				const el = this.$refs[ref] instanceof Element ? this.$refs[ref] : this.$refs[ref].$el;
+				const fn = e => {
+					if (['touchstart', 'mouseover'].includes(e.type)) {
+						if (this.isDescriptionHovering) return;
+						this.isDescriptionHovering = true;
+						this.tooltipTimeoutId = setTimeout(() => {
+							this.closeTooltip();
+
+							if (!this.isDescriptionHovering) return;
+							this.tooltip = this.$root.new(MkTooltip, {
+								text: this.$t(entry),
+								source: el
+							});
+						}, 300);
+					} else {
+						if (!this.isDescriptionHovering) return;
+						this.isDescriptionHovering = false;
+						clearTimeout(this.tooltipTimeoutId);
+						this.closeTooltip();
+					}
+				}
+
+				tooltipEvents.map(ev => el.addEventListener(ev, fn));
+				return [ref, fn];
+			});
+		});
+	},
+
+	beforeDestroy() {
+		this.tooltipEvents.map(([ref, fn]) => {
+			const el = this.$refs[ref] instanceof Element ? this.$refs[ref] : this.$refs[ref].$el;
+			tooltipEvents.map(ev => el.removeEventListener(ev, fn));
+		})
 	},
 
 	methods: {
@@ -576,7 +631,14 @@ export default Vue.extend({
 				insertTextAtCursor(this.$refs.text, emoji);
 				vm.close();
 			});
-		}
+		},
+
+		closeTooltip() {
+			if (this.tooltip != null) {
+				this.tooltip.close();
+				this.tooltip = null;
+			}
+		},
 	}
 });
 </script>
