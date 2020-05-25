@@ -34,11 +34,19 @@ addToList: "أضفه إلى قائمة"
 reply: "رد"
 loadMore: "عرض المزيد"
 youGotNewFollower: "يتابعك"
+lists: "القوائم"
+noLists: "ليس لديك أية قائمة"
 note: "ملاحظة"
 notes: "الملاحظات"
 following: "المتابَعون"
 followers: "المتابِعين"
 followsYou: "يتابعك"
+createList: "إنشاء قائمة"
+manageLists: "إدارة القوائم"
+error: "حدث خطأ ما"
+retry: "حاول مجددًا"
+enterListName: "اسم القائمة"
+privacy: "الخصوصية"
 makeFollowManuallyApprove: "القبول يدويا طلبات الإشتراك"
 follow: "تابِع"
 followRequest: "طلب اشتراك"
@@ -65,6 +73,7 @@ maintainerEmail: "عنوان بريد المدير الإلكتروني"
 disconnectSerice: "قطع الاتصال"
 enableGlobalTimeline: "تفعيل الخيط الزمني الشامل"
 exploreFediverse: "استكشف الفديفرس"
+userList: "القوائم"
 uiLanguage: "لغة واجهة المستخدم"
 local: "المحلي"
 clinetSettings: "إعدادات التطبيق"
@@ -94,6 +103,7 @@ _profile:
   username: "اسم المستخدم"
 _exportOrImport:
   followingList: "المتابَعون"
+  userLists: "القوائم"
 _timelines:
   home: "الرئيسي"
   local: "المحلي"
@@ -103,10 +113,24 @@ _pages:
   blocks:
     image: "الصور"
   script:
+    categories:
+      list: "القوائم"
     blocks:
       _join:
         arg1: "القوائم"
         arg2: "فاصل"
       add: "إضافة"
+      _randomPick:
+        arg1: "القوائم"
+      _dailyRandomPick:
+        arg1: "القوائم"
+      _seedRandomPick:
+        arg2: "القوائم"
+      _pick:
+        arg1: "القوائم"
+      _listLen:
+        arg1: "القوائم"
+    types:
+      array: "القوائم"
 _notification:
   youWereFollowed: "يتابعك"
