@@ -1075,4 +1075,5 @@ _notification:
   youGotQuote: "Cité·e par {name}"
   youWereFollowed: "Vous suit"
   youReceivedFollowRequest: "Vous avez reçu une demande d’abonnement"
+  yourFollowRequestAccepted: "Votre demande d’abonnement a été accepté"
   youWereInvitedToGroup: "Invité au groupe"
