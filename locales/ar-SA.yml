@@ -270,6 +270,7 @@ _cw:
   files: "{count} ملفات"
   poll: "استطلاع رأي"
 _poll:
+  at: "تاريخ الإنتهاء"
   deadlineTime: "سا"
 _visibility:
   home: "الرئيسي"
