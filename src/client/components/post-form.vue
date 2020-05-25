@@ -9,7 +9,7 @@
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
 		<div>
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
-			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" :title="$t('visibility')">
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
