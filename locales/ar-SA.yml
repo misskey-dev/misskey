@@ -251,6 +251,8 @@ chooseEmoji: "اختر إيموجي"
 recentUsed: "المستخدمة مؤخرا"
 install: "التثبيت"
 uninstall: "إلغاء التثبيت"
+installedApps: "التطبيقات المُخوّلة"
+lastUsedDate: "آخر استخدام"
 state: "الحالة"
 sort: "ترتيب حسب"
 output: "الخارجة"
@@ -267,6 +269,7 @@ _sfx:
   notification: "الإشعارات"
   chat: "الدردشة"
 _ago:
+  unknown: "مجهول"
   future: "المستقبَل"
   justNow: "اللحظة"
   secondsAgo: "منذ {n} ثوانٍ"
@@ -284,8 +287,11 @@ _time:
 _tutorial:
   title: "كيف تستخدم Misskey"
   step1_1: "مرحبًا!"
+_2fa:
+  registerKey: "تسجيل مفتاح أمان جديد"
 _permissions:
   "write:account": "تعديل معلومات حسابك"
+  "read:notifications": "اظهر الإشعارات"
 _weekday:
   sunday: "الأحد"
   monday: "الإثنين"
@@ -312,7 +318,14 @@ _cw:
   poll: "استطلاع رأي"
 _poll:
   at: "تاريخ الإنتهاء"
+  deadlineDate: "تاريخ الانتهاء"
   deadlineTime: "سا"
+  duration: "المدة"
+  vote: "قم بالتصويت"
+  showResult: "اعرض النتائج"
+  closed: "انتهى"
+  remainingDays: "{d} أيام و {h} ساعات متبقية"
+  remainingHours: "{h} ساعات و {m} دقائق متبقية"
 _visibility:
   home: "الرئيسي"
   followers: "المتابِعين"
