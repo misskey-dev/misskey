@@ -326,10 +326,17 @@ _poll:
   closed: "انتهى"
   remainingDays: "{d} أيام و {h} ساعات متبقية"
   remainingHours: "{h} ساعات و {m} دقائق متبقية"
+  remainingMinutes: "{m} دقائق و {s} ثوانٍ متبقية"
+  remainingSeconds: "{s} ثوانٍ متبقية"
 _visibility:
+  public: "للعامة"
   home: "الرئيسي"
   followers: "المتابِعين"
+  specified: "مباشرة"
   localOnly: "المحلي فقط"
+_postForm:
+  replyPlaceholder: "رد على هذه الملاحظة…"
+  quotePlaceholder: "اقتبس هذه الملاحظة…"
 _profile:
   name: "الإسم"
   username: "اسم المستخدم"
