@@ -112,8 +112,10 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		if (!this.notification.isRead) this.readObserver.unobserve(this.$el);
-		this.connection.dispose();
+		if (!this.notification.isRead) {
+			this.readObserver.unobserve(this.$el);
+			this.connection.dispose();
+		}
 	},
 
 	methods: {
