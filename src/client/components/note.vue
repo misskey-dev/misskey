@@ -278,6 +278,9 @@ export default Vue.extend({
 			(this as any).$root.api('promo/read', {
 				noteId: this.appearNote.id
 			});
+				this.$root.stream.send('readNotification', {
+					id: notification.id
+				});
 			this.hideThisNote = true;
 		},
 
