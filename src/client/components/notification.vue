@@ -90,6 +90,7 @@ export default Vue.extend({
 			getNoteSummary: (text: string) => noteSummary(text, this.$root.i18n.messages[this.$root.i18n.locale]),
 			followRequestDone: false,
 			groupInviteDone: false,
+			connection: null,
 			readObserver: new IntersectionObserver((entries, observer) => {
 				if (!entries.some(entry => entry.isIntersecting)) return;
 				this.$root.stream.send('readNotification', {
@@ -102,11 +103,17 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		if (!this.notification.isRead) this.readObserver.observe(this.$el);
+		if (!this.notification.isRead) {
+			this.readObserver.observe(this.$el);
+			
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
+		}
 	},
 
 	beforeDestroy() {
 		if (!this.notification.isRead) this.readObserver.unobserve(this.$el);
+		this.connection.dispose();
 	},
 
 	methods: {
