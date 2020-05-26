@@ -670,7 +670,7 @@ _postForm:
   replyPlaceholder: "Répondre à cette note ..."
   quotePlaceholder: "Citez cette note ..."
   _placeholders:
-    a: "Qu'est-ce qu'il se passe ?"
+    a: "Quoi de neuf ?"
     b: "Quoi de neuf ?"
     c: "Qu’avez-vous en tête ?"
     d: "Désirez-vous publier quelques mots ?"
