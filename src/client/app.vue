@@ -136,15 +136,12 @@ import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, 
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
-import i18n from './i18n';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XClock: () => import('./components/header-clock.vue').then(m => m.default),
 		MkButton: () => import('./components/ui/button.vue').then(m => m.default),
@@ -503,8 +500,7 @@ export default Vue.extend({
 		},
 
 		async onNotification(notification) {
-			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			if (true) {
+			if (document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
 					id: notification.id
 				});

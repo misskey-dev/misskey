@@ -7,13 +7,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import XWindow from './window.vue';
 import MkSignin from './signin.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkSignin,
 		XWindow,

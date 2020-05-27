@@ -21,13 +21,10 @@
 import Vue from 'vue';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import XQueue from './queue.queue.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: `${this.$t('jobQueue')} | ${this.$t('instance')}`

@@ -245,7 +245,8 @@ router.get('/notes/:note', async ctx => {
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
-			summary: getNoteSummary(_note),
+			// TODO: Let locale changeable by instance setting
+			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl
 		});

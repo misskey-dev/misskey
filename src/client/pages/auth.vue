@@ -30,12 +30,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import XForm from './auth.form.vue';
 import MkSignin from '../components/signin.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		XForm,
 		MkSignin,

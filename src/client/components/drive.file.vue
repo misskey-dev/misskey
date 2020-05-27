@@ -32,7 +32,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 //import updateAvatar from '../api/update-avatar';
 //import updateBanner from '../api/update-banner';
@@ -40,8 +39,6 @@ import XFileThumbnail from './drive-file-thumbnail.vue';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XFileThumbnail
 	},

@@ -57,11 +57,8 @@ import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
 import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkInput,

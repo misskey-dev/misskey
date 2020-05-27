@@ -63,12 +63,9 @@
 import Vue from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { version } from '../config';
-import i18n from '../i18n';
 import MkLink from '../components/link.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkLink
 	},

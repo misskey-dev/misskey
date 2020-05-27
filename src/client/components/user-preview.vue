@@ -28,13 +28,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import parseAcct from '../../misc/acct/parse';
 import MkFollowButton from './follow-button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkFollowButton
 	},

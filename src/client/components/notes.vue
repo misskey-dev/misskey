@@ -29,15 +29,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
 import MkButton from './ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNote, XList, MkButton
 	},

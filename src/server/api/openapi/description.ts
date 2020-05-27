@@ -1,7 +1,5 @@
-import config from '../../../config';
 import endpoints from '../endpoints';
 import * as locale from '../../../../locales/';
-import { fromEntries } from '../../../prelude/array';
 import { kinds as kindsList } from '../kinds';
 
 export interface IKindInfo {
@@ -10,16 +8,16 @@ export interface IKindInfo {
 }
 
 export function kinds() {
-	const kinds = fromEntries(
+	const kinds = Object.fromEntries(
 		kindsList
 			.map(k => [k, {
 					endpoints: [],
-					descs: fromEntries(
+					descs: Object.fromEntries(
 						Object.keys(locale)
-							.map(l => [l, locale[l]._permissions[k] as string] as [string, string])
-						) as { [x: string]: string; }
-				}] as [ string, IKindInfo ])
-			) as { [x: string]: IKindInfo; };
+							.map(l => [l, locale[l]._permissions[k] as string])
+						)
+				} as IKindInfo])
+			);
 
 	const errors = [] as string[][];
 
@@ -37,17 +35,17 @@ export function kinds() {
 }
 
 export function getDescription(lang = 'ja-JP'): string {
-	const permissionTable = (Object.entries(kinds()) as [string, IKindInfo][])
+	const permissionTable = Object.entries(kinds())
 		.map(e => `|${e[0]}|${e[1].descs[lang]}|${e[1].endpoints.map(f => `[${f}](#operation/${f})`).join(', ')}|`)
 		.join('\n');
 
-	const descriptions = {
+	const descriptions: { [x: string]: string } = {
 		'ja-JP': `
 # Permissions
 |Permisson (kind)|Description|Endpoints|
 |:--|:--|:--|
 ${permissionTable}
 `
-	} as { [x: string]: string };
+	};
 	return lang in descriptions ? descriptions[lang] : descriptions['ja-JP'];
 }

@@ -28,11 +28,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faFolder, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
-
 	props: {
 		folder: {
 			type: Object,

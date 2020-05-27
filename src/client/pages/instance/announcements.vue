@@ -28,14 +28,11 @@
 import Vue from 'vue';
 import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('announcements') as string

@@ -57,7 +57,6 @@ import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
-import i18n from '../i18n';
 import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
@@ -70,8 +69,6 @@ import { formatTimeString } from '../../misc/format-time-string';
 import { selectDriveFile } from '../scripts/select-drive-file';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNotePreview,
 		XUploader: () => import('./uploader.vue').then(m => m.default),

@@ -1065,3 +1065,6 @@ _relayStatus:
   requesting: "Pendiente"
   accepted: "Aceptar"
   rejected: "Rechazada"
+_notification:
+  youWereFollowed: "te ha seguido"
+  youWereInvitedToGroup: "Invitado al grupo"

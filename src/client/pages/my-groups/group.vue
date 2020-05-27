@@ -41,14 +41,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
 import Progress from '../../scripts/loading';
 import MkButton from '../../components/ui/button.vue';
 import MkUserSelect from '../../components/user-select.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.group ? `${this.group.name} | ${this.$t('manageGroups')}` : this.$t('manageGroups')

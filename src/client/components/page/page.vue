@@ -9,14 +9,11 @@ import Vue from 'vue';
 import { parse } from '@syuilo/aiscript';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../i18n';
 import XBlock from './page.block.vue';
 import { Hpml } from '../../scripts/hpml/evaluator';
 import { url } from '../../config';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XBlock
 	},
