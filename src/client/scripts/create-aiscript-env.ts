@@ -23,9 +23,10 @@ export function createAiScriptEnv(vm, opts) {
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
 		'Mk:api': values.FN_NATIVE(async ([ep, param, token]) => {
+			if (token) utils.assertString(token);
 			apiRequests++;
 			if (apiRequests > 16) return values.NULL;
-			const res = await vm.$root.api(ep.value, utils.valToJs(param), token || null);
+			const res = await vm.$root.api(ep.value, utils.valToJs(param), token ? token.value : null);
 			return utils.jsToVal(res);
 		}),
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
