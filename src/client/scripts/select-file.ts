@@ -41,7 +41,14 @@ export function selectFile(component: any, src: any, label: string | null, multi
 				}).finally(() => {
 					dialog.close();
 				});
+
+				// 一応廃棄
+				(window as any).__misskey_input_ref__ = null;
 			};
+
+			// iOS Safari で正常に動かす為のおまじない
+			(window as any).__misskey_input_ref__ = input;
+
 			input.click();
 		};
 
