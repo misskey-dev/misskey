@@ -46,6 +46,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 				(window as any).__misskey_input_ref__ = null;
 			};
 
+			// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
 			// iOS Safari で正常に動かす為のおまじない
 			(window as any).__misskey_input_ref__ = input;
 
