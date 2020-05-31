@@ -96,15 +96,15 @@ export default Vue.extend({
 		},
 
 		readAllUnreadNotes() {
-			this.$root.api('i/read_all_unread_notes');
+			this.$root.api('i/read-all-unread-notes');
 		},
 
 		readAllMessagingMessages() {
-			this.$root.api('i/read_all_messaging_messages');
+			this.$root.api('i/read-all-messaging-messages');
 		},
 
 		readAllNotifications() {
-			this.$root.api('notifications/mark_all_as_read');
+			this.$root.api('notifications/mark-all-as-read');
 		},
 	}
 });
