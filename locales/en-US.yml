@@ -509,6 +509,7 @@ addedRelays: "Added Relays"
 serviceworkerInfo: "Must be enabled for push notifications."
 deletedNote: "Deleted note"
 invisibleNote: "Invisible note"
+enableInfiniteScroll: "Enable infinite scrolling"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
