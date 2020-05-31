@@ -50,15 +50,7 @@ export default Vue.extend({
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	font-size: 10px;
-
-	@media (min-width: 350px) {
-		font-size: 12px;
-	}
-
-	@media (min-width: 500px) {
-		font-size: 14px;
-	}
+	font-size: 0.95em;
 
 	> .avatar {
 
