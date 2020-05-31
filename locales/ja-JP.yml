@@ -509,6 +509,7 @@ addedRelays: "追加済みのリレー"
 serviceworkerInfo: "プッシュ通知を行うには有効する必要があります。"
 deletedNote: "削除された投稿"
 invisibleNote: "非公開の投稿"
+enableInfiniteScroll: "自動でもっと見る"
 
 _theme:
   explore: "テーマを探す"

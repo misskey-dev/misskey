@@ -56,6 +56,7 @@ export const defaultDeviceSettings = {
 	imageNewTab: false,
 	showFixedPostForm: false,
 	disablePagesScript: true,
+	enableInfiniteScroll: true,
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 	sfxVolume: 0.3,
@@ -332,6 +333,10 @@ export default () => new Vuex.Store({
 
 				setUserData(state, x: { userId: string; data: any }) {
 					state.userData[x.userId] = copy(x.data);
+				},
+
+				setInfiniteScrollEnabling(state, x: boolean) {
+					state.enableInfiniteScroll = x;
 				},
 			}
 		},
