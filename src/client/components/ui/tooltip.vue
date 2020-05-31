@@ -1,8 +1,7 @@
 <template>
-<transition name="zoom-in-top">
-	<div class="buebdbiu" ref="popover" v-if="show">
-		{{ text }}
-		<slot></slot>
+<transition name="zoom-in-top" appear>
+	<div class="buebdbiu" v-if="show">
+		<slot>{{ text }}</slot>
 	</div>
 </transition>
 </template>
@@ -26,10 +25,12 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
+		console.log(['mount', this, this.$parent, this.source, this.text])
+
 		this.show = true;
 
 		this.$nextTick(() => {
-			const popover = this.$refs.popover as any;
+			console.log([this.$el, this.source])
 
 			if (this.source == null) {
 				this.destroyDom();
@@ -39,14 +40,17 @@ export default Vue.extend({
 
 			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
 			const y = rect.top + window.pageYOffset + this.source.offsetHeight;
-			popover.style.left = (x - 28) + 'px';
-			popover.style.top = (y + 16) + 'px';
+			this.$el.style.left = (x - 28) + 'px';
+			this.$el.style.top = (y + 16) + 'px';
+
+			console.log(this.$el)
+			console.log([rect, this.$el.style.left, this.$el.style.top, this.$el])
 		});
 	},
 	methods: {
 		close() {
-			this.show = false;
-			setTimeout(this.destroyDom, 300);
+			// this.show = false;
+			// setTimeout(this.destroyDom, 300);
 		}
 	}
 })
@@ -54,7 +58,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .buebdbiu {
-	z-index: 10000;
+	z-index: 11000;
 	display: block;
 	position: absolute;
 	max-width: 240px;
