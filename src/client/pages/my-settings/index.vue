@@ -6,6 +6,7 @@
 	<x-profile-setting/>
 	<x-privacy-setting/>
 	<x-reaction-setting/>
+	<x-gacha-setting/>
 
 	<section class="_card">
 		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
@@ -46,6 +47,7 @@ import XPrivacySetting from './privacy.vue';
 import XImportExport from './import-export.vue';
 import XDrive from './drive.vue';
 import XReactionSetting from './reaction.vue';
+import XGachaSetting from './gacha.vue';
 import XMuteBlock from './mute-block.vue';
 import XSecurity from './security.vue';
 import X2fa from './2fa.vue';
@@ -67,6 +69,7 @@ export default Vue.extend({
 		XImportExport,
 		XDrive,
 		XReactionSetting,
+		XGachaSetting,
 		XMuteBlock,
 		XSecurity,
 		X2fa,

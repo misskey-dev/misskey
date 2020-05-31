@@ -16,6 +16,15 @@ export const defaultSettings = {
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	faces: [
+		'(=^・・^=)',
+		'v(\'ω\')v',
+		'🐡( \'-\' 🐡 )ﾌｸﾞﾊﾟﾝﾁ!!!!',
+		'✌️(´･_･`)✌️',
+		'(｡>﹏<｡)',
+		'(Δ・x・Δ)',
+		'(ｺ｀・ﾍ・´ｹ)'
+	],
 };
 
 export const defaultDeviceUserSettings = {
@@ -405,6 +414,10 @@ export default () => new Vuex.Store({
 			namespaced: true,
 
 			state: defaultSettings,
+
+			getters: {
+				getRandomFace: ({ faces }) => () => faces.length > 0 ? faces[Math.floor(Math.random() * faces.length)] : '',
+			},
 
 			mutations: {
 				set(state, x: { key: string; value: any }) {

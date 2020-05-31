@@ -510,6 +510,9 @@ serviceworkerInfo: "プッシュ通知を行うには有効する必要があり
 deletedNote: "削除された投稿"
 invisibleNote: "非公開の投稿"
 enableInfiniteScroll: "自動でもっと見る"
+gachaSettings: "顔文字ガチャの設定"
+gachaFaces: "顔文字"
+gachaSettingDescription: "顔文字ガチャで出現する顔文字を改行で区切って設定します。"
 
 _theme:
   explore: "テーマを探す"
