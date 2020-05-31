@@ -509,6 +509,7 @@ addedRelays: "Hinzugefügte Relays"
 serviceworkerInfo: "Muss für Push-Benachrichtigungen aktiviert sein."
 deletedNote: "Gelöschte Notiz"
 invisibleNote: "Private Notiz"
+enableInfiniteScroll: "Automatisch mehr Notizen laden"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
