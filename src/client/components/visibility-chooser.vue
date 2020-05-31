@@ -1,5 +1,5 @@
 <template>
-<x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
+<x-popup :source="source" ref="popup" @closed="closed">
 	<div class="gqyayizv">
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 			<div><fa :icon="faGlobe"/></div>
@@ -22,11 +22,18 @@
 				<span>{{ $t('_visibility.followersDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
+		<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
 			<div><fa :icon="faEnvelope"/></div>
 			<div>
 				<span>{{ $t('_visibility.specified') }}</span>
 				<span>{{ $t('_visibility.specifiedDescription') }}</span>
+			</div>
+		</button>
+		<button class="_button" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
+			<div><fa :icon="faBiohazard"/></div>
+			<div>
+				<span>{{ $t('_visibility.localOnly') }}</span>
+				<span>{{ $t('_visibility.localOnlyDescription') }}</span>
 			</div>
 		</button>
 	</div>
@@ -35,7 +42,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGlobe, faUnlock, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faUnlock, faHome, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import XPopup from './popup.vue';
 
@@ -50,12 +57,17 @@ export default Vue.extend({
 		currentVisibility: {
 			type: String,
 			required: false
+		},
+		currentLocalOnly: {
+			type: Boolean,
+			required: false
 		}
 	},
 	data() {
 		return {
 			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
-			faGlobe, faUnlock, faEnvelope, faHome
+			localOnly: this.currentLocalOnly,
+			faGlobe, faUnlock, faEnvelope, faHome, faBiohazard
 		}
 	},
 	methods: {
@@ -63,9 +75,15 @@ export default Vue.extend({
 			if (this.$store.state.settings.rememberNoteVisibility) {
 				this.$store.commit('deviceUser/setVisibility', visibility);
 			}
-			this.$emit('chosen', visibility);
+			this.$emit('chosen', { visibility, localOnly: this.localOnly });
 			this.destroyDom();
 		},
+		closed() {
+			this.$emit('closed');
+			// localOnly フラグの更新の為に chosen イベントも呼ぶ
+			this.choose(this.v);
+			this.destroyDom();
+		}
 	}
 });
 </script>

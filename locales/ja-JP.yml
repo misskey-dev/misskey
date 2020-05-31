@@ -683,6 +683,7 @@ _visibility:
   specified: "ダイレクト"
   specifiedDescription: "指定したユーザーのみに公開"
   localOnly: "ローカルのみ"
+  localOnlyDescription: "リモートユーザーには非公開"
 
 _postForm:
   replyPlaceholder: "このノートに返信..."
