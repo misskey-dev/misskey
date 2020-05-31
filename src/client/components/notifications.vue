@@ -27,7 +27,7 @@ export default Vue.extend({
 	components: {
 		XNotification,
 		XList,
-		XNote
+		XNote,
 	},
 
 	mixins: [
@@ -50,7 +50,7 @@ export default Vue.extend({
 				params: () => ({
 					includeTypes: this.type ? [this.type] : undefined
 				})
-			}
+			},
 		};
 	},
 
