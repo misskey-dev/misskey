@@ -53,7 +53,7 @@ export default Vue.component('misskey-flavored-markdown', {
 
 					if (!this.plain) {
 						const x = text.split('\n')
-							.map(t => t == '' ? [createElement('br')] : [this._v(t), createElement('br')]);
+							.map(t => t == '' ? [createElement('br')] : [this._v(t), createElement('br')]); // NOTE: this._vはHACK SEE: https://github.com/syuilo/misskey/pull/6399#issuecomment-632820283
 						x[x.length - 1].pop();
 						return x;
 					} else {
