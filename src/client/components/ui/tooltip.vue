@@ -19,19 +19,17 @@ export default Vue.extend({
 			required: false
 		}
 	},
+
 	data() {
 		return {
 			show: false
 		};
 	},
-	mounted() {
-		console.log(['mount', this, this.$parent, this.source, this.text])
 
+	mounted() {
 		this.show = true;
 
 		this.$nextTick(() => {
-			console.log([this.$el, this.source])
-
 			if (this.source == null) {
 				this.destroyDom();
 				return;
@@ -42,15 +40,13 @@ export default Vue.extend({
 			const y = rect.top + window.pageYOffset + this.source.offsetHeight;
 			this.$el.style.left = (x - 28) + 'px';
 			this.$el.style.top = (y + 16) + 'px';
-
-			console.log(this.$el)
-			console.log([rect, this.$el.style.left, this.$el.style.top, this.$el])
 		});
 	},
+
 	methods: {
 		close() {
-			// this.show = false;
-			// setTimeout(this.destroyDom, 300);
+			this.show = false;
+			setTimeout(this.destroyDom, 300);
 		}
 	}
 })

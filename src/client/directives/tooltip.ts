@@ -14,8 +14,6 @@ export default {
 		self.hideTimer = null;
 		self.checkTimer = null;
 
-		console.log(['bind', el, self, self.text, vn])
-
 		self.close = () => {
 			if (self.tag) {
 				clearInterval(self.checkTimer);
@@ -25,7 +23,6 @@ export default {
 		};
 
 		const show = e => {
-			console.log('あうー')
 			if (!document.body.contains(el)) return;
 			if (self.tag) return;
 
@@ -37,18 +34,16 @@ export default {
 				}
 			}).$mount();
 
-			console.log(self.tag)
+			document.body.appendChild(self.tag.$el);
 		};
 
 		el.addEventListener(start, () => {
-			console.log('うん')
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
 			self.showTimer = setTimeout(show, 300);
 		});
 
 		el.addEventListener(end, () => {
-			console.log('すん')
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
 			self.hideTimer = setTimeout(self.close, 300);
