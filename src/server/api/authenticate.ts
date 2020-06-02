@@ -21,7 +21,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 		return [user, null];
 	} else {
 		const accessToken = await AccessTokens.findOne({
-			hash: token.toLowerCase()
+			hash: token
 		});
 
 		if (accessToken == null) {
