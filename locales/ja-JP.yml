@@ -45,6 +45,7 @@ loadMore: "もっと見る"
 youGotNewFollower: "フォローされました"
 receiveFollowRequest: "フォローリクエストされました"
 followRequestAccepted: "フォローが承認されました"
+mention: "メンション"
 mentions: "あなた宛て"
 directNotes: "ダイレクト投稿"
 importAndExport: "インポートとエクスポート"
@@ -104,6 +105,7 @@ suspendConfirm: "凍結しますか？"
 unsuspendConfirm: "解凍しますか？"
 selectList: "リストを選択"
 customEmojis: "カスタム絵文字"
+emoji: "絵文字"
 emojiName: "絵文字名"
 emojiUrl: "絵文字画像URL"
 addEmoji: "絵文字を追加"
@@ -510,6 +512,9 @@ serviceworkerInfo: "プッシュ通知を行うには有効する必要があり
 deletedNote: "削除された投稿"
 invisibleNote: "非公開の投稿"
 enableInfiniteScroll: "自動でもっと見る"
+visibility: "公開範囲"
+poll: "アンケート"
+useCw: "内容を隠す"
 
 _theme:
   explore: "テーマを探す"
@@ -648,7 +653,6 @@ _cw:
   show: "もっと見る"
   chars: "{count}文字"
   files: "{count}ファイル"
-  poll: "アンケート"
 
 _poll:
   noOnlyOneChoice: "選択肢は最低2つ必要です"
@@ -1119,3 +1123,4 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "グループに招待されました"
+

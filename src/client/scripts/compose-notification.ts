@@ -5,7 +5,7 @@ import { clientDb, get, bulkGet } from '../db';
 const getTranslation = (text: string): Promise<string> => get(text, clientDb.i18n);
 
 export default async function(type, data): Promise<[string, NotificationOptions]> {
-	const contexts = ['deletedNote', 'invisibleNote', 'withNFiles', '_cw.poll'];
+	const contexts = ['deletedNote', 'invisibleNote', 'withNFiles', 'poll'];
 	const locale = Object.fromEntries(await bulkGet(contexts, clientDb.i18n) as [string, string][]);
 
 	switch (type) {
