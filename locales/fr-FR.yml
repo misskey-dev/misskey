@@ -633,7 +633,6 @@ _cw:
   show: "Afficher plus …"
   chars: "{count} caractères"
   files: "{count} fichiers"
-  poll: "Sondage"
 _poll:
   noOnlyOneChoice: "Au moins 2 réponses nécéssaires"
   choiceN: "Choix {n}"
@@ -1077,3 +1076,4 @@ _notification:
   youReceivedFollowRequest: "Vous avez reçu une demande d’abonnement"
   yourFollowRequestAccepted: "Votre demande d’abonnement a été accepté"
   youWereInvitedToGroup: "Invité au groupe"
+
