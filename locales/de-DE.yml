@@ -636,7 +636,6 @@ _cw:
   show: "Mehr anzeigen"
   chars: "{count} Zeichen"
   files: "{count} Dateien"
-  poll: "Umfrage"
 _poll:
   noOnlyOneChoice: "Mindestens zwei Antwortmöglichkeiten werden benötigt."
   choiceN: "Auswahl {n}"
@@ -1084,3 +1083,4 @@ _notification:
   youReceivedFollowRequest: "Du hast eine Follow-Anfrage erhalten"
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
   youWereInvitedToGroup: "Du wurdest in eine Gruppe eingeladen"
+
