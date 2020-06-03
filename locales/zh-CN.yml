@@ -636,7 +636,6 @@ _cw:
   show: "查看更多"
   chars: "{count}个字符"
   files: "{count} 个文件"
-  poll: "投票"
 _poll:
   noOnlyOneChoice: "需要至少两个选项"
   choiceN: "选择{n}"
@@ -1084,3 +1083,4 @@ _notification:
   youReceivedFollowRequest: "您有新的关注请求"
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
+
