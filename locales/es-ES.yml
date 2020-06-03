@@ -635,7 +635,6 @@ _cw:
   show: "Ver más"
   chars: "{count} caracteres"
   files: "{count} archivos"
-  poll: "Encuesta"
 _poll:
   noOnlyOneChoice: "Se necesitan al menos 2 opciones"
   choiceN: "Opción {n}"
@@ -1083,3 +1082,4 @@ _notification:
   youReceivedFollowRequest: "Has mandado una solicitud de seguimiento"
   yourFollowRequestAccepted: "Tu solicitud de seguimiento fue aceptada"
   youWereInvitedToGroup: "Invitado al grupo"
+
