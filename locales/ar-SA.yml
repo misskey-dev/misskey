@@ -315,7 +315,6 @@ _cw:
   show: "عرض المزيد"
   chars: "{count} أحرف"
   files: "{count} ملفات"
-  poll: "استطلاع رأي"
 _poll:
   at: "تاريخ الإنتهاء"
   deadlineDate: "تاريخ الانتهاء"
@@ -380,3 +379,4 @@ _pages:
       array: "القوائم"
 _notification:
   youWereFollowed: "يتابعك"
+
