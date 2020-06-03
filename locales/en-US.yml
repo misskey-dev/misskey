@@ -636,7 +636,6 @@ _cw:
   show: "Load more"
   chars: "{count} characters"
   files: "{count} file(s)"
-  poll: "Poll"
 _poll:
   noOnlyOneChoice: "At least two choices are needed"
   choiceN: "Choice {n}"
@@ -1084,3 +1083,4 @@ _notification:
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
   youWereInvitedToGroup: "Invited to group"
+
