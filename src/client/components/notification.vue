@@ -104,7 +104,7 @@ export default Vue.extend({
 					id: this.notification.id
 				});
 				entries.map(({ target }) => observer.unobserve(target));
-			})
+			});
 
 			this.readObserver.observe(this.$el);
 
