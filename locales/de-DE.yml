@@ -673,6 +673,7 @@ _visibility:
   specified: "Direkt"
   specifiedDescription: "Nur für bestimmte Benutzer sichtbar"
   localOnly: "Nur Lokal"
+  localOnlyDescription: "Unsichtbar für Benutzer anderer Instanzen"
 _postForm:
   replyPlaceholder: "Dieser Notiz antworten..."
   quotePlaceholder: "Diese Notiz zitieren..."
