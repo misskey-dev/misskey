@@ -8,6 +8,7 @@
 	<header>
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
 		<div>
+			<span class="local-only" v-if="localOnly" v-text="$t('_visibility.localOnly')" />
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
 			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
@@ -15,7 +16,6 @@
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
 				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
 			</button>
-			<button class="_button localOnly" v-if="visibility !== 'specified'" @click="localOnly = !localOnly" :class="{ active: localOnly }" v-tooltip="$t('_visibility.localOnly')"><fa :icon="faBiohazard"/></button>
 			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
@@ -397,10 +397,12 @@ export default Vue.extend({
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				currentVisibility: this.visibility
+				currentVisibility: this.visibility,
+				currentLocalOnly: this.localOnly
 			});
-			w.$once('chosen', v => {
-				this.applyVisibility(v);
+			w.$once('chosen', ({ visibility, localOnly }) => {
+				this.applyVisibility(visibility);
+				this.localOnly = localOnly;
 			});
 		},
 
@@ -628,15 +630,9 @@ export default Vue.extend({
 					margin-left: 0 !important;
 				}
 			}
-
-			> .localOnly {
-				height: 34px;
-				width: 34px;
+			
+			.local-only {
 				margin: 0 8px;
-
-				&.active {
-					color: var(--accent);
-				}
 			}
 
 			> .submit {
