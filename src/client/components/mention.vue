@@ -1,5 +1,5 @@
 <template>
-<router-link class="ldlomzub" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
+<router-link class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
 	<span class="me" v-if="isMe">{{ $t('you') }}</span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
@@ -63,6 +63,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .ldlomzub {
 	color: var(--mention);
+
+	&.isMe {
+		color: var(--mentionMe);
+	}
 	
 	> .me {
 		pointer-events: none;
