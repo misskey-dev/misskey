@@ -673,6 +673,7 @@ _visibility:
   specified: "Direct"
   specifiedDescription: "Post to specified users only"
   localOnly: "Local only"
+  localOnlyDescription: "Not visible to remote users"
 _postForm:
   replyPlaceholder: "Reply to this note..."
   quotePlaceholder: "Quote this note..."
