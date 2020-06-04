@@ -1,3 +1,1 @@
-export function isDeviceTouch(): boolean {
-	return 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0;
-}
+export const isDeviceTouch = 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0;

@@ -62,13 +62,13 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
-			if (isDeviceTouch()) return;
+			if (isDeviceTouch) return;
 			clearTimeout(this.showTimer);
 			clearTimeout(this.hideTimer);
 			this.showTimer = setTimeout(this.showPreview, 500);
 		},
 		onMouseleave() {
-			if (isDeviceTouch()) return;
+			if (isDeviceTouch) return;
 			clearTimeout(this.showTimer);
 			clearTimeout(this.hideTimer);
 			this.hideTimer = setTimeout(this.closePreview, 500);

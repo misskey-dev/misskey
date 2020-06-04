@@ -8855,10 +8855,10 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
-summaly@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/summaly/-/summaly-2.3.1.tgz#028ef4d206a5da06ae5c723fc60719d38368d6f2"
-  integrity sha512-QgBllL0h1MevPW5xS1B+8hp2WW1f5UIADd4SgLeBkvOePb9ApGarcJN1FRBkVcyxd1H/hvJ5zPr2nRJ51Hpaqw==
+summaly@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/summaly/-/summaly-2.4.0.tgz#2054c91097d331b8aea838c88022bc1f23520cbe"
+  integrity sha512-dSXmg6WIk6kxzTfnBEwpMs42q0YI/bBbzU+vFKTd4DMBgH/UKWJCbqHIfrdaxA1I0CocNjXKCj38mglfM82kAg==
   dependencies:
     cheerio-httpcli "0.7.4"
     debug "3.1.0"
