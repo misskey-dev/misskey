@@ -673,6 +673,7 @@ _visibility:
   specified: "Mensaje directo"
   specifiedDescription: "Visible sólo para los usuarios elegidos"
   localOnly: "Solo local"
+  localOnlyDescription: "Oculto para usuarios remotos"
 _postForm:
   replyPlaceholder: "Responder a esta nota"
   quotePlaceholder: "Citar esta nota"
