@@ -21,7 +21,7 @@ import apiServer from './api';
 import { sum } from '../prelude/array';
 import Logger from '../services/logger';
 import { program } from '../argv';
-import { UserProfiles } from '../models';
+import { UserProfiles, AccessTokens, Users } from '../models';
 import { networkChart } from '../services/chart';
 import { genAvatar } from '../misc/gen-avatar';
 import { createTemp } from '../misc/create-temp';
@@ -89,6 +89,30 @@ router.get('/verify-email/:code', async ctx => {
 		});
 	} else {
 		ctx.status = 404;
+	}
+});
+
+router.post('/miauth/:session/check', async ctx => {
+	ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
+
+	const token = await AccessTokens.findOne({
+		session: ctx.params.session
+	});
+
+	if (token && !token.fetched) {
+		AccessTokens.update(token.id, {
+			fetched: true
+		});
+
+		ctx.body = {
+			ok: true,
+			token: token.token,
+			user: await Users.pack(token.userId, null, { detail: true })
+		};
+	} else {
+		ctx.body = {
+			ok: false,
+		};
 	}
 });
 
