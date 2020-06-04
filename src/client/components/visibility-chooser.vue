@@ -29,8 +29,8 @@
 				<span>{{ $t('_visibility.specifiedDescription') }}</span>
 			</div>
 		</button>
-		<button class="_button" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
-			<div><fa :icon="faBiohazard"/></div>
+		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
+			<div><fa :icon="localOnly ? faToggleOn : faToggleOff"/></div>
 			<div>
 				<span>{{ $t('_visibility.localOnly') }}</span>
 				<span>{{ $t('_visibility.localOnlyDescription') }}</span>
@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faGlobe, faUnlock, faHome, faBiohazard } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faUnlock, faHome, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import XPopup from './popup.vue';
 
@@ -67,7 +67,7 @@ export default Vue.extend({
 		return {
 			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
 			localOnly: this.currentLocalOnly,
-			faGlobe, faUnlock, faEnvelope, faHome, faBiohazard
+			faGlobe, faUnlock, faEnvelope, faHome, faToggleOn, faToggleOff
 		}
 	},
 	methods: {
@@ -112,6 +112,11 @@ export default Vue.extend({
 		&.active {
 			color: #fff;
 			background: var(--accent);
+		}
+
+		&.localOnly.active {
+			color: var(--accent);
+			background: inherit;
 		}
 
 		> *:first-child {
