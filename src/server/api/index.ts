@@ -41,9 +41,7 @@ const upload = multer({
 });
 
 // Init router
-const router = new Router({
-	prefix: '/api'
-});
+const router = new Router();
 
 /**
  * Register endpoint handlers
@@ -75,18 +73,7 @@ router.get('/v1/instance/peers', async ctx => {
 	ctx.body = instances.map(instance => instance.host);
 });
 
-// Return 404 for unknown API
-router.all('*', async ctx => {
-	ctx.status = 404;
-});
-
-// Register router
-app.use(router.routes());
-
-//#region miauth
-const miauthRouter = new Router();
-
-miauthRouter.post('/miauth/:session/check', async ctx => {
+router.post('/miauth/:session/check', async ctx => {
 	const token = await AccessTokens.findOne({
 		session: ctx.params.session
 	});
@@ -108,7 +95,12 @@ miauthRouter.post('/miauth/:session/check', async ctx => {
 	}
 });
 
-app.use(miauthRouter.routes());
-//#endregion
+// Return 404 for unknown API
+router.all('*', async ctx => {
+	ctx.status = 404;
+});
+
+// Register router
+app.use(router.routes());
 
 export default app;
