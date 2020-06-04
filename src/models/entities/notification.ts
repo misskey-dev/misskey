@@ -5,6 +5,7 @@ import { Note } from './note';
 import { FollowRequest } from './follow-request';
 import { UserGroupInvitation } from './user-group-invitation';
 import { AccessToken } from './access-token';
+import { notificationTypes } from '../../types';
 
 @Entity()
 export class Notification {
@@ -66,10 +67,10 @@ export class Notification {
 	 */
 	@Index()
 	@Column('enum', {
-		enum: ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'app'],
+		enum: notificationTypes,
 		comment: 'The type of the Notification.'
 	})
-	public type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollVote' | 'receiveFollowRequest' | 'followRequestAccepted' | 'groupInvited' | 'app';
+	public type: typeof notificationTypes[number];
 
 	/**
 	 * 通知が読まれたかどうか
