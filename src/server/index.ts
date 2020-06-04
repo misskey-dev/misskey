@@ -17,7 +17,7 @@ import activityPub from './activitypub';
 import nodeinfo from './nodeinfo';
 import wellKnown from './well-known';
 import config from '../config';
-import api from './api';
+import apiServer from './api';
 import { sum } from '../prelude/array';
 import Logger from '../services/logger';
 import { program } from '../argv';
@@ -55,7 +55,7 @@ if (config.url.startsWith('https') && !config.disableHsts) {
 	});
 }
 
-app.use(mount(api));
+app.use(mount('/api', apiServer));
 app.use(mount('/files', require('./file')));
 app.use(mount('/proxy', require('./proxy')));
 
