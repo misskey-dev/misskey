@@ -673,6 +673,7 @@ _visibility:
   specified: "指定用户"
   specifiedDescription: "仅发送至指定用户"
   localOnly: "仅限本地"
+  localOnlyDescription: "对远程用户不可见"
 _postForm:
   replyPlaceholder: "回复这个帖子..."
   quotePlaceholder: "引用这个帖子..."
