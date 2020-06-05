@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.38.1",
+	"version": "12.39.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -224,7 +224,7 @@
 		"speakeasy": "2.0.0",
 		"stringz": "2.1.0",
 		"style-loader": "1.2.1",
-		"summaly": "2.3.1",
+		"summaly": "2.4.0",
 		"syslog-pro": "1.0.0",
 		"systeminformation": "4.26.4",
 		"syuilo-password-strength": "0.0.1",

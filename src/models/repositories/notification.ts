@@ -19,6 +19,7 @@ export class NotificationRepository extends Repository<Notification> {
 			id: notification.id,
 			createdAt: notification.createdAt.toISOString(),
 			type: notification.type,
+			isRead: notification.isRead,
 			userId: notification.notifierId,
 			user: notification.notifierId ? Users.pack(notification.notifier || notification.notifierId) : null,
 			...(notification.type === 'mention' ? {

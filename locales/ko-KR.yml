@@ -632,7 +632,6 @@ _cw:
   show: "더 보기"
   chars: "{count} 문자"
   files: "{count} 파일"
-  poll: "투표"
 _poll:
   noOnlyOneChoice: "투표 항목이 최소 2개 필요합니다"
   choiceN: "선택지 {n}"
@@ -1070,3 +1069,4 @@ _relayStatus:
 _notification:
   youWereFollowed: "새로운 팔로워가 있습니다"
   youWereInvitedToGroup: "그룹에 초대되었습니다"
+
