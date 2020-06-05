@@ -3,6 +3,16 @@ ChangeLog
 
 12.39.1 (2020/6/5)
 -------------------
+### ✨Improvements
+- メンションの色をテーマで指定できるように [071c7e6](https://github.com/syuilo/misskey/commit/071c7e6a581ca5d025d414869e03536011219370)
+
+### 🐛Fixes
+- リモートからのノートが受信できない問題を修正 [3c2d94ac](https://github.com/syuilo/misskey/commit/3c2d94ace31c0dbbbd18606d16828df60d0392eb), [7f76a73e](https://github.com/syuilo/misskey/commit/7f76a73eeef5df3b1fc02a00a0ca5710383a2429)
+  * MiAuthのレスポンスが返ってこない問題を修正を差し戻し
+- ドキュメントのMiAuthのURLを現状利用できるものに修正 [ddf92c3e](https://github.com/syuilo/misskey/commit/ddf92c3e2c5bdfc89e5c223a3cc2794f6a023400), [7f76a73e](https://github.com/syuilo/misskey/commit/7f76a73eeef5df3b1fc02a00a0ca5710383a2429)
+
+12.39.0 (2020/6/4)
+-------------------
 **12.39.0にはリモートからのノートが受信できないという重大なバグがありますので、使わないでください。**  
 **NEVER USE 12.39.0 because it has a serious bug that Misskey cannot recieve notes from remotes.**  
 
@@ -16,13 +26,13 @@ ChangeLog
 - APIのNotificationでisRead（既読かどうか）を含めるように [#6407](https://github.com/syuilo/misskey/pull/6407)
 
 ### 🐛Fixes
-- ドキュメントのMiAuthのURLが間違っているのを修正 [ddf92c3e](https://github.com/syuilo/misskey/commit/ddf92c3e2c5bdfc89e5c223a3cc2794f6a023400)
 - 引用ノートのフォントサイズがおかしいときがあるのを修正 [#6414](https://github.com/syuilo/misskey/pull/6414)
 - iOS Safari 上で アイコンおよびバナーのアップロードができない不具合を修正 [#6427](https://github.com/syuilo/misskey/pull/6427)
 - APで `HTTP-Signature検証失敗 かつ LD-Signatureなし` がキューに溜まってリトライし続けるのを修正 [#6437](https://github.com/syuilo/misskey/pull/6437)
 - MiAuthでトークンが利用できない問題を修正 [6b2c2890](https://github.com/syuilo/misskey/commit/6b2c289029cbf01537c2a67a3e61d615aad30c34)
 - Twitterのプレビューが利用できなくなっている問題を修正 [f296410](https://github.com/syuilo/misskey/commit/f2964101d162fb64ac9e7ad99123c5bb568ac52b)
 - IDの重複が起きてしまう問題を修正 [#6440](https://github.com/syuilo/misskey/pull/6440)
+- ※MiAuthのレスポンスが返ってこない問題を修正 [#6418](https://github.com/syuilo/misskey/issues/6418)
 
 12.38.0 (2020/5/17)
 -------------------
