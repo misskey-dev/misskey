@@ -111,7 +111,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	}
 
 	// Update stats
-	registerOrFetchInstanceDoc(authUser.user.host).then(i => {
+	registerOrFetchInstanceDoc(host).then(i => {
 		Instances.update(i.id, {
 			latestRequestReceivedAt: new Date(),
 			lastCommunicatedAt: new Date(),
