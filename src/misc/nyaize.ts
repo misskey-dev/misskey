@@ -3,7 +3,9 @@ export function nyaize(text: string): string {
 		// ja-JP
 		.replace(/な/g, 'にゃ').replace(/ナ/g, 'ニャ').replace(/ﾅ/g, 'ﾆｬ')
 		// en-US
-		.replace(/morning/gi, 'mornyan').replace(/everyone/gi, 'everynyan')
+		.replace(/Na/g, 'Nya').replace(/na/g, 'nya')
+		.replace(/Morning/g, 'Mornyan').replace(/morning/g, 'mornyan')
+		.replace(/Everyone/g, 'Everynyan').replace(/everyone/g, 'everynyan')
 		// ko-KR
 		.replace(/[나-낳]/g, match => String.fromCharCode(
 			match.charCodeAt(0)! + '냐'.charCodeAt(0) - '나'.charCodeAt(0)
