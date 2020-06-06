@@ -494,9 +494,8 @@ export default Vue.extend({
 					...i,
 					token: token
 				}).then(() => {
-					this.$router.go({
-						path: this.$router.currentRoute.path,
-						force: true
+					this.$nextTick(() => {
+						location.reload();
 					});
 				});
 			});
