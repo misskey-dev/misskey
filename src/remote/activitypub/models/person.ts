@@ -138,6 +138,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const isBot = object.type === 'Service';
 
+	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
+
 	// Create user
 	let user: IRemoteUser;
 	try {
@@ -168,6 +170,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
 				url: getOneApHrefNullable(person.url),
 				fields,
+				birthday: bday ? bday[0] : undefined,
+				location: person['vcard:Address'] || undefined,
 				userHost: host
 			}));
 
@@ -319,6 +323,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
+	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
+
 	const updates = {
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
@@ -356,6 +362,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		url: getOneApHrefNullable(person.url),
 		fields,
 		description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
+		birthday: bday ? bday[0] : undefined,
+		location: person['vcard:Address'] || undefined,
 	});
 
 	// ハッシュタグ更新
