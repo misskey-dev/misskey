@@ -27,7 +27,7 @@ const summarize = (note: any, locale: any): string => {
 
 	// 投票が添付されているとき
 	if (note.poll) {
-		summary += ` (${locale._cw?.poll || locale['_cw.poll']})`;
+		summary += ` (${locale['poll']})`;
 	}
 
 	// 返信のとき

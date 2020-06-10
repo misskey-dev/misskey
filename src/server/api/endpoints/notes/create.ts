@@ -11,6 +11,7 @@ import { Users, DriveFiles, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
+import { noteVisibilities } from '../../../../types';
 
 let maxNoteTextLength = 500;
 
@@ -38,7 +39,7 @@ export const meta = {
 
 	params: {
 		visibility: {
-			validator: $.optional.str.or(['public', 'home', 'followers', 'specified']),
+			validator: $.optional.str.or(noteVisibilities as unknown as string[]),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'

@@ -494,7 +494,9 @@ export default Vue.extend({
 					...i,
 					token: token
 				}).then(() => {
-					location.reload();
+					this.$nextTick(() => {
+						location.reload();
+					});
 				});
 			});
 		},

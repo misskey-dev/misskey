@@ -29,6 +29,7 @@
 		link: '#44a4c1',
 		hashtag: '#ff9156',
 		mention: '@accent',
+		mentionMe: '@mention',
 		renote: '#229e82',
 		modalBg: 'rgba(0, 0, 0, 0.5)',
 		divider: 'rgba(255, 255, 255, 0.1)',
