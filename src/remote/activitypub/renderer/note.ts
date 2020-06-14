@@ -85,31 +85,15 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 
 	const files = await getPromisedFiles(note.fileIds);
 
-	let text = note.text;
+	const text = note.text;
 	let poll: Poll | undefined;
 
 	if (note.hasPoll) {
 		poll = await Polls.findOne({ noteId: note.id });
 	}
 
-	if (poll) {
-		if (text == null) text = '';
-		const url = `${config.url}/notes/${note.id}`;
-		// TODO: i18n
-		text += `\n[リモートで結果を表示](${url})`;
-	}
-
 	let apText = text;
 	if (apText == null) apText = '';
-
-	// Provides choices as text for AP
-	if (poll) {
-		const cs = poll.choices.map((c, i) => `${i}: ${c}`);
-		apText += '\n----------------------------------------\n';
-		apText += cs.join('\n');
-		apText += '\n----------------------------------------\n';
-		apText += '番号を返信して投票';
-	}
 
 	if (quote) {
 		apText += `\n\nRE: ${quote}`;
@@ -135,7 +119,6 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		content: toHtml(Object.assign({}, note, {
 			text: text
 		})),
-		_misskey_fallback_content: content,
 		[poll.expiresAt && poll.expiresAt < new Date() ? 'closed' : 'endTime']: poll.expiresAt,
 		[poll.multiple ? 'anyOf' : 'oneOf']: poll.choices.map((text, i) => ({
 			type: 'Note',
