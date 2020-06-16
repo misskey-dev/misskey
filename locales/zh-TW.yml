@@ -293,10 +293,13 @@ userList: "清單"
 about: "資訊"
 patrons: "贊助者"
 administrator: "管理員"
+token: "令牌"
 twoStepAuthentication: "雙重身份驗證"
 moderator: "板主"
-securityKeyName: "密鑰名稱"
+nUsersMentioned: "提到了{n}"
+securityKeyName: "金鑰名稱"
 lastUsed: "最後活躍時間"
+unregister: "刪除賬戶"
 passwordLessLogin: "設置無密碼登入"
 resetPassword: "重置密碼"
 newPasswordIs: "新密碼為「{password}」"
@@ -439,6 +442,7 @@ _rooms:
     default: "預設"
   _furnitures:
     monitor: "監視器"
+    keyboard: "鍵盤"
 _pages:
   deleted: "頁面已被刪除"
   blocks:
