@@ -281,13 +281,16 @@ notesAndReplies: "貼文與回覆"
 withFiles: "附件"
 silence: "禁言"
 silenceConfirm: "確定要禁言此用戶嗎？"
+unsilence: "解除禁言"
 unsilenceConfirm: "確定要解除禁言嗎？"
 popularUsers: "熱門用戶"
 recentlyUpdatedUsers: "最近發文的用戶"
 recentlyRegisteredUsers: "新加入用戶"
 recentlyDiscoveredUsers: "最近發現的用戶"
+exploreUsersCount: "有{count}個用戶"
 popularTags: "熱門標籤"
 userList: "清單"
+about: "資訊"
 patrons: "贊助者"
 administrator: "管理員"
 twoStepAuthentication: "雙重身份驗證"
@@ -360,6 +363,7 @@ volume: "音量"
 details: "詳細資訊"
 deleteAllFiles: "刪除所有檔案"
 deleteAllFilesConfirm: "要删除所有檔案吗？"
+userSilenced: "該用戶已被禁言。"
 deletedNote: "已删除的貼文"
 _sfx:
   note: "貼文"
@@ -439,23 +443,42 @@ _pages:
   deleted: "頁面已被刪除"
   blocks:
     image: "圖片"
+    numberInput: "輸入數值"
   script:
     categories:
       list: "清單"
     blocks:
       _join:
         arg1: "清單"
+      _round:
+        arg1: "數值"
       _randomPick:
         arg1: "清單"
+      _dailyRannum:
+        arg1: "下限"
+        arg2: "上限"
       _dailyRandomPick:
         arg1: "清單"
+      seedRandom: "隨機抽選種子碼"
+      _seedRandom:
+        arg1: "種子"
+        arg2: "機率"
+      seedRannum: "亂數 (種子)"
+      _seedRannum:
+        arg1: "種子"
+      seedRandomPick: "從列表中隨機選擇 (種子)"
       _seedRandomPick:
+        arg1: "種子"
         arg2: "清單"
       _pick:
         arg1: "清單"
       _listLen:
         arg1: "清單"
+      number: "數值"
+      _numberToString:
+        arg1: "數值"
     types:
+      number: "数值"
       array: "清單"
 _notification:
   youWereFollowed: "您有新的追隨者"
