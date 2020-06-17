@@ -423,18 +423,37 @@ _tutorial:
   step7_1: "以上為Misskey的基本操作說明，教學在此告一段落。辛苦了。"
   step7_2: "歡迎到{help}來瞭解更多Misskey相關介紹。"
 _permissions:
+  "read:blocks": "已封鎖用戶名單"
+  "write:blocks": "編輯已封鎖用戶名單"
+  "read:drive": "存取雲端硬碟\n"
+  "write:drive": "編輯雲端硬碟的檔案"
+  "read:favorites": "瀏覽已收藏"
   "write:favorites": "編輯收藏清單"
   "write:notes": "撰寫或刪除貼文"
   "read:notifications": "查看通知"
+  "write:votes": "投票"
+_weekday:
+  sunday: "週日"
+  monday: "週一"
+  tuesday: "週二"
+  wednesday: "週三"
+  thursday: "週四"
+  friday: "週五"
+  saturday: "週六"
 _widgets:
   notifications: "通知"
   timeline: "時間軸"
+  clock: "時鐘"
+  rss: "RSS閱讀器"
   activity: "動態"
+  photos: "照片"
 _cw:
   show: "瀏覽更多"
   files: "{count} 個檔案"
 _poll:
   deadlineTime: "小時"
+  vote: "投票"
+  voted: "已投票"
 _visibility:
   home: "首頁"
   followers: "追隨者"
@@ -557,6 +576,7 @@ _pages:
       number: "数值"
       array: "清單"
 _notification:
+  youGotPoll: "{name}已投票"
   youWereFollowed: "您有新的追隨者"
   yourFollowRequestAccepted: "您的追隨請求已通過"
 
