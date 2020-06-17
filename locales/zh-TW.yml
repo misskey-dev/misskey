@@ -502,6 +502,10 @@ _pages:
         arg1: "否"
       _random:
         arg1: "機率"
+      rannum: "亂數"
+      _rannum:
+        arg1: "下限"
+        arg2: "上限"
       _randomPick:
         arg1: "清單"
       _dailyRandom:
@@ -537,6 +541,7 @@ _pages:
       _numberToString:
         arg1: "數值"
       aiScriptVar: "AiScript的變數"
+      fn: "函数"
     types:
       string: "文字"
       number: "数值"
