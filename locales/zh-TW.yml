@@ -475,23 +475,37 @@ _pages:
       _round:
         arg1: "數值"
       _eq:
+        arg1: "A"
         arg2: "B"
       _notEq:
+        arg1: "A"
         arg2: "B"
       _and:
+        arg1: "A"
         arg2: "B"
       _or:
+        arg1: "A"
         arg2: "B"
       _lt:
+        arg1: "A"
         arg2: "B"
       _gt:
+        arg1: "A"
         arg2: "B"
       _ltEq:
+        arg1: "A"
         arg2: "B"
       _gtEq:
         arg2: "B"
+      not: "否"
+      _not:
+        arg1: "否"
+      _random:
+        arg1: "機率"
       _randomPick:
         arg1: "清單"
+      _dailyRandom:
+        arg1: "機率"
       _dailyRannum:
         arg1: "下限"
         arg2: "上限"
