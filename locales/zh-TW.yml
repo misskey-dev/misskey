@@ -294,6 +294,7 @@ exploreUsersCount: "有{count}個用戶"
 popularTags: "熱門標籤"
 userList: "清單"
 about: "資訊"
+aboutMisskey: "關於 Misskey"
 patrons: "贊助者"
 administrator: "管理員"
 token: "令牌"
@@ -457,8 +458,38 @@ _pages:
     blocks:
       _join:
         arg1: "清單"
+      _add:
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
       _round:
         arg1: "數值"
+      _eq:
+        arg2: "B"
+      _notEq:
+        arg2: "B"
+      _and:
+        arg2: "B"
+      _or:
+        arg2: "B"
+      _lt:
+        arg2: "B"
+      _gt:
+        arg2: "B"
+      _ltEq:
+        arg2: "B"
+      _gtEq:
+        arg2: "B"
       _randomPick:
         arg1: "清單"
       _dailyRannum:
@@ -473,18 +504,27 @@ _pages:
       seedRannum: "亂數 (種子)"
       _seedRannum:
         arg1: "種子"
+        arg2: "最小值"
+        arg3: "最大值"
       seedRandomPick: "從列表中隨機選擇 (種子)"
       _seedRandomPick:
         arg1: "種子"
         arg2: "清單"
+      pick: "從清單中選取"
       _pick:
         arg1: "清單"
+        arg2: "位置"
+      listLen: "取得清單長度"
       _listLen:
         arg1: "清單"
       number: "數值"
+      _stringToNumber:
+        arg1: "文字"
       _numberToString:
         arg1: "數值"
+      aiScriptVar: "AiScript的變數"
     types:
+      string: "文字"
       number: "数值"
       array: "清單"
 _notification:
