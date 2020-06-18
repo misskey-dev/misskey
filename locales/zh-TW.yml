@@ -491,6 +491,7 @@ _rooms:
 _pages:
   deleted: "頁面已被刪除"
   like: "喜歡"
+  unlike: "收回喜歡"
   blocks:
     image: "圖片"
     _textareaInput:
