@@ -491,6 +491,8 @@ _pages:
     categories:
       list: "清單"
     blocks:
+      _strPick:
+        arg2: "字元位置"
       _join:
         arg1: "清單"
       _add:
@@ -526,18 +528,26 @@ _pages:
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A小於B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A大於B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A小於或等於B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A大於或等於B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "分支"
+      _if:
+        arg1: "如果"
+        arg2: "如果"
       not: "否"
       _not:
         arg1: "否"
