@@ -167,6 +167,7 @@ publishing: "現正直播"
 notResponding: "沒有回應"
 instanceFollowing: "追蹤實例"
 instanceFollowers: "追蹤實例"
+instanceUsers: "用戶"
 changePassword: "修改密碼"
 security: "安全性"
 retypedNotMatch: "不相符的輸入內容"
@@ -188,6 +189,7 @@ messaging: "傳送訊息"
 upload: "上傳"
 fromDrive: "從雲端"
 fromUrl: "從URL"
+uploadFromUrl: "從網址上傳"
 uploadFromUrlMayTakeTime: "還需要一些時間才能完成上傳。"
 explore: "探索"
 games: "Misskey 遊戲"
@@ -277,7 +279,9 @@ enableRecaptcha: "啟用 reCAPTCHA"
 recaptchaSiteKey: "網站金鑰"
 recaptchaSecretKey: "金鑰"
 name: "名稱"
+antennaKeywords: "包含的關鍵字"
 antennaExcludeKeywords: "排除關鍵字"
+notifyAntenna: "通知我有新的貼文"
 serviceworker: "ServiceWorker"
 enableServiceworker: "開啟 ServiceWorker"
 caseSensitive: "區分大小寫"
@@ -486,13 +490,25 @@ _pages:
   deleted: "頁面已被刪除"
   blocks:
     image: "圖片"
+    _textareaInput:
+      name: "變數名稱"
     numberInput: "輸入數值"
+    _numberInput:
+      name: "變數名稱"
+    _canvas:
+      width: "寬度"
+    _counter:
+      text: "標題"
+    _button:
+      text: "標題"
   script:
     categories:
       list: "清單"
     blocks:
       _strPick:
         arg2: "字元位置"
+      _strReverse:
+        arg1: "本文"
       _join:
         arg1: "清單"
       _add:
@@ -600,6 +616,10 @@ _pages:
       number: "数值"
       array: "清單"
     enviromentVariables: "環境變數"
+_relayStatus:
+  requesting: "等待核准"
+  accepted: "已通過核准"
+  rejected: "已拒絕"
 _notification:
   youGotPoll: "{name}已投票"
   youWereFollowed: "您有新的追隨者"
