@@ -366,6 +366,7 @@ tags: "標籤"
 fontSize: "字體大小"
 total: "合計"
 clinetSettings: "用戶端設定"
+serverLogs: "伺服器日誌"
 deleteAll: "刪除所有記錄"
 none: "無"
 volume: "音量"
@@ -493,6 +494,7 @@ _pages:
       _join:
         arg1: "清單"
       _add:
+        arg1: "A"
         arg2: "B"
       _subtract:
         arg1: "A"
@@ -508,15 +510,19 @@ _pages:
         arg2: "B"
       _round:
         arg1: "數值"
+      eq: "A和B相等"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A和B不等"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A和B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A或B"
       _or:
         arg1: "A"
         arg2: "B"
@@ -530,6 +536,7 @@ _pages:
         arg1: "A"
         arg2: "B"
       _gtEq:
+        arg1: "A"
         arg2: "B"
       not: "否"
       _not:
