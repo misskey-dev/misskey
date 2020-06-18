@@ -144,6 +144,8 @@ statistics: "統計"
 clearQueue: "清除佇列"
 clearQueueConfirmTitle: "確定要清除佇列嗎？"
 clearCachedFiles: "清除快取資料"
+blockedInstances: "已封鎖的實例"
+blockedInstancesDescription: "請逐行輸入需要封鎖的實例。已封鎖的實例將無法與本實例進行通訊。"
 muteAndBlock: "禁言 / 封鎖"
 mutedUsers: "已禁言用戶"
 blockedUsers: "已封鎖用戶"
@@ -488,6 +490,7 @@ _rooms:
     keyboard: "鍵盤"
 _pages:
   deleted: "頁面已被刪除"
+  like: "喜歡"
   blocks:
     image: "圖片"
     _textareaInput:
