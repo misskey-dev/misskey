@@ -303,6 +303,8 @@ popularTags: "熱門標籤"
 userList: "清單"
 about: "資訊"
 aboutMisskey: "關於 Misskey"
+misskeyTranslation: "幫助我們為Misskey的翻譯工作出一分力："
+misskeyDonate: "向Misskey捐款以支援我們開發工作："
 patrons: "贊助者"
 administrator: "管理員"
 token: "令牌"
@@ -507,14 +509,25 @@ _pages:
       text: "標題"
   script:
     categories:
+      value: "數值 "
+      fn: "函数"
+      text: "文本操作"
+      convert: "轉換"
       list: "清單"
     blocks:
+      text: "文本"
+      multiLineText: "文本 (多行)"
+      textList: "文本列表"
       _strPick:
+        arg1: "文本"
         arg2: "字元位置"
+      _strReplace:
+        arg1: "文本"
       _strReverse:
         arg1: "本文"
       _join:
         arg1: "清單"
+      add: "加"
       _add:
         arg1: "A"
         arg2: "B"
@@ -599,6 +612,8 @@ _pages:
       _seedRandomPick:
         arg1: "種子"
         arg2: "清單"
+      _DRPWPM:
+        arg1: "文本列表"
       pick: "從清單中選取"
       _pick:
         arg1: "清單"
@@ -611,14 +626,20 @@ _pages:
         arg1: "文字"
       _numberToString:
         arg1: "數值"
+      ref: "變數"
       aiScriptVar: "AiScript的變數"
       fn: "函数"
       _fn:
+        slots: "欄位"
         arg1: "輸出"
+      _for:
+        arg1: "重複次數"
+        arg2: "處理"
     types:
       string: "文字"
       number: "数值"
       array: "清單"
+      stringArray: "文本列表"
     enviromentVariables: "環境變數"
 _relayStatus:
   requesting: "等待核准"
