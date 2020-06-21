@@ -140,6 +140,8 @@ export interface IPerson extends IObject {
 	endpoints?: {
 		sharedInbox?: string;
 	};
+	'vcard:bday'?: string;
+	'vcard:Address'?: string;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>
