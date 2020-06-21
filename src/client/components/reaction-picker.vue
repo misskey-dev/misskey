@@ -4,7 +4,7 @@
 		<div class="buttons" ref="buttons" :class="{ showFocus }">
 			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><x-reaction-icon :reaction="reaction"/></button>
 		</div>
-		<input class="text" v-model="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
+		<input class="text" v-model.trim="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
 	</div>
 </x-popup>
 </template>
