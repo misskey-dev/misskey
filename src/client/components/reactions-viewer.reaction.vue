@@ -1,7 +1,7 @@
 <template>
 <button
 	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle }"
+	:class="{ reacted: note.myReaction == reaction, canToggle: canToggle && !isMe }"
 	@click="toggleReaction(reaction)"
 	v-if="count > 0"
 	@touchstart="onMouseover"
@@ -9,9 +9,9 @@
 	@mouseleave="onMouseleave"
 	@touchend="onMouseleave"
 	ref="reaction"
-	v-particle
+	v-particle="canToggle && !isMe"
 >
-	<x-reaction-icon :reaction="reaction" :customEmojis="note.emojis" ref="icon"/>
+	<x-reaction-icon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
 	<span>{{ count }}</span>
 </button>
 </template>
@@ -58,14 +58,14 @@ export default Vue.extend({
 			return !this.reaction.match(/@\w/);
 		},
 	},
-	mounted() {
-		if (!this.isInitial) this.anime();
-	},
 	watch: {
 		count(newCount, oldCount) {
 			if (oldCount < newCount) this.anime();
 			if (this.details != null) this.openDetails();
 		},
+	},
+	mounted() {
+		if (!this.isInitial) this.anime();
 	},
 	methods: {
 		toggleReaction() {
