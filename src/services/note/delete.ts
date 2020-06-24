@@ -6,14 +6,14 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import config from '../../config';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import { User } from '../../models/entities/user';
-import { Note } from '../../models/entities/note';
+import { User, IRemoteUser } from '../../models/entities/user';
+import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
-import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
+import { deliverToFollowers, deliverToUser } from '../../remote/activitypub/deliver-manager';
 import { countSameRenotes } from '../../misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
-import { Brackets } from 'typeorm';
+import { Brackets, In } from 'typeorm';
 
 /**
  * 投稿を削除します。
@@ -51,6 +51,10 @@ export default async function(user: User, note: Note, quiet = false) {
 
 			deliverToFollowers(user, content);
 			deliverToRelays(user, content);
+			const remoteUsers = await getMentionedRemoteUsers(note);
+			for (const remoteUser of remoteUsers) {
+				deliverToUser(user, content, remoteUser);
+			}
 		}
 
 		// also deliever delete activity to cascaded notes
@@ -61,6 +65,10 @@ export default async function(user: User, note: Note, quiet = false) {
 			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
 			deliverToFollowers(cascadingNote.user, content);
 			deliverToRelays(cascadingNote.user, content);
+			const remoteUsers = await getMentionedRemoteUsers(cascadingNote);
+			for (const remoteUser of remoteUsers) {
+				deliverToUser(cascadingNote.user, content, remoteUser);
+			}
 		}
 		//#endregion
 
@@ -102,4 +110,14 @@ async function findCascadingNotes(note: Note) {
 	await recursive(note.id);
 
 	return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
+}
+
+async function getMentionedRemoteUsers(note: Note) {
+	const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
+
+	return await Users.find({
+		where: {
+			uri: In(mentions)
+		}
+	}) as IRemoteUser[];
 }
