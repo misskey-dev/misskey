@@ -6,7 +6,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
 import config from '../../config';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import { User, IRemoteUser } from '../../models/entities/user';
+import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
@@ -49,12 +49,7 @@ export default async function(user: User, note: Note, quiet = false) {
 				? renderUndo(renderAnnounce(renote.uri || `${config.url}/notes/${renote.id}`, note), user)
 				: renderDelete(renderTombstone(`${config.url}/notes/${note.id}`), user));
 
-			deliverToFollowers(user, content);
-			deliverToRelays(user, content);
-			const remoteUsers = await getMentionedRemoteUsers(note);
-			for (const remoteUser of remoteUsers) {
-				deliverToUser(user, content, remoteUser);
-			}
+			deliverToConcerned(user, note, content);
 		}
 
 		// also deliever delete activity to cascaded notes
@@ -63,12 +58,7 @@ export default async function(user: User, note: Note, quiet = false) {
 			if (!cascadingNote.user) continue;
 			if (!Users.isLocalUser(cascadingNote.user)) continue;
 			const content = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
-			deliverToFollowers(cascadingNote.user, content);
-			deliverToRelays(cascadingNote.user, content);
-			const remoteUsers = await getMentionedRemoteUsers(cascadingNote);
-			for (const remoteUser of remoteUsers) {
-				deliverToUser(cascadingNote.user, content, remoteUser);
-			}
+			deliverToConcerned(cascadingNote.user, cascadingNote, content);
 		}
 		//#endregion
 
@@ -120,4 +110,13 @@ async function getMentionedRemoteUsers(note: Note) {
 			uri: In(mentions)
 		}
 	}) as IRemoteUser[];
+}
+
+async function deliverToConcerned(user: ILocalUser, note: Note, content: any) {
+	deliverToFollowers(user, content);
+	deliverToRelays(user, content);
+	const remoteUsers = await getMentionedRemoteUsers(note);
+	for (const remoteUser of remoteUsers) {
+		deliverToUser(user, content, remoteUser);
+	}
 }
