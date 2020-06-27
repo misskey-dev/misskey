@@ -214,10 +214,6 @@ export default Vue.extend({
 			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
-
-		isDesktop() {
-			if (this.isDesktop) this.adjustWidgetsWidth();
-		}
 	},
 
 	created() {
@@ -241,8 +237,6 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		if (this.isDesktop) this.adjustWidgetsWidth();
-
 		const adjustTitlePosition = () => {
 			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth;
 			if (left >= 0) {
@@ -268,19 +262,6 @@ export default Vue.extend({
 	},
 
 	methods: {
-		adjustWidgetsWidth() {
-			// https://stackoverflow.com/questions/33891709/when-flexbox-items-wrap-in-column-mode-container-does-not-grow-its-width
-			const adjust = () => {
-				const lastChild = this.$refs.widgets.children[this.$refs.widgets.children.length - 1];
-				if (lastChild == null) return;
-
-				const width = lastChild.offsetLeft + 300 + 16;
-				this.$refs.widgets.style.width = width + 'px';
-			};
-			setInterval(adjust, 1000);
-			setTimeout(adjust, 100);
-		},
-
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
@@ -938,6 +919,9 @@ export default Vue.extend({
 
 			> .content {
 				> * {
+					min-height: calc(100vh - #{$header-height});
+					box-sizing: border-box;
+
 					&:not(.full) {
 						padding: var(--margin) 0;
 					}
@@ -987,6 +971,8 @@ export default Vue.extend({
 		> .widgets {
 			box-sizing: border-box;
 			margin-left: var(--margin);
+			background: var(--pageBg);
+			box-shadow: 1px 0 0 0 var(--divider),-1px 0 0 0 var(--divider);
 
 			@media (max-width: $side-hide-threshold) {
 				display: none;
@@ -994,23 +980,12 @@ export default Vue.extend({
 
 			> div {
 				position: sticky;
-				top: calc(#{$header-height} + var(--margin));
-				height: calc(100vh - #{$header-height} - var(--margin));
-
-				&.edit {
-					overflow: auto;
-					width: auto !important;
-				}
-
-				&:not(.edit) {
-					display: inline-flex;
-					flex-wrap: wrap;
-					flex-direction: column;
-					place-content: flex-start;
-				}
+				top: $header-height;
+				height: calc(100vh - #{$header-height});
+				overflow: auto;
 
 				> * {
-					margin: 0 var(--margin) var(--margin) 0;
+					margin: var(--margin) 0;
 					width: 300px;
 				}
 
