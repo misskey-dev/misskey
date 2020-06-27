@@ -103,12 +103,27 @@ async function findCascadingNotes(note: Note) {
 }
 
 async function getMentionedRemoteUsers(note: Note) {
-	const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
+	const where = [] as any[];
+
+	// mention / reply / dm
+	const uris = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
+	if (uris.length > 0) {
+		where.push(
+			{ uri: In(uris) }
+		);
+	}
+
+	// renote / quote
+	if (note.renoteUserId) {
+		where.push({
+			id: note.renoteUserId
+		});
+	}
+
+	if (where.length === 0) return [];
 
 	return await Users.find({
-		where: {
-			uri: In(mentions)
-		}
+		where
 	}) as IRemoteUser[];
 }
 
