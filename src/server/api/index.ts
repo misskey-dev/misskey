@@ -96,7 +96,7 @@ router.post('/miauth/:session/check', async ctx => {
 });
 
 // Return 404 for unknown API
-router.all('*', async ctx => {
+router.all('(.*)', async ctx => {
 	ctx.status = 404;
 });
 
