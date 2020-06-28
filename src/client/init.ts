@@ -240,7 +240,7 @@ os.init(async () => {
 	});
 
 	for (const plugin of store.state.deviceUser.plugins) {
-		console.info(plugin.name, plugin.version);
+		console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 
 		const aiscript = new AiScript(createPluginEnv(app, {
 			plugin: plugin,

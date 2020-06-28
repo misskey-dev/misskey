@@ -89,6 +89,7 @@ export default () => new Vuex.Store({
 		pluginContexts: new Map<string, AiScript>(),
 		postFormActions: [],
 		userActions: [],
+		noteActions: [],
 	},
 
 	getters: {
@@ -233,6 +234,14 @@ export default () => new Vuex.Store({
 			state.userActions.push({
 				title, handler: (user) => {
 					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
+				}
+			});
+		},
+
+		registerNoteAction(state, { pluginId, title, handler }) {
+			state.noteActions.push({
+				title, handler: (note) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
 				}
 			});
 		},
