@@ -4,6 +4,7 @@ import * as nestedProperty from 'nested-property';
 import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { apiUrl } from './config';
+import { AiScript, utils, values } from '@syuilo/aiscript';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -36,6 +37,7 @@ export const defaultDeviceUserSettings = {
 		'announcements',
 		'search',
 	],
+	plugins: [],
 };
 
 export const defaultDeviceSettings = {
@@ -81,7 +83,11 @@ export default () => new Vuex.Store({
 	state: {
 		i: null,
 		pendingApiRequestsCount: 0,
-		spinner: null
+		spinner: null,
+
+		// Plugin
+		pluginContexts: new Map<string, AiScript>(),
+		postFormActions: [],
 	},
 
 	getters: {
@@ -204,9 +210,23 @@ export default () => new Vuex.Store({
 			state.i = x;
 		},
 
-		updateIKeyValue(state, x) {
-			state.i[x.key] = x.value;
+		updateIKeyValue(state, { key, value }) {
+			state.i[key] = value;
 		},
+
+		initPlugin(state, { plugin, aiscript }) {
+			state.pluginContexts.set(plugin.id, aiscript);
+		},
+
+		registerPostFormAction(state, { pluginId, title, handler }) {
+			state.postFormActions.push({
+				title, handler: (form, update) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
+						update(key.value, value.value);
+					})]);
+				}
+			});
+		}
 	},
 
 	actions: {
@@ -397,6 +417,20 @@ export default () => new Vuex.Store({
 					if (w) {
 						w.data = x.data;
 					}
+				},
+
+				installPlugin(state, { meta, ast }) {
+					state.plugins.push({
+						id: meta.id,
+						name: meta.name,
+						version: meta.version,
+						author: meta.author,
+						ast: ast
+					});
+				},
+
+				uninstallPlugin(state, id) {
+					state.plugins = state.plugins.filter(x => x.id != id);
 				},
 			}
 		},

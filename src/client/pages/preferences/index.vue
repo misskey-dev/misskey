@@ -9,6 +9,8 @@
 
 	<x-sidebar/>
 
+	<x-plugins/>
+
 	<section class="_card">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
@@ -100,6 +102,7 @@ import MkRadio from '../../components/ui/radio.vue';
 import MkRange from '../../components/ui/range.vue';
 import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
+import XPlugins from './plugins.vue';
 import { langs } from '../../config';
 import { clientDb, set } from '../../db';
 
@@ -130,11 +133,12 @@ export default Vue.extend({
 	components: {
 		XTheme,
 		XSidebar,
+		XPlugins,
 		MkButton,
 		MkSwitch,
 		MkSelect,
 		MkRadio,
-		MkRange
+		MkRange,
 	},
 
 	data() {

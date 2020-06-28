@@ -40,3 +40,12 @@ export function createAiScriptEnv(vm, opts) {
 		}),
 	};
 }
+
+export function createPluginEnv(vm, opts) {
+	return {
+		...createAiScriptEnv(vm, opts),
+		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
+			vm.$store.commit('registerPostFormAction', { pluginId: opts.plugin.id, title: title.value, handler });
+		}),
+	};
+}

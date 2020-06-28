@@ -23,6 +23,8 @@ import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import createStore from './store';
 import { clientDb, get, count } from './db';
 import { setI18nContexts } from './scripts/set-i18n-contexts';
+import { createPluginEnv } from './scripts/aiscript/api';
+import { AiScript } from '@syuilo/aiscript';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -236,6 +238,35 @@ os.init(async () => {
 		// TODO
 		//store.commit('instance/set', );
 	});
+
+	for (const plugin of store.state.deviceUser.plugins) {
+		console.info(plugin.name, plugin.version);
+
+		const aiscript = new AiScript(createPluginEnv(app, {
+			plugin: plugin,
+			storageKey: 'plugins:' + plugin.id
+		}), {
+			in: (q) => {
+				return new Promise(ok => {
+					app.dialog({
+						title: q,
+						input: {}
+					}).then(({ canceled, result: a }) => {
+						ok(a);
+					});
+				});
+			},
+			out: (value) => {
+				console.log(value);
+			},
+			log: (type, params) => {
+			},
+		});
+
+		store.commit('initPlugin', { plugin, aiscript });
+
+		aiscript.exec(plugin.ast);
+	}
 
 	if (store.getters.isSignedIn) {
 		const main = os.stream.useSharedConnection('main');
