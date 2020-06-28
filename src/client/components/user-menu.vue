@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import XMenu from './menu.vue';
 import copyToClipboard from '../scripts/copy-to-clipboard';
@@ -78,6 +78,16 @@ export default Vue.extend({
 					this.$router.push('/my/settings');
 				}
 			}]);
+		}
+
+		if (this.$store.state.userActions.length > 0) {
+			menu = menu.concat([null, ...this.$store.state.userActions.map(action => ({
+				icon: faPlug,
+				text: action.title,
+				action: () => {
+					action.handler(this.user);
+				}
+			}))]);
 		}
 
 		return {

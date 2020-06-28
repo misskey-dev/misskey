@@ -4,6 +4,7 @@
 	<div class="_content">
 		<details>
 			<summary><fa :icon="faDownload"/> {{ $t('install') }}</summary>
+			<mk-info warn>{{ $t('pluginInstallWarn') }}</mk-info>
 			<mk-textarea v-model="script" tall>
 				<span>{{ $t('script') }}</span>
 			</mk-textarea>
@@ -25,6 +26,10 @@
 					<div>{{ $t('author') }}:</div>
 					<div>{{ selectedPlugin.author }}</div>
 				</div>
+				<div class="_keyValue">
+					<div>{{ $t('description') }}:</div>
+					<div>{{ selectedPlugin.description }}</div>
+				</div>
 				<mk-button @click="uninstall()" style="margin-top: 8px;"><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
 			</template>
 		</details>
@@ -38,6 +43,7 @@ import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload } from '@fortaweso
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
+import MkInfo from '../../components/ui/info.vue';
 import { AiScript, parse } from '@syuilo/aiscript';
 
 export default Vue.extend({
@@ -45,6 +51,7 @@ export default Vue.extend({
 		MkButton,
 		MkTextarea,
 		MkSelect,
+		MkInfo,
 	},
 	
 	data() {
@@ -91,7 +98,7 @@ export default Vue.extend({
 				});
 				return;
 			}
-			const { id, name, version, author } = data;
+			const { id, name, version, author, description } = data;
 			if (id == null || name == null || version == null || author == null) {
 				this.$root.dialog({
 					type: 'error',
@@ -101,7 +108,7 @@ export default Vue.extend({
 			}
 			this.$store.commit('deviceUser/installPlugin', {
 				meta: {
-					id, name, version, author
+					id, name, version, author, description
 				},
 				ast
 			});

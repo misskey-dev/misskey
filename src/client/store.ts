@@ -88,6 +88,7 @@ export default () => new Vuex.Store({
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
 		postFormActions: [],
+		userActions: [],
 	},
 
 	getters: {
@@ -226,7 +227,15 @@ export default () => new Vuex.Store({
 					})]);
 				}
 			});
-		}
+		},
+
+		registerUserAction(state, { pluginId, title, handler }) {
+			state.userActions.push({
+				title, handler: (user) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
+				}
+			});
+		},
 	},
 
 	actions: {
@@ -425,6 +434,7 @@ export default () => new Vuex.Store({
 						name: meta.name,
 						version: meta.version,
 						author: meta.author,
+						description: meta.description,
 						ast: ast
 					});
 				},

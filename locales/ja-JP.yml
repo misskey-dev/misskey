@@ -515,7 +515,9 @@ enableInfiniteScroll: "自動でもっと見る"
 visibility: "公開範囲"
 poll: "アンケート"
 useCw: "内容を隠す"
+manage: "管理"
 plugins: "プラグイン"
+pluginInstallWarn: "信頼できないプラグインはインストールしないでください。"
 
 _theme:
   explore: "テーマを探す"
