@@ -100,7 +100,7 @@ export default Vue.extend({
 	},
 	metaInfo() {
 		return {
-			title: this.$t('themeEditor') as string
+			title: this.$t('themeEditor') + (this.changed ? '*' : '')
 		};
 	},
 
@@ -112,6 +112,7 @@ export default Vue.extend({
 			baseTheme: 'light' as 'dark' | 'light',
 			author: `@${this.$store.state.i.username}@${toUnicode(host)}`,
 			themeToImport: '',
+			changed: false,
 			faPalette, faChevronDown, faKeyboard,
 			lightTheme, darkTheme, themeProps,
 		}
@@ -123,11 +124,46 @@ export default Vue.extend({
 		},
 	},
 
+	beforeDestroy() {
+		window.removeEventListener('beforeunload', this.beforeunload);
+	},
+
+	async beforeRouteLeave(to, from, next) {
+		if (this.changed && !(await this.confirm())) {
+			next(false);
+		} else {
+			next();
+		}
+	},
+
 	mounted() {
 		this.init();
+		window.addEventListener('beforeunload', this.beforeunload);
+		const changed = () => this.changed = true;
+		this.$watch('name', changed);
+		this.$watch('description', changed);
+		this.$watch('baseTheme', changed);
+		this.$watch('author', changed);
+		this.$watch('theme', changed);
 	},
 
 	methods: {
+		beforeunload(e: BeforeUnloadEvent) {
+			if (this.changed) {
+				e.preventDefault();
+				e.returnValue = '';
+			}
+		},
+
+		async confirm(): Promise<boolean> {
+			const { canceled } = await this.$root.dialog({
+				type: 'warning',
+				text: this.$t('leaveConfirm'),
+				showCancelButton: true
+			});
+			return !canceled;
+		},
+
 		init() {
 			const t: ThemeViewModel = [];
 			for (const key of themeProps) {
@@ -162,6 +198,7 @@ export default Vue.extend({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
 			});
+			this.changed = false;
 		},
 		preview() {
 			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
@@ -174,7 +211,8 @@ export default Vue.extend({
 				});
 			}
 		},
-		importTheme() {
+		async importTheme() {
+			if (this.changed && (!await this.confirm())) return;
 			try {
 				const theme = JSON5.parse(this.themeToImport) as Theme;
 				if (!validateTheme(theme)) throw new Error(this.$t('_theme.invalid'));

@@ -518,6 +518,7 @@ useCw: "内容を隠す"
 themeEditor: "テーマエディター"
 description: "説明"
 author: "作者"
+leaveConfirm: "未保存の変更があります。破棄しますか？"
 
 _theme:
   explore: "テーマを探す"
