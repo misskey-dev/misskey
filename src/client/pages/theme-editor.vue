@@ -18,7 +18,10 @@
 			<div class="list-view">
 				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
 					<div class="_inputs">
-						<div v-text="k.startsWith('$') ? `${k} (${$t('_theme.constant')})` : $t('_theme.keys.' + k)" />
+						<div>
+							{{ k.startsWith('$') ? `${k} (${$t('_theme.constant')})` : $t('_theme.keys.' + k) }}
+							<button v-if="k.startsWith('$')" class="_button _link" @click="del(i)" v-text="$t('delete')" />
+						</div>
 						<div>
 							<div class="type" @click="chooseType($event, i)">
 								{{ getTypeOf(v) }} <fa :icon="faChevronDown"/>
@@ -131,6 +134,15 @@ export default Vue.extend({
 				t.push([ key, null ]);
 			}
 			this.theme = t;
+		},
+		async del(i: number) {
+			const { canceled } = await this.$root.dialog({ 
+				type: 'warning',
+				showCancelButton: true,
+				text: this.$t('_theme.deleteConstantConfirm', { const: this.theme[i][0] }),
+			});
+			if (canceled) return;
+			Vue.delete(this.theme, i);
 		},
 		async addConst() {
 			const { canceled, result } = await this.$root.dialog({

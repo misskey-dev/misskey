@@ -545,7 +545,8 @@ _theme:
   lighten: "明るさ"
   inputConstantName: "定数名を入力してください"
   importInfo: "ここにテーマコードを貼り付けて、エディターにインポートできます"
-  
+  deleteConstantConfirm: "定数 {const} を削除しても良いですか？"
+
   keys:
     accent: "アクセント" 
     bg: "背景" 
