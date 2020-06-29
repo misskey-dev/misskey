@@ -22,6 +22,7 @@
 				</label>
 			</div>
 		</div>
+		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
 	</div>
 	<div class="_content">
 		<mk-select v-model="lightTheme">
@@ -45,11 +46,11 @@
 		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>
 	</div>
 	<div class="_content">
-		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
-	</div>
-	<div class="_content">
 		<mk-button primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</mk-button>
 		<mk-button primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</mk-button>
+	</div>
+	<div class="_content">
+		<router-link to="/theme-editor" class="_link">{{ $t('_theme.editor') }}</router-link>
 	</div>
 	<div class="_content">
 		<details>
