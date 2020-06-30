@@ -1085,7 +1085,7 @@ _notification:
   youGotPoll: "来自{name}的投票"
   youGotMessagingMessageFromUser: "来自{name}的聊天"
   youGotMessagingMessageFromGroup: "来自{name}的群聊"
-  youWereFollowed: "您有新的关注者"
+  youWereFollowed: "关注了你。"
   youReceivedFollowRequest: "您有新的关注请求"
   yourFollowRequestAccepted: "您的关注请求已通过"
   youWereInvitedToGroup: "您有新的群组邀请"
