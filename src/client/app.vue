@@ -716,6 +716,7 @@ export default Vue.extend({
 					border-radius: 38px;
 					color: var(--fg);
 					background: var(--bg);
+					-webkit-appearance: textfield;
 
 					&:focus {
 						outline: none;
