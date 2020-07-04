@@ -17,16 +17,14 @@ export const builtinThemes = [
 	require('./themes/black.json5'),
 	require('./themes/lavender.json5'),
 	require('./themes/halloween.json5'),
-	require('./themes/garden.json5'),
-	require('./themes/mauve.json5'),
-	require('./themes/elegant.json5'),
+	require('./themes/city.json5'),
 	require('./themes/rainy.json5'),
 	require('./themes/urban.json5'),
 	require('./themes/cafe.json5'),
 	require('./themes/chocolate.json5'),
 	require('./themes/danboard.json5'),
 	require('./themes/olive.json5'),
-	require('./themes/tweetdeck.json5'),
+	require('./themes/ocean.json5'),
 ] as Theme[];
 
 let timeout = null;
