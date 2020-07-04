@@ -1,5 +1,5 @@
 <template>
-<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
+<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv _list_" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
 	<template v-for="(item, i) in items">
 		<slot :item="item"></slot>
 		<div class="separator" v-if="showDate(i, item)" :key="item.id + '_date'">

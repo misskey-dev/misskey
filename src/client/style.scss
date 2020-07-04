@@ -279,11 +279,12 @@ hr {
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
+}
 
-	._panel {
-		box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
-		border-radius: none;
-	}
+._widget ._list_ ._panel {
+	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
+	border-radius: 0;
+	margin: 0 !important;
 }
 
 .__panelButton {
