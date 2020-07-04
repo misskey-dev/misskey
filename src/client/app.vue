@@ -571,9 +571,9 @@ export default Vue.extend({
 	$header-height: 60px;
 	$nav-width: 250px;
 	$nav-icon-only-width: 80px;
-	$main-width: 650px;
+	$main-width: 670px;
 	$ui-font-size: 1em;
-	$nav-icon-only-threshold: 1300px;
+	$nav-icon-only-threshold: 1279px;
 	$nav-hide-threshold: 650px;
 	$side-hide-threshold: 1070px;
 
@@ -920,9 +920,10 @@ export default Vue.extend({
 				> * {
 					min-height: calc(100vh - #{$header-height});
 					box-sizing: border-box;
+					padding: var(--margin);
 
-					&:not(.full) {
-						padding: var(--margin) 0;
+					&.full {
+						padding: 0 var(--margin);
 					}
 
 					&.naked {
@@ -965,7 +966,6 @@ export default Vue.extend({
 
 		> .widgets {
 			box-sizing: border-box;
-			margin: 0 var(--margin);
 
 			@media (max-width: $side-hide-threshold) {
 				display: none;

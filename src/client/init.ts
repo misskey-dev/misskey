@@ -102,13 +102,6 @@ const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
 
-// iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
-try {
-	localStorage.setItem('foo', 'bar');
-} catch (e) {
-	Storage.prototype.setItem = () => { }; // noop
-}
-
 // http://qiita.com/junya/items/3ff380878f26ca447f85
 document.body.setAttribute('ontouchstart', '');
 

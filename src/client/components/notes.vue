@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notes" v-size="[{ max: 500 }]">
+<div class="mk-notes">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $t('noNotes') }}</div>
@@ -89,16 +89,7 @@ export default Vue.extend({
 .mk-notes {
 	> .notes {
 		> ::v-deep *:not(:last-child) {
-			margin-bottom: var(--marginFull);
-		}
-	}
-
-	&.max-width_500px {
-		> .notes {
-			> ::v-deep *:not(:last-child) {
-				//margin-bottom: var(--marginHalf);
-				margin-bottom: 0;
-			}
+			margin-bottom: var(--margin);
 		}
 	}
 }
