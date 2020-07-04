@@ -126,11 +126,11 @@ export default Vue.extend({
 		background: var(--accent);
 
 		&:not(:disabled):hover {
-			background: var(--jkhztclx);
+			background: var(--X8);
 		}
 
 		&:not(:disabled):active {
-			background: var(--jkhztclx);
+			background: var(--X8);
 		}
 	}
 

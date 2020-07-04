@@ -51,14 +51,6 @@ Vue.mixin({
 
 console.info(`Misskey v${version}`);
 
-// v11互換性のため
-if (localStorage.getItem('kyoppie') === 'yuppie') {
-	const i = localStorage.getItem('i');
-	localStorage.clear();
-	localStorage.setItem('i', i);
-	location.reload(true);
-}
-
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
@@ -101,13 +93,6 @@ if (isMobile || window.innerWidth <= 1024) {
 const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
-
-// iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
-try {
-	localStorage.setItem('foo', 'bar');
-} catch (e) {
-	Storage.prototype.setItem = () => { }; // noop
-}
 
 // http://qiita.com/junya/items/3ff380878f26ca447f85
 document.body.setAttribute('ontouchstart', '');
