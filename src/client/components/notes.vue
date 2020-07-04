@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notes" v-size="[{ max: 500 }]">
+<div class="mk-notes">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $t('noNotes') }}</div>
@@ -14,7 +14,7 @@
 		</button>
 	</div>
 
-	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
+	<x-list ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
 		<x-note :note="note" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</x-list>
 
@@ -85,21 +85,3 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" scoped>
-.mk-notes {
-	> .notes {
-		> ::v-deep *:not(:last-child) {
-			margin-bottom: var(--marginFull);
-		}
-	}
-
-	&.max-width_500px {
-		> .notes {
-			> ::v-deep *:not(:last-child) {
-				//margin-bottom: var(--marginHalf);
-				margin-bottom: 0;
-			}
-		}
-	}
-}
-</style>

@@ -9,6 +9,9 @@
 
 	props: {
 		divider: '#2d2d2d',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		panelBorder: '@divider',
 		messageBg: '#1d1d1d',
 	},
 }

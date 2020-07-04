@@ -172,7 +172,7 @@ export default define({
 			> .meter {
 				width: 100%;
 				overflow: hidden;
-				background: var(--aupeazdm);
+				background: var(--X11);
 				border-radius: 8px;
 
 				> .val {

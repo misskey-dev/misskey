@@ -730,7 +730,7 @@ export default Vue.extend({
 					margin-right: 14px;
 					padding: 8px 0 8px 8px;
 					border-radius: 8px;
-					background: var(--nwjktjjq);
+					background: var(--X4);
 
 					> button {
 						padding: 4px 8px;
@@ -812,7 +812,7 @@ export default Vue.extend({
 				border-radius: 6px;
 
 				&:hover {
-					background: var(--geavgsxy);
+					background: var(--X5);
 				}
 
 				&.active {
