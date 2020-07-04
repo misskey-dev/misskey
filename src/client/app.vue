@@ -188,8 +188,11 @@ export default Vue.extend({
 				return {
 					left: [],
 					right: [{
-						name: 'calendar',
+						name: 'welcome',
 						id: 'a', place: 'right', data: {}
+					}, {
+						name: 'calendar',
+						id: 'b', place: 'right', data: {}
 					}, {
 						name: 'trends',
 						id: 'c', place: 'right', data: {}
