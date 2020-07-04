@@ -86,33 +86,31 @@
 			</div>
 		</main>
 
-		<div class="widgets">
-			<div ref="widgets" :class="{ edit: widgetsEditMode }">
-				<template v-if="isDesktop && $store.getters.isSignedIn">
-					<template v-if="widgetsEditMode">
-						<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
-						<x-draggable
-							:list="widgets"
-							handle=".handle"
-							animation="150"
-							class="sortable"
-							@sort="onWidgetSort"
-						>
-							<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
-								<header>
-									<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
-								</header>
-								<div @click="widgetFunc(widget.id)">
-									<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
-								</div>
+		<div class="widgets" :class="{ edit: widgetsEditMode }">
+			<template v-if="isDesktop && $store.getters.isSignedIn">
+				<template v-if="widgetsEditMode">
+					<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
+					<x-draggable
+						:list="widgets"
+						handle=".handle"
+						animation="150"
+						class="sortable"
+						@sort="onWidgetSort"
+					>
+						<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
+							<header>
+								<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+							</header>
+							<div @click="widgetFunc(widget.id)">
+								<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
 							</div>
-						</x-draggable>
-					</template>
-					<template v-else>
-						<component class="_widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
-					</template>
+						</div>
+					</x-draggable>
 				</template>
-			</div>
+				<template v-else>
+					<component class="_widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				</template>
+			</template>
 		</div>
 	</div>
 
@@ -575,7 +573,7 @@ export default Vue.extend({
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1279px;
 	$nav-hide-threshold: 650px;
-	$side-hide-threshold: 1070px;
+	$side-hide-threshold: 1090px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
@@ -965,57 +963,53 @@ export default Vue.extend({
 		}
 
 		> .widgets {
-			box-sizing: border-box;
+			position: sticky;
+			top: $header-height;
+			height: calc(100vh - #{$header-height});
+			padding: 0 var(--margin);
+			overflow: auto;
+			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
 			@media (max-width: $side-hide-threshold) {
 				display: none;
 			}
 
-			> div {
-				position: sticky;
-				top: $header-height;
-				height: calc(100vh - #{$header-height});
-				padding: 0 var(--margin);
-				overflow: auto;
-				box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
+			> * {
+				margin: var(--margin) 0;
+				width: 300px;
+			}
 
-				> * {
-					margin: var(--margin) 0;
-					width: 300px;
-				}
+			> .add {
+				margin: 0 auto;
+			}
 
-				> .add {
-					margin: 0 auto;
-				}
+			.customize-container {
+				margin: 8px 0;
+				background: #fff;
 
-				.customize-container {
-					margin: 8px 0;
-					background: #fff;
+				> header {
+					position: relative;
+					line-height: 32px;
 
-					> header {
-						position: relative;
-						line-height: 32px;
-
-						> .handle {
-							padding: 0 8px;
-							cursor: move;
-						}
-
-						> .remove {
-							position: absolute;
-							top: 0;
-							right: 0;
-							padding: 0 8px;
-							line-height: 32px;
-						}
+					> .handle {
+						padding: 0 8px;
+						cursor: move;
 					}
 
-					> div {
-						padding: 8px;
+					> .remove {
+						position: absolute;
+						top: 0;
+						right: 0;
+						padding: 0 8px;
+						line-height: 32px;
+					}
+				}
 
-						> * {
-							pointer-events: none;
-						}
+				> div {
+					padding: 8px;
+
+					> * {
+						pointer-events: none;
 					}
 				}
 			}
