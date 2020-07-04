@@ -278,7 +278,11 @@ hr {
 ._panel {
 	position: relative;
 	background: var(--panel);
-	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
+	border-radius: var(--radius);
+
+	._panel {
+		box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
+	}
 }
 
 .__panelButton {
@@ -371,33 +375,6 @@ hr {
 		@media (max-width: 500px) {
 			padding: 16px;
 		}
-	}
-}
-
-._frame {
-	position: relative;
-	border: solid 1px var(--divider);
-	border-radius: var(--radius);
-	margin: var(--margin);
-
-	> ._title {
-		margin: 0;
-		padding: 16px;
-		border-bottom: solid 1px var(--divider);
-		font-weight: bold;
-	}
-
-	> ._content {
-		padding: 16px;
-
-		& + ._content {
-			border-top: solid 1px var(--divider);
-		}
-	}
-
-	> ._footer {
-		border-top: solid 1px var(--divider);
-		padding: 16px;
 	}
 }
 

@@ -20,7 +20,6 @@
 		panel: '#000',
 		shadow: 'rgba(0, 0, 0, 0.1)',
 		header: 'rgba(20, 20, 20, 0.75)',
-		pageBg: ':lighten<5<@bg',
 		navBg: '@panel',
 		navFg: '@fg',
 		navHoverFg: ':lighten<17<@fg',

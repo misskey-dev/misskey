@@ -911,7 +911,6 @@ export default Vue.extend({
 		> main {
 			width: $main-width;
 			min-width: $main-width;
-			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
 			@media (max-width: $side-hide-threshold) {
 				min-width: 0;
@@ -924,10 +923,6 @@ export default Vue.extend({
 
 					&:not(.full) {
 						padding: var(--margin) 0;
-					}
-
-					&:not(.naked) {
-						background: var(--pageBg);
 					}
 
 					&.naked {
@@ -970,9 +965,7 @@ export default Vue.extend({
 
 		> .widgets {
 			box-sizing: border-box;
-			margin-left: var(--margin);
-			background: var(--pageBg);
-			box-shadow: 1px 0 0 0 var(--divider),-1px 0 0 0 var(--divider);
+			margin: 0 var(--margin);
 
 			@media (max-width: $side-hide-threshold) {
 				display: none;
@@ -982,7 +975,9 @@ export default Vue.extend({
 				position: sticky;
 				top: $header-height;
 				height: calc(100vh - #{$header-height});
+				padding: 0 var(--margin);
 				overflow: auto;
+				box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
 				> * {
 					margin: var(--margin) 0;

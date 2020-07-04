@@ -87,13 +87,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mfcuwfyp {
-	> .notifications {
-		> ::v-deep * {
-			//margin-bottom: var(--margin);
-			margin-bottom: 0;
-		}
-	}
-
 	> .empty {
 		margin: 0;
 		padding: 16px;
