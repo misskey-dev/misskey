@@ -582,7 +582,7 @@ export default Vue.extend({
 	$ui-font-size: 1em;
 	$nav-icon-only-threshold: 1279px;
 	$nav-hide-threshold: 650px;
-	$side-hide-threshold: 1090px;
+	$header-sub-hide-threshold: 1090px;
 	$left-widgets-hide-threshold: 1600px;
 	$right-widgets-hide-threshold: 1090px;
 
@@ -682,7 +682,7 @@ export default Vue.extend({
 			right: 16px;
 			height: $header-height;
 
-			@media (max-width: $side-hide-threshold) {
+			@media (max-width: $header-sub-hide-threshold) {
 				display: none;
 			}
 
@@ -919,11 +919,7 @@ export default Vue.extend({
 
 		> main {
 			width: $main-width;
-			min-width: $main-width;
-
-			@media (max-width: $side-hide-threshold) {
-				min-width: 0;
-			}
+			min-width: 0;
 
 			> .content {
 				> * {
@@ -1055,7 +1051,7 @@ export default Vue.extend({
 			display: block;
 		}
 
-		@media (min-width: ($side-hide-threshold + 1px)) {
+		@media (min-width: ($header-sub-hide-threshold + 1px)) {
 			display: none;
 		}
 	}
