@@ -86,18 +86,18 @@
 			</div>
 		</main>
 
-		<div class="widgets" :class="{ edit: widgetsEditMode }">
-			<template v-if="isDesktop && $store.getters.isSignedIn">
+		<template v-if="isDesktop">
+			<div class="widgets" :class="{ edit: widgetsEditMode }" v-for="place in ['left', 'right']" :key="place">
 				<template v-if="widgetsEditMode">
-					<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
+					<mk-button primary @click="addWidget(place)" class="add"><fa :icon="faPlus"/></mk-button>
 					<x-draggable
-						:list="widgets"
+						:list="widgets[place]"
 						handle=".handle"
 						animation="150"
 						class="sortable"
 						@sort="onWidgetSort"
 					>
-						<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
+						<div v-for="widget in widgets[place]" class="customize-container _panel" :key="widget.id">
 							<header>
 								<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
 							</header>
@@ -107,11 +107,9 @@
 						</div>
 					</x-draggable>
 				</template>
-				<template v-else>
-					<component class="_widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
-				</template>
-			</template>
-		</div>
+				<component v-else class="_widget" v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+			</div>
+		</template>
 	</div>
 
 	<div class="buttons">
@@ -179,7 +177,12 @@ export default Vue.extend({
 		},
 
 		widgets(): any[] {
-			return this.$store.state.deviceUser.widgets;
+			const widgets = this.$store.state.deviceUser.widgets;
+			return {
+				left: widgets.filter(x => x.place === 'left'),
+				right: widgets.filter(x => x.place == null || x.place === 'right'),
+				mobile: widgets.filter(x => x.place === 'mobile'),
+			};
 		},
 
 		menu(): string[] {
@@ -219,16 +222,16 @@ export default Vue.extend({
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
 
-			if (this.widgets.length === 0) {
+			if (this.$store.state.deviceUser.widgets.length === 0) {
 				this.$store.commit('deviceUser/setWidgets', [{
 					name: 'calendar',
-					id: 'a', data: {}
+					id: 'a', place: 'right', data: {}
 				}, {
 					name: 'notifications',
-					id: 'b', data: {}
+					id: 'b', place: 'right', data: {}
 				}, {
 					name: 'trends',
-					id: 'c', data: {}
+					id: 'c', place: 'right', data: {}
 				}]);
 			}
 		}
@@ -503,7 +506,7 @@ export default Vue.extend({
 			this.saveHome();
 		},
 
-		addWidget(ev) {
+		async addWidget(place) {
 			const widgets = [
 				'memo',
 				'notifications',
@@ -516,18 +519,24 @@ export default Vue.extend({
 				'photos',
 			];
 
-			this.$root.menu({
-				items: widgets.map(widget => ({
-					text: this.$t('_widgets.' + widget),
-					action: () => {
-						this.$store.commit('deviceUser/addWidget', {
-							name: widget,
-							id: uuid(),
-							data: {}
-						});
-					}
-				})),
-				source: ev.currentTarget || ev.target,
+			const { canceled, result: widget } = await this.$root.dialog({
+				type: null,
+				title: this.$t('chooseWidget'),
+				select: {
+					items: widgets.map(widget => ({
+						value: widget,
+						text: this.$t('_widgets.' + widget),
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			this.$store.commit('deviceUser/addWidget', {
+				name: widget,
+				id: uuid(),
+				place: place,
+				data: {}
 			});
 		},
 
@@ -536,7 +545,7 @@ export default Vue.extend({
 		},
 
 		saveHome() {
-			this.$store.commit('deviceUser/setWidgets', this.widgets);
+			this.$store.commit('deviceUser/setWidgets', [...this.widgets.left, ...this.widgets.right, ...this.widgets.mobile]);
 		}
 	}
 });
@@ -574,6 +583,8 @@ export default Vue.extend({
 	$nav-icon-only-threshold: 1279px;
 	$nav-hide-threshold: 650px;
 	$side-hide-threshold: 1090px;
+	$left-widgets-hide-threshold: 1600px;
+	$right-widgets-hide-threshold: 1090px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
@@ -970,7 +981,19 @@ export default Vue.extend({
 			overflow: auto;
 			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
-			@media (max-width: $side-hide-threshold) {
+			&:first-of-type {
+				order: -1;
+
+				@media (max-width: $left-widgets-hide-threshold) {
+					display: none;
+				}
+			}
+
+			&:empty {
+				display: none;
+			}
+
+			@media (max-width: $right-widgets-hide-threshold) {
 				display: none;
 			}
 
