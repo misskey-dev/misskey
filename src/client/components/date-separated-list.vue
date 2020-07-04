@@ -69,6 +69,10 @@ export default Vue.extend({
 
 <style lang="scss">
 .sqadhkmv {
+	> *:not(:last-child) {
+		margin-bottom: var(--margin);
+	}
+
 	> .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
