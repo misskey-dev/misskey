@@ -279,6 +279,8 @@ hr {
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
+	box-shadow: 0 0 0 1px var(--panelBorder);
+	overflow: hidden;
 }
 
 ._widget ._list_ ._panel {
@@ -324,8 +326,10 @@ hr {
 		margin: 0;
 		padding: 22px 32px;
 		font-size: 1.1em;
-		border-bottom: solid 1px var(--divider);
+		border-bottom: solid 1px var(--panelHeaderDivider);
 		font-weight: bold;
+		background: var(--panelHeaderBg);
+		color: var(--panelHeaderFg);
 
 		@media (max-width: 500px) {
 			padding: 16px;
@@ -381,7 +385,7 @@ hr {
 }
 
 ._fullinfo {
-	padding: 32px;
+	padding: 64px 32px;
 	text-align: center;
 
 	> img {

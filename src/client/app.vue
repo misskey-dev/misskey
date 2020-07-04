@@ -932,6 +932,7 @@ export default Vue.extend({
 
 		&.wallpaper {
 			background: var(--wallpaperOverlay);
+			backdrop-filter: blur(4px);
 		}
 
 		> main {
