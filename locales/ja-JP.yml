@@ -528,7 +528,7 @@ _theme:
   installed: "{name}をインストールしました"
   alreadyInstalled: "そのテーマは既にインストールされています"
   invalid: "テーマの形式が間違っています"
-  editor: "テーマエディターを開く"
+  make: "テーマを作る"
   baseTheme: "ベーステーマ"
   addConstant: "定数を追加"
   constant: "定数"
