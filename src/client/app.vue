@@ -177,12 +177,26 @@ export default Vue.extend({
 		},
 
 		widgets(): any[] {
-			const widgets = this.$store.state.deviceUser.widgets;
-			return {
-				left: widgets.filter(x => x.place === 'left'),
-				right: widgets.filter(x => x.place == null || x.place === 'right'),
-				mobile: widgets.filter(x => x.place === 'mobile'),
-			};
+			if (this.$store.getters.isSignedIn) {
+				const widgets = this.$store.state.deviceUser.widgets;
+				return {
+					left: widgets.filter(x => x.place === 'left'),
+					right: widgets.filter(x => x.place == null || x.place === 'right'),
+					mobile: widgets.filter(x => x.place === 'mobile'),
+				};
+			} else {
+				return {
+					left: [],
+					right: [{
+						name: 'calendar',
+						id: 'a', place: 'right', data: {}
+					}, {
+						name: 'trends',
+						id: 'c', place: 'right', data: {}
+					}],
+					mobile: [],
+				};
+			}
 		},
 
 		menu(): string[] {
