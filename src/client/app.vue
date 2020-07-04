@@ -109,7 +109,7 @@
 						</x-draggable>
 					</template>
 					<template v-else>
-						<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+						<component class="_widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
 					</template>
 				</template>
 			</div>
