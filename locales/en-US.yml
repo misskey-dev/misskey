@@ -515,6 +515,7 @@ enableInfiniteScroll: "Enable infinite scrolling"
 visibility: "Visiblility"
 poll: "Poll"
 useCw: "Hide content"
+fixedWidgetsPosition: "Make widget position fixed"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
