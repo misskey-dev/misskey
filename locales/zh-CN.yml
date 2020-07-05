@@ -515,6 +515,7 @@ enableInfiniteScroll: "启用自动滚动页面模式"
 visibility: "可见性"
 poll: "调查问卷"
 useCw: "隐藏内容"
+fixedWidgetsPosition: "固定小工具的位置"
 _theme:
   explore: "寻找主题"
   install: "安装主题"
