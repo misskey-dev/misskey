@@ -515,6 +515,9 @@ enableInfiniteScroll: "自動でもっと見る"
 visibility: "公開範囲"
 poll: "アンケート"
 useCw: "内容を隠す"
+enablePlayer: "プレイヤーを開く"
+disablePlayer: "プレイヤーを閉じる"
+expandTweet: "ツイートを展開する"
 
 _theme:
   explore: "テーマを探す"

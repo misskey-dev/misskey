@@ -1,9 +1,9 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disable-player')"><fa icon="times"/></button>
+	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><fa icon="times"/></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
-<div v-else-if="tweetUrl && detail" class="twitter">
+<div v-else-if="tweetUrl && tweetExpanded" class="twitter">
 	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkMode ? 'dark' : null">
 		<a :href="url"></a>
 	</blockquote>
@@ -12,7 +12,7 @@
 	<transition name="zoom" mode="out-in">
 		<component :is="self ? 'router-link' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enable-player')"><fa :icon="faPlayCircle"/></button>
+				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enablePlayer')"><fa :icon="faPlayCircle"/></button>
 			</div>
 			<article>
 				<header>
@@ -26,12 +26,18 @@
 			</article>
 		</component>
 	</transition>
+	<div class="expandTweet" v-if="tweetUrl">
+		<a @click="() => { this.expandTweet(); tweetExpanded = true; }">
+			<fa :icon="faTwitter"/> {{ $t('expandTweet') }}
+		</a>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
+import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
 import { url as local, lang } from '../config';
 
 export default Vue.extend({
@@ -70,41 +76,29 @@ export default Vue.extend({
 				height: null
 			},
 			tweetUrl: null,
+			tweetExpanded: this.detail,
 			playerEnabled: false,
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',
-			faPlayCircle
+			faPlayCircle, faTwitter
 		};
 	},
 
 	created() {
 		const requestUrl = new URL(this.url);
 
-		if (this.detail && requestUrl.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(requestUrl.pathname)) {
+		if (requestUrl.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(requestUrl.pathname)) {
 			this.tweetUrl = requestUrl;
-			const twttr = (window as any).twttr || {};
-			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
+		}
 
-			if (twttr.widgets) {
-				Vue.nextTick(loadTweet);
-			} else {
-				const wjsId = 'twitter-wjs';
-				if (!document.getElementById(wjsId)) {
-					const head = document.getElementsByTagName('head')[0];
-					const script = document.createElement('script');
-					script.setAttribute('id', wjsId);
-					script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
-					head.appendChild(script);
-				}
-				twttr.ready = loadTweet;
-				(window as any).twttr = twttr;
-			}
+		if (this.tweetExpanded && this.tweetUrl) {
+			this.expandTweet();
 			return;
 		}
 
-		if (requestUrl.hostname === 'music.youtube.com') {
-			requestUrl.hostname = 'youtube.com';
+		if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/(?:watch|channel)')) {
+			requestUrl.hostname = 'www.youtube.com';
 		}
 
 		const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
@@ -123,7 +117,32 @@ export default Vue.extend({
 				this.player = info.player;
 			})
 		});
-	}
+	},
+
+	methods: {
+		expandTweet() {
+			const twttr = (window as any).twttr || {};
+			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
+			if (twttr.widgets) {
+				Vue.nextTick(loadTweet);
+			} else {
+				const wjsId = 'twitter-wjs';
+				if (!document.getElementById(wjsId)) {
+					const head = document.getElementsByTagName('head')[0];
+					const script = document.createElement('script');
+					script.setAttribute('id', wjsId);
+					script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
+					head.appendChild(script);
+					const meta = document.createElement("meta");
+					meta.name = 'twitter:widgets:theme';
+					meta.content = this.$store.state.device.darkmode ? 'dark': 'light';
+					head.appendChild(meta);
+				}
+				twttr.ready = loadTweet;
+				(window as any).twttr = twttr;
+			}
+		},
+	},
 });
 </script>
 
