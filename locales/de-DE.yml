@@ -515,6 +515,7 @@ enableInfiniteScroll: "Automatisch mehr Notizen laden"
 visibility: "Sichtbarkeit"
 poll: "Umfrage"
 useCw: "Inhalt verstecken"
+fixedWidgetsPosition: "Widgetposition fixieren"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
