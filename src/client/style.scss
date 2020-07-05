@@ -27,6 +27,10 @@ html {
 	overflow: auto;
 	overflow-y: scroll;
 
+	&, div, textarea {
+		scrollbar-width: thin;
+	}
+
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
 
