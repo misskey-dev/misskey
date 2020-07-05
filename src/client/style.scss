@@ -27,12 +27,9 @@ html {
 	overflow: auto;
 	overflow-y: scroll;
 
-	&, div, textarea {
-		scrollbar-width: thin;
-	}
-
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
+		scrollbar-width: thin;
 
 		&:hover {
 			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
