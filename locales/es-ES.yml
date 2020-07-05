@@ -515,6 +515,7 @@ enableInfiniteScroll: "Activar scroll infinito"
 visibility: "Visibilidad"
 poll: "Encuesta"
 useCw: "Esconder contenidos"
+fixedWidgetsPosition: "Fijar la posición de los widgets"
 _theme:
   explore: "Explorar temas"
   install: "Instalar tema"
