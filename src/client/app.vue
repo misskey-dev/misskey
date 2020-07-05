@@ -1022,7 +1022,6 @@ export default Vue.extend({
 
 			.customize-container {
 				margin: 8px 0;
-				background: #fff;
 
 				> header {
 					position: relative;
