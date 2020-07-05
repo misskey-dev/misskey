@@ -29,6 +29,7 @@ html {
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
+		scrollbar-width: thin;
 
 		&:hover {
 			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
