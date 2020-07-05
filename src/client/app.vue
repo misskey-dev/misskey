@@ -87,7 +87,7 @@
 		</main>
 
 		<template v-if="isDesktop">
-			<div class="widgets" :class="{ edit: widgetsEditMode }" v-for="place in ['left', 'right']" :key="place">
+			<div class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition }" v-for="place in ['left', 'right']" :key="place">
 				<template v-if="widgetsEditMode">
 					<mk-button primary @click="addWidget(place)" class="add"><fa :icon="faPlus"/></mk-button>
 					<x-draggable
@@ -988,12 +988,16 @@ export default Vue.extend({
 		}
 
 		> .widgets {
-			position: sticky;
 			top: $header-height;
-			height: calc(100vh - #{$header-height});
+			min-height: calc(100vh - #{$header-height});
 			padding: 0 var(--margin);
-			overflow: auto;
 			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
+
+			&.fixed {
+				position: sticky;
+				height: calc(100vh - #{$header-height});
+				overflow: auto;
+			}
 
 			&:first-of-type {
 				order: -1;
