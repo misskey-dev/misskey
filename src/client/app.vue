@@ -86,34 +86,33 @@
 			</div>
 		</main>
 
-		<div class="widgets">
-			<div ref="widgets" :class="{ edit: widgetsEditMode }">
-				<template v-if="isDesktop && $store.getters.isSignedIn">
-					<template v-if="widgetsEditMode">
-						<mk-button primary @click="addWidget" class="add"><fa :icon="faPlus"/></mk-button>
-						<x-draggable
-							:list="widgets"
-							handle=".handle"
-							animation="150"
-							class="sortable"
-							@sort="onWidgetSort"
-						>
-							<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
-								<header>
-									<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
-								</header>
-								<div @click="widgetFunc(widget.id)">
-									<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
-								</div>
+		<template v-if="isDesktop">
+			<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition, empty: widgets[place].length === 0 && !widgetsEditMode }" :key="place">
+				<div class="spacer"></div>
+				<div class="container" v-if="widgetsEditMode">
+					<mk-button primary @click="addWidget(place)" class="add"><fa :icon="faPlus"/></mk-button>
+					<x-draggable
+						:list="widgets[place]"
+						handle=".handle"
+						animation="150"
+						class="sortable"
+						@sort="onWidgetSort"
+					>
+						<div v-for="widget in widgets[place]" class="customize-container _panel" :key="widget.id">
+							<header>
+								<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+							</header>
+							<div @click="widgetFunc(widget.id)">
+								<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
 							</div>
-						</x-draggable>
-					</template>
-					<template v-else>
-						<component class="widget" v-for="widget in widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
-					</template>
-				</template>
+						</div>
+					</x-draggable>
+				</div>
+				<div class="container" v-else>
+					<component class="_widget" v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				</div>
 			</div>
-		</div>
+		</template>
 	</div>
 
 	<div class="buttons">
@@ -138,6 +137,7 @@ import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
+import { StickySidebar } from './scripts/sticky-sidebar';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -181,7 +181,29 @@ export default Vue.extend({
 		},
 
 		widgets(): any[] {
-			return this.$store.state.deviceUser.widgets;
+			if (this.$store.getters.isSignedIn) {
+				const widgets = this.$store.state.deviceUser.widgets;
+				return {
+					left: widgets.filter(x => x.place === 'left'),
+					right: widgets.filter(x => x.place == null || x.place === 'right'),
+					mobile: widgets.filter(x => x.place === 'mobile'),
+				};
+			} else {
+				return {
+					left: [],
+					right: [{
+						name: 'welcome',
+						id: 'a', place: 'right', data: {}
+					}, {
+						name: 'calendar',
+						id: 'b', place: 'right', data: {}
+					}, {
+						name: 'trends',
+						id: 'c', place: 'right', data: {}
+					}],
+					mobile: [],
+				};
+			}
 		},
 
 		menu(): string[] {
@@ -214,6 +236,12 @@ export default Vue.extend({
 			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
+
+		isDesktop() {
+			this.$nextTick(() => {
+				this.attachSticky();
+			});
+		}
 	},
 
 	created() {
@@ -221,16 +249,16 @@ export default Vue.extend({
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
 
-			if (this.widgets.length === 0) {
+			if (this.$store.state.deviceUser.widgets.length === 0) {
 				this.$store.commit('deviceUser/setWidgets', [{
 					name: 'calendar',
-					id: 'a', data: {}
+					id: 'a', place: 'right', data: {}
 				}, {
 					name: 'notifications',
-					id: 'b', data: {}
+					id: 'b', place: 'right', data: {}
 				}, {
 					name: 'trends',
-					id: 'c', data: {}
+					id: 'c', place: 'right', data: {}
 				}]);
 			}
 		}
@@ -259,9 +287,24 @@ export default Vue.extend({
 				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
 			}, { passive: true });
 		}
+
+		// widget follow
+		this.attachSticky();
 	},
 
 	methods: {
+		attachSticky() {
+			if (!this.isDesktop) return;
+			if (this.$store.state.device.fixedWidgetsPosition) return;
+
+			const stickyWidgetColumns = this.$refs.widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
+			window.addEventListener('scroll', () => {
+				for (const stickyWidgetColumn of stickyWidgetColumns) {
+					stickyWidgetColumn.calc(window.scrollY);
+				}
+			}, { passive: true });
+		},
+
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
@@ -505,7 +548,7 @@ export default Vue.extend({
 			this.saveHome();
 		},
 
-		addWidget(ev) {
+		async addWidget(place) {
 			const widgets = [
 				'memo',
 				'notifications',
@@ -518,18 +561,24 @@ export default Vue.extend({
 				'photos',
 			];
 
-			this.$root.menu({
-				items: widgets.map(widget => ({
-					text: this.$t('_widgets.' + widget),
-					action: () => {
-						this.$store.commit('deviceUser/addWidget', {
-							name: widget,
-							id: uuid(),
-							data: {}
-						});
-					}
-				})),
-				source: ev.currentTarget || ev.target,
+			const { canceled, result: widget } = await this.$root.dialog({
+				type: null,
+				title: this.$t('chooseWidget'),
+				select: {
+					items: widgets.map(widget => ({
+						value: widget,
+						text: this.$t('_widgets.' + widget),
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			this.$store.commit('deviceUser/addWidget', {
+				name: widget,
+				id: uuid(),
+				place: place,
+				data: {}
 			});
 		},
 
@@ -538,7 +587,7 @@ export default Vue.extend({
 		},
 
 		saveHome() {
-			this.$store.commit('deviceUser/setWidgets', this.widgets);
+			this.$store.commit('deviceUser/setWidgets', [...this.widgets.left, ...this.widgets.right, ...this.widgets.mobile]);
 		}
 	}
 });
@@ -571,11 +620,13 @@ export default Vue.extend({
 	$header-height: 60px;
 	$nav-width: 250px;
 	$nav-icon-only-width: 80px;
-	$main-width: 650px;
+	$main-width: 670px;
 	$ui-font-size: 1em;
-	$nav-icon-only-threshold: 1300px;
+	$nav-icon-only-threshold: 1279px;
 	$nav-hide-threshold: 650px;
-	$side-hide-threshold: 1070px;
+	$header-sub-hide-threshold: 1090px;
+	$left-widgets-hide-threshold: 1600px;
+	$right-widgets-hide-threshold: 1090px;
 
 	min-height: 100vh;
 	box-sizing: border-box;
@@ -673,7 +724,7 @@ export default Vue.extend({
 			right: 16px;
 			height: $header-height;
 
-			@media (max-width: $side-hide-threshold) {
+			@media (max-width: $header-sub-hide-threshold) {
 				display: none;
 			}
 
@@ -851,7 +902,7 @@ export default Vue.extend({
 					z-index: 1;
 					padding-top: 8px;
 					padding-bottom: 8px;
-					background: var(--wboyroyc);
+					background: var(--X14);
 					-webkit-backdrop-filter: blur(8px);
 					backdrop-filter: blur(8px);
 				}
@@ -906,28 +957,21 @@ export default Vue.extend({
 
 		&.wallpaper {
 			background: var(--wallpaperOverlay);
+			backdrop-filter: blur(4px);
 		}
 
 		> main {
 			width: $main-width;
-			min-width: $main-width;
-			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
-
-			@media (max-width: $side-hide-threshold) {
-				min-width: 0;
-			}
+			min-width: 0;
 
 			> .content {
 				> * {
 					min-height: calc(100vh - #{$header-height});
 					box-sizing: border-box;
+					padding: var(--margin);
 
-					&:not(.full) {
-						padding: var(--margin) 0;
-					}
-
-					&:not(.naked) {
-						background: var(--pageBg);
+					&.full {
+						padding: 0 var(--margin);
 					}
 
 					&.naked {
@@ -969,58 +1013,83 @@ export default Vue.extend({
 		}
 
 		> .widgets {
-			box-sizing: border-box;
-			margin-left: var(--margin);
-			background: var(--pageBg);
-			box-shadow: 1px 0 0 0 var(--divider),-1px 0 0 0 var(--divider);
+			padding: 0 var(--margin);
+			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
-			@media (max-width: $side-hide-threshold) {
+			&.fixed {
+				position: sticky;
+				overflow: auto;
+				height: calc(100vh - #{$header-height});
+				top: $header-height;
+			}
+
+			&:first-of-type {
+				order: -1;
+
+				@media (max-width: $left-widgets-hide-threshold) {
+					display: none;
+				}
+			}
+
+			&.empty {
 				display: none;
 			}
 
-			> div {
+			@media (max-width: $right-widgets-hide-threshold) {
+				display: none;
+			}
+
+			> .container {
 				position: sticky;
-				top: $header-height;
-				height: calc(100vh - #{$header-height});
-				overflow: auto;
+				height: min-content;
+				min-height: calc(100vh - #{$header-height});
+				padding: var(--margin) 0;
+				box-sizing: border-box;
 
 				> * {
 					margin: var(--margin) 0;
 					width: 300px;
-				}
 
-				> .add {
-					margin: 0 auto;
-				}
-
-				.customize-container {
-					margin: 8px 0;
-					background: #fff;
-
-					> header {
-						position: relative;
-						line-height: 32px;
-
-						> .handle {
-							padding: 0 8px;
-							cursor: move;
-						}
-
-						> .remove {
-							position: absolute;
-							top: 0;
-							right: 0;
-							padding: 0 8px;
-							line-height: 32px;
-						}
+					&:first-child {
+						margin-top: 0;
 					}
 
-					> div {
-						padding: 8px;
+					&:last-child {
+						margin-bottom: 0;
+					}
+				}
+			}
 
-						> * {
-							pointer-events: none;
-						}
+			> .add {
+				margin: 0 auto;
+			}
+
+			.customize-container {
+				margin: 8px 0;
+
+				> header {
+					position: relative;
+					line-height: 32px;
+
+					> .handle {
+						padding: 0 8px;
+						cursor: move;
+					}
+
+					> .remove {
+						position: absolute;
+						top: 0;
+						right: 0;
+						padding: 0 8px;
+						line-height: 32px;
+					}
+				}
+
+				> div {
+					padding: 8px;
+
+					> * {
+						pointer-events: none;
 					}
 				}
 			}
@@ -1043,7 +1112,7 @@ export default Vue.extend({
 			display: block;
 		}
 
-		@media (min-width: ($side-hide-threshold + 1px)) {
+		@media (min-width: ($header-sub-hide-threshold + 1px)) {
 			display: none;
 		}
 	}
@@ -1056,7 +1125,7 @@ export default Vue.extend({
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		background: linear-gradient(0deg, var(--bg), var(--bonzsgfz));
+		background: linear-gradient(0deg, var(--bg), var(--X1));
 
 		@media (max-width: 500px) {
 			padding: 0 16px 16px 16px;
@@ -1100,7 +1169,7 @@ export default Vue.extend({
 				color: var(--fg);
 
 				&:hover {
-					background: var(--pcncwizz);
+					background: var(--X2);
 				}
 
 				> i {

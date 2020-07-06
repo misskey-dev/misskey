@@ -75,11 +75,11 @@ export default Vue.extend({
 	position: relative;
 	overflow: hidden;
 	background: var(--panel);
-	border: solid 2px var(--jvhmlskx);
+	border: solid 2px var(--X12);
 	border-radius: 6px;
 
 	&:hover {
-		border: solid 2px var(--yakfpmhl);
+		border: solid 2px var(--X13);
 	}
 
 	&.warn {

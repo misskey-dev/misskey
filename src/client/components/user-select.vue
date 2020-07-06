@@ -112,7 +112,7 @@ export default Vue.extend({
 			font-size: 14px;
 
 			&:hover {
-				background: var(--bwqtlupy);
+				background: var(--X7);
 			}
 
 			&.selected {

@@ -109,8 +109,10 @@ export default Vue.extend({
 
 	> header {
 		position: relative;
-		box-shadow: 0 1px 0 0 var(--divider);
+		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 		z-index: 1;
+		background: var(--panelHeaderBg);
+		color: var(--panelHeaderFg);
 
 		> .title {
 			margin: 0;

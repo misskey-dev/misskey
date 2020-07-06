@@ -1,0 +1,22 @@
+{
+	id: '8e4aa0ab-a439-43c8-b67d-16d5c03936de',
+
+	name: 'City',
+	author: 'Zheneha',
+
+	base: 'dark',
+
+	props: {
+		accent: 'rgb(255, 153, 0)',
+		panel: 'rgb(30, 30, 30)',
+		bg: 'rgb(0, 0, 0)',
+		fg: 'rgb(255, 255, 255)',
+		infoFg: '@accent',
+		infoBg: 'rgb(0, 0, 0)',
+		header: 'rgb(37, 37, 37)',
+		mention: '@accent',
+		hashtag: '@accent',
+		link: '@accent',
+		renote: 'rgb(118, 179, 40)',
+	},
+}

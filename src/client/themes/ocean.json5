@@ -1,9 +1,8 @@
 {
 	id: '7e5e263e-c6c1-44e4-a3d2-39198e3cddb8',
 
-	name: 'Tweet Deck',
+	name: 'Ocean',
 	author: 'simirall',
-	desc: 'Tweet like a pro.',
 
 	base: 'dark',
 
