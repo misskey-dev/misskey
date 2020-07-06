@@ -11,7 +11,7 @@ import VueI18n from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import VueHotkey from './scripts/hotkey';
-import App from './app.vue';
+import App from './deck.vue';
 import MiOS from './mios';
 import { version, langs, instanceName, getLocale } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
