@@ -3,7 +3,7 @@
 :root {
 	--radius: 8px;
 	--marginFull: 16px;
-	--marginHalf: 10px;
+	--marginHalf: 8px;
 
 	--margin: var(--marginFull);
 
@@ -29,6 +29,7 @@ html {
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
+		scrollbar-width: thin;
 
 		&:hover {
 			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
