@@ -34,7 +34,7 @@ export class StickySidebar {
 			if (this.isBottom) {
 				this.isBottom = false;
 				const overflow = this.el.clientHeight - window.innerHeight;
-				this.spacer.style.marginTop = `${scrollTop - (overflow + this.marginTop)}px`;
+				this.spacer.style.marginTop = `${this.lastScrollTop - (overflow + this.marginTop)}px`;
 			}
 		}
 
