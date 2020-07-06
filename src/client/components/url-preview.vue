@@ -3,8 +3,8 @@
 	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><fa icon="times"/></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
-<div v-else-if="tweetId && tweetExpanded" class="twitter">
-	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.device.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
+<div v-else-if="tweetId && tweetExpanded" class="twitter" ref="twitter">
+	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', left: `${tweetLeft}px`, width: `${tweetLeft < 0 ? 'auto' : '100%'}`, height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.device.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
 <div v-else class="mk-url-preview" v-size="[{ max: 400 }, { max: 350 }]">
 	<transition name="zoom" mode="out-in">
@@ -77,6 +77,7 @@ export default Vue.extend({
 			tweetExpanded: this.detail,
 			embedId: `embed${Math.random().toString().replace(/\D/,'')}`,
 			tweetHeight: 150,
+ 			tweetLeft: 0,
 			playerEnabled: false,
 			self: self,
 			attr: self ? 'to' : 'href',
@@ -115,6 +116,14 @@ export default Vue.extend({
 		});
 
 		(window as any).addEventListener('message', this.adjustTweetHeight);
+	},
+
+	mounted() {
+		// 300pxないと絶対右にはみ出るので左に移動してしまう
+		const areaWidth = (this.$el as any)?.clientWidth;
+		if (areaWidth && areaWidth < 300) this.tweetLeft = areaWidth - 241;
+		console.log(`areaWidth: ${areaWidth}`);
+		console.log(`this.tweetLeft: ${this.tweetLeft}`);
 	},
 
 	methods: {
