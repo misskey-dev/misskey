@@ -1043,11 +1043,20 @@ export default Vue.extend({
 				position: sticky;
 				height: min-content;
 				min-height: calc(100vh - #{$header-height});
-				overflow: hidden;
+				padding: var(--margin) 0;
+				box-sizing: border-box;
 
 				> * {
 					margin: var(--margin) 0;
 					width: 300px;
+
+					&:first-child {
+						margin-top: 0;
+					}
+
+					&:last-child {
+						margin-bottom: 0;
+					}
 				}
 			}
 
