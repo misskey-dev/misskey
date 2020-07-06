@@ -265,6 +265,10 @@ export default Vue.extend({
 			}
 			location.reload();
 		},
+
+		fixedWidgetsPosition() {
+			location.reload()
+		},
 	},
 
 	methods: {

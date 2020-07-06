@@ -87,8 +87,9 @@
 		</main>
 
 		<template v-if="isDesktop">
-			<div class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition }" v-for="place in ['left', 'right']" :key="place">
-				<template v-if="widgetsEditMode">
+			<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition, empty: widgets[place].length === 0 && !widgetsEditMode }" :key="place">
+				<div class="spacer"></div>
+				<div class="container" v-if="widgetsEditMode">
 					<mk-button primary @click="addWidget(place)" class="add"><fa :icon="faPlus"/></mk-button>
 					<x-draggable
 						:list="widgets[place]"
@@ -106,8 +107,10 @@
 							</div>
 						</div>
 					</x-draggable>
-				</template>
-				<component v-else class="_widget" v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				</div>
+				<div class="container" v-else>
+					<component class="_widget" v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				</div>
 			</div>
 		</template>
 	</div>
@@ -134,6 +137,7 @@ import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
+import { StickySidebar } from './scripts/sticky-sidebar';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -232,6 +236,12 @@ export default Vue.extend({
 			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
+
+		isDesktop() {
+			this.$nextTick(() => {
+				this.attachSticky();
+			});
+		}
 	},
 
 	created() {
@@ -277,9 +287,24 @@ export default Vue.extend({
 				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
 			}, { passive: true });
 		}
+
+		// widget follow
+		this.attachSticky();
 	},
 
 	methods: {
+		attachSticky() {
+			if (!this.isDesktop) return;
+			if (this.$store.state.device.fixedWidgetsPosition) return;
+
+			const stickyWidgetColumns = this.$refs.widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
+			window.addEventListener('scroll', () => {
+				for (const stickyWidgetColumn of stickyWidgetColumns) {
+					stickyWidgetColumn.calc(window.scrollY);
+				}
+			}, { passive: true });
+		},
+
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
@@ -988,15 +1013,14 @@ export default Vue.extend({
 		}
 
 		> .widgets {
-			top: $header-height;
-			min-height: calc(100vh - #{$header-height});
 			padding: 0 var(--margin);
 			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
 			&.fixed {
 				position: sticky;
-				height: calc(100vh - #{$header-height});
 				overflow: auto;
+				height: calc(100vh - #{$header-height});
+				top: $header-height;
 			}
 
 			&:first-of-type {
@@ -1007,7 +1031,7 @@ export default Vue.extend({
 				}
 			}
 
-			&:empty {
+			&.empty {
 				display: none;
 			}
 
@@ -1015,9 +1039,16 @@ export default Vue.extend({
 				display: none;
 			}
 
-			> * {
-				margin: var(--margin) 0;
-				width: 300px;
+			> .container {
+				position: sticky;
+				height: min-content;
+				min-height: calc(100vh - #{$header-height});
+				overflow: hidden;
+
+				> * {
+					margin: var(--margin) 0;
+					width: 300px;
+				}
 			}
 
 			> .add {
