@@ -3,10 +3,8 @@
 	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><fa icon="times"/></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
-<div v-else-if="tweetUrl && tweetExpanded" class="twitter">
-	<blockquote ref="tweet" class="twitter-tweet" :data-theme="$store.state.device.darkMode ? 'dark' : null">
-		<a :href="url"></a>
-	</blockquote>
+<div v-else-if="tweetId && tweetExpanded" class="twitter">
+	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.device.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
 <div v-else class="mk-url-preview" v-size="[{ max: 400 }, { max: 350 }]">
 	<transition name="zoom" mode="out-in">
@@ -26,8 +24,8 @@
 			</article>
 		</component>
 	</transition>
-	<div class="expandTweet" v-if="tweetUrl">
-		<a @click="() => { this.expandTweet(); tweetExpanded = true; }">
+	<div class="expandTweet" v-if="tweetId">
+		<a @click="tweetExpanded = true">
 			<fa :icon="faTwitter"/> {{ $t('expandTweet') }}
 		</a>
 	</div>
@@ -75,8 +73,10 @@ export default Vue.extend({
 				width: null,
 				height: null
 			},
-			tweetUrl: null,
+			tweetId: null,
 			tweetExpanded: this.detail,
+			embedId: `embed${Math.random().toString().replace(/\D/,'')}`,
+			tweetHeight: 150,
 			playerEnabled: false,
 			self: self,
 			attr: self ? 'to' : 'href',
@@ -88,13 +88,9 @@ export default Vue.extend({
 	created() {
 		const requestUrl = new URL(this.url);
 
-		if (requestUrl.hostname == 'twitter.com' && /^\/.+\/status(es)?\/\d+/.test(requestUrl.pathname)) {
-			this.tweetUrl = requestUrl;
-		}
-
-		if (this.tweetExpanded && this.tweetUrl) {
-			this.expandTweet();
-			return;
+		if (requestUrl.hostname == 'twitter.com') {
+			const m = requestUrl.pathname.match(/^\/.+\/status(?:es)?\/(\d+)/);
+			if (m) this.tweetId = m[1];
 		}
 
 		if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/(?:watch|channel)')) {
@@ -117,31 +113,23 @@ export default Vue.extend({
 				this.player = info.player;
 			})
 		});
+
+		(window as any).addEventListener('message', this.adjustTweetHeight);
 	},
 
 	methods: {
-		expandTweet() {
-			const twttr = (window as any).twttr || {};
-			const loadTweet = () => twttr.widgets.load(this.$refs.tweet);
-			if (twttr.widgets) {
-				Vue.nextTick(loadTweet);
-			} else {
-				const wjsId = 'twitter-wjs';
-				if (!document.getElementById(wjsId)) {
-					const head = document.getElementsByTagName('head')[0];
-					const script = document.createElement('script');
-					script.setAttribute('id', wjsId);
-					script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
-					head.appendChild(script);
-					const meta = document.createElement("meta");
-					meta.name = 'twitter:widgets:theme';
-					meta.content = this.$store.state.device.darkmode ? 'dark': 'light';
-					head.appendChild(meta);
-				}
-				twttr.ready = loadTweet;
-				(window as any).twttr = twttr;
-			}
-		},
+		adjustTweetHeight(message: any) {
+			if (message.origin !== 'https://platform.twitter.com') return;
+			const embed = message.data?.['twttr.embed'];
+			if (embed?.method !== 'twttr.private.resize') return;
+			if (embed?.id !== this.embedId) return;
+			const height = embed?.params[0]?.height;
+			if (height) this.tweetHeight = height;
+ 		},
+	},
+
+	beforeDestroy() {
+		(window as any).removeEventListener('message', this.adjustTweetHeight);
 	},
 });
 </script>
