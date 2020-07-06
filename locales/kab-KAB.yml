@@ -14,7 +14,20 @@ reply: "Err"
 loadMore: "Wali ugar"
 youGotNewFollower: "Yeṭṭafaṛ-ik·em-id"
 mention: "Bder"
+import: "Kter"
+export: "Sifeḍ"
+files: "Ifuyla"
+download: "Sider"
+lists: "Tibdarin"
+noLists: "Ulac ɣur-k·m ula d yiwet n tabdart"
+following: "Ig ṭṭafaṛ"
+followers: "Imeḍfaṛen"
+followsYou: "Yeṭṭafaṛ-ik·em-id"
+createList: "Snulfu-d tabdart"
+follow: "Ḍfeṛ"
+you: "Kečči·mmi"
 remove: "Kkes"
+userList: "Tibdarin"
 uiLanguage: "Tutlayt n wegrudem"
 _sfx:
   notification: "Ilɣuyen"
@@ -22,8 +35,32 @@ _widgets:
   notifications: "Ilɣuyen"
 _cw:
   show: "Wali ugar"
+_visibility:
+  followers: "Imeḍfaṛen"
 _profile:
   username: "Isem n umseqdac"
+_exportOrImport:
+  followingList: "Ig ṭṭafaṛ"
+  userLists: "Tibdarin"
+_pages:
+  script:
+    categories:
+      list: "Tibdarin"
+    blocks:
+      _join:
+        arg1: "Tibdarin"
+      _randomPick:
+        arg1: "Tibdarin"
+      _dailyRandomPick:
+        arg1: "Tibdarin"
+      _seedRandomPick:
+        arg2: "Tibdarin"
+      _pick:
+        arg1: "Tibdarin"
+      _listLen:
+        arg1: "Tibdarin"
+    types:
+      array: "Tibdarin"
 _notification:
   youWereFollowed: "Yeṭṭafaṛ-ik·em-id"
 
