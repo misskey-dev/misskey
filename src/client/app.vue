@@ -103,13 +103,13 @@
 								<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
 							</header>
 							<div @click="widgetFunc(widget.id)">
-								<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+								<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
 							</div>
 						</div>
 					</x-draggable>
 				</div>
 				<div class="container" v-else>
-					<component class="_close_" v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+					<component v-for="widget in widgets[place]" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
 				</div>
 			</div>
 		</template>

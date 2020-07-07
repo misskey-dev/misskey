@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }" v-size="[{ max: 500 }]">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -118,10 +118,6 @@ export default Vue.extend({
 			margin: 0;
 			padding: 12px 16px;
 
-			@media (max-width: 500px) {
-				padding: 8px 10px;
-			}
-
 			> [data-icon] {
 				margin-right: 6px;
 			}
@@ -139,6 +135,22 @@ export default Vue.extend({
 			padding: 0;
 			width: 42px;
 			height: 100%;
+		}
+	}
+
+	&.max-width_500px {
+		> header {
+			> .title {
+				padding: 8px 10px;
+			}
+		}
+	}
+}
+
+._forceContainerFull_ .ukygtjoj {
+	> header {
+		> .title {
+			padding: 12px 16px !important;
 		}
 	}
 }
