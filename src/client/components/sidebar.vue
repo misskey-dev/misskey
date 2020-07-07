@@ -9,7 +9,7 @@
 	</transition>
 
 	<transition name="nav">
-		<nav class="nav" ref="nav" v-show="showNav">
+		<nav class="nav" v-show="showNav">
 			<div>
 				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
 					<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>

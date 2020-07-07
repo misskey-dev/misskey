@@ -516,6 +516,8 @@ visibility: "公開範囲"
 poll: "アンケート"
 useCw: "内容を隠す"
 fixedWidgetsPosition: "ウィジェットの位置を固定する"
+deck: "デッキ"
+undeck: "デッキ解除"
 
 _theme:
   explore: "テーマを探す"

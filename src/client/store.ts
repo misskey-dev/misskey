@@ -1,9 +1,9 @@
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed } from '@fortawesome/free-solid-svg-icons';
+import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
-import { apiUrl } from './config';
+import { apiUrl, deckmode } from './config';
 import { erase } from '../prelude/array';
 
 export const defaultSettings = {
@@ -36,6 +36,8 @@ export const defaultDeviceUserSettings = {
 		'explore',
 		'announcements',
 		'search',
+		'-',
+		'deck',
 	],
 	deck: {
 		columns: [],
@@ -203,6 +205,14 @@ export default () => new Vuex.Store({
 				icon: faDoorClosed,
 				get show() { return getters.isSignedIn; },
 				get to() { return `/@${state.i.username}/room`; },
+			},
+			deck: {
+				title: deckmode ? 'undeck' : 'deck',
+				icon: faColumns,
+				action: () => {
+					localStorage.setItem('deckmode', (!deckmode).toString());
+					location.reload();
+				},
 			},
 		}),
 	},

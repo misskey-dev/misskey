@@ -29,7 +29,7 @@
 		</div>
 	</header>
 
-	<x-sidebar/>
+	<x-sidebar ref="nav"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<main ref="main">
@@ -218,7 +218,7 @@ export default Vue.extend({
 
 	mounted() {
 		const adjustTitlePosition = () => {
-			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth;
+			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.$el.offsetWidth;
 			if (left >= 0) {
 				this.$refs.title.style.left = left + 'px';
 			}

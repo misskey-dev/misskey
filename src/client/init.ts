@@ -1,5 +1,5 @@
 /**
- * App entry point
+ * Client entry point
  */
 
 import Vue from 'vue';
@@ -11,9 +11,10 @@ import VueI18n from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import VueHotkey from './scripts/hotkey';
-import App from './deck.vue';
+import App from './app.vue';
+import Deck from './deck.vue';
 import MiOS from './mios';
-import { version, langs, instanceName, getLocale } from './config';
+import { version, langs, instanceName, getLocale, deckmode } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
@@ -209,10 +210,8 @@ os.init(async () => {
 			}
 		},
 		router: router,
-		render: createEl => createEl(App)
+		render: createEl => createEl(deckmode ? Deck : App)
 	});
-
-	os.app = app;
 
 	// マウント
 	app.$mount('#app');
