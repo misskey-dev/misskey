@@ -3,7 +3,7 @@
 :root {
 	--radius: 8px;
 	--marginFull: 16px;
-	--marginHalf: 8px;
+	--marginHalf: 10px;
 
 	--margin: var(--marginFull);
 
@@ -284,7 +284,7 @@ hr {
 	overflow: hidden;
 }
 
-._widget ._list_ ._panel {
+._close_ ._list_ > * {
 	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
 	border-radius: 0;
 	margin: 0 !important;
@@ -360,7 +360,7 @@ hr {
 	}
 }
 
-._widget ._card {
+._narrow_ ._card {
 	> ._title {
 		padding: 16px;
 		font-size: 1em;

@@ -1,5 +1,5 @@
 <template>
-<div class="dnpfarvg _panel _widget" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
+<div class="dnpfarvg _panel _narrow_" :class="{ naked, paged, _close_: !paged, narrow, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -55,6 +55,11 @@ export default Vue.extend({
 			default: null
 		},
 		naked: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		paged: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -322,7 +327,7 @@ export default Vue.extend({
 
 	height: 100%;
 	overflow: hidden;
-	box-shadow: 0 0 0 1px #0000001f;
+	box-shadow: 0 0 0 1px var(--deckColumnBorder);
 
 	&.draghover {
 		box-shadow: 0 0 0 2px var(--focus);
@@ -375,15 +380,23 @@ export default Vue.extend({
 		}
 	}
 
+	&.paged {
+		> div {
+			background: var(--bg);
+			padding: var(--margin);
+		}
+	}
+
 	> header {
+		position: relative;
 		display: flex;
 		z-index: 2;
 		line-height: $header-height;
 		padding: 0 16px;
 		font-size: 14px;
-		color: var(--faceHeaderText);
-		background: var(--faceHeader);
-		box-shadow: 0 var(--lineWidth) rgba(#000, 0.15);
+		color: var(--panelHeaderFg);
+		background: var(--panelHeaderBg);
+		//box-shadow: 0 1px var(--divider);
 		cursor: pointer;
 
 		&, * {
@@ -453,7 +466,6 @@ export default Vue.extend({
 		overflow: auto;
 		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;
-		background: var(--bg);
 	}
 }
 </style>

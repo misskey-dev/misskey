@@ -1,13 +1,6 @@
 <template>
 <div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign} ${$store.state.deviceUser.deckColumnWidth}`" v-hotkey.global="keymap">
-	<template v-for="ids in layout">
-		<div v-if="ids.length > 1" class="folder">
-			<deck-column-core v-for="id, i in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
-		</div>
-		<deck-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
-	</template>
-
-	<deck-column>
+	<deck-column :paged="true">
 		<template #header>
 			<div class="default">
 				<portal-target name="avatar" slim/>
@@ -20,6 +13,13 @@
 
 		<router-view></router-view>
 	</deck-column>
+
+	<template v-for="ids in layout">
+		<div v-if="ids.length > 1" class="folder">
+			<deck-column-core v-for="id, i in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
+		</div>
+		<deck-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
+	</template>
 
 	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button"><fa :icon="faPlus"/></button>
 
@@ -176,6 +176,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-deck {
+	--margin: var(--marginHalf);
+
 	display: flex;
 	height: 100vh;
 	box-sizing: border-box;
@@ -185,10 +187,10 @@ export default Vue.extend({
 	overflow-y: hidden;
 
 	// TODO: この値を設定で変えられるようにする
-	$margin: 12px;
+	$columnMargin: 12px;
 
 	> div {
-		margin-right: $margin;
+		margin-right: $columnMargin;
 		width: 330px;
 		min-width: 330px;
 
@@ -201,7 +203,7 @@ export default Vue.extend({
 			flex-direction: column;
 
 			> *:not(:last-child) {
-				margin-bottom: $margin;
+				margin-bottom: $columnMargin;
 			}
 		}
 	}
