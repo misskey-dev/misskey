@@ -8,7 +8,9 @@
 	base: 'light',
 
 	props: {
+		bg: '#f2f2f2',
 		panelHeaderDivider: '@divider',
 		messageBg: '#dedede',
+		deckColumnBorder: '#cccccc',
 	},
 }
