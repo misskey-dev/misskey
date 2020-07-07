@@ -322,7 +322,6 @@ export default Vue.extend({
 		},
 
 		post() {
-			if (!this.$store.getters.isSignedIn) return;
 			this.$root.post();
 		},
 
