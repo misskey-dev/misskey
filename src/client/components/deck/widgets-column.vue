@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :naked="true" :narrow="true" :name="name" :column="column" :is-stacked="isStacked">
+<x-column :menu="menu" :naked="true" :name="name" :column="column" :is-stacked="isStacked">
 	<template #header><fa icon="calculator"/>{{ name }}</template>
 
 	<div class="wtdtxvec">
