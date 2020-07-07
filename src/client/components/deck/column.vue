@@ -1,9 +1,10 @@
 <template>
-<div class="dnpfarvg _panel _narrow_" :class="{ naked, paged, _close_: !paged, narrow, active, isStacked, draghover, dragging, dropready }"
+<div class="dnpfarvg _panel _narrow_" :class="{ naked, paged, _close_: !paged, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
 	v-hotkey="keymap"
+	:style="{ width: `${width}px` }"
 >
 	<header :class="{ indicate: count > 0 }"
 		draggable="true"
@@ -64,11 +65,6 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-		narrow: {
-			type: Boolean,
-			required: false,
-			default: false
-		}
 	},
 
 	data() {
@@ -85,6 +81,10 @@ export default Vue.extend({
 	computed: {
 		isTemporaryColumn(): boolean {
 			return this.column == null;
+		},
+
+		width(): number {
+			return this.column == null ? 350 : this.column.width;
 		},
 
 		keymap(): any {
@@ -358,12 +358,6 @@ export default Vue.extend({
 	&:not(.active) {
 		flex-basis: $header-height;
 		min-height: $header-height;
-	}
-
-	&:not(.isStacked).narrow {
-		width: 285px;
-		min-width: 285px;
-		flex-grow: 0 !important;
 	}
 
 	&.naked {

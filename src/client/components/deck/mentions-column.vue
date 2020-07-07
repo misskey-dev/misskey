@@ -2,7 +2,7 @@
 <x-column :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
 	<template #header><fa :icon="['far', 'bell']"/>{{ name }}</template>
 
-	<x-direct/>
+	<x-mentions/>
 </x-column>
 </template>
 

@@ -42,7 +42,6 @@ export const defaultDeviceUserSettings = {
 		layout: [],
 	},
 	deckColumnAlign: 'left',
-	deckColumnWidth: 'normal',
 };
 
 export const defaultDeviceSettings = {

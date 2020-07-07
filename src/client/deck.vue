@@ -1,5 +1,5 @@
 <template>
-<div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign} ${$store.state.deviceUser.deckColumnWidth}`" v-hotkey.global="keymap">
+<div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign}`" v-hotkey.global="keymap">
 	<deck-column :paged="true">
 		<template #header>
 			<div class="default">
@@ -164,6 +164,7 @@ export default Vue.extend({
 						this.$store.commit('deviceUser/addDeckColumn', {
 							type: column,
 							id: uuid(),
+							width: 330,
 						});
 					}
 				})),
@@ -191,8 +192,6 @@ export default Vue.extend({
 
 	> div {
 		margin-right: $columnMargin;
-		width: 330px;
-		min-width: 330px;
 
 		&:last-of-type {
 			margin-right: 0;
