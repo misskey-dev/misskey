@@ -1,5 +1,5 @@
 <template>
-<div class="dnpfarvg _panel" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
+<div class="dnpfarvg _panel _widget" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
