@@ -29,10 +29,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Menu from '../../../common/views/components/menu.vue';
-import { countIf } from '../../../prelude/array';
 import { faArrowUp, faArrowDown, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
+import { countIf } from '../../../prelude/array';
 
 export default Vue.extend({
 	props: {
@@ -448,7 +447,7 @@ export default Vue.extend({
 	}
 
 	> div {
-		height: "calc(100% - %s)" % $header-height;
+		height: calc(100% - #{$header-height});
 		overflow: auto;
 		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;

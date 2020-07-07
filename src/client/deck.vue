@@ -2,11 +2,9 @@
 <div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign} ${$store.state.deviceUser.deckColumnWidth}`" v-hotkey.global="keymap">
 	<template v-for="ids in layout">
 		<div v-if="ids.length > 1" class="folder">
-			<template v-for="id, i in ids">
-				<deck-column-core :ref="id" :key="id" :column="columns.find(c => c.id == id)" :is-stacked="true" @parentFocus="moveFocus(id, $event)"/>
-			</template>
+			<deck-column-core v-for="id, i in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</div>
-		<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])" @parentFocus="moveFocus(ids[0], $event)"/>
+		<deck-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>
 
 	<deck-column>
@@ -33,7 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from './config';
@@ -58,7 +56,7 @@ export default Vue.extend({
 			searchWait: false,
 			canBack: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faPlus
+			faPlus, faPencilAlt
 		};
 	},
 
@@ -90,6 +88,12 @@ export default Vue.extend({
 		},
 	},
 
+	provide() {
+		return {
+			getColumnVm: this.getColumnVm,
+		};
+	},
+
 	created() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
@@ -101,6 +105,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		getColumnVm(id) {
+			return this.$refs[id][0];
+		},
+
 		help() {
 			this.$router.push('/docs/keyboard-shortcut');
 		},
@@ -145,15 +153,7 @@ export default Vue.extend({
 
 		addColumn(ev) {
 			const columns = [
-				'memo',
-				'notifications',
-				'timeline',
-				'calendar',
-				'rss',
-				'trends',
-				'clock',
-				'activity',
-				'photos',
+				'local',
 			];
 
 			this.$root.menu({
@@ -161,7 +161,7 @@ export default Vue.extend({
 					text: this.$t('_deck._columns.' + column),
 					action: () => {
 						this.$store.commit('deviceUser/addDeckColumn', {
-							name: column,
+							type: column,
 							id: uuid(),
 						});
 					}
@@ -176,6 +176,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-deck {
 	display: flex;
+	height: 100vh;
+	box-sizing: border-box;
 	flex: 1;
 	padding: var(--margin) 0 var(--margin) var(--margin);
 	overflow: auto;
