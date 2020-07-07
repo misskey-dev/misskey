@@ -15,12 +15,12 @@
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="widgetFunc(widget.id)">
 					<button class="remove" @click="removeWidget(widget)"><fa icon="times"/></button>
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" platform="deck" :column="column"/>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :column="column"/>
 				</div>
 			</x-draggable>
 		</template>
 		<template v-else>
-			<component class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" platform="deck" :column="column"/>
+			<component class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :column="column"/>
 		</template>
 	</div>
 </x-column>

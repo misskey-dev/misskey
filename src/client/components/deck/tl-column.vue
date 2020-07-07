@@ -95,16 +95,14 @@ export default Vue.extend({
 		this.connection = this.stream;
 
 		this.connection.on('note', this.onNote);
-		if (this.column.type == 'home') {
+		if (this.column.type === 'home') {
 			this.connection.on('follow', this.onChangeFollowing);
 			this.connection.on('unfollow', this.onChangeFollowing);
 		}
 
-		this.$root.getMeta().then(meta => {
-			this.disabled = !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin && (
-				meta.disableLocalTimeline && ['local', 'hybrid'].includes(this.column.type) ||
-				meta.disableGlobalTimeline && ['global'].includes(this.column.type));
-		});
+		this.disabled = !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin && (
+			this.$store.state.instance.meta.disableLocalTimeline && ['local', 'hybrid'].includes(this.column.type) ||
+			this.$store.state.instance.meta.disableGlobalTimeline && ['global'].includes(this.column.type));
 	},
 
 	beforeDestroy() {

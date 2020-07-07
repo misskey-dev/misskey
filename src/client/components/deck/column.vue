@@ -12,14 +12,14 @@
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
 	>
-		<button class="toggleActive" @click="toggleActive" v-if="isStacked">
+		<button class="toggleActive _button" @click="toggleActive" v-if="isStacked">
 			<template v-if="active"><fa :icon="faAngleUp"/></template>
 			<template v-else><fa :icon="faAngleDown"/></template>
 		</button>
 		<span class="header"><slot name="header"></slot></span>
 		<span class="count" v-if="count > 0">({{ count }})</span>
-		<button v-if="!isTemporaryColumn" class="menu" ref="menu" @click.stop="showMenu"><fa icon="caret-down"/></button>
-		<button v-else class="close" @click.stop="close"><fa icon="times"/></button>
+		<button v-if="!isTemporaryColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
+		<button v-else class="close _button" @click.stop="close"><fa :icon="faTimes"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faArrowUp, faArrowDown, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 import { countIf } from '../../../prelude/array';
 
@@ -73,7 +73,7 @@ export default Vue.extend({
 			dragging: false,
 			draghover: false,
 			dropready: false,
-			faArrowUp, faArrowDown, faAngleUp, faAngleDown
+			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes
 		};
 	},
 
@@ -242,9 +242,9 @@ export default Vue.extend({
 		},
 
 		showMenu() {
-			this.$root.new(Menu, {
+			this.$root.menu({
+				items: this.getMenu(),
 				source: this.$refs.menu,
-				items: this.getMenu()
 			});
 		},
 

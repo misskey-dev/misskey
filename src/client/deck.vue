@@ -21,7 +21,7 @@
 		<router-view></router-view>
 	</deck-column>
 
-	<button @click="addColumn" :title="$t('@deck.add-column')"><fa :icon="faPlus"/></button>
+	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button"><fa :icon="faPlus"/></button>
 
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 
@@ -153,6 +153,7 @@ export default Vue.extend({
 
 		addColumn(ev) {
 			const columns = [
+				'widgets',
 				'local',
 			];
 
