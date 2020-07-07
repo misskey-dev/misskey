@@ -1,6 +1,8 @@
 <template>
 <div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign}`" v-hotkey.global="keymap">
-	<deck-column :paged="true">
+	<x-sidebar/>
+
+	<deck-column :paged="true" class="column">
 		<template #header>
 			<div class="default">
 				<portal-target name="avatar" slim/>
@@ -15,10 +17,10 @@
 	</deck-column>
 
 	<template v-for="ids in layout">
-		<div v-if="ids.length > 1" class="folder">
+		<div v-if="ids.length > 1" class="folder column">
 			<deck-column-core v-for="id, i in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</div>
-		<deck-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
+		<deck-column-core v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>
 
 	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button"><fa :icon="faPlus"/></button>
@@ -38,11 +40,13 @@ import { host } from './config';
 import { search } from './scripts/search';
 import DeckColumnCore from './components/deck/column-core.vue';
 import DeckColumn from './components/deck/column.vue';
+import XSidebar from './components/sidebar.vue';
 
 export default Vue.extend({
 	components: {
+		XSidebar,
 		DeckColumn,
-		DeckColumnCore
+		DeckColumnCore,
 	},
 
 	data() {
@@ -185,18 +189,13 @@ export default Vue.extend({
 	box-sizing: border-box;
 	flex: 1;
 	padding: var(--margin) 0 var(--margin) var(--margin);
-	overflow: auto;
-	overflow-y: hidden;
 
 	// TODO: この値を設定で変えられるようにする
 	$columnMargin: 12px;
 
-	> div {
+	> .column {
+		flex-shrink: 0;
 		margin-right: $columnMargin;
-
-		&:last-of-type {
-			margin-right: 0;
-		}
 
 		&.folder {
 			display: flex;

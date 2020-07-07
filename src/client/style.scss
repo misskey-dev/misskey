@@ -25,7 +25,6 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
-	overflow-y: scroll;
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
