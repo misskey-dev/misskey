@@ -1,10 +1,10 @@
 <template>
 <x-column :menu="menu" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<fa v-if="column.type == 'home'" icon="home"/>
-		<fa v-if="column.type == 'local'" :icon="['far', 'comments']"/>
-		<fa v-if="column.type == 'hybrid'" icon="share-alt"/>
-		<fa v-if="column.type == 'global'" icon="globe"/>
+		<fa v-if="column.type == 'home'" :icon="faHome"/>
+		<fa v-if="column.type == 'local'" :icon="faComments"/>
+		<fa v-if="column.type == 'hybrid'" :icon="faShareAlt"/>
+		<fa v-if="column.type == 'global'" :icon="faGlobe"/>
 		<span>{{ column.name }}</span>
 	</template>
 
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XNotes from '../notes.vue';
 
@@ -46,8 +46,8 @@ export default Vue.extend({
 		return {
 			connection: null,
 			disabled: false,
-			faMinusCircle,
-			pagination: null
+			pagination: null,
+			faMinusCircle, faHome, faComments, faShareAlt, faGlobe
 		};
 	},
 
