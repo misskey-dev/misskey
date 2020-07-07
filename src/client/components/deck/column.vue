@@ -46,10 +46,6 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-		name: {
-			type: String,
-			required: false
-		},
 		menu: {
 			type: Array,
 			required: false,
@@ -179,7 +175,7 @@ export default Vue.extend({
 					this.$root.dialog({
 						title: this.$t('rename'),
 						input: {
-							default: this.name,
+							default: this.column.name,
 							allowEmpty: false
 						}
 					}).then(({ canceled, result: name }) => {

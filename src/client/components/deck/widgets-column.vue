@@ -1,6 +1,6 @@
 <template>
-<x-column :menu="menu" :naked="true" :name="name" :column="column" :is-stacked="isStacked">
-	<template #header><fa :icon="faWindowMaximize"/>{{ name }}</template>
+<x-column :menu="menu" :naked="true" :column="column" :is-stacked="isStacked">
+	<template #header><fa :icon="faWindowMaximize"/>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
 		<template v-if="edit">
@@ -60,13 +60,6 @@ export default Vue.extend({
 			widgets,
 			faWindowMaximize
 		};
-	},
-
-	computed: {
-		name(): string {
-			if (this.column.name) return this.column.name;
-			return this.$t('@widgets');
-		}
 	},
 
 	created() {

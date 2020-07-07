@@ -164,6 +164,7 @@ export default Vue.extend({
 						this.$store.commit('deviceUser/addDeckColumn', {
 							type: column,
 							id: uuid(),
+							name: 'Hoge', // TODO
 							width: 330,
 						});
 					}

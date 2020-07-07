@@ -1,6 +1,6 @@
 <template>
-<x-column :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
-	<template #header><fa :icon="['far', 'bell']"/>{{ name }}</template>
+<x-column :column="column" :is-stacked="isStacked" :menu="menu">
+	<template #header><fa :icon="['far', 'bell']"/>{{ column.name }}</template>
 
 	<x-mentions/>
 </x-column>
@@ -31,13 +31,6 @@ export default Vue.extend({
 	data() {
 		return {
 			menu: null,
-		}
-	},
-
-	computed: {
-		name(): string {
-			if (this.column.name) return this.column.name;
-			return this.$t('@deck.notifications');
 		}
 	},
 });
