@@ -49,6 +49,14 @@ _exportOrImport:
   blockingList: "Seḥbes"
   userLists: "Tibdarin"
 _pages:
+  font: "Tasefsit"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  eyeCatchingImageRemove: "Kkes tugna i d-ijebden"
+  selectType: "Fren anaw"
+  contentBlocks: "Agbur"
+  inputBlocks: "Anekcum"
+  specialBlocks: "Uzzig"
   script:
     categories:
       list: "Tibdarin"
