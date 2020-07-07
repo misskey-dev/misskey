@@ -1,5 +1,5 @@
 <template>
-<div class="mk-nav">
+<div class="mvcprjjd">
 	<transition name="nav-back">
 		<div class="nav-back"
 			v-if="showNav"
@@ -324,7 +324,7 @@ export default Vue.extend({
 	opacity: 0;
 }
 
-.mk-nav {
+.mvcprjjd {
 	$ui-font-size: 1em;
 	$nav-width: 250px;
 	$nav-icon-only-width: 80px;

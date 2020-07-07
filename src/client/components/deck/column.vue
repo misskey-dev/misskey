@@ -17,6 +17,9 @@
 			<template v-if="active"><fa :icon="faAngleUp"/></template>
 			<template v-else><fa :icon="faAngleDown"/></template>
 		</button>
+		<div class="action">
+			<slot name="action"></slot>
+		</div>
 		<span class="header"><slot name="header"></slot></span>
 		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button v-if="!isTemporaryColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
@@ -70,7 +73,7 @@ export default Vue.extend({
 			dragging: false,
 			draghover: false,
 			dropready: false,
-			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes
+			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes,
 		};
 	},
 
@@ -393,10 +396,6 @@ export default Vue.extend({
 			user-select: none;
 		}
 
-		*:not(button) {
-			pointer-events: none;
-		}
-
 		&.indicate {
 			box-shadow: 0 3px 0 0 var(--accent);
 		}
@@ -407,10 +406,6 @@ export default Vue.extend({
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-
-			[data-icon] {
-				margin-right: 8px;
-			}
 		}
 
 		> .count {
@@ -423,6 +418,7 @@ export default Vue.extend({
 		}
 
 		> .toggleActive,
+		> .action > *,
 		> .menu,
 		> .close {
 			padding: 0;
@@ -440,8 +436,12 @@ export default Vue.extend({
 			}
 		}
 
-		> .toggleActive {
+		> .toggleActive, > .action {
 			margin-left: -16px;
+		}
+
+		> .action:empty {
+			display: none;
 		}
 
 		> .menu,

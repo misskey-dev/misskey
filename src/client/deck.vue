@@ -3,13 +3,19 @@
 	<x-sidebar/>
 
 	<deck-column :paged="true" class="column">
+		<template #action>
+			<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
+		</template>
+
 		<template #header>
-			<div class="default">
-				<portal-target name="avatar" slim/>
-				<span class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></span>
-			</div>
-			<div class="custom">
-				<portal-target name="header" slim/>
+			<div class="iwnjqeul">
+				<div class="default">
+					<portal-target name="avatar" slim/>
+					<span class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></span>
+				</div>
+				<div class="custom">
+					<portal-target name="header" slim/>
+				</div>
 			</div>
 		</template>
 
@@ -33,7 +39,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPencilAlt, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from './config';
@@ -60,7 +66,7 @@ export default Vue.extend({
 			searchWait: false,
 			canBack: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faPlus, faPencilAlt
+			faPlus, faPencilAlt, faChevronLeft
 		};
 	},
 
@@ -218,5 +224,8 @@ export default Vue.extend({
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
 	}
+}
+
+.iwnjqeul {
 }
 </style>
