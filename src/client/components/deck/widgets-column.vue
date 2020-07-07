@@ -6,6 +6,7 @@
 		<template v-if="edit">
 			<header>
 				<select v-model="widgetAdderSelected" @change="addWidget">
+					<option v-for="widget in widgets" :value="widget" :key="widget">{{ widget }}</option>
 				</select>
 			</header>
 			<x-draggable
@@ -28,9 +29,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import XColumn from './column.vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
+import XColumn from './column.vue';
+import { widgets } from '../../widgets';
 
 export default Vue.extend({
 	components: {
@@ -54,6 +56,7 @@ export default Vue.extend({
 			edit: false,
 			menu: null,
 			widgetAdderSelected: null,
+			widgets,
 		};
 	},
 
@@ -85,7 +88,7 @@ export default Vue.extend({
 		},
 
 		addWidget() {
-			this.$store.commit('addDeckWidget', {
+			this.$store.commit('deviceUser/addDeckWidget', {
 				id: this.column.id,
 				widget: {
 					name: this.widgetAdderSelected,
@@ -98,14 +101,14 @@ export default Vue.extend({
 		},
 
 		removeWidget(widget) {
-			this.$store.commit('removeDeckWidget', {
+			this.$store.commit('deviceUser/removeDeckWidget', {
 				id: this.column.id,
 				widget
 			});
 		},
 
 		saveWidgets() {
-			this.$store.commit('updateDeckColumn', this.column);
+			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		}
 	}
 });

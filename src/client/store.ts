@@ -516,6 +516,7 @@ export default () => new Vuex.Store({
 				addDeckWidget(state, x) {
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
+					if (column.widgets == null) column.widgets = [];
 					column.widgets.unshift(x.widget);
 				},
 		

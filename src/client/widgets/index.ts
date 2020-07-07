@@ -10,3 +10,15 @@ Vue.component('mkw-trends', () => import('./trends.vue').then(m => m.default));
 Vue.component('mkw-clock', () => import('./clock.vue').then(m => m.default));
 Vue.component('mkw-activity', () => import('./activity.vue').then(m => m.default));
 Vue.component('mkw-photos', () => import('./photos.vue').then(m => m.default));
+
+export const widgets = [
+	'memo',
+	'notifications',
+	'timeline',
+	'calendar',
+	'rss',
+	'trends',
+	'clock',
+	'activity',
+	'photos',
+];

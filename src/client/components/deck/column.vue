@@ -179,50 +179,50 @@ export default Vue.extend({
 						}
 					}).then(({ canceled, result: name }) => {
 						if (canceled) return;
-						this.$store.commit('renameDeckColumn', { id: this.column.id, name });
+						this.$store.commit('deviceUser/renameDeckColumn', { id: this.column.id, name });
 					});
 				}
 			}, null, {
 				icon: 'arrow-left',
 				text: this.$t('swap-left'),
 				action: () => {
-					this.$store.commit('swapLeftDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
 				icon: 'arrow-right',
 				text: this.$t('swap-right'),
 				action: () => {
-					this.$store.commit('swapRightDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
 				icon: faArrowUp,
 				text: this.$t('swap-up'),
 				action: () => {
-					this.$store.commit('swapUpDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
 				icon: faArrowDown,
 				text: this.$t('swap-down'),
 				action: () => {
-					this.$store.commit('swapDownDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
 				icon: ['far', 'window-restore'],
 				text: this.$t('stack-left'),
 				action: () => {
-					this.$store.commit('stackLeftDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
 				icon: faWindowMaximize,
 				text: this.$t('pop-right'),
 				action: () => {
-					this.$store.commit('popRightDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/popRightDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
 				icon: ['far', 'trash-alt'],
 				text: this.$t('remove'),
 				action: () => {
-					this.$store.commit('removeDeckColumn', this.column.id);
+					this.$store.commit('deviceUser/removeDeckColumn', this.column.id);
 				}
 			}];
 
@@ -306,7 +306,7 @@ export default Vue.extend({
 
 			const id = e.dataTransfer.getData('mk-deck-column');
 			if (id != null && id != '') {
-				this.$store.commit('swapDeckColumn', {
+				this.$store.commit('deviceUser/swapDeckColumn', {
 					a: this.column.id,
 					b: id
 				});
@@ -322,6 +322,7 @@ export default Vue.extend({
 
 	height: 100%;
 	overflow: hidden;
+	box-shadow: 0 0 0 1px #0000001f;
 
 	&.draghover {
 		box-shadow: 0 0 0 2px var(--focus);
@@ -361,7 +362,8 @@ export default Vue.extend({
 	}
 
 	&.naked {
-		background: var(--deckAcrylicColumnBg);
+		//background: var(--deckAcrylicColumnBg);
+		background: transparent !important;
 
 		> header {
 			background: transparent;
@@ -451,6 +453,7 @@ export default Vue.extend({
 		overflow: auto;
 		overflow-x: hidden;
 		-webkit-overflow-scrolling: touch;
+		background: var(--bg);
 	}
 }
 </style>

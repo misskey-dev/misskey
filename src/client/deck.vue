@@ -11,7 +11,7 @@
 		<template #header>
 			<div class="default">
 				<portal-target name="avatar" slim/>
-				<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
+				<span class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></span>
 			</div>
 			<div class="custom">
 				<portal-target name="header" slim/>
@@ -184,8 +184,11 @@ export default Vue.extend({
 	overflow: auto;
 	overflow-y: hidden;
 
+	// TODO: この値を設定で変えられるようにする
+	$margin: 12px;
+
 	> div {
-		margin-right: 8px;
+		margin-right: $margin;
 		width: 330px;
 		min-width: 330px;
 
@@ -198,7 +201,7 @@ export default Vue.extend({
 			flex-direction: column;
 
 			> *:not(:last-child) {
-				margin-bottom: 8px;
+				margin-bottom: $margin;
 			}
 		}
 	}

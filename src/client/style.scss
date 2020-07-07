@@ -348,31 +348,6 @@ hr {
 		& + ._content {
 			border-top: solid 1px var(--divider);
 		}
-
-		&._list {
-			padding: 16px;
-
-			@media (max-width: 500px) {
-				padding: 8px;
-			}
-
-			._listItem {
-				padding: 8px 16px;
-				border-radius: var(--radius);
-
-				@media (max-width: 500px) {
-					padding: 8px;
-				}
-
-				&:hover {
-					background: var(--listItemHoverBg);
-				}
-
-				> * {
-					pointer-events: none;
-				}
-			}
-		}
 	}
 
 	> ._footer {
@@ -382,6 +357,21 @@ hr {
 		@media (max-width: 500px) {
 			padding: 16px;
 		}
+	}
+}
+
+._widget ._card {
+	> ._title {
+		padding: 16px;
+		font-size: 1em;
+	}
+
+	> ._content {
+		padding: 16px;
+	}
+
+	> ._footer {
+		padding: 16px;
 	}
 }
 

@@ -138,6 +138,7 @@ import { v4 as uuid } from 'uuid';
 import { host, instanceName } from './config';
 import { search } from './scripts/search';
 import { StickySidebar } from './scripts/sticky-sidebar';
+import { widgets } from './widgets';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -549,18 +550,6 @@ export default Vue.extend({
 		},
 
 		async addWidget(place) {
-			const widgets = [
-				'memo',
-				'notifications',
-				'timeline',
-				'calendar',
-				'rss',
-				'trends',
-				'clock',
-				'activity',
-				'photos',
-			];
-
 			const { canceled, result: widget } = await this.$root.dialog({
 				type: null,
 				title: this.$t('chooseWidget'),
