@@ -1,6 +1,6 @@
 <template>
 <x-column :menu="menu" :naked="true" :column="column" :is-stacked="isStacked">
-	<template #header><fa :icon="faWindowMaximize"/>{{ column.name }}</template>
+	<template #header><fa :icon="faWindowMaximize" style="margin-right: 8px;"/>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
 		<template v-if="edit">

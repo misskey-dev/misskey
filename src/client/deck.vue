@@ -164,6 +164,7 @@ export default Vue.extend({
 		addColumn(ev) {
 			const columns = [
 				'widgets',
+				'notifications',
 				'local',
 			];
 

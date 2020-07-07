@@ -5,7 +5,7 @@
 		<fa v-if="column.type == 'local'" :icon="faComments"/>
 		<fa v-if="column.type == 'hybrid'" :icon="faShareAlt"/>
 		<fa v-if="column.type == 'global'" :icon="faGlobe"/>
-		<span>{{ column.name }}</span>
+		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<div class="iwaalbte" v-if="disabled">

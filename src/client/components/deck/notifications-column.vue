@@ -1,6 +1,6 @@
 <template>
 <x-column :column="column" :is-stacked="isStacked" :menu="menu">
-	<template #header><fa :icon="faBell"/>{{ column.name }}</template>
+	<template #header><fa :icon="faBell" style="margin-right: 8px;"/>{{ column.name }}</template>
 
 	<x-notifications/>
 </x-column>
@@ -10,7 +10,7 @@
 import Vue from 'vue';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
-import XNotifications from '../../pages/notifications.vue';
+import XNotifications from '../notifications.vue';
 
 export default Vue.extend({
 	components: {
