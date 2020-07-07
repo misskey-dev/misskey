@@ -1,6 +1,6 @@
 <template>
 <x-column :menu="menu" :naked="true" :name="name" :column="column" :is-stacked="isStacked">
-	<template #header><fa icon="calculator"/>{{ name }}</template>
+	<template #header><fa :icon="faWindowMaximize"/>{{ name }}</template>
 
 	<div class="wtdtxvec">
 		<template v-if="edit">
@@ -31,6 +31,7 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
+import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
 
@@ -57,13 +58,14 @@ export default Vue.extend({
 			menu: null,
 			widgetAdderSelected: null,
 			widgets,
+			faWindowMaximize
 		};
 	},
 
 	computed: {
 		name(): string {
 			if (this.column.name) return this.column.name;
-			return this.$t('@deck.widgets');
+			return this.$t('@widgets');
 		}
 	},
 

@@ -29,8 +29,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
+import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import { countIf } from '../../../prelude/array';
 
 export default Vue.extend({
@@ -173,7 +173,7 @@ export default Vue.extend({
 
 		getMenu() {
 			const items = [{
-				icon: 'pencil-alt',
+				icon: faPencilAlt,
 				text: this.$t('rename'),
 				action: () => {
 					this.$root.dialog({
@@ -188,13 +188,13 @@ export default Vue.extend({
 					});
 				}
 			}, null, {
-				icon: 'arrow-left',
+				icon: faArrowLeft,
 				text: this.$t('swap-left'),
 				action: () => {
 					this.$store.commit('deviceUser/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
-				icon: 'arrow-right',
+				icon: faArrowRight,
 				text: this.$t('swap-right'),
 				action: () => {
 					this.$store.commit('deviceUser/swapRightDeckColumn', this.column.id);
@@ -212,7 +212,7 @@ export default Vue.extend({
 					this.$store.commit('deviceUser/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				icon: ['far', 'window-restore'],
+				icon: faWindowRestore,
 				text: this.$t('stack-left'),
 				action: () => {
 					this.$store.commit('deviceUser/stackLeftDeckColumn', this.column.id);
@@ -224,7 +224,7 @@ export default Vue.extend({
 					this.$store.commit('deviceUser/popRightDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
-				icon: ['far', 'trash-alt'],
+				icon: faTrashAlt,
 				text: this.$t('remove'),
 				action: () => {
 					this.$store.commit('deviceUser/removeDeckColumn', this.column.id);
