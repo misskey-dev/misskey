@@ -1,16 +1,16 @@
 <template>
 <div class="dnpfarvg _panel" :class="{ naked, narrow, active, isStacked, draghover, dragging, dropready }"
-		@dragover.prevent.stop="onDragover"
-		@dragleave="onDragleave"
-		@drop.prevent.stop="onDrop"
-		v-hotkey="keymap"
+	@dragover.prevent.stop="onDragover"
+	@dragleave="onDragleave"
+	@drop.prevent.stop="onDrop"
+	v-hotkey="keymap"
 >
 	<header :class="{ indicate: count > 0 }"
-			draggable="true"
-			@click="goTop"
-			@dragstart="onDragstart"
-			@dragend="onDragend"
-			@contextmenu.prevent.stop="onContextmenu"
+		draggable="true"
+		@click="goTop"
+		@dragstart="onDragstart"
+		@dragend="onDragend"
+		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<button class="toggleActive" @click="toggleActive" v-if="isStacked">
 			<template v-if="active"><fa :icon="faAngleUp"/></template>

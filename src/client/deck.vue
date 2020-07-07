@@ -8,7 +8,21 @@
 		</div>
 		<x-column-core v-else :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id == ids[0])" @parentFocus="moveFocus(ids[0], $event)"/>
 	</template>
-	<router-view></router-view>
+
+	<deck-column>
+		<template #header>
+			<div class="default">
+				<portal-target name="avatar" slim/>
+				<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
+			</div>
+			<div class="custom">
+				<portal-target name="header" slim/>
+			</div>
+		</template>
+
+		<router-view></router-view>
+	</deck-column>
+
 	<button @click="addColumn" :title="$t('@deck.add-column')"><fa :icon="faPlus"/></button>
 
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
@@ -25,9 +39,11 @@ import { v4 as uuid } from 'uuid';
 import { host } from './config';
 import { search } from './scripts/search';
 import DeckColumnCore from './components/deck/column-core.vue';
+import DeckColumn from './components/deck/column.vue';
 
 export default Vue.extend({
 	components: {
+		DeckColumn,
 		DeckColumnCore
 	},
 
