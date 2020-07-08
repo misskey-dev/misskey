@@ -196,6 +196,7 @@ os.init(async () => {
 				return p;
 			},
 			post(opts, cb) {
+				if (!this.$store.getters.isSignedIn) return;
 				const vm = this.new(PostFormDialog, opts);
 				if (cb) vm.$once('closed', cb);
 				(vm as any).focus();

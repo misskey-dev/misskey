@@ -1,3 +1,5 @@
+// TODO: このファイル消したい
+
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 
