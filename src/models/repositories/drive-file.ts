@@ -39,7 +39,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
-				return `/files/${key}`;
+				return `${config.url}/files/${key}`;
 			}
 		}
 
