@@ -111,6 +111,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .wtdtxvec {
+	padding-top: 1px; // ウィジェットのbox-shadowを利用した1px borderを隠さないようにするため
+
 	> header {
 		padding: 16px;
 
