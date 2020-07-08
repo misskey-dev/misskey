@@ -1,3 +1,5 @@
+// TODO: このファイル消したい
+
 import autobind from 'autobind-decorator';
 import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
