@@ -4,7 +4,7 @@
 		<fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<x-timeline ref="timeline" src="antenna" @after="() => $emit('loaded')"/>
+	<x-timeline ref="timeline" src="antenna" :antenna="{ id: column.antennaId }" @after="() => $emit('loaded')"/>
 </x-column>
 </template>
 
@@ -47,29 +47,21 @@ export default Vue.extend({
 		this.menu = [{
 			icon: 'cog',
 			text: this.$t('antenna'),
-			action: () => {
-				const antennas = this.$root.api('antennas/list');
-				const antennaItems = antennas.map(antenna => ({
-					text: antenna.name,
-					icon: faSatellite,
-					action: () => {
-						this.props.antenna = antenna;
-						this.setSrc('antenna');
-					}
-				}));
+			action: async () => {
+				const antennas = await this.$root.api('antennas/list');
 				this.$root.dialog({
 					title: this.$t('antenna'),
 					type: null,
 					select: {
-						items: antennaItems.map(x => ({
+						items: antennas.map(x => ({
 							value: x, text: x.name
 						}))
 					},
 					showCancelButton: true
 				}).then(({ canceled, result: antenna }) => {
 					if (canceled) return;
-					this.column.antenna = antenna.id;
-					this.$store.commit('updateDeckColumn', this.column);
+					this.column.antennaId = antenna.id;
+					this.$store.commit('deviceUser/updateDeckColumn', this.column);
 				});
 			}
 		}];

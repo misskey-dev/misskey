@@ -39,7 +39,7 @@ export default Vue.extend({
 	created() {
 		if (this.column.notificationType == null) {
 			this.column.notificationType = 'all';
-			this.$store.commit('updateDeckColumn', this.column);
+			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		}
 
 		this.menu = [{
@@ -59,7 +59,7 @@ export default Vue.extend({
 				}).then(({ canceled, result: type }) => {
 					if (canceled) return;
 					this.column.notificationType = type;
-					this.$store.commit('updateDeckColumn', this.column);
+					this.$store.commit('deviceUser/updateDeckColumn', this.column);
 				});
 			}
 		}];
