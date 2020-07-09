@@ -4,7 +4,7 @@
 		<fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<x-timeline ref="timeline" src="list" :list="{ id: column.listId }" @after="() => $emit('loaded')"/>
+	<x-timeline ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
 </x-column>
 </template>
 

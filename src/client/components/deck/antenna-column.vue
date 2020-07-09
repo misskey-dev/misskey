@@ -4,7 +4,7 @@
 		<fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<x-timeline ref="timeline" src="antenna" :antenna="{ id: column.antennaId }" @after="() => $emit('loaded')"/>
+	<x-timeline ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => $emit('loaded')"/>
 </x-column>
 </template>
 
