@@ -190,6 +190,8 @@ export default Vue.extend({
 	},
 
 	created() {
+		document.documentElement.style.overflowY = 'scroll';
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
@@ -754,11 +756,5 @@ export default Vue.extend({
 			}
 		}
 	}
-}
-</style>
-
-<style lang="scss">
-html {
-	overflow-y: scroll;
 }
 </style>
