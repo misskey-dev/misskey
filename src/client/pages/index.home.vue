@@ -19,7 +19,7 @@
 	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
 	<x-post-form class="post-form _panel" fixed v-if="$store.state.device.showFixedPostForm"/>
-	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list.id" :antenna="antenna.id" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
+	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list ? list.id : null" :antenna="antenna ? antenna.id : null" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
 </div>
 </template>
 
