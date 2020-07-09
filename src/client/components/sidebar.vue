@@ -309,11 +309,11 @@ export default Vue.extend({
 }
 
 .mvcprjjd {
-	$ui-font-size: 1em;
-	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
-	$nav-icon-only-threshold: 1279px;
-	$nav-hide-threshold: 650px;
+	$ui-font-size: 1em; // TODO: どこかに集約したい
+	$nav-width: 250px; // TODO: どこかに集約したい
+	$nav-icon-only-width: 80px; // TODO: どこかに集約したい
+	$nav-icon-only-threshold: 1279px; // TODO: どこかに集約したい
+	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
 	> .nav-back {
 		position: fixed;

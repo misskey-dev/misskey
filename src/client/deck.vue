@@ -1,6 +1,6 @@
 <template>
 <div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign}`" v-hotkey.global="keymap">
-	<x-sidebar/>
+	<x-sidebar ref="nav"/>
 
 	<deck-column :paged="true" class="column">
 		<template #action>
@@ -31,6 +31,7 @@
 
 	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button"><fa :icon="faPlus"/></button>
 
+	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 
 	<stream-indicator v-if="$store.getters.isSignedIn"/>
@@ -39,7 +40,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus, faPencilAlt, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from './config';
@@ -59,14 +60,14 @@ export default Vue.extend({
 		return {
 			host: host,
 			pageKey: 0,
-			showNav: false,
 			searching: false,
 			connection: null,
 			searchQuery: '',
 			searchWait: false,
 			canBack: false,
+			menuDef: this.$store.getters.nav({}),
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faPlus, faPencilAlt, faChevronLeft
+			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
 		};
 	},
 
@@ -79,6 +80,13 @@ export default Vue.extend({
 		},
 		layout(): any[] {
 			return this.deck.layout;
+		},
+		navIndicated(): boolean {
+			if (!this.$store.getters.isSignedIn) return false;
+			for (const def in this.menuDef) {
+				if (this.menuDef[def].indicated) return true;
+			}
+			return false;
 		},
 		keymap(): any {
 			return {
@@ -93,7 +101,6 @@ export default Vue.extend({
 	watch:{
 		$route(to, from) {
 			this.pageKey++;
-			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
 	},
@@ -118,6 +125,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		showNav() {
+			this.$refs.nav.show();
+		},
+
 		getColumnVm(id) {
 			return this.$refs[id][0];
 		},
@@ -199,6 +210,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-deck {
+	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
+
 	--margin: var(--marginHalf);
 
 	display: flex;
@@ -224,16 +237,43 @@ export default Vue.extend({
 		}
 	}
 
-	> .post {
+	> .post,
+	> .nav {
 		position: fixed;
 		z-index: 1000;
 		bottom: 32px;
-		right: 32px;
 		width: 64px;
 		height: 64px;
 		border-radius: 100%;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
+	}
+
+	> .post {
+		right: 32px;
+	}
+
+	> .nav {
+		left: 32px;
+		background: var(--panel);
+		color: var(--fg);
+
+		@media (min-width: ($nav-hide-threshold + 1px)) {
+			display: none;
+		}
+
+		&:hover {
+			background: var(--X2);
+		}
+
+		> i {
+			position: absolute;
+			top: 0;
+			left: 0;
+			color: var(--indicator);
+			font-size: 16px;
+			animation: blink 1s infinite;
+		}
 	}
 }
 

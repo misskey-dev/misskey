@@ -171,7 +171,6 @@ export default Vue.extend({
 		navIndicated(): boolean {
 			if (!this.$store.getters.isSignedIn) return false;
 			for (const def in this.menuDef) {
-				if (def === 'timeline') continue;
 				if (def === 'notifications') continue;
 				if (this.menuDef[def].indicated) return true;
 			}
@@ -364,12 +363,12 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-app {
 	$header-height: 60px;
-	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
+	$nav-width: 250px; // TODO: どこかに集約したい
+	$nav-icon-only-width: 80px; // TODO: どこかに集約したい
 	$main-width: 670px;
-	$ui-font-size: 1em;
-	$nav-icon-only-threshold: 1279px;
-	$nav-hide-threshold: 650px;
+	$ui-font-size: 1em; // TODO: どこかに集約したい
+	$nav-icon-only-threshold: 1279px; // TODO: どこかに集約したい
+	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 	$header-sub-hide-threshold: 1090px;
 	$left-widgets-hide-threshold: 1600px;
 	$right-widgets-hide-threshold: 1090px;
