@@ -6,7 +6,7 @@
 	v-hotkey="keymap"
 	:style="{ width: `${width}px` }"
 >
-	<header :class="{ indicate: count > 0 }"
+	<header :class="{ indicated }"
 		draggable="true"
 		@click="goTop"
 		@dragstart="onDragstart"
@@ -21,7 +21,6 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<span class="count" v-if="count > 0">({{ count }})</span>
 		<button v-if="!isTemporaryColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
 		<button v-else class="close _button" @click.stop="close"><fa :icon="faTimes"/></button>
 	</header>
@@ -64,11 +63,15 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		indicated: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {
 		return {
-			count: 0,
 			active: true,
 			dragging: false,
 			draghover: false,
@@ -101,28 +104,12 @@ export default Vue.extend({
 	},
 
 	watch: {
-		active(v) {
-			if (v && this.isScrollTop()) {
-				this.$emit('top');
-			}
-		},
 		dragging(v) {
 			this.$root.$emit(v ? 'deck.column.dragStart' : 'deck.column.dragEnd');
 		}
 	},
 
-	provide() {
-		return {
-			column: this,
-			isScrollTop: this.isScrollTop,
-			count: v => this.count = v,
-			inNakedDeckColumn: !this.naked
-		};
-	},
-
 	mounted() {
-		this.$refs.body.addEventListener('scroll', this.onScroll, { passive: true });
-
 		if (!this.isTemporaryColumn) {
 			this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
 			this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
@@ -130,8 +117,6 @@ export default Vue.extend({
 	},
 
 	beforeDestroy() {
-		this.$refs.body.removeEventListener('scroll', this.onScroll);
-
 		if (!this.isTemporaryColumn) {
 			this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
 			this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
@@ -153,21 +138,6 @@ export default Vue.extend({
 			const vms = deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
 			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
 			this.active = !this.active;
-		},
-
-		isScrollTop() {
-			return this.active && this.$refs.body.scrollTop == 0;
-		},
-
-		onScroll() {
-			if (this.isScrollTop()) {
-				this.$emit('top');
-			}
-
-			if (this.$store.state.device.enableInfiniteScroll) {
-				const current = this.$refs.body.scrollTop + this.$refs.body.clientHeight;
-				if (current > this.$refs.body.scrollHeight - 1) this.$emit('bottom');
-			}
 		},
 
 		getMenu() {
@@ -242,7 +212,7 @@ export default Vue.extend({
 
 		onContextmenu(e) {
 			if (this.isTemporaryColumn) return;
-			this.$contextmenu(e, this.getMenu());
+			this.showMenu();
 		},
 
 		showMenu() {
@@ -396,7 +366,7 @@ export default Vue.extend({
 			user-select: none;
 		}
 
-		&.indicate {
+		&.indicated {
 			box-shadow: 0 3px 0 0 var(--accent);
 		}
 
@@ -408,11 +378,6 @@ export default Vue.extend({
 			white-space: nowrap;
 		}
 
-		> .count {
-			margin-left: 4px;
-			opacity: 0.5;
-		}
-		
 		> span:only-of-type {
 			width: 100%;
 		}

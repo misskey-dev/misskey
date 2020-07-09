@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :column="column" :is-stacked="isStacked">
+<x-column :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated">
 	<template #header>
 		<fa v-if="column.type === 'home'" :icon="faHome"/>
 		<fa v-if="column.type === 'local'" :icon="faComments"/>
@@ -15,7 +15,7 @@
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<x-timeline v-else ref="timeline" :src="column.type" @after="() => $emit('loaded')"/>
+	<x-timeline v-else ref="timeline" :src="column.type" @after="() => $emit('loaded')" @queue="queueUpdated"/>
 </x-column>
 </template>
 
@@ -45,6 +45,7 @@ export default Vue.extend({
 	data() {
 		return {
 			disabled: false,
+			indicated: false,
 			faMinusCircle, faHome, faComments, faShareAlt, faGlobe,
 		};
 	},
@@ -62,6 +63,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		queueUpdated(q) {
+			this.indicated = q !== 0;
+		},
+
 		focus() {
 			(this.$refs.timeline as any).focus();
 		}
