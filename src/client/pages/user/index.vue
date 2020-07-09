@@ -118,6 +118,7 @@ import MkContainer from '../../components/ui/container.vue';
 import MkRemoteCaution from '../../components/remote-caution.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
+import { getScrollPosition } from '../../scripts/scroll';
 
 export default Vue.extend({
 	components: {
@@ -168,12 +169,8 @@ export default Vue.extend({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		window.addEventListener('scroll', this.parallax, { passive: true });
-		document.addEventListener('touchmove', this.parallax, { passive: true });
 		this.$once('hook:beforeDestroy', () => {
 			window.cancelAnimationFrame(this.parallaxAnimationId);
-			window.removeEventListener('scroll', this.parallax);
-			document.removeEventListener('touchmove', this.parallax);
 		});
 	},
 
@@ -205,7 +202,7 @@ export default Vue.extend({
 			const banner = this.$refs.banner as any;
 			if (banner == null) return;
 
-			const top = window.scrollY;
+			const top = getScrollPosition(this.$el);
 
 			if (top < 0) return;
 
