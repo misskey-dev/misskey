@@ -17,6 +17,7 @@
 import Vue from 'vue';
 import XTlColumn from './tl-column.vue';
 import XAntennaColumn from './antenna-column.vue';
+import XListColumn from './list-column.vue';
 import XNotificationsColumn from './notifications-column.vue';
 import XWidgetsColumn from './widgets-column.vue';
 import XMentionsColumn from './mentions-column.vue';
@@ -26,6 +27,7 @@ export default Vue.extend({
 	components: {
 		XTlColumn,
 		XAntennaColumn,
+		XListColumn,
 		XNotificationsColumn,
 		XWidgetsColumn,
 		XMentionsColumn,
