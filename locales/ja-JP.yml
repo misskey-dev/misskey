@@ -650,6 +650,7 @@ _widgets:
   rss: "RSSリーダー"
   activity: "アクティビティ"
   photos: "フォト"
+  digitalClock: "デジタル時計"
 
 _cw:
   hide: "隠す"
