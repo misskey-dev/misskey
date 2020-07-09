@@ -18,7 +18,7 @@ import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
 import { router } from './router';
-import { applyTheme, lightTheme } from './theme';
+import { applyTheme, lightTheme } from './scripts/theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import createStore from './store';
 import { clientDb, get, count } from './db';
@@ -114,7 +114,7 @@ os.init(async () => {
 	}, false);
 
 	store.watch(state => state.device.darkMode, darkMode => {
-		import('./theme').then(({ builtinThemes }) => {
+		import('./scripts/theme').then(({ builtinThemes }) => {
 			const themes = builtinThemes.concat(store.state.device.themes);
 			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
 		});
