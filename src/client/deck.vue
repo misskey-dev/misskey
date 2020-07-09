@@ -165,7 +165,10 @@ export default Vue.extend({
 			const columns = [
 				'widgets',
 				'notifications',
+				'home',
 				'local',
+				'social',
+				'global',
 			];
 
 			this.$root.menu({

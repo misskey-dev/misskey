@@ -1,10 +1,12 @@
 <template>
 <x-column :menu="menu" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<fa v-if="column.type == 'home'" :icon="faHome"/>
-		<fa v-if="column.type == 'local'" :icon="faComments"/>
-		<fa v-if="column.type == 'hybrid'" :icon="faShareAlt"/>
-		<fa v-if="column.type == 'global'" :icon="faGlobe"/>
+		<fa v-if="column.type === 'home'" :icon="faHome"/>
+		<fa v-if="column.type === 'local'" :icon="faComments"/>
+		<fa v-if="column.type === 'social'" :icon="faShareAlt"/>
+		<fa v-if="column.type === 'global'" :icon="faGlobe"/>
+		<fa v-if="column.type === 'list'" :icon="faListUl"/>
+		<fa v-if="column.type === 'antenna'" :icon="faSatellite"/>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
@@ -15,20 +17,20 @@
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<x-notes v-else ref="timeline" :pagination="pagination" @after="() => $emit('loaded')"/>
+	<x-timeline v-else ref="timeline" :src="column.type" @after="() => $emit('loaded')"/>
 </x-column>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
-import XNotes from '../notes.vue';
+import XTimeline from '../timeline.vue';
 
 export default Vue.extend({
 	components: {
 		XColumn,
-		XNotes,
+		XTimeline,
 	},
 
 	props: {
@@ -44,31 +46,9 @@ export default Vue.extend({
 
 	data() {
 		return {
-			connection: null,
 			disabled: false,
-			pagination: null,
-			faMinusCircle, faHome, faComments, faShareAlt, faGlobe
+			faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faListUl, faSatellite
 		};
-	},
-
-	computed: {
-		stream(): any {
-			switch (this.column.type) {
-				case 'home': return this.$root.stream.useSharedConnection('homeTimeline');
-				case 'local': return this.$root.stream.useSharedConnection('localTimeline');
-				case 'hybrid': return this.$root.stream.useSharedConnection('hybridTimeline');
-				case 'global': return this.$root.stream.useSharedConnection('globalTimeline');
-			}
-		},
-
-		endpoint(): string {
-			switch (this.column.type) {
-				case 'home': return 'notes/timeline';
-				case 'local': return 'notes/local-timeline';
-				case 'hybrid': return 'notes/hybrid-timeline';
-				case 'global': return 'notes/global-timeline';
-			}
-		},
 	},
 
 	watch: {
@@ -77,48 +57,13 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		this.pagination = {
-			endpoint: this.endpoint,
-			limit: 10,
-			params: init => ({
-				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
-				withFiles: this.mediaOnly,
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
-			})
-		};
-	},
-
 	mounted() {
-		this.connection = this.stream;
-
-		this.connection.on('note', this.onNote);
-		if (this.column.type === 'home') {
-			this.connection.on('follow', this.onChangeFollowing);
-			this.connection.on('unfollow', this.onChangeFollowing);
-		}
-
 		this.disabled = !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin && (
-			this.$store.state.instance.meta.disableLocalTimeline && ['local', 'hybrid'].includes(this.column.type) ||
+			this.$store.state.instance.meta.disableLocalTimeline && ['local', 'social'].includes(this.column.type) ||
 			this.$store.state.instance.meta.disableGlobalTimeline && ['global'].includes(this.column.type));
 	},
 
-	beforeDestroy() {
-		this.connection.dispose();
-	},
-
 	methods: {
-		onNote(note) {
-			if (this.mediaOnly && note.files.length == 0) return;
-			(this.$refs.timeline as any).prepend(note);
-		},
-
-		onChangeFollowing() {
-			(this.$refs.timeline as any).reload();
-		},
-
 		focus() {
 			(this.$refs.timeline as any).focus();
 		}
