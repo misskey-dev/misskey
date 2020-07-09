@@ -1,5 +1,5 @@
 <template>
-<x-column :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated">
+<x-column :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
 		<fa v-if="column.type === 'home'" :icon="faHome"/>
 		<fa v-if="column.type === 'local'" :icon="faComments"/>
@@ -15,7 +15,7 @@
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<x-timeline v-else ref="timeline" :src="column.type" @after="() => $emit('loaded')" @queue="queueUpdated"/>
+	<x-timeline v-else ref="timeline" :src="column.type" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote"/>
 </x-column>
 </template>
 
@@ -46,6 +46,7 @@ export default Vue.extend({
 		return {
 			disabled: false,
 			indicated: false,
+			columnActive: true,
 			faMinusCircle, faHome, faComments, faShareAlt, faGlobe,
 		};
 	},
@@ -64,7 +65,23 @@ export default Vue.extend({
 
 	methods: {
 		queueUpdated(q) {
-			this.indicated = q !== 0;
+			if (this.columnActive) {
+				this.indicated = q !== 0;
+			}
+		},
+
+		onNote() {
+			if (!this.columnActive) {
+				this.indicated = true;
+			}
+		},
+
+		onChangeActiveState(state) {
+			this.columnActive = state;
+
+			if (this.columnActive) {
+				this.indicated = false;
+			}
 		},
 
 		focus() {

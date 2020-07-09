@@ -55,6 +55,8 @@ export default Vue.extend({
 			const _note = JSON.parse(JSON.stringify(note));	// deepcopy
 			(this.$refs.tl as any).prepend(_note);
 
+			this.$emit('note');
+
 			if (this.sound) {
 				this.$root.sound(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
 			}

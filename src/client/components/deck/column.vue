@@ -104,6 +104,10 @@ export default Vue.extend({
 	},
 
 	watch: {
+		active(v) {
+			this.$emit('change-active-state', v);
+		},
+
 		dragging(v) {
 			this.$root.$emit(v ? 'deck.column.dragStart' : 'deck.column.dragEnd');
 		}
@@ -327,6 +331,10 @@ export default Vue.extend({
 	&:not(.active) {
 		flex-basis: $header-height;
 		min-height: $header-height;
+
+		> header.indicated {
+			box-shadow: 4px 0px var(--accent) inset;
+		}
 	}
 
 	&.naked {
