@@ -98,6 +98,7 @@ export default Vue.extend({
 		},
 	},
 
+	// TODO: 消したい
 	provide() {
 		return {
 			getColumnVm: this.getColumnVm,
