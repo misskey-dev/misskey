@@ -120,9 +120,6 @@ export default Vue.extend({
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
-			menuDef: this.$store.getters.nav({
-				search: this.search
-			}),
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,

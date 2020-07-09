@@ -59,8 +59,6 @@ export default Vue.extend({
 			searching: false,
 			accounts: [],
 			connection: null,
-			searchQuery: '',
-			searchWait: false,
 			menuDef: this.$store.getters.nav({
 				search: this.search
 			}),
