@@ -76,7 +76,7 @@
 	</div>
 
 	<div class="buttons">
-		<button class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
+		<button class="button nav _button" @click="showNav" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
@@ -115,7 +115,6 @@ export default Vue.extend({
 		return {
 			host: host,
 			pageKey: 0,
-			showNav: false,
 			searching: false,
 			accounts: [],
 			lists: [],
@@ -185,7 +184,6 @@ export default Vue.extend({
 	watch:{
 		$route(to, from) {
 			this.pageKey++;
-			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
 
@@ -245,6 +243,10 @@ export default Vue.extend({
 	},
 
 	methods: {
+		showNav() {
+			this.$refs.nav.show();
+		},
+
 		attachSticky() {
 			if (!this.isDesktop) return;
 			if (this.$store.state.device.fixedWidgetsPosition) return;

@@ -237,3 +237,9 @@ export default Vue.extend({
 .iwnjqeul {
 }
 </style>
+
+<style lang="scss">
+html {
+	overflow-y: hidden;
+}
+</style>

@@ -63,7 +63,7 @@ export default define({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mkw-notifications {
 	flex-grow: 1;
 	flex-shrink: 0;

@@ -2,14 +2,14 @@
 <div class="mvcprjjd">
 	<transition name="nav-back">
 		<div class="nav-back"
-			v-if="showNav"
-			@click="showNav = false"
-			@touchstart="showNav = false"
+			v-if="showing"
+			@click="showing = false"
+			@touchstart="showing = false"
 		></div>
 	</transition>
 
 	<transition name="nav">
-		<nav class="nav" v-show="showNav">
+		<nav class="nav" v-show="showing">
 			<div>
 				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
 					<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
@@ -55,8 +55,7 @@ export default Vue.extend({
 	data() {
 		return {
 			host: host,
-			pageKey: 0,
-			showNav: false,
+			showing: false,
 			searching: false,
 			accounts: [],
 			lists: [],
@@ -97,15 +96,13 @@ export default Vue.extend({
 
 	watch: {
 		$route(to, from) {
-			this.pageKey++;
-			this.showNav = false;
-			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
+			this.showing = false;
 		},
 	},
 
 	methods: {
-		onTransition() {
-			if (window._scroll) window._scroll();
+		show() {
+			this.showing = true;
 		},
 
 		search() {

@@ -130,7 +130,7 @@ export default define({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .mkw-timeline {
 	flex-grow: 1;
 	flex-shrink: 0;
