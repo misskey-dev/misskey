@@ -58,7 +58,6 @@ export default Vue.extend({
 			showing: false,
 			searching: false,
 			accounts: [],
-			lists: [],
 			connection: null,
 			searchQuery: '',
 			searchWait: false,

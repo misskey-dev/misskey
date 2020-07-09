@@ -116,8 +116,6 @@ export default Vue.extend({
 			host: host,
 			pageKey: 0,
 			searching: false,
-			accounts: [],
-			lists: [],
 			connection: null,
 			searchQuery: '',
 			searchWait: false,
