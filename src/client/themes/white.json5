@@ -9,7 +9,7 @@
 
 	props: {
 		bg: '#f2f2f2',
-		header: ':alpha<0.3<@bg',
+		header: ':alpha<0.7<@bg',
 		navBg: '@bg',
 		panelHeaderDivider: '@divider',
 		messageBg: '#dedede',
