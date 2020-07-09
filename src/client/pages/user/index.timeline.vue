@@ -1,5 +1,5 @@
 <template>
-<div class="kjeftjfm">
+<div class="kjeftjfm" v-size="[{ max: 500 }]">
 	<div class="with">
 		<button class="_button" @click="with_ = null" :class="{ active: with_ === null }">{{ $t('notes') }}</button>
 		<button class="_button" @click="with_ = 'replies'" :class="{ active: with_ === 'replies' }">{{ $t('notesAndReplies') }}</button>
@@ -60,10 +60,6 @@ export default Vue.extend({
 		display: flex;
 		margin-bottom: var(--margin);
 
-		@media (max-width: 500px) {
-			font-size: 80%;
-		}
-
 		> button {
 			flex: 1;
 			padding: 11px 8px 8px 8px;
@@ -73,6 +69,12 @@ export default Vue.extend({
 				color: var(--accent);
 				border-bottom-color: var(--accent);
 			}
+		}
+	}
+
+	&.max-width_500px {
+		> .with {
+			font-size: 80%;
 		}
 	}
 }
