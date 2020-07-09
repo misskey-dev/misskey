@@ -79,16 +79,6 @@ export default Vue.extend({
 			}
 			return false;
 		},
-
-		navIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
-			for (const def in this.menuDef) {
-				if (def === 'timeline') continue;
-				if (def === 'notifications') continue;
-				if (this.menuDef[def].indicated) return true;
-			}
-			return false;
-		}
 	},
 
 	watch: {

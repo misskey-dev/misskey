@@ -122,6 +122,7 @@ export default Vue.extend({
 			widgetsEditMode: false,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
+			menuDef: this.$store.getters.nav({}),
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
@@ -167,12 +168,14 @@ export default Vue.extend({
 			return this.$store.state.deviceUser.menu;
 		},
 
-		otherNavItemIndicated(): boolean {
-			// TODO: x-sidebarを参照
-		},
-
 		navIndicated(): boolean {
-			// TODO: x-sidebarを参照
+			if (!this.$store.getters.isSignedIn) return false;
+			for (const def in this.menuDef) {
+				if (def === 'timeline') continue;
+				if (def === 'notifications') continue;
+				if (this.menuDef[def].indicated) return true;
+			}
+			return false;
 		}
 	},
 
