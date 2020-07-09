@@ -33,7 +33,7 @@
 		"core-js": "^3.6.5",
 		"gulp/gulp-cli/yargs/yargs-parser": "5.0.0-security.0",
 		"lodash": "^4.17.19",
-		"mocha": "^7.1.1"
+		"mocha/serialize-javascript": "^3.1.0"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.10.3",
