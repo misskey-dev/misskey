@@ -169,6 +169,10 @@ export default Vue.extend({
 				'local',
 				'social',
 				'global',
+				'antenna',
+				'list',
+				'mentions',
+				'direct',
 			];
 
 			this.$root.menu({

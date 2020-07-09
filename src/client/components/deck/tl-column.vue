@@ -6,7 +6,6 @@
 		<fa v-if="column.type === 'social'" :icon="faShareAlt"/>
 		<fa v-if="column.type === 'global'" :icon="faGlobe"/>
 		<fa v-if="column.type === 'list'" :icon="faListUl"/>
-		<fa v-if="column.type === 'antenna'" :icon="faSatellite"/>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
@@ -23,7 +22,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
+import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faListUl } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
 
@@ -47,7 +46,7 @@ export default Vue.extend({
 	data() {
 		return {
 			disabled: false,
-			faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faListUl, faSatellite
+			faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faListUl,
 		};
 	},
 
