@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-container :show-header="!props.compact">
+	<mk-container :show-header="props.showHeader">
 		<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
 
 		<div class="otgbylcu">
@@ -19,10 +19,12 @@ import define from './define';
 export default define({
 	name: 'memo',
 	props: () => ({
-		compact: false
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
-	
 	components: {
 		MkContainer
 	},
@@ -45,11 +47,6 @@ export default define({
 	},
 
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
-
 		onChange() {
 			this.changed = true;
 			clearTimeout(this.timeoutId);

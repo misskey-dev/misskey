@@ -1,6 +1,6 @@
 <template>
-<div class="mkw-timeline" :style="`flex-basis: calc(${basis}% - var(--margin)); height: ${previewHeight}px;`">
-	<mk-container :show-header="!props.compact" class="container">
+<div class="mkw-timeline">
+	<mk-container :show-header="props.showHeader" class="container" :style="`height: ${props.height}px;`">
 		<template #header>
 			<button @click="choose" class="_button">
 				<fa v-if="props.src === 'home'" :icon="faHome"/>
@@ -28,19 +28,25 @@ import MkContainer from '../components/ui/container.vue';
 import XTimeline from '../components/timeline.vue';
 import define from './define';
 
-const basisSteps = [25, 50, 75, 100]
-const previewHeights = [200, 300, 400, 500]
-
 export default define({
 	name: 'timeline',
 	props: () => ({
-		src: 'home',
-		list: null,
-		compact: false,
-		basisStep: 0
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
+		src: {
+			type: 'string',
+			default: 'home',
+			hidden: true,
+		},
+		list: {
+			type: 'object',
+			default: null,
+			hidden: true,
+		},
 	})
 }).extend({
-	
 	components: {
 		MkContainer,
 		XTimeline,
@@ -53,28 +59,7 @@ export default define({
 		};
 	},
 
-	computed: {
-		basis(): number {
-			return basisSteps[this.props.basisStep] || 25
-		},
-
-		previewHeight(): number {
-			return previewHeights[this.props.basisStep] || 200
-		}
-	},
-
 	methods: {
-		func() {
-			if (this.props.basisStep === basisSteps.length - 1) {
-				this.props.basisStep = 0
-				this.props.compact = !this.props.compact;
-			} else {
-				this.props.basisStep += 1
-			}
-
-			this.save();
-		},
-
 		async choose(ev) {
 			this.menuOpened = true;
 			const [antennas, lists] = await Promise.all([

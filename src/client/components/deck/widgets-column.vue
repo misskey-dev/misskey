@@ -14,7 +14,7 @@
 				animation="150"
 				@sort="onWidgetSort"
 			>
-				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @contextmenu.stop.prevent="widgetFunc(widget.id)">
+				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @click="widgetFunc(widget.id)">
 					<button class="remove" @click="removeWidget(widget)"><fa icon="times"/></button>
 					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :column="column"/>
 				</div>
@@ -74,8 +74,7 @@ export default Vue.extend({
 
 	methods: {
 		widgetFunc(id) {
-			const w = this.$refs[id][0];
-			if (w.func) w.func();
+			this.$refs[id][0].setting();
 		},
 
 		onWidgetSort() {

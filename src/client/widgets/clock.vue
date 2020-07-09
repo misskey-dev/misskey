@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-container :naked="props.style % 2 === 0" :show-header="false">
+	<mk-container :naked="props.transparent" :show-header="false">
 		<div class="vubelbmv">
 			<mk-analog-clock class="clock" :smooth="props.style < 2"/>
 		</div>
@@ -16,19 +16,16 @@ import MkAnalogClock from '../components/analog-clock.vue';
 export default define({
 	name: 'clock',
 	props: () => ({
-		style: 0
+		transparent: {
+			type: 'boolean',
+			default: false,
+		},
 	})
 }).extend({
 	components: {
 		MkContainer,
 		MkAnalogClock
 	},
-	methods: {
-		func() {
-			this.props.style = (this.props.style + 1) % 4;
-			this.save();
-		}
-	}
 });
 </script>
 

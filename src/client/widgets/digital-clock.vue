@@ -18,9 +18,19 @@ import define from './define';
 export default define({
 	name: 'digitalClock',
 	props: () => ({
-		transparent: false,
-		fontSize: 1.5,
-		showMs: true,
+		transparent: {
+			type: 'boolean',
+			default: false,
+		},
+		fontSize: {
+			type: 'number',
+			default: 1.5,
+			step: 0.1,
+		},
+		showMs: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
 	data() {
@@ -40,10 +50,6 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
-		func() {
-			// TODO: 設定画面
-			this.save();
-		},
 		tick() {
 			const now = new Date();
 			this.hh = now.getHours().toString().padStart(2, '0');

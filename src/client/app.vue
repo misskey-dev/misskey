@@ -319,8 +319,7 @@ export default Vue.extend({
 		},
 
 		widgetFunc(id) {
-			const w = this.$refs[id][0];
-			if (w.func) w.func();
+			this.$refs[id][0].setting();
 		},
 
 		onWidgetSort() {

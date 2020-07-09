@@ -20,6 +20,7 @@
 				:pattern="pattern"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
+				:step="step"
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
@@ -36,6 +37,7 @@
 				:pattern="pattern"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
+				:step="step"
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
@@ -114,6 +116,9 @@ export default Vue.extend({
 		spellcheck: {
 			required: false
 		},
+		step: {
+			required: false
+		},
 		debounce: {
 			required: false
 		},
@@ -164,7 +169,7 @@ export default Vue.extend({
 		},
 		v(v) {
 			if (this.type === 'number') {
-				this.$emit('input', parseInt(v, 10));
+				this.$emit('input', parseFloat(v));
 			} else {
 				this.$emit('input', v);
 			}

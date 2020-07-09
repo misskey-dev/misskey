@@ -18,6 +18,7 @@ import { version, langs, instanceName, getLocale, deckmode } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
+import Form from './components/form-window.vue';
 import { router } from './router';
 import { applyTheme, lightTheme } from './scripts/theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
@@ -166,6 +167,7 @@ os.init(async () => {
 				i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
 			};
 		},
+		// TODO: ここらへんのメソッド全部Vuexに移したい
 		methods: {
 			api: (endpoint: string, data: { [x: string]: any } = {}, token?) => store.dispatch('api', { endpoint, data, token }),
 			signout: os.signout,
@@ -194,6 +196,13 @@ os.init(async () => {
 					vm.$once('closed', () => res());
 				});
 				return p;
+			},
+			form(title, form) {
+				const vm = this.new(Form, { title, form });
+				return new Promise((res) => {
+					vm.$once('ok', result => res({ canceled: false, result }));
+					vm.$once('cancel', () => res({ canceled: true }));
+				});
 			},
 			post(opts, cb) {
 				if (!this.$store.getters.isSignedIn) return;

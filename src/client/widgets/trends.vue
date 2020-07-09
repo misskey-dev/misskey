@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-container :show-header="!props.compact">
+	<mk-container :show-header="props.showHeader">
 		<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
 		<div class="wbrkwala">
@@ -28,7 +28,10 @@ import XChart from './trends.chart.vue';
 export default define({
 	name: 'hashtags',
 	props: () => ({
-		compact: false
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
 	components: {
@@ -49,10 +52,6 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
 		fetch() {
 			this.$root.api('hashtags/trend').then(stats => {
 				this.stats = stats;
