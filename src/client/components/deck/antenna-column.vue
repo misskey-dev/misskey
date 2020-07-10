@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSatellite } from '@fortawesome/free-solid-svg-icons';
+import { faSatellite, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
 
@@ -33,6 +33,7 @@ export default Vue.extend({
 
 	data() {
 		return {
+			menu: null,
 			faSatellite
 		};
 	},
@@ -45,7 +46,7 @@ export default Vue.extend({
 
 	created() {
 		this.menu = [{
-			icon: 'cog',
+			icon: faCog,
 			text: this.$t('antenna'),
 			action: async () => {
 				const antennas = await this.$root.api('antennas/list');

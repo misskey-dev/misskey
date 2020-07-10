@@ -180,10 +180,7 @@ export default Vue.extend({
 			const columns = [
 				'widgets',
 				'notifications',
-				'home',
-				'local',
-				'social',
-				'global',
+				'tl',
 				'antenna',
 				'list',
 				'mentions',
@@ -193,11 +190,18 @@ export default Vue.extend({
 			this.$root.menu({
 				items: columns.map(column => ({
 					text: this.$t('_deck._columns.' + column),
-					action: () => {
+					action: async () => {
+						const { canceled, result: name } = await this.$root.dialog({
+							title: this.$t('_deck.columnName'),
+							input: {
+								default: this.$t('_deck._columns.' + column),
+							}
+						});
+						if (canceled) return;
 						this.$store.commit('deviceUser/addDeckColumn', {
 							type: column,
 							id: uuid(),
-							name: 'Hoge', // TODO
+							name: name,
 							width: 330,
 						});
 					}

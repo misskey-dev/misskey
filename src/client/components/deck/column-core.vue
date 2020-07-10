@@ -2,13 +2,10 @@
 <!-- TODO: リファクタの余地がありそう -->
 <x-widgets-column v-if="column.type === 'widgets'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
 <x-notifications-column v-else-if="column.type === 'notifications'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
-<x-tl-column v-else-if="column.type === 'home'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
-<x-tl-column v-else-if="column.type === 'local'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
-<x-tl-column v-else-if="column.type === 'social'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
-<x-tl-column v-else-if="column.type === 'global'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
+<x-tl-column v-else-if="column.type === 'tl'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
 <x-list-column v-else-if="column.type === 'list'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
 <x-antenna-column v-else-if="column.type === 'antenna'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
-<x-tl-column v-else-if="column.type === 'hashtag'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
+<!-- TODO: <x-tl-column v-else-if="column.type === 'hashtag'" :column="column" :is-stacked="isStacked" v-on="$listeners"/> -->
 <x-mentions-column v-else-if="column.type === 'mentions'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
 <x-direct-column v-else-if="column.type === 'direct'" :column="column" :is-stacked="isStacked" v-on="$listeners"/>
 </template>

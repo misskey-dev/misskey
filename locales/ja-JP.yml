@@ -1132,3 +1132,13 @@ _notification:
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
+  columnName: "カラム名"
+
+  _columns:
+    widgets: "ウィジェット"
+    notifications: "通知"
+    tl: "タイムライン"
+    antenna: "アンテナ"
+    list: "リスト"
+    mentions: "あなた宛て"
+    direct: "ダイレクト"
