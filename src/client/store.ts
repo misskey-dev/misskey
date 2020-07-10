@@ -43,7 +43,6 @@ export const defaultDeviceUserSettings = {
 		columns: [],
 		layout: [],
 	},
-	deckColumnAlign: 'left',
 };
 
 export const defaultDeviceSettings = {
@@ -69,6 +68,9 @@ export const defaultDeviceSettings = {
 	fixedWidgetsPosition: false,
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
+	deckColumnAlign: 'left',
+	deckAlwaysShowMainColumn: true,
+	deckMainColumnPlace: 'left',
 	sfxVolume: 0.3,
 	sfxNote: 'syuilo/down',
 	sfxNoteMy: 'syuilo/up',

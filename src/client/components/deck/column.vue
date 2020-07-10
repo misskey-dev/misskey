@@ -1,5 +1,6 @@
 <template>
-<div class="dnpfarvg _panel _narrow_" :class="{ naked, paged, _close_: !paged, active, isStacked, draghover, dragging, dropready }"
+<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
+<section class="dnpfarvg _panel _narrow_" :class="{ naked, paged, _close_: !paged, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -27,7 +28,7 @@
 	<div ref="body" v-show="active">
 		<slot></slot>
 	</div>
-</div>
+</section>
 </template>
 
 <script lang="ts">

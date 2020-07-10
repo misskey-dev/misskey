@@ -1,8 +1,9 @@
 <template>
-<div class="mk-deck" :class="`${$store.state.deviceUser.deckColumnAlign}`" v-hotkey.global="keymap">
+<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap">
 	<x-sidebar ref="nav"/>
 
-	<deck-column :paged="true" class="column">
+	<!-- TODO: deckMainColumnPlace を見て位置変える -->
+	<deck-column :paged="true" class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
 		<template #action>
 			<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
 		</template>
@@ -29,7 +30,7 @@
 		<deck-column-core v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>
 
-	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button"><fa :icon="faPlus"/></button>
+	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button add"><fa :icon="faPlus"/></button>
 
 	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
@@ -222,6 +223,16 @@ export default Vue.extend({
 
 	// TODO: この値を設定で変えられるようにする
 	$columnMargin: 12px;
+
+	&.center {
+		> .column:first-of-type {
+			margin-left: auto;
+		}
+
+		> .add {
+			margin-right: auto;
+		}
+	}
 
 	> .column {
 		flex-shrink: 0;
