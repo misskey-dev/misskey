@@ -30,7 +30,7 @@
 		<deck-column-core v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>
 
-	<button @click="addColumn" :title="$t('@deck.add-column')" class="_button add"><fa :icon="faPlus"/></button>
+	<button @click="addColumn" class="_button add"><fa :icon="faPlus"/></button>
 
 	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>

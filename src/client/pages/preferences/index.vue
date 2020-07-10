@@ -59,7 +59,7 @@
 			</mk-switch>
 		</div>
 		<div class="_content">
-			<div>{{ $t('_deck.deckColumnAlign') }}</div>
+			<div>{{ $t('_deck.columnAlign') }}</div>
 			<mk-radio v-model="deckColumnAlign" value="left">{{ $t('left') }}</mk-radio>
 			<mk-radio v-model="deckColumnAlign" value="center">{{ $t('center') }}</mk-radio>
 		</div>

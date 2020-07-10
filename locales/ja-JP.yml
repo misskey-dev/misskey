@@ -1129,3 +1129,6 @@ _notification:
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "グループに招待されました"
 
+_deck:
+  alwaysShowMainColumn: "常にメインカラムを表示"
+  columnAlign: "カラムの寄せ"
