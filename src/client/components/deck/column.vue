@@ -23,7 +23,7 @@
 		</div>
 		<span class="header"><slot name="header"></slot></span>
 		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
-		<button v-else class="close _button" @click.stop="close"><fa :icon="faTimes"/></button>
+		<button v-else-if="$route.name !== 'index'" class="close _button" @click.stop="close"><fa :icon="faTimes"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
