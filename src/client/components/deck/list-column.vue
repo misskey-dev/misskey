@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faListUl } from '@fortawesome/free-solid-svg-icons';
+import { faListUl, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
 
@@ -45,7 +45,7 @@ export default Vue.extend({
 
 	created() {
 		this.menu = [{
-			icon: 'cog',
+			icon: faCog,
 			text: this.$t('list'),
 			action: async () => {
 				const lists = await this.$root.api('users/lists/list');

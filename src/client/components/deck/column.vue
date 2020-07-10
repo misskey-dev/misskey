@@ -35,7 +35,6 @@
 import Vue from 'vue';
 import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
-import { countIf } from '../../../prelude/array';
 
 export default Vue.extend({
 	props: {
@@ -194,7 +193,6 @@ export default Vue.extend({
 			}];
 
 			if (this.menu) {
-				items.unshift(null);
 				for (const i of this.menu.reverse()) {
 					items.unshift(i);
 				}
