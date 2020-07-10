@@ -1,7 +1,7 @@
 <template>
 <mk-container :naked="props.transparent" :show-header="false">
 	<div class="vubelbmv">
-		<mk-analog-clock class="clock" :smooth="props.style < 2"/>
+		<mk-analog-clock class="clock"/>
 	</div>
 </mk-container>
 </template>
