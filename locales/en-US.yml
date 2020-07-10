@@ -516,6 +516,7 @@ visibility: "Visiblility"
 poll: "Poll"
 useCw: "Hide content"
 fixedWidgetsPosition: "Make widget position fixed"
+expandTweet: "Expand tweet"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
