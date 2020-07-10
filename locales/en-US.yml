@@ -516,6 +516,8 @@ visibility: "Visiblility"
 poll: "Poll"
 useCw: "Hide content"
 fixedWidgetsPosition: "Make widget position fixed"
+enablePlayer: "Open video player"
+disablePlayer: "Close video player"
 expandTweet: "Expand tweet"
 _theme:
   explore: "Explore Themes"
