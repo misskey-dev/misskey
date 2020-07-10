@@ -3,7 +3,7 @@
 	<x-sidebar ref="nav"/>
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
-	<deck-column :paged="true" class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
+	<deck-column class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
 		<template #action>
 			<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
 		</template>

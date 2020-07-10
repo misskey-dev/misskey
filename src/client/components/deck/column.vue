@@ -1,6 +1,6 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section class="dnpfarvg _panel _narrow_" :class="{ naked, paged, _close_: !paged, active, isStacked, draghover, dragging, dropready }"
+<section class="dnpfarvg _panel _narrow_" :class="{ naked, paged: isMainColumn, _close_: !isMainColumn, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -22,7 +22,7 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="!isTemporaryColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
+		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
 		<button v-else class="close _button" @click.stop="close"><fa :icon="faTimes"/></button>
 	</header>
 	<div ref="body" v-show="active">
@@ -59,11 +59,6 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-		paged: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
 		indicated: {
 			type: Boolean,
 			required: false,
@@ -82,7 +77,7 @@ export default Vue.extend({
 	},
 
 	computed: {
-		isTemporaryColumn(): boolean {
+		isMainColumn(): boolean {
 			return this.column == null;
 		},
 
@@ -115,14 +110,14 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		if (!this.isTemporaryColumn) {
+		if (!this.isMainColumn) {
 			this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
 			this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
 		}
 	},
 
 	beforeDestroy() {
-		if (!this.isTemporaryColumn) {
+		if (!this.isMainColumn) {
 			this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
 			this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
 		}
@@ -216,7 +211,7 @@ export default Vue.extend({
 		},
 
 		onContextmenu(e) {
-			if (this.isTemporaryColumn) return;
+			if (this.isMainColumn) return;
 			this.showMenu();
 		},
 
@@ -239,8 +234,8 @@ export default Vue.extend({
 		},
 
 		onDragstart(e) {
-			// テンポラリカラムはドラッグさせない
-			if (this.isTemporaryColumn) {
+			// メインカラムはドラッグさせない
+			if (this.isMainColumn) {
 				e.preventDefault();
 				return;
 			}
@@ -255,8 +250,8 @@ export default Vue.extend({
 		},
 
 		onDragover(e) {
-			// テンポラリカラムにはドロップさせない
-			if (this.isTemporaryColumn) {
+			// メインカラムにはドロップさせない
+			if (this.isMainColumn) {
 				e.dataTransfer.dropEffect = 'none';
 				return;
 			}
