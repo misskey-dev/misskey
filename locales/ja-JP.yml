@@ -516,6 +516,9 @@ visibility: "公開範囲"
 poll: "アンケート"
 useCw: "内容を隠す"
 fixedWidgetsPosition: "ウィジェットの位置を固定する"
+enablePlayer: "プレイヤーを開く"
+disablePlayer: "プレイヤーを閉じる"
+expandTweet: "ツイートを展開する"
 
 _theme:
   explore: "テーマを探す"
