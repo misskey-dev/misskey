@@ -171,7 +171,7 @@ export default Vue.extend({
 		navIndicated(): boolean {
 			if (!this.$store.getters.isSignedIn) return false;
 			for (const def in this.menuDef) {
-				if (def === 'notifications') continue;
+				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
 				if (this.menuDef[def].indicated) return true;
 			}
 			return false;
