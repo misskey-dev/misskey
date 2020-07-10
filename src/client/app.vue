@@ -178,7 +178,7 @@ export default Vue.extend({
 		}
 	},
 
-	watch:{
+	watch: {
 		$route(to, from) {
 			this.pageKey++;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
