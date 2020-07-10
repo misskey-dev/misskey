@@ -8,6 +8,7 @@
 	base: 'light',
 
 	props: {
+		panelHeaderDivider: '@divider',
 		messageBg: '#dedede',
 	},
 }

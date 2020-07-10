@@ -146,7 +146,6 @@ module.exports = {
 	resolveLoader: {
 		modules: ['node_modules']
 	},
-	cache: false,
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
 };

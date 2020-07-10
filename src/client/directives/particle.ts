@@ -2,6 +2,8 @@ import Particle from '../components/particle.vue';
 
 export default {
 	bind(el, binding, vn) {
+		// 明示的に false であればバインドしない
+		if (binding.value === false) return;
 		el.addEventListener('click', () => {
 			const rect = el.getBoundingClientRect();
 

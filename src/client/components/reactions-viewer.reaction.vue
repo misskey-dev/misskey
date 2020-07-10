@@ -9,9 +9,9 @@
 	@mouseleave="onMouseleave"
 	@touchend="onMouseleave"
 	ref="reaction"
-	v-particle
+	v-particle="canToggle"
 >
-	<x-reaction-icon :reaction="reaction" :customEmojis="note.emojis" ref="icon"/>
+	<x-reaction-icon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
 	<span>{{ count }}</span>
 </button>
 </template>
@@ -55,11 +55,8 @@ export default Vue.extend({
 			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
 		},
 		canToggle(): boolean {
-			return !this.reaction.match(/@\w/);
+			return !this.reaction.match(/@\w/) && !this.isMe && this.$store.getters.isSignedIn;
 		},
-	},
-	mounted() {
-		if (!this.isInitial) this.anime();
 	},
 	watch: {
 		count(newCount, oldCount) {
@@ -67,9 +64,11 @@ export default Vue.extend({
 			if (this.details != null) this.openDetails();
 		},
 	},
+	mounted() {
+		if (!this.isInitial) this.anime();
+	},
 	methods: {
 		toggleReaction() {
-			if (this.isMe) return;
 			if (!this.canToggle) return;
 
 			const oldReaction = this.note.myReaction;
