@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }" v-size="[{ max: 500 }]">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 500 }]">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -46,6 +46,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: true
+		},
+		scrollable: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 	},
 	data() {
@@ -105,6 +110,15 @@ export default Vue.extend({
 	&.naked {
 		background: transparent !important;
 		box-shadow: none !important;
+	}
+
+	&.scrollable {
+		display: flex;
+		flex-direction: column;
+
+		> div {
+			overflow: auto;
+		}
 	}
 
 	> header {

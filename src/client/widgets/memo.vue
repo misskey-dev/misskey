@@ -1,14 +1,12 @@
 <template>
-<div>
-	<mk-container :show-header="props.showHeader">
-		<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
+<mk-container :show-header="props.showHeader">
+	<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
 
-		<div class="otgbylcu">
-			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
-			<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
-		</div>
-	</mk-container>
-</div>
+	<div class="otgbylcu">
+		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
+		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">

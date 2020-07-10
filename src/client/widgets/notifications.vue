@@ -1,5 +1,5 @@
 <template>
-<mk-container class="mkw-notifications" :style="`height: ${props.height}px;`" :show-header="props.showHeader">
+<mk-container :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
 	<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
 
 	<div>
@@ -39,9 +39,3 @@ export default define({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.mkw-notifications {
-
-}
-</style>

@@ -1,19 +1,17 @@
 <template>
-<div>
-	<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent">
-		<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
+<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent">
+	<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
 
-		<div class="">
-			<mk-loading v-if="fetching"/>
-			<div v-else :class="$style.stream">
-				<div v-for="(image, i) in images" :key="i"
-					:class="$style.img"
-					:style="`background-image: url(${thumbnail(image)})`"
-				></div>
-			</div>
+	<div class="">
+		<mk-loading v-if="fetching"/>
+		<div v-else :class="$style.stream">
+			<div v-for="(image, i) in images" :key="i"
+				:class="$style.img"
+				:style="`background-image: url(${thumbnail(image)})`"
+			></div>
 		</div>
-	</mk-container>
-</div>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">

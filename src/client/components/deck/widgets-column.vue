@@ -15,14 +15,12 @@
 				@sort="onWidgetSort"
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @click="widgetFunc(widget.id)">
-					<button class="remove" @click="removeWidget(widget)"><fa icon="times"/></button>
+					<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
 					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :column="column"/>
 				</div>
 			</x-draggable>
 		</template>
-		<template v-else>
-			<component class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :column="column"/>
-		</template>
+		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :column="column"/>
 	</div>
 </x-column>
 </template>
@@ -31,7 +29,7 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
-import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize, faTimes } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
 
@@ -58,7 +56,7 @@ export default Vue.extend({
 			menu: null,
 			widgetAdderSelected: null,
 			widgets,
-			faWindowMaximize
+			faWindowMaximize, faTimes
 		};
 	},
 
@@ -121,7 +119,7 @@ export default Vue.extend({
 		}
 	}
 
-	> .widget, > .customize-container {
+	> .widget, .customize-container {
 		margin: 8px;
 
 		&:first-of-type {
@@ -129,7 +127,8 @@ export default Vue.extend({
 		}
 	}
 
-	> .customize-container {
+	.customize-container {
+		position: relative;
 		cursor: move;
 
 		> *:not(.remove) {
@@ -138,7 +137,7 @@ export default Vue.extend({
 
 		> .remove {
 			position: absolute;
-			z-index: 1;
+			z-index: 2;
 			top: 8px;
 			right: 8px;
 			width: 32px;

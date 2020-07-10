@@ -1,11 +1,9 @@
 <template>
-<div>
-	<mk-container :naked="props.transparent" :show-header="false">
-		<div class="vubelbmv">
-			<mk-analog-clock class="clock" :smooth="props.style < 2"/>
-		</div>
-	</mk-container>
-</div>
+<mk-container :naked="props.transparent" :show-header="false">
+	<div class="vubelbmv">
+		<mk-analog-clock class="clock" :smooth="props.style < 2"/>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
