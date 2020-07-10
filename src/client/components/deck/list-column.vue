@@ -4,7 +4,7 @@
 		<fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<x-timeline ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
+	<x-timeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
 </x-column>
 </template>
 
@@ -47,27 +47,34 @@ export default Vue.extend({
 		this.menu = [{
 			icon: faCog,
 			text: this.$t('list'),
-			action: async () => {
-				const lists = await this.$root.api('users/lists/list');
-				this.$root.dialog({
-					title: this.$t('list'),
-					type: null,
-					select: {
-						items: lists.map(x => ({
-							value: x, text: x.name
-						}))
-					},
-					showCancelButton: true
-				}).then(({ canceled, result: list }) => {
-					if (canceled) return;
-					this.column.listId = list.id;
-					this.$store.commit('deviceUser/updateDeckColumn', this.column);
-				});
-			}
+			action: this.setList
 		}];
 	},
 
+	mounted() {
+		if (this.column.listId == null) {
+			this.setList();
+		}
+	},
+
 	methods: {
+		async setList() {
+			const lists = await this.$root.api('users/lists/list');
+			const { canceled, result: list } = await this.$root.dialog({
+				title: this.$t('list'),
+				type: null,
+				select: {
+					items: lists.map(x => ({
+						value: x, text: x.name
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			Vue.set(this.column, 'listId', list.id);
+			this.$store.commit('deviceUser/updateDeckColumn', this.column);
+		},
+
 		focus() {
 			(this.$refs.timeline as any).focus();
 		}
