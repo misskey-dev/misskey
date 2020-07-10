@@ -394,7 +394,7 @@ export default Vue.extend({
 		> .action > *,
 		> .menu,
 		> .close {
-			padding: 0;
+			z-index: 1;
 			width: $header-height;
 			line-height: $header-height;
 			font-size: 16px;
@@ -411,6 +411,10 @@ export default Vue.extend({
 
 		> .toggleActive, > .action {
 			margin-left: -16px;
+		}
+
+		> .action {
+			z-index: 1;
 		}
 
 		> .action:empty {

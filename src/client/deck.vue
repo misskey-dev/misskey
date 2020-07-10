@@ -278,5 +278,32 @@ export default Vue.extend({
 }
 
 .iwnjqeul {
+	$header-height: 42px; // TODO: column.vueのそれを参照するようにしたい(出来るのか？)
+
+	> .default {
+		> .avatar {
+			$size: 28px;
+			display: inline-block;
+			width: $size;
+			height: $size;
+			vertical-align: bottom;
+			margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
+		}
+
+		> .title {
+			display: inline-block;
+			margin: 0;
+			line-height: $header-height;
+
+			> [data-icon] {
+				margin-right: 8px;
+			}
+		}
+	}
+
+	> .custom {
+		position: absolute;
+		top: 0;
+	}
 }
 </style>
