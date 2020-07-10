@@ -95,10 +95,6 @@ export default Vue.extend({
 		}
 	},
 
-	inject: {
-		getColumnVm: { from: 'getColumnVm' }
-	},
-
 	watch: {
 		active(v) {
 			this.$emit('change-active-state', v);
@@ -134,9 +130,6 @@ export default Vue.extend({
 
 		toggleActive() {
 			if (!this.isStacked) return;
-			const deck = this.$store.state.deviceUser.deck;
-			const vms = deck.layout.find(ids => ids.indexOf(this.column.id) != -1).map(id => this.getColumnVm(id));
-			if (this.active && countIf(vm => vm.$el.classList.contains('active'), vms) == 1) return;
 			this.active = !this.active;
 		},
 

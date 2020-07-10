@@ -106,13 +106,6 @@ export default Vue.extend({
 		},
 	},
 
-	// TODO: 消したい
-	provide() {
-		return {
-			getColumnVm: this.getColumnVm,
-		};
-	},
-
 	created() {
 		document.documentElement.style.overflowY = 'hidden';
 
@@ -128,10 +121,6 @@ export default Vue.extend({
 	methods: {
 		showNav() {
 			this.$refs.nav.show();
-		},
-
-		getColumnVm(id) {
-			return this.$refs[id][0];
 		},
 
 		help() {
