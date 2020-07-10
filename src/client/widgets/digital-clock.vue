@@ -35,6 +35,7 @@ export default define({
 }).extend({
 	data() {
 		return {
+			clock: null,
 			hh: null,
 			mm: null,
 			ss: null,
@@ -44,7 +45,10 @@ export default define({
 	},
 	created() {
 		this.tick();
-		this.clock = setInterval(this.tick, 10);
+		this.$watch('props.showMs', () => {
+			if (this.clock) clearInterval(this.clock);
+			this.clock = setInterval(this.tick, this.props.showMs ? 10 : 1000);
+		}, { immediate: true });
 	},
 	beforeDestroy() {
 		clearInterval(this.clock);
