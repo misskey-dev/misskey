@@ -206,16 +206,18 @@ export default Vue.extend({
 .mk-deck {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
+	// TODO: この値を設定で変えられるようにする？
+	$columnMargin: 12px;
+
+	$deckMargin: 12px;
+
 	--margin: var(--marginHalf);
 
 	display: flex;
 	height: 100vh;
 	box-sizing: border-box;
 	flex: 1;
-	padding: var(--margin) 0 var(--margin) var(--margin);
-
-	// TODO: この値を設定で変えられるようにする
-	$columnMargin: 12px;
+	padding: $deckMargin 0 $deckMargin $deckMargin;
 
 	&.center {
 		> .column:first-of-type {
