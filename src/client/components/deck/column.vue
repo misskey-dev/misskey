@@ -364,7 +364,7 @@ export default Vue.extend({
 		z-index: 2;
 		line-height: $header-height;
 		padding: 0 16px;
-		font-size: 14px;
+		font-size: 0.9em;
 		color: var(--panelHeaderFg);
 		background: var(--panelHeaderBg);
 		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
