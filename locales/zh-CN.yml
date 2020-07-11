@@ -519,6 +519,7 @@ fixedWidgetsPosition: "固定小工具的位置"
 enablePlayer: "打开播放器"
 disablePlayer: "关闭播放器"
 expandTweet: "展开推文"
+description: "描述"
 deck: "Deck"
 undeck: "取消Deck"
 _theme:
