@@ -1086,4 +1086,11 @@ _notification:
   youReceivedFollowRequest: "새로운 팔로우 요청이 있습니다"
   yourFollowRequestAccepted: "팔로우 요청이 수락되었습니다"
   youWereInvitedToGroup: "그룹에 초대되었습니다"
-
+_deck:
+  _columns:
+    notifications: "알림"
+    tl: "타임라인"
+    antenna: "안테나"
+    list: "리스트"
+    mentions: "받은 멘션"
+    direct: "다이렉트"
