@@ -92,9 +92,13 @@ export default Vue.extend({
 						value: 'global', text: this.$t('_timelines.global')
 					}]
 				},
-				showCancelButton: true
 			});
-			if (canceled) return;
+			if (canceled) {
+				if (this.column.tl == null) {
+					this.setType();
+				}
+				return;
+			}
 			Vue.set(this.column, 'tl', src);
 			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		},
