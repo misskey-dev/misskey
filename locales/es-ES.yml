@@ -571,6 +571,8 @@ _theme:
     renote: "Renotar"
     modalBg: "Fondo modal"
     divider: "Divisor"
+    scrollbarHandle: "Cuadro de la barra de desplazamiento"
+    scrollbarHandleHover: "Cuadro de la barra de desplazamiento (hover)"
 _sfx:
   note: "Notas"
   noteMy: "Nota (a mí mismo)"
