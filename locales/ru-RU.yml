@@ -38,4 +38,7 @@ _widgets:
   timeline: "Лента"
 _cw:
   show: "Показать еще"
-
+_deck:
+  _columns:
+    notifications: "Уведомления"
+    tl: "Лента"
