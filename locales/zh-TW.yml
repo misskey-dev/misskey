@@ -652,4 +652,9 @@ _notification:
   youGotPoll: "{name}已投票"
   youWereFollowed: "您有新的追隨者"
   yourFollowRequestAccepted: "您的追隨請求已通過"
-
+_deck:
+  _columns:
+    notifications: "通知"
+    tl: "時間軸"
+    list: "清單"
+    mentions: "提及"
