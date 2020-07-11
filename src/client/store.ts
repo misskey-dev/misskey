@@ -234,6 +234,7 @@ export default () => new Vuex.Store({
 			ctx.commit('updateI', i);
 			ctx.commit('settings/init', i.clientData);
 			ctx.commit('deviceUser/init', ctx.state.device.userData[i.id] || {});
+			// TODO: ローカルストレージを消してページリロードしたときは i が無いのでその場合のハンドリングをよしなにやる
 			await ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
 		},
 
