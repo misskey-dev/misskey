@@ -33,6 +33,10 @@ export default define({
 			type: 'boolean',
 			default: true,
 		},
+		height: {
+			type: 'number',
+			default: 300,
+		},
 		src: {
 			type: 'string',
 			default: 'home',
