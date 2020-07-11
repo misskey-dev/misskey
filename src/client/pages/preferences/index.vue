@@ -201,7 +201,7 @@ export default Vue.extend({
 
 		enableInfiniteScroll: {
 			get() { return this.$store.state.device.enableInfiniteScroll; },
-			set(value) { this.$store.commit('device/setInfiniteScrollEnabling', value); }
+			set(value) { this.$store.commit('device/set', { key: 'enableInfiniteScroll', value }); }
 		},
 
 		fixedWidgetsPosition: {
@@ -292,6 +292,10 @@ export default Vue.extend({
 		},
 
 		fixedWidgetsPosition() {
+			location.reload()
+		},
+
+		enableInfiniteScroll() {
 			location.reload()
 		},
 	},

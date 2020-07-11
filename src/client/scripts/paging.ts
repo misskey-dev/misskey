@@ -22,7 +22,6 @@ export default (opts) => ({
 					&& this.fetchMore()
 				),
 			loadMoreElement: null as Element,
-			unsubscribeInfiniteScrollMutation: null as any,
 		};
 	},
 
@@ -65,13 +64,6 @@ export default (opts) => ({
 				this.loadMoreElement = this.$refs.loadMore instanceof Element ? this.$refs.loadMore : this.$refs.loadMore.$el;
 				if (this.$store.state.device.enableInfiniteScroll) this.ilObserver.observe(this.loadMoreElement);
 				this.loadMoreElement.addEventListener('click', this.fetchMore);
-
-				this.unsubscribeInfiniteScrollMutation = this.$store.subscribe(mutation => {
-					if (mutation.type !== 'device/setInfiniteScrollEnabling') return;
-
-					if (mutation.payload) return this.ilObserver.observe(this.loadMoreElement);
-					return this.ilObserver.unobserve(this.loadMoreElement);
-				});
 			}
 		});
 	},
@@ -79,7 +71,6 @@ export default (opts) => ({
 	beforeDestroy() {
 		this.ilObserver.disconnect();
 		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click', this.fetchMore);
-		if (this.unsubscribeInfiniteScrollMutation) this.unsubscribeInfiniteScrollMutation();
 	},
 
 	methods: {
