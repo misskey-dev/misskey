@@ -44,10 +44,12 @@ export default Vue.extend({
 		font-size: 16px;
 		border: solid 1px var(--divider);
 		border-radius: 4px 0 0 4px;
+		-webkit-appearance: textfield;
 	}
 
 	> button {
 		flex-shrink: 0;
+		margin: 0;
 		padding: 0 16px;
 		border: solid 1px var(--divider);
 		border-left: none;
