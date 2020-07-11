@@ -538,6 +538,8 @@ _theme:
   func: "函数"
   alpha: "不透明度"
   keys:
+    header: "页眉"
+    navBg: "侧边栏背景"
     mention: "提及"
     renote: "转发"
     divider: "分割线"
