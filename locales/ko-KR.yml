@@ -522,6 +522,12 @@ _theme:
   installed: "{name} 테마가 설치되었습니다"
   alreadyInstalled: "이미 설치된 테마입니다"
   invalid: "테마 형식이 올바르지 않습니다"
+  defaultValue: "기본값"
+  func: "함수"
+  keys:
+    mention: "멘션"
+    renote: "Renote"
+    divider: "구분선"
 _sfx:
   note: "새 노트"
   noteMy: "내 노트"
