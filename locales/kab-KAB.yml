@@ -33,6 +33,9 @@ youHaveNoLists: "Ulac ɣur-k·m ula d yiwet n tabdart"
 remove: "Kkes"
 userList: "Tibdarin"
 uiLanguage: "Tutlayt n wegrudem"
+_theme:
+  keys:
+    mention: "Bder"
 _sfx:
   notification: "Ilɣuyen"
 _widgets:
