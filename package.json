@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.39.1",
+	"version": "12.40.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -31,8 +31,9 @@
 		"chokidar": "^3.3.1",
 		"constantinople": "^4.0.1",
 		"core-js": "^3.6.5",
-		"lodash": "^4.17.15",
-		"mocha": "^7.1.1"
+		"gulp/gulp-cli/yargs/yargs-parser": "5.0.0-security.0",
+		"lodash": "^4.17.19",
+		"mocha/serialize-javascript": "^3.1.0"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.10.3",

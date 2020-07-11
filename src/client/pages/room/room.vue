@@ -143,7 +143,7 @@ export default Vue.extend({
 		if (this.changed) {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('leave-confirm'),
+				text: this.$t('leaveConfirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) {

@@ -29,47 +29,7 @@
 		</div>
 	</header>
 
-	<transition name="nav-back">
-		<div class="nav-back"
-			v-if="showNav"
-			@click="showNav = false"
-			@touchstart="showNav = false"
-		></div>
-	</transition>
-
-	<transition name="nav">
-		<nav class="nav" ref="nav" v-show="showNav">
-			<div>
-				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
-					<mk-avatar :user="$store.state.i" class="avatar"/><mk-acct class="text" :user="$store.state.i"/>
-				</button>
-				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
-					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</button>
-				<router-link class="item index" active-class="active" to="/" exact v-else>
-					<fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</router-link>
-				<template v-for="item in menu">
-					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" @click="() => { if (menuDef[item].action) menuDef[item].action() }" :to="menuDef[item].to">
-						<fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
-						<i v-if="menuDef[item].indicated"><fa :icon="faCircle"/></i>
-					</component>
-				</template>
-				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
-					<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
-				</button>
-				<button class="item _button" @click="more">
-					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
-					<i v-if="otherNavItemIndicated"><fa :icon="faCircle"/></i>
-				</button>
-				<router-link class="item" active-class="active" to="/preferences">
-					<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
-				</router-link>
-			</div>
-		</nav>
-	</transition>
+	<x-sidebar ref="nav"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<main ref="main">
@@ -87,8 +47,9 @@
 		</main>
 
 		<template v-if="isDesktop">
-			<div class="widgets" :class="{ edit: widgetsEditMode }" v-for="place in ['left', 'right']" :key="place">
-				<template v-if="widgetsEditMode">
+			<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition, empty: widgets[place].length === 0 && !widgetsEditMode }" :key="place">
+				<div class="spacer"></div>
+				<div class="container" v-if="widgetsEditMode">
 					<mk-button primary @click="addWidget(place)" class="add"><fa :icon="faPlus"/></mk-button>
 					<x-draggable
 						:list="widgets[place]"
@@ -102,18 +63,20 @@
 								<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
 							</header>
 							<div @click="widgetFunc(widget.id)">
-								<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+								<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
 							</div>
 						</div>
 					</x-draggable>
-				</template>
-				<component v-else class="_widget" v-for="widget in widgets[place]" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				</div>
+				<div class="container" v-else>
+					<component v-for="widget in widgets[place]" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				</div>
 			</div>
 		</template>
 	</div>
 
 	<div class="buttons">
-		<button class="button nav _button" @click="showNav = true" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
+		<button class="button nav _button" @click="showNav" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
 		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
@@ -132,13 +95,17 @@ import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, 
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { ResizeObserver } from '@juggle/resize-observer';
 import { v4 as uuid } from 'uuid';
-import { host, instanceName } from './config';
+import { host } from './config';
 import { search } from './scripts/search';
+import { StickySidebar } from './scripts/sticky-sidebar';
+import { widgets } from './widgets';
+import XSidebar from './components/sidebar.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default Vue.extend({
 	components: {
+		XSidebar,
 		XClock: () => import('./components/header-clock.vue').then(m => m.default),
 		MkButton: () => import('./components/ui/button.vue').then(m => m.default),
 		XDraggable: () => import('vuedraggable'),
@@ -148,19 +115,14 @@ export default Vue.extend({
 		return {
 			host: host,
 			pageKey: 0,
-			showNav: false,
 			searching: false,
-			accounts: [],
-			lists: [],
 			connection: null,
 			searchQuery: '',
 			searchWait: false,
 			widgetsEditMode: false,
-			menuDef: this.$store.getters.nav({
-				search: this.search
-			}),
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
+			menuDef: this.$store.getters.nav({}),
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
@@ -169,6 +131,10 @@ export default Vue.extend({
 	computed: {
 		keymap(): any {
 			return {
+				'd': () => {
+					if (this.$store.state.device.syncDeviceDarkMode) return;
+					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
+				},
 				'p': this.post,
 				'n': this.post,
 				's': this.search,
@@ -206,35 +172,32 @@ export default Vue.extend({
 			return this.$store.state.deviceUser.menu;
 		},
 
-		otherNavItemIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
-			for (const def in this.menuDef) {
-				if (this.menu.includes(def)) continue;
-				if (this.menuDef[def].indicated) return true;
-			}
-			return false;
-		},
-
 		navIndicated(): boolean {
 			if (!this.$store.getters.isSignedIn) return false;
 			for (const def in this.menuDef) {
-				if (def === 'timeline') continue;
-				if (def === 'notifications') continue;
+				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
 				if (this.menuDef[def].indicated) return true;
 			}
 			return false;
 		}
 	},
 
-	watch:{
+	watch: {
 		$route(to, from) {
 			this.pageKey++;
-			this.showNav = false;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
+
+		isDesktop() {
+			this.$nextTick(() => {
+				this.attachSticky();
+			});
+		}
 	},
 
 	created() {
+		document.documentElement.style.overflowY = 'scroll';
+
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
@@ -256,7 +219,7 @@ export default Vue.extend({
 
 	mounted() {
 		const adjustTitlePosition = () => {
-			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.offsetWidth;
+			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.$el.offsetWidth;
 			if (left >= 0) {
 				this.$refs.title.style.left = left + 'px';
 			}
@@ -277,9 +240,28 @@ export default Vue.extend({
 				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
 			}, { passive: true });
 		}
+
+		// widget follow
+		this.attachSticky();
 	},
 
 	methods: {
+		showNav() {
+			this.$refs.nav.show();
+		},
+
+		attachSticky() {
+			if (!this.isDesktop) return;
+			if (this.$store.state.device.fixedWidgetsPosition) return;
+
+			const stickyWidgetColumns = this.$refs.widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
+			window.addEventListener('scroll', () => {
+				for (const stickyWidgetColumn of stickyWidgetColumns) {
+					stickyWidgetColumn.calc(window.scrollY);
+				}
+			}, { passive: true });
+		},
+
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
@@ -326,180 +308,6 @@ export default Vue.extend({
 			}
 		},
 
-		async openAccountMenu(ev) {
-			const accounts = (await this.$root.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
-
-			const accountItems = accounts.map(account => ({
-				type: 'user',
-				user: account,
-				action: () => { this.switchAccount(account); }
-			}));
-
-			this.$root.menu({
-				items: [...[{
-					type: 'link',
-					text: this.$t('profile'),
-					to: `/@${ this.$store.state.i.username }`,
-					avatar: this.$store.state.i,
-				}, {
-					type: 'link',
-					text: this.$t('accountSettings'),
-					to: '/my/settings',
-					icon: faCog,
-				}, null, ...accountItems, {
-					icon: faPlus,
-					text: this.$t('addAcount'),
-					action: () => {
-						this.$root.menu({
-							items: [{
-								text: this.$t('existingAcount'),
-								action: () => { this.addAcount(); },
-							}, {
-								text: this.$t('createAccount'),
-								action: () => { this.createAccount(); },
-							}],
-							align: 'left',
-							fixed: true,
-							width: 240,
-							source: ev.currentTarget || ev.target,
-						});
-					},
-				}]],
-				align: 'left',
-				fixed: true,
-				width: 240,
-				source: ev.currentTarget || ev.target,
-			});
-		},
-
-		oepnInstanceMenu(ev) {
-			this.$root.menu({
-				items: [{
-					type: 'link',
-					text: this.$t('dashboard'),
-					to: '/instance',
-					icon: faTachometerAlt,
-				}, null, {
-					type: 'link',
-					text: this.$t('settings'),
-					to: '/instance/settings',
-					icon: faCog,
-				}, {
-					type: 'link',
-					text: this.$t('customEmojis'),
-					to: '/instance/emojis',
-					icon: faLaugh,
-				}, {
-					type: 'link',
-					text: this.$t('users'),
-					to: '/instance/users',
-					icon: faUsers,
-				}, {
-					type: 'link',
-					text: this.$t('files'),
-					to: '/instance/files',
-					icon: faCloud,
-				}, {
-					type: 'link',
-					text: this.$t('jobQueue'),
-					to: '/instance/queue',
-					icon: faExchangeAlt,
-				}, {
-					type: 'link',
-					text: this.$t('federation'),
-					to: '/instance/federation',
-					icon: faGlobe,
-				}, {
-					type: 'link',
-					text: this.$t('relays'),
-					to: '/instance/relays',
-					icon: faProjectDiagram,
-				}, {
-					type: 'link',
-					text: this.$t('announcements'),
-					to: '/instance/announcements',
-					icon: faBroadcastTower,
-				}],
-				align: 'left',
-				fixed: true,
-				width: 200,
-				source: ev.currentTarget || ev.target,
-			});
-		},
-
-		more(ev) {
-			const items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
-				type: def.to ? 'link' : 'button',
-				text: this.$t(def.title),
-				icon: def.icon,
-				to: def.to,
-				action: def.action,
-				indicate: def.indicated,
-			}));
-			this.$root.menu({
-				items: [...items, null, {
-					type: 'link',
-					text: this.$t('help'),
-					to: '/docs',
-					icon: faQuestionCircle,
-				}, {
-					type: 'link',
-					text: this.$t('aboutX', { x: instanceName || host }),
-					to: '/about',
-					icon: faInfoCircle,
-				}, {
-					type: 'link',
-					text: this.$t('aboutMisskey'),
-					to: '/about-misskey',
-					icon: faInfoCircle,
-				}],
-				align: 'left',
-				fixed: true,
-				width: 200,
-				source: ev.currentTarget || ev.target,
-			});
-		},
-
-		async addAcount() {
-			this.$root.new(await import('./components/signin-dialog.vue').then(m => m.default)).$once('login', res => {
-				this.$store.dispatch('addAcount', res);
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			});
-		},
-
-		async createAccount() {
-			this.$root.new(await import('./components/signup-dialog.vue').then(m => m.default)).$once('signup', res => {
-				this.$store.dispatch('addAcount', res);
-				this.switchAccountWithToken(res.i);
-			});
-		},
-
-		async switchAccount(account: any) {
-			const token = this.$store.state.device.accounts.find((x: any) => x.id === account.id).token;
-			this.switchAccountWithToken(token);
-		},
-
-		switchAccountWithToken(token: string) {
-			this.$root.dialog({
-				type: 'waiting',
-				iconOnly: true
-			});
-
-			this.$root.api('i', {}, token).then((i: any) => {
-				this.$store.dispatch('switchAccount', {
-					...i,
-					token: token
-				}).then(() => {
-					this.$nextTick(() => {
-						location.reload();
-					});
-				});
-			});
-		},
-
 		async onNotification(notification) {
 			if (document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
@@ -515,8 +323,7 @@ export default Vue.extend({
 		},
 
 		widgetFunc(id) {
-			const w = this.$refs[id][0];
-			if (w.func) w.func();
+			this.$refs[id][0].setting();
 		},
 
 		onWidgetSort() {
@@ -524,18 +331,6 @@ export default Vue.extend({
 		},
 
 		async addWidget(place) {
-			const widgets = [
-				'memo',
-				'notifications',
-				'timeline',
-				'calendar',
-				'rss',
-				'trends',
-				'clock',
-				'activity',
-				'photos',
-			];
-
 			const { canceled, result: widget } = await this.$root.dialog({
 				type: null,
 				title: this.$t('chooseWidget'),
@@ -569,36 +364,14 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.nav-enter-active,
-.nav-leave-active {
-	opacity: 1;
-	transform: translateX(0);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.nav-enter,
-.nav-leave-active {
-	opacity: 0;
-	transform: translateX(-240px);
-}
-
-.nav-back-enter-active,
-.nav-back-leave-active {
-	opacity: 1;
-	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.nav-back-enter,
-.nav-back-leave-active {
-	opacity: 0;
-}
-
 .mk-app {
 	$header-height: 60px;
-	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
+	$nav-width: 250px; // TODO: どこかに集約したい
+	$nav-icon-only-width: 80px; // TODO: どこかに集約したい
 	$main-width: 670px;
-	$ui-font-size: 1em;
-	$nav-icon-only-threshold: 1279px;
-	$nav-hide-threshold: 650px;
+	$ui-font-size: 1em; // TODO: どこかに集約したい
+	$nav-icon-only-threshold: 1279px; // TODO: どこかに集約したい
+	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 	$header-sub-hide-threshold: 1090px;
 	$left-widgets-hide-threshold: 1600px;
 	$right-widgets-hide-threshold: 1090px;
@@ -755,176 +528,6 @@ export default Vue.extend({
 		}
 	}
 
-	> .nav-back {
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 1001;
-		width: 100%;
-		height: 100%;
-		background: var(--modalBg);
-	}
-
-	> .nav {
-		$avatar-size: 32px;
-		$avatar-margin: ($header-height - $avatar-size) / 2;
-
-		flex: 0 0 $nav-width;
-		width: $nav-width;
-		box-sizing: border-box;
-
-		@media (max-width: $nav-icon-only-threshold) {
-			flex: 0 0 $nav-icon-only-width;
-			width: $nav-icon-only-width;
-		}
-
-		@media (max-width: $nav-hide-threshold) {
-			position: fixed;
-			top: 0;
-			left: 0;
-			z-index: 1001;
-		}
-
-		@media (min-width: $nav-hide-threshold + 1px) {
-			display: block !important;
-		}
-
-		> div {
-			position: fixed;
-			top: 0;
-			left: 0;
-			z-index: 1001;
-			width: $nav-width;
-			height: 100vh;
-			box-sizing: border-box;
-			overflow: auto;
-			background: var(--navBg);
-			border-right: solid 1px var(--divider);
-
-			> .divider {
-				margin: 16px 0;
-				border-top: solid 1px var(--divider);
-			}
-
-			@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
-				width: $nav-icon-only-width;
-
-				> .divider {
-					margin: 8px auto;
-					width: calc(100% - 32px);
-				}
-
-				> .item {
-					&:first-child {
-						margin-bottom: 8px;
-					}
-
-					&:last-child {
-						margin-top: 8px;
-					}
-				}
-			}
-
-			> .item {
-				position: relative;
-				display: block;
-				padding-left: 32px;
-				font-size: $ui-font-size;
-				line-height: 3.2rem;
-				text-overflow: ellipsis;
-				overflow: hidden;
-				white-space: nowrap;
-				width: 100%;
-				text-align: left;
-				box-sizing: border-box;
-				color: var(--navFg);
-
-				> [data-icon] {
-					width: ($header-height - ($avatar-margin * 2));
-				}
-
-				> [data-icon],
-				> .avatar {
-					margin-right: $avatar-margin;
-				}
-
-				> .avatar {
-					width: $avatar-size;
-					height: $avatar-size;
-					vertical-align: middle;
-				}
-
-				> i {
-					position: absolute;
-					top: 0;
-					left: 20px;
-					color: var(--navIndicator);
-					font-size: 8px;
-					animation: blink 1s infinite;
-				}
-
-				&:hover {
-					text-decoration: none;
-					color: var(--navHoverFg);
-				}
-
-				&.active {
-					color: var(--navActive);
-				}
-
-				&:first-child, &:last-child {
-					position: sticky;
-					z-index: 1;
-					padding-top: 8px;
-					padding-bottom: 8px;
-					background: var(--X14);
-					-webkit-backdrop-filter: blur(8px);
-					backdrop-filter: blur(8px);
-				}
-
-				&:first-child {
-					top: 0;
-					margin-bottom: 16px;
-					border-bottom: solid 1px var(--divider);
-				}
-
-				&:last-child {
-					bottom: 0;
-					margin-top: 16px;
-					border-top: solid 1px var(--divider);
-				}
-
-				@media (max-width: $nav-icon-only-threshold) and (min-width: $nav-hide-threshold + 1px) {
-					padding-left: 0;
-					width: 100%;
-					text-align: center;
-					font-size: $ui-font-size * 1.2;
-					line-height: 3.7rem;
-
-					> [data-icon],
-					> .avatar {
-						margin-right: 0;
-					}
-
-					> i {
-						left: 10px;
-					}
-
-					> .text {
-						display: none;
-					}
-				}
-			}
-
-			@media (max-width: $nav-hide-threshold) {
-				> .index,
-				> .notifications {
-					display: none;
-				}
-			}
-		}
-	}
-
 	> .contents {
 		display: flex;
 		margin: 0 auto;
@@ -988,12 +591,15 @@ export default Vue.extend({
 		}
 
 		> .widgets {
-			position: sticky;
-			top: $header-height;
-			height: calc(100vh - #{$header-height});
 			padding: 0 var(--margin);
-			overflow: auto;
 			box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
+
+			&.fixed {
+				position: sticky;
+				overflow: auto;
+				height: calc(100vh - #{$header-height});
+				top: $header-height;
+			}
 
 			&:first-of-type {
 				order: -1;
@@ -1003,7 +609,7 @@ export default Vue.extend({
 				}
 			}
 
-			&:empty {
+			&.empty {
 				display: none;
 			}
 
@@ -1011,9 +617,25 @@ export default Vue.extend({
 				display: none;
 			}
 
-			> * {
-				margin: var(--margin) 0;
-				width: 300px;
+			> .container {
+				position: sticky;
+				height: min-content;
+				min-height: calc(100vh - #{$header-height});
+				padding: var(--margin) 0;
+				box-sizing: border-box;
+
+				> * {
+					margin: var(--margin) 0;
+					width: 300px;
+
+					&:first-child {
+						margin-top: 0;
+					}
+
+					&:last-child {
+						margin-bottom: 0;
+					}
+				}
 			}
 
 			> .add {
@@ -1022,7 +644,6 @@ export default Vue.extend({
 
 			.customize-container {
 				margin: 8px 0;
-				background: #fff;
 
 				> header {
 					position: relative;

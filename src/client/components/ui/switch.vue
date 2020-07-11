@@ -5,7 +5,7 @@
 	role="switch"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
-	@click="toggle"
+	@click.prevent="toggle"
 >
 	<input
 		type="checkbox"

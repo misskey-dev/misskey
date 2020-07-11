@@ -133,7 +133,7 @@ export default Vue.extend({
 			pointer-events: none;
 			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 			transition-duration: 0.3s;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			pointer-events: none;
 			//will-change transform
@@ -151,7 +151,7 @@ export default Vue.extend({
 			box-sizing: border-box;
 			font: inherit;
 			font-weight: normal;
-			font-size: 16px;
+			font-size: 1em;
 			background: transparent;
 			border: none;
 			border-radius: 0;

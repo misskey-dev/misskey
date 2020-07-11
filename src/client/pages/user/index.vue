@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-page" v-if="user">
+<div class="mk-user-page" v-if="user" v-size="[{ max: 500 }]">
 	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 
@@ -118,6 +118,7 @@ import MkContainer from '../../components/ui/container.vue';
 import MkRemoteCaution from '../../components/remote-caution.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
+import { getScrollPosition } from '../../scripts/scroll';
 
 export default Vue.extend({
 	components: {
@@ -168,12 +169,8 @@ export default Vue.extend({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		window.addEventListener('scroll', this.parallax, { passive: true });
-		document.addEventListener('touchmove', this.parallax, { passive: true });
 		this.$once('hook:beforeDestroy', () => {
 			window.cancelAnimationFrame(this.parallaxAnimationId);
-			window.removeEventListener('scroll', this.parallax);
-			document.removeEventListener('touchmove', this.parallax);
 		});
 	},
 
@@ -205,7 +202,7 @@ export default Vue.extend({
 			const banner = this.$refs.banner as any;
 			if (banner == null) return;
 
-			const top = window.scrollY;
+			const top = getScrollPosition(this.$el);
 
 			if (top < 0) return;
 
@@ -219,7 +216,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-user-page {
-
 	> .punished {
 		font-size: 0.8em;
 		padding: 16px;
@@ -237,10 +233,6 @@ export default Vue.extend({
 			background-size: cover;
 			background-position: center;
 
-			@media (max-width: 500px) {
-				height: 140px;
-			}
-
 			> .banner {
 				height: 100%;
 				background-color: #4c5e6d;
@@ -257,10 +249,6 @@ export default Vue.extend({
 				width: 100%;
 				height: 78px;
 				background: linear-gradient(transparent, rgba(#000, 0.7));
-
-				@media (max-width: 500px) {
-					display: none;
-				}
 			}
 
 			> .followed {
@@ -308,10 +296,6 @@ export default Vue.extend({
 				box-sizing: border-box;
 				color: #fff;
 
-				@media (max-width: 500px) {
-					display: none;
-				}
-
 				> .name {
 					display: block;
 					margin: 0;
@@ -343,10 +327,6 @@ export default Vue.extend({
 			font-weight: bold;
 			border-bottom: solid 1px var(--divider);
 
-			@media (max-width: 500px) {
-				display: block;
-			}
-
 			> .bottom {
 				> * {
 					display: inline-block;
@@ -365,25 +345,11 @@ export default Vue.extend({
 			width: 120px;
 			height: 120px;
 			box-shadow: 1px 1px 3px rgba(#000, 0.2);
-
-			@media (max-width: 500px) {
-				top: 90px;
-				left: 0;
-				right: 0;
-				width: 92px;
-				height: 92px;
-				margin: auto;
-			}
 		}
 
 		> .description {
 			padding: 24px 24px 24px 154px;
 			font-size: 0.95em;
-
-			@media (max-width: 500px) {
-				padding: 16px;
-				text-align: center;
-			}
 
 			> .empty {
 				margin: 0;
@@ -396,10 +362,6 @@ export default Vue.extend({
 			font-size: 0.9em;
 			border-top: solid 1px var(--divider);
 
-			@media (max-width: 500px) {
-				padding: 16px;
-			}
-		
 			> .field {
 				display: flex;
 				padding: 0;
@@ -436,10 +398,6 @@ export default Vue.extend({
 			padding: 24px;
 			border-top: solid 1px var(--divider);
 
-			@media (max-width: 500px) {
-				padding: 16px;
-			}
-
 			> a {
 				flex: 1;
 				text-align: center;
@@ -472,6 +430,48 @@ export default Vue.extend({
 
 	> .content {
 		margin-bottom: var(--margin);
+	}
+
+	&.max-width_500px {
+		> .profile {
+			> .banner-container {
+				height: 140px;
+
+				> .fade {
+					display: none;
+				}
+
+				> .title {
+					display: none;
+				}
+			}
+
+			> .title {
+				display: block;
+			}
+
+			> .avatar {
+				top: 90px;
+				left: 0;
+				right: 0;
+				width: 92px;
+				height: 92px;
+				margin: auto;
+			}
+
+			> .description {
+				padding: 16px;
+				text-align: center;
+			}
+
+			> .fields {
+				padding: 16px;
+			}
+
+			> .status {
+				padding: 16px;
+			}
+		}
 	}
 }
 </style>
