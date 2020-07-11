@@ -352,6 +352,9 @@ notFoundDescription: "指定されたURLに該当するページはあらへん�
 close: "さいなら"
 joinedGroups: "参加しとるグループ"
 invites: "来てや"
+_theme:
+  keys:
+    renote: "Renote"
 _sfx:
   note: "ノート"
   notification: "通知"
