@@ -165,7 +165,7 @@ export default Vue.extend({
 			this.$root.sound('notification');
 		},
 
-		addColumn(ev) {
+		async addColumn(ev) {
 			const columns = [
 				'widgets',
 				'notifications',
@@ -176,26 +176,23 @@ export default Vue.extend({
 				'direct',
 			];
 
-			this.$root.menu({
-				items: columns.map(column => ({
-					text: this.$t('_deck._columns.' + column),
-					action: async () => {
-						const { canceled, result: name } = await this.$root.dialog({
-							title: this.$t('_deck.columnName'),
-							input: {
-								default: this.$t('_deck._columns.' + column),
-							}
-						});
-						if (canceled) return;
-						this.$store.commit('deviceUser/addDeckColumn', {
-							type: column,
-							id: uuid(),
-							name: name,
-							width: 330,
-						});
-					}
-				})),
-				source: ev.currentTarget || ev.target,
+			const { canceled, result: column } = await this.$root.dialog({
+				title: this.$t('_deck.addColumn'),
+				type: null,
+				select: {
+					items: columns.map(column => ({
+						value: column, text: this.$t('_deck._columns.' + column)
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			this.$store.commit('deviceUser/addDeckColumn', {
+				type: column,
+				id: uuid(),
+				name: this.$t('_deck._columns.' + column),
+				width: 330,
 			});
 		},
 	}

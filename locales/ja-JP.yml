@@ -1135,7 +1135,6 @@ _notification:
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
-  columnName: "カラム名"
 
   _columns:
     widgets: "ウィジェット"
