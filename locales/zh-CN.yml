@@ -523,6 +523,7 @@ themeEditor: "主题编辑器"
 description: "描述"
 author: "作者"
 leaveConfirm: "存在未保存的更改。要放弃更改吗？"
+pluginInstallWarn: "请不要安装不明来源的插件"
 deck: "Deck"
 undeck: "取消Deck"
 _theme:
