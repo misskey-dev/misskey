@@ -394,6 +394,11 @@ deleteAllFiles: "刪除所有檔案"
 deleteAllFilesConfirm: "要删除所有檔案吗？"
 userSilenced: "該用戶已被禁言。"
 deletedNote: "已删除的貼文"
+_theme:
+  func: "函数"
+  keys:
+    mention: "提及"
+    renote: "轉發貼文"
 _sfx:
   note: "貼文"
   noteMy: "我的貼文"
