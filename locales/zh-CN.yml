@@ -529,6 +529,7 @@ _theme:
   installed: "{name} 已安装"
   alreadyInstalled: "此主题已经安装"
   invalid: "主题格式错误"
+  constant: "常量"
   defaultValue: "默认值"
   func: "函数"
   keys:
