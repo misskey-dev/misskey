@@ -277,6 +277,8 @@ next: "التالية"
 retype: "أعد الكتابة"
 noteOf: "ملاحظات {user}"
 inviteToGroup: "دعوة إلى فريق"
+noMessagesYet: "ليس هناك رسائل بعد"
+newMessageExists: "لقد تلقيت رسالة جديدة"
 invitationCode: "رمز الدعوة"
 checking: "التحقق جارٍ"
 available: "متوفر"
@@ -341,6 +343,8 @@ deletedNote: "ملاحظة محذوفة"
 invisibleNote: "ملاحظة مخفية"
 _theme:
   explore: "استكشف قوالب المظهر"
+  keys:
+    messageBg: "خلفية الدردشة"
 _sfx:
   note: "الملاحظات"
   noteMy: "ملاحظتي"
@@ -465,6 +469,8 @@ _pages:
     types:
       array: "القوائم"
 _notification:
+  youGotMessagingMessageFromUser: "لقد تلقيت رسالة مِن {name}"
+  youGotMessagingMessageFromGroup: "لقد أرسِلَت رسالة إلى الفريق {name}"
   youWereFollowed: "يتابعك"
 _deck:
   _columns:
