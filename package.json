@@ -48,7 +48,7 @@
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.3.1",
 		"@sinonjs/fake-timers": "6.0.1",
-		"@syuilo/aiscript": "0.7.0",
+		"@syuilo/aiscript": "0.7.2",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.14.0",
 		"@types/cbor": "5.0.0",

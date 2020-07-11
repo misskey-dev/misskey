@@ -89,7 +89,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
@@ -108,7 +108,6 @@ import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 
 export default Vue.extend({
-	
 	components: {
 		XSub,
 		XNoteHeader,
@@ -145,7 +144,7 @@ export default Vue.extend({
 			showContent: false,
 			hideThisNote: false,
 			noteBody: this.$refs.noteBody,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faEllipsisH
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug
 		};
 	},
 
@@ -610,6 +609,16 @@ export default Vue.extend({
 					}
 				} : undefined]
 				.filter(x => x !== undefined);
+			}
+
+			if (this.$store.state.noteActions.length > 0) {
+				menu = menu.concat([null, ...this.$store.state.noteActions.map(action => ({
+					icon: faPlug,
+					text: action.title,
+					action: () => {
+						action.handler(this.appearNote);
+					}
+				}))]);
 			}
 
 			this.$root.menu({

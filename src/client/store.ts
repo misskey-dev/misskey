@@ -3,6 +3,7 @@ import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
+import { AiScript, utils, values } from '@syuilo/aiscript';
 import { apiUrl, deckmode } from './config';
 import { erase } from '../prelude/array';
 
@@ -43,6 +44,7 @@ export const defaultDeviceUserSettings = {
 		columns: [],
 		layout: [],
 	},
+	plugins: [],
 };
 
 export const defaultDeviceSettings = {
@@ -93,7 +95,13 @@ export default () => new Vuex.Store({
 	state: {
 		i: null,
 		pendingApiRequestsCount: 0,
-		spinner: null
+		spinner: null,
+
+		// Plugin
+		pluginContexts: new Map<string, AiScript>(),
+		postFormActions: [],
+		userActions: [],
+		noteActions: [],
 	},
 
 	getters: {
@@ -224,8 +232,38 @@ export default () => new Vuex.Store({
 			state.i = x;
 		},
 
-		updateIKeyValue(state, x) {
-			state.i[x.key] = x.value;
+		updateIKeyValue(state, { key, value }) {
+			state.i[key] = value;
+		},
+
+		initPlugin(state, { plugin, aiscript }) {
+			state.pluginContexts.set(plugin.id, aiscript);
+		},
+
+		registerPostFormAction(state, { pluginId, title, handler }) {
+			state.postFormActions.push({
+				title, handler: (form, update) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
+						update(key.value, value.value);
+					})]);
+				}
+			});
+		},
+
+		registerUserAction(state, { pluginId, title, handler }) {
+			state.userActions.push({
+				title, handler: (user) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
+				}
+			});
+		},
+
+		registerNoteAction(state, { pluginId, title, handler }) {
+			state.noteActions.push({
+				title, handler: (note) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
 		},
 	},
 
@@ -546,6 +584,21 @@ export default () => new Vuex.Store({
 					column = x;
 				},
 				//#endregion
+
+				installPlugin(state, { meta, ast }) {
+					state.plugins.push({
+						id: meta.id,
+						name: meta.name,
+						version: meta.version,
+						author: meta.author,
+						description: meta.description,
+						ast: ast
+					});
+				},
+
+				uninstallPlugin(state, id) {
+					state.plugins = state.plugins.filter(x => x.id != id);
+				},
 			}
 		},
 
