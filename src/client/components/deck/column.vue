@@ -81,7 +81,7 @@ export default Vue.extend({
 		},
 
 		width(): number {
-			return this.column == null ? 350 : this.column.width;
+			return this.isMainColumn ? 350 : this.column.width;
 		},
 
 		keymap(): any {
