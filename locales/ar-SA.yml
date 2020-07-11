@@ -454,4 +454,11 @@ _pages:
       array: "القوائم"
 _notification:
   youWereFollowed: "يتابعك"
-
+_deck:
+  _columns:
+    notifications: "الإشعارات"
+    tl: "الخيط الزمني"
+    antenna: "الهوائيات"
+    list: "القوائم"
+    mentions: "الإشارات"
+    direct: "مباشرة"
