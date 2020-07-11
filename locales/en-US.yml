@@ -527,6 +527,12 @@ _theme:
   installed: "{name} has been installed"
   alreadyInstalled: "The theme is already installed"
   invalid: "Theme format is invalid"
+  defaultValue: "Default value"
+  func: "Functions"
+  keys:
+    mention: "Mention"
+    renote: "Renote"
+    divider: "Divider"
 _sfx:
   note: "New note"
   noteMy: "My note"
