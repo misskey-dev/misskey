@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
 import XNotifications from '../notifications.vue';
@@ -43,7 +44,7 @@ export default Vue.extend({
 		}
 
 		this.menu = [{
-			icon: 'cog',
+			icon: faCog,
 			text: this.$t('@.notification-type'),
 			action: () => {
 				this.$root.dialog({

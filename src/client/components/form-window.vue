@@ -1,5 +1,5 @@
 <template>
-<x-window ref="window" :width="500" :height="500" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>
 		{{ title }}
 	</template>
@@ -65,8 +65,7 @@ export default Vue.extend({
 .xkpnjxcv {
 	> label {
 		display: block;
-		border-bottom: solid 1px var(--divider);
-		padding: 24px 0;
+		padding: 16px 24px;
 	}
 }
 </style>
