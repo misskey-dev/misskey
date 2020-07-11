@@ -77,4 +77,7 @@ _pages:
       array: "Tibdarin"
 _notification:
   youWereFollowed: "Yeṭṭafaṛ-ik·em-id"
-
+_deck:
+  _columns:
+    notifications: "Ilɣuyen"
+    list: "Tibdarin"
