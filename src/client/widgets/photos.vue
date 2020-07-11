@@ -1,19 +1,17 @@
 <template>
-<div>
-	<mk-container :show-header="props.design === 0" :naked="props.design === 2" :class="$style.root" :data-melt="props.design === 2">
-		<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
+<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent">
+	<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
 
-		<div class="">
-			<mk-loading v-if="fetching"/>
-			<div v-else :class="$style.stream">
-				<div v-for="(image, i) in images" :key="i"
-					:class="$style.img"
-					:style="`background-image: url(${thumbnail(image)})`"
-				></div>
-			</div>
+	<div class="">
+		<mk-loading v-if="fetching"/>
+		<div v-else :class="$style.stream">
+			<div v-for="(image, i) in images" :key="i"
+				:class="$style.img"
+				:style="`background-image: url(${thumbnail(image)})`"
+			></div>
 		</div>
-	</mk-container>
-</div>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
@@ -25,7 +23,14 @@ import { getStaticImageUrl } from '../scripts/get-static-image-url';
 export default define({
 	name: 'photos',
 	props: () => ({
-		design: 0,
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
+		transparent: {
+			type: 'boolean',
+			default: false,
+		},
 	})
 }).extend({
 	components: {
@@ -63,15 +68,6 @@ export default define({
 			}
 		},
 
-		func() {
-			if (this.props.design === 2) {
-				this.props.design = 0;
-			} else {
-				this.props.design++;
-			}
-			this.save();
-		},
-
 		thumbnail(image: any): string {
 			return this.$store.state.device.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
@@ -82,7 +78,7 @@ export default define({
 </script>
 
 <style lang="scss" module>
-.root[data-melt] {
+.root[data-transparent] {
 	.stream {
 		padding: 0;
 	}

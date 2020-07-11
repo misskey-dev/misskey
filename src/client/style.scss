@@ -3,7 +3,7 @@
 :root {
 	--radius: 8px;
 	--marginFull: 16px;
-	--marginHalf: 8px;
+	--marginHalf: 10px;
 
 	--margin: var(--marginFull);
 
@@ -25,7 +25,6 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
-	overflow-y: scroll;
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
@@ -278,13 +277,14 @@ hr {
 
 ._panel {
 	position: relative;
+	z-index: 1;
 	background: var(--panel);
 	border-radius: var(--radius);
 	box-shadow: 0 0 0 1px var(--panelBorder);
 	overflow: hidden;
 }
 
-._widget ._list_ ._panel {
+._close_ ._list_ > * {
 	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
 	border-radius: 0;
 	margin: 0 !important;
@@ -348,31 +348,6 @@ hr {
 		& + ._content {
 			border-top: solid 1px var(--divider);
 		}
-
-		&._list {
-			padding: 16px;
-
-			@media (max-width: 500px) {
-				padding: 8px;
-			}
-
-			._listItem {
-				padding: 8px 16px;
-				border-radius: var(--radius);
-
-				@media (max-width: 500px) {
-					padding: 8px;
-				}
-
-				&:hover {
-					background: var(--listItemHoverBg);
-				}
-
-				> * {
-					pointer-events: none;
-				}
-			}
-		}
 	}
 
 	> ._footer {
@@ -382,6 +357,21 @@ hr {
 		@media (max-width: 500px) {
 			padding: 16px;
 		}
+	}
+}
+
+._narrow_ ._card {
+	> ._title {
+		padding: 16px;
+		font-size: 1em;
+	}
+
+	> ._content {
+		padding: 16px;
+	}
+
+	> ._footer {
+		padding: 16px;
 	}
 }
 

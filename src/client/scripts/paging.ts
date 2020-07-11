@@ -13,7 +13,7 @@ export default (opts) => ({
 			moreFetching: false,
 			inited: false,
 			more: false,
-			backed: false,
+			backed: false, // 遡り中か否か
 			isBackTop: false,
 			ilObserver: new IntersectionObserver(
 				(entries) => entries.some((entry) => entry.isIntersecting)

@@ -40,7 +40,7 @@ export default Vue.extend({
 
 	> img {
 		vertical-align: bottom;
-		height: 150px;
+		height: 128px;
 		margin-bottom: 16px;
 		border-radius: 16px;
 	}

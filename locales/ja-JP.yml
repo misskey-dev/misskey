@@ -519,6 +519,8 @@ fixedWidgetsPosition: "ウィジェットの位置を固定する"
 enablePlayer: "プレイヤーを開く"
 disablePlayer: "プレイヤーを閉じる"
 expandTweet: "ツイートを展開する"
+deck: "デッキ"
+undeck: "デッキ解除"
 
 _theme:
   explore: "テーマを探す"
@@ -651,6 +653,7 @@ _widgets:
   rss: "RSSリーダー"
   activity: "アクティビティ"
   photos: "フォト"
+  digitalClock: "デジタル時計"
 
 _cw:
   hide: "隠す"
@@ -1129,3 +1132,15 @@ _notification:
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "グループに招待されました"
 
+_deck:
+  alwaysShowMainColumn: "常にメインカラムを表示"
+  columnAlign: "カラムの寄せ"
+
+  _columns:
+    widgets: "ウィジェット"
+    notifications: "通知"
+    tl: "タイムライン"
+    antenna: "アンテナ"
+    list: "リスト"
+    mentions: "あなた宛て"
+    direct: "ダイレクト"
