@@ -422,13 +422,13 @@ export default () => new Vuex.Store({
 					state.deck.columns.push(column);
 					state.deck.layout.push([column.id]);
 				},
-		
+
 				removeDeckColumn(state, id) {
 					state.deck.columns = state.deck.columns.filter(c => c.id != id);
 					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
-		
+
 				swapDeckColumn(state, x) {
 					const a = x.a;
 					const b = x.b;
@@ -439,7 +439,7 @@ export default () => new Vuex.Store({
 					state.deck.layout[aX][aY] = b;
 					state.deck.layout[bX][bY] = a;
 				},
-		
+
 				swapLeftDeckColumn(state, id) {
 					state.deck.layout.some((ids, i) => {
 						if (ids.indexOf(id) != -1) {
@@ -455,7 +455,7 @@ export default () => new Vuex.Store({
 						}
 					});
 				},
-		
+
 				swapRightDeckColumn(state, id) {
 					state.deck.layout.some((ids, i) => {
 						if (ids.indexOf(id) != -1) {
@@ -471,7 +471,7 @@ export default () => new Vuex.Store({
 						}
 					});
 				},
-		
+
 				swapUpDeckColumn(state, id) {
 					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
 					ids.some((x, i) => {
@@ -488,7 +488,7 @@ export default () => new Vuex.Store({
 						}
 					});
 				},
-		
+
 				swapDownDeckColumn(state, id) {
 					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
 					ids.some((x, i) => {
@@ -505,7 +505,7 @@ export default () => new Vuex.Store({
 						}
 					});
 				},
-		
+
 				stackLeftDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
 					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
@@ -513,33 +513,33 @@ export default () => new Vuex.Store({
 					if (left) state.deck.layout[i - 1].push(id);
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
-		
+
 				popRightDeckColumn(state, id) {
 					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
 					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
 					state.deck.layout.splice(i + 1, 0, [id]);
 					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
 				},
-		
+
 				addDeckWidget(state, x) {
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					if (column.widgets == null) column.widgets = [];
 					column.widgets.unshift(x.widget);
 				},
-		
+
 				removeDeckWidget(state, x) {
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
 				},
-		
+
 				renameDeckColumn(state, x) {
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
 					column.name = x.name;
 				},
-		
+
 				updateDeckColumn(state, x) {
 					let column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
