@@ -431,4 +431,10 @@ _pages:
       array: "リスト"
 _notification:
   youWereFollowed: "フォローされたで"
-
+_deck:
+  _columns:
+    notifications: "通知"
+    tl: "タイムライン"
+    antenna: "アンテナ"
+    list: "リスト"
+    mentions: "あんた宛て"
