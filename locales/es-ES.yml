@@ -548,6 +548,7 @@ _theme:
   darken: "Oscuridad"
   lighten: "Brillo"
   inputConstantName: "Por favor ingrese el nombre de la constante"
+  importInfo: "Pegando el código del tema aquí, puede importarlo al editor"
   keys:
     mention: "Menciones"
     renote: "Renotar"
