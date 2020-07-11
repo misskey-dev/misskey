@@ -524,6 +524,12 @@ _theme:
   installed: "{name} a été installé"
   alreadyInstalled: "Ce thème est déjà installé"
   invalid: "Le format du thème n'est pas valide"
+  defaultValue: "Valeur par défaut"
+  func: "Fonction"
+  keys:
+    mention: "Mentionner"
+    renote: "Renote"
+    divider: "Séparateur"
 _sfx:
   note: "Nouvelle note"
   noteMy: "Ma note"
