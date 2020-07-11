@@ -519,6 +519,8 @@ fixedWidgetsPosition: "固定小工具的位置"
 enablePlayer: "打开播放器"
 disablePlayer: "关闭播放器"
 expandTweet: "展开推文"
+deck: "Deck"
+undeck: "取消Deck"
 _theme:
   explore: "寻找主题"
   install: "安装主题"
@@ -527,6 +529,12 @@ _theme:
   installed: "{name} 已安装"
   alreadyInstalled: "此主题已经安装"
   invalid: "主题格式错误"
+  defaultValue: "默认值"
+  func: "函数"
+  keys:
+    mention: "提及"
+    renote: "转发"
+    divider: "分割线"
 _sfx:
   note: "帖子"
   noteMy: "我的帖子"
