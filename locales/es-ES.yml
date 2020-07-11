@@ -523,6 +523,8 @@ themeEditor: "Editor de temas"
 description: "Descripción"
 author: "Autor"
 leaveConfirm: "Hay modificaciones sin guardar. ¿Desea descartarlas?"
+manage: "Administrar"
+plugins: "Plugins"
 _theme:
   explore: "Explorar temas"
   install: "Instalar tema"
