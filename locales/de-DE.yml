@@ -523,6 +523,8 @@ themeEditor: "Farbthemen-Editor"
 description: "Beschreibung"
 author: "Autor"
 leaveConfirm: "Es gibt unspeicherte Änderungen. Möchtest du diese verwerfen?"
+plugins: "Plugins"
+pluginInstallWarn: "Installiere nur vertrauenswürdige Plugins."
 deck: "Deck"
 undeck: "Deck verlassen"
 _theme:
