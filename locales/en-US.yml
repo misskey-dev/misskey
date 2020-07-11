@@ -1093,4 +1093,11 @@ _notification:
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
   youWereInvitedToGroup: "Invited to group"
-
+_deck:
+  _columns:
+    notifications: "Notifications"
+    tl: "Timeline"
+    antenna: "Antennas"
+    list: "Lists"
+    mentions: "Mentions"
+    direct: "Direct"
