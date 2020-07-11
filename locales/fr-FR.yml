@@ -516,6 +516,7 @@ visibility: "Visibilité"
 poll: "Sondage"
 useCw: "Masquer le contenu"
 fixedWidgetsPosition: "Rendre la position du widget fixe"
+description: "Description"
 _theme:
   explore: "Explorer les thèmes"
   install: "Installer un thème"
@@ -530,6 +531,7 @@ _theme:
     mention: "Mentionner"
     renote: "Renote"
     divider: "Séparateur"
+    messageBg: "Arrière plan de la discussion"
 _sfx:
   note: "Nouvelle note"
   noteMy: "Ma note"
@@ -891,7 +893,7 @@ _pages:
         pushEvent: "Envoyer un évènement"
         _pushEvent:
           event: "Nom de l’évènement"
-          message: "Message à afficher lorsque appuyé"
+          message: "Message à afficher lorsqu’il est activé"
           variable: "Variable à envoyer"
           no-variable: "Rien"
         callAiScript: "Appeler AiScript"
