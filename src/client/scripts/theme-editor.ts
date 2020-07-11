@@ -1,6 +1,6 @@
 import { v4 as uuid} from 'uuid';
 
-import { themeProps, Theme } from '../theme';
+import { themeProps, Theme } from './theme';
 
 export type Default = null;
 export type Color = string;

@@ -86,7 +86,7 @@ import MkTextarea from '../components/ui/textarea.vue';
 import MkSelect from '../components/ui/select.vue';
 
 import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '../scripts/theme-editor';
-import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '../theme';
+import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '../scripts/theme';
 import { toUnicode } from 'punycode';
 import { host } from '../config';
 
