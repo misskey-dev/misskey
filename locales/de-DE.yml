@@ -527,6 +527,12 @@ _theme:
   installed: "{name} wurde installiert"
   alreadyInstalled: "Dieses Thema ist bereits installiert"
   invalid: "Themenformat ist ungültig"
+  defaultValue: "Standardwert"
+  func: "Funktionen"
+  keys:
+    mention: "Erwähnung"
+    renote: "Renote"
+    divider: "Trenner"
 _sfx:
   note: "Notizen"
   noteMy: "Meine Notizen"
