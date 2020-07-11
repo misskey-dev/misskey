@@ -289,9 +289,11 @@ export default Vue.extend({
 				height: 480px;
 				overflow: auto;
 				border: 1px solid var(--divider);
+
 				> .item {
 					min-height: 48px;
 					padding: 0 16px;
+					word-break: break-all;
 
 					&:not(:last-child) {
 						padding-bottom: 8px;
@@ -317,12 +319,14 @@ export default Vue.extend({
 							width: 1.5em;
 							height: 1.5em;
 						}
+
 						> div {
 							margin-left: 8px;
 							display: inline-block;
 						}
 					}
 				}
+				
 				> ._button {
 					margin: 16px;
 				}
