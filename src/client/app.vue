@@ -131,6 +131,10 @@ export default Vue.extend({
 	computed: {
 		keymap(): any {
 			return {
+				'd': () => {
+					if (this.$store.state.device.syncDeviceDarkMode) return;
+					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
+				},
 				'p': this.post,
 				'n': this.post,
 				's': this.search,

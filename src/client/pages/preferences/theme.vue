@@ -22,6 +22,7 @@
 				</label>
 			</div>
 		</div>
+		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
 	</div>
 	<div class="_content">
 		<mk-select v-model="lightTheme">
@@ -42,10 +43,7 @@
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</mk-select>
-		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>
-	</div>
-	<div class="_content">
-		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
+		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>・<router-link to="/theme-editor" class="_link">{{ $t('_theme.make') }}</router-link>
 	</div>
 	<div class="_content">
 		<mk-button primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</mk-button>
