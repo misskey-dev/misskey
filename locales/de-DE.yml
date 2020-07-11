@@ -1093,4 +1093,11 @@ _notification:
   youReceivedFollowRequest: "Du hast eine Follow-Anfrage erhalten"
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
   youWereInvitedToGroup: "Du wurdest in eine Gruppe eingeladen"
-
+_deck:
+  _columns:
+    notifications: "Benachrichtigungen"
+    tl: "Chronik"
+    antenna: "Antennen"
+    list: "Listen"
+    mentions: "Erwähnungen"
+    direct: "Direkt"
