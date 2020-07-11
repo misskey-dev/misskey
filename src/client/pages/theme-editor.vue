@@ -171,6 +171,7 @@ export default Vue.extend({
 			}
 			this.theme = t;
 		},
+	
 		async del(i: number) {
 			const { canceled } = await this.$root.dialog({ 
 				type: 'warning',
@@ -180,6 +181,7 @@ export default Vue.extend({
 			if (canceled) return;
 			Vue.delete(this.theme, i);
 		},
+	
 		async addConst() {
 			const { canceled, result } = await this.$root.dialog({
 				title: this.$t('_theme.inputConstantName'),
@@ -188,6 +190,7 @@ export default Vue.extend({
 			if (canceled) return;
 			this.theme.push([ '$' + result, '#000000']);
 		},
+	
 		save() {
 			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
 			const themes = this.$store.state.device.themes.concat(theme);
@@ -200,6 +203,7 @@ export default Vue.extend({
 			});
 			this.changed = false;
 		},
+	
 		preview() {
 			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
 			try {
@@ -211,8 +215,10 @@ export default Vue.extend({
 				});
 			}
 		},
+	
 		async importTheme() {
 			if (this.changed && (!await this.confirm())) return;
+
 			try {
 				const theme = JSON5.parse(this.themeToImport) as Theme;
 				if (!validateTheme(theme)) throw new Error(this.$t('_theme.invalid'));
@@ -230,49 +236,49 @@ export default Vue.extend({
 				});
 			}
 		},
+	
 		colorChanged(color: string, i: number) {
 			Vue.set(this.theme, i, [this.theme[i][0], color]);
-		},		
-		getTypeOf(v: ThemeValue) {
-			return v === null ? this.$t('_theme.defaultValue') :
-						typeof v === 'string' ? this.$t('_theme.color') :
-						this.$t('_theme.' + v.type);
 		},
+	
+		getTypeOf(v: ThemeValue) {
+			return v === null
+				? this.$t('_theme.defaultValue')
+				: typeof v === 'string'
+					? this.$t('_theme.color')
+					: this.$t('_theme.' + v.type);
+		},
+	
 		async chooseType(e: MouseEvent, i: number) {
 			const newValue = await this.showTypeMenu(e);
 			Vue.set(this.theme, i, [ this.theme[i][0], newValue ]);
 		},
+	
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
 				this.$root.menu({
-					items: [
-						{
-							text: this.$t('_theme.defaultValue'),
-							action: () => resolve(null),
-						},
-						{
-							text: this.$t('_theme.color'),
-							action: () => resolve('#000000'),
-						},
-						{
-							text: this.$t('_theme.func'),
-							action: () => resolve({
-								type: 'func', name: 'alpha', arg: 1, value: 'accent'
-							}),
-						},
-						{
-							text: this.$t('_theme.refProp'),
-							action: () => resolve({
-								type: 'refProp', key: 'accent',
-							}),
-						},
-						{
-							text: this.$t('_theme.refConst'),
-							action: () => resolve({
-								type: 'refConst', key: '',
-							}),
-						},
-					],
+					items: [{
+						text: this.$t('_theme.defaultValue'),
+						action: () => resolve(null),
+					}, {
+						text: this.$t('_theme.color'),
+						action: () => resolve('#000000'),
+					}, {
+						text: this.$t('_theme.func'),
+						action: () => resolve({
+							type: 'func', name: 'alpha', arg: 1, value: 'accent'
+						}),
+					}, {
+						text: this.$t('_theme.refProp'),
+						action: () => resolve({
+							type: 'refProp', key: 'accent',
+						}),
+					}, {
+						text: this.$t('_theme.refConst'),
+						action: () => resolve({
+							type: 'refConst', key: '',
+						}),
+					},],
 					source: e.currentTarget || e.target,
 				});
 			});
@@ -326,7 +332,7 @@ export default Vue.extend({
 						}
 					}
 				}
-				
+
 				> ._button {
 					margin: 16px;
 				}
