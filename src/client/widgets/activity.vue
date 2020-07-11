@@ -1,18 +1,16 @@
 <template>
-<div>
-	<mk-container :show-header="props.design === 0" :naked="props.design === 2">
-		<template #header><fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
-		<template #func><button @click="toggleView()" class="_button"><fa :icon="faSort"/></button></template>
+<mk-container :show-header="props.showHeader" :naked="props.transparent">
+	<template #header><fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
+	<template #func><button @click="toggleView()" class="_button"><fa :icon="faSort"/></button></template>
 
-		<div>
-			<mk-loading v-if="fetching"/>
-			<template v-else>
-				<x-calendar v-show="props.view === 0" :data="[].concat(activity)"/>
-				<x-chart v-show="props.view === 1" :data="[].concat(activity)"/>
-			</template>
-		</div>
-	</mk-container>
-</div>
+	<div>
+		<mk-loading v-if="fetching"/>
+		<template v-else>
+			<x-calendar v-show="props.view === 0" :data="[].concat(activity)"/>
+			<x-chart v-show="props.view === 1" :data="[].concat(activity)"/>
+		</template>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
@@ -25,8 +23,19 @@ import XChart from './activity.chart.vue';
 export default define({
 	name: 'activity',
 	props: () => ({
-		design: 0,
-		view: 0
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
+		transparent: {
+			type: 'boolean',
+			default: false,
+		},
+		view: {
+			type: 'number',
+			default: 0,
+			hidden: true,
+		},
 	})
 }).extend({
 	components: {
@@ -57,14 +66,6 @@ export default define({
 		});
 	},
 	methods: {
-		func() {
-			if (this.props.design === 2) {
-				this.props.design = 0;
-			} else {
-				this.props.design++;
-			}
-			this.save();
-		},
 		toggleView() {
 			if (this.props.view === 1) {
 				this.props.view = 0;

@@ -85,7 +85,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
-import { Theme, builtinThemes, applyTheme, validateTheme } from '../../theme';
+import { Theme, builtinThemes, applyTheme, validateTheme } from '../../scripts/theme';
 import { selectFile } from '../../scripts/select-file';
 import { isDeviceDarkmode } from '../../scripts/is-device-darkmode';
 
