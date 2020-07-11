@@ -559,12 +559,10 @@ _theme:
     bg: "背景"
     fg: "文字"
     focus: "フォーカス"
-    html: "HTML"
     indicator: "インジケーター"
     panel: "パネル"
     shadow: "影"
     header: "ヘッダー"
-    pageBg: "ページの背景"
     navBg: "サイドバーの背景"
     navFg: "サイドバーの文字"
     navHoverFg: "サイドバー文字(ホバー)"
@@ -599,7 +597,6 @@ _theme:
     messageBg: "チャットの背景"
     accentDarken: "アクセント (暗め)"
     accentLighten: "アクセント (明るめ)"
-    accentShadow: "アクセントの影"
     fgHighlighted: "強調された文字"
 
 _sfx:
