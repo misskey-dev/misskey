@@ -665,6 +665,7 @@ _widgets:
   rss: "RSS 리더"
   activity: "활동"
   photos: "사진"
+  digitalClock: "디지털 시계"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -1118,6 +1119,7 @@ _notification:
   youWereInvitedToGroup: "그룹에 초대되었습니다"
 _deck:
   _columns:
+    widgets: "위젯"
     notifications: "알림"
     tl: "타임라인"
     antenna: "안테나"
