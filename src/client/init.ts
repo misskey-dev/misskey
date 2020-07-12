@@ -98,9 +98,6 @@ const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
 
-// http://qiita.com/junya/items/3ff380878f26ca447f85
-document.body.setAttribute('ontouchstart', '');
-
 // アプリ基底要素マウント
 document.body.innerHTML = '<div id="app"></div>';
 
