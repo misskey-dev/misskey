@@ -30,6 +30,7 @@ import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
 import XPostForm from '../components/post-form.vue';
+import { scroll } from '../scripts/scroll';
 
 export default Vue.extend({
 	metaInfo() {
@@ -120,7 +121,7 @@ export default Vue.extend({
 		},
 
 		top() {
-			window.scroll({ top: 0, behavior: 'instant' });
+			scroll(this.$el, 0);
 		},
 
 		async choose(ev) {
