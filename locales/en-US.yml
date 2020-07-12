@@ -523,6 +523,9 @@ themeEditor: "Theme editor"
 description: "Description"
 author: "Author"
 leaveConfirm: "There are unsaved changes. Do you want to discard them?"
+manage: "Management"
+plugins: "Plugins"
+pluginInstallWarn: "Please do not install untrustworthy plugins."
 deck: "Deck"
 undeck: "Leave Deck"
 _theme:
@@ -1166,6 +1169,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
+  addColumn: "Add column"
   _columns:
     widgets: "Widgets"
     notifications: "Notifications"
