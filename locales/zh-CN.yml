@@ -536,7 +536,7 @@ _theme:
   installed: "{name} 已安装"
   alreadyInstalled: "此主题已经安装"
   invalid: "主题格式错误"
-  make: "主题制作"
+  make: "制作主题"
   base: "基于"
   addConstant: "添加常量"
   constant: "常量"
