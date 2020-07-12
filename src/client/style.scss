@@ -207,6 +207,10 @@ hr {
 	backdrop-filter: var(--modalBgFilter);
 }
 
+._shadow {
+	box-shadow: 0px 4px 32px var(--shadow) !important;
+}
+
 ._button {
 	appearance: none;
 	padding: 0;

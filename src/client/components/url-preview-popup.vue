@@ -1,5 +1,5 @@
 <template>
-<div class="fgmtyycl _panel" :style="{ top: top + 'px', left: left + 'px' }">
+<div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
 	<mk-url-preview :url="url"/>
 </div>
 </template>
