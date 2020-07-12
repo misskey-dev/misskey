@@ -1169,6 +1169,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spalten ausrichten"
+  addColumn: "Spalte hinzufügen"
   _columns:
     widgets: "Widgets"
     notifications: "Benachrichtigungen"
