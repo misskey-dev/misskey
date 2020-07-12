@@ -528,6 +528,7 @@ plugins: "Plugins"
 pluginInstallWarn: "Please do not install untrustworthy plugins."
 deck: "Deck"
 undeck: "Leave Deck"
+useBlurEffectForModal: "Use blur effect on modals"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
