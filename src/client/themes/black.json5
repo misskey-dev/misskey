@@ -12,6 +12,7 @@
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
 		panelBorder: '@divider',
+		modalBg: 'rgba(255, 255, 255, 0.1)',
 		messageBg: '#1d1d1d',
 		deckColumnBorder: '@divider',
 	},

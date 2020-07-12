@@ -197,6 +197,16 @@ hr {
 	}
 }
 
+._modalBg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--modalBg);
+	backdrop-filter: var(--modalBgFilter);
+}
+
 ._button {
 	appearance: none;
 	padding: 0;
