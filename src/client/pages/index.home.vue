@@ -224,7 +224,7 @@ export default Vue.extend({
 
 	> i {
 		position: absolute;
-		top: 16px;
+		top: initial;
 		right: 8px;
 		color: var(--indicator);
 		font-size: 12px;
