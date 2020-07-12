@@ -341,6 +341,7 @@ addRelay: "إضافة مُرحّل"
 addedRelays: "المرحلات التي تم إضافتها"
 deletedNote: "ملاحظة محذوفة"
 invisibleNote: "ملاحظة مخفية"
+poll: "استطلاع رأي"
 _theme:
   explore: "استكشف قوالب المظهر"
   keys:
@@ -398,12 +399,22 @@ _cw:
   chars: "{count} أحرف"
   files: "{count} ملفات"
 _poll:
+  noOnlyOneChoice: "تحتاج إلى خيارَين على الأقل"
+  choiceN: "الخيار {n}"
+  noMore: "لا يمكنك إضافة خيارات أخرى"
+  canMultipleVote: "السماح بالإجابات المتعددة"
+  expiration: "ينتهي استطلاع الرأي في"
+  infinite: "أبدًا"
   at: "تاريخ الإنتهاء"
+  after: "ينتهي بعد…"
   deadlineDate: "تاريخ الانتهاء"
   deadlineTime: "سا"
   duration: "المدة"
+  votesCount: "{n} أصوات"
+  totalVotes: "المجموع {n} أصوات"
   vote: "قم بالتصويت"
   showResult: "اعرض النتائج"
+  voted: "تم التصويت"
   closed: "انتهى"
   remainingDays: "{d} أيام و {h} ساعات متبقية"
   remainingHours: "{h} ساعات و {m} دقائق متبقية"
@@ -469,6 +480,7 @@ _pages:
     types:
       array: "القوائم"
 _notification:
+  youGotPoll: "شارك {name} في استطلاع الرأي"
   youGotMessagingMessageFromUser: "لقد تلقيت رسالة مِن {name}"
   youGotMessagingMessageFromGroup: "لقد أرسِلَت رسالة إلى الفريق {name}"
   youWereFollowed: "يتابعك"
