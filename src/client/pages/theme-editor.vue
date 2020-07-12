@@ -9,7 +9,7 @@
 			<mk-input v-model="author" required><span>{{ $t('author') }}</span></mk-input>
 			<mk-textarea v-model="description"><span>{{ $t('description') }}</span></mk-textarea>
 			<div class="_inputs">
-				<div v-text="$t('_theme.baseTheme')" />
+				<div v-text="$t('_theme.base')" />
 				<mk-radio v-model="baseTheme" value="light">{{ $t('light') }}</mk-radio>
 				<mk-radio v-model="baseTheme" value="dark">{{ $t('dark') }}</mk-radio>
 			</div>
