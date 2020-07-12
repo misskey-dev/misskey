@@ -522,6 +522,7 @@ expandTweet: "Étendre le tweet"
 themeEditor: "Éditeur de thèmes"
 description: "Description"
 author: "Auteur·rice"
+leaveConfirm: "Vous avez des modifications non-sauvegardées. Voulez-vous les ignorer ?"
 manage: "Gestion"
 plugins: "Extensions"
 _theme:
@@ -536,6 +537,7 @@ _theme:
   base: "Base"
   defaultValue: "Valeur par défaut"
   color: "Couleur"
+  key: "Clé "
   func: "Fonction"
   argument: "Argument"
   alpha: "Transparence"
@@ -553,6 +555,8 @@ _theme:
     mention: "Mentionner"
     renote: "Renote"
     divider: "Séparateur"
+    infoWarnFg: "Texte d’avertissement"
+    badge: "Badge"
     messageBg: "Arrière plan de la discussion"
 _sfx:
   note: "Nouvelle note"
@@ -667,6 +671,7 @@ _widgets:
   rss: "Lecteur de flux RSS"
   activity: "Activité"
   photos: "Photos"
+  digitalClock: "Horloge numérique"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"
@@ -1123,6 +1128,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"
+  addColumn: "Ajouter une colonne"
   _columns:
     widgets: "Widgets"
     notifications: "Notifications"
