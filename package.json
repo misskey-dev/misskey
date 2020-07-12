@@ -43,7 +43,6 @@
 		"@fortawesome/free-regular-svg-icons": "5.13.1",
 		"@fortawesome/free-solid-svg-icons": "5.13.1",
 		"@fortawesome/vue-fontawesome": "0.1.10",
-		"@juggle/resize-observer": "3.2.0",
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.3.1",
