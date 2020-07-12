@@ -528,6 +528,7 @@ plugins: "Plugins"
 pluginInstallWarn: "Installiere nur vertrauenswürdige Plugins."
 deck: "Deck"
 undeck: "Deck verlassen"
+useBlurEffectForModal: "Weichzeichnungseffekt für Modals verwenden"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
