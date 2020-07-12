@@ -13,14 +13,21 @@ export default (opts) => ({
 			moreFetching: false,
 			inited: false,
 			more: false,
-			backed: false,
+			backed: false, // 遡り中か否か
 			isBackTop: false,
+			ilObserver: new IntersectionObserver(
+				(entries) => entries.some((entry) => entry.isIntersecting)
+					&& !this.moreFetching
+					&& !this.fetching
+					&& this.fetchMore()
+				),
+			loadMoreElement: null as Element,
 		};
 	},
 
 	computed: {
 		empty(): boolean {
-			return this.items.length == 0 && !this.fetching && this.inited;
+			return this.items.length === 0 && !this.fetching && this.inited;
 		},
 
 		error(): boolean {
@@ -49,6 +56,21 @@ export default (opts) => ({
 		this.$on('hook:deactivated', () => {
 			this.isBackTop = window.scrollY === 0;
 		});
+	},
+
+	mounted() {
+		this.$nextTick(() => {
+			if (this.$refs.loadMore) {
+				this.loadMoreElement = this.$refs.loadMore instanceof Element ? this.$refs.loadMore : this.$refs.loadMore.$el;
+				if (this.$store.state.device.enableInfiniteScroll) this.ilObserver.observe(this.loadMoreElement);
+				this.loadMoreElement.addEventListener('click', this.fetchMore);
+			}
+		});
+	},
+
+	beforeDestroy() {
+		this.ilObserver.disconnect();
+		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click', this.fetchMore);
 	},
 
 	methods: {

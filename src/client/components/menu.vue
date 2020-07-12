@@ -1,6 +1,6 @@
 <template>
 <x-popup :source="source" :no-center="noCenter" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
-	<sequential-entrance class="rrevdjwt" :class="{ left: align === 'left' }" :delay="15" :direction="direction" ref="items">
+	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i"></div>
 			<span v-else-if="item.type === 'label'" class="label item" :key="i">
@@ -28,7 +28,7 @@
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</button>
 		</template>
-	</sequential-entrance>
+	</div>
 </x-popup>
 </template>
 
@@ -91,7 +91,7 @@ export default Vue.extend({
 	mounted() {
 		if (this.viaKeyboard) {
 			this.$nextTick(() => {
-				focusNext(this.$refs.items.$slots.default[0].elm, true);
+				focusNext(this.$refs.items.children[0], true);
 			});
 		}
 	},

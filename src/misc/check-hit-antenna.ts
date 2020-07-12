@@ -39,29 +39,39 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 		if (!accts.includes(getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 	}
 
-	if (antenna.keywords.length > 0) {
+	const keywords = antenna.keywords
+		// Clean up
+		.map(xs => xs.filter(x => x !== ''))
+		.filter(xs => xs.length > 0);
+
+	if (keywords.length > 0) {
 		if (note.text == null) return false;
 
-		const matched = antenna.keywords.some(keywords =>
-			keywords.every(keyword =>
+		const matched = keywords.some(and =>
+			and.every(keyword =>
 				antenna.caseSensitive
 					? note.text!.includes(keyword)
 					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
-		
+
 		if (!matched) return false;
 	}
 
-	if (antenna.excludeKeywords.length > 0) {
+	const excludeKeywords = antenna.excludeKeywords
+		// Clean up
+		.map(xs => xs.filter(x => x !== ''))
+		.filter(xs => xs.length > 0);
+
+	if (excludeKeywords.length > 0) {
 		if (note.text == null) return false;
 
-		const matched = antenna.excludeKeywords.some(keywords =>
-			keywords.every(keyword =>
+		const matched = excludeKeywords.some(and =>
+			and.every(keyword =>
 				antenna.caseSensitive
 					? note.text!.includes(keyword)
 					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
-		
+
 		if (matched) return false;
 	}
 

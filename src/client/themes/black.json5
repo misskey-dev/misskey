@@ -1,0 +1,20 @@
+{
+	id: '8c539dc1-0fab-4d47-9194-39c508e9bfe1',
+
+	name: 'Black',
+	author: 'syuilo',
+	desc: 'Basic dark theme',
+
+	base: 'dark',
+
+	props: {
+		divider: '#2d2d2d',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		panelBorder: '@divider',
+		shadow: 'rgba(255, 255, 255, 0.05)',
+		modalBg: 'rgba(255, 255, 255, 0.1)',
+		messageBg: '#1d1d1d',
+		deckColumnBorder: '@divider',
+	},
+}

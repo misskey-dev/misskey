@@ -98,7 +98,7 @@ export class UserRepository extends Repository<User> {
 
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
 		const antennas = await Antennas.find({ userId });
-		
+
 		const unread = antennas.length > 0 ? await AntennaNotes.findOne({
 			antennaId: In(antennas.map(x => x.id)),
 			read: false
@@ -112,7 +112,7 @@ export class UserRepository extends Repository<User> {
 			muterId: userId
 		});
 		const mutedUserIds = mute.map(m => m.muteeId);
-	
+
 		const count = await Notifications.count({
 			where: {
 				notifieeId: userId,
@@ -289,7 +289,7 @@ export class UserRepository extends Repository<User> {
 
 	//#region Validators
 	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
-	public validateRemoteUsername = $.str.match(/^\w([\w-]*\w)?$/);
+	public validateRemoteUsername = $.str.match(/^\w([\w-.]*\w)?$/);
 	public validatePassword = $.str.min(1);
 	public validateName = $.str.min(1).max(50);
 	public validateDescription = $.str.min(1).max(500);

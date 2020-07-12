@@ -32,7 +32,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 //import updateAvatar from '../api/update-avatar';
 //import updateBanner from '../api/update-banner';
@@ -40,22 +39,25 @@ import XFileThumbnail from './drive-file-thumbnail.vue';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n,
+	components: {
+		XFileThumbnail
+	},
 
 	props: {
 		file: {
 			type: Object,
 			required: true,
 		},
+		isSelected: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 		selectMode: {
 			type: Boolean,
 			required: false,
 			default: false,
 		}
-	},
-
-	components: {
-		XFileThumbnail
 	},
 
 	data() {
@@ -65,11 +67,9 @@ export default Vue.extend({
 	},
 
 	computed: {
+		// TODO: parentへの参照を無くす
 		browser(): any {
 			return this.$parent;
-		},
-		isSelected(): boolean {
-			return this.browser.selectedFiles.some(f => f.id == this.file.id);
 		},
 		title(): string {
 			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.size)}`;
@@ -79,7 +79,7 @@ export default Vue.extend({
 	methods: {
 		onClick(ev) {
 			if (this.selectMode) {
-				this.browser.chooseFile(this.file);
+				this.$emit('chosen', this.file);
 			} else {
 				this.$root.menu({
 					items: [{
@@ -139,9 +139,9 @@ export default Vue.extend({
 
 		rename() {
 			this.$root.dialog({
-				title: this.$t('contextmenu.rename-file'),
+				title: this.$t('renameFile'),
 				input: {
-					placeholder: this.$t('contextmenu.input-new-file-name'),
+					placeholder: this.$t('inputNewFileName'),
 					default: this.file.name,
 					allowEmpty: false
 				}

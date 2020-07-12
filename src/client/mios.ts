@@ -1,25 +1,19 @@
+// TODO: このファイル消したい
+
 import autobind from 'autobind-decorator';
-import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
-import initStore from './store';
 import { apiUrl, version } from './config';
 import Progress from './scripts/loading';
 
 import Stream from './scripts/stream';
-
-//#region api requests
-let spinner = null;
-let pending = 0;
-//#endregion
+import store from './store';
 
 /**
  * Misskey Operating System
  */
 export default class MiOS extends EventEmitter {
-	public app: Vue;
-
-	public store: ReturnType<typeof initStore>;
+	public store: ReturnType<typeof store>;
 
 	/**
 	 * A connection manager of home stream
@@ -30,6 +24,11 @@ export default class MiOS extends EventEmitter {
 	 * A registration of service worker
 	 */
 	private swRegistration: ServiceWorkerRegistration = null;
+
+	constructor(vuex: MiOS['store']) {
+		super();
+		this.store = vuex;
+	}
 
 	@autobind
 	public signout() {
@@ -51,8 +50,6 @@ export default class MiOS extends EventEmitter {
 				if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
 			});
 		};
-
-		this.store = initStore(this);
 
 		// ユーザーをフェッチしてコールバックする
 		const fetchme = (token, cb) => {
@@ -123,8 +120,13 @@ export default class MiOS extends EventEmitter {
 			});
 		} else {
 			// Get token from localStorage
-			const i = localStorage.getItem('i');
-			
+			let i = localStorage.getItem('i');
+
+			// 連携ログインの場合用にCookieを参照する
+			if (i == null || i === 'null') {
+				i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
+			}
+
 			fetchme(i, me => {
 				if (me) {
 					this.store.dispatch('login', me);
@@ -182,16 +184,19 @@ export default class MiOS extends EventEmitter {
 				}
 
 				// Register
-				this.api('sw/register', {
-					endpoint: subscription.endpoint,
-					auth: encode(subscription.getKey('auth')),
-					publickey: encode(subscription.getKey('p256dh'))
+				this.store.dispatch('api', {
+					endpoint: 'sw/register',
+					data: {
+						endpoint: subscription.endpoint,
+						auth: encode(subscription.getKey('auth')),
+						publickey: encode(subscription.getKey('p256dh'))
+					}
 				});
 			})
 			// When subscribe failed
 			.catch(async (err: Error) => {
 				// 通知が許可されていなかったとき
-				if (err.name == 'NotAllowedError') {
+				if (err.name === 'NotAllowedError') {
 					return;
 				}
 
@@ -208,52 +213,6 @@ export default class MiOS extends EventEmitter {
 
 		// Register service worker
 		navigator.serviceWorker.register(sw);
-	}
-
-	/**
-	 * Misskey APIにリクエストします
-	 * @param endpoint エンドポイント名
-	 * @param data パラメータ
-	 */
-	@autobind
-	public api(endpoint: string, data: { [x: string]: any } = {}, token?): Promise<{ [x: string]: any }> {
-		if (++pending === 1) {
-			spinner = document.createElement('div');
-			spinner.setAttribute('id', 'wait');
-			document.body.appendChild(spinner);
-		}
-
-		const onFinally = () => {
-			if (--pending === 0) spinner.parentNode.removeChild(spinner);
-		};
-
-		const promise = new Promise((resolve, reject) => {
-			// Append a credential
-			if (this.store.getters.isSignedIn) (data as any).i = this.store.state.i.token;
-			if (token) (data as any).i = token;
-
-			// Send request
-			fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
-				method: 'POST',
-				body: JSON.stringify(data),
-				credentials: 'omit',
-				cache: 'no-cache'
-			}).then(async (res) => {
-				const body = res.status === 204 ? null : await res.json();
-
-				if (res.status === 200) {
-					resolve(body);
-				} else if (res.status === 204) {
-					resolve();
-				} else {
-					reject(body.error);
-				}
-			}).catch(reject);
-		});
-
-		promise.then(onFinally, onFinally);
-
-		return promise;
 	}
 }
 

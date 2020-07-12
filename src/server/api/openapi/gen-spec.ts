@@ -123,7 +123,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 				url: `https://github.com/syuilo/misskey/blob/develop/src/server/api/endpoints/${endpoint.name}.ts`
 			},
 			...(endpoint.meta.tags ? {
-				tags: endpoint.meta.tags
+				tags: [endpoint.meta.tags[0]]
 			} : {}),
 			...(endpoint.meta.requireCredential ? {
 				security: [{

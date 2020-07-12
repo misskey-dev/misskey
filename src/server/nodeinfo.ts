@@ -65,6 +65,7 @@ const nodeinfo2 = async () => {
 			disableRegistration: meta.disableRegistration,
 			disableLocalTimeline: meta.disableLocalTimeline,
 			disableGlobalTimeline: meta.disableGlobalTimeline,
+			enableHcaptcha: meta.enableHcaptcha,
 			enableRecaptcha: meta.enableRecaptcha,
 			maxNoteTextLength: meta.maxNoteTextLength,
 			enableTwitterIntegration: meta.enableTwitterIntegration,
@@ -80,6 +81,7 @@ router.get(nodeinfo2_1path, async ctx => {
 	const base = await nodeinfo2();
 
 	ctx.body = { version: '2.1', ...base };
+	ctx.set('Cache-Control', 'public, max-age=600');
 });
 
 router.get(nodeinfo2_0path, async ctx => {
@@ -88,6 +90,7 @@ router.get(nodeinfo2_0path, async ctx => {
 	delete base.software.repository;
 
 	ctx.body = { version: '2.0', ...base };
+	ctx.set('Cache-Control', 'public, max-age=600');
 });
 
 export default router;

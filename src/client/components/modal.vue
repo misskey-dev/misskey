@@ -1,10 +1,10 @@
 <template>
 <div class="mk-modal" v-hotkey.global="keymap">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
-		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
+		<div class="bg _modalBg" ref="bg" v-if="show" @click="canClose ? close() : () => {}"></div>
 	</transition>
 	<transition :name="$store.state.device.animation ? 'modal' : ''" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
-		<div class="content" ref="content" v-if="show" @click.self="close()"><slot></slot></div>
+		<div class="content" ref="content" v-if="show" @click.self="canClose ? close() : () => {}"><slot></slot></div>
 	</transition>
 </div>
 </template>
@@ -14,6 +14,11 @@ import Vue from 'vue';
 
 export default Vue.extend({
 	props: {
+		canClose: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	},
 	data() {
 		return {
@@ -55,13 +60,7 @@ export default Vue.extend({
 
 .mk-modal {
 	> .bg {
-		position: fixed;
-		top: 0;
-		left: 0;
 		z-index: 10000;
-		width: 100%;
-		height: 100%;
-		background: var(--modalBg)
 	}
 
 	> .content {

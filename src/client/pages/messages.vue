@@ -2,7 +2,7 @@
 <div>
 	<portal to="icon"><fa :icon="faEnvelope"/></portal>
 	<portal to="title">{{ $t('directNotes') }}</portal>
-	<x-notes :pagination="pagination" :detail="true" @before="before()" @after="after()"/>
+	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
 </div>
 </template>
 

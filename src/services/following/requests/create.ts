@@ -50,7 +50,8 @@ export default async function(follower: User, followee: User, requestId?: string
 		}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 
 		// 通知を作成
-		createNotification(followee.id, follower.id, 'receiveFollowRequest', {
+		createNotification(followee.id, 'receiveFollowRequest', {
+			notifierId: follower.id,
 			followRequestId: followRequest.id
 		});
 	}

@@ -29,13 +29,10 @@
 import Vue from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import i18n from '../../i18n';
 import { apiUrl } from '../../config';
 import MkButton from '../../components/ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton
 	},
@@ -70,11 +67,10 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		if (!document.cookie.match(/i=(\w+)/)) {
-			document.cookie = `i=${this.$store.state.i.token}; path=/;` +
-			` domain=${document.location.hostname}; max-age=31536000;` +
+		document.cookie = `igi=${this.$store.state.i.token}; path=/;` +
+			` max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');
-		}
+
 		this.$watch('integrations', () => {
 			if (this.integrations.twitter) {
 				if (this.twitterForm) this.twitterForm.close();

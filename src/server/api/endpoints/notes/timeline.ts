@@ -102,6 +102,13 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	const hasFollowing = (await Followings.count({
+		where: {
+			followerId: user.id,
+		},
+		take: 1
+	})) !== 0;
+
 	//#region Construct query
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')
@@ -110,8 +117,8 @@ export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere(new Brackets(qb => { qb
-			.where(`note.userId IN (${ followingQuery.getQuery() })`)
-			.orWhere('note.userId = :meId', { meId: user.id });
+			.where('note.userId = :meId', { meId: user.id });
+			if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
 		}))
 		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(followingQuery.getParameters());

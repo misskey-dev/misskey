@@ -1,5 +1,5 @@
 /**
- * App entry point
+ * Client entry point
  */
 
 import Vue from 'vue';
@@ -7,24 +7,33 @@ import Vuex from 'vuex';
 import VueMeta from 'vue-meta';
 import PortalVue from 'portal-vue';
 import VAnimateCss from 'v-animate-css';
+import VueI18n from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import i18n from './i18n';
 import VueHotkey from './scripts/hotkey';
 import App from './app.vue';
+import Deck from './deck.vue';
 import MiOS from './mios';
-import { version, langs, instanceName } from './config';
+import { version, langs, instanceName, getLocale, deckmode } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
+import Form from './components/form-window.vue';
 import { router } from './router';
-import { applyTheme, lightTheme } from './theme';
+import { applyTheme, lightTheme } from './scripts/theme';
+import { isDeviceDarkmode } from './scripts/is-device-darkmode';
+import createStore from './store';
+import { clientDb, get, count } from './db';
+import { setI18nContexts } from './scripts/set-i18n-contexts';
+import { createPluginEnv } from './scripts/aiscript/api';
+import { AiScript } from '@syuilo/aiscript';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
 Vue.use(VueMeta);
 Vue.use(PortalVue);
 Vue.use(VAnimateCss);
+Vue.use(VueI18n);
 Vue.component('fa', FontAwesomeIcon);
 
 require('./directives');
@@ -45,16 +54,6 @@ Vue.mixin({
 });
 
 console.info(`Misskey v${version}`);
-
-// v11互換性のため
-if (localStorage.getItem('kyoppie') === 'yuppie') {
-	const i = localStorage.getItem('i');
-	localStorage.clear();
-	localStorage.setItem('i', i);
-	location.reload(true);
-}
-
-window.history.scrollRestoration = 'manual';
 
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
@@ -81,78 +80,55 @@ if (lang == null) {
 
 // Detect the user agent
 const ua = navigator.userAgent.toLowerCase();
-let isMobile = /mobile|iphone|ipad|android/.test(ua);
+const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 // Get the <head> element
 const head = document.getElementsByTagName('head')[0];
 
 // If mobile, insert the viewport meta tag
 if (isMobile || window.innerWidth <= 1024) {
-	const viewport = document.getElementsByName("viewport").item(0);
+	const viewport = document.getElementsByName('viewport').item(0);
 	viewport.setAttribute('content',
 		`${viewport.getAttribute('content')},minimum-scale=1,maximum-scale=1,user-scalable=no`);
 	head.appendChild(viewport);
 }
-
-//#region Fetch locale data
-const cachedLocale = localStorage.getItem('locale');
-
-if (cachedLocale == null) {
-	fetch(`/assets/locales/${lang}.${version}.json`)
-		.then(response => response.json()).then(locale => {
-			localStorage.setItem('locale', JSON.stringify(locale));
-			i18n.locale = lang;
-			i18n.setLocaleMessage(lang, locale);
-		});
-} else {
-	// TODO: 古い時だけ更新
-	setTimeout(() => {
-		fetch(`/assets/locales/${lang}.${version}.json`)
-			.then(response => response.json()).then(locale => {
-				localStorage.setItem('locale', JSON.stringify(locale));
-			});
-	}, 1000 * 5);
-}
-//#endregion
 
 //#region Set lang attr
 const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
 
-// iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
-try {
-	localStorage.setItem('foo', 'bar');
-} catch (e) {
-	Storage.prototype.setItem = () => { }; // noop
-}
-
-// http://qiita.com/junya/items/3ff380878f26ca447f85
-document.body.setAttribute('ontouchstart', '');
-
 // アプリ基底要素マウント
 document.body.innerHTML = '<div id="app"></div>';
 
-const os = new MiOS();
+const store = createStore();
+
+window.addEventListener('storage', e => {
+	if (e.key === 'vuex') {
+		store.replaceState(JSON.parse(localStorage['vuex']));
+	} else if (e.key === 'i') {
+		location.reload();
+	}
+}, false);
+
+const os = new MiOS(store);
 
 os.init(async () => {
-	window.addEventListener('storage', e => {
-		if (e.key === 'vuex') {
-			os.store.replaceState(JSON.parse(localStorage['vuex']));
-		} else if (e.key === 'i') {
-			location.reload();
-		}
-	}, false)
+	//#region Fetch locale data
+	const i18n = new VueI18n();
 
-	if ('Notification' in window && os.store.getters.isSignedIn) {
-		// 許可を得ていなかったらリクエスト
-		if (Notification.permission === 'default') {
-			Notification.requestPermission();
-		}
-	}
+	await count(clientDb.i18n).then(async n => {
+		if (n === 0) return setI18nContexts(lang, version, i18n);
+		if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
+
+		i18n.locale = lang;
+		i18n.setLocaleMessage(lang, await getLocale());
+	});
+	//#endregion
 
 	const app = new Vue({
-		store: os.store,
+		store: store,
+		i18n,
 		metaInfo: {
 			title: null,
 			titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
@@ -160,11 +136,13 @@ os.init(async () => {
 		data() {
 			return {
 				stream: os.stream,
-				isMobile: isMobile
+				isMobile: isMobile,
+				i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
 			};
 		},
+		// TODO: ここらへんのメソッド全部Vuexに移したい
 		methods: {
-			api: os.api,
+			api: (endpoint: string, data: { [x: string]: any } = {}, token?) => store.dispatch('api', { endpoint, data, token }),
 			signout: os.signout,
 			new(vm, props) {
 				const x = new vm({
@@ -192,7 +170,15 @@ os.init(async () => {
 				});
 				return p;
 			},
+			form(title, form) {
+				const vm = this.new(Form, { title, form });
+				return new Promise((res) => {
+					vm.$once('ok', result => res({ canceled: false, result }));
+					vm.$once('cancel', () => res({ canceled: true }));
+				});
+			},
 			post(opts, cb) {
+				if (!this.$store.getters.isSignedIn) return;
 				const vm = this.new(PostFormDialog, opts);
 				if (cb) vm.$once('closed', cb);
 				(vm as any).focus();
@@ -207,66 +193,128 @@ os.init(async () => {
 			}
 		},
 		router: router,
-		render: createEl => createEl(App)
+		render: createEl => createEl(deckmode ? Deck : App)
 	});
-
-	os.app = app;
 
 	// マウント
 	app.$mount('#app');
 
-	if (app.$store.getters.isSignedIn) {
+	store.watch(state => state.device.darkMode, darkMode => {
+		import('./scripts/theme').then(({ builtinThemes }) => {
+			const themes = builtinThemes.concat(store.state.device.themes);
+			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		});
+	});
+
+	//#region Sync dark mode
+	if (store.state.device.syncDeviceDarkMode) {
+		store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
+		if (store.state.device.syncDeviceDarkMode) {
+			store.commit('device/set', { key: 'darkMode', value: mql.matches });
+		}
+	});
+	//#endregion
+
+	store.watch(state => state.device.useBlurEffectForModal, v => {
+		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+	}, { immediate: true });
+
+	os.stream.on('emojiAdded', data => {
+		// TODO
+		//store.commit('instance/set', );
+	});
+
+	for (const plugin of store.state.deviceUser.plugins) {
+		console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+
+		const aiscript = new AiScript(createPluginEnv(app, {
+			plugin: plugin,
+			storageKey: 'plugins:' + plugin.id
+		}), {
+			in: (q) => {
+				return new Promise(ok => {
+					app.dialog({
+						title: q,
+						input: {}
+					}).then(({ canceled, result: a }) => {
+						ok(a);
+					});
+				});
+			},
+			out: (value) => {
+				console.log(value);
+			},
+			log: (type, params) => {
+			},
+		});
+
+		store.commit('initPlugin', { plugin, aiscript });
+
+		aiscript.exec(plugin.ast);
+	}
+
+	if (store.getters.isSignedIn) {
+		if ('Notification' in window) {
+			// 許可を得ていなかったらリクエスト
+			if (Notification.permission === 'default') {
+				Notification.requestPermission();
+			}
+		}
+
 		const main = os.stream.useSharedConnection('main');
 
 		// 自分の情報が更新されたとき
 		main.on('meUpdated', i => {
-			app.$store.dispatch('mergeMe', i);
+			store.dispatch('mergeMe', i);
 		});
 
 		main.on('readAllNotifications', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadNotification: false
 			});
 		});
 
 		main.on('unreadNotification', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadNotification: true
 			});
 		});
 
 		main.on('unreadMention', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadMentions: true
 			});
 		});
 
 		main.on('readAllUnreadMentions', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadMentions: false
 			});
 		});
 
 		main.on('unreadSpecifiedNote', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadSpecifiedNotes: true
 			});
 		});
 
 		main.on('readAllUnreadSpecifiedNotes', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadSpecifiedNotes: false
 			});
 		});
 
 		main.on('readAllMessagingMessages', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadMessagingMessage: false
 			});
 		});
 
 		main.on('unreadMessagingMessage', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadMessagingMessage: true
 			});
 
@@ -274,13 +322,13 @@ os.init(async () => {
 		});
 
 		main.on('readAllAntennas', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadAntenna: false
 			});
 		});
 
 		main.on('unreadAntenna', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadAntenna: true
 			});
 
@@ -288,13 +336,13 @@ os.init(async () => {
 		});
 
 		main.on('readAllAnnouncements', () => {
-			app.$store.dispatch('mergeMe', {
+			store.dispatch('mergeMe', {
 				hasUnreadAnnouncement: false
 			});
 		});
 
 		main.on('clientSettingUpdated', x => {
-			app.$store.commit('settings/set', {
+			store.commit('settings/set', {
 				key: x.key,
 				value: x.value
 			});

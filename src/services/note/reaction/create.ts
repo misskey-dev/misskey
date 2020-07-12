@@ -4,10 +4,10 @@ import { renderLike } from '../../../remote/activitypub/renderer/like';
 import DeliverManager from '../../../remote/activitypub/deliver-manager';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { IdentifiableError } from '../../../misc/identifiable-error';
-import { toDbReaction } from '../../../misc/reaction-lib';
+import { toDbReaction, decodeReaction } from '../../../misc/reaction-lib';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles } from '../../../models';
+import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles, Emojis } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
@@ -20,7 +20,7 @@ export default async (user: User, note: Note, reaction?: string) => {
 		throw new IdentifiableError('2d8e7297-1873-4c00-8404-792c68d7bef0', 'cannot react to my note');
 	}
 
-	reaction = await toDbReaction(reaction);
+	reaction = await toDbReaction(reaction, user.host);
 
 	const exist = await NoteReactions.findOne({
 		noteId: note.id,
@@ -59,14 +59,34 @@ export default async (user: User, note: Note, reaction?: string) => {
 
 	perUserReactionsChart.update(user, note);
 
+	// カスタム絵文字リアクションだったら絵文字情報も送る
+	const decodedReaction = decodeReaction(reaction);
+
+	let emoji = await Emojis.findOne({
+		where: {
+			name: decodedReaction.name,
+			host: decodedReaction.host
+		},
+		select: ['name', 'host', 'url']
+	});
+
+	if (emoji) {
+		emoji = {
+			name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
+			url: emoji.url
+		} as any;
+	}
+
 	publishNoteStream(note.id, 'reacted', {
-		reaction: reaction,
+		reaction: decodedReaction.reaction,
+		emoji: emoji,
 		userId: user.id
 	});
 
 	// リアクションされたユーザーがローカルユーザーなら通知を作成
 	if (note.userHost === null) {
-		createNotification(note.userId, user.id, 'reaction', {
+		createNotification(note.userId, 'reaction', {
+			notifierId: user.id,
 			noteId: note.id,
 			reaction: reaction
 		});
@@ -78,7 +98,8 @@ export default async (user: User, note: Note, reaction?: string) => {
 		userId: Not(user.id)
 	}).then(watchers => {
 		for (const watcher of watchers) {
-			createNotification(watcher.userId, user.id, 'reaction', {
+			createNotification(watcher.userId, 'reaction', {
+				notifierId: user.id,
 				noteId: note.id,
 				reaction: reaction
 			});
@@ -94,10 +115,10 @@ export default async (user: User, note: Note, reaction?: string) => {
 
 	//#region 配信
 	if (Users.isLocalUser(user) && !note.localOnly) {
-		const content = renderActivity(renderLike(inserted, note));
+		const content = renderActivity(await renderLike(inserted, note));
 		const dm = new DeliverManager(user, content);
 		if (note.userHost !== null) {
-			const reactee = await Users.findOne(note.userId)
+			const reactee = await Users.findOne(note.userId);
 			dm.addDirectRecipe(reactee as IRemoteUser);
 		}
 		dm.addFollowersRecipe();

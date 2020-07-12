@@ -32,7 +32,9 @@
 	<x-integration/>
 	<x-api/>
 
-	<mk-button @click="$root.signout()" primary style="margin: var(--margin) auto;">{{ $t('logout') }}</mk-button>
+	<router-link class="_panel _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;">{{ $t('installedApps') }}</router-link>
+
+	<button class="_panel _buttonPrimary" @click="$root.signout()" style="margin: var(--margin) auto;">{{ $t('logout') }}</button>
 </div>
 </template>
 
@@ -94,15 +96,15 @@ export default Vue.extend({
 		},
 
 		readAllUnreadNotes() {
-			this.$root.api('i/read_all_unread_notes');
+			this.$root.api('i/read-all-unread-notes');
 		},
 
 		readAllMessagingMessages() {
-			this.$root.api('i/read_all_messaging_messages');
+			this.$root.api('i/read-all-messaging-messages');
 		},
 
 		readAllNotifications() {
-			this.$root.api('notifications/mark_all_as_read');
+			this.$root.api('notifications/mark-all-as-read');
 		},
 	}
 });

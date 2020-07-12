@@ -19,7 +19,7 @@ const XRD = (...x: { element: string, value?: string, attributes?: Record<string
 		typeof value === 'string' ? `>${escapeValue(value)}</${element}` : '/'
 	}>`).reduce((a, c) => a + c, '')}</XRD>`;
 
-const allPath = '/.well-known/*';
+const allPath = '/.well-known/(.*)';
 const webFingerPath = '/.well-known/webfinger';
 const jrd = 'application/jrd+json';
 const xrd = 'application/xrd+xml';

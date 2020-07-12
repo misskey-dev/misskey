@@ -1,30 +1,28 @@
 <template>
-<div>
-	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
+<mk-container :show-header="props.showHeader">
+	<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
 
-		<div class="otgbylcu">
-			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
-			<button @click="saveMemo" :disabled="!changed">{{ $t('save') }}</button>
-		</div>
-	</mk-container>
-</div>
+	<div class="otgbylcu">
+		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
+		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import i18n from '../i18n';
 
 export default define({
 	name: 'memo',
 	props: () => ({
-		compact: false
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
-	i18n,
-	
 	components: {
 		MkContainer
 	},
@@ -47,11 +45,6 @@ export default define({
 	},
 
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
-
 		onChange() {
 			this.changed = true;
 			clearTimeout(this.timeoutId);
@@ -84,6 +77,7 @@ export default define({
 		border: none;
 		border-bottom: solid var(--lineWidth) var(--faceDivider);
 		border-radius: 0;
+		box-sizing: border-box;
 	}
 
 	> button {
@@ -94,22 +88,8 @@ export default define({
 		margin: 0;
 		padding: 0 10px;
 		height: 28px;
-		color: #fff;
-		background: var(--accent) !important;
 		outline: none;
-		border: none;
 		border-radius: 4px;
-		transition: background 0.1s ease;
-		cursor: pointer;
-
-		&:hover {
-			background: var(--accentLighten10) !important;
-		}
-
-		&:active {
-			background: var(--accentDarken) !important;
-			transition: background 0s ease;
-		}
 
 		&:disabled {
 			opacity: 0.7;

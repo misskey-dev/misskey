@@ -127,6 +127,23 @@ export class Meta {
 	@Column('boolean', {
 		default: false,
 	})
+	public enableHcaptcha: boolean;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true
+	})
+	public hcaptchaSiteKey: string | null;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true
+	})
+	public hcaptchaSecretKey: string | null;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public enableRecaptcha: boolean;
 
 	@Column('varchar', {
@@ -348,4 +365,9 @@ export class Meta {
 		default: true,
 	})
 	public objectStorageUseSSL: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public objectStorageUseProxy: boolean;
 }

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as util from 'util';
 import Logger from '../services/logger';
 import { createTemp } from './create-temp';
-import { downloadUrl } from './donwload-url';
+import { downloadUrl } from './download-url';
 
 const logger = new Logger('download-text-file');
 

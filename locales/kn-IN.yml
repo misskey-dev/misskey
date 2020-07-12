@@ -63,3 +63,10 @@ _cw:
   show: "ಇನ್ನಷ್ಟು ನೋಡು"
 _profile:
   username: "ಬಳಕೆಹೆಸರು"
+_notification:
+  youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
+_deck:
+  _columns:
+    notifications: "ಅಧಿಸೂಚನೆಗಳು"
+    tl: "ಸಮಯಸಾಲು"
+    mentions: "ಹೆಸರಿಸಿದ"

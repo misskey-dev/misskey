@@ -21,14 +21,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkInput from './ui/input.vue';
 import XWindow from './window.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkInput,
 		XWindow,
@@ -115,7 +112,7 @@ export default Vue.extend({
 			font-size: 14px;
 
 			&:hover {
-				background: var(--bwqtlupy);
+				background: var(--X7);
 			}
 
 			&.selected {

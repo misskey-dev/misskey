@@ -20,12 +20,9 @@ import XSigninDialog from '../components/signin-dialog.vue';
 import XSignupDialog from '../components/signup-dialog.vue';
 import MkButton from '../components/ui/button.vue';
 import XNotes from '../components/notes.vue';
-import i18n from '../i18n';
 import { host } from '../config';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		XNotes,

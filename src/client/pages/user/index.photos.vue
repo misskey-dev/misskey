@@ -2,23 +2,21 @@
 <div class="ujigsodd">
 	<mk-loading v-if="fetching"/>
 	<div class="stream" v-if="!fetching && images.length > 0">
-		<a v-for="(image, i) in images" :key="i"
+		<router-link v-for="(image, i) in images" :key="i"
 			class="img"
 			:style="`background-image: url(${thumbnail(image.file)})`"
-			:href="image.note | notePage"
-		></a>
+			:to="image.note | notePage"
+		></router-link>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('no-photos') }}</p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../i18n';
 import { getStaticImageUrl } from '../../scripts/get-static-image-url';
 
 export default Vue.extend({
-	i18n,
 	props: ['user'],
 	data() {
 		return {

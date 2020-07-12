@@ -22,7 +22,7 @@ adduser --disabled-password --disabled-login misskey
 これらのソフトウェアをインストール・設定してください:
 
 #### 依存関係 :package:
-* **[Node.js](https://nodejs.org/en/)** (11.10.1以上)
+* **[Node.js](https://nodejs.org/en/)** (12.x, 14.x)
 * **[PostgreSQL](https://www.postgresql.org/)** (10以上)
 * **[Redis](https://redis.io/)**
 

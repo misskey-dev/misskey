@@ -1,20 +1,38 @@
 doctype html
 
 html
+	#msg
 	script.
-		localStorage.removeItem('locale');
+		const msg = document.getElementById('msg');
 
 		try {
-			navigator.serviceWorker.controller.postMessage('clear');
+			localStorage.clear();
+			message('localStorage cleared');
 
-			navigator.serviceWorker.getRegistrations().then(registrations => {
-				return Promise.all(registrations.map(registration => registration.unregister()));
-			}).then(() => {
-				location = '/';
-			});
+			const delidb = indexedDB.deleteDatabase('MisskeyClient');
+			delidb.onsuccess = () => message('indexedDB cleared');
+
+			if (navigator.serviceWorker.controller) {
+				navigator.serviceWorker.controller.postMessage('clear');
+				navigator.serviceWorker.getRegistrations()
+					.then(registrations => {
+						return Promise.all(registrations.map(registration => registration.unregister()));
+					})
+					.then(() => {
+						message('Success Flush! Please reopen Misskey.\n成功しました。Misskeyを開き直してください。');
+					})
+					.catch(e => { throw Error(e) });
+			} else {
+				message('Success Flush! Please reopen Misskey.\n成功しました。Misskeyを開き直してください。');
+			}
 		} catch (e) {
 			console.error(e);
+			message(`${e}¥n¥nFlush Failed. Please reopen Misskey.\n失敗しました。Misskeyを開き直してください。`);
 			setTimeout(() => {
 				location = '/';
 			}, 10000)
+		}
+
+		function message(text) {
+			msg.insertAdjacentHTML('beforeend', `<p>[${(new Date()).toString()}] ${text.replace(/¥n/g,'<br>')}</p>`)
 		}

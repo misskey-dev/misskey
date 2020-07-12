@@ -7,7 +7,7 @@
 	v-hotkey="keymap"
 	v-size="[{ max: 500 }, { max: 450 }, { max: 350 }, { max: 300 }]"
 >
-	<x-sub v-for="note in conversation" :key="note.id" :note="note"/>
+	<x-sub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="info" v-if="pinned"><fa :icon="faThumbtack"/> {{ $t('pinnedNote') }}</div>
 	<div class="info" v-if="appearNote._prId_"><fa :icon="faBullhorn"/> {{ $t('promotion') }}<button class="_textButton hide" @click="readPromo()">{{ $t('hideThisNote') }} <fa :icon="faTimes"/></button></div>
@@ -21,19 +21,23 @@
 			</router-link>
 		</i18n>
 		<div class="info">
-			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime"><mk-time :time="note.createdAt"/></button>
-			<span class="visibility" v-if="note.visibility != 'public'">
-				<fa v-if="note.visibility == 'home'" :icon="faHome"/>
-				<fa v-if="note.visibility == 'followers'" :icon="faUnlock"/>
-				<fa v-if="note.visibility == 'specified'" :icon="faEnvelope"/>
+			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
+				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
+				<mk-time :time="note.createdAt"/>
+			</button>
+			<span class="visibility" v-if="note.visibility !== 'public'">
+				<fa v-if="note.visibility === 'home'" :icon="faHome"/>
+				<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
+				<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
 			</span>
+			<span class="localOnly" v-if="note.localOnly"><fa :icon="faBiohazard"/></span>
 		</div>
 	</div>
 	<article class="article">
 		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<x-note-header class="header" :note="appearNote" :mini="true"/>
-			<div class="body" v-if="appearNote.deletedAt == null">
+			<div class="body" v-if="appearNote.deletedAt == null" ref="noteBody">
 				<p v-if="appearNote.cw != null" class="cw">
 				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
 					<x-cw-button v-model="showContent" :note="appearNote"/>
@@ -46,10 +50,10 @@
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
-						<x-media-list :media-list="appearNote.files"/>
+						<x-media-list :media-list="appearNote.files" :parent-element="noteBody"/>
 					</div>
-					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer"/>
-					<x-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" class="url-preview"/>
+					<x-poll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
+					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="detail" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><x-note-preview :note="appearNote.renote"/></div>
 				</div>
 			</div>
@@ -79,17 +83,16 @@
 			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
-	<x-sub v-for="note in replies" :key="note.id" :note="note"/>
+	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
-import i18n from '../i18n';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -97,7 +100,7 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import XUrlPreview from './url-preview.vue';
+import MkUrlPreview from './url-preview.vue';
 import MkReactionPicker from './reaction-picker.vue';
 import pleaseLogin from '../scripts/please-login';
 import { focusPrev, focusNext } from '../scripts/focus';
@@ -105,8 +108,6 @@ import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 
 export default Vue.extend({
-	i18n,
-	
 	components: {
 		XSub,
 		XNoteHeader,
@@ -115,7 +116,7 @@ export default Vue.extend({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		XUrlPreview,
+		MkUrlPreview,
 	},
 
 	props: {
@@ -142,7 +143,8 @@ export default Vue.extend({
 			replies: [],
 			showContent: false,
 			hideThisNote: false,
-			faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan
+			noteBody: this.$refs.noteBody,
+			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug
 		};
 	},
 
@@ -190,6 +192,10 @@ export default Vue.extend({
 
 		isMyNote(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
+		},
+
+		isMyRenote(): boolean {
+			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
@@ -254,6 +260,8 @@ export default Vue.extend({
 		if (this.$store.getters.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
+
+		this.noteBody = this.$refs.noteBody
 	},
 
 	beforeDestroy() {
@@ -300,6 +308,14 @@ export default Vue.extend({
 			switch (type) {
 				case 'reacted': {
 					const reaction = body.reaction;
+
+					if (body.emoji) {
+						const emojis = this.appearNote.emojis || [];
+						if (!emojis.includes(body.emoji)) {
+							emojis.push(body.emoji);
+							Vue.set(this.appearNote, 'emojis', emojis);
+						}
+					}
 
 					if (this.appearNote.reactions == null) {
 						Vue.set(this.appearNote, 'reactions', {});
@@ -460,6 +476,22 @@ export default Vue.extend({
 			});
 		},
 
+		delEdit() {
+			this.$root.dialog({
+				type: 'warning',
+				text: this.$t('deleteAndEditConfirm'),
+				showCancelButton: true
+			}).then(({ canceled }) => {
+				if (canceled) return;
+
+				this.$root.api('notes/delete', {
+					noteId: this.appearNote.id
+				});
+
+				this.$root.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
+			});
+		},
+
 		toggleFavorite(favorite: boolean) {
 			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.appearNote.id
@@ -501,11 +533,11 @@ export default Vue.extend({
 					icon: faLink,
 					text: this.$t('copyLink'),
 					action: this.copyLink
-				}, this.appearNote.uri ? {
+				}, (this.appearNote.url || this.appearNote.uri) ? {
 					icon: faExternalLinkSquareAlt,
 					text: this.$t('showOnRemote'),
 					action: () => {
-						window.open(this.appearNote.uri, '_blank');
+						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
 				null,
@@ -545,8 +577,13 @@ export default Vue.extend({
 					}]
 					: []
 				),
-				...(this.appearNote.userId == this.$store.state.i.id ? [
+				...(this.appearNote.userId == this.$store.state.i.id || this.$store.state.i.isModerator || this.$store.state.i.isAdmin ? [
 					null,
+					this.appearNote.userId == this.$store.state.i.id ? {
+						icon: faEdit,
+						text: this.$t('deleteAndEdit'),
+						action: this.delEdit
+					} : undefined,
 					{
 						icon: faTrashAlt,
 						text: this.$t('delete'),
@@ -564,14 +601,24 @@ export default Vue.extend({
 					icon: faLink,
 					text: this.$t('copyLink'),
 					action: this.copyLink
-				}, this.appearNote.uri ? {
+				}, (this.appearNote.url || this.appearNote.uri) ? {
 					icon: faExternalLinkSquareAlt,
 					text: this.$t('showOnRemote'),
 					action: () => {
-						window.open(this.appearNote.uri, '_blank');
+						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined]
 				.filter(x => x !== undefined);
+			}
+
+			if (this.$store.state.noteActions.length > 0) {
+				menu = menu.concat([null, ...this.$store.state.noteActions.map(action => ({
+					icon: faPlug,
+					text: action.title,
+					action: () => {
+						action.handler(this.appearNote);
+					}
+				}))]);
 			}
 
 			this.$root.menu({
@@ -582,7 +629,7 @@ export default Vue.extend({
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
-			if (!this.$store.getters.isSignedIn || (this.$store.state.i.id !== this.note.userId)) return;
+			if (!this.isMyRenote) return;
 			this.$root.menu({
 				items: [{
 					text: this.$t('unrenote'),
@@ -684,61 +731,7 @@ export default Vue.extend({
 .note {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-
-	&.max-width_500px {
-		font-size: 0.9em;
-	}
-
-	&.max-width_450px {
-		> .renote {
-			padding: 8px 16px 0 16px;
-		}
-
-		> .article {
-			padding: 14px 16px 9px;
-
-			> .avatar {
-				margin: 0 10px 8px 0;
-				width: 50px;
-				height: 50px;
-			}
-		}
-	}
-
-	&.max-width_350px {
-		> .article {
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 18px;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	&.max-width_300px {
-		font-size: 0.825em;
-
-		> .article {
-			> .avatar {
-				width: 44px;
-				height: 44px;
-			}
-
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 12px;
-						}
-					}
-				}
-			}
-		}
-	}
+	overflow: hidden;
 
 	&:focus {
 		outline: none;
@@ -749,14 +742,6 @@ export default Vue.extend({
 		opacity: 1;
 	}
 
-	> *:first-child {
-		border-radius: var(--radius) var(--radius) 0 0;
-	}
-
-	> *:last-child {
-		border-radius: 0 0 var(--radius) var(--radius);
-	}
-
 	> .info {
 		display: flex;
 		align-items: center;
@@ -765,10 +750,6 @@ export default Vue.extend({
 		font-size: 90%;
 		white-space: pre;
 		color: #d28a3f;
-
-		@media (max-width: 450px) {
-			padding: 8px 16px 0 16px;
-		}
 
 		> [data-icon] {
 			margin-right: 4px;
@@ -782,6 +763,15 @@ export default Vue.extend({
 
 	> .info + .article {
 		padding-top: 8px;
+	}
+
+	> .reply-to {
+		opacity: 0.7;
+		padding-bottom: 0;
+	}
+
+	> .reply-to-more {
+		opacity: 0.7;
 	}
 
 	> .renote {
@@ -823,14 +813,18 @@ export default Vue.extend({
 			> .time {
 				flex-shrink: 0;
 				color: inherit;
+
+				> .dropdownIcon {
+					margin-right: 4px;
+				}
 			}
 
 			> .visibility {
 				margin-left: 8px;
+			}
 
-				[data-icon] {
-					margin-right: 0;
-				}
+			> .localOnly {
+				margin-left: 8px;
 			}
 		}
 	}
@@ -890,7 +884,7 @@ export default Vue.extend({
 						margin-top: 8px;
 					}
 
-					> .mk-poll {
+					> .poll {
 						font-size: 80%;
 					}
 
@@ -934,6 +928,69 @@ export default Vue.extend({
 
 			> .deleted {
 				opacity: 0.7;
+			}
+		}
+	}
+
+	> .reply {
+		border-top: solid 1px var(--divider);
+	}
+
+	&.max-width_500px {
+		font-size: 0.9em;
+	}
+
+	&.max-width_450px {
+		> .renote {
+			padding: 8px 16px 0 16px;
+		}
+
+		> .info {
+			padding: 8px 16px 0 16px;
+		}
+
+		> .article {
+			padding: 14px 16px 9px;
+
+			> .avatar {
+				margin: 0 10px 8px 0;
+				width: 50px;
+				height: 50px;
+			}
+		}
+	}
+
+	&.max-width_350px {
+		> .article {
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 18px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.max-width_300px {
+		font-size: 0.825em;
+
+		> .article {
+			> .avatar {
+				width: 44px;
+				height: 44px;
+			}
+
+			> .main {
+				> .footer {
+					> .button {
+						&:not(:last-child) {
+							margin-right: 12px;
+						}
+					}
+				}
 			}
 		}
 	}

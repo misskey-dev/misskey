@@ -12,9 +12,9 @@
 			<template #prefix><fa :icon="faLock"/></template>
 		</mk-input>
 		<mk-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
-		<p v-if="meta && meta.enableTwitterIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/twitter`"><fa :icon="faTwitter"/> {{ $t('signinWith', { x: 'Twitter' }) }}</a></p>
-		<p v-if="meta && meta.enableGithubIntegration"  style="margin: 8px 0;"><a :href="`${apiUrl}/signin/github`"><fa :icon="faGithub"/> {{ $t('signinWith', { x: 'GitHub' }) }}</a></p>
-		<p v-if="meta && meta.enableDiscordIntegration" style="margin: 8px 0;"><a :href="`${apiUrl}/signin/discord`"><fa :icon="faDiscord"/> {{ $t('signinWith', { x: 'Discord' }) }}</a></p>
+		<a class="_panel _button" style="margin: 8px auto;" v-if="meta && meta.enableTwitterIntegration" :href="`${apiUrl}/signin/twitter`"><fa :icon="faTwitter" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
+		<a class="_panel _button" style="margin: 8px auto;" v-if="meta && meta.enableGithubIntegration"  :href="`${apiUrl}/signin/github`"><fa :icon="faGithub" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
+		<a class="_panel _button" style="margin: 8px auto;" v-if="meta && meta.enableDiscordIntegration" :href="`${apiUrl}/signin/discord`"><fa :icon="faDiscord" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Discord' }) }}</a>
 	</div>
 	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 		<div v-if="user && user.securityKeys" class="twofa-group tap-group">
@@ -49,13 +49,10 @@ import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
-import i18n from '../i18n';
 import { apiUrl, host } from '../config';
-import { hexifyAB } from '../scripts/2fa';
+import { byteify, hexify } from '../scripts/2fa';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkInput,
@@ -121,14 +118,9 @@ export default Vue.extend({
 			this.queryingKey = true;
 			return navigator.credentials.get({
 				publicKey: {
-					challenge: Buffer.from(
-						this.challengeData.challenge
-							.replace(/\-/g, '+')
-							.replace(/_/g, '/'),
-							'base64'
-					),
+					challenge: byteify(this.challengeData.challenge, 'base64'),
 					allowCredentials: this.challengeData.securityKeys.map(key => ({
-						id: Buffer.from(key.id, 'hex'),
+						id: byteify(key.id, 'hex'),
 						type: 'public-key',
 						transports: ['usb', 'nfc', 'ble', 'internal']
 					})),
@@ -143,9 +135,9 @@ export default Vue.extend({
 				return this.$root.api('signin', {
 					username: this.username,
 					password: this.password,
-					signature: hexifyAB(credential.response.signature),
-					authenticatorData: hexifyAB(credential.response.authenticatorData),
-					clientDataJSON: hexifyAB(credential.response.clientDataJSON),
+					signature: hexify(credential.response.signature),
+					authenticatorData: hexify(credential.response.authenticatorData),
+					clientDataJSON: hexify(credential.response.clientDataJSON),
 					credentialId: credential.id,
 					challengeId: this.challengeData.challengeId
 				});
@@ -155,7 +147,7 @@ export default Vue.extend({
 				if (err === null) return;
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('login-failed')
+					text: this.$t('signinFailed')
 				});
 				this.signing = false;
 			});
@@ -176,7 +168,7 @@ export default Vue.extend({
 					}).catch(() => {
 						this.$root.dialog({
 							type: 'error',
-							text: this.$t('login-failed')
+							text: this.$t('signinFailed')
 						});
 						this.challengeData = null;
 						this.totpLogin = false;

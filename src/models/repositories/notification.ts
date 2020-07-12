@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Users, Notes, UserGroupInvitations } from '..';
+import { Users, Notes, UserGroupInvitations, AccessTokens } from '..';
 import { Notification } from '../entities/notification';
 import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
@@ -13,13 +13,15 @@ export class NotificationRepository extends Repository<Notification> {
 		src: Notification['id'] | Notification,
 	): Promise<PackedNotification> {
 		const notification = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const token = notification.appAccessTokenId ? await AccessTokens.findOne(notification.appAccessTokenId).then(ensure) : null;
 
 		return await awaitAll({
 			id: notification.id,
 			createdAt: notification.createdAt.toISOString(),
 			type: notification.type,
+			isRead: notification.isRead,
 			userId: notification.notifierId,
-			user: Users.pack(notification.notifier || notification.notifierId),
+			user: notification.notifierId ? Users.pack(notification.notifier || notification.notifierId) : null,
 			...(notification.type === 'mention' ? {
 				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId),
 			} : {}),
@@ -42,6 +44,11 @@ export class NotificationRepository extends Repository<Notification> {
 			} : {}),
 			...(notification.type === 'groupInvited' ? {
 				invitation: UserGroupInvitations.pack(notification.userGroupInvitationId!),
+			} : {}),
+			...(notification.type === 'app' ? {
+				body: notification.customBody,
+				header: notification.customHeader || token?.name,
+				icon: notification.customIcon || token?.iconUrl,
 			} : {}),
 		});
 	}

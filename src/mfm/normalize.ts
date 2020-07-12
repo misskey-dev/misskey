@@ -4,7 +4,7 @@ import { MfmForest, MfmTree } from './prelude';
 import { createTree, createLeaf } from '../prelude/tree';
 
 function isEmptyTextTree(t: MfmTree): boolean {
-	return t.node.type == 'text' && t.node.props.text === '';
+	return t.node.type === 'text' && t.node.props.text === '';
 }
 
 function concatTextTrees(ts: MfmForest): MfmTree {

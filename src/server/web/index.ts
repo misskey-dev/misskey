@@ -58,7 +58,7 @@ const router = new Router();
 
 //#region static assets
 
-router.get('/assets/*', async ctx => {
+router.get('/assets/(.*)', async ctx => {
 	await send(ctx as any, ctx.path, {
 		root: client,
 		maxage: ms('7 days'),
@@ -245,7 +245,8 @@ router.get('/notes/:note', async ctx => {
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
-			summary: getNoteSummary(_note),
+			// TODO: Let locale changeable by instance setting
+			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl
 		});
@@ -332,7 +333,7 @@ router.get('/flush', async ctx => {
 });
 
 // Render base html for all requests
-router.get('*', async ctx => {
+router.get('(.*)', async ctx => {
 	const meta = await fetchMeta();
 	await ctx.render('base', {
 		img: meta.bannerUrl,

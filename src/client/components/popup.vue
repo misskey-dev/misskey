@@ -1,7 +1,7 @@
 <template>
 <div class="mk-popup" v-hotkey.global="keymap">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
-		<div class="bg" ref="bg" @click="close()" v-if="show"></div>
+		<div class="bg _modalBg" ref="bg" @click="close()" v-if="show"></div>
 	</transition>
 	<transition :name="$store.state.device.animation ? 'popup' : ''" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
 		<div class="content" :class="{ fixed }" ref="content" v-if="show" :style="{ width: width ? width + 'px' : 'auto' }"><slot></slot></div>
@@ -128,13 +128,7 @@ export default Vue.extend({
 
 .mk-popup {
 	> .bg {
-		position: fixed;
-		top: 0;
-		left: 0;
 		z-index: 10000;
-		width: 100%;
-		height: 100%;
-		background: var(--modalBg)
 	}
 
 	> .content {

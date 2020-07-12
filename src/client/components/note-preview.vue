@@ -1,5 +1,5 @@
 <template>
-<div class="yohlumlkhizgfkvvscwfcrcggkotpvry">
+<div class="yohlumlk">
 	<mk-avatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<x-note-header class="header" :note="note" :mini="true"/>
@@ -45,20 +45,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.yohlumlkhizgfkvvscwfcrcggkotpvry {
+.yohlumlk {
 	display: flex;
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	font-size: 10px;
-
-	@media (min-width: 350px) {
-		font-size: 12px;
-	}
-
-	@media (min-width: 500px) {
-		font-size: 14px;
-	}
+	font-size: 0.95em;
 
 	> .avatar {
 
@@ -100,7 +92,6 @@ export default Vue.extend({
 				margin: 0;
 				padding: 0;
 				overflow-wrap: break-word;
-				color: var(--noteText);
 
 				> .text {
 					margin-right: 8px;
@@ -112,7 +103,6 @@ export default Vue.extend({
 					cursor: default;
 					margin: 0;
 					padding: 0;
-					color: var(--subNoteText);
 				}
 			}
 		}

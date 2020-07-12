@@ -1,38 +1,37 @@
 <template>
-<div>
-	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
+<mk-container :show-header="props.showHeader">
+	<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
-		<div class="wbrkwala">
-			<mk-loading v-if="fetching"/>
-			<transition-group tag="div" name="chart" class="tags" v-else>
-				<div v-for="stat in stats" :key="stat.tag">
-					<div class="tag">
-						<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
-						<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
-					</div>
-					<x-chart class="chart" :src="stat.chart"/>
+	<div class="wbrkwala">
+		<mk-loading v-if="fetching"/>
+		<transition-group tag="div" name="chart" class="tags" v-else>
+			<div v-for="stat in stats" :key="stat.tag">
+				<div class="tag">
+					<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+					<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 				</div>
-			</transition-group>
-		</div>
-	</mk-container>
-</div>
+				<x-chart class="chart" :src="stat.chart"/>
+			</div>
+		</transition-group>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import i18n from '../i18n';
 import XChart from './trends.chart.vue';
 
 export default define({
 	name: 'hashtags',
 	props: () => ({
-		compact: false
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
-	i18n,
 	components: {
 		MkContainer, XChart
 	},
@@ -51,10 +50,6 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
 		fetch() {
 			this.$root.api('hashtags/trend').then(stats => {
 				this.stats = stats;

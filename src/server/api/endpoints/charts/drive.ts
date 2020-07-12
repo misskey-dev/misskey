@@ -25,11 +25,16 @@ export const meta = {
 				'ja-JP': '最大数。例えば 30 を指定したとすると、スパンが"day"の場合は30日分のデータが、スパンが"hour"の場合は30時間分のデータが返ります。'
 			}
 		},
+
+		offset: {
+			validator: $.optional.nullable.num,
+			default: null,
+		},
 	},
 
 	res: convertLog(driveChart.schema),
 };
 
 export default define(meta, async (ps) => {
-	return await driveChart.getChart(ps.span as any, ps.limit!);
+	return await driveChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null);
 });

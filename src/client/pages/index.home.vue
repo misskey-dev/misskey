@@ -19,7 +19,7 @@
 	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
 	<x-post-form class="post-form _panel" fixed v-if="$store.state.device.showFixedPostForm"/>
-	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
+	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list ? list.id : null" :antenna="antenna ? antenna.id : null" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
 </div>
 </template>
 
@@ -29,8 +29,8 @@ import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatell
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
-import XTutorial from './index.home.tutorial.vue';
 import XPostForm from '../components/post-form.vue';
+import { scroll } from '../scripts/scroll';
 
 export default Vue.extend({
 	metaInfo() {
@@ -41,7 +41,7 @@ export default Vue.extend({
 
 	components: {
 		XTimeline,
-		XTutorial,
+		XTutorial: () => import('./index.home.tutorial.vue').then(m => m.default),
 		XPostForm,
 	},
 
@@ -121,7 +121,7 @@ export default Vue.extend({
 		},
 
 		top() {
-			window.scroll({ top: 0, behavior: 'instant' });
+			scroll(this.$el, 0);
 		},
 
 		async choose(ev) {
@@ -224,7 +224,7 @@ export default Vue.extend({
 
 	> i {
 		position: absolute;
-		top: 16px;
+		top: initial;
 		right: 8px;
 		color: var(--indicator);
 		font-size: 12px;
