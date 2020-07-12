@@ -122,8 +122,6 @@ export default Vue.extend({
 		// 300pxないと絶対右にはみ出るので左に移動してしまう
 		const areaWidth = (this.$el as any)?.clientWidth;
 		if (areaWidth && areaWidth < 300) this.tweetLeft = areaWidth - 241;
-		console.log(`areaWidth: ${areaWidth}`);
-		console.log(`this.tweetLeft: ${this.tweetLeft}`);
 	},
 
 	methods: {
