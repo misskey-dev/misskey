@@ -29,7 +29,7 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
-import { faWindowMaximize, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize, faTimes, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
 
@@ -62,7 +62,7 @@ export default Vue.extend({
 
 	created() {
 		this.menu = [{
-			icon: 'cog',
+			icon: faCog,
 			text: this.$t('edit'),
 			action: () => {
 				this.edit = !this.edit;
