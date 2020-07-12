@@ -92,6 +92,10 @@ export default Vue.extend({
 			this.showing = true;
 		},
 
+		top() {
+			window.scroll({ top: 0, behavior: 'smooth' });
+		},
+
 		search() {
 			if (this.searching) return;
 
