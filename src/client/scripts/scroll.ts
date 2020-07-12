@@ -1,7 +1,7 @@
 export function getScrollContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
-	const style = window.getComputedStyle(el);
-	if (style.getPropertyValue('overflow') === 'auto') {
+	const overflow = window.getComputedStyle(el).getPropertyValue('overflow');
+	if (overflow.endsWith('auto')) { // xとyを個別に指定している場合、hidden auto みたいな値になる
 		return el;
 	} else {
 		return getScrollContainer(el.parentElement);

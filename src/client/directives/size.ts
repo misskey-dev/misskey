@@ -1,5 +1,3 @@
-import { ResizeObserver } from '@juggle/resize-observer';
-
 export default {
 	inserted(el, binding, vn) {
 		const query = binding.value;

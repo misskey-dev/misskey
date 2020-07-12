@@ -30,7 +30,7 @@ import PrismEditor from 'vue-prism-editor';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
 import MkContainer from '../components/ui/container.vue';
 import MkButton from '../components/ui/button.vue';
-import { createAiScriptEnv } from '../scripts/create-aiscript-env';
+import { createAiScriptEnv } from '../scripts/aiscript/api';
 
 export default Vue.extend({
 	metaInfo() {

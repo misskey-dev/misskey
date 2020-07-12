@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 500 }]">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -46,6 +46,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: true
+		},
+		scrollable: {
+			type: Boolean,
+			required: false,
+			default: false
 		},
 	},
 	data() {
@@ -107,20 +112,25 @@ export default Vue.extend({
 		box-shadow: none !important;
 	}
 
+	&.scrollable {
+		display: flex;
+		flex-direction: column;
+
+		> div {
+			overflow: auto;
+		}
+	}
+
 	> header {
 		position: relative;
 		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
-		z-index: 1;
+		z-index: 2;
 		background: var(--panelHeaderBg);
 		color: var(--panelHeaderFg);
 
 		> .title {
 			margin: 0;
 			padding: 12px 16px;
-
-			@media (max-width: 500px) {
-				padding: 8px 10px;
-			}
 
 			> [data-icon] {
 				margin-right: 6px;
@@ -139,6 +149,30 @@ export default Vue.extend({
 			padding: 0;
 			width: 42px;
 			height: 100%;
+		}
+	}
+
+	&.max-width_500px {
+		> header {
+			> .title {
+				padding: 8px 10px;
+			}
+		}
+	}
+}
+
+._forceContainerFull_ .ukygtjoj {
+	> header {
+		> .title {
+			padding: 12px 16px !important;
+		}
+	}
+}
+
+._forceContainerFull_.ukygtjoj {
+	> header {
+		> .title {
+			padding: 12px 16px !important;
 		}
 	}
 }

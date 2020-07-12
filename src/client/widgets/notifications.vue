@@ -1,13 +1,11 @@
 <template>
-<div class="mkw-notifications" :style="`flex-basis: calc(${basis}% - var(--margin)); height: ${previewHeight}px;`">
-	<mk-container :show-header="!props.compact" class="container">
-		<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
+<mk-container :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
+	<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
 
-		<div>
-			<x-notifications/>
-		</div>
-	</mk-container>
-</div>
+	<div>
+		<x-notifications/>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
@@ -16,17 +14,19 @@ import MkContainer from '../components/ui/container.vue';
 import XNotifications from '../components/notifications.vue';
 import define from './define';
 
-const basisSteps = [25, 50, 75, 100]
-const previewHeights = [200, 300, 400, 500]
-
 export default define({
 	name: 'notifications',
 	props: () => ({
-		compact: false,
-		basisStep: 0
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
+		height: {
+			type: 'number',
+			default: 300,
+		},
 	})
 }).extend({
-	
 	components: {
 		MkContainer,
 		XNotifications,
@@ -37,47 +37,5 @@ export default define({
 			faBell
 		};
 	},
-
-	computed: {
-		basis(): number {
-			return basisSteps[this.props.basisStep] || 25
-		},
-
-		previewHeight(): number {
-			return previewHeights[this.props.basisStep] || 200
-		}
-	},
-
-	methods: {
-		func() {
-			if (this.props.basisStep === basisSteps.length - 1) {
-				this.props.basisStep = 0
-				this.props.compact = !this.props.compact;
-			} else {
-				this.props.basisStep += 1
-			}
-
-			this.save();
-		}
-	}
 });
 </script>
-
-<style lang="scss">
-.mkw-notifications {
-	flex-grow: 1;
-	flex-shrink: 0;
-	min-height: 0; // https://www.gwtcenter.com/min-height-required-on-firefox-flexbox
-
-	.container {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-
-		> div {
-			overflow: auto;
-			flex-grow: 1;
-		}
-	}
-}
-</style>

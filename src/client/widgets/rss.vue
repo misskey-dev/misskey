@@ -1,17 +1,15 @@
 <template>
-<div>
-	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faRssSquare"/>RSS</template>
-		<template #func><button class="_button" @click="setting"><fa :icon="faCog"/></button></template>
+<mk-container :show-header="props.showHeader">
+	<template #header><fa :icon="faRssSquare"/>RSS</template>
+	<template #func><button class="_button" @click="setting"><fa :icon="faCog"/></button></template>
 
-		<div class="ekmkgxbj">
-			<mk-loading v-if="fetching"/>
-			<div class="feed" v-else>
-				<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
-			</div>
+	<div class="ekmkgxbj">
+		<mk-loading v-if="fetching"/>
+		<div class="feed" v-else>
+			<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
-	</mk-container>
-</div>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
@@ -22,8 +20,14 @@ import define from './define';
 export default define({
 	name: 'rss',
 	props: () => ({
-		compact: false,
-		url: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews'
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
+		url: {
+			type: 'string',
+			default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		},
 	})
 }).extend({
 	components: {
@@ -40,15 +44,12 @@ export default define({
 	mounted() {
 		this.fetch();
 		this.clock = setInterval(this.fetch, 60000);
+		this.$watch('props.url', this.fetch);
 	},
 	beforeDestroy() {
 		clearInterval(this.clock);
 	},
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
 		fetch() {
 			fetch(`https://api.rss2json.com/v1/api.json?rss_url=${this.props.url}`, {
 			}).then(res => {
@@ -58,20 +59,6 @@ export default define({
 				});
 			});
 		},
-		setting() {
-			this.$root.dialog({
-				title: 'URL',
-				input: {
-					type: 'url',
-					default: this.props.url
-				}
-			}).then(({ canceled, result: url }) => {
-				if (canceled) return;
-				this.props.url = url;
-				this.save();
-				this.fetch();
-			});
-		}
 	}
 });
 </script>

@@ -8,12 +8,12 @@
 
 	props: {
 		accent: 'rgb(255, 153, 0)',
-		panel: 'rgb(22, 22, 22)',
+		panel: 'rgb(30, 30, 30)',
 		bg: 'rgb(0, 0, 0)',
-		fg: 'rgb(240, 240, 240)',
+		fg: 'rgb(255, 255, 255)',
 		infoFg: '@accent',
 		infoBg: 'rgb(0, 0, 0)',
-		header: 'rgb(27, 27, 27)',
+		header: 'rgb(37, 37, 37)',
 		mention: '@accent',
 		hashtag: '@accent',
 		link: '@accent',

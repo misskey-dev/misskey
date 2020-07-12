@@ -352,6 +352,9 @@ notFoundDescription: "指定されたURLに該当するページはあらへん�
 close: "さいなら"
 joinedGroups: "参加しとるグループ"
 invites: "来てや"
+_theme:
+  keys:
+    renote: "Renote"
 _sfx:
   note: "ノート"
   notification: "通知"
@@ -431,4 +434,10 @@ _pages:
       array: "リスト"
 _notification:
   youWereFollowed: "フォローされたで"
-
+_deck:
+  _columns:
+    notifications: "通知"
+    tl: "タイムライン"
+    antenna: "アンテナ"
+    list: "リスト"
+    mentions: "あんた宛て"

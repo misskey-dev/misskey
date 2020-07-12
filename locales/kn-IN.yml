@@ -65,4 +65,8 @@ _profile:
   username: "ಬಳಕೆಹೆಸರು"
 _notification:
   youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
-
+_deck:
+  _columns:
+    notifications: "ಅಧಿಸೂಚನೆಗಳು"
+    tl: "ಸಮಯಸಾಲು"
+    mentions: "ಹೆಸರಿಸಿದ"

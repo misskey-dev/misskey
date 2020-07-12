@@ -1,14 +1,12 @@
 <template>
-<div>
-	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
+<mk-container :show-header="props.showHeader">
+	<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
 
-		<div class="otgbylcu">
-			<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
-			<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
-		</div>
-	</mk-container>
-</div>
+	<div class="otgbylcu">
+		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
+		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
@@ -19,10 +17,12 @@ import define from './define';
 export default define({
 	name: 'memo',
 	props: () => ({
-		compact: false
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
-	
 	components: {
 		MkContainer
 	},
@@ -45,11 +45,6 @@ export default define({
 	},
 
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
-
 		onChange() {
 			this.changed = true;
 			clearTimeout(this.timeoutId);
