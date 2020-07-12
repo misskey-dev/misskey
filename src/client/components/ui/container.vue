@@ -168,4 +168,12 @@ export default Vue.extend({
 		}
 	}
 }
+
+._forceContainerFull_.ukygtjoj {
+	> header {
+		> .title {
+			padding: 12px 16px !important;
+		}
+	}
+}
 </style>
