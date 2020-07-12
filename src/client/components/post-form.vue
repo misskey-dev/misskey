@@ -327,7 +327,9 @@ export default Vue.extend({
 		},
 
 		focus() {
-			(this.$refs.text as any).focus();
+			this.$nextTick(() => {
+				(this.$refs.text as any).focus();
+			});
 		},
 
 		chooseFileFrom(ev) {
