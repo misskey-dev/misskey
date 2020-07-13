@@ -22,7 +22,7 @@ export class StickySidebar {
 
 			if (this.isTop) {
 				this.isTop = false;
-				this.spacer.style.marginTop = `${scrollTop}px`;
+				this.spacer.style.marginTop = `${this.lastScrollTop}px`;
 			}
 		} else { // upscroll
 			const overflow = this.el.clientHeight - window.innerHeight;
