@@ -49,7 +49,7 @@ Next (2020/7/)
 - サーバーへのファイルダウンロードのタイムアウトを11秒から60秒に緩和 [#6503](https://github.com/syuilo/misskey/pull/6503)
 - 非ログイン時にキーボードショートカットで投稿フォームが開けてしまう問題を修正 [#6508](https://github.com/syuilo/misskey/pull/6508)
 - キャッシュされてないリモートファイルのURLが相対URLで返ってくる問題を修正 [#6514](https://github.com/syuilo/misskey/pull/6514)
-  * リモートファイルをキャッシュしない設定のインスタンスでサードパーティークライアントでリモートの画像が表示できない問題が修正されます
+  * リモートファイルをキャッシュしない設定のインスタンスにおいてサードパーティークライアントでリモートの画像が表示できない問題が修正されます
 - Mastodon v2.5.0未満からのActivityが受け取れない問題の修正 [#6518](https://github.com/syuilo/misskey/pull/6518)
 - music.youtube.comのURLプレビューの修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
 - URLプレビューの翻訳を修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
