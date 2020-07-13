@@ -302,6 +302,7 @@ export default () => new Vuex.Store({
 		},
 
 		mergeMe(ctx, me) {
+			// TODO: プロパティ一つ一つに対してコミットが発生するのはアレなので良い感じにする
 			for (const [key, value] of Object.entries(me)) {
 				ctx.commit('updateIKeyValue', { key, value });
 			}
