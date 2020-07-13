@@ -549,7 +549,7 @@ _theme:
   func: "Functions"
   funcKind: "Function type"
   argument: "Argument"
-  basedProp: "Name of the referenced property"
+  basedProp: "Referenced property"
   alpha: "Opacity"
   darken: "Darken"
   lighten: "Lighten"
