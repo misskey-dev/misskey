@@ -1167,6 +1167,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Siempre mostrar la columna principal"
   columnAlign: "Alinear columnas"
+  addColumn: "Agregar columna"
   _columns:
     widgets: "Widgets"
     notifications: "Notificaciones"
