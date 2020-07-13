@@ -549,7 +549,7 @@ _theme:
   func: "Funktionen"
   funcKind: "Funktionstyp"
   argument: "Parameter"
-  basedProp: "Name der referenzierten Eigenschaft"
+  basedProp: "Referenzierte Eigenschaft"
   alpha: "Transparenz"
   darken: "Verdunkeln"
   lighten: "Erhellen"
