@@ -68,6 +68,7 @@ export const defaultDeviceSettings = {
 	disablePagesScript: true,
 	enableInfiniteScroll: true,
 	fixedWidgetsPosition: false,
+	useBlurEffectForModal: true,
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 	deckColumnAlign: 'left',

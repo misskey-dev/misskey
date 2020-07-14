@@ -528,6 +528,7 @@ plugins: "プラグイン"
 pluginInstallWarn: "信頼できないプラグインはインストールしないでください。"
 deck: "デッキ"
 undeck: "デッキ解除"
+useBlurEffectForModal: "モーダルにぼかし効果を使用"
 
 _theme:
   explore: "テーマを探す"
@@ -1206,6 +1207,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
+  addColumn: "カラムを追加"
 
   _columns:
     widgets: "ウィジェット"

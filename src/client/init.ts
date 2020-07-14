@@ -98,44 +98,22 @@ const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
 
-// http://qiita.com/junya/items/3ff380878f26ca447f85
-document.body.setAttribute('ontouchstart', '');
-
 // アプリ基底要素マウント
 document.body.innerHTML = '<div id="app"></div>';
 
 const store = createStore();
 
+window.addEventListener('storage', e => {
+	if (e.key === 'vuex') {
+		store.replaceState(JSON.parse(localStorage['vuex']));
+	} else if (e.key === 'i') {
+		location.reload();
+	}
+}, false);
+
 const os = new MiOS(store);
 
 os.init(async () => {
-	window.addEventListener('storage', e => {
-		if (e.key === 'vuex') {
-			store.replaceState(JSON.parse(localStorage['vuex']));
-		} else if (e.key === 'i') {
-			location.reload();
-		}
-	}, false);
-
-	store.watch(state => state.device.darkMode, darkMode => {
-		import('./scripts/theme').then(({ builtinThemes }) => {
-			const themes = builtinThemes.concat(store.state.device.themes);
-			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
-		});
-	});
-
-	//#region Sync dark mode
-	if (store.state.device.syncDeviceDarkMode) {
-		store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
-	}
-
-	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
-		if (store.state.device.syncDeviceDarkMode) {
-			store.commit('device/set', { key: 'darkMode', value: mql.matches });
-		}
-	});
-	//#endregion
-
 	//#region Fetch locale data
 	const i18n = new VueI18n();
 
@@ -147,13 +125,6 @@ os.init(async () => {
 		i18n.setLocaleMessage(lang, await getLocale());
 	});
 	//#endregion
-
-	if ('Notification' in window && store.getters.isSignedIn) {
-		// 許可を得ていなかったらリクエスト
-		if (Notification.permission === 'default') {
-			Notification.requestPermission();
-		}
-	}
 
 	const app = new Vue({
 		store: store,
@@ -228,6 +199,29 @@ os.init(async () => {
 	// マウント
 	app.$mount('#app');
 
+	store.watch(state => state.device.darkMode, darkMode => {
+		import('./scripts/theme').then(({ builtinThemes }) => {
+			const themes = builtinThemes.concat(store.state.device.themes);
+			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		});
+	});
+
+	//#region Sync dark mode
+	if (store.state.device.syncDeviceDarkMode) {
+		store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
+		if (store.state.device.syncDeviceDarkMode) {
+			store.commit('device/set', { key: 'darkMode', value: mql.matches });
+		}
+	});
+	//#endregion
+
+	store.watch(state => state.device.useBlurEffectForModal, v => {
+		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+	}, { immediate: true });
+
 	os.stream.on('emojiAdded', data => {
 		// TODO
 		//store.commit('instance/set', );
@@ -263,6 +257,13 @@ os.init(async () => {
 	}
 
 	if (store.getters.isSignedIn) {
+		if ('Notification' in window) {
+			// 許可を得ていなかったらリクエスト
+			if (Notification.permission === 'default') {
+				Notification.requestPermission();
+			}
+		}
+
 		const main = os.stream.useSharedConnection('main');
 
 		// 自分の情報が更新されたとき

@@ -78,6 +78,7 @@
 			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
 			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
 			<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
+			<mk-switch v-model="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</mk-switch>
 			<mk-switch v-model="useOsNativeEmojis">
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
@@ -176,6 +177,11 @@ export default Vue.extend({
 		reduceAnimation: {
 			get() { return !this.$store.state.device.animation; },
 			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
+		},
+
+		useBlurEffectForModal: {
+			get() { return this.$store.state.device.useBlurEffectForModal; },
+			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
 		},
 
 		disableAnimatedMfm: {
