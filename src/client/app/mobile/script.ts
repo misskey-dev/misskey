@@ -31,6 +31,8 @@ import PostFormDialog from './views/components/post-form-dialog.vue';
 import FileChooser from './views/components/drive-file-chooser.vue';
 import FolderChooser from './views/components/drive-folder-chooser.vue';
 
+import { url, instanceHost } from '../config';
+
 /**
  * init
  */
@@ -112,6 +114,7 @@ init((launch, os) => {
 	// Init router
 	const router = new VueRouter({
 		mode: 'history',
+		base: `/${instanceHost}/`,
 		routes: [
 			...(os.store.state.device.inDeckMode
 				? [{ path: '/', name: 'index', component: () => import('../common/views/deck/deck.vue').then(m => m.default), children: [

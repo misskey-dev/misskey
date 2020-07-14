@@ -102,8 +102,9 @@
 
 	// If mobile, insert the viewport meta tag
 	if (isMobile) {
-		const viewport = document.getElementsByName("viewport").item(0);
-		viewport.content = `${viewport.content},minimum-scale=1,maximum-scale=1,user-scalable=no`;
+		const viewport = document.createElement('meta');
+		viewport.name = 'viewport';
+		viewport.content = 'width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no';
 		head.appendChild(viewport);
 	}
 

@@ -8,7 +8,6 @@
 		<div class="about">
 			<h2>{{ name || 'Misskey' }}</h2>
 			<p v-html="description || this.$t('@.about')"></p>
-			<router-link class="signup" to="/signup">{{ $t('@.signup') }}</router-link>
 		</div>
 		<div class="signin">
 			<a href="/signin" @click.prevent="signin()">{{ $t('@.signin') }}</a>
@@ -191,9 +190,6 @@ export default Vue.extend({
 
 			> p
 				margin 8px
-
-			> .signup
-				font-weight bold
 
 		> .signin
 			margin 16px 0
