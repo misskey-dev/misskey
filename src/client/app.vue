@@ -375,7 +375,8 @@ export default Vue.extend({
 	$left-widgets-hide-threshold: 1600px;
 	$right-widgets-hide-threshold: 1090px;
 
-	min-height: 100vh;
+	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 	padding-top: $header-height;
 
@@ -544,7 +545,8 @@ export default Vue.extend({
 
 			> .content {
 				> * {
-					min-height: calc(100vh - #{$header-height});
+					// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+					min-height: calc((var(--vh, 1vh) * 100) - #{$header-height});
 					box-sizing: border-box;
 					padding: var(--margin);
 
@@ -597,7 +599,8 @@ export default Vue.extend({
 			&.fixed {
 				position: sticky;
 				overflow: auto;
-				height: calc(100vh - #{$header-height});
+				// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+				height: calc((var(--vh, 1vh) * 100) - #{$header-height});
 				top: $header-height;
 			}
 
@@ -620,7 +623,8 @@ export default Vue.extend({
 			> .container {
 				position: sticky;
 				height: min-content;
-				min-height: calc(100vh - #{$header-height});
+				// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+				min-height: calc((var(--vh, 1vh) * 100) - #{$header-height});
 				padding: var(--margin) 0;
 				box-sizing: border-box;
 

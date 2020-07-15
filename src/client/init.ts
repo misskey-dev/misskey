@@ -59,6 +59,16 @@ if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
 
+//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+// TODO: いつの日にか消したい
+const vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+window.addEventListener('resize', () => {
+	const vh = window.innerHeight * 0.01;
+	document.documentElement.style.setProperty('--vh', `${vh}px`);
+});
+//#endregion
+
 //#region Detect the user language
 let lang = localStorage.getItem('lang');
 
