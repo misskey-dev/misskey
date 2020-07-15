@@ -134,6 +134,8 @@ const sounds = [
 	'syuilo/poi1',
 	'syuilo/poi2',
 	'syuilo/pirori',
+	'syuilo/pirori-wet',
+	'syuilo/pirori-square-wet',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',

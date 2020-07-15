@@ -211,7 +211,8 @@ export default Vue.extend({
 	--margin: var(--marginHalf);
 
 	display: flex;
-	height: 100vh;
+	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+	height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 	flex: 1;
 	padding: $deckMargin 0 $deckMargin $deckMargin;

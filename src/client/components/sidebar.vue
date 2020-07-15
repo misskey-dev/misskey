@@ -353,7 +353,8 @@ export default Vue.extend({
 			left: 0;
 			z-index: 1001;
 			width: $nav-width;
-			height: 100vh;
+			// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+			height: calc(var(--vh, 1vh) * 100);
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);

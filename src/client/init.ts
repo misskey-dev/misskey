@@ -59,6 +59,16 @@ if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
 
+//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+// TODO: いつの日にか消したい
+const vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+window.addEventListener('resize', () => {
+	const vh = window.innerHeight * 0.01;
+	document.documentElement.style.setProperty('--vh', `${vh}px`);
+});
+//#endregion
+
 //#region Detect the user language
 let lang = localStorage.getItem('lang');
 
@@ -103,9 +113,13 @@ document.body.innerHTML = '<div id="app"></div>';
 
 const store = createStore();
 
+// 他のタブと永続化されたstateを同期
 window.addEventListener('storage', e => {
 	if (e.key === 'vuex') {
-		store.replaceState(JSON.parse(localStorage['vuex']));
+		store.replaceState({
+			...store.state,
+			...JSON.parse(e.newValue)
+		});
 	} else if (e.key === 'i') {
 		location.reload();
 	}

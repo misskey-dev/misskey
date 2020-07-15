@@ -1,6 +1,63 @@
 ChangeLog
 =========
 
+Next (2020/7/)
+-------------------
+### ✨Improvements
+- サウンドを追加 [b9e9631](https://github.com/syuilo/misskey/commit/b9e9631195a8ca5ed1386daeacdc835456d52975)
+
+### 🐛Fixes
+- 
+
+12.41.2 (2020/7/12)
+-------------------
+### ✨Improvements
+- モーダルにぼかし効果を使用するオプション [aae9bc4c](https://github.com/syuilo/misskey/commit/aae9bc4cf4c583b4d675391fe3da2fa53b7f18e0)
+- スタイルの調整 [eb84445](https://github.com/syuilo/misskey/commit/eb84445796039b93d124fa615e96c08fedcd9bf9), [dab7282](https://github.com/syuilo/misskey/commit/dab728278ca577622c575d1968eb6a22c7b444b9), [35a8c379](https://github.com/syuilo/misskey/commit/35a8c37922193317b3f6397562c762f9a9169b91)
+
+### 🐛Fixes
+- Deckのタイムラインを追加した直後のタイムライン種別の選択がキャンセルできない問題を修正 [#6535](https://github.com/syuilo/misskey/pull/6535)
+- ノート詳細 /notes/:id ページの直リンを踏むと Not Found になる問題を修正 [364bd9a](https://github.com/syuilo/misskey/commit/364bd9ae74226c46ccdad810884bce11b2bef156)
+- Deckでメインカラムの「投稿があります」をクリックしても上に行かない問題を修正 [5b5b64d](https://github.com/syuilo/misskey/commit/5b5b64d2514cf445aa81a6750ac4185f4e7dd8cd)
+- 翻訳の修正 [7555ab0](https://github.com/syuilo/misskey/commit/7555ab097a6aab68851782b641a33fb3fdf2f101), [426c2fa](https://github.com/syuilo/misskey/commit/426c2fa5d152610516337cc5a53810e136d573db)
+
+12.41.1 (2020/7/12)
+-------------------
+### ✨Improvements
+- ResizeObserver Polyfillを削除 [c89abda](https://github.com/syuilo/misskey/commit/c89abda3fb55857bb81c4f2163a4a0396a04fc27)
+  * Misskey Webのパフォーマンスが劇的に改善されました
+- スタイルの調整 [7cbe95a](https://github.com/syuilo/misskey/commit/7cbe95a1cf67f2536a6332bbccc7129afcd92f73), [320352b](https://github.com/syuilo/misskey/commit/320352bf4ba56ddd67c9c6bc0816dab94c53191b)
+
+### 🐛Fixes
+- サイドバーのホームを押すことでのトップへのスクロールが動作しなくなっている問題を修正 [3c66990](https://github.com/syuilo/misskey/commit/3c669902632570bb1354f6b53253037f183718b5)
+
+12.41.0 (2020/7/12)
+-------------------
+### ✨Improvements
+- デッキの実装 [#6504](https://github.com/syuilo/misskey/pull/6504), [065ec8e](https://github.com/syuilo/misskey/commit/065ec8e17080887814b1912233d38e412b2811d2), [debc008](https://github.com/syuilo/misskey/commit/debc0086fab6c131cf37f00e8b03fbe5d6f09c64)
+- テーマエディターの実装 [#6482](https://github.com/syuilo/misskey/pull/6482)
+- プラグインシステムの実装 [#6479](https://github.com/syuilo/misskey/pull/6479)
+- ウィジェットの位置を固定するオプションを追加 [3799708](https://github.com/syuilo/misskey/commit/3799708daf52c221c03ff0b1c11d8b888b22d32f)
+- ウィジェットの位置を固定しない場合、Twitterのようにstickyに画面追従するように [c25cf7f](https://github.com/syuilo/misskey/commit/c25cf7f89a1d3d7e55331396bbc3f44920a38de5)
+- サウンドを追加 (syuilo/pirori) [d4b4b61](https://github.com/syuilo/misskey/commit/d4b4b61535ee4f5f759ba3342b55e978e43f1c7b)
+- タイムライン上でTwitterの埋め込みプレビューを表示できるように [#6496](https://github.com/syuilo/misskey/pull/6496)
+- デザインや挙動の調整 [#6495](https://github.com/syuilo/misskey/pull/6495), [752669b](https://github.com/syuilo/misskey/commit/752669bf5ea83b81ddcabb804e795a24debe6dc0), [#6497](https://github.com/syuilo/misskey/pull/6497), [ade11aa](https://github.com/syuilo/misskey/commit/ade11aa447f0102c9202955e01c59fcb501f794e), [27a17b4](https://github.com/syuilo/misskey/commit/27a17b467d72aea81774c04b8ca3e01ed6874b24), [4fd0636](https://github.com/syuilo/misskey/commit/4fd06369d355f032b5eb245dfd98faadee2289f9), [ca2e53b](https://github.com/syuilo/misskey/commit/ca2e53bd6e3de50f2fdf62da16734873be37fcc4), [8ff2694](https://github.com/syuilo/misskey/commit/8ff2694cadd3ab3d51f96fc2ea3bbfde29475660), [11f8d74](https://github.com/syuilo/misskey/commit/11f8d742eb53e8b815abc8ed1c34627dcbaa9e2f)
+- ソースコードのリファクタ [a591a33](https://github.com/syuilo/misskey/commit/a591a334ed6fd7f8ed936bf7e7edfcce08de035a)
+
+### 🐛Fixes
+- 依存パッケージの更新 [#6491](https://github.com/syuilo/misskey/pull/6491), [#6516](https://github.com/syuilo/misskey/pull/6516), [d327bb8](https://github.com/syuilo/misskey/commit/d327bb8ff1b8765e92d6815d244e74f0793f6157)
+- サーバーへのファイルダウンロードのタイムアウトを11秒から60秒に緩和 [#6503](https://github.com/syuilo/misskey/pull/6503)
+- 非ログイン時にキーボードショートカットで投稿フォームが開けてしまう問題を修正 [#6508](https://github.com/syuilo/misskey/pull/6508)
+- キャッシュされてないリモートファイルのURLが相対URLで返ってくる問題を修正 [#6514](https://github.com/syuilo/misskey/pull/6514)
+  * リモートファイルをキャッシュしない設定のインスタンスにおいてサードパーティークライアントでリモートの画像が表示できない問題が修正されます
+- Mastodon v2.5.0未満からのActivityが受け取れない問題の修正 [#6518](https://github.com/syuilo/misskey/pull/6518)
+- music.youtube.comのURLプレビューの修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
+- URLプレビューの翻訳を修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
+- ノートの表示幅が狭いとTwitterウィジェットがはみ出すのをなんとか修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
+- HiDPi環境でMisskey v12 Roomの家具を選択できない問題を修正 [#6507](https://github.com/syuilo/misskey/pull/6507)
+- Safariでの検索インプット・検索ボタンのデザインが適用されないのを修正 [#6484](https://github.com/syuilo/misskey/pull/6484)
+- フォロワーではないリモートユーザーに削除通知が配信されない問題を修正 [#6475](https://github.com/syuilo/misskey/pull/6475)
+
 12.40.0 (2020/7/5)
 -------------------
 ### ✨Improvements
