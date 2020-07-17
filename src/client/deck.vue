@@ -1,5 +1,5 @@
 <template>
-<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap">
+<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap" @wheel="onWheel">
 	<x-sidebar ref="nav"/>
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
@@ -49,6 +49,7 @@ import { search } from './scripts/search';
 import DeckColumnCore from './components/deck/column-core.vue';
 import DeckColumn from './components/deck/column.vue';
 import XSidebar from './components/sidebar.vue';
+import { getScrollContainer } from './scripts/scroll';
 
 export default Vue.extend({
 	components: {
@@ -108,6 +109,7 @@ export default Vue.extend({
 
 	created() {
 		document.documentElement.style.overflowY = 'hidden';
+		document.documentElement.style.scrollBehavior = 'auto';
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
@@ -119,6 +121,12 @@ export default Vue.extend({
 	},
 
 	methods: {
+		onWheel(e) {
+			if (getScrollContainer(e.target) == null) {
+				document.documentElement.scrollLeft += e.deltaY > 0 ? 96 : -96;
+			}
+		},
+
 		showNav() {
 			this.$refs.nav.show();
 		},
