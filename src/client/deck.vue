@@ -1,5 +1,5 @@
 <template>
-<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap" @wheel="onWheel">
+<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap">
 	<x-sidebar ref="nav"/>
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
@@ -110,6 +110,7 @@ export default Vue.extend({
 	created() {
 		document.documentElement.style.overflowY = 'hidden';
 		document.documentElement.style.scrollBehavior = 'auto';
+		window.addEventListener('wheel', this.onWheel);
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
