@@ -346,6 +346,8 @@ deletedNote: "ملاحظة محذوفة"
 invisibleNote: "ملاحظة مخفية"
 poll: "استطلاع رأي"
 themeEditor: "مصمم القوالب"
+plugins: "الإضافات"
+pluginInstallWarn: "يرجى تنصيب إضافات ذات مصدر موثوق منه فقط."
 _theme:
   explore: "استكشف قوالب المظهر"
   install: "تنصيب قالب"
@@ -353,6 +355,7 @@ _theme:
   code: "شيفرة القالب"
   installed: "تم تنصيب {name}"
   make: "إنشاء قالب"
+  alpha: "الشفافية"
   keys:
     messageBg: "خلفية الدردشة"
 _sfx:
