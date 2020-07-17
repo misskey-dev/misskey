@@ -68,14 +68,8 @@
 	</section>
 
 	<section class="_card">
-		<div class="_title"><fa :icon="faCog"/> {{ $t('accessibility') }}</div>
+		<div class="_title"><fa :icon="faCog"/> {{ $t('appearance') }}</div>
 		<div class="_content">
-			<mk-switch v-model="autoReload">
-				{{ $t('autoReloadWhenDisconnected') }}
-			</mk-switch>
-		</div>
-		<div class="_content">
-			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
 			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
 			<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
 			<mk-switch v-model="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</mk-switch>
@@ -83,6 +77,25 @@
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
+		</div>
+		<div class="_content">
+			<div>{{ $t('fontSize') }}</div>
+			<mk-radio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
+		</div>
+	</section>
+
+	<section class="_card">
+		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
+		<div class="_content">
+			<mk-switch v-model="autoReload">
+				{{ $t('autoReloadWhenDisconnected') }}
+			</mk-switch>
+		</div>
+		<div class="_content">
+			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
 			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
 			<mk-switch v-model="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</mk-switch>
 			<mk-switch v-model="fixedWidgetsPosition">{{ $t('fixedWidgetsPosition') }}</mk-switch>
@@ -94,13 +107,6 @@
 
 				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 			</mk-select>
-		</div>
-		<div class="_content">
-			<div>{{ $t('fontSize') }}</div>
-			<mk-radio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
-			<mk-radio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
-			<mk-radio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
-			<mk-radio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
 		</div>
 	</section>
 
