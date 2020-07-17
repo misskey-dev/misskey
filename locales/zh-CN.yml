@@ -528,6 +528,7 @@ plugins: "插件"
 pluginInstallWarn: "请不要安装不明来源的插件"
 deck: "Deck"
 undeck: "取消Deck"
+useBlurEffectForModal: "模态框使用模糊效果"
 _theme:
   explore: "寻找主题"
   install: "安装主题"
@@ -574,7 +575,7 @@ _theme:
     mention: "提及"
     mentionMe: "提及"
     renote: "转发"
-    modalBg: "模块背景"
+    modalBg: "模态框背景"
     divider: "分割线"
     scrollbarHandle: "滚动条"
     scrollbarHandleHover: "滚动条（悬停）"
@@ -596,6 +597,8 @@ _theme:
     wallpaperOverlay: "壁纸叠加层"
     badge: "徽章"
     messageBg: "聊天背景"
+    accentDarken: "强调色(暗)"
+    accentLighten: "强调色(亮)"
     fgHighlighted: "高亮显示文本"
 _sfx:
   note: "帖子"
@@ -1167,6 +1170,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "总是显示主列"
   columnAlign: "列对齐"
+  addColumn: "添加列"
   _columns:
     widgets: "小部件"
     notifications: "通知"
