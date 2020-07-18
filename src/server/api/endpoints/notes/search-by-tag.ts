@@ -6,6 +6,7 @@ import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { Brackets } from 'typeorm';
+import { safeForSql } from '../../../../misc/safe-for-sql';
 
 export const meta = {
 	desc: {
@@ -75,7 +76,7 @@ export const meta = {
 		},
 
 		limit: {
-			validator: $.optional.num.range(1, 30),
+			validator: $.optional.num.range(1, 100),
 			default: 10
 		},
 	},
@@ -99,14 +100,16 @@ export default define(meta, async (ps, me) => {
 	if (me) generateMuteQuery(query, me);
 
 	if (ps.tag) {
-		query.andWhere(':tag = ANY(note.tags)', { tag: ps.tag.toLowerCase() });
+		if (!safeForSql(ps.tag)) return;
+		query.andWhere(`'{"${ps.tag.toLowerCase()}"}' <@ note.tags`);
 	} else {
 		let i = 0;
 		query.andWhere(new Brackets(qb => {
 			for (const tags of ps.query!) {
 				qb.orWhere(new Brackets(qb => {
 					for (const tag of tags) {
-						qb.andWhere(`:tag${i} = ANY(note.tags)`, { [`tag${i}`]: tag.toLowerCase() });
+						if (!safeForSql(tag)) return;
+						qb.andWhere(`'{"${tag.toLowerCase()}"}' <@ note.tags`);
 						i++;
 					}
 				}));

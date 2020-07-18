@@ -11,7 +11,7 @@ export const meta = {
 
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireModerator: true,
 
 	params: {
@@ -36,12 +36,5 @@ export default define(meta, async (ps) => {
 		.take(ps.limit!)
 		.getMany();
 
-	return emojis.map(e => ({
-		id: e.id,
-		name: e.name,
-		category: e.category,
-		aliases: e.aliases,
-		host: e.host,
-		url: e.url
-	}));
+	return Emojis.packMany(emojis);
 });

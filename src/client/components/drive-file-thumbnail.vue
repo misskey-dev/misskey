@@ -12,7 +12,7 @@
 		preload="metadata"
 		controls
 		v-else-if="detail && is === 'video'"/>
-	<img :src="file.thumbnailUrl" alt="" @load="onThumbnailLoaded" :style="`object-fit: ${ fit }`" v-else-if="isThumbnailAvailable"/>
+	<img :src="file.thumbnailUrl" @load="onThumbnailLoaded" :style="`object-fit: ${ fit }`" v-else-if="isThumbnailAvailable"/>
 	<fa :icon="faFileImage" class="icon" v-else-if="is === 'image'"/>
 	<fa :icon="faFileVideo" class="icon" v-else-if="is === 'video'"/>
 
@@ -133,6 +133,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .zdjebgpv {
 	display: flex;
+	position: relative;
 
 	> img,
 	> .icon {

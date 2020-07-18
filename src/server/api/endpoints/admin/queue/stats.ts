@@ -4,7 +4,7 @@ import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '../../../
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireModerator: true,
 
 	params: {}

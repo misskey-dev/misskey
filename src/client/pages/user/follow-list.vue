@@ -1,6 +1,6 @@
 <template>
 <mk-pagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
-	<div class="user _panel" v-for="(user, i) in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" :data-index="i">
+	<div class="user _panel" v-for="(user, i) in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id">
 		<mk-avatar class="avatar" :user="user"/>
 		<div class="body">
 			<div class="name">
@@ -19,13 +19,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import parseAcct from '../../../misc/acct/parse';
-import i18n from '../../i18n';
 import MkFollowButton from '../../components/follow-button.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkPagination,
 		MkFollowButton,

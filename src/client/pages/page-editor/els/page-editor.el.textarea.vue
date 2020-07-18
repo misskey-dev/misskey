@@ -11,12 +11,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer
 	},
@@ -55,6 +52,7 @@ export default Vue.extend({
 		background: transparent;
 		color: var(--fg);
 		font-size: 14px;
+		box-sizing: border-box;
 	}
 }
 </style>

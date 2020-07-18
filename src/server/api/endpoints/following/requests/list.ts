@@ -9,7 +9,7 @@ export const meta = {
 
 	tags: ['following', 'account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:following'
 };

@@ -4,6 +4,7 @@ import { getConnection } from 'typeorm';
 import { Meta } from '../../../../models/entities/meta';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
+import { ID } from '../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
@@ -12,7 +13,7 @@ export const meta = {
 
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireAdmin: true,
 
 	params: {
@@ -144,6 +145,27 @@ export const meta = {
 			}
 		},
 
+		enableHcaptcha: {
+			validator: $.optional.bool,
+			desc: {
+				'ja-JP': 'hCaptchaを使用するか否か'
+			}
+		},
+
+		hcaptchaSiteKey: {
+			validator: $.optional.nullable.str,
+			desc: {
+				'ja-JP': 'hCaptcha site key'
+			}
+		},
+
+		hcaptchaSecretKey: {
+			validator: $.optional.nullable.str,
+			desc: {
+				'ja-JP': 'hCaptcha secret key'
+			}
+		},
+
 		enableRecaptcha: {
 			validator: $.optional.bool,
 			desc: {
@@ -165,10 +187,10 @@ export const meta = {
 			}
 		},
 
-		proxyAccount: {
-			validator: $.optional.nullable.str,
+		proxyAccountId: {
+			validator: $.optional.nullable.type(ID),
 			desc: {
-				'ja-JP': 'プロキシアカウントのユーザー名'
+				'ja-JP': 'プロキシアカウントのID'
 			}
 		},
 
@@ -393,6 +415,10 @@ export const meta = {
 		objectStorageUseSSL: {
 			validator: $.optional.bool
 		},
+
+		objectStorageUseProxy: {
+			validator: $.optional.bool
+		}
 	}
 };
 
@@ -467,6 +493,18 @@ export default define(meta, async (ps, me) => {
 		set.proxyRemoteFiles = ps.proxyRemoteFiles;
 	}
 
+	if (ps.enableHcaptcha !== undefined) {
+		set.enableHcaptcha = ps.enableHcaptcha;
+	}
+
+	if (ps.hcaptchaSiteKey !== undefined) {
+		set.hcaptchaSiteKey = ps.hcaptchaSiteKey;
+	}
+
+	if (ps.hcaptchaSecretKey !== undefined) {
+		set.hcaptchaSecretKey = ps.hcaptchaSecretKey;
+	}
+
 	if (ps.enableRecaptcha !== undefined) {
 		set.enableRecaptcha = ps.enableRecaptcha;
 	}
@@ -479,8 +517,8 @@ export default define(meta, async (ps, me) => {
 		set.recaptchaSecretKey = ps.recaptchaSecretKey;
 	}
 
-	if (ps.proxyAccount !== undefined) {
-		set.proxyAccount = ps.proxyAccount;
+	if (ps.proxyAccountId !== undefined) {
+		set.proxyAccountId = ps.proxyAccountId;
 	}
 
 	if (ps.maintainerName !== undefined) {
@@ -629,6 +667,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.objectStorageUseSSL !== undefined) {
 		set.objectStorageUseSSL = ps.objectStorageUseSSL;
+	}
+
+	if (ps.objectStorageUseProxy !== undefined) {
+		set.objectStorageUseProxy = ps.objectStorageUseProxy;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {

@@ -6,7 +6,7 @@
 
 	<div class="efvhhmdq">
 		<div class="no-users" v-if="empty">
-			<p>{{ $t('no-users') }}</p>
+			<p>{{ $t('noUsers') }}</p>
 		</div>
 		<div class="user" v-for="user in users" :key="user.id">
 			<mk-avatar class="avatar" :user="user"/>
@@ -22,8 +22,8 @@
 			</div>
 			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
-		<button class="more" :class="{ fetching: moreFetching }" v-if="more" @click="fetchMore()" :disabled="moreFetching">
-			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('@.loading') : $t('@.load-more') }}
+		<button class="more" ref="loadMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
+			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
 		</button>
 	</div>
 </mk-container>
@@ -31,14 +31,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import MkContainer from './ui/container.vue';
 import MkFollowButton from './follow-button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkContainer,
 		MkFollowButton,

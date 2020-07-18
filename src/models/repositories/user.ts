@@ -98,7 +98,7 @@ export class UserRepository extends Repository<User> {
 
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
 		const antennas = await Antennas.find({ userId });
-		
+
 		const unread = antennas.length > 0 ? await AntennaNotes.findOne({
 			antennaId: In(antennas.map(x => x.id)),
 			read: false
@@ -112,7 +112,7 @@ export class UserRepository extends Repository<User> {
 			muterId: userId
 		});
 		const mutedUserIds = mute.map(m => m.muteeId);
-	
+
 		const count = await Notifications.count({
 			where: {
 				notifieeId: userId,
@@ -120,6 +120,14 @@ export class UserRepository extends Repository<User> {
 				isRead: false
 			},
 			take: 1
+		});
+
+		return count > 0;
+	}
+
+	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
+		const count = await FollowRequests.count({
+			followeeId: userId
 		});
 
 		return count > 0;
@@ -219,6 +227,7 @@ export class UserRepository extends Repository<User> {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				autoWatch: profile!.autoWatch,
+				injectFeaturedNote: profile!.injectFeaturedNote,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
@@ -226,9 +235,7 @@ export class UserRepository extends Repository<User> {
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
 				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
-				pendingReceivedFollowRequestsCount: FollowRequests.count({
-					followeeId: user.id
-				}),
+				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				integrations: profile!.integrations,
 			} : {}),
 
@@ -282,7 +289,7 @@ export class UserRepository extends Repository<User> {
 
 	//#region Validators
 	public validateLocalUsername = $.str.match(/^\w{1,20}$/);
-	public validateRemoteUsername = $.str.match(/^\w([\w-]*\w)?$/);
+	public validateRemoteUsername = $.str.match(/^\w([\w-.]*\w)?$/);
 	public validatePassword = $.str.min(1);
 	public validateName = $.str.min(1).max(50);
 	public validateDescription = $.str.min(1).max(500);

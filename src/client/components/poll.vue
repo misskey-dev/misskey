@@ -1,5 +1,5 @@
 <template>
-<div class="mk-poll" :data-done="closed || isVoted">
+<div class="tivcixzd" :data-done="closed || isVoted">
 	<ul>
 		<li v-for="(choice, i) in poll.choices" :key="i" @click="vote(i)" :class="{ voted: choice.voted }">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
@@ -24,11 +24,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import { sum } from '../../prelude/array';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		note: {
 			type: Object,
@@ -99,7 +97,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.mk-poll {
+.tivcixzd {
 	> ul {
 		display: block;
 		margin: 0;
@@ -111,9 +109,7 @@ export default Vue.extend({
 			position: relative;
 			margin: 4px 0;
 			padding: 4px 8px;
-			width: 100%;
-			color: var(--pollChoiceText);
-			border: solid 1px var(--pollChoiceBorder);
+			border: solid 1px var(--divider);
 			border-radius: 4px;
 			overflow: hidden;
 			cursor: pointer;

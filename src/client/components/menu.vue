@@ -1,34 +1,34 @@
 <template>
-<x-popup :source="source" :no-center="noCenter" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
-	<sequential-entrance class="rrevdjwt" :class="{ left: align === 'left' }" :delay="15" :direction="direction">
+<x-popup :source="source" :no-center="noCenter" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
+	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
-			<div v-if="item === null" class="divider" :key="i" :data-index="i"></div>
-			<span v-else-if="item.type === 'label'" class="label item" :key="i" :data-index="i">
+			<div v-if="item === null" class="divider" :key="i"></div>
+			<span v-else-if="item.type === 'label'" class="label item" :key="i">
 				<span>{{ item.text }}</span>
 			</span>
-			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</router-link>
-			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<span>{{ item.text }}</span>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</a>
-			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
 				<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</button>
-			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i" :data-index="i">
+			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
 				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
 				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 				<span>{{ item.text }}</span>
 				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
 			</button>
 		</template>
-	</sequential-entrance>
+	</div>
 </x-popup>
 </template>
 
@@ -36,6 +36,7 @@
 import Vue from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import XPopup from './popup.vue';
+import { focusPrev, focusNext } from '../scripts/focus';
 
 export default Vue.extend({
 	components: {
@@ -69,11 +70,30 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
+		viaKeyboard: {
+			type: Boolean,
+			required: false
+		},
 	},
 	data() {
 		return {
 			faCircle
 		};
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'up|k|shift+tab': this.focusUp,
+				'down|j|tab': this.focusDown,
+			};
+		},
+	},
+	mounted() {
+		if (this.viaKeyboard) {
+			this.$nextTick(() => {
+				focusNext(this.$refs.items.children[0], true);
+			});
+		}
 	},
 	methods: {
 		clicked(fn) {
@@ -82,18 +102,18 @@ export default Vue.extend({
 		},
 		close() {
 			this.$refs.popup.close();
+		},
+		focusUp() {
+			focusPrev(document.activeElement);
+		},
+		focusDown() {
+			focusNext(document.activeElement);
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-@keyframes blink {
-	0% { opacity: 1; }
-	30% { opacity: 1; }
-	90% { opacity: 0; }
-}
-
 .rrevdjwt {
 	padding: 8px 0;
 
@@ -105,11 +125,13 @@ export default Vue.extend({
 
 	> .item {
 		display: block;
+		position: relative;
 		padding: 8px 16px;
 		width: 100%;
 		box-sizing: border-box;
 		white-space: nowrap;
 		font-size: 0.9em;
+		line-height: 20px;
 		text-align: center;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -123,6 +145,10 @@ export default Vue.extend({
 		&:active {
 			color: #fff;
 			background: var(--accentDarken);
+		}
+
+		&:not(:active):focus {
+			box-shadow: 0 0 0 2px var(--focus) inset;
 		}
 
 		&.label {
@@ -150,7 +176,7 @@ export default Vue.extend({
 			position: absolute;
 			top: 5px;
 			left: 13px;
-			color: var(--accent);
+			color: var(--indicator);
 			font-size: 12px;
 			animation: blink 1s infinite;
 		}

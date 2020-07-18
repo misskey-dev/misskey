@@ -20,6 +20,7 @@
 				:pattern="pattern"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
+				:step="step"
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
@@ -36,6 +37,7 @@
 				:pattern="pattern"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
+				:step="step"
 				@focus="focused = true"
 				@blur="focused = false"
 				@keydown="$emit('keydown', $event)"
@@ -114,6 +116,9 @@ export default Vue.extend({
 		spellcheck: {
 			required: false
 		},
+		step: {
+			required: false
+		},
 		debounce: {
 			required: false
 		},
@@ -164,7 +169,7 @@ export default Vue.extend({
 		},
 		v(v) {
 			if (this.type === 'number') {
-				this.$emit('input', parseInt(v, 10));
+				this.$emit('input', parseFloat(v));
 			} else {
 				this.$emit('input', v);
 			}
@@ -239,6 +244,14 @@ export default Vue.extend({
 	position: relative;
 	margin: 32px 0;
 
+	&:not(.inline):first-child {
+		margin-top: 8px;
+	}
+
+	&:not(.inline):last-child {
+		margin-bottom: 8px;
+	}
+
 	> .icon {
 		position: absolute;
 		top: 0;
@@ -254,7 +267,7 @@ export default Vue.extend({
 
 	> .input {
 		position: relative;
-		
+
 		&:before {
 			content: '';
 			display: block;
@@ -289,7 +302,7 @@ export default Vue.extend({
 			pointer-events: none;
 			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 			transition-duration: 0.3s;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			color: var(--inputLabel);
 			pointer-events: none;
@@ -304,7 +317,7 @@ export default Vue.extend({
 			top: -17px;
 			left: 0 !important;
 			pointer-events: none;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			color: var(--inputLabel);
 			pointer-events: none;
@@ -327,14 +340,16 @@ export default Vue.extend({
 		}
 
 		> input {
+			$height: 32px;
 			display: block;
+			height: $height;
 			width: 100%;
 			margin: 0;
 			padding: 0;
 			font: inherit;
 			font-weight: normal;
-			font-size: 16px;
-			line-height: 32px;
+			font-size: 1em;
+			line-height: $height;
 			color: var(--inputText);
 			background: transparent;
 			border: none;
@@ -354,7 +369,7 @@ export default Vue.extend({
 			position: absolute;
 			z-index: 1;
 			top: 0;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			color: var(--inputLabel);
 			pointer-events: none;

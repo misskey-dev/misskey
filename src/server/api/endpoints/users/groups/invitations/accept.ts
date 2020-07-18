@@ -2,28 +2,28 @@ import $ from 'cafy';
 import { ID } from '../../../../../../misc/cafy-id';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
-import { UserGroupJoinings, UserGroupInvites } from '../../../../../../models';
+import { UserGroupJoinings, UserGroupInvitations } from '../../../../../../models';
 import { genId } from '../../../../../../misc/gen-id';
 import { UserGroupJoining } from '../../../../../../models/entities/user-group-joining';
 
 export const meta = {
 	desc: {
 		'ja-JP': 'ユーザーグループへの招待を承認します。',
-		'en-US': 'Accept invite of a user group.'
+		'en-US': 'Accept invitation of a user group.'
 	},
 
 	tags: ['groups', 'users'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:user-groups',
 
 	params: {
-		inviteId: {
+		invitationId: {
 			validator: $.type(ID),
 			desc: {
 				'ja-JP': '招待ID',
-				'en-US': 'The invite ID'
+				'en-US': 'The invitation ID'
 			}
 		},
 	},
@@ -39,15 +39,15 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Fetch the invitation
-	const invite = await UserGroupInvites.findOne({
-		id: ps.inviteId,
+	const invitation = await UserGroupInvitations.findOne({
+		id: ps.invitationId,
 	});
 
-	if (invite == null) {
+	if (invitation == null) {
 		throw new ApiError(meta.errors.noSuchInvitation);
 	}
 
-	if (invite.userId !== user.id) {
+	if (invitation.userId !== user.id) {
 		throw new ApiError(meta.errors.noSuchInvitation);
 	}
 
@@ -56,8 +56,8 @@ export default define(meta, async (ps, user) => {
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
-		userGroupId: invite.userGroupId
+		userGroupId: invitation.userGroupId
 	} as UserGroupJoining);
 
-	UserGroupInvites.delete(invite.id);
+	UserGroupInvitations.delete(invitation.id);
 });

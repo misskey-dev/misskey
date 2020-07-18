@@ -57,13 +57,10 @@
 import Vue from 'vue';
 import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import XUserList from '../components/user-list.vue';
 import MkContainer from '../components/ui/container.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('explore') as string
@@ -115,13 +112,15 @@ export default Vue.extend({
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
-			meta: null,
 			num: Vue.filter('number'),
 			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
 		};
 	},
 
 	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
 		tagUsers(): any {
 			return {
 				endpoint: 'hashtags/users',
@@ -158,9 +157,6 @@ export default Vue.extend({
 		});
 		this.$root.api('stats').then(stats => {
 			this.stats = stats;
-		});
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
 		});
 	},
 });

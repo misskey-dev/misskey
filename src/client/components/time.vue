@@ -8,10 +8,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		time: {
 			type: [Date, String],
@@ -48,7 +46,7 @@ export default Vue.extend({
 				ago >= 10       ? this.$t('_ago.secondsAgo', { n: (~~(ago % 60)).toString() }) :
 				ago >= -1       ? this.$t('_ago.justNow') :
 				ago <  -1       ? this.$t('_ago.future') :
-				this.$t('@.time.unknown'));
+				this.$t('_ago.unknown'));
 		}
 	},
 	created() {
@@ -63,6 +61,7 @@ export default Vue.extend({
 	},
 	methods: {
 		tick() {
+			// TODO: パフォーマンス向上のため、このコンポーネントが画面内に表示されている場合のみ更新する
 			this.now = new Date();
 
 			this.tickId = setTimeout(() => {

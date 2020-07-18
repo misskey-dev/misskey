@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './user';
+import { id } from '../id';
 
 @Entity()
 export class Meta {
@@ -110,11 +112,34 @@ export class Meta {
 	})
 	public proxyRemoteFiles: boolean;
 
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public proxyAccountId: User['id'] | null;
+
+	@ManyToOne(type => User, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public proxyAccount: User | null;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableHcaptcha: boolean;
+
 	@Column('varchar', {
-		length: 128,
+		length: 64,
 		nullable: true
 	})
-	public proxyAccount: string | null;
+	public hcaptchaSiteKey: string | null;
+
+	@Column('varchar', {
+		length: 64,
+		nullable: true
+	})
+	public hcaptchaSecretKey: string | null;
 
 	@Column('boolean', {
 		default: false,
@@ -340,4 +365,9 @@ export class Meta {
 		default: true,
 	})
 	public objectStorageUseSSL: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public objectStorageUseProxy: boolean;
 }

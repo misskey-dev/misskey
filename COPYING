@@ -1,0 +1,19 @@
+Unless otherwise stated this repository is
+Copyright © 2014-2020 syuilo and contributers
+
+And is distributed under The GNU Affero General Public License Version 3, you should have received a copy of the license file as LICENSE.
+
+
+Misskey includes several third-party Open-Source softwares.
+
+Unicode emoji regular expressions by Twitter, Inc.
+License: MIT
+https://github.com/twitter/twemoji-parser/blob/master/LICENSE.md
+
+Emoji keywords for Unicode 11 and below by Mu-An Chiou
+License: MIT
+https://github.com/muan/emojilib/blob/master/LICENSE
+
+RsaSignature2017 implementation by Transmute Industries Inc
+License: MIT
+https://github.com/transmute-industries/RsaSignature2017/blob/master/LICENSE

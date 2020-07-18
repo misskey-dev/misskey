@@ -7,7 +7,7 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertToJpeg, convertToWebp, convertToPng } from './image-processor';
+import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToPngOrJpeg } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { getFileInfo } from '../../misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
@@ -174,7 +174,7 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		if (['image/jpeg', 'image/webp'].includes(type)) {
 			thumbnail = await convertToJpeg(path, 498, 280);
 		} else if (['image/png'].includes(type)) {
-			thumbnail = await convertToPng(path, 498, 280);
+			thumbnail = await convertToPngOrJpeg(path, 498, 280);
 		} else if (type.startsWith('video/')) {
 			try {
 				thumbnail = await GenerateVideoThumbnail(path);
@@ -217,7 +217,8 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	const upload = s3.upload(params);
 
-	await upload.promise();
+	const result = await upload.promise();
+	if (result) logger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 }
 
 async function deleteOldFile(user: IRemoteUser) {
@@ -335,7 +336,7 @@ export default async function(
 	}
 
 	if (info.avgColor) {
-		properties['avgColor'] = `rgb(${info.avgColor.join(',')}`;
+		properties['avgColor'] = `rgb(${info.avgColor.join(',')})`;
 	}
 
 	const profile = user ? await UserProfiles.findOne(user.id) : null;

@@ -1,6 +1,6 @@
 <template>
-<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="ebkgoccj" :class="{ noPadding }" @keydown="onKeydown">
+<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }" :can-close="canClose">
+	<div class="ebkgoccj" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: `${height}px` }">
 		<div class="header">
 			<button class="_button" v-if="withOkButton" @click="close()"><fa :icon="faTimes"/></button>
 			<span class="title">
@@ -20,12 +20,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import XModal from './modal.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XModal,
 	},
@@ -49,7 +46,22 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		width: {
+			type: Number,
+			required: false,
+			default: 400
+		},
+		height: {
+			type: Number,
+			required: false,
+			default: 400
+		},
+		canClose: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	},
 
 	data() {
@@ -76,18 +88,11 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .ebkgoccj {
-	width: 400px;
-	height: 400px;
 	background: var(--panel);
 	border-radius: var(--radius);
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-
-	@media (max-width: 500px) {
-		width: 350px;
-		height: 350px;
-	}
 
 	> .header {
 		$height: 58px;

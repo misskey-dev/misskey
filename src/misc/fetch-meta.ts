@@ -7,7 +7,7 @@ export async function fetchMeta(noCache = false): Promise<Meta> {
 	if (!noCache && cache) return cache;
 
 	return await getConnection().transaction(async transactionalEntityManager => {
-		// バグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
+		// 過去のバグでレコードが複数出来てしまっている可能性があるので新しいIDを優先する
 		const meta = await transactionalEntityManager.findOne(Meta, {
 			order: {
 				id: 'DESC'

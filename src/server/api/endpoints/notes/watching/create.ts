@@ -6,8 +6,6 @@ import { getNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿をウォッチします。',
 		'en-US': 'Watch a note.'
@@ -15,7 +13,7 @@ export const meta = {
 
 	tags: ['notes'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

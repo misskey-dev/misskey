@@ -23,7 +23,7 @@ export const meta = {
 
 	tags: ['account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 
@@ -126,6 +126,10 @@ export const meta = {
 			}
 		},
 
+		injectFeaturedNote: {
+			validator: $.optional.bool,
+		},
+
 		alwaysMarkNsfw: {
 			validator: $.optional.bool,
 			desc: {
@@ -174,8 +178,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, app) => {
-	const isSecure = user != null && app == null;
+export default define(meta, async (ps, user, token) => {
+	const isSecure = token == null;
 
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
@@ -189,13 +193,14 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
-	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
-	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
-	if (typeof ps.carefulBot == 'boolean') profileUpdates.carefulBot = ps.carefulBot;
-	if (typeof ps.autoAcceptFollowed == 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
-	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch == 'boolean') profileUpdates.autoWatch = ps.autoWatch;
-	if (typeof ps.alwaysMarkNsfw == 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
+	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.autoWatch === 'boolean') profileUpdates.autoWatch = ps.autoWatch;
+	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
+	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);

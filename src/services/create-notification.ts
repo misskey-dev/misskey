@@ -3,43 +3,26 @@ import pushSw from './push-notification';
 import { Notifications, Mutings } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
-import { Note } from '../models/entities/note';
 import { Notification } from '../models/entities/notification';
-import { FollowRequest } from '../models/entities/follow-request';
 
 export async function createNotification(
 	notifieeId: User['id'],
-	notifierId: User['id'],
-	type: string,
-	content?: {
-		noteId?: Note['id'];
-		reaction?: string;
-		choice?: number;
-		followRequestId?: FollowRequest['id'];
-	}
+	type: Notification['type'],
+	data: Partial<Notification>
 ) {
-	if (notifieeId === notifierId) {
+	if (data.notifierId && (notifieeId === data.notifierId)) {
 		return null;
 	}
 
-	const data = {
+	// Create notification
+	const notification = await Notifications.save({
 		id: genId(),
 		createdAt: new Date(),
 		notifieeId: notifieeId,
-		notifierId: notifierId,
 		type: type,
 		isRead: false,
-	} as Partial<Notification>;
-
-	if (content) {
-		if (content.noteId) data.noteId = content.noteId;
-		if (content.reaction) data.reaction = content.reaction;
-		if (content.choice) data.choice = content.choice;
-		if (content.followRequestId) data.followRequestId = content.followRequestId;
-	}
-
-	// Create notification
-	const notification = await Notifications.save(data);
+		...data
+	} as Partial<Notification>);
 
 	const packed = await Notifications.pack(notification);
 
@@ -55,7 +38,7 @@ export async function createNotification(
 			const mutings = await Mutings.find({
 				muterId: notifieeId
 			});
-			if (mutings.map(m => m.muteeId).includes(notifierId)) {
+			if (data.notifierId && mutings.map(m => m.muteeId).includes(data.notifierId)) {
 				return;
 			}
 			//#endregion

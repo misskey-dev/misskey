@@ -2,20 +2,17 @@
  * Tests of MFM
  *
  * How to run the tests:
- * > npx mocha test/mfm.ts --require ts-node/register
+ * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true npx mocha test/mfm.ts --require ts-node/register
  *
  * To specify test:
- * > npx mocha test/mfm.ts --require ts-node/register -g 'test name'
- *
- * If the tests not start, try set following enviroment variables:
- * TS_NODE_FILES=true and TS_NODE_TRANSPILE_ONLY=true
- * for more details, please see: https://github.com/TypeStrong/ts-node/issues/754
+ * > npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true npx mocha test/mfm.ts --require ts-node/register -g 'test name'
  */
 
 import * as assert from 'assert';
 
 import { parse, parsePlain } from '../src/mfm/parse';
-import { toHtml } from '../src/mfm/toHtml';
+import { toHtml } from '../src/mfm/to-html';
+import { toString } from '../src/mfm/to-string';
 import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/prelude';
 import { removeOrphanedBrackets } from '../src/mfm/language';
 
@@ -1298,5 +1295,74 @@ describe('MFM', () => {
 			], {}),
 			leaf('blockCode', { code: 'after', lang: null })
 		]);
+	});
+
+	describe('toString', () => {
+		it('太字', () => {
+			assert.deepStrictEqual(toString(parse('**太字**')), '**太字**');
+		});
+		it('中央揃え', () => {
+			assert.deepStrictEqual(toString(parse('<center>中央揃え</center>')), '<center>中央揃え</center>');
+		});
+		it('打ち消し線', () => {
+			assert.deepStrictEqual(toString(parse('~~打ち消し線~~')), '~~打ち消し線~~');
+		});
+		it('小さい字', () => {
+			assert.deepStrictEqual(toString(parse('<small>小さい字</small>')), '<small>小さい字</small>');
+		});
+		it('モーション', () => {
+			assert.deepStrictEqual(toString(parse('<motion>モーション</motion>')), '<motion>モーション</motion>');
+		});
+		it('モーション2', () => {
+			assert.deepStrictEqual(toString(parse('(((モーション)))')), '<motion>モーション</motion>');
+		});
+		it('ビッグ＋', () => {
+			assert.deepStrictEqual(toString(parse('*** ビッグ＋ ***')), '*** ビッグ＋ ***');
+		});
+		it('回転', () => {
+			assert.deepStrictEqual(toString(parse('<spin>回転</spin>')), '<spin>回転</spin>');
+		});
+		it('右回転', () => {
+			assert.deepStrictEqual(toString(parse('<spin right>右回転</spin>')), '<spin right>右回転</spin>');
+		});
+		it('左回転', () => {
+			assert.deepStrictEqual(toString(parse('<spin left>左回転</spin>')), '<spin left>左回転</spin>');
+		});
+		it('往復回転', () => {
+			assert.deepStrictEqual(toString(parse('<spin alternate>往復回転</spin>')), '<spin alternate>往復回転</spin>');
+		});
+		it('ジャンプ', () => {
+			assert.deepStrictEqual(toString(parse('<jump>ジャンプ</jump>')), '<jump>ジャンプ</jump>');
+		});
+		it('コードブロック', () => {
+			assert.deepStrictEqual(toString(parse('```\nコードブロック\n```')), '```\nコードブロック\n```');
+		});
+		it('インラインコード', () => {
+			assert.deepStrictEqual(toString(parse('`インラインコード`')), '`インラインコード`');
+		});
+		it('引用行', () => {
+			assert.deepStrictEqual(toString(parse('>引用行')), '>引用行');
+		});
+		it('検索', () => {
+			assert.deepStrictEqual(toString(parse('検索 [search]')), '検索 [search]');
+		});
+		it('リンク', () => {
+			assert.deepStrictEqual(toString(parse('[リンク](http://example.com)')), '[リンク](http://example.com)');
+		});
+		it('詳細なしリンク', () => {
+			assert.deepStrictEqual(toString(parse('?[詳細なしリンク](http://example.com)')), '?[詳細なしリンク](http://example.com)');
+		});
+		it('【タイトル】', () => {
+			assert.deepStrictEqual(toString(parse('【タイトル】')), '[タイトル]');
+		});
+		it('[タイトル]', () => {
+			assert.deepStrictEqual(toString(parse('[タイトル]')), '[タイトル]');
+		});
+		it('インライン数式', () => {
+			assert.deepStrictEqual(toString(parse('\\(インライン数式\\)')), '\\(インライン数式\\)');
+		});
+		it('ブロック数式', () => {
+			assert.deepStrictEqual(toString(parse('\\\[\nブロック数式\n\]\\')), '\\\[\nブロック数式\n\]\\');
+		});
 	});
 });

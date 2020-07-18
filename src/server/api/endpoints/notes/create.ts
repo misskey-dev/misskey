@@ -11,6 +11,7 @@ import { Users, DriveFiles, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { Note } from '../../../../models/entities/note';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
+import { noteVisibilities } from '../../../../types';
 
 let maxNoteTextLength = 500;
 
@@ -21,15 +22,13 @@ setInterval(() => {
 }, 3000);
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '投稿します。'
 	},
 
 	tags: ['notes'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	limit: {
 		duration: ms('1hour'),
@@ -40,7 +39,7 @@ export const meta = {
 
 	params: {
 		visibility: {
-			validator: $.optional.str.or(['public', 'home', 'followers', 'specified']),
+			validator: $.optional.str.or(noteVisibilities as unknown as string[]),
 			default: 'public',
 			desc: {
 				'ja-JP': '投稿の公開範囲'
@@ -211,7 +210,7 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, app) => {
+export default define(meta, async (ps, user) => {
 	let visibleUsers: User[] = [];
 	if (ps.visibleUserIds) {
 		visibleUsers = (await Promise.all(ps.visibleUserIds.map(id => Users.findOne(id))))
@@ -283,7 +282,6 @@ export default define(meta, async (ps, user, app) => {
 		reply,
 		renote,
 		cw: ps.cw,
-		app,
 		viaMobile: ps.viaMobile,
 		localOnly: ps.localOnly,
 		visibility: ps.visibility,

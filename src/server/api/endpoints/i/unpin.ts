@@ -6,15 +6,13 @@ import { ApiError } from '../../error';
 import { Users } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿のピン留めを解除します。'
 	},
 
 	tags: ['account', 'notes'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 

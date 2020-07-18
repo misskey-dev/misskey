@@ -2,12 +2,12 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { Antennas, UserLists } from '../../../../models';
+import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
 
 export const meta = {
 	tags: ['antennas'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:account',
 
@@ -21,14 +21,22 @@ export const meta = {
 		},
 
 		src: {
-			validator: $.str.or(['home', 'all', 'users', 'list'])
+			validator: $.str.or(['home', 'all', 'users', 'list', 'group'])
 		},
 
 		userListId: {
 			validator: $.nullable.optional.type(ID),
 		},
 
+		userGroupId: {
+			validator: $.nullable.optional.type(ID),
+		},
+
 		keywords: {
+			validator: $.arr($.arr($.str))
+		},
+
+		excludeKeywords: {
 			validator: $.arr($.arr($.str))
 		},
 
@@ -64,6 +72,12 @@ export const meta = {
 			message: 'No such user list.',
 			code: 'NO_SUCH_USER_LIST',
 			id: '1c6b35c9-943e-48c2-81e4-2844989407f7'
+		},
+
+		noSuchUserGroup: {
+			message: 'No such user group.',
+			code: 'NO_SUCH_USER_GROUP',
+			id: '109ed789-b6eb-456e-b8a9-6059d567d385'
 		}
 	}
 };
@@ -80,15 +94,25 @@ export default define(meta, async (ps, user) => {
 	}
 
 	let userList;
+	let userGroupJoining;
 
 	if (ps.src === 'list') {
 		userList = await UserLists.findOne({
 			id: ps.userListId,
 			userId: user.id,
 		});
-	
+
 		if (userList == null) {
 			throw new ApiError(meta.errors.noSuchUserList);
+		}
+	} else if (ps.src === 'group') {
+		userGroupJoining = await UserGroupJoinings.findOne({
+			userGroupId: ps.userGroupId,
+			userId: user.id,
+		});
+
+		if (userGroupJoining == null) {
+			throw new ApiError(meta.errors.noSuchUserGroup);
 		}
 	}
 
@@ -96,7 +120,9 @@ export default define(meta, async (ps, user) => {
 		name: ps.name,
 		src: ps.src,
 		userListId: userList ? userList.id : null,
+		userGroupJoiningId: userGroupJoining ? userGroupJoining.id : null,
 		keywords: ps.keywords,
+		excludeKeywords: ps.excludeKeywords,
 		users: ps.users,
 		caseSensitive: ps.caseSensitive,
 		withReplies: ps.withReplies,

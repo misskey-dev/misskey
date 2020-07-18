@@ -15,7 +15,7 @@ const dir = `${__dirname}/../../.config`;
 /**
  * Path of configuration file
  */
-const path = process.env.NODE_ENV == 'test'
+const path = process.env.NODE_ENV === 'test'
 	? `${dir}/test.yml`
 	: `${dir}/default.yml`;
 

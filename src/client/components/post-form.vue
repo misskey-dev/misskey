@@ -6,43 +6,45 @@
 	@drop.stop="onDrop"
 >
 	<header>
-		<button class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
+		<button v-if="!fixed" class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
 		<div>
-			<span class="text-count" :class="{ over: trimmedLength(text) > 500 }">{{ 500 - trimmedLength(text) }}</span>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}</button>
+			<span class="local-only" v-if="localOnly" v-text="$t('_visibility.localOnly')" />
+			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')">
+				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
+				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
+				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
+				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
+			</button>
+			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
-	<div class="form">
+	<div class="form" :class="{ fixed }">
 		<x-note-preview class="preview" v-if="reply" :note="reply"/>
 		<x-note-preview class="preview" v-if="renote" :note="renote"/>
-		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('@.post-form.quote-attached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
+		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
-				<span v-for="u in visibleUsers">
+				<span v-for="u in visibleUsers" :key="u.id">
 					<mk-acct :user="u"/>
 					<button class="_button" @click="removeVisibleUser(u)"><fa :icon="faTimes"/></button>
 				</span>
 				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
-		<textarea v-model="text" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
+		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
+		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<x-post-form-attaches class="attaches" :files="files"/>
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom"><fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll"><fa :icon="faChartPie"/></button>
-			<button class="_button" @click="useCw = !useCw"><fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention"><fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="setVisibility" ref="visibilityButton">
-				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
-				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
-				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
-				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
-			</button>
+			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><fa :icon="faPhotoVideo"/></button>
+			<button class="_button" @click="poll = !poll" :class="{ active: poll }" v-tooltip="$t('poll')"><fa :icon="faPollH"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$t('useCw')"><fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="insertMention" v-tooltip="$t('mention')"><fa :icon="faAt"/></button>
+			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><fa :icon="faLaughSquint"/></button>
+			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="$store.state.postFormActions.length > 0"><fa :icon="faPlug"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
@@ -51,12 +53,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
-import i18n from '../i18n';
 import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
@@ -67,10 +68,9 @@ import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
 import { selectDriveFile } from '../scripts/select-drive-file';
+import { noteVisibilities } from '../../types';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNotePreview,
 		XUploader: () => import('./uploader.vue').then(m => m.default),
@@ -107,6 +107,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		fixed: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 
@@ -122,13 +127,14 @@ export default Vue.extend({
 			pollExpiration: [],
 			useCw: false,
 			cw: null,
+			localOnly: false,
 			visibility: 'public',
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faTimes, faUpload, faChartPie, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt
+			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard, faPlug
 		};
 	},
 
@@ -151,7 +157,7 @@ export default Vue.extend({
 				this.$t('_postForm._placeholders.f')
 			];
 			const x = xs[Math.floor(Math.random() * xs.length)];
-			
+
 			return this.renote
 				? this.$t('_postForm.quotePlaceholder')
 				: this.reply
@@ -161,17 +167,27 @@ export default Vue.extend({
 
 		submitText(): string {
 			return this.renote
-				? this.$t('renote')
+				? this.$t('quote')
 				: this.reply
 					? this.$t('reply')
-					: this.$t('post');
+					: this.$t('note');
 		},
 
 		canPost(): boolean {
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= 500) &&
+				(length(this.text.trim()) <= this.max) &&
 				(!this.poll || this.pollChoices.length >= 2);
+		},
+
+		max(): number {
+			return this.$store.state.instance.meta ? this.$store.state.instance.meta.maxNoteTextLength : 1000;
+		}
+	},
+
+	watch: {
+		localOnly() {
+			this.$store.commit('deviceUser/setLocalOnly', this.localOnly);
 		}
 	},
 
@@ -207,7 +223,9 @@ export default Vue.extend({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? (this.$store.state.device.visibility || this.$store.state.settings.defaultNoteVisibility) : this.$store.state.settings.defaultNoteVisibility);
+		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility);
+
+		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
@@ -250,6 +268,10 @@ export default Vue.extend({
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
 				if (draft) {
 					this.text = draft.data.text;
+					this.useCw = draft.data.useCw;
+					this.cw = draft.data.cw;
+					this.applyVisibility(draft.data.visibility);
+					this.localOnly = draft.data.localOnly;
 					this.files = (draft.data.files || []).filter(e => e);
 					if (draft.data.poll) {
 						this.poll = true;
@@ -257,7 +279,6 @@ export default Vue.extend({
 							(this.$refs.poll as any).set(draft.data.poll);
 						});
 					}
-					this.$emit('change-attached-files', this.files);
 				}
 			}
 
@@ -278,6 +299,7 @@ export default Vue.extend({
 					});
 				}
 				this.visibility = init.visibility;
+				this.localOnly = init.localOnly;
 				this.quoteId = init.renote ? init.renote.id : null;
 			}
 
@@ -288,8 +310,12 @@ export default Vue.extend({
 	methods: {
 		watch() {
 			this.$watch('text', () => this.saveDraft());
+			this.$watch('useCw', () => this.saveDraft());
+			this.$watch('cw', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
 			this.$watch('files', () => this.saveDraft());
+			this.$watch('visibility', () => this.saveDraft());
+			this.$watch('localOnly', () => this.saveDraft());
 		},
 
 		trimmedLength(text: string) {
@@ -373,15 +399,17 @@ export default Vue.extend({
 		setVisibility() {
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
-				currentVisibility: this.visibility
+				currentVisibility: this.visibility,
+				currentLocalOnly: this.localOnly
 			});
-			w.$once('chosen', v => {
-				this.applyVisibility(v);
+			w.$once('chosen', ({ visibility, localOnly }) => {
+				this.applyVisibility(visibility);
+				this.localOnly = localOnly;
 			});
 		},
 
 		applyVisibility(v: string) {
-			this.visibility = v;
+			this.visibility = (noteVisibilities as unknown as string[]).includes(v) ? v : 'public'; // v11互換性のため
 		},
 
 		addVisibleUser() {
@@ -400,7 +428,6 @@ export default Vue.extend({
 			this.files = [];
 			this.poll = false;
 			this.quoteId = null;
-			this.$emit('change-attached-files', this.files);
 		},
 
 		onKeydown(e) {
@@ -425,7 +452,7 @@ export default Vue.extend({
 
 				this.$root.dialog({
 					type: 'info',
-					text: this.$t('@.post-form.quote-question'),
+					text: this.$t('quoteQuestion'),
 					showCancelButton: true
 				}).then(({ canceled }) => {
 					if (canceled) {
@@ -472,7 +499,6 @@ export default Vue.extend({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.files.push(file);
-				this.$emit('change-attached-files', this.files);
 				e.preventDefault();
 			}
 			//#endregion
@@ -487,6 +513,10 @@ export default Vue.extend({
 				updatedAt: new Date(),
 				data: {
 					text: this.text,
+					useCw: this.useCw,
+					cw: this.cw,
+					visibility: this.visibility,
+					localOnly: this.localOnly,
 					files: this.files,
 					poll: this.poll && this.$refs.poll ? (this.$refs.poll as any).get() : undefined
 				}
@@ -512,6 +542,7 @@ export default Vue.extend({
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
+				localOnly: this.localOnly,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
 				viaMobile: this.$root.isMobile
@@ -549,6 +580,22 @@ export default Vue.extend({
 				insertTextAtCursor(this.$refs.text, emoji);
 				vm.close();
 			});
+		},
+
+		showActions(ev) {
+			this.$root.menu({
+				items: this.$store.state.postFormActions.map(action => ({
+					text: action.title,
+					action: () => {
+						action.handler({
+							text: this.text
+						}, (key, value) => {
+							if (key === 'text') { this.text = value; }
+						});
+					}
+				})),
+				source: ev.currentTarget || ev.target,
+			});
 		}
 	}
 });
@@ -557,8 +604,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .gafaadew {
 	background: var(--panel);
-	border-radius: var(--radius);
-	box-shadow: 0 0 2px rgba(#000, 0.1);
 
 	> header {
 		z-index: 1000;
@@ -586,6 +631,7 @@ export default Vue.extend({
 			right: 0;
 
 			> .text-count {
+				opacity: 0.7;
 				line-height: 66px;
 
 				@media (max-width: 500px) {
@@ -593,10 +639,25 @@ export default Vue.extend({
 				}
 			}
 
+			> .visibility {
+				height: 34px;
+				width: 34px;
+				margin: 0 8px;
+
+				& + .localOnly {
+					margin-left: 0 !important;
+				}
+			}
+			
+			.local-only {
+				margin: 0 8px;
+			}
+
 			> .submit {
-				margin: 16px;
-				padding: 0 16px;
+				margin: 16px 16px 16px 0;
+				padding: 0 12px;
 				line-height: 34px;
+				font-weight: bold;
 				vertical-align: bottom;
 				border-radius: 4px;
 
@@ -607,6 +668,10 @@ export default Vue.extend({
 				&:disabled {
 					opacity: 0.7;
 				}
+
+				> [data-icon] {
+					margin-left: 6px;
+				}
 			}
 		}
 	}
@@ -614,6 +679,10 @@ export default Vue.extend({
 	> .form {
 		max-width: 500px;
 		margin: 0 auto;
+
+		&.fixed {
+			max-width: unset;
+		}
 
 		> .preview {
 			padding: 16px;
@@ -661,7 +730,7 @@ export default Vue.extend({
 					margin-right: 14px;
 					padding: 8px 0 8px 8px;
 					border-radius: 8px;
-					background: var(--nwjktjjq);
+					background: var(--X4);
 
 					> button {
 						padding: 4px 8px;
@@ -670,12 +739,8 @@ export default Vue.extend({
 			}
 		}
 
-		> input {
-			z-index: 1;
-		}
-
-		> input,
-		> textarea {
+		> .cw,
+		> .text {
 			display: block;
 			box-sizing: border-box;
 			padding: 0 24px;
@@ -686,7 +751,7 @@ export default Vue.extend({
 			border-radius: 0;
 			background: transparent;
 			color: var(--fg);
-			font-family: initial;
+			font-family: inherit;
 
 			@media (max-width: 500px) {
 				padding: 0 16px;
@@ -701,13 +766,23 @@ export default Vue.extend({
 			}
 		}
 
-		> textarea {
+		> .cw {
+			z-index: 1;
+			padding-bottom: 8px;
+			border-bottom: solid 1px var(--divider);
+		}
+
+		> .text {
 			max-width: 100%;
 			min-width: 100%;
 			min-height: 90px;
 
 			@media (max-width: 500px) {
 				min-height: 80px;
+			}
+
+			&.withCw {
+				padding-top: 8px;
 			}
 		}
 
@@ -727,7 +802,7 @@ export default Vue.extend({
 				padding: 0 8px 8px 8px;
 			}
 
-			> * {
+			> button {
 				display: inline-block;
 				padding: 0;
 				margin: 0;
@@ -737,7 +812,11 @@ export default Vue.extend({
 				border-radius: 6px;
 
 				&:hover {
-					background: var(--geavgsxy);
+					background: var(--X5);
+				}
+
+				&.active {
+					color: var(--accent);
 				}
 			}
 		}

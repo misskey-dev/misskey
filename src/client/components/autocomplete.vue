@@ -2,7 +2,7 @@
 <div class="swhvrteh" @contextmenu.prevent="() => {}">
 	<ol class="users" ref="suggests" v-if="type === 'user'">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1" class="user">
-			<img class="avatar" :src="user.avatarUrl" alt=""/>
+			<img class="avatar" :src="user.avatarUrl"/>
 			<span class="name">
 				<mk-user-name :user="user" :key="user.id"/>
 			</span>
@@ -18,7 +18,7 @@
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
 			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
-			<span class="emoji" v-else-if="!useOsDefaultEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-else-if="!useOsNativeEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span class="alias" v-if="emoji.aliasOf">({{ emoji.aliasOf }})</span>
@@ -130,8 +130,8 @@ export default Vue.extend({
 			return (this.$refs.suggests as Element).children;
 		},
 
-		useOsDefaultEmojis(): boolean {
-			return this.$store.state.device.useOsDefaultEmojis;
+		useOsNativeEmojis(): boolean {
+			return this.$store.state.device.useOsNativeEmojis;
 		}
 	},
 
@@ -143,7 +143,7 @@ export default Vue.extend({
 		this.setPosition();
 
 		//#region Construct Emoji DB
-		const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
+		const customEmojis = this.$store.state.instance.meta.emojis;
 		const emojiDefinitions: EmojiDef[] = [];
 
 		for (const x of customEmojis) {
@@ -426,7 +426,7 @@ export default Vue.extend({
 			}
 
 			&:hover {
-				background: var(--yrnqrguo);
+				background: var(--X3);
 			}
 
 			&[data-selected='true'] {

@@ -19,23 +19,31 @@
 		{{ folder.name }}
 	</p>
 	<p class="upload" v-if="$store.state.settings.uploadFolder == folder.id">
-		{{ $t('upload-folder') }}
+		{{ $t('uploadFolder') }}
 	</p>
+	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { faFolder, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
-
 	props: {
 		folder: {
 			type: Object,
 			required: true,
+		},
+		isSelected: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		selectMode: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 
@@ -56,7 +64,12 @@ export default Vue.extend({
 			return this.folder.name;
 		}
 	},
+
 	methods: {
+		checkboxClicked(e) {
+			this.$emit('chosen', this.folder);
+		},
+
 		onClick() {
 			this.browser.move(this.folder);
 		},
@@ -137,14 +150,14 @@ export default Vue.extend({
 					switch (err) {
 						case 'detected-circular-definition':
 							this.$root.dialog({
-								title: this.$t('unable-to-process'),
-								text: this.$t('circular-reference-detected')
+								title: this.$t('unableToProcess'),
+								text: this.$t('circularReferenceFolder')
 							});
 							break;
 						default:
 							this.$root.dialog({
 								type: 'error',
-								text: this.$t('unhandled-error')
+								text: this.$t('error')
 							});
 					}
 				});
@@ -177,9 +190,9 @@ export default Vue.extend({
 
 		rename() {
 			this.$root.dialog({
-				title: this.$t('contextmenu.rename-folder'),
+				title: this.$t('renameFolder'),
 				input: {
-					placeholder: this.$t('contextmenu.input-new-folder-name'),
+					placeholder: this.$t('inputNewFolderName'),
 					default: this.folder.name
 				}
 			}).then(({ canceled, result: name }) => {
@@ -206,14 +219,14 @@ export default Vue.extend({
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 						this.$root.dialog({
 							type: 'error',
-							title: this.$t('unable-to-delete'),
-							text: this.$t('has-child-files-or-folders')
+							title: this.$t('unableToDelete'),
+							text: this.$t('hasChildFilesOrFolders')
 						});
 						break;
 					default:
 						this.$root.dialog({
 							type: 'error',
-							text: this.$t('unable-to-delete')
+							text: this.$t('unableToDelete')
 						});
 				}
 			});
@@ -241,8 +254,22 @@ export default Vue.extend({
 		cursor: pointer;
 	}
 
-	* {
+	*:not(.checkbox) {
 		pointer-events: none;
+	}
+
+	> .checkbox {
+		position: absolute;
+		bottom: 8px;
+		right: 8px;
+		width: 16px;
+		height: 16px;
+		background: #fff;
+		border: solid 1px #000;
+
+		&.checked {
+			background: var(--accent);
+		}
 	}
 
 	&[data-draghover] {

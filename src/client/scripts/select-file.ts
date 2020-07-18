@@ -1,8 +1,8 @@
-import { faUpload, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { selectDriveFile } from './select-drive-file';
 import { apiUrl } from '../config';
 
-export function selectFile(component: any, src: any, label: string, multiple = false) {
+export function selectFile(component: any, src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
 		const chooseFileFromPc = () => {
 			const input = document.createElement('input');
@@ -41,7 +41,15 @@ export function selectFile(component: any, src: any, label: string, multiple = f
 				}).finally(() => {
 					dialog.close();
 				});
+
+				// 一応廃棄
+				(window as any).__misskey_input_ref__ = null;
 			};
+
+			// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
+			// iOS Safari で正常に動かす為のおまじない
+			(window as any).__misskey_input_ref__ = input;
+
 			input.click();
 		};
 
@@ -51,15 +59,16 @@ export function selectFile(component: any, src: any, label: string, multiple = f
 			});
 		};
 
+		// TODO
 		const chooseFileFromUrl = () => {
 
 		};
 
 		component.$root.menu({
-			items: [{
+			items: [label ? {
 				text: label,
 				type: 'label'
-			}, {
+			} : undefined, {
 				text: component.$t('upload'),
 				icon: faUpload,
 				action: chooseFileFromPc

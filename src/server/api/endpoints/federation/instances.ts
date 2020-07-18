@@ -6,7 +6,7 @@ import { fetchMeta } from '../../../../misc/fetch-meta';
 export const meta = {
 	tags: ['federation'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		host: {
@@ -129,7 +129,7 @@ export default define(meta, async (ps, me) => {
 	}
 
 	if (ps.host) {
-		query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' })
+		query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' });
 	}
 
 	const instances = await query.take(ps.limit!).skip(ps.offset).getMany();

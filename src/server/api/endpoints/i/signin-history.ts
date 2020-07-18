@@ -5,7 +5,7 @@ import { Signins } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

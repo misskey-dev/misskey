@@ -10,9 +10,7 @@
 		<tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>新規投稿</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
 		<tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
 		<tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>通知を表示/隠す</td><td><b>N</b>otifications</td></tr>
-		<tr><td><kbd class="key">A</kbd>, <kbd class="key">M</kbd></td><td>アカウントメニューを表示/隠す</td><td><b>A</b>ccount, <b>M</b>y, <b>M</b>e, <b>M</b>enu</td></tr>
-		<tr><td><kbd class="key">D</kbd></td><td>ダークモード切り替え</td><td><b>D</b>ark</td></tr>
-		<tr><td><kbd class="key">Z</kbd></td><td>上部のバーを隠す</td><td><b>Z</b>en</td></tr>
+		<tr><td><kbd class="key">S</kbd></td><td>検索</td><td><b>S</b>earch</td></tr>
 		<tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>ヘルプを表示</td><td><b>H</b>elp</td></tr>
 	</tbody>
 </table>
@@ -62,51 +60,7 @@
 		<tr><td><kbd class="key">←</kbd>, <kbd class="key">H</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>左のリアクションにフォーカスを移動</td><td>-</td></tr>
 		<tr><td><kbd class="key">→</kbd>, <kbd class="key">L</kbd>, <kbd class="key">Tab</kbd></td><td>右のリアクションにフォーカスを移動</td><td>-</td></tr>
 		<tr><td><kbd class="key">Enter</kbd>, <kbd class="key">Space</kbd>, <kbd class="key">+</kbd></td><td>リアクション確定</td><td>-</td></tr>
-		<tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションで確定(対応については後述)</td><td>-</td></tr>
+		<tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションで確定</td><td>-</td></tr>
 		<tr><td><kbd class="key">Esc</kbd></td><td>リアクションするのをやめる</td><td>-</td></tr>
-	</tbody>
-</table>
-
-## リアクションと数字キーの対応
-<table>
-	<thead>
-		<tr><th>数字キー</th><th>リアクション</th></tr>
-	</thead>
-	<tbody>
-		<tr><td><kbd class="key">1</kbd></td><td>👍</td></tr>
-		<tr><td><kbd class="key">2</kbd></td><td>❤️</td></tr>
-		<tr><td><kbd class="key">3</kbd></td><td>😆</td></tr>
-		<tr><td><kbd class="key">4</kbd></td><td>🤔</td></tr>
-		<tr><td><kbd class="key">5</kbd></td><td>😮</td></tr>
-		<tr><td><kbd class="key">6</kbd></td><td>🎉</td></tr>
-		<tr><td><kbd class="key">7</kbd></td><td>💢</td></tr>
-		<tr><td><kbd class="key">8</kbd></td><td>😥</td></tr>
-		<tr><td><kbd class="key">9</kbd></td><td>😇</td></tr>
-		<tr><td><kbd class="key">0</kbd></td><td>🍮 or 🍣</td></tr>
-	</tbody>
-</table>
-
-## デッキ
-<table>
-	<thead>
-		<tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
-	</thead>
-	<tbody>
-		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">↑</kbd></kbd></td><td>上のカラムにフォーカス</td><td>-</td></tr>
-		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">↓</kbd></kbd></td><td>下のカラムにフォーカス</td><td>-</td></tr>
-		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">→</kbd></kbd></td><td>右のカラムにフォーカス</td><td>-</td></tr>
-		<tr><td>投稿にフォーカスした状態で<kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">←</kbd></kbd></td><td>左のカラムにフォーカス</td><td>-</td></tr>
-	</tbody>
-</table>
-
-# 例
-<table>
-	<thead>
-		<tr><th>ショートカット</th><th>動作</th></tr>
-	</thead>
-	<tbody>
-		<tr><td><kbd class="key">t</kbd><kbd class="key">+</kbd><kbd class="key">+</kbd></td><td>タイムラインの最新の投稿に👍する</td></tr>
-		<tr><td><kbd class="key">t</kbd><kbd class="key">1</kbd></td><td>タイムラインの最新の投稿に👍する</td></tr>
-		<tr><td><kbd class="key">t</kbd><kbd class="key">0</kbd></td><td>タイムラインの最新の投稿に🍮する</td></tr>
 	</tbody>
 </table>

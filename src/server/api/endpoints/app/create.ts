@@ -1,14 +1,14 @@
-import rndstr from 'rndstr';
 import $ from 'cafy';
 import define from '../../define';
 import { Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
 import { unique } from '../../../../prelude/array';
+import { secureRndstr } from '../../../../misc/secure-rndstr';
 
 export const meta = {
 	tags: ['app'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	desc: {
 		'ja-JP': 'アプリを作成します。',
@@ -60,7 +60,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Generate secret
-	const secret = rndstr('a-zA-Z0-9', 32);
+	const secret = secureRndstr(32, true);
 
 	// for backward compatibility
 	const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));

@@ -8,9 +8,11 @@ export default {
 		self.tag = null;
 		self.showTimer = null;
 		self.hideTimer = null;
+		self.checkTimer = null;
 
 		self.close = () => {
 			if (self.tag) {
+				clearInterval(self.checkTimer);
 				self.tag.close();
 				self.tag = null;
 			}
@@ -38,6 +40,14 @@ export default {
 			});
 
 			document.body.appendChild(self.tag.$el);
+
+			self.checkTimer = setInterval(() => {
+				if (!document.body.contains(el)) {
+					clearTimeout(self.showTimer);
+					clearTimeout(self.hideTimer);
+					self.close();
+				}
+			}, 1000);
 		};
 
 		el.addEventListener('mouseover', () => {
@@ -60,8 +70,6 @@ export default {
 
 	unbind(el, binding, vn) {
 		const self = el._userPreviewDirective_;
-		clearTimeout(self.showTimer);
-		clearTimeout(self.hideTimer);
-		self.close();
+		clearInterval(self.checkTimer);
 	}
 };

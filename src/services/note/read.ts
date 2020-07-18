@@ -3,6 +3,8 @@ import { Note } from '../../models/entities/note';
 import { User } from '../../models/entities/user';
 import { NoteUnreads, Antennas, AntennaNotes, Users } from '../../models';
 
+// TODO: 状態が変化していない場合は各種イベントを送信しない
+
 /**
  * Mark a note as read
  */
@@ -66,5 +68,5 @@ export default (
 		if (!unread) {
 			publishMainStream(userId, 'readAllAntennas');
 		}
-	})
+	});
 });

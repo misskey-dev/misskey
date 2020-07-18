@@ -6,7 +6,7 @@ import { DriveFiles } from '../../../../../models';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 	requireModerator: true,
 
 	params: {
@@ -51,8 +51,8 @@ const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
 export default define(meta, async (ps, me) => {
 	const q = {} as any;
 
-	if (ps.origin == 'local') q['userHost'] = null;
-	if (ps.origin == 'remote') q['userHost'] = { $ne: null };
+	if (ps.origin === 'local') q['userHost'] = null;
+	if (ps.origin === 'remote') q['userHost'] = { $ne: null };
 
 	const files = await DriveFiles.find({
 		where: q,

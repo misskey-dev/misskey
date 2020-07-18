@@ -3,12 +3,12 @@
 	<portal to="icon"><fa :icon="faSatellite"/></portal>
 	<portal to="title">{{ $t('manageAntennas') }}</portal>
 
-	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createAntenna') }}</mk-button>
+	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 
 	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-		<x-antenna v-for="(antenna, i) in items" :key="antenna.id" :data-index="i" :antenna="antenna" @created="onAntennaDeleted"/>
+		<x-antenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
 	</mk-pagination>
 </div>
 </template>
@@ -50,8 +50,10 @@ export default Vue.extend({
 				name: '',
 				src: 'all',
 				userListId: null,
+				userGroupId: null,
 				users: [],
 				keywords: [],
+				excludeKeywords: [],
 				withReplies: false,
 				caseSensitive: false,
 				withFile: false,

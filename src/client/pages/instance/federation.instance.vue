@@ -98,11 +98,20 @@
 		<div class="operations">
 			<span class="label">{{ $t('operations') }}</span>
 			<mk-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
-			<mk-switch v-model="isBlocked" class="switch">{{ $t('blockThisInstance') }}</mk-switch>
+			<mk-switch :value="isBlocked" class="switch" @change="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
+			<details>
+				<summary>{{ $t('deleteAllFiles') }}</summary>
+				<mk-button @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
+			</details>
+			<details>
+				<summary>{{ $t('removeAllFollowing') }}</summary>
+				<mk-button @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</mk-button>
+				<mk-info warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</mk-info>
+			</details>
 		</div>
 		<details class="metadata">
 			<summary class="label">{{ $t('metadata') }}</summary>
-			<pre><code>{{ JSON.stringify(instance.metadata, null, 2) }}</code></pre>
+			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
 	</div>
 </x-window>
@@ -111,12 +120,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import Chart from 'chart.js';
-import i18n from '../../i18n';
-import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '../../components/window.vue';
 import MkUsersDialog from '../../components/users-dialog.vue';
 import MkSelect from '../../components/ui/select.vue';
+import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import MkInfo from '../../components/ui/info.vue';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -130,12 +140,12 @@ const alpha = hex => {
 };
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XWindow,
 		MkSelect,
+		MkButton,
 		MkSwitch,
+		MkInfo,
 	},
 
 	props: {
@@ -147,15 +157,13 @@ export default Vue.extend({
 
 	data() {
 		return {
-			meta: null,
-			isSuspended: false,
-			isBlocked: false,
+			isSuspended: this.instance.isSuspended,
 			now: null,
 			chart: null,
 			chartInstance: null,
 			chartSrc: 'requests',
 			chartSpan: 'hour',
-			faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown
+			faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt
 		};
 	},
 
@@ -184,6 +192,14 @@ export default Vue.extend({
 				null;
 
 			return stats;
+		},
+
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+
+		isBlocked() {
+			return this.meta && this.meta.blockedHosts.includes(this.instance.host);
 		}
 	},
 
@@ -192,12 +208,6 @@ export default Vue.extend({
 			this.$root.api('admin/federation/update-instance', {
 				host: this.instance.host,
 				isSuspended: this.isSuspended
-			});
-		},
-
-		isBlocked() {
-			this.$root.api('admin/update-meta', {
-				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
 			});
 		},
 
@@ -210,13 +220,7 @@ export default Vue.extend({
 		}
 	},
 
-	async created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-			this.isSuspended = this.instance.isSuspended;
-			this.isBlocked = this.meta.blockedHosts.includes(this.instance.host);
-		});
-	
+	async created() {	
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([
@@ -235,8 +239,36 @@ export default Vue.extend({
 	},
 
 	methods: {
+		changeBlock(e) {
+			this.$root.api('admin/update-meta', {
+				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
+			});
+		},
+
 		setSrc(src) {
 			this.chartSrc = src;
+		},
+
+		removeAllFollowing() {
+			this.$root.api('admin/federation/remove-all-following', {
+				host: this.instance.host
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			});
+		},
+
+		deleteAllFiles() {
+			this.$root.api('admin/federation/delete-all-files', {
+				host: this.instance.host
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			});
 		},
 
 		renderChart() {

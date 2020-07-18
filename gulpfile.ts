@@ -5,14 +5,13 @@
 import * as fs from 'fs';
 import * as gulp from 'gulp';
 import * as ts from 'gulp-typescript';
-import * as mocha from 'gulp-mocha';
 import * as rimraf from 'rimraf';
 import * as rename from 'gulp-rename';
 const cleanCSS = require('gulp-clean-css');
 const sass = require('gulp-dart-sass');
 const fiber = require('fibers');
 
-const locales = require('./locales');
+const locales: { [x: string]: any } = require('./locales');
 const meta = require('./package.json');
 
 gulp.task('build:ts', () => {
@@ -32,14 +31,20 @@ gulp.task('build:copy:views', () =>
 gulp.task('build:copy:locales', cb => {
 	fs.mkdirSync('./built/client/assets/locales', { recursive: true });
 
+	const v = { '_version_': meta.version };
+
 	for (const [lang, locale] of Object.entries(locales)) {
-		fs.writeFileSync(`./built/client/assets/locales/${lang}.${meta.version}.json`, JSON.stringify(locale), 'utf-8');
+		fs.writeFileSync(`./built/client/assets/locales/${lang}.${meta.version}.json`, JSON.stringify({ ...locale, ...v }), 'utf-8');
 	}
 
 	cb();
 });
 
-gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:locales', () =>
+gulp.task('build:copy:fonts', () =>
+	gulp.src('./node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/client/assets/fonts/'))
+);
+
+gulp.task('build:copy', gulp.parallel('build:copy:views', 'build:copy:locales', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/emojilist.json',
 		'./src/server/web/views/**/*',
@@ -74,9 +79,17 @@ gulp.task('copy:client', () =>
 			.pipe(gulp.dest('./built/client/assets/'))
 );
 
+gulp.task('copy:docs', () =>
+		gulp.src([
+			'./src/docs/**/*',
+		])
+		.pipe(gulp.dest('./built/client/assets/docs/'))
+);
+
 gulp.task('build:client', gulp.parallel(
 	'build:client:styles',
-	'copy:client'
+	'copy:client',
+	'copy:docs'
 ));
 
 gulp.task('build', gulp.parallel(
@@ -84,15 +97,5 @@ gulp.task('build', gulp.parallel(
 	'build:copy',
 	'build:client',
 ));
-
-gulp.task('mocha', () =>
-	gulp.src('./test/**/*.ts')
-		.pipe(mocha({
-			exit: true,
-			require: 'ts-node/register'
-		} as any))
-);
-
-gulp.task('test', gulp.task('mocha'));
 
 gulp.task('default', gulp.task('build'));

@@ -1,5 +1,5 @@
 <template>
-<mfm-core v-bind="$attrs" class="havbbuyv" :class="{ nowrap: $attrs['nowrap'] }" v-once/>
+<mfm-core v-bind="$attrs" class="havbbuyv" :class="{ nowrap: $attrs['nowrap'] }"/>
 </template>
 
 <script lang="ts">
@@ -31,6 +31,19 @@ export default Vue.extend({
 		color: var(--fg);
 		border-left: solid 3px var(--fg);
 		opacity: 0.7;
+	}
+
+	::v-deep pre {
+		font-size: 0.8em;
+	}
+
+	::v-deep > code {
+		word-break: break-all;
+	}
+
+	::v-deep .title {
+		text-align: center;
+		border-bottom: solid 1px var(--divider);
 	}
 }
 </style>

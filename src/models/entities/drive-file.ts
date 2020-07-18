@@ -4,6 +4,7 @@ import { DriveFolder } from './drive-folder';
 import { id } from '../id';
 
 @Entity()
+@Index(['userId', 'folderId', 'id'])
 export class DriveFile {
 	@PrimaryColumn(id())
 	public id: string;

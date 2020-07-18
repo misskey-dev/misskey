@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader }">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 500 }]">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -8,9 +8,16 @@
 			<template v-else><fa :icon="faAngleDown"/></template>
 		</button>
 	</header>
-	<div v-show="showBody">
-		<slot></slot>
-	</div>
+	<transition name="container-toggle"
+		@enter="enter"
+		@after-enter="afterEnter"
+		@leave="leave"
+		@after-leave="afterLeave"
+	>
+		<div v-show="showBody">
+			<slot></slot>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -40,6 +47,11 @@ export default Vue.extend({
 			required: false,
 			default: true
 		},
+		scrollable: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -51,12 +63,42 @@ export default Vue.extend({
 		toggleContent(show: boolean) {
 			if (!this.bodyTogglable) return;
 			this.showBody = show;
-		}
+		},
+
+		enter(el) {
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = 0;
+			el.offsetHeight; // reflow
+			el.style.height = elementHeight + 'px';
+		},
+		afterEnter(el) {
+			el.style.height = null;
+		},
+		leave(el) {
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = elementHeight + 'px';
+			el.offsetHeight; // reflow
+			el.style.height = 0;
+		},
+		afterLeave(el) {
+			el.style.height = null;
+		},
 	}
 });
 </script>
 
 <style lang="scss" scoped>
+.container-toggle-enter-active, .container-toggle-leave-active {
+	overflow-y: hidden;
+	transition: opacity 0.5s, height 0.5s !important;
+}
+.container-toggle-enter {
+	opacity: 0;
+}
+.container-toggle-leave-to {
+	opacity: 0;
+}
+
 .ukygtjoj {
 	position: relative;
 	overflow: hidden;
@@ -70,16 +112,25 @@ export default Vue.extend({
 		box-shadow: none !important;
 	}
 
+	&.scrollable {
+		display: flex;
+		flex-direction: column;
+
+		> div {
+			overflow: auto;
+		}
+	}
+
 	> header {
 		position: relative;
+		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
+		z-index: 2;
+		background: var(--panelHeaderBg);
+		color: var(--panelHeaderFg);
 
 		> .title {
 			margin: 0;
 			padding: 12px 16px;
-
-			@media (max-width: 500px) {
-				padding: 8px 10px;
-			}
 
 			> [data-icon] {
 				margin-right: 6px;
@@ -98,6 +149,30 @@ export default Vue.extend({
 			padding: 0;
 			width: 42px;
 			height: 100%;
+		}
+	}
+
+	&.max-width_500px {
+		> header {
+			> .title {
+				padding: 8px 10px;
+			}
+		}
+	}
+}
+
+._forceContainerFull_ .ukygtjoj {
+	> header {
+		> .title {
+			padding: 12px 16px !important;
+		}
+	}
+}
+
+._forceContainerFull_.ukygtjoj {
+	> header {
+		> .title {
+			padding: 12px 16px !important;
 		}
 	}
 }

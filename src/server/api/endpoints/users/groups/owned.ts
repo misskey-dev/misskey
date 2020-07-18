@@ -8,7 +8,7 @@ export const meta = {
 
 	tags: ['groups', 'account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:user-groups',
 

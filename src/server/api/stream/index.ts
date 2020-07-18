@@ -7,9 +7,9 @@ import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
-import { App } from '../../../models/entities/app';
 import { Users, Followings, Mutings } from '../../../models';
 import { ApiError } from '../error';
+import { AccessToken } from '../../../models/entities/access-token';
 
 /**
  * Main stream connection
@@ -18,7 +18,7 @@ export default class Connection {
 	public user?: User;
 	public following: User['id'][] = [];
 	public muting: User['id'][] = [];
-	public app: App;
+	public token?: AccessToken;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
@@ -30,14 +30,18 @@ export default class Connection {
 		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User | null | undefined,
-		app: App | null | undefined
+		token: AccessToken | null | undefined
 	) {
 		this.wsConnection = wsConnection;
 		this.subscriber = subscriber;
 		if (user) this.user = user;
-		if (app) this.app = app;
+		if (token) this.token = token;
 
 		this.wsConnection.on('message', this.onWsConnectionMessage);
+
+		this.subscriber.on('broadcast', async ({ type, body }) => {
+			this.onBroadcastMessage(type, body);
+		});
 
 		if (this.user) {
 			this.updateFollowing();
@@ -60,8 +64,9 @@ export default class Connection {
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
 			case 'readNotification': this.onReadNotification(body); break;
-			case 'subNote': this.onSubscribeNote(body); break;
-			case 'sn': this.onSubscribeNote(body); break; // alias
+			case 'subNote': this.onSubscribeNote(body, true); break;
+			case 'sn': this.onSubscribeNote(body, true); break; // alias
+			case 's': this.onSubscribeNote(body, false); break;
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
@@ -69,6 +74,11 @@ export default class Connection {
 			case 'channel': this.onChannelMessageRequested(body); break;
 			case 'ch': this.onChannelMessageRequested(body); break; // alias
 		}
+	}
+
+	@autobind
+	private onBroadcastMessage(type: string, body: any) {
+		this.sendMessageToWs(type, body);
 	}
 
 	/**
@@ -82,7 +92,7 @@ export default class Connection {
 		const endpoint = payload.endpoint || payload.ep; // alias
 
 		// 呼び出し
-		call(endpoint, user, this.app, payload.data).then(res => {
+		call(endpoint, user, this.token, payload.data).then(res => {
 			this.sendMessageToWs(`api:${payload.id}`, { res });
 		}).catch((e: ApiError) => {
 			this.sendMessageToWs(`api:${payload.id}`, {
@@ -107,7 +117,7 @@ export default class Connection {
 	 * 投稿購読要求時
 	 */
 	@autobind
-	private onSubscribeNote(payload: any) {
+	private onSubscribeNote(payload: any, read: boolean) {
 		if (!payload.id) return;
 
 		if (this.subscribingNotes[payload.id] == null) {
@@ -116,11 +126,11 @@ export default class Connection {
 
 		this.subscribingNotes[payload.id]++;
 
-		if (this.subscribingNotes[payload.id] == 1) {
+		if (this.subscribingNotes[payload.id] === 1) {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
 		}
 
-		if (this.user) {
+		if (this.user && read) {
 			readNote(this.user.id, payload.id);
 		}
 	}

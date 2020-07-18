@@ -1,54 +1,46 @@
 <template>
-<div class="mk-notes" v-size="[{ max: 500 }]">
-	<div class="empty" v-if="empty">{{ $t('noNotes') }}</div>
+<div class="mk-notes">
+	<div class="_fullinfo" v-if="empty">
+		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+		<div>{{ $t('noNotes') }}</div>
+	</div>
 
 	<mk-error v-if="error" @retry="init()"/>
 
-	<x-list ref="notes" class="notes" :items="notes" v-slot="{ item: note, i }">
-		<x-note :note="note" :detail="detail" :key="note.id" :data-index="i"/>
+	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
+		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+			<template v-if="moreFetching"><mk-loading inline/></template>
+		</button>
+	</div>
+
+	<x-list ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
+		<x-note :note="note" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</x-list>
 
-	<footer v-if="more">
-		<button @click="fetchMore()" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" class="_buttonPrimary">
+	<div v-show="more && !reversed" style="margin-top: var(--margin);">
+		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
+			<template v-if="moreFetching"><mk-loading inline/></template>
 		</button>
-	</footer>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
-import getUserName from '../../misc/get-user-name';
-import getNoteSummary from '../../misc/get-note-summary';
+import MkButton from './ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
-		XNote, XList
+		XNote, XList, MkButton
 	},
 
 	mixins: [
 		paging({
-			onPrepend: (self, note) => {
-				// タブが非表示なら通知
-				if (document.hidden) {
-					if ('Notification' in window && Notification.permission === 'granted') {
-						new Notification(getUserName(note.user), {
-							body: getNoteSummary(note),
-							icon: note.user.avatarUrl,
-							tag: 'newNote'
-						});
-					}
-				}
-			},
-
 			before: (self) => {
 				self.$emit('before');
 			},
@@ -75,16 +67,14 @@ export default Vue.extend({
 		}
 	},
 
-	data() {
-		return {
-			faSpinner
-		};
-	},
-
 	computed: {
 		notes(): any[] {
 			return this.extract ? this.extract(this.items) : this.items;
 		},
+
+		reversed(): boolean {
+			return this.pagination.reversed;
+		}
 	},
 
 	methods: {
@@ -95,50 +85,3 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" scoped>
-.mk-notes {
-	> .empty {
-		margin: 0 auto;
-		padding: 32px;
-		text-align: center;
-		background: rgba(0, 0, 0, 0.3);
-		color: #fff;
-		-webkit-backdrop-filter: blur(16px);
-		backdrop-filter: blur(16px);
-		border-radius: 6px;
-	}
-
-	> .notes {
-		> ::v-deep * {
-			margin-bottom: var(--marginFull);
-		}
-	}
-
-	&.max-width_500px {
-		> .notes {
-			> ::v-deep * {
-				margin-bottom: var(--marginHalf);
-			}
-		}
-	}
-
-	> footer {
-		text-align: center;
-
-		&:empty {
-			display: none;
-		}
-
-		> button {
-			margin: 0;
-			padding: 16px;
-			width: 100%;
-			border-radius: var(--radius);
-
-			&:disabled {
-				opacity: 0.7;
-			}
-		}
-	}
-}
-</style>

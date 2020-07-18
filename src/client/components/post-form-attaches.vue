@@ -1,6 +1,6 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<x-draggable class="files" :list="files" animation="150">
+	<x-draggable class="files" :list="files" animation="150" delay="100" delayOnTouchOnly="true">
 		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
 			<x-file-thumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<div class="sensitive" v-if="file.isSensitive">
@@ -14,15 +14,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import * as XDraggable from 'vuedraggable';
 import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
 import XFileThumbnail from './drive-file-thumbnail.vue'
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XDraggable,
 		XFileThumbnail
@@ -41,6 +38,8 @@ export default Vue.extend({
 
 	data() {
 		return {
+			menu: null as Promise<null> | null,
+
 			faExclamationTriangle
 		};
 	},
@@ -80,7 +79,8 @@ export default Vue.extend({
 			});
 		},
 		showFileMenu(file, ev: MouseEvent) {
-			this.$root.menu({
+			if (this.menu) return;
+			this.menu = this.$root.menu({
 				items: [{
 					text: this.$t('renameFile'),
 					icon: faICursor,
@@ -95,7 +95,7 @@ export default Vue.extend({
 					action: () => { this.detachMedia(file.id) }
 				}],
 				source: ev.currentTarget || ev.target
-			});
+			}).then(() => this.menu = null);
 		}
 	}
 });

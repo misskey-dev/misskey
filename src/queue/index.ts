@@ -12,6 +12,7 @@ import procesObjectStorage from './processors/object-storage';
 import { queueLogger } from './logger';
 import { DriveFile } from '../models/entities/drive-file';
 import { getJobInfo } from './get-job-info';
+import { IActivity } from '../remote/activitypub/type';
 
 function initializeQueue(name: string, limitPerSec = -1) {
 	return new Queue(name, {
@@ -28,6 +29,12 @@ function initializeQueue(name: string, limitPerSec = -1) {
 		} : undefined
 	});
 }
+
+export type InboxJobData = {
+	activity: IActivity,
+	/** HTTP-Signature */
+	signature: httpSignature.IParsedSignature
+};
 
 function renderError(e: Error): any {
 	return {
@@ -109,7 +116,7 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 		attempts: config.inboxJobMaxAttempts || 8,
 		backoff: {
 			type: 'exponential',
-			delay: 1000
+			delay: 60 * 1000
 		},
 		removeOnComplete: true,
 		removeOnFail: true

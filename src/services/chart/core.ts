@@ -8,9 +8,9 @@ import * as nestedProperty from 'nested-property';
 import autobind from 'autobind-decorator';
 import Logger from '../logger';
 import { Schema } from '../../misc/schema';
-import { EntitySchema, getRepository, Repository, LessThan, MoreThanOrEqual } from 'typeorm';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { DateUTC, isTimeSame, isTimeBefore, subtractTimespan } from '../../prelude/time';
+import { EntitySchema, getRepository, Repository, LessThan, Between } from 'typeorm';
+import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '../../prelude/time';
+import { getChartInsertLock } from '../../misc/app-lock';
 
 const logger = new Logger('chart', 'white', process.env.NODE_ENV !== 'test');
 
@@ -134,6 +134,24 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
+	private static parseDate(date: Date): [number, number, number, number, number, number, number] {
+		const y = date.getUTCFullYear();
+		const m = date.getUTCMonth();
+		const d = date.getUTCDate();
+		const h = date.getUTCHours();
+		const _m = date.getUTCMinutes();
+		const _s = date.getUTCSeconds();
+		const _ms = date.getUTCMilliseconds();
+
+		return [y, m, d, h, _m, _s, _ms];
+	}
+
+	@autobind
+	private static getCurrentDate() {
+		return Chart.parseDate(new Date());
+	}
+
+	@autobind
 	public static schemaToEntity(name: string, schema: Schema): EntitySchema {
 		return new EntitySchema({
 			name: `__chart__${camelToSnake(name)}`,
@@ -212,18 +230,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private getCurrentDate(): [number, number, number, number] {
-		const now = new Date();
-
-		const y = now.getUTCFullYear();
-		const m = now.getUTCMonth();
-		const d = now.getUTCDate();
-		const h = now.getUTCHours();
-
-		return [y, m, d, h];
-	}
-
-	@autobind
 	private getLatestLog(span: Span, group: string | null = null): Promise<Log | null> {
 		return this.repository.findOne({
 			group: group,
@@ -237,11 +243,11 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	private async getCurrentLog(span: Span, group: string | null = null): Promise<Log> {
-		const [y, m, d, h] = this.getCurrentDate();
+		const [y, m, d, h] = Chart.getCurrentDate();
 
 		const current =
-			span == 'day' ? DateUTC([y, m, d]) :
-			span == 'hour' ? DateUTC([y, m, d, h]) :
+			span == 'day' ? dateUTC([y, m, d, 0]) :
+			span == 'hour' ? dateUTC([y, m, d, h]) :
 			null as never;
 
 		// 現在(今日または今のHour)のログ
@@ -275,38 +281,43 @@ export default abstract class Chart<T extends Record<string, any>> {
 			data = this.getNewLog(obj);
 		} else {
 			// ログが存在しなかったら
-			// (Misskeyインスタンスを建てて初めてのチャート更新時)
+			// (Misskeyインスタンスを建てて初めてのチャート更新時など)
 
 			// 初期ログデータを作成
 			data = this.getNewLog(null);
 
-			logger.info(`${this.name}: Initial commit created`);
+			logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): Initial commit created`);
 		}
 
+		const date = Chart.dateToTimestamp(current);
+		const lockKey = `${this.name}:${date}:${group}:${span}`;
+
+		const unlock = await getChartInsertLock(lockKey);
 		try {
+			// ロック内でもう1回チェックする
+			const currentLog = await this.repository.findOne({
+				span: span,
+				date: date,
+				...(group ? { group: group } : {})
+			});
+
+			// ログがあればそれを返して終了
+			if (currentLog != null) return currentLog;
+
 			// 新規ログ挿入
 			log = await this.repository.save({
 				group: group,
 				span: span,
-				date: Chart.dateToTimestamp(current),
+				date: date,
 				...Chart.convertObjectToFlattenColumns(data)
 			});
 
-			logger.info(`${this.name}: New commit created`);
-		} catch (e) {
-			// duplicate key error
-			// 並列動作している他のチャートエンジンプロセスと処理が重なる場合がある
-			// その場合は再度最も新しいログを持ってくる
-			if (isDuplicateKeyValueError(e)) {
-				log = await this.getLatestLog(span, group) as Log;
-				logger.info(`${this.name}: Commit duplicated`);
-			} else {
-				logger.error(e);
-				throw e;
-			}
-		}
+			logger.info(`${this.name + (group ? `:${group}` : '')} (${span}): New commit created`);
 
-		return log;
+			return log;
+		} finally {
+			unlock();
+		}
 	}
 
 	@autobind
@@ -373,12 +384,15 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	public async getChart(span: Span, range: number, group: string | null = null): Promise<ArrayValue<T>> {
-		const [y, m, d, h] = this.getCurrentDate();
+	public async getChart(span: Span, amount: number, begin: Date | null, group: string | null = null): Promise<ArrayValue<T>> {
+		const [y, m, d, h, _m, _s, _ms] = begin ? Chart.parseDate(subtractTime(addTime(begin, 1, span), 1)) : Chart.getCurrentDate();
+		const [y2, m2, d2, h2] = begin ? Chart.parseDate(addTime(begin, 1, span)) : [] as never;
+
+		const lt = dateUTC([y, m, d, h, _m, _s, _ms]);
 
 		const gt =
-			span == 'day' ? subtractTimespan(DateUTC([y, m, d]), range, 'days') :
-			span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), range, 'hours') :
+			span === 'day' ? subtractTime(begin ? dateUTC([y2, m2, d2, 0]) : dateUTC([y, m, d, 0]), amount - 1, 'day') :
+			span === 'hour' ? subtractTime(begin ? dateUTC([y2, m2, d2, h2]) : dateUTC([y, m, d, h]), amount - 1, 'hour') :
 			null as never;
 
 		// ログ取得
@@ -386,7 +400,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 			where: {
 				group: group,
 				span: span,
-				date: MoreThanOrEqual(Chart.dateToTimestamp(gt))
+				date: Between(Chart.dateToTimestamp(gt), Chart.dateToTimestamp(lt))
 			},
 			order: {
 				date: -1
@@ -432,10 +446,10 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const chart: T[] = [];
 
 		// 整形
-		for (let i = (range - 1); i >= 0; i--) {
+		for (let i = (amount - 1); i >= 0; i--) {
 			const current =
-				span == 'day' ? subtractTimespan(DateUTC([y, m, d]), i, 'days') :
-				span == 'hour' ? subtractTimespan(DateUTC([y, m, d, h]), i, 'hours') :
+				span === 'day' ? subtractTime(dateUTC([y, m, d, 0]), i, 'day') :
+				span === 'hour' ? subtractTime(dateUTC([y, m, d, h]), i, 'hour') :
 				null as never;
 
 			const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));

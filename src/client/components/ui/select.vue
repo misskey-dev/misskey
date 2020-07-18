@@ -56,7 +56,7 @@ export default Vue.extend({
 			}
 		},
 		filled(): boolean {
-			return this.v != '' && this.v != null;
+			return true;
 		}
 	},
 	mounted() {
@@ -77,6 +77,14 @@ export default Vue.extend({
 	position: relative;
 	margin: 32px 0;
 
+	&:not(.inline):first-child {
+		margin-top: 8px;
+	}
+
+	&:not(.inline):last-child {
+		margin-bottom: 8px;
+	}
+
 	> .icon {
 		position: absolute;
 		top: 0;
@@ -92,6 +100,7 @@ export default Vue.extend({
 
 	> .input {
 		display: flex;
+		position: relative;
 
 		&:before {
 			content: '';
@@ -126,7 +135,7 @@ export default Vue.extend({
 			pointer-events: none;
 			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 			transition-duration: 0.3s;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			pointer-events: none;
 			//will-change transform
@@ -141,14 +150,19 @@ export default Vue.extend({
 			padding: 0;
 			font: inherit;
 			font-weight: normal;
-			font-size: 16px;
+			font-size: 1em;
 			height: 32px;
-			background: var(--panel);
+			background: none;
 			border: none;
 			border-radius: 0;
 			outline: none;
 			box-shadow: none;
 			color: var(--fg);
+
+			option,
+			optgroup {
+				background: var(--bg);
+			}
 		}
 
 		> .prefix,
@@ -156,7 +170,7 @@ export default Vue.extend({
 			display: block;
 			align-self: center;
 			justify-self: center;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			color: rgba(#000, 0.54);
 			pointer-events: none;

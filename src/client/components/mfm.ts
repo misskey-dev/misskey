@@ -1,7 +1,8 @@
 import Vue, { VNode } from 'vue';
-import { MfmForest } from '../../mfm/types';
+import { MfmForest } from '../../mfm/prelude';
 import { parse, parsePlain } from '../../mfm/parse';
 import MkUrl from './url.vue';
+import MkLink from './link.vue';
 import MkMention from './mention.vue';
 import { concat } from '../../prelude/array';
 import MkFormula from './formula.vue';
@@ -52,11 +53,11 @@ export default Vue.component('misskey-flavored-markdown', {
 
 					if (!this.plain) {
 						const x = text.split('\n')
-							.map(t => t == '' ? [createElement('br')] : [createElement('span', t), createElement('br')]);
+							.map(t => t == '' ? [createElement('br')] : [this._v(t), createElement('br')]); // NOTE: this._vはHACK SEE: https://github.com/syuilo/misskey/pull/6399#issuecomment-632820283
 						x[x.length - 1].pop();
 						return x;
 					} else {
-						return [createElement('span', text.replace(/\n/g, ' '))];
+						return [this._v(text.replace(/\n/g, ' '))];
 					}
 				}
 
@@ -79,12 +80,12 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'big': {
 					return (createElement as any)('strong', {
 						attrs: {
-							style: `display: inline-block; font-size: 150% };`
+							style: `display: inline-block; font-size: 150%;`
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
+						directives: [this.$store.state.device.animatedMfm ? {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
-						}]
+						}: {}]
 					}, genEl(token.children));
 				}
 
@@ -109,10 +110,10 @@ export default Vue.component('misskey-flavored-markdown', {
 						attrs: {
 							style: 'display: inline-block;'
 						},
-						directives: [this.$store.state.settings.disableAnimatedMfm ? {} : {
+						directives: [this.$store.state.device.animatedMfm ? {
 							name: 'animate-css',
 							value: { classes: 'rubberBand', iteration: 'infinite' }
-						}]
+						} : {}]
 					}, genEl(token.children));
 				}
 
@@ -121,9 +122,8 @@ export default Vue.component('misskey-flavored-markdown', {
 						token.node.props.attr == 'left' ? 'reverse' :
 						token.node.props.attr == 'alternate' ? 'alternate' :
 						'normal';
-					const style = (this.$store.state.settings.disableAnimatedMfm)
-						? ''
-						: `animation: spin 1.5s linear infinite; animation-direction: ${direction};`;
+					const style = this.$store.state.device.animatedMfm
+						? `animation: spin 1.5s linear infinite; animation-direction: ${direction};` : '';
 					return (createElement as any)('span', {
 						attrs: {
 							style: 'display: inline-block;' + style
@@ -134,7 +134,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				case 'jump': {
 					return (createElement as any)('span', {
 						attrs: {
-							style: (this.$store.state.settings.disableAnimatedMfm) ? 'display: inline-block;' : 'display: inline-block; animation: jump 0.75s linear infinite;'
+							style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: jump 0.75s linear infinite;' : 'display: inline-block;'
 						},
 					}, genEl(token.children));
 				}
@@ -154,22 +154,16 @@ export default Vue.component('misskey-flavored-markdown', {
 							url: token.node.props.url,
 							rel: 'nofollow noopener',
 						},
-						attrs: {
-							style: 'color:var(--link);'
-						}
 					})];
 				}
 
 				case 'link': {
-					return [createElement('a', {
-						attrs: {
-							class: 'link',
-							href: token.node.props.url,
+					return [createElement(MkLink, {
+						key: Math.random(),
+						props: {
+							url: token.node.props.url,
 							rel: 'nofollow noopener',
-							target: '_blank',
-							title: token.node.props.url,
-							style: 'color:var(--link);'
-						}
+						},
 					}, genEl(token.children))];
 				}
 
@@ -239,7 +233,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					const customEmojis = (this.$root.getMetaSync() || { emojis: [] }).emojis || [];
 					return [createElement('mk-emoji', {
 						key: Math.random(),
 						attrs: {
@@ -247,7 +240,7 @@ export default Vue.component('misskey-flavored-markdown', {
 							name: token.node.props.name
 						},
 						props: {
-							customEmojis: this.customEmojis || customEmojis,
+							customEmojis: this.customEmojis,
 							normal: this.plain
 						}
 					})];

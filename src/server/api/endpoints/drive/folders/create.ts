@@ -7,8 +7,6 @@ import { DriveFolders } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ドライブのフォルダを作成します。',
 		'en-US': 'Create a folder of drive.'
@@ -16,7 +14,7 @@ export const meta = {
 
 	tags: ['drive'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:drive',
 

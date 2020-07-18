@@ -125,6 +125,11 @@ export class UserProfile {
 	})
 	public carefulBot: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public injectFeaturedNote: boolean;
+
 	@Column({
 		...id(),
 		nullable: true

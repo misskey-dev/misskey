@@ -3,6 +3,9 @@ import { User } from './user';
 import { id } from '../id';
 import { Note } from './note';
 import { FollowRequest } from './follow-request';
+import { UserGroupInvitation } from './user-group-invitation';
+import { AccessToken } from './access-token';
+import { notificationTypes } from '../../types';
 
 @Entity()
 export class Notification {
@@ -34,11 +37,13 @@ export class Notification {
 	/**
 	 * 通知の送信者(initiator)
 	 */
+	@Index()
 	@Column({
 		...id(),
+		nullable: true,
 		comment: 'The ID of sender user of the Notification.'
 	})
-	public notifierId: User['id'];
+	public notifierId: User['id'] | null;
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
@@ -57,16 +62,20 @@ export class Notification {
 	 * pollVote - (自分または自分がWatchしている)投稿の投票に投票された
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
+	 * groupInvited - グループに招待された
+	 * app - アプリ通知
 	 */
+	@Index()
 	@Column('enum', {
-		enum: ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted'],
+		enum: notificationTypes,
 		comment: 'The type of the Notification.'
 	})
-	public type: 'follow' | 'mention' | 'reply' | 'renote' | 'quote' | 'reaction' | 'pollVote' | 'receiveFollowRequest' | 'followRequestAccepted';
+	public type: typeof notificationTypes[number];
 
 	/**
 	 * 通知が読まれたかどうか
 	 */
+	@Index()
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the Notification is read.'
@@ -97,13 +106,67 @@ export class Notification {
 	@JoinColumn()
 	public followRequest: FollowRequest | null;
 
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public userGroupInvitationId: UserGroupInvitation['id'] | null;
+
+	@ManyToOne(type => UserGroupInvitation, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public userGroupInvitation: UserGroupInvitation | null;
+
 	@Column('varchar', {
 		length: 128, nullable: true
 	})
-	public reaction: string;
+	public reaction: string | null;
 
 	@Column('integer', {
 		nullable: true
 	})
-	public choice: number;
+	public choice: number | null;
+
+	/**
+	 * アプリ通知のbody
+	 */
+	@Column('varchar', {
+		length: 2048, nullable: true
+	})
+	public customBody: string | null;
+
+	/**
+	 * アプリ通知のheader
+	 * (省略時はアプリ名で表示されることを期待)
+	 */
+	@Column('varchar', {
+		length: 256, nullable: true
+	})
+	public customHeader: string | null;
+
+	/**
+	 * アプリ通知のicon(URL)
+	 * (省略時はアプリアイコンで表示されることを期待)
+	 */
+	@Column('varchar', {
+		length: 1024, nullable: true
+	})
+	public customIcon: string | null;
+
+	/**
+	 * アプリ通知のアプリ(のトークン)
+	 */
+	@Index()
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public appAccessTokenId: AccessToken['id'] | null;
+
+	@ManyToOne(type => AccessToken, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public appAccessToken: AccessToken | null;
 }

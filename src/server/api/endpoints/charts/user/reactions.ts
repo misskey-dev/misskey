@@ -5,8 +5,6 @@ import { convertLog } from '../../../../../services/chart/core';
 import { perUserReactionsChart } from '../../../../../services/chart';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'ユーザーごとの被リアクション数のチャートを取得します。'
 	},
@@ -29,6 +27,11 @@ export const meta = {
 			}
 		},
 
+		offset: {
+			validator: $.optional.nullable.num,
+			default: null,
+		},
+
 		userId: {
 			validator: $.type(ID),
 			desc: {
@@ -42,5 +45,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	return await perUserReactionsChart.getChart(ps.span as any, ps.limit!, ps.userId);
+	return await perUserReactionsChart.getChart(ps.span as any, ps.limit!, ps.offset ? new Date(ps.offset) : null, ps.userId);
 });

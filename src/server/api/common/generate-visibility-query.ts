@@ -2,7 +2,7 @@ import { User } from '../../../models/entities/user';
 import { Followings } from '../../../models';
 import { Brackets, SelectQueryBuilder } from 'typeorm';
 
-export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User) {
+export function generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: User | null) {
 	if (me == null) {
 		q.andWhere(new Brackets(qb => { qb
 			.where(`note.visibility = 'public'`)

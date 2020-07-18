@@ -12,7 +12,7 @@ export const meta = {
 
 	tags: ['account', 'pages'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:pages',
 

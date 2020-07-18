@@ -1,5 +1,5 @@
 export default {
-	inserted(el, binding) {
+	inserted(el, binding, vn) {
 		const query = binding.value;
 
 		/*
@@ -31,7 +31,7 @@ export default {
 
 		const calc = () => {
 			const width = el.clientWidth;
-			
+
 			for (const q of query) {
 				if (q.max) {
 					if (width <= q.max) {
@@ -52,12 +52,18 @@ export default {
 
 		calc();
 
-		el._sizeResizeCb_ = calc;
+		vn.context.$on('hook:activated', calc);
 
-		window.addEventListener('resize', calc);
+		const ro = new ResizeObserver((entries, observer) => {
+			calc();
+		});
+
+		ro.observe(el);
+
+		el._ro_ = ro;
 	},
 
 	unbind(el, binding, vn) {
-		window.removeEventListener('resize', el._sizeResizeCb_);
+		el._ro_.unobserve(el);
 	}
 };

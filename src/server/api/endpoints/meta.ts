@@ -6,8 +6,6 @@ import { Emojis, Users } from '../../../models';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': 'インスタンス情報を取得します。',
 		'en-US': 'Get the information of this instance.'
@@ -15,7 +13,7 @@ export const meta = {
 
 	tags: ['meta'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		detail: {
@@ -124,6 +122,8 @@ export default define(meta, async (ps, me) => {
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
 		proxyRemoteFiles: instance.proxyRemoteFiles,
+		enableHcaptcha: instance.enableHcaptcha,
+		hcaptchaSiteKey: instance.hcaptchaSiteKey,
 		enableRecaptcha: instance.enableRecaptcha,
 		recaptchaSiteKey: instance.recaptchaSiteKey,
 		swPublickey: instance.swPublicKey,
@@ -132,14 +132,10 @@ export default define(meta, async (ps, me) => {
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
-		emojis: emojis.map(e => ({
-			id: e.id,
-			aliases: e.aliases,
-			name: e.name,
-			category: e.category,
-			url: e.url,
-		})),
-		requireSetup: (await Users.count({})) === 0,
+		emojis: await Emojis.packMany(emojis),
+		requireSetup: (await Users.count({
+			host: null,
+		})) === 0,
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,
@@ -155,12 +151,14 @@ export default define(meta, async (ps, me) => {
 			localTimeLine: !instance.disableLocalTimeline,
 			globalTimeLine: !instance.disableGlobalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
+			hcaptcha: instance.enableHcaptcha,
 			recaptcha: instance.enableRecaptcha,
 			objectStorage: instance.useObjectStorage,
 			twitter: instance.enableTwitterIntegration,
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: instance.enableServiceWorker,
+			miauth: true,
 		};
 	}
 
@@ -169,8 +167,9 @@ export default define(meta, async (ps, me) => {
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;
 		response.blockedHosts = instance.blockedHosts;
+		response.hcaptchaSecretKey = instance.hcaptchaSecretKey;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
-		response.proxyAccount = instance.proxyAccount;
+		response.proxyAccountId = instance.proxyAccountId;
 		response.twitterConsumerKey = instance.twitterConsumerKey;
 		response.twitterConsumerSecret = instance.twitterConsumerSecret;
 		response.githubClientId = instance.githubClientId;
@@ -195,6 +194,7 @@ export default define(meta, async (ps, me) => {
 		response.objectStorageAccessKey = instance.objectStorageAccessKey;
 		response.objectStorageSecretKey = instance.objectStorageSecretKey;
 		response.objectStorageUseSSL = instance.objectStorageUseSSL;
+		response.objectStorageUseProxy = instance.objectStorageUseProxy;
 	}
 
 	return response;

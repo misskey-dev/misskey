@@ -6,8 +6,8 @@
 	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createList') }}</mk-button>
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="lists" ref="list">
-		<div class="list _panel" v-for="(list, i) in items" :key="list.id" :data-index="i">
-			<router-link :to="`/lists/${ list.id }`">{{ list.name }}</router-link>
+		<div class="list _panel" v-for="(list, i) in items" :key="list.id">
+			<router-link :to="`/my/lists/${ list.id }`">{{ list.name }}</router-link>
 		</div>
 	</mk-pagination>
 </div>
@@ -62,7 +62,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .qkcjvfiv {
 	> .add {
-		margin: 0 auto 16px auto;
+		margin: 0 auto var(--margin) auto;
 	}
 
 	> .lists {

@@ -12,7 +12,7 @@ export const meta = {
 		'ja-JP': '指定したリバーシの対局で投了します。'
 	},
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	params: {
 		gameId: {

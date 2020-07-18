@@ -10,7 +10,7 @@ export const meta = {
 
 	tags: ['drive', 'account'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:drive',
 

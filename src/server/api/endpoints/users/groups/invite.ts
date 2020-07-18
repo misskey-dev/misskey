@@ -3,9 +3,10 @@ import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
-import { UserGroups, UserGroupJoinings, UserGroupInvites } from '../../../../../models';
+import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '../../../../../models';
 import { genId } from '../../../../../misc/gen-id';
-import { UserGroupInvite } from '../../../../../models/entities/user-group-invite';
+import { UserGroupInvitation } from '../../../../../models/entities/user-group-invitation';
+import { createNotification } from '../../../../../services/create-notification';
 
 export const meta = {
 	desc: {
@@ -15,7 +16,7 @@ export const meta = {
 
 	tags: ['groups', 'users'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:user-groups',
 
@@ -86,19 +87,25 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.alreadyAdded);
 	}
 
-	const invite = await UserGroupInvites.findOne({
+	const existInvitation = await UserGroupInvitations.findOne({
 		userGroupId: userGroup.id,
 		userId: user.id
 	});
 
-	if (invite) {
+	if (existInvitation) {
 		throw new ApiError(meta.errors.alreadyInvited);
 	}
 
-	await UserGroupInvites.save({
+	const invitation = await UserGroupInvitations.save({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		userGroupId: userGroup.id
-	} as UserGroupInvite);
+	} as UserGroupInvitation);
+
+	// 通知を作成
+	createNotification(user.id, 'groupInvited', {
+		notifierId: me.id,
+		userGroupInvitationId: invitation.id
+	});
 });

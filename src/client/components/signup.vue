@@ -2,9 +2,8 @@
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
 		<mk-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
-			<span>{{ $t('invitation-code') }}</span>
-			<template #prefix><fa icon="id-card-alt"/></template>
-			<template #desc v-html="this.$t('invitation-info').replace('{}', 'mailto:' + meta.maintainerEmail)"></template>
+			<span>{{ $t('invitationCode') }}</span>
+			<template #prefix><fa :icon="faKey"/></template>
 		</mk-input>
 		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
 			<span>{{ $t('username') }}</span>
@@ -15,57 +14,56 @@
 				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('available') }}</span>
 				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('unavailable') }}</span>
 				<span v-if="usernameState == 'error'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('error') }}</span>
-				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('invalid-format') }}</span>
-				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('too-short') }}</span>
-				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('too-long') }}</span>
+				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('usernameInvalidFormat') }}</span>
+				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooShort') }}</span>
+				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooLong') }}</span>
 			</template>
 		</mk-input>
 		<mk-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword">
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
-				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('weak-password') }}</p>
-				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('normal-password') }}</p>
-				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('strong-password') }}</p>
+				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('weakPassword') }}</p>
+				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('normalPassword') }}</p>
+				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('strongPassword') }}</p>
 			</template>
 		</mk-input>
 		<mk-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
 			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
-				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('password-matched') }}</p>
-				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('password-not-matched') }}</p>
+				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('passwordMatched') }}</p>
+				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('passwordNotMatched') }}</p>
 			</template>
 		</mk-input>
 		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
 			<i18n path="agreeTo">
-				<a :href="meta.tosUrl" target="_blank">{{ $t('tos') }}</a>
+				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n>
 		</mk-switch>
-		<div v-if="meta.enableRecaptcha" class="g-recaptcha" :data-sitekey="meta.recaptchaSiteKey" style="margin: 16px 0;"></div>
-		<mk-button type="submit" :disabled=" submitting || !(meta.tosUrl ? ToSAgreement : true) || passwordRetypeState == 'not-match'" primary>{{ $t('start') }}</mk-button>
+		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
+		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
+		<mk-button type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</mk-button>
 	</template>
 </form>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faLock, faExclamationTriangle, faSpinner, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
-import i18n from '../i18n';
 import { host, url } from '../config';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkInput,
 		MkSwitch,
+		captcha: () => import('./captcha.vue').then(x => x.default),
 	},
 
 	data() {
@@ -79,14 +77,35 @@ export default Vue.extend({
 			usernameState: null,
 			passwordStrength: '',
 			passwordRetypeState: null,
-			meta: {},
 			submitting: false,
 			ToSAgreement: false,
-			faLock, faExclamationTriangle, faSpinner, faCheck
+			hCaptchaResponse: null,
+			reCaptchaResponse: null,
+			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
+		}
+	},
+
+	props: {
+		autoSet: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 
 	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+
+		shouldDisableSubmitting(): boolean {
+			return this.submitting ||
+				this.meta.tosUrl && !this.ToSAgreement ||
+				this.meta.enableHcaptcha && !this.hCaptchaResponse ||
+				this.meta.enableRecaptcha && !this.reCaptchaResponse ||
+				this.passwordRetypeState == 'not-match';
+		},
+
 		shouldShowProfileUrl(): boolean {
 			return (this.username != '' &&
 				this.usernameState != 'invalid-format' &&
@@ -96,16 +115,12 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
-	},
-
-	mounted() {
-		const head = document.getElementsByTagName('head')[0];
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
-		head.appendChild(script);
+		if (this.autoSet) {
+			this.$once('signup', res => {
+				localStorage.setItem('i', res.i);
+				location.reload();
+			});
+		}
 	},
 
 	methods: {
@@ -164,28 +179,36 @@ export default Vue.extend({
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
-				'g-recaptcha-response': this.meta.enableRecaptcha ? (window as any).grecaptcha.getResponse() : null
+				'hcaptcha-response': this.hCaptchaResponse,
+				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
 				this.$root.api('signin', {
 					username: this.username,
 					password: this.password
 				}).then(res => {
-					localStorage.setItem('i', res.i);
-					location.href = '/';
+					this.$emit('signup', res);
 				});
 			}).catch(() => {
 				this.submitting = false;
+				this.$refs.hcaptcha?.reset?.();
+				this.$refs.recaptcha?.reset?.();
 
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('some-error')
+					text: this.$t('error')
 				});
-
-				if (this.meta.enableRecaptcha) {
-					(window as any).grecaptcha.reset();
-				}
 			});
 		}
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.mk-signup {
+	padding: 32px 0 0;
+
+	.captcha {
+		margin: 16px 0;
+	}
+}
+</style>

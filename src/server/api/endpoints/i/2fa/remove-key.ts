@@ -6,7 +6,7 @@ import { ensure } from '../../../../../prelude/ensure';
 import { publishMainStream } from '../../../../../services/stream';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

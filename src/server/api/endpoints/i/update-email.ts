@@ -11,7 +11,7 @@ import { sendEmail } from '../../../../services/send-email';
 import { ApiError } from '../../error';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

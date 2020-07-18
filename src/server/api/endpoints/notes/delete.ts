@@ -9,8 +9,6 @@ import { Users } from '../../../../models';
 import { ensure } from '../../../../prelude/ensure';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿を削除します。',
 		'en-US': 'Delete a note.'
@@ -18,7 +16,7 @@ export const meta = {
 
 	tags: ['notes'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:notes',
 

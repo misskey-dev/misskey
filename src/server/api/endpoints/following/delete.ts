@@ -8,8 +8,6 @@ import { getUser } from '../../common/getters';
 import { Followings, Users } from '../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したユーザーのフォローを解除します。',
 		'en-US': 'Unfollow a user.'
@@ -22,7 +20,7 @@ export const meta = {
 		max: 100
 	},
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:following',
 

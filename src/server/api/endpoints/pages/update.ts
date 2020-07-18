@@ -13,7 +13,7 @@ export const meta = {
 
 	tags: ['pages'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:pages',
 
@@ -49,6 +49,10 @@ export const meta = {
 
 		variables: {
 			validator: $.arr($.obj())
+		},
+
+		script: {
+			validator: $.str,
 		},
 
 		eyeCatchingImageId: {
@@ -132,6 +136,7 @@ export default define(meta, async (ps, user) => {
 		summary: ps.name === undefined ? page.summary : ps.summary,
 		content: ps.content,
 		variables: ps.variables,
+		script: ps.script,
 		alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
 		hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
 		font: ps.font === undefined ? page.font : ps.font,

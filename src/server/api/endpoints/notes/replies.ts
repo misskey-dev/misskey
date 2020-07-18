@@ -14,7 +14,7 @@ export const meta = {
 
 	tags: ['notes'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		noteId: {

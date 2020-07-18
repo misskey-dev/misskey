@@ -5,8 +5,6 @@ import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定したドライブのフォルダの情報を取得します。',
 		'en-US': 'Get specified folder of drive.'
@@ -14,7 +12,7 @@ export const meta = {
 
 	tags: ['drive'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:drive',
 

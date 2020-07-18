@@ -15,7 +15,7 @@ export const meta = {
 
 	tags: ['notes', 'reactions'],
 
-	requireCredential: false,
+	requireCredential: false as const,
 
 	params: {
 		noteId: {
@@ -79,7 +79,11 @@ export default define(meta, async (ps, user) => {
 	} as DeepPartial<NoteReaction>;
 
 	if (ps.type) {
-		query.reaction = ps.type;
+		// ローカルリアクションはホスト名が . とされているが
+		// DB 上ではそうではないので、必要に応じて変換
+		const suffix = '@.:';
+		const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
+		query.reaction = type;
 	}
 
 	const reactions = await NoteReactions.find({

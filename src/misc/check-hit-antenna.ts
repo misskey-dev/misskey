@@ -1,9 +1,10 @@
 import { Antenna } from '../models/entities/antenna';
 import { Note } from '../models/entities/note';
 import { User } from '../models/entities/user';
-import { UserListJoinings } from '../models';
+import { UserListJoinings, UserGroupJoinings } from '../models';
 import parseAcct from './acct/parse';
 import { getFullApAccount } from './convert-host';
+import { ensure } from '../prelude/ensure';
 
 export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: User, followers: User['id'][]): Promise<boolean> {
 	if (note.visibility === 'specified') return false;
@@ -22,6 +23,14 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 		})).map(x => x.userId);
 
 		if (!listUsers.includes(note.userId)) return false;
+	} else if (antenna.src === 'group') {
+		const joining = await UserGroupJoinings.findOne(antenna.userGroupJoiningId!).then(ensure);
+
+		const groupUsers = (await UserGroupJoinings.find({
+			userGroupId: joining.userGroupId
+		})).map(x => x.userId);
+
+		if (!groupUsers.includes(note.userId)) return false;
 	} else if (antenna.src === 'users') {
 		const accts = antenna.users.map(x => {
 			const { username, host } = parseAcct(x);
@@ -30,17 +39,40 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 		if (!accts.includes(getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 	}
 
-	if (antenna.keywords.length > 0) {
+	const keywords = antenna.keywords
+		// Clean up
+		.map(xs => xs.filter(x => x !== ''))
+		.filter(xs => xs.length > 0);
+
+	if (keywords.length > 0) {
 		if (note.text == null) return false;
 
-		const matched = antenna.keywords.some(keywords =>
-			keywords.every(keyword =>
+		const matched = keywords.some(and =>
+			and.every(keyword =>
 				antenna.caseSensitive
 					? note.text!.includes(keyword)
 					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
-		
+
 		if (!matched) return false;
+	}
+
+	const excludeKeywords = antenna.excludeKeywords
+		// Clean up
+		.map(xs => xs.filter(x => x !== ''))
+		.filter(xs => xs.length > 0);
+
+	if (excludeKeywords.length > 0) {
+		if (note.text == null) return false;
+
+		const matched = excludeKeywords.some(and =>
+			and.every(keyword =>
+				antenna.caseSensitive
+					? note.text!.includes(keyword)
+					: note.text!.toLowerCase().includes(keyword.toLowerCase())
+			));
+
+		if (matched) return false;
 	}
 
 	if (antenna.withFile) {

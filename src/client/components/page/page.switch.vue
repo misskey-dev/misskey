@@ -1,6 +1,6 @@
 <template>
 <div class="hkcxmtwj">
-	<mk-switch v-model="v">{{ script.interpolate(value.text) }}</mk-switch>
+	<mk-switch v-model="v">{{ hpml.interpolate(value.text) }}</mk-switch>
 </div>
 </template>
 
@@ -16,7 +16,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
@@ -27,8 +27,8 @@ export default Vue.extend({
 	},
 	watch: {
 		v() {
-			this.script.aiScript.updatePageVar(this.value.name, this.v);
-			this.script.eval();
+			this.hpml.updatePageVar(this.value.name, this.v);
+			this.hpml.eval();
 		}
 	}
 });

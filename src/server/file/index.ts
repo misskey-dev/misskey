@@ -23,7 +23,7 @@ router.get('/app-default.jpg', ctx => {
 });
 
 router.get('/:key', sendDriveFile);
-router.get('/:key/*', sendDriveFile);
+router.get('/:key/(.*)', sendDriveFile);
 
 // Register router
 app.use(router.routes());

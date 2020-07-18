@@ -3,7 +3,7 @@ import define from '../../define';
 import { AccessTokens, Apps } from '../../../../models';
 
 export const meta = {
-	requireCredential: true,
+	requireCredential: true as const,
 
 	secure: true,
 

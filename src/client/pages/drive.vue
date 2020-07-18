@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="naked full">
 	<portal to="header">
 		<button @click="menu" class="_button _jmoebdiw_">
 			<fa :icon="faCloud" style="margin-right: 8px;"/>
@@ -57,11 +57,11 @@ export default Vue.extend({
 				}, this.folder ? {
 					text: this.$t('renameFolder'),
 					icon: faICursor,
-					action: () => { this.$refs.drive.renameFolder(); }
+					action: () => { this.$refs.drive.renameFolder(this.folder); }
 				} : undefined, this.folder ? {
 					text: this.$t('deleteFolder'),
 					icon: faTrashAlt,
-					action: () => { this.$refs.drive.deleteFolder(); }
+					action: () => { this.$refs.drive.deleteFolder(this.folder); }
 				} : undefined, {
 					text: this.$t('createFolder'),
 					icon: faFolderPlus,

@@ -1,9 +1,9 @@
 <template>
-<div class="mk-popup">
-	<transition name="bg-fade" appear>
-		<div class="bg" ref="bg" @click="close()" v-if="show"></div>
+<div class="mk-popup" v-hotkey.global="keymap">
+	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
+		<div class="bg _modalBg" ref="bg" @click="close()" v-if="show"></div>
 	</transition>
-	<transition name="popup" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
+	<transition :name="$store.state.device.animation ? 'popup' : ''" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
 		<div class="content" :class="{ fixed }" ref="content" v-if="show" :style="{ width: width ? width + 'px' : 'auto' }"><slot></slot></div>
 	</transition>
 </div>
@@ -34,6 +34,13 @@ export default Vue.extend({
 		return {
 			show: true,
 		};
+	},
+	computed: {
+		keymap(): any {
+			return {
+				'esc': this.close,
+			};
+		},
 	},
 	mounted() {
 		this.$nextTick(() => {
@@ -96,8 +103,8 @@ export default Vue.extend({
 	methods: {
 		close() {
 			this.show = false;
-			(this.$refs.bg as any).style.pointerEvents = 'none';
-			(this.$refs.content as any).style.pointerEvents = 'none';
+			if (this.$refs.bg) (this.$refs.bg as any).style.pointerEvents = 'none';
+			if (this.$refs.content) (this.$refs.content as any).style.pointerEvents = 'none';
 		}
 	}
 });
@@ -121,20 +128,14 @@ export default Vue.extend({
 
 .mk-popup {
 	> .bg {
-		position: fixed;
-		top: 0;
-		left: 0;
 		z-index: 10000;
-		width: 100%;
-		height: 100%;
-		background: var(--modalBg)
 	}
 
 	> .content {
 		position: absolute;
 		z-index: 10001;
 		background: var(--panel);
-		border-radius: 4px;
+		border-radius: 8px;
 		box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 		overflow: hidden;
 		transform-origin: center top;

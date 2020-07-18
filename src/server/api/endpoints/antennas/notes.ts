@@ -8,9 +8,9 @@ import { generateMuteQuery } from '../../common/generate-mute-query';
 import { ApiError } from '../../error';
 
 export const meta = {
-	tags: ['account', 'notes', 'antennas'],
+	tags: ['antennas', 'account', 'notes'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:account',
 

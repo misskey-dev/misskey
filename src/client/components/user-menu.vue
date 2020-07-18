@@ -4,17 +4,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import XMenu from './menu.vue';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 import { host } from '../config';
 import getAcct from '../../misc/acct/render';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XMenu
 	},
@@ -43,7 +40,11 @@ export default Vue.extend({
 			icon: faListUl,
 			text: this.$t('addToList'),
 			action: this.pushList
-		}] as any;
+		}, this.$store.state.i.id != this.user.id ? {
+			icon: faUsers,
+			text: this.$t('inviteToGroup'),
+			action: this.inviteGroup
+		} : undefined] as any;
 
 		if (this.$store.getters.isSignedIn && this.$store.state.i.id != this.user.id) {
 			menu = menu.concat([null, {
@@ -56,8 +57,12 @@ export default Vue.extend({
 				action: this.toggleBlock
 			}]);
 
-			if (this.$store.state.i.isAdmin) {
+			if (this.$store.getters.isSignedIn && (this.$store.state.i.isAdmin || this.$store.state.i.isModerator)) {
 				menu = menu.concat([null, {
+					icon: faMicrophoneSlash,
+					text: this.user.isSilenced ? this.$t('unsilence') : this.$t('silence'),
+					action: this.toggleSilence
+				}, {
 					icon: faSnowflake,
 					text: this.user.isSuspended ? this.$t('unsuspend') : this.$t('suspend'),
 					action: this.toggleSuspend
@@ -73,6 +78,16 @@ export default Vue.extend({
 					this.$router.push('/my/settings');
 				}
 			}]);
+		}
+
+		if (this.$store.state.userActions.length > 0) {
+			menu = menu.concat([null, ...this.$store.state.userActions.map(action => ({
+				icon: faPlug,
+				text: action.title,
+				action: () => {
+					action.handler(this.user);
+				}
+			}))]);
 		}
 
 		return {
@@ -118,6 +133,42 @@ export default Vue.extend({
 			});
 		},
 
+		async inviteGroup() {
+			const groups = await this.$root.api('users/groups/owned');
+			if (groups.length === 0) {
+				this.$root.dialog({
+					type: 'error',
+					text: this.$t('youHaveNoGroups')
+				});
+				return;
+			}
+			const { canceled, result: groupId } = await this.$root.dialog({
+				type: null,
+				title: this.$t('group'),
+				select: {
+					items: groups.map(group => ({
+						value: group.id, text: group.name
+					}))
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			this.$root.api('users/groups/invite', {
+				groupId: groupId,
+				userId: this.user.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
 		async toggleMute() {
 			this.$root.api(this.user.isMuted ? 'mute/delete' : 'mute/create', {
 				userId: this.user.id
@@ -142,6 +193,25 @@ export default Vue.extend({
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = !this.user.isBlocking;
+				this.$root.dialog({
+					type: 'success',
+					iconOnly: true, autoClose: true
+				});
+			}, e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
+		async toggleSilence() {
+			if (!await this.getConfirmed(this.$t(this.user.isSilenced ? 'unsilenceConfirm' : 'silenceConfirm'))) return;
+
+			this.$root.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
+				userId: this.user.id
+			}).then(() => {
+				this.user.isSilenced = !this.user.isSilenced;
 				this.$root.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true

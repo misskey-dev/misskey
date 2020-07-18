@@ -10,7 +10,7 @@
 import Vue from 'vue';
 import XSetup from './index.welcome.setup.vue';
 import XEntrance from './index.welcome.entrance.vue';
-import { getInstanceName } from '../scripts/get-instance-name';
+import { instanceName } from '../config';
 
 export default Vue.extend({
 	components: {
@@ -20,15 +20,14 @@ export default Vue.extend({
 
 	data() {
 		return {
-			meta: null,
-			instanceName: getInstanceName(),
+			instanceName: instanceName || 'Misskey',
 		}
 	},
 
-	created() {
-		this.$root.getMeta().then(meta => {
-			this.meta = meta;
-		});
-	}
+	computed: {
+		meta() {
+			return this.$store.state.instance.meta;
+		},
+	},
 });
 </script>

@@ -7,6 +7,9 @@ import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
 import { generateMuteQuery } from '../../common/generate-mute-query';
 import { activeUsersChart } from '../../../../services/chart';
+import { generateRepliesQuery } from '../../common/generate-replies-query';
+import { injectPromo } from '../../common/inject-promo';
+import { injectFeatured } from '../../common/inject-featured';
 
 export const meta = {
 	desc: {
@@ -76,9 +79,9 @@ export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.visibility = \'public\'')
-		.andWhere('note.replyId IS NULL')
 		.leftJoinAndSelect('note.user', 'user');
 
+	generateRepliesQuery(query, user);
 	if (user) generateMuteQuery(query, user);
 
 	if (ps.withFiles) {
@@ -87,6 +90,9 @@ export default define(meta, async (ps, user) => {
 	//#endregion
 
 	const timeline = await query.take(ps.limit!).getMany();
+
+	await injectPromo(timeline, user);
+	await injectFeatured(timeline, user);
 
 	process.nextTick(() => {
 		if (user) {

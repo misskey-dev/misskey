@@ -9,7 +9,7 @@ import MiOS from '../mios';
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	public state: string;
+	public state: 'initializing' | 'reconnecting' | 'connected';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
@@ -68,7 +68,7 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onOpen() {
-		const isReconnect = this.state == 'reconnecting';
+		const isReconnect = this.state === 'reconnecting';
 
 		this.state = 'connected';
 		this.emit('_connected_');
@@ -87,7 +87,7 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onClose() {
-		if (this.state == 'connected') {
+		if (this.state === 'connected') {
 			this.state = 'reconnecting';
 			this.emit('_disconnected_');
 		}
@@ -100,7 +100,7 @@ export default class Stream extends EventEmitter {
 	private onMessage(message) {
 		const { type, body } = JSON.parse(message.data);
 
-		if (type == 'channel') {
+		if (type === 'channel') {
 			const id = body.id;
 
 			let connections: Connection[];

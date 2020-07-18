@@ -6,17 +6,16 @@
 			<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
 		</div>
 
-		<sequential-entrance class="users">
-			<router-link v-for="(item, i) in items" class="user" :key="item.id" :data-index="i" :to="extract ? extract(item) : item | userPage">
+		<div class="users">
+			<router-link v-for="item in items" class="user" :key="item.id" :to="extract ? extract(item) : item | userPage">
 				<mk-avatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
 				<div class="body">
 					<mk-user-name :user="extract ? extract(item) : item" class="name"/>
 					<mk-acct :user="extract ? extract(item) : item" class="acct"/>
 				</div>
 			</router-link>
-		</sequential-entrance>
-
-		<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+		</div>
+		<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
 		</button>
@@ -31,13 +30,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XModal from './modal.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XModal,
 	},

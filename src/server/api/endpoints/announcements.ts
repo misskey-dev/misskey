@@ -5,12 +5,19 @@ import { Announcements, AnnouncementReads } from '../../../models';
 import { makePaginationQuery } from '../common/make-pagination-query';
 
 export const meta = {
-	requireCredential: false,
+	tags: ['meta'],
+
+	requireCredential: false as const,
 
 	params: {
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
+		},
+
+		withUnreads: {
+			validator: $.optional.boolean,
+			default: false
 		},
 
 		sinceId: {
@@ -38,5 +45,5 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	return announcements;
+	return ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements;
 });

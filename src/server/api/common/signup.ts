@@ -22,8 +22,6 @@ export async function signup(username: User['username'], password: UserProfile['
 		throw new Error('INVALID_PASSWORD');
 	}
 
-	const usersCount = await Users.count({});
-
 	// Generate hash of password
 	const salt = await bcrypt.genSalt(8);
 	const hash = await bcrypt.hash(password, salt);
@@ -76,7 +74,9 @@ export async function signup(username: User['username'], password: UserProfile['
 			usernameLower: username.toLowerCase(),
 			host: toPunyNullable(host),
 			token: secret,
-			isAdmin: usersCount === 0,
+			isAdmin: (await Users.count({
+				host: null,
+			})) === 0,
 		}));
 
 		await transactionalEntityManager.save(new UserKeypair({
@@ -88,7 +88,6 @@ export async function signup(username: User['username'], password: UserProfile['
 		await transactionalEntityManager.save(new UserProfile({
 			userId: account.id,
 			autoAcceptFollowed: true,
-			autoWatch: false,
 			password: hash,
 		}));
 

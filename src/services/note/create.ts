@@ -30,6 +30,8 @@ import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-erro
 import { ensure } from '../../prelude/ensure';
 import { checkHitAntenna } from '../../misc/check-hit-antenna';
 import { addNoteToAntenna } from '../add-note-to-antenna';
+import { countSameRenotes } from '../../misc/count-same-renotes';
+import { deliverToRelays } from '../relay';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -77,7 +79,8 @@ class NotificationManager {
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
 			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
-				createNotification(x.target, this.notifier.id, x.reason, {
+				createNotification(x.target, x.reason, {
+					notifierId: this.notifier.id,
 					noteId: this.note.id
 				});
 			}
@@ -102,6 +105,7 @@ type Option = {
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
+	url?: string | null;
 	app?: App | null;
 };
 
@@ -112,22 +116,27 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	if (data.localOnly == null) data.localOnly = false;
 
 	// サイレンス
-	if (user.isSilenced && data.visibility == 'public') {
+	if (user.isSilenced && data.visibility === 'public') {
 		data.visibility = 'home';
 	}
 
 	// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
-	if (data.renote && data.renote.visibility != 'public' && data.renote.visibility != 'home') {
+	if (data.renote && data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && data.renote.userId !== user.id) {
 		return rej('Renote target is not public or home');
 	}
 
 	// Renote対象がpublicではないならhomeにする
-	if (data.renote && data.renote.visibility != 'public' && data.visibility == 'public') {
+	if (data.renote && data.renote.visibility !== 'public' && data.visibility === 'public') {
 		data.visibility = 'home';
 	}
 
+	// Renote対象がfollowersならfollowersにする
+	if (data.renote && data.renote.visibility === 'followers') {
+		data.visibility = 'followers';
+	}
+
 	// 返信対象がpublicではないならhomeにする
-	if (data.reply && data.reply.visibility != 'public' && data.visibility == 'public') {
+	if (data.reply && data.reply.visibility !== 'public' && data.visibility === 'public') {
 		data.visibility = 'home';
 	}
 
@@ -203,7 +212,9 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// ハッシュタグ更新
-	updateHashtags(user, tags);
+	if (data.visibility === 'public' || data.visibility === 'home') {
+		updateHashtags(user, tags);
+	}
 
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
@@ -215,7 +226,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			.getMany();
 
 		const followers = followings.map(f => f.followerId);
-		
+
 		for (const antenna of antennas) {
 			checkHitAntenna(antenna, note, user, followers).then(hit => {
 				if (hit) {
@@ -229,7 +240,8 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		saveReply(data.reply, note);
 	}
 
-	if (data.renote) {
+	// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
+	if (data.renote && (await countSameRenotes(user.id, data.renote.id, note.id) === 0)) {
 		incRenoteCount(data.renote);
 	}
 
@@ -338,6 +350,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 					dm.addFollowersRecipe();
 				}
 
+				if (['public'].includes(note.visibility)) {
+					deliverToRelays(user, noteActivity);
+				}
+
 				dm.execute();
 			})();
 		}
@@ -397,6 +413,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 	});
 
 	if (data.uri != null) insert.uri = data.uri;
+	if (data.url != null) insert.url = data.url;
 
 	// Append mentions data
 	if (mentionedUsers.length > 0) {
@@ -416,30 +433,29 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 	// 投稿を作成
 	try {
-		let note: Note;
 		if (insert.hasPoll) {
 			// Start transaction
 			await getConnection().transaction(async transactionalEntityManager => {
-				note = await transactionalEntityManager.save(insert);
+				await transactionalEntityManager.insert(Note, insert);
 
 				const poll = new Poll({
-					noteId: note.id,
+					noteId: insert.id,
 					choices: data.poll!.choices,
 					expiresAt: data.poll!.expiresAt,
 					multiple: data.poll!.multiple,
 					votes: new Array(data.poll!.choices.length).fill(0),
-					noteVisibility: note.visibility,
+					noteVisibility: insert.visibility,
 					userId: user.id,
 					userHost: user.host
 				});
 
-				await transactionalEntityManager.save(poll);
+				await transactionalEntityManager.insert(Poll, poll);
 			});
 		} else {
-			note = await Notes.save(insert);
+			await Notes.insert(insert);
 		}
 
-		return note!;
+		return await Notes.findOneOrFail(insert.id);
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
@@ -450,7 +466,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 
 		console.error(e);
 
-		throw new Error('something happened');
+		throw e;
 	}
 }
 

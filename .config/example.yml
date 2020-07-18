@@ -88,7 +88,9 @@ redis:
 #elasticsearch:
 #  host: localhost
 #  port: 9200
-#  pass: null
+#  ssl: false
+#  user: 
+#  pass: 
 
 #   ┌─────────────────────┐
 #───┘ Sonic configuration └─────────────────────────────
@@ -148,6 +150,11 @@ id: 'aid'
 
 # Proxy for HTTP/HTTPS
 #proxy: http://127.0.0.1:3128
+
+#proxyBypassHosts: [
+#  'example.com',
+#  '192.0.2.8'
+#]
 
 # Proxy for SMTP/SMTPS
 #proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT

@@ -2,7 +2,7 @@
 <x-container @remove="() => $emit('remove')" :draggable="true">
 	<template #header><fa :icon="faQuestion"/> {{ $t('_pages.blocks.if') }}</template>
 	<template #func>
-		<button @click="add()">
+		<button @click="add()" class="_button">
 			<fa :icon="faPlus"/>
 		</button>
 	</template>
@@ -10,16 +10,16 @@
 	<section class="romcojzs">
 		<mk-select v-model="value.var">
 			<template #label>{{ $t('_pages.blocks._if.variable') }}</template>
-			<option v-for="v in aiScript.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('_pages.script.pageVariables')">
-				<option v-for="v in aiScript.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$t('_pages.script.enviromentVariables')">
-				<option v-for="v in aiScript.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 		</mk-select>
 
-		<x-blocks class="children" v-model="value.children" :ai-script="aiScript"/>
+		<x-blocks class="children" v-model="value.children" :hpml="hpml"/>
 	</section>
 </x-container>
 </template>
@@ -28,13 +28,10 @@
 import Vue from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '../../../components/ui/select.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkSelect
 	},
@@ -45,7 +42,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		aiScript: {
+		hpml: {
 			required: true,
 		},
 	},
@@ -69,7 +66,7 @@ export default Vue.extend({
 		async add() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: this.$t('choose-block'),
+				title: this.$t('_pages.chooseBlock'),
 				select: {
 					groupedItems: this.getPageBlockList()
 				},

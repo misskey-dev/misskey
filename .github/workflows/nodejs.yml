@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [11.10.x, 12.x]
+        node-version: [12.x, 14.x]
 
     services:
       postgres:
@@ -21,13 +21,14 @@ jobs:
           - 5432:5432
         env:
           POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
       redis:
         image: redis:alpine
         ports:
           - 6379:6379
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -40,3 +41,13 @@ jobs:
       run: yarn build
     - name: Test
       run: yarn test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: yarn install
+    - run: yarn lint

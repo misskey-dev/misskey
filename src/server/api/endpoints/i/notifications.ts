@@ -4,6 +4,7 @@ import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings, Users } from '../../../../models';
+import { notificationTypes } from '../../../../types';
 
 export const meta = {
 	desc: {
@@ -13,7 +14,7 @@ export const meta = {
 
 	tags: ['account', 'notifications'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'read:notifications',
 
@@ -42,12 +43,12 @@ export const meta = {
 		},
 
 		includeTypes: {
-			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted'])),
+			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
 			default: [] as string[]
 		},
 
 		excludeTypes: {
-			validator: $.optional.arr($.str.or(['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest', 'followRequestAccepted'])),
+			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
 			default: [] as string[]
 		}
 	},

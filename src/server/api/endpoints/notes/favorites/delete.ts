@@ -6,8 +6,6 @@ import { getNote } from '../../../common/getters';
 import { NoteFavorites } from '../../../../../models';
 
 export const meta = {
-	stability: 'stable',
-
 	desc: {
 		'ja-JP': '指定した投稿のお気に入りを解除します。',
 		'en-US': 'Unfavorite a note.'
@@ -15,7 +13,7 @@ export const meta = {
 
 	tags: ['notes', 'favorites'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 
 	kind: 'write:favorites',
 

@@ -11,7 +11,7 @@ export const meta = {
 
 	tags: ['admin'],
 
-	requireCredential: true,
+	requireCredential: true as const,
 	requireAdmin: true,
 
 	params: {
@@ -30,6 +30,10 @@ export default define(meta, async (ps) => {
 
 	if (user == null) {
 		throw new Error('user not found');
+	}
+
+	if (user.isAdmin) {
+		throw new Error('cannot mark as moderator if admin user');
 	}
 
 	await Users.update(user.id, {

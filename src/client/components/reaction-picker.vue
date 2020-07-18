@@ -1,35 +1,21 @@
 <template>
 <x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
 	<div class="rdfaahpb">
-		<transition-group
-			name="reaction-fade"
-			tag="div"
-			class="buttons"
-			ref="buttons"
-			:class="{ showFocus }"
-			:css="false"
-			@before-enter="beforeEnter"
-			@enter="enter"
-			mode="out-in"
-			appear
-		>
-			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :data-index="i" :tabindex="i + 1" :title="/^[a-z]+$/.test(reaction) ? $t('@.reactions.' + reaction) : reaction"><x-reaction-icon :reaction="reaction"/></button>
-		</transition-group>
-		<input class="text" v-model="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
+		<div class="buttons" ref="buttons" :class="{ showFocus }">
+			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><x-reaction-icon :reaction="reaction"/></button>
+		</div>
+		<input class="text" v-model.trim="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
 	</div>
 </x-popup>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { emojiRegex } from '../../misc/emoji-regex';
 import XReactionIcon from './reaction-icon.vue';
 import XPopup from './popup.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XPopup,
 		XReactionIcon,
@@ -84,7 +70,7 @@ export default Vue.extend({
 
 	watch: {
 		focus(i) {
-			this.$refs.buttons.children[i].elm.focus();
+			this.$refs.buttons.children[i].focus();
 		}
 	},
 
@@ -129,21 +115,7 @@ export default Vue.extend({
 		},
 
 		choose() {
-			this.$refs.buttons.children[this.focus].elm.click();
-		},
-
-		beforeEnter(el) {
-			el.style.opacity = 0;
-			el.style.transform = 'scale(0.7)';
-		},
-
-		enter(el, done) {
-			el.style.transition = [getComputedStyle(el).transition, 'transform 1s cubic-bezier(0.23, 1, 0.32, 1)', 'opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1)'].filter(x => x != '').join(',');
-			setTimeout(() => {
-				el.style.opacity = 1;
-				el.style.transform = 'scale(1)';
-				setTimeout(done, 1000);
-			}, 0 * el.dataset.index)
+			this.$refs.buttons.children[this.focus].click();
 		},
 	}
 });

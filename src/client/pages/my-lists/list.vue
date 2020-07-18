@@ -1,11 +1,23 @@
 <template>
 <div class="mk-list-page">
+	<portal to="icon"><fa :icon="faListUl"/></portal>
+	<portal to="title">{{ list.name }}</portal>
+
 	<transition name="zoom" mode="out-in">
-		<div v-if="list" :key="list.id" class="_card list">
-			<div class="_title">{{ list.name }}</div>
+		<div v-if="list" class="_card">
+			<div class="_content">
+				<mk-button inline @click="renameList()">{{ $t('rename') }}</mk-button>
+				<mk-button inline @click="deleteList()">{{ $t('delete') }}</mk-button>
+			</div>
+		</div>
+	</transition>
+
+	<transition name="zoom" mode="out-in">
+		<div v-if="list" class="_card members">
+			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user" v-for="(user, i) in users" :key="user.id" :data-index="i">
+					<div class="user" v-for="user in users" :key="user.id">
 						<mk-avatar :user="user" class="avatar"/>
 						<div class="body">
 							<mk-user-name :user="user" class="name"/>
@@ -18,8 +30,7 @@
 				</div>
 			</div>
 			<div class="_footer">
-				<mk-button inline @click="renameList()">{{ $t('renameList') }}</mk-button>
-				<mk-button inline @click="deleteList()">{{ $t('deleteList') }}</mk-button>
+				<mk-button inline @click="addUser()">{{ $t('addUser') }}</mk-button>
 			</div>
 		</div>
 	</transition>
@@ -28,14 +39,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
+import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../../scripts/loading';
 import MkButton from '../../components/ui/button.vue';
+import MkUserSelect from '../../components/user-select.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.list ? `${this.list.name} | ${this.$t('manageLists')}` : this.$t('manageLists')
@@ -50,7 +59,7 @@ export default Vue.extend({
 		return {
 			list: null,
 			users: [],
-			faTimes
+			faTimes, faListUl
 		};
 	},
 
@@ -74,6 +83,26 @@ export default Vue.extend({
 				}).then(users => {
 					this.users = users;
 					Progress.done();
+				});
+			});
+		},
+
+		addUser() {
+			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+				this.$root.api('users/lists/push', {
+					listId: this.list.id,
+					userId: user.id
+				}).then(() => {
+					this.users.push(user);
+					this.$root.dialog({
+						type: 'success',
+						iconOnly: true, autoClose: true
+					});
+				}).catch(e => {
+					this.$root.dialog({
+						type: 'error',
+						text: e
+					});
 				});
 			});
 		},
@@ -107,7 +136,7 @@ export default Vue.extend({
 		async deleteList() {
 			const { canceled } = await this.$root.dialog({
 				type: 'warning',
-				text: this.$t('deleteListConfirm', { list: this.list.name }),
+				text: this.$t('removeAreYouSure', { x: this.list.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
@@ -127,7 +156,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mk-list-page {
-	> .list {
+	> .members {
 		> ._content {
 			max-height: 400px;
 			overflow: auto;

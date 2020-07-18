@@ -1,37 +1,37 @@
 <template>
-<div>
-	<mk-container :show-header="!props.compact">
-		<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
+<mk-container :show-header="props.showHeader">
+	<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
-		<div class="wbrkwala">
-			<transition-group tag="div" name="chart">
-				<div v-for="stat in stats" :key="stat.tag">
-					<div class="tag">
-						<router-link :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
-						<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
-					</div>
-					<x-chart class="chart" :src="stat.chart"/>
+	<div class="wbrkwala">
+		<mk-loading v-if="fetching"/>
+		<transition-group tag="div" name="chart" class="tags" v-else>
+			<div v-for="stat in stats" :key="stat.tag">
+				<div class="tag">
+					<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+					<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 				</div>
-			</transition-group>
-		</div>
-	</mk-container>
-</div>
+				<x-chart class="chart" :src="stat.chart"/>
+			</div>
+		</transition-group>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import i18n from '../i18n';
 import XChart from './trends.chart.vue';
 
 export default define({
 	name: 'hashtags',
 	props: () => ({
-		compact: false
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
 	})
 }).extend({
-	i18n,
 	components: {
 		MkContainer, XChart
 	},
@@ -50,10 +50,6 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
-		func() {
-			this.props.compact = !this.props.compact;
-			this.save();
-		},
 		fetch() {
 			this.$root.api('hashtags/trend').then(stats => {
 				this.stats = stats;
@@ -66,20 +62,10 @@ export default define({
 
 <style lang="scss" scoped>
 .wbrkwala {
-	> .fetching,
-	> .empty {
-		margin: 0;
-		padding: 16px;
-		text-align: center;
-		color: var(--text);
-		opacity: 0.7;
+	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
+	overflow: hidden;
 
-		> [data-icon] {
-			margin-right: 4px;
-		}
-	}
-
-	> div {
+	> .tags {
 		.chart-move {
 			transition: transform 1s ease;
 		}
@@ -88,30 +74,28 @@ export default define({
 			display: flex;
 			align-items: center;
 			padding: 14px 16px;
-
-			&:not(:last-child) {
-				border-bottom: solid 1px var(--divider);
-			}
+			border-bottom: solid 1px var(--divider);
 
 			> .tag {
 				flex: 1;
 				overflow: hidden;
-				font-size: 14px;
+				font-size: 0.9em;
 				color: var(--fg);
 
-				> a {
+				> .a {
 					display: block;
 					width: 100%;
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					color: inherit;
+					line-height: 18px;
 				}
 
 				> p {
 					margin: 0;
 					font-size: 75%;
 					opacity: 0.7;
+					line-height: 16px;
 				}
 			}
 

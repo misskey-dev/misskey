@@ -2,13 +2,13 @@
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-const summarize = (note: any): string => {
+const summarize = (note: any, locale: any): string => {
 	if (note.deletedAt) {
-		return '(削除された投稿)';
+		return `(${locale['deletedNote']})`;
 	}
 
 	if (note.isHidden) {
-		return '(非公開の投稿)';
+		return `(${locale['invisibleNote']})`;
 	}
 
 	let summary = '';
@@ -22,18 +22,18 @@ const summarize = (note: any): string => {
 
 	// ファイルが添付されているとき
 	if ((note.files || []).length != 0) {
-		summary += ` (${note.files.length}つのファイル)`;
+		summary += ` (${locale['withNFiles'].replace('{n}', note.files.length)})`;
 	}
 
 	// 投票が添付されているとき
 	if (note.poll) {
-		summary += ' (投票)';
+		summary += ` (${locale['poll']})`;
 	}
 
 	// 返信のとき
 	if (note.replyId) {
 		if (note.reply) {
-			summary += `\n\nRE: ${summarize(note.reply)}`;
+			summary += `\n\nRE: ${summarize(note.reply, locale)}`;
 		} else {
 			summary += '\n\nRE: ...';
 		}
@@ -42,7 +42,7 @@ const summarize = (note: any): string => {
 	// Renoteのとき
 	if (note.renoteId) {
 		if (note.renote) {
-			summary += `\n\nRN: ${summarize(note.renote)}`;
+			summary += `\n\nRN: ${summarize(note.renote, locale)}`;
 		} else {
 			summary += '\n\nRN: ...';
 		}
