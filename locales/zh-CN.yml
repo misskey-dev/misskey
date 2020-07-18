@@ -534,6 +534,7 @@ permission: "权限"
 enableAll: "启用全部"
 disableAll: "禁用全部"
 tokenRequested: "允许访问账户"
+pluginTokenRequestedDescription: "此插件将能够拥有此处设置的权限"
 _theme:
   explore: "寻找主题"
   install: "安装主题"
