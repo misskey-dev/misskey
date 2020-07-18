@@ -533,6 +533,7 @@ generateAccessToken: "Generate access token"
 permission: "Permissions"
 enableAll: "Enable all"
 disableAll: "Disable all"
+pluginTokenRequestedDescription: "This plugin will be able to use the permissions set here."
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
