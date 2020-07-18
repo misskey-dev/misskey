@@ -529,6 +529,10 @@ pluginInstallWarn: "信頼できないプラグインはインストールしな
 deck: "デッキ"
 undeck: "デッキ解除"
 useBlurEffectForModal: "モーダルにぼかし効果を使用"
+generateAccessToken: "アクセストークンの発行"
+permission: "権限"
+enableAll: "全て有効にする"
+disableAll: "全て無効にする"
 
 _theme:
   explore: "テーマを探す"
