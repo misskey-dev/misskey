@@ -533,6 +533,8 @@ generateAccessToken: "アクセストークンの発行"
 permission: "権限"
 enableAll: "全て有効にする"
 disableAll: "全て無効にする"
+tokenRequested: "アカウントへのアクセス許可"
+pluginTokenRequestedDescription: "このプラグインはここで設定した権限を行使できるようになります。"
 
 _theme:
   explore: "テーマを探す"
