@@ -226,24 +226,24 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const bannerId = banner ? banner.id : null;
 	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar, true) : null;
 	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
-	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
-	const bannerColor = banner && banner.properties.avgColor ? banner.properties.avgColor : null;
+	const avatarBlurhash = avatar ? avatar.blurhash : null;
+	const bannerBlurhash = banner ? banner.blurhash : null;
 
 	await Users.update(user!.id, {
 		avatarId,
 		bannerId,
 		avatarUrl,
 		bannerUrl,
-		avatarColor,
-		bannerColor
+		avatarBlurhash,
+		bannerBlurhash
 	});
 
 	user!.avatarId = avatarId;
 	user!.bannerId = bannerId;
 	user!.avatarUrl = avatarUrl;
 	user!.bannerUrl = bannerUrl;
-	user!.avatarColor = avatarColor;
-	user!.bannerColor = bannerColor;
+	user!.avatarBlurhash = avatarBlurhash;
+	user!.bannerBlurhash = bannerBlurhash;
 	//#endregion
 
 	//#region カスタム絵文字取得
@@ -341,13 +341,13 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	if (avatar) {
 		updates.avatarId = avatar.id;
 		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
-		updates.avatarColor = avatar.properties.avgColor ? avatar.properties.avgColor : null;
+		updates.avatarBlurhash = avatar.blurhash;
 	}
 
 	if (banner) {
 		updates.bannerId = banner.id;
 		updates.bannerUrl = DriveFiles.getPublicUrl(banner);
-		updates.bannerColor = banner.properties.avgColor ? banner.properties.avgColor : null;
+		updates.bannerBlurhash = banner.blurhash;
 	}
 
 	// Update user

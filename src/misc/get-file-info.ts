@@ -6,6 +6,7 @@ import * as fileType from 'file-type';
 import isSvg from 'is-svg';
 import * as probeImageSize from 'probe-image-size';
 import * as sharp from 'sharp';
+import { encode } from 'blurhash';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -18,7 +19,7 @@ export type FileInfo = {
 	};
 	width?: number;
 	height?: number;
-	avgColor?: number[];
+	blurhash?: string;
 	warnings: string[];
 };
 
@@ -71,12 +72,11 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 		}
 	}
 
-	// average color
-	let avgColor: number[] | undefined;
+	let blurhash: string | undefined;
 
 	if (['image/jpeg', 'image/gif', 'image/png', 'image/apng', 'image/webp', 'image/svg+xml'].includes(type.mime)) {
-		avgColor = await calcAvgColor(path).catch(e => {
-			warnings.push(`calcAvgColor failed: ${e}`);
+		blurhash = await getBlurhash(path).catch(e => {
+			warnings.push(`getBlurhash failed: ${e}`);
 			return undefined;
 		});
 	}
@@ -87,7 +87,7 @@ export async function getFileInfo(path: string): Promise<FileInfo> {
 		type,
 		width,
 		height,
-		avgColor,
+		blurhash,
 		warnings,
 	};
 }
@@ -173,18 +173,15 @@ async function detectImageSize(path: string): Promise<{
 /**
  * Calculate average color of image
  */
-async function calcAvgColor(path: string): Promise<number[]> {
-	const img = sharp(path);
-
-	const info = await (img as any).stats();
-
-	if (info.isOpaque) {
-		const r = Math.round(info.channels[0].mean);
-		const g = Math.round(info.channels[1].mean);
-		const b = Math.round(info.channels[2].mean);
-
-		return [r, g, b];
-	} else {
-		return [255, 255, 255];
-	}
+function getBlurhash(path: string): Promise<string> {
+	return new Promise((resolve, reject) => {
+		sharp(path)
+			.raw()
+			.ensureAlpha()
+			.resize(64, 64, { fit: 'inside' })
+			.toBuffer((err, buffer, { width, height }) => {
+				if (err) return reject(err);
+				resolve(encode(new Uint8ClampedArray(buffer), width, height, 7, 7));
+			});
+	});
 }

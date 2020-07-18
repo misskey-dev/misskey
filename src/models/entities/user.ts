@@ -106,14 +106,14 @@ export class User {
 	public bannerUrl: string | null;
 
 	@Column('varchar', {
-		length: 32, nullable: true,
+		length: 128, nullable: true,
 	})
-	public avatarColor: string | null;
+	public avatarBlurhash: string | null;
 
 	@Column('varchar', {
-		length: 32, nullable: true,
+		length: 128, nullable: true,
 	})
-	public bannerColor: string | null;
+	public bannerBlurhash: string | null;
 
 	@Column('boolean', {
 		default: false,
