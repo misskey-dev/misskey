@@ -42,12 +42,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { AiScript, parse } from '@syuilo/aiscript';
+import { serialize } from '@syuilo/aiscript/built/serializer';
 import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInfo from '../../components/ui/info.vue';
-import { AiScript, parse } from '@syuilo/aiscript';
 
 export default Vue.extend({
 	components: {
@@ -131,7 +132,7 @@ export default Vue.extend({
 					id, name, version, author, description, permissions, config
 				},
 				token,
-				ast // TODO: astにはMapが含まれることがあり、MapはJSONとしてシリアライズできないのでバグる。どうにかする
+				ast: serialize(ast)
 			});
 
 			this.$root.dialog({

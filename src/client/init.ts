@@ -9,6 +9,8 @@ import PortalVue from 'portal-vue';
 import VAnimateCss from 'v-animate-css';
 import VueI18n from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { AiScript } from '@syuilo/aiscript';
+import { deserialize } from '@syuilo/aiscript/built/serializer';
 
 import VueHotkey from './scripts/hotkey';
 import App from './app.vue';
@@ -26,7 +28,6 @@ import createStore from './store';
 import { clientDb, get, count } from './db';
 import { setI18nContexts } from './scripts/set-i18n-contexts';
 import { createPluginEnv } from './scripts/aiscript/api';
-import { AiScript } from '@syuilo/aiscript';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
@@ -267,7 +268,7 @@ os.init(async () => {
 
 		store.commit('initPlugin', { plugin, aiscript });
 
-		aiscript.exec(plugin.ast);
+		aiscript.exec(deserialize(plugin.ast));
 	}
 
 	if (store.getters.isSignedIn) {
