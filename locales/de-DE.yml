@@ -533,6 +533,7 @@ generateAccessToken: "Zugriffstoken generieren"
 permission: "Berechtigungen"
 enableAll: "Alle aktivieren"
 disableAll: "Alle deaktivieren"
+tokenRequested: "Benutzerkontozugriff gewähren"
 pluginTokenRequestedDescription: "Dieses Plugin wird die hier konfigurierten Berechtigungen verwenden können."
 _theme:
   explore: "Themen erforschen"
