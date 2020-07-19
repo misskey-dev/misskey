@@ -1,13 +1,34 @@
 ChangeLog
 =========
+12.42.0 (2020/7/19)
+-------------------
+*このアップデートでは、データベースのマイグレーション(`npm run migrate`/`yarn migrate`)が必要です。*
 
-Next (2020/7/)
+### ✨Improvements
+- Deckでマウスホイールを使って横スクロールできるように [e18caa3](https://github.com/syuilo/misskey/commit/e18caa339624b566e76d19d0e132028b6377f7f8), [eb275a6](https://github.com/syuilo/misskey/commit/eb275a62a6ae5699b38cf3bca516d34b44e9d944)
+- 設定画面を整理 [b663a47](https://github.com/syuilo/misskey/commit/b663a47331000b61010ad91fdc422b60b2eeb660)
+  * アクセシビリティ → アピアランス
+- リモートで削除されており、ローカルで削除されている若しくは未認知のActorからActivityを受信した場合に、エラーでリトライしないように [#6554](https://github.com/syuilo/misskey/pull/6554)
+- トークン手動発行機能を実装 [0c1de7b](https://github.com/syuilo/misskey/commit/0c1de7b1b6e9ac10b62d8b3157cb064c79aa21d1), [b9c5e95](https://github.com/syuilo/misskey/commit/b9c5e95b855fcf599b339037d4753252a1f786d4)
+- AiScriptからAPIにアクセスできるように [b39850d](https://github.com/syuilo/misskey/commit/b39850de012fa7b05959c7f4bbbbade841d186ff)
+- Blurhashを実装 [3f71b14](https://github.com/syuilo/misskey/commit/3f71b1463719bee476d39b7ceca5a2eea4b5cb67)
+  * avgColor, avatarColor, bannerColor は使われなくなります。
+- デザイン・挙動の調整 [280eeb9](https://github.com/syuilo/misskey/commit/280eeb9d7539e5b7c8d09dfa21a7679eebb09407)
+
+### 🐛Fixes
+- AiScriptのアップデートとプラグインの動作の修正 [705d40a](https://github.com/syuilo/misskey/commit/705d40ab37bedb1e43e4677457497c342517a23d)
+
+12.41.3 (2020/7/15)
 -------------------
 ### ✨Improvements
 - サウンドを追加 [b9e9631](https://github.com/syuilo/misskey/commit/b9e9631195a8ca5ed1386daeacdc835456d52975)
 
 ### 🐛Fixes
-- 
+- サイドバーのsticky動作の修正 [937df57](https://github.com/syuilo/misskey/commit/937df577f1b005ff4da2122e642c5c9f687d0069)
+- iOS/macOS Safariで投稿フォームやノートメニューをたまに表示できない問題を修正 [9d3beb3](https://github.com/syuilo/misskey/commit/9d3beb3174f87f05c50e2e7304a03d2c55a3f7ec)
+  * windowのstorageイベントが発火すると永続化されたstateのみが残る問題を修正
+- iOS Safariで設定を選べなくなってしまうことがある問題を修正 [e7f1ab2](https://github.com/syuilo/misskey/commit/e7f1ab2d01f92558ff5e230663d951686390d35a)
+  * Safariのvh計算のバグに対処
 
 12.41.2 (2020/7/12)
 -------------------
