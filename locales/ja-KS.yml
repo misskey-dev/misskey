@@ -295,6 +295,7 @@ proxyRemoteFilesDescription: "この設定を入れると、保存しとらん�
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
 inMb: "メガバイト単位"
+recaptcha: "reCAPTCHA"
 avoidMultiCaptchaConfirm: "ぎょうさんのCaptchaをつこてしまうと、仲良うせんことがあるんや。他のCaptchaをなおしとこか？別にキャンセルしてもろうたらCaptchaは消されへんで済むけど知らんで。"
 antennas: "アンテナ"
 manageAntennas: "アンテナいじる"
