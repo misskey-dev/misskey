@@ -1,4 +1,5 @@
 import { utils, values } from '@syuilo/aiscript';
+import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
 
 export function createAiScriptEnv(vm, opts) {
 	let apiRequests = 0;
@@ -26,7 +27,7 @@ export function createAiScriptEnv(vm, opts) {
 			if (token) utils.assertString(token);
 			apiRequests++;
 			if (apiRequests > 16) return values.NULL;
-			const res = await vm.$root.api(ep.value, utils.valToJs(param), token ? token.value : null);
+			const res = await vm.$root.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token || null));
 			return utils.jsToVal(res);
 		}),
 		'Mk:save': values.FN_NATIVE(([key, value]) => {
@@ -42,8 +43,14 @@ export function createAiScriptEnv(vm, opts) {
 }
 
 export function createPluginEnv(vm, opts) {
+	const config = new Map();
+	for (const key in opts.plugin.config) {
+		const val = opts.plugin.configData[key] || opts.plugin.config[key].default;
+		config.set(key, jsToVal(val));
+	}
+
 	return {
-		...createAiScriptEnv(vm, opts),
+		...createAiScriptEnv(vm, { ...opts, token: opts.plugin.token }),
 		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
 			vm.$store.commit('registerPostFormAction', { pluginId: opts.plugin.id, title: title.value, handler });
 		}),
@@ -53,5 +60,6 @@ export function createPluginEnv(vm, opts) {
 		'Mk:register_note_action': values.FN_NATIVE(([title, handler]) => {
 			vm.$store.commit('registerNoteAction', { pluginId: opts.plugin.id, title: title.value, handler });
 		}),
+		'Plugin:config': values.OBJ(config),
 	};
 }

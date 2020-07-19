@@ -1,15 +1,9 @@
 <template>
-<span class="eiwwqkts" :class="{ cat }" :title="user | acct" v-if="disableLink && !disablePreview" v-user-preview="user.id" @click="onClick">
-	<span class="inner" :style="icon"></span>
+<span class="eiwwqkts" :class="{ cat }" :title="user | acct" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
+	<img class="inner" :src="url"/>
 </span>
-<span class="eiwwqkts" :class="{ cat }" :title="user | acct" v-else-if="disableLink && disablePreview" @click="onClick">
-	<span class="inner" :style="icon"></span>
-</span>
-<router-link class="eiwwqkts" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && !disablePreview" v-user-preview="user.id">
-	<span class="inner" :style="icon"></span>
-</router-link>
-<router-link class="eiwwqkts" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else-if="!disableLink && disablePreview">
-	<span class="inner" :style="icon"></span>
+<router-link class="eiwwqkts" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
+	<img class="inner" :src="url"/>
 </router-link>
 </template>
 
@@ -45,22 +39,6 @@ export default Vue.extend({
 				? getStaticImageUrl(this.user.avatarUrl)
 				: this.user.avatarUrl;
 		},
-		icon(): any {
-			return {
-				backgroundColor: this.user.avatarColor,
-				backgroundImage: `url(${this.url})`,
-			};
-		}
-	},
-	watch: {
-		'user.avatarColor'() {
-			this.$el.style.color = this.user.avatarColor;
-		}
-	},
-	mounted() {
-		if (this.user.avatarColor) {
-			this.$el.style.color = this.user.avatarColor;
-		}
 	},
 	methods: {
 		onClick(e) {
@@ -102,15 +80,17 @@ export default Vue.extend({
 	}
 	
 	.inner {
-		background-position: center center;
-		background-size: cover;
+		position: absolute;
 		bottom: 0;
 		left: 0;
-		position: absolute;
 		right: 0;
 		top: 0;
 		border-radius: 100%;
 		z-index: 1;
+		overflow: hidden;
+		object-fit: cover;
+		width: 100%;
+		height: 100%;
 	}
 }
 </style>

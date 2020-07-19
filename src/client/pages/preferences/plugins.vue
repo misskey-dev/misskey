@@ -30,7 +30,10 @@
 					<div>{{ $t('description') }}:</div>
 					<div>{{ selectedPlugin.description }}</div>
 				</div>
-				<mk-button @click="uninstall()" style="margin-top: 8px;"><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
+				<div style="margin-top: 8px;">
+					<mk-button @click="config()" inline v-if="selectedPlugin.config"><fa :icon="faCog"/> {{ $t('settings') }}</mk-button>
+					<mk-button @click="uninstall()" inline><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
+				</div>
 			</template>
 		</details>
 	</div>
@@ -39,12 +42,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { AiScript, parse } from '@syuilo/aiscript';
+import { serialize } from '@syuilo/aiscript/built/serializer';
+import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInfo from '../../components/ui/info.vue';
-import { AiScript, parse } from '@syuilo/aiscript';
 
 export default Vue.extend({
 	components: {
@@ -58,7 +62,7 @@ export default Vue.extend({
 		return {
 			script: '',
 			selectedPluginId: null,
-			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload
+			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog
 		}
 	},
 
@@ -70,7 +74,7 @@ export default Vue.extend({
 	},
 
 	methods: {
-		install() {
+		async install() {
 			let ast;
 			try {
 				ast = parse(this.script);
@@ -82,7 +86,6 @@ export default Vue.extend({
 				return;
 			}
 			const meta = AiScript.collectMetadata(ast);
-			console.log(meta);
 			if (meta == null) {
 				this.$root.dialog({
 					type: 'error',
@@ -98,7 +101,7 @@ export default Vue.extend({
 				});
 				return;
 			}
-			const { id, name, version, author, description } = data;
+			const { id, name, version, author, description, permissions, config } = data;
 			if (id == null || name == null || version == null || author == null) {
 				this.$root.dialog({
 					type: 'error',
@@ -106,15 +109,39 @@ export default Vue.extend({
 				});
 				return;
 			}
+
+			const token = permissions == null || permissions.length === 0 ? null : await new Promise(async (res, rej) => {
+				this.$root.new(await import('../../components/token-generate-window.vue').then(m => m.default), {
+					title: this.$t('tokenRequested'),
+					information: this.$t('pluginTokenRequestedDescription'),
+					initialName: name,
+					initialPermissions: permissions
+				}).$on('ok', async ({ name, permissions }) => {
+					const { token } = await this.$root.api('miauth/gen-token', {
+						session: null,
+						name: name,
+						permission: permissions,
+					});
+
+					res(token);
+				});
+			});
+
 			this.$store.commit('deviceUser/installPlugin', {
 				meta: {
-					id, name, version, author, description
+					id, name, version, author, description, permissions, config
 				},
-				ast
+				token,
+				ast: serialize(ast)
 			});
+
 			this.$root.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
+			});
+
+			this.$nextTick(() => {
+				location.reload();
 			});
 		},
 
@@ -123,6 +150,29 @@ export default Vue.extend({
 			this.$root.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
+			});
+			this.$nextTick(() => {
+				location.reload();
+			});
+		},
+
+		// TODO: この処理をstore側にactionとして移動し、設定画面を開くAiScriptAPIを実装できるようにする
+		async config() {
+			const config = this.selectedPlugin.config;
+			for (const key in this.selectedPlugin.configData) {
+				config[key].default = this.selectedPlugin.configData[key];
+			}
+
+			const { canceled, result } = await this.$root.form(this.selectedPlugin.name, config);
+			if (canceled) return;
+
+			this.$store.commit('deviceUser/configPlugin', {
+				id: this.selectedPluginId,
+				config: result
+			});
+
+			this.$nextTick(() => {
+				location.reload();
 			});
 		}
 	},

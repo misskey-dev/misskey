@@ -8,7 +8,7 @@
 	</template>
 
 	<section class="oyyftmcf">
-		<mk-file-thumbnail class="preview" v-if="file" :file="file" :detail="true" fit="contain" @click="choose()"/>
+		<mk-file-thumbnail class="preview" v-if="file" :file="file" fit="contain" @click="choose()"/>
 	</section>
 </x-container>
 </template>

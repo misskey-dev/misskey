@@ -553,10 +553,6 @@ export default Vue.extend({
 					&.full {
 						padding: 0 var(--margin);
 					}
-
-					&.naked {
-						background: var(--bg);
-					}
 				}
 			}
 
