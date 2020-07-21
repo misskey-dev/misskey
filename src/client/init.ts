@@ -40,7 +40,6 @@ Vue.component('fa', FontAwesomeIcon);
 require('./directives');
 require('./components');
 require('./widgets');
-require('./filters');
 
 Vue.mixin({
 	methods: {
@@ -157,16 +156,6 @@ os.init(async () => {
 		},
 		// TODO: ここらへんのメソッド全部Vuexに移したい
 		methods: {
-			api: (endpoint: string, data: { [x: string]: any } = {}, token?) => store.dispatch('api', { endpoint, data, token }),
-			signout: os.signout,
-			new(vm, props) {
-				const x = new vm({
-					parent: this,
-					propsData: props
-				}).$mount();
-				document.body.appendChild(x.$el);
-				return x;
-			},
 			dialog(opts) {
 				const vm = this.new(Dialog, opts);
 				const p: any = new Promise((res) => {
