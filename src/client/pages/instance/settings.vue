@@ -82,8 +82,8 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableEmail" @click="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
-			<mk-input v-model="email" type="email" @change="save()" :disabled="!enableEmail">{{ $t('email') }}</mk-input>
+			<mk-switch v-model="enableEmail" @change="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
+			<mk-input v-model="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</mk-input>
 			<div><b>{{ $t('smtpConfig') }}</b></div>
 			<div class="_inputs">
 				<mk-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtpHost') }}</mk-input>
