@@ -11,7 +11,9 @@
 			<mk-input v-model="iconUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('iconUrl') }}</mk-input>
 			<mk-input v-model="bannerUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</mk-input>
 			<mk-input v-model="tosUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('tosUrl') }}</mk-input>
-			<mk-input v-model="maintainerName">{{ $t('maintainerName') }}</mk-input>
+			<mk-input v-model="feedbackUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('feedbackUrl') }}</mk-input>
+			<mk-input v-model="repositoryUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('repositoryUrl') }}</mk-input>
+			<mk-input v-model="maintainerName"><template #icon><fa :icon="faLink"/></template>{{ $t('maintainerName') }}</mk-input>
 			<mk-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</mk-input>
 		</div>
 		<div class="_footer">
@@ -27,6 +29,9 @@
 			<mk-switch v-model="enableLocalTimeline" @change="save()">{{ $t('enableLocalTimeline') }}</mk-switch>
 			<mk-switch v-model="enableGlobalTimeline" @change="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
 			<mk-info>{{ $t('disablingTimelinesInfo') }}</mk-info>
+		</div>
+		<div class="_content">
+			<mk-switch v-model="useStarForReactionFallback" @change="save()">{{ $t('useStarForReactionFallback') }}</mk-switch>
 		</div>
 	</section>
 
@@ -71,6 +76,29 @@
 		</div>
 		<div class="_footer">
 			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
+
+	<section class="_card">
+		<div class="_title"><fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
+		<div class="_content">
+			<mk-switch v-model="enableEmail" @click="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
+			<mk-input v-model="email" type="email" @change="save()" :disabled="!enableEmail">{{ $t('email') }}</mk-input>
+			<div><b>{{ $t('smtpConfig') }}</b></div>
+			<div class="_inputs">
+				<mk-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtpHost') }}</mk-input>
+				<mk-input v-model="smtpPort" type="number" :disabled="!enableEmail">{{ $t('smtpPort') }}</mk-input>
+			</div>
+			<div class="_inputs">
+				<mk-input v-model="smtpUser" :disabled="!enableEmail">{{ $t('smtpUser') }}</mk-input>
+				<mk-input v-model="smtpPass" type="password" :disabled="!enableEmail">{{ $t('smtpPass') }}</mk-input>
+			</div>
+			<mk-info>{{ $t('emptyToDisableSmtpAuth') }}</mk-info>
+			<mk-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtpSecure') }}<template #desc>{{ $t('smtpSecureInfo') }}</template></mk-switch>
+			<div>
+				<mk-button :disabled="!enableEmail" inline @click="testEmail()">{{ $t('testEmail') }}</mk-button>
+				<mk-button :disabled="!enableEmail" primary inline @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+			</div>
 		</div>
 	</section>
 
@@ -195,12 +223,19 @@
 			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 		</div>
 	</section>
+	<section class="_card">
+		<div class="_title"><fa :icon="faArchway" /> Summaly Proxy</div>
+		<div class="_content">
+			<mk-input v-model="summalyProxy">URL</mk-input>
+			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from '../../components/ui/button.vue';
@@ -243,7 +278,11 @@ export default Vue.extend({
 			maintainerEmail: null,
 			name: null,
 			description: null,
-			tosUrl: null,
+			tosUrl: null as string | null,
+			feedbackUrl: null as string | null,
+			repositoryUrl: null as string | null,
+			enableEmail: false,
+			email: null,
 			bannerUrl: null,
 			iconUrl: null,
 			maxNoteTextLength: 0,
@@ -279,7 +318,14 @@ export default Vue.extend({
 			enableDiscordIntegration: false,
 			discordClientId: null,
 			discordClientSecret: null,
-			faPencilAlt, faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt
+			useStarForReactionFallback: false,
+			smtpSecure: false,
+			smtpHost: '',
+			smtpPort: 0,
+			smtpUser: '',
+			smtpPass: '',
+			summalyProxy: '',
+			faPencilAlt, faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway
 		}
 	},
 
@@ -293,8 +339,12 @@ export default Vue.extend({
 		this.name = this.meta.name;
 		this.description = this.meta.description;
 		this.tosUrl = this.meta.tosUrl;
+		this.feedbackUrl = this.meta.feedbackUrl;
+		this.repositoryUrl = this.meta.repositoryUrl;
 		this.bannerUrl = this.meta.bannerUrl;
 		this.iconUrl = this.meta.iconUrl;
+		this.enableEmail = this.meta.enableEmail;
+		this.email = this.meta.email;
 		this.maintainerName = this.meta.maintainerName;
 		this.maintainerEmail = this.meta.maintainerEmail;
 		this.maxNoteTextLength = this.meta.maxNoteTextLength;
@@ -337,6 +387,13 @@ export default Vue.extend({
 		this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
 		this.discordClientId = this.meta.discordClientId;
 		this.discordClientSecret = this.meta.discordClientSecret;
+		this.useStarForReactionFallback = this.meta.useStarForReactionFallback;
+		this.smtpSecure = this.meta.smtpSecure;
+		this.smtpHost = this.meta.smtpHost;
+		this.smtpPort = this.meta.smtpPort;
+		this.smtpUser = this.meta.smtpUser;
+		this.smtpPass = this.meta.smtpPass;
+		this.summalyProxy = this.meta.summalyProxy;
 
 		if (this.proxyAccountId) {
 			this.$root.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
@@ -412,11 +469,31 @@ export default Vue.extend({
 			});
 		},
 
+		async testEmail() {
+			this.$root.api('admin/send-email', {
+				to: this.maintainerEmail,
+				subject: 'Test email',
+				text: 'Yo'
+			}).then(x => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
 		save(withDialog = false) {
 			this.$root.api('admin/update-meta', {
 				name: this.name,
 				description: this.description,
 				tosUrl: this.tosUrl,
+				feedbackUrl: this.feedbackUrl,
+				repositoryUrl: this.repositoryUrl,
 				bannerUrl: this.bannerUrl,
 				iconUrl: this.iconUrl,
 				maintainerName: this.maintainerName,
@@ -461,6 +538,15 @@ export default Vue.extend({
 				enableDiscordIntegration: this.enableDiscordIntegration,
 				discordClientId: this.discordClientId,
 				discordClientSecret: this.discordClientSecret,
+				enableEmail: this.enableEmail,
+				email: this.email,
+				smtpSecure: this.smtpSecure,
+				smtpHost: this.smtpHost,
+				smtpPort: this.smtpPort,
+				smtpUser: this.smtpUser,
+				smtpPass: this.smtpPass,
+				summalyProxy: this.summalyProxy,
+				useStarForReactionFallback: this.useStarForReactionFallback,
 			}).then(() => {
 				this.$store.dispatch('instance/fetch');
 				if (withDialog) {
