@@ -22,26 +22,26 @@
 			<span v-else>{{ notification.header }}</span>
 			<mk-time :time="notification.createdAt" v-if="withTime"/>
 		</header>
-		<router-link v-if="notification.type === 'reaction'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+		<router-link v-if="notification.type === 'reaction'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<fa :icon="faQuoteLeft"/>
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 			<fa :icon="faQuoteRight"/>
 		</router-link>
-		<router-link v-if="notification.type === 'renote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note.renote)">
+		<router-link v-if="notification.type === 'renote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
 			<fa :icon="faQuoteLeft"/>
 			<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.renote.emojis"/>
 			<fa :icon="faQuoteRight"/>
 		</router-link>
-		<router-link v-if="notification.type === 'reply'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+		<router-link v-if="notification.type === 'reply'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</router-link>
-		<router-link v-if="notification.type === 'mention'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+		<router-link v-if="notification.type === 'mention'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</router-link>
-		<router-link v-if="notification.type === 'quote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+		<router-link v-if="notification.type === 'quote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</router-link>
-		<router-link v-if="notification.type === 'pollVote'" class="text" :to="notification.note | notePage" :title="getNoteSummary(notification.note)">
+		<router-link v-if="notification.type === 'pollVote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<fa :icon="faQuoteLeft"/>
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 			<fa :icon="faQuoteRight"/>
@@ -64,6 +64,7 @@ import { faClock } from '@fortawesome/free-regular-svg-icons';
 import noteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
+import notePage from '../filters/note';
 
 export default Vue.extend({
 	components: {
@@ -141,6 +142,7 @@ export default Vue.extend({
 			this.groupInviteDone = true;
 			this.$root.api('users/groups/invitations/reject', { invitationId: this.notification.invitation.id });
 		},
+		notePage
 	}
 });
 </script>

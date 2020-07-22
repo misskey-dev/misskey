@@ -26,6 +26,7 @@
 import Vue from 'vue';
 import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
+import notePage from '../filters/note';
 
 export default Vue.extend({
 	props: {
@@ -39,6 +40,10 @@ export default Vue.extend({
 		return {
 			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark, faBiohazard
 		};
+	},
+
+	methods: {
+		notePage
 	}
 });
 </script>
