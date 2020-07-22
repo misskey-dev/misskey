@@ -48,7 +48,7 @@
 				</div>
 				<div class="cell">
 					<div class="label"><fa :icon="faDatabase" fixed-width class="icon"/>{{ $t('storageUsage') }}</div>
-					<div class="data">{{ instance.driveUsage | bytes }}</div>
+					<div class="data">{{ bytes(instance.driveUsage) }}</div>
 				</div>
 			</div>
 			<div class="row">
@@ -127,6 +127,7 @@ import MkSelect from '../../components/ui/select.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
+import bytes from '../../filters/bytes';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -220,7 +221,7 @@ export default Vue.extend({
 		}
 	},
 
-	async created() {	
+	async created() {
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([
@@ -474,7 +475,9 @@ export default Vue.extend({
 					}
 				}
 			});
-		}
+		},
+
+		bytes
 	}
 });
 </script>
