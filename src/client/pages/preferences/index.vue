@@ -68,7 +68,27 @@
 	</section>
 
 	<section class="_card">
-		<div class="_title"><fa :icon="faCog"/> {{ $t('accessibility') }}</div>
+		<div class="_title"><fa :icon="faCog"/> {{ $t('appearance') }}</div>
+		<div class="_content">
+			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
+			<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
+			<mk-switch v-model="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</mk-switch>
+			<mk-switch v-model="useOsNativeEmojis">
+				{{ $t('useOsNativeEmojis') }}
+				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
+			</mk-switch>
+		</div>
+		<div class="_content">
+			<div>{{ $t('fontSize') }}</div>
+			<mk-radio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
+			<mk-radio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
+		</div>
+	</section>
+
+	<section class="_card">
+		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<mk-switch v-model="autoReload">
 				{{ $t('autoReloadWhenDisconnected') }}
@@ -76,12 +96,6 @@
 		</div>
 		<div class="_content">
 			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
-			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
-			<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
-			<mk-switch v-model="useOsNativeEmojis">
-				{{ $t('useOsNativeEmojis') }}
-				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
-			</mk-switch>
 			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
 			<mk-switch v-model="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</mk-switch>
 			<mk-switch v-model="fixedWidgetsPosition">{{ $t('fixedWidgetsPosition') }}</mk-switch>
@@ -93,13 +107,6 @@
 
 				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 			</mk-select>
-		</div>
-		<div class="_content">
-			<div>{{ $t('fontSize') }}</div>
-			<mk-radio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
-			<mk-radio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
-			<mk-radio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
-			<mk-radio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
 		</div>
 	</section>
 
@@ -133,6 +140,8 @@ const sounds = [
 	'syuilo/poi1',
 	'syuilo/poi2',
 	'syuilo/pirori',
+	'syuilo/pirori-wet',
+	'syuilo/pirori-square-wet',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
@@ -176,6 +185,11 @@ export default Vue.extend({
 		reduceAnimation: {
 			get() { return !this.$store.state.device.animation; },
 			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
+		},
+
+		useBlurEffectForModal: {
+			get() { return this.$store.state.device.useBlurEffectForModal; },
+			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
 		},
 
 		disableAnimatedMfm: {

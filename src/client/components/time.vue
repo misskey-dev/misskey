@@ -61,6 +61,7 @@ export default Vue.extend({
 	},
 	methods: {
 		tick() {
+			// TODO: パフォーマンス向上のため、このコンポーネントが画面内に表示されている場合のみ更新する
 			this.now = new Date();
 
 			this.tickId = setTimeout(() => {

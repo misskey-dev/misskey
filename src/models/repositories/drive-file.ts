@@ -115,6 +115,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			md5: file.md5,
 			size: file.size,
 			isSensitive: file.isSensitive,
+			blurhash: file.blurhash,
 			properties: file.properties,
 			url: opts.self ? file.url : this.getPublicUrl(file, false, meta),
 			thumbnailUrl: this.getPublicUrl(file, true, meta),

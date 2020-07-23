@@ -1,7 +1,7 @@
 <template>
 <div class="mvcprjjd">
 	<transition name="nav-back">
-		<div class="nav-back"
+		<div class="nav-back _modalBg"
 			v-if="showing"
 			@click="showing = false"
 			@touchstart="showing = false"
@@ -320,13 +320,7 @@ export default Vue.extend({
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
 	> .nav-back {
-		position: fixed;
-		top: 0;
-		left: 0;
 		z-index: 1001;
-		width: 100%;
-		height: 100%;
-		background: var(--modalBg);
 	}
 
 	> .nav {
@@ -359,7 +353,8 @@ export default Vue.extend({
 			left: 0;
 			z-index: 1001;
 			width: $nav-width;
-			height: 100vh;
+			// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+			height: calc(var(--vh, 1vh) * 100);
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);

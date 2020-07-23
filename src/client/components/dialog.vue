@@ -1,7 +1,7 @@
 <template>
 <div class="mk-dialog" :class="{ iconOnly }">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
-		<div class="bg" ref="bg" @click="onBgClick" v-if="show"></div>
+		<div class="bg _modalBg" ref="bg" @click="onBgClick" v-if="show"></div>
 	</transition>
 	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="() => { destroyDom(); }">
 		<div class="main" ref="main" v-if="show">
@@ -243,16 +243,6 @@ export default Vue.extend({
 	&.iconOnly > .main {
 		min-width: 0;
 		width: initial;
-	}
-
-	> .bg {
-		display: block;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0,0,0,0.7);
 	}
 
 	> .main {

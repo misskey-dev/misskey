@@ -13,7 +13,7 @@ export const meta = {
 
 	params: {
 		session: {
-			validator: $.str
+			validator: $.nullable.str
 		},
 
 		name: {
@@ -52,4 +52,8 @@ export default define(meta, async (ps, user) => {
 		iconUrl: ps.iconUrl,
 		permission: ps.permission,
 	});
+
+	return {
+		token: accessToken
+	};
 });

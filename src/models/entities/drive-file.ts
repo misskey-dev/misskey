@@ -67,6 +67,12 @@ export class DriveFile {
 	})
 	public comment: string | null;
 
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: 'The BlurHash string.'
+	})
+	public blurhash: string | null;
+
 	@Column('jsonb', {
 		default: {},
 		comment: 'The any properties of the DriveFile. For example, it includes image width/height.'

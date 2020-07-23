@@ -25,3 +25,36 @@ export function onScrollTop(el: Element, cb) {
 	};
 	container.addEventListener('scroll', onScroll, { passive: true });
 }
+
+export function onScrollBottom(el: Element, cb) {
+	const container = getScrollContainer(el) || window;
+	const onScroll = ev => {
+		if (!document.body.contains(el)) return;
+		const pos = getScrollPosition(el);
+		if (pos + el.clientHeight > el.scrollHeight - 1) {
+			cb();
+			container.removeEventListener('scroll', onscroll);
+		}
+	};
+	container.addEventListener('scroll', onScroll, { passive: true });
+}
+
+export function scroll(el: Element, top: number) {
+	const container = getScrollContainer(el);
+	if (container == null) {
+		window.scroll({ top: top, behavior: 'instant' });
+	} else {
+		container.scrollTop = top;
+	}
+}
+
+export function isBottom(el: Element, asobi = 0) {
+	const container = getScrollContainer(el);
+	const current = container
+		? el.scrollTop + el.offsetHeight
+		: window.scrollY + window.innerHeight;
+	const max = container
+		? el.scrollHeight
+		: document.body.offsetHeight;
+	return current >= (max - asobi);
+}
