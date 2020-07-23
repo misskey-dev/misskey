@@ -26,14 +26,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
 import { faWindowMaximize, faTimes, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XDraggable,

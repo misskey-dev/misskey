@@ -9,13 +9,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCloud, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import { selectDriveFolder } from '../../scripts/select-drive-folder';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 	},

@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { Room } from '../../scripts/room/room';
 import parseAcct from '../../../misc/acct/parse';
 import XPreview from './preview.vue';
@@ -72,7 +72,7 @@ import { selectFile } from '../../scripts/select-file';
 
 let room: Room;
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPreview,
 		MkButton,

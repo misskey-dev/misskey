@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -70,7 +70,7 @@ import { formatTimeString } from '../../misc/format-time-string';
 import { selectDriveFile } from '../scripts/select-drive-file';
 import { noteVisibilities } from '../../types';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XNotePreview,
 		XUploader: () => import('./uploader.vue').then(m => m.default),

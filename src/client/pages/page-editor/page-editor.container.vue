@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		expanded: {
 			type: Boolean,

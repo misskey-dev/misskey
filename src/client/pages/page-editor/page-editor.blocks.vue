@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as XDraggable from 'vuedraggable';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
@@ -22,7 +22,7 @@ import XCounter from './els/page-editor.el.counter.vue';
 import XRadioButton from './els/page-editor.el.radio-button.vue';
 import XCanvas from './els/page-editor.el.canvas.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XDraggable, XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas
 	},

@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { erase } from '../../prelude/array';
 import { addTime } from '../../prelude/time';
@@ -59,7 +59,7 @@ import MkSelect from './ui/select.vue';
 import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkInput,
 		MkSelect,

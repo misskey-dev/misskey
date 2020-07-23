@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faFireAlt } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../scripts/loading';
 import XNotes from '../components/notes.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('featured') as string

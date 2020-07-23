@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XWindow from './window.vue';
 import MkInput from './ui/input.vue';
 import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XWindow,
 		MkInput,

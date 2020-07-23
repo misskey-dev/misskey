@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import XSigninDialog from '../components/signin-dialog.vue';
 import XSignupDialog from '../components/signup-dialog.vue';
@@ -22,7 +22,7 @@ import MkButton from '../components/ui/button.vue';
 import XNotes from '../components/notes.vue';
 import { host } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		XNotes,

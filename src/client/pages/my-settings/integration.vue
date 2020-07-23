@@ -26,13 +26,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { apiUrl } from '../../config';
 import MkButton from '../../components/ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},

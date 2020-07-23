@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 
@@ -90,7 +90,7 @@ import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } f
 import { toUnicode } from 'punycode';
 import { host } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkRadio,
 		MkButton,

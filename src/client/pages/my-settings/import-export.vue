@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faDownload, faUpload, faBoxes } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import { apiUrl } from '../../config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkSelect,

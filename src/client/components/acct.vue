@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import { host } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	props: ['user', 'detail'],
 	data() {
 		return {

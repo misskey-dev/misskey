@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
@@ -58,7 +58,7 @@ import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,

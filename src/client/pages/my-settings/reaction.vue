@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import MkInput from '../../components/ui/input.vue';
@@ -24,7 +24,7 @@ import MkReactionPicker from '../../components/reaction-picker.vue';
 import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
 import { defaultSettings } from '../../store';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkInput,
 		MkButton,

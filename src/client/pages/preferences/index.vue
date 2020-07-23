@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
@@ -148,7 +148,7 @@ const sounds = [
 	'noizenecio/kick_gaba',
 ];
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('settings') as string

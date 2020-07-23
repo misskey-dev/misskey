@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as XDraggable from 'vuedraggable';
 import "prismjs";
 import 'prismjs/themes/prism-okaidia.css';
@@ -105,7 +105,7 @@ import { url } from '../../config';
 import { collectPageVars } from '../../scripts/collect-page-vars';
 import { selectDriveFile } from '../../scripts/select-drive-file';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput, PrismEditor
 	},

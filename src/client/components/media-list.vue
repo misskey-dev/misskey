@@ -15,12 +15,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XBanner,
 		XImage,

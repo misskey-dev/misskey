@@ -54,13 +54,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import XUserList from '../components/user-list.vue';
 import MkContainer from '../components/ui/container.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('explore') as string

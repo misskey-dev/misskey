@@ -39,11 +39,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkSignin from '../components/signin.vue';
 import MkButton from '../components/ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkSignin,
 		MkButton,

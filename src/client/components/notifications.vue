@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XNotification,
 		XList,

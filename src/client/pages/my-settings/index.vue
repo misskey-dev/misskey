@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import XProfileSetting from './profile.vue';
 import XPrivacySetting from './privacy.vue';
@@ -54,7 +54,7 @@ import XApi from './api.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('settings') as string

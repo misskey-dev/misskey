@@ -4,9 +4,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 
-export default Vue.extend({
+export default defineComponent({
 	created() {
 		const acct = new URL(location.href).searchParams.get('acct');
 		if (acct == null) return;

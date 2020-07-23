@@ -23,14 +23,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
 import { formatTimeString } from '../../../misc/format-time-string';
 import { selectFile } from '../../scripts/select-file';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XUploader: () => import('../../components/uploader.vue').then(m => m.default),
 	},

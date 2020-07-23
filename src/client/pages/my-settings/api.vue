@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faKey, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton, MkInput
 	},

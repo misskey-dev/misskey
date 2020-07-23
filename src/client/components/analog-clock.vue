@@ -34,10 +34,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as tinycolor from 'tinycolor2';
 
-export default Vue.extend({
+export default defineComponent({
 	data() {
 		return {
 			now: new Date(),

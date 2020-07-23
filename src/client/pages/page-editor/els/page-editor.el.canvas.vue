@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPaintBrush, faMagic } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '../../../components/ui/input.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkInput
 	},

@@ -33,12 +33,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
 import { url as local, lang } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		url: {
 			type: String,

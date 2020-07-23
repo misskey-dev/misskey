@@ -15,11 +15,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import { host as localHost } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		username: {
 			type: String,

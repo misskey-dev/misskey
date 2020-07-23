@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
@@ -107,7 +107,7 @@ import { focusPrev, focusNext } from '../scripts/focus';
 import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XSub,
 		XNoteHeader,

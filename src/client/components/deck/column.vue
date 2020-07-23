@@ -32,11 +32,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		column: {
 			type: Object,

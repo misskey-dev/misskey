@@ -20,12 +20,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkSelect,
 		MkSwitch,

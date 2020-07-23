@@ -13,13 +13,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
 import XFileThumbnail from './drive-file-thumbnail.vue'
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XDraggable,
 		XFileThumbnail

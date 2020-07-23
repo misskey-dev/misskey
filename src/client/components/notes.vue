@@ -28,13 +28,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import paging from '../scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
 import MkButton from './ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XNote, XList, MkButton
 	},

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
@@ -32,7 +32,7 @@ import XTimeline from '../components/timeline.vue';
 import XPostForm from '../components/post-form.vue';
 import { scroll } from '../scripts/scroll';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('timeline') as string

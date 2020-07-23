@@ -118,7 +118,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '../../components/window.vue';
@@ -139,7 +139,7 @@ const alpha = hex => {
 	return `rgba(${r}, ${g}, ${b}, 0.1)`;
 };
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XWindow,
 		MkSelect,

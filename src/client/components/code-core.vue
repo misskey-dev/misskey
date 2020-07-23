@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import XPrism from 'vue-prism-component';
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPrism
 	},

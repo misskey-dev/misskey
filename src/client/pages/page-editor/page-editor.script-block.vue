@@ -56,14 +56,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/hpml/index';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkTextarea
 	},

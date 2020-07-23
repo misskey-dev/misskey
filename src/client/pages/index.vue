@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import Home from './index.home.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	name: 'index',
 
 	components: {

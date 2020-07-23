@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faAt } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XMentions from '../../pages/mentions.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XMentions

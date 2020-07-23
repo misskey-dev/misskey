@@ -4,12 +4,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import DefaultUI from './default.vue';
 import DeckUI from './deck.vue';
 import { instanceName, deckmode } from './config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		DefaultUI,
 		DeckUI,

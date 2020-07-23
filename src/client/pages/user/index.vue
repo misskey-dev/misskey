@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
@@ -120,7 +120,7 @@ import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '../../scripts/scroll';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XUserTimeline,
 		XNote,

@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { hostname } from '../../config';
 import { byteify, hexify, stringify } from '../../scripts/2fa';
@@ -72,7 +72,7 @@ import MkInfo from '../../components/ui/info.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton, MkInfo, MkInput, MkSwitch
 	},

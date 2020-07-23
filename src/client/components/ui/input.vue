@@ -69,11 +69,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import debounce from 'v-debounce';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
-export default Vue.extend({
+export default defineComponent({
 	directives: {
 		debounce
 	},

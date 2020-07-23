@@ -6,10 +6,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkRadio from '../ui/radio.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkRadio
 	},
