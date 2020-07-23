@@ -13,6 +13,7 @@ import { deserialize } from '@syuilo/aiscript/built/serializer';
 import VueHotkey from './scripts/hotkey';
 import Root from './root.vue';
 import MiOS from './mios';
+import widgets from './widgets';
 import { version, langs, getLocale } from './config';
 import { store } from './store';
 import { router } from './router';
@@ -46,21 +47,10 @@ app.use(VAnimateCss);
 app.use(i18n);
 app.component('fa', FontAwesomeIcon);
 
-require('./directives');
-require('./components');
-require('./widgets');
+widgets(app);
 
-app.mixin({
-	methods: {
-		destroyDom() {
-			this.$destroy();
-
-			if (this.$el.parentNode) {
-				this.$el.parentNode.removeChild(this.$el);
-			}
-		}
-	}
-});
+//require('./directives');
+//require('./components');
 
 console.info(`Misskey v${version}`);
 
