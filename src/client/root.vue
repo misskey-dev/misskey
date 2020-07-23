@@ -7,6 +7,7 @@
 import Vue from 'vue';
 import DefaultUI from './default.vue';
 import DeckUI from './deck.vue';
+import { instanceName, deckmode } from './config';
 
 export default Vue.extend({
 	components: {

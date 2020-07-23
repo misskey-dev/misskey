@@ -3,11 +3,9 @@
  */
 
 import { createApp } from 'vue';
-import Vuex from 'vuex';
 import VueMeta from 'vue-meta';
-import PortalVue from 'portal-vue';
 import VAnimateCss from 'v-animate-css';
-import VueI18n from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
@@ -15,27 +13,37 @@ import { deserialize } from '@syuilo/aiscript/built/serializer';
 import VueHotkey from './scripts/hotkey';
 import Root from './root.vue';
 import MiOS from './mios';
-import { version, langs, instanceName, getLocale, deckmode } from './config';
-import PostFormDialog from './components/post-form-dialog.vue';
-import Dialog from './components/dialog.vue';
-import Menu from './components/menu.vue';
-import Form from './components/form-window.vue';
+import { version, langs, getLocale } from './config';
+import { store } from './store';
 import { router } from './router';
 import { applyTheme, lightTheme } from './scripts/theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
-import createStore from './store';
 import { clientDb, get, count } from './db';
 import { setI18nContexts } from './scripts/set-i18n-contexts';
 import { createPluginEnv } from './scripts/aiscript/api';
 
+//#region Fetch locale data
+const i18n = createI18n({
+	legacy: true,
+});
+
+await count(clientDb.i18n).then(async n => {
+	if (n === 0) return setI18nContexts(lang, version, i18n);
+	if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
+
+	i18n.locale = lang;
+	i18n.setLocaleMessage(lang, await getLocale());
+});
+//#endregion
+
 const app = createApp(Root);
 
-app.use(Vuex);
+app.use(store);
+app.use(router);
 app.use(VueHotkey);
 app.use(VueMeta);
-app.use(PortalVue);
 app.use(VAnimateCss);
-app.use(VueI18n);
+app.use(i18n);
 app.component('fa', FontAwesomeIcon);
 
 require('./directives');
@@ -112,8 +120,6 @@ html.setAttribute('lang', lang);
 // アプリ基底要素マウント
 document.body.innerHTML = '<div id="app"></div>';
 
-const store = createStore();
-
 // 他のタブと永続化されたstateを同期
 window.addEventListener('storage', e => {
 	if (e.key === 'vuex') {
@@ -129,18 +135,6 @@ window.addEventListener('storage', e => {
 const os = new MiOS(store);
 
 os.init(async () => {
-	//#region Fetch locale data
-	const i18n = new VueI18n();
-
-	await count(clientDb.i18n).then(async n => {
-		if (n === 0) return setI18nContexts(lang, version, i18n);
-		if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
-
-		i18n.locale = lang;
-		i18n.setLocaleMessage(lang, await getLocale());
-	});
-	//#endregion
-
 	app.mount('#app');
 
 	store.watch(state => state.device.darkMode, darkMode => {

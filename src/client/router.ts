@@ -1,15 +1,12 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import MkIndex from './pages/index.vue';
-
-Vue.use(VueRouter);
 
 const page = (path: string) => () => import(`./pages/${path}.vue`).then(m => m.default);
 
 let indexScrollPos = 0;
 
-export const router = new VueRouter({
-	mode: 'history',
+export const router = new createRouter({
+	history: createWebHistory(),
 	routes: [
 		{ path: '/', name: 'index', component: MkIndex },
 		{ path: '/@:user', name: 'user', component: page('user/index'), children: [
@@ -67,7 +64,7 @@ export const router = new VueRouter({
 		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
-		{ path: '*', component: page('not-found') }
+		{ path: '/:catchAll(.*)', component: page('not-found') }
 	],
 	// なんかHacky
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
