@@ -97,6 +97,13 @@ export default () => new Vuex.Store({
 		i: null,
 		pendingApiRequestsCount: 0,
 		spinner: null,
+		dialogs: [] as {
+			id: any;
+			type: 'info' | 'question' | 'warn' | 'success' | 'error';
+			title: string;
+			text: string;
+			result: any;
+		}[],
 
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
@@ -235,6 +242,10 @@ export default () => new Vuex.Store({
 
 		updateIKeyValue(state, { key, value }) {
 			state.i[key] = value;
+		},
+
+		showDialog(state, dialog) {
+			state.dialogs.push(dialog);
 		},
 
 		initPlugin(state, { plugin, aiscript }) {

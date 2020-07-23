@@ -2,7 +2,7 @@
  * Client entry point
  */
 
-import Vue from 'vue';
+import { createApp } from 'vue';
 import Vuex from 'vuex';
 import VueMeta from 'vue-meta';
 import PortalVue from 'portal-vue';
@@ -13,8 +13,7 @@ import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
 
 import VueHotkey from './scripts/hotkey';
-import App from './app.vue';
-import Deck from './deck.vue';
+import Root from './root.vue';
 import MiOS from './mios';
 import { version, langs, instanceName, getLocale, deckmode } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
@@ -29,19 +28,21 @@ import { clientDb, get, count } from './db';
 import { setI18nContexts } from './scripts/set-i18n-contexts';
 import { createPluginEnv } from './scripts/aiscript/api';
 
-Vue.use(Vuex);
-Vue.use(VueHotkey);
-Vue.use(VueMeta);
-Vue.use(PortalVue);
-Vue.use(VAnimateCss);
-Vue.use(VueI18n);
-Vue.component('fa', FontAwesomeIcon);
+const app = createApp(Root);
+
+app.use(Vuex);
+app.use(VueHotkey);
+app.use(VueMeta);
+app.use(PortalVue);
+app.use(VAnimateCss);
+app.use(VueI18n);
+app.component('fa', FontAwesomeIcon);
 
 require('./directives');
 require('./components');
 require('./widgets');
 
-Vue.mixin({
+app.mixin({
 	methods: {
 		destroyDom() {
 			this.$destroy();
@@ -140,68 +141,7 @@ os.init(async () => {
 	});
 	//#endregion
 
-	const app = new Vue({
-		store: store,
-		i18n,
-		metaInfo: {
-			title: null,
-			titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
-		},
-		data() {
-			return {
-				stream: os.stream,
-				isMobile: isMobile,
-				i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
-			};
-		},
-		// TODO: ここらへんのメソッド全部Vuexに移したい
-		methods: {
-			dialog(opts) {
-				const vm = this.new(Dialog, opts);
-				const p: any = new Promise((res) => {
-					vm.$once('ok', result => res({ canceled: false, result }));
-					vm.$once('cancel', () => res({ canceled: true }));
-				});
-				p.close = () => {
-					vm.close();
-				};
-				return p;
-			},
-			menu(opts) {
-				const vm = this.new(Menu, opts);
-				const p: any = new Promise((res) => {
-					vm.$once('closed', () => res());
-				});
-				return p;
-			},
-			form(title, form) {
-				const vm = this.new(Form, { title, form });
-				return new Promise((res) => {
-					vm.$once('ok', result => res({ canceled: false, result }));
-					vm.$once('cancel', () => res({ canceled: true }));
-				});
-			},
-			post(opts, cb) {
-				if (!this.$store.getters.isSignedIn) return;
-				const vm = this.new(PostFormDialog, opts);
-				if (cb) vm.$once('closed', cb);
-				(vm as any).focus();
-			},
-			sound(type: string) {
-				if (this.$store.state.device.sfxVolume === 0) return;
-				const sound = this.$store.state.device['sfx' + type.substr(0, 1).toUpperCase() + type.substr(1)];
-				if (sound == null) return;
-				const audio = new Audio(`/assets/sounds/${sound}.mp3`);
-				audio.volume = this.$store.state.device.sfxVolume;
-				audio.play();
-			}
-		},
-		router: router,
-		render: createEl => createEl(deckmode ? Deck : App)
-	});
-
-	// マウント
-	app.$mount('#app');
+	app.mount('#app');
 
 	store.watch(state => state.device.darkMode, darkMode => {
 		import('./scripts/theme').then(({ builtinThemes }) => {

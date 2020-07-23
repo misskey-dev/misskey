@@ -1,5 +1,6 @@
 <template>
 <component :is="deck ? DeckUI : DefaultUI"/>
+<!-- Render modals here -->
 </template>
 
 <script lang="ts">
@@ -13,14 +14,22 @@ export default Vue.extend({
 		DeckUI,
 	},
 
+	metaInfo: {
+		title: null,
+		titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
+	},
+
 	data() {
 		return {
+			stream: os.stream,
+			isMobile: isMobile,
+			i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
 		};
 	},
 
 	methods: {
 		dialog(opts) {
-			//this.$store.openDialog();
+			this.$store.commit('showDialog', opts);
 		}
 	}
 });
