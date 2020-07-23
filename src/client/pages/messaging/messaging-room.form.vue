@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
@@ -32,7 +32,7 @@ import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
 	components: {
-		XUploader: () => import('../../components/uploader.vue').then(m => m.default),
+		XUploader: defineAsyncComponent(() => import('../../components/uploader.vue')),
 	},
 	props: {
 		user: {

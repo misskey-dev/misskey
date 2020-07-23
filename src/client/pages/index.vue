@@ -3,15 +3,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import Home from './index.home.vue';
 
 export default Vue.extend({
-	name: 'index',
+	name: 'Index',
 
 	components: {
 		Home,
-		Welcome: () => import('./index.welcome.vue').then(m => m.default),
+		Welcome: defineAsyncComponent(() => import('./index.welcome.vue')),
 	},
 
 	data() {

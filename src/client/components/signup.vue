@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
@@ -63,7 +63,15 @@ export default Vue.extend({
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: () => import('./captcha.vue').then(x => x.default),
+		captcha: defineAsyncComponent(() => import('./captcha.vue')),
+	},
+
+	props: {
+		autoSet: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
 	},
 
 	data() {
@@ -82,14 +90,6 @@ export default Vue.extend({
 			hCaptchaResponse: null,
 			reCaptchaResponse: null,
 			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
-		}
-	},
-
-	props: {
-		autoSet: {
-			type: Boolean,
-			required: false,
-			default: false,
 		}
 	},
 

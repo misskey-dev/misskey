@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
@@ -127,8 +127,8 @@ export default Vue.extend({
 		MkFollowButton,
 		MkContainer,
 		MkRemoteCaution,
-		XPhotos: () => import('./index.photos.vue').then(m => m.default),
-		XActivity: () => import('./index.activity.vue').then(m => m.default),
+		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
+		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},
 
 	metaInfo() {

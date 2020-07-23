@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -73,9 +73,9 @@ import { noteVisibilities } from '../../types';
 export default Vue.extend({
 	components: {
 		XNotePreview,
-		XUploader: () => import('./uploader.vue').then(m => m.default),
-		XPostFormAttaches: () => import('./post-form-attaches.vue').then(m => m.default),
-		XPollEditor: () => import('./poll-editor.vue').then(m => m.default)
+		XUploader: defineAsyncComponent(() => import('./uploader.vue')),
+		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
+		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
 	},
 
 	props: {
