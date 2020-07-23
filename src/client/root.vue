@@ -24,7 +24,6 @@ export default Vue.extend({
 		return {
 			stream: os.stream,
 			isMobile: isMobile,
-			i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
 		};
 	},
 

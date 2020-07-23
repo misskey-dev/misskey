@@ -146,6 +146,9 @@ module.exports = {
 	resolveLoader: {
 		modules: ['node_modules']
 	},
+	experiments: {
+		topLevelAwait: true
+	},
 	devtool: false, //'source-map',
 	mode: isProduction ? 'production' : 'development'
 };
