@@ -22,6 +22,7 @@ export default defineComponent({
 	},
 
 	props: {
+		// TODO: propで渡すとvueによって無駄なobserveがされるのでどうにかする
 		stream: {
 
 		},
