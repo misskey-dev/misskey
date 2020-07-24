@@ -3,7 +3,7 @@
 	<div class="_title"><fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 	<div class="_content">
 		<mk-input v-model="reactions" style="font-family: 'Segoe UI Emoji', 'Noto Color Emoji', Roboto, HelveticaNeue, Arial, sans-serif">
-			{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></template>
+			{{ $t('reaction') }}<template #desc v-t="'reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji'"></button></template>
 		</mk-input>
 		<mk-button inline @click="setDefault"><fa :icon="faUndo"/> {{ $t('default') }}</mk-button>
 	</div>

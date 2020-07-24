@@ -2,14 +2,14 @@
 <div class="mk-notes">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-		<div>{{ $t('noNotes') }}</div>
+		<div v-t="'noNotes'"></div>
 	</div>
 
 	<mk-error v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
 		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+			<template v-if="!moreFetching" v-t="'loadMore'"></template>
 			<template v-if="moreFetching"><mk-loading inline/></template>
 		</button>
 	</div>
@@ -20,7 +20,7 @@
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
 		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+			<template v-if="!moreFetching" v-t="'loadMore'"></template>
 			<template v-if="moreFetching"><mk-loading inline/></template>
 		</button>
 	</div>

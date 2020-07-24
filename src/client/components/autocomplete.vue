@@ -8,7 +8,7 @@
 			</span>
 			<span class="username">@{{ user | acct }}</span>
 		</li>
-		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose">{{ $t('selectUser') }}</li>
+		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose" v-t="'selectUser'"></li>
 	</ol>
 	<ol class="hashtags" ref="suggests" v-if="hashtags.length > 0">
 		<li v-for="hashtag in hashtags" @click="complete(type, hashtag)" @keydown="onKeydown" tabindex="-1">

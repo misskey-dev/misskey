@@ -21,7 +21,7 @@
 					<fa :icon="faSpinner" pulse v-if="type === 'waiting'"/>
 				</div>
 				<header v-if="title" v-html="title"></header>
-				<header v-if="title == null && user">{{ $t('enterUsername') }}</header>
+				<header v-if="title == null && user" v-t="'enterUsername'"></header>
 				<div class="body" v-if="text" v-html="text"></div>
 				<mk-input v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></mk-input>
 				<mk-input v-if="user" v-model="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></mk-input>
@@ -37,7 +37,7 @@
 				</mk-select>
 				<div class="buttons" v-if="!iconOnly && (showOkButton || showCancelButton) && !actions">
 					<mk-button inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('ok') : $t('gotIt') }}</mk-button>
-					<mk-button inline @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('cancel') }}</mk-button>
+					<mk-button inline @click="cancel" v-if="showCancelButton || input || select || user" v-t="'cancel'"></mk-button>
 				</div>
 				<div class="buttons" v-if="actions">
 					<mk-button v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</mk-button>

@@ -14,11 +14,11 @@
 		<div class="_footer">
 			<small>@{{ page.user.username }}</small>
 			<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
-				<router-link :to="`/my/pages/edit/${page.id}`">{{ $t('_pages.editThisPage') }}</router-link>
-				<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)">{{ $t('unpin') }}</a>
-				<a v-else @click="pin(true)">{{ $t('pin') }}</a>
+				<router-link :to="`/my/pages/edit/${page.id}`" v-t="'_pages.editThisPage'"></router-link>
+				<a v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)" v-t="'unpin'"></a>
+				<a v-else @click="pin(true)" v-t="'pin'"></a>
 			</template>
-			<router-link :to="`./${page.name}/view-source`">{{ $t('_pages.viewSource') }}</router-link>
+			<router-link :to="`./${page.name}/view-source`" v-t="'_pages.viewSource'"></router-link>
 			<div class="like">
 				<button class="_button" @click="unlike()" v-if="page.isLiked" :title="$t('_pages.unlike')"><fa :icon="faHeartS"/></button>
 				<button class="_button" @click="like()" v-else :title="$t('_pages.like')"><fa :icon="faHeartR"/></button>

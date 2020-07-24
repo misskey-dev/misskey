@@ -1,13 +1,13 @@
 <template>
 <div class="mk-instance-users">
 	<portal to="icon"><fa :icon="faUsers"/></portal>
-	<portal to="title">{{ $t('users') }}</portal>
+	<portal to="title" v-t="'users'"></portal>
 
 	<section class="_card lookup">
 		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
 			<mk-input class="target" v-model="target" type="text" @enter="showUser()">
-				<span>{{ $t('usernameOrUserId') }}</span>
+				<span v-t="'usernameOrUserId'"></span>
 			</mk-input>
 			<mk-button @click="showUser()" primary><fa :icon="faSearch"/> {{ $t('lookup') }}</mk-button>
 		</div>
@@ -21,34 +21,34 @@
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
 				<mk-select v-model="sort" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('sort') }}</template>
+					<template #label v-t="'sort'"></template>
 					<option value="-createdAt">{{ $t('registeredDate') }} ({{ $t('ascendingOrder') }})</option>
 					<option value="+createdAt">{{ $t('registeredDate') }} ({{ $t('descendingOrder') }})</option>
 					<option value="-updatedAt">{{ $t('lastUsed') }} ({{ $t('ascendingOrder') }})</option>
 					<option value="+updatedAt">{{ $t('lastUsed') }} ({{ $t('descendingOrder') }})</option>
 				</mk-select>
 				<mk-select v-model="state" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('state') }}</template>
-					<option value="all">{{ $t('all') }}</option>
-					<option value="available">{{ $t('normal') }}</option>
-					<option value="admin">{{ $t('administrator') }}</option>
-					<option value="moderator">{{ $t('moderator') }}</option>
-					<option value="silenced">{{ $t('silence') }}</option>
-					<option value="suspended">{{ $t('suspend') }}</option>
+					<template #label v-t="'state'"></template>
+					<option value="all" v-t="'all'"></option>
+					<option value="available" v-t="'normal'"></option>
+					<option value="admin" v-t="'administrator'"></option>
+					<option value="moderator" v-t="'moderator'"></option>
+					<option value="silenced" v-t="'silence'"></option>
+					<option value="suspended" v-t="'suspend'"></option>
 				</mk-select>
 				<mk-select v-model="origin" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('instance') }}</template>
-					<option value="combined">{{ $t('all') }}</option>
-					<option value="local">{{ $t('local') }}</option>
-					<option value="remote">{{ $t('remote') }}</option>
+					<template #label v-t="'instance'"></template>
+					<option value="combined" v-t="'all'"></option>
+					<option value="local" v-t="'local'"></option>
+					<option value="remote" v-t="'remote'"></option>
 				</mk-select>
 			</div>
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
 				<mk-input v-model="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @input="$refs.users.reload()">
-					<span>{{ $t('username') }}</span>
+					<span v-t="'username'"></span>
 				</mk-input>
 				<mk-input v-model="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @input="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
-					<span>{{ $t('host') }}</span>
+					<span v-t="'host'"></span>
 				</mk-input>
 			</div>
 		</div>

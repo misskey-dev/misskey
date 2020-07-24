@@ -2,8 +2,8 @@
 <div class="mk-media-banner">
 	<div class="sensitive" v-if="media.isSensitive && hide" @click="hide = false">
 		<span class="icon"><fa :icon="faExclamationTriangle"/></span>
-		<b>{{ $t('sensitive') }}</b>
-		<span>{{ $t('clickToShow') }}</span>
+		<b v-t="'sensitive'"></b>
+		<span v-t="'clickToShow'"></span>
 	</div>
 	<div class="audio" v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'">
 		<audio class="audio"

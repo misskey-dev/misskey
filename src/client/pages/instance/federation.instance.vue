@@ -5,11 +5,11 @@
 		<div class="table info">
 			<div class="row">
 				<div class="cell">
-					<div class="label">{{ $t('software') }}</div>
+					<div class="label" v-t="'software'"></div>
 					<div class="data">{{ instance.softwareName || '?' }}</div>
 				</div>
 				<div class="cell">
-					<div class="label">{{ $t('version') }}</div>
+					<div class="label" v-t="'version'"></div>
 					<div class="data">{{ instance.softwareVersion || '?' }}</div>
 				</div>
 			</div>
@@ -70,24 +70,24 @@
 		</div>
 		<div class="chart">
 			<div class="header">
-				<span class="label">{{ $t('charts') }}</span>
+				<span class="label" v-t="'charts'"></span>
 				<div class="selects">
 					<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
-						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
-						<option value="users">{{ $t('_instanceCharts.users') }}</option>
-						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
-						<option value="notes">{{ $t('_instanceCharts.notes') }}</option>
-						<option value="notes-total">{{ $t('_instanceCharts.notesTotal') }}</option>
-						<option value="ff">{{ $t('_instanceCharts.ff') }}</option>
-						<option value="ff-total">{{ $t('_instanceCharts.ffTotal') }}</option>
-						<option value="drive-usage">{{ $t('_instanceCharts.cacheSize') }}</option>
-						<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
-						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
-						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
+						<option value="requests" v-t="'_instanceCharts.requests'"></option>
+						<option value="users" v-t="'_instanceCharts.users'"></option>
+						<option value="users-total" v-t="'_instanceCharts.usersTotal'"></option>
+						<option value="notes" v-t="'_instanceCharts.notes'"></option>
+						<option value="notes-total" v-t="'_instanceCharts.notesTotal'"></option>
+						<option value="ff" v-t="'_instanceCharts.ff'"></option>
+						<option value="ff-total" v-t="'_instanceCharts.ffTotal'"></option>
+						<option value="drive-usage" v-t="'_instanceCharts.cacheSize'"></option>
+						<option value="drive-usage-total" v-t="'_instanceCharts.cacheSizeTotal'"></option>
+						<option value="drive-files" v-t="'_instanceCharts.files'"></option>
+						<option value="drive-files-total" v-t="'_instanceCharts.filesTotal'"></option>
 					</mk-select>
 					<mk-select v-model="chartSpan" style="margin: 0;">
-						<option value="hour">{{ $t('perHour') }}</option>
-						<option value="day">{{ $t('perDay') }}</option>
+						<option value="hour" v-t="'perHour'"></option>
+						<option value="day" v-t="'perDay'"></option>
 					</mk-select>
 				</div>
 			</div>
@@ -96,21 +96,21 @@
 			</div>
 		</div>
 		<div class="operations">
-			<span class="label">{{ $t('operations') }}</span>
-			<mk-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
-			<mk-switch :value="isBlocked" class="switch" @change="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
+			<span class="label" v-t="'operations'"></span>
+			<mk-switch v-model="isSuspended" class="switch" v-t="'stopActivityDelivery'"></mk-switch>
+			<mk-switch :value="isBlocked" class="switch" @change="changeBlock" v-t="'blockThisInstance'"></mk-switch>
 			<details>
-				<summary>{{ $t('deleteAllFiles') }}</summary>
+				<summary v-t="'deleteAllFiles'"></summary>
 				<mk-button @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
 			</details>
 			<details>
-				<summary>{{ $t('removeAllFollowing') }}</summary>
+				<summary v-t="'removeAllFollowing'"></summary>
 				<mk-button @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</mk-button>
 				<mk-info warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</mk-info>
 			</details>
 		</div>
 		<details class="metadata">
-			<summary class="label">{{ $t('metadata') }}</summary>
+			<summary class="label" v-t="'metadata'"></summary>
 			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
 	</div>

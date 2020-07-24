@@ -1,7 +1,7 @@
 <template>
 <div class="qkcjvfiv">
 	<portal to="icon"><fa :icon="faListUl"/></portal>
-	<portal to="title">{{ $t('manageLists') }}</portal>
+	<portal to="title" v-t="'manageLists'"></portal>
 
 	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createList') }}</mk-button>
 

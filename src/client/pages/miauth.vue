@@ -7,20 +7,20 @@
 	</div>
 	<div class="denied _card" v-if="state == 'denied'">
 		<div class="_content">
-			<p>{{ $t('_auth.denied') }}</p>
+			<p v-t="'_auth.denied'"></p>
 		</div>
 	</div>
 	<div class="accepted _card" v-else-if="state == 'accepted'">
 		<div class="_content">
 			<p v-if="callback">{{ $t('_auth.callback') }}<mk-ellipsis/></p>
-			<p v-else>{{ $t('_auth.pleaseGoBack') }}</p>
+			<p v-else v-t="'_auth.pleaseGoBack'"></p>
 		</div>
 	</div>
 	<div class="_card" v-else>
 		<div class="_title" v-if="name">{{ $t('_auth.shareAccess', { name: name }) }}</div>
-		<div class="_title" v-else>{{ $t('_auth.shareAccessAsk') }}</div>
+		<div class="_title" v-else v-t="'_auth.shareAccessAsk'"></div>
 		<div class="_content">
-			<p>{{ $t('_auth.permissionAsk') }}</p>
+			<p v-t="'_auth.permissionAsk'"></p>
 			<ul>
 				<template v-for="p in permission">
 					<li :key="p">{{ $t(`_permissions.${p}`) }}</li>
@@ -28,8 +28,8 @@
 			</ul>
 		</div>
 		<div class="_footer">
-			<mk-button @click="deny" inline>{{ $t('cancel') }}</mk-button>
-			<mk-button @click="accept" inline primary>{{ $t('accept') }}</mk-button>
+			<mk-button @click="deny" inline v-t="'cancel'"></mk-button>
+			<mk-button @click="accept" inline primary v-t="'accept'"></mk-button>
 		</div>
 	</div>
 </div>

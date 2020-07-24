@@ -1,18 +1,18 @@
 <template>
 <div class="ztgjmzrw">
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
-	<portal to="title">{{ $t('announcements') }}</portal>
+	<portal to="title" v-t="'announcements'"></portal>
 	<mk-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 	<section class="_card announcements">
 		<div class="_content announcement" v-for="announcement in announcements">
 			<mk-input v-model="announcement.title">
-				<span>{{ $t('title') }}</span>
+				<span v-t="'title'"></span>
 			</mk-input>
 			<mk-textarea v-model="announcement.text">
-				<span>{{ $t('text') }}</span>
+				<span v-t="'text'"></span>
 			</mk-textarea>
 			<mk-input v-model="announcement.imageUrl">
-				<span>{{ $t('imageUrl') }}</span>
+				<span v-t="'imageUrl'"></span>
 			</mk-input>
 			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">

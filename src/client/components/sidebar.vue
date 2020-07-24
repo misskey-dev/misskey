@@ -29,14 +29,14 @@
 				</template>
 				<div class="divider"></div>
 				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
-					<fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
+					<fa :icon="faServer" fixed-width/><span class="text" v-t="'instance'"></span>
 				</button>
 				<button class="item _button" @click="more">
-					<fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+					<fa :icon="faEllipsisH" fixed-width/><span class="text" v-t="'more'"></span>
 					<i v-if="otherNavItemIndicated"><fa :icon="faCircle"/></i>
 				</button>
 				<router-link class="item" active-class="active" to="/preferences">
-					<fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
+					<fa :icon="faCog" fixed-width/><span class="text" v-t="'settings'"></span>
 				</router-link>
 			</div>
 		</nav>

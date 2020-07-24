@@ -6,15 +6,15 @@
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_card">
 			<div class="_content">
-				<mk-button inline @click="renameList()">{{ $t('rename') }}</mk-button>
-				<mk-button inline @click="deleteList()">{{ $t('delete') }}</mk-button>
+				<mk-button inline @click="renameList()" v-t="'rename'"></mk-button>
+				<mk-button inline @click="deleteList()" v-t="'delete'"></mk-button>
 			</div>
 		</div>
 	</transition>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_card members">
-			<div class="_title">{{ $t('members') }}</div>
+			<div class="_title" v-t="'members'"></div>
 			<div class="_content">
 				<div class="users">
 					<div class="user" v-for="user in users" :key="user.id">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div class="_footer">
-				<mk-button inline @click="addUser()">{{ $t('addUser') }}</mk-button>
+				<mk-button inline @click="addUser()" v-t="'addUser'"></mk-button>
 			</div>
 		</div>
 	</transition>
