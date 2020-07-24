@@ -24,7 +24,7 @@
 		<x-note-preview class="preview" v-if="renote" :note="renote"/>
 		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
-			<span style="margin-right: 8px;" v-t="'recipient'"></span>
+			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers" :key="u.id">
 					<mk-acct :user="u"/>

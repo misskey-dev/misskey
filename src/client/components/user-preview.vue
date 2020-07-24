@@ -12,13 +12,13 @@
 		</div>
 		<div class="status">
 			<div>
-				<p v-t="'notes'"></p><span>{{ u.notesCount }}</span>
+				<p>{{ $t('notes') }}</p><span>{{ u.notesCount }}</span>
 			</div>
 			<div>
-				<p v-t="'following'"></p><span>{{ u.followingCount }}</span>
+				<p>{{ $t('following') }}</p><span>{{ u.followingCount }}</span>
 			</div>
 			<div>
-				<p v-t="'followers'"></p><span>{{ u.followersCount }}</span>
+				<p>{{ $t('followers') }}</p><span>{{ u.followersCount }}</span>
 			</div>
 		</div>
 		<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && u.id != $store.state.i.id" :user="u" mini/>

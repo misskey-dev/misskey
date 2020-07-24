@@ -14,7 +14,7 @@
 		</button>
 	</portal>
 
-	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()" v-t="'newNoteRecived'"></button></div>
+	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 
 	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 

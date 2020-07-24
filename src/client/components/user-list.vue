@@ -6,7 +6,7 @@
 
 	<div class="efvhhmdq">
 		<div class="no-users" v-if="empty">
-			<p v-t="'noUsers'"></p>
+			<p>{{ $t('noUsers') }}</p>
 		</div>
 		<div class="user" v-for="user in users" :key="user.id">
 			<mk-avatar class="avatar" :user="user"/>
@@ -17,7 +17,7 @@
 				</div>
 				<div class="description">
 					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-					<span v-else class="empty" v-t="'noAccountDescription'"></span>
+					<span v-else class="empty">{{ $t('noAccountDescription') }}</span>
 				</div>
 			</div>
 			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>

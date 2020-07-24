@@ -1,9 +1,9 @@
 <template>
 <div class="nsbbhtug" v-if="hasDisconnected" @click="resetDisconnected">
-	<div v-t="'disconnectedFromServer'"></div>
+	<div>{{ $t('disconnectedFromServer') }}</div>
 	<div class="command">
-		<button class="_textButton" @click="reload" v-t="'reload'"></button>
-		<button class="_textButton" v-t="'doNothing'"></button>
+		<button class="_textButton" @click="reload">{{ $t('reload') }}</button>
+		<button class="_textButton">{{ $t('doNothing') }}</button>
 	</div>
 </div>
 </template>

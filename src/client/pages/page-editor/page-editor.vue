@@ -14,28 +14,28 @@
 			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
 
 			<mk-input v-model="title">
-				<span v-t="'_pages.title'"></span>
+				<span>{{ $t('_pages.title') }}</span>
 			</mk-input>
 
 			<template v-if="showOptions">
 				<mk-input v-model="summary">
-					<span v-t="'_pages.summary'"></span>
+					<span>{{ $t('_pages.summary') }}</span>
 				</mk-input>
 
 				<mk-input v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-					<span v-t="'_pages.url'"></span>
+					<span>{{ $t('_pages.url') }}</span>
 				</mk-input>
 
-				<mk-switch v-model="alignCenter" v-t="'_pages.alignCenter'"></mk-switch>
+				<mk-switch v-model="alignCenter">{{ $t('_pages.alignCenter') }}</mk-switch>
 
 				<mk-select v-model="font">
 					<template #label>{{ $t('_pages.font') }}</template>
-					<option value="serif" v-t="'_pages.fontSerif'"></option>
-					<option value="sans-serif" v-t="'_pages.fontSansSerif'"></option>
+					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
+					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
 				</mk-select>
 
-				<mk-switch v-model="hideTitleWhenPinned" v-t="'_pages.hideTitleWhenPinned'"></mk-switch>
+				<mk-switch v-model="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</mk-switch>
 
 				<div class="eyeCatch">
 					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</mk-button>

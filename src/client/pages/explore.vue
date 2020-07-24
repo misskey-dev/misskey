@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faHashtag"/></portal>
-	<portal to="title" v-t="'explore'"></portal>
+	<portal to="title">{{ $t('explore') }}</portal>
 
 	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
@@ -24,7 +24,7 @@
 	</template>
 
 	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
-		<header><span v-t="'exploreFediverse'"></span></header>
+		<header><span>{{ $t('exploreFediverse') }}</span></header>
 	</div>
 
 	<mk-container :body-togglable="true" :expanded="false" ref="tags">

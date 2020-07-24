@@ -1,13 +1,13 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faPlug"/></portal>
-	<portal to="title" v-t="'installedApps'"></portal>
+	<portal to="title">{{ $t('installedApps') }}</portal>
 
 	<mk-pagination :pagination="pagination" class="bfomjevm" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div v-t="'nothing'"></div>
+				<div>{{ $t('nothing') }}</div>
 			</div>
 		</template>
 		<template #default="{items}">
@@ -28,7 +28,7 @@
 						<button class="_button" @click="revoke(token)"><fa :icon="faTrashAlt"/></button>
 					</div>
 					<details>
-						<summary v-t="'details'"></summary>
+						<summary>{{ $t('details') }}</summary>
 						<ul>
 							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 						</ul>

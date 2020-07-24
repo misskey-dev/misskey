@@ -7,7 +7,7 @@
 	</div>
 	<div class="denied _card" v-if="state == 'denied'">
 		<div class="_content">
-			<p v-t="'_auth.denied'"></p>
+			<p>{{ $t('_auth.denied') }}</p>
 		</div>
 	</div>
 	<div class="accepted _card" v-else-if="state == 'accepted'">
@@ -20,7 +20,7 @@
 		<div class="_title" v-if="name">{{ $t('_auth.shareAccess', { name: name }) }}</div>
 		<div class="_title" v-else>{{ $t('_auth.shareAccessAsk') }}</div>
 		<div class="_content">
-			<p v-t="'_auth.permissionAsk'"></p>
+			<p>{{ $t('_auth.permissionAsk') }}</p>
 			<ul>
 				<template v-for="p in permission">
 					<li :key="p">{{ $t(`_permissions.${p}`) }}</li>

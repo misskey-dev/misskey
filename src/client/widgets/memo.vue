@@ -4,7 +4,7 @@
 
 	<div class="otgbylcu">
 		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
-		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary" v-t="'save'"></button>
+		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
 	</div>
 </mk-container>
 </template>

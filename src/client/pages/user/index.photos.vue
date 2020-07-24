@@ -8,7 +8,7 @@
 			:to="image.note | notePage"
 		></router-link>
 	</div>
-	<p class="empty" v-if="!fetching && images.length == 0" v-t="'nothing'"></p>
+	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
 </div>
 </template>
 

@@ -2,28 +2,28 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
 	<div class="_content">
-		<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register" v-t="'_2fa.registerDevice'"></mk-button></p>
+		<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register">{{ $t('_2fa.registerDevice') }}</mk-button></p>
 		<template v-if="$store.state.i.twoFactorEnabled">
-			<p v-t="'_2fa.alreadyRegistered'"></p>
-			<mk-button @click="unregister" v-t="'unregister'"></mk-button>
+			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
+			<mk-button @click="unregister">{{ $t('unregister') }}</mk-button>
 
 			<template v-if="supportsCredentials">
 				<hr class="totp-method-sep">
 
-				<h2 class="heading" v-t="'securityKey'"></h2>
-				<p v-t="'_2fa.securityKeyInfo'"></p>
+				<h2 class="heading">{{ $t('securityKey') }}</h2>
+				<p>{{ $t('_2fa.securityKeyInfo') }}</p>
 				<div class="key-list">
 					<div class="key" v-for="key in $store.state.i.securityKeysList">
 						<h3>{{ key.name }}</h3>
 						<div class="last-used">{{ $t('lastUsed') }}<mk-time :time="key.lastUsed"/></div>
-						<mk-button @click="unregisterKey(key)" v-t="'unregister'"></mk-button>
+						<mk-button @click="unregisterKey(key)">{{ $t('unregister') }}</mk-button>
 					</div>
 				</div>
 
-				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0" v-t="'passwordLessLogin'"></mk-switch>
+				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
 
 				<mk-info warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</mk-info>
-				<mk-button v-if="!registration || registration.error" @click="addSecurityKey" v-t="'_2fa.registerKey'"></mk-button>
+				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</mk-button>
 
 				<ol v-if="registration && !registration.error">
 					<li v-if="registration.stage >= 0">
@@ -33,9 +33,9 @@
 					<li v-if="registration.stage >= 1">
 						<mk-form :disabled="registration.stage != 1 || registration.saving">
 							<mk-input v-model="keyName" :max="30">
-								<span v-t="'securityKeyName'"></span>
+								<span>{{ $t('securityKeyName') }}</span>
 							</mk-input>
-							<mk-button @click="registerKey" :disabled="keyName.length == 0" v-t="'registerSecurityKey'"></mk-button>
+							<mk-button @click="registerKey" :disabled="keyName.length == 0">{{ $t('registerSecurityKey') }}</mk-button>
 							<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
 						</mk-form>
 					</li>
@@ -52,8 +52,8 @@
 				</li>
 				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
 				<li>{{ $t('_2fa.step3') }}<br>
-					<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" v-t="'token'"></mk-input>
-					<mk-button primary @click="submit" v-t="'done'"></mk-button>
+					<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</mk-input>
+					<mk-button primary @click="submit">{{ $t('done') }}</mk-button>
 				</li>
 			</ol>
 			<mk-info>{{ $t('_2fa.step4') }}</mk-info>

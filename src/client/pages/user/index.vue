@@ -20,7 +20,7 @@
 					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
 				</div>
 			</div>
-			<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed" v-t="'followsYou'"></span>
+			<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
 			<div class="actions" v-if="$store.getters.isSignedIn">
 				<button @click="menu" class="menu _button" ref="menu"><fa :icon="faEllipsisH"/></button>
 				<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
@@ -39,7 +39,7 @@
 		</div>
 		<div class="description">
 			<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-			<p v-else class="empty" v-t="'noAccountDescription'"></p>
+			<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
 		</div>
 		<div class="fields system">
 			<dl class="field" v-if="user.location">
@@ -68,15 +68,15 @@
 		<div class="status">
 			<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
 				<b>{{ user.notesCount | number }}</b>
-				<span v-t="'notes'"></span>
+				<span>{{ $t('notes') }}</span>
 			</router-link>
 			<router-link :to="user | userPage('following')" :class="{ active: $route.name === 'userFollowing' }">
 				<b>{{ user.followingCount | number }}</b>
-				<span v-t="'following'"></span>
+				<span>{{ $t('following') }}</span>
 			</router-link>
 			<router-link :to="user | userPage('followers')" :class="{ active: $route.name === 'userFollowers' }">
 				<b>{{ user.followersCount | number }}</b>
-				<span v-t="'followers'"></span>
+				<span>{{ $t('followers') }}</span>
 			</router-link>
 		</div>
 	</div>

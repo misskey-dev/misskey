@@ -5,7 +5,7 @@
 		<h1 class="name" v-html="meta.name || host"></h1>
 		<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
 		<mk-button @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</mk-button>
-		<mk-button @click="signin()" style="display: inline-block;" v-t="'login'"></mk-button>
+		<mk-button @click="signin()" style="display: inline-block;">{{ $t('login') }}</mk-button>
 	</div>
 </div>
 </template>

@@ -14,8 +14,8 @@
 		<span>{{ $t('_poll.totalVotes', { n: total }) }}</span>
 		<span> · </span>
 		<a v-if="!closed && !isVoted" @click="toggleShowResult">{{ showResult ? $t('_poll.vote') : $t('_poll.showResult') }}</a>
-		<span v-if="isVoted" v-t="'_poll.voted'"></span>
-		<span v-else-if="closed" v-t="'_poll.closed'"></span>
+		<span v-if="isVoted">{{ $t('_poll.voted') }}</span>
+		<span v-else-if="closed">{{ $t('_poll.closed') }}</span>
 		<span v-if="remaining > 0"> · {{ timer }}</span>
 	</p>
 </div>

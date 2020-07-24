@@ -16,11 +16,11 @@
 			</router-link>
 		</div>
 		<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
-			<template v-if="!moreFetching" v-t="'loadMore'"></template>
+			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
 		</button>
 
-		<p class="empty" v-if="empty" v-t="'noUsers'"></p>
+		<p class="empty" v-if="empty">{{ $t('noUsers') }}</p>
 
 		<mk-error v-if="error" @retry="init()"/>
 	</div>

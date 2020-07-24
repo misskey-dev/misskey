@@ -16,7 +16,7 @@
 				</div>
 			</div>
 			<div class="content" v-else>
-				<p class="is-deleted" v-t="'deleted'"></p>
+				<p class="is-deleted">{{ $t('deleted') }}</p>
 			</div>
 		</div>
 		<div></div>
@@ -26,7 +26,7 @@
 				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
 			</template>
 			<template v-else>
-				<span class="read" v-if="isMe && message.isRead" v-t="'messageRead'"></span>
+				<span class="read" v-if="isMe && message.isRead">{{ $t('messageRead') }}</span>
 			</template>
 			<mk-time :time="message.createdAt"/>
 			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>

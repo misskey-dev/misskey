@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faStickyNote"/></portal>
-	<portal to="title" v-t="'pages'"></portal>
+	<portal to="title">{{ $t('pages') }}</portal>
 
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faEdit" fixed-width/>{{ $t('_pages.my') }}</template>

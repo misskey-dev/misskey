@@ -63,7 +63,7 @@
 		</template>
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }" v-t="'save'"></button>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
 	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>

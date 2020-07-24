@@ -3,8 +3,8 @@
 	<div class="_title"><fa :icon="faListUl"/> {{ $t('sidebar') }}</div>
 	<div class="_content">
 		<mk-textarea v-model="items" tall>
-			<span v-t="'sidebar'"></span>
-			<template #desc><button class="_textButton" @click="addItem" v-t="'addItem'"></button></template>
+			<span>{{ $t('sidebar') }}</span>
+			<template #desc><button class="_textButton" @click="addItem">{{ $t('addItem') }}</button></template>
 		</mk-textarea>
 	</div>
 	<div class="_footer">

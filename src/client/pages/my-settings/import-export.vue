@@ -3,11 +3,11 @@
 	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
 		<mk-select v-model="exportTarget">
-			<option value="notes" v-t="'_exportOrImport.allNotes'"></option>
-			<option value="following" v-t="'_exportOrImport.followingList'"></option>
-			<option value="user-lists" v-t="'_exportOrImport.userLists'"></option>
-			<option value="mute" v-t="'_exportOrImport.muteList'"></option>
-			<option value="blocking" v-t="'_exportOrImport.blockingList'"></option>
+			<option value="notes">{{ $t('_exportOrImport.allNotes') }}</option>
+			<option value="following">{{ $t('_exportOrImport.followingList') }}</option>
+			<option value="user-lists">{{ $t('_exportOrImport.userLists') }}</option>
+			<option value="mute">{{ $t('_exportOrImport.muteList') }}</option>
+			<option value="blocking">{{ $t('_exportOrImport.blockingList') }}</option>
 		</mk-select>
 		<mk-button inline @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</mk-button>
 		<mk-button inline @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</mk-button>
