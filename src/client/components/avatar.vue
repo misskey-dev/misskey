@@ -42,12 +42,12 @@ export default Vue.extend({
 	},
 	watch: {
 		'user.avatarBlurhash'() {
-			this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+			this.$el.style.color = this.user.avatarBlurhash && this.getBlurhashAvgColor(this.user.avatarBlurhash);
 		}
 	},
 	mounted() {
 		if (this.user.avatarBlurhash) {
-			this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+			this.$el.style.color = this.user.avatarBlurhash && this.getBlurhashAvgColor(this.user.avatarBlurhash);
 		}
 	},
 	methods: {
