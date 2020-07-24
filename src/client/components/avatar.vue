@@ -42,21 +42,20 @@ export default Vue.extend({
 	},
 	watch: {
 		'user.avatarBlurhash'() {
-			this.$el.style.color = this.user.avatarBlurhash && this.getBlurhashAvgColor(this.user.avatarBlurhash);
+			this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
 		}
 	},
 	mounted() {
-		if (this.user.avatarBlurhash) {
-			this.$el.style.color = this.user.avatarBlurhash && this.getBlurhashAvgColor(this.user.avatarBlurhash);
-		}
+		this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
 	},
 	methods: {
-		getBlurhashAvgColor(s: string) {
-			return '#' + [...s]
-				.slice(2, 6)
-				.map(x => '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~'.indexOf(x))
-				.reduce((a, c) => a * 83 + c, 0)
-				.toString(16);
+		getBlurhashAvgColor(s) {
+			return typeof s == 'string'
+				? '#' + [...s.slice(2, 6)]
+						.map(x => '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~'.indexOf(x))
+						.reduce((a, c) => a * 83 + c, 0)
+						.toString(16)
+				: undefined;
 		},
 		onClick(e) {
 			this.$emit('click', e);
