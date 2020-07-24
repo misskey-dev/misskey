@@ -1,7 +1,7 @@
 <template>
 <div class="mmnnbwxb">
 	<portal to="icon"><fa :icon="faInfoCircle"/></portal>
-	<portal to="title">{{ $t('about') }}</portal>
+	<portal to="title" v-t="'about'"></portal>
 
 	<section class="_card info" v-if="meta">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
@@ -9,7 +9,7 @@
 			<div v-html="meta.description"></div>
 		</div>
 		<div class="_content table">
-			<div><b>{{ $t('administrator') }}</b><span>{{ meta.maintainerName }}</span></div>
+			<div><b v-t="'administrator'"></b><span>{{ meta.maintainerName }}</span></div>
 			<div><b></b><span>{{ meta.maintainerEmail }}</span></div>
 		</div>
 		<div class="_content table">

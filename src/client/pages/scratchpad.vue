@@ -1,7 +1,7 @@
 <template>
 <div class="">
 	<portal to="icon"><fa :icon="faTerminal"/></portal>
-	<portal to="title">{{ $t('scratchpad') }}</portal>
+	<portal to="title" v-t="'scratchpad'"></portal>
 
 	<div class="_panel">
 		<prism-editor v-model="code" :line-numbers="false" language="js"/>
@@ -16,7 +16,7 @@
 	</mk-container>
 
 	<section class="_card" style="margin-top: var(--margin);">
-		<div class="_content">{{ $t('scratchpadDescription') }}</div>
+		<div class="_content" v-t="'scratchpadDescription'"></div>
 	</section>
 </div>
 </template>

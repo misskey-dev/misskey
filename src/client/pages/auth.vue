@@ -17,10 +17,10 @@
 	<div class="accepted _panel" v-if="state == 'accepted'">
 		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
 		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<mk-ellipsis/></p>
-		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
+		<p v-if="!session.app.callbackUrl" v-t="'_auth.pleaseGoBack'"></p>
 	</div>
 	<div class="error _panel" v-if="state == 'fetch-session-error'">
-		<p>{{ $t('error') }}</p>
+		<p v-t="'error'"></p>
 	</div>
 </div>
 <div class="signin" v-else>

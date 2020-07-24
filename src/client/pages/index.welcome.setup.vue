@@ -2,14 +2,14 @@
 <form class="mk-setup" @submit.prevent="submit()">
 	<h1>Welcome to Misskey!</h1>
 	<div>
-		<p>{{ $t('intro') }}</p>
+		<p v-t="'intro'"></p>
 		<mk-input v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
-			<span>{{ $t('username') }}</span>
+			<span v-t="'username'"></span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</mk-input>
 		<mk-input v-model="password" type="password">
-			<span>{{ $t('password') }}</span>
+			<span v-t="'password'"></span>
 			<template #prefix><fa :icon="faLock"/></template>
 		</mk-input>
 		<footer>

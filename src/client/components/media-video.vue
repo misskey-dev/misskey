@@ -2,7 +2,7 @@
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
 		<b><fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
-		<span>{{ $t('clickToShow') }}</span>
+		<span v-t="'clickToShow'"></span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>

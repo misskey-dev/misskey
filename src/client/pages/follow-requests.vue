@@ -1,13 +1,13 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faUserClock"/></portal>
-	<portal to="title">{{ $t('followRequests') }}</portal>
+	<portal to="title" v-t="'followRequests'"></portal>
 
 	<mk-pagination :pagination="pagination" class="mk-follow-requests" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $t('noFollowRequests') }}</div>
+				<div v-t="'noFollowRequests'"></div>
 			</div>
 		</template>
 		<template #default="{items}">

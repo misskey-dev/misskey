@@ -6,12 +6,12 @@
 			<mk-info warn v-if="information">{{ information }}</mk-info>
 		</div>
 		<div>
-			<mk-input v-model="name">{{ $t('name') }}</mk-input>
+			<mk-input v-model="name" v-t="'name'"></mk-input>
 		</div>
 		<div>
-			<div style="margin-bottom: 16px;"><b>{{ $t('permission') }}</b></div>
-			<mk-button inline @click="disableAll">{{ $t('disableAll') }}</mk-button>
-			<mk-button inline @click="enableAll">{{ $t('enableAll') }}</mk-button>
+			<div style="margin-bottom: 16px;"><b v-t="'permission'"></b></div>
+			<mk-button inline @click="disableAll" v-t="'disableAll'"></mk-button>
+			<mk-button inline @click="enableAll" v-t="'enableAll'"></mk-button>
 			<mk-switch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</mk-switch>
 		</div>
 	</div>

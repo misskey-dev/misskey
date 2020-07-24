@@ -7,16 +7,16 @@
 		</div>
 	
 		<mk-input v-model="name" :max="30">
-			<span>{{ $t('_profile.name') }}</span>
+			<span v-t="'_profile.name'"></span>
 		</mk-input>
 
 		<mk-textarea v-model="description" :max="500">
-			<span>{{ $t('_profile.description') }}</span>
+			<span v-t="'_profile.description'"></span>
 			<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
 		</mk-textarea>
 
 		<mk-input v-model="location">
-			<span>{{ $t('location') }}</span>
+			<span v-t="'location'"></span>
 			<template #prefix><fa :icon="faMapMarkerAlt"/></template>
 		</mk-input>
 
@@ -26,27 +26,27 @@
 		</mk-input>
 
 		<details class="fields">
-			<summary>{{ $t('_profile.metadata') }}</summary>
+			<summary v-t="'_profile.metadata'"></summary>
 			<div class="row">
-				<mk-input v-model="fieldName0">{{ $t('_profile.metadataLabel') }}</mk-input>
-				<mk-input v-model="fieldValue0">{{ $t('_profile.metadataContent') }}</mk-input>
+				<mk-input v-model="fieldName0" v-t="'_profile.metadataLabel'"></mk-input>
+				<mk-input v-model="fieldValue0" v-t="'_profile.metadataContent'"></mk-input>
 			</div>
 			<div class="row">
-				<mk-input v-model="fieldName1">{{ $t('_profile.metadataLabel') }}</mk-input>
-				<mk-input v-model="fieldValue1">{{ $t('_profile.metadataContent') }}</mk-input>
+				<mk-input v-model="fieldName1" v-t="'_profile.metadataLabel'"></mk-input>
+				<mk-input v-model="fieldValue1" v-t="'_profile.metadataContent'"></mk-input>
 			</div>
 			<div class="row">
-				<mk-input v-model="fieldName2">{{ $t('_profile.metadataLabel') }}</mk-input>
-				<mk-input v-model="fieldValue2">{{ $t('_profile.metadataContent') }}</mk-input>
+				<mk-input v-model="fieldName2" v-t="'_profile.metadataLabel'"></mk-input>
+				<mk-input v-model="fieldValue2" v-t="'_profile.metadataContent'"></mk-input>
 			</div>
 			<div class="row">
-				<mk-input v-model="fieldName3">{{ $t('_profile.metadataLabel') }}</mk-input>
-				<mk-input v-model="fieldValue3">{{ $t('_profile.metadataContent') }}</mk-input>
+				<mk-input v-model="fieldName3" v-t="'_profile.metadataLabel'"></mk-input>
+				<mk-input v-model="fieldValue3" v-t="'_profile.metadataContent'"></mk-input>
 			</div>
 		</details>
 
-		<mk-switch v-model="isBot">{{ $t('flagAsBot') }}</mk-switch>
-		<mk-switch v-model="isCat">{{ $t('flagAsCat') }}</mk-switch>
+		<mk-switch v-model="isBot" v-t="'flagAsBot'"></mk-switch>
+		<mk-switch v-model="isCat" v-t="'flagAsCat'"></mk-switch>
 	</div>
 	<div class="_footer">
 		<mk-button @click="save(true)" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>

@@ -8,7 +8,7 @@
 			<div v-html="body" class="qyqbqfal"></div>
 		</div>
 		<div class="_footer">
-			<mk-link :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $t('docSource') }}</mk-link>
+			<mk-link :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at" v-t="'docSource'"></mk-link>
 		</div>
 	</main>
 </div>

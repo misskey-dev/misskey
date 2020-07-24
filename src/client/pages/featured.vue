@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faFireAlt"/></portal>
-	<portal to="title">{{ $t('featured') }}</portal>
+	<portal to="title" v-t="'featured'"></portal>
 	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>

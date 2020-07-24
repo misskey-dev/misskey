@@ -1,6 +1,6 @@
 <template>
 <router-link class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
-	<span class="me" v-if="isMe">{{ $t('you') }}</span>
+	<span class="me" v-if="isMe" v-t="'you'"></span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host" v-if="(host != localHost) || $store.state.settings.showFullAcct">@{{ toUnicode(host) }}</span>

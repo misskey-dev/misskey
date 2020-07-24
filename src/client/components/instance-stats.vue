@@ -4,19 +4,19 @@
 		<div class="_panel">
 			<div>
 				<b><fa :icon="faUser"/>{{ $t('users') }}</b>
-				<small>{{ $t('local') }}</small>
+				<small v-t="'local'"></small>
 			</div>
 			<div>
 				<dl class="total">
-					<dt>{{ $t('total') }}</dt>
+					<dt v-t="'total'"></dt>
 					<dd>{{ info.originalUsersCount | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersLocalDoD > 0 }">
-					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dt v-t="'dayOverDayChanges'"></dt>
 					<dd>{{ usersLocalDoD | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersLocalWoW > 0 }">
-					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dt v-t="'weekOverWeekChanges'"></dt>
 					<dd>{{ usersLocalWoW | number }}</dd>
 				</dl>
 			</div>
@@ -24,19 +24,19 @@
 		<div class="_panel">
 			<div>
 				<b><fa :icon="faUser"/>{{ $t('users') }}</b>
-				<small>{{ $t('remote') }}</small>
+				<small v-t="'remote'"></small>
 			</div>
 			<div>
 				<dl class="total">
-					<dt>{{ $t('total') }}</dt>
+					<dt v-t="'total'"></dt>
 					<dd>{{ (info.usersCount - info.originalUsersCount) | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersRemoteDoD > 0 }">
-					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dt v-t="'dayOverDayChanges'"></dt>
 					<dd>{{ usersRemoteDoD | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersRemoteWoW > 0 }">
-					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dt v-t="'weekOverWeekChanges'"></dt>
 					<dd>{{ usersRemoteWoW | number }}</dd>
 				</dl>
 			</div>
@@ -44,19 +44,19 @@
 		<div class="_panel">
 			<div>
 				<b><fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
-				<small>{{ $t('local') }}</small>
+				<small v-t="'local'"></small>
 			</div>
 			<div>
 				<dl class="total">
-					<dt>{{ $t('total') }}</dt>
+					<dt v-t="'total'"></dt>
 					<dd>{{ info.originalNotesCount | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesLocalDoD > 0 }">
-					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dt v-t="'dayOverDayChanges'"></dt>
 					<dd>{{ notesLocalDoD | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesLocalWoW > 0 }">
-					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dt v-t="'weekOverWeekChanges'"></dt>
 					<dd>{{ notesLocalWoW | number }}</dd>
 				</dl>
 			</div>
@@ -64,19 +64,19 @@
 		<div class="_panel">
 			<div>
 				<b><fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
-				<small>{{ $t('remote') }}</small>
+				<small v-t="'remote'"></small>
 			</div>
 			<div>
 				<dl class="total">
-					<dt>{{ $t('total') }}</dt>
+					<dt v-t="'total'"></dt>
 					<dd>{{ (info.notesCount - info.originalNotesCount) | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesRemoteDoD > 0 }">
-					<dt>{{ $t('dayOverDayChanges') }}</dt>
+					<dt v-t="'dayOverDayChanges'"></dt>
 					<dd>{{ notesRemoteDoD | number }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesRemoteWoW > 0 }">
-					<dt>{{ $t('weekOverWeekChanges') }}</dt>
+					<dt v-t="'weekOverWeekChanges'"></dt>
 					<dd>{{ notesRemoteWoW | number }}</dd>
 				</dl>
 			</div>
@@ -89,30 +89,30 @@
 			<div class="selects" style="display: flex;">
 				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="$t('federation')">
-						<option value="federation-instances">{{ $t('_charts.federationInstancesIncDec') }}</option>
-						<option value="federation-instances-total">{{ $t('_charts.federationInstancesTotal') }}</option>
+						<option value="federation-instances" v-t="'_charts.federationInstancesIncDec'"></option>
+						<option value="federation-instances-total" v-t="'_charts.federationInstancesTotal'"></option>
 					</optgroup>
 					<optgroup :label="$t('users')">
-						<option value="users">{{ $t('_charts.usersIncDec') }}</option>
-						<option value="users-total">{{ $t('_charts.usersTotal') }}</option>
-						<option value="active-users">{{ $t('_charts.activeUsers') }}</option>
+						<option value="users" v-t="'_charts.usersIncDec'"></option>
+						<option value="users-total" v-t="'_charts.usersTotal'"></option>
+						<option value="active-users" v-t="'_charts.activeUsers'"></option>
 					</optgroup>
 					<optgroup :label="$t('notes')">
-						<option value="notes">{{ $t('_charts.notesIncDec') }}</option>
-						<option value="local-notes">{{ $t('_charts.localNotesIncDec') }}</option>
-						<option value="remote-notes">{{ $t('_charts.remoteNotesIncDec') }}</option>
-						<option value="notes-total">{{ $t('_charts.notesTotal') }}</option>
+						<option value="notes" v-t="'_charts.notesIncDec'"></option>
+						<option value="local-notes" v-t="'_charts.localNotesIncDec'"></option>
+						<option value="remote-notes" v-t="'_charts.remoteNotesIncDec'"></option>
+						<option value="notes-total" v-t="'_charts.notesTotal'"></option>
 					</optgroup>
 					<optgroup :label="$t('drive')">
-						<option value="drive-files">{{ $t('_charts.filesIncDec') }}</option>
-						<option value="drive-files-total">{{ $t('_charts.filesTotal') }}</option>
-						<option value="drive">{{ $t('_charts.storageUsageIncDec') }}</option>
-						<option value="drive-total">{{ $t('_charts.storageUsageTotal') }}</option>
+						<option value="drive-files" v-t="'_charts.filesIncDec'"></option>
+						<option value="drive-files-total" v-t="'_charts.filesTotal'"></option>
+						<option value="drive" v-t="'_charts.storageUsageIncDec'"></option>
+						<option value="drive-total" v-t="'_charts.storageUsageTotal'"></option>
 					</optgroup>
 				</mk-select>
 				<mk-select v-model="chartSpan" style="margin: 0;">
-					<option value="hour">{{ $t('perHour') }}</option>
-					<option value="day">{{ $t('perDay') }}</option>
+					<option value="hour" v-t="'perHour'"></option>
+					<option value="day" v-t="'perDay'"></option>
 				</mk-select>
 			</div>
 			<canvas ref="chart"></canvas>

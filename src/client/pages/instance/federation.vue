@@ -1,21 +1,21 @@
 <template>
 <div class="mk-federation">
 	<portal to="icon"><fa :icon="faGlobe"/></portal>
-	<portal to="title">{{ $t('federation') }}</portal>
+	<portal to="title" v-t="'federation'"></portal>
 
 	<section class="_card instances">
 		<div class="_content">
-			<mk-input v-model="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
+			<mk-input v-model="host" :debounce="true"><span v-t="'host'"></span></mk-input>
 			<div class="inputs" style="display: flex;">
 				<mk-select v-model="state" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('state') }}</template>
-					<option value="all">{{ $t('all') }}</option>
-					<option value="federating">{{ $t('federating') }}</option>
-					<option value="subscribing">{{ $t('subscribing') }}</option>
-					<option value="publishing">{{ $t('publishing') }}</option>
-					<option value="suspended">{{ $t('suspended') }}</option>
-					<option value="blocked">{{ $t('blocked') }}</option>
-					<option value="notResponding">{{ $t('notResponding') }}</option>
+					<option value="all" v-t="'all'"></option>
+					<option value="federating" v-t="'federating'"></option>
+					<option value="subscribing" v-t="'subscribing'"></option>
+					<option value="publishing" v-t="'publishing'"></option>
+					<option value="suspended" v-t="'suspended'"></option>
+					<option value="blocked" v-t="'blocked'"></option>
+					<option value="notResponding" v-t="'notResponding'"></option>
 				</mk-select>
 				<mk-select v-model="sort" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('sort') }}</template>

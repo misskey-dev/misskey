@@ -1,17 +1,17 @@
 <template>
 <div v-if="meta">
 	<portal to="icon"><fa :icon="faCog"/></portal>
-	<portal to="title">{{ $t('settings') }}</portal>
+	<portal to="title" v-t="'settings'"></portal>
 
 	<section class="_card info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
-			<mk-input v-model="name">{{ $t('instanceName') }}</mk-input>
-			<mk-textarea v-model="description">{{ $t('instanceDescription') }}</mk-textarea>
+			<mk-input v-model="name" v-t="'instanceName'"></mk-input>
+			<mk-textarea v-model="description" v-t="'instanceDescription'"></mk-textarea>
 			<mk-input v-model="iconUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('iconUrl') }}</mk-input>
 			<mk-input v-model="bannerUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</mk-input>
 			<mk-input v-model="tosUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('tosUrl') }}</mk-input>
-			<mk-input v-model="maintainerName">{{ $t('maintainerName') }}</mk-input>
+			<mk-input v-model="maintainerName" v-t="'maintainerName'"></mk-input>
 			<mk-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</mk-input>
 		</div>
 		<div class="_footer">
@@ -24,8 +24,8 @@
 			<mk-input v-model="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</mk-input>
 		</div>
 		<div class="_content">
-			<mk-switch v-model="enableLocalTimeline" @change="save()">{{ $t('enableLocalTimeline') }}</mk-switch>
-			<mk-switch v-model="enableGlobalTimeline" @change="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
+			<mk-switch v-model="enableLocalTimeline" @change="save()" v-t="'enableLocalTimeline'"></mk-switch>
+			<mk-switch v-model="enableGlobalTimeline" @change="save()" v-t="'enableGlobalTimeline'"></mk-switch>
 			<mk-info>{{ $t('disablingTimelinesInfo') }}</mk-info>
 		</div>
 	</section>
@@ -33,22 +33,22 @@
 	<section class="_card info">
 		<div class="_title"><fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableRegistration" @change="save()">{{ $t('enableRegistration') }}</mk-switch>
-			<mk-button v-if="!enableRegistration" @click="invite">{{ $t('invite') }}</mk-button>
+			<mk-switch v-model="enableRegistration" @change="save()" v-t="'enableRegistration'"></mk-switch>
+			<mk-button v-if="!enableRegistration" @click="invite" v-t="'invite'"></mk-button>
 		</div>
 	</section>
 
 	<section class="_card">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableHcaptcha" ref="enableHcaptcha">{{ $t('enableHcaptcha') }}</mk-switch>
+			<mk-switch v-model="enableHcaptcha" ref="enableHcaptcha" v-t="'enableHcaptcha'"></mk-switch>
 			<template v-if="enableHcaptcha">
 				<mk-input v-model="hcaptchaSiteKey" :disabled="!enableHcaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('hcaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="hcaptchaSecretKey" :disabled="!enableHcaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('hcaptchaSecretKey') }}</mk-input>
 			</template>
 		</div>
 		<div class="_content" v-if="enableHcaptcha">
-			<header>{{ $t('preview') }}</header>
+			<header v-t="'preview'"></header>
 			<captcha v-if="enableHcaptcha" provider="hcaptcha" :sitekey="hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
 		</div>
 		<div class="_footer">
@@ -59,14 +59,14 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
-			<mk-switch v-model="enableRecaptcha" ref="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
+			<mk-switch v-model="enableRecaptcha" ref="enableRecaptcha" v-t="'enableRecaptcha'"></mk-switch>
 			<template v-if="enableRecaptcha">
 				<mk-input v-model="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSiteKey') }}</mk-input>
 				<mk-input v-model="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><fa :icon="faKey"/></template>{{ $t('recaptchaSecretKey') }}</mk-input>
 			</template>
 		</div>
 		<div class="_content" v-if="enableRecaptcha && recaptchaSiteKey">
-			<header>{{ $t('preview') }}</header>
+			<header v-t="'preview'"></header>
 			<captcha v-if="enableRecaptcha" provider="grecaptcha" :sitekey="recaptchaSiteKey"/>
 		</div>
 		<div class="_footer">
@@ -94,7 +94,7 @@
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers">
-				<template #desc>{{ $t('pinnedUsersDescription') }} <button class="_textButton" @click="addPinUser">{{ $t('addUser') }}</button></template>
+				<template #desc>{{ $t('pinnedUsersDescription') }} <button class="_textButton" @click="addPinUser" v-t="'addUser'"></button></template>
 			</mk-textarea>
 		</div>
 		<div class="_footer">
@@ -118,7 +118,7 @@
 	<section class="_card">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('objectStorage') }}</div>
 		<div class="_content">
-			<mk-switch v-model="useObjectStorage">{{ $t('useObjectStorage') }}</mk-switch>
+			<mk-switch v-model="useObjectStorage" v-t="'useObjectStorage'"></mk-switch>
 			<template v-if="useObjectStorage">
 				<mk-input v-model="objectStorageBaseUrl" :disabled="!useObjectStorage">{{ $t('objectStorageBaseUrl') }}<template #desc>{{ $t('objectStorageBaseUrlDesc') }}</template></mk-input>
 				<div class="_inputs">
@@ -146,7 +146,7 @@
 		<div class="_title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
 			<mk-input :value="proxyAccount ? proxyAccount.username : null" style="margin: 0;" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></mk-input>
-			<mk-button primary @click="chooseProxyAccount">{{ $t('chooseProxyAccount') }}</mk-button>
+			<mk-button primary @click="chooseProxyAccount" v-t="'chooseProxyAccount'"></mk-button>
 		</div>
 	</section>
 
@@ -166,7 +166,7 @@
 		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
 			<header><fa :icon="faTwitter"/> Twitter</header>
-			<mk-switch v-model="enableTwitterIntegration">{{ $t('enable') }}</mk-switch>
+			<mk-switch v-model="enableTwitterIntegration" v-t="'enable'"></mk-switch>
 			<template v-if="enableTwitterIntegration">
 				<mk-info>Callback URL: {{ `${url}/api/tw/cb` }}</mk-info>
 				<mk-input v-model="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><fa :icon="faKey"/></template>Consumer Key</mk-input>
@@ -175,7 +175,7 @@
 		</div>
 		<div class="_content">
 			<header><fa :icon="faGithub"/> GitHub</header>
-			<mk-switch v-model="enableGithubIntegration">{{ $t('enable') }}</mk-switch>
+			<mk-switch v-model="enableGithubIntegration" v-t="'enable'"></mk-switch>
 			<template v-if="enableGithubIntegration">
 				<mk-info>Callback URL: {{ `${url}/api/gh/cb` }}</mk-info>
 				<mk-input v-model="githubClientId" :disabled="!enableGithubIntegration"><template #icon><fa :icon="faKey"/></template>Client ID</mk-input>
@@ -184,7 +184,7 @@
 		</div>
 		<div class="_content">
 			<header><fa :icon="faDiscord"/> Discord</header>
-			<mk-switch v-model="enableDiscordIntegration">{{ $t('enable') }}</mk-switch>
+			<mk-switch v-model="enableDiscordIntegration" v-t="'enable'"></mk-switch>
 			<template v-if="enableDiscordIntegration">
 				<mk-info>Callback URL: {{ `${url}/api/dc/cb` }}</mk-info>
 				<mk-input v-model="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><fa :icon="faKey"/></template>Client ID</mk-input>

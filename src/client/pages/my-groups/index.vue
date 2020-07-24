@@ -1,7 +1,7 @@
 <template>
 <div class="">
 	<portal to="icon"><fa :icon="faUsers"/></portal>
-	<portal to="title">{{ $t('groups') }}</portal>
+	<portal to="title" v-t="'groups'"></portal>
 
 	<mk-button @click="create" primary style="margin: 0 auto var(--margin) auto;"><fa :icon="faPlus"/> {{ $t('createGroup') }}</mk-button>
 

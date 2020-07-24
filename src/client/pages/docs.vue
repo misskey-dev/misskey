@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faQuestionCircle"/></portal>
-	<portal to="title">{{ $t('help') }}</portal>
+	<portal to="title" v-t="'help'"></portal>
 	<main class="_card">
 		<div class="_content">
 			<ul>

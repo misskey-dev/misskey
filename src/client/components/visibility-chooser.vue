@@ -4,37 +4,37 @@
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 			<div><fa :icon="faGlobe"/></div>
 			<div>
-				<span>{{ $t('_visibility.public') }}</span>
-				<span>{{ $t('_visibility.publicDescription') }}</span>
+				<span v-t="'_visibility.public'"></span>
+				<span v-t="'_visibility.publicDescription'"></span>
 			</div>
 		</button>
 		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
 			<div><fa :icon="faHome"/></div>
 			<div>
-				<span>{{ $t('_visibility.home') }}</span>
-				<span>{{ $t('_visibility.homeDescription') }}</span>
+				<span v-t="'_visibility.home'"></span>
+				<span v-t="'_visibility.homeDescription'"></span>
 			</div>
 		</button>
 		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
 			<div><fa :icon="faUnlock"/></div>
 			<div>
-				<span>{{ $t('_visibility.followers') }}</span>
-				<span>{{ $t('_visibility.followersDescription') }}</span>
+				<span v-t="'_visibility.followers'"></span>
+				<span v-t="'_visibility.followersDescription'"></span>
 			</div>
 		</button>
 		<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
 			<div><fa :icon="faEnvelope"/></div>
 			<div>
-				<span>{{ $t('_visibility.specified') }}</span>
-				<span>{{ $t('_visibility.specifiedDescription') }}</span>
+				<span v-t="'_visibility.specified'"></span>
+				<span v-t="'_visibility.specifiedDescription'"></span>
 			</div>
 		</button>
 		<div class="divider"></div>
 		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
 			<div><fa :icon="faBiohazard"/></div>
 			<div>
-				<span>{{ $t('_visibility.localOnly') }}</span>
-				<span>{{ $t('_visibility.localOnlyDescription') }}</span>
+				<span v-t="'_visibility.localOnly'"></span>
+				<span v-t="'_visibility.localOnlyDescription'"></span>
 			</div>
 			<div><fa :icon="localOnly ? faToggleOn : faToggleOff"/></div>
 		</button>
