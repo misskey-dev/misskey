@@ -7,7 +7,7 @@
 		<p class="description">{{ app.description }}</p>
 	</div>
 	<div class="_content">
-		<h2 v-t="'_auth.permissionAsk'"></h2>
+		<h2>{{ $t('_auth.permissionAsk') }}</h2>
 		<ul>
 			<template v-for="p in app.permission">
 				<li :key="p">{{ $t(`_permissions.${p}`) }}</li>
@@ -15,8 +15,8 @@
 		</ul>
 	</div>
 	<div class="_footer">
-		<mk-button @click="cancel" inline v-t="'cancel'"></mk-button>
-		<mk-button @click="accept" inline primary v-t="'accept'"></mk-button>
+		<mk-button @click="cancel" inline>{{ $t('cancel') }}</mk-button>
+		<mk-button @click="accept" inline primary>{{ $t('accept') }}</mk-button>
 	</div>
 </section>
 </template>

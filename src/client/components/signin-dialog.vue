@@ -1,6 +1,6 @@
 <template>
 <x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }">
-	<template #header v-t="'login'"></template>
+	<template #header>{{ $t('login') }}</template>
 	<mk-signin :auto-set="autoSet" @login="onLogin"/>
 </x-window>
 </template>

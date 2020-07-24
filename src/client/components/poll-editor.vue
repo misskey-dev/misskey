@@ -13,34 +13,34 @@
 			</button>
 		</li>
 	</ul>
-	<mk-button class="add" v-if="choices.length < 10" @click="add" v-t="'add'"></mk-button>
-	<mk-button class="add" v-else disabled v-t="'_poll.noMore'"></mk-button>
+	<mk-button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</mk-button>
+	<mk-button class="add" v-else disabled>{{ $t('_poll.noMore') }}</mk-button>
 	<section>
-		<mk-switch v-model="multiple" v-t="'_poll.canMultipleVote'"></mk-switch>
+		<mk-switch v-model="multiple">{{ $t('_poll.canMultipleVote') }}</mk-switch>
 		<div>
 			<mk-select v-model="expiration">
-				<template #label v-t="'_poll.expiration'"></template>
-				<option value="infinite" v-t="'_poll.infinite'"></option>
-				<option value="at" v-t="'_poll.at'"></option>
-				<option value="after" v-t="'_poll.after'"></option>
+				<template #label>{{ $t('_poll.expiration') }}</template>
+				<option value="infinite">{{ $t('_poll.infinite') }}</option>
+				<option value="at">{{ $t('_poll.at') }}</option>
+				<option value="after">{{ $t('_poll.after') }}</option>
 			</mk-select>
 			<section v-if="expiration === 'at'">
 				<mk-input v-model="atDate" type="date" class="input">
-					<span v-t="'_poll.deadlineDate'"></span>
+					<span>{{ $t('_poll.deadlineDate') }}</span>
 				</mk-input>
 				<mk-input v-model="atTime" type="time" class="input">
-					<span v-t="'_poll.deadlineTime'"></span>
+					<span>{{ $t('_poll.deadlineTime') }}</span>
 				</mk-input>
 			</section>
 			<section v-if="expiration === 'after'">
 				<mk-input v-model="after" type="number" class="input">
-					<span v-t="'_poll.duration'"></span>
+					<span>{{ $t('_poll.duration') }}</span>
 				</mk-input>
 				<mk-select v-model="unit">
-					<option value="second" v-t="'_time.second'"></option>
-					<option value="minute" v-t="'_time.minute'"></option>
-					<option value="hour" v-t="'_time.hour'"></option>
-					<option value="day" v-t="'_time.day'"></option>
+					<option value="second">{{ $t('_time.second') }}</option>
+					<option value="minute">{{ $t('_time.minute') }}</option>
+					<option value="hour">{{ $t('_time.hour') }}</option>
+					<option value="day">{{ $t('_time.day') }}</option>
 				</mk-select>
 			</section>
 		</div>

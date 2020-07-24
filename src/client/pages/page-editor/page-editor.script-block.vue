@@ -41,8 +41,8 @@
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
 		<mk-textarea v-model="slots">
-			<span v-t="'_pages.script.blocks._fn.slots'"></span>
-			<template #desc v-t="'_pages.script.blocks._fn.slots-info'"></template>
+			<span>{{ $t('_pages.script.blocks._fn.slots') }}</span>
+			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</mk-textarea>
 		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
 	</section>

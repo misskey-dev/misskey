@@ -47,9 +47,9 @@
 			<fa :icon="faQuoteRight"/>
 		</router-link>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><mk-follow-button :user="notification.user" :full="true"/></div></span>
-		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;" v-t="'followRequestAccepted'"></span>
-		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;" v-t="'receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept'"></button> | <button class="_textButton" @click="rejectFollowRequest()" v-t="'reject'"></button></div></span>
-		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;" v-t="'groupInvited') }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $t('accept'"></button> | <button class="_textButton" @click="rejectGroupInvitation()" v-t="'reject'"></button></div></span>
+		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
+		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
+		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ $t('groupInvited') }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ $t('reject') }}</button></div></span>
 		<span v-if="notification.type === 'app'" class="text">
 			<mfm :text="notification.body" :nowrap="!full"/>
 		</span>

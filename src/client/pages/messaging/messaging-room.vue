@@ -26,7 +26,7 @@
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button class="_buttonPrimary" @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i v-t="'newMessageExists'"></button>
+				<button class="_buttonPrimary" @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
 			</div>
 		</transition>
 		<x-form v-if="!fetching" :user="user" :group="group" ref="form"/>

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-messaging" v-size="[{ max: 400 }]">
 	<portal to="icon"><fa :icon="faComments"/></portal>
-	<portal to="title" v-t="'messaging'"></portal>
+	<portal to="title">{{ $t('messaging') }}</portal>
 
 	<mk-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</mk-button>
 
@@ -33,7 +33,7 @@
 	</div>
 	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-		<div v-t="'noHistory'"></div>
+		<div>{{ $t('noHistory') }}</div>
 	</div>
 	<mk-loading v-if="fetching"/>
 </div>

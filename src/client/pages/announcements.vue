@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
-	<portal to="title" v-t="'announcements'"></portal>
+	<portal to="title">{{ $t('announcements') }}</portal>
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
 		<section class="_card announcement" v-for="(announcement, i) in items" :key="announcement.id">

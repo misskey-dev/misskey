@@ -12,7 +12,7 @@
 		<x-media-list :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
-		<summary v-t="'poll'"></summary>
+		<summary>{{ $t('poll') }}</summary>
 		<x-poll :note="note"/>
 	</details>
 </div>

@@ -13,7 +13,7 @@
 			@blur="focused = false"
 		></textarea>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }" v-t="'save'"></button>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
 	<div class="desc"><slot name="desc"></slot></div>
 </div>
 </template>

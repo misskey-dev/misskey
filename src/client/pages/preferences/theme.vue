@@ -6,8 +6,8 @@
 			<div class="toggleWrapper">
 				<input type="checkbox" class="dn" id="dn" v-model="darkMode" :disabled="syncDeviceDarkMode"/>
 				<label for="dn" class="toggle">
-					<span class="before" v-t="'light'"></span>
-					<span class="after" v-t="'dark'"></span>
+					<span class="before">{{ $t('light') }}</span>
+					<span class="after">{{ $t('dark') }}</span>
 					<span class="toggle__handler">
 						<span class="crater crater--1"></span>
 						<span class="crater crater--2"></span>
@@ -22,11 +22,11 @@
 				</label>
 			</div>
 		</div>
-		<mk-switch v-model="syncDeviceDarkMode" v-t="'syncDeviceDarkMode'"></mk-switch>
+		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
 	</div>
 	<div class="_content">
 		<mk-select v-model="lightTheme">
-			<template #label v-t="'themeForLightMode'"></template>
+			<template #label>{{ $t('themeForLightMode') }}</template>
 			<optgroup :label="$t('lightThemes')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
@@ -35,7 +35,7 @@
 			</optgroup>
 		</mk-select>
 		<mk-select v-model="darkTheme">
-			<template #label v-t="'themeForDarkMode'"></template>
+			<template #label>{{ $t('themeForDarkMode') }}</template>
 			<optgroup :label="$t('darkThemes')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
@@ -43,17 +43,17 @@
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</mk-select>
-		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link" v-t="'_theme.explore'"></a>・<router-link to="/theme-editor" class="_link" v-t="'_theme.make'"></router-link>
+		<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>・<router-link to="/theme-editor" class="_link">{{ $t('_theme.make') }}</router-link>
 	</div>
 	<div class="_content">
-		<mk-button primary v-if="wallpaper == null" @click="setWallpaper" v-t="'setWallpaper'"></mk-button>
-		<mk-button primary v-else @click="wallpaper = null" v-t="'removeWallpaper'"></mk-button>
+		<mk-button primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</mk-button>
+		<mk-button primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</mk-button>
 	</div>
 	<div class="_content">
 		<details>
 			<summary><fa :icon="faDownload"/> {{ $t('_theme.install') }}</summary>
 			<mk-textarea v-model="installThemeCode">
-				<span v-t="'_theme.code'"></span>
+				<span>{{ $t('_theme.code') }}</span>
 			</mk-textarea>
 			<mk-button @click="() => install(this.installThemeCode)" :disabled="installThemeCode == null" primary inline><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
 			<mk-button @click="() => preview(this.installThemeCode)" :disabled="installThemeCode == null" inline><fa :icon="faEye"/> {{ $t('preview') }}</mk-button>
@@ -67,7 +67,7 @@
 			</mk-select>
 			<template v-if="selectedTheme">
 				<mk-textarea readonly tall :value="selectedThemeCode">
-					<span v-t="'_theme.code'"></span>
+					<span>{{ $t('_theme.code') }}</span>
 				</mk-textarea>
 				<mk-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
 			</template>

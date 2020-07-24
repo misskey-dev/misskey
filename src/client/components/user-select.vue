@@ -1,10 +1,10 @@
 <template>
 <x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
-	<template #header v-t="'selectUser'"></template>
+	<template #header>{{ $t('selectUser') }}</template>
 	<div class="tbhwbxda">
 		<div class="inputs">
-			<mk-input v-model="username" class="input" @input="search" ref="username"><span v-t="'username'"></span><template #prefix>@</template></mk-input>
-			<mk-input v-model="host" class="input" @input="search"><span v-t="'host'"></span><template #prefix>@</template></mk-input>
+			<mk-input v-model="username" class="input" @input="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></mk-input>
+			<mk-input v-model="host" class="input" @input="search"><span>{{ $t('host') }}</span><template #prefix>@</template></mk-input>
 		</div>
 		<div class="users">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">

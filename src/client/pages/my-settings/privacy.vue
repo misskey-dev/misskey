@@ -2,19 +2,19 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faLock"/> {{ $t('privacy') }}</div>
 	<div class="_content">
-		<mk-switch v-model="isLocked" @change="save()" v-t="'makeFollowManuallyApprove'"></mk-switch>
-		<mk-switch v-model="autoAcceptFollowed" v-if="isLocked" @change="save()" v-t="'autoAcceptFollowed'"></mk-switch>
+		<mk-switch v-model="isLocked" @change="save()">{{ $t('makeFollowManuallyApprove') }}</mk-switch>
+		<mk-switch v-model="autoAcceptFollowed" v-if="isLocked" @change="save()">{{ $t('autoAcceptFollowed') }}</mk-switch>
 	</div>
 	<div class="_content">
-		<mk-switch v-model="rememberNoteVisibility" @change="save()" v-t="'rememberNoteVisibility'"></mk-switch>
+		<mk-switch v-model="rememberNoteVisibility" @change="save()">{{ $t('rememberNoteVisibility') }}</mk-switch>
 		<mk-select v-model="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
-			<template #label v-t="'defaultNoteVisibility'"></template>
-			<option value="public" v-t="'_visibility.public'"></option>
-			<option value="home" v-t="'_visibility.home'"></option>
-			<option value="followers" v-t="'_visibility.followers'"></option>
-			<option value="specified" v-t="'_visibility.specified'"></option>
+			<template #label>{{ $t('defaultNoteVisibility') }}</template>
+			<option value="public">{{ $t('_visibility.public') }}</option>
+			<option value="home">{{ $t('_visibility.home') }}</option>
+			<option value="followers">{{ $t('_visibility.followers') }}</option>
+			<option value="specified">{{ $t('_visibility.specified') }}</option>
 		</mk-select>
-		<mk-switch v-model="defaultNoteLocalOnly" v-if="!rememberNoteVisibility" v-t="'_visibility.localOnly'"></mk-switch>
+		<mk-switch v-model="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</mk-switch>
 	</div>
 </section>
 </template>

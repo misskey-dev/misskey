@@ -13,7 +13,7 @@
 			<fa :icon="faMinusCircle"/>
 			{{ $t('disabled-timeline.title') }}
 		</p>
-		<p class="desc" v-t="'disabled-timeline.description'"></p>
+		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
 	<x-timeline v-else-if="column.tl" ref="timeline" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote" :key="column.tl"/>
 </x-column>

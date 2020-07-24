@@ -3,9 +3,9 @@
 	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.textareaInput') }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
-		<mk-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span v-t="'_pages.blocks._textareaInput.name'"></span></mk-input>
-		<mk-input v-model="value.text"><span v-t="'_pages.blocks._textareaInput.text'"></span></mk-input>
-		<mk-textarea v-model="value.default"><span v-t="'_pages.blocks._textareaInput.default'"></span></mk-textarea>
+		<mk-input v-model="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._textareaInput.name') }}</span></mk-input>
+		<mk-input v-model="value.text"><span>{{ $t('_pages.blocks._textareaInput.text') }}</span></mk-input>
+		<mk-textarea v-model="value.default"><span>{{ $t('_pages.blocks._textareaInput.default') }}</span></mk-textarea>
 	</section>
 </x-container>
 </template>

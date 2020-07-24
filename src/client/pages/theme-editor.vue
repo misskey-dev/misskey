@@ -1,17 +1,17 @@
 <template>
 <div class="t9makv94">
 	<portal to="icon"><fa :icon="faPalette"/></portal>
-	<portal to="title" v-t="'themeEditor'"></portal>
+	<portal to="title">{{ $t('themeEditor') }}</portal>
 
 	<section class="_card">
 		<div class="_content">
-			<mk-input v-model="name" required><span v-t="'name'"></span></mk-input>
-			<mk-input v-model="author" required><span v-t="'author'"></span></mk-input>
-			<mk-textarea v-model="description"><span v-t="'description'"></span></mk-textarea>
+			<mk-input v-model="name" required><span>{{ $t('name') }}</span></mk-input>
+			<mk-input v-model="author" required><span>{{ $t('author') }}</span></mk-input>
+			<mk-textarea v-model="description"><span>{{ $t('description') }}</span></mk-textarea>
 			<div class="_inputs">
 				<div v-text="$t('_theme.base')" />
-				<mk-radio v-model="baseTheme" value="light" v-t="'light'"></mk-radio>
-				<mk-radio v-model="baseTheme" value="dark" v-t="'dark'"></mk-radio>
+				<mk-radio v-model="baseTheme" value="light">{{ $t('light') }}</mk-radio>
+				<mk-radio v-model="baseTheme" value="dark">{{ $t('dark') }}</mk-radio>
 			</div>
 		</div>
 		<div class="_content">
@@ -36,7 +36,7 @@
 							<!-- ref const -->
 							<mk-input v-else-if="v.type === 'refConst'" v-model="v.key">
 								<template #prefix>$</template>
-								<span v-t="'name'"></span>
+								<span>{{ $t('name') }}</span>
 							</mk-input>
 							<!-- ref props -->
 							<mk-select class="select" v-else-if="v.type === 'refProp'" v-model="v.key">
@@ -45,30 +45,30 @@
 							<!-- func -->
 							<template v-else-if="v.type === 'func'">
 								<mk-select class="select" v-model="v.name">
-									<template #label v-t="'_theme.funcKind'"></template>
+									<template #label>{{ $t('_theme.funcKind') }}</template>
 									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
 								</mk-select>
-								<mk-input type="number" v-model="v.arg"><span v-t="'_theme.argument'"></span></mk-input>
+								<mk-input type="number" v-model="v.arg"><span>{{ $t('_theme.argument') }}</span></mk-input>
 								<mk-select class="select" v-model="v.value">
-									<template #label v-t="'_theme.basedProp'"></template>
+									<template #label>{{ $t('_theme.basedProp') }}</template>
 									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
 								</mk-select>
 							</template>
 						</div>
 					</div>
 				</div>
-				<mk-button primary @click="addConst" v-t="'_theme.addConstant'"></mk-button>
+				<mk-button primary @click="addConst">{{ $t('_theme.addConstant') }}</mk-button>
 			</div>
 		</div>
 		<div class="_content">
 				<mk-textarea v-model="themeToImport">
 					{{ $t('_theme.importInfo') }}
 				</mk-textarea>
-				<mk-button :disabled="!themeToImport.trim()" @click="importTheme" v-t="'import'"></mk-button>
+				<mk-button :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</mk-button>
 		</div>
 		<div class="_footer">
-			<mk-button inline @click="preview" v-t="'preview'"></mk-button>
-			<mk-button inline primary :disabled="!name || !author" @click="save" v-t="'save'"></mk-button>
+			<mk-button inline @click="preview">{{ $t('preview') }}</mk-button>
+			<mk-button inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</mk-button>
 		</div>
 	</section>
 </div>

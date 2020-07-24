@@ -1,6 +1,6 @@
 <template>
 <x-window ref="window" :width="366" :height="506" @closed="() => { $emit('closed'); destroyDom(); }">
-	<template #header v-t="'signup'"></template>
+	<template #header>{{ $t('signup') }}</template>
 	<x-signup :auto-set="autoSet" @signup="onSignup"/>
 </x-window>
 </template>

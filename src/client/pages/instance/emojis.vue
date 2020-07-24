@@ -1,13 +1,13 @@
 <template>
 <div class="mk-instance-emojis">
 	<portal to="icon"><fa :icon="faLaugh"/></portal>
-	<portal to="title" v-t="'customEmojis'"></portal>
+	<portal to="title">{{ $t('customEmojis') }}</portal>
 
 	<section class="_card local">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">
 			<mk-pagination :pagination="pagination" class="emojis" ref="emojis">
-				<template #empty><span v-t="'noCustomEmojis'"></span></template>
+				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selected = emoji" :class="{ selected: selected && (selected.id === emoji.id) }">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>
@@ -23,9 +23,9 @@
 			</mk-pagination>
 		</div>
 		<div class="_content" v-if="selected">
-			<mk-input v-model="name"><span v-t="'name'"></span></mk-input>
-			<mk-input v-model="category" :datalist="categories"><span v-t="'category'"></span></mk-input>
-			<mk-input v-model="aliases"><span v-t="'tags'"></span></mk-input>
+			<mk-input v-model="name"><span>{{ $t('name') }}</span></mk-input>
+			<mk-input v-model="category" :datalist="categories"><span>{{ $t('category') }}</span></mk-input>
+			<mk-input v-model="aliases"><span>{{ $t('tags') }}</span></mk-input>
 			<mk-button inline primary @click="update"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 			<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
 		</div>
@@ -36,9 +36,9 @@
 	<section class="_card remote">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
 		<div class="_content">
-			<mk-input v-model="host" :debounce="true"><span v-t="'host'"></span></mk-input>
+			<mk-input v-model="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
 			<mk-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
-				<template #empty><span v-t="'noCustomEmojis'"></span></template>
+				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
 						<img :src="emoji.url" class="img" :alt="emoji.name"/>

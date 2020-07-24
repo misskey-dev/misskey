@@ -2,9 +2,9 @@
 <section class="rrfwjxfl _card">
 	<div class="_title"><fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
 	<div class="_content">
-		<span v-t="'mutedUsers'"></span>
+		<span>{{ $t('mutedUsers') }}</span>
 		<mk-pagination :pagination="mutingPagination" class="muting">
-			<template #empty><span v-t="'noUsers'"></span></template>
+			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
 				<div class="user" v-for="(mute, i) in items" :key="mute.id">
 					<router-link class="name" :to="mute.mutee | userPage">
@@ -15,9 +15,9 @@
 		</mk-pagination>
 	</div>
 	<div class="_content">
-		<span v-t="'blockedUsers'"></span>
+		<span>{{ $t('blockedUsers') }}</span>
 		<mk-pagination :pagination="blockingPagination" class="blocking">
-			<template #empty><span v-t="'noUsers'"></span></template>
+			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
 				<div class="user" v-for="(block, i) in items" :key="block.id">
 					<router-link class="name" :to="block.blockee | userPage">

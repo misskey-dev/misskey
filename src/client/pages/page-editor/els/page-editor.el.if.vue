@@ -9,7 +9,7 @@
 
 	<section class="romcojzs">
 		<mk-select v-model="value.var">
-			<template #label v-t="'_pages.blocks._if.variable'"></template>
+			<template #label>{{ $t('_pages.blocks._if.variable') }}</template>
 			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('_pages.script.pageVariables')">
 				<option v-for="v in hpml.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
