@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
@@ -102,11 +102,11 @@ import XSidebar from './components/sidebar.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XSidebar,
-		XClock: defineAsyncComponent(() => import('./components/header-clock.vue')),
-		MkButton: defineAsyncComponent(() => import('./components/ui/button.vue')),
+		XClock: defineAsyncComponent(() => import('./components/header-clock.vue').then(m => m.default)),
+		MkButton: defineAsyncComponent(() => import('./components/ui/button.vue').then(m => m.default)),
 		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
 	},
 

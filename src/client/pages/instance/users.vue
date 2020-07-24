@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPlus, faUsers, faSearch, faBookmark, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import parseAcct from '../../../misc/acct/parse';
@@ -93,7 +93,7 @@ import MkSelect from '../../components/ui/select.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 import MkUserSelect from '../../components/user-select.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: `${this.$t('users')} | ${this.$t('instance')}`

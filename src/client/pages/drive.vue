@@ -13,11 +13,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCloud, faAngleDown, faAngleUp, faFolderPlus, faUpload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import XDrive from '../components/drive.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('drive') as string

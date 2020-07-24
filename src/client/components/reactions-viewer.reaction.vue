@@ -17,11 +17,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XDetails from './reactions-viewer.details.vue';
 import XReactionIcon from './reaction-icon.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XReactionIcon
 	},

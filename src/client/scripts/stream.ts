@@ -2,7 +2,6 @@ import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { wsUrl } from '../config';
-import MiOS from '../mios';
 
 /**
  * Misskey stream connection
@@ -14,12 +13,10 @@ export default class Stream extends EventEmitter {
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 
-	constructor(os: MiOS) {
+	constructor(user) {
 		super();
 
 		this.state = 'initializing';
-
-		const user = os.store.state.i;
 
 		this.stream = new ReconnectingWebsocket(wsUrl + (user ? `?i=${user.token}` : ''), '', { minReconnectionDelay: 1 }); // https://github.com/pladaria/reconnecting-websocket/issues/91
 		this.stream.addEventListener('open', this.onOpen);

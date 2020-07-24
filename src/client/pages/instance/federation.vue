@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
@@ -68,7 +68,7 @@ import MkSelect from '../../components/ui/select.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 import MkInstanceInfo from './federation.instance.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('federation') as string

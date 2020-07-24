@@ -10,12 +10,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { emojiRegex } from '../../misc/emoji-regex';
 import XReactionIcon from './reaction-icon.vue';
 import XPopup from './popup.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPopup,
 		XReactionIcon,

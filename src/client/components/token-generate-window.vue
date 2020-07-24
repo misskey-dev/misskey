@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { kinds } from '../../misc/api-permissions';
 import XWindow from './window.vue';
 import MkInput from './ui/input.vue';
@@ -28,7 +28,7 @@ import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
 import MkInfo from './ui/info.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XWindow,
 		MkInput,

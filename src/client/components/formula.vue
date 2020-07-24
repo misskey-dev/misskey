@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineAsyncComponent } from 'vue';
-export default Vue.extend({
+import { defineComponent, defineAsyncComponent } from 'vue';
+export default defineComponent({
 	components: {
-		XFormula: defineAsyncComponent(() => import('./formula-core.vue'))
+		XFormula: defineAsyncComponent(() => import('./formula-core.vue').then(m => m.default))
 	},
 	props: {
 		formula: {

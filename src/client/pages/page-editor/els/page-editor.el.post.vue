@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkTextarea from '../../../components/ui/textarea.vue';
 import MkInput from '../../../components/ui/input.vue';
 import MkSwitch from '../../../components/ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkTextarea, MkInput, MkSwitch
 	},

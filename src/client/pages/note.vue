@@ -28,14 +28,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../scripts/loading';
 import XNote from '../components/note.vue';
 import XNotes from '../components/notes.vue';
 import MkRemoteCaution from '../components/remote-caution.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('note') as string

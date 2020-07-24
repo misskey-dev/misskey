@@ -60,11 +60,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faInfoCircle, faChevronLeft, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons'
 import MkButton from '../components/ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 	},

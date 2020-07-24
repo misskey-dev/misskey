@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -71,7 +71,7 @@ import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import { groupByX } from '../../prelude/array';
 import XPopup from './popup.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPopup,
 	},

@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XDirect from '../../pages/messages.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XDirect

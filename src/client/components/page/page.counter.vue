@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkButton from '../ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},

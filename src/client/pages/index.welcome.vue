@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XSetup from './index.welcome.setup.vue';
 import XEntrance from './index.welcome.entrance.vue';
 import { instanceName } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XSetup,
 		XEntrance,

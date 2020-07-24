@@ -33,12 +33,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import XPopup from './popup.vue';
 import { focusPrev, focusNext } from '../scripts/focus';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPopup
 	},

@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import {
 	faFile,
 	faFileAlt,
@@ -28,7 +28,7 @@ import {
 	} from '@fortawesome/free-solid-svg-icons';
 import ImgWithBlurhash from './img-with-blurhash.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		ImgWithBlurhash
 	},

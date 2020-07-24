@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -52,7 +52,7 @@ import MkInput from './ui/input.vue';
 import { apiUrl, host } from '../config';
 import { byteify, hexify } from '../scripts/2fa';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,

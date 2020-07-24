@@ -40,13 +40,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '../../../misc/acct/render';
 import MkButton from '../../components/ui/button.vue';
 import MkUserSelect from '../../components/user-select.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},

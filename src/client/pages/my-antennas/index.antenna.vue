@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
@@ -56,7 +56,7 @@ import MkSwitch from '../../components/ui/switch.vue';
 import MkUserSelect from '../../components/user-select.vue';
 import getAcct from '../../../misc/acct/render';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton, MkInput, MkTextarea, MkSelect, MkSwitch
 	},

@@ -18,11 +18,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import XModal from './modal.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XModal,
 	},

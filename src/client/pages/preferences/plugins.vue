@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
 import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
@@ -50,7 +50,7 @@ import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInfo from '../../components/ui/info.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkTextarea,

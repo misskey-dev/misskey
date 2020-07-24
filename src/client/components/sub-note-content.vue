@@ -19,12 +19,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faReply } from '@fortawesome/free-solid-svg-icons';
 import XPoll from './poll.vue';
 import XMediaList from './media-list.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPoll,
 		XMediaList,

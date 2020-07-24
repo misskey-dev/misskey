@@ -6,13 +6,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
 import { apiUrl } from '../../config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkTextarea,
 		MkButton,

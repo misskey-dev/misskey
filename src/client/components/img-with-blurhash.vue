@@ -6,10 +6,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { decode } from 'blurhash';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		src: {
 			type: String,

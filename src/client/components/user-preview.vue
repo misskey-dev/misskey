@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import parseAcct from '../../misc/acct/parse';
 import MkFollowButton from './follow-button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkFollowButton
 	},

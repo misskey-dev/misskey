@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
@@ -120,15 +120,15 @@ import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '../../scripts/scroll';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XUserTimeline,
 		XNote,
 		MkFollowButton,
 		MkContainer,
 		MkRemoteCaution,
-		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
-		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
+		XPhotos: defineAsyncComponent(() => import('./index.photos.vue').then(m => m.default)),
+		XActivity: defineAsyncComponent(() => import('./index.activity.vue').then(m => m.default)),
 	},
 
 	metaInfo() {

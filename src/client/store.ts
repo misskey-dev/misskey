@@ -1,4 +1,4 @@
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
@@ -88,7 +88,7 @@ function copy<T>(data: T): T {
 	return JSON.parse(JSON.stringify(data));
 }
 
-export default () => new Vuex.Store({
+export const store = createStore({
 	plugins: [createPersistedState({
 		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
 	})],
@@ -97,6 +97,13 @@ export default () => new Vuex.Store({
 		i: null,
 		pendingApiRequestsCount: 0,
 		spinner: null,
+		dialogs: [] as {
+			id: any;
+			type: 'info' | 'question' | 'warn' | 'success' | 'error';
+			title: string;
+			text: string;
+			result: any;
+		}[],
 
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
@@ -235,6 +242,10 @@ export default () => new Vuex.Store({
 
 		updateIKeyValue(state, { key, value }) {
 			state.i[key] = value;
+		},
+
+		showDialog(state, dialog) {
+			state.dialogs.push(dialog);
 		},
 
 		initPlugin(state, { plugin, aiscript }) {

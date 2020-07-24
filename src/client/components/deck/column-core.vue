@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XTlColumn from './tl-column.vue';
 import XAntennaColumn from './antenna-column.vue';
 import XListColumn from './list-column.vue';
@@ -20,7 +20,7 @@ import XWidgetsColumn from './widgets-column.vue';
 import XMentionsColumn from './mentions-column.vue';
 import XDirectColumn from './direct-column.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XTlColumn,
 		XAntennaColumn,

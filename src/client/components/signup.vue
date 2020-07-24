@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
@@ -58,12 +58,12 @@ import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: defineAsyncComponent(() => import('./captcha.vue')),
+		captcha: defineAsyncComponent(() => import('./captcha.vue').then(m => m.default)),
 	},
 
 	props: {

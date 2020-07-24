@@ -43,12 +43,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import XPopup from './popup.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPopup
 	},

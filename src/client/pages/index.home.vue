@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
@@ -32,7 +32,7 @@ import XTimeline from '../components/timeline.vue';
 import XPostForm from '../components/post-form.vue';
 import { scroll } from '../scripts/scroll';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('timeline') as string
@@ -41,7 +41,7 @@ export default Vue.extend({
 
 	components: {
 		XTimeline,
-		XTutorial: defineAsyncComponent(() => import('./index.home.tutorial.vue')),
+		XTutorial: defineAsyncComponent(() => import('./index.home.tutorial.vue').then(m => m.default)),
 		XPostForm,
 	},
 

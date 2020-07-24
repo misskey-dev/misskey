@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import MkInput from '../../components/ui/input.vue';
@@ -89,7 +89,7 @@ import { Theme, builtinThemes, applyTheme, validateTheme } from '../../scripts/t
 import { selectFile } from '../../scripts/select-file';
 import { isDeviceDarkmode } from '../../scripts/is-device-darkmode';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkInput,
 		MkButton,

@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer
 	},

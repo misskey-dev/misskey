@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../scripts/loading';
 import XNotifications from '../components/notifications.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('notifications') as string

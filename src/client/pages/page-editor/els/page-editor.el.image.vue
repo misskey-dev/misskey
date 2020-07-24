@@ -14,14 +14,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faImage, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkFileThumbnail from '../../../components/drive-file-thumbnail.vue';
 import { selectDriveFile } from '../../../scripts/select-drive-file';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkFileThumbnail
 	},

@@ -20,13 +20,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../components/ui/button.vue';
 import MkInput from '../components/ui/input.vue';
 import { host } from '../config';
 
-export default Vue.extend({
+export default defineComponent({
 	
 	components: {
 		MkButton,

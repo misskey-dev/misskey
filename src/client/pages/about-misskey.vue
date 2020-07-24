@@ -60,12 +60,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { version } from '../config';
 import MkLink from '../components/link.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkLink
 	},

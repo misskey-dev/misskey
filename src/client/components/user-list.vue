@@ -30,12 +30,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import paging from '../scripts/paging';
 import MkContainer from './ui/container.vue';
 import MkFollowButton from './follow-button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkContainer,
 		MkFollowButton,

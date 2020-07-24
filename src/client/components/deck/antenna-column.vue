@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSatellite, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XTimeline,

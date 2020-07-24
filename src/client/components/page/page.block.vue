@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XText from './page.text.vue';
 import XSection from './page.section.vue';
 import XImage from './page.image.vue';
@@ -19,7 +19,7 @@ import XCounter from './page.counter.vue';
 import XRadioButton from './page.radio-button.vue';
 import XCanvas from './page.canvas.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton, XCanvas
 	},
