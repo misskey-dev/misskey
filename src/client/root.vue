@@ -1,5 +1,6 @@
 <template>
-<component :is="deck ? DeckUI : DefaultUI"/>
+<DeckUI v-if="deckmode"/>
+<DefaultUI v-else/>
 <!-- Render modals here -->
 </template>
 
@@ -20,10 +21,20 @@ export default defineComponent({
 		titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
 	},
 
+	props: {
+		stream: {
+
+		},
+		isMobile: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
+	},
+
 	data() {
 		return {
-			stream: os.stream,
-			isMobile: isMobile,
+			deckmode
 		};
 	},
 
