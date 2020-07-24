@@ -53,11 +53,11 @@ export default defineComponent({
 
 					if (!this.plain) {
 						const x = text.split('\n')
-							.map(t => t == '' ? [h('br')] : [this._v(t), h('br')]); // NOTE: this._vはHACK SEE: https://github.com/syuilo/misskey/pull/6399#issuecomment-632820283
+							.map(t => t == '' ? [h('br')] : [t, h('br')]);
 						x[x.length - 1].pop();
 						return x;
 					} else {
-						return [this._v(text.replace(/\n/g, ' '))];
+						return [text.replace(/\n/g, ' ')];
 					}
 				}
 
