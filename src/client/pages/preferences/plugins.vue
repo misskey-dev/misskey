@@ -6,7 +6,7 @@
 			<summary><fa :icon="faDownload"/> {{ $t('install') }}</summary>
 			<mk-info warn>{{ $t('pluginInstallWarn') }}</mk-info>
 			<mk-textarea v-model="script" tall>
-				<span v-t="'script'"></span>
+				<span>{{ $t('script') }}</span>
 			</mk-textarea>
 			<mk-button @click="install()" primary><fa :icon="faSave"/> {{ $t('install') }}</mk-button>
 		</details>

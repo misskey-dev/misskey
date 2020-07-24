@@ -1,13 +1,13 @@
 <template>
 <div class="">
 	<portal to="icon"><fa :icon="faShareAlt"/></portal>
-	<portal to="title" v-t="'share'"></portal>
+	<portal to="title">{{ $t('share') }}</portal>
 
 	<section class="_card">
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<div>{{ text }}</div>
-			<mk-button @click="post()" v-if="!posted" v-t="'post'"></mk-button>
+			<mk-button @click="post()" v-if="!posted">{{ $t('post') }}</mk-button>
 			<mk-button primary @click="close()" v-else>{{ $t('close') }}</mk-button>
 		</div>
 		<div class="_footer" v-if="url">{{ url }}</div>

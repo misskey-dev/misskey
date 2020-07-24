@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="icon"><fa :icon="faCog"/></portal>
-	<portal to="title" v-t="'accountSettings'"></portal>
+	<portal to="title">{{ $t('accountSettings') }}</portal>
 
 	<x-profile-setting/>
 	<x-privacy-setting/>
@@ -18,9 +18,9 @@
 			</mk-switch>
 		</div>
 		<div class="_content">
-			<mk-button @click="readAllNotifications" v-t="'markAsReadAllNotifications'"></mk-button>
-			<mk-button @click="readAllUnreadNotes" v-t="'markAsReadAllUnreadNotes'"></mk-button>
-			<mk-button @click="readAllMessagingMessages" v-t="'markAsReadAllTalkMessages'"></mk-button>
+			<mk-button @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</mk-button>
+			<mk-button @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</mk-button>
+			<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
 		</div>
 	</section>
 
@@ -32,9 +32,9 @@
 	<x-integration/>
 	<x-api/>
 
-	<router-link class="_panel _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;" v-t="'installedApps'"></router-link>
+	<router-link class="_panel _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;">{{ $t('installedApps') }}</router-link>
 
-	<button class="_panel _buttonPrimary" @click="$root.signout()" style="margin: var(--margin) auto;" v-t="'logout'"></button>
+	<button class="_panel _buttonPrimary" @click="$root.signout()" style="margin: var(--margin) auto;">{{ $t('logout') }}</button>
 </div>
 </template>
 

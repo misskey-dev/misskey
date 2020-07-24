@@ -3,7 +3,7 @@
 	<div class="mjndxjcg _panel">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
-		<mk-button @click="() => $emit('retry')" class="button" v-t="'retry'"></mk-button>
+		<mk-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</mk-button>
 	</div>
 </transition>
 </template>

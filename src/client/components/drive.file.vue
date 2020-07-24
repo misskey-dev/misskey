@@ -9,15 +9,15 @@
 >
 	<div class="label" v-if="$store.state.i.avatarId == file.id">
 		<img src="/assets/label.svg"/>
-		<p v-t="'avatar'"></p>
+		<p>{{ $t('avatar') }}</p>
 	</div>
 	<div class="label" v-if="$store.state.i.bannerId == file.id">
 		<img src="/assets/label.svg"/>
-		<p v-t="'banner'"></p>
+		<p>{{ $t('banner') }}</p>
 	</div>
 	<div class="label red" v-if="file.isSensitive">
 		<img src="/assets/label-red.svg"/>
-		<p v-t="'nsfw'"></p>
+		<p>{{ $t('nsfw') }}</p>
 	</div>
 
 	<x-file-thumbnail class="thumbnail" :file="file" fit="contain"/>

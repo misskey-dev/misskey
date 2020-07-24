@@ -2,11 +2,11 @@
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
 		<mk-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
-			<span v-t="'invitationCode'"></span>
+			<span>{{ $t('invitationCode') }}</span>
 			<template #prefix><fa :icon="faKey"/></template>
 		</mk-input>
 		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
-			<span v-t="'username'"></span>
+			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #desc>
@@ -20,7 +20,7 @@
 			</template>
 		</mk-input>
 		<mk-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword">
-			<span v-t="'password'"></span>
+			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
 				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('weakPassword') }}</p>
@@ -38,7 +38,7 @@
 		</mk-input>
 		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
 			<i18n-t path="agreeTo">
-				<a :href="meta.tosUrl" class="_link" target="_blank" v-t="'tos'"></a>
+				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n-t>
 		</mk-switch>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
