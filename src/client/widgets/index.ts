@@ -1,17 +1,17 @@
-import { App } from 'vue';
+import { App, defineAsyncComponent } from 'vue';
 
 export default function(app: App) {
-	app.component('mkw-welcome', () => import('./welcome.vue').then(m => m.default));
-	app.component('mkw-memo', () => import('./memo.vue').then(m => m.default));
-	app.component('mkw-notifications', () => import('./notifications.vue').then(m => m.default));
-	app.component('mkw-timeline', () => import('./timeline.vue').then(m => m.default));
-	app.component('mkw-calendar', () => import('./calendar.vue').then(m => m.default));
-	app.component('mkw-rss', () => import('./rss.vue').then(m => m.default));
-	app.component('mkw-trends', () => import('./trends.vue').then(m => m.default));
-	app.component('mkw-clock', () => import('./clock.vue').then(m => m.default));
-	app.component('mkw-activity', () => import('./activity.vue').then(m => m.default));
-	app.component('mkw-photos', () => import('./photos.vue').then(m => m.default));
-	app.component('mkw-digitalClock', () => import('./digital-clock.vue').then(m => m.default));
+	app.component('mkw-welcome', defineAsyncComponent(() => import('./welcome.vue').then(m => m.default)));
+	app.component('mkw-memo', defineAsyncComponent(() => import('./memo.vue').then(m => m.default)));
+	app.component('mkw-notifications', defineAsyncComponent(() => import('./notifications.vue').then(m => m.default)));
+	app.component('mkw-timeline', defineAsyncComponent(() => import('./timeline.vue').then(m => m.default)));
+	app.component('mkw-calendar', defineAsyncComponent(() => import('./calendar.vue').then(m => m.default)));
+	app.component('mkw-rss', defineAsyncComponent(() => import('./rss.vue').then(m => m.default)));
+	app.component('mkw-trends', defineAsyncComponent(() => import('./trends.vue').then(m => m.default)));
+	app.component('mkw-clock', defineAsyncComponent(() => import('./clock.vue').then(m => m.default)));
+	app.component('mkw-activity', defineAsyncComponent(() => import('./activity.vue').then(m => m.default)));
+	app.component('mkw-photos', defineAsyncComponent(() => import('./photos.vue').then(m => m.default)));
+	app.component('mkw-digitalClock', defineAsyncComponent(() => import('./digital-clock.vue').then(m => m.default)));
 }
 
 export const widgets = [
