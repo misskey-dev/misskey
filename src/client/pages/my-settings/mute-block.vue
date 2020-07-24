@@ -7,7 +7,7 @@
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
 				<div class="user" v-for="(mute, i) in items" :key="mute.id">
-					<router-link class="name" :to="mute.mutee | userPage">
+					<router-link class="name" :to="userPage(mute.mutee)">
 						<mk-acct :user="mute.mutee"/>
 					</router-link>
 				</div>
@@ -20,7 +20,7 @@
 			<template #empty><span>{{ $t('noUsers') }}</span></template>
 			<template #default="{items}">
 				<div class="user" v-for="(block, i) in items" :key="block.id">
-					<router-link class="name" :to="block.blockee | userPage">
+					<router-link class="name" :to="userPage(block.blockee)">
 						<mk-acct :user="block.blockee"/>
 					</router-link>
 				</div>
@@ -34,6 +34,7 @@
 import Vue from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '../../components/ui/pagination.vue';
+import { userPage } from '../../filters/user';
 
 export default Vue.extend({
 	components: {
@@ -53,6 +54,10 @@ export default Vue.extend({
 			faBan
 		}
 	},
+
+	methods: {
+		userPage
+	}
 });
 </script>
 

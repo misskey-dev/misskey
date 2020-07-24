@@ -7,7 +7,7 @@
 		</div>
 
 		<div class="users">
-			<router-link v-for="item in items" class="user" :key="item.id" :to="extract ? extract(item) : item | userPage">
+			<router-link v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
 				<mk-avatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
 				<div class="body">
 					<mk-user-name :user="extract ? extract(item) : item" class="name"/>
@@ -32,6 +32,7 @@ import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import paging from '../scripts/paging';
 import XModal from './modal.vue';
+import { userPage } from '../filters/user';
 
 export default Vue.extend({
 	components: {
@@ -64,6 +65,7 @@ export default Vue.extend({
 		close() {
 			this.$refs.modal.close();
 		},
+		userPage
 	}
 });
 </script>

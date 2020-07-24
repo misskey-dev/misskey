@@ -4,7 +4,7 @@
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
-			<router-link class="name" :to="u | userPage"><mk-user-name :user="u" :nowrap="false"/></router-link>
+			<router-link class="name" :to="userPage(u)"><mk-user-name :user="u" :nowrap="false"/></router-link>
 			<p class="username"><mk-acct :user="u"/></p>
 		</div>
 		<div class="description">
@@ -30,6 +30,7 @@
 import Vue from 'vue';
 import parseAcct from '../../misc/acct/parse';
 import MkFollowButton from './follow-button.vue';
+import { userPage } from '../filters/user';
 
 export default Vue.extend({
 	components: {
@@ -85,7 +86,8 @@ export default Vue.extend({
 			this.closed = true;
 			this.show = false;
 			if (this.$refs.content) (this.$refs.content as any).style.pointerEvents = 'none';
-		}
+		},
+		userPage
 	}
 });
 </script>

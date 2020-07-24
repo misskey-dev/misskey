@@ -66,15 +66,15 @@
 			</dl>
 		</div>
 		<div class="status">
-			<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
+			<router-link :to="userPage(user)" :class="{ active: $route.name === 'user' }">
 				<b>{{ number(user.notesCount) }}</b>
 				<span>{{ $t('notes') }}</span>
 			</router-link>
-			<router-link :to="user | userPage('following')" :class="{ active: $route.name === 'userFollowing' }">
+			<router-link :to="userPage(user, 'following')" :class="{ active: $route.name === 'userFollowing' }">
 				<b>{{ number(user.followingCount) }}</b>
 				<span>{{ $t('following') }}</span>
 			</router-link>
-			<router-link :to="user | userPage('followers')" :class="{ active: $route.name === 'userFollowers' }">
+			<router-link :to="userPage(user, 'followers')" :class="{ active: $route.name === 'userFollowers' }">
 				<b>{{ number(user.followersCount) }}</b>
 				<span>{{ $t('followers') }}</span>
 			</router-link>
@@ -120,6 +120,7 @@ import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '../../scripts/scroll';
 import number from '../../filters/number';
+import userPage from '../../filters/user';
 
 export default Vue.extend({
 	components: {
@@ -212,7 +213,9 @@ export default Vue.extend({
 			banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 		},
 
-		number
+		number,
+
+		userPage
 	}
 });
 </script>

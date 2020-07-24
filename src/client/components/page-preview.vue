@@ -8,7 +8,7 @@
 		<p v-if="page.summary" :title="page.summary">{{ page.summary.length > 85 ? page.summary.slice(0, 85) + '…' : page.summary }}</p>
 		<footer>
 			<img class="icon" :src="page.user.avatarUrl"/>
-			<p>{{ page.user | userName }}</p>
+			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
 </router-link>
@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { userName } from '../filters/user';
 
 export default Vue.extend({
 	props: {
@@ -23,6 +24,9 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
+		methods: {
+			userName
+		}
 	},
 });
 </script>

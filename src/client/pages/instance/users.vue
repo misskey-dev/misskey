@@ -59,7 +59,7 @@
 					<div class="body">
 						<header>
 							<mk-user-name class="name" :user="user"/>
-							<span class="acct">@{{ user | acct }}</span>
+							<span class="acct">@{{ acct(user) }}</span>
 							<span class="staff" v-if="user.isAdmin"><fa :icon="faBookmark"/></span>
 							<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
 							<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
@@ -92,6 +92,7 @@ import MkInput from '../../components/ui/input.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 import MkUserSelect from '../../components/user-select.vue';
+import { acct } from '../../filters/user';
 
 export default Vue.extend({
 	metaInfo() {
@@ -223,7 +224,9 @@ export default Vue.extend({
 
 		async show(user) {
 			this.$router.push('./users/' + user.id);
-		}
+		},
+
+		acct
 	}
 });
 </script>
@@ -234,7 +237,7 @@ export default Vue.extend({
 		> ._content {
 			max-height: 300px;
 			overflow: auto;
-			
+
 			> .users {
 				> .user {
 					display: flex;

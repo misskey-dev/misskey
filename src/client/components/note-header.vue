@@ -1,6 +1,6 @@
 <template>
 <header class="kkwtjztg">
-	<router-link class="name" :to="note.user | userPage" v-user-preview="note.user.id">
+	<router-link class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
 		<mk-user-name :user="note.user"/>
 	</router-link>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
@@ -27,6 +27,7 @@ import Vue from 'vue';
 import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import notePage from '../filters/note';
+import { userPage } from '../filters/user';
 
 export default Vue.extend({
 	props: {
@@ -43,7 +44,8 @@ export default Vue.extend({
 	},
 
 	methods: {
-		notePage
+		notePage,
+		userPage
 	}
 });
 </script>

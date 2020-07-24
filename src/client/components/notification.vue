@@ -18,7 +18,7 @@
 	</div>
 	<div class="tail">
 		<header>
-			<router-link v-if="notification.user" class="name" :to="notification.user | userPage" v-user-preview="notification.user.id"><mk-user-name :user="notification.user"/></router-link>
+			<router-link v-if="notification.user" class="name" :to="userPage(notification.user)" v-user-preview="notification.user.id"><mk-user-name :user="notification.user"/></router-link>
 			<span v-else>{{ notification.header }}</span>
 			<mk-time :time="notification.createdAt" v-if="withTime"/>
 		</header>
@@ -65,6 +65,7 @@ import noteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
+import { userPage } from '../filters/user';
 
 export default Vue.extend({
 	components: {
@@ -142,7 +143,8 @@ export default Vue.extend({
 			this.groupInviteDone = true;
 			this.$root.api('users/groups/invitations/reject', { invitationId: this.notification.invitation.id });
 		},
-		notePage
+		notePage,
+		userPage
 	}
 });
 </script>

@@ -22,7 +22,7 @@
 				</header>
 				<header v-else>
 					<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
-					<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
+					<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
 					<mk-time :time="message.createdAt"/>
 				</header>
 				<div class="body">
@@ -45,6 +45,7 @@ import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg
 import getAcct from '../../../misc/acct/render';
 import MkButton from '../../components/ui/button.vue';
 import MkUserSelect from '../../components/user-select.vue';
+import { acct } from '../../filters/user';
 
 export default Vue.extend({
 	components: {
@@ -159,7 +160,9 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 			this.$router.push(`/my/messaging/group/${group.id}`);
-		}
+		},
+
+		acct
 	}
 });
 </script>

@@ -6,7 +6,7 @@
 			<span class="name">
 				<mk-user-name :user="user" :key="user.id"/>
 			</span>
-			<span class="username">@{{ user | acct }}</span>
+			<span class="username">@{{ acct(user) }}</span>
 		</li>
 		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose">{{ $t('selectUser') }}</li>
 	</ol>
@@ -34,6 +34,7 @@ import contains from '../scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import MkUserSelect from './user-select.vue';
+import { acct } from '../filters/user';
 
 type EmojiDef = {
 	emoji: string;
@@ -381,7 +382,9 @@ export default Vue.extend({
 			vm.$once('closed', () => {
 				this.textarea.focus();
 			});
-		}
+		},
+
+		acct
 	}
 });
 </script>
