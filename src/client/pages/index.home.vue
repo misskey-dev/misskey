@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
@@ -41,7 +41,7 @@ export default defineComponent({
 
 	components: {
 		XTimeline,
-		XTutorial: () => import('./index.home.tutorial.vue').then(m => m.default),
+		XTutorial: defineAsyncComponent(() => import('./index.home.tutorial.vue').then(m => m.default)),
 		XPostForm,
 	},
 

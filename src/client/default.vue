@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
@@ -105,9 +105,9 @@ const DESKTOP_THRESHOLD = 1100;
 export default defineComponent({
 	components: {
 		XSidebar,
-		XClock: () => import('./components/header-clock.vue').then(m => m.default),
-		MkButton: () => import('./components/ui/button.vue').then(m => m.default),
-		XDraggable: () => import('vuedraggable'),
+		XClock: defineAsyncComponent(() => import('./components/header-clock.vue').then(m => m.default)),
+		MkButton: defineAsyncComponent(() => import('./components/ui/button.vue').then(m => m.default)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
 	},
 
 	data() {

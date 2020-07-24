@@ -247,7 +247,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mathInline': {
-					//const MkFormula = () => import('./formula.vue').then(m => m.default);
 					return [createElement(MkFormula, {
 						key: Math.random(),
 						props: {
@@ -258,7 +257,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mathBlock': {
-					//const MkFormula = () => import('./formula.vue').then(m => m.default);
 					return [createElement(MkFormula, {
 						key: Math.random(),
 						props: {
@@ -269,7 +267,6 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'search': {
-					//const MkGoogle = () => import('./google.vue').then(m => m.default);
 					return [createElement(MkGoogle, {
 						key: Math.random(),
 						props: {

@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MkIndex from './pages/index.vue';
+import { defineAsyncComponent } from 'vue';
 
-const page = (path: string) => () => import(`./pages/${path}.vue`).then(m => m.default);
+const page = (path: string) => defineAsyncComponent(() => import(`./pages/${path}.vue`).then(m => m.default));
 
 let indexScrollPos = 0;
 
-export const router = new createRouter({
+export const router = createRouter({
 	history: createWebHistory(),
 	routes: [
 		{ path: '/', name: 'index', component: MkIndex },

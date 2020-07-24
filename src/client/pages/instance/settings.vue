@@ -199,7 +199,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -225,7 +225,7 @@ export default defineComponent({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
-		Captcha: () => import('../../components/captcha.vue').then(x => x.default),
+		Captcha: defineAsyncComponent(() => import('../../components/captcha.vue').then(m => m.default)),
 	},
 
 	data() {
