@@ -81,10 +81,6 @@ const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
 
-const i18n = createI18n({
-	legacy: true,
-});
-
 //#region Fetch user
 const signout = () => {
 	store.dispatch('logout');
@@ -158,17 +154,24 @@ app.use(store);
 app.use(router);
 app.use(VueHotkey);
 app.use(VAnimateCss);
-app.use(i18n);
 app.component('fa', FontAwesomeIcon);
 
-//#region Fetch locale data
-/*await count(clientDb.i18n).then(async n => {
-	if (n === 0) return setI18nContexts(lang, version, i18n);
-	if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
+//#region Init i18n
+const locale = await count(clientDb.i18n).then(async n => {
+	if (n === 0) return await setI18nContexts(lang, version, i18n);
+	if ((await get('_version_', clientDb.i18n) !== version)) return await setI18nContexts(lang, version, i18n, true);
 
-	i18n.locale = lang;
-	i18n.setLocaleMessage(lang, await getLocale());
-});*/
+	return await getLocale();
+});
+
+const i18n = createI18n({
+	legacy: true,
+	sync: false,
+	locale: lang,
+	messages: { [lang]: locale }
+});
+
+app.use(i18n);
 //#endregion
 
 widgets(app);

@@ -11,7 +11,6 @@ export function setI18nContexts(lang: string, version: string, i18n: I18n, clear
 	.then(locale => {
 		const flatLocaleEntries = deepEntries(locale, delimitEntry) as [string, string][];
 		bulkSet(flatLocaleEntries, clientDb.i18n);
-		i18n.locale = lang;
-		i18n.setLocaleMessage(lang, Object.fromEntries(flatLocaleEntries));
+		return Object.fromEntries(flatLocaleEntries);
 	});
 }
