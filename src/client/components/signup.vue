@@ -37,9 +37,9 @@
 			</template>
 		</mk-input>
 		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
-			<i18n path="agreeTo">
+			<i18n-t path="agreeTo">
 				<a :href="meta.tosUrl" class="_link" target="_blank" v-t="'tos'"></a>
-			</i18n>
+			</i18n-t>
 		</mk-switch>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
 		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>

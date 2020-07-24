@@ -23,10 +23,10 @@
 	</div>
 	<div class="_content" v-else-if="tutorial === 4">
 		<div v-t="'_tutorial.step5_1'"></div>
-		<i18n path="_tutorial.step5_2" tag="div">
+		<i18n-t path="_tutorial.step5_2" tag="div">
 			<router-link class="_link" place="featured" to="/featured" v-t="'featured'"></router-link>
 			<router-link class="_link" place="explore" to="/explore" v-t="'explore'"></router-link>
-		</i18n>
+		</i18n-t>
 		<div v-t="'_tutorial.step5_3'"></div>
 		<small v-t="'_tutorial.step5_4'"></small>
 	</div>
@@ -37,9 +37,9 @@
 	</div>
 	<div class="_content" v-else-if="tutorial === 6">
 		<div v-t="'_tutorial.step7_1'"></div>
-		<i18n path="_tutorial.step7_2" tag="div">
+		<i18n-t path="_tutorial.step7_2" tag="div">
 			<router-link class="_link" place="help" to="/docs" v-t="'help'"></router-link>
-		</i18n>
+		</i18n-t>
 		<div v-t="'_tutorial.step7_3'"></div>
 	</div>
 

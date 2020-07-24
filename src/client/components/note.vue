@@ -15,11 +15,11 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa :icon="faRetweet"/>
-		<i18n path="renotedBy" tag="span">
+		<i18n-t path="renotedBy" tag="span">
 			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId" place="user">
 				<mk-user-name :user="note.user"/>
 			</router-link>
-		</i18n>
+		</i18n-t>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
 				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
