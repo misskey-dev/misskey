@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { getScrollPosition, onScrollTop } from './scroll';
 
 const SECOND_FETCH_LIMIT = 30;
@@ -48,14 +47,14 @@ export default (opts) => ({
 	created() {
 		opts.displayLimit = opts.displayLimit || 30;
 		this.init();
+	},
 
-		this.$on('hook:activated', () => {
-			this.isBackTop = false;
-		});
+	activated() {
+		this.isBackTop = false;
+	},
 
-		this.$on('hook:deactivated', () => {
-			this.isBackTop = window.scrollY === 0;
-		});
+	deactivated() {
+		this.isBackTop = window.scrollY === 0;
 	},
 
 	mounted() {
@@ -75,7 +74,7 @@ export default (opts) => ({
 
 	methods: {
 		updateItem(i, item) {
-			Vue.set((this as any).items, i, item);
+			(this as any).items[i] = item;
 		},
 
 		reload() {

@@ -1,18 +1,19 @@
+import { Directive } from 'vue';
 import * as getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode';
 
 export default {
-	bind(el, binding, vn) {
+	mounted(el, binding, vn) {
 		const self = el._autoCompleteDirective_ = {} as any;
 		self.x = new Autocomplete(el, vn.context, binding.value);
 		self.x.attach();
 	},
 
-	unbind(el, binding, vn) {
+	unmounted(el, binding, vn) {
 		const self = el._autoCompleteDirective_;
 		self.x.detach();
 	}
-};
+} as Directive;
 
 /**
  * オートコンプリートを管理するクラス。

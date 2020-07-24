@@ -16,6 +16,7 @@ import FontAwesomeIcon from './components/fa.vue';
 import Stream from './scripts/stream';
 import widgets from './widgets';
 import directives from './directives';
+import components from './components';
 import { version, langs, getLocale, apiUrl } from './config';
 import { store } from './store';
 import { router } from './router';
@@ -172,8 +173,7 @@ app.component('fa', FontAwesomeIcon);
 
 widgets(app);
 directives(app);
-
-//require('./components');
+components(app);
 
 document.body.innerHTML = '<div id="app"></div>';
 

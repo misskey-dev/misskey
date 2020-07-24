@@ -40,6 +40,10 @@ export default defineComponent({
 	},
 
 	methods: {
+		api(endpoint: string, data: { [x: string]: any } = {}, token?) {
+			return this.$store.dispatch('api', { endpoint, data, token });
+		},
+
 		dialog(opts) {
 			this.$store.commit('showDialog', opts);
 		}
