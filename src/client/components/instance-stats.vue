@@ -9,15 +9,15 @@
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ info.originalUsersCount | number }}</dd>
+					<dd>{{ number(info.originalUsersCount) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersLocalDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ usersLocalDoD | number }}</dd>
+					<dd>{{ number(usersLocalDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersLocalWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ usersLocalWoW | number }}</dd>
+					<dd>{{ number(usersLocalWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
@@ -29,15 +29,15 @@
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ (info.usersCount - info.originalUsersCount) | number }}</dd>
+					<dd>{{ number((info.usersCount - info.originalUsersCount)) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersRemoteDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ usersRemoteDoD | number }}</dd>
+					<dd>{{ number(usersRemoteDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersRemoteWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ usersRemoteWoW | number }}</dd>
+					<dd>{{ number(usersRemoteWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
@@ -49,15 +49,15 @@
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ info.originalNotesCount | number }}</dd>
+					<dd>{{ number(info.originalNotesCount) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesLocalDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ notesLocalDoD | number }}</dd>
+					<dd>{{ number(notesLocalDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesLocalWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ notesLocalWoW | number }}</dd>
+					<dd>{{ number(notesLocalWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
@@ -69,15 +69,15 @@
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ (info.notesCount - info.originalNotesCount) | number }}</dd>
+					<dd>{{ number((info.notesCount - info.originalNotesCount)) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesRemoteDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ notesRemoteDoD | number }}</dd>
+					<dd>{{ number(notesRemoteDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesRemoteWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ notesRemoteWoW | number }}</dd>
+					<dd>{{ number(notesRemoteWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
@@ -126,6 +126,7 @@ import Vue from 'vue';
 import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
+import number from '../filters/number';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -580,6 +581,8 @@ export default Vue.extend({
 				}]
 			};
 		},
+
+		number
 	}
 });
 </script>

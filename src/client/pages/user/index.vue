@@ -67,15 +67,15 @@
 		</div>
 		<div class="status">
 			<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
-				<b>{{ user.notesCount | number }}</b>
+				<b>{{ number(user.notesCount) }}</b>
 				<span>{{ $t('notes') }}</span>
 			</router-link>
 			<router-link :to="user | userPage('following')" :class="{ active: $route.name === 'userFollowing' }">
-				<b>{{ user.followingCount | number }}</b>
+				<b>{{ number(user.followingCount) }}</b>
 				<span>{{ $t('following') }}</span>
 			</router-link>
 			<router-link :to="user | userPage('followers')" :class="{ active: $route.name === 'userFollowers' }">
-				<b>{{ user.followersCount | number }}</b>
+				<b>{{ number(user.followersCount) }}</b>
 				<span>{{ $t('followers') }}</span>
 			</router-link>
 		</div>
@@ -119,6 +119,7 @@ import MkRemoteCaution from '../../components/remote-caution.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '../../scripts/scroll';
+import number from '../../filters/number';
 
 export default Vue.extend({
 	components: {
@@ -210,6 +211,8 @@ export default Vue.extend({
 			const pos = -(top / z);
 			banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 		},
+
+		number
 	}
 });
 </script>
@@ -271,7 +274,7 @@ export default Vue.extend({
 				background: rgba(0, 0, 0, 0.2);
 				padding: 8px;
 				border-radius: 24px;
-		
+
 				> .menu {
 					vertical-align: bottom;
 					height: 31px;

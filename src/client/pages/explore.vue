@@ -59,6 +59,7 @@ import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-soli
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import XUserList from '../components/user-list.vue';
 import MkContainer from '../components/ui/container.vue';
+import number from '../filters/number';
 
 export default Vue.extend({
 	metaInfo() {
@@ -112,7 +113,7 @@ export default Vue.extend({
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
-			num: Vue.filter('number'),
+			num: number,
 			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
 		};
 	},

@@ -24,27 +24,27 @@
 			<div class="row">
 				<div class="cell">
 					<div class="label"><fa :icon="faCloudDownloadAlt" fixed-width class="icon"/>{{ $t('following') }}</div>
-					<div class="data clickable" @click="showFollowing()">{{ instance.followingCount | number }}</div>
+					<div class="data clickable" @click="showFollowing()">{{ number(instance.followingCount) }}</div>
 				</div>
 				<div class="cell">
 					<div class="label"><fa :icon="faCloudUploadAlt" fixed-width class="icon"/>{{ $t('followers') }}</div>
-					<div class="data clickable" @click="showFollowers()">{{ instance.followersCount | number }}</div>
+					<div class="data clickable" @click="showFollowers()">{{ number(instance.followersCount) }}</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="cell">
 					<div class="label"><fa :icon="faUsers" fixed-width class="icon"/>{{ $t('users') }}</div>
-					<div class="data clickable" @click="showUsers()">{{ instance.usersCount | number }}</div>
+					<div class="data clickable" @click="showUsers()">{{ number(instance.usersCount) }}</div>
 				</div>
 				<div class="cell">
 					<div class="label"><fa :icon="faPencilAlt" fixed-width class="icon"/>{{ $t('notes') }}</div>
-					<div class="data">{{ instance.notesCount | number }}</div>
+					<div class="data">{{ number(instance.notesCount) }}</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="cell">
 					<div class="label"><fa :icon="faFileImage" fixed-width class="icon"/>{{ $t('files') }}</div>
-					<div class="data">{{ instance.driveFiles | number }}</div>
+					<div class="data">{{ number(instance.driveFiles) }}</div>
 				</div>
 				<div class="cell">
 					<div class="label"><fa :icon="faDatabase" fixed-width class="icon"/>{{ $t('storageUsage') }}</div>
@@ -128,6 +128,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
 import bytes from '../../filters/bytes';
+import number from '../../filters/number';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -477,7 +478,9 @@ export default Vue.extend({
 			});
 		},
 
-		bytes
+		bytes,
+
+		number
 	}
 });
 </script>
