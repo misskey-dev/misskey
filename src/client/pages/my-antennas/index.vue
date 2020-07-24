@@ -1,7 +1,7 @@
 <template>
 <div class="ieepwinx">
 	<portal to="icon"><fa :icon="faSatellite"/></portal>
-	<portal to="title">{{ $t('manageAntennas') }}</portal>
+	<portal to="title" v-t="'manageAntennas'"></portal>
 
 	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 

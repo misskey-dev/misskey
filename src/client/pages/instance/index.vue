@@ -1,7 +1,7 @@
 <template>
 <div v-if="meta" class="xhexznfu">
 	<portal to="icon"><fa :icon="faServer"/></portal>
-	<portal to="title">{{ $t('instance') }}</portal>
+	<portal to="title" v-t="'instance'"></portal>
 
 	<mk-instance-stats style="margin-bottom: var(--margin);"/>
 
@@ -10,16 +10,16 @@
 		<div class="_content">
 			<div class="_inputs">
 				<mk-input v-model="logDomain" :debounce="true">
-					<span>{{ $t('domain') }}</span>
+					<span v-t="'domain'"></span>
 				</mk-input>
 				<mk-select v-model="logLevel">
 					<template #label>{{ $t('level') }}</template>
-					<option value="all">{{ $t('levels.all') }}</option>
-					<option value="info">{{ $t('levels.info') }}</option>
-					<option value="success">{{ $t('levels.success') }}</option>
-					<option value="warning">{{ $t('levels.warning') }}</option>
-					<option value="error">{{ $t('levels.error') }}</option>
-					<option value="debug">{{ $t('levels.debug') }}</option>
+					<option value="all" v-t="'levels.all'"></option>
+					<option value="info" v-t="'levels.info'"></option>
+					<option value="success" v-t="'levels.success'"></option>
+					<option value="warning" v-t="'levels.warning'"></option>
+					<option value="error" v-t="'levels.error'"></option>
+					<option value="debug" v-t="'levels.debug'"></option>
 				</mk-select>
 			</div>
 

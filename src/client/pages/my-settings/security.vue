@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faLock"/> {{ $t('password') }}</div>
 	<div class="_content">
-		<mk-button primary @click="change()">{{ $t('changePassword') }}</mk-button>
+		<mk-button primary @click="change()" v-t="'changePassword'"></mk-button>
 	</div>
 </section>
 </template>

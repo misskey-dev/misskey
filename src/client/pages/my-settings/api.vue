@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faKey"/> API</div>
 	<div class="_content">
-		<mk-button @click="generateToken">{{ $t('generateAccessToken') }}</mk-button>
+		<mk-button @click="generateToken" v-t="'generateAccessToken'"></mk-button>
 		<mk-button @click="regenerateToken"><fa :icon="faSyncAlt"/> {{ $t('regenerate') }}</mk-button>
 	</div>
 </section>

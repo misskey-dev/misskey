@@ -16,7 +16,7 @@
 				<div v-for="k in Object.keys(selectedFurnitureInfo.props)" :key="k">
 					<p>{{ k }}</p>
 					<template v-if="selectedFurnitureInfo.props[k] === 'image'">
-						<mk-button @click="chooseImage(k, $event)">{{ $t('_rooms.chooseImage') }}</mk-button>
+						<mk-button @click="chooseImage(k, $event)" v-t="'_rooms.chooseImage'"></mk-button>
 					</template>
 					<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
 						<input type="color" :value="selectedFurnitureProps ? selectedFurnitureProps[k] : null" @change="updateColor(k, $event)"/>
@@ -41,11 +41,11 @@
 		<div class="_content">
 			<mk-select :value="roomType" @input="updateRoomType($event)">
 				<template #label>{{ $t('_rooms.roomType') }}</template>
-				<option value="default">{{ $t('_rooms._roomType.default') }}</option>
-				<option value="washitsu">{{ $t('_rooms._roomType.washitsu') }}</option>
+				<option value="default" v-t="'_rooms._roomType.default'"></option>
+				<option value="washitsu" v-t="'_rooms._roomType.washitsu'"></option>
 			</mk-select>
 			<label v-if="roomType === 'default'">
-				<span>{{ $t('_rooms.carpetColor') }}</span>
+				<span v-t="'_rooms.carpetColor'"></span>
 				<input type="color" :value="carpetColor" @change="updateCarpetColor($event)"/>
 			</label>
 		</div>

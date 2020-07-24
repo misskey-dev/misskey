@@ -3,12 +3,12 @@
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 	<div class="normal-signin" v-if="!totpLogin">
 		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
-			<span>{{ $t('username') }}</span>
+			<span v-t="'username'"></span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</mk-input>
 		<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
-			<span>{{ $t('password') }}</span>
+			<span v-t="'password'"></span>
 			<template #prefix><fa :icon="faLock"/></template>
 		</mk-input>
 		<mk-button type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>
@@ -18,22 +18,22 @@
 	</div>
 	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 		<div v-if="user && user.securityKeys" class="twofa-group tap-group">
-			<p>{{ $t('tapSecurityKey') }}</p>
+			<p v-t="'tapSecurityKey'"></p>
 			<mk-button @click="queryKey" v-if="!queryingKey">
 				{{ $t('retry') }}
 			</mk-button>
 		</div>
 		<div class="or-hr" v-if="user && user.securityKeys">
-			<p class="or-msg">{{ $t('or') }}</p>
+			<p class="or-msg" v-t="'or'"></p>
 		</div>
 		<div class="twofa-group totp-group">
-			<p style="margin-bottom:0;">{{ $t('twoStepAuthentication') }}</p>
+			<p style="margin-bottom:0;" v-t="'twoStepAuthentication'"></p>
 			<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
-				<span>{{ $t('password') }}</span>
+				<span v-t="'password'"></span>
 				<template #prefix><fa :icon="faLock"/></template>
 			</mk-input>
 			<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
-				<span>{{ $t('token') }}</span>
+				<span v-t="'token'"></span>
 				<template #prefix><fa :icon="faGavel"/></template>
 			</mk-input>
 			<mk-button type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</mk-button>

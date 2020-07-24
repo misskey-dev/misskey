@@ -1,13 +1,13 @@
 <template>
 <div class="relaycxt">
 	<portal to="icon"><fa :icon="faProjectDiagram"/></portal>
-	<portal to="title">{{ $t('relays') }}</portal>
+	<portal to="title" v-t="'relays'"></portal>
 
 	<section class="_card add">
 		<div class="_title"><fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
 		<div class="_content">
 			<mk-input v-model="inbox">
-				<span>{{ $t('inboxUrl') }}</span>
+				<span v-t="'inboxUrl'"></span>
 			</mk-input>
 			<mk-button @click="add(inbox)" primary><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 		</div>

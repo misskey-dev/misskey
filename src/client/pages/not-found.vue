@@ -1,11 +1,11 @@
 <template>
 <div class="ipledcug">
 	<portal to="icon"><fa :icon="faExclamationTriangle"/></portal>
-	<portal to="title">{{ $t('notFound') }}</portal>
+	<portal to="title" v-t="'notFound'"></portal>
 
 	<div class="_fullinfo">
 		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
-		<div>{{ $t('notFoundDescription') }}</div>
+		<div v-t="'notFoundDescription'"></div>
 	</div>
 </div>
 </template>

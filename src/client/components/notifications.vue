@@ -6,11 +6,11 @@
 	</x-list>
 
 	<button class="_panel _button" ref="loadMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<template v-if="!moreFetching" v-t="'loadMore'"></template>
 		<template v-if="moreFetching"><mk-loading inline/></template>
 	</button>
 
-	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
+	<p class="empty" v-if="empty" v-t="'noNotifications'"></p>
 
 	<mk-error v-if="error" @retry="init()"/>
 </div>
