@@ -15,8 +15,8 @@
 				<mk-avatar class="avatar" :user="req.follower"/>
 				<div class="body">
 					<div class="name">
-						<router-link class="name" :to="req.follower | userPage" v-user-preview="req.follower.id"><mk-user-name :user="req.follower"/></router-link>
-						<p class="acct">@{{ req.follower | acct }}</p>
+						<router-link class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><mk-user-name :user="req.follower"/></router-link>
+						<p class="acct">@{{ acct(req.follower) }}</p>
 					</div>
 					<div class="description" v-if="req.follower.description" :title="req.follower.description">
 						<mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$store.state.i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
@@ -36,6 +36,7 @@
 import { defineComponent } from 'vue';
 import { faUserClock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '../components/ui/pagination.vue';
+import { userPage, acct } from '../filters/user';
 
 export default defineComponent({
 	metaInfo() {
@@ -68,7 +69,9 @@ export default defineComponent({
 			this.$root.api('following/requests/reject', { userId: user.id }).then(() => {
 				this.$refs.list.reload();
 			});
-		}
+		},
+		userPage,
+		acct
 	}
 });
 </script>

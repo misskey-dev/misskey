@@ -16,7 +16,7 @@
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa :icon="faRetweet"/>
 		<i18n-t path="renotedBy" tag="span">
-			<router-link class="name" :to="note.user | userPage" v-user-preview="note.userId" place="user">
+			<router-link class="name" :to="userPage(note.user)" v-user-preview="note.userId" place="user">
 				<mk-user-name :user="note.user"/>
 			</router-link>
 		</i18n-t>
@@ -106,6 +106,7 @@ import pleaseLogin from '../scripts/please-login';
 import { focusPrev, focusNext } from '../scripts/focus';
 import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
+import { userPage } from '../filters/user';
 
 export default defineComponent({
 	components: {
@@ -722,7 +723,9 @@ export default defineComponent({
 
 		focusAfter() {
 			focusNext(this.$el);
-		}
+		},
+
+		userPage
 	}
 });
 </script>

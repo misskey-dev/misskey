@@ -48,9 +48,9 @@
 					<div class="cell"><div class="label">CPU</div>{{ serverInfo.cpu.model }}</div>
 				</div>
 				<div class="row">
-					<div class="cell"><div class="label">MEM total</div>{{ serverInfo.mem.total | bytes }}</div>
-					<div class="cell"><div class="label">MEM used</div>{{ memUsage | bytes }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
-					<div class="cell"><div class="label">MEM free</div>{{ serverInfo.mem.total - memUsage | bytes }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+					<div class="cell"><div class="label">MEM total</div>{{ bytes(serverInfo.mem.total) }}</div>
+					<div class="cell"><div class="label">MEM used</div>{{ bytes(memUsage) }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+					<div class="cell"><div class="label">MEM free</div>{{ bytes(serverInfo.mem.total - memUsage) }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
 				</div>
 			</div>
 		</div>
@@ -63,9 +63,9 @@
 		<div class="_content" v-if="serverInfo">
 			<div class="table">
 				<div class="row">
-					<div class="cell"><div class="label">Disk total</div>{{ serverInfo.fs.total | bytes }}</div>
-					<div class="cell"><div class="label">Disk used</div>{{ serverInfo.fs.used | bytes }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
-					<div class="cell"><div class="label">Disk free</div>{{ serverInfo.fs.total - serverInfo.fs.used | bytes }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+					<div class="cell"><div class="label">Disk total</div>{{ bytes(serverInfo.fs.total) }}</div>
+					<div class="cell"><div class="label">Disk used</div>{{ bytes(serverInfo.fs.used) }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+					<div class="cell"><div class="label">Disk free</div>{{ bytes(serverInfo.fs.total - serverInfo.fs.used) }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
 				</div>
 			</div>
 		</div>
@@ -107,6 +107,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInput from '../../components/ui/input.vue';
 import { version, url } from '../../config';
+import bytes from '../../filters/bytes';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -167,7 +168,7 @@ export default defineComponent({
 
 	mounted() {
 		this.fetchLogs();
-	
+
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 		this.chartCpuMem = new Chart(this.$refs.cpumem, {
@@ -439,7 +440,9 @@ export default defineComponent({
 			for (const stats of statsLog.reverse()) {
 				this.onStats(stats);
 			}
-		}
+		},
+
+		bytes
 	}
 });
 </script>

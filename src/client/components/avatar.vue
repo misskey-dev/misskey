@@ -1,8 +1,8 @@
 <template>
-<span class="eiwwqkts" :class="{ cat }" :title="user | acct" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
+<span class="eiwwqkts" :class="{ cat }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
 	<img class="inner" :src="url"/>
 </span>
-<router-link class="eiwwqkts" :class="{ cat }" :to="user | userPage" :title="user | acct" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
+<router-link class="eiwwqkts" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
 	<img class="inner" :src="url"/>
 </router-link>
 </template>
@@ -10,6 +10,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import { acct, userPage } from '../filters/user';
 
 export default defineComponent({
 	props: {
@@ -60,7 +61,9 @@ export default defineComponent({
 		},
 		onClick(e) {
 			this.$emit('click', e);
-		}
+		},
+		acct,
+		userPage
 	}
 });
 </script>
@@ -95,7 +98,7 @@ export default defineComponent({
 			transform: rotate(-37.5deg) skew(-30deg);
 		}
 	}
-	
+
 	.inner {
 		position: absolute;
 		bottom: 0;

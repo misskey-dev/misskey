@@ -37,6 +37,7 @@ import copyToClipboard from '../scripts/copy-to-clipboard';
 //import updateBanner from '../api/update-banner';
 import XFileThumbnail from './drive-file-thumbnail.vue';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import bytes from '../filters/bytes';
 
 export default defineComponent({
 	components: {
@@ -72,7 +73,7 @@ export default defineComponent({
 			return this.$parent;
 		},
 		title(): string {
-			return `${this.file.name}\n${this.file.type} ${Vue.filter('bytes')(this.file.size)}`;
+			return `${this.file.name}\n${this.file.type} ${bytes(this.file.size)}`;
 		}
 	},
 
@@ -181,7 +182,9 @@ export default defineComponent({
 			this.$root.api('drive/files/delete', {
 				fileId: this.file.id
 			});
-		}
+		},
+
+		bytes
 	}
 });
 </script>

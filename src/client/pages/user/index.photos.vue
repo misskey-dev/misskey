@@ -5,7 +5,7 @@
 		<router-link v-for="(image, i) in images" :key="i"
 			class="img"
 			:style="`background-image: url(${thumbnail(image.file)})`"
-			:to="image.note | notePage"
+			:to="notePage(image.note)"
 		></router-link>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
@@ -15,6 +15,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '../../scripts/get-static-image-url';
+import notePage from '../../filters/note';
 
 export default defineComponent({
 	props: ['user'],
@@ -57,6 +58,7 @@ export default defineComponent({
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;
 		},
+		notePage
 	},
 });
 </script>

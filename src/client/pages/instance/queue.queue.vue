@@ -2,10 +2,10 @@
 <section class="_card mk-queue-queue">
 	<div class="_title"><slot name="title"></slot></div>
 	<div class="_content status">
-		<div class="cell"><div class="label">Process</div>{{ activeSincePrevTick | number }}</div>
-		<div class="cell"><div class="label">Active</div>{{ active | number }}</div>
-		<div class="cell"><div class="label">Waiting</div>{{ waiting | number }}</div>
-		<div class="cell"><div class="label">Delayed</div>{{ delayed | number }}</div>
+		<div class="cell"><div class="label">Process</div>{{ number(activeSincePrevTick) }}</div>
+		<div class="cell"><div class="label">Active</div>{{ number(active) }}</div>
+		<div class="cell"><div class="label">Waiting</div>{{ number(waiting) }}</div>
+		<div class="cell"><div class="label">Delayed</div>{{ number(delayed) }}</div>
 	</div>
 	<div class="_content" style="margin-bottom: -8px;">
 		<canvas ref="chart"></canvas>
@@ -14,7 +14,7 @@
 		<div v-if="jobs.length > 0">
 			<div v-for="job in jobs" :key="job[0]">
 				<span>{{ job[0] }}</span>
-				<span style="margin-left: 8px; opacity: 0.7;">({{ job[1] | number }} jobs)</span>
+				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 			</div>
 		</div>
 		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
@@ -25,6 +25,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
+import number from '../../filters/number';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -179,6 +180,8 @@ export default defineComponent({
 				this.jobs = jobs;
 			});
 		},
+
+		number
 	}
 });
 </script>

@@ -66,16 +66,16 @@
 			</dl>
 		</div>
 		<div class="status">
-			<router-link :to="user | userPage()" :class="{ active: $route.name === 'user' }">
-				<b>{{ user.notesCount | number }}</b>
+			<router-link :to="userPage(user)" :class="{ active: $route.name === 'user' }">
+				<b>{{ number(user.notesCount) }}</b>
 				<span>{{ $t('notes') }}</span>
 			</router-link>
-			<router-link :to="user | userPage('following')" :class="{ active: $route.name === 'userFollowing' }">
-				<b>{{ user.followingCount | number }}</b>
+			<router-link :to="userPage(user, 'following')" :class="{ active: $route.name === 'userFollowing' }">
+				<b>{{ number(user.followingCount) }}</b>
 				<span>{{ $t('following') }}</span>
 			</router-link>
-			<router-link :to="user | userPage('followers')" :class="{ active: $route.name === 'userFollowers' }">
-				<b>{{ user.followersCount | number }}</b>
+			<router-link :to="userPage(user, 'followers')" :class="{ active: $route.name === 'userFollowers' }">
+				<b>{{ number(user.followersCount) }}</b>
 				<span>{{ $t('followers') }}</span>
 			</router-link>
 		</div>
@@ -119,6 +119,8 @@ import MkRemoteCaution from '../../components/remote-caution.vue';
 import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '../../scripts/scroll';
+import number from '../../filters/number';
+import { userPage, acct } from '../../filters/user';
 
 export default defineComponent({
 	components: {
@@ -133,7 +135,7 @@ export default defineComponent({
 
 	metaInfo() {
 		return {
-			title: (this.user ? '@' + Vue.filter('acct')(this.user).replace('@', ' | ') : null) as string
+			title: (this.user ? '@' + acct(this.user).replace('@', ' | ') : null) as string
 		};
 	},
 
@@ -210,6 +212,10 @@ export default defineComponent({
 			const pos = -(top / z);
 			banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 		},
+
+		number,
+
+		userPage
 	}
 });
 </script>
@@ -271,7 +277,7 @@ export default defineComponent({
 				background: rgba(0, 0, 0, 0.2);
 				padding: 8px;
 				border-radius: 24px;
-		
+
 				> .menu {
 					vertical-align: bottom;
 					height: 31px;

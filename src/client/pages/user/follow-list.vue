@@ -4,8 +4,8 @@
 		<mk-avatar class="avatar" :user="user"/>
 		<div class="body">
 			<div class="name">
-				<router-link class="name" :to="user | userPage" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
-				<p class="acct">@{{ user | acct }}</p>
+				<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
+				<p class="acct">@{{ acct(user) }}</p>
 			</div>
 			<div class="description" v-if="user.description" :title="user.description">
 				<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
@@ -21,6 +21,7 @@ import { defineComponent } from 'vue';
 import parseAcct from '../../../misc/acct/parse';
 import MkFollowButton from '../../components/follow-button.vue';
 import MkPagination from '../../components/ui/pagination.vue';
+import { userPage, acct } from '../../filters/user';
 
 export default defineComponent({
 	components: {
@@ -55,6 +56,12 @@ export default defineComponent({
 		'$route'() {
 			this.$refs.list.reload();
 		}
+	},
+
+	methods: {
+		userPage,
+		
+		acct
 	}
 });
 </script>

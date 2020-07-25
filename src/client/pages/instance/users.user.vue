@@ -7,7 +7,7 @@
 		<div class="_title">
 			<mk-avatar class="avatar" :user="user"/>
 			<mk-user-name class="name" :user="user"/>
-			<span class="acct">@{{ user | acct }}</span>
+			<span class="acct">@{{ acct(user) }}</span>
 			<span class="staff" v-if="user.isAdmin"><fa :icon="faBookmark"/></span>
 			<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
 			<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
@@ -40,6 +40,7 @@ import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesom
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import Progress from '../../scripts/loading';
+import { acct, userPage } from '../../filters/user';
 
 export default defineComponent({
 	components: {
@@ -84,7 +85,7 @@ export default defineComponent({
 		},
 
 		openProfile() {
-			window.open(Vue.filter('userPage')(this.user, null, true), '_blank');
+			window.open(userPage(this.user, null, true), '_blank');
 		},
 
 		async updateRemoteUser() {
@@ -175,6 +176,8 @@ export default defineComponent({
 			});
 			await this.refreshUser();
 		},
+
+		acct
 	}
 });
 </script>

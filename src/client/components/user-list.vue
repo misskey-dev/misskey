@@ -12,7 +12,7 @@
 			<mk-avatar class="avatar" :user="user"/>
 			<div class="body">
 				<div class="name">
-					<router-link class="name" :to="user | userPage" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
+					<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
 					<span class="username"><mk-acct :user="user"/></span>
 				</div>
 				<div class="description">
@@ -34,6 +34,7 @@ import { defineComponent } from 'vue';
 import paging from '../scripts/paging';
 import MkContainer from './ui/container.vue';
 import MkFollowButton from './follow-button.vue';
+import { userPage } from '../filters/user';
 
 export default defineComponent({
 	components: {
@@ -62,6 +63,10 @@ export default defineComponent({
 		users() {
 			return this.extract ? this.extract(this.items) : this.items;
 		}
+	},
+
+	methods: {
+		userPage
 	}
 });
 </script>
@@ -96,7 +101,7 @@ export default defineComponent({
 
 			> .name {
 				font-weight: bold;
-						
+
 				> .name {
 					margin-right: 8px;
 				}
