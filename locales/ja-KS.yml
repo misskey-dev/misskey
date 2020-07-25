@@ -387,6 +387,7 @@ _widgets:
   notifications: "通知"
   timeline: "タイムライン"
   activity: "アクティビティ"
+  federation: "連合"
 _cw:
   show: "もっとあるやろ！"
 _poll:
