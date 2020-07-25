@@ -405,6 +405,7 @@ _widgets:
   rss: "تدفق RSS"
   activity: "النشاط"
   photos: "الصور"
+  federation: "الفديرالية"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
