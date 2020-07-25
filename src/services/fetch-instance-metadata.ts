@@ -3,14 +3,14 @@ import fetch from 'node-fetch';
 import { getJson, getHtml, getAgentByUrl } from '../misc/fetch';
 import { Instance } from '../models/entities/instance';
 import { Instances } from '../models';
-import { getNodeinfoLock } from '../misc/app-lock';
+import { getFetchInstanceMetadataLock } from '../misc/app-lock';
 import Logger from './logger';
 import { URL } from 'url';
 
 const logger = new Logger('metadata', 'cyan');
 
 export async function fetchInstanceMetadata(instance: Instance): Promise<void> {
-	const unlock = await getNodeinfoLock(instance.host);
+	const unlock = await getFetchInstanceMetadataLock(instance.host);
 
 	const _instance = await Instances.findOne({ host: instance.host });
 	const now = Date.now();
