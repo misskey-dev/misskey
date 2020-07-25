@@ -120,7 +120,7 @@ import Progress from '../../scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '../../scripts/scroll';
 import number from '../../filters/number';
-import userPage from '../../filters/user';
+import { userPage, acct } from '../../filters/user';
 
 export default defineComponent({
 	components: {
@@ -135,7 +135,7 @@ export default defineComponent({
 
 	metaInfo() {
 		return {
-			title: (this.user ? '@' + Vue.filter('acct')(this.user).replace('@', ' | ') : null) as string
+			title: (this.user ? '@' + acct(this.user).replace('@', ' | ') : null) as string
 		};
 	},
 

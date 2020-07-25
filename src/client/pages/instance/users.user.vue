@@ -40,7 +40,7 @@ import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesom
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import Progress from '../../scripts/loading';
-import { acct } from '../../filters/user';
+import { acct, userPage } from '../../filters/user';
 
 export default defineComponent({
 	components: {
@@ -85,7 +85,7 @@ export default defineComponent({
 		},
 
 		openProfile() {
-			window.open(Vue.filter('userPage')(this.user, null, true), '_blank');
+			window.open(userPage(this.user, null, true), '_blank');
 		},
 
 		async updateRemoteUser() {
