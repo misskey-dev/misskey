@@ -677,6 +677,7 @@ _widgets:
   activity: "Activité"
   photos: "Photos"
   digitalClock: "Horloge numérique"
+  federation: "Fédération"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"
