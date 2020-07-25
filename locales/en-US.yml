@@ -720,6 +720,7 @@ _widgets:
   activity: "Activity"
   photos: "Photos"
   digitalClock: "Digital clock"
+  federation: "Federation"
 _cw:
   hide: "Hide"
   show: "Load more"
