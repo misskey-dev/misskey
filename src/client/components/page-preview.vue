@@ -24,10 +24,10 @@ export default defineComponent({
 			type: Object,
 			required: true
 		},
-		methods: {
-			userName
-		}
 	},
+	methods: {
+		userName
+	}
 });
 </script>
 
