@@ -10,7 +10,7 @@
 					<a class="a" :href="'https://' + instance.host" target="_blank" :title="instance.host">#{{ instance.host }}</a>
 					<p>{{ instance.softwareName }} {{ instance.softwareVersion }}</p>
 				</div>
-				<x-chart class="chart" :src="stat.chart"/>
+				<!-- TODO: <x-chart class="chart" :src="stat.chart"/> -->
 			</div>
 		</transition-group>
 	</div>
