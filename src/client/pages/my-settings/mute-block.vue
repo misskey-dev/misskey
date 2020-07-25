@@ -31,12 +31,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '../../components/ui/pagination.vue';
 import { userPage } from '../../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkPagination,
 	},

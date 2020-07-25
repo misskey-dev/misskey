@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XNotes
 	},
@@ -46,11 +46,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$once('hook:beforeDestroy', () => {
-			this.connection.dispose();
-			if (this.connection2) this.connection2.dispose();
-		});
-
 		const prepend = note => {
 			const _note = JSON.parse(JSON.stringify(note));	// deepcopy
 			(this.$refs.tl as any).prepend(_note);
@@ -128,6 +123,11 @@ export default Vue.extend({
 				...this.baseQuery, ...this.query
 			})
 		};
+	},
+
+	beforeUnmount() {
+		this.connection.dispose();
+		if (this.connection2) this.connection2.dispose();
 	},
 
 	methods: {

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { parse } from '@syuilo/aiscript';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -13,7 +13,7 @@ import XBlock from './page.block.vue';
 import { Hpml } from '../../scripts/hpml/evaluator';
 import { url } from '../../config';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XBlock
 	},

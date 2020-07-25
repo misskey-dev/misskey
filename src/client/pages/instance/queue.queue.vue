@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import number from '../../filters/number';
 
@@ -35,7 +35,7 @@ const alpha = (hex, a) => {
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		domain: {
 			required: true

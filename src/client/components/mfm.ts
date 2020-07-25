@@ -1,4 +1,4 @@
-import Vue, { VNode } from 'vue';
+import { VNode, defineComponent, h } from 'vue';
 import { MfmForest } from '../../mfm/prelude';
 import { parse, parsePlain } from '../../mfm/parse';
 import MkUrl from './url.vue';
@@ -10,7 +10,7 @@ import MkCode from './code.vue';
 import MkGoogle from './google.vue';
 import { host } from '../config';
 
-export default Vue.component('misskey-flavored-markdown', {
+export default defineComponent({
 	props: {
 		text: {
 			type: String,
@@ -41,7 +41,7 @@ export default Vue.component('misskey-flavored-markdown', {
 		},
 	},
 
-	render(createElement) {
+	render() {
 		if (this.text == null || this.text == '') return;
 
 		const ast = (this.plain ? parsePlain : parse)(this.text);
@@ -53,24 +53,24 @@ export default Vue.component('misskey-flavored-markdown', {
 
 					if (!this.plain) {
 						const x = text.split('\n')
-							.map(t => t == '' ? [createElement('br')] : [this._v(t), createElement('br')]); // NOTE: this._vはHACK SEE: https://github.com/syuilo/misskey/pull/6399#issuecomment-632820283
+							.map(t => t == '' ? [h('br')] : [t, h('br')]);
 						x[x.length - 1].pop();
 						return x;
 					} else {
-						return [this._v(text.replace(/\n/g, ' '))];
+						return [text.replace(/\n/g, ' ')];
 					}
 				}
 
 				case 'bold': {
-					return [createElement('b', genEl(token.children))];
+					return [h('b', genEl(token.children))];
 				}
 
 				case 'strike': {
-					return [createElement('del', genEl(token.children))];
+					return [h('del', genEl(token.children))];
 				}
 
 				case 'italic': {
-					return (createElement as any)('i', {
+					return h('i', {
 						attrs: {
 							style: 'font-style: oblique;'
 						},
@@ -78,7 +78,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'big': {
-					return (createElement as any)('strong', {
+					return h('strong', {
 						attrs: {
 							style: `display: inline-block; font-size: 150%;`
 						},
@@ -90,7 +90,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'small': {
-					return [createElement('small', {
+					return [h('small', {
 						attrs: {
 							style: 'opacity: 0.7;'
 						},
@@ -98,7 +98,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'center': {
-					return [createElement('div', {
+					return [h('div', {
 						attrs: {
 							style: 'text-align:center;'
 						}
@@ -106,7 +106,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'motion': {
-					return (createElement as any)('span', {
+					return h('span', {
 						attrs: {
 							style: 'display: inline-block;'
 						},
@@ -124,7 +124,7 @@ export default Vue.component('misskey-flavored-markdown', {
 						'normal';
 					const style = this.$store.state.device.animatedMfm
 						? `animation: spin 1.5s linear infinite; animation-direction: ${direction};` : '';
-					return (createElement as any)('span', {
+					return h('span', {
 						attrs: {
 							style: 'display: inline-block;' + style
 						},
@@ -132,7 +132,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'jump': {
-					return (createElement as any)('span', {
+					return h('span', {
 						attrs: {
 							style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: jump 0.75s linear infinite;' : 'display: inline-block;'
 						},
@@ -140,7 +140,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'flip': {
-					return (createElement as any)('span', {
+					return h('span', {
 						attrs: {
 							style: 'display: inline-block; transform: scaleX(-1);'
 						},
@@ -148,7 +148,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'url': {
-					return [createElement(MkUrl, {
+					return [h(MkUrl, {
 						key: Math.random(),
 						props: {
 							url: token.node.props.url,
@@ -158,7 +158,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'link': {
-					return [createElement(MkLink, {
+					return [h(MkLink, {
 						key: Math.random(),
 						props: {
 							url: token.node.props.url,
@@ -168,7 +168,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mention': {
-					return [createElement(MkMention, {
+					return [h(MkMention, {
 						key: Math.random(),
 						props: {
 							host: (token.node.props.host == null && this.author && this.author.host != null ? this.author.host : token.node.props.host) || host,
@@ -178,7 +178,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'hashtag': {
-					return [createElement('router-link', {
+					return [h('router-link', {
 						key: Math.random(),
 						attrs: {
 							to: this.isNote ? `/tags/${encodeURIComponent(token.node.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.node.props.hashtag)}`,
@@ -188,7 +188,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'blockCode': {
-					return [createElement(MkCode, {
+					return [h(MkCode, {
 						key: Math.random(),
 						props: {
 							code: token.node.props.code,
@@ -198,7 +198,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'inlineCode': {
-					return [createElement(MkCode, {
+					return [h(MkCode, {
 						key: Math.random(),
 						props: {
 							code: token.node.props.code,
@@ -210,13 +210,13 @@ export default Vue.component('misskey-flavored-markdown', {
 
 				case 'quote': {
 					if (this.shouldBreak) {
-						return [createElement('div', {
+						return [h('div', {
 							attrs: {
 								class: 'quote'
 							}
 						}, genEl(token.children))];
 					} else {
-						return [createElement('span', {
+						return [h('span', {
 							attrs: {
 								class: 'quote'
 							}
@@ -225,7 +225,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'title': {
-					return [createElement('div', {
+					return [h('div', {
 						attrs: {
 							class: 'title'
 						}
@@ -233,7 +233,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'emoji': {
-					return [createElement('mk-emoji', {
+					return [h('mk-emoji', {
 						key: Math.random(),
 						attrs: {
 							emoji: token.node.props.emoji,
@@ -247,8 +247,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mathInline': {
-					//const MkFormula = () => import('./formula.vue').then(m => m.default);
-					return [createElement(MkFormula, {
+					return [h(MkFormula, {
 						key: Math.random(),
 						props: {
 							formula: token.node.props.formula,
@@ -258,8 +257,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'mathBlock': {
-					//const MkFormula = () => import('./formula.vue').then(m => m.default);
-					return [createElement(MkFormula, {
+					return [h(MkFormula, {
 						key: Math.random(),
 						props: {
 							formula: token.node.props.formula,
@@ -269,8 +267,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				case 'search': {
-					//const MkGoogle = () => import('./google.vue').then(m => m.default);
-					return [createElement(MkGoogle, {
+					return [h(MkGoogle, {
 						key: Math.random(),
 						props: {
 							q: token.node.props.query
@@ -287,6 +284,6 @@ export default Vue.component('misskey-flavored-markdown', {
 		}));
 
 		// Parse ast to DOM
-		return createElement('span', genEl(ast));
+		return h('span', genEl(ast));
 	}
 });

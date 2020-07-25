@@ -732,6 +732,7 @@ _widgets:
   activity: "アクティビティ"
   photos: "フォト"
   digitalClock: "デジタル時計"
+  federation: "連合"
 
 _cw:
   hide: "隠す"

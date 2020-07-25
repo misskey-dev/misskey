@@ -20,12 +20,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkInput from './ui/input.vue';
 import XWindow from './window.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkInput,
 		XWindow,

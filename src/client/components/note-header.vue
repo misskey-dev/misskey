@@ -23,13 +23,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		note: {
 			type: Object,

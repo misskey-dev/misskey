@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSpinner, faInfoCircle, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import MkButton from './ui/button.vue';
@@ -58,7 +58,7 @@ import MkSelect from './ui/select.vue';
 import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,

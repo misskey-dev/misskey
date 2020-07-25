@@ -8,12 +8,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../scripts/loading';
 import XNotes from '../components/notes.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: '#' + this.$route.params.tag

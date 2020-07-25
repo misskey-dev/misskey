@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XWindow from './window.vue';
 import XSignup from './signup.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XSignup,
 		XWindow,

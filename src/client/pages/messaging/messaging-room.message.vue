@@ -36,12 +36,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
 import MkUrlPreview from '../../components/url-preview.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkUrlPreview
 	},

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTerminal, faPlay } from '@fortawesome/free-solid-svg-icons';
 import "prismjs";
 import 'prismjs/themes/prism-okaidia.css';
@@ -32,7 +32,7 @@ import MkContainer from '../components/ui/container.vue';
 import MkButton from '../components/ui/button.vue';
 import { createAiScriptEnv } from '../scripts/aiscript/api';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('scratchpad') as string

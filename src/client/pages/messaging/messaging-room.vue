@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import XList from '../../components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
@@ -43,7 +43,7 @@ import XForm from './messaging-room.form.vue';
 import parseAcct from '../../../misc/acct/parse';
 import { isBottom, onScrollBottom } from '../../scripts/scroll';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XMessage,
 		XForm,

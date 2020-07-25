@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import { defaultDeviceUserSettings } from '../../store';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkTextarea,

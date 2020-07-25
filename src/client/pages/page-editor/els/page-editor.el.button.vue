@@ -38,14 +38,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '../../../components/ui/select.vue';
 import MkInput from '../../../components/ui/input.vue';
 import MkSwitch from '../../../components/ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkSelect, MkInput, MkSwitch
 	},

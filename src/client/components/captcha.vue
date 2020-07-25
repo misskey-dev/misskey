@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 
 type Captcha = {
 	render(container: string | Node, options: {
@@ -29,7 +29,7 @@ declare global {
 	}
 }
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		provider: {
 			type: String,

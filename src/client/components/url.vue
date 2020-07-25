@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '../config';
 import MkUrlPreview from './url-preview-popup.vue';
 import { isDeviceTouch } from '../scripts/is-device-touch';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		url: {
 			type: String,

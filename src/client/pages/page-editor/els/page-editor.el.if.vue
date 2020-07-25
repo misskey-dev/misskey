@@ -25,13 +25,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '../../../components/ui/select.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkSelect
 	},

@@ -45,10 +45,10 @@
 		<div v-if="data && !$store.state.i.twoFactorEnabled">
 			<ol style="margin: 0; padding: 0 0 0 1em;">
 				<li>
-					<i18n path="_2fa.step1" tag="span">
+					<i18n-t path="_2fa.step1" tag="span">
 						<a href="https://authy.com/" rel="noopener" target="_blank" place="a" class="_link">Authy</a>
 						<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" place="b" class="_link">Google Authenticator</a>
-					</i18n>
+					</i18n-t>
 				</li>
 				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
 				<li>{{ $t('_2fa.step3') }}<br>
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { hostname } from '../../config';
 import { byteify, hexify, stringify } from '../../scripts/2fa';
@@ -72,7 +72,7 @@ import MkInfo from '../../components/ui/info.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton, MkInfo, MkInput, MkSwitch
 	},

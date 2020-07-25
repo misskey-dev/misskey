@@ -15,11 +15,11 @@
 	<div class="renote" v-if="isRenote">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<fa :icon="faRetweet"/>
-		<i18n path="renotedBy" tag="span">
+		<i18n-t path="renotedBy" tag="span">
 			<router-link class="name" :to="userPage(note.user)" v-user-preview="note.userId" place="user">
 				<mk-user-name :user="note.user"/>
 			</router-link>
-		</i18n>
+		</i18n-t>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
 				<fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
@@ -34,19 +34,19 @@
 		</div>
 	</div>
 	<article class="article">
-		<mk-avatar class="avatar" :user="appearNote.user"/>
+		<mk-avatar class="avatar" :user="appearNote.user" v-once/>
 		<div class="main">
 			<x-note-header class="header" :note="appearNote" :mini="true"/>
 			<div class="body" v-if="appearNote.deletedAt == null" ref="noteBody">
 				<p v-if="appearNote.cw != null" class="cw">
-				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" />
+				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" v-once/>
 					<x-cw-button v-model="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 						<router-link class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><fa :icon="faReply"/></router-link>
-						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
+						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" v-once/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
@@ -108,7 +108,7 @@ import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 import { userPage } from '../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XSub,
 		XNoteHeader,

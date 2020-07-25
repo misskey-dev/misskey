@@ -8,11 +8,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import { acct, userPage } from '../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		user: {
 			type: Object,
@@ -41,7 +41,24 @@ export default Vue.extend({
 				: this.user.avatarUrl;
 		},
 	},
+	watch: {
+		'user.avatarBlurhash'() {
+			this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+		}
+	},
+	mounted() {
+		this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+	},
 	methods: {
+		getBlurhashAvgColor(s) {
+			return typeof s == 'string'
+				? '#' + [...s.slice(2, 6)]
+						.map(x => '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~'.indexOf(x))
+						.reduce((a, c) => a * 83 + c, 0)
+						.toString(16)
+						.padStart(6, '0')
+				: undefined;
+		},
 		onClick(e) {
 			this.$emit('click', e);
 		},

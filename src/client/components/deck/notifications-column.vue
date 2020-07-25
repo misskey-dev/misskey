@@ -7,13 +7,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
 import XNotifications from '../notifications.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XNotifications

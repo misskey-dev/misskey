@@ -23,10 +23,10 @@
 	</div>
 	<div class="_content" v-else-if="tutorial === 4">
 		<div>{{ $t('_tutorial.step5_1') }}</div>
-		<i18n path="_tutorial.step5_2" tag="div">
+		<i18n-t path="_tutorial.step5_2" tag="div">
 			<router-link class="_link" place="featured" to="/featured">{{ $t('featured') }}</router-link>
 			<router-link class="_link" place="explore" to="/explore">{{ $t('explore') }}</router-link>
-		</i18n>
+		</i18n-t>
 		<div>{{ $t('_tutorial.step5_3') }}</div>
 		<small>{{ $t('_tutorial.step5_4') }}</small>
 	</div>
@@ -37,9 +37,9 @@
 	</div>
 	<div class="_content" v-else-if="tutorial === 6">
 		<div>{{ $t('_tutorial.step7_1') }}</div>
-		<i18n path="_tutorial.step7_2" tag="div">
+		<i18n-t path="_tutorial.step7_2" tag="div">
 			<router-link class="_link" place="help" to="/docs">{{ $t('help') }}</router-link>
-		</i18n>
+		</i18n-t>
 		<div>{{ $t('_tutorial.step7_3') }}</div>
 	</div>
 
@@ -60,11 +60,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faInfoCircle, faChevronLeft, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons'
 import MkButton from '../components/ui/button.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 	},

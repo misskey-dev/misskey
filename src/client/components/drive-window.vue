@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XDrive from './drive.vue';
 import XWindow from './window.vue';
 import number from '../filters/number';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XDrive,
 		XWindow,

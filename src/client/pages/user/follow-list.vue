@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import parseAcct from '../../../misc/acct/parse';
 import MkFollowButton from '../../components/follow-button.vue';
 import MkPagination from '../../components/ui/pagination.vue';
 import { userPage, acct } from '../../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkPagination,
 		MkFollowButton,

@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
@@ -139,7 +139,7 @@ const alpha = (hex, a) => {
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkSelect
 	},

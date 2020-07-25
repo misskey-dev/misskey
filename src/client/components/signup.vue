@@ -37,9 +37,9 @@
 			</template>
 		</mk-input>
 		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
-			<i18n path="agreeTo">
+			<i18n-t path="agreeTo">
 				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
-			</i18n>
+			</i18n-t>
 		</mk-switch>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
 		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
@@ -58,12 +58,20 @@ import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: () => import('./captcha.vue').then(x => x.default),
+		captcha: defineAsyncComponent(() => import('./captcha.vue').then(m => m.default)),
+	},
+
+	props: {
+		autoSet: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
 	},
 
 	data() {
@@ -82,14 +90,6 @@ export default Vue.extend({
 			hCaptchaResponse: null,
 			reCaptchaResponse: null,
 			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
-		}
-	},
-
-	props: {
-		autoSet: {
-			type: Boolean,
-			required: false,
-			default: false,
 		}
 	},
 

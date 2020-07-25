@@ -2,20 +2,21 @@
 <x-column :column="column" :is-stacked="isStacked" :menu="menu">
 	<template #header><fa :icon="faAt" style="margin-right: 8px;"/>{{ column.name }}</template>
 
-	<x-mentions/>
+	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
 </x-column>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faAt } from '@fortawesome/free-solid-svg-icons';
+import Progress from '../../scripts/loading';
 import XColumn from './column.vue';
-import XMentions from '../../pages/mentions.vue';
+import XNotes from '../notes.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
-		XMentions
+		XNotes
 	},
 
 	props: {
@@ -32,8 +33,22 @@ export default Vue.extend({
 	data() {
 		return {
 			menu: null,
+			pagination: {
+				endpoint: 'notes/mentions',
+				limit: 10,
+			},
 			faAt
 		}
 	},
+
+	methods: {
+		before() {
+			Progress.start();
+		},
+
+		after() {
+			Progress.done();
+		}
+	}
 });
 </script>

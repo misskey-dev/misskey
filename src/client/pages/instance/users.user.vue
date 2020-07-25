@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
@@ -42,7 +42,7 @@ import MkSwitch from '../../components/ui/switch.vue';
 import Progress from '../../scripts/loading';
 import { acct } from '../../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkSwitch,

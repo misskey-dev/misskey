@@ -15,10 +15,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { userName } from '../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		page: {
 			type: Object,

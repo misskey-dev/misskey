@@ -28,13 +28,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import paging from '../scripts/paging';
 import XModal from './modal.vue';
 import { userPage } from '../filters/user';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XModal,
 	},

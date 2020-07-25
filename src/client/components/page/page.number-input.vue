@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkInput from '../ui/input.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkInput
 	},

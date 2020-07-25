@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import ApexCharts from 'apexcharts';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		user: {
 			type: Object,

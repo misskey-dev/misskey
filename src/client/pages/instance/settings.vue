@@ -199,7 +199,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -212,7 +212,7 @@ import MkUserSelect from '../../components/user-select.vue';
 import { url } from '../../config';
 import getAcct from '../../../misc/acct/render';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: this.$t('instance') as string
@@ -225,7 +225,7 @@ export default Vue.extend({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
-		Captcha: () => import('../../components/captcha.vue').then(x => x.default),
+		Captcha: defineAsyncComponent(() => import('../../components/captcha.vue').then(m => m.default)),
 	},
 
 	data() {

@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
@@ -67,7 +67,7 @@ import MkPagination from '../../components/ui/pagination.vue';
 import { selectFile } from '../../scripts/select-file';
 import { unique } from '../../../prelude/array';
 
-export default Vue.extend({
+export default defineComponent({
 	metaInfo() {
 		return {
 			title: `${this.$t('customEmojis')} | ${this.$t('instance')}`

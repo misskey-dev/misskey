@@ -1,7 +1,10 @@
+import { Directive } from 'vue';
 import MkUserPreview from '../components/user-preview.vue';
 
 export default {
-	bind(el: HTMLElement, binding, vn) {
+	mounted(el: HTMLElement, binding, vn) {
+		// TODO: 新たにプロパティを作るのをやめMapを使う
+		// ただメモリ的には↓の方が省メモリかもしれないので検討中
 		const self = (el as any)._userPreviewDirective_ = {} as any;
 
 		self.user = binding.value;
@@ -68,8 +71,8 @@ export default {
 		});
 	},
 
-	unbind(el, binding, vn) {
+	unmounted(el, binding, vn) {
 		const self = el._userPreviewDirective_;
 		clearInterval(self.checkTimer);
 	}
-};
+} as Directive;

@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
@@ -51,7 +51,7 @@ import DeckColumn from './components/deck/column.vue';
 import XSidebar from './components/sidebar.vue';
 import { getScrollContainer } from './scripts/scroll';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XSidebar,
 		DeckColumn,
