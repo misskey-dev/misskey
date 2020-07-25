@@ -720,6 +720,7 @@ _widgets:
   activity: "活动"
   photos: "照片"
   digitalClock: "数字时钟"
+  federation: "联合"
 _cw:
   hide: "隐藏"
   show: "查看更多"
