@@ -481,6 +481,7 @@ _widgets:
   rss: "RSS閱讀器"
   activity: "動態"
   photos: "照片"
+  federation: "聯邦宇宙"
 _cw:
   show: "瀏覽更多"
   files: "{count} 個檔案"
