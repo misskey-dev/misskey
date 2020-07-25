@@ -665,6 +665,7 @@ _widgets:
   activity: "활동"
   photos: "사진"
   digitalClock: "디지털 시계"
+  federation: "연합"
 _cw:
   hide: "숨기기"
   show: "더 보기"
