@@ -5,12 +5,12 @@
 	<div class="wbrkwalb">
 		<mk-loading v-if="fetching"/>
 		<transition-group tag="div" name="chart" class="instances" v-else>
-			<div v-for="instance in instances" :key="instance.id">
+			<div v-for="(instance, i) in instances" :key="instance.id">
 				<div class="instance">
 					<a class="a" :href="'https://' + instance.host" target="_blank" :title="instance.host">#{{ instance.host }}</a>
 					<p>{{ instance.softwareName }} {{ instance.softwareVersion }}</p>
 				</div>
-				<!-- TODO: <x-chart class="chart" :src="stat.chart"/> -->
+				<mk-mini-chart class="chart" :src="charts[i].requests.received"/>
 			</div>
 		</transition-group>
 	</div>
@@ -21,7 +21,7 @@
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import XChart from './trends.chart.vue';
+import MkMiniChart from '../components/mini-chart.vue';
 
 export default define({
 	name: 'federation',
@@ -33,11 +33,12 @@ export default define({
 	})
 }).extend({
 	components: {
-		MkContainer, XChart
+		MkContainer, MkMiniChart
 	},
 	data() {
 		return {
 			instances: [],
+			charts: [],
 			fetching: true,
 			faGlobe
 		};
@@ -50,14 +51,15 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
-		fetch() {
-			this.$root.api('federation/instances', {
+		async fetch() {
+			const instances = await this.$root.api('federation/instances', {
 				sort: '+lastCommunicatedAt',
 				limit: 5
-			}).then(instances => {
-				this.instances = instances;
-				this.fetching = false;
 			});
+			const charts = await Promise.all(instances.map(i => this.$root.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
+			this.instances = instances;
+			this.charts = charts;
+			this.fetching = false;
 		}
 	}
 });
