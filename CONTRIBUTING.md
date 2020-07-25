@@ -1,6 +1,10 @@
 # Contribution guide
 :v: Thanks for your contributions :v:
 
+## When you contribute...
+- 任意のIssueについて、せっかく実装してくださっても、実装方法や設計の認識が揃ってないとマージできない/しないことになりかねないので、初めにそのIssue上で着手することを宣言し、必要であれば他メンバーに実装方法や設計の判断を仰いでください。宣言することは作業が他の人と被るのを防止する効果もあります。
+- 時間や優先度の都合上、提出してくださったPRが長期間放置されることもありますがご理解ください。
+
 ## Issues
 Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
 
