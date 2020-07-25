@@ -2,6 +2,7 @@ import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { selectDriveFile } from './select-drive-file';
 import { apiUrl } from '../config';
 
+// TODO: component引数は消せる(各種操作がstoreに移動し、かつstoreが複数ファイルで共有されるようになったため)
 export function selectFile(component: any, src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
 		const chooseFileFromPc = () => {

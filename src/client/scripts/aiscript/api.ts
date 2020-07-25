@@ -1,6 +1,7 @@
 import { utils, values } from '@syuilo/aiscript';
 import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
 
+// TODO: vm引数は消せる(各種操作がstoreに移動し、かつstoreが複数ファイルで共有されるようになったため)
 export function createAiScriptEnv(vm, opts) {
 	let apiRequests = 0;
 	return {
@@ -42,6 +43,7 @@ export function createAiScriptEnv(vm, opts) {
 	};
 }
 
+// TODO: vm引数は消せる(各種操作がstoreに移動し、かつstoreが複数ファイルで共有されるようになったため)
 export function createPluginEnv(vm, opts) {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config)) {
