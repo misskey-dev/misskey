@@ -1,7 +1,7 @@
 <template>
 <button
 	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle }"
+	:class="{ reacted: myReaction == reaction, canToggle }"
 	@click="toggleReaction(reaction)"
 	v-if="count > 0"
 	@touchstart="onMouseover"
@@ -11,7 +11,7 @@
 	ref="reaction"
 	v-particle="canToggle"
 >
-	<x-reaction-icon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
+	<x-reaction-icon :reaction="reaction" :custom-emojis="emojis" ref="icon"/>
 	<span>{{ count }}</span>
 </button>
 </template>
@@ -28,6 +28,14 @@ export default Vue.extend({
 	props: {
 		reaction: {
 			type: String,
+			required: true,
+		},
+		myReaction: {
+			type: String,
+			required: false,
+		},
+		emojis: {
+			type: Array,
 			required: true,
 		},
 		count: {
@@ -71,7 +79,7 @@ export default Vue.extend({
 		toggleReaction() {
 			if (!this.canToggle) return;
 
-			const oldReaction = this.note.myReaction;
+			const oldReaction = this.myReaction;
 			if (oldReaction) {
 				this.$root.api('notes/reactions/delete', {
 					noteId: this.note.id
