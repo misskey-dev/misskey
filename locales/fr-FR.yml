@@ -1134,6 +1134,12 @@ _notification:
   youReceivedFollowRequest: "Vous avez reçu une demande d’abonnement"
   yourFollowRequestAccepted: "Votre demande d’abonnement a été accepté"
   youWereInvitedToGroup: "Invité au groupe"
+  _types:
+    follow: "Abonnements"
+    mention: "Mentionner"
+    renote: "Renote"
+    quote: "Citer"
+    reaction: "Réactions"
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"
