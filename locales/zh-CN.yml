@@ -536,6 +536,7 @@ disableAll: "禁用全部"
 tokenRequested: "允许访问账户"
 pluginTokenRequestedDescription: "此插件将能够拥有此处设置的权限"
 smtpHost: "主机名"
+smtpPort: "端口"
 smtpUser: "用户名"
 smtpPass: "密码"
 _theme:
