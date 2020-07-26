@@ -44,9 +44,8 @@ export function createAiScriptEnv(vm, opts) {
 
 export function createPluginEnv(vm, opts) {
 	const config = new Map();
-	for (const key in opts.plugin.config) {
-		const val = opts.plugin.configData[key] || opts.plugin.config[key].default;
-		config.set(key, jsToVal(val));
+	for (const [k, v] of Object.entries(opts.plugin.config)) {
+		config.set(k, jsToVal(opts.plugin.configData[k] || v.default));
 	}
 
 	return {
