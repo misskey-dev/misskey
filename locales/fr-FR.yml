@@ -526,6 +526,9 @@ leaveConfirm: "Vous avez des modifications non-sauvegardées. Voulez-vous les ig
 manage: "Gestion"
 plugins: "Extensions"
 pluginInstallWarn: "N’installez que des extensions provenant de sources de confiance."
+smtpHost: "Hôte"
+smtpUser: "Nom d’utilisateur·rice"
+smtpPass: "Mot de passe"
 _theme:
   explore: "Explorer les thèmes"
   install: "Installer un thème"
