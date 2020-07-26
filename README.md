@@ -101,6 +101,8 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 
 :heart: Backers
 ----------------------------------------------------------------
+
+*This section is no longer up to date. See master or develop branch instead.*
 <!-- PATREON_START -->
 <table><tr>
 <td><img src="https://c8.patreon.com/2/200/20832595" alt="Roujo " width="100"></td>
