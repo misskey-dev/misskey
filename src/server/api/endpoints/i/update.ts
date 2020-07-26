@@ -142,7 +142,18 @@ export const meta = {
 			desc: {
 				'ja-JP': 'ピン留めするページID'
 			}
-		}
+		},
+
+		enableWordMute: {
+			validator: $.optional.bool,
+			desc: {
+				'ja-JP': 'ワードミュートを有効にするか否か'
+			}
+		},
+
+		mutedWords: {
+			validator: $.arr($.arr($.str))
+		},
 	},
 
 	errors: {
@@ -193,6 +204,7 @@ export default define(meta, async (ps, user, token) => {
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
+	if (ps.mutedWords !== undefined) updates.mutedWords = ps.mutedWords;
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
@@ -201,6 +213,7 @@ export default define(meta, async (ps, user, token) => {
 	if (typeof ps.autoWatch === 'boolean') profileUpdates.autoWatch = ps.autoWatch;
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (typeof ps.enableWordMute === 'boolean') profileUpdates.enableWordMute = ps.enableWordMute;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);

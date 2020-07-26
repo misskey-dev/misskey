@@ -2,6 +2,7 @@ import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typ
 import { Note } from './note';
 import { User } from './user';
 import { id } from '../id';
+import { mutedNoteReasons } from '../../types';
 
 @Entity()
 @Index(['noteId', 'userId'], { unique: true })
@@ -34,4 +35,14 @@ export class MutedNote {
 	})
 	@JoinColumn()
 	public user: User | null;
+
+	/**
+	 * ミュートされた理由。
+	 */
+	@Index()
+	@Column('enum', {
+		enum: mutedNoteReasons,
+		comment: 'The reason of the MutedNote.'
+	})
+	public reason: typeof mutedNoteReasons[number];
 }

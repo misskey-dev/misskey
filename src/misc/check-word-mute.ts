@@ -1,10 +1,19 @@
 import { Note } from '../models/entities/note';
+import { User } from '../models/entities/user';
 
 type NoteLike = {
+	userId: Note['userId'];
 	text: Note['text'];
 };
 
-export async function checkWordMute(note: NoteLike, mutedWords: string[][]): Promise<boolean> {
+type UserLike = {
+	id: User['id'];
+};
+
+export async function checkWordMute(note: NoteLike, me: UserLike | null | undefined, mutedWords: string[][]): Promise<boolean> {
+	// 自分自身
+	if (me && (note.userId === me.id)) return false;
+
 	const words = mutedWords
 		// Clean up
 		.map(xs => xs.filter(x => x !== ''))

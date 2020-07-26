@@ -58,7 +58,7 @@ export default class extends Channel {
 		// 現状では、ワードミュートにおけるMutedNoteレコードの追加処理はストリーミングに流す処理と並列で行われるため、
 		// レコードが追加されるNoteでも追加されるより先にここのストリーミングの処理に到達することが起こる。
 		// そのためレコードが存在するかのチェックでは不十分なので、改めてcheckWordMuteを呼んでいる
-		if (this.userProfile?.enableWordMute && await checkWordMute(note, this.userProfile.mutedWords)) return;
+		if (this.userProfile?.enableWordMute && await checkWordMute(note, this.user, this.userProfile.mutedWords)) return;
 
 		this.send('note', note);
 	}

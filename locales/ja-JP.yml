@@ -553,6 +553,9 @@ emptyToDisableSmtpAuth: "ユーザー名とパスワードを空欄にするこ�
 smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
+wordMute: "ワードミュート"
+muteWords: "ミュートするワード"
+muteWordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
 
 _theme:
   explore: "テーマを探す"

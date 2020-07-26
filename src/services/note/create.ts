@@ -225,12 +225,13 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		enableWordMute: true
 	}).then(us => {
 		for (const u of us) {
-			checkWordMute(note, u.mutedWords).then(shouldMute => {
+			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 				if (shouldMute) {
 					MutedNotes.save({
 						id: genId(),
 						userId: u.userId,
 						noteId: note.id,
+						reason: 'word',
 					});
 				}
 			});
