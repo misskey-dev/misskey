@@ -1177,6 +1177,12 @@ _notification:
   youReceivedFollowRequest: "You've received a follow request"
   yourFollowRequestAccepted: "Your follow request was accepted"
   youWereInvitedToGroup: "Invited to group"
+  _types:
+    follow: "Following"
+    mention: "Mention"
+    renote: "Renote"
+    quote: "Quote"
+    reaction: "Reaction"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
