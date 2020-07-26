@@ -5,8 +5,9 @@
 	<div class="wbrkwalb">
 		<mk-loading v-if="fetching"/>
 		<transition-group tag="div" name="chart" class="instances" v-else>
-			<div v-for="(instance, i) in instances" :key="instance.id">
-				<div class="instance">
+			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
+				<img :src="instance.iconUrl" alt=""/>
+				<div class="body">
 					<a class="a" :href="'https://' + instance.host" target="_blank" :title="instance.host">{{ instance.host }}</a>
 					<p>{{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</p>
 				</div>
@@ -75,13 +76,20 @@ export default define({
 			transition: transform 1s ease;
 		}
 
-		> div {
+		> .instance {
 			display: flex;
 			align-items: center;
 			padding: 14px 16px;
 			border-bottom: solid 1px var(--divider);
 
-			> .instance {
+			> img {
+				display: block;
+				width: 30px;
+				height: 30px;
+				object-fit: cover;
+			}
+
+			> .body {
 				flex: 1;
 				overflow: hidden;
 				font-size: 0.9em;
