@@ -353,6 +353,9 @@ notFoundDescription: "指定されたURLに該当するページはあらへん�
 close: "さいなら"
 joinedGroups: "参加しとるグループ"
 invites: "来てや"
+smtpHost: "ホスト"
+smtpUser: "ユーザー名"
+smtpPass: "パスワード"
 _theme:
   keys:
     renote: "Renote"
