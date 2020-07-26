@@ -68,6 +68,9 @@ export default define({
 
 <style lang="scss" scoped>
 .wbrkwalb {
+	$bodyTitleHieght: 18px;
+	$bodyInfoHieght: 16px;
+
 	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
 	overflow: hidden;
 
@@ -84,9 +87,11 @@ export default define({
 
 			> img {
 				display: block;
-				width: 30px;
-				height: 30px;
+				width: ($bodyTitleHieght + $bodyInfoHieght);
+				height: ($bodyTitleHieght + $bodyInfoHieght);
 				object-fit: cover;
+				border-radius: 4px;
+				margin-right: 8px;
 			}
 
 			> .body {
@@ -101,14 +106,14 @@ export default define({
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					line-height: 18px;
+					line-height: $bodyTitleHieght;
 				}
 
 				> p {
 					margin: 0;
 					font-size: 75%;
 					opacity: 0.7;
-					line-height: 16px;
+					line-height: $bodyInfoHieght;
 				}
 			}
 
