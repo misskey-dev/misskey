@@ -11,7 +11,7 @@
 			<mk-input v-model="iconUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('iconUrl') }}</mk-input>
 			<mk-input v-model="bannerUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</mk-input>
 			<mk-input v-model="tosUrl"><template #icon><fa :icon="faLink"/></template>{{ $t('tosUrl') }}</mk-input>
-			<mk-input v-model="maintainerName"><template #icon><fa :icon="faLink"/></template>{{ $t('maintainerName') }}</mk-input>
+			<mk-input v-model="maintainerName">{{ $t('maintainerName') }}</mk-input>
 			<mk-input v-model="maintainerEmail" type="email"><template #icon><fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</mk-input>
 		</div>
 		<div class="_footer">
