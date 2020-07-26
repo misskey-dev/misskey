@@ -439,6 +439,11 @@ _pages:
       array: "リスト"
 _notification:
   youWereFollowed: "フォローされたで"
+  _types:
+    follow: "フォロー"
+    renote: "Renote"
+    quote: "引用"
+    reaction: "リアクション"
 _deck:
   _columns:
     notifications: "通知"
