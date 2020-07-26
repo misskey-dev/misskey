@@ -10,6 +10,7 @@ import { activeUsersChart } from '../../../../services/chart';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { injectPromo } from '../../common/inject-promo';
 import { injectFeatured } from '../../common/inject-featured';
+import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 
 export const meta = {
 	desc: {
@@ -83,6 +84,7 @@ export default define(meta, async (ps, user) => {
 
 	generateRepliesQuery(query, user);
 	if (user) generateMuteQuery(query, user);
+	if (user) generateMutedNoteQuery(query, user);
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

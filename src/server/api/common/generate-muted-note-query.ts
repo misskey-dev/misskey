@@ -1,0 +1,13 @@
+import { User } from '../../../models/entities/user';
+import { MutedNotes } from '../../../models';
+import { SelectQueryBuilder } from 'typeorm';
+
+export function generateMutedNoteQuery(q: SelectQueryBuilder<any>, me: User) {
+	const mutedQuery = MutedNotes.createQueryBuilder('muted')
+		.select('muted.noteId')
+		.where('muted.userId = :userId', { userId: me.id });
+
+	q.andWhere(`note.id NOT IN (${ mutedQuery.getQuery() })`);
+
+	q.setParameters(mutedQuery.getParameters());
+}
