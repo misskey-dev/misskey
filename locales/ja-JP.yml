@@ -539,6 +539,20 @@ tokenRequested: "アカウントへのアクセス許可"
 pluginTokenRequestedDescription: "このプラグインはここで設定した権限を行使できるようになります。"
 notificationType: "通知の種類"
 edit: "編集"
+useStarForReactionFallback: "リアクション絵文字が不明な場合、代わりに★を使う"
+emailConfig: "メールサーバー設定"
+enableEmail: "メール配信機能を有効化する"
+emailConfigInfo: "メールアドレスの確認やパスワードリセットの際に使います"
+email: "メールアドレス"
+smtpConfig: "SMTP サーバーの設定"
+smtpHost: "ホスト"
+smtpPort: "ポート"
+smtpUser: "ユーザー名"
+smtpPass: "パスワード"
+emptyToDisableSmtpAuth: "ユーザー名とパスワードを空欄にすることで、SMTP認証を無効化出来ます"
+smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
+smtpSecureInfo: "STARTTLS使用時はオフにします。"
+testEmail: "配信テスト"
 
 _theme:
   explore: "テーマを探す"
@@ -736,6 +750,7 @@ _widgets:
   activity: "アクティビティ"
   photos: "フォト"
   digitalClock: "デジタル時計"
+  federation: "連合"
 
 _cw:
   hide: "隠す"

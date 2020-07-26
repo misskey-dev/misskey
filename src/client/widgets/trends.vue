@@ -10,7 +10,7 @@
 					<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
 					<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 				</div>
-				<x-chart class="chart" :src="stat.chart"/>
+				<mk-mini-chart class="chart" :src="stat.chart"/>
 			</div>
 		</transition-group>
 	</div>
@@ -21,7 +21,7 @@
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
-import XChart from './trends.chart.vue';
+import MkMiniChart from '../components/mini-chart.vue';
 
 export default define({
 	name: 'hashtags',
@@ -33,7 +33,7 @@ export default define({
 	})
 }).extend({
 	components: {
-		MkContainer, XChart
+		MkContainer, MkMiniChart
 	},
 	data() {
 		return {
