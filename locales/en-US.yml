@@ -1200,7 +1200,8 @@ _notification:
     renote: "Renote"
     quote: "Quote"
     reaction: "Reaction"
-    pollVote: "Poll votes"
+    pollVote: "Polls"
+    receiveFollowRequest: "Follow requests"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
