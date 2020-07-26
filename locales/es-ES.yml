@@ -548,6 +548,7 @@ smtpPass: "Contraseña"
 emptyToDisableSmtpAuth: "Deje el nombre del usuario y la contraseña en blanco para deshabilitar la autenticación SMTP"
 smtpSecure: "Usar SSL/TLS implícito en la conexión SMTP"
 smtpSecureInfo: "Apagar cuando se use STARTTLS"
+testEmail: "Prueba de envío"
 _theme:
   explore: "Explorar temas"
   install: "Instalar tema"
