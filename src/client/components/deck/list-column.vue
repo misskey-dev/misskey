@@ -46,7 +46,7 @@ export default Vue.extend({
 	created() {
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('list'),
+			text: this.$t('selectList'),
 			action: this.setList
 		}];
 	},
@@ -61,7 +61,7 @@ export default Vue.extend({
 		async setList() {
 			const lists = await this.$root.api('users/lists/list');
 			const { canceled, result: list } = await this.$root.dialog({
-				title: this.$t('list'),
+				title: this.$t('selectList'),
 				type: null,
 				select: {
 					items: lists.map(x => ({
