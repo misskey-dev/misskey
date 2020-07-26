@@ -2,6 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faCommentSlash"/> {{ $t('wordMute') }}</div>
 	<div class="_content">
+		<mk-switch v-model="enableWordMute">{{ $t('enableWordMute') }}</mk-switch>
 		<mk-textarea v-model="mutedWords">
 			<span>{{ $t('muteWords') }}</span>
 			<template #desc>{{ $t('muteWordsDescription') }}</template>
@@ -17,10 +18,14 @@
 import Vue from 'vue';
 import { faCommentSlash, faSave } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
+import MkTextarea from '../../components/ui/textarea.vue';
+import MkSwitch from '../../components/ui/switch.vue';
 
 export default Vue.extend({
 	components: {
 		MkButton,
+		MkTextarea,
+		MkSwitch,
 	},
 	
 	data() {
