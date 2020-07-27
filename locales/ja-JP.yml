@@ -554,7 +554,6 @@ smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
-enableWordMute: "ワードミュートを有効にする"
 muteWords: "ミュートするワード"
 muteWordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
 
