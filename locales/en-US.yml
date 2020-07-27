@@ -553,6 +553,15 @@ emptyToDisableSmtpAuth: "Leave username and password empty to disable SMTP verif
 smtpSecure: "Use implicit SSL/TLS for SMTP connections"
 smtpSecureInfo: "Turn this off when using STARTTLS"
 testEmail: "Test email delivery"
+wordMute: "Word mute"
+userSaysSomething: "{name} said something"
+_wordMute:
+  muteWords: "Word to mute"
+  muteWordsDescription: "Separate with spaces for AND condition. Separate with line breaks for OR."
+  muteWordsDescription2: "Surround keywords by slashes to use regular expressions."
+  softDescription: "Hide notes fulfilling the set conditions from the timeline."
+  soft: "Soft"
+  hard: "Hard"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
