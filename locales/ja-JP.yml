@@ -556,6 +556,8 @@ testEmail: "配信テスト"
 wordMute: "ワードミュート"
 muteWords: "ミュートするワード"
 muteWordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります"
+softMuteDescription: "指定した条件のノートをタイムラインから隠します。"
+hardMuteDescription: "指定した条件のノートをタイムラインに追加しないようにします。追加されなかったノートは、条件を変更しても除外されたままになります。"
 
 _theme:
   explore: "テーマを探す"
