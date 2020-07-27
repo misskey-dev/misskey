@@ -15,6 +15,10 @@ export default abstract class Channel {
 		return this.connection.user;
 	}
 
+	protected get userProfile() {
+		return this.connection.userProfile;
+	}
+
 	protected get following() {
 		return this.connection.following;
 	}

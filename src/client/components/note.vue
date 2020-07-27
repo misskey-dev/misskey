@@ -1,6 +1,7 @@
 <template>
 <div
 	class="note _panel"
+	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
@@ -84,6 +85,13 @@
 	</article>
 	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
+<div v-else class="_panel muted" @click="muted = false">
+	<i18n path="userSaysSomething" tag="small">
+		<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.userId" place="name">
+			<mk-user-name :user="appearNote.user"/>
+		</router-link>
+	</i18n>
+</div>
 </template>
 
 <script lang="ts">
@@ -105,6 +113,7 @@ import pleaseLogin from '../scripts/please-login';
 import { focusPrev, focusNext } from '../scripts/focus';
 import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
+import { checkWordMute } from '../scripts/check-word-mute';
 
 export default Vue.extend({
 	components: {
@@ -142,6 +151,7 @@ export default Vue.extend({
 			replies: [],
 			showContent: false,
 			isDeleted: false,
+			muted: false,
 			myReaction: null,
 			reactions: {},
 			emojis: [],
@@ -227,14 +237,15 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
-		this.emojis = [...this.appearNote.emojis];
-		this.reactions = { ...this.appearNote.reactions };
-		this.myReaction = this.appearNote.myReaction;
-
+	async created() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream;
 		}
+
+		this.emojis = [...this.appearNote.emojis];
+		this.reactions = { ...this.appearNote.reactions };
+		this.myReaction = this.appearNote.myReaction;
+		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);
 
 		if (this.detail) {
 			this.$root.api('notes/children', {
@@ -975,5 +986,11 @@ export default Vue.extend({
 			}
 		}
 	}
+}
+
+.muted {
+	padding: 8px;
+	text-align: center;
+	opacity: 0.7;
 }
 </style>

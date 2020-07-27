@@ -17,7 +17,7 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings } from '../../models';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
@@ -29,6 +29,7 @@ import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 import { ensure } from '../../prelude/ensure';
 import { checkHitAntenna } from '../../misc/check-hit-antenna';
+import { checkWordMute } from '../../misc/check-word-mute';
 import { addNoteToAntenna } from '../add-note-to-antenna';
 import { countSameRenotes } from '../../misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
@@ -218,6 +219,24 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 	// Increment notes count (user)
 	incNotesCountOfUser(user);
+
+	// Word mute
+	UserProfiles.find({
+		enableWordMute: true
+	}).then(us => {
+		for (const u of us) {
+			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
+				if (shouldMute) {
+					MutedNotes.save({
+						id: genId(),
+						userId: u.userId,
+						noteId: note.id,
+						reason: 'word',
+					});
+				}
+			});
+		}
+	});
 
 	// Antenna
 	Antennas.find().then(async antennas => {

@@ -12,6 +12,7 @@ import { activeUsersChart } from '../../../../services/chart';
 import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { injectPromo } from '../../common/inject-promo';
 import { injectFeatured } from '../../common/inject-featured';
+import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 
 export const meta = {
 	desc: {
@@ -133,6 +134,7 @@ export default define(meta, async (ps, user) => {
 	generateRepliesQuery(query, user);
 	generateVisibilityQuery(query, user);
 	generateMuteQuery(query, user);
+	generateMutedNoteQuery(query, user);
 
 	if (ps.includeMyRenotes === false) {
 		query.andWhere(new Brackets(qb => {

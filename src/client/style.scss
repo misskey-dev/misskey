@@ -355,6 +355,10 @@ hr {
 			padding: 16px;
 		}
 
+		&._noPad {
+			padding: 0 !important;
+		}
+
 		& + ._content {
 			border-top: solid 1px var(--divider);
 		}
