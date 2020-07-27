@@ -11,9 +11,13 @@ export async function checkWordMute(note: Record<string, any>, me: Record<string
 		if (note.text == null) return false;
 
 		const matched = words.some(and =>
-			and.every(keyword =>
-				note.text!.includes(keyword)
-			));
+			and.every(keyword => {
+				const regexp = keyword.match(/^\/(.+)\/(.*)$/);
+				if (regexp) {
+					return new RegExp(regexp[1], regexp[2]).test(note.text!);
+				}
+				return note.text!.includes(keyword);
+			}));
 
 		if (matched) return true;
 	}

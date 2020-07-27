@@ -1,3 +1,4 @@
+const RE2 = require('re2');
 import { Note } from '../models/entities/note';
 import { User } from '../models/entities/user';
 
@@ -23,9 +24,13 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 		if (note.text == null) return false;
 
 		const matched = words.some(and =>
-			and.every(keyword =>
-				note.text!.includes(keyword)
-			));
+			and.every(keyword => {
+				const regexp = keyword.match(/^\/(.+)\/(.*)$/);
+				if (regexp) {
+					return new RE2(regexp[1], regexp[2]).test(note.text!);
+				}
+				return note.text!.includes(keyword);
+			}));
 
 		if (matched) return true;
 	}
