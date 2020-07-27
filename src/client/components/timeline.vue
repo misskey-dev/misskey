@@ -52,7 +52,6 @@ export default Vue.extend({
 		});
 
 		const prepend = note => {
-			Object.freeze(note);
 			(this.$refs.tl as any).prepend(note);
 
 			this.$emit('note');
