@@ -145,7 +145,7 @@ export const meta = {
 		},
 
 		mutedWords: {
-			validator: $.arr($.arr($.str))
+			validator: $.optional.arr($.arr($.str))
 		},
 	},
 

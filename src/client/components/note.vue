@@ -85,8 +85,12 @@
 	</article>
 	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
-<div v-else>
-	<p>aaaa</p>
+<div v-else class="_panel muted" @click="muted = false">
+	<i18n path="userSaysSomething" tag="small">
+		<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.userId" place="name">
+			<mk-user-name :user="appearNote.user"/>
+		</router-link>
+	</i18n>
 </div>
 </template>
 
@@ -982,5 +986,11 @@ export default Vue.extend({
 			}
 		}
 	}
+}
+
+.muted {
+	padding: 8px;
+	text-align: center;
+	opacity: 0.7;
 }
 </style>
