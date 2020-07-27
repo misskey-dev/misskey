@@ -553,6 +553,7 @@ emptyToDisableSmtpAuth: "Benutzername und Passwort leer lassen um SMTP-Verifizie
 smtpSecure: "Für SMTP-Verbindungen implizit SSL/TLS verwenden"
 smtpSecureInfo: "Schalte dies aus, falls du STARTTLS verwendest"
 testEmail: "Email-Versand testen"
+wordMute: "Wort-Stummschaltung"
 userSaysSomething: "{name} hat etwas gesagt."
 _wordMute:
   muteWords: "Wort stummschalten"
