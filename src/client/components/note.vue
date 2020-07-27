@@ -246,8 +246,6 @@ export default Vue.extend({
 			this.connection = this.$root.stream;
 		}
 
-		console.log(this.note);
-
 		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);
 
 		if (this.detail) {
