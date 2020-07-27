@@ -560,7 +560,8 @@ _wordMute:
   muteWordsDescription2: "Umgib Schlüsselworter mit Schrägstrichen, um Reguläre Ausdrücke zu verwenden."
   softDescription: "Notizen, die die eingestellten Konditionen erfüllen, in der Chronik ausblenden"
   hardDescription: "Verhindern, dass Notizen, die die eingestellten Konditionen erfüllen, der Chronik hinzugefügt werden. Zudem werden diese Notizen auch nicht der Chronik hinzugefügt, falls die Konditionen geändert werden."
-  soft: "Soft"
+  soft: "Leicht"
+  hard: "Schwer"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
