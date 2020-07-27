@@ -553,6 +553,14 @@ emptyToDisableSmtpAuth: "Benutzername und Passwort leer lassen um SMTP-Verifizie
 smtpSecure: "Für SMTP-Verbindungen implizit SSL/TLS verwenden"
 smtpSecureInfo: "Schalte dies aus, falls du STARTTLS verwendest"
 testEmail: "Email-Versand testen"
+userSaysSomething: "{name} hat etwas gesagt."
+_wordMute:
+  muteWords: "Wort stummschalten"
+  muteWordsDescription: "Mit Leerzeichen für eine \"UND\"-Verknüpfung trennen, durch Zeilenumbrüche für eine \"ODER\"-Verknüpfung trennen."
+  muteWordsDescription2: "Umgib Schlüsselworter mit Schrägstrichen, um Reguläre Ausdrücke zu verwenden."
+  softDescription: "Notizen, die die eingestellten Konditionen erfüllen, in der Chronik ausblenden"
+  hardDescription: "Verhindern, dass Notizen, die die eingestellten Konditionen erfüllen, der Chronik hinzugefügt werden. Zudem werden diese Notizen auch nicht der Chronik hinzugefügt, falls die Konditionen geändert werden."
+  soft: "Soft"
 _theme:
   explore: "Themen erforschen"
   install: "Thema installieren"
