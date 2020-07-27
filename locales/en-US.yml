@@ -560,6 +560,7 @@ _wordMute:
   muteWordsDescription: "Separate with spaces for AND condition. Separate with line breaks for OR."
   muteWordsDescription2: "Surround keywords by slashes to use regular expressions."
   softDescription: "Hide notes fulfilling the set conditions from the timeline."
+  hardDescription: "Prevent notes fulfilling the set conditions from being added to the timeline. In addition, these notes will not be added to the timeline even if the conditions are changed."
   soft: "Soft"
   hard: "Hard"
 _theme:
