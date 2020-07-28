@@ -75,11 +75,12 @@ export default Vue.extend({
 				this.$root.stream.send('readNotification', {
 					id: notification.id
 				});
-
-				notification.isRead = true;
 			}
 
-			this.prepend(notification);
+			this.prepend({
+				...notification,
+				isRead: document.visibilityState === 'visible'
+			});
 		},
 	}
 });
