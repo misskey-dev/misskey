@@ -555,6 +555,7 @@ smtpSecureInfo: "Turn this off when using STARTTLS"
 testEmail: "Test email delivery"
 wordMute: "Word mute"
 userSaysSomething: "{name} said something"
+makeActive: "Activate"
 _wordMute:
   muteWords: "Word to mute"
   muteWordsDescription: "Separate with spaces for AND condition. Separate with line breaks for OR."
