@@ -35,19 +35,19 @@
 		</div>
 	</div>
 	<article class="article">
-		<mk-avatar class="avatar" :user="appearNote.user" v-once/>
+		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<x-note-header class="header" :note="appearNote" :mini="true"/>
 			<div class="body" ref="noteBody">
 				<p v-if="appearNote.cw != null" class="cw">
-				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" v-once/>
+				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 					<x-cw-button v-model="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 						<router-link class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><fa :icon="faReply"/></router-link>
-						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" v-once/>
+						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
@@ -114,6 +114,7 @@ import { focusPrev, focusNext } from '../scripts/focus';
 import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 import { checkWordMute } from '../scripts/check-word-mute';
+import { utils } from '@syuilo/aiscript';
 
 export default Vue.extend({
 	model: {
@@ -244,6 +245,15 @@ export default Vue.extend({
 	async created() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream;
+		}
+
+		// plugin
+		if (this.$store.state.noteViewInterruptors.length > 0) {
+			let result = this.note;
+			for (const interruptor of this.$store.state.noteViewInterruptors) {
+				result = utils.valToJs(await interruptor.handler(JSON.parse(JSON.stringify(result))));
+			}
+			this.$emit('updated', Object.freeze(result));
 		}
 
 		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);

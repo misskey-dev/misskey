@@ -111,6 +111,7 @@ export default () => new Vuex.Store({
 		postFormActions: [],
 		userActions: [],
 		noteActions: [],
+		noteViewInterruptors: [],
 	},
 
 	getters: {
@@ -271,6 +272,14 @@ export default () => new Vuex.Store({
 			state.noteActions.push({
 				title, handler: (note) => {
 					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
+		},
+
+		registerNoteViewInterruptor(state, { pluginId, handler }) {
+			state.noteViewInterruptors.push({
+				handler: (note) => {
+					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
 				}
 			});
 		},

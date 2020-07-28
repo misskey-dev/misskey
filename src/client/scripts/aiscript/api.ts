@@ -70,6 +70,9 @@ export function createPluginEnv(vm, opts) {
 		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
 			vm.$store.commit('registerNoteAction', { pluginId: opts.plugin.id, title: title.value, handler });
 		}),
+		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
+			vm.$store.commit('registerNoteViewInterruptor', { pluginId: opts.plugin.id, handler });
+		}),
 		'Plugin:config': values.OBJ(config),
 	};
 }
