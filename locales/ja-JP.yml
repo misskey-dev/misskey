@@ -555,6 +555,7 @@ smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
 wordMute: "ワードミュート"
 userSaysSomething: "{name}が何かを言いました"
+makeActive: "アクティブにする"
 
 _wordMute:
   muteWords: "ミュートするワード"

@@ -18,6 +18,9 @@
 				<option v-for="x in $store.state.deviceUser.plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</mk-select>
 			<template v-if="selectedPlugin">
+				<div style="margin: -8px 0 8px 0;">
+					<mk-switch :value="selectedPlugin.active" @change="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</mk-switch>
+				</div>
 				<div class="_keyValue">
 					<div>{{ $t('version') }}:</div>
 					<div>{{ selectedPlugin.version }}</div>
@@ -49,6 +52,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInfo from '../../components/ui/info.vue';
+import MkSwitch from '../../components/ui/switch.vue';
 
 export default Vue.extend({
 	components: {
@@ -56,6 +60,7 @@ export default Vue.extend({
 		MkTextarea,
 		MkSelect,
 		MkInfo,
+		MkSwitch,
 	},
 	
 	data() {
@@ -169,6 +174,17 @@ export default Vue.extend({
 			this.$store.commit('deviceUser/configPlugin', {
 				id: this.selectedPluginId,
 				config: result
+			});
+
+			this.$nextTick(() => {
+				location.reload();
+			});
+		},
+
+		changeActive(plugin, active) {
+			this.$store.commit('deviceUser/changePluginActive', {
+				id: plugin.id,
+				active: active
 			});
 
 			this.$nextTick(() => {

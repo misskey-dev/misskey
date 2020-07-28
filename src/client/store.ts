@@ -45,7 +45,14 @@ export const defaultDeviceUserSettings = {
 		columns: [],
 		layout: [],
 	},
-	plugins: [],
+	plugins: [] as {
+		id: string;
+		name: string;
+		active: boolean;
+		configData: Record<string, any>;
+		token: string;
+		ast: any[];
+	}[],
 };
 
 export const defaultDeviceSettings = {
@@ -591,6 +598,7 @@ export default () => new Vuex.Store({
 				installPlugin(state, { meta, ast, token }) {
 					state.plugins.push({
 						...meta,
+						active: true,
 						configData: {},
 						token: token,
 						ast: ast
@@ -603,6 +611,10 @@ export default () => new Vuex.Store({
 
 				configPlugin(state, { id, config }) {
 					state.plugins.find(p => p.id === id).configData = config;
+				},
+
+				changePluginActive(state, { id, active }) {
+					state.plugins.find(p => p.id === id).active = active;
 				},
 			}
 		},
