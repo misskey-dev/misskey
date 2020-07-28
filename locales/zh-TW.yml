@@ -673,6 +673,12 @@ _notification:
   youGotPoll: "{name}已投票"
   youWereFollowed: "您有新的追隨者"
   yourFollowRequestAccepted: "您的追隨請求已通過"
+  _types:
+    follow: "追隨中"
+    mention: "提及"
+    renote: "轉發貼文"
+    quote: "引用"
+    reaction: "反應"
 _deck:
   _columns:
     notifications: "通知"

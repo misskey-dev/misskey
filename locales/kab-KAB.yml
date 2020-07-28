@@ -82,6 +82,9 @@ _pages:
       array: "Tibdarin"
 _notification:
   youWereFollowed: "Yeṭṭafaṛ-ik·em-id"
+  _types:
+    follow: "Ig ṭṭafaṛ"
+    mention: "Bder"
 _deck:
   _columns:
     notifications: "Ilɣuyen"

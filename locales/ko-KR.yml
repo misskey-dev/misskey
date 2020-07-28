@@ -1120,6 +1120,12 @@ _notification:
   youReceivedFollowRequest: "새로운 팔로우 요청이 있습니다"
   yourFollowRequestAccepted: "팔로우 요청이 수락되었습니다"
   youWereInvitedToGroup: "그룹에 초대되었습니다"
+  _types:
+    follow: "팔로잉"
+    mention: "멘션"
+    renote: "Renote"
+    quote: "인용"
+    reaction: "리액션"
 _deck:
   _columns:
     widgets: "위젯"

@@ -1188,6 +1188,12 @@ _notification:
   youReceivedFollowRequest: "Has mandado una solicitud de seguimiento"
   yourFollowRequestAccepted: "Tu solicitud de seguimiento fue aceptada"
   youWereInvitedToGroup: "Invitado al grupo"
+  _types:
+    follow: "Siguiendo"
+    mention: "Menciones"
+    renote: "Renotar"
+    quote: "Citar"
+    reaction: "Reacción"
 _deck:
   alwaysShowMainColumn: "Siempre mostrar la columna principal"
   columnAlign: "Alinear columnas"
