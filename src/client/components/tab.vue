@@ -1,6 +1,6 @@
 <template>
 <div class="pxhvhrfw" v-size="[{ max: 500 }]">
-	<button v-for="item in items" class="_button" @click="$emit('input', item.value)" :class="{ active: value === item.value }" :key="item.value">{{ item.label }}</button>
+	<button v-for="item in items" class="_button" @click="$emit('input', item.value)" :class="{ active: value === item.value }" :key="item.value"><fa v-if="item.icon" :icon="item.icon" class="icon"/>{{ item.label }}</button>
 </div>
 </template>
 
@@ -32,6 +32,10 @@ export default Vue.extend({
 		&.active {
 			color: var(--accent);
 			border-bottom-color: var(--accent);
+		}
+
+		> .icon {
+			margin-right: 6px;
 		}
 	}
 
