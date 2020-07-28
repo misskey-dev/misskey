@@ -4,7 +4,7 @@ import define from '../../define';
 import { fetchMeta } from '../../../../misc/fetch-meta';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { activeUsersChart } from '../../../../services/chart';
@@ -101,7 +101,7 @@ export default define(meta, async (ps, user) => {
 
 	generateRepliesQuery(query, user);
 	generateVisibilityQuery(query, user);
-	if (user) generateMuteQuery(query, user);
+	if (user) generateMutedUserQuery(query, user);
 	if (user) generateMutedNoteQuery(query, user);
 
 	if (ps.withFiles) {
