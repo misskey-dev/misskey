@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
+import { isMutedUserRelated } from '../../../../misc/is-muted-user-related';
 import Channel from '../channel';
 import { fetchMeta } from '../../../../misc/fetch-meta';
 import { Notes } from '../../../../models';
@@ -46,7 +46,7 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (shouldMuteThisNote(note, this.muting)) return;
+		if (isMutedUserRelated(note, this.muting)) return;
 
 		// 流れてきたNoteがミュートすべきNoteだったら無視する
 		// TODO: 将来的には、単にMutedNoteテーブルにレコードがあるかどうかで判定したい(以下の理由により難しそうではある)
