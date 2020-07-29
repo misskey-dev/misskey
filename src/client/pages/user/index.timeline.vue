@@ -1,9 +1,9 @@
 <template>
 <div class="kjeftjfm" v-size="[{ max: 500 }]">
 	<div class="with">
-		<button class="_button" @click="with_ = null" :class="{ active: with_ === null }">{{ $t('notes') }}</button>
-		<button class="_button" @click="with_ = 'replies'" :class="{ active: with_ === 'replies' }">{{ $t('notesAndReplies') }}</button>
-		<button class="_button" @click="with_ = 'files'" :class="{ active: with_ === 'files' }">{{ $t('withFiles') }}</button>
+		<button class="_button" @click="with_ = null" :class="{ active: with_ === null }" aria-label="$t('notes')">{{ $t('notes') }}</button>
+		<button class="_button" @click="with_ = 'replies'" :class="{ active: with_ === 'replies' }" aria-label="$t('notesAndReplies')">{{ $t('notesAndReplies') }}</button>
+		<button class="_button" @click="with_ = 'files'" :class="{ active: with_ === 'files' } aria-label="$t('withFiles')">{{ $t('withFiles') }}</button>
 	</div>
 	<x-notes ref="timeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
 </div>
