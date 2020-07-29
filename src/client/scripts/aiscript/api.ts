@@ -73,6 +73,9 @@ export function createPluginEnv(vm, opts) {
 		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
 			vm.$store.commit('registerNoteViewInterruptor', { pluginId: opts.plugin.id, handler });
 		}),
+		'Plugin:register_note_post_interruptor': values.FN_NATIVE(([handler]) => {
+			vm.$store.commit('registerNotePostInterruptor', { pluginId: opts.plugin.id, handler });
+		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			window.open(url.value, '_blank');
 		}),
