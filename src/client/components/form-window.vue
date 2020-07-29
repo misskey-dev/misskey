@@ -60,7 +60,7 @@ export default Vue.extend({
 
 	created() {
 		for (const item in this.form) {
-			Vue.set(this.values, item, this.form[item].default || null);
+			Vue.set(this.values, item, this.form[item].hasOwnProperty('default') ? this.form[item].default : null);
 		}
 	},
 
