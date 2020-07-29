@@ -7,15 +7,17 @@ import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
-import { Users, Followings, Mutings } from '../../../models';
+import { Users, Followings, Mutings, UserProfiles } from '../../../models';
 import { ApiError } from '../error';
 import { AccessToken } from '../../../models/entities/access-token';
+import { UserProfile } from '../../../models/entities/user-profile';
 
 /**
  * Main stream connection
  */
 export default class Connection {
 	public user?: User;
+	public userProfile?: UserProfile;
 	public following: User['id'][] = [];
 	public muting: User['id'][] = [];
 	public token?: AccessToken;
@@ -25,6 +27,7 @@ export default class Connection {
 	private subscribingNotes: any = {};
 	private followingClock: NodeJS.Timer;
 	private mutingClock: NodeJS.Timer;
+	private userProfileClock: NodeJS.Timer;
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -49,6 +52,9 @@ export default class Connection {
 
 			this.updateMuting();
 			this.mutingClock = setInterval(this.updateMuting, 5000);
+
+			this.updateUserProfile();
+			this.userProfileClock = setInterval(this.updateUserProfile, 5000);
 		}
 	}
 
@@ -262,6 +268,13 @@ export default class Connection {
 		this.muting = mutings.map(x => x.muteeId);
 	}
 
+	@autobind
+	private async updateUserProfile() {
+		this.userProfile = await UserProfiles.findOne({
+			userId: this.user!.id
+		});
+	}
+
 	/**
 	 * ストリームが切れたとき
 	 */
@@ -273,5 +286,6 @@ export default class Connection {
 
 		if (this.followingClock) clearInterval(this.followingClock);
 		if (this.mutingClock) clearInterval(this.mutingClock);
+		if (this.userProfileClock) clearInterval(this.userProfileClock);
 	}
 }

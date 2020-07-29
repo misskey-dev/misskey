@@ -1,7 +1,8 @@
 <template>
 <div
 	class="note _panel"
-	v-show="!isDeleted && !hideThisNote"
+	v-if="!muted"
+	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
 	v-hotkey="keymap"
@@ -34,19 +35,19 @@
 		</div>
 	</div>
 	<article class="article">
-		<mk-avatar class="avatar" :user="appearNote.user" v-once/>
+		<mk-avatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<x-note-header class="header" :note="appearNote" :mini="true"/>
-			<div class="body" v-if="appearNote.deletedAt == null" ref="noteBody">
+			<div class="body" ref="noteBody">
 				<p v-if="appearNote.cw != null" class="cw">
-				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" v-once/>
+				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 					<x-cw-button v-model="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 						<router-link class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><fa :icon="faReply"/></router-link>
-						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis" v-once/>
+						<mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
@@ -57,7 +58,7 @@
 					<div class="renote" v-if="appearNote.renote"><x-note-preview :note="appearNote.renote"/></div>
 				</div>
 			</div>
-			<footer v-if="appearNote.deletedAt == null" class="footer">
+			<footer class="footer">
 				<x-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()" class="button _button">
 					<template v-if="appearNote.reply"><fa :icon="faReplyAll"/></template>
@@ -80,10 +81,16 @@
 					<fa :icon="faEllipsisH"/>
 				</button>
 			</footer>
-			<div class="deleted" v-if="appearNote.deletedAt != null">{{ $t('deleted') }}</div>
 		</div>
 	</article>
 	<x-sub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
+</div>
+<div v-else class="_panel muted" @click="muted = false">
+	<i18n path="userSaysSomething" tag="small">
+		<router-link class="name" :to="appearNote.user | userPage" v-user-preview="appearNote.userId" place="name">
+			<mk-user-name :user="appearNote.user"/>
+		</router-link>
+	</i18n>
 </div>
 </template>
 
@@ -106,8 +113,15 @@ import pleaseLogin from '../scripts/please-login';
 import { focusPrev, focusNext } from '../scripts/focus';
 import { url } from '../config';
 import copyToClipboard from '../scripts/copy-to-clipboard';
+import { checkWordMute } from '../scripts/check-word-mute';
+import { utils } from '@syuilo/aiscript';
 
 export default Vue.extend({
+	model: {
+		prop: 'note',
+		event: 'updated'
+	},
+
 	components: {
 		XSub,
 		XNoteHeader,
@@ -142,7 +156,8 @@ export default Vue.extend({
 			conversation: [],
 			replies: [],
 			showContent: false,
-			hideThisNote: false,
+			isDeleted: false,
+			muted: false,
 			noteBody: this.$refs.noteBody,
 			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug
 		};
@@ -186,10 +201,6 @@ export default Vue.extend({
 			return this.isRenote ? this.note.renote : this.note;
 		},
 
-		isDeleted(): boolean {
-			return this.appearNote.deletedAt != null || this.note.deletedAt != null;
-		},
-
 		isMyNote(): boolean {
 			return this.$store.getters.isSignedIn && (this.$store.state.i.id === this.appearNote.userId);
 		},
@@ -231,10 +242,21 @@ export default Vue.extend({
 		}
 	},
 
-	created() {
+	async created() {
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream;
 		}
+
+		// plugin
+		if (this.$store.state.noteViewInterruptors.length > 0) {
+			let result = this.note;
+			for (const interruptor of this.$store.state.noteViewInterruptors) {
+				result = utils.valToJs(await interruptor.handler(JSON.parse(JSON.stringify(result))));
+			}
+			this.$emit('updated', Object.freeze(result));
+		}
+
+		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);
 
 		if (this.detail) {
 			this.$root.api('notes/children', {
@@ -261,7 +283,7 @@ export default Vue.extend({
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
 
-		this.noteBody = this.$refs.noteBody
+		this.noteBody = this.$refs.noteBody;
 	},
 
 	beforeDestroy() {
@@ -273,11 +295,24 @@ export default Vue.extend({
 	},
 
 	methods: {
+		updateAppearNote(v) {
+			this.$emit('updated', Object.freeze(this.isRenote ? {
+				...this.note,
+				renote: {
+					...this.note.renote,
+					...v
+				}
+			} : {
+				...this.note,
+				...v
+			}));
+		},
+
 		readPromo() {
 			(this as any).$root.api('promo/read', {
 				noteId: this.appearNote.id
 			});
-			this.hideThisNote = true;
+			this.isDeleted = true;
 		},
 
 		capture(withHandler = false) {
@@ -309,67 +344,88 @@ export default Vue.extend({
 				case 'reacted': {
 					const reaction = body.reaction;
 
+					// DeepではなくShallowコピーであることに注意。n.reactions[reaction] = hogeとかしないように(親からもらったデータをミューテートすることになるので)
+					let n = {
+						...this.appearNote,
+					};
+
 					if (body.emoji) {
 						const emojis = this.appearNote.emojis || [];
 						if (!emojis.includes(body.emoji)) {
-							emojis.push(body.emoji);
-							Vue.set(this.appearNote, 'emojis', emojis);
+							n.emojis = [...emojis, body.emoji];
 						}
 					}
 
-					if (this.appearNote.reactions == null) {
-						Vue.set(this.appearNote, 'reactions', {});
-					}
-
-					if (this.appearNote.reactions[reaction] == null) {
-						Vue.set(this.appearNote.reactions, reaction, 0);
-					}
+					// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
+					const currentCount = (this.appearNote.reactions || {})[reaction] || 0;
 
 					// Increment the count
-					this.appearNote.reactions[reaction]++;
+					n.reactions = {
+						...this.appearNote.reactions,
+						[reaction]: currentCount + 1
+					};
 
-					if (body.userId == this.$store.state.i.id) {
-						Vue.set(this.appearNote, 'myReaction', reaction);
+					if (body.userId === this.$store.state.i.id) {
+						n.myReaction = reaction;
 					}
+
+					this.updateAppearNote(n);
 					break;
 				}
 
 				case 'unreacted': {
 					const reaction = body.reaction;
 
-					if (this.appearNote.reactions == null) {
-						return;
-					}
+					// DeepではなくShallowコピーであることに注意。n.reactions[reaction] = hogeとかしないように(親からもらったデータをミューテートすることになるので)
+					let n = {
+						...this.appearNote,
+					};
 
-					if (this.appearNote.reactions[reaction] == null) {
-						return;
-					}
+					// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
+					const currentCount = (this.appearNote.reactions || {})[reaction] || 0;
 
 					// Decrement the count
-					if (this.appearNote.reactions[reaction] > 0) this.appearNote.reactions[reaction]--;
+					n.reactions = {
+						...this.appearNote.reactions,
+						[reaction]: Math.max(0, currentCount - 1)
+					};
 
-					if (body.userId == this.$store.state.i.id) {
-						Vue.set(this.appearNote, 'myReaction', null);
+					if (body.userId === this.$store.state.i.id) {
+						n.myReaction = null;
 					}
+
+					this.updateAppearNote(n);
 					break;
 				}
 
 				case 'pollVoted': {
 					const choice = body.choice;
-					this.appearNote.poll.choices[choice].votes++;
-					if (body.userId == this.$store.state.i.id) {
-						Vue.set(this.appearNote.poll.choices[choice], 'isVoted', true);
-					}
+
+					// DeepではなくShallowコピーであることに注意。n.reactions[reaction] = hogeとかしないように(親からもらったデータをミューテートすることになるので)
+					let n = {
+						...this.appearNote,
+					};
+
+					n.poll = {
+						...this.appearNote.poll,
+						choices: {
+							...this.appearNote.poll.choices,
+							[choice]: {
+								...this.appearNote.poll.choices[choice],
+								votes: this.appearNote.poll.choices[choice].votes + 1,
+								...(body.userId === this.$store.state.i.id ? {
+									isVoted: true
+								} : {})
+							}
+						}
+					};
+
+					this.updateAppearNote(n);
 					break;
 				}
 
 				case 'deleted': {
-					Vue.set(this.appearNote, 'deletedAt', body.deletedAt);
-					Vue.set(this.appearNote, 'renote', null);
-					this.appearNote.text = null;
-					this.appearNote.fileIds = [];
-					this.appearNote.poll = null;
-					this.appearNote.cw = null;
+					this.isDeleted = true;
 					break;
 				}
 			}
@@ -638,7 +694,7 @@ export default Vue.extend({
 						this.$root.api('notes/delete', {
 							noteId: this.note.id
 						});
-						Vue.set(this.note, 'deletedAt', new Date());
+						this.isDeleted = true;
 					}
 				}],
 				source: this.$refs.renoteTime,
@@ -925,10 +981,6 @@ export default Vue.extend({
 					}
 				}
 			}
-
-			> .deleted {
-				opacity: 0.7;
-			}
 		}
 	}
 
@@ -994,5 +1046,11 @@ export default Vue.extend({
 			}
 		}
 	}
+}
+
+.muted {
+	padding: 8px;
+	text-align: center;
+	opacity: 0.7;
 }
 </style>

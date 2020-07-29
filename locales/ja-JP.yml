@@ -553,6 +553,18 @@ emptyToDisableSmtpAuth: "ユーザー名とパスワードを空欄にするこ�
 smtpSecure: "SMTP 接続に暗黙的なSSL/TLSを使用する"
 smtpSecureInfo: "STARTTLS使用時はオフにします。"
 testEmail: "配信テスト"
+wordMute: "ワードミュート"
+userSaysSomething: "{name}が何かを言いました"
+makeActive: "アクティブにする"
+
+_wordMute:
+  muteWords: "ミュートするワード"
+  muteWordsDescription: "スペースで区切るとAND指定になり、改行で区切るとOR指定になります。"
+  muteWordsDescription2: "キーワードをスラッシュで囲むと正規表現になります。"
+  softDescription: "指定した条件のノートをタイムラインから隠します。"
+  hardDescription: "指定した条件のノートをタイムラインに追加しないようにします。追加されなかったノートは、条件を変更しても除外されたままになります。"
+  soft: "ソフト"
+  hard: "ハード"
 
 _theme:
   explore: "テーマを探す"

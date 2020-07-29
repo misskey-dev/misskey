@@ -3,7 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notes } from '../../../../models';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { Brackets } from 'typeorm';
 import { safeForSql } from '../../../../misc/safe-for-sql';
@@ -97,7 +97,7 @@ export default define(meta, async (ps, me) => {
 		.leftJoinAndSelect('note.user', 'user');
 
 	generateVisibilityQuery(query, me);
-	if (me) generateMuteQuery(query, me);
+	if (me) generateMutedUserQuery(query, me);
 
 	if (ps.tag) {
 		if (!safeForSql(ps.tag)) return;

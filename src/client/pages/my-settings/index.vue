@@ -27,6 +27,7 @@
 	<x-import-export/>
 	<x-drive/>
 	<x-mute-block/>
+	<x-word-mute/>
 	<x-security/>
 	<x-2fa/>
 	<x-integration/>
@@ -47,6 +48,7 @@ import XImportExport from './import-export.vue';
 import XDrive from './drive.vue';
 import XReactionSetting from './reaction.vue';
 import XMuteBlock from './mute-block.vue';
+import XWordMute from './word-mute.vue';
 import XSecurity from './security.vue';
 import X2fa from './2fa.vue';
 import XIntegration from './integration.vue';
@@ -68,6 +70,7 @@ export default Vue.extend({
 		XDrive,
 		XReactionSetting,
 		XMuteBlock,
+		XWordMute,
 		XSecurity,
 		X2fa,
 		XIntegration,

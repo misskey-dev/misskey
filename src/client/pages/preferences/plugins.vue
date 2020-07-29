@@ -18,6 +18,9 @@
 				<option v-for="x in $store.state.deviceUser.plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</mk-select>
 			<template v-if="selectedPlugin">
+				<div style="margin: -8px 0 8px 0;">
+					<mk-switch :value="selectedPlugin.active" @change="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</mk-switch>
+				</div>
 				<div class="_keyValue">
 					<div>{{ $t('version') }}:</div>
 					<div>{{ selectedPlugin.version }}</div>
@@ -44,11 +47,13 @@
 import Vue from 'vue';
 import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
+import { v4 as uuid } from 'uuid';
 import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInfo from '../../components/ui/info.vue';
+import MkSwitch from '../../components/ui/switch.vue';
 
 export default Vue.extend({
 	components: {
@@ -56,6 +61,7 @@ export default Vue.extend({
 		MkTextarea,
 		MkSelect,
 		MkInfo,
+		MkSwitch,
 	},
 	
 	data() {
@@ -101,8 +107,8 @@ export default Vue.extend({
 				});
 				return;
 			}
-			const { id, name, version, author, description, permissions, config } = data;
-			if (id == null || name == null || version == null || author == null) {
+			const { name, version, author, description, permissions, config } = data;
+			if (name == null || version == null || author == null) {
 				this.$root.dialog({
 					type: 'error',
 					text: 'Required property not found :('
@@ -128,8 +134,9 @@ export default Vue.extend({
 			});
 
 			this.$store.commit('deviceUser/installPlugin', {
+				id: uuid(),
 				meta: {
-					id, name, version, author, description, permissions, config
+					name, version, author, description, permissions, config
 				},
 				token,
 				ast: serialize(ast)
@@ -169,6 +176,17 @@ export default Vue.extend({
 			this.$store.commit('deviceUser/configPlugin', {
 				id: this.selectedPluginId,
 				config: result
+			});
+
+			this.$nextTick(() => {
+				location.reload();
+			});
+		},
+
+		changeActive(plugin, active) {
+			this.$store.commit('deviceUser/changePluginActive', {
+				id: plugin.id,
+				active: active
 			});
 
 			this.$nextTick(() => {

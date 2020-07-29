@@ -1,7 +1,7 @@
 <template>
 <div class="mfcuwfyp">
 	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
-		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" :key="notification.id"/>
+		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @updated="noteUpdated(notification.note, $event)" :key="notification.id"/>
 		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
@@ -75,11 +75,20 @@ export default Vue.extend({
 				this.$root.stream.send('readNotification', {
 					id: notification.id
 				});
-
-				notification.isRead = true;
 			}
 
-			this.prepend(notification);
+			this.prepend({
+				...notification,
+				isRead: document.visibilityState === 'visible'
+			});
+		},
+
+		noteUpdated(oldValue, newValue) {
+			const i = this.items.findIndex(n => n.note === oldValue);
+			Vue.set(this.items, i, {
+				...this.items[i],
+				note: newValue
+			});
 		},
 	}
 });

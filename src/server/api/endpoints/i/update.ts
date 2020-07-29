@@ -142,7 +142,11 @@ export const meta = {
 			desc: {
 				'ja-JP': 'ピン留めするページID'
 			}
-		}
+		},
+
+		mutedWords: {
+			validator: $.optional.arr($.arr($.str))
+		},
 	},
 
 	errors: {
@@ -193,6 +197,10 @@ export default define(meta, async (ps, user, token) => {
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
+	if (ps.mutedWords !== undefined) {
+		profileUpdates.mutedWords = ps.mutedWords;
+		profileUpdates.enableWordMute = ps.mutedWords.length > 0;
+	}
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;

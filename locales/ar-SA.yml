@@ -500,6 +500,9 @@ _notification:
   youGotMessagingMessageFromUser: "لقد تلقيت رسالة مِن {name}"
   youGotMessagingMessageFromGroup: "لقد أرسِلَت رسالة إلى الفريق {name}"
   youWereFollowed: "يتابعك"
+  _types:
+    follow: "المتابَعون"
+    quote: "اقتبس"
 _deck:
   _columns:
     notifications: "الإشعارات"
