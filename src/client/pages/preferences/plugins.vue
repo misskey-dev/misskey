@@ -47,6 +47,7 @@
 import Vue from 'vue';
 import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
+import { v4 as uuid } from 'uuid';
 import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
@@ -106,8 +107,8 @@ export default Vue.extend({
 				});
 				return;
 			}
-			const { id, name, version, author, description, permissions, config } = data;
-			if (id == null || name == null || version == null || author == null) {
+			const { name, version, author, description, permissions, config } = data;
+			if (name == null || version == null || author == null) {
 				this.$root.dialog({
 					type: 'error',
 					text: 'Required property not found :('
@@ -133,8 +134,9 @@ export default Vue.extend({
 			});
 
 			this.$store.commit('deviceUser/installPlugin', {
+				id: uuid(),
 				meta: {
-					id, name, version, author, description, permissions, config
+					name, version, author, description, permissions, config
 				},
 				token,
 				ast: serialize(ast)

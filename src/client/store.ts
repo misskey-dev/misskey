@@ -613,9 +613,10 @@ export default () => new Vuex.Store({
 				},
 				//#endregion
 
-				installPlugin(state, { meta, ast, token }) {
+				installPlugin(state, { id, meta, ast, token }) {
 					state.plugins.push({
 						...meta,
+						id,
 						active: true,
 						configData: {},
 						token: token,
