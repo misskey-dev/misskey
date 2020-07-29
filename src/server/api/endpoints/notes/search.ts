@@ -7,7 +7,7 @@ import { ID } from '../../../../misc/cafy-id';
 import config from '../../../../config';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 
 export const meta = {
 	desc: {
@@ -69,7 +69,7 @@ export default define(meta, async (ps, me) => {
 			.leftJoinAndSelect('note.user', 'user');
 
 		generateVisibilityQuery(query, me);
-		if (me) generateMuteQuery(query, me);
+		if (me) generateMutedUserQuery(query, me);
 
 		const notes = await query.take(ps.limit!).getMany();
 

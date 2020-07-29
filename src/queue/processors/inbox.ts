@@ -8,7 +8,7 @@ import { instanceChart } from '../../services/chart';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny, extractDbHost } from '../../misc/convert-host';
 import { getApId } from '../../remote/activitypub/type';
-import { fetchNodeinfo } from '../../services/fetch-nodeinfo';
+import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
 import { InboxJobData } from '..';
 import DbResolver from '../../remote/activitypub/db-resolver';
 import { resolvePerson } from '../../remote/activitypub/models/person';
@@ -47,7 +47,15 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 
 	// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 	if (authUser == null) {
-		authUser = await dbResolver.getAuthUserFromApId(getApId(activity.actor));
+		try {
+			authUser = await dbResolver.getAuthUserFromApId(getApId(activity.actor));
+		} catch (e) {
+			// 対象が4xxならスキップ
+			if (e.statusCode >= 400 && e.statusCode < 500) {
+				return `skip: Ignored deleted actors on both ends ${activity.actor} - ${e.statusCode}`;
+			}
+			throw `Error in actor ${activity.actor} - ${e.statusCode || e}`;
+		}
 	}
 
 	// それでもわからなければ終了
@@ -118,7 +126,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			isNotResponding: false
 		});
 
-		fetchNodeinfo(i);
+		fetchInstanceMetadata(i);
 
 		instanceChart.requestReceived(i.host);
 	});

@@ -123,10 +123,6 @@ a {
 	&:hover {
 		text-decoration: underline;
 	}
-
-	* {
-		cursor: pointer;
-	}
 }
 
 hr {
@@ -357,6 +353,10 @@ hr {
 
 		@media (max-width: 500px) {
 			padding: 16px;
+		}
+
+		&._noPad {
+			padding: 0 !important;
 		}
 
 		& + ._content {

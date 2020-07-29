@@ -112,10 +112,10 @@ export default class Stream extends EventEmitter {
 			}
 
 			for (const c of connections.filter(c => c != null)) {
-				c.emit(body.type, body.body);
+				c.emit(body.type, Object.freeze(body.body));
 			}
 		} else {
-			this.emit(type, body);
+			this.emit(type, Object.freeze(body));
 		}
 	}
 

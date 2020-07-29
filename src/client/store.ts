@@ -18,6 +18,7 @@ export const defaultSettings = {
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	mutedWords: [],
 };
 
 export const defaultDeviceUserSettings = {
@@ -44,7 +45,14 @@ export const defaultDeviceUserSettings = {
 		columns: [],
 		layout: [],
 	},
-	plugins: [],
+	plugins: [] as {
+		id: string;
+		name: string;
+		active: boolean;
+		configData: Record<string, any>;
+		token: string;
+		ast: any[];
+	}[],
 };
 
 export const defaultDeviceSettings = {
@@ -103,6 +111,7 @@ export default () => new Vuex.Store({
 		postFormActions: [],
 		userActions: [],
 		noteActions: [],
+		noteViewInterruptors: [],
 	},
 
 	getters: {
@@ -266,6 +275,14 @@ export default () => new Vuex.Store({
 				}
 			});
 		},
+
+		registerNoteViewInterruptor(state, { pluginId, handler }) {
+			state.noteViewInterruptors.push({
+				handler: (note) => {
+					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
+		},
 	},
 
 	actions: {
@@ -302,6 +319,7 @@ export default () => new Vuex.Store({
 		},
 
 		mergeMe(ctx, me) {
+			// TODO: プロパティ一つ一つに対してコミットが発生するのはアレなので良い感じにする
 			for (const [key, value] of Object.entries(me)) {
 				ctx.commit('updateIKeyValue', { key, value });
 			}
@@ -586,19 +604,26 @@ export default () => new Vuex.Store({
 				},
 				//#endregion
 
-				installPlugin(state, { meta, ast }) {
+				installPlugin(state, { meta, ast, token }) {
 					state.plugins.push({
-						id: meta.id,
-						name: meta.name,
-						version: meta.version,
-						author: meta.author,
-						description: meta.description,
+						...meta,
+						active: true,
+						configData: {},
+						token: token,
 						ast: ast
 					});
 				},
 
 				uninstallPlugin(state, id) {
 					state.plugins = state.plugins.filter(x => x.id != id);
+				},
+
+				configPlugin(state, { id, config }) {
+					state.plugins.find(p => p.id === id).configData = config;
+				},
+
+				changePluginActive(state, { id, active }) {
+					state.plugins.find(p => p.id === id).active = active;
 				},
 			}
 		},

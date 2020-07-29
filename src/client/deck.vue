@@ -49,6 +49,7 @@ import { search } from './scripts/search';
 import DeckColumnCore from './components/deck/column-core.vue';
 import DeckColumn from './components/deck/column.vue';
 import XSidebar from './components/sidebar.vue';
+import { getScrollContainer } from './scripts/scroll';
 
 export default Vue.extend({
 	components: {
@@ -108,6 +109,8 @@ export default Vue.extend({
 
 	created() {
 		document.documentElement.style.overflowY = 'hidden';
+		document.documentElement.style.scrollBehavior = 'auto';
+		window.addEventListener('wheel', this.onWheel);
 
 		if (this.$store.getters.isSignedIn) {
 			this.connection = this.$root.stream.useSharedConnection('main');
@@ -119,6 +122,12 @@ export default Vue.extend({
 	},
 
 	methods: {
+		onWheel(e) {
+			if (getScrollContainer(e.target) == null) {
+				document.documentElement.scrollLeft += e.deltaY > 0 ? 96 : -96;
+			}
+		},
+
 		showNav() {
 			this.$refs.nav.show();
 		},
@@ -211,7 +220,8 @@ export default Vue.extend({
 	--margin: var(--marginHalf);
 
 	display: flex;
-	height: 100vh;
+	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+	height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 	flex: 1;
 	padding: $deckMargin 0 $deckMargin $deckMargin;

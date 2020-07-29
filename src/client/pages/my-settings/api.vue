@@ -2,9 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faKey"/> API</div>
 	<div class="_content">
-		<mk-input :value="$store.state.i.token" readonly>
-			<span>{{ $t('token') }}</span>
-		</mk-input>
+		<mk-button @click="generateToken">{{ $t('generateAccessToken') }}</mk-button>
 		<mk-button @click="regenerateToken"><fa :icon="faSyncAlt"/> {{ $t('regenerate') }}</mk-button>
 	</div>
 </section>
@@ -26,6 +24,22 @@ export default Vue.extend({
 		};
 	},
 	methods: {
+		async generateToken() {
+			this.$root.new(await import('../../components/token-generate-window.vue').then(m => m.default), {
+			}).$on('ok', async ({ name, permissions }) => {
+				const { token } = await this.$root.api('miauth/gen-token', {
+					session: null,
+					name: name,
+					permission: permissions,
+				});
+
+				this.$root.dialog({
+					type: 'success',
+					title: this.$t('token'),
+					text: token
+				});
+			});
+		},
 		regenerateToken() {
 			this.$root.dialog({
 				title: this.$t('password'),

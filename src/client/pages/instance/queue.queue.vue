@@ -169,7 +169,7 @@ export default Vue.extend({
 		},
 
 		onStatsLog(statsLog) {
-			for (const stats of statsLog.reverse()) {
+			for (const stats of [...statsLog].reverse()) {
 				this.onStats(stats);
 			}
 		},

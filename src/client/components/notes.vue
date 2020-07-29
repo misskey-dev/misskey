@@ -15,7 +15,7 @@
 	</div>
 
 	<x-list ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<x-note :note="note" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
+		<x-note :note="note" @updated="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</x-list>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
@@ -62,14 +62,15 @@ export default Vue.extend({
 			default: false
 		},
 
-		extract: {
+		prop: {
+			type: String,
 			required: false
 		}
 	},
 
 	computed: {
 		notes(): any[] {
-			return this.extract ? this.extract(this.items) : this.items;
+			return this.prop ? this.items.map(item => item[this.prop]) : this.items;
 		},
 
 		reversed(): boolean {
@@ -78,6 +79,15 @@ export default Vue.extend({
 	},
 
 	methods: {
+		updated(oldValue, newValue) {
+			const i = this.notes.findIndex(n => n === oldValue);
+			if (this.prop) {
+				Vue.set(this.items[i], this.prop, newValue);
+			} else {
+				Vue.set(this.items, i, newValue);
+			}
+		},
+
 		focus() {
 			this.$refs.notes.focus();
 		}

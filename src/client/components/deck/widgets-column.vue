@@ -5,9 +5,12 @@
 	<div class="wtdtxvec">
 		<template v-if="edit">
 			<header>
-				<select v-model="widgetAdderSelected" @change="addWidget">
-					<option v-for="widget in widgets" :value="widget" :key="widget">{{ widget }}</option>
-				</select>
+				<mk-select v-model="widgetAdderSelected" style="margin-bottom: var(--margin)">
+					<template #label>{{ $t('selectWidget') }}</template>
+					<option v-for="widget in widgets" :value="widget" :key="widget">{{ $t(`_widgets.${widget}`) }}</option>
+				</mk-select>
+				<mk-button inline @click="addWidget" primary><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+				<mk-button inline @click="edit = false">{{ $t('close') }}</mk-button>
 			</header>
 			<x-draggable
 				:list="column.widgets"
@@ -15,7 +18,7 @@
 				@sort="onWidgetSort"
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @click="widgetFunc(widget.id)">
-					<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+					<button class="remove _button" @click.prevent.stop="removeWidget(widget)"><fa :icon="faTimes"/></button>
 					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :column="column"/>
 				</div>
 			</x-draggable>
@@ -29,7 +32,9 @@
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
-import { faWindowMaximize, faTimes, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize, faTimes, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
+import MkSelect from '../../components/ui/select.vue';
+import MkButton from '../../components/ui/button.vue';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
 
@@ -37,6 +42,8 @@ export default Vue.extend({
 	components: {
 		XColumn,
 		XDraggable,
+		MkSelect,
+		MkButton,
 	},
 
 	props: {
@@ -56,7 +63,7 @@ export default Vue.extend({
 			menu: null,
 			widgetAdderSelected: null,
 			widgets,
-			faWindowMaximize, faTimes
+			faWindowMaximize, faTimes, faPlus
 		};
 	},
 
@@ -80,6 +87,8 @@ export default Vue.extend({
 		},
 
 		addWidget() {
+			if (this.widgetAdderSelected == null) return;
+
 			this.$store.commit('deviceUser/addDeckWidget', {
 				id: this.column.id,
 				widget: {

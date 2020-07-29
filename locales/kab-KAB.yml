@@ -33,6 +33,8 @@ youHaveNoLists: "Ulac ɣur-k·m ula d yiwet n tabdart"
 remove: "Kkes"
 userList: "Tibdarin"
 uiLanguage: "Tutlayt n wegrudem"
+smtpUser: "Isem n umseqdac"
+smtpPass: "Awal uffir"
 _theme:
   keys:
     mention: "Bder"
@@ -80,6 +82,9 @@ _pages:
       array: "Tibdarin"
 _notification:
   youWereFollowed: "Yeṭṭafaṛ-ik·em-id"
+  _types:
+    follow: "Ig ṭṭafaṛ"
+    mention: "Bder"
 _deck:
   _columns:
     notifications: "Ilɣuyen"
