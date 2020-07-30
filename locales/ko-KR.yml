@@ -1127,6 +1127,12 @@ _notification:
     quote: "인용"
     reaction: "리액션"
 _deck:
+  swapLeft: "왼쪽으로 이동"
+  swapRight: "오른쪽으로 이동"
+  swapUp: "위로 이동"
+  swapDown: "아래로 이동"
+  stackLeft: "왼쪽에 쌓기"
+  popRight: "오른쪽으로 빼기"
   _columns:
     widgets: "위젯"
     notifications: "알림"
