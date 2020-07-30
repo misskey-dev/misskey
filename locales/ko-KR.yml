@@ -537,6 +537,7 @@ smtpHost: "호스트"
 smtpUser: "유저명"
 smtpPass: "비밀번호"
 emptyToDisableSmtpAuth: "SMTP 인증을 사용하지 않으려면 공란으로 비워둡니다."
+smtpSecureInfo: "STARTTLS 사용 시에는 해제합니다."
 wordMute: "단어 뮤트"
 _wordMute:
   muteWords: "뮤트할 단어"
