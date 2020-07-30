@@ -150,37 +150,37 @@ export default defineComponent({
 				}
 			}, null, {
 				icon: faArrowLeft,
-				text: this.$t('swap-left'),
+				text: this.$t('_deck.swapLeft'),
 				action: () => {
 					this.$store.commit('deviceUser/swapLeftDeckColumn', this.column.id);
 				}
 			}, {
 				icon: faArrowRight,
-				text: this.$t('swap-right'),
+				text: this.$t('_deck.swapRight'),
 				action: () => {
 					this.$store.commit('deviceUser/swapRightDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
 				icon: faArrowUp,
-				text: this.$t('swap-up'),
+				text: this.$t('_deck.swapUp'),
 				action: () => {
 					this.$store.commit('deviceUser/swapUpDeckColumn', this.column.id);
 				}
 			} : undefined, this.isStacked ? {
 				icon: faArrowDown,
-				text: this.$t('swap-down'),
+				text: this.$t('_deck.swapDown'),
 				action: () => {
 					this.$store.commit('deviceUser/swapDownDeckColumn', this.column.id);
 				}
 			} : undefined, null, {
 				icon: faWindowRestore,
-				text: this.$t('stack-left'),
+				text: this.$t('_deck.stackLeft'),
 				action: () => {
 					this.$store.commit('deviceUser/stackLeftDeckColumn', this.column.id);
 				}
 			}, this.isStacked ? {
 				icon: faWindowMaximize,
-				text: this.$t('pop-right'),
+				text: this.$t('_deck.popRight'),
 				action: () => {
 					this.$store.commit('deviceUser/popRightDeckColumn', this.column.id);
 				}

@@ -4,7 +4,7 @@
 		<fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<x-timeline ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => $emit('loaded')"/>
+	<x-timeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => $emit('loaded')"/>
 </x-column>
 </template>
 
@@ -33,7 +33,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			menu: null,
 			faSatellite
 		};
 	},
@@ -47,28 +46,36 @@ export default defineComponent({
 	created() {
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('antenna'),
-			action: async () => {
-				const antennas = await this.$root.api('antennas/list');
-				this.$root.dialog({
-					title: this.$t('antenna'),
-					type: null,
-					select: {
-						items: antennas.map(x => ({
-							value: x, text: x.name
-						}))
-					},
-					showCancelButton: true
-				}).then(({ canceled, result: antenna }) => {
-					if (canceled) return;
-					this.column.antennaId = antenna.id;
-					this.$store.commit('deviceUser/updateDeckColumn', this.column);
-				});
-			}
+			text: this.$t('selectAntenna'),
+			action: this.setAntenna
 		}];
 	},
 
+	mounted() {
+		if (this.column.antennaId == null) {
+			this.setAntenna();
+		}
+	},
+
 	methods: {
+		async setAntenna() {
+			const antennas = await this.$root.api('antennas/list');
+			const { canceled, result: antenna } = await this.$root.dialog({
+				title: this.$t('selectAntenna'),
+				type: null,
+				select: {
+					items: antennas.map(x => ({
+						value: x, text: x.name
+					})),
+				default: this.column.antennaId
+				},
+				showCancelButton: true
+			});
+			if (canceled) return;
+			Vue.set(this.column, 'antennaId', antenna.id);
+			this.$store.commit('deviceUser/updateDeckColumn', this.column);
+		},
+
 		focus() {
 			(this.$refs.timeline as any).focus();
 		}

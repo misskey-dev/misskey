@@ -18,6 +18,7 @@ export const defaultSettings = {
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	mutedWords: [],
 };
 
 export const defaultDeviceUserSettings = {
@@ -44,7 +45,14 @@ export const defaultDeviceUserSettings = {
 		columns: [],
 		layout: [],
 	},
-	plugins: [],
+	plugins: [] as {
+		id: string;
+		name: string;
+		active: boolean;
+		configData: Record<string, any>;
+		token: string;
+		ast: any[];
+	}[],
 };
 
 export const defaultDeviceSettings = {
@@ -110,6 +118,8 @@ export const store = createStore({
 		postFormActions: [],
 		userActions: [],
 		noteActions: [],
+		noteViewInterruptors: [],
+		notePostInterruptors: [],
 	},
 
 	getters: {
@@ -274,6 +284,22 @@ export const store = createStore({
 			state.noteActions.push({
 				title, handler: (note) => {
 					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
+		},
+
+		registerNoteViewInterruptor(state, { pluginId, handler }) {
+			state.noteViewInterruptors.push({
+				handler: (note) => {
+					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
+		},
+
+		registerNotePostInterruptor(state, { pluginId, handler }) {
+			state.notePostInterruptors.push({
+				handler: (note) => {
+					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
 				}
 			});
 		},
@@ -598,9 +624,11 @@ export const store = createStore({
 				},
 				//#endregion
 
-				installPlugin(state, { meta, ast, token }) {
+				installPlugin(state, { id, meta, ast, token }) {
 					state.plugins.push({
 						...meta,
+						id,
+						active: true,
 						configData: {},
 						token: token,
 						ast: ast
@@ -613,6 +641,10 @@ export const store = createStore({
 
 				configPlugin(state, { id, config }) {
 					state.plugins.find(p => p.id === id).configData = config;
+				},
+
+				changePluginActive(state, { id, active }) {
+					state.plugins.find(p => p.id === id).active = active;
 				},
 			}
 		},

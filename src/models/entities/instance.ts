@@ -158,6 +158,11 @@ export class Instance {
 	})
 	public maintainerEmail: string | null;
 
+	@Column('varchar', {
+		length: 256, nullable: true, default: null,
+	})
+	public iconUrl: string | null;
+
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})

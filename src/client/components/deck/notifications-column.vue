@@ -45,14 +45,14 @@ export default defineComponent({
 
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('@.notification-type'),
+			text: this.$t('notificationType'),
 			action: () => {
 				this.$root.dialog({
-					title: this.$t('@.notification-type'),
+					title: this.$t('notificationType'),
 					type: null,
 					select: {
 						items: ['all', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest'].map(x => ({
-							value: x, text: this.$t('@.notification-types.' + x)
+							value: x, text: this.$t(`_notification._types.${x}`)
 						}))
 						default: this.column.notificationType,
 					},

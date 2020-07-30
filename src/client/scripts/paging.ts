@@ -73,10 +73,6 @@ export default (opts) => ({
 	},
 
 	methods: {
-		updateItem(i, item) {
-			(this as any).items[i] = item;
-		},
-
 		reload() {
 			this.items = [];
 			this.init();
@@ -93,6 +89,9 @@ export default (opts) => ({
 				...params,
 				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 			}).then(items => {
+				for (const item of items) {
+					Object.freeze(item);
+				}
 				if (!this.pagination.noPaging && (items.length > (this.pagination.limit || 10))) {
 					items.pop();
 					this.items = this.pagination.reversed ? [...items].reverse() : items;
@@ -129,6 +128,9 @@ export default (opts) => ({
 					untilId: this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
+				for (const item of items) {
+					Object.freeze(item);
+				}
 				if (items.length > SECOND_FETCH_LIMIT) {
 					items.pop();
 					this.items = this.pagination.reversed ? [...items].reverse().concat(this.items) : this.items.concat(items);

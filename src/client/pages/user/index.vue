@@ -83,7 +83,7 @@
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
 		<div class="pins">
-			<x-note v-for="note in user.pinnedNotes" class="note" :note="note" :key="note.id" :detail="true" :pinned="true"/>
+			<x-note v-for="note in user.pinnedNotes" class="note" :note="note" @updated="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
 		</div>
 		<mk-container :body-togglable="true" class="content">
 			<template #header><fa :icon="faImage"/>{{ $t('images') }}</template>
@@ -211,6 +211,11 @@ export default defineComponent({
 			const z = 1.75; // 奥行き(小さいほど奥)
 			const pos = -(top / z);
 			banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
+		},
+
+		pinnedNoteUpdated(oldValue, newValue) {
+			const i = this.user.pinnedNotes.findIndex(n => n === oldValue);
+			Vue.set(this.user.pinnedNotes, i, newValue);
 		},
 
 		number,

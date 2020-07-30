@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import shouldMuteThisNote from '../../../../misc/should-mute-this-note';
+import { isMutedUserRelated } from '../../../../misc/is-muted-user-related';
 import Channel from '../channel';
 import { Notes } from '../../../../models';
 import { PackedNote } from '../../../../models/repositories/note';
@@ -34,7 +34,7 @@ export default class extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (shouldMuteThisNote(note, this.muting)) return;
+		if (isMutedUserRelated(note, this.muting)) return;
 
 		this.send('note', note);
 	}

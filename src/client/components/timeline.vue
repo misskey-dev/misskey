@@ -47,8 +47,7 @@ export default defineComponent({
 
 	created() {
 		const prepend = note => {
-			const _note = JSON.parse(JSON.stringify(note));	// deepcopy
-			(this.$refs.tl as any).prepend(_note);
+			(this.$refs.tl as any).prepend(note);
 
 			this.$emit('note');
 

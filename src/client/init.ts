@@ -223,7 +223,7 @@ stream.on('emojiAdded', data => {
 	//store.commit('instance/set', );
 });
 
-for (const plugin of store.state.deviceUser.plugins) {
+for (const plugin of store.state.deviceUser.plugins.filter(p => p.active)) {
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
 
 	const aiscript = new AiScript(createPluginEnv(app, {

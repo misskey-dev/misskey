@@ -27,6 +27,27 @@ export async function getJson(url: string, accept = 'application/json, */*', tim
 	return await res.json();
 }
 
+export async function getHtml(url: string, accept = 'text/html, */*', timeout = 10000, headers?: HeadersInit) {
+	const res = await fetch(url, {
+		headers: Object.assign({
+			'User-Agent': config.userAgent,
+			Accept: accept
+		}, headers || {}),
+		timeout,
+		agent: getAgentByUrl,
+	});
+
+	if (!res.ok) {
+		throw {
+			name: `StatusError`,
+			statusCode: res.status,
+			message: `${res.status} ${res.statusText}`,
+		};
+	}
+
+	return await res.text();
+}
+
 /**
  * Get http non-proxy agent
  */
