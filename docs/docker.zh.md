@@ -3,8 +3,8 @@ Docker 部署指南
 
 这份指南描述了如何使用Docker安装并设置 Misskey 。
 
-[日本語版もあります - Japanese version also available](./docker.ja.md)
-[英語版もあります - English version also available](./docker.en.md)]
+- [日本語版もあります - Japanese version also available](./docker.ja.md)
+- [英語版もあります - English version also available](./docker.en.md)]
 
 ----------------------------------------------------------------
 

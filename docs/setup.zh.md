@@ -4,8 +4,8 @@ Misskey 设置和安装指南
 非常感谢您对构建 Misskey 服务器的关注！
 这份指南描述了 Misskey 的安装与设置流程。
 
-[日本語版もあります - Japanese version also available](./setup.ja.md)
-[英語版もあります - English version also available](./setup.en.md)
+- [日本語版もあります - Japanese version also available](./setup.ja.md)
+- [英語版もあります - English version also available](./setup.en.md)
 
 ----------------------------------------------------------------
 

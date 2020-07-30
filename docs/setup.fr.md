@@ -4,9 +4,9 @@ Guide d'installation et de configuration de Misskey
 Nous vous remerçions de l'intrêt que vous manifestez pour l'installation de votre propre instance Misskey !
 Ce guide décrit les étapes à suivre afin d'installer et de configurer une instance Misskey.
 
-[La version en japonnais est également disponible sur - 日本語版もあります](./setup.ja.md)
-[Version anglaise également disponible - English version also available - 英語版もあります](./setup.en.md)
-[Version Chinois simplifié également disponible - Simplified Chinese version also available - 简体中文版同样可用](./setup.zh.md)
+- [La version en japonnais est également disponible sur - 日本語版もあります](./setup.ja.md)
+- [Version anglaise également disponible - English version also available - 英語版もあります](./setup.en.md)
+- [Version Chinois simplifié également disponible - Simplified Chinese version also available - 简体中文版同样可用](./setup.zh.md)
 
 ----------------------------------------------------------------
 

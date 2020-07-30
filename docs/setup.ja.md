@@ -4,8 +4,8 @@ Misskey構築の手引き
 Misskeyサーバーの構築にご関心をお寄せいただきありがとうございます！
 このガイドではMisskeyのインストール・セットアップ方法について解説します。
 
-[英語版もあります - English version also available](./setup.en.md)
-[简体中文版同样可用 - Simplified Chinese version also available](./setup.zh.md)
+- [英語版もあります - English version also available](./setup.en.md)
+- [简体中文版同样可用 - Simplified Chinese version also available](./setup.zh.md)
 
 ----------------------------------------------------------------
 
