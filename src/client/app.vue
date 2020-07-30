@@ -201,9 +201,9 @@ export default Vue.extend({
 
 				if (this.$route.name !== 'index') {
 					right.unshift({
-					name: 'welcome',
-					id: 'a', place: 'right', data: {}
-				});
+						name: 'welcome',
+						id: 'a', place: 'right', data: {}
+					});
 				}
 
 				return {
