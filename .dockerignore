@@ -10,3 +10,4 @@ docker-compose.yml
 elasticsearch/
 node_modules/
 redis/
+files/
