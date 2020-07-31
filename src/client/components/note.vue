@@ -71,10 +71,10 @@
 				<button v-else class="button _button">
 					<fa :icon="faBan"/>
 				</button>
-				<button v-if="!isMyNote && appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
+				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
 					<fa :icon="faPlus"/>
 				</button>
-				<button v-if="!isMyNote && appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
 					<fa :icon="faMinus"/>
 				</button>
 				<button class="button _button" @click="menu()" ref="menuButton">
@@ -407,18 +407,18 @@ export default defineComponent({
 						...this.appearNote,
 					};
 
+					const choices = [...this.appearNote.poll.choices];
+					choices[choice] = {
+						...choices[choice],
+						votes: choices[choice].votes + 1,
+						...(body.userId === this.$store.state.i.id ? {
+							isVoted: true
+						} : {})
+					};
+
 					n.poll = {
 						...this.appearNote.poll,
-						choices: {
-							...this.appearNote.poll.choices,
-							[choice]: {
-								...this.appearNote.poll.choices[choice],
-								votes: this.appearNote.poll.choices[choice].votes + 1,
-								...(body.userId === this.$store.state.i.id ? {
-									isVoted: true
-								} : {})
-							}
-						}
+						choices: choices
 					};
 
 					this.updateAppearNote(n);

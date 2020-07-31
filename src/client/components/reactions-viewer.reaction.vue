@@ -51,11 +51,8 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		isMe(): boolean {
-			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
-		},
 		canToggle(): boolean {
-			return !this.reaction.match(/@\w/) && !this.isMe && this.$store.getters.isSignedIn;
+			return !this.reaction.match(/@\w/) && this.$store.getters.isSignedIn;
 		},
 	},
 	watch: {

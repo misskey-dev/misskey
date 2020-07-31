@@ -18,8 +18,10 @@
 			</transition>
 		</div>
 		<div class="sub">
-			<button v-if="widgetsEditMode" class="_button edit active" @click="widgetsEditMode = false"><fa :icon="faGripVertical"/></button>
-			<button v-else class="_button edit" @click="widgetsEditMode = true"><fa :icon="faGripVertical"/></button>
+			<template v-if="$store.getters.isSignedIn">
+				<button v-if="widgetsEditMode" class="_button edit active" @click="widgetsEditMode = false"><fa :icon="faGripVertical"/></button>
+				<button v-else class="_button edit" @click="widgetsEditMode = true"><fa :icon="faGripVertical"/></button>
+			</template>
 			<div class="search">
 				<fa :icon="faSearch"/>
 				<input type="search" :placeholder="$t('search')" v-model="searchQuery" v-autocomplete="{ model: 'searchQuery' }" :disabled="searchWait" @keypress="searchKeypress"/>
@@ -141,7 +143,7 @@ export default defineComponent({
 			};
 		},
 
-		widgets(): any[] {
+		widgets(): any {
 			if (this.$store.getters.isSignedIn) {
 				const widgets = this.$store.state.deviceUser.widgets;
 				return {
@@ -150,18 +152,24 @@ export default defineComponent({
 					mobile: widgets.filter(x => x.place === 'mobile'),
 				};
 			} else {
-				return {
-					left: [],
-					right: [{
+				const right = [{
+					name: 'calendar',
+					id: 'b', place: 'right', data: {}
+				}, {
+					name: 'trends',
+					id: 'c', place: 'right', data: {}
+				}];
+
+				if (this.$route.name !== 'index') {
+					right.unshift({
 						name: 'welcome',
 						id: 'a', place: 'right', data: {}
-					}, {
-						name: 'calendar',
-						id: 'b', place: 'right', data: {}
-					}, {
-						name: 'trends',
-						id: 'c', place: 'right', data: {}
-					}],
+					});
+				}
+
+				return {
+					left: [],
+					right,
 					mobile: [],
 				};
 			}

@@ -149,7 +149,7 @@ export class UserProfile {
 
 	@Index()
 	@Column('boolean', {
-		default: false,
+		default: false, select: false,
 	})
 	public enableWordMute: boolean;
 
