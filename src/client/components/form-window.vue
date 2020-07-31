@@ -5,10 +5,22 @@
 	</template>
 	<div class="xkpnjxcv">
 		<label v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
-			<mk-input v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1"><span v-text="form[item].label || item"></span></mk-input>
-			<mk-input v-else-if="form[item].type === 'string' && !item.multiline" v-model="values[item]" type="text"><span v-text="form[item].label || item"></span></mk-input>
-			<mk-textarea v-else-if="form[item].type === 'string' && item.multiline" v-model="values[item]"><span v-text="form[item].label || item"></span></mk-textarea>
-			<mk-switch v-else-if="form[item].type === 'boolean'" v-model="values[item]"><span v-text="form[item].label || item"></span></mk-switch>
+			<mk-input v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
+				<span v-text="form[item].label || item"></span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</mk-input>
+			<mk-input v-else-if="form[item].type === 'string' && !item.multiline" v-model="values[item]" type="text">
+				<span v-text="form[item].label || item"></span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</mk-input>
+			<mk-textarea v-else-if="form[item].type === 'string' && item.multiline" v-model="values[item]">
+				<span v-text="form[item].label || item"></span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</mk-textarea>
+			<mk-switch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
+				<span v-text="form[item].label || item"></span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</mk-switch>
 		</label>
 	</div>
 </x-window>
@@ -48,7 +60,7 @@ export default Vue.extend({
 
 	created() {
 		for (const item in this.form) {
-			Vue.set(this.values, item, this.form[item].default || null);
+			Vue.set(this.values, item, this.form[item].hasOwnProperty('default') ? this.form[item].default : null);
 		}
 	},
 
