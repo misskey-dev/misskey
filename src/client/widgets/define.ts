@@ -1,11 +1,11 @@
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { Form } from '../scripts/form';
 
 export default function <T extends Form>(data: {
 	name: string;
 	props?: () => T;
 }) {
-	return Vue.extend({
+	return defineComponent({
 		props: {
 			widget: {
 				type: Object
