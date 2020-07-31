@@ -406,18 +406,18 @@ export default Vue.extend({
 						...this.appearNote,
 					};
 
+					const choices = [...this.appearNote.poll.choices];
+					choices[choice] = {
+						...choices[choice],
+						votes: choices[choice].votes + 1,
+						...(body.userId === this.$store.state.i.id ? {
+							isVoted: true
+						} : {})
+					};
+
 					n.poll = {
 						...this.appearNote.poll,
-						choices: {
-							...this.appearNote.poll.choices,
-							[choice]: {
-								...this.appearNote.poll.choices[choice],
-								votes: this.appearNote.poll.choices[choice].votes + 1,
-								...(body.userId === this.$store.state.i.id ? {
-									isVoted: true
-								} : {})
-							}
-						}
+						choices: choices
 					};
 
 					this.updateAppearNote(n);
