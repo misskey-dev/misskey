@@ -7,6 +7,12 @@
 			<template #desc><button class="_textButton" @click="addItem">{{ $t('addItem') }}</button></template>
 		</mk-textarea>
 	</div>
+	<div class="_content">
+		<div>{{ $t('display') }}</div>
+		<mk-radio v-model="sidebarDisplay" value="full">{{ $t('_sidebar.full') }}</mk-radio>
+		<mk-radio v-model="sidebarDisplay" value="icon">{{ $t('_sidebar.icon') }}</mk-radio>
+		<mk-radio v-model="sidebarDisplay" value="hide">{{ $t('_sidebar.hide') }}</mk-radio>
+	</div>
 	<div class="_footer">
 		<mk-button inline @click="save()" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 		<mk-button inline @click="reset()"><fa :icon="faRedo"/> {{ $t('default') }}</mk-button>
@@ -19,12 +25,14 @@ import Vue from 'vue';
 import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
+import MkRadio from '../../components/ui/radio.vue';
 import { defaultDeviceUserSettings } from '../../store';
 
 export default Vue.extend({
 	components: {
 		MkButton,
 		MkTextarea,
+		MkRadio,
 	},
 	
 	data() {
@@ -38,7 +46,12 @@ export default Vue.extend({
 	computed: {
 		splited(): string[] {
 			return this.items.trim().split('\n').filter(x => x.trim() !== '');
-		}
+		},
+
+		sidebarDisplay: {
+			get() { return this.$store.state.device.sidebarDisplay; },
+			set(value) { this.$store.commit('device/set', { key: 'sidebarDisplay', value }); }
+		},
 	},
 
 	created() {
