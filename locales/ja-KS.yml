@@ -356,6 +356,8 @@ invites: "来てや"
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
+_sidebar:
+  icon: "アイコン"
 _theme:
   keys:
     renote: "Renote"
