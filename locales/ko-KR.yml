@@ -539,6 +539,9 @@ smtpPass: "비밀번호"
 emptyToDisableSmtpAuth: "SMTP 인증을 사용하지 않으려면 공란으로 비워둡니다."
 smtpSecureInfo: "STARTTLS 사용 시에는 해제합니다."
 wordMute: "단어 뮤트"
+_sidebar:
+  icon: "아바타"
+  hide: "숨기기"
 _wordMute:
   muteWords: "뮤트할 단어"
 _theme:
