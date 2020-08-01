@@ -556,6 +556,7 @@ testEmail: "邮件发送测试"
 wordMute: "文字屏蔽"
 userSaysSomething: "{name}说了什么"
 makeActive: "激活"
+display: "显示"
 _sidebar:
   icon: "头像"
   hide: "隐藏"
