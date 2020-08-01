@@ -19,13 +19,13 @@ import MkButton from './button.vue';
 import paging from '../../scripts/paging';
 
 export default Vue.extend({
-	mixins: [
-		paging({}),
-	],
-
 	components: {
 		MkButton
 	},
+
+	mixins: [
+		paging({}),
+	],
 
 	props: {
 		pagination: {
