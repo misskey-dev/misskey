@@ -3,7 +3,8 @@ Docker Guide
 
 This guide describes how to install and setup Misskey with Docker.
 
-[Japanese version also available - 日本語版もあります](./docker.ja.md)
+- [Japanese version also available - 日本語版もあります](./docker.ja.md)
+- [Simplified Chinese version also available - 简体中文版同样可用](./docker.zh.md)
 
 ----------------------------------------------------------------
 
