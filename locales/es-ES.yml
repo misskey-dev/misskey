@@ -556,6 +556,9 @@ testEmail: "Prueba de envío"
 wordMute: "Silenciar palabras"
 userSaysSomething: "{name} dijo algo"
 makeActive: "Activar"
+_sidebar:
+  icon: "Avatar"
+  hide: "Ocultar"
 _wordMute:
   muteWords: "Palabras que silenciar"
   muteWordsDescription: "Separar con espacios indica una declaracion And, separar con lineas nuevas indica una declaracion Or。"
