@@ -556,6 +556,9 @@ testEmail: "Test email delivery"
 wordMute: "Word mute"
 userSaysSomething: "{name} said something"
 makeActive: "Activate"
+_sidebar:
+  icon: "Avatar"
+  hide: "Hide"
 _wordMute:
   muteWords: "Word to mute"
   muteWordsDescription: "Separate with spaces for AND condition. Separate with line breaks for OR."
