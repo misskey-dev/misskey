@@ -374,7 +374,7 @@ export default Vue.extend({
 						padding-left: 0;
 						width: 100%;
 						text-align: center;
-						font-size: $ui-font-size * 1.2;
+						font-size: $ui-font-size * 1.1;
 						line-height: 3.7rem;
 
 						> [data-icon],
