@@ -77,6 +77,7 @@ export const defaultDeviceSettings = {
 	enableInfiniteScroll: true,
 	fixedWidgetsPosition: false,
 	useBlurEffectForModal: true,
+	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 	deckColumnAlign: 'left',
