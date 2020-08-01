@@ -11,7 +11,7 @@
 		<div>{{ $t('display') }}</div>
 		<mk-radio v-model="sidebarDisplay" value="full">{{ $t('_sidebar.full') }}</mk-radio>
 		<mk-radio v-model="sidebarDisplay" value="icon">{{ $t('_sidebar.icon') }}</mk-radio>
-		<mk-radio v-model="sidebarDisplay" value="hide">{{ $t('_sidebar.hide') }}</mk-radio>
+		<!-- <mk-radio v-model="sidebarDisplay" value="hide" disabled>{{ $t('_sidebar.hide') }}</mk-radio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</div>
 	<div class="_footer">
 		<mk-button inline @click="save()" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>

@@ -90,6 +90,18 @@ export default Vue.extend({
 
 		'$store.state.device.sidebarDisplay'() {
 			this.calcViewState();
+		},
+
+		iconOnly() {
+			this.$nextTick(() => {
+				this.$emit('change-view-mode');
+			});
+		},
+
+		hidden() {
+			this.$nextTick(() => {
+				this.$emit('change-view-mode');
+			});
 		}
 	},
 
@@ -100,9 +112,8 @@ export default Vue.extend({
 
 	methods: {
 		calcViewState() {
-			const hideThresold = 650; // TODO: どこかに集約したい
-			this.iconOnly = (window.innerWidth < 1280) || (this.$store.state.device.sidebarDisplay === 'icon');
-			this.hidden = (window.innerWidth < hideThresold) || (this.$store.state.device.sidebarDisplay === 'hide');
+			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.device.sidebarDisplay === 'icon');
+			this.hidden = (window.innerWidth <= 650) || (this.$store.state.device.sidebarDisplay === 'hide');
 		},
 
 		show() {
@@ -331,8 +342,8 @@ export default Vue.extend({
 
 .mvcprjjd {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$nav-width: 250px; // TODO: どこかに集約したい
-	$nav-icon-only-width: 80px; // TODO: どこかに集約したい
+	$nav-width: 250px;
+	$nav-icon-only-width: 80px;
 
 	> .nav-back {
 		z-index: 1001;
