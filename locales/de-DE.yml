@@ -556,6 +556,9 @@ testEmail: "Email-Versand testen"
 wordMute: "Wort-Stummschaltung"
 userSaysSomething: "{name} hat etwas gesagt."
 makeActive: "Aktivieren"
+_sidebar:
+  icon: "Profilbild"
+  hide: "Ausblenden"
 _wordMute:
   muteWords: "Wort stummschalten"
   muteWordsDescription: "Mit Leerzeichen für eine \"UND\"-Verknüpfung trennen, durch Zeilenumbrüche für eine \"ODER\"-Verknüpfung trennen."
