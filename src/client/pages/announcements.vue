@@ -49,7 +49,6 @@ export default Vue.extend({
 	methods: {
 		// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
 		read(items, announcement, i) {
-			console.log(this);
 			Vue.set(items, i, {
 				...announcement,
 				isRead: true,
