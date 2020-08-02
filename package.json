@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.45.1",
+	"version": "12.46.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -47,7 +47,7 @@
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.0.1",
 		"@sinonjs/fake-timers": "6.0.1",
-		"@syuilo/aiscript": "0.10.1",
+		"@syuilo/aiscript": "0.11.0",
 		"@types/bcryptjs": "2.4.2",
 		"@types/bull": "3.14.0",
 		"@types/cbor": "5.0.0",

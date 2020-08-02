@@ -1,6 +1,7 @@
 import { utils, values } from '@syuilo/aiscript';
 import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
 
+// TODO: vue3に移行した折にはvmを渡す必要は無くなるはず
 export function createAiScriptEnv(vm, opts) {
 	let apiRequests = 0;
 	return {
@@ -42,6 +43,7 @@ export function createAiScriptEnv(vm, opts) {
 	};
 }
 
+// TODO: vue3に移行した折にはvmを渡す必要は無くなるはず
 export function createPluginEnv(vm, opts) {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config || {})) {

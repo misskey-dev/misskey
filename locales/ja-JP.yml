@@ -556,6 +556,12 @@ testEmail: "配信テスト"
 wordMute: "ワードミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
+display: "表示"
+
+_sidebar:
+  full: "フル"
+  icon: "アイコン"
+  hide: "隠す"
 
 _wordMute:
   muteWords: "ミュートするワード"

@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app" v-hotkey.global="keymap">
-	<header class="header">
+	<header class="header" ref="header">
 		<div class="title" ref="title">
 			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
 				<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
@@ -31,7 +31,7 @@
 		</div>
 	</header>
 
-	<x-sidebar ref="nav"/>
+	<x-sidebar ref="nav" @change-view-mode="calcHeaderWidth"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<main ref="main">
@@ -77,7 +77,7 @@
 		</template>
 	</div>
 
-	<div class="buttons">
+	<div class="buttons" :class="{ navHidden }">
 		<button class="button nav _button" @click="showNav" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
@@ -85,7 +85,7 @@
 		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 	</div>
 
-	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
+	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" :class="{ navHidden }" @click="post()"><fa :icon="faPencilAlt"/></button>
 
 	<stream-indicator v-if="$store.getters.isSignedIn"/>
 </div>
@@ -124,6 +124,7 @@ export default Vue.extend({
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
 			menuDef: this.$store.getters.nav({}),
+			navHidden: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
@@ -225,22 +226,15 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		const adjustTitlePosition = () => {
-			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.$el.offsetWidth;
-			if (left >= 0) {
-				this.$refs.title.style.left = left + 'px';
-			}
-		};
-
-		adjustTitlePosition();
+		this.adjustTitlePosition();
 
 		const ro = new ResizeObserver((entries, observer) => {
-			adjustTitlePosition();
+			this.adjustTitlePosition();
 		});
 
 		ro.observe(this.$refs.contents);
 
-		window.addEventListener('resize', adjustTitlePosition, { passive: true });
+		window.addEventListener('resize', this.adjustTitlePosition, { passive: true });
 
 		if (!this.isDesktop) {
 			window.addEventListener('resize', () => {
@@ -250,9 +244,27 @@ export default Vue.extend({
 
 		// widget follow
 		this.attachSticky();
+
+		this.$nextTick(() => {
+			this.calcHeaderWidth();
+		});
 	},
 
 	methods: {
+		adjustTitlePosition() {
+			const left = this.$refs.main.getBoundingClientRect().left - this.$refs.nav.$el.offsetWidth;
+			if (left >= 0) {
+				this.$refs.title.style.left = left + 'px';
+			}
+		},
+
+		calcHeaderWidth() {
+			const navWidth = this.$refs.nav.$el.offsetWidth;
+			this.navHidden = navWidth === 0;
+			this.$refs.header.style.width = `calc(100% - ${navWidth}px)`;
+			this.adjustTitlePosition();
+		},
+
 		showNav() {
 			this.$refs.nav.show();
 		},
@@ -373,12 +385,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .mk-app {
 	$header-height: 60px;
-	$nav-width: 250px; // TODO: どこかに集約したい
-	$nav-icon-only-width: 80px; // TODO: どこかに集約したい
 	$main-width: 670px;
 	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$nav-icon-only-threshold: 1279px; // TODO: どこかに集約したい
-	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 	$header-sub-hide-threshold: 1090px;
 	$left-widgets-hide-threshold: 1600px;
 	$right-widgets-hide-threshold: 1090px;
@@ -399,20 +407,12 @@ export default Vue.extend({
 		top: 0;
 		right: 0;
 		height: $header-height;
-		width: calc(100% - #{$nav-width});
+		width: 100%;
 		//background-color: var(--panel);
 		-webkit-backdrop-filter: blur(32px);
 		backdrop-filter: blur(32px);
 		background-color: var(--header);
 		border-bottom: solid 1px var(--divider);
-
-		@media (max-width: $nav-icon-only-threshold) {
-			width: calc(100% - #{$nav-icon-only-width});
-		}
-
-		@media (max-width: $nav-hide-threshold) {
-			width: 100%;
-		}
 
 		> .title {
 			position: relative;
@@ -683,7 +683,7 @@ export default Vue.extend({
 	}
 
 	> .post {
-		display: none;
+		display: block;
 		position: fixed;
 		z-index: 1000;
 		bottom: 32px;
@@ -694,8 +694,8 @@ export default Vue.extend({
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
 
-		@media (min-width: ($nav-hide-threshold + 1px)) {
-			display: block;
+		&.navHidden {
+			display: none;
 		}
 
 		@media (min-width: ($header-sub-hide-threshold + 1px)) {
@@ -717,7 +717,7 @@ export default Vue.extend({
 			padding: 0 16px 16px 16px;
 		}
 
-		@media (min-width: ($nav-hide-threshold + 1px)) {
+		&:not(.navHidden) {
 			display: none;
 		}
 
