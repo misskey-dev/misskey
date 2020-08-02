@@ -540,6 +540,8 @@ pluginTokenRequestedDescription: "Ce plugin pourra utiliser les autorisations d�
 notificationType: "Type de notifications"
 edit: "Editer"
 emailConfig: "Configuration du serveur email"
+enableEmail: "Activer la distribution de courriel"
+emailConfigInfo: "Utilisé pour confirmer votre adresse de courriel et la réinitialisation de votre mot de passe en cas d’oubli."
 email: "Adresse de courrier électronique"
 smtpConfig: "Paramètres du serveur SMTP"
 smtpHost: "Hôte"
