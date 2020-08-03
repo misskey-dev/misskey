@@ -556,7 +556,9 @@ testEmail: "Prueba de envío"
 wordMute: "Silenciar palabras"
 userSaysSomething: "{name} dijo algo"
 makeActive: "Activar"
+display: "Apariencia"
 _sidebar:
+  full: "Completo"
   icon: "Avatar"
   hide: "Ocultar"
 _wordMute:
