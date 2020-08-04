@@ -56,11 +56,13 @@ export default define(meta, async (ps, user) => {
 		sha256.update(accessToken + app.secret);
 		const hash = sha256.digest('hex');
 
+		const now = new Date();
+
 		// Insert access token doc
 		await AccessTokens.save({
 			id: genId(),
-			createdAt: new Date(),
-			lastUsedAt: new Date(),
+			createdAt: now,
+			lastUsedAt: now,
 			appId: session.appId,
 			userId: user.id,
 			token: accessToken,
