@@ -3,6 +3,7 @@ import { User } from './user';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
 import { noteVisibilities } from '../../types';
+import { Channel } from './channel';
 
 
 @Entity()
@@ -172,6 +173,20 @@ export class Note {
 		default: false
 	})
 	public hasPoll: boolean;
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true, default: null,
+		comment: 'The ID of source channel.'
+	})
+	public channelId: Channel['id'] | null;
+
+	@ManyToOne(type => Channel, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public channel: Channel | null;
 
 	//#region Denormalized fields
 	@Index()
