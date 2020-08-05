@@ -65,3 +65,33 @@ self.addEventListener('push', ev => {
 		return self.registration.showNotification(...(await composeNotification(type, body)));
 	}));
 });
+
+self.addEventListener('notificationclick', ev => {
+	const { action, notification } = ev;
+	const type = notification.data.type;
+	const push = notification.data.data;
+	const { origin } = location;
+
+	switch (action) {
+		case 'showUser':
+			switch (type) {
+				case 'reaction':
+					self.clients.openWindow(`${origin}/users/${push.note.user.id}`);
+					break;
+
+				default:
+					if ('note' in push) {
+						self.clients.openWindow(`${origin}/notes/${push.note.id}`);
+					}
+			}
+			break;
+		default:
+	}
+
+	switch (type) {
+		case 'reaction':
+			break;
+		default:
+			break;
+	}
+});
