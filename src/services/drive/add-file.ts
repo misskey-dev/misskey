@@ -209,6 +209,7 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 		Body: stream,
 		ContentType: type,
 		CacheControl: 'max-age=31536000, immutable',
+		ACL: 'public-read'
 	} as S3.PutObjectRequest;
 
 	if (filename) params.ContentDisposition = contentDisposition('inline', filename);
