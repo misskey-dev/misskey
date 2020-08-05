@@ -1,13 +1,14 @@
-import { Store } from 'vuex';
+import { Store, MutationPayload } from 'vuex';
 import { VuexPersistDB } from './vuex-idb';
 
 // Vuexモジュールかつ永続化ストアの名前を列挙
 const modules = ['device', 'deviceUser', 'settings', 'instance'] as const;
 
-export function VuexPersist<State>() {
+export function VuexPersistAndShare<State>() {
 	const persistDB = new VuexPersistDB();
+	const ch = new BroadcastChannel('vuexShare');
 
-	return (store: Store<State>) => {
+	return async (store: Store<State>) => {
 		// 互換性のためlocalStorageを検索
 		const old = localStorage.getItem('vuex');
 
@@ -18,7 +19,7 @@ export function VuexPersist<State>() {
 			});
 			localStorage.removeItem('vuex');
 		} else {
-			Promise.all(persistDB.stores.map(n => persistDB.entries(n)))
+			await Promise.all(persistDB.stores.map(n => persistDB.entries(n)))
 			.then(vals => vals.map(entries => Object.fromEntries(entries)))
 			.then(vals => {
 				let savedState = {};
@@ -35,16 +36,38 @@ export function VuexPersist<State>() {
 			});
 		}
 
+		const passedPayloads: any[] = [];
+
 		store.subscribe((mutation, state) => {
+			if (passedPayloads.includes(mutation.payload)) {
+				passedPayloads.splice(passedPayloads.indexOf(mutation.payload), 1);
+				console.log('a', passedPayloads);
+				return;
+			}
+
 			const splited = mutation.type.split('/');
 			const module = splited[0] as typeof modules[number]; // 型定義と実際の値は違う
 
 			if (splited.length === 1) {
+				// mutationがルートの場合
 				persistDB.set('i', state.i, 'store');
-				modules.map(module => persistDB.bulkSet(Object.entries(state[module]), module));
+
+				modules.map(m => {
+					persistDB.bulkSet(Object.entries(state[m]), m);
+				});
 			} else if (modules.includes(module)) {
+				// mutationがモジュールの場合
 				persistDB.bulkSet(Object.entries(state[module]), module);
 			}
+
+			ch.postMessage(mutation);
 		});
+
+		ch.onmessage = ev => {
+			const mutation = ev.data as MutationPayload;
+			passedPayloads.push(mutation.payload);
+			store.commit(mutation.type, mutation.payload);
+			return;
+		};
 	};
 }
