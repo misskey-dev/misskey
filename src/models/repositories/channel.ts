@@ -2,7 +2,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Channel } from '../entities/channel';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
-import { DriveFiles } from '..';
+import { DriveFiles, ChannelFollowings } from '..';
+import { User } from '../entities/user';
 
 export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 
@@ -10,10 +11,17 @@ export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 export class ChannelRepository extends Repository<Channel> {
 	public async pack(
 		src: Channel['id'] | Channel,
+		me?: User['id'] | User | null | undefined,
 	): Promise<PackedChannel> {
 		const channel = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;
+
+		const following = await ChannelFollowings.findOne({
+			followerId: meId,
+			followeeId: channel.id,
+		});
 
 		return {
 			id: channel.id,
@@ -25,6 +33,10 @@ export class ChannelRepository extends Repository<Channel> {
 			bannerUrl: banner ? DriveFiles.getPublicUrl(banner, false) : null,
 			usersCount: channel.usersCount,
 			notesCount: channel.notesCount,
+
+			...(me ? {
+				isFollowing: following != null,
+			} : {})
 		};
 	}
 }
@@ -72,6 +84,10 @@ export const packedChannelSchema = {
 		usersCount: {
 			type: 'number' as const,
 			nullable: false as const, optional: false as const,
+		},
+		isFollowing: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const,
 		},
 		userId: {
 			type: 'string' as const,

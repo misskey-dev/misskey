@@ -227,6 +227,7 @@ export class NoteRepository extends Repository<Note> {
 			files: DriveFiles.packMany(note.fileIds),
 			replyId: note.replyId,
 			renoteId: note.renoteId,
+			channelId: note.channelId || undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri || undefined,
 			url: note.url || undefined,
@@ -391,6 +392,16 @@ export const packedNoteSchema = {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
 		},
-
+		channelId: {
+			type: 'string' as const,
+			optional: true as const, nullable: true as const,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		channel: {
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
+			ref: 'Channel'
+		},
 	},
 };

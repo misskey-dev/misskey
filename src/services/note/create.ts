@@ -17,7 +17,7 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes } from '../../models';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
@@ -33,6 +33,7 @@ import { checkWordMute } from '../../misc/check-word-mute';
 import { addNoteToAntenna } from '../add-note-to-antenna';
 import { countSameRenotes } from '../../misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
+import { Channel } from '../../models/entities/channel';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -102,6 +103,7 @@ type Option = {
 	cw?: string | null;
 	visibility?: string;
 	visibleUsers?: User[] | null;
+	channel?: Channel | null;
 	apMentions?: User[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
@@ -115,9 +117,11 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
 	if (data.localOnly == null) data.localOnly = false;
+	if (data.channel != null) data.visibility = 'public';
+	if (data.channel != null) data.visibleUsers = [];
 
 	// サイレンス
-	if (user.isSilenced && data.visibility === 'public') {
+	if (user.isSilenced && data.visibility === 'public' && data.channel == null) {
 		data.visibility = 'home';
 	}
 
@@ -142,12 +146,12 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	}
 
 	// ローカルのみをRenoteしたらローカルのみにする
-	if (data.renote && data.renote.localOnly) {
+	if (data.renote && data.renote.localOnly && data.channel == null) {
 		data.localOnly = true;
 	}
 
 	// ローカルのみにリプライしたらローカルのみにする
-	if (data.reply && data.reply.localOnly) {
+	if (data.reply && data.reply.localOnly && data.channel == null) {
 		data.localOnly = true;
 	}
 
@@ -379,6 +383,22 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		//#endregion
 	}
 
+	if (data.channel) {
+		Channels.increment({ id: data.channel.id }, 'notesCount', 1);
+		Channels.update(data.channel.id, {
+			lastNotedAt: new Date(),
+		});
+
+		Notes.findOne({
+			userId: user.id,
+			channelId: data.channel.id,
+		}).then(exist => {
+			if (exist == null) {
+				Channels.increment({ id: data.channel.id }, 'usersCount', 1);
+			}
+		});
+	}
+
 	// Register to search database
 	index(note);
 });
@@ -405,6 +425,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		fileIds: data.files ? data.files.map(file => file.id) : [],
 		replyId: data.reply ? data.reply.id : null,
 		renoteId: data.renote ? data.renote.id : null,
+		channelId: data.channel ? data.channel.id : null,
 		name: data.name,
 		text: data.text,
 		hasPoll: data.poll != null,

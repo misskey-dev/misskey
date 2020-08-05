@@ -732,6 +732,8 @@ _permissions:
   "write:page-likes": "ページのいいねを操作する"
   "read:user-groups": "ユーザーグループを見る"
   "write:user-groups": "ユーザーグループを操作する"
+  "read:channels": "チャンネルを見る"
+  "write:channels": "チャンネルを操作する"
 
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"

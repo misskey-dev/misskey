@@ -5,7 +5,6 @@ import { id } from '../id';
 import { noteVisibilities } from '../../types';
 import { Channel } from './channel';
 
-
 @Entity()
 @Index('IDX_NOTE_TAGS', { synchronize: false })
 export class Note {
