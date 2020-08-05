@@ -6,6 +6,7 @@ import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-ic
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { apiUrl, deckmode } from './config';
 import { erase } from '../prelude/array';
+import { VuexPersist } from './scripts/vuex-persist';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -98,9 +99,7 @@ function copy<T>(data: T): T {
 }
 
 export default () => new Vuex.Store({
-	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
-	})],
+	plugins: [VuexPersist()],
 
 	state: {
 		i: null,
