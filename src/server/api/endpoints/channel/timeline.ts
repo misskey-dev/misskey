@@ -4,9 +4,7 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes, Channels } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { activeUsersChart } from '../../../../services/chart';
-import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'channels'],
@@ -89,7 +87,8 @@ export default define(meta, async (ps, user) => {
 	//#region Construct query
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere('note.channelId = :channelId', { channelId: channel.id })
-		.leftJoinAndSelect('note.user', 'user');
+		.leftJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.channel', 'channel');
 	//#endregion
 
 	const timeline = await query.take(ps.limit!).getMany();

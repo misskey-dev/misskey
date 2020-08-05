@@ -6,6 +6,8 @@ export function generateChannelQuery(q: SelectQueryBuilder<any>, me?: User | nul
 	if (me == null) {
 		q.andWhere('note.channelId IS NULL');
 	} else {
+		q.leftJoinAndSelect('note.channel', 'channel');
+
 		const channelFollowingQuery = ChannelFollowings.createQueryBuilder('channelFollowing')
 			.select('channelFollowing.followeeId')
 			.where('channelFollowing.followerId = :followerId', { followerId: me.id });

@@ -113,6 +113,22 @@ type Option = {
 };
 
 export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
+	// チャンネル外にリプライしたら対象のスコープに合わせる
+	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
+	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
+		if (data.reply.channelId) {
+			data.channel = await Channels.findOne(data.reply.channelId);
+		} else {
+			data.channel = null;
+		}
+	}
+
+	// チャンネル内にリプライしたら対象のスコープに合わせる
+	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
+	if (data.reply && (data.channel == null) && data.reply.channelId) {
+		data.channel = await Channels.findOne(data.reply.channelId);
+	}
+
 	if (data.createdAt == null) data.createdAt = new Date();
 	if (data.visibility == null) data.visibility = 'public';
 	if (data.viaMobile == null) data.viaMobile = false;
