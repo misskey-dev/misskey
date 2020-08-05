@@ -76,7 +76,7 @@ self.addEventListener('notificationclick', ev => {
 		case 'showUser':
 			switch (type) {
 				case 'reaction':
-					self.clients.openWindow(`${origin}/users/${push.note.user.id}`);
+					self.clients.openWindow(`${origin}/users/${push.user.id}`);
 					break;
 
 				default:
@@ -88,10 +88,40 @@ self.addEventListener('notificationclick', ev => {
 		default:
 	}
 
-	switch (type) {
-		case 'reaction':
+	notification.close();
+});
+
+self.addEventListener('notificationclick', ev => {
+	const { action, notification } = ev;
+	const type = notification.data.type;
+	const push = notification.data.data;
+	const { origin } = location;
+
+	switch (action) {
+		case 'showUser':
+			switch (type) {
+				case 'reaction':
+					self.clients.openWindow(`${origin}/users/${push.user.id}`);
+					break;
+
+				default:
+					if ('note' in push) {
+						self.clients.openWindow(`${origin}/notes/${push.note.id}`);
+					}
+			}
 			break;
 		default:
-			break;
 	}
+
+	notification.close();
+});
+
+self.addEventListener('notificationclose', ev => {
+	const { origin } = location;
+	fetch(`${origin}/api/notifications/read`, {
+		method: 'POST',
+		body: JSON.stringify({
+
+		})
+	});
 });
