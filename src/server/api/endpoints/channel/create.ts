@@ -43,14 +43,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	let file = null;
+	let banner = null;
 	if (ps.bannerId != null) {
-		file = await DriveFiles.findOne({
+		banner = await DriveFiles.findOne({
 			id: ps.bannerId,
 			userId: user.id
 		});
 
-		if (file == null) {
+		if (banner == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
 	}
@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 		userId: user.id,
 		name: ps.name,
 		description: ps.description || null,
-		bannerId: file ? file.id : null,
+		bannerId: banner ? banner.id : null,
 	} as Channel);
 
 	return await Channels.pack(channel, user);

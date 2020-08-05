@@ -47,6 +47,12 @@ export const meta = {
 			code: 'ACCESS_DENIED',
 			id: '1fb7cb09-d46a-4fdf-b8df-057788cce513'
 		},
+
+		noSuchFile: {
+			message: 'No such file.',
+			code: 'NO_SUCH_FILE',
+			id: 'e86c14a4-0da2-4032-8df3-e737a04c7f3b'
+		},
 	}
 };
 
@@ -59,12 +65,28 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchChannel);
 	}
 
-	if (channel.userId !== me.userId) {
+	if (channel.userId !== me.id) {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
+	let banner = undefined;
+	if (ps.bannerId != null) {
+		banner = await DriveFiles.findOne({
+			id: ps.bannerId,
+			userId: me.id
+		});
+
+		if (banner == null) {
+			throw new ApiError(meta.errors.noSuchFile);
+		}
+	} else if (ps.bannerId === null) {
+		banner = null;
+	}
+
 	await Channels.update(channel.id, {
-		...(ps.name !== undefined ? { name: ps.name } : {})
+		...(ps.name !== undefined ? { name: ps.name } : {}),
+		...(ps.description !== undefined ? { description: ps.description } : {}),
+		...(banner ? { bannerId: banner.id } : {}),
 	});
 
 	return await Channels.pack(channel.id, me);
