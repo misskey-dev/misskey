@@ -47,7 +47,7 @@ export default Vue.extend({
 
 	watch: {
 		channelId: {
-			handler() {
+			async handler() {
 				this.channel = await this.$root.api('channels/show', {
 					channelId: this.channelId,
 				});

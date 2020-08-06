@@ -1,31 +1,36 @@
 <template>
-<div class="_panel">
-	<div class="_content">
-		<mk-input v-model="name">{{ $t('name') }}</mk-input>
+<div>
+	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
+	<portal to="title">{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
 
-		<mk-textarea v-model="description">{{ $t('description') }}</mk-textarea>
+	<div class="_card">
+		<div class="_content">
+			<mk-input v-model="name">{{ $t('name') }}</mk-input>
 
-		<div class="banner">
-			<mk-button v-if="bannerId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>
-			<div v-else-if="bannerUrl">
-				<img :src="bannerUrl"/>
-				<mk-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</mk-button>
+			<mk-textarea v-model="description">{{ $t('description') }}</mk-textarea>
+
+			<div class="banner">
+				<mk-button v-if="bannerId == null" @click="setBannerImage()"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>
+				<div v-else-if="bannerUrl">
+					<img :src="bannerUrl"/>
+					<mk-button @click="removeBannerImage()"><fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</mk-button>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="_footer">
-		<mk-button @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		<div class="_footer">
+			<mk-button @click="save()" primary><fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</mk-button>
+		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
+import MkTextarea from '../components/ui/textarea.vue';
+import MkButton from '../components/ui/button.vue';
+import MkInput from '../components/ui/input.vue';
 import { selectDriveFile } from '../scripts/select-drive-file';
 
 export default Vue.extend({
@@ -47,7 +52,7 @@ export default Vue.extend({
 			description: null,
 			bannerUrl: null,
 			bannerId: null,
-			faSave, faTrashAlt, faPlus,
+			faSave, faTrashAlt, faPlus,faSatelliteDish,
 		};
 	},
 

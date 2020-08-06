@@ -557,6 +557,14 @@ wordMute: "ワードミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
+channel: "チャンネル"
+create: "作成"
+
+_channel:
+  create: "チャンネルを作成"
+  edit: "チャンネルを編集"
+  setBanner: "バナーを設定"
+  removeBanner: "バナーを削除"
 
 _sidebar:
   full: "フル"
