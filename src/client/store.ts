@@ -98,7 +98,7 @@ function copy<T>(data: T): T {
 }
 
 export default () => new Vuex.Store({
-	plugins: [VuexPersistAndShare()],
+	plugins: [VuexPersistAndShare(['i'], ['device', 'deviceUser', 'settings', 'instance'])],
 
 	state: {
 		i: null,
