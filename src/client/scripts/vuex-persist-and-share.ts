@@ -1,4 +1,5 @@
 import { Store, MutationPayload } from 'vuex';
+import { BroadcastChannel } from 'broadcast-channel';
 import { VuexPersistDB } from './vuex-idb';
 
 // Vuexモジュールかつ永続化ストアの名前を列挙
@@ -6,7 +7,9 @@ const modules = ['device', 'deviceUser', 'settings', 'instance'] as const;
 
 export function VuexPersistAndShare<State>() {
 	const persistDB = new VuexPersistDB();
-	const ch = new BroadcastChannel('vuexShare');
+	const ch = new BroadcastChannel<MutationPayload>('vuexShare', {
+		webWorkerSupport: false
+	});
 
 	return async (store: Store<State>) => {
 		// 互換性のためlocalStorageを検索
@@ -41,7 +44,6 @@ export function VuexPersistAndShare<State>() {
 		store.subscribe((mutation, state) => {
 			if (passedPayloads.includes(mutation.payload)) {
 				passedPayloads.splice(passedPayloads.indexOf(mutation.payload), 1);
-				console.log('a', passedPayloads);
 				return;
 			}
 
@@ -63,11 +65,9 @@ export function VuexPersistAndShare<State>() {
 			ch.postMessage(mutation);
 		});
 
-		ch.onmessage = ev => {
-			const mutation = ev.data as MutationPayload;
+		ch.addEventListener('message', mutation => {
 			passedPayloads.push(mutation.payload);
 			store.commit(mutation.type, mutation.payload);
-			return;
-		};
+		});
 	};
 }
