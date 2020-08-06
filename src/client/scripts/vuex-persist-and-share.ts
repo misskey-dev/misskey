@@ -1,7 +1,7 @@
-import { Store, MutationPayload, ActionPayload } from 'vuex';
+import { Store, MutationPayload } from 'vuex';
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
-import { VuexPersistDB } from './vuex-idb';
+import { VuexPersistDB, VuexPersistStore } from './vuex-idb';
 
 /**
  * Vuexのstate永続化及びcommit・dispatchをタブ間で共有するvuexプラグインです
@@ -10,10 +10,7 @@ import { VuexPersistDB } from './vuex-idb';
  */
 export function VuexPersistAndShare<State>(states: string[], modules: string[]) {
 	const persistDB = new VuexPersistDB();
-	const mutationCh = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
-		webWorkerSupport: false
-	});
-	const actionCh = new BroadcastChannel<ActionPayload>('vuexActionShare', {
+	const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
 		webWorkerSupport: false
 	});
 
@@ -49,7 +46,7 @@ export function VuexPersistAndShare<State>(states: string[], modules: string[]) 
 		const passedPayloads: any[] = [];
 
 		// 別タブからのmutationを実行
-		mutationCh.addEventListener('message', mutation => {
+		ch.addEventListener('message', mutation => {
 			passedPayloads.push(mutation.payload);
 			store.commit(mutation.type, mutation.payload);
 		});
@@ -62,7 +59,7 @@ export function VuexPersistAndShare<State>(states: string[], modules: string[]) 
 			}
 
 			const splited = mutation.type.split('/');
-			const module = splited[0]; // ここの型定義と実際の値は違います
+			const module = splited[0];
 
 			// 永続化
 			if (splited.length === 1) {
@@ -70,31 +67,15 @@ export function VuexPersistAndShare<State>(states: string[], modules: string[]) 
 				persistDB.bulkSet(states.map(s => [s, state[s]]), 'store');
 
 				modules.map(m => {
-					persistDB.bulkSet(Object.entries(state[m]), m);
+					persistDB.bulkSet(Object.entries(state[m]), m as VuexPersistStore);
 				});
 			} else if (modules.includes(module)) {
 				// mutationがモジュールの場合
-				persistDB.bulkSet(Object.entries(state[module]), module);
+				persistDB.bulkSet(Object.entries(state[module]), module as VuexPersistStore);
 			}
 
 			// ほかのタブにmutationを伝達
-			mutationCh.postMessage(mutation);
-		});
-
-		// 別タブからのactionを実行
-		actionCh.addEventListener('message', action => {
-			passedPayloads.push(action.payload);
-			store.dispatch(action.type, action.payload);
-		});
-
-		store.subscribeAction((action) => {
-			if (passedPayloads.includes(action.payload)) {
-				// 別タブから来たactionの場合は処理をしない
-				passedPayloads.splice(passedPayloads.indexOf(action.payload), 1);
-				return;
-			}
-
-			actionCh.postMessage(action);
+			ch.postMessage(mutation);
 		});
 	};
 }
