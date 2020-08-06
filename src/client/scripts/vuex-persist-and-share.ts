@@ -1,4 +1,5 @@
 import { Store, MutationPayload, ActionPayload } from 'vuex';
+// SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
 import { VuexPersistDB } from './vuex-idb';
 
