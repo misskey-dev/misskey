@@ -13,24 +13,40 @@ html
 
 			promises.push(new Promise((res, rej) => {
 				const delDB = indexedDB.deleteDatabase('MisskeyClient');
+
+				const to = setTimeout(() => {
+					message('indexedDB MisskeyClient clearing timeout.');
+					rej();
+				}, 10000)
+
 				delDB.onsuccess = () => {
-					message('indexedDB MisskeyClient cleared');
+					message('indexedDB MisskeyClient cleared.');
+					clearTimeout(to);
 					res();
 				};
 				delDB.onerror = () => {
-					message(`indexedDB MisskeyClient clearing failed`);
+					message(`indexedDB MisskeyClient clearing failed.`);
+					clearTimeout(to);
 					rej();
 				};
 			}));
 
 			promises.push(new Promise((res, rej) => {
 				const delDB = indexedDB.deleteDatabase('vuex');
+
+				const to = setTimeout(() => {
+					message('indexedDB MisskeyClient clearing timeout.');
+					rej();
+				}, 10000)
+
 				delDB.onsuccess = () => {
-					message('indexedDB vuex cleared');
+					message('indexedDB vuex cleared.');
+					clearTimeout(to);
 					res();
 				};
 				delDB.onerror = () => {
-					message(`indexedDB vuex clearing failed`);
+					message(`indexedDB vuex clearing failed.`);
+					clearTimeout(to);
 					rej();
 				};
 			}));
@@ -40,6 +56,9 @@ html
 				promises.push(navigator.serviceWorker.getRegistrations()
 					.then(registrations => {
 						return Promise.all(registrations.map(registration => registration.unregister()));
+					})
+					.then(() => {
+						message('ServiceWorker unregistered.');
 					}));
 			}
 
@@ -50,7 +69,7 @@ html
 			})
 		} catch (e) {
 			console.error(e);
-			message(`${e}¥n¥nFlush Failed. Please reopen Misskey.\n失敗しました。Misskeyを開き直してください。`);
+			message(`${e}¥n¥nFlush Failed. \n失敗しました。`);
 			setTimeout(() => {
 				location = '/';
 			}, 10000)
