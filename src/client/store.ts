@@ -1,11 +1,11 @@
 import Vuex from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { apiUrl, deckmode } from './config';
 import { erase } from '../prelude/array';
+import { VuexPersistAndShare } from './scripts/vuex-persist-and-share';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -98,9 +98,7 @@ function copy<T>(data: T): T {
 }
 
 export default () => new Vuex.Store({
-	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
-	})],
+	plugins: [VuexPersistAndShare(['i'], ['device', 'deviceUser', 'settings', 'instance'])],
 
 	state: {
 		i: null,
