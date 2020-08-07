@@ -15,6 +15,11 @@ export class ChannelFollowing {
 	})
 	public createdAt: Date;
 
+	@Column('timestamp with time zone', {
+		comment: 'チャンネルに未読のノートがあるか判定するために使われる値'
+	})
+	public readCursor: Date;
+
 	@Index()
 	@Column({
 		...id(),
