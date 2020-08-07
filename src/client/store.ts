@@ -1,5 +1,4 @@
 import Vuex from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
@@ -98,10 +97,6 @@ function copy<T>(data: T): T {
 }
 
 export default () => new Vuex.Store({
-	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
-	})],
-
 	state: {
 		i: null,
 		pendingApiRequestsCount: 0,
