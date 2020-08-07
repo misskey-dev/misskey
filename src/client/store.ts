@@ -5,7 +5,6 @@ import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-ic
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { apiUrl, deckmode } from './config';
 import { erase } from '../prelude/array';
-import { VuexPersistAndShare } from './scripts/vuex-persist-and-share';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -98,8 +97,6 @@ function copy<T>(data: T): T {
 }
 
 export default () => new Vuex.Store({
-	plugins: [VuexPersistAndShare(['i'], ['device', 'deviceUser', 'settings', 'instance'])],
-
 	state: {
 		i: null,
 		pendingApiRequestsCount: 0,
