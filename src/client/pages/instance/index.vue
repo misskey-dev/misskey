@@ -6,12 +6,22 @@
 	<div class="main">
 		<mk-instance-stats :chart-limit="300" :detailed="true"/>
 
-		<section class="_card">
-			<div class="_title">test</div>
-			<div class="_content">
-				test
-			</div>
-		</section>
+		<div class="column">
+			<mk-container :body-togglable="false">
+				<template #header><fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
+
+				<div class="_content igpifznz">
+					<div><b>Misskey</b><span>v{{ version }}</span></div>
+				</div>
+				<div class="_content igpifznz" v-if="serverInfo">
+					<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
+					<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
+					<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
+				</div>
+			</mk-container>
+
+			<mkw-federation/>
+		</div>
 	</div>
 
 	<div class="charts">
@@ -99,23 +109,12 @@
 			<mk-button @click="deleteAllLogs()" primary><fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</mk-button>
 		</div>
 	</section>
-
-	<section class="_card info">
-		<div class="_content table">
-			<div><b>Misskey</b><span>v{{ version }}</span></div>
-		</div>
-		<div class="_content table" v-if="serverInfo">
-			<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
-			<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
-			<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
-		</div>
-	</section>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '../../components/instance-stats.vue';
@@ -123,6 +122,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkContainer from '../../components/ui/container.vue';
+import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '../../config';
 
 const alpha = (hex, a) => {
@@ -146,7 +146,8 @@ export default Vue.extend({
 		MkSelect,
 		MkInput,
 		MkContainer,
-		VueJsonPretty
+		MkwFederation,
+		VueJsonPretty,
 	},
 
 	data() {
@@ -162,7 +163,7 @@ export default Vue.extend({
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
-			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt
+			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle
 		}
 	},
 
@@ -494,6 +495,13 @@ export default Vue.extend({
 			grid-template-columns: 3fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
+
+			> .column {
+				display: grid;
+				grid-template-columns: 1fr;
+				grid-template-rows: auto 1fr;
+				gap: 16px 16px;
+			}
 		}
 
 		> .charts {
@@ -501,6 +509,20 @@ export default Vue.extend({
 			grid-template-columns: 1fr 1fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
+		}
+	}
+
+	> .main {
+		> .column {
+			.igpifznz {
+				> div {
+					display: flex;
+
+					> * {
+						flex: 1;
+					}
+				}
+			}
 		}
 	}
 
@@ -551,18 +573,6 @@ export default Vue.extend({
 					&.debug {
 						opacity: 0.7;
 					}
-				}
-			}
-		}
-	}
-
-	> .info {
-		> .table {
-			> div {
-				display: flex;
-
-				> * {
-					flex: 1;
 				}
 			}
 		}

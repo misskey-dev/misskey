@@ -638,6 +638,7 @@ export default Vue.extend({
 		grid-template-rows: 1fr;
 		gap: var(--margin);
 		margin-bottom: var(--margin);
+		font-size: 90%;
 
 		> div {
 			display: flex;
