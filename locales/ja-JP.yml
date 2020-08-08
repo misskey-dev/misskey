@@ -557,6 +557,7 @@ wordMute: "ワードミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
+copy: "コピー"
 
 _sidebar:
   full: "フル"
