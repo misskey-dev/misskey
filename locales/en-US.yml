@@ -557,6 +557,7 @@ wordMute: "Word mute"
 userSaysSomething: "{name} said something"
 makeActive: "Activate"
 display: "Display"
+copy: "Copy"
 _sidebar:
   full: "Full"
   icon: "Avatar"
