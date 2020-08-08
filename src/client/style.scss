@@ -329,10 +329,6 @@ hr {
 ._card {
 	@extend ._panel;
 
-	& + ._card {
-		margin-top: var(--margin);
-	}
-
 	> ._title {
 		margin: 0;
 		padding: 22px 32px;
@@ -386,6 +382,12 @@ hr {
 
 	> ._footer {
 		padding: 16px;
+	}
+}
+
+._vMargin {
+	& + ._vMargin {
+		margin-top: var(--margin);
 	}
 }
 

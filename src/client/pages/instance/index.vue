@@ -78,6 +78,15 @@
 		</mk-container>
 	</div>
 
+	<div class="queue">
+		<x-queue :connection="queueConnection" domain="inbox">
+			<template #title><fa :icon="faExchangeAlt"/> In</template>
+		</x-queue>
+		<x-queue :connection="queueConnection" domain="deliver">
+			<template #title><fa :icon="faExchangeAlt"/> Out</template>
+		</x-queue>
+	</div>
+
 	<section class="_card logs">
 		<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
 		<div class="_content">
@@ -124,6 +133,7 @@ import MkInput from '../../components/ui/input.vue';
 import MkContainer from '../../components/ui/container.vue';
 import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '../../config';
+import XQueue from './queue-chart.vue';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -147,6 +157,7 @@ export default Vue.extend({
 		MkInput,
 		MkContainer,
 		MkwFederation,
+		XQueue,
 		VueJsonPretty,
 	},
 
@@ -157,6 +168,7 @@ export default Vue.extend({
 			stats: null,
 			serverInfo: null,
 			connection: null,
+			queueConnection: this.$root.stream.useSharedConnection('queueStats'),
 			memUsage: 0,
 			chartCpuMem: null,
 			chartNet: null,
@@ -416,6 +428,13 @@ export default Vue.extend({
 				id: Math.random().toString().substr(2, 8),
 				length: 150
 			});
+
+			this.$nextTick(() => {
+				this.queueConnection.send('requestLog', {
+					id: Math.random().toString().substr(2, 8),
+					length: 200
+				});
+			});
 		});
 	},
 
@@ -423,6 +442,7 @@ export default Vue.extend({
 		this.connection.off('stats', this.onStats);
 		this.connection.off('statsLog', this.onStatsLog);
 		this.connection.dispose();
+		this.queueConnection.dispose();
 	},
 
 	methods: {
@@ -507,6 +527,13 @@ export default Vue.extend({
 		> .charts {
 			display: grid;
 			grid-template-columns: 1fr 1fr 1fr;
+			grid-template-rows: 1fr;
+			gap: 16px 16px;
+		}
+
+		> .queue {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
 		}
