@@ -1,5 +1,5 @@
 <template>
-<div class="zbcjwnqg">
+<div class="zbcjwnqg" v-size="[{ max: 550 }, { max: 1200 }]">
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
@@ -618,17 +618,29 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .zbcjwnqg {
+	&.max-width_1200px {
+		> .stats {
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
+		}
+	}
+
+	&.max-width_550px {
+		> .stats {
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr 1fr 1fr 1fr;
+		}
+	}
+
 	> .stats {
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		margin: calc(0px - var(--margin) / 2);
-		margin-bottom: calc(var(--margin) / 2);
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-rows: 1fr;
+		gap: var(--margin);
+		margin-bottom: var(--margin);
 
 		> div {
 			display: flex;
-			flex: 1 0 213px;
-			margin: calc(var(--margin) / 2);
 			box-sizing: border-box;
 			padding: 16px 20px;
 
