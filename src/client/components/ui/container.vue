@@ -150,7 +150,7 @@ export default Vue.extend({
 
 	> div {
 		> ::v-deep ._content {
-			padding: 32px;
+			padding: 24px;
 
 			& + ._content {
 				border-top: solid 1px var(--divider);
