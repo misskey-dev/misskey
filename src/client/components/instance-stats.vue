@@ -271,6 +271,9 @@ export default Vue.extend({
 				this.chartInstance.destroy();
 			}
 
+			// TODO: var(--panel)の色が暗いか明るいかで判定する
+			const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 			this.chartInstance = new Chart(this.$refs.chart, {
 				type: 'line',
@@ -283,6 +286,7 @@ export default Vue.extend({
 						lineTension: 0,
 						borderWidth: 2,
 						borderColor: x.color,
+						borderDash: x.borderDash || [],
 						backgroundColor: alpha(x.color, 0.1),
 						hidden: !!x.hidden
 					}))
@@ -305,15 +309,26 @@ export default Vue.extend({
 					},
 					scales: {
 						xAxes: [{
+							type: 'time',
+							time: {
+								stepSize: 1,
+								unit: this.chartSpan == 'day' ? 'month' : 'day',
+							},
 							gridLines: {
-								display: false
+								display: this.detailed,
+								color: gridColor,
+								zeroLineColor: gridColor,
 							},
 							ticks: {
-								display: false
+								display: this.detailed
 							}
 						}],
 						yAxes: [{
 							position: 'left',
+							gridLines: {
+								color: gridColor,
+								zeroLineColor: gridColor,
+							},
 							ticks: {
 								display: this.detailed
 							}
@@ -337,7 +352,11 @@ export default Vue.extend({
 		},
 
 		format(arr) {
-			return arr;
+			const now = Date.now();
+			return arr.map((v, i) => ({
+				x: new Date(now - ((this.chartSpan == 'day' ? 86400000 :3600000 ) * i)),
+				y: v
+			}));
 		},
 
 		federationInstancesChart(total: boolean): any {
@@ -359,6 +378,7 @@ export default Vue.extend({
 					name: 'All',
 					type: 'line',
 					color: '#008FFB',
+					borderDash: [5, 5],
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
 						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))

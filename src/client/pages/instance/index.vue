@@ -185,6 +185,9 @@ export default Vue.extend({
 
 	mounted() {
 		this.fetchLogs();
+
+		// TODO: var(--panel)の色が暗いか明るいかで判定する
+		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 	
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
@@ -238,14 +241,21 @@ export default Vue.extend({
 				scales: {
 					xAxes: [{
 						gridLines: {
-							display: false
+							display: false,
+							color: gridColor,
+							zeroLineColor: gridColor,
 						},
 						ticks: {
-							display: false
+							display: false,
 						}
 					}],
 					yAxes: [{
 						position: 'right',
+						gridLines: {
+							display: true,
+							color: gridColor,
+							zeroLineColor: gridColor,
+						},
 						ticks: {
 							display: false,
 							max: 100
@@ -300,7 +310,9 @@ export default Vue.extend({
 				scales: {
 					xAxes: [{
 						gridLines: {
-							display: false
+							display: false,
+							color: gridColor,
+							zeroLineColor: gridColor,
 						},
 						ticks: {
 							display: false
@@ -308,6 +320,11 @@ export default Vue.extend({
 					}],
 					yAxes: [{
 						position: 'right',
+						gridLines: {
+							display: true,
+							color: gridColor,
+							zeroLineColor: gridColor,
+						},
 						ticks: {
 							display: false,
 						}
@@ -361,7 +378,9 @@ export default Vue.extend({
 				scales: {
 					xAxes: [{
 						gridLines: {
-							display: false
+							display: false,
+							color: gridColor,
+							zeroLineColor: gridColor,
 						},
 						ticks: {
 							display: false
@@ -369,6 +388,11 @@ export default Vue.extend({
 					}],
 					yAxes: [{
 						position: 'right',
+						gridLines: {
+							display: true,
+							color: gridColor,
+							zeroLineColor: gridColor,
+						},
 						ticks: {
 							display: false,
 						}
