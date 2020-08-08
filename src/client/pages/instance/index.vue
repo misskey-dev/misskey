@@ -3,7 +3,16 @@
 	<portal to="icon"><fa :icon="faServer"/></portal>
 	<portal to="title">{{ $t('instance') }}</portal>
 
-	<mk-instance-stats/>
+	<div class="main">
+		<mk-instance-stats/>
+
+		<section class="_card">
+			<div class="_title">test</div>
+			<div class="_content">
+				test
+			</div>
+		</section>
+	</div>
 
 	<div class="charts">
 		<mk-container :body-togglable="false">
@@ -456,12 +465,18 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .xhexznfu {
 	&.min-width_1600px {
+		> .main {
+			display: grid;
+			grid-template-columns: 3fr 1fr;
+			grid-template-rows: 1fr;
+			gap: 16px 16px;
+		}
+
 		> .charts {
 			display: grid;
 			grid-template-columns: 1fr 1fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
-			grid-template-areas: ". . .";
 		}
 	}
 
