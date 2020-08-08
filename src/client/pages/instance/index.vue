@@ -133,7 +133,7 @@ import MkInput from '../../components/ui/input.vue';
 import MkContainer from '../../components/ui/container.vue';
 import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '../../config';
-import XQueue from './queue-chart.vue';
+import XQueue from './index.queue-chart.vue';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -556,6 +556,12 @@ export default Vue.extend({
 	> .charts {
 		> * {
 			margin: var(--margin) 0;
+		}
+	}
+
+	> .queue {
+		> * {
+			margin-bottom: var(--margin);
 		}
 	}
 

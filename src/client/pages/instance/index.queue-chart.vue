@@ -1,30 +1,24 @@
 <template>
-<section class="_card mk-queue-queue">
-	<div class="_title"><slot name="title"></slot></div>
-	<div class="_content status">
-		<div class="cell"><div class="label">Process</div>{{ activeSincePrevTick | number }}</div>
-		<div class="cell"><div class="label">Active</div>{{ active | number }}</div>
-		<div class="cell"><div class="label">Waiting</div>{{ waiting | number }}</div>
-		<div class="cell"><div class="label">Delayed</div>{{ delayed | number }}</div>
+<mk-container :body-togglable="false">
+	<template #header><slot name="title"></slot></template>
+	<div class="_content _table">
+		<div class="_row">
+			<div class="_cell"><div class="_label">Process</div>{{ activeSincePrevTick | number }}</div>
+			<div class="_cell"><div class="_label">Active</div>{{ active | number }}</div>
+			<div class="_cell"><div class="_label">Waiting</div>{{ waiting | number }}</div>
+			<div class="_cell"><div class="_label">Delayed</div>{{ delayed | number }}</div>
+		</div>
 	</div>
 	<div class="_content" style="margin-bottom: -8px;">
 		<canvas ref="chart"></canvas>
 	</div>
-	<div class="_content" style="max-height: 180px; overflow: auto;">
-		<div v-if="jobs.length > 0">
-			<div v-for="job in jobs" :key="job[0]">
-				<span>{{ job[0] }}</span>
-				<span style="margin-left: 8px; opacity: 0.7;">({{ job[1] | number }} jobs)</span>
-			</div>
-		</div>
-		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
-	</div>
-</section>
+</mk-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Chart from 'chart.js';
+import MkContainer from '../../components/ui/container.vue';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -35,6 +29,10 @@ const alpha = (hex, a) => {
 };
 
 export default Vue.extend({
+	components: {
+		MkContainer,
+	},
+
 	props: {
 		domain: {
 			required: true
@@ -47,7 +45,6 @@ export default Vue.extend({
 	data() {
 		return {
 			chart: null,
-			jobs: [],
 			activeSincePrevTick: 0,
 			active: 0,
 			waiting: 0,
@@ -56,8 +53,6 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.fetchJobs();
-
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 		this.chart = new Chart(this.$refs.chart, {
@@ -173,29 +168,6 @@ export default Vue.extend({
 				this.onStats(stats);
 			}
 		},
-
-		fetchJobs() {
-			this.$root.api(this.domain === 'inbox' ? 'admin/queue/inbox-delayed' : this.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
-				this.jobs = jobs;
-			});
-		},
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.mk-queue-queue {
-	> .status {
-		display: flex;
-
-		> .cell {
-			flex: 1;
-
-			> .label {
-				font-size: 80%;
-				opacity: 0.7;
-			}
-		}
-	}
-}
-</style>
