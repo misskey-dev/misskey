@@ -33,7 +33,7 @@
 
 	<x-sidebar ref="nav" @change-view-mode="calcHeaderWidth"/>
 
-	<div class="contents" ref="contents" :class="{ wallpaper }">
+	<div class="contents" ref="contents" :class="{ wallpaper, full }">
 		<main ref="main">
 			<div class="content">
 				<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
@@ -125,6 +125,7 @@ export default Vue.extend({
 			canBack: false,
 			menuDef: this.$store.getters.nav({}),
 			navHidden: false,
+			full: true,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
@@ -545,6 +546,18 @@ export default Vue.extend({
 		&.wallpaper {
 			background: var(--wallpaperOverlay);
 			backdrop-filter: blur(4px);
+		}
+
+		&.full {
+			width: 100%;
+
+			> main {
+				width: 100%;
+			}
+
+			> .widgets {
+				display: none;
+			}
 		}
 
 		> main {

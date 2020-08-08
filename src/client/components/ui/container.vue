@@ -103,10 +103,6 @@ export default Vue.extend({
 	position: relative;
 	overflow: hidden;
 
-	& + .ukygtjoj {
-		margin-top: var(--margin);
-	}
-
 	&.naked {
 		background: transparent !important;
 		box-shadow: none !important;
@@ -152,10 +148,26 @@ export default Vue.extend({
 		}
 	}
 
+	> div {
+		> ::v-deep ._content {
+			padding: 32px;
+
+			& + ._content {
+				border-top: solid 1px var(--divider);
+			}
+		}
+	}
+
 	&.max-width_500px {
 		> header {
 			> .title {
 				padding: 8px 10px;
+			}
+		}
+
+		> div {
+			> ::v-deep ._content {
+				padding: 16px;
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 <template>
-<div v-if="meta" class="xhexznfu">
+<div v-if="meta" class="xhexznfu" v-size="[{ min: 1600 }]">
 	<portal to="icon"><fa :icon="faServer"/></portal>
 	<portal to="title">{{ $t('instance') }}</portal>
 
@@ -37,52 +37,59 @@
 		</div>
 	</section>
 
-	<section class="_card chart">
-		<div class="_title"><fa :icon="faMicrochip"/> {{ $t('cpuAndMemory') }}</div>
-		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-			<canvas ref="cpumem"></canvas>
-		</div>
-		<div class="_content" v-if="serverInfo">
-			<div class="table">
-				<div class="row">
-					<div class="cell"><div class="label">CPU</div>{{ serverInfo.cpu.model }}</div>
-				</div>
-				<div class="row">
-					<div class="cell"><div class="label">MEM total</div>{{ serverInfo.mem.total | bytes }}</div>
-					<div class="cell"><div class="label">MEM used</div>{{ memUsage | bytes }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
-					<div class="cell"><div class="label">MEM free</div>{{ serverInfo.mem.total - memUsage | bytes }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+	<div class="charts">
+		<mk-container :body-togglable="false">
+			<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
+
+			<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+				<canvas ref="cpumem"></canvas>
+			</div>
+			<div class="_content" v-if="serverInfo">
+				<div class="_table">
+					<!--
+					<div class="_row">
+						<div class="_cell"><div class="_label">CPU</div>{{ serverInfo.cpu.model }}</div>
+					</div>
+					-->
+					<div class="_row">
+						<div class="_cell"><div class="_label">MEM total</div>{{ serverInfo.mem.total | bytes }}</div>
+						<div class="_cell"><div class="_label">MEM used</div>{{ memUsage | bytes }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+						<div class="_cell"><div class="_label">MEM free</div>{{ serverInfo.mem.total - memUsage | bytes }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section class="_card chart">
-		<div class="_title"><fa :icon="faHdd"/> {{ $t('disk') }}</div>
-		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-			<canvas ref="disk"></canvas>
-		</div>
-		<div class="_content" v-if="serverInfo">
-			<div class="table">
-				<div class="row">
-					<div class="cell"><div class="label">Disk total</div>{{ serverInfo.fs.total | bytes }}</div>
-					<div class="cell"><div class="label">Disk used</div>{{ serverInfo.fs.used | bytes }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
-					<div class="cell"><div class="label">Disk free</div>{{ serverInfo.fs.total - serverInfo.fs.used | bytes }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+		</mk-container>
+		<mk-container :body-togglable="false">
+			<template #header><fa :icon="faHdd"/> {{ $t('disk') }}</template>
+
+			<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+				<canvas ref="disk"></canvas>
+			</div>
+			<div class="_content" v-if="serverInfo">
+				<div class="_table">
+					<div class="_row">
+						<div class="_cell"><div class="_label">Disk total</div>{{ serverInfo.fs.total | bytes }}</div>
+						<div class="_cell"><div class="_label">Disk used</div>{{ serverInfo.fs.used | bytes }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+						<div class="_cell"><div class="_label">Disk free</div>{{ serverInfo.fs.total - serverInfo.fs.used | bytes }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section class="_card chart">
-		<div class="_title"><fa :icon="faExchangeAlt"/> {{ $t('network') }}</div>
-		<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-			<canvas ref="net"></canvas>
-		</div>
-		<div class="_content" v-if="serverInfo">
-			<div class="table">
-				<div class="row">
-					<div class="cell"><div class="label">Interface</div>{{ serverInfo.net.interface }}</div>
+		</mk-container>
+		<mk-container :body-togglable="false">
+			<template #header><fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
+
+			<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+				<canvas ref="net"></canvas>
+			</div>
+			<div class="_content" v-if="serverInfo">
+				<div class="_table">
+					<div class="_row">
+						<div class="_cell"><div class="_label">Interface</div>{{ serverInfo.net.interface }}</div>
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</mk-container>
+	</div>
 
 	<section class="_card info">
 		<div class="_content table">
@@ -106,6 +113,7 @@ import MkInstanceStats from '../../components/instance-stats.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInput from '../../components/ui/input.vue';
+import MkContainer from '../../components/ui/container.vue';
 import { version, url } from '../../config';
 
 const alpha = (hex, a) => {
@@ -128,6 +136,7 @@ export default Vue.extend({
 		MkButton,
 		MkSelect,
 		MkInput,
+		MkContainer,
 		VueJsonPretty
 	},
 
@@ -446,6 +455,22 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .xhexznfu {
+	&.min-width_1600px {
+		> .charts {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			grid-template-rows: 1fr;
+			gap: 16px 16px;
+			grid-template-areas: ". . .";
+		}
+	}
+
+	> .charts {
+		> * {
+			margin: var(--margin) 0;
+		}
+	}
+
 	> .stats {
 		display: flex;
 		justify-content: space-between;
@@ -486,38 +511,6 @@ export default Vue.extend({
 
 					&.debug {
 						opacity: 0.7;
-					}
-				}
-			}
-		}
-	}
-
-	> .chart {
-		> ._content {
-			> .table {
-				> .row {
-					display: flex;
-
-					&:not(:last-child) {
-						margin-bottom: 16px;
-
-						@media (max-width: 500px) {
-							margin-bottom: 8px;
-						}
-					}
-
-					> .cell {
-						flex: 1;
-
-						> .label {
-							font-size: 80%;
-							opacity: 0.7;
-
-							> .icon {
-								margin-right: 4px;
-								display: none;
-							}
-						}
 					}
 				}
 			}

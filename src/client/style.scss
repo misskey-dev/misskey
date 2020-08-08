@@ -389,6 +389,34 @@ hr {
 	}
 }
 
+._table {
+	> ._row {
+		display: flex;
+
+		&:not(:last-child) {
+			margin-bottom: 16px;
+
+			@media (max-width: 500px) {
+				margin-bottom: 8px;
+			}
+		}
+
+		> ._cell {
+			flex: 1;
+
+			> ._label {
+				font-size: 80%;
+				opacity: 0.7;
+
+				> ._icon {
+					margin-right: 4px;
+					display: none;
+				}
+			}
+		}
+	}
+}
+
 ._fullinfo {
 	padding: 64px 32px;
 	text-align: center;
