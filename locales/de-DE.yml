@@ -557,6 +557,7 @@ wordMute: "Wort-Stummschaltung"
 userSaysSomething: "{name} hat etwas gesagt."
 makeActive: "Aktivieren"
 display: "Anzeige"
+copy: "Kopieren"
 _sidebar:
   full: "Voll"
   icon: "Profilbild"
