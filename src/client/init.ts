@@ -122,7 +122,7 @@ window.addEventListener('storage', e => {
 	}
 }, false);
 
-vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'])
+vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'], [])
 	.then(() => new MiOS(store))
 	.then(os => {
 		os.init(async () => {

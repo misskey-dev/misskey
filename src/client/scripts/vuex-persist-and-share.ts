@@ -4,12 +4,13 @@ import { BroadcastChannel } from 'broadcast-channel';
 import { VuexPersistDB, VuexPersistStore } from './vuex-idb';
 
 /**
- * Vuexのstate永続化及びcommit・dispatchをタブ間で共有します
+ * Vuexのstate永続化を行い、moduleのcommitをタブ間で共有します
  * @param store vuexインスタンス
  * @param states 永続化するルートのstate
  * @param modules 永続化するmodule
+ * @param ignoreMutations 共有しないcommit (mutation type)
  */
-export async function vuexPersistAndShare<State>(store: Store<State>, states: string[], modules: string[]) {
+export async function vuexPersistAndShare<State>(store: Store<State>, states: string[], modules: string[], ignoreMutations: string[]) {
 	const persistDB = new VuexPersistDB();
 	const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
 		webWorkerSupport: false
@@ -57,6 +58,8 @@ export async function vuexPersistAndShare<State>(store: Store<State>, states: st
 			passedPayloads.splice(passedPayloads.indexOf(mutation.payload), 1);
 			return;
 		}
+
+		if (ignoreMutations.includes(mutation.type)) return;
 
 		const splited = mutation.type.split('/');
 		const module = splited[0];
