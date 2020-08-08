@@ -122,249 +122,253 @@ window.addEventListener('storage', e => {
 	}
 }, false);
 
-vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'], [])
-	.then(() => new MiOS(store))
-	.then(os => {
-		os.init(async () => {
-			//#region Fetch locale data
-			const i18n = new VueI18n();
+(async () => {
 
-			await count(clientDb.i18n).then(async n => {
-				if (n === 0) return setI18nContexts(lang, version, i18n);
-				if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
+await vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'], []);
 
-				i18n.locale = lang;
-				i18n.setLocaleMessage(lang, await getLocale());
-			});
-			//#endregion
+const os = new MiOS(store);
 
-			const app = new Vue({
-				store: store,
-				i18n,
-				metaInfo: {
-					title: null,
-					titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
-				},
-				data() {
-					return {
-						stream: os.stream,
-						isMobile: isMobile,
-						i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
-					};
-				},
-				// TODO: ここらへんのメソッド全部Vuexに移したい
-				methods: {
-					api: (endpoint: string, data: { [x: string]: any } = {}, token?) => store.dispatch('api', { endpoint, data, token }),
-					signout: os.signout,
-					new(vm, props) {
-						const x = new vm({
-							parent: this,
-							propsData: props
-						}).$mount();
-						document.body.appendChild(x.$el);
-						return x;
-					},
-					dialog(opts) {
-						const vm = this.new(Dialog, opts);
-						const p: any = new Promise((res) => {
-							vm.$once('ok', result => res({ canceled: false, result }));
-							vm.$once('cancel', () => res({ canceled: true }));
-						});
-						p.close = () => {
-							vm.close();
-						};
-						return p;
-					},
-					menu(opts) {
-						const vm = this.new(Menu, opts);
-						const p: any = new Promise((res) => {
-							vm.$once('closed', () => res());
-						});
-						return p;
-					},
-					form(title, form) {
-						const vm = this.new(Form, { title, form });
-						return new Promise((res) => {
-							vm.$once('ok', result => res({ canceled: false, result }));
-							vm.$once('cancel', () => res({ canceled: true }));
-						});
-					},
-					post(opts, cb) {
-						if (!this.$store.getters.isSignedIn) return;
-						const vm = this.new(PostFormDialog, opts);
-						if (cb) vm.$once('closed', cb);
-						(vm as any).focus();
-					},
-					sound(type: string) {
-						if (this.$store.state.device.sfxVolume === 0) return;
-						const sound = this.$store.state.device['sfx' + type.substr(0, 1).toUpperCase() + type.substr(1)];
-						if (sound == null) return;
-						const audio = new Audio(`/assets/sounds/${sound}.mp3`);
-						audio.volume = this.$store.state.device.sfxVolume;
-						audio.play();
-					}
-				},
-				router: router,
-				render: createEl => createEl(deckmode ? Deck : App)
-			});
+os.init(async () => {
+	//#region Fetch locale data
+	const i18n = new VueI18n();
 
-			// マウント
-			app.$mount('#app');
+	await count(clientDb.i18n).then(async n => {
+		if (n === 0) return setI18nContexts(lang, version, i18n);
+		if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
 
-			store.watch(state => state.device.darkMode, darkMode => {
-				import('./scripts/theme').then(({ builtinThemes }) => {
-					const themes = builtinThemes.concat(store.state.device.themes);
-					applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		i18n.locale = lang;
+		i18n.setLocaleMessage(lang, await getLocale());
+	});
+	//#endregion
+
+	const app = new Vue({
+		store: store,
+		i18n,
+		metaInfo: {
+			title: null,
+			titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
+		},
+		data() {
+			return {
+				stream: os.stream,
+				isMobile: isMobile,
+				i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
+			};
+		},
+		// TODO: ここらへんのメソッド全部Vuexに移したい
+		methods: {
+			api: (endpoint: string, data: { [x: string]: any } = {}, token?) => store.dispatch('api', { endpoint, data, token }),
+			signout: os.signout,
+			new(vm, props) {
+				const x = new vm({
+					parent: this,
+					propsData: props
+				}).$mount();
+				document.body.appendChild(x.$el);
+				return x;
+			},
+			dialog(opts) {
+				const vm = this.new(Dialog, opts);
+				const p: any = new Promise((res) => {
+					vm.$once('ok', result => res({ canceled: false, result }));
+					vm.$once('cancel', () => res({ canceled: true }));
 				});
-			});
-
-			//#region Sync dark mode
-			if (store.state.device.syncDeviceDarkMode) {
-				store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+				p.close = () => {
+					vm.close();
+				};
+				return p;
+			},
+			menu(opts) {
+				const vm = this.new(Menu, opts);
+				const p: any = new Promise((res) => {
+					vm.$once('closed', () => res());
+				});
+				return p;
+			},
+			form(title, form) {
+				const vm = this.new(Form, { title, form });
+				return new Promise((res) => {
+					vm.$once('ok', result => res({ canceled: false, result }));
+					vm.$once('cancel', () => res({ canceled: true }));
+				});
+			},
+			post(opts, cb) {
+				if (!this.$store.getters.isSignedIn) return;
+				const vm = this.new(PostFormDialog, opts);
+				if (cb) vm.$once('closed', cb);
+				(vm as any).focus();
+			},
+			sound(type: string) {
+				if (this.$store.state.device.sfxVolume === 0) return;
+				const sound = this.$store.state.device['sfx' + type.substr(0, 1).toUpperCase() + type.substr(1)];
+				if (sound == null) return;
+				const audio = new Audio(`/assets/sounds/${sound}.mp3`);
+				audio.volume = this.$store.state.device.sfxVolume;
+				audio.play();
 			}
+		},
+		router: router,
+		render: createEl => createEl(deckmode ? Deck : App)
+	});
 
-			window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
-				if (store.state.device.syncDeviceDarkMode) {
-					store.commit('device/set', { key: 'darkMode', value: mql.matches });
-				}
-			});
-			//#endregion
+	// マウント
+	app.$mount('#app');
 
-			store.watch(state => state.device.useBlurEffectForModal, v => {
-				document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
-			}, { immediate: true });
-
-			os.stream.on('emojiAdded', data => {
-				// TODO
-				//store.commit('instance/set', );
-			});
-
-			for (const plugin of store.state.deviceUser.plugins.filter(p => p.active)) {
-				console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
-
-				const aiscript = new AiScript(createPluginEnv(app, {
-					plugin: plugin,
-					storageKey: 'plugins:' + plugin.id
-				}), {
-					in: (q) => {
-						return new Promise(ok => {
-							app.dialog({
-								title: q,
-								input: {}
-							}).then(({ canceled, result: a }) => {
-								ok(a);
-							});
-						});
-					},
-					out: (value) => {
-						console.log(value);
-					},
-					log: (type, params) => {
-					},
-				});
-
-				store.commit('initPlugin', { plugin, aiscript });
-
-				aiscript.exec(deserialize(plugin.ast));
-			}
-
-			if (store.getters.isSignedIn) {
-				if ('Notification' in window) {
-					// 許可を得ていなかったらリクエスト
-					if (Notification.permission === 'default') {
-						Notification.requestPermission();
-					}
-				}
-
-				const main = os.stream.useSharedConnection('main');
-
-				// 自分の情報が更新されたとき
-				main.on('meUpdated', i => {
-					store.dispatch('mergeMe', i);
-				});
-
-				main.on('readAllNotifications', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadNotification: false
-					});
-				});
-
-				main.on('unreadNotification', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadNotification: true
-					});
-				});
-
-				main.on('unreadMention', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadMentions: true
-					});
-				});
-
-				main.on('readAllUnreadMentions', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadMentions: false
-					});
-				});
-
-				main.on('unreadSpecifiedNote', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadSpecifiedNotes: true
-					});
-				});
-
-				main.on('readAllUnreadSpecifiedNotes', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadSpecifiedNotes: false
-					});
-				});
-
-				main.on('readAllMessagingMessages', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadMessagingMessage: false
-					});
-				});
-
-				main.on('unreadMessagingMessage', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadMessagingMessage: true
-					});
-
-					app.sound('chatBg');
-				});
-
-				main.on('readAllAntennas', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadAntenna: false
-					});
-				});
-
-				main.on('unreadAntenna', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadAntenna: true
-					});
-
-					app.sound('antenna');
-				});
-
-				main.on('readAllAnnouncements', () => {
-					store.dispatch('mergeMe', {
-						hasUnreadAnnouncement: false
-					});
-				});
-
-				main.on('clientSettingUpdated', x => {
-					store.commit('settings/set', {
-						key: x.key,
-						value: x.value
-					});
-				});
-
-				// トークンが再生成されたとき
-				// このままではMisskeyが利用できないので強制的にサインアウトさせる
-				main.on('myTokenRegenerated', () => {
-					os.signout();
-				});
-			}
+	store.watch(state => state.device.darkMode, darkMode => {
+		import('./scripts/theme').then(({ builtinThemes }) => {
+			const themes = builtinThemes.concat(store.state.device.themes);
+			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
 		});
 	});
+
+	//#region Sync dark mode
+	if (store.state.device.syncDeviceDarkMode) {
+		store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
+		if (store.state.device.syncDeviceDarkMode) {
+			store.commit('device/set', { key: 'darkMode', value: mql.matches });
+		}
+	});
+	//#endregion
+
+	store.watch(state => state.device.useBlurEffectForModal, v => {
+		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+	}, { immediate: true });
+
+	os.stream.on('emojiAdded', data => {
+		// TODO
+		//store.commit('instance/set', );
+	});
+
+	for (const plugin of store.state.deviceUser.plugins.filter(p => p.active)) {
+		console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+
+		const aiscript = new AiScript(createPluginEnv(app, {
+			plugin: plugin,
+			storageKey: 'plugins:' + plugin.id
+		}), {
+			in: (q) => {
+				return new Promise(ok => {
+					app.dialog({
+						title: q,
+						input: {}
+					}).then(({ canceled, result: a }) => {
+						ok(a);
+					});
+				});
+			},
+			out: (value) => {
+				console.log(value);
+			},
+			log: (type, params) => {
+			},
+		});
+
+		store.commit('initPlugin', { plugin, aiscript });
+
+		aiscript.exec(deserialize(plugin.ast));
+	}
+
+	if (store.getters.isSignedIn) {
+		if ('Notification' in window) {
+			// 許可を得ていなかったらリクエスト
+			if (Notification.permission === 'default') {
+				Notification.requestPermission();
+			}
+		}
+
+		const main = os.stream.useSharedConnection('main');
+
+		// 自分の情報が更新されたとき
+		main.on('meUpdated', i => {
+			store.dispatch('mergeMe', i);
+		});
+
+		main.on('readAllNotifications', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadNotification: false
+			});
+		});
+
+		main.on('unreadNotification', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadNotification: true
+			});
+		});
+
+		main.on('unreadMention', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadMentions: true
+			});
+		});
+
+		main.on('readAllUnreadMentions', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadMentions: false
+			});
+		});
+
+		main.on('unreadSpecifiedNote', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadSpecifiedNotes: true
+			});
+		});
+
+		main.on('readAllUnreadSpecifiedNotes', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadSpecifiedNotes: false
+			});
+		});
+
+		main.on('readAllMessagingMessages', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: false
+			});
+		});
+
+		main.on('unreadMessagingMessage', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadMessagingMessage: true
+			});
+
+			app.sound('chatBg');
+		});
+
+		main.on('readAllAntennas', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadAntenna: false
+			});
+		});
+
+		main.on('unreadAntenna', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadAntenna: true
+			});
+
+			app.sound('antenna');
+		});
+
+		main.on('readAllAnnouncements', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadAnnouncement: false
+			});
+		});
+
+		main.on('clientSettingUpdated', x => {
+			store.commit('settings/set', {
+				key: x.key,
+				value: x.value
+			});
+		});
+
+		// トークンが再生成されたとき
+		// このままではMisskeyが利用できないので強制的にサインアウトさせる
+		main.on('myTokenRegenerated', () => {
+			os.signout();
+		});
+	}
+});
+
+})();
