@@ -4,7 +4,7 @@
 	<portal to="title">{{ $t('instance') }}</portal>
 
 	<div class="main">
-		<mk-instance-stats/>
+		<mk-instance-stats :chart-limit="300" :detailed="true"/>
 
 		<section class="_card">
 			<div class="_title">test</div>

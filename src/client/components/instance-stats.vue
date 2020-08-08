@@ -127,7 +127,6 @@ import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-ico
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
 
-const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
 const alpha = (hex, a) => {
@@ -141,6 +140,19 @@ const alpha = (hex, a) => {
 export default Vue.extend({
 	components: {
 		MkSelect
+	},
+
+	props: {
+		chartLimit: {
+			type: Number,
+			required: false,
+			default: 90
+		},
+		detailed: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {
@@ -209,17 +221,17 @@ export default Vue.extend({
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([Promise.all([
-			this.$root.api('charts/federation', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/users', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/active-users', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/notes', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/drive', { limit: chartLimit, span: 'hour' }),
+			this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
 		]), Promise.all([
-			this.$root.api('charts/federation', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/users', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/active-users', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/notes', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/drive', { limit: chartLimit, span: 'day' }),
+			this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
 		])]);
 
 		const chart = {
@@ -263,7 +275,7 @@ export default Vue.extend({
 			this.chartInstance = new Chart(this.$refs.chart, {
 				type: 'line',
 				data: {
-					labels: new Array(chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
+					labels: new Array(this.chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
 					datasets: this.data.series.map(x => ({
 						label: x.name,
 						data: x.data.slice().reverse(),
@@ -301,9 +313,9 @@ export default Vue.extend({
 							}
 						}],
 						yAxes: [{
-							position: 'right',
+							position: 'left',
 							ticks: {
-								display: false
+								display: this.detailed
 							}
 						}]
 					},
