@@ -1,6 +1,8 @@
 export default {
 	inserted(src, binding, vn) {
 		const query = binding.value;
+
+		// TODO: 要素をもらうというよりはカスタム幅算出関数をもらうようにしてcalcで都度呼び出して計算するようにした方が柔軟そう
 		const el = query.el ? query.el() : src;
 
 		/*
