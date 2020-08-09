@@ -112,7 +112,17 @@
 	<mk-folder>
 		<template #header><fa :icon="faStream"/> {{ $t('logs') }}</template>
 
-		<div class="">
+		<div class="uwuemslx">
+			<mk-container :body-togglable="false" :resize-base-el="() => $el">
+				<template #header><fa :icon="faInfoCircle"/>{{ $t('') }}</template>
+
+				<div class="_content">
+					<div class="_keyValue" v-for="log in modLogs">
+						<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><mk-time :time="log.createdAt" style="opacity: 0.7;"/>
+					</div>
+				</div>
+			</mk-container>
+
 			<section class="_card logs">
 				<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
 				<div class="_content">
@@ -206,6 +216,7 @@ export default Vue.extend({
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
+			modLogs: [],
 			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
@@ -230,6 +241,7 @@ export default Vue.extend({
 	mounted() {
 		this.fetchLogs();
 		this.fetchJobs();
+		this.fetchModLogs();
 
 		// TODO: var(--panel)の色が暗いか明るいかで判定する
 		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -494,6 +506,12 @@ export default Vue.extend({
 			});
 		},
 
+		fetchModLogs() {
+			this.$root.api('admin/show-moderation-logs', {}).then(logs => {
+				this.modLogs = logs;
+			});
+		},
+
 		deleteAllLogs() {
 			this.$root.api('admin/delete-logs').then(() => {
 				this.$root.dialog({
@@ -574,6 +592,14 @@ export default Vue.extend({
 			grid-template-columns: 0.5fr 1fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
+		}
+
+		.uwuemslx {
+			display: grid;
+			grid-template-columns: 2fr 3fr;
+			grid-template-rows: 1fr;
+			gap: 16px 16px;
+			height: 500px;
 		}
 	}
 
