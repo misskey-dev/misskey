@@ -49,7 +49,7 @@ export default defineComponent({
 	},
 	created() {
 		this.tick();
-		this.$watch('props.showMs', () => {
+		this.$watch(() => this.props.showMs, () => {
 			if (this.clock) clearInterval(this.clock);
 			this.clock = setInterval(this.tick, this.props.showMs ? 10 : 1000);
 		}, { immediate: true });
