@@ -1,5 +1,5 @@
 <template>
-<div class="zbcjwnqg" v-size="[{ max: 550 }, { max: 1200 }]">
+<div class="zbcjwnqg" v-size="{ max: [550, 1200] }">
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>

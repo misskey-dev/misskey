@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 380 }]">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="{ max: [380], el: resizeBaseEl }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -51,6 +51,9 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
+		},
+		resizeBaseEl: {
+			required: false,
 		},
 	},
 	data() {

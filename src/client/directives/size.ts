@@ -1,6 +1,7 @@
 export default {
-	inserted(el, binding, vn) {
+	inserted(src, binding, vn) {
 		const query = binding.value;
+		const el = query.el ? query.el() : src;
 
 		/*
 		const addClassRecursive = (el: Element, cls: string) => {
@@ -32,19 +33,21 @@ export default {
 		const calc = () => {
 			const width = el.clientWidth;
 
-			for (const q of query) {
-				if (q.max) {
-					if (width <= q.max) {
-						addClass(el, 'max-width_' + q.max + 'px');
+			if (query.max) {
+				for (const v of query.max) {
+					if (width <= v) {
+						addClass(src, 'max-width_' + v + 'px');
 					} else {
-						removeClass(el, 'max-width_' + q.max + 'px');
+						removeClass(src, 'max-width_' + v + 'px');
 					}
 				}
-				if (q.min) {
-					if (width >= q.min) {
-						addClass(el, 'min-width_' + q.min + 'px');
+			}
+			if (query.min) {
+				for (const v of query.min) {
+					if (width >= v) {
+						addClass(src, 'min-width_' + v + 'px');
 					} else {
-						removeClass(el, 'min-width_' + q.min + 'px');
+						removeClass(src, 'min-width_' + v + 'px');
 					}
 				}
 			}

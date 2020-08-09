@@ -1,5 +1,5 @@
 <template>
-<div class="ssazuxis" v-size="[{ max: 500 }]">
+<div class="ssazuxis" v-size="{ max: [500] }">
 	<header @click="() => showBody = !showBody" class="_button">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>

@@ -1,5 +1,5 @@
 <template>
-<div v-if="meta" class="xhexznfu" v-size="[{ min: 1600 }]">
+<div v-if="meta" class="xhexznfu" v-size="{ min: [1600] }">
 	<portal to="icon"><fa :icon="faServer"/></portal>
 	<portal to="title">{{ $t('instance') }}</portal>
 
@@ -10,7 +10,7 @@
 			<mk-instance-stats :chart-limit="300" :detailed="true"/>
 
 			<div class="column">
-				<mk-container :body-togglable="false">
+				<mk-container :body-togglable="false" :resize-base-el="() => $el">
 					<template #header><fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
 
 					<div class="_content">
@@ -32,7 +32,7 @@
 		<template #header><fa :icon="faHeartbeat"/> {{ $t('metrics') }}</template>
 
 		<div class="segusily">
-			<mk-container :body-togglable="false">
+			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
@@ -53,7 +53,7 @@
 					</div>
 				</div>
 			</mk-container>
-			<mk-container :body-togglable="false">
+			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faHdd"/> {{ $t('disk') }}</template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
@@ -69,7 +69,7 @@
 					</div>
 				</div>
 			</mk-container>
-			<mk-container :body-togglable="false">
+			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
@@ -90,7 +90,7 @@
 		<template #header><fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
 
 		<div class="vkyrmkwb">
-			<mk-container :body-togglable="false">
+			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
 
 				<div class="_content">
