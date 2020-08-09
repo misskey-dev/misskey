@@ -238,6 +238,10 @@ export default Vue.extend({
 		}
 	},
 
+	created() {
+		this.$store.commit('setFullView', true);
+	},
+
 	mounted() {
 		this.fetchLogs();
 		this.fetchJobs();
@@ -487,6 +491,7 @@ export default Vue.extend({
 		this.connection.off('statsLog', this.onStatsLog);
 		this.connection.dispose();
 		this.queueConnection.dispose();
+		this.$store.commit('setFullView', false);
 	},
 
 	methods: {
