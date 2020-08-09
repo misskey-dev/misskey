@@ -80,12 +80,15 @@ export default Vue.extend({
 
 .ssazuxis {
 	position: relative;
-	overflow: hidden;
 
 	> header {
 		display: flex;
 		position: relative;
 		z-index: 2;
+		// TODO
+		// position: sticky;
+		// top: var(--stickyTopOffset);
+		// backdrop-filter: blur(20px);
 
 		> .title {
 			margin: 0;
