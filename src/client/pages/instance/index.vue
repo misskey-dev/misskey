@@ -79,6 +79,16 @@
 	</div>
 
 	<div class="queue">
+		<mk-container :body-togglable="false">
+			<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
+
+			<div class="_content">
+				<div class="_keyValue" v-for="job in jobs" :key="job[0]">
+					<div>{{ job[0] }}</div>
+					<div>{{ job[1] | number }} jobs</div>
+				</div>
+			</div>
+		</mk-container>
 		<x-queue :connection="queueConnection" domain="inbox">
 			<template #title><fa :icon="faExchangeAlt"/> In</template>
 		</x-queue>
@@ -123,7 +133,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '../../components/instance-stats.vue';
@@ -172,10 +182,11 @@ export default Vue.extend({
 			memUsage: 0,
 			chartCpuMem: null,
 			chartNet: null,
+			jobs: [],
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
-			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle
+			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle
 		}
 	},
 
@@ -198,6 +209,7 @@ export default Vue.extend({
 
 	mounted() {
 		this.fetchLogs();
+		this.fetchJobs();
 
 		// TODO: var(--panel)の色が暗いか明るいかで判定する
 		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -456,6 +468,12 @@ export default Vue.extend({
 			});
 		},
 
+		fetchJobs() {
+			this.$root.api('admin/queue/deliver-delayed', {}).then(jobs => {
+				this.jobs = jobs;
+			});
+		},
+
 		deleteAllLogs() {
 			this.$root.api('admin/delete-logs').then(() => {
 				this.$root.dialog({
@@ -533,7 +551,7 @@ export default Vue.extend({
 
 		> .queue {
 			display: grid;
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: 0.5fr 1fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
 		}
