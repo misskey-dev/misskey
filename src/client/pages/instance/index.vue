@@ -3,102 +3,111 @@
 	<portal to="icon"><fa :icon="faServer"/></portal>
 	<portal to="title">{{ $t('instance') }}</portal>
 
-	<div class="header">Overview</div>
-	<div class="main">
-		<mk-instance-stats :chart-limit="300" :detailed="true"/>
+	<mk-folder>
+		<template #header><fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>
 
-		<div class="column">
+		<div class="sboqnrfi">
+			<mk-instance-stats :chart-limit="300" :detailed="true"/>
+
+			<div class="column">
+				<mk-container :body-togglable="false">
+					<template #header><fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
+
+					<div class="_content">
+						<div class="_keyValue"><b>Misskey</b><span>v{{ version }}</span></div>
+					</div>
+					<div class="_content" v-if="serverInfo">
+						<div class="_keyValue"><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
+						<div class="_keyValue"><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
+						<div class="_keyValue"><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
+					</div>
+				</mk-container>
+
+				<mkw-federation/>
+			</div>
+		</div>
+	</mk-folder>
+
+	<mk-folder style="margin: var(--margin) 0;">
+		<template #header><fa :icon="faHeartbeat"/> {{ $t('metrics') }}</template>
+
+		<div class="segusily">
 			<mk-container :body-togglable="false">
-				<template #header><fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
+				<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
 
-				<div class="_content igpifznz">
-					<div><b>Misskey</b><span>v{{ version }}</span></div>
+				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+					<canvas ref="cpumem"></canvas>
 				</div>
-				<div class="_content igpifznz" v-if="serverInfo">
-					<div><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
-					<div><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
-					<div><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
+				<div class="_content" v-if="serverInfo">
+					<div class="_table">
+						<!--
+						<div class="_row">
+							<div class="_cell"><div class="_label">CPU</div>{{ serverInfo.cpu.model }}</div>
+						</div>
+						-->
+						<div class="_row">
+							<div class="_cell"><div class="_label">MEM total</div>{{ serverInfo.mem.total | bytes }}</div>
+							<div class="_cell"><div class="_label">MEM used</div>{{ memUsage | bytes }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+							<div class="_cell"><div class="_label">MEM free</div>{{ serverInfo.mem.total - memUsage | bytes }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+						</div>
+					</div>
 				</div>
 			</mk-container>
+			<mk-container :body-togglable="false">
+				<template #header><fa :icon="faHdd"/> {{ $t('disk') }}</template>
 
-			<mkw-federation/>
+				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+					<canvas ref="disk"></canvas>
+				</div>
+				<div class="_content" v-if="serverInfo">
+					<div class="_table">
+						<div class="_row">
+							<div class="_cell"><div class="_label">Disk total</div>{{ serverInfo.fs.total | bytes }}</div>
+							<div class="_cell"><div class="_label">Disk used</div>{{ serverInfo.fs.used | bytes }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+							<div class="_cell"><div class="_label">Disk free</div>{{ serverInfo.fs.total - serverInfo.fs.used | bytes }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+						</div>
+					</div>
+				</div>
+			</mk-container>
+			<mk-container :body-togglable="false">
+				<template #header><fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
+
+				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
+					<canvas ref="net"></canvas>
+				</div>
+				<div class="_content" v-if="serverInfo">
+					<div class="_table">
+						<div class="_row">
+							<div class="_cell"><div class="_label">Interface</div>{{ serverInfo.net.interface }}</div>
+						</div>
+					</div>
+				</div>
+			</mk-container>
 		</div>
-	</div>
+	</mk-folder>
 
-	<div class="header">Health</div>
-	<div class="health">
-		<mk-container :body-togglable="false">
-			<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
+	<mk-folder>
+		<template #header><fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
 
-			<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-				<canvas ref="cpumem"></canvas>
-			</div>
-			<div class="_content" v-if="serverInfo">
-				<div class="_table">
-					<!--
-					<div class="_row">
-						<div class="_cell"><div class="_label">CPU</div>{{ serverInfo.cpu.model }}</div>
-					</div>
-					-->
-					<div class="_row">
-						<div class="_cell"><div class="_label">MEM total</div>{{ serverInfo.mem.total | bytes }}</div>
-						<div class="_cell"><div class="_label">MEM used</div>{{ memUsage | bytes }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
-						<div class="_cell"><div class="_label">MEM free</div>{{ serverInfo.mem.total - memUsage | bytes }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+		<div class="vkyrmkwb">
+			<mk-container :body-togglable="false">
+				<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
+
+				<div class="_content">
+					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
+						<div>{{ job[0] }}</div>
+						<div>{{ job[1] | number }} jobs</div>
 					</div>
 				</div>
-			</div>
-		</mk-container>
-		<mk-container :body-togglable="false">
-			<template #header><fa :icon="faHdd"/> {{ $t('disk') }}</template>
-
-			<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-				<canvas ref="disk"></canvas>
-			</div>
-			<div class="_content" v-if="serverInfo">
-				<div class="_table">
-					<div class="_row">
-						<div class="_cell"><div class="_label">Disk total</div>{{ serverInfo.fs.total | bytes }}</div>
-						<div class="_cell"><div class="_label">Disk used</div>{{ serverInfo.fs.used | bytes }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
-						<div class="_cell"><div class="_label">Disk free</div>{{ serverInfo.fs.total - serverInfo.fs.used | bytes }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
-					</div>
-				</div>
-			</div>
-		</mk-container>
-		<mk-container :body-togglable="false">
-			<template #header><fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
-
-			<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-				<canvas ref="net"></canvas>
-			</div>
-			<div class="_content" v-if="serverInfo">
-				<div class="_table">
-					<div class="_row">
-						<div class="_cell"><div class="_label">Interface</div>{{ serverInfo.net.interface }}</div>
-					</div>
-				</div>
-			</div>
-		</mk-container>
-	</div>
-
-	<div class="header">Queue</div>
-	<div class="queue">
-		<mk-container :body-togglable="false">
-			<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
-
-			<div class="_content">
-				<div class="_keyValue" v-for="job in jobs" :key="job[0]">
-					<div>{{ job[0] }}</div>
-					<div>{{ job[1] | number }} jobs</div>
-				</div>
-			</div>
-		</mk-container>
-		<x-queue :connection="queueConnection" domain="inbox">
-			<template #title><fa :icon="faExchangeAlt"/> In</template>
-		</x-queue>
-		<x-queue :connection="queueConnection" domain="deliver">
-			<template #title><fa :icon="faExchangeAlt"/> Out</template>
-		</x-queue>
-	</div>
+			</mk-container>
+			<x-queue :connection="queueConnection" domain="inbox">
+				<template #title><fa :icon="faExchangeAlt"/> In</template>
+			</x-queue>
+			<x-queue :connection="queueConnection" domain="deliver">
+				<template #title><fa :icon="faExchangeAlt"/> Out</template>
+			</x-queue>
+		</div>
+	</mk-folder>
 
 	<section class="_card logs">
 		<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
@@ -136,7 +145,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '../../components/instance-stats.vue';
@@ -144,6 +153,7 @@ import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkContainer from '../../components/ui/container.vue';
+import MkFolder from '../../components/ui/folder.vue';
 import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '../../config';
 import XQueue from './index.queue-chart.vue';
@@ -169,6 +179,7 @@ export default Vue.extend({
 		MkSelect,
 		MkInput,
 		MkContainer,
+		MkFolder,
 		MkwFederation,
 		XQueue,
 		VueJsonPretty,
@@ -189,7 +200,7 @@ export default Vue.extend({
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
-			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle
+			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
 
@@ -531,7 +542,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .xhexznfu {
 	&.min-width_1600px {
-		> .main {
+		.sboqnrfi {
 			display: grid;
 			grid-template-columns: 3fr 1fr;
 			grid-template-rows: 1fr;
@@ -545,14 +556,14 @@ export default Vue.extend({
 			}
 		}
 
-		> .health {
+		.segusily {
 			display: grid;
 			grid-template-columns: 1fr 1fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
 		}
 
-		> .queue {
+		.vkyrmkwb {
 			display: grid;
 			grid-template-columns: 0.5fr 1fr 1fr;
 			grid-template-rows: 1fr;
@@ -560,27 +571,7 @@ export default Vue.extend({
 		}
 	}
 
-	> .main {
-		> .column {
-			.igpifznz {
-				> div {
-					display: flex;
-
-					> * {
-						flex: 1;
-					}
-				}
-			}
-		}
-	}
-
-	> .health {
-		> * {
-			margin: var(--margin) 0;
-		}
-	}
-
-	> .queue {
+	.vkyrmkwb {
 		> * {
 			margin-bottom: var(--margin);
 		}

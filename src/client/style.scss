@@ -434,7 +434,7 @@ hr {
 ._keyValue {
 	display: flex;
 
-	> div {
+	> * {
 		flex: 1;
 	}
 }
