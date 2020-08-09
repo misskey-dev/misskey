@@ -544,7 +544,7 @@ export default Vue.extend({
 	&.min-width_1600px {
 		.sboqnrfi {
 			display: grid;
-			grid-template-columns: 3fr 1fr;
+			grid-template-columns: 3.2fr 1fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
 

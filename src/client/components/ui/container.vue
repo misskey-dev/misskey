@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 400 }]">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 380 }]">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -158,7 +158,7 @@ export default Vue.extend({
 		}
 	}
 
-	&.max-width_400px {
+	&.max-width_380px {
 		> header {
 			> .title {
 				padding: 8px 10px;
