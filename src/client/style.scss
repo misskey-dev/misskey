@@ -413,6 +413,11 @@ hr {
 	color: var(--link);
 }
 
+._caption {
+	font-size: 0.8em;
+	opacity: 0.7;
+}
+
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }

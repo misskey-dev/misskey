@@ -13,10 +13,11 @@
 	</div>
 	<div class="_content" v-show="tab === 'hard'">
 		<mk-info>{{ $t('_wordMute.hardDescription') }}</mk-info>
-		<mk-textarea v-model="hardMutedWords">
+		<mk-textarea v-model="hardMutedWords" style="margin-bottom: 16px;">
 			<span>{{ $t('_wordMute.muteWords') }}</span>
 			<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
 		</mk-textarea>
+		<div v-if="hardWordMutedNotesCount != null" class="_caption">{{ $t('_wordMute.mutedNotesCount', { count: hardWordMutedNotesCount }) }}</div>
 	</div>
 	<div class="_footer">
 		<mk-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
@@ -45,6 +46,7 @@ export default Vue.extend({
 			tab: 'soft',
 			softMutedWords: '',
 			hardMutedWords: '',
+			hardWordMutedNotesCount: null,
 			changed: false,
 			faCommentSlash, faSave,
 		}
@@ -59,9 +61,11 @@ export default Vue.extend({
 		},
 	},
 
-	created() {
+	async created() {
 		this.softMutedWords = this.$store.state.settings.mutedWords.map(x => x.join(' ')).join('\n');
 		this.hardMutedWords = this.$store.state.i.mutedWords.map(x => x.join(' ')).join('\n');
+
+		this.hardWordMutedNotesCount = (await this.$root.api('i/get-word-muted-notes-count', {})).count;
 	},
 
 	methods: {
