@@ -558,6 +558,9 @@ userSaysSomething: "{name} said something"
 makeActive: "Activate"
 display: "Display"
 copy: "Copy"
+metrics: "Metrics"
+overview: "Overview"
+logs: "Logs"
 _sidebar:
   full: "Full"
   icon: "Avatar"
@@ -570,6 +573,7 @@ _wordMute:
   hardDescription: "Prevent notes fulfilling the set conditions from being added to the timeline. In addition, these notes will not be added to the timeline even if the conditions are changed."
   soft: "Soft"
   hard: "Hard"
+  mutedNotes: "Muted notes"
 _theme:
   explore: "Explore Themes"
   install: "Install theme"
