@@ -109,37 +109,43 @@
 		</div>
 	</mk-folder>
 
-	<section class="_card logs">
-		<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
-		<div class="_content">
-			<div class="_inputs">
-				<mk-input v-model="logDomain" :debounce="true">
-					<span>{{ $t('domain') }}</span>
-				</mk-input>
-				<mk-select v-model="logLevel">
-					<template #label>{{ $t('level') }}</template>
-					<option value="all">{{ $t('levels.all') }}</option>
-					<option value="info">{{ $t('levels.info') }}</option>
-					<option value="success">{{ $t('levels.success') }}</option>
-					<option value="warning">{{ $t('levels.warning') }}</option>
-					<option value="error">{{ $t('levels.error') }}</option>
-					<option value="debug">{{ $t('levels.debug') }}</option>
-				</mk-select>
-			</div>
+	<mk-folder>
+		<template #header><fa :icon="faStream"/> {{ $t('logs') }}</template>
 
-			<div class="logs">
-				<code v-for="log in logs" :key="log.id" :class="log.level">
-					<details>
-						<summary><mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
-						<vue-json-pretty v-if="log.data" :data="log.data"></vue-json-pretty>
-					</details>
-				</code>
-			</div>
+		<div class="">
+			<section class="_card logs">
+				<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
+				<div class="_content">
+					<div class="_inputs">
+						<mk-input v-model="logDomain" :debounce="true">
+							<span>{{ $t('domain') }}</span>
+						</mk-input>
+						<mk-select v-model="logLevel">
+							<template #label>{{ $t('level') }}</template>
+							<option value="all">{{ $t('levels.all') }}</option>
+							<option value="info">{{ $t('levels.info') }}</option>
+							<option value="success">{{ $t('levels.success') }}</option>
+							<option value="warning">{{ $t('levels.warning') }}</option>
+							<option value="error">{{ $t('levels.error') }}</option>
+							<option value="debug">{{ $t('levels.debug') }}</option>
+						</mk-select>
+					</div>
+
+					<div class="logs">
+						<code v-for="log in logs" :key="log.id" :class="log.level">
+							<details>
+								<summary><mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
+								<vue-json-pretty v-if="log.data" :data="log.data"></vue-json-pretty>
+							</details>
+						</code>
+					</div>
+				</div>
+				<div class="_footer">
+					<mk-button @click="deleteAllLogs()" primary><fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</mk-button>
+				</div>
+			</section>
 		</div>
-		<div class="_footer">
-			<mk-button @click="deleteAllLogs()" primary><fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</mk-button>
-		</div>
-	</section>
+	</mk-folder>
 </div>
 </template>
 
