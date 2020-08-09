@@ -17,7 +17,7 @@
 			<span>{{ $t('_wordMute.muteWords') }}</span>
 			<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
 		</mk-textarea>
-		<div v-if="hardWordMutedNotesCount != null" class="_caption">{{ $t('_wordMute.mutedNotesCount', { count: hardWordMutedNotesCount }) }}</div>
+		<div v-if="hardWordMutedNotesCount != null" class="_caption">{{ $t('_wordMute.mutedNotes') }}: {{ hardWordMutedNotesCount | number }}</div>
 	</div>
 	<div class="_footer">
 		<mk-button @click="save()" primary inline :disabled="!changed"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>

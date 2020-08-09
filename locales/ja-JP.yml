@@ -575,7 +575,7 @@ _wordMute:
   hardDescription: "指定した条件のノートをタイムラインに追加しないようにします。追加されなかったノートは、条件を変更しても除外されたままになります。"
   soft: "ソフト"
   hard: "ハード"
-  mutedNotesCount: "{count}ノートがミュートされました"
+  mutedNotes: "ミュートされたノート"
 
 _theme:
   explore: "テーマを探す"
