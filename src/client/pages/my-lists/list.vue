@@ -4,7 +4,7 @@
 	<portal to="title">{{ list.name }}</portal>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="list" class="_card">
+		<div v-if="list" class="_card _vMargin">
 			<div class="_content">
 				<mk-button inline @click="renameList()">{{ $t('rename') }}</mk-button>
 				<mk-button inline @click="deleteList()">{{ $t('delete') }}</mk-button>
@@ -13,7 +13,7 @@
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="list" class="_card members">
+		<div v-if="list" class="_card members _vMargin">
 			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">

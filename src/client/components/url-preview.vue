@@ -6,7 +6,7 @@
 <div v-else-if="tweetId && tweetExpanded" class="twitter" ref="twitter">
 	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', left: `${tweetLeft}px`, width: `${tweetLeft < 0 ? 'auto' : '100%'}`, height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.device.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 </div>
-<div v-else class="mk-url-preview" v-size="[{ max: 400 }, { max: 350 }]">
+<div v-else class="mk-url-preview" v-size="{ max: [400, 350] }">
 	<transition name="zoom" mode="out-in">
 		<component :is="self ? 'router-link' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">

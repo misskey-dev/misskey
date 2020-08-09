@@ -11,7 +11,7 @@
 
 	<x-plugins/>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
 			<mk-range v-model="sfxVolume" :min="0" :max="1" :step="0.1">
@@ -53,7 +53,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faColumns"/> {{ $t('deck') }}</div>
 		<div class="_content">
 			<mk-switch v-model="deckAlwaysShowMainColumn">
@@ -67,7 +67,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCog"/> {{ $t('appearance') }}</div>
 		<div class="_content">
 			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
@@ -87,7 +87,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<mk-switch v-model="autoReload">

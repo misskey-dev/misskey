@@ -1,5 +1,5 @@
 <template>
-<div class="zbcjwnqg">
+<div class="zbcjwnqg" v-size="{ max: [550, 1200] }">
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
@@ -127,7 +127,6 @@ import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-ico
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
 
-const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
 const alpha = (hex, a) => {
@@ -141,6 +140,19 @@ const alpha = (hex, a) => {
 export default Vue.extend({
 	components: {
 		MkSelect
+	},
+
+	props: {
+		chartLimit: {
+			type: Number,
+			required: false,
+			default: 90
+		},
+		detailed: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {
@@ -209,17 +221,17 @@ export default Vue.extend({
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([Promise.all([
-			this.$root.api('charts/federation', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/users', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/active-users', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/notes', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/drive', { limit: chartLimit, span: 'hour' }),
+			this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
+			this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
 		]), Promise.all([
-			this.$root.api('charts/federation', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/users', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/active-users', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/notes', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/drive', { limit: chartLimit, span: 'day' }),
+			this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
+			this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
 		])]);
 
 		const chart = {
@@ -259,11 +271,14 @@ export default Vue.extend({
 				this.chartInstance.destroy();
 			}
 
+			// TODO: var(--panel)の色が暗いか明るいかで判定する
+			const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 			this.chartInstance = new Chart(this.$refs.chart, {
 				type: 'line',
 				data: {
-					labels: new Array(chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
+					labels: new Array(this.chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
 					datasets: this.data.series.map(x => ({
 						label: x.name,
 						data: x.data.slice().reverse(),
@@ -271,6 +286,7 @@ export default Vue.extend({
 						lineTension: 0,
 						borderWidth: 2,
 						borderColor: x.color,
+						borderDash: x.borderDash || [],
 						backgroundColor: alpha(x.color, 0.1),
 						hidden: !!x.hidden
 					}))
@@ -293,17 +309,28 @@ export default Vue.extend({
 					},
 					scales: {
 						xAxes: [{
+							type: 'time',
+							time: {
+								stepSize: 1,
+								unit: this.chartSpan == 'day' ? 'month' : 'day',
+							},
 							gridLines: {
-								display: false
+								display: this.detailed,
+								color: gridColor,
+								zeroLineColor: gridColor,
 							},
 							ticks: {
-								display: false
+								display: this.detailed
 							}
 						}],
 						yAxes: [{
-							position: 'right',
+							position: 'left',
+							gridLines: {
+								color: gridColor,
+								zeroLineColor: gridColor,
+							},
 							ticks: {
-								display: false
+								display: this.detailed
 							}
 						}]
 					},
@@ -325,7 +352,11 @@ export default Vue.extend({
 		},
 
 		format(arr) {
-			return arr;
+			const now = Date.now();
+			return arr.map((v, i) => ({
+				x: new Date(now - ((this.chartSpan == 'day' ? 86400000 :3600000 ) * i)),
+				y: v
+			}));
 		},
 
 		federationInstancesChart(total: boolean): any {
@@ -347,6 +378,7 @@ export default Vue.extend({
 					name: 'All',
 					type: 'line',
 					color: '#008FFB',
+					borderDash: [5, 5],
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
 						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))
@@ -586,17 +618,30 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .zbcjwnqg {
+	&.max-width_1200px {
+		> .stats {
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
+		}
+	}
+
+	&.max-width_550px {
+		> .stats {
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr 1fr 1fr 1fr;
+		}
+	}
+
 	> .stats {
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		margin: calc(0px - var(--margin) / 2);
-		margin-bottom: calc(var(--margin) / 2);
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-rows: 1fr;
+		gap: var(--margin);
+		margin-bottom: var(--margin);
+		font-size: 90%;
 
 		> div {
 			display: flex;
-			flex: 1 0 213px;
-			margin: calc(var(--margin) / 2);
 			box-sizing: border-box;
 			padding: 16px 20px;
 

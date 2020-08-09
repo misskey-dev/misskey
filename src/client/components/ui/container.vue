@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="[{ max: 500 }]">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="{ max: [380], el: resizeBaseEl }">
 	<header v-if="showHeader">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
@@ -52,6 +52,9 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		resizeBaseEl: {
+			required: false,
+		},
 	},
 	data() {
 		return {
@@ -103,10 +106,6 @@ export default Vue.extend({
 	position: relative;
 	overflow: hidden;
 
-	& + .ukygtjoj {
-		margin-top: var(--margin);
-	}
-
 	&.naked {
 		background: transparent !important;
 		box-shadow: none !important;
@@ -152,10 +151,26 @@ export default Vue.extend({
 		}
 	}
 
-	&.max-width_500px {
+	> div {
+		> ::v-deep ._content {
+			padding: 24px;
+
+			& + ._content {
+				border-top: solid 1px var(--divider);
+			}
+		}
+	}
+
+	&.max-width_380px {
 		> header {
 			> .title {
 				padding: 8px 10px;
+			}
+		}
+
+		> div {
+			> ::v-deep ._content {
+				padding: 16px;
 			}
 		}
 	}
