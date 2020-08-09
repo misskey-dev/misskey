@@ -46,7 +46,7 @@ export default function <T extends Form>(data: {
 					const defaultProps = data.props();
 					for (const prop of Object.keys(defaultProps)) {
 						if (this.props.hasOwnProperty(prop)) continue;
-						Vue.set(this.props, prop, defaultProps[prop].default);
+						this.props[prop] = defaultProps[prop].default;
 					}
 				}
 			},
@@ -60,7 +60,7 @@ export default function <T extends Form>(data: {
 				if (canceled) return;
 
 				for (const key of Object.keys(result)) {
-					Vue.set(this.props, key, result[key]);
+					this.props[key] = result[key];
 				}
 
 				this.save();

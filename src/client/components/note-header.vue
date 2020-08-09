@@ -9,7 +9,7 @@
 	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><fa :icon="farBookmark"/></span>
 	<div class="info">
 		<span class="mobile" v-if="note.viaMobile"><fa :icon="faMobileAlt"/></span>
-		<router-link class="created-at" :to="note | notePage">
+		<router-link class="created-at" :to="notePage(note)">
 			<mk-time :time="note.createdAt"/>
 		</router-link>
 		<span class="visibility" v-if="note.visibility !== 'public'">

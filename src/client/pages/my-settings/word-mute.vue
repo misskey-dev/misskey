@@ -25,14 +25,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCommentSlash, faSave } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkTab from '../../components/tab.vue';
 import MkInfo from '../../components/ui/info.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton,
 		MkTextarea,

@@ -242,7 +242,7 @@
 		"uuid": "8.3.0",
 		"v-animate-css": "0.0.3",
 		"v-debounce": "0.1.2",
-		"vue": "git+https://github.com/vuejs/vue-next.git#ed4381020fcea0494f19f11bebabd9108f2dafd7",
+		"vue": "3.0.0-rc.5",
 		"vue-color": "2.7.1",
 		"vue-content-loading": "1.6.0",
 		"vue-cropperjs": "4.1.0",
