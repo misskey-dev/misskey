@@ -3,6 +3,7 @@
 	<portal to="icon"><fa :icon="faServer"/></portal>
 	<portal to="title">{{ $t('instance') }}</portal>
 
+	<div class="header">Overview</div>
 	<div class="main">
 		<mk-instance-stats :chart-limit="300" :detailed="true"/>
 
@@ -24,7 +25,8 @@
 		</div>
 	</div>
 
-	<div class="charts">
+	<div class="header">Health</div>
+	<div class="health">
 		<mk-container :body-togglable="false">
 			<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
 
@@ -78,6 +80,7 @@
 		</mk-container>
 	</div>
 
+	<div class="header">Queue</div>
 	<div class="queue">
 		<mk-container :body-togglable="false">
 			<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
@@ -542,7 +545,7 @@ export default Vue.extend({
 			}
 		}
 
-		> .charts {
+		> .health {
 			display: grid;
 			grid-template-columns: 1fr 1fr 1fr;
 			grid-template-rows: 1fr;
@@ -571,7 +574,7 @@ export default Vue.extend({
 		}
 	}
 
-	> .charts {
+	> .health {
 		> * {
 			margin: var(--margin) 0;
 		}
