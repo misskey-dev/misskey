@@ -599,7 +599,7 @@ export default Vue.extend({
 			grid-template-columns: 2fr 3fr;
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
-			height: 500px;
+			height: 400px;
 		}
 	}
 
