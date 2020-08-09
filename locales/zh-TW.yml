@@ -409,6 +409,8 @@ deletedNote: "已删除的貼文"
 smtpHost: "主機"
 smtpUser: "使用名稱"
 smtpPass: "密碼"
+_sidebar:
+  icon: "頭像"
 _theme:
   func: "函数"
   keys:

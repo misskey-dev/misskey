@@ -351,6 +351,9 @@ pluginInstallWarn: "يرجى تنصيب إضافات ذات مصدر موثوق 
 smtpHost: "المضيف"
 smtpUser: "اسم المستخدم"
 smtpPass: "الكلمة السرية"
+_sidebar:
+  icon: "الصورة الرمزية"
+  hide: "إخفاء"
 _theme:
   explore: "استكشف قوالب المظهر"
   install: "تنصيب قالب"

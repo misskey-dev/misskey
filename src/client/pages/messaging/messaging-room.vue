@@ -221,14 +221,20 @@ export default defineComponent({
 				for (const id of x) {
 					if (this.messages.some(x => x.id == id)) {
 						const exist = this.messages.map(x => x.id).indexOf(id);
-						this.messages[exist].isRead = true;
+						this.messages[exist] = {
+							...this.messages[exist],
+							isRead: true,
+						};
 					}
 				}
 			} else if (this.group) {
 				for (const id of x.ids) {
 					if (this.messages.some(x => x.id == id)) {
 						const exist = this.messages.map(x => x.id).indexOf(id);
-						this.messages[exist].reads.push(x.userId);
+						this.messages[exist] = {
+							...this.messages[exist],
+							reads: [...this.messages[exist].reads, x.userId]
+						};
 					}
 				}
 			}

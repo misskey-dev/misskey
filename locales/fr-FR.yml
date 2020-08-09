@@ -543,6 +543,9 @@ emailConfig: "Configuration du serveur email"
 smtpHost: "Hôte"
 smtpUser: "Nom d’utilisateur·rice"
 smtpPass: "Mot de passe"
+_sidebar:
+  icon: "Avatar"
+  hide: "Masquer"
 _theme:
   explore: "Explorer les thèmes"
   install: "Installer un thème"

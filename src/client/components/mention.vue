@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import { host as localHost } from '../config';
+import { wellKnownServices } from '../../well-known-services';
 
 export default defineComponent({
 	props: {
@@ -37,12 +38,11 @@ export default defineComponent({
 	},
 	computed: {
 		url(): string {
-			switch (this.host) {
-				case 'twitter.com':
-				case 'github.com':
-					return `https://${this.host}/${this.username}`;
-				default:
-					return `/${this.canonical}`;
+			const wellKnown = wellKnownServices.find(x => x[0] === this.host);
+			if (wellKnown) {
+				return wellKnown[1](this.username);
+			} else {
+				return `/${this.canonical}`;
 			}
 		},
 		canonical(): string {

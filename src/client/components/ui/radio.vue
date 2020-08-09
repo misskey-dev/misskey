@@ -42,6 +42,7 @@ export default defineComponent({
 	},
 	methods: {
 		toggle() {
+			if (this.disabled) return;
 			this.$emit('change', this.value);
 		}
 	}
@@ -61,7 +62,10 @@ export default defineComponent({
 
 	&.disabled {
 		opacity: 0.6;
-		cursor: not-allowed;
+
+		&, * {
+			cursor: not-allowed !important;
+		}
 	}
 
 	&.checked {

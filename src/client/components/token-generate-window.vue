@@ -2,8 +2,8 @@
 <x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
 	<div class="ugkkpisj">
-		<div>
-			<mk-info warn v-if="information">{{ information }}</mk-info>
+		<div v-if="information">
+			<mk-info warn>{{ information }}</mk-info>
 		</div>
 		<div>
 			<mk-input v-model="name">{{ $t('name') }}</mk-input>
