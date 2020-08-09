@@ -37,6 +37,6 @@ export default define(meta, async (ps, me) => {
 
 	return {
 		...user,
-		token: user.token != null ? "<MASKED>" : user.token,
+		token: user.token != null ? '<MASKED>' : user.token,
 	};
 });
