@@ -6,25 +6,6 @@ export default {
 		// その場合はunbindの方も改修することを忘れずに
 		const el = query.el ? query.el() : src;
 
-		/*
-		const addClassRecursive = (el: Element, cls: string) => {
-			el.classList.add(cls);
-			if (el.children) {
-				for (const child of el.children) {
-					addClassRecursive(child, cls);
-				}
-			}
-		};
-
-		const removeClassRecursive = (el: Element, cls: string) => {
-			el.classList.remove(cls);
-			if (el.children) {
-				for (const child of el.children) {
-					removeClassRecursive(child, cls);
-				}
-			}
-		};*/
-
 		const addClass = (el: Element, cls: string) => {
 			el.classList.add(cls);
 		};
