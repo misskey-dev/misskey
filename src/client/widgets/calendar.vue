@@ -32,9 +32,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'calendar',
 	props: () => ({
 		transparent: {
@@ -42,7 +43,10 @@ export default define({
 			default: false,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	data() {
 		return {
 			now: new Date(),

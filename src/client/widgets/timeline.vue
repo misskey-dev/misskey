@@ -20,13 +20,14 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XTimeline from '../components/timeline.vue';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'timeline',
 	props: () => ({
 		showHeader: {
@@ -48,7 +49,10 @@ export default define({
 			hidden: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer,
 		XTimeline,

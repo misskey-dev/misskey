@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import XSigninDialog from '../components/signin-dialog.vue';
 import XSignupDialog from '../components/signup-dialog.vue';
@@ -18,11 +19,14 @@ import MkButton from '../components/ui/button.vue';
 import { host } from '../config';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'welcome',
 	props: () => ({
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkButton
 	},

@@ -13,9 +13,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'digitalClock',
 	props: () => ({
 		transparent: {
@@ -32,7 +33,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	data() {
 		return {
 			clock: null,

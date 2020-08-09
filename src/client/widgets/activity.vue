@@ -14,13 +14,14 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faChartBar, faSort } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 
-export default define({
+const widget = define({
 	name: 'activity',
 	props: () => ({
 		showHeader: {
@@ -37,7 +38,10 @@ export default define({
 			hidden: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer,
 		XCalendar,

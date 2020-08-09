@@ -18,12 +18,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
 import MkMiniChart from '../components/mini-chart.vue';
 
-export default define({
+const widget = define({
 	name: 'hashtags',
 	props: () => ({
 		showHeader: {
@@ -31,7 +32,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer, MkMiniChart
 	},

@@ -15,12 +15,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
 
-export default define({
+const widget = define({
 	name: 'photos',
 	props: () => ({
 		showHeader: {
@@ -32,7 +33,10 @@ export default define({
 			default: false,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer,
 	},

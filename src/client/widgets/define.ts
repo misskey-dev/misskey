@@ -16,12 +16,6 @@ export default function <T extends Form>(data: {
 			}
 		},
 
-		data() {
-			return {
-				bakedOldProps: null
-			};
-		},
-
 		computed: {
 			id(): string {
 				return this.widget.id;

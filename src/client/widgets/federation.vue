@@ -19,12 +19,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
 import MkMiniChart from '../components/mini-chart.vue';
 
-export default define({
+const widget = define({
 	name: 'federation',
 	props: () => ({
 		showHeader: {
@@ -32,7 +33,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer, MkMiniChart
 	},

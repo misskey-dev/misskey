@@ -10,11 +10,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'memo',
 	props: () => ({
 		showHeader: {
@@ -22,7 +23,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer
 	},

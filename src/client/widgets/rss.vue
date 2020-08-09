@@ -13,11 +13,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faRssSquare, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'rss',
 	props: () => ({
 		showHeader: {
@@ -29,7 +30,10 @@ export default define({
 			default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer
 	},

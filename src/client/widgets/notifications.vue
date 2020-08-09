@@ -9,12 +9,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XNotifications from '../components/notifications.vue';
 import define from './define';
 
-export default define({
+const widget = define({
 	name: 'notifications',
 	props: () => ({
 		showHeader: {
@@ -26,7 +27,10 @@ export default define({
 			default: 300,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer,
 		XNotifications,
