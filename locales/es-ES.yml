@@ -558,6 +558,9 @@ userSaysSomething: "{name} dijo algo"
 makeActive: "Activar"
 display: "Apariencia"
 copy: "Copiar"
+metrics: "Métricas"
+overview: "Resumen"
+logs: "Registros"
 _sidebar:
   full: "Completo"
   icon: "Avatar"
@@ -570,6 +573,7 @@ _wordMute:
   hardDescription: "Evitar que se agreguen a la linea de tiempo las notas que cumplen las condiciones. Las notas no agregadas seguirán quitadas aunque cambien las condiciones."
   soft: "Suave"
   hard: "Duro"
+  mutedNotes: "Notas silenciadas"
 _theme:
   explore: "Explorar temas"
   install: "Instalar tema"
