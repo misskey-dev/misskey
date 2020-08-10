@@ -288,7 +288,7 @@ export default Vue.extend({
 						borderColor: x.color,
 						borderDash: x.borderDash || [],
 						backgroundColor: alpha(x.color, 0.1),
-						fill: x.fill == null ? true : x.false,
+						fill: x.fill == null ? true : x.fill,
 						hidden: !!x.hidden
 					}))
 				},
