@@ -96,7 +96,7 @@
 				<div class="_content">
 					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
 						<div>{{ job[0] }}</div>
-						<div>{{ job[1] | number }} jobs</div>
+						<div style="text-align: right;">{{ job[1] | number }} jobs</div>
 					</div>
 				</div>
 			</mk-container>
