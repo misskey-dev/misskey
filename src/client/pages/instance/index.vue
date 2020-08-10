@@ -90,12 +90,12 @@
 		<template #header><fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
 
 		<div class="vkyrmkwb">
-			<mk-container :body-togglable="false" :resize-base-el="() => $el">
+			<mk-container :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
 				<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
 
 				<div class="_content">
 					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
-						<div>{{ job[0] }}</div>
+						<button class="_button" @click="showInstanceInfo(job[0])">{{ job[0] }}</button>
 						<div style="text-align: right;">{{ job[1] | number }} jobs</div>
 					</div>
 				</div>
@@ -173,6 +173,7 @@ import MkFolder from '../../components/ui/folder.vue';
 import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '../../config';
 import XQueue from './index.queue-chart.vue';
+import MkInstanceInfo from './instance.vue';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -495,6 +496,18 @@ export default Vue.extend({
 	},
 
 	methods: {
+		async showInstanceInfo(q) {
+			let instance = q;
+			if (typeof q === 'string') {
+				instance = await this.$root.api('federation/show-instance', {
+					host: q
+				});
+			}
+			this.$root.new(MkInstanceInfo, {
+				instance: instance
+			});
+		},
+
 		fetchLogs() {
 			this.$root.api('admin/logs', {
 				level: this.logLevel === 'all' ? null : this.logLevel,
@@ -595,7 +608,7 @@ export default Vue.extend({
 		.vkyrmkwb {
 			display: grid;
 			grid-template-columns: 0.5fr 1fr 1fr;
-			grid-template-rows: 1fr;
+			grid-template-rows: 385px;
 			gap: 16px 16px;
 		}
 
