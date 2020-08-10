@@ -23,7 +23,7 @@
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="label">{{ $t('following') }}</div>
+					<div class="_label">{{ $t('following') }}</div>
 					<button class="_data _textButton" @click="showFollowing()">{{ instance.followingCount | number }}</button>
 				</div>
 				<div class="_cell">
