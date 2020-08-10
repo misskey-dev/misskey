@@ -59,35 +59,34 @@ export default Vue.extend({
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
 		this.chart = new Chart(this.$refs.chart, {
-			type: 'line',
+			type: 'bar',
 			data: {
 				labels: [],
 				datasets: [{
 					label: 'Process',
 					pointRadius: 0,
 					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#00E396',
-					backgroundColor: alpha('#00E396', 0.1),
+					borderWidth: 0,
+					backgroundColor: '#00E396',
 					data: []
 				}, {
 					label: 'Active',
 					pointRadius: 0,
 					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#00BCD4',
-					backgroundColor: alpha('#00BCD4', 0.1),
+					borderWidth: 0,
+					backgroundColor: '#00BCD4',
 					data: []
 				}, {
 					label: 'Waiting',
 					pointRadius: 0,
 					lineTension: 0,
-					borderWidth: 2,
-					borderColor: '#FFB300',
-					backgroundColor: alpha('#FFB300', 0.1),
+					borderWidth: 0,
+					backgroundColor: '#FFB300',
 					data: []
 				}, {
 					label: 'Delayed',
+					order: -1,
+					type: 'line',
 					pointRadius: 0,
 					lineTension: 0,
 					borderWidth: 2,
@@ -115,6 +114,7 @@ export default Vue.extend({
 				},
 				scales: {
 					xAxes: [{
+						stacked: true,
 						gridLines: {
 							display: false,
 							color: gridColor,
@@ -125,6 +125,7 @@ export default Vue.extend({
 						}
 					}],
 					yAxes: [{
+						stacked: true,
 						position: 'right',
 						gridLines: {
 							display: true,
@@ -163,7 +164,7 @@ export default Vue.extend({
 			this.chart.data.datasets[1].data.push(stats[this.domain].active);
 			this.chart.data.datasets[2].data.push(stats[this.domain].waiting);
 			this.chart.data.datasets[3].data.push(stats[this.domain].delayed);
-			if (this.chart.data.datasets[0].data.length > 200) {
+			if (this.chart.data.datasets[0].data.length > 100) {
 				this.chart.data.labels.shift();
 				this.chart.data.datasets[0].data.shift();
 				this.chart.data.datasets[1].data.shift();
