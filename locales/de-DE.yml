@@ -561,6 +561,7 @@ copy: "Kopieren"
 metrics: "Metriken"
 overview: "Übersicht"
 logs: "Logs"
+delayed: "Verzögert"
 _sidebar:
   full: "Voll"
   icon: "Profilbild"
