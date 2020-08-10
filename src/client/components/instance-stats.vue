@@ -288,6 +288,7 @@ export default Vue.extend({
 						borderColor: x.color,
 						borderDash: x.borderDash || [],
 						backgroundColor: alpha(x.color, 0.1),
+						fill: !!x.fill,
 						hidden: !!x.hidden
 					}))
 				},
@@ -379,6 +380,7 @@ export default Vue.extend({
 					type: 'line',
 					color: '#008FFB',
 					borderDash: [5, 5],
+					fill: false,
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
 						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))
@@ -495,7 +497,9 @@ export default Vue.extend({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#008FFB',
+					color: '#09d8e2',
+					borderDash: [5, 5],
+					fill: false,
 					data: this.format(
 						sum(
 							this.stats.drive.local.incSize,
@@ -512,17 +516,17 @@ export default Vue.extend({
 				}, {
 					name: 'Local -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FF4560',
 					data: this.format(negate(this.stats.drive.local.decSize))
 				}, {
 					name: 'Remote +',
 					type: 'area',
-					color: '#008FFB',
+					color: '#00E396',
 					data: this.format(this.stats.drive.remote.incSize)
 				}, {
 					name: 'Remote -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FEB019',
 					data: this.format(negate(this.stats.drive.remote.decSize))
 				}]
 			};
@@ -557,7 +561,9 @@ export default Vue.extend({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#008FFB',
+					color: '#09d8e2',
+					borderDash: [5, 5],
+					fill: false,
 					data: this.format(
 						sum(
 							this.stats.drive.local.incCount,
@@ -574,17 +580,17 @@ export default Vue.extend({
 				}, {
 					name: 'Local -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FF4560',
 					data: this.format(negate(this.stats.drive.local.decCount))
 				}, {
 					name: 'Remote +',
 					type: 'area',
-					color: '#008FFB',
+					color: '#00E396',
 					data: this.format(this.stats.drive.remote.incCount)
 				}, {
 					name: 'Remote -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FEB019',
 					data: this.format(negate(this.stats.drive.remote.decCount))
 				}]
 			};
