@@ -676,7 +676,7 @@ export default Vue.extend({
 							margin: 0;
 						}
 
-						> dt {
+						> dd {
 							text-overflow: ellipsis;
 							overflow: hidden;
 							white-space: nowrap;
