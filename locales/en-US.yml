@@ -561,6 +561,7 @@ copy: "Copy"
 metrics: "Metrics"
 overview: "Overview"
 logs: "Logs"
+delayed: "Delayed"
 _sidebar:
   full: "Full"
   icon: "Avatar"
