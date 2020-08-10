@@ -17,53 +17,53 @@
 		<div class="_table data">
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label"><fa :icon="faCrosshairs" fixed-width class="icon"/>{{ $t('registeredAt') }}</div>
+					<div class="_label">{{ $t('registeredAt') }}</div>
 					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<mk-time :time="instance.caughtAt"/>)</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="label"><fa :icon="faCloudDownloadAlt" fixed-width class="icon"/>{{ $t('following') }}</div>
+					<div class="label">{{ $t('following') }}</div>
 					<button class="_data _textButton" @click="showFollowing()">{{ instance.followingCount | number }}</button>
 				</div>
 				<div class="_cell">
-					<div class="_label"><fa :icon="faCloudUploadAlt" fixed-width class="icon"/>{{ $t('followers') }}</div>
+					<div class="_label">{{ $t('followers') }}</div>
 					<button class="_data _textButton" @click="showFollowers()">{{ instance.followersCount | number }}</button>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label"><fa :icon="faUsers" fixed-width class="icon"/>{{ $t('users') }}</div>
+					<div class="_label">{{ $t('users') }}</div>
 					<button class="_data _textButton" @click="showUsers()">{{ instance.usersCount | number }}</button>
 				</div>
 				<div class="_cell">
-					<div class="_label"><fa :icon="faPencilAlt" fixed-width class="icon"/>{{ $t('notes') }}</div>
+					<div class="_label">{{ $t('notes') }}</div>
 					<div class="_data">{{ instance.notesCount | number }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label"><fa :icon="faFileImage" fixed-width class="icon"/>{{ $t('files') }}</div>
+					<div class="_label">{{ $t('files') }}</div>
 					<div class="_data">{{ instance.driveFiles | number }}</div>
 				</div>
 				<div class="_cell">
-					<div class="_label"><fa :icon="faDatabase" fixed-width class="icon"/>{{ $t('storageUsage') }}</div>
+					<div class="_label">{{ $t('storageUsage') }}</div>
 					<div class="_data">{{ instance.driveUsage | bytes }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label"><fa :icon="faLongArrowAltUp" fixed-width class="icon"/>{{ $t('latestRequestSentAt') }}</div>
+					<div class="_label">{{ $t('latestRequestSentAt') }}</div>
 					<div class="_data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
 				</div>
 				<div class="_cell">
-					<div class="_label"><fa :icon="faTrafficLight" fixed-width class="icon"/>{{ $t('latestStatus') }}</div>
+					<div class="_label">{{ $t('latestStatus') }}</div>
 					<div class="_data">{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label"><fa :icon="faLongArrowAltDown" fixed-width class="icon"/>{{ $t('latestRequestReceivedAt') }}</div>
+					<div class="_label">{{ $t('latestRequestReceivedAt') }}</div>
 					<div class="_data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
 				</div>
 			</div>
