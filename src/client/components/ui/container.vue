@@ -126,6 +126,7 @@ export default Vue.extend({
 		z-index: 2;
 		background: var(--panelHeaderBg);
 		color: var(--panelHeaderFg);
+		line-height: 1.4em;
 
 		> .title {
 			margin: 0;
