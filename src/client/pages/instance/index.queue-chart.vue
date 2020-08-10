@@ -67,21 +67,21 @@ export default Vue.extend({
 					pointRadius: 0,
 					lineTension: 0,
 					borderWidth: 0,
-					backgroundColor: '#00E396',
+					backgroundColor: '#8BC34A',
 					data: []
 				}, {
 					label: 'Active',
 					pointRadius: 0,
 					lineTension: 0,
 					borderWidth: 0,
-					backgroundColor: '#00BCD4',
+					backgroundColor: '#03A9F4',
 					data: []
 				}, {
 					label: 'Waiting',
 					pointRadius: 0,
 					lineTension: 0,
 					borderWidth: 0,
-					backgroundColor: '#FFB300',
+					backgroundColor: '#FFC107',
 					data: []
 				}, {
 					label: 'Delayed',
@@ -90,7 +90,7 @@ export default Vue.extend({
 					pointRadius: 0,
 					lineTension: 0,
 					borderWidth: 2,
-					borderColor: '#E53935',
+					borderColor: '#F44336',
 					borderDash: [5, 5],
 					fill: false,
 					data: []
