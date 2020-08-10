@@ -561,6 +561,7 @@ copy: "コピー"
 metrics: "メトリクス"
 overview: "概要"
 logs: "ログ"
+delayed: "遅延"
 
 _sidebar:
   full: "フル"
