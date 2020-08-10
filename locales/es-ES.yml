@@ -561,6 +561,7 @@ copy: "Copiar"
 metrics: "Métricas"
 overview: "Resumen"
 logs: "Registros"
+delayed: "atrasado"
 _sidebar:
   full: "Completo"
   icon: "Avatar"
