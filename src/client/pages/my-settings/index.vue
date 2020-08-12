@@ -22,6 +22,9 @@
 			<mk-button @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</mk-button>
 			<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
 		</div>
+		<div class="_content">
+			<mk-button @click="configure">{{ $t('notificationSetting') }}</mk-button>
+		</div>
 	</section>
 
 	<x-import-export/>
@@ -109,6 +112,15 @@ export default Vue.extend({
 		readAllNotifications() {
 			this.$root.api('notifications/mark-all-as-read');
 		},
+
+		async configure() {
+			this.$root.new(await import('../../components/notification-setting-window.vue').then(m => m.default), {
+				includingTypes: this.$store.state.settings.includingNotificationTypes,
+				showGlobalToggle: false,
+			}).$on('ok', async ({ includingTypes: value }: any) => {
+				this.$store.dispatch('settings/set', { key: 'includingNotificationTypes', value });
+			});
+		}
 	}
 });
 </script>

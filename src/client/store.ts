@@ -6,6 +6,7 @@ import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-ic
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { apiUrl, deckmode } from './config';
 import { erase } from '../prelude/array';
+import { notificationTypes } from '../types';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -18,6 +19,7 @@ export const defaultSettings = {
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	includingNotificationTypes: [ ...notificationTypes ],
 	mutedWords: [],
 };
 

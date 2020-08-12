@@ -557,6 +557,23 @@ wordMute: "ワードミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
+notificationSetting: "通知設定"
+notificationSettingDesc: "表示する通知の種別を選択してください。"
+useGlobalSetting: "グローバル設定を使う"
+useGlobalSettingDesc: "オンにすると、アカウント設定ページにある通知設定が使用されます。オフにすると、個別に設定できるようになります。"
+
+_notificationTypes:
+  follow: "フォロー"
+  mention: "メンション"
+  reply: "リプライ"
+  renote: "Renote"
+  quote: "引用"
+  reaction: "リアクション"
+  pollVote: "アンケートに投票された"
+  receiveFollowRequest: "フォロー申請を受け取った"
+  followRequestAccepted: "フォローが受理された"
+  groupInvited: "グループに招待された"
+  app: "連携アプリからの通知"
 
 _sidebar:
   full: "フル"

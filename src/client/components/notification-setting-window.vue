@@ -1,0 +1,80 @@
+<template>
+<x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
+	<template #header>{{ $t('notificationSetting') }}</template>
+	<div class="vv94n3oa">
+		<mk-switch v-if="showGlobalToggle" v-model="useGlobalSetting">
+			{{ $t('useGlobalSetting') }}
+			<template #desc>{{ $t('useGlobalSettingDesc') }}</template>
+		</mk-switch>
+		<div v-if="!useGlobalSetting">
+			<mk-info>{{ $t('notificationSettingDesc') }}</mk-info>
+			<mk-switch v-for="type in notificationTypes" :key="type" v-model="typesMap[type]">{{ $t(`_notificationTypes.${type}`) }}</mk-switch>
+		</div>
+	</div>
+</x-window>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import XWindow from './window.vue';
+import MkSwitch from './ui/switch.vue';
+import MkInfo from './ui/info.vue';
+import { notificationTypes } from '../../types';
+
+export default Vue.extend({
+	components: {
+		XWindow,
+		MkSwitch,
+		MkInfo
+	},
+
+	props: {
+		includingTypes: {
+			// todo これで型に合わないものを弾いてくれるのかどうか要調査
+			type: Array as PropType<typeof notificationTypes[number][]>,
+			required: false,
+			default: null,
+		},
+		showGlobalToggle: {
+			type: Boolean,
+			required: false,
+			default: true,
+		}
+	},
+
+	data() {
+		return {
+			typesMap: {} as Record<typeof notificationTypes[number], boolean>,
+			useGlobalSetting: false,
+			notificationTypes,
+		};
+	},
+
+	created() {
+		this.useGlobalSetting = this.includingTypes === null && this.showGlobalToggle;
+
+		for (const type of this.notificationTypes) {
+			Vue.set(this.typesMap, type, this.includingTypes === null || this.includingTypes.includes(type));
+		}
+	},
+
+	methods: {
+		ok() {
+			const includingTypes = this.useGlobalSetting ? null : (Object.keys(this.typesMap) as typeof notificationTypes[number][])
+				.filter(type => this.typesMap[type]);
+
+			this.$emit('ok', { includingTypes });
+			this.$refs.window.close();
+		},
+	}
+});
+</script>
+
+<style lang="scss" scoped>
+.vv94n3oa {
+	> div {
+		border-top: solid 1px var(--divider);
+		padding: 24px;
+	}
+}
+</style>
