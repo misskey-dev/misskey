@@ -8,6 +8,8 @@
 		</mk-switch>
 		<div v-if="!useGlobalSetting">
 			<mk-info>{{ $t('notificationSettingDesc') }}</mk-info>
+			<mk-button inline @click="disableAll">{{ $t('disableAll') }}</mk-button>
+			<mk-button inline @click="enableAll">{{ $t('enableAll') }}</mk-button>
 			<mk-switch v-for="type in notificationTypes" :key="type" v-model="typesMap[type]">{{ $t(`_notificationTypes.${type}`) }}</mk-switch>
 		</div>
 	</div>
@@ -19,13 +21,15 @@ import Vue, { PropType } from 'vue';
 import XWindow from './window.vue';
 import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
+import MkButton from './ui/button.vue';
 import { notificationTypes } from '../../types';
 
 export default Vue.extend({
 	components: {
 		XWindow,
 		MkSwitch,
-		MkInfo
+		MkInfo,
+		MkButton
 	},
 
 	props: {
@@ -66,6 +70,18 @@ export default Vue.extend({
 			this.$emit('ok', { includingTypes });
 			this.$refs.window.close();
 		},
+
+		disableAll() {
+			for (const type in this.typesMap) {
+				this.typesMap[type as typeof notificationTypes[number]] = false;
+			}
+		},
+
+		enableAll() {
+			for (const type in this.typesMap) {
+				this.typesMap[type as typeof notificationTypes[number]] = true;
+			}
+		}
 	}
 });
 </script>
