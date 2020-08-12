@@ -65,6 +65,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	// includeTypes が空の場合はクエリしない
+	if (ps.includeTypes && ps.includeTypes.length === 0) {
+		return [];
+	}
+	// excludeTypes に全指定されている場合はクエリしない
+	if (notificationTypes.every(type => ps.excludeTypes?.includes(type))) {
+		return [];
+	}
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')
 		.where('following.followerId = :followerId', { followerId: user.id });
