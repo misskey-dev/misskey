@@ -50,7 +50,7 @@ export default Vue.extend({
 				endpoint: 'i/notifications',
 				limit: 10,
 				params: () => ({
-					includeTypes: this.includeTypes || this.$store.state.settings.includingNotificationTypes,
+					includeTypes: this.includeTypes || this.$store.state.i.includingNotificationTypes || undefined,
 				})
 			},
 		};
@@ -60,7 +60,7 @@ export default Vue.extend({
 		includeTypes() {
 			this.reload();
 		},
-		'$store.state.settings.includingNotificationTypes'() {
+		'$store.state.i.includingNotificationTypes'() {
 			if (this.includeTypes === null) {
 				this.reload();
 			}

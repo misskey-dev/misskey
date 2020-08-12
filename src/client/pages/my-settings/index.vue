@@ -115,10 +115,19 @@ export default Vue.extend({
 
 		async configure() {
 			this.$root.new(await import('../../components/notification-setting-window.vue').then(m => m.default), {
-				includingTypes: this.$store.state.settings.includingNotificationTypes,
+				includingTypes: this.$store.state.i.includingNotificationTypes,
 				showGlobalToggle: false,
 			}).$on('ok', async ({ includingTypes: value }: any) => {
-				this.$store.dispatch('settings/set', { key: 'includingNotificationTypes', value });
+				await this.$root.api('i/update', {
+					includingNotificationTypes: value,
+				}).then(i => {
+					this.$store.state.i.includingNotificationTypes = i.includingNotificationTypes;
+				}).catch(err => {
+					this.$root.dialog({
+						type: 'error',
+						text: err.message
+					});
+				});
 			});
 		}
 	}

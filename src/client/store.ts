@@ -19,7 +19,6 @@ export const defaultSettings = {
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	includingNotificationTypes: [ ...notificationTypes ],
 	mutedWords: [],
 };
 
