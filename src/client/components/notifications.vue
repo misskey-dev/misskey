@@ -78,16 +78,19 @@ export default Vue.extend({
 
 	methods: {
 		onNotification(notification) {
-			if (document.visibilityState === 'visible') {
+			const isMuted = !this.includeTypes.includes(notification.type);
+			if (isMuted || document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
 					id: notification.id
 				});
 			}
 
-			this.prepend({
-				...notification,
-				isRead: document.visibilityState === 'visible'
-			});
+			if (!isMuted) {
+				this.prepend({
+					...notification,
+					isRead: document.visibilityState === 'visible'
+				});
+			}
 		},
 
 		noteUpdated(oldValue, newValue) {
