@@ -1,6 +1,6 @@
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
-import { Notifications, Mutings } from '../models';
+import { Notifications, Mutings, UserProfiles } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
 import { Notification } from '../models/entities/notification';
@@ -23,6 +23,14 @@ export async function createNotification(
 		isRead: false,
 		...data
 	} as Partial<Notification>);
+
+	const profile = await UserProfiles.findOne({ userId: notifieeId });
+
+	if (!profile?.includingNotificationTypes?.includes(type)) {
+		// この通知を見ないようにしているのであれば既読だけして終わる
+		await Notifications.update({ id: notification.id }, { isRead: true });
+		return notification;
+	}
 
 	const packed = await Notifications.pack(notification);
 
