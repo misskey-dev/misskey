@@ -216,7 +216,9 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 	const s3 = getS3(meta);
 
-	const upload = s3.upload(params);
+	const upload = s3.upload(params, {
+		partSize: s3.endpoint?.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024
+	});
 
 	const result = await upload.promise();
 	if (result) logger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
