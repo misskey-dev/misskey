@@ -562,6 +562,7 @@ metrics: "Metrics"
 overview: "Overview"
 logs: "Logs"
 delayed: "Delayed"
+database: "Database"
 _sidebar:
   full: "Full"
   icon: "Avatar"
