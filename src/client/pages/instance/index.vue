@@ -27,11 +27,22 @@
 					<template #header><fa :icon="faDatabase"/>{{ $t('database') }}</template>
 
 					<div class="_content" v-if="dbInfo">
-						<div class="_keyValue" v-for="table in Object.entries(dbInfo)"><b>{{ table[0] }}</b><span>{{ table[1].count | number }}</span><span>{{ table[1].size | bytes }}</span></div>
+						<table style="border-collapse: collapse; width: 100%;">
+							<tr style="opacity: 0.7;">
+								<th style="text-align: left; padding: 0 8px 8px 0;">Table</th>
+								<th style="text-align: left; padding: 0 8px 8px 0;">Records</th>
+								<th style="text-align: left; padding: 0 0 8px 0;">Size</th>
+							</tr>
+							<tr v-for="table in dbInfo" :key="table[0]">
+								<th style="text-align: left; padding: 0 8px 0 0; word-break: break-all;">{{ table[0] }}</th>
+								<td style="padding: 0 8px 0 0;">{{ table[1].count | number }}</td>
+								<td style="padding: 0; opacity: 0.7;">{{ table[1].size | bytes }}</td>
+							</tr>
+						</table>
 					</div>
 				</mk-container>
 
-				<mkw-federation class="fed"/>
+				<mkw-federation class="fed" :body-togglable="true" :scrollable="true"/>
 			</div>
 		</div>
 	</mk-folder>
@@ -497,7 +508,7 @@ export default Vue.extend({
 		});
 
 		this.$root.api('admin/get-table-stats', {}).then(res => {
-			this.dbInfo = res;
+			this.dbInfo = Object.entries(res).sort((a, b) => b[1].size - a[1].size);
 		});
 
 		this.$nextTick(() => {
@@ -630,11 +641,13 @@ export default Vue.extend({
 				> .db {
 					flex: 1;
 					flex-grow: 0;
+					height: 100%;
 				}
 
 				> .fed {
 					flex: 1;
 					flex-grow: 0;
+					height: 100%;
 				}
 
 				> *:not(:last-child) {
