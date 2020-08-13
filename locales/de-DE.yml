@@ -562,6 +562,7 @@ metrics: "Metriken"
 overview: "Übersicht"
 logs: "Logs"
 delayed: "Verzögert"
+database: "Datenbank"
 _sidebar:
   full: "Voll"
   icon: "Profilbild"
