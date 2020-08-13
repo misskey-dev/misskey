@@ -161,6 +161,7 @@
 				</div>
 				<mk-switch v-model="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $t('objectStorageUseSSL') }}<template #desc>{{ $t('objectStorageUseSSLDesc') }}</template></mk-switch>
 				<mk-switch v-model="objectStorageUseProxy" :disabled="!useObjectStorage">{{ $t('objectStorageUseProxy') }}<template #desc>{{ $t('objectStorageUseProxyDesc') }}</template></mk-switch>
+				<mk-switch v-model="objectStorageSetPublicRead" :disabled="!useObjectStorage">{{ $t('objectStorageSetPublicRead') }}</mk-switch>
 			</template>
 		</div>
 		<div class="_footer">
@@ -306,6 +307,7 @@ export default Vue.extend({
 			objectStorageSecretKey: null,
 			objectStorageUseSSL: false,
 			objectStorageUseProxy: false,
+			objectStorageSetPublicRead: false,
 			enableTwitterIntegration: false,
 			twitterConsumerKey: null,
 			twitterConsumerSecret: null,
@@ -373,6 +375,7 @@ export default Vue.extend({
 		this.objectStorageSecretKey = this.meta.objectStorageSecretKey;
 		this.objectStorageUseSSL = this.meta.objectStorageUseSSL;
 		this.objectStorageUseProxy = this.meta.objectStorageUseProxy;
+		this.objectStorageSetPublicRead = this.meta.objectStorageSetPublicRead;
 		this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
 		this.twitterConsumerKey = this.meta.twitterConsumerKey;
 		this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
@@ -522,6 +525,7 @@ export default Vue.extend({
 				objectStorageSecretKey: this.objectStorageSecretKey ? this.objectStorageSecretKey : null,
 				objectStorageUseSSL: this.objectStorageUseSSL,
 				objectStorageUseProxy: this.objectStorageUseProxy,
+				objectStorageSetPublicRead: this.objectStorageSetPublicRead,
 				enableTwitterIntegration: this.enableTwitterIntegration,
 				twitterConsumerKey: this.twitterConsumerKey,
 				twitterConsumerSecret: this.twitterConsumerSecret,
