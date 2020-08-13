@@ -562,6 +562,7 @@ copy: "复制"
 metrics: "指标"
 overview: "概述"
 logs: "日志"
+delayed: "延迟"
 database: "数据库"
 _sidebar:
   full: "全部"
