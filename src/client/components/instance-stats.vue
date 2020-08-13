@@ -84,7 +84,7 @@
 	</div>
 
 	<section class="_card">
-		<div class="_title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
+		<div class="_title" style="position: relative;"><fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><fa :icon="faSync"/></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
 				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
@@ -123,7 +123,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
 
@@ -171,7 +171,7 @@ export default Vue.extend({
 			chartInstance: null,
 			chartSrc: 'notes',
 			chartSpan: 'hour',
-			faChartBar, faUser, faPencilAlt
+			faChartBar, faUser, faPencilAlt, faSync
 		}
 	},
 
@@ -220,52 +220,56 @@ export default Vue.extend({
 
 		this.now = new Date();
 
-		const [perHour, perDay] = await Promise.all([Promise.all([
-			this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
-			this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
-			this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
-			this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
-			this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
-		]), Promise.all([
-			this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
-			this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
-			this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
-			this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
-			this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
-		])]);
-
-		const chart = {
-			perHour: {
-				federation: perHour[0],
-				users: perHour[1],
-				activeUsers: perHour[2],
-				notes: perHour[3],
-				drive: perHour[4],
-			},
-			perDay: {
-				federation: perDay[0],
-				users: perDay[1],
-				activeUsers: perDay[2],
-				notes: perDay[3],
-				drive: perDay[4],
-			}
-		};
-
-		this.notesLocalWoW = this.info.originalNotesCount - chart.perDay.notes.local.total[7];
-		this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
-		this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
-		this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
-		this.usersLocalWoW = this.info.originalUsersCount - chart.perDay.users.local.total[7];
-		this.usersLocalDoD = this.info.originalUsersCount - chart.perDay.users.local.total[1];
-		this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
-		this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
-
-		this.chart = chart;
-
-		this.renderChart();
+		this.fetchChart();
 	},
 
 	methods: {
+		async fetchChart() {
+			const [perHour, perDay] = await Promise.all([Promise.all([
+				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
+			]), Promise.all([
+				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
+			])]);
+
+			const chart = {
+				perHour: {
+					federation: perHour[0],
+					users: perHour[1],
+					activeUsers: perHour[2],
+					notes: perHour[3],
+					drive: perHour[4],
+				},
+				perDay: {
+					federation: perDay[0],
+					users: perDay[1],
+					activeUsers: perDay[2],
+					notes: perDay[3],
+					drive: perDay[4],
+				}
+			};
+
+			this.notesLocalWoW = this.info.originalNotesCount - chart.perDay.notes.local.total[7];
+			this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
+			this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
+			this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
+			this.usersLocalWoW = this.info.originalUsersCount - chart.perDay.users.local.total[7];
+			this.usersLocalDoD = this.info.originalUsersCount - chart.perDay.users.local.total[1];
+			this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
+			this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
+
+			this.chart = chart;
+
+			this.renderChart();
+		},
+
 		renderChart() {
 			if (this.chartInstance) {
 				this.chartInstance.destroy();

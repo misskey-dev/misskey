@@ -1,6 +1,8 @@
 <template>
 <mk-container :body-togglable="false">
 	<template #header><slot name="title"></slot></template>
+	<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
+
 	<div class="_content _table">
 		<div class="_row">
 			<div class="_cell"><div class="_label">Process</div>{{ activeSincePrevTick | number }}</div>
@@ -18,6 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Chart from 'chart.js';
+import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../../components/ui/container.vue';
 
 const alpha = (hex, a) => {
@@ -49,6 +52,8 @@ export default Vue.extend({
 			active: 0,
 			waiting: 0,
 			delayed: 0,
+			paused: false,
+			faPlay, faPause
 		}
 	},
 
@@ -155,6 +160,7 @@ export default Vue.extend({
 
 	methods: {
 		onStats(stats) {
+			if (this.paused) return;
 			this.activeSincePrevTick = stats[this.domain].activeSincePrevTick;
 			this.active = stats[this.domain].active;
 			this.waiting = stats[this.domain].waiting;
@@ -178,6 +184,14 @@ export default Vue.extend({
 			for (const stats of [...statsLog].reverse()) {
 				this.onStats(stats);
 			}
+		},
+
+		pause() {
+			this.paused = true;
+		},
+
+		resume() {
+			this.paused = false;
 		},
 	}
 });

@@ -53,6 +53,7 @@
 		<div class="segusily">
 			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
+				<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 					<canvas ref="cpumem"></canvas>
@@ -72,8 +73,10 @@
 					</div>
 				</div>
 			</mk-container>
+
 			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faHdd"/> {{ $t('disk') }}</template>
+				<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 					<canvas ref="disk"></canvas>
@@ -88,8 +91,10 @@
 					</div>
 				</div>
 			</mk-container>
+
 			<mk-container :body-togglable="false" :resize-base-el="() => $el">
 				<template #header><fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
+				<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 					<canvas ref="net"></canvas>
@@ -180,7 +185,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '../../components/instance-stats.vue';
@@ -240,7 +245,8 @@ export default Vue.extend({
 			dbInfo: null,
 			overviewHeight: '1fr',
 			queueHeight: '1fr',
-			faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
+			paused: false,
+			faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
 
@@ -580,6 +586,8 @@ export default Vue.extend({
 		},
 
 		onStats(stats) {
+			if (this.paused) return;
+
 			const cpu = (stats.cpu * 100).toFixed(0);
 			const memActive = (stats.mem.active / this.serverInfo.mem.total * 100).toFixed(0);
 			const memUsed = (stats.mem.used / this.serverInfo.mem.total * 100).toFixed(0);
@@ -616,7 +624,15 @@ export default Vue.extend({
 			for (const stats of [...statsLog].reverse()) {
 				this.onStats(stats);
 			}
-		}
+		},
+
+		pause() {
+			this.paused = true;
+		},
+
+		resume() {
+			this.paused = false;
+		},
 	}
 });
 </script>

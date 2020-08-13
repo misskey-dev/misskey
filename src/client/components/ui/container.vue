@@ -2,11 +2,13 @@
 <div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
-		<slot name="func"></slot>
-		<button class="_button" v-if="bodyTogglable" @click="() => showBody = !showBody">
-			<template v-if="showBody"><fa :icon="faAngleUp"/></template>
-			<template v-else><fa :icon="faAngleDown"/></template>
-		</button>
+		<div class="sub">
+			<slot name="func"></slot>
+			<button class="_button" v-if="bodyTogglable" @click="() => showBody = !showBody">
+				<template v-if="showBody"><fa :icon="faAngleUp"/></template>
+				<template v-else><fa :icon="faAngleDown"/></template>
+			</button>
+		</div>
 	</header>
 	<transition name="container-toggle"
 		@enter="enter"
@@ -153,14 +155,17 @@ export default Vue.extend({
 			}
 		}
 
-		> button {
+		> .sub {
 			position: absolute;
 			z-index: 2;
 			top: 0;
 			right: 0;
-			padding: 0;
-			width: 42px;
 			height: 100%;
+
+			> button {
+				width: 42px;
+				height: 100%;
+			}
 		}
 	}
 
