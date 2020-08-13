@@ -108,7 +108,7 @@
 	<mk-folder>
 		<template #header><fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
 
-		<div class="vkyrmkwb">
+		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
 			<mk-container :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
 				<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
 
@@ -119,10 +119,10 @@
 					</div>
 				</div>
 			</mk-container>
-			<x-queue :connection="queueConnection" domain="inbox">
+			<x-queue :connection="queueConnection" domain="inbox" ref="queue" class="queue">
 				<template #title><fa :icon="faExchangeAlt"/> In</template>
 			</x-queue>
-			<x-queue :connection="queueConnection" domain="deliver">
+			<x-queue :connection="queueConnection" domain="deliver" class="queue">
 				<template #title><fa :icon="faExchangeAlt"/> Out</template>
 			</x-queue>
 		</div>
@@ -239,6 +239,7 @@ export default Vue.extend({
 			modLogs: [],
 			dbInfo: null,
 			overviewHeight: '1fr',
+			queueHeight: '1fr',
 			faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
@@ -512,13 +513,17 @@ export default Vue.extend({
 		});
 
 		this.$nextTick(() => {
-			const ro = new ResizeObserver((entries, observer) => {
-				if (this.$refs.stats) {
+			new ResizeObserver((entries, observer) => {
+				if (this.$refs.stats && this.$refs.stats.$el) {
 					this.overviewHeight = this.$refs.stats.$el.offsetHeight + 'px';
 				}
-			});
+			}).observe(this.$refs.stats.$el);
 
-			ro.observe(this.$refs.stats.$el);
+			new ResizeObserver((entries, observer) => {
+				if (this.$refs.queue && this.$refs.queue.$el) {
+					this.queueHeight = this.$refs.queue.$el.offsetHeight + 'px';
+				}
+			}).observe(this.$refs.queue.$el);
 		});
 	},
 
@@ -666,8 +671,17 @@ export default Vue.extend({
 		.vkyrmkwb {
 			display: grid;
 			grid-template-columns: 0.5fr 1fr 1fr;
-			grid-template-rows: 400px;
+			grid-template-rows: 1fr;
 			gap: 16px 16px;
+			margin-bottom: var(--margin);
+
+			> .queue {
+				height: min-content;
+			}
+
+			> * {
+				margin-bottom: 0;
+			}
 		}
 
 		.uwuemslx {
