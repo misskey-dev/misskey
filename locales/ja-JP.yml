@@ -562,6 +562,7 @@ metrics: "メトリクス"
 overview: "概要"
 logs: "ログ"
 delayed: "遅延"
+database: "データベース"
 
 _sidebar:
   full: "フル"

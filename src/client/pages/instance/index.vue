@@ -6,11 +6,11 @@
 	<mk-folder>
 		<template #header><fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>
 
-		<div class="sboqnrfi">
-			<mk-instance-stats :chart-limit="300" :detailed="true"/>
+		<div class="sboqnrfi" :style="{ gridTemplateRows: overviewHeight }">
+			<mk-instance-stats :chart-limit="300" :detailed="true" class="stats" ref="stats"/>
 
 			<div class="column">
-				<mk-container :body-togglable="false" :resize-base-el="() => $el">
+				<mk-container :body-togglable="true" :resize-base-el="() => $el" class="info">
 					<template #header><fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
 
 					<div class="_content">
@@ -22,8 +22,16 @@
 						<div class="_keyValue"><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
 					</div>
 				</mk-container>
+				
+				<mk-container :body-togglable="true" :scrollable="true" :resize-base-el="() => $el" class="db">
+					<template #header><fa :icon="faDatabase"/>{{ $t('database') }}</template>
 
-				<mkw-federation/>
+					<div class="_content" v-if="dbInfo">
+						<div class="_keyValue" v-for="table in Object.entries(dbInfo)"><b>{{ table[0] }}</b><span>{{ table[1].count | number }}</span><span>{{ table[1].size | bytes }}</span></div>
+					</div>
+				</mk-container>
+
+				<mkw-federation class="fed"/>
 			</div>
 		</div>
 	</mk-folder>
@@ -161,7 +169,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '../../components/instance-stats.vue';
@@ -218,7 +226,9 @@ export default Vue.extend({
 			logLevel: 'all',
 			logDomain: '',
 			modLogs: [],
-			faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
+			dbInfo: null,
+			overviewHeight: '1fr',
+			faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
 
@@ -485,6 +495,20 @@ export default Vue.extend({
 				});
 			});
 		});
+
+		this.$root.api('admin/get-table-stats', {}).then(res => {
+			this.dbInfo = res;
+		});
+
+		this.$nextTick(() => {
+			const ro = new ResizeObserver((entries, observer) => {
+				if (this.$refs.stats) {
+					this.overviewHeight = this.$refs.stats.$el.offsetHeight + 'px';
+				}
+			});
+
+			ro.observe(this.$refs.stats.$el);
+		});
 	},
 
 	beforeDestroy() {
@@ -590,11 +614,32 @@ export default Vue.extend({
 			grid-template-rows: 1fr;
 			gap: 16px 16px;
 
+			> .stats {
+				height: min-content;
+			}
+
 			> .column {
-				display: grid;
-				grid-template-columns: 1fr;
-				grid-template-rows: auto 1fr;
-				gap: 16px 16px;
+				display: flex;
+				flex-direction: column;
+
+				> .info {
+					flex-shrink: 0;
+					flex-grow: 0;
+				}
+
+				> .db {
+					flex: 1;
+					flex-grow: 0;
+				}
+
+				> .fed {
+					flex: 1;
+					flex-grow: 0;
+				}
+
+				> *:not(:last-child) {
+					margin-bottom: var(--margin);
+				}
 			}
 		}
 
@@ -608,7 +653,7 @@ export default Vue.extend({
 		.vkyrmkwb {
 			display: grid;
 			grid-template-columns: 0.5fr 1fr 1fr;
-			grid-template-rows: 385px;
+			grid-template-rows: 400px;
 			gap: 16px 16px;
 		}
 

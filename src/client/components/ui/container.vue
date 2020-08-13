@@ -1,6 +1,6 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable }" v-size="{ max: [380], el: resizeBaseEl }">
-	<header v-if="showHeader">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
+	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<slot name="func"></slot>
 		<button class="_button" v-if="bodyTogglable" @click="() => showBody = !showBody">
@@ -61,6 +61,18 @@ export default Vue.extend({
 			showBody: this.expanded,
 			faAngleUp, faAngleDown
 		};
+	},
+	mounted() {
+		this.$watch('showBody', showBody => {
+			this.$el.style.minHeight = `${this.$refs.header.offsetHeight}px`;
+			if (showBody) {
+				this.$el.style.flexBasis = `auto`;
+			} else {
+				this.$el.style.flexBasis = `${this.$refs.header.offsetHeight}px`;
+			}
+		}, {
+			immediate: true
+		});
 	},
 	methods: {
 		toggleContent(show: boolean) {
