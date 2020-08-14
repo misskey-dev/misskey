@@ -106,6 +106,7 @@ export default () => new Vuex.Store({
 		i: null,
 		pendingApiRequestsCount: 0,
 		spinner: null,
+		fullView: false,
 
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
@@ -246,6 +247,10 @@ export default () => new Vuex.Store({
 
 		updateIKeyValue(state, { key, value }) {
 			state.i[key] = value;
+		},
+
+		setFullView(state, v) {
+			state.fullView = v;
 		},
 
 		initPlugin(state, { plugin, aiscript }) {

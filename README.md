@@ -6,6 +6,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/syuilo/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/syuilo/misskey)
 [![Dependencies](https://img.shields.io/david/syuilo/misskey.svg?style=for-the-badge&logo=npm)](https://david-dm.org/syuilo/misskey)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge&logo=github)](http://makeapullrequest.com)
+[![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
 
 **A forever evolving, sophisticated microblogging platform.**
 

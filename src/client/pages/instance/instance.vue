@@ -2,69 +2,69 @@
 <x-window @closed="() => { $emit('closed'); destroyDom(); }" :no-padding="true" :width="520" :height="500">
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
-		<div class="table info">
-			<div class="row">
-				<div class="cell">
-					<div class="label">{{ $t('software') }}</div>
-					<div class="data">{{ instance.softwareName || '?' }}</div>
+		<div class="_table">
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('software') }}</div>
+					<div class="_data">{{ instance.softwareName || '?' }}</div>
 				</div>
-				<div class="cell">
-					<div class="label">{{ $t('version') }}</div>
-					<div class="data">{{ instance.softwareVersion || '?' }}</div>
+				<div class="_cell">
+					<div class="_label">{{ $t('version') }}</div>
+					<div class="_data">{{ instance.softwareVersion || '?' }}</div>
 				</div>
 			</div>
 		</div>
-		<div class="table data">
-			<div class="row">
-				<div class="cell">
-					<div class="label"><fa :icon="faCrosshairs" fixed-width class="icon"/>{{ $t('registeredAt') }}</div>
-					<div class="data">{{ new Date(instance.caughtAt).toLocaleString() }} (<mk-time :time="instance.caughtAt"/>)</div>
+		<div class="_table data">
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('registeredAt') }}</div>
+					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<mk-time :time="instance.caughtAt"/>)</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="cell">
-					<div class="label"><fa :icon="faCloudDownloadAlt" fixed-width class="icon"/>{{ $t('following') }}</div>
-					<div class="data clickable" @click="showFollowing()">{{ instance.followingCount | number }}</div>
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('following') }}</div>
+					<button class="_data _textButton" @click="showFollowing()">{{ instance.followingCount | number }}</button>
 				</div>
-				<div class="cell">
-					<div class="label"><fa :icon="faCloudUploadAlt" fixed-width class="icon"/>{{ $t('followers') }}</div>
-					<div class="data clickable" @click="showFollowers()">{{ instance.followersCount | number }}</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="cell">
-					<div class="label"><fa :icon="faUsers" fixed-width class="icon"/>{{ $t('users') }}</div>
-					<div class="data clickable" @click="showUsers()">{{ instance.usersCount | number }}</div>
-				</div>
-				<div class="cell">
-					<div class="label"><fa :icon="faPencilAlt" fixed-width class="icon"/>{{ $t('notes') }}</div>
-					<div class="data">{{ instance.notesCount | number }}</div>
+				<div class="_cell">
+					<div class="_label">{{ $t('followers') }}</div>
+					<button class="_data _textButton" @click="showFollowers()">{{ instance.followersCount | number }}</button>
 				</div>
 			</div>
-			<div class="row">
-				<div class="cell">
-					<div class="label"><fa :icon="faFileImage" fixed-width class="icon"/>{{ $t('files') }}</div>
-					<div class="data">{{ instance.driveFiles | number }}</div>
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('users') }}</div>
+					<button class="_data _textButton" @click="showUsers()">{{ instance.usersCount | number }}</button>
 				</div>
-				<div class="cell">
-					<div class="label"><fa :icon="faDatabase" fixed-width class="icon"/>{{ $t('storageUsage') }}</div>
-					<div class="data">{{ instance.driveUsage | bytes }}</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="cell">
-					<div class="label"><fa :icon="faLongArrowAltUp" fixed-width class="icon"/>{{ $t('latestRequestSentAt') }}</div>
-					<div class="data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
-				</div>
-				<div class="cell">
-					<div class="label"><fa :icon="faTrafficLight" fixed-width class="icon"/>{{ $t('latestStatus') }}</div>
-					<div class="data">{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</div>
+				<div class="_cell">
+					<div class="_label">{{ $t('notes') }}</div>
+					<div class="_data">{{ instance.notesCount | number }}</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="cell">
-					<div class="label"><fa :icon="faLongArrowAltDown" fixed-width class="icon"/>{{ $t('latestRequestReceivedAt') }}</div>
-					<div class="data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('files') }}</div>
+					<div class="_data">{{ instance.driveFiles | number }}</div>
+				</div>
+				<div class="_cell">
+					<div class="_label">{{ $t('storageUsage') }}</div>
+					<div class="_data">{{ instance.driveUsage | bytes }}</div>
+				</div>
+			</div>
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('latestRequestSentAt') }}</div>
+					<div class="_data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
+				</div>
+				<div class="_cell">
+					<div class="_label">{{ $t('latestStatus') }}</div>
+					<div class="_data">{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</div>
+				</div>
+			</div>
+			<div class="_row">
+				<div class="_cell">
+					<div class="_label">{{ $t('latestRequestReceivedAt') }}</div>
+					<div class="_data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
 				</div>
 			</div>
 		</div>
@@ -483,38 +483,11 @@ export default Vue.extend({
 .mk-instance-info {
 	overflow: auto;
 
-	> .table {
+	> ._table {
 		padding: 0 32px;
 
 		@media (max-width: 500px) {
 			padding: 0 16px;
-		}
-
-		> .row {
-			display: flex;
-
-			&:not(:last-child) {
-				margin-bottom: 8px;
-			}
-
-			> .cell {
-				flex: 1;
-
-				> .label {
-					font-size: 80%;
-					opacity: 0.7;
-
-					> .icon {
-						margin-right: 4px;
-						display: none;
-					}
-				}
-
-				> .data.clickable {
-					color: var(--accent);
-					cursor: pointer;
-				}
-			}
 		}
 	}
 
