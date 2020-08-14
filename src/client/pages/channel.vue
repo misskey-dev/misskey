@@ -6,8 +6,8 @@
 	<mk-container :body-togglable="true" :expanded="true">
 		<template #header><fa :icon="faSatelliteDish" fixed-width/>{{ channel.name }}</template>
 
-		<div>
-			<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }">
+		<div class="wpgynlbz">
+			<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			</div>
 		</div>
 	</mk-container>
@@ -63,4 +63,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.wpgynlbz {
+	> .banner {
+		height: 100px;
+		background-position: center;
+		background-size: cover;
+	}
+}
 </style>
