@@ -11,6 +11,10 @@
 			</div>
 		</div>
 	</mk-container>
+
+	<x-post-form class="post-form _panel" fixed/>
+
+	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>
 
@@ -19,6 +23,8 @@ import Vue from 'vue';
 import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
+import XPostForm from '../components/post-form.vue';
+import XNotes from '../components/notes.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -29,6 +35,8 @@ export default Vue.extend({
 
 	components: {
 		MkContainer,
+		XPostForm,
+		XNotes,
 	},
 
 	props: {
@@ -41,6 +49,13 @@ export default Vue.extend({
 	data() {
 		return {
 			channel: null,
+			pagination: {
+				endpoint: 'channels/timeline',
+				limit: 10,
+				params: () => ({
+					channelId: this.channelId,
+				})
+			},
 			faSatelliteDish,
 		};
 	},
