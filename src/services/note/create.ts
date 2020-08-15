@@ -17,7 +17,7 @@ import extractMentions from '../../misc/extract-mentions';
 import extractEmojis from '../../misc/extract-emojis';
 import extractHashtags from '../../misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
-import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels } from '../../models';
+import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
@@ -275,6 +275,15 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 	});
 
+	// Channel
+	if (note.channelId) {
+		ChannelFollowings.find({ followeeId: note.channelId }).then(followings => {
+			for (const following of followings) {
+				insertNoteUnread(following.followerId, note, {});
+			}
+		});
+	}
+
 	if (data.reply) {
 		saveReply(data.reply, note);
 	}
@@ -293,13 +302,19 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			if (data.visibleUsers == null) throw new Error('invalid param');
 
 			for (const u of data.visibleUsers) {
-				insertNoteUnread(u, note, {
+				// ローカルユーザーのみ
+				if (!Users.isLocalUser(u)) continue;
+
+				insertNoteUnread(u.id, note, {
 					isSpecified: true,
 				});
 			}
 		} else {
 			for (const u of mentionedUsers) {
-				insertNoteUnread(u, note, {
+				// ローカルユーザーのみ
+				if (!Users.isLocalUser(u)) continue;
+
+				insertNoteUnread(u.id, note, {
 					isMentioned: true,
 				});
 			}
