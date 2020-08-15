@@ -1,20 +1,17 @@
 import { Note } from '../../models/entities/note';
 import { publishMainStream } from '../stream';
 import { User } from '../../models/entities/user';
-import { Mutings, NoteUnreads, Users } from '../../models';
+import { Mutings, NoteUnreads } from '../../models';
 import { genId } from '../../misc/gen-id';
 
-export default async function(user: User, note: Note, params: {
+export default async function(userId: User['id'], note: Note, params: {
 	// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
 	isSpecified?: boolean;
 	isMentioned?: boolean;
 }) {
-	// ローカルユーザーのみ
-	if (!Users.isLocalUser(user)) return;
-
 	//#region ミュートしているなら無視
 	const mute = await Mutings.find({
-		muterId: user.id
+		muterId: userId
 	});
 	if (mute.map(m => m.muteeId).includes(note.userId)) return;
 	//#endregion
@@ -22,7 +19,7 @@ export default async function(user: User, note: Note, params: {
 	const unread = await NoteUnreads.save({
 		id: genId(),
 		noteId: note.id,
-		userId: user.id,
+		userId: userId,
 		isSpecified: params.isSpecified,
 		isMentioned: params.isMentioned,
 		noteChannelId: note.channelId,
@@ -35,9 +32,9 @@ export default async function(user: User, note: Note, params: {
 		if (exist == null) return;
 
 		if (params.isMentioned) {
-			publishMainStream(user.id, 'unreadMention', note.id);
+			publishMainStream(userId, 'unreadMention', note.id);
 		} else if (params.isSpecified) {
-			publishMainStream(user.id, 'unreadSpecifiedNote', note.id);
+			publishMainStream(userId, 'unreadSpecifiedNote', note.id);
 		}
 	}, 2000);
 }
