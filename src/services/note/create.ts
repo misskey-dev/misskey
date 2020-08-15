@@ -293,11 +293,15 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			if (data.visibleUsers == null) throw new Error('invalid param');
 
 			for (const u of data.visibleUsers) {
-				insertNoteUnread(u, note, true);
+				insertNoteUnread(u, note, {
+					isSpecified: true,
+				});
 			}
 		} else {
 			for (const u of mentionedUsers) {
-				insertNoteUnread(u, note, false);
+				insertNoteUnread(u, note, {
+					isMentioned: true,
+				});
 			}
 		}
 

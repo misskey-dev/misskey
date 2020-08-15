@@ -4,7 +4,11 @@ import { User } from '../../models/entities/user';
 import { Mutings, NoteUnreads, Users } from '../../models';
 import { genId } from '../../misc/gen-id';
 
-export default async function(user: User, note: Note, isSpecified = false) {
+export default async function(user: User, note: Note, params: {
+	// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
+	isSpecified?: boolean;
+	isMentioned?: boolean;
+}) {
 	// ローカルユーザーのみ
 	if (!Users.isLocalUser(user)) return;
 
@@ -19,8 +23,10 @@ export default async function(user: User, note: Note, isSpecified = false) {
 		id: genId(),
 		noteId: note.id,
 		userId: user.id,
-		isSpecified,
-		noteUserId: note.userId
+		isSpecified: params.isSpecified,
+		isMentioned: params.isMentioned,
+		noteChannelId: note.channelId,
+		noteUserId: note.userId,
 	});
 
 	// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
@@ -28,9 +34,9 @@ export default async function(user: User, note: Note, isSpecified = false) {
 		const exist = await NoteUnreads.findOne(unread.id);
 		if (exist == null) return;
 
-		publishMainStream(user.id, 'unreadMention', note.id);
-
-		if (isSpecified) {
+		if (params.isMentioned) {
+			publishMainStream(user.id, 'unreadMention', note.id);
+		} else if (params.isSpecified) {
 			publishMainStream(user.id, 'unreadSpecifiedNote', note.id);
 		}
 	}, 2000);

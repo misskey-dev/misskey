@@ -22,7 +22,7 @@ export default (
 		const [count1, count2] = await Promise.all([
 			NoteUnreads.count({
 				userId: userId,
-				isSpecified: false
+				isMentioned: true
 			}),
 			NoteUnreads.count({
 				userId: userId,

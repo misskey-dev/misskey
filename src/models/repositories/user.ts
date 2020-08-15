@@ -187,7 +187,7 @@ export class UserRepository extends Repository<User> {
 					take: 1
 				}).then(count => count > 0),
 				hasUnreadMentions: NoteUnreads.count({
-					where: { userId: user.id },
+					where: { userId: user.id, isMentioned: true },
 					take: 1
 				}).then(count => count > 0),
 			} : {}),
