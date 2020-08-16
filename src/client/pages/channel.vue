@@ -6,6 +6,10 @@
 	<div class="wpgynlbz _panel _vMargin">
 		<x-channel-follow-button :channel="channel" :full="true" class="subscribe"/>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
+			<div class="status">
+				<div><fa :icon="faUsers" fixed-width/> {{ $t('_channel.usersCount', { n: channel.usersCount }) }}</div>
+				<div><fa :icon="faPencilAlt" fixed-width/> {{ $t('_channel.notesCount', { n: channel.notesCount }) }}</div>
+			</div>
 			<div class="fade"></div>
 		</div>
 		<div class="description" v-if="channel.description">
@@ -21,7 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XPostForm from '../components/post-form.vue';
@@ -63,7 +67,7 @@ export default Vue.extend({
 					channelId: this.channelId,
 				})
 			},
-			faSatelliteDish,
+			faSatelliteDish, faUsers, faPencilAlt,
 		};
 	},
 
@@ -86,7 +90,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .wpgynlbz {
-
 	> .subscribe {
 		position: absolute;
 		z-index: 1;
@@ -107,6 +110,18 @@ export default Vue.extend({
 			width: 100%;
 			height: 64px;
 			background: linear-gradient(0deg, var(--panel), var(--X15));
+		}
+
+		> .status {
+			position: absolute;
+			z-index: 1;
+			bottom: 16px;
+			right: 16px;
+			padding: 8px 12px;
+			font-size: 80%;
+			background: rgba(0, 0, 0, 0.7);
+			border-radius: 6px;
+			color: #fff;
 		}
 	}
 
