@@ -12,16 +12,16 @@
 		</mk-pagination>
 	</div>
 
-	<div class="grwlizim owned" v-if="tab === 'owned'">
-		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
-		<mk-pagination :pagination="ownedPagination" #default="{items}">
+	<div class="grwlizim following" v-if="tab === 'following'">
+		<mk-pagination :pagination="followingPagination" #default="{items}">
 			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
 		</mk-pagination>
 	</div>
 
-	<div class="grwlizim" v-if="tab === 'liked'">
-		<mk-pagination :pagination="likedPagesPagination" #default="{items}">
-			<mk-channel-preview v-for="like in items" class="uveselbe" :channel="like.channel" :key="like.channel.id"/>
+	<div class="grwlizim owned" v-if="tab === 'owned'">
+		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
+		<mk-pagination :pagination="ownedPagination" #default="{items}">
+			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
 		</mk-pagination>
 	</div>
 </div>
@@ -45,6 +45,10 @@ export default Vue.extend({
 			tab: 'featured',
 			featuredPagination: {
 				endpoint: 'i/pages',
+				limit: 5,
+			},
+			followingPagination: {
+				endpoint: 'channels/followed',
 				limit: 5,
 			},
 			ownedPagination: {

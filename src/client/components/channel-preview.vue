@@ -8,9 +8,14 @@
 			<div><fa :icon="faPencilAlt" fixed-width/><i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.notesCount }}</b></i18n></div>
 		</div>
 	</div>
-	<article>
-		<p v-if="channel.description" :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
+	<article v-if="channel.description">
+		<p :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
 	</article>
+	<footer>
+		<span>
+			{{ $t('updatedAt') }}: <mk-time :time="channel.lastNotedAt"/>
+		</span>
+	</footer>
 </router-link>
 </template>
 
@@ -93,6 +98,16 @@ export default Vue.extend({
 		}
 	}
 
+	> footer {
+		padding: 12px 16px;
+		border-top: solid 1px var(--divider);
+
+		> span {
+			opacity: 0.7;
+			font-size: 0.9em;
+		}
+	}
+
 	@media (max-width: 550px) {
 		font-size: 0.9em;
 
@@ -106,6 +121,10 @@ export default Vue.extend({
 
 		> article {
 			padding: 12px;
+		}
+
+		> footer {
+			display: none;
 		}
 	}
 
