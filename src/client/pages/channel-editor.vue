@@ -10,9 +10,9 @@
 			<mk-textarea v-model="description">{{ $t('description') }}</mk-textarea>
 
 			<div class="banner">
-				<mk-button v-if="bannerId == null" @click="setBannerImage()"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>
+				<mk-button v-if="bannerId == null" @click="setBannerImage"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>
 				<div v-else-if="bannerUrl">
-					<img :src="bannerUrl"/>
+					<img :src="bannerUrl" style="width: 100%;"/>
 					<mk-button @click="removeBannerImage()"><fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</mk-button>
 				</div>
 			</div>
@@ -31,7 +31,7 @@ import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkTextarea from '../components/ui/textarea.vue';
 import MkButton from '../components/ui/button.vue';
 import MkInput from '../components/ui/input.vue';
-import { selectDriveFile } from '../scripts/select-drive-file';
+import { selectFile } from '../scripts/select-file';
 
 export default Vue.extend({
 	components: {
@@ -110,8 +110,8 @@ export default Vue.extend({
 			}
 		},
 
-		setBannerImage() {
-			selectDriveFile(this.$root, false).then(file => {
+		setBannerImage(e) {
+			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
 				this.bannerId = file.id;
 			});
 		},

@@ -31,7 +31,7 @@ export const router = new VueRouter({
 		{ path: '/search', component: page('search') },
 		{ path: '/channels', component: page('channels') },
 		{ path: '/channels/new', component: page('channel-editor') },
-		{ path: '/channels/edit/:channelId', component: page('channel-editor'), props: true },
+		{ path: '/channels/:channelId/edit', component: page('channel-editor'), props: true },
 		{ path: '/channels/:channelId', component: page('channel'), props: true },
 		{ path: '/my/notifications', component: page('notifications') },
 		{ path: '/my/favorites', component: page('favorites') },
