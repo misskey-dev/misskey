@@ -3,8 +3,14 @@
 	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
 	<portal to="title">{{ channel.name }}</portal>
 
-	<div class="wpgynlbz _panel _vMargin">
+	<div class="wpgynlbz _panel _vMargin" :class="{ hide: !showBanner }">
 		<x-channel-follow-button :channel="channel" :full="true" class="subscribe"/>
+		<button class="_button toggle" @click="() => showBanner = !showBanner">
+			<template v-if="showBanner"><fa :icon="faAngleUp"/></template>
+			<template v-else><fa :icon="faAngleDown"/></template>
+		</button>
+		<div class="hideOverlay" v-if="!showBanner">
+		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
 				<div><fa :icon="faUsers" fixed-width/> {{ $t('_channel.usersCount', { n: channel.usersCount }) }}</div>
@@ -25,7 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XPostForm from '../components/post-form.vue';
@@ -60,6 +66,7 @@ export default Vue.extend({
 	data() {
 		return {
 			channel: null,
+			showBanner: true,
 			pagination: {
 				endpoint: 'channels/timeline',
 				limit: 10,
@@ -67,7 +74,7 @@ export default Vue.extend({
 					channelId: this.channelId,
 				})
 			},
-			faSatelliteDish, faUsers, faPencilAlt,
+			faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown,
 		};
 	},
 
@@ -95,6 +102,23 @@ export default Vue.extend({
 		z-index: 1;
 		top: 16px;
 		left: 16px;
+	}
+
+	> .toggle {
+		position: absolute;
+		z-index: 2;
+    top: 8px;
+		right: 8px;
+		font-size: 1.2em;
+		width: 48px;
+		height: 48px;
+		color: #fff;
+		background: rgba(0, 0, 0, 0.5);
+		border-radius: 100%;
+		
+		> [data-icon] {
+			vertical-align: middle;
+		}
 	}
 	
 	> .banner {
@@ -127,6 +151,44 @@ export default Vue.extend({
 
 	> .description {
 		padding: 16px;
+	}
+
+	> .hideOverlay {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		-webkit-backdrop-filter: blur(16px);
+		backdrop-filter: blur(16px);
+		background: rgba(0, 0, 0, 0.3);
+	}
+
+	&.hide {
+		> .subscribe {
+			display: none;
+		}
+
+		> .toggle {
+			top: 0;
+			right: 0;
+			height: 100%;
+			background: transparent;
+		}
+
+		> .banner {
+			height: 42px;
+			filter: blur(8px);
+
+			> * {
+				display: none;
+			}
+		}
+
+		> .description {
+			display: none;
+		}
 	}
 }
 </style>
