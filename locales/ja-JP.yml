@@ -575,7 +575,7 @@ _channel:
   featured: "トレンド"
   owned: "管理中"
   following: "フォロー中"
-  usersCount: "{n}人が参加しています"
+  usersCount: "{n}人が参加中"
   notesCount: "{n}投稿があります"
 
 _sidebar:

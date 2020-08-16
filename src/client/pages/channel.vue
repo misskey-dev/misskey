@@ -13,8 +13,8 @@
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><fa :icon="faUsers" fixed-width/> {{ $t('_channel.usersCount', { n: channel.usersCount }) }}</div>
-				<div><fa :icon="faPencilAlt" fixed-width/> {{ $t('_channel.notesCount', { n: channel.notesCount }) }}</div>
+				<div><fa :icon="faUsers" fixed-width/><i18n path="_channel.usersCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.usersCount }}</b></i18n></div>
+				<div><fa :icon="faPencilAlt" fixed-width/><i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.notesCount }}</b></i18n></div>
 			</div>
 			<div class="fade"></div>
 		</div>
