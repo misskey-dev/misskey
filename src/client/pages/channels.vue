@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
 	<portal to="title">{{ $t('channel') }}</portal>
 
-	<mk-tab v-model="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faEdit }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
+	<mk-tab v-model="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 
 	<div class="grwlizim featured" v-if="tab === 'featured'">
 		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { faSatelliteDish, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import MkChannelPreview from '../components/channel-preview.vue';
 import MkPagination from '../components/ui/pagination.vue';
@@ -44,7 +44,7 @@ export default Vue.extend({
 		return {
 			tab: 'featured',
 			featuredPagination: {
-				endpoint: 'i/pages',
+				endpoint: 'channels/featured',
 				limit: 5,
 			},
 			followingPagination: {
@@ -55,7 +55,7 @@ export default Vue.extend({
 				endpoint: 'channels/owned',
 				limit: 5,
 			},
-			faSatelliteDish, faPlus, faEdit, faHeart
+			faSatelliteDish, faPlus, faEdit, faHeart, faFireAlt
 		};
 	},
 	methods: {
@@ -68,7 +68,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .grwlizim {
-	padding: 16px;
+	padding: 16px 0;
 
 	&.my .uveselbe:first-child {
 		margin-top: 16px;
