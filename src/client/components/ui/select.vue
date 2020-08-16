@@ -196,7 +196,7 @@ export default Vue.extend({
 
 	> .text {
 		margin: 6px 0;
-		font-size: 13px;
+		font-size: 0.8em;
 
 		&:empty {
 			display: none;

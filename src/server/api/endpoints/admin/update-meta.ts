@@ -418,6 +418,10 @@ export const meta = {
 
 		objectStorageUseProxy: {
 			validator: $.optional.bool
+		},
+
+		objectStorageSetPublicRead: {
+			validator: $.optional.bool
 		}
 	}
 };
@@ -671,6 +675,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.objectStorageUseProxy !== undefined) {
 		set.objectStorageUseProxy = ps.objectStorageUseProxy;
+	}
+
+	if (ps.objectStorageSetPublicRead !== undefined) {
+		set.objectStorageSetPublicRead = ps.objectStorageSetPublicRead;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {

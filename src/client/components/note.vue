@@ -6,7 +6,7 @@
 	:tabindex="!isDeleted ? '-1' : null"
 	:class="{ renote: isRenote }"
 	v-hotkey="keymap"
-	v-size="[{ max: 500 }, { max: 450 }, { max: 350 }, { max: 300 }]"
+	v-size="{ max: [500, 450, 350, 300] }"
 >
 	<x-sub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
 	<x-sub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
