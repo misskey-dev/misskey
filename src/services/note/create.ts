@@ -424,11 +424,13 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			lastNotedAt: new Date(),
 		});
 
-		Notes.findOne({
+		Notes.count({
 			userId: user.id,
 			channelId: data.channel.id,
-		}).then(exist => {
-			if (exist == null) {
+		}).then(count => {
+			// この処理が行われるのはノート作成後なので、ノートが一つしかなかったら最初の投稿だと判断できる
+			// TODO: とはいえノートを削除して何回も投稿すればその分だけインクリメントされる雑さもあるのでどうにかしたい
+			if (count === 1) {
 				Channels.increment({ id: data.channel.id }, 'usersCount', 1);
 			}
 		});
