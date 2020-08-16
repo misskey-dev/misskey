@@ -10,7 +10,7 @@
 		<div>
 			<span class="local-only" v-if="localOnly" v-text="$t('_visibility.localOnly')" />
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
-			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')">
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')" :disabled="channel != null">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
@@ -236,9 +236,11 @@ export default Vue.extend({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility);
+		if (this.channel == null) {
+			this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility);
 
-		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
+			this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
+		}
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
@@ -410,6 +412,10 @@ export default Vue.extend({
 		},
 
 		setVisibility() {
+			if (this.channel) {
+				// TODO: information dialog
+				return;
+			}
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				currentVisibility: this.visibility,
