@@ -1,10 +1,14 @@
 <template>
-<router-link :to="`/channels/${channel.id}`" class="eftoefju" tabindex="-1">
-	<div class="thumbnail" v-if="channel.bannerUrl" :style="`background-image: url('${channel.bannerUrl}')`"></div>
+<router-link :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
+	<div class="banner" v-if="channel.bannerUrl" :style="`background-image: url('${channel.bannerUrl}')`">
+		<div class="fade"></div>
+		<div class="name"><fa :icon="faSatelliteDish"/> {{ channel.name }}</div>
+		<div class="status">
+			<div><fa :icon="faUsers" fixed-width/> {{ $t('_channel.usersCount', { n: channel.usersCount }) }}</div>
+			<div><fa :icon="faPencilAlt" fixed-width/> {{ $t('_channel.notesCount', { n: channel.notesCount }) }}</div>
+		</div>
+	</div>
 	<article>
-		<header>
-			<h1 :title="channel.name">{{ channel.name }}</h1>
-		</header>
 		<p v-if="channel.description" :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
 	</article>
 </router-link>
@@ -12,6 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
 	props: {
@@ -19,6 +24,12 @@ export default Vue.extend({
 			type: Object,
 			required: true
 		},
+	},
+
+	data() {
+		return {
+			faSatelliteDish, faUsers, faPencilAlt,
+		};
 	},
 });
 </script>
@@ -28,101 +39,69 @@ export default Vue.extend({
 	display: block;
 	overflow: hidden;
 	width: 100%;
-	border: solid var(--lineWidth) var(--urlPreviewBorder);
-	border-radius: 4px;
-	overflow: hidden;
 	border: 1px solid var(--divider);
 
 	&:hover {
 		text-decoration: none;
-		border-color: var(--urlPreviewBorderHover);
 	}
 
-	> .thumbnail {
+	> .banner {
+		position: relative;
 		width: 100%;
 		height: 200px;
 		background-position: center;
 		background-size: cover;
-		display: flex;
-		justify-content: center;
-		align-items: center;
 
-		> button {
-			font-size: 3.5em;
-			opacity: 0.7;
-
-			&:hover {
-				font-size: 4em;
-				opacity: 0.9;
-			}
+		> .fade {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 64px;
+			background: linear-gradient(0deg, var(--panel), var(--X15));
 		}
 
-		& + article {
-			left: 100px;
-			width: calc(100% - 100px);
+		> .name {
+			position: absolute;
+			top: 16px;
+			left: 16px;
+			padding: 12px 16px;
+			background: rgba(0, 0, 0, 0.7);
+			color: #fff;
+			font-size: 1.2em;
+		}
+
+		> .status {
+			position: absolute;
+			z-index: 1;
+			bottom: 16px;
+			right: 16px;
+			padding: 8px 12px;
+			font-size: 80%;
+			background: rgba(0, 0, 0, 0.7);
+			border-radius: 6px;
+			color: #fff;
 		}
 	}
 
 	> article {
 		padding: 16px;
 
-		> header {
-			margin-bottom: 8px;
-
-			> h1 {
-				margin: 0;
-				font-size: 1em;
-				color: var(--urlPreviewTitle);
-			}
-		}
-
 		> p {
 			margin: 0;
-			color: var(--urlPreviewText);
-			font-size: 0.8em;
-		}
-
-		> footer {
-			margin-top: 8px;
-			height: 16px;
-
-			> img {
-				display: inline-block;
-				width: 16px;
-				height: 16px;
-				margin-right: 4px;
-				vertical-align: top;
-			}
-
-			> p {
-				display: inline-block;
-				margin: 0;
-				color: var(--urlPreviewInfo);
-				font-size: 0.8em;
-				line-height: 16px;
-				vertical-align: top;
-			}
-		}
-	}
-
-	@media (max-width: 700px) {
-		> .thumbnail {
-			position: relative;
-			width: 100%;
-			height: 100px;
-
-			& + article {
-				left: 0;
-				width: 100%;
-			}
+			font-size: 1em;
 		}
 	}
 
 	@media (max-width: 550px) {
-		font-size: 12px;
+		font-size: 0.9em;
 
-		> .thumbnail {
+		> .banner {
 			height: 80px;
+
+			> .status {
+				display: none;
+			}
 		}
 
 		> article {
@@ -131,27 +110,14 @@ export default Vue.extend({
 	}
 
 	@media (max-width: 500px) {
-		font-size: 10px;
+		font-size: 0.8em;
 
-		> .thumbnail {
+		> .banner {
 			height: 70px;
 		}
 
 		> article {
 			padding: 8px;
-
-			> header {
-				margin-bottom: 4px;
-			}
-
-			> footer {
-				margin-top: 4px;
-
-				> img {
-					width: 12px;
-					height: 12px;
-				}
-			}
 		}
 	}
 }
