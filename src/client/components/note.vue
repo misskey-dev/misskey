@@ -57,6 +57,7 @@
 					<mk-url-preview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="detail" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><x-note-preview :note="appearNote.renote"/></div>
 				</div>
+				<div v-if="appearNote.channel && !inChannel">channel</div>
 			</div>
 			<footer class="footer">
 				<x-reactions-viewer :note="appearNote" ref="reactionsViewer"/>
@@ -132,6 +133,8 @@ export default Vue.extend({
 		XPoll,
 		MkUrlPreview,
 	},
+
+	inject: ['inChannel'],
 
 	props: {
 		note: {

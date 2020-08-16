@@ -3,16 +3,16 @@
 	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
 	<portal to="title">{{ channel.name }}</portal>
 
-	<mk-container :body-togglable="true" :expanded="true" class="_vMargin">
-		<template #header><fa :icon="faSatelliteDish" fixed-width/>{{ channel.name }}</template>
-
-		<div class="wpgynlbz">
-			<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
-			</div>
+	<div class="wpgynlbz _panel _vMargin">
+		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
+			<div class="fade"></div>
 		</div>
-	</mk-container>
+		<div class="description" v-if="channel.description">
+			<mfm :text="channel.description" :is-note="false" :i="$store.state.i"/>
+		</div>
+	</div>
 
-	<x-post-form class="post-form _panel _vMargin" fixed/>
+	<x-post-form :channel="channel" class="post-form _panel _vMargin" fixed/>
 
 	<x-timeline class="_vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
 </div>
@@ -44,6 +44,10 @@ export default Vue.extend({
 			type: String,
 			required: true
 		}
+	},
+
+	provide: {
+		inChannel: true
 	},
 
 	data() {
@@ -80,9 +84,23 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .wpgynlbz {
 	> .banner {
-		height: 100px;
+		position: relative;
+		height: 200px;
 		background-position: center;
 		background-size: cover;
+
+		> .fade {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 64px;
+			background: linear-gradient(0deg, var(--panel), var(--X15));
+		}
+	}
+
+	> .description {
+		padding: 16px;
 	}
 }
 </style>
