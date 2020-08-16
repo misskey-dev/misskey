@@ -4,6 +4,7 @@
 	<portal to="title">{{ channel.name }}</portal>
 
 	<div class="wpgynlbz _panel _vMargin">
+		<x-channel-follow-button :channel="channel" :full="true" class="subscribe"/>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="fade"></div>
 		</div>
@@ -25,6 +26,7 @@ import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XPostForm from '../components/post-form.vue';
 import XTimeline from '../components/timeline.vue';
+import XChannelFollowButton from '../components/channel-follow-button.vue';
 
 export default Vue.extend({
 	metaInfo() {
@@ -37,6 +39,7 @@ export default Vue.extend({
 		MkContainer,
 		XPostForm,
 		XTimeline,
+		XChannelFollowButton
 	},
 
 	props: {
@@ -83,6 +86,14 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .wpgynlbz {
+
+	> .subscribe {
+		position: absolute;
+		z-index: 1;
+		top: 16px;
+		left: 16px;
+	}
+	
 	> .banner {
 		position: relative;
 		height: 200px;

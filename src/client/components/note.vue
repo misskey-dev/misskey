@@ -134,7 +134,11 @@ export default Vue.extend({
 		MkUrlPreview,
 	},
 
-	inject: ['inChannel'],
+	inject: {
+		inChannel: {
+			default: null
+		}
+	},
 
 	props: {
 		note: {
