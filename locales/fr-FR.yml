@@ -554,6 +554,8 @@ wordMute: "Filtre de mots"
 userSaysSomething: "{name} a dit quelque chose"
 makeActive: "Activer"
 display: "Affichage"
+_channel:
+  featured: "Tendances"
 _sidebar:
   full: "Complet"
   icon: "Avatar"
