@@ -164,9 +164,11 @@ export default Vue.extend({
 				icon: faSatelliteDish,
 				indicate: channel.hasUnreadNote,
 				action: () => {
-					this.channel = channel;
-					this.src = 'channel';
-					this.saveSrc();
+					// NOTE: チャンネルタイムラインをこのコンポーネントで表示するようにすると投稿フォームはどうするかなどの問題が生じるのでとりあえずページ遷移で
+					//this.channel = channel;
+					//this.src = 'channel';
+					//this.saveSrc();
+					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
 			this.$root.menu({
