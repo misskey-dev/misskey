@@ -564,6 +564,8 @@ overview: "Resumen"
 logs: "Registros"
 delayed: "atrasado"
 database: "Base de datos"
+_channel:
+  featured: "Tendencias"
 _sidebar:
   full: "Completo"
   icon: "Avatar"
