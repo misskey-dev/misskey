@@ -571,7 +571,7 @@ _channel:
   edit: "编辑频道"
   setBanner: "设置横幅"
   removeBanner: "删除横幅"
-  featured: "趋势"
+  featured: "热点"
   owned: "管理中"
   following: "正在关注"
   usersCount: "有{n}人参与"
@@ -743,6 +743,8 @@ _permissions:
   "write:page-likes": "操作喜欢的页面"
   "read:user-groups": "查看用户组"
   "write:user-groups": "操作用户组"
+  "read:channels": "查看频道"
+  "write:channels": "管理频道"
 _auth:
   shareAccess: "您要授权允许“{name}”访问您的帐户吗？"
   shareAccessAsk: "您确定要授权此应用程序访问您的帐户吗？"
@@ -817,6 +819,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "回复这个帖子..."
   quotePlaceholder: "引用这个帖子..."
+  channelPlaceholder: "发布到频道…"
   _placeholders:
     a: "现在如何？"
     b: "发生了什么？"
