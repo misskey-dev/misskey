@@ -90,6 +90,7 @@ export const defaultDeviceSettings = {
 	sfxChat: 'syuilo/pope1',
 	sfxChatBg: 'syuilo/waon',
 	sfxAntenna: 'syuilo/triple',
+	sfxChannel: 'syuilo/square-pico',
 	userData: {},
 };
 

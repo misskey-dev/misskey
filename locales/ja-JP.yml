@@ -673,6 +673,7 @@ _sfx:
   chat: "チャット"
   chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
+  channel: "チャンネル通知"
 
 _ago:
   unknown: "謎"
