@@ -497,6 +497,18 @@ smtpHost: "主機"
 smtpPort: "端口"
 smtpUser: "使用名稱"
 smtpPass: "密碼"
+channel: "頻道"
+create: "新增"
+_channel:
+  create: "建立頻道"
+  edit: "編輯頻道"
+  setBanner: "設置封面圖"
+  removeBanner: "移除封面圖"
+  featured: "流行"
+  owned: "管理中"
+  following: "關注中"
+  usersCount: "有{n}人參與"
+  notesCount: "有{n}個帖子"
 _sidebar:
   icon: "頭像"
 _theme:
@@ -510,6 +522,7 @@ _sfx:
   noteMy: "我的貼文"
   notification: "通知"
   chat: "傳送訊息"
+  channel: "頻道通知"
 _ago:
   unknown: "未知"
   future: "未來"
@@ -560,6 +573,8 @@ _permissions:
   "read:reactions": "查看反應"
   "write:reactions": "編輯反應"
   "write:votes": "投票"
+  "read:channels": "已查看的頻道"
+  "write:channels": "操作頻道"
 _weekday:
   sunday: "週日"
   monday: "週一"
@@ -586,6 +601,8 @@ _poll:
 _visibility:
   home: "首頁"
   followers: "追隨者"
+_postForm:
+  channelPlaceholder: "發佈到頻道"
 _profile:
   name: "名稱"
   username: "使用名稱"
