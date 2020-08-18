@@ -5,11 +5,11 @@
 
 	<router-link v-if="$store.getters.isSignedIn" class="_panel _buttonPrimary" to="/my/settings" style="margin-bottom: var(--margin);">{{ $t('accountSettings') }}</router-link>
 
-	<x-theme/>
+	<x-theme class="_vMargin"/>
 
-	<x-sidebar/>
+	<x-sidebar class="_vMargin"/>
 
-	<x-plugins/>
+	<x-plugins class="_vMargin"/>
 
 	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
