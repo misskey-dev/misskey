@@ -37,7 +37,7 @@ export default Vue.extend({
 
 	provide() {
 		return {
-			inChannel: this.channel != null
+			inChannel: this.src === 'channel'
 		};
 	},
 

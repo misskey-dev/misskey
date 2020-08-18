@@ -279,7 +279,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	if (note.channelId) {
 		ChannelFollowings.find({ followeeId: note.channelId }).then(followings => {
 			for (const following of followings) {
-				insertNoteUnread(following.followerId, note, {});
+				insertNoteUnread(following.followerId, note, {
+					isSpecified: false,
+					isMentioned: false,
+				});
 			}
 		});
 	}
@@ -307,6 +310,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 				insertNoteUnread(u.id, note, {
 					isSpecified: true,
+					isMentioned: false,
 				});
 			}
 		} else {
@@ -315,6 +319,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 				if (!Users.isLocalUser(u)) continue;
 
 				insertNoteUnread(u.id, note, {
+					isSpecified: false,
 					isMentioned: true,
 				});
 			}

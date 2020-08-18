@@ -63,9 +63,19 @@ export default async function(
 	}
 
 	async function careAntenna() {
+		const beforeUnread = await Users.getHasUnreadAntenna(userId);
+		if (!beforeUnread) return;
+
 		const antennas = await Antennas.find({ userId });
 
 		await Promise.all(antennas.map(async antenna => {
+			const countBefore = await AntennaNotes.count({
+				antennaId: antenna.id,
+				read: false
+			});
+
+			if (countBefore === 0) return;
+
 			await AntennaNotes.update({
 				antennaId: antenna.id,
 				noteId: noteId
@@ -73,12 +83,12 @@ export default async function(
 				read: true
 			});
 
-			const count = await AntennaNotes.count({
+			const countAfter = await AntennaNotes.count({
 				antennaId: antenna.id,
 				read: false
 			});
 
-			if (count === 0) {
+			if (countAfter === 0) {
 				publishMainStream(userId, 'readAntenna', antenna);
 			}
 		}));

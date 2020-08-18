@@ -6,8 +6,8 @@ import { genId } from '../../misc/gen-id';
 
 export default async function(userId: User['id'], note: Note, params: {
 	// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse
-	isSpecified?: boolean;
-	isMentioned?: boolean;
+	isSpecified: boolean;
+	isMentioned: boolean;
 }) {
 	//#region ミュートしているなら無視
 	// TODO: 現在の仕様ではChannelにミュートは適用されないのでよしなにケアする
@@ -30,6 +30,7 @@ export default async function(userId: User['id'], note: Note, params: {
 	// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 	setTimeout(async () => {
 		const exist = await NoteUnreads.findOne(unread.id);
+
 		if (exist == null) return;
 
 		if (params.isMentioned) {
