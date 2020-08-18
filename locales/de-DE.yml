@@ -565,7 +565,13 @@ logs: "Logs"
 delayed: "Verzögert"
 database: "Datenbank"
 _channel:
+  create: "Kanal erstellen"
+  edit: "Kanal bearbeiten"
+  setBanner: "Kanalbanner festlegen"
+  removeBanner: "Kanalbanner entfernen"
   featured: "Trends"
+  owned: "Besitzer"
+  following: "Folgt"
 _sidebar:
   full: "Voll"
   icon: "Profilbild"
