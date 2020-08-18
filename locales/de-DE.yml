@@ -564,6 +564,8 @@ overview: "Übersicht"
 logs: "Logs"
 delayed: "Verzögert"
 database: "Datenbank"
+channel: "Kanal"
+create: "Erstellen"
 _channel:
   create: "Kanal erstellen"
   edit: "Kanal bearbeiten"
@@ -572,6 +574,7 @@ _channel:
   featured: "Trends"
   owned: "Besitzer"
   following: "Folgt"
+  usersCount: "{n} Teilnehmer"
 _sidebar:
   full: "Voll"
   icon: "Profilbild"
@@ -663,6 +666,7 @@ _sfx:
   chat: "Chat"
   chatBg: "Nachrichten (Hintergrund)"
   antenna: "Antennen"
+  channel: "Kanalbenachrichtigung"
 _ago:
   unknown: "Unbekannt"
   future: "Zukunft"
@@ -738,6 +742,8 @@ _permissions:
   "write:page-likes": "Liste der Seiten, die mir gefallen, bearbeiten"
   "read:user-groups": "Benutzergruppen lesen"
   "write:user-groups": "Benutzergruppen bearbeiten oder löschen"
+  "read:channels": "Kanäle lesen"
+  "write:channels": "Kanäle bearbeiten"
 _auth:
   shareAccess: "Möchtest du \"{name}\" authorisieren, auf dieses Benuzerkonto zugreifen zu können?"
   shareAccessAsk: "Bist du dir sicher, dass du diese Anwendung authorisieren möchtest, auf dein Benutzerkonto zugreifen zu können?"
@@ -812,6 +818,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "Dieser Notiz antworten..."
   quotePlaceholder: "Diese Notiz zitieren..."
+  channelPlaceholder: "In einen Kanal senden"
   _placeholders:
     a: "Was machst du momentan?"
     b: "Was ist um dich herum los?"
