@@ -564,6 +564,8 @@ overview: "概述"
 logs: "日志"
 delayed: "延迟"
 database: "数据库"
+_channel:
+  featured: "趋势"
 _sidebar:
   full: "全部"
   icon: "图标"
