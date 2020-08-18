@@ -71,7 +71,15 @@ export default class Connection {
 	private async onWsConnectionMessage(data: websocket.IMessage) {
 		if (data.utf8Data == null) return;
 
-		const { type, body } = JSON.parse(data.utf8Data);
+		let obj: Record<string, any>;
+
+		try {
+			obj = JSON.parse(data.utf8Data);
+		} catch (e) {
+			return;
+		}
+
+		const { type, body } = obj;
 
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
