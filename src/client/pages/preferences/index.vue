@@ -154,6 +154,7 @@ const sounds = [
 	'aisha/2',
 	'aisha/3',
 	'noizenecio/kick_gaba',
+	'noizenecio/kick_gaba2',
 ];
 
 export default Vue.extend({
