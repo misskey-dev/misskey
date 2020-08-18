@@ -564,6 +564,8 @@ overview: "Overview"
 logs: "Logs"
 delayed: "Delayed"
 database: "Database"
+_channel:
+  featured: "Trending"
 _sidebar:
   full: "Full"
   icon: "Avatar"
