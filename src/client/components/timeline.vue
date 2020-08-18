@@ -35,6 +35,12 @@ export default Vue.extend({
 		}
 	},
 
+	provide() {
+		return {
+			inChannel: this.channel != null
+		};
+	},
+
 	data() {
 		return {
 			connection: null,

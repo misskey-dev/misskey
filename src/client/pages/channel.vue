@@ -59,10 +59,6 @@ export default Vue.extend({
 		}
 	},
 
-	provide: {
-		inChannel: true
-	},
-
 	data() {
 		return {
 			channel: null,

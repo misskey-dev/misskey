@@ -81,22 +81,21 @@ export default Vue.extend({
 	watch: {
 		src() {
 			this.showNav = false;
-			this.saveSrc();
 		},
 		list(x) {
 			this.showNav = false;
-			this.saveSrc();
 			if (x != null) this.antenna = null;
+			if (x != null) this.channel = null;
 		},
 		antenna(x) {
 			this.showNav = false;
-			this.saveSrc();
 			if (x != null) this.list = null;
+			if (x != null) this.channel = null;
 		},
 		channel(x) {
 			this.showNav = false;
-			this.saveSrc();
-			if (x != null) this.channel = null;
+			if (x != null) this.antenna = null;
+			if (x != null) this.list = null;
 		},
 	},
 
@@ -147,7 +146,8 @@ export default Vue.extend({
 				indicate: antenna.hasUnreadNote,
 				action: () => {
 					this.antenna = antenna;
-					this.setSrc('antenna');
+					this.src = 'antenna';
+					this.saveSrc();
 				}
 			}));
 			const listItems = lists.map(list => ({
@@ -155,7 +155,8 @@ export default Vue.extend({
 				icon: faListUl,
 				action: () => {
 					this.list = list;
-					this.setSrc('list');
+					this.src = 'list';
+					this.saveSrc();
 				}
 			}));
 			const channelItems = channels.map(channel => ({
@@ -164,26 +165,27 @@ export default Vue.extend({
 				indicate: channel.hasUnreadNote,
 				action: () => {
 					this.channel = channel;
-					this.setSrc('channel');
+					this.src = 'channel';
+					this.saveSrc();
 				}
 			}));
 			this.$root.menu({
 				items: [{
 					text: this.$t('_timelines.home'),
 					icon: faHome,
-					action: () => { this.setSrc('home') }
+					action: () => { this.src = 'home'; this.saveSrc(); }
 				}, this.meta.disableLocalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
 					text: this.$t('_timelines.local'),
 					icon: faComments,
-					action: () => { this.setSrc('local') }
+					action: () => { this.src = 'local'; this.saveSrc(); }
 				}, this.meta.disableLocalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
 					text: this.$t('_timelines.social'),
 					icon: faShareAlt,
-					action: () => { this.setSrc('social') }
+					action: () => { this.src = 'social'; this.saveSrc(); }
 				}, this.meta.disableGlobalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
 					text: this.$t('_timelines.global'),
 					icon: faGlobe,
-					action: () => { this.setSrc('global') }
+					action: () => { this.src = 'global'; this.saveSrc(); }
 				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems],
 				fixed: true,
 				noCenter: true,
@@ -191,10 +193,6 @@ export default Vue.extend({
 			}).then(() => {
 				this.menuOpened = false;
 			});
-		},
-
-		setSrc(src) {
-			this.src = src;
 		},
 
 		saveSrc() {
