@@ -6,7 +6,6 @@
 	<mk-tab v-model="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 
 	<div class="grwlizim featured" v-if="tab === 'featured'">
-		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
 		<mk-pagination :pagination="featuredPagination" #default="{items}">
 			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
 		</mk-pagination>
