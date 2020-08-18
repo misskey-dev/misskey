@@ -552,6 +552,8 @@ makeActive: "활성화"
 copy: "복사"
 logs: "로그"
 database: "데이터베이스"
+_channel:
+  featured: "트렌드"
 _sidebar:
   icon: "아바타"
   hide: "숨기기"
