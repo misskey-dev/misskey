@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes } from '..';
+import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings } from '..';
 import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
@@ -102,6 +102,17 @@ export class UserRepository extends Repository<User> {
 		const unread = antennas.length > 0 ? await AntennaNotes.findOne({
 			antennaId: In(antennas.map(x => x.id)),
 			read: false
+		}) : null;
+
+		return unread != null;
+	}
+
+	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
+		const channels = await ChannelFollowings.find({ followerId: userId });
+
+		const unread = channels.length > 0 ? await NoteUnreads.findOne({
+			userId: userId,
+			noteChannelId: In(channels.map(x => x.id)),
 		}) : null;
 
 		return unread != null;
@@ -235,6 +246,7 @@ export class UserRepository extends Repository<User> {
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
+				hasUnreadChannel: this.getHasUnreadChannel(user.id),
 				hasUnreadMessagingMessage: this.getHasUnreadMessagingMessage(user.id),
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),

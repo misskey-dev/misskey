@@ -33,8 +33,12 @@ export default async function(userId: User['id'], note: Note, params: {
 
 		if (params.isMentioned) {
 			publishMainStream(userId, 'unreadMention', note.id);
-		} else if (params.isSpecified) {
+		}
+		if (params.isSpecified) {
 			publishMainStream(userId, 'unreadSpecifiedNote', note.id);
+		}
+		if (note.channelId) {
+			publishMainStream(userId, 'unreadChannel', note.id);
 		}
 	}, 2000);
 }

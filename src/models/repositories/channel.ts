@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Channel } from '../entities/channel';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
-import { DriveFiles, ChannelFollowings } from '..';
+import { DriveFiles, ChannelFollowings, NoteUnreads } from '..';
 import { User } from '../entities/user';
 
 export type PackedChannel = SchemaType<typeof packedChannelSchema>;
@@ -17,6 +17,8 @@ export class ChannelRepository extends Repository<Channel> {
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;
+
+		const hasUnreadNote = me ? (await NoteUnreads.findOne({ channelId: channel.id, userId: meId })) != null : undefined;
 
 		const following = await ChannelFollowings.findOne({
 			followerId: meId,
@@ -36,6 +38,7 @@ export class ChannelRepository extends Repository<Channel> {
 
 			...(me ? {
 				isFollowing: following != null,
+				hasUnreadNote,
 			} : {})
 		};
 	}

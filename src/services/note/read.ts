@@ -2,51 +2,65 @@ import { publishMainStream } from '../stream';
 import { Note } from '../../models/entities/note';
 import { User } from '../../models/entities/user';
 import { NoteUnreads, Antennas, AntennaNotes, Users } from '../../models';
-
-// TODO: 状態が変化していない場合は各種イベントを送信しない
+import { Not, IsNull } from 'typeorm';
 
 /**
  * Mark a note as read
  */
-export default (
+export default async function(
 	userId: User['id'],
 	noteId: Note['id']
-) => new Promise<any>(async (resolve, reject) => {
-	// Remove document
-	/*const res = */await NoteUnreads.delete({
-		userId: userId,
-		noteId: noteId
-	});
+) {
+	async function careNoteUnreads() {
+		const exist = await NoteUnreads.findOne({
+			userId: userId,
+			noteId: noteId,
+		});
 
-	async function careEvent() {
-		const [count1, count2] = await Promise.all([
+		if (!exist) return;
+
+		// Remove the record
+		await NoteUnreads.delete({
+			userId: userId,
+			noteId: noteId,
+		});
+
+		if (exist.isMentioned) {
 			NoteUnreads.count({
 				userId: userId,
 				isMentioned: true
-			}),
+			}).then(mentionsCount => {
+				if (mentionsCount === 0) {
+					// 全て既読になったイベントを発行
+					publishMainStream(userId, 'readAllUnreadMentions');
+				}
+			});
+		}
+
+		if (exist.isSpecified) {
 			NoteUnreads.count({
 				userId: userId,
 				isSpecified: true
-			})
-		]);
-
-		if (count1 === 0) {
-			// 全て既読になったイベントを発行
-			publishMainStream(userId, 'readAllUnreadMentions');
+			}).then(specifiedCount => {
+				if (specifiedCount === 0) {
+					// 全て既読になったイベントを発行
+					publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
+				}
+			});
 		}
 
-		if (count2 === 0) {
-			// 全て既読になったイベントを発行
-			publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
+		if (exist.noteChannelId) {
+			NoteUnreads.count({
+				userId: userId,
+				noteChannelId: Not(IsNull())
+			}).then(channelNoteCount => {
+				if (channelNoteCount === 0) {
+					// 全て既読になったイベントを発行
+					publishMainStream(userId, 'readAllChannels');
+				}
+			});
 		}
 	}
-
-	// TODO: https://github.com/typeorm/typeorm/issues/2415
-	//if (res.affected > 0) {
-	//	careEvent();
-	//}
-
-	careEvent();
 
 	async function careAntenna() {
 		const antennas = await Antennas.find({ userId });
@@ -76,5 +90,6 @@ export default (
 		});
 	}
 
+	careNoteUnreads();
 	careAntenna();
-});
+}
