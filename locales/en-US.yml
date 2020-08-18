@@ -564,8 +564,18 @@ overview: "Overview"
 logs: "Logs"
 delayed: "Delayed"
 database: "Database"
+channel: "Channels"
+create: "Create"
 _channel:
+  create: "Create channel"
+  edit: "Edit channel"
+  setBanner: "Set banner"
+  removeBanner: "Remove banner"
   featured: "Trending"
+  owned: "Owner"
+  following: "Following"
+  usersCount: "{n} Participants"
+  notesCount: "{n} Notes"
 _sidebar:
   full: "Full"
   icon: "Avatar"
@@ -657,6 +667,7 @@ _sfx:
   chat: "Messaging"
   chatBg: "Messaging (Background)"
   antenna: "Antenna Reception"
+  channel: "Channel notifications"
 _ago:
   unknown: "Unknown"
   future: "Future"
@@ -732,6 +743,8 @@ _permissions:
   "write:page-likes": "Edit likes on pages"
   "read:user-groups": "View user groups"
   "write:user-groups": "Edit or delete user groups"
+  "read:channels": "Read channels"
+  "write:channels": "Modify channels"
 _auth:
   shareAccess: "Would you like to authorize \"{name}\" to access this account?"
   shareAccessAsk: "Are you sure you want to authorize this application to access your account?"
@@ -806,6 +819,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "Reply to this note..."
   quotePlaceholder: "Quote this note..."
+  channelPlaceholder: "Post to channel"
   _placeholders:
     a: "What are you up to?"
     b: "What's happening around you?"
