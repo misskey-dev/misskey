@@ -564,6 +564,19 @@ overview: "概要"
 logs: "ログ"
 delayed: "遅延"
 database: "データベース"
+channel: "チャンネル"
+create: "作成"
+
+_channel:
+  create: "チャンネルを作成"
+  edit: "チャンネルを編集"
+  setBanner: "バナーを設定"
+  removeBanner: "バナーを削除"
+  featured: "トレンド"
+  owned: "管理中"
+  following: "フォロー中"
+  usersCount: "{n}人が参加中"
+  notesCount: "{n}投稿があります"
 
 _sidebar:
   full: "フル"
@@ -660,6 +673,7 @@ _sfx:
   chat: "チャット"
   chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
+  channel: "チャンネル通知"
 
 _ago:
   unknown: "謎"
@@ -740,6 +754,8 @@ _permissions:
   "write:page-likes": "ページのいいねを操作する"
   "read:user-groups": "ユーザーグループを見る"
   "write:user-groups": "ユーザーグループを操作する"
+  "read:channels": "チャンネルを見る"
+  "write:channels": "チャンネルを操作する"
 
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
@@ -822,6 +838,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
+  channelPlaceholder: "チャンネルに投稿..."
   _placeholders:
     a: "いまどうしてる？"
     b: "何かありましたか？"

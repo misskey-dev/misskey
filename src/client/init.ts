@@ -350,6 +350,20 @@ os.init(async () => {
 			app.sound('antenna');
 		});
 
+		main.on('readAllChannels', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadChannel: false
+			});
+		});
+
+		main.on('unreadChannel', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadChannel: true
+			});
+
+			app.sound('channel');
+		});
+
 		main.on('readAllAnnouncements', () => {
 			store.dispatch('mergeMe', {
 				hasUnreadAnnouncement: false
