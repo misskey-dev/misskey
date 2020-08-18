@@ -352,6 +352,8 @@ smtpHost: "المضيف"
 smtpUser: "اسم المستخدم"
 smtpPass: "الكلمة السرية"
 display: "المظهر"
+_channel:
+  featured: "المتداوَلة"
 _sidebar:
   full: "كامل"
   icon: "الصورة الرمزية"
