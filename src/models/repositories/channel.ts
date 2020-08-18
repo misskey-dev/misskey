@@ -18,7 +18,7 @@ export class ChannelRepository extends Repository<Channel> {
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;
 
-		const hasUnreadNote = me ? (await NoteUnreads.findOne({ channelId: channel.id, userId: meId })) != null : undefined;
+		const hasUnreadNote = me ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
 
 		const following = await ChannelFollowings.findOne({
 			followerId: meId,

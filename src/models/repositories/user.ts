@@ -150,7 +150,6 @@ export class UserRepository extends Repository<User> {
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
-			includeHasUnreadNotes?: boolean
 		}
 	): Promise<PackedUser> {
 		const opts = Object.assign({
@@ -191,17 +190,6 @@ export class UserRepository extends Repository<User> {
 				},
 				select: ['name', 'host', 'url', 'aliases']
 			}) : [],
-
-			...(opts.includeHasUnreadNotes ? {
-				hasUnreadSpecifiedNotes: NoteUnreads.count({
-					where: { userId: user.id, isSpecified: true },
-					take: 1
-				}).then(count => count > 0),
-				hasUnreadMentions: NoteUnreads.count({
-					where: { userId: user.id, isMentioned: true },
-					take: 1
-				}).then(count => count > 0),
-			} : {}),
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -244,6 +232,14 @@ export class UserRepository extends Repository<User> {
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
+				hasUnreadSpecifiedNotes: NoteUnreads.count({
+					where: { userId: user.id, isSpecified: true },
+					take: 1
+				}).then(count => count > 0),
+				hasUnreadMentions: NoteUnreads.count({
+					where: { userId: user.id, isMentioned: true },
+					take: 1
+				}).then(count => count > 0),
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
 				hasUnreadChannel: this.getHasUnreadChannel(user.id),
@@ -288,7 +284,6 @@ export class UserRepository extends Repository<User> {
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
-			includeHasUnreadNotes?: boolean
 		}
 	) {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
