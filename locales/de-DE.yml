@@ -564,6 +564,8 @@ overview: "Übersicht"
 logs: "Logs"
 delayed: "Verzögert"
 database: "Datenbank"
+_channel:
+  featured: "Trends"
 _sidebar:
   full: "Voll"
   icon: "Profilbild"
