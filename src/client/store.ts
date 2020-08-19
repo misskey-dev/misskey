@@ -60,7 +60,7 @@ export const defaultDeviceSettings = {
 	loadRawImages: false,
 	alwaysShowNsfw: false,
 	useOsNativeEmojis: false,
-	autoReload: false,
+	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
 	recentEmojis: [],
 	themes: [],

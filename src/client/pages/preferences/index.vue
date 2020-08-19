@@ -95,9 +95,10 @@
 	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
-			<mk-switch v-model="autoReload">
-				{{ $t('autoReloadWhenDisconnected') }}
-			</mk-switch>
+			<div>{{ $t('whenServerDisconnected') }}</div>
+			<mk-radio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</mk-radio>
+			<mk-radio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</mk-radio>
+			<mk-radio v-model="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</mk-radio>
 		</div>
 		<div class="_content">
 			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
@@ -186,9 +187,9 @@ export default Vue.extend({
 	},
 
 	computed: {
-		autoReload: {
-			get() { return this.$store.state.device.autoReload; },
-			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
+		serverDisconnectedBehavior: {
+			get() { return this.$store.state.device.serverDisconnectedBehavior; },
+			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
 		},
 
 		reduceAnimation: {
