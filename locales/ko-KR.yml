@@ -553,6 +553,7 @@ logs: "로그"
 database: "데이터베이스"
 _channel:
   featured: "트렌드"
+  usersCount: "{n}명 참여 중"
 _sidebar:
   icon: "아바타"
   hide: "숨기기"
@@ -578,6 +579,7 @@ _theme:
   func: "함수"
   funcKind: "함수 종류"
   argument: "매개변수"
+  importInfo: "여기에 테마 코드를 붙여 넣어 에디터로 불러올 수 있습니다."
   keys:
     link: "링크"
     hashtag: "해시태그"
