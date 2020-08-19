@@ -13,12 +13,18 @@ export function getScrollPosition(el: Element | null): number {
 	return container == null ? window.scrollY : container.scrollTop;
 }
 
+export function isTopVisible(el: Element | null): boolean {
+	const scrollTop = getScrollPosition(el);
+	const topPosition = el.offsetTop; // TODO: container内でのelの相対位置を取得できればより正確になる
+
+	return scrollTop <= topPosition;
+}
+
 export function onScrollTop(el: Element, cb) {
 	const container = getScrollContainer(el) || window;
 	const onScroll = ev => {
 		if (!document.body.contains(el)) return;
-		const pos = getScrollPosition(el);
-		if (pos === 0) {
+		if (isTopVisible(el)) {
 			cb();
 			container.removeEventListener('scroll', onScroll);
 		}
