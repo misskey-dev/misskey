@@ -564,7 +564,7 @@ overview: "Overview"
 logs: "Logs"
 delayed: "Delayed"
 database: "Database"
-channel: "Channels"
+channel: "Channel"
 create: "Create"
 _channel:
   create: "Create channel"
