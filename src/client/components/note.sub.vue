@@ -1,5 +1,5 @@
 <template>
-<div class="wrpstxzv" :class="{ children }" v-size="[{ max: 450 }]">
+<div class="wrpstxzv" :class="{ children }" v-size="{ max: [450] }">
 	<div class="main">
 		<mk-avatar class="avatar" :user="note.user"/>
 		<div class="body">

@@ -3,27 +3,12 @@ import { Directive } from 'vue';
 //const observers = new Map<Element, ResizeObserver>();
 
 export default {
-	mounted(el, binding, vn) {
+	mounted(src, binding, vn) {
 		const query = binding.value;
 
-		/*
-		const addClassRecursive = (el: Element, cls: string) => {
-			el.classList.add(cls);
-			if (el.children) {
-				for (const child of el.children) {
-					addClassRecursive(child, cls);
-				}
-			}
-		};
-
-		const removeClassRecursive = (el: Element, cls: string) => {
-			el.classList.remove(cls);
-			if (el.children) {
-				for (const child of el.children) {
-					removeClassRecursive(child, cls);
-				}
-			}
-		};*/
+		// TODO: 要素をもらうというよりはカスタム幅算出関数をもらうようにしてcalcで都度呼び出して計算するようにした方が柔軟そう
+		// その場合はunbindの方も改修することを忘れずに
+		const el = query.el ? query.el() : src;
 
 		const addClass = (el: Element, cls: string) => {
 			el.classList.add(cls);
@@ -36,19 +21,21 @@ export default {
 		const calc = () => {
 			const width = el.clientWidth;
 
-			for (const q of query) {
-				if (q.max) {
-					if (width <= q.max) {
-						addClass(el, 'max-width_' + q.max + 'px');
+			if (query.max) {
+				for (const v of query.max) {
+					if (width <= v) {
+						addClass(src, 'max-width_' + v + 'px');
 					} else {
-						removeClass(el, 'max-width_' + q.max + 'px');
+						removeClass(src, 'max-width_' + v + 'px');
 					}
 				}
-				if (q.min) {
-					if (width >= q.min) {
-						addClass(el, 'min-width_' + q.min + 'px');
+			}
+			if (query.min) {
+				for (const v of query.min) {
+					if (width >= v) {
+						addClass(src, 'min-width_' + v + 'px');
 					} else {
-						removeClass(el, 'min-width_' + q.min + 'px');
+						removeClass(src, 'min-width_' + v + 'px');
 					}
 				}
 			}
@@ -71,7 +58,11 @@ export default {
 		el._ro_ = ro;
 	},
 
-	unmounted(el, binding, vn) {
+	unmounted(src, binding, vn) {
+		const query = binding.value;
+
+		const el = query.el ? query.el() : src;
+
 		el._ro_.unobserve(el);
 	}
 } as Directive;

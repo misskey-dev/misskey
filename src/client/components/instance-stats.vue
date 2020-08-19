@@ -1,5 +1,5 @@
 <template>
-<div class="zbcjwnqg">
+<div class="zbcjwnqg" v-size="{ max: [550, 1200] }">
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
@@ -84,7 +84,7 @@
 	</div>
 
 	<section class="_card">
-		<div class="_title"><fa :icon="faChartBar"/> {{ $t('statistics') }}</div>
+		<div class="_title" style="position: relative;"><fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><fa :icon="faSync"/></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
 				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
@@ -123,12 +123,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChartBar, faUser, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
 import number from '../filters/number';
 
-const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
 const alpha = (hex, a) => {
@@ -142,6 +141,19 @@ const alpha = (hex, a) => {
 export default defineComponent({
 	components: {
 		MkSelect
+	},
+
+	props: {
+		chartLimit: {
+			type: Number,
+			required: false,
+			default: 90
+		},
+		detailed: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	data() {
@@ -160,7 +172,7 @@ export default defineComponent({
 			chartInstance: null,
 			chartSrc: 'notes',
 			chartSpan: 'hour',
-			faChartBar, faUser, faPencilAlt
+			faChartBar, faUser, faPencilAlt, faSync
 		}
 	},
 
@@ -209,62 +221,69 @@ export default defineComponent({
 
 		this.now = new Date();
 
-		const [perHour, perDay] = await Promise.all([Promise.all([
-			this.$root.api('charts/federation', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/users', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/active-users', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/notes', { limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/drive', { limit: chartLimit, span: 'hour' }),
-		]), Promise.all([
-			this.$root.api('charts/federation', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/users', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/active-users', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/notes', { limit: chartLimit, span: 'day' }),
-			this.$root.api('charts/drive', { limit: chartLimit, span: 'day' }),
-		])]);
-
-		const chart = {
-			perHour: {
-				federation: perHour[0],
-				users: perHour[1],
-				activeUsers: perHour[2],
-				notes: perHour[3],
-				drive: perHour[4],
-			},
-			perDay: {
-				federation: perDay[0],
-				users: perDay[1],
-				activeUsers: perDay[2],
-				notes: perDay[3],
-				drive: perDay[4],
-			}
-		};
-
-		this.notesLocalWoW = this.info.originalNotesCount - chart.perDay.notes.local.total[7];
-		this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
-		this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
-		this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
-		this.usersLocalWoW = this.info.originalUsersCount - chart.perDay.users.local.total[7];
-		this.usersLocalDoD = this.info.originalUsersCount - chart.perDay.users.local.total[1];
-		this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
-		this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
-
-		this.chart = chart;
-
-		this.renderChart();
+		this.fetchChart();
 	},
 
 	methods: {
+		async fetchChart() {
+			const [perHour, perDay] = await Promise.all([Promise.all([
+				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
+				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
+			]), Promise.all([
+				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
+				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
+			])]);
+
+			const chart = {
+				perHour: {
+					federation: perHour[0],
+					users: perHour[1],
+					activeUsers: perHour[2],
+					notes: perHour[3],
+					drive: perHour[4],
+				},
+				perDay: {
+					federation: perDay[0],
+					users: perDay[1],
+					activeUsers: perDay[2],
+					notes: perDay[3],
+					drive: perDay[4],
+				}
+			};
+
+			this.notesLocalWoW = this.info.originalNotesCount - chart.perDay.notes.local.total[7];
+			this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
+			this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
+			this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
+			this.usersLocalWoW = this.info.originalUsersCount - chart.perDay.users.local.total[7];
+			this.usersLocalDoD = this.info.originalUsersCount - chart.perDay.users.local.total[1];
+			this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
+			this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
+
+			this.chart = chart;
+
+			this.renderChart();
+		},
+
 		renderChart() {
 			if (this.chartInstance) {
 				this.chartInstance.destroy();
 			}
 
+			// TODO: var(--panel)の色が暗いか明るいかで判定する
+			const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 			this.chartInstance = new Chart(this.$refs.chart, {
 				type: 'line',
 				data: {
-					labels: new Array(chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
+					labels: new Array(this.chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
 					datasets: this.data.series.map(x => ({
 						label: x.name,
 						data: x.data.slice().reverse(),
@@ -272,7 +291,9 @@ export default defineComponent({
 						lineTension: 0,
 						borderWidth: 2,
 						borderColor: x.color,
+						borderDash: x.borderDash || [],
 						backgroundColor: alpha(x.color, 0.1),
+						fill: x.fill == null ? true : x.fill,
 						hidden: !!x.hidden
 					}))
 				},
@@ -294,17 +315,28 @@ export default defineComponent({
 					},
 					scales: {
 						xAxes: [{
+							type: 'time',
+							time: {
+								stepSize: 1,
+								unit: this.chartSpan == 'day' ? 'month' : 'day',
+							},
 							gridLines: {
-								display: false
+								display: this.detailed,
+								color: gridColor,
+								zeroLineColor: gridColor,
 							},
 							ticks: {
-								display: false
+								display: this.detailed
 							}
 						}],
 						yAxes: [{
-							position: 'right',
+							position: 'left',
+							gridLines: {
+								color: gridColor,
+								zeroLineColor: gridColor,
+							},
 							ticks: {
-								display: false
+								display: this.detailed
 							}
 						}]
 					},
@@ -326,7 +358,11 @@ export default defineComponent({
 		},
 
 		format(arr) {
-			return arr;
+			const now = Date.now();
+			return arr.map((v, i) => ({
+				x: new Date(now - ((this.chartSpan == 'day' ? 86400000 :3600000 ) * i)),
+				y: v
+			}));
 		},
 
 		federationInstancesChart(total: boolean): any {
@@ -348,6 +384,8 @@ export default defineComponent({
 					name: 'All',
 					type: 'line',
 					color: '#008FFB',
+					borderDash: [5, 5],
+					fill: false,
 					data: this.format(type == 'combined'
 						? sum(this.stats.notes.local.inc, negate(this.stats.notes.local.dec), this.stats.notes.remote.inc, negate(this.stats.notes.remote.dec))
 						: sum(this.stats.notes[type].inc, negate(this.stats.notes[type].dec))
@@ -464,7 +502,9 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#008FFB',
+					color: '#09d8e2',
+					borderDash: [5, 5],
+					fill: false,
 					data: this.format(
 						sum(
 							this.stats.drive.local.incSize,
@@ -481,17 +521,17 @@ export default defineComponent({
 				}, {
 					name: 'Local -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FF4560',
 					data: this.format(negate(this.stats.drive.local.decSize))
 				}, {
 					name: 'Remote +',
 					type: 'area',
-					color: '#008FFB',
+					color: '#00E396',
 					data: this.format(this.stats.drive.remote.incSize)
 				}, {
 					name: 'Remote -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FEB019',
 					data: this.format(negate(this.stats.drive.remote.decSize))
 				}]
 			};
@@ -526,7 +566,9 @@ export default defineComponent({
 				series: [{
 					name: 'All',
 					type: 'line',
-					color: '#008FFB',
+					color: '#09d8e2',
+					borderDash: [5, 5],
+					fill: false,
 					data: this.format(
 						sum(
 							this.stats.drive.local.incCount,
@@ -543,17 +585,17 @@ export default defineComponent({
 				}, {
 					name: 'Local -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FF4560',
 					data: this.format(negate(this.stats.drive.local.decCount))
 				}, {
 					name: 'Remote +',
 					type: 'area',
-					color: '#008FFB',
+					color: '#00E396',
 					data: this.format(this.stats.drive.remote.incCount)
 				}, {
 					name: 'Remote -',
 					type: 'area',
-					color: '#008FFB',
+					color: '#FEB019',
 					data: this.format(negate(this.stats.drive.remote.decCount))
 				}]
 			};
@@ -589,17 +631,30 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .zbcjwnqg {
+	&.max-width_1200px {
+		> .stats {
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1fr 1fr;
+		}
+	}
+
+	&.max-width_550px {
+		> .stats {
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr 1fr 1fr 1fr;
+		}
+	}
+
 	> .stats {
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		margin: calc(0px - var(--margin) / 2);
-		margin-bottom: calc(var(--margin) / 2);
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-rows: 1fr;
+		gap: var(--margin);
+		margin-bottom: var(--margin);
+		font-size: 90%;
 
 		> div {
 			display: flex;
-			flex: 1 0 213px;
-			margin: calc(var(--margin) / 2);
 			box-sizing: border-box;
 			padding: 16px 20px;
 
@@ -634,7 +689,7 @@ export default defineComponent({
 							margin: 0;
 						}
 
-						> dt {
+						> dd {
 							text-overflow: ellipsis;
 							overflow: hidden;
 							white-space: nowrap;

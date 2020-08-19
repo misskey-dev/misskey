@@ -1,5 +1,5 @@
 <template>
-<div class="mk-user-page" v-if="user" v-size="[{ max: 500 }]">
+<div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
 	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
 

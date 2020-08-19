@@ -22,7 +22,7 @@ import { defineComponent } from 'vue';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
-import XQueue from './queue.queue.vue';
+import XQueue from './queue.chart.vue';
 
 export default defineComponent({
 	metaInfo() {

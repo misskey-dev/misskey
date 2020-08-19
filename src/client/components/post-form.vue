@@ -10,7 +10,7 @@
 		<div>
 			<span class="local-only" v-if="localOnly" v-text="$t('_visibility.localOnly')" />
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
-			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')">
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')" :disabled="channel != null">
 				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
 				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
@@ -88,6 +88,10 @@ export default defineComponent({
 			type: Object,
 			required: false
 		},
+		channel: {
+			type: Object,
+			required: false
+		},
 		mention: {
 			type: Object,
 			required: false
@@ -140,30 +144,38 @@ export default defineComponent({
 	},
 
 	computed: {
-		draftId(): string {
-			return this.renote
-				? `renote:${this.renote.id}`
-				: this.reply
-					? `reply:${this.reply.id}`
-					: 'note';
+		draftKey(): string {
+			let key = this.channel ? `channel:${this.channel.id}` : '';
+
+			if (this.renote) {
+				key += `renote:${this.renote.id}`;
+			} else if (this.reply) {
+				key += `reply:${this.reply.id}`;
+			} else {
+				key += 'note';
+			}
+
+			return key;
 		},
 
 		placeholder(): string {
-			const xs = [
-				this.$t('_postForm._placeholders.a'),
-				this.$t('_postForm._placeholders.b'),
-				this.$t('_postForm._placeholders.c'),
-				this.$t('_postForm._placeholders.d'),
-				this.$t('_postForm._placeholders.e'),
-				this.$t('_postForm._placeholders.f')
-			];
-			const x = xs[Math.floor(Math.random() * xs.length)];
-
-			return this.renote
-				? this.$t('_postForm.quotePlaceholder')
-				: this.reply
-					? this.$t('_postForm.replyPlaceholder')
-					: x;
+			if (this.renote) {
+				return this.$t('_postForm.quotePlaceholder');
+			} else if (this.reply) {
+				return this.$t('_postForm.replyPlaceholder');
+			} else if (this.channel) {
+				return this.$t('_postForm.channelPlaceholder');
+			} else {
+				const xs = [
+					this.$t('_postForm._placeholders.a'),
+					this.$t('_postForm._placeholders.b'),
+					this.$t('_postForm._placeholders.c'),
+					this.$t('_postForm._placeholders.d'),
+					this.$t('_postForm._placeholders.e'),
+					this.$t('_postForm._placeholders.f')
+				];
+				return xs[Math.floor(Math.random() * xs.length)];
+			}
 		},
 
 		submitText(): string {
@@ -224,9 +236,11 @@ export default defineComponent({
 		}
 
 		// デフォルト公開範囲
-		this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility);
+		if (this.channel == null) {
+			this.applyVisibility(this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility);
 
-		this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
+			this.localOnly = this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly;
+		}
 
 		// 公開以外へのリプライ時は元の公開範囲を引き継ぐ
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
@@ -266,7 +280,7 @@ export default defineComponent({
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
 			if (!this.instant && !this.mention) {
-				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftId];
+				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftKey];
 				if (draft) {
 					this.text = draft.data.text;
 					this.useCw = draft.data.useCw;
@@ -398,6 +412,10 @@ export default defineComponent({
 		},
 
 		setVisibility() {
+			if (this.channel) {
+				// TODO: information dialog
+				return;
+			}
 			const w = this.$root.new(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				currentVisibility: this.visibility,
@@ -510,7 +528,7 @@ export default defineComponent({
 
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
-			data[this.draftId] = {
+			data[this.draftKey] = {
 				updatedAt: new Date(),
 				data: {
 					text: this.text,
@@ -529,7 +547,7 @@ export default defineComponent({
 		deleteDraft() {
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
-			delete data[this.draftId];
+			delete data[this.draftKey];
 
 			localStorage.setItem('drafts', JSON.stringify(data));
 		},
@@ -540,6 +558,7 @@ export default defineComponent({
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
+				channelId: this.channel ? this.channel.id : undefined,
 				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
 				cw: this.useCw ? this.cw || '' : undefined,
 				localOnly: this.localOnly,

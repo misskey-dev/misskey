@@ -1,11 +1,13 @@
 <template>
-<section class="_card mk-queue-queue">
+<section class="_card">
 	<div class="_title"><slot name="title"></slot></div>
-	<div class="_content status">
-		<div class="cell"><div class="label">Process</div>{{ number(activeSincePrevTick) }}</div>
-		<div class="cell"><div class="label">Active</div>{{ number(active) }}</div>
-		<div class="cell"><div class="label">Waiting</div>{{ number(waiting) }}</div>
-		<div class="cell"><div class="label">Delayed</div>{{ number(delayed) }}</div>
+	<div class="_content _table">
+		<div class="_row">
+			<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
+			<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
+			<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
+			<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
+		</div>
 	</div>
 	<div class="_content" style="margin-bottom: -8px;">
 		<canvas ref="chart"></canvas>
@@ -58,6 +60,9 @@ export default defineComponent({
 
 	mounted() {
 		this.fetchJobs();
+
+		// TODO: var(--panel)の色が暗いか明るいかで判定する
+		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
@@ -119,7 +124,9 @@ export default defineComponent({
 				scales: {
 					xAxes: [{
 						gridLines: {
-							display: false
+							display: false,
+							color: gridColor,
+							zeroLineColor: gridColor,
 						},
 						ticks: {
 							display: false
@@ -127,6 +134,11 @@ export default defineComponent({
 					}],
 					yAxes: [{
 						position: 'right',
+						gridLines: {
+							display: true,
+							color: gridColor,
+							zeroLineColor: gridColor,
+						},
 						ticks: {
 							display: false,
 						}
@@ -185,20 +197,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.mk-queue-queue {
-	> .status {
-		display: flex;
-
-		> .cell {
-			flex: 1;
-
-			> .label {
-				font-size: 80%;
-				opacity: 0.7;
-			}
-		}
-	}
-}
-</style>

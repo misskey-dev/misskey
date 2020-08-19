@@ -49,7 +49,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 			authorizationHeaderName: 'Signature',
 			key: keypair.privateKey,
 			keyId: `${config.url}/users/${user.id}#main-key`,
-			headers: ['date', 'host', 'digest']
+			headers: ['(request-target)', 'date', 'host', 'digest']
 		});
 
 		req.on('timeout', () => req.abort());

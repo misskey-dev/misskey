@@ -8,7 +8,7 @@
 		/>
 	</portal>
 
-	<div class="controller _card" v-if="objectSelected">
+	<div class="controller _card _vMargin" v-if="objectSelected">
 		<div class="_content">
 			<p class="name">{{ selectedFurnitureName }}</p>
 			<x-preview ref="preview"/>
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="menu _card" v-if="isMyRoom">
+	<div class="menu _card _vMargin" v-if="isMyRoom">
 		<div class="_content">
 			<mk-button @click="add()"><fa :icon="faBoxOpen"/> {{ $t('_rooms.addFurniture') }}</mk-button>
 		</div>

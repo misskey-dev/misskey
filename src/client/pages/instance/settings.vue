@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faCog"/></portal>
 	<portal to="title">{{ $t('settings') }}</portal>
 
-	<section class="_card info">
+	<section class="_card _vMargin info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
 			<mk-input v-model="name">{{ $t('instanceName') }}</mk-input>
@@ -19,7 +19,7 @@
 		</div>
 	</section>
 
-	<section class="_card info">
+	<section class="_card _vMargin info">
 		<div class="_content">
 			<mk-input v-model="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</mk-input>
 		</div>
@@ -33,7 +33,7 @@
 		</div>
 	</section>
 
-	<section class="_card info">
+	<section class="_card _vMargin info">
 		<div class="_title"><fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRegistration" @change="save()">{{ $t('enableRegistration') }}</mk-switch>
@@ -41,7 +41,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableHcaptcha" ref="enableHcaptcha">{{ $t('enableHcaptcha') }}</mk-switch>
@@ -59,7 +59,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha" ref="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
@@ -77,7 +77,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableEmail" @change="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
@@ -100,7 +100,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></mk-switch>
@@ -116,7 +116,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers">
@@ -128,7 +128,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<mk-switch v-model="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></mk-switch>
@@ -141,7 +141,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('objectStorage') }}</div>
 		<div class="_content">
 			<mk-switch v-model="useObjectStorage">{{ $t('useObjectStorage') }}</mk-switch>
@@ -161,6 +161,7 @@
 				</div>
 				<mk-switch v-model="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $t('objectStorageUseSSL') }}<template #desc>{{ $t('objectStorageUseSSLDesc') }}</template></mk-switch>
 				<mk-switch v-model="objectStorageUseProxy" :disabled="!useObjectStorage">{{ $t('objectStorageUseProxy') }}<template #desc>{{ $t('objectStorageUseProxyDesc') }}</template></mk-switch>
+				<mk-switch v-model="objectStorageSetPublicRead" :disabled="!useObjectStorage">{{ $t('objectStorageSetPublicRead') }}</mk-switch>
 			</template>
 		</div>
 		<div class="_footer">
@@ -168,7 +169,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
 			<mk-input :value="proxyAccount ? proxyAccount.username : null" style="margin: 0;" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></mk-input>
@@ -176,7 +177,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="blockedHosts">
@@ -188,7 +189,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
 			<header><fa :icon="faTwitter"/> Twitter</header>
@@ -221,7 +222,8 @@
 			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 		</div>
 	</section>
-	<section class="_card">
+
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faArchway" /> Summaly Proxy</div>
 		<div class="_content">
 			<mk-input v-model="summalyProxy">URL</mk-input>
@@ -305,6 +307,7 @@ export default defineComponent({
 			objectStorageSecretKey: null,
 			objectStorageUseSSL: false,
 			objectStorageUseProxy: false,
+			objectStorageSetPublicRead: false,
 			enableTwitterIntegration: false,
 			twitterConsumerKey: null,
 			twitterConsumerSecret: null,
@@ -372,6 +375,7 @@ export default defineComponent({
 		this.objectStorageSecretKey = this.meta.objectStorageSecretKey;
 		this.objectStorageUseSSL = this.meta.objectStorageUseSSL;
 		this.objectStorageUseProxy = this.meta.objectStorageUseProxy;
+		this.objectStorageSetPublicRead = this.meta.objectStorageSetPublicRead;
 		this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
 		this.twitterConsumerKey = this.meta.twitterConsumerKey;
 		this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
@@ -521,6 +525,7 @@ export default defineComponent({
 				objectStorageSecretKey: this.objectStorageSecretKey ? this.objectStorageSecretKey : null,
 				objectStorageUseSSL: this.objectStorageUseSSL,
 				objectStorageUseProxy: this.objectStorageUseProxy,
+				objectStorageSetPublicRead: this.objectStorageSetPublicRead,
 				enableTwitterIntegration: this.enableTwitterIntegration,
 				twitterConsumerKey: this.twitterConsumerKey,
 				twitterConsumerSecret: this.twitterConsumerSecret,

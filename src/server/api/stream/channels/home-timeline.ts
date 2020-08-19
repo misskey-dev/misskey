@@ -18,8 +18,12 @@ export default class extends Channel {
 
 	@autobind
 	private async onNote(note: PackedNote) {
-		// その投稿のユーザーをフォローしていなかったら弾く
-		if (this.user!.id !== note.userId && !this.following.includes(note.userId)) return;
+		if (note.channelId) {
+			if (!this.followingChannels.includes(note.channelId)) return;
+		} else {
+			// その投稿のユーザーをフォローしていなかったら弾く
+			if ((this.user!.id !== note.userId) && !this.following.includes(note.userId)) return;
+		}
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await Notes.pack(note.id, this.user!, {

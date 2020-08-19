@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { apiUrl, deckmode } from './config';
@@ -60,7 +60,7 @@ export const defaultDeviceSettings = {
 	loadRawImages: false,
 	alwaysShowNsfw: false,
 	useOsNativeEmojis: false,
-	autoReload: false,
+	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
 	recentEmojis: [],
 	themes: [],
@@ -90,6 +90,7 @@ export const defaultDeviceSettings = {
 	sfxChat: 'syuilo/pope1',
 	sfxChatBg: 'syuilo/waon',
 	sfxAntenna: 'syuilo/triple',
+	sfxChannel: 'syuilo/square-pico',
 	userData: {},
 };
 
@@ -113,6 +114,7 @@ export const store = createStore({
 			text: string;
 			result: any;
 		}[],
+		fullView: false,
 
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
@@ -219,6 +221,11 @@ export const store = createStore({
 				get show() { return getters.isSignedIn; },
 				to: '/my/pages',
 			},
+			channels: {
+				title: 'channel',
+				icon: faSatelliteDish,
+				to: '/channels',
+			},
 			games: {
 				title: 'games',
 				icon: faGamepad,
@@ -257,6 +264,10 @@ export const store = createStore({
 
 		showDialog(state, dialog) {
 			state.dialogs.push(dialog);
+		},
+
+		setFullView(state, v) {
+			state.fullView = v;
 		},
 
 		initPlugin(state, { plugin, aiscript }) {

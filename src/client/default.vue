@@ -33,7 +33,7 @@
 
 	<x-sidebar ref="nav" @change-view-mode="calcHeaderWidth"/>
 
-	<div class="contents" ref="contents" :class="{ wallpaper }">
+	<div class="contents" ref="contents" :class="{ wallpaper, full: $store.state.fullView }">
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
@@ -547,6 +547,18 @@ export default defineComponent({
 		&.wallpaper {
 			background: var(--wallpaperOverlay);
 			backdrop-filter: blur(4px);
+		}
+
+		&.full {
+			width: 100%;
+
+			> main {
+				width: 100%;
+			}
+
+			> .widgets {
+				display: none;
+			}
 		}
 
 		> main {
