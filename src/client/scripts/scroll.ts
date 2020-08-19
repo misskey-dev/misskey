@@ -20,7 +20,7 @@ export function onScrollTop(el: Element, cb) {
 		const pos = getScrollPosition(el);
 		if (pos === 0) {
 			cb();
-			container.removeEventListener('scroll', onscroll);
+			container.removeEventListener('scroll', onScroll);
 		}
 	};
 	container.addEventListener('scroll', onScroll, { passive: true });
@@ -33,7 +33,7 @@ export function onScrollBottom(el: Element, cb) {
 		const pos = getScrollPosition(el);
 		if (pos + el.clientHeight > el.scrollHeight - 1) {
 			cb();
-			container.removeEventListener('scroll', onscroll);
+			container.removeEventListener('scroll', onScroll);
 		}
 	};
 	container.addEventListener('scroll', onScroll, { passive: true });
