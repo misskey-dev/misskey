@@ -461,7 +461,7 @@ objectStorageBucketDesc: "请指定使用的对象存储服务的存储桶名称
 objectStoragePrefix: "前缀"
 objectStoragePrefixDesc: "文件将存储在此前缀的目录下。"
 objectStorageEndpoint: "端点"
-objectStorageEndpointDesc: "S3默认情况下为空，否则请为每个服务指定端点。 指定为“<host>”或“<host>:<port>”。"
+objectStorageEndpointDesc: "如果你希望使用AWS S3请留空。否则请根据你使用的服务来进行设置，指定端点形式为“<host>”或“<host>:<port>”。"
 objectStorageRegion: "可用区"
 objectStorageRegionDesc: "指定一个可用区，例如“xx-east-1”。 如果您的对象存储服务没有可用区概念，请将其留空或填写“us-east-1”。"
 objectStorageUseSSL: "使用SSL"
