@@ -329,10 +329,6 @@ hr {
 ._card {
 	@extend ._panel;
 
-	& + ._card {
-		margin-top: var(--margin);
-	}
-
 	> ._title {
 		margin: 0;
 		padding: 22px 32px;
@@ -389,6 +385,40 @@ hr {
 	}
 }
 
+._vMargin {
+	& + ._vMargin {
+		margin-top: var(--margin);
+	}
+}
+
+._table {
+	> ._row {
+		display: flex;
+
+		&:not(:last-child) {
+			margin-bottom: 16px;
+
+			@media (max-width: 500px) {
+				margin-bottom: 8px;
+			}
+		}
+
+		> ._cell {
+			flex: 1;
+
+			> ._label {
+				font-size: 80%;
+				opacity: 0.7;
+
+				> ._icon {
+					margin-right: 4px;
+					display: none;
+				}
+			}
+		}
+	}
+}
+
 ._fullinfo {
 	padding: 64px 32px;
 	text-align: center;
@@ -404,13 +434,18 @@ hr {
 ._keyValue {
 	display: flex;
 
-	> div {
+	> * {
 		flex: 1;
 	}
 }
 
 ._link {
 	color: var(--link);
+}
+
+._caption {
+	font-size: 0.8em;
+	opacity: 0.7;
 }
 
 .zoom-enter-active, .zoom-leave-active {

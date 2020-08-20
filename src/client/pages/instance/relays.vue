@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faProjectDiagram"/></portal>
 	<portal to="title">{{ $t('relays') }}</portal>
 
-	<section class="_card add">
+	<section class="_card _vMargin add">
 		<div class="_title"><fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
 		<div class="_content">
 			<mk-input v-model="inbox">
@@ -13,7 +13,7 @@
 		</div>
 	</section>
 
-	<section class="_card relays">
+	<section class="_card _vMargin relays">
 		<div class="_title"><fa :icon="faProjectDiagram"/> {{ $t('addedRelays') }}</div>
 		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
 			<div>{{ relay.inbox }}</div>

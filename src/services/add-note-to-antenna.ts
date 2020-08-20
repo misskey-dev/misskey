@@ -28,6 +28,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 			select: ['muteeId']
 		});
 
+		// Copy
 		const _note: Note = {
 			...note
 		};

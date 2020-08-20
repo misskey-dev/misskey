@@ -264,6 +264,7 @@ rename: "名前を変更"
 avatar: "アイコン"
 banner: "バナー"
 nsfw: "閲覧注意"
+whenServerDisconnected: "サーバーとの接続が失われたとき"
 disconnectedFromServer: "サーバーから切断されました"
 reload: "リロード"
 doNothing: "なにもしない"
@@ -364,7 +365,6 @@ unregister: "登録を解除"
 passwordLessLogin: "パスワード無しログイン"
 resetPassword: "パスワードをリセット"
 newPasswordIs: "新しいパスワードは「{password}」です"
-autoReloadWhenDisconnected: "サーバー切断時に自動リロード"
 autoNoteWatch: "ノートの自動ウォッチ"
 autoNoteWatchDescription: "あなたがリアクションしたり返信したりした他のユーザーのノートに関する通知を受け取るようにします。"
 reduceUiAnimation: "UIのアニメーションを減らす"
@@ -468,6 +468,7 @@ objectStorageUseSSL: "SSLを使用する"
 objectStorageUseSSLDesc: "API接続にhttpsを使用しない場合はオフにしてください"
 objectStorageUseProxy: "Proxyを利用する"
 objectStorageUseProxyDesc: "API接続にproxyを利用しない場合はオフにしてください"
+objectStorageSetPublicRead: "アップロード時に'public-read'を設定する"
 serverLogs: "サーバーログ"
 deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
@@ -557,6 +558,14 @@ wordMute: "ワードミュート"
 userSaysSomething: "{name}が何かを言いました"
 makeActive: "アクティブにする"
 display: "表示"
+copy: "コピー"
+metrics: "メトリクス"
+overview: "概要"
+logs: "ログ"
+delayed: "遅延"
+database: "データベース"
+channel: "チャンネル"
+create: "作成"
 notificationSetting: "通知設定"
 notificationSettingDesc: "表示する通知の種別を選択してください。"
 useGlobalSetting: "グローバル設定を使う"
@@ -575,6 +584,22 @@ _notificationTypes:
   groupInvited: "グループに招待された"
   app: "連携アプリからの通知"
 
+_serverDisconnectedBehavior:
+  reload: "自動でリロード"
+  dialog: "ダイアログで警告"
+  quiet: "控えめに警告"
+
+_channel:
+  create: "チャンネルを作成"
+  edit: "チャンネルを編集"
+  setBanner: "バナーを設定"
+  removeBanner: "バナーを削除"
+  featured: "トレンド"
+  owned: "管理中"
+  following: "フォロー中"
+  usersCount: "{n}人が参加中"
+  notesCount: "{n}投稿があります"
+
 _sidebar:
   full: "フル"
   icon: "アイコン"
@@ -588,6 +613,7 @@ _wordMute:
   hardDescription: "指定した条件のノートをタイムラインに追加しないようにします。追加されなかったノートは、条件を変更しても除外されたままになります。"
   soft: "ソフト"
   hard: "ハード"
+  mutedNotes: "ミュートされたノート"
 
 _theme:
   explore: "テーマを探す"
@@ -669,6 +695,7 @@ _sfx:
   chat: "チャット"
   chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
+  channel: "チャンネル通知"
 
 _ago:
   unknown: "謎"
@@ -749,6 +776,8 @@ _permissions:
   "write:page-likes": "ページのいいねを操作する"
   "read:user-groups": "ユーザーグループを見る"
   "write:user-groups": "ユーザーグループを操作する"
+  "read:channels": "チャンネルを見る"
+  "write:channels": "チャンネルを操作する"
 
 _auth:
   shareAccess: "「{name}」がアカウントにアクセスすることを許可しますか？"
@@ -831,6 +860,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "このノートに返信..."
   quotePlaceholder: "このノートを引用..."
+  channelPlaceholder: "チャンネルに投稿..."
   _placeholders:
     a: "いまどうしてる？"
     b: "何かありましたか？"

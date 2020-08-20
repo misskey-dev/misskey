@@ -8,7 +8,8 @@ export default function <T extends Form>(data: {
 	return Vue.extend({
 		props: {
 			widget: {
-				type: Object
+				type: Object,
+				required: false
 			},
 			isCustomizeMode: {
 				type: Boolean,
@@ -16,19 +17,13 @@ export default function <T extends Form>(data: {
 			}
 		},
 
-		data() {
-			return {
-				bakedOldProps: null
-			};
-		},
-
 		computed: {
 			id(): string {
-				return this.widget.id;
+				return this.widget ? this.widget.id : null;
 			},
 
 			props(): Record<string, any> {
-				return this.widget.data;
+				return this.widget ? this.widget.data : {};
 			}
 		},
 
@@ -67,7 +62,9 @@ export default function <T extends Form>(data: {
 			},
 
 			save() {
-				this.$store.commit('deviceUser/updateWidget', this.widget);
+				if (this.widget) {
+					this.$store.commit('deviceUser/updateWidget', this.widget);
+				}
 			}
 		}
 	});

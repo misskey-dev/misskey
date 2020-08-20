@@ -24,11 +24,21 @@ export default Vue.extend({
 			type: String,
 			required: false
 		},
+		channel: {
+			type: String,
+			required: false
+		},
 		sound: {
 			type: Boolean,
 			required: false,
 			default: false,
 		}
+	},
+
+	provide() {
+		return {
+			inChannel: this.src === 'channel'
+		};
 	},
 
 	data() {
@@ -117,6 +127,15 @@ export default Vue.extend({
 			this.connection.on('note', prepend);
 			this.connection.on('userAdded', onUserAdded);
 			this.connection.on('userRemoved', onUserRemoved);
+		} else if (this.src == 'channel') {
+			endpoint = 'channels/timeline';
+			this.query = {
+				channelId: this.channel
+			};
+			this.connection = this.$root.stream.connectToChannel('channel', {
+				channelId: this.channel
+			});
+			this.connection.on('note', prepend);
 		}
 
 		this.pagination = {

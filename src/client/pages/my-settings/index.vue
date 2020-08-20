@@ -3,11 +3,11 @@
 	<portal to="icon"><fa :icon="faCog"/></portal>
 	<portal to="title">{{ $t('accountSettings') }}</portal>
 
-	<x-profile-setting/>
-	<x-privacy-setting/>
-	<x-reaction-setting/>
+	<x-profile-setting class="_vMargin"/>
+	<x-privacy-setting class="_vMargin"/>
+	<x-reaction-setting class="_vMargin"/>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<mk-switch v-model="$store.state.i.autoWatch" @change="onChangeAutoWatch">
@@ -27,14 +27,14 @@
 		</div>
 	</section>
 
-	<x-import-export/>
-	<x-drive/>
-	<x-mute-block/>
-	<x-word-mute/>
-	<x-security/>
-	<x-2fa/>
-	<x-integration/>
-	<x-api/>
+	<x-import-export class="_vMargin"/>
+	<x-drive class="_vMargin"/>
+	<x-mute-block class="_vMargin"/>
+	<x-word-mute class="_vMargin"/>
+	<x-security class="_vMargin"/>
+	<x-2fa class="_vMargin"/>
+	<x-integration class="_vMargin"/>
+	<x-api class="_vMargin"/>
 
 	<router-link class="_panel _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;">{{ $t('installedApps') }}</router-link>
 

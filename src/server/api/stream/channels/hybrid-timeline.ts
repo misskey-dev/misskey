@@ -23,11 +23,15 @@ export default class extends Channel {
 
 	@autobind
 	private async onNote(note: PackedNote) {
-		// 自分自身の投稿 または その投稿のユーザーをフォローしている または 全体公開のローカルの投稿 の場合だけ
+		// チャンネルの投稿ではなく、自分自身の投稿 または
+		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
+		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
+		// フォローしているチャンネルの投稿 の場合だけ
 		if (!(
-			this.user!.id === note.userId ||
-			this.following.includes(note.userId) ||
-			((note.user as PackedUser).host == null && note.visibility === 'public')
+			(note.channelId == null && this.user!.id === note.userId) ||
+			(note.channelId == null && this.following.includes(note.userId)) ||
+			(note.channelId == null && ((note.user as PackedUser).host == null && note.visibility === 'public')) ||
+			(note.channelId != null && this.followingChannels.includes(note.channelId))
 		)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {

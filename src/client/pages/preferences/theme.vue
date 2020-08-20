@@ -55,8 +55,8 @@
 			<mk-textarea v-model="installThemeCode">
 				<span>{{ $t('_theme.code') }}</span>
 			</mk-textarea>
-			<mk-button @click="() => install(this.installThemeCode)" :disabled="installThemeCode == null" primary inline><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
-			<mk-button @click="() => preview(this.installThemeCode)" :disabled="installThemeCode == null" inline><fa :icon="faEye"/> {{ $t('preview') }}</mk-button>
+			<mk-button @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
+			<mk-button @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><fa :icon="faEye"/> {{ $t('preview') }}</mk-button>
 		</details>
 	</div>
 	<div class="_content">
@@ -68,6 +68,7 @@
 			<template v-if="selectedTheme">
 				<mk-textarea readonly tall :value="selectedThemeCode">
 					<span>{{ $t('_theme.code') }}</span>
+					<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $t('copy') }}</button></template>
 				</mk-textarea>
 				<mk-button @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
 			</template>
@@ -80,7 +81,6 @@
 import Vue from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
-import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkSwitch from '../../components/ui/switch.vue';
@@ -88,10 +88,10 @@ import MkTextarea from '../../components/ui/textarea.vue';
 import { Theme, builtinThemes, applyTheme, validateTheme } from '../../scripts/theme';
 import { selectFile } from '../../scripts/select-file';
 import { isDeviceDarkmode } from '../../scripts/is-device-darkmode';
+import copyToClipboard from '../../scripts/copy-to-clipboard';
 
 export default Vue.extend({
 	components: {
-		MkInput,
 		MkButton,
 		MkSelect,
 		MkSwitch,
@@ -192,6 +192,14 @@ export default Vue.extend({
 			});
 		},
 
+		copyThemeCode() {
+			copyToClipboard(this.selectedThemeCode);
+			this.$root.dialog({
+				type: 'success',
+				iconOnly: true, autoClose: true
+			});
+		},
+
 		parseThemeCode(code) {
 			let theme;
 
@@ -247,7 +255,7 @@ export default Vue.extend({
 				key: 'themes', value: themes
 			});
 			this.$root.dialog({
-				type: 'info',
+				type: 'success',
 				iconOnly: true, autoClose: true
 			});
 		},
