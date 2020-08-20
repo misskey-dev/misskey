@@ -256,7 +256,6 @@ unregister: "إلغاء التسجيل"
 passwordLessLogin: "لِج مِن دون كلمة سرية"
 resetPassword: "أعد تعيين كلمتك السرية"
 newPasswordIs: "كلمتك السرية الجديدة هي {password}"
-autoReloadWhenDisconnected: "إنعاش تلقائي عندما يُقطَع الإتصال بالخادم"
 autoNoteWatch: "راقب الملاحظات تلقائيا"
 share: "شارِك"
 notFound: "غير موجود"
@@ -351,7 +350,11 @@ pluginInstallWarn: "يرجى تنصيب إضافات ذات مصدر موثوق 
 smtpHost: "المضيف"
 smtpUser: "اسم المستخدم"
 smtpPass: "الكلمة السرية"
+display: "المظهر"
+_channel:
+  featured: "المتداوَلة"
 _sidebar:
+  full: "كامل"
   icon: "الصورة الرمزية"
   hide: "إخفاء"
 _theme:

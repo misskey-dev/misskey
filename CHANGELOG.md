@@ -1,5 +1,43 @@
 ChangeLog
 =========
+
+12.46.0 (2020/8/2)
+------------------
+
+### ✨Improvements
+
+- チャットでCmd+Enterショートカットが使用できない問題を修正 [#6614](https://github.com/syuilo/misskey/pull/6614)
+- サイドバーを折り畳めるように [#6610](https://github.com/syuilo/misskey/pull/6610)
+	
+### 🐛Fixes
+- お知らせを既読にできない問題を修正 [9008664](https://github.com/syuilo/misskey/commit/9008664606483e2902f03929f0f696ac43de6db4)
+- シンタックスハイライト構文が壊れている問題を修正 [60736ba](https://github.com/syuilo/misskey/commit/60736bab2ac974c2d2c2c106d297fa67fdaff87a)
+
+12.45.1 (2020/8/1)
+-------------------
+
+### ✨Improvements
+- 自分のノートにリアクションを押せるように [#6506](https://github.com/syuilo/misskey/pull/6506)
+- 非ログイン時にウェルカムメッセージが被る問題を修正 [#6509](https://github.com/syuilo/misskey/pull/6509)
+
+### 🐛Fixes
+- 最新の投票結果がタイムラインなどに反映されない問題を修正 [2522e73](https://github.com/syuilo/misskey/commit/2522e7388d4d0b92d4517f2c07190e8f88394026)
+
+
+12.45.0 (2020/7/30)
+-------------------
+
+### ✨Improvements
+- プラグインのIDを不要に [57203de](https://github.com/syuilo/misskey/commit/57203de4cbf3947825f422dd746a076d79e353c7)
+- プラグインの設定にdescriptionを表示できるように [9eee564](https://github.com/syuilo/misskey/commit/9eee5644b9b112ed6d8863edce569f4d554459f5)
+- AiScript: Plugin:register_note_post_interruptor 関数を追加(ノート作成時の割り込み処理を登録できる) [e7de5f6](https://github.com/syuilo/misskey/commit/e7de5f60513774e9c599a2e3aac0fbeefb88236f)
+- AiScript: Plugin:open_url 関数を追加 [60d81d7](https://github.com/syuilo/misskey/commit/60d81d74e35879f52a374d5e35fe25dc115d75a4)
+
+### 🐛Fixes
+- 通知のノートがリアクティブではない問題を修正 [2701a7e](https://github.com/syuilo/misskey/commit/2701a7e85fcf745e75b46b88b0fc9b3f76218e44)
+- ピン留めされたノートがリアクティブではない問題を修正 [31a0afd](https://github.com/syuilo/misskey/commit/31a0afdaab309cd2e9fd22f0524730488202704d)
+- プラグインの設定がnullになることがある問題を修正 [01e9b3c](https://github.com/syuilo/misskey/commit/01e9b3c2f634f37cee6820ca25d7576ef3ab6442)
+
 12.44.1 (2020/7/29)
 -------------------
 ### 🐛Fixes

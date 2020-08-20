@@ -25,6 +25,7 @@ export default class extends Channel {
 	@autobind
 	private async onNote(note: PackedNote) {
 		if (note.visibility !== 'public') return;
+		if (note.channelId != null) return;
 
 		// リプライなら再pack
 		if (note.replyId != null) {
