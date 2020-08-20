@@ -576,6 +576,10 @@ _channel:
   setBanner: "Elegir banner"
   removeBanner: "Borrar banner"
   featured: "Tendencias"
+  owned: "Dueño"
+  following: "Siguiendo"
+  usersCount: "{n} participantes"
+  notesCount: "{n} notas"
 _sidebar:
   full: "Completo"
   icon: "Avatar"
@@ -667,6 +671,7 @@ _sfx:
   chat: "Chat"
   chatBg: "Chat (Fondo)"
   antenna: "Antena receptora"
+  channel: "Notificaciones del canal"
 _ago:
   unknown: "Desconocido"
   future: "Futuro"
@@ -742,6 +747,8 @@ _permissions:
   "write:page-likes": "Administrar páginas que te gustan"
   "read:user-groups": "Ver grupos de usuarios"
   "write:user-groups": "Administrar grupos de usuarios"
+  "read:channels": "Ver canal"
+  "write:channels": "Modificar canal"
 _auth:
   shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
   shareAccessAsk: "¿Está seguro de que desea autorizar esta aplicación para acceder a su cuenta?"
@@ -816,6 +823,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "Responder a esta nota"
   quotePlaceholder: "Citar esta nota"
+  channelPlaceholder: "Postear en el canal"
   _placeholders:
     a: "¿Qué haces?"
     b: "¿Te pasó algo?"
