@@ -27,6 +27,10 @@ export default abstract class Channel {
 		return this.connection.muting;
 	}
 
+	protected get followingChannels() {
+		return this.connection.followingChannels;
+	}
+
 	protected get subscriber() {
 		return this.connection.subscriber;
 	}

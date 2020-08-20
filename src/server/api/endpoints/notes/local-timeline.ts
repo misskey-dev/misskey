@@ -13,6 +13,7 @@ import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { injectPromo } from '../../common/inject-promo';
 import { injectFeatured } from '../../common/inject-featured';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
+import { generateChannelQuery } from '../../common/generate-channel-query';
 
 export const meta = {
 	desc: {
@@ -99,6 +100,7 @@ export default define(meta, async (ps, user) => {
 		.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
 		.leftJoinAndSelect('note.user', 'user');
 
+	generateChannelQuery(query, user);
 	generateRepliesQuery(query, user);
 	generateVisibilityQuery(query, user);
 	if (user) generateMutedUserQuery(query, user);

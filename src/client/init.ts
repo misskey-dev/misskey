@@ -237,6 +237,26 @@ os.init(async () => {
 		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 	}, { immediate: true });
 
+	let reloadDialogShowing = false;
+	os.stream.on('_disconnected_', async () => {
+		if (store.state.device.serverDisconnectedBehavior === 'reload') {
+			location.reload();
+		} else if (store.state.device.serverDisconnectedBehavior === 'dialog') {
+			if (reloadDialogShowing) return;
+			reloadDialogShowing = true;
+			const { canceled } = await app.dialog({
+				type: 'warning',
+				title: app.$t('disconnectedFromServer'),
+				text: app.$t('reloadConfirm'),
+				showCancelButton: true
+			});
+			reloadDialogShowing = false;
+			if (!canceled) {
+				location.reload();
+			}
+		}
+	});
+
 	os.stream.on('emojiAdded', data => {
 		// TODO
 		//store.commit('instance/set', );
@@ -348,6 +368,20 @@ os.init(async () => {
 			});
 
 			app.sound('antenna');
+		});
+
+		main.on('readAllChannels', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadChannel: false
+			});
+		});
+
+		main.on('unreadChannel', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadChannel: true
+			});
+
+			app.sound('channel');
 		});
 
 		main.on('readAllAnnouncements', () => {

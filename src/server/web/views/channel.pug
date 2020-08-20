@@ -1,0 +1,21 @@
+extends ./base
+
+block vars
+	- const title = channel.name;
+	- const url = `${config.url}/channels/${channel.id}`;
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content= channel.description)
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content= channel.description)
+	meta(property='og:url'         content= url)
+	meta(property='og:image'       content= channel.bannerUrl)
+
+block meta
+	meta(name='twitter:card' content='summary')

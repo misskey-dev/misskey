@@ -38,7 +38,7 @@ import { FollowRequest } from '../models/entities/follow-request';
 import { Emoji } from '../models/entities/emoji';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 import { ReversiMatching } from '../models/entities/games/reversi/matching';
-import { UserNotePining } from '../models/entities/user-note-pinings';
+import { UserNotePining } from '../models/entities/user-note-pining';
 import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
@@ -60,6 +60,9 @@ import { PromoRead } from '../models/entities/promo-read';
 import { program } from '../argv';
 import { Relay } from '../models/entities/relay';
 import { MutedNote } from '../models/entities/muted-note';
+import { Channel } from '../models/entities/channel';
+import { ChannelFollowing } from '../models/entities/channel-following';
+import { ChannelNotePining } from '../models/entities/channel-note-pining';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -153,6 +156,9 @@ export const entities = [
 	ReversiMatching,
 	Relay,
 	MutedNote,
+	Channel,
+	ChannelFollowing,
+	ChannelNotePining,
 	...charts as any
 ];
 

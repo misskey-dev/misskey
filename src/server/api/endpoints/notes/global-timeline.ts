@@ -80,6 +80,7 @@ export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 			ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 		.andWhere('note.visibility = \'public\'')
+		.andWhere('note.channelId IS NULL')
 		.leftJoinAndSelect('note.user', 'user');
 
 	generateRepliesQuery(query, user);

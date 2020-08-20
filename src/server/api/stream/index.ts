@@ -7,7 +7,8 @@ import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
 import { User } from '../../../models/entities/user';
-import { Users, Followings, Mutings, UserProfiles } from '../../../models';
+import { Channel as ChannelModel } from '../../../models/entities/channel';
+import { Users, Followings, Mutings, UserProfiles, ChannelFollowings } from '../../../models';
 import { ApiError } from '../error';
 import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
@@ -20,6 +21,7 @@ export default class Connection {
 	public userProfile?: UserProfile;
 	public following: User['id'][] = [];
 	public muting: User['id'][] = [];
+	public followingChannels: ChannelModel['id'][] = [];
 	public token?: AccessToken;
 	private wsConnection: websocket.connection;
 	public subscriber: EventEmitter;
@@ -27,6 +29,7 @@ export default class Connection {
 	private subscribingNotes: any = {};
 	private followingClock: NodeJS.Timer;
 	private mutingClock: NodeJS.Timer;
+	private followingChannelsClock: NodeJS.Timer;
 	private userProfileClock: NodeJS.Timer;
 
 	constructor(
@@ -53,6 +56,9 @@ export default class Connection {
 			this.updateMuting();
 			this.mutingClock = setInterval(this.updateMuting, 5000);
 
+			this.updateFollowingChannels();
+			this.followingChannelsClock = setInterval(this.updateFollowingChannels, 5000);
+
 			this.updateUserProfile();
 			this.userProfileClock = setInterval(this.updateUserProfile, 5000);
 		}
@@ -65,7 +71,15 @@ export default class Connection {
 	private async onWsConnectionMessage(data: websocket.IMessage) {
 		if (data.utf8Data == null) return;
 
-		const { type, body } = JSON.parse(data.utf8Data);
+		let obj: Record<string, any>;
+
+		try {
+			obj = JSON.parse(data.utf8Data);
+		} catch (e) {
+			return;
+		}
+
+		const { type, body } = obj;
 
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
@@ -269,6 +283,18 @@ export default class Connection {
 	}
 
 	@autobind
+	private async updateFollowingChannels() {
+		const followings = await ChannelFollowings.find({
+			where: {
+				followerId: this.user!.id
+			},
+			select: ['followeeId']
+		});
+
+		this.followingChannels = followings.map(x => x.followeeId);
+	}
+
+	@autobind
 	private async updateUserProfile() {
 		this.userProfile = await UserProfiles.findOne({
 			userId: this.user!.id
@@ -286,6 +312,7 @@ export default class Connection {
 
 		if (this.followingClock) clearInterval(this.followingClock);
 		if (this.mutingClock) clearInterval(this.mutingClock);
+		if (this.followingChannelsClock) clearInterval(this.followingChannelsClock);
 		if (this.userProfileClock) clearInterval(this.userProfileClock);
 	}
 }
