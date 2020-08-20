@@ -14,23 +14,20 @@ export async function createNotification(
 		return null;
 	}
 
+	const profile = await UserProfiles.findOne({ userId: notifieeId });
+
+	const isMuted = !profile?.includingNotificationTypes?.includes(type);
+
 	// Create notification
 	const notification = await Notifications.save({
 		id: genId(),
 		createdAt: new Date(),
 		notifieeId: notifieeId,
 		type: type,
-		isRead: false,
+		// 相手がこの通知をミュートしているようなら、既読を予めつけておく
+		isRead: isMuted,
 		...data
 	} as Partial<Notification>);
-
-	const profile = await UserProfiles.findOne({ userId: notifieeId });
-
-	if (!profile?.includingNotificationTypes?.includes(type)) {
-		// この通知を見ないようにしているのであれば既読だけして終わる
-		await Notifications.update({ id: notification.id }, { isRead: true });
-		return notification;
-	}
 
 	const packed = await Notifications.pack(notification);
 
