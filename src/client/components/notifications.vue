@@ -50,10 +50,16 @@ export default Vue.extend({
 				endpoint: 'i/notifications',
 				limit: 10,
 				params: () => ({
-					includeTypes: this.includeTypes || this.$store.state.i.includingNotificationTypes || undefined,
+					includeTypes: this.allIncludeTypes || undefined,
 				})
 			},
 		};
+	},
+
+	computed: {
+		allIncludeTypes() {
+			return this.includeTypes ?? this.$store.state.i.includingNotificationTypes;
+		}
 	},
 
 	watch: {
@@ -78,7 +84,8 @@ export default Vue.extend({
 
 	methods: {
 		onNotification(notification) {
-			const isMuted = this.includeTypes !== null && !this.includeTypes.includes(notification.type);
+			// 
+			const isMuted = !!this.allIncludeTypes && !this.allIncludeTypes.includes(notification.type);
 			if (isMuted || document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
 					id: notification.id
