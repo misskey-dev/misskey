@@ -553,6 +553,7 @@ logs: "로그"
 database: "데이터베이스"
 channel: "채널"
 _channel:
+  create: "채널 생성"
   setBanner: "배너 설정"
   removeBanner: "배너 삭제"
   featured: "트렌드"
@@ -564,6 +565,7 @@ _sidebar:
   hide: "숨기기"
 _wordMute:
   muteWords: "뮤트할 단어"
+  mutedNotes: "뮤트된 노트"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
