@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
+
 export default defineComponent({
 	components: {
 		XCode: defineAsyncComponent(() => import('./code-core.vue').then(m => m.default))

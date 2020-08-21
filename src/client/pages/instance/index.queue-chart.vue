@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../../components/ui/container.vue';
@@ -31,7 +31,7 @@ const alpha = (hex, a) => {
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkContainer,
 	},

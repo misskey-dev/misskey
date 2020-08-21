@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSatelliteDish, faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import MkChannelPreview from '../components/channel-preview.vue';
@@ -35,7 +35,7 @@ import MkPagination from '../components/ui/pagination.vue';
 import MkButton from '../components/ui/button.vue';
 import MkTab from '../components/tab.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkChannelPreview, MkPagination, MkButton, MkTab
 	},
