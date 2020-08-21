@@ -168,12 +168,22 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		};
 	}
 
-	const img = sharp(path);
-	const metadata = await img.metadata();
-	const isAnimated = metadata.pages && metadata.pages > 1;
+	let img: sharp.Sharp | null = null;
 
-	// skip animated
-	if (isAnimated) {
+	try {
+		img = sharp(path);
+		const metadata = await img.metadata();
+		const isAnimated = metadata.pages && metadata.pages > 1;
+
+		// skip animated
+		if (isAnimated) {
+			return {
+				webpublic: null,
+				thumbnail: null
+			};
+		}
+	} catch (e) {
+		logger.warn(`sharp failed: ${e}`);
 		return {
 			webpublic: null,
 			thumbnail: null
