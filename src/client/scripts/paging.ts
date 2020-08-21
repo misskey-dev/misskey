@@ -148,7 +148,7 @@ export default (opts) => ({
 		},
 
 		prepend(item) {
-			const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
+			const isTop = () => this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
 			const isTabVisible = () => document.visibilityState === 'visible';
 
 			if (isTop() && isTabVisible()) {
