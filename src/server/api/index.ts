@@ -78,7 +78,7 @@ router.post('/miauth/:session/check', async ctx => {
 		session: ctx.params.session
 	});
 
-	if (token && !token.fetched) {
+	if (token && token.session != null && !token.fetched) {
 		AccessTokens.update(token.id, {
 			fetched: true
 		});
@@ -96,7 +96,7 @@ router.post('/miauth/:session/check', async ctx => {
 });
 
 // Return 404 for unknown API
-router.all('*', async ctx => {
+router.all('(.*)', async ctx => {
 	ctx.status = 404;
 });
 

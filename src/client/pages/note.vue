@@ -14,14 +14,15 @@
 		<hr v-if="showNext"/>
 
 		<mk-remote-caution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
-		<x-note :note="note" :key="note.id" :detail="true"/>
-		<div v-if="error">
-			<mk-error @retry="fetch()"/>
-		</div>
+		<x-note v-model="note" :key="note.id" :detail="true"/>
 
 		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><fa :icon="faChevronDown"/></button>
 		<hr v-if="showPrev"/>
 		<x-notes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
+	</div>
+
+	<div v-if="error">
+		<mk-error @retry="fetch()"/>
 	</div>
 </div>
 </template>
@@ -29,14 +30,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import Progress from '../scripts/loading';
 import XNote from '../components/note.vue';
 import XNotes from '../components/notes.vue';
 import MkRemoteCaution from '../components/remote-caution.vue';
 
 export default Vue.extend({
-	i18n,
 	metaInfo() {
 		return {
 			title: this.$t('note') as string

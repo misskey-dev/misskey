@@ -13,15 +13,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 import MkTextarea from '../../../components/ui/textarea.vue';
 import MkInput from '../../../components/ui/input.vue';
 import MkSwitch from '../../../components/ui/switch.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkTextarea, MkInput, MkSwitch
 	},

@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-calendar" :class="{ _panel: props.design === 0 }">
+<div class="mkw-calendar" :class="{ _panel: !props.transparent }">
 	<div class="calendar" :data-is-holiday="isHoliday">
 		<p class="month-and-year">
 			<span class="year">{{ $t('yearX', { year }) }}</span>
@@ -33,15 +33,16 @@
 
 <script lang="ts">
 import define from './define';
-import i18n from '../i18n';
 
 export default define({
 	name: 'calendar',
 	props: () => ({
-		design: 0
+		transparent: {
+			type: 'boolean',
+			default: false,
+		},
 	})
 }).extend({
-	i18n,
 	data() {
 		return {
 			now: new Date(),
@@ -64,14 +65,6 @@ export default define({
 		clearInterval(this.clock);
 	},
 	methods: {
-		func() {
-			if (this.props.design === 2) {
-				this.props.design = 0;
-			} else {
-				this.props.design++;
-			}
-			this.save();
-		},
 		tick() {
 			const now = new Date();
 			const nd = now.getDate();
@@ -174,7 +167,7 @@ export default define({
 			> .meter {
 				width: 100%;
 				overflow: hidden;
-				background: var(--aupeazdm);
+				background: var(--X11);
 				border-radius: 8px;
 
 				> .val {

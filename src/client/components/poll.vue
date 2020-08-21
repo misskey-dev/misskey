@@ -24,11 +24,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import { sum } from '../../prelude/array';
 
 export default Vue.extend({
-	i18n,
 	props: {
 		note: {
 			type: Object,
@@ -54,9 +52,9 @@ export default Vue.extend({
 		},
 		timer(): string {
 			return this.$t(
-				this.remaining > 86400 ? '_poll.remainingDays' :
-				this.remaining > 3600 ? '_poll.remainingHours' :
-				this.remaining > 60 ? '_poll.remainingMinutes' : '_poll.remainingSeconds', {
+				this.remaining >= 86400 ? '_poll.remainingDays' :
+				this.remaining >= 3600 ? '_poll.remainingHours' :
+				this.remaining >= 60 ? '_poll.remainingMinutes' : '_poll.remainingSeconds', {
 					s: Math.floor(this.remaining % 60),
 					m: Math.floor(this.remaining / 60) % 60,
 					h: Math.floor(this.remaining / 3600) % 24,

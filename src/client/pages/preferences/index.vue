@@ -5,11 +5,13 @@
 
 	<router-link v-if="$store.getters.isSignedIn" class="_panel _buttonPrimary" to="/my/settings" style="margin-bottom: var(--margin);">{{ $t('accountSettings') }}</router-link>
 
-	<x-theme/>
+	<x-theme class="_vMargin"/>
 
-	<x-sidebar/>
+	<x-sidebar class="_vMargin"/>
 
-	<section class="_card">
+	<x-plugins class="_vMargin"/>
+
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
 			<mk-range v-model="sfxVolume" :min="0" :max="1" :step="0.1">
@@ -48,33 +50,38 @@
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
 				<template #text><button class="_textButton" @click="listen(sfxAntenna)" v-if="sfxAntenna"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
 			</mk-select>
+			<mk-select v-model="sfxChannel">
+				<template #label>{{ $t('_sfx.channel') }}</template>
+				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
+				<template #text><button class="_textButton" @click="listen(sfxChannel)" v-if="sfxChannel"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</mk-select>
 		</div>
 	</section>
 
-	<section class="_card">
-		<div class="_title"><fa :icon="faCog"/> {{ $t('accessibility') }}</div>
+	<section class="_card _vMargin">
+		<div class="_title"><fa :icon="faColumns"/> {{ $t('deck') }}</div>
 		<div class="_content">
-			<mk-switch v-model="autoReload">
-				{{ $t('autoReloadWhenDisconnected') }}
+			<mk-switch v-model="deckAlwaysShowMainColumn">
+				{{ $t('_deck.alwaysShowMainColumn') }}
 			</mk-switch>
 		</div>
 		<div class="_content">
-			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
+			<div>{{ $t('_deck.columnAlign') }}</div>
+			<mk-radio v-model="deckColumnAlign" value="left">{{ $t('left') }}</mk-radio>
+			<mk-radio v-model="deckColumnAlign" value="center">{{ $t('center') }}</mk-radio>
+		</div>
+	</section>
+
+	<section class="_card _vMargin">
+		<div class="_title"><fa :icon="faCog"/> {{ $t('appearance') }}</div>
+		<div class="_content">
 			<mk-switch v-model="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
 			<mk-switch v-model="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
+			<mk-switch v-model="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</mk-switch>
 			<mk-switch v-model="useOsNativeEmojis">
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</mk-switch>
-			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
-			<mk-switch v-model="disablePagesScript">{{ $t('disablePagesScript') }}</mk-switch>
-		</div>
-		<div class="_content">
-			<mk-select v-model="lang">
-				<template #label>{{ $t('uiLanguage') }}</template>
-
-				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-			</mk-select>
 		</div>
 		<div class="_content">
 			<div>{{ $t('fontSize') }}</div>
@@ -85,13 +92,37 @@
 		</div>
 	</section>
 
+	<section class="_card _vMargin">
+		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
+		<div class="_content">
+			<div>{{ $t('whenServerDisconnected') }}</div>
+			<mk-radio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</mk-radio>
+			<mk-radio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</mk-radio>
+			<mk-radio v-model="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</mk-radio>
+		</div>
+		<div class="_content">
+			<mk-switch v-model="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
+			<mk-switch v-model="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
+			<mk-switch v-model="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</mk-switch>
+			<mk-switch v-model="fixedWidgetsPosition">{{ $t('fixedWidgetsPosition') }}</mk-switch>
+			<mk-switch v-model="disablePagesScript">{{ $t('disablePagesScript') }}</mk-switch>
+		</div>
+		<div class="_content">
+			<mk-select v-model="lang">
+				<template #label>{{ $t('uiLanguage') }}</template>
+
+				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+			</mk-select>
+		</div>
+	</section>
+
 	<mk-button @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</mk-button>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 import MkSelect from '../../components/ui/select.vue';
@@ -99,8 +130,9 @@ import MkRadio from '../../components/ui/radio.vue';
 import MkRange from '../../components/ui/range.vue';
 import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
-import i18n from '../../i18n';
+import XPlugins from './plugins.vue';
 import { langs } from '../../config';
+import { clientDb, set } from '../../db';
 
 const sounds = [
 	null,
@@ -113,15 +145,20 @@ const sounds = [
 	'syuilo/triple',
 	'syuilo/poi1',
 	'syuilo/poi2',
+	'syuilo/pirori',
+	'syuilo/pirori-wet',
+	'syuilo/pirori-square-wet',
+	'syuilo/square-pico',
+	'syuilo/reverved',
+	'syuilo/ryukyu',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
 	'noizenecio/kick_gaba',
+	'noizenecio/kick_gaba2',
 ];
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('settings') as string
@@ -131,11 +168,12 @@ export default Vue.extend({
 	components: {
 		XTheme,
 		XSidebar,
+		XPlugins,
 		MkButton,
 		MkSwitch,
 		MkSelect,
 		MkRadio,
-		MkRange
+		MkRange,
 	},
 
 	data() {
@@ -144,19 +182,24 @@ export default Vue.extend({
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
 			sounds,
-			faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute
+			faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns
 		}
 	},
 
 	computed: {
-		autoReload: {
-			get() { return this.$store.state.device.autoReload; },
-			set(value) { this.$store.commit('device/set', { key: 'autoReload', value }); }
+		serverDisconnectedBehavior: {
+			get() { return this.$store.state.device.serverDisconnectedBehavior; },
+			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
 		},
 
 		reduceAnimation: {
 			get() { return !this.$store.state.device.animation; },
 			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
+		},
+
+		useBlurEffectForModal: {
+			get() { return this.$store.state.device.useBlurEffectForModal; },
+			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
 		},
 
 		disableAnimatedMfm: {
@@ -182,6 +225,26 @@ export default Vue.extend({
 		showFixedPostForm: {
 			get() { return this.$store.state.device.showFixedPostForm; },
 			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
+		},
+
+		enableInfiniteScroll: {
+			get() { return this.$store.state.device.enableInfiniteScroll; },
+			set(value) { this.$store.commit('device/set', { key: 'enableInfiniteScroll', value }); }
+		},
+
+		fixedWidgetsPosition: {
+			get() { return this.$store.state.device.fixedWidgetsPosition; },
+			set(value) { this.$store.commit('device/set', { key: 'fixedWidgetsPosition', value }); }
+		},
+
+		deckAlwaysShowMainColumn: {
+			get() { return this.$store.state.device.deckAlwaysShowMainColumn; },
+			set(value) { this.$store.commit('device/set', { key: 'deckAlwaysShowMainColumn', value }); }
+		},
+
+		deckColumnAlign: {
+			get() { return this.$store.state.device.deckColumnAlign; },
+			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
 		},
 
 		sfxVolume: {
@@ -219,6 +282,11 @@ export default Vue.extend({
 			set(value) { this.$store.commit('device/set', { key: 'sfxAntenna', value }); }
 		},
 
+		sfxChannel: {
+			get() { return this.$store.state.device.sfxChannel; },
+			set(value) { this.$store.commit('device/set', { key: 'sfxChannel', value }); }
+		},
+
 		volumeIcon: {
 			get() {
 				return this.sfxVolume === 0 ? faVolumeMute : faVolumeUp;
@@ -228,9 +296,23 @@ export default Vue.extend({
 
 	watch: {
 		lang() {
+			const dialog = this.$root.dialog({
+				type: 'waiting',
+				iconOnly: true
+			});
+
 			localStorage.setItem('lang', this.lang);
-			localStorage.removeItem('locale');
-			location.reload();
+
+			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18n)
+				.then(() => location.reload())
+				.catch(() => {
+					dialog.close();
+					this.$root.dialog({
+						type: 'error',
+						iconOnly: true,
+						autoClose: true
+					});
+				});
 		},
 
 		fontSize() {
@@ -240,6 +322,14 @@ export default Vue.extend({
 				localStorage.setItem('fontSize', this.fontSize);
 			}
 			location.reload();
+		},
+
+		fixedWidgetsPosition() {
+			location.reload()
+		},
+
+		enableInfiniteScroll() {
+			location.reload()
 		},
 	},
 

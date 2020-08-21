@@ -1,5 +1,5 @@
 /**
- * App entry point
+ * Client entry point
  */
 
 import Vue from 'vue';
@@ -7,26 +7,34 @@ import Vuex from 'vuex';
 import VueMeta from 'vue-meta';
 import PortalVue from 'portal-vue';
 import VAnimateCss from 'v-animate-css';
+import VueI18n from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { AiScript } from '@syuilo/aiscript';
+import { deserialize } from '@syuilo/aiscript/built/serializer';
 
-import i18n from './i18n';
 import VueHotkey from './scripts/hotkey';
 import App from './app.vue';
+import Deck from './deck.vue';
 import MiOS from './mios';
-import { version, langs, instanceName } from './config';
+import { version, langs, instanceName, getLocale, deckmode } from './config';
 import PostFormDialog from './components/post-form-dialog.vue';
 import Dialog from './components/dialog.vue';
 import Menu from './components/menu.vue';
+import Form from './components/form-window.vue';
 import { router } from './router';
-import { applyTheme, lightTheme } from './theme';
+import { applyTheme, lightTheme } from './scripts/theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
 import createStore from './store';
+import { clientDb, get, count } from './db';
+import { setI18nContexts } from './scripts/set-i18n-contexts';
+import { createPluginEnv } from './scripts/aiscript/api';
 
 Vue.use(Vuex);
 Vue.use(VueHotkey);
 Vue.use(VueMeta);
 Vue.use(PortalVue);
 Vue.use(VAnimateCss);
+Vue.use(VueI18n);
 Vue.component('fa', FontAwesomeIcon);
 
 require('./directives');
@@ -48,19 +56,19 @@ Vue.mixin({
 
 console.info(`Misskey v${version}`);
 
-// v11互換性のため
-if (localStorage.getItem('kyoppie') === 'yuppie') {
-	const i = localStorage.getItem('i');
-	localStorage.clear();
-	localStorage.setItem('i', i);
-	location.reload(true);
-}
-
-window.history.scrollRestoration = 'manual';
-
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
+
+//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+// TODO: いつの日にか消したい
+const vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+window.addEventListener('resize', () => {
+	const vh = window.innerHeight * 0.01;
+	document.documentElement.style.setProperty('--vh', `${vh}px`);
+});
+//#endregion
 
 //#region Detect the user language
 let lang = localStorage.getItem('lang');
@@ -96,86 +104,46 @@ if (isMobile || window.innerWidth <= 1024) {
 	head.appendChild(viewport);
 }
 
-//#region Fetch locale data
-const cachedLocale = localStorage.getItem('locale');
-
-if (cachedLocale == null) {
-	fetch(`/assets/locales/${lang}.${version}.json`)
-		.then(response => response.json()).then(locale => {
-			localStorage.setItem('locale', JSON.stringify(locale));
-			i18n.locale = lang;
-			i18n.setLocaleMessage(lang, locale);
-		});
-} else {
-	// TODO: 古い時だけ更新
-	setTimeout(() => {
-		fetch(`/assets/locales/${lang}.${version}.json`)
-			.then(response => response.json()).then(locale => {
-				localStorage.setItem('locale', JSON.stringify(locale));
-			});
-	}, 1000 * 5);
-}
-//#endregion
-
 //#region Set lang attr
 const html = document.documentElement;
 html.setAttribute('lang', lang);
 //#endregion
-
-// iOSでプライベートモードだとlocalStorageが使えないので既存のメソッドを上書きする
-try {
-	localStorage.setItem('foo', 'bar');
-} catch (e) {
-	Storage.prototype.setItem = () => { }; // noop
-}
-
-// http://qiita.com/junya/items/3ff380878f26ca447f85
-document.body.setAttribute('ontouchstart', '');
 
 // アプリ基底要素マウント
 document.body.innerHTML = '<div id="app"></div>';
 
 const store = createStore();
 
+// 他のタブと永続化されたstateを同期
+window.addEventListener('storage', e => {
+	if (e.key === 'vuex') {
+		store.replaceState({
+			...store.state,
+			...JSON.parse(e.newValue)
+		});
+	} else if (e.key === 'i') {
+		location.reload();
+	}
+}, false);
+
 const os = new MiOS(store);
 
 os.init(async () => {
-	window.addEventListener('storage', e => {
-		if (e.key === 'vuex') {
-			store.replaceState(JSON.parse(localStorage['vuex']));
-		} else if (e.key === 'i') {
-			location.reload();
-		}
-	}, false);
+	//#region Fetch locale data
+	const i18n = new VueI18n();
 
-	store.watch(state => state.device.darkMode, darkMode => {
-		import('./theme').then(({ builtinThemes }) => {
-			const themes = builtinThemes.concat(store.state.device.themes);
-			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
-		});
-	});
+	await count(clientDb.i18n).then(async n => {
+		if (n === 0) return setI18nContexts(lang, version, i18n);
+		if ((await get('_version_', clientDb.i18n) !== version)) return setI18nContexts(lang, version, i18n, true);
 
-	//#region Sync dark mode
-	if (store.state.device.syncDeviceDarkMode) {
-		store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
-	}
-
-	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
-		if (store.state.device.syncDeviceDarkMode) {
-			store.commit('device/set', { key: 'darkMode', value: mql.matches });
-		}
+		i18n.locale = lang;
+		i18n.setLocaleMessage(lang, await getLocale());
 	});
 	//#endregion
 
-	if ('Notification' in window && store.getters.isSignedIn) {
-		// 許可を得ていなかったらリクエスト
-		if (Notification.permission === 'default') {
-			Notification.requestPermission();
-		}
-	}
-
 	const app = new Vue({
 		store: store,
+		i18n,
 		metaInfo: {
 			title: null,
 			titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
@@ -183,9 +151,11 @@ os.init(async () => {
 		data() {
 			return {
 				stream: os.stream,
-				isMobile: isMobile
+				isMobile: isMobile,
+				i18n // TODO: 消せないか考える SEE: https://github.com/syuilo/misskey/pull/6396#discussion_r429511030
 			};
 		},
+		// TODO: ここらへんのメソッド全部Vuexに移したい
 		methods: {
 			api: (endpoint: string, data: { [x: string]: any } = {}, token?) => store.dispatch('api', { endpoint, data, token }),
 			signout: os.signout,
@@ -215,7 +185,15 @@ os.init(async () => {
 				});
 				return p;
 			},
+			form(title, form) {
+				const vm = this.new(Form, { title, form });
+				return new Promise((res) => {
+					vm.$once('ok', result => res({ canceled: false, result }));
+					vm.$once('cancel', () => res({ canceled: true }));
+				});
+			},
 			post(opts, cb) {
+				if (!this.$store.getters.isSignedIn) return;
 				const vm = this.new(PostFormDialog, opts);
 				if (cb) vm.$once('closed', cb);
 				(vm as any).focus();
@@ -230,20 +208,97 @@ os.init(async () => {
 			}
 		},
 		router: router,
-		render: createEl => createEl(App)
+		render: createEl => createEl(deckmode ? Deck : App)
 	});
-
-	os.app = app;
 
 	// マウント
 	app.$mount('#app');
+
+	store.watch(state => state.device.darkMode, darkMode => {
+		import('./scripts/theme').then(({ builtinThemes }) => {
+			const themes = builtinThemes.concat(store.state.device.themes);
+			applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		});
+	});
+
+	//#region Sync dark mode
+	if (store.state.device.syncDeviceDarkMode) {
+		store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+	}
+
+	window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
+		if (store.state.device.syncDeviceDarkMode) {
+			store.commit('device/set', { key: 'darkMode', value: mql.matches });
+		}
+	});
+	//#endregion
+
+	store.watch(state => state.device.useBlurEffectForModal, v => {
+		document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
+	}, { immediate: true });
+
+	let reloadDialogShowing = false;
+	os.stream.on('_disconnected_', async () => {
+		if (store.state.device.serverDisconnectedBehavior === 'reload') {
+			location.reload();
+		} else if (store.state.device.serverDisconnectedBehavior === 'dialog') {
+			if (reloadDialogShowing) return;
+			reloadDialogShowing = true;
+			const { canceled } = await app.dialog({
+				type: 'warning',
+				title: app.$t('disconnectedFromServer'),
+				text: app.$t('reloadConfirm'),
+				showCancelButton: true
+			});
+			reloadDialogShowing = false;
+			if (!canceled) {
+				location.reload();
+			}
+		}
+	});
 
 	os.stream.on('emojiAdded', data => {
 		// TODO
 		//store.commit('instance/set', );
 	});
 
+	for (const plugin of store.state.deviceUser.plugins.filter(p => p.active)) {
+		console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+
+		const aiscript = new AiScript(createPluginEnv(app, {
+			plugin: plugin,
+			storageKey: 'plugins:' + plugin.id
+		}), {
+			in: (q) => {
+				return new Promise(ok => {
+					app.dialog({
+						title: q,
+						input: {}
+					}).then(({ canceled, result: a }) => {
+						ok(a);
+					});
+				});
+			},
+			out: (value) => {
+				console.log(value);
+			},
+			log: (type, params) => {
+			},
+		});
+
+		store.commit('initPlugin', { plugin, aiscript });
+
+		aiscript.exec(deserialize(plugin.ast));
+	}
+
 	if (store.getters.isSignedIn) {
+		if ('Notification' in window) {
+			// 許可を得ていなかったらリクエスト
+			if (Notification.permission === 'default') {
+				Notification.requestPermission();
+			}
+		}
+
 		const main = os.stream.useSharedConnection('main');
 
 		// 自分の情報が更新されたとき
@@ -313,6 +368,20 @@ os.init(async () => {
 			});
 
 			app.sound('antenna');
+		});
+
+		main.on('readAllChannels', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadChannel: false
+			});
+		});
+
+		main.on('unreadChannel', () => {
+			store.dispatch('mergeMe', {
+				hasUnreadChannel: true
+			});
+
+			app.sound('channel');
 		});
 
 		main.on('readAllAnnouncements', () => {

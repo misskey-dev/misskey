@@ -14,11 +14,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../i18n';
 import { getStaticImageUrl } from '../../scripts/get-static-image-url';
 
 export default Vue.extend({
-	i18n,
 	props: ['user'],
 	data() {
 		return {

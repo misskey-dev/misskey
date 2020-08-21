@@ -17,7 +17,7 @@ import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles, Pages } from '../../models';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
@@ -58,7 +58,7 @@ const router = new Router();
 
 //#region static assets
 
-router.get('/assets/*', async ctx => {
+router.get('/assets/(.*)', async ctx => {
 	await send(ctx as any, ctx.path, {
 		root: client,
 		maxage: ms('7 days'),
@@ -188,7 +188,7 @@ router.get('/@:user.json', async ctx => {
 	}
 });
 
-//#region for crawlers
+//#region SSR (for crawlers)
 // User
 router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
@@ -245,7 +245,8 @@ router.get('/notes/:note', async ctx => {
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
-			summary: getNoteSummary(_note),
+			// TODO: Let locale changeable by instance setting
+			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
 			icon: meta.iconUrl
 		});
@@ -296,6 +297,28 @@ router.get('/@:user/pages/:page', async ctx => {
 
 	ctx.status = 404;
 });
+
+// Channel
+router.get('/channels/:channel', async ctx => {
+	const channel = await Channels.findOne({
+		id: ctx.params.channel,
+	});
+
+	if (channel) {
+		const _channel = await Channels.pack(channel);
+		const meta = await fetchMeta();
+		await ctx.render('channel', {
+			channel: _channel,
+			instanceName: meta.name || 'Misskey'
+		});
+
+		ctx.set('Cache-Control', 'public, max-age=180');
+
+		return;
+	}
+
+	ctx.status = 404;
+});
 //#endregion
 
 router.get('/info', async ctx => {
@@ -332,7 +355,7 @@ router.get('/flush', async ctx => {
 });
 
 // Render base html for all requests
-router.get('*', async ctx => {
+router.get('(.*)', async ctx => {
 	const meta = await fetchMeta();
 	await ctx.render('base', {
 		img: meta.bannerUrl,

@@ -8,13 +8,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
 import { apiUrl } from '../../config';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkTextarea,
 		MkButton,

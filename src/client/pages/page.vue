@@ -1,5 +1,5 @@
 <template>
-<div class="xcukqgmh _panel">
+<div class="xcukqgmh">
 	<portal to="avatar" v-if="page"><mk-avatar class="avatar" :user="page.user" :disable-preview="true"/></portal>
 	<portal to="title" v-if="page">{{ page.title || page.name }}</portal>
 

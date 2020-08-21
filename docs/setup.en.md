@@ -4,7 +4,8 @@ Misskey Setup and Installation Guide
 We thank you for your interest in setting up your Misskey server!
 This guide describes how to install and setup Misskey.
 
-[Japanese version also available - 日本語版もあります](./setup.ja.md)
+- [Japanese version also available - 日本語版もあります](./setup.ja.md)
+- [Simplified Chinese version also available - 简体中文版同样可用](./setup.zh.md)
 
 ----------------------------------------------------------------
 
@@ -22,8 +23,8 @@ adduser --disabled-password --disabled-login misskey
 Please install and setup these softwares:
 
 #### Dependencies :package:
-* **[Node.js](https://nodejs.org/en/)** >= 11.10.1
-* **[PostgreSQL](https://www.postgresql.org/)** >= 10
+* **[Node.js](https://nodejs.org/en/)** (12.x, 14.x)
+* **[PostgreSQL](https://www.postgresql.org/)** (>= 10)
 * **[Redis](https://redis.io/)**
 
 ##### Optional

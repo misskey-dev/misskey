@@ -11,7 +11,7 @@
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 			</div>
 			<div class="_footer" v-if="$store.getters.isSignedIn && !announcement.isRead">
-				<mk-button @click="read(announcement)" primary><fa :icon="faCheck"/> {{ $t('gotIt') }}</mk-button>
+				<mk-button @click="read(items, announcement, i)" primary><fa :icon="faCheck"/> {{ $t('gotIt') }}</mk-button>
 			</div>
 		</section>
 	</mk-pagination>
@@ -21,13 +21,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faCheck, faBroadcastTower } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import MkPagination from '../components/ui/pagination.vue';
 import MkButton from '../components/ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('announcements') as string
@@ -50,8 +47,12 @@ export default Vue.extend({
 	},
 
 	methods: {
-		read(announcement) {
-			announcement.isRead = true;
+		// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
+		read(items, announcement, i) {
+			Vue.set(items, i, {
+				...announcement,
+				isRead: true,
+			});
 			this.$root.api('i/read-announcement', { announcementId: announcement.id });
 		},
 	}

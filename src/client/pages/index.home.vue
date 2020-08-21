@@ -2,14 +2,15 @@
 <div class="mk-home" v-hotkey.global="keymap">
 	<portal to="header" v-if="showTitle">
 		<button @click="choose" class="_button _kjvfvyph_">
-			<i><fa v-if="$store.state.i.hasUnreadAntenna" :icon="faCircle"/></i>
+			<i><fa v-if="$store.state.i.hasUnreadAntenna || $store.state.i.hasUnreadChannel" :icon="faCircle"/></i>
 			<fa v-if="src === 'home'" :icon="faHome"/>
 			<fa v-if="src === 'local'" :icon="faComments"/>
 			<fa v-if="src === 'social'" :icon="faShareAlt"/>
 			<fa v-if="src === 'global'" :icon="faGlobe"/>
 			<fa v-if="src === 'list'" :icon="faListUl"/>
 			<fa v-if="src === 'antenna'" :icon="faSatellite"/>
-			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : src === 'antenna' ? antenna.name : $t('_timelines.' + src) }}</span>
+			<fa v-if="src === 'channel'" :icon="faSatelliteDish"/>
+			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : src === 'antenna' ? antenna.name : src === 'channel' ? channel.name : $t('_timelines.' + src) }}</span>
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
@@ -19,17 +20,18 @@
 	<x-tutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
 	<x-post-form class="post-form _panel" fixed v-if="$store.state.device.showFixedPostForm"/>
-	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src" :src="src" :list="list" :antenna="antenna" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
+	<x-timeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src" :src="src" :list="list ? list.id : null" :antenna="antenna ? antenna.id : null" :channel="channel ? channel.id : null" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '../scripts/loading';
 import XTimeline from '../components/timeline.vue';
 import XPostForm from '../components/post-form.vue';
+import { scroll } from '../scripts/scroll';
 
 export default Vue.extend({
 	metaInfo() {
@@ -56,10 +58,11 @@ export default Vue.extend({
 			src: 'home',
 			list: null,
 			antenna: null,
+			channel: null,
 			menuOpened: false,
 			queue: 0,
 			width: 0,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faCircle
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle
 		};
 	},
 
@@ -78,16 +81,20 @@ export default Vue.extend({
 	watch: {
 		src() {
 			this.showNav = false;
-			this.saveSrc();
 		},
 		list(x) {
 			this.showNav = false;
-			this.saveSrc();
 			if (x != null) this.antenna = null;
+			if (x != null) this.channel = null;
 		},
 		antenna(x) {
 			this.showNav = false;
-			this.saveSrc();
+			if (x != null) this.list = null;
+			if (x != null) this.channel = null;
+		},
+		channel(x) {
+			this.showNav = false;
+			if (x != null) this.antenna = null;
 			if (x != null) this.list = null;
 		},
 	},
@@ -98,6 +105,8 @@ export default Vue.extend({
 			this.list = this.$store.state.deviceUser.tl.arg;
 		} else if (this.src === 'antenna') {
 			this.antenna = this.$store.state.deviceUser.tl.arg;
+		} else if (this.src === 'channel') {
+			this.channel = this.$store.state.deviceUser.tl.arg;
 		}
 	},
 
@@ -120,15 +129,16 @@ export default Vue.extend({
 		},
 
 		top() {
-			window.scroll({ top: 0, behavior: 'instant' });
+			scroll(this.$el, 0);
 		},
 
 		async choose(ev) {
 			if (this.meta == null) return;
 			this.menuOpened = true;
-			const [antennas, lists] = await Promise.all([
+			const [antennas, lists, channels] = await Promise.all([
 				this.$root.api('antennas/list'),
-				this.$root.api('users/lists/list')
+				this.$root.api('users/lists/list'),
+				this.$root.api('channels/followed'),
 			]);
 			const antennaItems = antennas.map(antenna => ({
 				text: antenna.name,
@@ -136,7 +146,8 @@ export default Vue.extend({
 				indicate: antenna.hasUnreadNote,
 				action: () => {
 					this.antenna = antenna;
-					this.setSrc('antenna');
+					this.src = 'antenna';
+					this.saveSrc();
 				}
 			}));
 			const listItems = lists.map(list => ({
@@ -144,27 +155,40 @@ export default Vue.extend({
 				icon: faListUl,
 				action: () => {
 					this.list = list;
-					this.setSrc('list');
+					this.src = 'list';
+					this.saveSrc();
+				}
+			}));
+			const channelItems = channels.map(channel => ({
+				text: channel.name,
+				icon: faSatelliteDish,
+				indicate: channel.hasUnreadNote,
+				action: () => {
+					// NOTE: チャンネルタイムラインをこのコンポーネントで表示するようにすると投稿フォームはどうするかなどの問題が生じるのでとりあえずページ遷移で
+					//this.channel = channel;
+					//this.src = 'channel';
+					//this.saveSrc();
+					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
 			this.$root.menu({
 				items: [{
 					text: this.$t('_timelines.home'),
 					icon: faHome,
-					action: () => { this.setSrc('home') }
+					action: () => { this.src = 'home'; this.saveSrc(); }
 				}, this.meta.disableLocalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
 					text: this.$t('_timelines.local'),
 					icon: faComments,
-					action: () => { this.setSrc('local') }
+					action: () => { this.src = 'local'; this.saveSrc(); }
 				}, this.meta.disableLocalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
 					text: this.$t('_timelines.social'),
 					icon: faShareAlt,
-					action: () => { this.setSrc('social') }
+					action: () => { this.src = 'social'; this.saveSrc(); }
 				}, this.meta.disableGlobalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
 					text: this.$t('_timelines.global'),
 					icon: faGlobe,
-					action: () => { this.setSrc('global') }
-				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems],
+					action: () => { this.src = 'global'; this.saveSrc(); }
+				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems],
 				fixed: true,
 				noCenter: true,
 				source: ev.currentTarget || ev.target
@@ -173,14 +197,13 @@ export default Vue.extend({
 			});
 		},
 
-		setSrc(src) {
-			this.src = src;
-		},
-
 		saveSrc() {
 			this.$store.commit('deviceUser/setTl', {
 				src: this.src,
-				arg: this.src == 'list' ? this.list : this.antenna
+				arg:
+					this.src === 'list' ? this.list :
+					this.src === 'antenna' ? this.antenna :
+					this.channel
 			});
 		},
 
@@ -223,7 +246,7 @@ export default Vue.extend({
 
 	> i {
 		position: absolute;
-		top: 16px;
+		top: initial;
 		right: 8px;
 		color: var(--indicator);
 		font-size: 12px;

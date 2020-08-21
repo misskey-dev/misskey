@@ -14,7 +14,7 @@
 		></textarea>
 	</div>
 	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
-	<div class="desc"><slot name="desc"></slot></div>
+	<div class="desc _caption"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -133,7 +133,7 @@ export default Vue.extend({
 			pointer-events: none;
 			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 			transition-duration: 0.3s;
-			font-size: 16px;
+			font-size: 1em;
 			line-height: 32px;
 			pointer-events: none;
 			//will-change transform
@@ -151,7 +151,7 @@ export default Vue.extend({
 			box-sizing: border-box;
 			font: inherit;
 			font-weight: normal;
-			font-size: 16px;
+			font-size: 1em;
 			background: transparent;
 			border: none;
 			border-radius: 0;
@@ -163,13 +163,11 @@ export default Vue.extend({
 
 	> .save {
 		margin: 6px 0 0 0;
-		font-size: 13px;
+		font-size: 0.8em;
 	}
 
 	> .desc {
 		margin: 6px 0 0 0;
-		font-size: 13px;
-		opacity: 0.7;
 
 		&:empty {
 			display: none;

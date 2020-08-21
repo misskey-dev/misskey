@@ -1,11 +1,11 @@
 <template>
 <div class="mfcuwfyp">
 	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
-		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" :key="notification.id"/>
+		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @updated="noteUpdated(notification.note, $event)" :key="notification.id"/>
 		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
-	<button class="_panel _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+	<button class="_panel _button" ref="loadMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 		<template v-if="moreFetching"><mk-loading inline/></template>
 	</button>
@@ -18,15 +18,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNotification,
 		XList,
@@ -74,12 +71,24 @@ export default Vue.extend({
 
 	methods: {
 		onNotification(notification) {
-			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.$root.stream.send('readNotification', {
-				id: notification.id
-			});
+			if (document.visibilityState === 'visible') {
+				this.$root.stream.send('readNotification', {
+					id: notification.id
+				});
+			}
 
-			this.prepend(notification);
+			this.prepend({
+				...notification,
+				isRead: document.visibilityState === 'visible'
+			});
+		},
+
+		noteUpdated(oldValue, newValue) {
+			const i = this.items.findIndex(n => n.note === oldValue);
+			Vue.set(this.items, i, {
+				...this.items[i],
+				note: newValue
+			});
 		},
 	}
 });
@@ -87,13 +96,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .mfcuwfyp {
-	> .notifications {
-		> ::v-deep * {
-			//margin-bottom: var(--margin);
-			margin-bottom: 0;
-		}
-	}
-
 	> .empty {
 		margin: 0;
 		padding: 16px;

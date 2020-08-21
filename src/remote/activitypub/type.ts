@@ -119,6 +119,14 @@ interface IQuestionChoice {
 	replies?: ICollection;
 	_misskey_votes?: number;
 }
+export interface ITombstone extends IObject {
+	type: 'Tombstone';
+	formerType?: string;
+	deleted?: Date;
+}
+
+export const isTombstone = (object: IObject): object is ITombstone =>
+	object.type === 'Tombstone';
 
 export const validActor = ['Person', 'Service', 'Group', 'Organization', 'Application'];
 
@@ -140,6 +148,8 @@ export interface IPerson extends IObject {
 	endpoints?: {
 		sharedInbox?: string;
 	};
+	'vcard:bday'?: string;
+	'vcard:Address'?: string;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>

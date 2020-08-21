@@ -32,7 +32,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../i18n';
 import copyToClipboard from '../scripts/copy-to-clipboard';
 //import updateAvatar from '../api/update-avatar';
 //import updateBanner from '../api/update-banner';
@@ -40,8 +39,6 @@ import XFileThumbnail from './drive-file-thumbnail.vue';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XFileThumbnail
 	},
@@ -127,17 +124,6 @@ export default Vue.extend({
 		onDragend(e) {
 			this.isDragging = false;
 			this.browser.isDragSource = false;
-		},
-
-		onThumbnailLoaded() {
-			if (this.file.properties.avgColor) {
-				anime({
-					targets: this.$refs.thumbnail,
-					backgroundColor: 'transparent', // TODO fade
-					duration: 100,
-					easing: 'linear'
-				});
-			}
 		},
 
 		rename() {
@@ -335,7 +321,6 @@ export default Vue.extend({
 		width: 128px;
 		height: 128px;
 		margin: auto;
-		color: var(--driveFileIcon);
 	}
 
 	> .name {

@@ -15,8 +15,7 @@
 				</div>
 			</router-link>
 		</div>
-
-		<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+		<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
 		</button>
@@ -31,13 +30,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import paging from '../scripts/paging';
 import XModal from './modal.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XModal,
 	},

@@ -49,13 +49,10 @@ import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
-import i18n from '../i18n';
 import { apiUrl, host } from '../config';
 import { byteify, hexify } from '../scripts/2fa';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkInput,

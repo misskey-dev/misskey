@@ -17,9 +17,15 @@ export default Vue.extend({
 			required: true
 		},
 		list: {
+			type: String,
 			required: false
 		},
 		antenna: {
+			type: String,
+			required: false
+		},
+		channel: {
+			type: String,
 			required: false
 		},
 		sound: {
@@ -27,6 +33,12 @@ export default Vue.extend({
 			required: false,
 			default: false,
 		}
+	},
+
+	provide() {
+		return {
+			inChannel: this.src === 'channel'
+		};
 	},
 
 	data() {
@@ -50,8 +62,9 @@ export default Vue.extend({
 		});
 
 		const prepend = note => {
-			const _note = JSON.parse(JSON.stringify(note));	// deepcopy
-			(this.$refs.tl as any).prepend(_note);
+			(this.$refs.tl as any).prepend(note);
+
+			this.$emit('note');
 
 			if (this.sound) {
 				this.$root.sound(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
@@ -77,10 +90,10 @@ export default Vue.extend({
 		if (this.src == 'antenna') {
 			endpoint = 'antennas/notes';
 			this.query = {
-				antennaId: this.antenna.id
+				antennaId: this.antenna
 			};
 			this.connection = this.$root.stream.connectToChannel('antenna', {
-				antennaId: this.antenna.id
+				antennaId: this.antenna
 			});
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
@@ -106,14 +119,23 @@ export default Vue.extend({
 		} else if (this.src == 'list') {
 			endpoint = 'notes/user-list-timeline';
 			this.query = {
-				listId: this.list.id
+				listId: this.list
 			};
 			this.connection = this.$root.stream.connectToChannel('userList', {
-				listId: this.list.id
+				listId: this.list
 			});
 			this.connection.on('note', prepend);
 			this.connection.on('userAdded', onUserAdded);
 			this.connection.on('userRemoved', onUserRemoved);
+		} else if (this.src == 'channel') {
+			endpoint = 'channels/timeline';
+			this.query = {
+				channelId: this.channel
+			};
+			this.connection = this.$root.stream.connectToChannel('channel', {
+				channelId: this.channel
+			});
+			this.connection.on('note', prepend);
 		}
 
 		this.pagination = {

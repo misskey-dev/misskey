@@ -15,7 +15,7 @@ import { updateUsertags } from '../../../services/update-hashtag';
 import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
-import { UserNotePining } from '../../../models/entities/user-note-pinings';
+import { UserNotePining } from '../../../models/entities/user-note-pining';
 import { genId } from '../../../misc/gen-id';
 import { instanceChart, usersChart } from '../../../services/chart';
 import { UserPublickey } from '../../../models/entities/user-publickey';
@@ -26,7 +26,7 @@ import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { ensure } from '../../../prelude/ensure';
 import { toArray } from '../../../prelude/array';
-import { fetchNodeinfo } from '../../../services/fetch-nodeinfo';
+import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
 
 const logger = apLogger;
 
@@ -138,6 +138,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const isBot = object.type === 'Service';
 
+	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
+
 	// Create user
 	let user: IRemoteUser;
 	try {
@@ -168,6 +170,8 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
 				url: getOneApHrefNullable(person.url),
 				fields,
+				birthday: bday ? bday[0] : null,
+				location: person['vcard:Address'] || null,
 				userHost: host
 			}));
 
@@ -200,7 +204,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	registerOrFetchInstanceDoc(host).then(i => {
 		Instances.increment({ id: i.id }, 'usersCount', 1);
 		instanceChart.newUser(i.host);
-		fetchNodeinfo(i);
+		fetchInstanceMetadata(i);
 	});
 
 	usersChart.update(user!, true);
@@ -222,24 +226,24 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const bannerId = banner ? banner.id : null;
 	const avatarUrl = avatar ? DriveFiles.getPublicUrl(avatar, true) : null;
 	const bannerUrl = banner ? DriveFiles.getPublicUrl(banner) : null;
-	const avatarColor = avatar && avatar.properties.avgColor ? avatar.properties.avgColor : null;
-	const bannerColor = banner && banner.properties.avgColor ? banner.properties.avgColor : null;
+	const avatarBlurhash = avatar ? avatar.blurhash : null;
+	const bannerBlurhash = banner ? banner.blurhash : null;
 
 	await Users.update(user!.id, {
 		avatarId,
 		bannerId,
 		avatarUrl,
 		bannerUrl,
-		avatarColor,
-		bannerColor
+		avatarBlurhash,
+		bannerBlurhash
 	});
 
 	user!.avatarId = avatarId;
 	user!.bannerId = bannerId;
 	user!.avatarUrl = avatarUrl;
 	user!.bannerUrl = bannerUrl;
-	user!.avatarColor = avatarColor;
-	user!.bannerColor = bannerColor;
+	user!.avatarBlurhash = avatarBlurhash;
+	user!.bannerBlurhash = bannerBlurhash;
 	//#endregion
 
 	//#region カスタム絵文字取得
@@ -319,6 +323,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
 
+	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
+
 	const updates = {
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
@@ -335,13 +341,13 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	if (avatar) {
 		updates.avatarId = avatar.id;
 		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
-		updates.avatarColor = avatar.properties.avgColor ? avatar.properties.avgColor : null;
+		updates.avatarBlurhash = avatar.blurhash;
 	}
 
 	if (banner) {
 		updates.bannerId = banner.id;
 		updates.bannerUrl = DriveFiles.getPublicUrl(banner);
-		updates.bannerColor = banner.properties.avgColor ? banner.properties.avgColor : null;
+		updates.bannerBlurhash = banner.blurhash;
 	}
 
 	// Update user
@@ -356,6 +362,8 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		url: getOneApHrefNullable(person.url),
 		fields,
 		description: person.summary ? htmlToMfm(person.summary, person.tag) : null,
+		birthday: bday ? bday[0] : null,
+		location: person['vcard:Address'] || null,
 	});
 
 	// ハッシュタグ更新

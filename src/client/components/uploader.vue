@@ -11,9 +11,7 @@
 					<span class="percentage" v-if="ctx.progressValue !== undefined">{{ Math.floor((ctx.progressValue / ctx.progressMax) * 100) }}</span>
 				</p>
 			</div>
-			<progress v-if="ctx.progressValue !== undefined && ctx.progressValue !== ctx.progressMax" :value="ctx.progressValue" :max="ctx.progressMax"></progress>
-			<div class="progress initing" v-if="ctx.progressValue === undefined"></div>
-			<div class="progress waiting" v-if="ctx.progressValue !== undefined && ctx.progressValue === ctx.progressMax"></div>
+			<progress :value="ctx.progressValue" :max="ctx.progressMax" :class="{ initing: ctx.progressValue === undefined, waiting: ctx.progressValue !== undefined && ctx.progressValue === ctx.progressMax }"></progress>
 		</li>
 	</ol>
 </div>
@@ -21,13 +19,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { apiUrl } from '../config';
 //import getMD5 from '../../scripts/get-md5';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default Vue.extend({
-	i18n,
 	data() {
 		return {
 			uploads: [],
@@ -119,7 +115,6 @@ export default Vue.extend({
   padding: 0;
   height: 36px;
   width: 100%;
-  box-shadow: 0 -1px 0 var(--accentAlpha01);
   border-top: solid 8px transparent;
   grid-template-columns: 36px calc(100% - 44px);
   grid-template-rows: 1fr 8px;
@@ -148,7 +143,6 @@ export default Vue.extend({
   padding: 0 8px 0 0;
   margin: 0;
   font-size: 0.8em;
-  color: var(--accentAlpha07);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -165,16 +159,13 @@ export default Vue.extend({
   flex-shrink: 0;
 }
 .mk-uploader > ol > li > .top > .status > .initing {
-  color: var(--accentAlpha05);
 }
 .mk-uploader > ol > li > .top > .status > .kb {
-  color: var(--accentAlpha05);
 }
 .mk-uploader > ol > li > .top > .status > .percentage {
   display: inline-block;
   width: 48px;
   text-align: right;
-  color: var(--accentAlpha07);
 }
 .mk-uploader > ol > li > .top > .status > .percentage:after {
   content: '%';
@@ -188,57 +179,14 @@ export default Vue.extend({
   grid-column: 2/3;
   grid-row: 2/3;
   z-index: 2;
+	width: 100%;
+	height: 8px;
 }
 .mk-uploader > ol > li > progress::-webkit-progress-value {
   background: var(--accent);
 }
 .mk-uploader > ol > li > progress::-webkit-progress-bar {
-  background: var(--accentAlpha01);
-}
-.mk-uploader > ol > li > .progress {
-  display: block;
-  border: none;
-  border-radius: 4px;
-  background: linear-gradient(45deg, var(--accentLighten30) 25%, var(--accent) 25%, var(--accent) 50%, var(--accentLighten30) 50%, var(--accentLighten30) 75%, var(--accent) 75%, var(--accent));
-  background-size: 32px 32px;
-  animation: bg 1.5s linear infinite;
-  grid-column: 2/3;
-  grid-row: 2/3;
-  z-index: 1;
-}
-.mk-uploader > ol > li > .progress.initing {
-  opacity: 0.3;
-}
-@-moz-keyframes bg {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -64px 32px;
-  }
-}
-@-webkit-keyframes bg {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -64px 32px;
-  }
-}
-@-o-keyframes bg {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -64px 32px;
-  }
-}
-@keyframes bg {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -64px 32px;
-  }
+  //background: var(--accentAlpha01);
+	background: transparent;
 }
 </style>

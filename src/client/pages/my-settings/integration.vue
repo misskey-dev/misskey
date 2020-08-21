@@ -29,13 +29,10 @@
 import Vue from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import i18n from '../../i18n';
 import { apiUrl } from '../../config';
 import MkButton from '../../components/ui/button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton
 	},

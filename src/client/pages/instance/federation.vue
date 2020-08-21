@@ -62,16 +62,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkPagination from '../../components/ui/pagination.vue';
-import MkInstanceInfo from './federation.instance.vue';
+import MkInstanceInfo from './instance.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('federation') as string

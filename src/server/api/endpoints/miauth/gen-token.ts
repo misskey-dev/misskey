@@ -13,7 +13,7 @@ export const meta = {
 
 	params: {
 		session: {
-			validator: $.str
+			validator: $.nullable.str
 		},
 
 		name: {
@@ -38,11 +38,13 @@ export default define(meta, async (ps, user) => {
 	// Generate access token
 	const accessToken = secureRndstr(32, true);
 
+	const now = new Date();
+
 	// Insert access token doc
 	await AccessTokens.save({
 		id: genId(),
-		createdAt: new Date(),
-		lastUsedAt: new Date(),
+		createdAt: now,
+		lastUsedAt: now,
 		session: ps.session,
 		userId: user.id,
 		token: accessToken,
@@ -52,4 +54,8 @@ export default define(meta, async (ps, user) => {
 		iconUrl: ps.iconUrl,
 		permission: ps.permission,
 	});
+
+	return {
+		token: accessToken
+	};
 });

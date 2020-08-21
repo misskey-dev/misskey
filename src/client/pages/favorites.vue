@@ -2,7 +2,7 @@
 <div>
 	<portal to="icon"><fa :icon="faStar"/></portal>
 	<portal to="title">{{ $t('favorites') }}</portal>
-	<x-notes :pagination="pagination" :detail="true" :extract="items => items.map(item => item.note)" @before="before()" @after="after()"/>
+	<x-notes :pagination="pagination" :detail="true" :prop="'note'" @before="before()" @after="after()"/>
 </div>
 </template>
 

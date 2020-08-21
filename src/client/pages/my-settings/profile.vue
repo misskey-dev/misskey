@@ -62,13 +62,10 @@ import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
 import MkSwitch from '../../components/ui/switch.vue';
-import i18n from '../../i18n';
 import { host } from '../../config';
 import { selectFile } from '../../scripts/select-file';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 		MkInput,

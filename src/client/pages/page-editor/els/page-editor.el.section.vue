@@ -21,12 +21,9 @@ import Vue from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../../i18n';
 import XContainer from '../page-editor.container.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer
 	},

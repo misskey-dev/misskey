@@ -1,5 +1,5 @@
 <template>
-<div class="nsbbhtug" v-if="hasDisconnected" @click="resetDisconnected">
+<div class="nsbbhtug" v-if="hasDisconnected && $store.state.device.serverDisconnectedBehavior === 'quiet'" @click="resetDisconnected">
 	<div>{{ $t('disconnectedFromServer') }}</div>
 	<div class="command">
 		<button class="_textButton" @click="reload">{{ $t('reload') }}</button>
@@ -10,10 +10,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	data() {
 		return {
 			hasDisconnected: false,
@@ -25,21 +23,12 @@ export default Vue.extend({
 		},
 	},
 	created() {
-		this.$root.stream.on('_connected_', this.onConnected);
 		this.$root.stream.on('_disconnected_', this.onDisconnected);
 	},
 	beforeDestroy() {
-		this.$root.stream.off('_connected_', this.onConnected);
 		this.$root.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
-		onConnected() {
-			if (this.hasDisconnected) {
-				if (this.$store.state.device.autoReload) {
-					this.reload();
-				}
-			}
-		},
 		onDisconnected() {
 			this.hasDisconnected = true;
 		},

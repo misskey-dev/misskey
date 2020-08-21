@@ -1,9 +1,11 @@
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-import { faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
-import { apiUrl } from './config';
+import { AiScript, utils, values } from '@syuilo/aiscript';
+import { apiUrl, deckmode } from './config';
+import { erase } from '../prelude/array';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -16,6 +18,7 @@ export const defaultSettings = {
 	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
 	memo: null,
 	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	mutedWords: [],
 };
 
 export const defaultDeviceUserSettings = {
@@ -35,7 +38,21 @@ export const defaultDeviceUserSettings = {
 		'explore',
 		'announcements',
 		'search',
+		'-',
+		'deck',
 	],
+	deck: {
+		columns: [],
+		layout: [],
+	},
+	plugins: [] as {
+		id: string;
+		name: string;
+		active: boolean;
+		configData: Record<string, any>;
+		token: string;
+		ast: any[];
+	}[],
 };
 
 export const defaultDeviceSettings = {
@@ -43,21 +60,29 @@ export const defaultDeviceSettings = {
 	loadRawImages: false,
 	alwaysShowNsfw: false,
 	useOsNativeEmojis: false,
-	autoReload: false,
+	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
 	recentEmojis: [],
 	themes: [],
 	darkTheme: '8c539dc1-0fab-4d47-9194-39c508e9bfe1',
 	lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 	darkMode: false,
+	deckMode: false,
 	syncDeviceDarkMode: true,
 	animation: true,
 	animatedMfm: true,
 	imageNewTab: false,
 	showFixedPostForm: false,
 	disablePagesScript: true,
+	enableInfiniteScroll: true,
+	fixedWidgetsPosition: false,
+	useBlurEffectForModal: true,
+	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
+	deckColumnAlign: 'left',
+	deckAlwaysShowMainColumn: true,
+	deckMainColumnPlace: 'left',
 	sfxVolume: 0.3,
 	sfxNote: 'syuilo/down',
 	sfxNoteMy: 'syuilo/up',
@@ -65,6 +90,7 @@ export const defaultDeviceSettings = {
 	sfxChat: 'syuilo/pope1',
 	sfxChatBg: 'syuilo/waon',
 	sfxAntenna: 'syuilo/triple',
+	sfxChannel: 'syuilo/square-pico',
 	userData: {},
 };
 
@@ -80,7 +106,16 @@ export default () => new Vuex.Store({
 	state: {
 		i: null,
 		pendingApiRequestsCount: 0,
-		spinner: null
+		spinner: null,
+		fullView: false,
+
+		// Plugin
+		pluginContexts: new Map<string, AiScript>(),
+		postFormActions: [],
+		userActions: [],
+		noteActions: [],
+		noteViewInterruptors: [],
+		notePostInterruptors: [],
 	},
 
 	getters: {
@@ -179,6 +214,11 @@ export default () => new Vuex.Store({
 				get show() { return getters.isSignedIn; },
 				to: '/my/pages',
 			},
+			channels: {
+				title: 'channel',
+				icon: faSatelliteDish,
+				to: '/channels',
+			},
 			games: {
 				title: 'games',
 				icon: faGamepad,
@@ -195,6 +235,14 @@ export default () => new Vuex.Store({
 				get show() { return getters.isSignedIn; },
 				get to() { return `/@${state.i.username}/room`; },
 			},
+			deck: {
+				title: deckmode ? 'undeck' : 'deck',
+				icon: faColumns,
+				action: () => {
+					localStorage.setItem('deckmode', (!deckmode).toString());
+					location.reload();
+				},
+			},
 		}),
 	},
 
@@ -203,8 +251,58 @@ export default () => new Vuex.Store({
 			state.i = x;
 		},
 
-		updateIKeyValue(state, x) {
-			state.i[x.key] = x.value;
+		updateIKeyValue(state, { key, value }) {
+			state.i[key] = value;
+		},
+
+		setFullView(state, v) {
+			state.fullView = v;
+		},
+
+		initPlugin(state, { plugin, aiscript }) {
+			state.pluginContexts.set(plugin.id, aiscript);
+		},
+
+		registerPostFormAction(state, { pluginId, title, handler }) {
+			state.postFormActions.push({
+				title, handler: (form, update) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
+						update(key.value, value.value);
+					})]);
+				}
+			});
+		},
+
+		registerUserAction(state, { pluginId, title, handler }) {
+			state.userActions.push({
+				title, handler: (user) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
+				}
+			});
+		},
+
+		registerNoteAction(state, { pluginId, title, handler }) {
+			state.noteActions.push({
+				title, handler: (note) => {
+					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
+		},
+
+		registerNoteViewInterruptor(state, { pluginId, handler }) {
+			state.noteViewInterruptors.push({
+				handler: (note) => {
+					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
+		},
+
+		registerNotePostInterruptor(state, { pluginId, handler }) {
+			state.notePostInterruptors.push({
+				handler: (note) => {
+					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+				}
+			});
 		},
 	},
 
@@ -213,6 +311,7 @@ export default () => new Vuex.Store({
 			ctx.commit('updateI', i);
 			ctx.commit('settings/init', i.clientData);
 			ctx.commit('deviceUser/init', ctx.state.device.userData[i.id] || {});
+			// TODO: ローカルストレージを消してページリロードしたときは i が無いのでその場合のハンドリングをよしなにやる
 			await ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
 		},
 
@@ -241,6 +340,7 @@ export default () => new Vuex.Store({
 		},
 
 		mergeMe(ctx, me) {
+			// TODO: プロパティ一つ一つに対してコミットが発生するのはアレなので良い感じにする
 			for (const [key, value] of Object.entries(me)) {
 				ctx.commit('updateIKeyValue', { key, value });
 			}
@@ -392,6 +492,160 @@ export default () => new Vuex.Store({
 					if (w) {
 						w.data = x.data;
 					}
+				},
+
+				//#region Deck
+				addDeckColumn(state, column) {
+					if (column.name == undefined) column.name = null;
+					state.deck.columns.push(column);
+					state.deck.layout.push([column.id]);
+				},
+
+				removeDeckColumn(state, id) {
+					state.deck.columns = state.deck.columns.filter(c => c.id != id);
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
+					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
+				},
+
+				swapDeckColumn(state, x) {
+					const a = x.a;
+					const b = x.b;
+					const aX = state.deck.layout.findIndex(ids => ids.indexOf(a) != -1);
+					const aY = state.deck.layout[aX].findIndex(id => id == a);
+					const bX = state.deck.layout.findIndex(ids => ids.indexOf(b) != -1);
+					const bY = state.deck.layout[bX].findIndex(id => id == b);
+					state.deck.layout[aX][aY] = b;
+					state.deck.layout[bX][bY] = a;
+				},
+
+				swapLeftDeckColumn(state, id) {
+					state.deck.layout.some((ids, i) => {
+						if (ids.indexOf(id) != -1) {
+							const left = state.deck.layout[i - 1];
+							if (left) {
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//state.deck.layout[i - 1] = state.deck.layout[i];
+								//state.deck.layout[i] = left;
+								state.deck.layout.splice(i - 1, 1, state.deck.layout[i]);
+								state.deck.layout.splice(i, 1, left);
+							}
+							return true;
+						}
+					});
+				},
+
+				swapRightDeckColumn(state, id) {
+					state.deck.layout.some((ids, i) => {
+						if (ids.indexOf(id) != -1) {
+							const right = state.deck.layout[i + 1];
+							if (right) {
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//state.deck.layout[i + 1] = state.deck.layout[i];
+								//state.deck.layout[i] = right;
+								state.deck.layout.splice(i + 1, 1, state.deck.layout[i]);
+								state.deck.layout.splice(i, 1, right);
+							}
+							return true;
+						}
+					});
+				},
+
+				swapUpDeckColumn(state, id) {
+					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
+					ids.some((x, i) => {
+						if (x == id) {
+							const up = ids[i - 1];
+							if (up) {
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//ids[i - 1] = id;
+								//ids[i] = up;
+								ids.splice(i - 1, 1, id);
+								ids.splice(i, 1, up);
+							}
+							return true;
+						}
+					});
+				},
+
+				swapDownDeckColumn(state, id) {
+					const ids = state.deck.layout.find(ids => ids.indexOf(id) != -1);
+					ids.some((x, i) => {
+						if (x == id) {
+							const down = ids[i + 1];
+							if (down) {
+								// https://vuejs.org/v2/guide/list.html#Caveats
+								//ids[i + 1] = id;
+								//ids[i] = down;
+								ids.splice(i + 1, 1, id);
+								ids.splice(i, 1, down);
+							}
+							return true;
+						}
+					});
+				},
+
+				stackLeftDeckColumn(state, id) {
+					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
+					const left = state.deck.layout[i - 1];
+					if (left) state.deck.layout[i - 1].push(id);
+					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
+				},
+
+				popRightDeckColumn(state, id) {
+					const i = state.deck.layout.findIndex(ids => ids.indexOf(id) != -1);
+					state.deck.layout = state.deck.layout.map(ids => erase(id, ids));
+					state.deck.layout.splice(i + 1, 0, [id]);
+					state.deck.layout = state.deck.layout.filter(ids => ids.length > 0);
+				},
+
+				addDeckWidget(state, x) {
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					if (column.widgets == null) column.widgets = [];
+					column.widgets.unshift(x.widget);
+				},
+
+				removeDeckWidget(state, x) {
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
+				},
+
+				renameDeckColumn(state, x) {
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column.name = x.name;
+				},
+
+				updateDeckColumn(state, x) {
+					let column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column = x;
+				},
+				//#endregion
+
+				installPlugin(state, { id, meta, ast, token }) {
+					state.plugins.push({
+						...meta,
+						id,
+						active: true,
+						configData: {},
+						token: token,
+						ast: ast
+					});
+				},
+
+				uninstallPlugin(state, id) {
+					state.plugins = state.plugins.filter(x => x.id != id);
+				},
+
+				configPlugin(state, { id, config }) {
+					state.plugins.find(p => p.id === id).configData = config;
+				},
+
+				changePluginActive(state, { id, active }) {
+					state.plugins.find(p => p.id === id).active = active;
 				},
 			}
 		},

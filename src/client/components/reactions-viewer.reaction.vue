@@ -4,12 +4,14 @@
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="toggleReaction(reaction)"
 	v-if="count > 0"
+	@touchstart="onMouseover"
 	@mouseover="onMouseover"
 	@mouseleave="onMouseleave"
+	@touchend="onMouseleave"
 	ref="reaction"
-	v-particle
+	v-particle="canToggle"
 >
-	<x-reaction-icon :reaction="reaction" :customEmojis="note.emojis" ref="icon"/>
+	<x-reaction-icon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
 	<span>{{ count }}</span>
 </button>
 </template>
@@ -49,15 +51,9 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		isMe(): boolean {
-			return this.$store.getters.isSignedIn && this.$store.state.i.id === this.note.userId;
-		},
 		canToggle(): boolean {
-			return !this.reaction.match(/@\w/);
+			return !this.reaction.match(/@\w/) && this.$store.getters.isSignedIn;
 		},
-	},
-	mounted() {
-		if (!this.isInitial) this.anime();
 	},
 	watch: {
 		count(newCount, oldCount) {
@@ -65,9 +61,11 @@ export default Vue.extend({
 			if (this.details != null) this.openDetails();
 		},
 	},
+	mounted() {
+		if (!this.isInitial) this.anime();
+	},
 	methods: {
 		toggleReaction() {
-			if (this.isMe) return;
 			if (!this.canToggle) return;
 
 			const oldReaction = this.note.myReaction;
@@ -90,16 +88,17 @@ export default Vue.extend({
 			}
 		},
 		onMouseover() {
+			if (this.isHovering) return;
 			this.isHovering = true;
 			this.detailsTimeoutId = setTimeout(this.openDetails, 300);
 		},
 		onMouseleave() {
+			if (!this.isHovering) return;
 			this.isHovering = false;
 			clearTimeout(this.detailsTimeoutId);
 			this.closeDetails();
 		},
 		openDetails() {
-			if (this.$root.isMobile) return;
 			this.$root.api('notes/reactions', {
 				noteId: this.note.id,
 				type: this.reaction,

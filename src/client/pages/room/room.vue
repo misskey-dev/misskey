@@ -8,7 +8,7 @@
 		/>
 	</portal>
 
-	<div class="controller _card" v-if="objectSelected">
+	<div class="controller _card _vMargin" v-if="objectSelected">
 		<div class="_content">
 			<p class="name">{{ selectedFurnitureName }}</p>
 			<x-preview ref="preview"/>
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="menu _card" v-if="isMyRoom">
+	<div class="menu _card _vMargin" v-if="isMyRoom">
 		<div class="_content">
 			<mk-button @click="add()"><fa :icon="faBoxOpen"/> {{ $t('_rooms.addFurniture') }}</mk-button>
 		</div>
@@ -59,7 +59,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../../i18n';
 import { Room } from '../../scripts/room/room';
 import parseAcct from '../../../misc/acct/parse';
 import XPreview from './preview.vue';
@@ -74,8 +73,6 @@ import { selectFile } from '../../scripts/select-file';
 let room: Room;
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XPreview,
 		MkButton,
@@ -146,7 +143,7 @@ export default Vue.extend({
 		if (this.changed) {
 			this.$root.dialog({
 				type: 'warning',
-				text: this.$t('leave-confirm'),
+				text: this.$t('leaveConfirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) {

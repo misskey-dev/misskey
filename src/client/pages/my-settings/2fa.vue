@@ -65,7 +65,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
 import { hostname } from '../../config';
 import { byteify, hexify, stringify } from '../../scripts/2fa';
 import MkButton from '../../components/ui/button.vue';
@@ -74,7 +73,6 @@ import MkInput from '../../components/ui/input.vue';
 import MkSwitch from '../../components/ui/switch.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkButton, MkInfo, MkInput, MkSwitch
 	},

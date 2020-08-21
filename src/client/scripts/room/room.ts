@@ -516,8 +516,8 @@ export class Room {
 		if (this.isTransformMode) return;
 
 		const rect = (ev.target as HTMLElement).getBoundingClientRect();
-		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.canvas.width) * 2 - 1;
-		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.canvas.height) * 2 + 1;
+		const x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+		const y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
 		const pos = new THREE.Vector2(x, y);
 
 		this.camera.updateMatrixWorld();
@@ -553,8 +553,8 @@ export class Room {
 		if (ev.target !== this.canvas || ev.button !== 0) return;
 
 		const rect = (ev.target as HTMLElement).getBoundingClientRect();
-		const x = (((ev.clientX * window.devicePixelRatio) - rect.left) / this.canvas.width) * 2 - 1;
-		const y = -(((ev.clientY * window.devicePixelRatio) - rect.top) / this.canvas.height) * 2 + 1;
+		const x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+		const y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
 		const pos = new THREE.Vector2(x, y);
 
 		this.camera.updateMatrixWorld();

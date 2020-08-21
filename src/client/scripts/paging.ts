@@ -1,6 +1,4 @@
-import Vue from 'vue';
-import { getScrollPosition, onScrollTop } from './scroll';
-import { onBecomeVisible } from './page-visibility';
+import { onScrollTop, isTopVisible } from './scroll';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -14,8 +12,15 @@ export default (opts) => ({
 			moreFetching: false,
 			inited: false,
 			more: false,
-			backed: false,
+			backed: false, // 遡り中か否か
 			isBackTop: false,
+			ilObserver: new IntersectionObserver(
+				(entries) => entries.some((entry) => entry.isIntersecting)
+					&& !this.moreFetching
+					&& !this.fetching
+					&& this.fetchMore()
+				),
+			loadMoreElement: null as Element,
 		};
 	},
 
@@ -52,11 +57,22 @@ export default (opts) => ({
 		});
 	},
 
-	methods: {
-		updateItem(i, item) {
-			Vue.set((this as any).items, i, item);
-		},
+	mounted() {
+		this.$nextTick(() => {
+			if (this.$refs.loadMore) {
+				this.loadMoreElement = this.$refs.loadMore instanceof Element ? this.$refs.loadMore : this.$refs.loadMore.$el;
+				if (this.$store.state.device.enableInfiniteScroll) this.ilObserver.observe(this.loadMoreElement);
+				this.loadMoreElement.addEventListener('click', this.fetchMore);
+			}
+		});
+	},
 
+	beforeDestroy() {
+		this.ilObserver.disconnect();
+		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click', this.fetchMore);
+	},
+
+	methods: {
 		reload() {
 			this.items = [];
 			this.init();
@@ -73,6 +89,9 @@ export default (opts) => ({
 				...params,
 				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 			}).then(items => {
+				for (const item of items) {
+					Object.freeze(item);
+				}
 				if (!this.pagination.noPaging && (items.length > (this.pagination.limit || 10))) {
 					items.pop();
 					this.items = this.pagination.reversed ? [...items].reverse() : items;
@@ -109,6 +128,9 @@ export default (opts) => ({
 					untilId: this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
+				for (const item of items) {
+					Object.freeze(item);
+				}
 				if (items.length > SECOND_FETCH_LIMIT) {
 					items.pop();
 					this.items = this.pagination.reversed ? [...items].reverse().concat(this.items) : this.items.concat(items);
@@ -125,8 +147,7 @@ export default (opts) => ({
 		},
 
 		prepend(item) {
-			const isTop = () => this.isBackTop || (document.body.contains(this.$el) && (getScrollPosition(this.$el) === 0));
-			const isTabVisible = () => document.visibilityState === 'visible';
+			const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
 
 			if (isTop() && isTabVisible()) {
 				// Prepend the item

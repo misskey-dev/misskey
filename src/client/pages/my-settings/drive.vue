@@ -13,12 +13,9 @@ import Vue from 'vue';
 import { faCloud, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '../../components/ui/button.vue';
-import i18n from '../../i18n';
 import { selectDriveFolder } from '../../scripts/select-drive-folder';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkButton,
 	},

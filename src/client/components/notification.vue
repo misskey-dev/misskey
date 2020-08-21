@@ -1,5 +1,5 @@
 <template>
-<div class="qglefbjs" :class="notification.type" v-size="[{ max: 500 }, { max: 600 }]">
+<div class="qglefbjs" :class="notification.type" v-size="{ max: [500, 600] }">
 	<div class="head">
 		<mk-avatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else class="icon" :src="notification.icon" alt=""/>
@@ -61,13 +61,11 @@
 import Vue from 'vue';
 import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import getNoteSummary from '../../misc/get-note-summary';
+import noteSummary from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		XReactionIcon, MkFollowButton
 	},
@@ -89,12 +87,39 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			getNoteSummary,
+			getNoteSummary: (text: string) => noteSummary(text, this.$root.i18n.messages[this.$root.i18n.locale]),
 			followRequestDone: false,
 			groupInviteDone: false,
+			connection: null,
+			readObserver: null,
 			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck, faPollH
 		};
 	},
+
+	mounted() {
+		if (!this.notification.isRead) {
+			this.readObserver = new IntersectionObserver((entries, observer) => {
+				if (!entries.some(entry => entry.isIntersecting)) return;
+				this.$root.stream.send('readNotification', {
+					id: this.notification.id
+				});
+				entries.map(({ target }) => observer.unobserve(target));
+			});
+
+			this.readObserver.observe(this.$el);
+
+			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
+		}
+	},
+
+	beforeDestroy() {
+		if (!this.notification.isRead) {
+			this.readObserver.unobserve(this.$el);
+			this.connection.dispose();
+		}
+	},
+
 	methods: {
 		acceptFollowRequest() {
 			this.followRequestDone = true;

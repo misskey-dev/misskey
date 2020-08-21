@@ -1,5 +1,6 @@
+// TODO: このファイル消したい
+
 import autobind from 'autobind-decorator';
-import Vue from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
 import { apiUrl, version } from './config';
@@ -12,8 +13,6 @@ import store from './store';
  * Misskey Operating System
  */
 export default class MiOS extends EventEmitter {
-	public app: Vue;
-
 	public store: ReturnType<typeof store>;
 
 	/**

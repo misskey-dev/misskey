@@ -1,17 +1,14 @@
 <template>
-<div class="fgmtyycl _panel" :style="{ top: top + 'px', left: left + 'px' }">
+<div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
 	<mk-url-preview :url="url"/>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import MkUrlPreview from './url-preview.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkUrlPreview
 	},

@@ -1,6 +1,6 @@
 <template>
 <transition name="popup" appear @after-leave="() => { $emit('closed'); destroyDom(); }">
-	<div v-if="show" class="fxxzrfni _panel" ref="content" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
+	<div v-if="show" class="fxxzrfni _panel _shadow" ref="content" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<mk-avatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
@@ -28,13 +28,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import parseAcct from '../../misc/acct/parse';
 import MkFollowButton from './follow-button.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkFollowButton
 	},

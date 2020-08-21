@@ -3,7 +3,7 @@ import * as seedrandom from 'seedrandom';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
 import { version } from '../../config';
 import { AiScript, utils, values } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '../create-aiscript-env';
+import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
 import { initLib } from './lib';
 

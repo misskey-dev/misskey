@@ -1,19 +1,19 @@
 <template>
-<div class="mjndxjcg _panel">
-	<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-	<p><fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
-	<mk-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</mk-button>
-</div>
+<transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
+	<div class="mjndxjcg _panel">
+		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+		<p><fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
+		<mk-button @click="() => $emit('retry')" class="button">{{ $t('retry') }}</mk-button>
+	</div>
+</transition>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
 import MkButton from './ui/button.vue';
 
 export default Vue.extend({
-	i18n,
 	components: {
 		MkButton,
 	},
@@ -40,7 +40,7 @@ export default Vue.extend({
 
 	> img {
 		vertical-align: bottom;
-		height: 150px;
+		height: 128px;
 		margin-bottom: 16px;
 		border-radius: 16px;
 	}

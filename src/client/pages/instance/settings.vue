@@ -3,7 +3,7 @@
 	<portal to="icon"><fa :icon="faCog"/></portal>
 	<portal to="title">{{ $t('settings') }}</portal>
 
-	<section class="_card info">
+	<section class="_card _vMargin info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
 			<mk-input v-model="name">{{ $t('instanceName') }}</mk-input>
@@ -19,7 +19,7 @@
 		</div>
 	</section>
 
-	<section class="_card info">
+	<section class="_card _vMargin info">
 		<div class="_content">
 			<mk-input v-model="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</mk-input>
 		</div>
@@ -28,9 +28,12 @@
 			<mk-switch v-model="enableGlobalTimeline" @change="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
 			<mk-info>{{ $t('disablingTimelinesInfo') }}</mk-info>
 		</div>
+		<div class="_content">
+			<mk-switch v-model="useStarForReactionFallback" @change="save()">{{ $t('useStarForReactionFallback') }}</mk-switch>
+		</div>
 	</section>
 
-	<section class="_card info">
+	<section class="_card _vMargin info">
 		<div class="_title"><fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRegistration" @change="save()">{{ $t('enableRegistration') }}</mk-switch>
@@ -38,7 +41,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableHcaptcha" ref="enableHcaptcha">{{ $t('enableHcaptcha') }}</mk-switch>
@@ -56,7 +59,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableRecaptcha" ref="enableRecaptcha">{{ $t('enableRecaptcha') }}</mk-switch>
@@ -74,7 +77,30 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
+		<div class="_title"><fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
+		<div class="_content">
+			<mk-switch v-model="enableEmail" @change="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
+			<mk-input v-model="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</mk-input>
+			<div><b>{{ $t('smtpConfig') }}</b></div>
+			<div class="_inputs">
+				<mk-input v-model="smtpHost" :disabled="!enableEmail">{{ $t('smtpHost') }}</mk-input>
+				<mk-input v-model="smtpPort" type="number" :disabled="!enableEmail">{{ $t('smtpPort') }}</mk-input>
+			</div>
+			<div class="_inputs">
+				<mk-input v-model="smtpUser" :disabled="!enableEmail">{{ $t('smtpUser') }}</mk-input>
+				<mk-input v-model="smtpPass" type="password" :disabled="!enableEmail">{{ $t('smtpPass') }}</mk-input>
+			</div>
+			<mk-info>{{ $t('emptyToDisableSmtpAuth') }}</mk-info>
+			<mk-switch v-model="smtpSecure" :disabled="!enableEmail">{{ $t('smtpSecure') }}<template #desc>{{ $t('smtpSecureInfo') }}</template></mk-switch>
+			<div>
+				<mk-button :disabled="!enableEmail" inline @click="testEmail()">{{ $t('testEmail') }}</mk-button>
+				<mk-button :disabled="!enableEmail" primary inline @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+			</div>
+		</div>
+	</section>
+
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
 			<mk-switch v-model="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></mk-switch>
@@ -90,7 +116,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="pinnedUsers">
@@ -102,7 +128,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<mk-switch v-model="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></mk-switch>
@@ -115,7 +141,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCloud"/> {{ $t('objectStorage') }}</div>
 		<div class="_content">
 			<mk-switch v-model="useObjectStorage">{{ $t('useObjectStorage') }}</mk-switch>
@@ -135,6 +161,7 @@
 				</div>
 				<mk-switch v-model="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $t('objectStorageUseSSL') }}<template #desc>{{ $t('objectStorageUseSSLDesc') }}</template></mk-switch>
 				<mk-switch v-model="objectStorageUseProxy" :disabled="!useObjectStorage">{{ $t('objectStorageUseProxy') }}<template #desc>{{ $t('objectStorageUseProxyDesc') }}</template></mk-switch>
+				<mk-switch v-model="objectStorageSetPublicRead" :disabled="!useObjectStorage">{{ $t('objectStorageSetPublicRead') }}</mk-switch>
 			</template>
 		</div>
 		<div class="_footer">
@@ -142,7 +169,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
 			<mk-input :value="proxyAccount ? proxyAccount.username : null" style="margin: 0;" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></mk-input>
@@ -150,7 +177,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
 			<mk-textarea v-model="blockedHosts">
@@ -162,7 +189,7 @@
 		</div>
 	</section>
 
-	<section class="_card">
+	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
 			<header><fa :icon="faTwitter"/> Twitter</header>
@@ -195,12 +222,20 @@
 			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
 		</div>
 	</section>
+
+	<section class="_card _vMargin">
+		<div class="_title"><fa :icon="faArchway" /> Summaly Proxy</div>
+		<div class="_content">
+			<mk-input v-model="summalyProxy">URL</mk-input>
+			<mk-button primary @click="save(true)"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
+		</div>
+	</section>
 </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from '../../components/ui/button.vue';
@@ -210,12 +245,9 @@ import MkSwitch from '../../components/ui/switch.vue';
 import MkInfo from '../../components/ui/info.vue';
 import MkUserSelect from '../../components/user-select.vue';
 import { url } from '../../config';
-import i18n from '../../i18n';
 import getAcct from '../../../misc/acct/render';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('instance') as string
@@ -246,7 +278,9 @@ export default Vue.extend({
 			maintainerEmail: null,
 			name: null,
 			description: null,
-			tosUrl: null,
+			tosUrl: null as string | null,
+			enableEmail: false,
+			email: null,
 			bannerUrl: null,
 			iconUrl: null,
 			maxNoteTextLength: 0,
@@ -273,6 +307,7 @@ export default Vue.extend({
 			objectStorageSecretKey: null,
 			objectStorageUseSSL: false,
 			objectStorageUseProxy: false,
+			objectStorageSetPublicRead: false,
 			enableTwitterIntegration: false,
 			twitterConsumerKey: null,
 			twitterConsumerSecret: null,
@@ -282,7 +317,14 @@ export default Vue.extend({
 			enableDiscordIntegration: false,
 			discordClientId: null,
 			discordClientSecret: null,
-			faPencilAlt, faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt
+			useStarForReactionFallback: false,
+			smtpSecure: false,
+			smtpHost: '',
+			smtpPort: 0,
+			smtpUser: '',
+			smtpPass: '',
+			summalyProxy: '',
+			faPencilAlt, faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway
 		}
 	},
 
@@ -298,6 +340,8 @@ export default Vue.extend({
 		this.tosUrl = this.meta.tosUrl;
 		this.bannerUrl = this.meta.bannerUrl;
 		this.iconUrl = this.meta.iconUrl;
+		this.enableEmail = this.meta.enableEmail;
+		this.email = this.meta.email;
 		this.maintainerName = this.meta.maintainerName;
 		this.maintainerEmail = this.meta.maintainerEmail;
 		this.maxNoteTextLength = this.meta.maxNoteTextLength;
@@ -331,6 +375,7 @@ export default Vue.extend({
 		this.objectStorageSecretKey = this.meta.objectStorageSecretKey;
 		this.objectStorageUseSSL = this.meta.objectStorageUseSSL;
 		this.objectStorageUseProxy = this.meta.objectStorageUseProxy;
+		this.objectStorageSetPublicRead = this.meta.objectStorageSetPublicRead;
 		this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
 		this.twitterConsumerKey = this.meta.twitterConsumerKey;
 		this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
@@ -340,6 +385,13 @@ export default Vue.extend({
 		this.enableDiscordIntegration = this.meta.enableDiscordIntegration;
 		this.discordClientId = this.meta.discordClientId;
 		this.discordClientSecret = this.meta.discordClientSecret;
+		this.useStarForReactionFallback = this.meta.useStarForReactionFallback;
+		this.smtpSecure = this.meta.smtpSecure;
+		this.smtpHost = this.meta.smtpHost;
+		this.smtpPort = this.meta.smtpPort;
+		this.smtpUser = this.meta.smtpUser;
+		this.smtpPass = this.meta.smtpPass;
+		this.summalyProxy = this.meta.summalyProxy;
 
 		if (this.proxyAccountId) {
 			this.$root.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
@@ -415,6 +467,24 @@ export default Vue.extend({
 			});
 		},
 
+		async testEmail() {
+			this.$root.api('admin/send-email', {
+				to: this.maintainerEmail,
+				subject: 'Test email',
+				text: 'Yo'
+			}).then(x => {
+				this.$root.dialog({
+					type: 'success',
+					splash: true
+				});
+			}).catch(e => {
+				this.$root.dialog({
+					type: 'error',
+					text: e
+				});
+			});
+		},
+
 		save(withDialog = false) {
 			this.$root.api('admin/update-meta', {
 				name: this.name,
@@ -455,6 +525,7 @@ export default Vue.extend({
 				objectStorageSecretKey: this.objectStorageSecretKey ? this.objectStorageSecretKey : null,
 				objectStorageUseSSL: this.objectStorageUseSSL,
 				objectStorageUseProxy: this.objectStorageUseProxy,
+				objectStorageSetPublicRead: this.objectStorageSetPublicRead,
 				enableTwitterIntegration: this.enableTwitterIntegration,
 				twitterConsumerKey: this.twitterConsumerKey,
 				twitterConsumerSecret: this.twitterConsumerSecret,
@@ -464,6 +535,15 @@ export default Vue.extend({
 				enableDiscordIntegration: this.enableDiscordIntegration,
 				discordClientId: this.discordClientId,
 				discordClientSecret: this.discordClientSecret,
+				enableEmail: this.enableEmail,
+				email: this.email,
+				smtpSecure: this.smtpSecure,
+				smtpHost: this.smtpHost,
+				smtpPort: this.smtpPort,
+				smtpUser: this.smtpUser,
+				smtpPass: this.smtpPass,
+				summalyProxy: this.summalyProxy,
+				useStarForReactionFallback: this.useStarForReactionFallback,
 			}).then(() => {
 				this.$store.dispatch('instance/fetch');
 				if (withDialog) {

@@ -147,6 +147,17 @@ export class UserProfile {
 	})
 	public integrations: Record<string, any>;
 
+	@Index()
+	@Column('boolean', {
+		default: false, select: false,
+	})
+	public enableWordMute: boolean;
+
+	@Column('jsonb', {
+		default: []
+	})
+	public mutedWords: string[][];
+
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {
