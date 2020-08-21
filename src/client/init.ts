@@ -158,8 +158,8 @@ app.component('fa', FontAwesomeIcon);
 
 //#region Init i18n
 const locale = await count(clientDb.i18n).then(async n => {
-	if (n === 0) return await setI18nContexts(lang, version, i18n);
-	if ((await get('_version_', clientDb.i18n) !== version)) return await setI18nContexts(lang, version, i18n, true);
+	if (n === 0) return await setI18nContexts(lang, version);
+	if ((await get('_version_', clientDb.i18n) !== version)) return await setI18nContexts(lang, version, true);
 
 	return await getLocale();
 });
