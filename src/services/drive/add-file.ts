@@ -160,6 +160,14 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		}
 	}
 
+	if (!['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+		logger.debug(`web image and thumbnail not created (not an required file)`);
+		return {
+			webpublic: null,
+			thumbnail: null
+		};
+	}
+
 	const img = sharp(path);
 	const metadata = await img.metadata();
 	const isAnimated = metadata.pages && metadata.pages > 1;
