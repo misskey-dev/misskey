@@ -1,5 +1,5 @@
 <template>
-<div class="kjeftjfm" v-size="[{ max: 500 }]">
+<div class="kjeftjfm" v-size="{ max: [500] }">
 	<div class="with">
 		<button class="_button" @click="with_ = null" :class="{ active: with_ === null }">{{ $t('notes') }}</button>
 		<button class="_button" @click="with_ = 'replies'" :class="{ active: with_ === 'replies' }">{{ $t('notesAndReplies') }}</button>

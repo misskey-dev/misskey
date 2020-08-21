@@ -145,6 +145,7 @@ export class DriveFile {
 	@JoinColumn()
 	public folder: DriveFolder | null;
 
+	@Index()
 	@Column('boolean', {
 		default: false,
 		comment: 'Whether the DriveFile is NSFW.'

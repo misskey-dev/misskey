@@ -1,22 +1,22 @@
 <template>
 <div v-if="$store.getters.isSignedIn">
-	<div class="waiting _card" v-if="state == 'waiting'">
+	<div class="waiting _card _vMargin" v-if="state == 'waiting'">
 		<div class="_content">
 			<mk-loading/>
 		</div>
 	</div>
-	<div class="denied _card" v-if="state == 'denied'">
+	<div class="denied _card _vMargin" v-if="state == 'denied'">
 		<div class="_content">
 			<p>{{ $t('_auth.denied') }}</p>
 		</div>
 	</div>
-	<div class="accepted _card" v-else-if="state == 'accepted'">
+	<div class="accepted _card _vMargin" v-else-if="state == 'accepted'">
 		<div class="_content">
 			<p v-if="callback">{{ $t('_auth.callback') }}<mk-ellipsis/></p>
 			<p v-else>{{ $t('_auth.pleaseGoBack') }}</p>
 		</div>
 	</div>
-	<div class="_card" v-else>
+	<div class="_card _vMargin" v-else>
 		<div class="_title" v-if="name">{{ $t('_auth.shareAccess', { name: name }) }}</div>
 		<div class="_title" v-else>{{ $t('_auth.shareAccessAsk') }}</div>
 		<div class="_content">

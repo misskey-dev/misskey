@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging" v-size="[{ max: 400 }]">
+<div class="mk-messaging" v-size="{ max: [400] }">
 	<portal to="icon"><fa :icon="faComments"/></portal>
 	<portal to="title">{{ $t('messaging') }}</portal>
 

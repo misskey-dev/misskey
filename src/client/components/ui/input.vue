@@ -64,7 +64,7 @@
 		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
 	</div>
 	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
-	<div class="desc"><slot name="desc"></slot></div>
+	<div class="desc _caption"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -401,13 +401,11 @@ export default Vue.extend({
 
 	> .save {
 		margin: 6px 0 0 0;
-		font-size: 13px;
+		font-size: 0.8em;
 	}
 
 	> .desc {
 		margin: 6px 0 0 0;
-		font-size: 13px;
-		opacity: 0.7;
 
 		&:empty {
 			display: none;
