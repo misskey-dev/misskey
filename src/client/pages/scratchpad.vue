@@ -4,7 +4,7 @@
 	<portal to="title">{{ $t('scratchpad') }}</portal>
 
 	<div class="_panel">
-		<prism-editor v-model="code" :line-numbers="false" language="js"/>
+		<prism-editor class="_code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
 		<mk-button style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><fa :icon="faPlay"/></mk-button>
 	</div>
 
@@ -24,9 +24,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faTerminal, faPlay } from '@fortawesome/free-solid-svg-icons';
-import "prismjs";
+import 'prismjs';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
-import PrismEditor from 'vue-prism-editor';
+import { PrismEditor } from 'vue-prism-editor';
+import 'vue-prism-editor/dist/prismeditor.min.css';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
 import MkContainer from '../components/ui/container.vue';
 import MkButton from '../components/ui/button.vue';
@@ -119,7 +123,11 @@ export default Vue.extend({
 					text: e
 				});
 			}
-		}
+		},
+
+		highlighter(code) {
+			return highlight(code, languages.js, 'javascript');
+		},
 	}
 });
 </script>
