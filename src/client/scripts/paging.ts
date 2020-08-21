@@ -1,4 +1,5 @@
 import { onScrollTop, isTopVisible } from './scroll';
+import { onBecomeVisible } from './page-visibility';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -148,6 +149,7 @@ export default (opts) => ({
 
 		prepend(item) {
 			const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
+			const isTabVisible = () => document.visibilityState === 'visible';
 
 			if (isTop() && isTabVisible()) {
 				// Prepend the item
