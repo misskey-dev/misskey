@@ -1165,7 +1165,6 @@ _notification:
     renote: "Renote"
     quote: "인용"
     reaction: "리액션"
-    receiveFollowRequest: "팔로우 요청"
 _deck:
   alwaysShowMainColumn: "메인 칼럼 항상 표시"
   columnAlign: "칼럼 정렬"
