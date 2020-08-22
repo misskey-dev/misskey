@@ -576,8 +576,8 @@ _channel:
   setBanner: "Set banner"
   removeBanner: "Remove banner"
   featured: "Trending"
-  owned: "Owner"
-  following: "Following"
+  owned: "Owned"
+  following: "Followed"
   usersCount: "{n} Participants"
   notesCount: "{n} Notes"
 _sidebar:
