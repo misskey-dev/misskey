@@ -21,6 +21,11 @@ export type FormItem = {
 	default: string | null;
 	hidden?: boolean;
 	enum: string[];
+} | {
+	label?: string;
+	type: 'array';
+	default: unknown[] | null;
+	hidden?: boolean;
 };
 
 export type Form = Record<string, FormItem>;

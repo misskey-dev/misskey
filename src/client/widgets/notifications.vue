@@ -26,6 +26,11 @@ export default define({
 			type: 'number',
 			default: 300,
 		},
+		includingTypes: {
+			type: 'array',
+			hidden: true,
+			default: null,
+		},
 	})
 }).extend({
 	components: {
@@ -37,14 +42,6 @@ export default define({
 		return {
 			faBell, faCog
 		};
-	},
-
-	created() {
-		// しないと初期設定から変更したときに限りリロードされない
-		if (this.props.includingTypes === undefined) {
-			this.$set(this.props, 'includingTypes', null);
-			this.save();
-		}
 	},
 
 	methods: {
