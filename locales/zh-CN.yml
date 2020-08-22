@@ -1244,8 +1244,6 @@ _notification:
     renote: "转发"
     quote: "引用"
     reaction: "回应"
-    pollVote: "投票"
-    receiveFollowRequest: "关注请求"
 _deck:
   alwaysShowMainColumn: "总是显示主列"
   columnAlign: "列对齐"
