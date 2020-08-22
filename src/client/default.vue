@@ -267,7 +267,10 @@ export default defineComponent({
 			if (!this.isDesktop) return;
 			if (this.$store.state.device.fixedWidgetsPosition) return;
 
-			const stickyWidgetColumns = this.$refs.widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
+			// NOTE: Vue3の仕様かどうか知らんけど this.$refs.widgets が要素が一つしかない場合に配列ではないので配列にする
+			const widgets = Array.isArray(this.$refs.widgets) ? this.$refs.widgets : [this.$refs.widgets];
+
+			const stickyWidgetColumns = widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
 			window.addEventListener('scroll', () => {
 				for (const stickyWidgetColumn of stickyWidgetColumns) {
 					stickyWidgetColumn.calc(window.scrollY);
