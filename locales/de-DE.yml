@@ -1244,8 +1244,6 @@ _notification:
     renote: "Renote"
     quote: "Zitieren"
     reaction: "Reaktionen"
-    pollVote: "Umfragen"
-    receiveFollowRequest: "Follow-Anfragen"
 _deck:
   alwaysShowMainColumn: "Hauptspalte immer zeigen"
   columnAlign: "Spalten ausrichten"
