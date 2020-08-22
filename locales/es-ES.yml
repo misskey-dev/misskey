@@ -566,6 +566,7 @@ delayed: "atrasado"
 database: "Base de datos"
 channel: "Canal"
 create: "Crear"
+notificationSetting: "Ajustes de Notificaciones"
 _serverDisconnectedBehavior:
   reload: "Recargar automáticamente"
   dialog: "Mostrar diálogo de advertencia"
