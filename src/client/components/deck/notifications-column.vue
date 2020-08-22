@@ -38,11 +38,6 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.column.notificationType == null) {
-			this.column.notificationType = 'all';
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
-		}
-
 		this.menu = [{
 			icon: faCog,
 			text: this.$t('notificationSetting'),
