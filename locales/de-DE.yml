@@ -580,8 +580,8 @@ _channel:
   setBanner: "Kanalbanner festlegen"
   removeBanner: "Kanalbanner entfernen"
   featured: "Trends"
-  owned: "Besitzer"
-  following: "Folgt"
+  owned: "Besitzt"
+  following: "Gefolgt"
   usersCount: "{n} Teilnehmer"
   notesCount: "{n} Notizen"
 _sidebar:
