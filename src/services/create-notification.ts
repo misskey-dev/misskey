@@ -1,6 +1,6 @@
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
-import { Notifications, Mutings } from '../models';
+import { Notifications, Mutings, UserProfiles } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
 import { Notification } from '../models/entities/notification';
@@ -14,13 +14,18 @@ export async function createNotification(
 		return null;
 	}
 
+	const profile = await UserProfiles.findOne({ userId: notifieeId });
+
+	const isMuted = !profile?.includingNotificationTypes?.includes(type);
+
 	// Create notification
 	const notification = await Notifications.save({
 		id: genId(),
 		createdAt: new Date(),
 		notifieeId: notifieeId,
 		type: type,
-		isRead: false,
+		// 相手がこの通知をミュートしているようなら、既読を予めつけておく
+		isRead: isMuted,
 		...data
 	} as Partial<Notification>);
 
