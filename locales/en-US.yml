@@ -1244,8 +1244,6 @@ _notification:
     renote: "Renote"
     quote: "Quote"
     reaction: "Reaction"
-    pollVote: "Polls"
-    receiveFollowRequest: "Follow requests"
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
