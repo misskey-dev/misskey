@@ -76,7 +76,7 @@
 	<mk-container :body-togglable="true" :expanded="true">
 		<template #header><fa :icon="faCode"/> {{ $t('script') }}</template>
 		<div>
-			<prism-editor v-model="script" :line-numbers="false" language="js"/>
+			<prism-editor class="_code" v-model="script" :highlight="highlighter" :line-numbers="false"/>
 		</div>
 	</mk-container>
 </div>
@@ -85,9 +85,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as XDraggable from 'vuedraggable';
-import "prismjs";
+import 'prismjs';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
-import PrismEditor from 'vue-prism-editor';
+import { PrismEditor } from 'vue-prism-editor';
+import 'vue-prism-editor/dist/prismeditor.min.css';
 import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
@@ -416,7 +420,11 @@ export default Vue.extend({
 
 		removeEyeCatchingImage() {
 			this.eyeCatchingImageId = null;
-		}
+		},
+
+		highlighter(code) {
+			return highlight(code, languages.js, 'javascript');
+		},
 	}
 });
 </script>

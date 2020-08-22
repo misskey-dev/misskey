@@ -448,6 +448,19 @@ hr {
 	opacity: 0.7;
 }
 
+._code {
+	background: #2d2d2d;
+	color: #ccc;
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+	font-size: 14px;
+	line-height: 1.5;
+	padding: 5px;
+}
+
+.prism-editor__textarea:focus {
+	outline: none;
+}
+
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }

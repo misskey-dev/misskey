@@ -160,12 +160,30 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 		}
 	}
 
-	const img = sharp(path);
-	const metadata = await img.metadata();
-	const isAnimated = metadata.pages && metadata.pages > 1;
+	if (!['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+		logger.debug(`web image and thumbnail not created (not an required file)`);
+		return {
+			webpublic: null,
+			thumbnail: null
+		};
+	}
 
-	// skip animated
-	if (isAnimated) {
+	let img: sharp.Sharp | null = null;
+
+	try {
+		img = sharp(path);
+		const metadata = await img.metadata();
+		const isAnimated = metadata.pages && metadata.pages > 1;
+
+		// skip animated
+		if (isAnimated) {
+			return {
+				webpublic: null,
+				thumbnail: null
+			};
+		}
+	} catch (e) {
+		logger.warn(`sharp failed: ${e}`);
 		return {
 			webpublic: null,
 			thumbnail: null
