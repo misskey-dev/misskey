@@ -2,6 +2,7 @@ import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'type
 import { id } from '../id';
 import { User } from './user';
 import { Page } from './page';
+import { notificationTypes } from '../../types';
 
 @Entity()
 export class UserProfile {
@@ -157,6 +158,13 @@ export class UserProfile {
 		default: []
 	})
 	public mutedWords: string[][];
+
+	@Column('enum', {
+		enum: notificationTypes,
+		array: true,
+		nullable: true,
+	})
+	public includingNotificationTypes: typeof notificationTypes[number][] | null;
 
 	//#region Denormalized fields
 	@Index()
