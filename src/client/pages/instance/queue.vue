@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faExchangeAlt"/></portal>
-	<portal to="title">{{ $t('jobQueue') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faExchangeAlt"/>{{ $t('jobQueue') }}</teleport>
 
 	<x-queue :connection="connection" domain="inbox">
 		<template #title><fa :icon="faExchangeAlt"/> In</template>

@@ -10,13 +10,7 @@
 
 		<template #header>
 			<div class="iwnjqeul">
-				<div class="default">
-					<portal-target name="avatar" slim/>
-					<span class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></span>
-				</div>
-				<div class="custom">
-					<portal-target name="header" slim/>
-				</div>
+				<div class="body" id="_teleport_header"></div>
 			</div>
 		</template>
 

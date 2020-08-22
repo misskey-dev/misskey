@@ -1,13 +1,13 @@
 <template>
 <div class="full">
-	<portal to="header">
+	<teleport to="#_teleport_header">
 		<button @click="menu" class="_button _jmoebdiw_">
 			<fa :icon="faCloud" style="margin-right: 8px;"/>
 			<span v-if="folder">{{ $t('drive') }} ({{ folder.name }})</span>
 			<span v-else>{{ $t('drive') }}</span>
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
-	</portal>
+	</teleport>
 	<x-drive ref="drive" @cd="x => folder = x"/>
 </div>
 </template>

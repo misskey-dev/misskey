@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faSearch"/></portal>
-	<portal to="title">{{ $t('searchWith', { q: $route.query.q }) }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faSearch"/>{{ $t('searchWith', { q: $route.query.q }) }}</teleport>
 	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>

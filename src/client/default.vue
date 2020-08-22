@@ -6,15 +6,7 @@
 				<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
 			</transition>
 			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-				<div class="body" :key="pageKey">
-					<div class="default">
-						<portal-target name="avatar" slim/>
-						<h1 class="title"><portal-target name="icon" slim/><portal-target name="title" slim/></h1>
-					</div>
-					<div class="custom">
-						<portal-target name="header" slim/>
-					</div>
-				</div>
+				<div class="body" :key="pageKey" id="_teleport_header"></div>
 			</transition>
 		</div>
 		<div class="sub">

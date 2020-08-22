@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faEnvelope"/></portal>
-	<portal to="title">{{ $t('directNotes') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faEnvelope"/>{{ $t('directNotes') }}</teleport>
 	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
 </div>
 </template>

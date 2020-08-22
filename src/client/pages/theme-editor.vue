@@ -1,7 +1,6 @@
 <template>
 <div class="t9makv94">
-	<portal to="icon"><fa :icon="faPalette"/></portal>
-	<portal to="title">{{ $t('themeEditor') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faPalette"/>{{ $t('themeEditor') }}</teleport>
 
 	<section class="_card">
 		<div class="_content">

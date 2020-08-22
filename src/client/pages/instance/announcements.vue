@@ -1,7 +1,6 @@
 <template>
 <div class="ztgjmzrw">
-	<portal to="icon"><fa :icon="faBroadcastTower"/></portal>
-	<portal to="title">{{ $t('announcements') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</teleport>
 	<mk-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 	<section class="_card announcements">
 		<div class="_content announcement" v-for="announcement in announcements">

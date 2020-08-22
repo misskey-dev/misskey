@@ -1,6 +1,6 @@
 <template>
 <div v-if="meta" class="mk-welcome">
-	<portal to="title">{{ instanceName }}</portal>
+	<teleport to="#_teleport_header">{{ instanceName }}</teleport>
 	<x-setup v-if="meta.requireSetup"/>
 	<x-entrance v-else/>
 </div>

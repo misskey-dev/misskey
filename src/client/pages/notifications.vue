@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faBell"/></portal>
-	<portal to="title">{{ $t('notifications') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faBell"/>{{ $t('notifications') }}</teleport>
 	<x-notifications @before="before" @after="after" page/>
 </div>
 </template>

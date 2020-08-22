@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faHashtag"/></portal>
-	<portal to="title">{{ $t('explore') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faHashtag"/>{{ $t('explore') }}</teleport>
 
 	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>

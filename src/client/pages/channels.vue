@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
-	<portal to="title">{{ $t('channel') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faSatelliteDish"/>{{ $t('channel') }}</teleport>
 
 	<mk-tab v-model="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 

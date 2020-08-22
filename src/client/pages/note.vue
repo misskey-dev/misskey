@@ -1,12 +1,12 @@
 <template>
 <div class="mk-note-page">
-	<portal to="avatar" v-if="note"><mk-avatar class="avatar" :user="note.user" :disable-preview="true"/></portal>
-	<portal to="title" v-if="note">
+	<teleport to="#_teleport_header" v-if="note">
+		<mk-avatar class="avatar" :user="note.user" :disable-preview="true"/>
 		<mfm 
 			:text="$t('noteOf', { user: note.user.name || note.user.username })"
 			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
 		/>
-	</portal>
+	</teleport>
 
 	<div v-if="note">
 		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></button>

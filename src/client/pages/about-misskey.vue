@@ -1,6 +1,6 @@
 <template>
 <div class="znqjceqz">
-	<portal to="title">{{ $t('aboutMisskey') }}</portal>
+	<teleport to="#_teleport_header">{{ $t('aboutMisskey') }}</teleport>
 
 	<section class="_card">
 		<div class="_title">{{ $t('aboutMisskey') }}</div>

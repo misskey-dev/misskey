@@ -1,7 +1,6 @@
 <template>
 <div class="mk-instance-users">
-	<portal to="icon"><fa :icon="faUsers"/></portal>
-	<portal to="title">{{ $t('users') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faUsers"/>{{ $t('users') }}</teleport>
 
 	<section class="_card _vMargin lookup">
 		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>

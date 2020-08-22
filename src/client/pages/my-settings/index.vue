@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faCog"/></portal>
-	<portal to="title">{{ $t('accountSettings') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faCog"/>{{ $t('accountSettings') }}</teleport>
 
 	<x-profile-setting class="_vMargin"/>
 	<x-privacy-setting class="_vMargin"/>

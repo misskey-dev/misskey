@@ -1,7 +1,6 @@
 <template>
 <div class="mmnnbwxb">
-	<portal to="icon"><fa :icon="faInfoCircle"/></portal>
-	<portal to="title">{{ $t('about') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faInfoCircle"/>{{ $t('about') }}</teleport>
 
 	<section class="_card info" v-if="meta">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>

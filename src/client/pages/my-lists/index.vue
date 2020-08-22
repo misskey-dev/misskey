@@ -1,7 +1,6 @@
 <template>
 <div class="qkcjvfiv">
-	<portal to="icon"><fa :icon="faListUl"/></portal>
-	<portal to="title">{{ $t('manageLists') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faListUl"/>{{ $t('manageLists') }}</teleport>
 
 	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createList') }}</mk-button>
 

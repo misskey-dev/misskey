@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faPlug"/></portal>
-	<portal to="title">{{ $t('installedApps') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faPlug"/>{{ $t('installedApps') }}</teleport>
 
 	<mk-pagination :pagination="pagination" class="bfomjevm" ref="list">
 		<template #empty>

@@ -1,7 +1,6 @@
 <template>
 <div class="vrcsvlkm" v-if="user && info">
-	<portal to="title" v-if="user"><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
-	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
+	<teleport to="#_teleport_header" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></teleport>
 
 	<section class="_card">
 		<div class="_title">

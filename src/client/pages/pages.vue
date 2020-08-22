@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faStickyNote"/></portal>
-	<portal to="title">{{ $t('pages') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faStickyNote"/>{{ $t('pages') }}</teleport>
 
 	<mk-tab v-model="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
 

@@ -1,7 +1,6 @@
 <template>
 <div class="relaycxt">
-	<portal to="icon"><fa :icon="faProjectDiagram"/></portal>
-	<portal to="title">{{ $t('relays') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faProjectDiagram"/>{{ $t('relays') }}</teleport>
 
 	<section class="_card _vMargin add">
 		<div class="_title"><fa :icon="faPlus"/> {{ $t('addRelay') }}</div>

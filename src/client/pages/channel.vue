@@ -1,7 +1,6 @@
 <template>
 <div v-if="channel">
-	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
-	<portal to="title">{{ channel.name }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faSatelliteDish"/>{{ channel.name }}</teleport>
 
 	<div class="wpgynlbz _panel _vMargin" :class="{ hide: !showBanner }">
 		<x-channel-follow-button :channel="channel" :full="true" class="subscribe"/>

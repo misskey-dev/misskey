@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faCog"/></portal>
-	<portal to="title">{{ $t('clinetSettings') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faCog"/>{{ $t('clinetSettings') }}</teleport>
 
 	<router-link v-if="$store.getters.isSignedIn" class="_panel _buttonPrimary" to="/my/settings" style="margin-bottom: var(--margin);">{{ $t('accountSettings') }}</router-link>
 

@@ -1,7 +1,6 @@
 <template>
 <div class="">
-	<portal to="icon"><fa :icon="faUsers"/></portal>
-	<portal to="title">{{ $t('groups') }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faUsers"/>{{ $t('groups') }}</teleport>
 
 	<mk-button @click="create" primary style="margin: 0 auto var(--margin) auto;"><fa :icon="faPlus"/> {{ $t('createGroup') }}</mk-button>
 

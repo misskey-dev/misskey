@@ -1,7 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faFileAlt"/></portal>
-	<portal to="title">{{ title }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faFileAlt"/>{{ title }}</teleport>
 	<main class="_card">
 		<div class="_title"><fa :icon="faFileAlt"/> {{ title }}</div>
 		<div class="_content">

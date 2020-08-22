@@ -1,7 +1,6 @@
 <template>
 <div class="mk-list-page">
-	<portal to="icon"><fa :icon="faListUl"/></portal>
-	<portal to="title">{{ list.name }}</portal>
+	<teleport to="#_teleport_header"><fa :icon="faListUl"/>{{ list.name }}</teleport>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_card _vMargin">
