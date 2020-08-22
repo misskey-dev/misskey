@@ -34,7 +34,7 @@ export default Vue.extend({
 
 	props: {
 		includingTypes: {
-			// todo これで型に合わないものを弾いてくれるのかどうか要調査
+			//  これで型に合わないものを弾いてくれるのかどうか要調査
 			type: Array as PropType<typeof notificationTypes[number][]>,
 			required: false,
 			default: null,
