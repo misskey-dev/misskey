@@ -2,7 +2,7 @@
 <x-column :column="column" :is-stacked="isStacked" :menu="menu">
 	<template #header><fa :icon="faBell" style="margin-right: 8px;"/>{{ column.name }}</template>
 
-	<x-notifications/>
+	<x-notifications :include-types="column.includingTypes"/>
 </x-column>
 </template>
 
@@ -38,28 +38,14 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.column.notificationType == null) {
-			this.column.notificationType = 'all';
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
-		}
-
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('notificationType'),
-			action: () => {
-				this.$root.dialog({
-					title: this.$t('notificationType'),
-					type: null,
-					select: {
-						items: ['all', 'follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'receiveFollowRequest'].map(x => ({
-							value: x, text: this.$t(`_notification._types.${x}`)
-						}))
-						default: this.column.notificationType,
-					},
-					showCancelButton: true
-				}).then(({ canceled, result: type }) => {
-					if (canceled) return;
-					this.column.notificationType = type;
+			text: this.$t('notificationSetting'),
+			action: async () => {
+				this.$root.new(await import('../notification-setting-window.vue').then(m => m.default), {
+					includingTypes: this.column.includingTypes,
+				}).$on('ok', async ({ includingTypes }) => {
+					this.$set(this.column, 'includingTypes', includingTypes);
 					this.$store.commit('deviceUser/updateDeckColumn', this.column);
 				});
 			}

@@ -155,6 +155,11 @@ export default defineComponent({
 		},
 
 		async onNotification(notification) {
+			const t = this.$store.state.i.includingNotificationTypes;
+			if (!!t && !t.includes(notification.type)) {
+				return;
+			}
+
 			if (document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
 					id: notification.id
@@ -164,7 +169,6 @@ export default defineComponent({
 					notification
 				});
 			}
-
 			this.$root.sound('notification');
 		},
 

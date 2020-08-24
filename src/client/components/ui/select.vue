@@ -13,7 +13,11 @@
 		>
 			<slot></slot>
 		</select>
-		<div class="suffix"><slot name="suffix"></slot></div>
+		<div class="suffix">
+			<slot name="suffix">
+				<fa :icon="faChevronDown"/>
+			</slot>
+		</div>
 	</div>
 	<div class="text"><slot name="text"></slot></div>
 </div>
@@ -21,6 +25,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -43,7 +48,8 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			focused: false
+			focused: false,
+			faChevronDown,
 		};
 	},
 	computed: {
@@ -157,6 +163,8 @@ export default defineComponent({
 			border-radius: 0;
 			outline: none;
 			box-shadow: none;
+			appearance: none;
+			-webkit-appearance: none;
 			color: var(--fg);
 
 			option,
@@ -172,7 +180,7 @@ export default defineComponent({
 			justify-self: center;
 			font-size: 1em;
 			line-height: 32px;
-			color: rgba(#000, 0.54);
+			color: var(--inputLabel);
 			pointer-events: none;
 
 			&:empty {

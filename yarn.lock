@@ -1914,21 +1914,21 @@ builtin-modules@^1.1.1:
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
   integrity sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8=
 
-bull@3.16.0:
-  version "3.16.0"
-  resolved "https://registry.yarnpkg.com/bull/-/bull-3.16.0.tgz#adabb8404ebecedfbe4f3b9b2163e249de1915ff"
-  integrity sha512-5RAeKPJwhzuk5y4TL5ys+mX1p1r8TOKUF537c2VFVqg0Z+Y2zL1gXfgk0OAlIhD+9E/q3BgRvN96AxUz6nfBDA==
+bull@3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/bull/-/bull-3.18.0.tgz#7d7730c8ab0975ea9ee4e74f6f85bd731c3526cb"
+  integrity sha512-nE/BKlg1dnJ/AcOy5D1nzthcmpAKqpUVXzQ43mJfnVC8ZM7mi4ZzP3spN7745UuikzmGGsbTe9px2TbEKhR+DQ==
   dependencies:
     cron-parser "^2.13.0"
     debuglog "^1.0.0"
     get-port "^5.1.1"
     ioredis "^4.14.1"
-    lodash "^4.17.15"
+    lodash "^4.17.19"
     p-timeout "^3.2.0"
     promise.prototype.finally "^3.1.2"
-    semver "^6.3.0"
+    semver "^7.3.2"
     util.promisify "^1.0.1"
-    uuid "^8.2.0"
+    uuid "^8.3.0"
 
 busboy@^0.2.11:
   version "0.2.14"
@@ -2506,16 +2506,6 @@ component-emitter@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.3.0.tgz#16e4070fba8ae29b679f2215853ee181ab2eabc0"
   integrity sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==
-
-component-props@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/component-props/-/component-props-1.1.1.tgz#f9b7df9b9927b6e6d97c9bd272aa867670f34944"
-  integrity sha1-+bffm5kntubZfJvScqqGdnDzSUQ=
-
-component-xor@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/component-xor/-/component-xor-0.0.4.tgz#c55d83ccc1b94cd5089a4e93fa7891c7263e59aa"
-  integrity sha1-xV2DzMG5TNUImk6T+niRxyY+Wao=
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -3164,14 +3154,6 @@ doctypes@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/doctypes/-/doctypes-1.1.0.tgz#ea80b106a87538774e8a3a4a5afe293de489e0a9"
   integrity sha1-6oCxBqh1OHdOijpKWv4pPeSJ4Kk=
-
-dom-iterator@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/dom-iterator/-/dom-iterator-1.0.0.tgz#9c09899846ec41c2d257adc4d6015e4759ef05ad"
-  integrity sha512-7dsMOQI07EMU98gQM8NSB3GsAiIeBYIPKpnxR3c9xOvdvBjChAcOM0iJ222I3p5xyiZO9e5oggkNaCusuTdYig==
-  dependencies:
-    component-props "1.1.1"
-    component-xor "0.0.4"
 
 dom-serializer@0:
   version "0.2.2"
@@ -5346,10 +5328,10 @@ jschardet@^2.1.0:
   resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-2.1.1.tgz#af6f8fd0b3b0f5d46a8fd9614a4fce490575c184"
   integrity sha512-pA5qG9Zwm8CBpGlK/lo2GE9jPxwqRgMV7Lzc/1iaPccw6v4Rhj8Zg2BTyrdmHmxlJojnbLupLeRnaPLsq03x6Q==
 
-jsdom@16.3.0:
-  version "16.3.0"
-  resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-16.3.0.tgz#75690b7dac36c67be49c336dcd7219bbbed0810c"
-  integrity sha512-zggeX5UuEknpdZzv15+MS1dPYG0J/TftiiNunOeNxSl3qr8Z6cIlQpN0IdJa44z9aFxZRIVqRncvEhQ7X5DtZg==
+jsdom@16.4.0:
+  version "16.4.0"
+  resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-16.4.0.tgz#36005bde2d136f73eee1a830c6d45e55408edddb"
+  integrity sha512-lYMm3wYdgPhrl7pDcRmvzPhhrGVBeVhPIqeHjzeiHN3DFmD1RBpbExbi8vU7BJdH8VAZYovR8DMt0PNNDM7k8w==
   dependencies:
     abab "^2.0.3"
     acorn "^7.1.1"
@@ -7103,10 +7085,10 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/pg/-/pg-8.3.0.tgz#941383300d38eef51ecb88a0188cec441ab64d81"
-  integrity sha512-jQPKWHWxbI09s/Z9aUvoTbvGgoj98AU7FDCcQ7kdejupn/TcNpx56v2gaOTzXkzOajmOEJEdi9eTh9cA2RVAjQ==
+pg@8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-8.3.2.tgz#52766e41302f5b878fe1efa10d4cdd486f6dff50"
+  integrity sha512-hOoRCTriXS+VWwyXHchRjWb9yv3Koq8irlwwXniqhdgK0AbfWvEnybGS2HIUE+UdCSTuYAM4WGPujFpPg9Vcaw==
   dependencies:
     buffer-writer "2.0.0"
     packet-reader "1.0.0"
@@ -7191,6 +7173,11 @@ pngjs@^3.3.0, pngjs@^3.3.1:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
   integrity sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==
+
+portal-vue@2.1.7:
+  version "2.1.7"
+  resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.7.tgz#ea08069b25b640ca08a5b86f67c612f15f4e4ad4"
+  integrity sha512-+yCno2oB3xA7irTt0EU5Ezw22L2J51uKAacE/6hMPMoO/mx3h4rXFkkBkT4GFsMDv/vEe8TNKC3ujJJ0PTwb6g==
 
 portscanner@2.2.0:
   version "2.2.0"
@@ -7884,10 +7871,10 @@ punycode@^1.4.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
   integrity sha1-wNWmOycYgArY4esPpSachN1BhF4=
 
-pureimage@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/pureimage/-/pureimage-0.2.4.tgz#7084e6de202beea1b2a4723545efce19266f5cfb"
-  integrity sha512-8/KkBM3nkUixfjFNw59UQJJ2HFIfiBgL3Cwxtrc9ObVe8yjcUfc/8ZCG0tbQ0qVjnlsCMq6binBueYbIlCb4qA==
+pureimage@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/pureimage/-/pureimage-0.2.5.tgz#10c9d314bcdfba712229ec70c3849164f537c248"
+  integrity sha512-D/oP8uaS8HLIOPqaxeVU0ZcJHUwvvFjeclKwn0RBeZJn3TBtZgKn7FVBN5auuCHQTC4K/wDAHfkY/JOuGCiohQ==
   dependencies:
     jpeg-js "^0.4.1"
     opentype.js "^0.4.3"
@@ -9269,10 +9256,10 @@ syslog-pro@1.0.0:
   dependencies:
     moment "^2.22.2"
 
-systeminformation@4.26.10:
-  version "4.26.10"
-  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-4.26.10.tgz#2244e7529ca9e7b8ecd6941e19fe7df7e3da9146"
-  integrity sha512-bO4FIzrjESAfh4KHwkUJym3jvKtJ4oJ2PG0BBQGBmKa0pF2oanpkB7CF4ZsSX7vfp3+GKaLzioVwpV/3Tyk+lQ==
+systeminformation@4.26.12:
+  version "4.26.12"
+  resolved "https://registry.yarnpkg.com/systeminformation/-/systeminformation-4.26.12.tgz#0c6d2c47832b42874dfd5d470d702d7fb5931fa6"
+  integrity sha512-rO39KsLPxK1UY/s3cgBZz8KUDN7dDgahcgFT2AJaKedo6uKgYHQPdgvhehqNsG+sGBHMUmBwtRUJWgyquEoBHw==
 
 syuilo-password-strength@0.0.1:
   version "0.0.1"
@@ -9587,10 +9574,10 @@ ts-loader@8.0.2:
     micromatch "^4.0.0"
     semver "^6.0.0"
 
-ts-node@8.10.2:
-  version "8.10.2"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.10.2.tgz#eee03764633b1234ddd37f8db9ec10b75ec7fb8d"
-  integrity sha512-ISJJGgkIpDdBhWVu3jufsWpK3Rzo7bdiIXJjQc0ynKxVOVcg2oIrf2H2cejminGrptVc6q6/uynAHNCuWGbpVA==
+ts-node@9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-9.0.0.tgz#e7699d2a110cc8c0d3b831715e417688683460b3"
+  integrity sha512-/TqB4SnererCDR/vb4S/QvSZvzQMJN8daAslg7MeaiHvD8rDZsSfXmNeNumyZZzMned72Xoq/isQljYSt8Ynfg==
   dependencies:
     arg "^4.1.0"
     diff "^4.0.1"
@@ -9745,10 +9732,10 @@ typeorm@0.2.25:
     yargonaut "^1.1.2"
     yargs "^13.2.1"
 
-typescript@3.9.7:
-  version "3.9.7"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
-  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+typescript@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.2.tgz#7ea7c88777c723c681e33bf7988be5d008d05ac2"
+  integrity sha512-e4ERvRV2wb+rRZ/IQeb3jm2VxBsirQLpQhdxplZ2MEzGvDkkMmPglecnNDfSUBivMjP93vRbngYYDQqQ/78bcQ==
 
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"
@@ -9806,13 +9793,6 @@ undertaker@^1.2.1:
     object.defaults "^1.0.0"
     object.reduce "^1.0.0"
     undertaker-registry "^1.0.0"
-
-unescape@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/unescape/-/unescape-1.0.1.tgz#956e430f61cad8a4d57d82c518f5e6cc5d0dda96"
-  integrity sha512-O0+af1Gs50lyH1nUu3ZyYS1cRh01Q/kUKatTOkSs7jukXE6/NebucDVxyiDsA9AQ4JC1V1jUH9EO8JX2nMDgGQ==
-  dependencies:
-    extend-shallow "^2.0.1"
 
 union-value@^1.0.0:
   version "1.0.1"
@@ -9943,7 +9923,7 @@ uuid@7.0.3:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
-uuid@8.3.0, uuid@^8.2.0:
+uuid@8.3.0, uuid@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
   integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
@@ -10156,14 +10136,10 @@ vue-prism-component@1.2.0:
   resolved "https://registry.yarnpkg.com/vue-prism-component/-/vue-prism-component-1.2.0.tgz#406252e16979def13b5d28827d95b2b6dc647825"
   integrity sha512-0N9CNuQu+36CJpdsZHrhdq7d18oBvjVMjawyKdIr8xuzFWLfdxECZQYbFaYoopPBg3SvkEEMtkhYqdgTQl5Y+A==
 
-vue-prism-editor@0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/vue-prism-editor/-/vue-prism-editor-0.6.1.tgz#e7c5ed39eecd798d2b4a3a6864985e90ed1f0c00"
-  integrity sha512-UyFLZ242eAplU0C1Tx/ZHSKFTPODQDMBuW9qqgMJyZqHFL2iuIbfT8EWmKtoNUn8w9VWS9IIicPs2odz2eni4Q==
-  dependencies:
-    dom-iterator "^1.0.0"
-    escape-html "^1.0.3"
-    unescape "^1.0.1"
+vue-prism-editor@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/vue-prism-editor/-/vue-prism-editor-1.2.2.tgz#023cfd4329848f191aac851f2f5e6c7a8c2e059f"
+  integrity sha512-Lq2VgVygTx3Whn/tC8gD4m1ajA4lzSyCTqPLZA1Dq/ErbBaZA93FWRblwCoDR7AD2nXhGWuiTzb5ih3guzB7DA==
 
 vue-router@4.0.0-beta.7:
   version "4.0.0-beta.7"
@@ -10210,17 +10186,17 @@ vue@^2.5.13, vue@^2.5.17:
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
 
-vuedraggable@2.24.0:
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-2.24.0.tgz#1ee069eeb91f61fcb540faf20f1c6b2d4d990a26"
-  integrity sha512-IlslPpc+iZ2zPNSJbydFZIDrE+don5u+Nc/bjT2YaF+Azidc+wxxJKfKT0NwE68AKk0syb0YbZneAcnynqREZQ==
+vuedraggable@2.24.1:
+  version "2.24.1"
+  resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-2.24.1.tgz#304abd7644dde05c1f199a227bf9e9107f56197a"
+  integrity sha512-G1fxO1oshx+WLdieSGl6jSJdlHOQFga1FpjuUpgXldbpKNzxpjsGn4xYNnRHVrOAqm8aG5FfpdQlh5LHesxCeA==
   dependencies:
     sortablejs "^1.10.1"
 
-vuex-persistedstate@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-3.0.1.tgz#6eacc3c416fe8cfe63c40d3ee7b8ed13aac4f04f"
-  integrity sha512-2dH77+fIecAXO8GeJEXiYnC++gx48PFGUayB5d7rWrN3fblRCOHQoVnmu/VV9DXbHHJcJth/0W/ofl8vw12j1A==
+vuex-persistedstate@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/vuex-persistedstate/-/vuex-persistedstate-3.1.0.tgz#a710d01000bff8336bc3b03fa3ef42e376094b71"
+  integrity sha512-nRiCe1qDdDrcveFQzTw0QGEj3dRpwN19BailSSwfhe4eUNNQ+9S/ApKnDEAuyw95cigOtSPciMEhdsC0qNUiKQ==
   dependencies:
     deepmerge "^4.2.2"
     shvl "^2.0.0"
