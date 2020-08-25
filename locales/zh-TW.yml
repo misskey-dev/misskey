@@ -223,7 +223,7 @@ nUsersRead: "{n}人已讀"
 tos: "使用條款"
 start: "開始"
 home: "首頁"
-remoteUserCaution: "由於是遠程用戶，信息不完整。"
+remoteUserCaution: "由於該用戶來自遠端實例，因此資料用戶並未即時更新。"
 activity: "動態"
 images: "圖片"
 birthday: "生日"
@@ -293,7 +293,7 @@ disablingTimelinesInfo: "即使您禁用了時間線功能，管理員和協調�
 registration: "註冊"
 enableRegistration: "開啟新用戶註冊"
 invite: "邀請"
-proxyRemoteFiles: "代理遠程檔案"
+proxyRemoteFiles: "遠端代理檔案"
 proxyRemoteFilesDescription: "啟用此設置後，由於超出存儲容量而未保存或刪除的遠程文件將被本地代理，並且將生成預覽圖。這不影響服務器的存儲。"
 driveCapacityPerLocalAccount: "每個本地用戶的雲端容量"
 driveCapacityPerRemoteAccount: "每個非本地用戶的雲端容量"
@@ -612,17 +612,24 @@ _weekday:
   friday: "週五"
   saturday: "週六"
 _widgets:
+  memo: "備忘錄"
   notifications: "通知"
   timeline: "時間軸"
+  calendar: "行事曆"
+  trends: "發燒貼文"
   clock: "時鐘"
   rss: "RSS閱讀器"
   activity: "動態"
   photos: "照片"
+  digitalClock: "電子時鐘"
   federation: "聯邦宇宙"
 _cw:
+  hide: "隱藏"
   show: "瀏覽更多"
+  chars: "{count}字元"
   files: "{count} 個檔案"
 _poll:
+  noOnlyOneChoice: "至少需要兩個選項。"
   expiration: "期限"
   infinite: "無期限"
   deadlineDate: "截止日期"
@@ -642,6 +649,7 @@ _postForm:
 _profile:
   name: "名稱"
   username: "使用名稱"
+  metadataContent: "内容"
 _exportOrImport:
   followingList: "追隨中"
   muteList: "消音"
@@ -666,6 +674,8 @@ _pages:
   unlike: "收回喜歡"
   blocks:
     image: "圖片"
+    _post:
+      text: "内容"
     _textareaInput:
       name: "變數名稱"
     numberInput: "輸入數值"
@@ -677,6 +687,9 @@ _pages:
       text: "標題"
     _button:
       text: "標題"
+      _action:
+        _dialog:
+          content: "内容"
   script:
     categories:
       value: "數值 "
