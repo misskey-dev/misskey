@@ -1,6 +1,6 @@
 <template>
 <div class="ieepwinx">
-	<teleport to="#_teleport_header"><fa :icon="faSatellite"/>{{ $t('manageAntennas') }}</teleport>
+	<portal to="header"><fa :icon="faSatellite"/>{{ $t('manageAntennas') }}</portal>
 
 	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
 

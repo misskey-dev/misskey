@@ -1,6 +1,6 @@
 <template>
 <div class="mk-group-page">
-	<teleport to="#_teleport_header"><fa :icon="faUsers"/>{{ group.name }}</teleport>
+	<portal to="header"><fa :icon="faUsers"/>{{ group.name }}</portal>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_card _vMargin">

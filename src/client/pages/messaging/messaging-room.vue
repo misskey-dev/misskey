@@ -4,10 +4,10 @@
 	@drop.prevent.stop="onDrop"
 >
 	<template v-if="!fetching && user">
-		<teleport to="#_teleport_header"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></teleport>
+		<portal to="header"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 	</template>
 	<template v-if="!fetching && group">
-		<teleport to="#_teleport_header"><fa :icon="faUsers"/>{{ group.name }}</teleport>
+		<portal to="header"><fa :icon="faUsers"/>{{ group.name }}</portal>
 	</template>
 
 	<div class="body">

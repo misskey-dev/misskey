@@ -1,6 +1,6 @@
 <template>
 <div class="mk-federation">
-	<teleport to="#_teleport_header"><fa :icon="faGlobe"/>{{ $t('federation') }}</teleport>
+	<portal to="header"><fa :icon="faGlobe"/>{{ $t('federation') }}</portal>
 
 	<section class="_card instances">
 		<div class="_content">

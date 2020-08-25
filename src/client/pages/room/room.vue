@@ -1,12 +1,12 @@
 <template>
 <div class="hveuntkp">
-	<teleport to="#_teleport_header" v-if="user">
+	<portal to="header" v-if="user">
 		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
 		<mfm 
 			:text="$t('_rooms.roomOf', { user: user.name || user.username })"
 			:plain="true" :nowrap="true" :custom-emojis="user.emojis" :is-note="false"
 		/>
-	</teleport>
+	</portal>
 
 	<div class="controller _card _vMargin" v-if="objectSelected">
 		<div class="_content">

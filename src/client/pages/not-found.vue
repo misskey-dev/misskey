@@ -1,6 +1,6 @@
 <template>
 <div class="ipledcug">
-	<teleport to="#_teleport_header"><fa :icon="faExclamationTriangle"/>{{ $t('notFound') }}</teleport>
+	<portal to="header"><fa :icon="faExclamationTriangle"/>{{ $t('notFound') }}</portal>
 
 	<div class="_fullinfo">
 		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>

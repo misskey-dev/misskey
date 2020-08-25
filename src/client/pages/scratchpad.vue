@@ -1,6 +1,6 @@
 <template>
 <div class="">
-	<teleport to="#_teleport_header"><fa :icon="faTerminal"/>{{ $t('scratchpad') }}</teleport>
+	<portal to="header"><fa :icon="faTerminal"/>{{ $t('scratchpad') }}</portal>
 
 	<div class="_panel">
 		<prism-editor class="_code" v-model="code" :highlight="highlighter" :line-numbers="false"/>

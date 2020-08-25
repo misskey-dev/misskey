@@ -1,6 +1,6 @@
 <template>
 <div class="xcukqgmh">
-	<teleport to="#_teleport_header" v-if="page"><mk-avatar class="avatar" :user="page.user" :disable-preview="true"/>{{ page.title || page.name }}</teleport>
+	<portal to="header" v-if="page"><mk-avatar class="avatar" :user="page.user" :disable-preview="true"/>{{ page.title || page.name }}</portal>
 
 	<div class="_card" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>

@@ -1,6 +1,6 @@
 <template>
 <div>
-	<teleport to="#_teleport_header"><fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</teleport>
+	<portal to="header"><fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
 
 	<mk-pagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
 		<section class="_card announcement" v-for="(announcement, i) in items" :key="announcement.id">

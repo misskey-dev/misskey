@@ -1,6 +1,6 @@
 <template>
 <div class="mk-home" v-hotkey.global="keymap">
-	<teleport to="#_teleport_header" v-if="showTitle">
+	<portal to="header" v-if="showTitle">
 		<button @click="choose" class="_button _kjvfvyph_">
 			<i><fa v-if="$store.state.i.hasUnreadAntenna || $store.state.i.hasUnreadChannel" :icon="faCircle"/></i>
 			<fa v-if="src === 'home'" :icon="faHome"/>
@@ -13,7 +13,7 @@
 			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : src === 'antenna' ? antenna.name : src === 'channel' ? channel.name : $t('_timelines.' + src) }}</span>
 			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
-	</teleport>
+	</portal>
 
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 

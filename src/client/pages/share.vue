@@ -1,6 +1,6 @@
 <template>
 <div class="">
-	<teleport to="#_teleport_header"><fa :icon="faShareAlt"/>{{ $t('share') }}</teleport>
+	<portal to="header"><fa :icon="faShareAlt"/>{{ $t('share') }}</portal>
 
 	<section class="_card">
 		<div class="_title" v-if="title">{{ title }}</div>

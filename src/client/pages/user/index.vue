@@ -1,6 +1,6 @@
 <template>
 <div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<teleport to="#_teleport_header" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></teleport>
+	<portal to="header" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
 
 	<mk-remote-caution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
 	<div class="punished _panel" v-if="user.isSuspended"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div>

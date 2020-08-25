@@ -1,6 +1,6 @@
 <template>
 <div>
-	<teleport to="#_teleport_header"><fa :icon="faQuestionCircle"/>{{ $t('help') }}</teleport>
+	<portal to="header"><fa :icon="faQuestionCircle"/>{{ $t('help') }}</portal>
 	<main class="_card">
 		<div class="_content">
 			<ul>

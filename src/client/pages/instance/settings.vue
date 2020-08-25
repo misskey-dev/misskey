@@ -1,6 +1,6 @@
 <template>
 <div v-if="meta">
-	<teleport to="#_teleport_header"><fa :icon="faCog"/>{{ $t('settings') }}</teleport>
+	<portal to="header"><fa :icon="faCog"/>{{ $t('settings') }}</portal>
 
 	<section class="_card _vMargin info">
 		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>

@@ -1,6 +1,6 @@
 <template>
 <div v-if="meta" class="xhexznfu" v-size="{ min: [1600] }">
-	<teleport to="#_teleport_header"><fa :icon="faServer"/>{{ $t('instance') }}</teleport>
+	<portal to="header"><fa :icon="faServer"/>{{ $t('instance') }}</portal>
 
 	<mk-folder>
 		<template #header><fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>

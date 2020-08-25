@@ -1,6 +1,6 @@
 <template>
 <div>
-	<teleport to="#_teleport_header"><fa :icon="faHashtag"/>{{ $route.params.tag }}</teleport>
+	<portal to="header"><fa :icon="faHashtag"/>{{ $route.params.tag }}</portal>
 
 	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>

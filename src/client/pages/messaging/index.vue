@@ -1,6 +1,6 @@
 <template>
 <div class="mk-messaging" v-size="{ max: [400] }">
-	<teleport to="#_teleport_header"><fa :icon="faComments"/>{{ $t('messaging') }}</teleport>
+	<portal to="header"><fa :icon="faComments"/>{{ $t('messaging') }}</portal>
 
 	<mk-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</mk-button>
 

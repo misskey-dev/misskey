@@ -1,6 +1,6 @@
 <template>
 <div>
-	<teleport to="#_teleport_header"><fa :icon="faSatelliteDish"/>{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</teleport>
+	<portal to="header"><fa :icon="faSatelliteDish"/>{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
 
 	<div class="_card">
 		<div class="_content">

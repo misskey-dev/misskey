@@ -1,6 +1,6 @@
 <template>
 <div>
-	<teleport to="#_teleport_header"><fa :icon="faUserClock"/>{{ $t('followRequests') }}</teleport>
+	<portal to="header"><fa :icon="faUserClock"/>{{ $t('followRequests') }}</portal>
 
 	<mk-pagination :pagination="pagination" class="mk-follow-requests" ref="list">
 		<template #empty>

@@ -1,6 +1,6 @@
 <template>
 <div class="mk-instance-emojis">
-	<teleport to="#_teleport_header"><fa :icon="faLaugh"/>{{ $t('customEmojis') }}</teleport>
+	<portal to="header"><fa :icon="faLaugh"/>{{ $t('customEmojis') }}</portal>
 
 	<section class="_card _vMargin local">
 		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
