@@ -603,6 +603,8 @@ _permissions:
   "write:votes": "投票"
   "read:channels": "已查看的頻道"
   "write:channels": "操作頻道"
+_antennaSources:
+  all: "全部貼文"
 _weekday:
   sunday: "週日"
   monday: "週一"
@@ -649,8 +651,10 @@ _postForm:
 _profile:
   name: "名稱"
   username: "使用名稱"
+  metadataLabel: "標籤"
   metadataContent: "内容"
 _exportOrImport:
+  allNotes: "全部貼文"
   followingList: "追隨中"
   muteList: "消音"
   blockingList: "封鎖"
