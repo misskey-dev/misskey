@@ -629,10 +629,13 @@ _poll:
   votesCount: "{n}票"
   totalVotes: "一共{n}票"
   vote: "投票"
+  showResult: "顯示結果"
   voted: "已投票"
+  closed: "已結束"
 _visibility:
   home: "首頁"
   followers: "追隨者"
+  localOnly: "僅限本地"
 _postForm:
   channelPlaceholder: "發佈到頻道"
 _profile:
