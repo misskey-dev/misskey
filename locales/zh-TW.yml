@@ -538,9 +538,12 @@ _theme:
   color: "顏色"
   func: "函数"
   keys:
+    bg: "背景"
     mention: "提及"
     renote: "轉發貼文"
     divider: "分割線"
+    infoBg: "資訊背景"
+    infoFg: "資訊內容"
 _sfx:
   note: "貼文"
   noteMy: "我的貼文"
@@ -619,7 +622,12 @@ _cw:
   show: "瀏覽更多"
   files: "{count} 個檔案"
 _poll:
+  expiration: "期限"
+  infinite: "無期限"
+  deadlineDate: "截止日期"
   deadlineTime: "小時"
+  votesCount: "{n}票"
+  totalVotes: "一共{n}票"
   vote: "投票"
   voted: "已投票"
 _visibility:
