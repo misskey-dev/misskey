@@ -532,6 +532,8 @@ _channel:
 _sidebar:
   icon: "頭像"
   hide: "隱藏"
+_wordMute:
+  muteWords: "加入靜音文字"
 _theme:
   color: "顏色"
   func: "函数"
