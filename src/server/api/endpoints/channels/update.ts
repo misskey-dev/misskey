@@ -3,7 +3,6 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Channels, DriveFiles } from '../../../../models';
-import { isNullOrUndefined } from 'util';
 
 export const meta = {
 	tags: ['channels'],
