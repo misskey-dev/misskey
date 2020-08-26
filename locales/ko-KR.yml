@@ -551,13 +551,21 @@ makeActive: "활성화"
 copy: "복사"
 logs: "로그"
 database: "데이터베이스"
+channel: "채널"
 _channel:
+  create: "채널 생성"
+  setBanner: "배너 설정"
+  removeBanner: "배너 삭제"
   featured: "트렌드"
+  following: "팔로잉"
+  usersCount: "{n}명 참여 중"
+  notesCount: "{n}노트"
 _sidebar:
   icon: "아바타"
   hide: "숨기기"
 _wordMute:
   muteWords: "뮤트할 단어"
+  mutedNotes: "뮤트된 노트"
 _theme:
   explore: "테마 찾아보기"
   install: "테마 설치"
@@ -578,6 +586,7 @@ _theme:
   func: "함수"
   funcKind: "함수 종류"
   argument: "매개변수"
+  importInfo: "여기에 테마 코드를 붙여 넣어 에디터로 불러올 수 있습니다."
   keys:
     link: "링크"
     hashtag: "해시태그"

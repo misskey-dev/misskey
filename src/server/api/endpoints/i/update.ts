@@ -14,6 +14,7 @@ import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
 import { ensure } from '../../../../prelude/ensure';
+import { notificationTypes } from '../../../../types';
 
 export const meta = {
 	desc: {
@@ -147,6 +148,10 @@ export const meta = {
 		mutedWords: {
 			validator: $.optional.arr($.arr($.str))
 		},
+
+		includingNotificationTypes: {
+			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[]))
+		},
 	},
 
 	errors: {
@@ -201,6 +206,7 @@ export default define(meta, async (ps, user, token) => {
 		profileUpdates.mutedWords = ps.mutedWords;
 		profileUpdates.enableWordMute = ps.mutedWords.length > 0;
 	}
+	if (ps.includingNotificationTypes !== undefined) profileUpdates.includingNotificationTypes = ps.includingNotificationTypes as typeof notificationTypes[number][];
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
