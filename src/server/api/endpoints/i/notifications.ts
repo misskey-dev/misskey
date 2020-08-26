@@ -44,12 +44,10 @@ export const meta = {
 
 		includeTypes: {
 			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-			default: [] as string[]
 		},
 
 		excludeTypes: {
 			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[])),
-			default: [] as string[]
 		}
 	},
 
@@ -65,6 +63,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
+	// includeTypes が空の場合はクエリしない
+	if (ps.includeTypes && ps.includeTypes.length === 0) {
+		return [];
+	}
+	// excludeTypes に全指定されている場合はクエリしない
+	if (notificationTypes.every(type => ps.excludeTypes?.includes(type))) {
+		return [];
+	}
 	const followingQuery = Followings.createQueryBuilder('following')
 		.select('following.followeeId')
 		.where('following.followerId = :followerId', { followerId: user.id });
@@ -91,9 +97,9 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	if (ps.includeTypes!.length > 0) {
+	if (ps.includeTypes?.length > 0) {
 		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
-	} else if (ps.excludeTypes!.length > 0) {
+	} else if (ps.excludeTypes?.length > 0) {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 

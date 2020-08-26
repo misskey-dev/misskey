@@ -17,11 +17,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { PropType } from 'vue';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
+import { notificationTypes } from '../../types';
 
 export default Vue.extend({
 	components: {
@@ -35,9 +36,10 @@ export default Vue.extend({
 	],
 
 	props: {
-		type: {
-			type: String,
-			required: false
+		includeTypes: {
+			type: Array as PropType<typeof notificationTypes[number][]>,
+			required: false,
+			default: null,
 		},
 	},
 
@@ -48,15 +50,26 @@ export default Vue.extend({
 				endpoint: 'i/notifications',
 				limit: 10,
 				params: () => ({
-					includeTypes: this.type ? [this.type] : undefined
+					includeTypes: this.allIncludeTypes || undefined,
 				})
 			},
 		};
 	},
 
+	computed: {
+		allIncludeTypes() {
+			return this.includeTypes ?? this.$store.state.i.includingNotificationTypes;
+		}
+	},
+
 	watch: {
-		type() {
+		includeTypes() {
 			this.reload();
+		},
+		'$store.state.i.includingNotificationTypes'() {
+			if (this.includeTypes === null) {
+				this.reload();
+			}
 		}
 	},
 
@@ -71,16 +84,20 @@ export default Vue.extend({
 
 	methods: {
 		onNotification(notification) {
-			if (document.visibilityState === 'visible') {
+			// 
+			const isMuted = !!this.allIncludeTypes && !this.allIncludeTypes.includes(notification.type);
+			if (isMuted || document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
 					id: notification.id
 				});
 			}
 
-			this.prepend({
-				...notification,
-				isRead: document.visibilityState === 'visible'
-			});
+			if (!isMuted) {
+				this.prepend({
+					...notification,
+					isRead: document.visibilityState === 'visible'
+				});
+			}
 		},
 
 		noteUpdated(oldValue, newValue) {

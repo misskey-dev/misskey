@@ -15,6 +15,7 @@ import { packedHashtagSchema } from '../../../models/repositories/hashtag';
 import { packedPageSchema } from '../../../models/repositories/page';
 import { packedUserGroupSchema } from '../../../models/repositories/user-group';
 import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favorite';
+import { packedChannelSchema } from '../../../models/repositories/channel';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -82,4 +83,5 @@ export const schemas = {
 	Blocking: convertSchemaToOpenApiSchema(packedBlockingSchema),
 	Hashtag: convertSchemaToOpenApiSchema(packedHashtagSchema),
 	Page: convertSchemaToOpenApiSchema(packedPageSchema),
+	Channel: convertSchemaToOpenApiSchema(packedChannelSchema),
 };
