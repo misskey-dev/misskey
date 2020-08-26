@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Channels, DriveFiles } from '../../../../models';
+import { isNullOrUndefined } from 'util';
 
 export const meta = {
 	tags: ['channels'],
@@ -69,7 +70,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	let banner = undefined;
+	let banner = null;
 	if (ps.bannerId != null) {
 		banner = await DriveFiles.findOne({
 			id: ps.bannerId,
@@ -79,8 +80,6 @@ export default define(meta, async (ps, me) => {
 		if (banner == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
-	} else if (ps.bannerId === null) {
-		banner = null;
 	}
 
 	await Channels.update(channel.id, {
