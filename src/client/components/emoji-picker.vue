@@ -12,6 +12,12 @@
 			</button>
 		</header>
 
+		<div class="skinTones" v-if="categories.find(x => x.isActive).name === 'people'">
+			<button class="skinTone" v-for="st in SKIN_TONES" :key="st" @click="changeSkinTone(st)">
+				<mk-emoji :emoji="getSkinToneModifiedChar(SKIN_TONES_SAMPLE, st)"/>
+			</button>
+		</div>
+
 		<div class="emojis">
 			<template v-if="categories[0].isActive">
 				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
@@ -35,10 +41,10 @@
 					<button v-for="emoji in emojilist.filter(e => e.category === categories.find(x => x.isActive).name)"
 						class="_button"
 						:title="emoji.name"
-						@click="chosen(emoji)"
-						:key="emoji.name"
+						@click="chosen(emoji, skinTone)"
+						:key="`${emoji.name}-${skinTone}`"
 					>
-						<mk-emoji :emoji="emoji.char"/>
+						<mk-emoji v-if="emoji.char != null" :emoji="emojiToSkinToneModifiedChar(emoji, skinTone)"/>
 					</button>
 				</div>
 			</template>
@@ -71,6 +77,9 @@ import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import { groupByX } from '../../prelude/array';
 import XPopup from './popup.vue';
 
+const SKIN_TONES_SAMPLE = '\u{1F44D}';	// thumbs up
+const SKIN_TONES = Object.freeze([ null, '\u{1F3FB}', '\u{1F3FC}', '\u{1F3FD}', '\u{1F3FE}', '\u{1F3FF}' ]);
+
 export default Vue.extend({
 	components: {
 		XPopup,
@@ -84,9 +93,12 @@ export default Vue.extend({
 
 	data() {
 		return {
+			SKIN_TONES_SAMPLE,
+			SKIN_TONES,
 			emojilist,
 			getStaticImageUrl,
 			customEmojis: {},
+			skinTone: '\u{1F3FF}' as string | null,
 			faGlobe, faHistory,
 			categories: [{
 				icon: faAsterisk,
@@ -136,6 +148,10 @@ export default Vue.extend({
 		let local = this.$store.state.instance.meta.emojis;
 		local = groupByX(local, (x: any) => x.category || '');
 		this.customEmojis = local;
+
+		if (SKIN_TONES.includes(this.$store.state.device.emojiSkinTone)) {
+			this.skinTone = this.$store.state.device.emojiSkinTone;
+		}
 	},
 
 	methods: {
@@ -156,8 +172,35 @@ export default Vue.extend({
 			}
 		},
 
-		chosen(emoji: any) {
-			const getKey = (emoji: any) => emoji.char || `:${emoji.name}:`;
+		changeSkinTone(skinTone: string) {
+			console.log(`change: ${skinTone}`);
+			this.skinTone = skinTone;
+			this.$store.commit('device/set', { key: 'emojiSkinTone', value: skinTone });
+		},
+
+		emojiToSkinToneModifiedChar(emoji: any, skinTone: string | null | undefined): string {
+			console.log(`${emoji.char} + ${skinTone}`);
+			if (emoji.st === 1) {
+				return this.getSkinToneModifiedChar(emoji.char, skinTone);
+			} else {
+				return emoji.char;
+			}
+		},
+
+		getSkinToneModifiedChar(char: string, skinTone: string | null | undefined): string {
+			if (!skinTone) return char;
+			let sgs = Array.from(char);	// split by surrogate pair
+			// 2文字目に挿入するが、そこが絵文字セレクタなら置き換える
+			if (sgs[1] === '\u{FE0F}') {
+				sgs.splice(1, 1, skinTone);
+			} else {
+				sgs.splice(1, 0, skinTone);
+			}
+			return sgs.join('');
+		},
+
+		chosen(emoji: any, skinTone?: string) {
+			const getKey = (emoji: any) => emoji.char ? this.getSkinToneModifiedChar(emoji.char, skinTone) : `:${emoji.name}:`;
 			let recents = this.$store.state.device.recentEmojis || [];
 			recents = recents.filter((e: any) => getKey(e) !== getKey(emoji));
 			recents.unshift(emoji)
@@ -194,6 +237,19 @@ export default Vue.extend({
 				color: var(--accent);
 				transition: color 0s;
 			}
+		}
+	}
+
+	> .skinTones {
+			display: flex;
+			justify-content: flex-end;
+			margin: 8px;
+
+		.skinTone {
+			border: none;
+			background: transparent;
+			padding: 0 6px;
+			cursor: pointer;
 		}
 	}
 
