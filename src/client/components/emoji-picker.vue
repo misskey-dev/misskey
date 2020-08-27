@@ -98,7 +98,7 @@ export default Vue.extend({
 			emojilist,
 			getStaticImageUrl,
 			customEmojis: {},
-			skinTone: '\u{1F3FF}' as string | null,
+			skinTone: null as string | null,
 			faGlobe, faHistory,
 			categories: [{
 				icon: faAsterisk,
