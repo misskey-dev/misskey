@@ -4,6 +4,7 @@
 declare var self: ServiceWorkerGlobalScope;
 
 import composeNotification from './scripts/compose-notification';
+import { VuexPersistDB } from './scripts/vuex-idb';
 
 // eslint-disable-next-line no-undef
 const version = _VERSION_;
@@ -58,7 +59,7 @@ self.addEventListener('push', ev => {
 		includeUncontrolled: true
 	}).then(async clients => {
 		// クライアントがあったらストリームに接続しているということなので通知しない
-		if (clients.length != 0) return;
+		// if (clients.length != 0) return;
 
 		const { type, body } = ev.data.json();
 
@@ -91,37 +92,24 @@ self.addEventListener('notificationclick', ev => {
 	notification.close();
 });
 
-self.addEventListener('notificationclick', ev => {
-	const { action, notification } = ev;
-	const type = notification.data.type;
-	const push = notification.data.data;
-	const { origin } = location;
+self.addEventListener('notificationclose', async ev => {
+	self.registration.showNotification('notificationclose');
+	const { notification } = ev;
+	const { data } = notification
 
-	switch (action) {
-		case 'showUser':
-			switch (type) {
-				case 'reaction':
-					self.clients.openWindow(`${origin}/users/${push.user.id}`);
-					break;
+	if (data.isNotification) {
+		const { origin } = location;
 
-				default:
-					if ('note' in push) {
-						self.clients.openWindow(`${origin}/notes/${push.note.id}`);
-					}
-			}
-			break;
-		default:
+		const db = new VuexPersistDB();
+
+		const i = await db.get('i', 'store')
+
+		fetch(`${origin}/api/notifications/read`, {
+			method: 'POST',
+			body: JSON.stringify({
+				i,
+				notificationIds: [data.data.id]
+			})
+		});
 	}
-
-	notification.close();
-});
-
-self.addEventListener('notificationclose', ev => {
-	const { origin } = location;
-	fetch(`${origin}/api/notifications/read`, {
-		method: 'POST',
-		body: JSON.stringify({
-
-		})
-	});
 });

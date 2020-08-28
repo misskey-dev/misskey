@@ -2,7 +2,6 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
-import { Notifications } from '../../../../models';
 import { readNotification } from '../../common/read-notification';
 
 export const meta = {
@@ -16,8 +15,8 @@ export const meta = {
 	requireCredential: true as const,
 
 	params: {
-		notificationId: {
-			validator: $.type(ID),
+		notificationIds: {
+			validator: $.arr($.type(ID)),
 			desc: {
 				'ja-JP': '対象の通知のID',
 				'en-US': 'Target notification ID.'
@@ -30,7 +29,7 @@ export const meta = {
 
 export default define(meta, async (ps, user) => {
 	// Update documents
-	await readNotification(user.id, [ps.notificationId]);
+	await readNotification(user.id, ps.notificationIds);
 
 	// 全ての通知を読みましたよというイベントを発行
 	publishMainStream(user.id, 'readAllNotifications');

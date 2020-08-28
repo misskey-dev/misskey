@@ -26,7 +26,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'mention',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -36,7 +37,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'reply',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -46,7 +48,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'renote',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -56,7 +59,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'quote',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -66,7 +70,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'reaction',
-							data
+							data,
+							isNotification: true,
 						},
 						actions: [
 							{
@@ -82,7 +87,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'pollVote',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -92,7 +98,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'follow',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -102,7 +109,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'receiveFollowRequest',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -112,7 +120,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						icon: data.user.avatarUrl,
 						data: {
 							type: 'followRequestAccepted',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
@@ -121,7 +130,8 @@ export default async function(type, data): Promise<[string, NotificationOptions]
 						body: data.group.name,
 						data: {
 							type: 'groupInvited',
-							data
+							data,
+							isNotification: true,
 						}
 					}];
 
