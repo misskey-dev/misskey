@@ -69,7 +69,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
-	let banner = null;
+	let banner;
 	if (ps.bannerId != null) {
 		banner = await DriveFiles.findOne({
 			id: ps.bannerId,
@@ -79,6 +79,8 @@ export default define(meta, async (ps, me) => {
 		if (banner == null) {
 			throw new ApiError(meta.errors.noSuchFile);
 		}
+	} else if (ps.bannerId === null) {
+		banner = { id: null };
 	}
 
 	await Channels.update(channel.id, {
