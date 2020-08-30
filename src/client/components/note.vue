@@ -520,8 +520,15 @@ export default Vue.extend({
 			}).then(() => {
 				this.$root.dialog({
 					type: 'success',
-					iconOnly: true, autoClose: true
+					text: this.$t('favorited')
 				});
+			}).catch(e => {
+				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
+					this.$root.dialog({
+						type: 'error',
+						text: this.$t('alreadyFavorited')
+					});
+				}
 			});
 		},
 
