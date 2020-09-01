@@ -477,6 +477,11 @@ export default Vue.extend({
 		renoteDirectly() {
 			(this as any).$root.api('notes/create', {
 				renoteId: this.appearNote.id
+			}).then(() => {
+				this.$root.dialog({
+					type: 'success',
+					text: this.$t('renoted')
+				});
 			});
 		},
 
