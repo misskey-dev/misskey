@@ -3,7 +3,7 @@
 	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full }"
 	@click="onClick"
 	:disabled="wait"
-	v-if="isFollowing != null"
+	v-if="isFollowing != null && !(isNotification && isFollowing)"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
@@ -39,6 +39,11 @@ export default Vue.extend({
 			required: true
 		},
 		full: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		isNotification: {
 			type: Boolean,
 			required: false,
 			default: false,
