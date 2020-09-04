@@ -43,7 +43,7 @@ export default defineComponent({
 	created() {
 		this.text = this.$store.state.settings.memo;
 
-		this.$watch('$store.state.settings.memo', text => {
+		this.$watch(() => this.$store.state.settings.memo, text => {
 			this.text = text;
 		});
 	},

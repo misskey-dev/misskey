@@ -140,7 +140,7 @@ export default defineComponent({
 
 		if (this.value.value && this.value.value.slots) this.slots = this.value.value.slots.map(x => x.name).join('\n');
 
-		this.$watch('value.type', (t) => {
+		this.$watch(() => this.value.type, (t) => {
 			this.warn = null;
 
 			if (this.value.type === 'fn') {
@@ -182,7 +182,7 @@ export default defineComponent({
 			}
 		});
 
-		this.$watch('value.args', (args) => {
+		this.$watch(() => this.value.args, (args) => {
 			if (args == null) {
 				this.warn = null;
 				return;
@@ -199,7 +199,7 @@ export default defineComponent({
 			deep: true
 		});
 
-		this.$watch('hpml.variables', () => {
+		this.$watch(() => this.hpml.variables, () => {
 			if (this.type != null && this.value) {
 				this.error = this.hpml.typeCheck(this.value);
 			}
