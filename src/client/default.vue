@@ -101,8 +101,8 @@ const DESKTOP_THRESHOLD = 1100;
 export default defineComponent({
 	components: {
 		XSidebar,
-		XClock: defineAsyncComponent(() => import('./components/header-clock.vue').then(m => m.default)),
-		MkButton: defineAsyncComponent(() => import('./components/ui/button.vue').then(m => m.default)),
+		XClock: defineAsyncComponent(() => import('./components/header-clock.vue')),
+		MkButton: defineAsyncComponent(() => import('./components/ui/button.vue')),
 		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
 	},
 
@@ -334,7 +334,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				this.$root.new(await import('./components/toast.vue').then(m => m.default), {
+				this.$root.new(await import('./components/toast.vue'), {
 					notification
 				});
 			}

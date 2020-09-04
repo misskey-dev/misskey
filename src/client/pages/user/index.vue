@@ -128,8 +128,8 @@ export default defineComponent({
 		MkFollowButton,
 		MkContainer,
 		MkRemoteCaution,
-		XPhotos: defineAsyncComponent(() => import('./index.photos.vue').then(m => m.default)),
-		XActivity: defineAsyncComponent(() => import('./index.activity.vue').then(m => m.default)),
+		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
+		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},
 
 	metaInfo() {

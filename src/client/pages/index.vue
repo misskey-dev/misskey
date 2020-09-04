@@ -11,7 +11,7 @@ export default defineComponent({
 
 	components: {
 		Home,
-		Welcome: defineAsyncComponent(() => import('./index.welcome.vue').then(m => m.default)),
+		Welcome: defineAsyncComponent(() => import('./index.welcome.vue')),
 	},
 
 	data() {

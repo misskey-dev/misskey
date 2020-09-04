@@ -165,7 +165,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				this.$root.new(await import('./components/toast.vue').then(m => m.default), {
+				this.$root.new(await import('./components/toast.vue'), {
 					notification
 				});
 			}

@@ -155,7 +155,7 @@ class Autocomplete {
 
 			this.opening = false;
 		} else {
-			const MkAutocomplete = await import('../components/autocomplete.vue').then(m => m.default);
+			const MkAutocomplete = await import('../components/autocomplete.vue');
 
 			// サジェスト要素作成
 			this.suggestion = new MkAutocomplete({

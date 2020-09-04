@@ -63,7 +63,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkSwitch,
-		captcha: defineAsyncComponent(() => import('./captcha.vue').then(m => m.default)),
+		captcha: defineAsyncComponent(() => import('./captcha.vue')),
 	},
 
 	props: {

@@ -74,9 +74,9 @@ import { utils } from '@syuilo/aiscript';
 export default defineComponent({
 	components: {
 		XNotePreview,
-		XUploader: defineAsyncComponent(() => import('./uploader.vue').then(m => m.default)),
-		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue').then(m => m.default)),
-		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue').then(m => m.default))
+		XUploader: defineAsyncComponent(() => import('./uploader.vue')),
+		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
+		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
 	},
 
 	props: {
@@ -603,7 +603,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			const vm = this.$root.new(await import('./emoji-picker.vue').then(m => m.default), {
+			const vm = this.$root.new(await import('./emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);

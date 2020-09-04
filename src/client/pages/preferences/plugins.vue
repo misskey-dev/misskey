@@ -117,7 +117,7 @@ export default defineComponent({
 			}
 
 			const token = permissions == null || permissions.length === 0 ? null : await new Promise(async (res, rej) => {
-				this.$root.new(await import('../../components/token-generate-window.vue').then(m => m.default), {
+				this.$root.new(await import('../../components/token-generate-window.vue'), {
 					title: this.$t('tokenRequested'),
 					information: this.$t('pluginTokenRequestedDescription'),
 					initialName: name,

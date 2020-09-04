@@ -6,7 +6,7 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 export default defineComponent({
 	components: {
-		XFormula: defineAsyncComponent(() => import('./formula-core.vue').then(m => m.default))
+		XFormula: defineAsyncComponent(() => import('./formula-core.vue'))
 	},
 	props: {
 		formula: {

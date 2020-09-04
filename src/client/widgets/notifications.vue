@@ -50,7 +50,7 @@ export default defineComponent({
 
 	methods: {
 		async configure() {
-			this.$root.new(await import('../components/notification-setting-window.vue').then(m => m.default), {
+			this.$root.new(await import('../components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
 			}).$on('ok', async ({ includingTypes }) => {
 				this.props.includingTypes = includingTypes;

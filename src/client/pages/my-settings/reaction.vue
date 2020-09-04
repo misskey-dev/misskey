@@ -72,7 +72,7 @@ export default defineComponent({
 		},
 
 		async chooseEmoji(ev) {
-			const vm = this.$root.new(await import('../../components/emoji-picker.vue').then(m => m.default), {
+			const vm = this.$root.new(await import('../../components/emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				this.reactions += emoji;

@@ -42,7 +42,7 @@ export default defineComponent({
 
 	components: {
 		XTimeline,
-		XTutorial: defineAsyncComponent(() => import('./index.home.tutorial.vue').then(m => m.default)),
+		XTutorial: defineAsyncComponent(() => import('./index.home.tutorial.vue')),
 		XPostForm,
 	},
 

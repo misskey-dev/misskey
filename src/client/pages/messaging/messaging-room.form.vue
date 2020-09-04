@@ -32,7 +32,7 @@ import { selectFile } from '../../scripts/select-file';
 
 export default defineComponent({
 	components: {
-		XUploader: defineAsyncComponent(() => import('../../components/uploader.vue').then(m => m.default)),
+		XUploader: defineAsyncComponent(() => import('../../components/uploader.vue')),
 	},
 	props: {
 		user: {
@@ -219,7 +219,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			const vm = this.$root.new(await import('../../components/emoji-picker.vue').then(m => m.default), {
+			const vm = this.$root.new(await import('../../components/emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);

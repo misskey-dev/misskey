@@ -259,7 +259,7 @@ export default defineComponent({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
-		Captcha: defineAsyncComponent(() => import('../../components/captcha.vue').then(m => m.default)),
+		Captcha: defineAsyncComponent(() => import('../../components/captcha.vue')),
 	},
 
 	data() {
