@@ -43,7 +43,7 @@ export default defineComponent({
 			tab: 'featured',
 			featuredPagination: {
 				endpoint: 'channels/featured',
-				limit: 5,
+				noPaging: true,
 			},
 			followingPagination: {
 				endpoint: 'channels/followed',

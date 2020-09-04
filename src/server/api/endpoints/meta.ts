@@ -99,6 +99,8 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
+	const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
@@ -143,6 +145,8 @@ export default define(meta, async (ps, me) => {
 		enableDiscordIntegration: instance.enableDiscordIntegration,
 
 		enableServiceWorker: instance.enableServiceWorker,
+
+		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 	};
 
 	if (ps.detail) {
