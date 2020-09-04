@@ -6,13 +6,12 @@ import { createApp } from 'vue';
 import VueMeta from 'vue-meta';
 import VAnimateCss from 'v-animate-css';
 import { createI18n } from 'vue-i18n';
-//import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
 
 import VueHotkey from './scripts/hotkey';
 import Root from './root.vue';
-import FontAwesomeIcon from './components/fa.vue';
 import Stream from './scripts/stream';
 import widgets from './widgets';
 import directives from './directives';
