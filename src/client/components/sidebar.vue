@@ -127,7 +127,7 @@ export default defineComponent({
 		search() {
 			if (this.searching) return;
 
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
@@ -277,7 +277,7 @@ export default defineComponent({
 		async addAcount() {
 			this.$root.new(await import('./signin-dialog.vue')).$once('login', res => {
 				this.$store.dispatch('addAcount', res);
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -297,7 +297,7 @@ export default defineComponent({
 		},
 
 		switchAccountWithToken(token: string) {
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'waiting',
 				iconOnly: true
 			});

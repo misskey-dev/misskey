@@ -61,7 +61,7 @@ export default defineComponent({
 			}).then((relay: any) => {
 				this.refresh();
 			}).catch((e: any) => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message || e
 				});
@@ -74,7 +74,7 @@ export default defineComponent({
 			}).then(() => {
 				this.refresh();
 			}).catch((e: any) => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message || e
 				});

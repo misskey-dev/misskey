@@ -1,7 +1,7 @@
 export default ($root: any) => {
 	if ($root.$store.getters.isSignedIn) return;
 
-	$root.dialog({
+	$root.showDialog({
 		title: $root.$t('signinRequired'),
 		text: null
 	});

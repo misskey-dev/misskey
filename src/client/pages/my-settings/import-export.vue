@@ -45,12 +45,12 @@ export default defineComponent({
 				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
 				null, {})
 			.then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'info',
 					text: this.$t('exportRequested')
 				});
 			}).catch((e: any) => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message
 				});
@@ -68,7 +68,7 @@ export default defineComponent({
 			data.append('file', file);
 			data.append('i', this.$store.state.i.token);
 
-			const dialog = this.$root.dialog({
+			const dialog = this.$root.showDialog({
 				type: 'waiting',
 				text: this.$t('uploading') + '...',
 				showOkButton: false,
@@ -85,7 +85,7 @@ export default defineComponent({
 				this.reqImport(f);
 			})
 			.catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -102,12 +102,12 @@ export default defineComponent({
 				null, {
 					fileId: file.id
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'info',
 					text: this.$t('importRequested')
 				});
 			}).catch((e: any) => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message
 				});

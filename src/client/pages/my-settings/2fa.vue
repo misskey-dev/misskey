@@ -89,7 +89,7 @@ export default defineComponent({
 	},
 	methods: {
 		register() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('password'),
 				input: {
 					type: 'password'
@@ -105,7 +105,7 @@ export default defineComponent({
 		},
 
 		unregister() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('password'),
 				input: {
 					type: 'password'
@@ -118,7 +118,7 @@ export default defineComponent({
 					this.usePasswordLessLogin = false;
 					this.updatePasswordLessLogin();
 				}).then(() => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
@@ -131,13 +131,13 @@ export default defineComponent({
 			this.$root.api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 				this.$store.state.i.twoFactorEnabled = true;
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					iconOnly: true, autoClose: true
 				});
@@ -156,7 +156,7 @@ export default defineComponent({
 			}).then(key => {
 				this.registration = null;
 				key.lastUsed = new Date();
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -164,7 +164,7 @@ export default defineComponent({
 		},
 
 		unregisterKey(key) {
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('password'),
 				input: {
 					type: 'password'
@@ -178,7 +178,7 @@ export default defineComponent({
 					this.usePasswordLessLogin = false;
 					this.updatePasswordLessLogin();
 				}).then(() => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
@@ -187,7 +187,7 @@ export default defineComponent({
 		},
 
 		addSecurityKey() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('password'),
 				input: {
 					type: 'password'

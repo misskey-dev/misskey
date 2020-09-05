@@ -49,7 +49,7 @@ export default defineComponent({
 					ast = parse(this.page.script);
 				} catch (e) {
 					console.error(e);
-					/*this.$root.dialog({
+					/*this.$root.showDialog({
 						type: 'error',
 						text: 'Syntax error :('
 					});*/
@@ -59,7 +59,7 @@ export default defineComponent({
 					this.hpml.eval();
 				}).catch(e => {
 					console.error(e);
-					/*this.$root.dialog({
+					/*this.$root.showDialog({
 						type: 'error',
 						text: e
 					});*/

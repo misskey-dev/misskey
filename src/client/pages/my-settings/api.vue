@@ -33,7 +33,7 @@ export default defineComponent({
 					permission: permissions,
 				});
 
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					title: this.$t('token'),
 					text: token
@@ -41,7 +41,7 @@ export default defineComponent({
 			});
 		},
 		regenerateToken() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('password'),
 				input: {
 					type: 'password'

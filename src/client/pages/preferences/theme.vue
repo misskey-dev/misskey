@@ -194,7 +194,7 @@ export default defineComponent({
 
 		copyThemeCode() {
 			copyToClipboard(this.selectedThemeCode);
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -206,21 +206,21 @@ export default defineComponent({
 			try {
 				theme = JSON5.parse(code);
 			} catch (e) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: this.$t('_theme.invalid')
 				});
 				return false;
 			}
 			if (!validateTheme(theme)) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: this.$t('_theme.invalid')
 				});
 				return false;
 			}
 			if (this.$store.state.device.themes.some(t => t.id === theme.id)) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'info',
 					text: this.$t('_theme.alreadyInstalled')
 				});
@@ -242,7 +242,7 @@ export default defineComponent({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
 			});
@@ -254,7 +254,7 @@ export default defineComponent({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

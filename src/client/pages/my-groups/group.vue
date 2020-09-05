@@ -93,12 +93,12 @@ export default defineComponent({
 					groupId: this.group.id,
 					userId: user.id
 				}).then(() => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}).catch(e => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						text: e
 					});
@@ -116,7 +116,7 @@ export default defineComponent({
 		},
 
 		async renameGroup() {
-			const { canceled, result: name } = await this.$root.dialog({
+			const { canceled, result: name } = await this.$root.showDialog({
 				title: this.$t('groupName'),
 				input: {
 					default: this.group.name
@@ -138,12 +138,12 @@ export default defineComponent({
 					groupId: this.group.id,
 					userId: user.id
 				}).then(() => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}).catch(e => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						text: e
 					});
@@ -152,7 +152,7 @@ export default defineComponent({
 		},
 
 		async deleteGroup() {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await this.$root.showDialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.group.name }),
 				showCancelButton: true
@@ -162,7 +162,7 @@ export default defineComponent({
 			await this.$root.api('users/groups/delete', {
 				groupId: this.group.id
 			});
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

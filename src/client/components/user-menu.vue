@@ -100,13 +100,13 @@ export default defineComponent({
 			const t = this.$t('selectList'); // なぜか後で参照すると null になるので最初にメモリに確保しておく
 			const lists = await this.$root.api('users/lists/list');
 			if (lists.length === 0) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: this.$t('youHaveNoLists')
 				});
 				return;
 			}
-			const { canceled, result: listId } = await this.$root.dialog({
+			const { canceled, result: listId } = await this.$root.showDialog({
 				type: null,
 				title: t,
 				select: {
@@ -121,12 +121,12 @@ export default defineComponent({
 				listId: listId,
 				userId: this.user.id
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -136,13 +136,13 @@ export default defineComponent({
 		async inviteGroup() {
 			const groups = await this.$root.api('users/groups/owned');
 			if (groups.length === 0) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: this.$t('youHaveNoGroups')
 				});
 				return;
 			}
-			const { canceled, result: groupId } = await this.$root.dialog({
+			const { canceled, result: groupId } = await this.$root.showDialog({
 				type: null,
 				title: this.$t('group'),
 				select: {
@@ -157,12 +157,12 @@ export default defineComponent({
 				groupId: groupId,
 				userId: this.user.id
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -174,12 +174,12 @@ export default defineComponent({
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = !this.user.isMuted;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -193,12 +193,12 @@ export default defineComponent({
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = !this.user.isBlocking;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -212,12 +212,12 @@ export default defineComponent({
 				userId: this.user.id
 			}).then(() => {
 				this.user.isSilenced = !this.user.isSilenced;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -231,12 +231,12 @@ export default defineComponent({
 				userId: this.user.id
 			}).then(() => {
 				this.user.isSuspended = !this.user.isSuspended;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -244,7 +244,7 @@ export default defineComponent({
 		},
 
 		async getConfirmed(text: string): Promise<Boolean> {
-			const confirm = await this.$root.dialog({
+			const confirm = await this.$root.showDialog({
 				type: 'warning',
 				showCancelButton: true,
 				title: 'confirm',

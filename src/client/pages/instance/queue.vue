@@ -57,7 +57,7 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'warning',
 				title: this.$t('clearQueueConfirmTitle'),
 				text: this.$t('clearQueueConfirmText'),
@@ -66,7 +66,7 @@ export default defineComponent({
 				if (canceled) return;
 
 				this.$root.api('admin/queue/clear', {}).then(() => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});

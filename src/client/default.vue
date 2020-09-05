@@ -301,7 +301,7 @@ export default defineComponent({
 		search() {
 			if (this.searching) return;
 
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
@@ -351,7 +351,7 @@ export default defineComponent({
 		},
 
 		async addWidget(place) {
-			const { canceled, result: widget } = await this.$root.dialog({
+			const { canceled, result: widget } = await this.$root.showDialog({
 				type: null,
 				title: this.$t('chooseWidget'),
 				select: {

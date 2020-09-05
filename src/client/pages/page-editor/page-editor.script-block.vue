@@ -210,7 +210,7 @@ export default defineComponent({
 
 	methods: {
 		async changeType() {
-			const { canceled, result: type } = await this.$root.dialog({
+			const { canceled, result: type } = await this.$root.showDialog({
 				type: null,
 				title: this.$t('_pages.selectType'),
 				select: {

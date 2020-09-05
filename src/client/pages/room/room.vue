@@ -141,7 +141,7 @@ export default defineComponent({
 
 	beforeRouteLeave(to, from, next) {
 		if (this.changed) {
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'warning',
 				text: this.$t('leaveConfirm'),
 				showCancelButton: true
@@ -171,7 +171,7 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: id } = await this.$root.dialog({
+			const { canceled, result: id } = await this.$root.showDialog({
 				type: null,
 				title: this.$t('_rooms.addFurniture'),
 				select: {
@@ -198,12 +198,12 @@ export default defineComponent({
 				room: room.getRoomInfo()
 			}).then(() => {
 				this.changed = false;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch((e: any) => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message
 				});
@@ -211,7 +211,7 @@ export default defineComponent({
 		},
 
 		clear() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'warning',
 				text: this.$t('_rooms.clearConfirm'),
 				showCancelButton: true

@@ -93,12 +93,12 @@ export default defineComponent({
 					userId: user.id
 				}).then(() => {
 					this.users.push(user);
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}).catch(e => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						text: e
 					});
@@ -116,7 +116,7 @@ export default defineComponent({
 		},
 
 		async renameList() {
-			const { canceled, result: name } = await this.$root.dialog({
+			const { canceled, result: name } = await this.$root.showDialog({
 				title: this.$t('enterListName'),
 				input: {
 					default: this.list.name
@@ -133,7 +133,7 @@ export default defineComponent({
 		},
 
 		async deleteList() {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await this.$root.showDialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.list.name }),
 				showCancelButton: true
@@ -143,7 +143,7 @@ export default defineComponent({
 			await this.$root.api('users/lists/delete', {
 				listId: this.list.id
 			});
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

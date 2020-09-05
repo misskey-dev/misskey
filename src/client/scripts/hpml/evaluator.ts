@@ -42,7 +42,7 @@ export class Hpml {
 			}), ...initLib(this)}, {
 				in: (q) => {
 					return new Promise(ok => {
-						vm.$root.dialog({
+						vm.$root.showDialog({
 							title: q,
 							input: {}
 						}).then(({ canceled, result: a }) => {

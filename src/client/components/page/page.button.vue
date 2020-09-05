@@ -24,7 +24,7 @@ export default defineComponent({
 		click() {
 			if (this.value.action === 'dialog') {
 				this.hpml.eval();
-				this.$root.dialog({
+				this.$root.showDialog({
 					text: this.hpml.interpolate(this.value.content)
 				});
 			} else if (this.value.action === 'resetRandom') {
@@ -39,7 +39,7 @@ export default defineComponent({
 					} : {})
 				});
 
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					text: this.hpml.interpolate(this.value.message)
 				});

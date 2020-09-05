@@ -255,7 +255,7 @@ export default defineComponent({
 			this.$root.api('admin/federation/remove-all-following', {
 				host: this.instance.host
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -266,7 +266,7 @@ export default defineComponent({
 			this.$root.api('admin/federation/delete-all-files', {
 				host: this.instance.host
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

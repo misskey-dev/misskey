@@ -402,7 +402,7 @@ export default defineComponent({
 	mounted() {
 		this.$refs.enableHcaptcha.$on('change', () => {
 			if (this.enableHcaptcha && this.enableRecaptcha) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'question', // warning だと間違って cancel するかもしれない
 					showCancelButton: true,
 					title: this.$t('settingGuide'),
@@ -419,7 +419,7 @@ export default defineComponent({
 
 		this.$refs.enableRecaptcha.$on('change', () => {
 			if (this.enableRecaptcha && this.enableHcaptcha) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'question', // warning だと間違って cancel するかもしれない
 					showCancelButton: true,
 					title: this.$t('settingGuide'),
@@ -438,12 +438,12 @@ export default defineComponent({
 	methods: {
 		invite() {
 			this.$root.api('admin/invite').then(x => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'info',
 					text: x.code
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -472,12 +472,12 @@ export default defineComponent({
 				subject: 'Test email',
 				text: 'Yo'
 			}).then(x => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					splash: true
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -546,13 +546,13 @@ export default defineComponent({
 			}).then(() => {
 				this.$store.dispatch('instance/fetch');
 				if (withDialog) {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});

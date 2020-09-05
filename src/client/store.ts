@@ -263,7 +263,18 @@ export const store = createStore({
 		},
 
 		showDialog(state, dialog) {
-			state.dialogs.push(dialog);
+			state.dialogs.push({
+				...dialog,
+				id: Math.random().toString() // TODO: uuidとか使う
+			});
+		},
+
+		requestDialogClose(state, dialogId) {
+			state.dialogs.find(d => d.id === dialogId).closing = true;
+		},
+
+		removeDialog(state, dialogId) {
+			state.dialogs = state.dialogs.filter(d => d.id !== dialogId);
 		},
 
 		setFullView(state, v) {

@@ -149,13 +149,13 @@ export default defineComponent({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$root.dialog({
+							this.$root.showDialog({
 								title: this.$t('unableToProcess'),
 								text: this.$t('circularReferenceFolder')
 							});
 							break;
 						default:
-							this.$root.dialog({
+							this.$root.showDialog({
 								type: 'error',
 								text: this.$t('error')
 							});
@@ -189,7 +189,7 @@ export default defineComponent({
 		},
 
 		rename() {
-			this.$root.dialog({
+			this.$root.showDialog({
 				title: this.$t('renameFolder'),
 				input: {
 					placeholder: this.$t('inputNewFolderName'),
@@ -217,14 +217,14 @@ export default defineComponent({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						this.$root.dialog({
+						this.$root.showDialog({
 							type: 'error',
 							title: this.$t('unableToDelete'),
 							text: this.$t('hasChildFilesOrFolders')
 						});
 						break;
 					default:
-						this.$root.dialog({
+						this.$root.showDialog({
 							type: 'error',
 							text: this.$t('unableToDelete')
 						});

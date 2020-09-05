@@ -578,7 +578,7 @@ export default defineComponent({
 
 		deleteAllLogs() {
 			this.$root.api('admin/delete-logs').then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

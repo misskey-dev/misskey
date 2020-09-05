@@ -9,14 +9,14 @@ export function createAiScriptEnv(vm, opts) {
 		USER_NAME: vm.$store.getters.isSignedIn ? values.STR(vm.$store.state.i.name) : values.NULL,
 		USER_USERNAME: vm.$store.getters.isSignedIn ? values.STR(vm.$store.state.i.username) : values.NULL,
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
-			await vm.$root.dialog({
+			await vm.$root.showDialog({
 				type: type ? type.value : 'info',
 				title: title.value,
 				text: text.value,
 			});
 		}),
 		'Mk:confirm': values.FN_NATIVE(async ([title, text, type]) => {
-			const confirm = await vm.$root.dialog({
+			const confirm = await vm.$root.showDialog({
 				type: type ? type.value : 'question',
 				showCancelButton: true,
 				title: title.value,

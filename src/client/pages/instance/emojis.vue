@@ -128,7 +128,7 @@ export default defineComponent({
 		async add(e) {
 			const files = await selectFile(this, e.currentTarget || e.target, null, true);
 
-			const dialog = this.$root.dialog({
+			const dialog = this.$root.showDialog({
 				type: 'waiting',
 				text: this.$t('doing') + '...',
 				showOkButton: false,
@@ -141,7 +141,7 @@ export default defineComponent({
 			})))
 			.then(() => {
 				this.$refs.emojis.reload();
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -159,7 +159,7 @@ export default defineComponent({
 				aliases: this.aliases.split(' '),
 			});
 
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -168,7 +168,7 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await this.$root.showDialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.selected.name }),
 				showCancelButton: true
@@ -187,12 +187,12 @@ export default defineComponent({
 				emojiId: this.selectedRemote.id,
 			}).then(() => {
 				this.$refs.emojis.reload();
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});

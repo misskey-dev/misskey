@@ -64,7 +64,7 @@ export default defineComponent({
 				initialText: text.trim()
 			}).$once('posted', () => {
 				this.posted = true;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

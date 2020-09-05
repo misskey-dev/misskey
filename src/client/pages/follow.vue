@@ -11,7 +11,7 @@ export default defineComponent({
 		const acct = new URL(location.href).searchParams.get('acct');
 		if (acct == null) return;
 
-		const dialog = this.$root.dialog({
+		const dialog = this.$root.showDialog({
 			type: 'waiting',
 			text: this.$t('fetchingAsApObject') + '...',
 			showOkButton: false,
@@ -26,7 +26,7 @@ export default defineComponent({
 				if (res.type == 'User') {
 					this.follow(res.object);
 				} else {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						text: 'Not a user'
 					}).then(() => {
@@ -34,7 +34,7 @@ export default defineComponent({
 					});
 				}
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				}).then(() => {
@@ -47,7 +47,7 @@ export default defineComponent({
 			this.$root.api('users/show', parseAcct(acct)).then(user => {
 				this.follow(user);
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				}).then(() => {
@@ -61,7 +61,7 @@ export default defineComponent({
 
 	methods: {
 		async follow(user) {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await this.$root.showDialog({
 				type: 'question',
 				text: this.$t('followConfirm', { name: user.name || user.username }),
 				showCancelButton: true
@@ -75,14 +75,14 @@ export default defineComponent({
 			this.$root.api('following/create', {
 				userId: user.id
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				}).then(() => {
 					window.close();
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				}).then(() => {

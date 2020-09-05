@@ -295,7 +295,7 @@ export default defineComponent({
 
 	watch: {
 		lang() {
-			const dialog = this.$root.dialog({
+			const dialog = this.$root.showDialog({
 				type: 'waiting',
 				iconOnly: true
 			});
@@ -306,7 +306,7 @@ export default defineComponent({
 				.then(() => location.reload())
 				.catch(() => {
 					dialog.close();
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						iconOnly: true,
 						autoClose: true

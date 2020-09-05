@@ -206,11 +206,12 @@ export default defineComponent({
 			});
 		});
 
-		this.$on('keydown', (e: KeyboardEvent) => {
+		// TODO: vue3
+		/*this.$on('keydown', (e: KeyboardEvent) => {
 			if (e.code == 'Enter') {
 				this.$emit('enter');
 			}
-		});
+		});*/
 	},
 	methods: {
 		focus() {

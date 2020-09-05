@@ -82,14 +82,14 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await this.$root.dialog({
+			const { canceled, result: name } = await this.$root.showDialog({
 				title: this.$t('groupName'),
 				input: true
 			});
 			if (canceled) return;
 			await this.$root.api('users/groups/create', { name: name });
 			this.$refs.owned.reload();
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -98,7 +98,7 @@ export default defineComponent({
 			this.$root.api('users/groups/invitations/accept', {
 				invitationId: invitation.id
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

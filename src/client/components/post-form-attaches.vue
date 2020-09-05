@@ -62,7 +62,7 @@ export default defineComponent({
 			});
 		},
 		async rename(file) {
-			const { canceled, result } = await this.$root.dialog({
+			const { canceled, result } = await this.$root.showDialog({
 				title: this.$t('enterFileName'),
 				input: {
 					default: file.name

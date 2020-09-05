@@ -145,7 +145,7 @@ export default defineComponent({
 				this.$emit('login', res);
 			}).catch(err => {
 				if (err === null) return;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: this.$t('signinFailed')
 				});
@@ -166,7 +166,7 @@ export default defineComponent({
 						this.challengeData = res;
 						return this.queryKey();
 					}).catch(() => {
-						this.$root.dialog({
+						this.$root.showDialog({
 							type: 'error',
 							text: this.$t('signinFailed')
 						});
@@ -186,7 +186,7 @@ export default defineComponent({
 				}).then(res => {
 					this.$emit('login', res);
 				}).catch(() => {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						text: this.$t('loginFailed')
 					});

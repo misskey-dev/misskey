@@ -97,7 +97,7 @@ export default defineComponent({
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
 					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
-						? await this.$root.dialog({
+						? await this.$root.showDialog({
 							title: this.$t('enterFileName'),
 							input: {
 								default: formatted
@@ -109,7 +109,7 @@ export default defineComponent({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'error',
 						text: this.$t('onlyOneFileCanBeAttached')
 					});
@@ -134,7 +134,7 @@ export default defineComponent({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: this.$t('onlyOneFileCanBeAttached')
 				});

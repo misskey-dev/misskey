@@ -89,7 +89,7 @@ export default defineComponent({
 
 		async updateRemoteUser() {
 			await this.$root.api('admin/update-remote-user', { userId: this.user.id }).then(res => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -98,7 +98,7 @@ export default defineComponent({
 		},
 
 		async resetPassword() {
-			const dialog = this.$root.dialog({
+			const dialog = this.$root.showDialog({
 				type: 'waiting',
 				iconOnly: true
 			});
@@ -106,12 +106,12 @@ export default defineComponent({
 			this.$root.api('admin/reset-password', {
 				userId: this.user.id,
 			}).then(({ password }) => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					text: this.$t('newPasswordIs', { password })
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e
 				});
@@ -121,7 +121,7 @@ export default defineComponent({
 		},
 
 		async toggleSilence() {
-			const confirm = await this.$root.dialog({
+			const confirm = await this.$root.showDialog({
 				type: 'warning',
 				showCancelButton: true,
 				text: this.silenced ? this.$t('silenceConfirm') : this.$t('unsilenceConfirm'),
@@ -135,7 +135,7 @@ export default defineComponent({
 		},
 
 		async toggleSuspend() {
-			const confirm = await this.$root.dialog({
+			const confirm = await this.$root.showDialog({
 				type: 'warning',
 				showCancelButton: true,
 				text: this.suspended ? this.$t('suspendConfirm') : this.$t('unsuspendConfirm'),
@@ -154,7 +154,7 @@ export default defineComponent({
 		},
 
 		async deleteAllFiles() {
-			const confirm = await this.$root.dialog({
+			const confirm = await this.$root.showDialog({
 				type: 'warning',
 				showCancelButton: true,
 				text: this.$t('deleteAllFilesConfirm'),
@@ -162,13 +162,13 @@ export default defineComponent({
 			if (confirm.canceled) return;
 			const process = async () => {
 				await this.$root.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			};
 			await process().catch(e => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.toString()
 				});

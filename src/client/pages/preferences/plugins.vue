@@ -85,7 +85,7 @@ export default defineComponent({
 			try {
 				ast = parse(this.script);
 			} catch (e) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: 'Syntax error :('
 				});
@@ -93,7 +93,7 @@ export default defineComponent({
 			}
 			const meta = AiScript.collectMetadata(ast);
 			if (meta == null) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: 'No metadata found :('
 				});
@@ -101,7 +101,7 @@ export default defineComponent({
 			}
 			const data = meta.get(null);
 			if (data == null) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: 'No metadata found :('
 				});
@@ -109,7 +109,7 @@ export default defineComponent({
 			}
 			const { name, version, author, description, permissions, config } = data;
 			if (name == null || version == null || author == null) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: 'Required property not found :('
 				});
@@ -142,7 +142,7 @@ export default defineComponent({
 				ast: serialize(ast)
 			});
 
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -154,7 +154,7 @@ export default defineComponent({
 
 		uninstall() {
 			this.$store.commit('deviceUser/uninstallPlugin', this.selectedPluginId);
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

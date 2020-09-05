@@ -469,7 +469,7 @@ export default defineComponent({
 			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'info',
 					text: this.$t('quoteQuestion'),
 					showCancelButton: true

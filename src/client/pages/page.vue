@@ -105,7 +105,7 @@ export default defineComponent({
 			this.$root.api('i/update', {
 				pinnedPageId: pin ? this.page.id : null,
 			}).then(() => {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

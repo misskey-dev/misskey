@@ -160,14 +160,14 @@ export default defineComponent({
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
-					this.$root.dialog({
+					this.$root.showDialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}
 			}).catch(err => {
 				this.saving = false;
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: err.id
 				});

@@ -155,7 +155,7 @@ export default defineComponent({
 		},
 
 		async confirm(): Promise<boolean> {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await this.$root.showDialog({
 				type: 'warning',
 				text: this.$t('leaveConfirm'),
 				showCancelButton: true
@@ -172,7 +172,7 @@ export default defineComponent({
 		},
 	
 		async del(i: number) {
-			const { canceled } = await this.$root.dialog({ 
+			const { canceled } = await this.$root.showDialog({ 
 				type: 'warning',
 				showCancelButton: true,
 				text: this.$t('_theme.deleteConstantConfirm', { const: this.theme[i][0] }),
@@ -182,7 +182,7 @@ export default defineComponent({
 		},
 	
 		async addConst() {
-			const { canceled, result } = await this.$root.dialog({
+			const { canceled, result } = await this.$root.showDialog({
 				title: this.$t('_theme.inputConstantName'),
 				input: true
 			});
@@ -196,7 +196,7 @@ export default defineComponent({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			this.$root.dialog({
+			this.$root.showDialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
 			});
@@ -208,7 +208,7 @@ export default defineComponent({
 			try {
 				applyTheme(theme, false);
 			} catch (e) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message
 				});
@@ -229,7 +229,7 @@ export default defineComponent({
 				this.theme = convertToViewModel(theme);
 				this.themeToImport = '';
 			} catch (e) {
-				this.$root.dialog({
+				this.$root.showDialog({
 					type: 'error',
 					text: e.message
 				});

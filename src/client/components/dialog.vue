@@ -1,10 +1,10 @@
 <template>
-<div class="mk-dialog" :class="{ iconOnly }">
+<div class="mk-dialog" :class="{ iconOnly }" :style="{ pointerEvents: closing ? 'none' : 'auto' }">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
-		<div class="bg _modalBg" ref="bg" @click="onBgClick" v-if="show"></div>
+		<div class="bg _modalBg" @click="onBgClick" v-if="!closing" :style="{ pointerEvents: closing ? 'none' : 'auto' }"></div>
 	</transition>
-	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="() => { destroyDom(); }">
-		<div class="main" ref="main" v-if="show">
+	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="$emit('closed')">
+		<div class="main" v-if="!closing" :style="{ pointerEvents: closing ? 'none' : 'auto' }">
 			<template v-if="type == 'signin'">
 				<mk-signin/>
 			</template>
@@ -114,12 +114,15 @@ export default defineComponent({
 		autoClose: {
 			type: Boolean,
 			default: false
-		}
+		},
+		closing: {
+			type: Boolean,
+			default: false
+		},
 	},
 
 	data() {
 		return {
-			show: true,
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			userInputValue: null,
 			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
@@ -137,7 +140,7 @@ export default defineComponent({
 					this.canOk = false;
 				});
 			}
-		}
+		},
 	},
 
 	mounted() {
@@ -145,7 +148,7 @@ export default defineComponent({
 
 		if (this.autoClose) {
 			setTimeout(() => {
-				this.close();
+				this.$emit('ok');
 			}, 1000);
 		}
 
@@ -165,7 +168,6 @@ export default defineComponent({
 				const user = await this.$root.api('users/show', parseAcct(this.userInputValue));
 				if (user) {
 					this.$emit('ok', user);
-					this.close();
 				}
 			} else {
 				const result =
@@ -173,21 +175,11 @@ export default defineComponent({
 					this.select ? this.selectedValue :
 					true;
 				this.$emit('ok', result);
-				this.close();
 			}
 		},
 
 		cancel() {
 			this.$emit('cancel');
-			this.close();
-		},
-
-		close() {
-			if (!this.show) return;
-			this.show = false;
-			this.$el.style.pointerEvents = 'none';
-			(this.$refs.bg as any).style.pointerEvents = 'none';
-			(this.$refs.main as any).style.pointerEvents = 'none';
 		},
 
 		onBgClick() {
