@@ -1,11 +1,13 @@
 <template>
 <div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none' }">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
-		<div class="bg _modalBg" ref="bg" v-if="showing" @click="$emit('click')"></div>
+		<div class="bg _modalBg" v-if="showing" @click="$emit('click')"></div>
 	</transition>
-	<transition :name="$store.state.device.animation ? 'modal' : ''" appear @after-leave="$emit('closed')">
-		<div class="content" ref="content" v-if="showing" @click.self="$emit('click')"><slot></slot></div>
-	</transition>
+	<div class="content" @click.self="$emit('click')">
+		<transition :name="$store.state.device.animation ? 'modal' : ''" appear @after-leave="$emit('closed')">
+			<slot v-if="showing"></slot>
+		</transition>
+	</div>
 </div>
 </template>
 
@@ -13,7 +15,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	emits: ['click', 'esc'],
+	emits: ['click', 'esc', 'closed'],
 	props: {
 		showing: {
 			type: Boolean,
