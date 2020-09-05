@@ -191,6 +191,7 @@ export default defineComponent({
 
 		return {
 			id,
+			v,
 			focused,
 			changed,
 			filled,
