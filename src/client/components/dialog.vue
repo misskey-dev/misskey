@@ -1,10 +1,10 @@
 <template>
 <div class="mk-dialog" :class="{ iconOnly }" :style="{ pointerEvents: closing ? 'none' : 'auto' }">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
-		<div class="bg _modalBg" @click="onBgClick" v-if="!closing" :style="{ pointerEvents: closing ? 'none' : 'auto' }"></div>
+		<div class="bg _modalBg" @click="onBgClick" v-if="!closing"></div>
 	</transition>
 	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="$emit('closed')">
-		<div class="main" v-if="!closing" :style="{ pointerEvents: closing ? 'none' : 'auto' }">
+		<div class="main" v-if="!closing">
 			<template v-if="type == 'signin'">
 				<mk-signin/>
 			</template>
@@ -214,6 +214,7 @@ export default defineComponent({
 .dialog-enter-from, .dialog-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
+	pointer-events: none;
 }
 
 .bg-fade-enter-active, .bg-fade-leave-active {
@@ -221,6 +222,7 @@ export default defineComponent({
 }
 .bg-fade-enter-from, .bg-fade-leave-to {
 	opacity: 0;
+	pointer-events: none;
 }
 
 .mk-dialog {
