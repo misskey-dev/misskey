@@ -73,6 +73,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			showing: true,
 			faCircle
 		};
 	},
