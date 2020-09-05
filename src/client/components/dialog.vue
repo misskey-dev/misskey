@@ -209,7 +209,7 @@ export default defineComponent({
 .dialog-enter-active, .dialog-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.dialog-enter, .dialog-leave-to {
+.dialog-enter-from, .dialog-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
 }
@@ -217,7 +217,7 @@ export default defineComponent({
 .bg-fade-enter-active, .bg-fade-leave-active {
 	transition: opacity 0.3s !important;
 }
-.bg-fade-enter, .bg-fade-leave-to {
+.bg-fade-enter-from, .bg-fade-leave-to {
 	opacity: 0;
 }
 
