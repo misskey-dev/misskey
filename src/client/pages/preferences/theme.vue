@@ -22,10 +22,10 @@
 				</label>
 			</div>
 		</div>
-		<mk-switch v-model="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
+		<mk-switch v-model:value="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</mk-switch>
 	</div>
 	<div class="_content">
-		<mk-select v-model="lightTheme">
+		<mk-select v-model:value="lightTheme">
 			<template #label>{{ $t('themeForLightMode') }}</template>
 			<optgroup :label="$t('lightThemes')">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -34,7 +34,7 @@
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</mk-select>
-		<mk-select v-model="darkTheme">
+		<mk-select v-model:value="darkTheme">
 			<template #label>{{ $t('themeForDarkMode') }}</template>
 			<optgroup :label="$t('darkThemes')">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -52,7 +52,7 @@
 	<div class="_content">
 		<details>
 			<summary><fa :icon="faDownload"/> {{ $t('_theme.install') }}</summary>
-			<mk-textarea v-model="installThemeCode">
+			<mk-textarea v-model:value="installThemeCode">
 				<span>{{ $t('_theme.code') }}</span>
 			</mk-textarea>
 			<mk-button @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><fa :icon="faCheck"/> {{ $t('install') }}</mk-button>
@@ -62,7 +62,7 @@
 	<div class="_content">
 		<details>
 			<summary><fa :icon="faFolderOpen"/> {{ $t('_theme.manage') }}</summary>
-			<mk-select v-model="selectedThemeId">
+			<mk-select v-model:value="selectedThemeId">
 				<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</mk-select>
 			<template v-if="selectedTheme">

@@ -3,7 +3,7 @@
 	<portal to="header"><fa :icon="faTerminal"/>{{ $t('scratchpad') }}</portal>
 
 	<div class="_panel">
-		<prism-editor class="_code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
+		<prism-editor class="_code" v-model:value="code" :highlight="highlighter" :line-numbers="false"/>
 		<mk-button style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><fa :icon="faPlay"/></mk-button>
 	</div>
 

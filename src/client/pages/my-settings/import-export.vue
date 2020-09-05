@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
-		<mk-select v-model="exportTarget">
+		<mk-select v-model:value="exportTarget">
 			<option value="notes">{{ $t('_exportOrImport.allNotes') }}</option>
 			<option value="following">{{ $t('_exportOrImport.followingList') }}</option>
 			<option value="user-lists">{{ $t('_exportOrImport.userLists') }}</option>

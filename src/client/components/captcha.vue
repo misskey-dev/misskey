@@ -110,7 +110,7 @@ export default defineComponent({
 			}
 		},
 		callback(response?: string) {
-			this.$emit('input', typeof response == 'string' ? response : null);
+			this.$emit('update:value', typeof response == 'string' ? response : null);
 		},
 	},
 });

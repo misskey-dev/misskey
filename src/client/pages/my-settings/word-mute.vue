@@ -2,18 +2,18 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faCommentSlash"/> {{ $t('wordMute') }}</div>
 	<div class="_content _noPad">
-		<mk-tab v-model="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]"/>
+		<mk-tab v-model:value="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]"/>
 	</div>
 	<div class="_content" v-show="tab === 'soft'">
 		<mk-info>{{ $t('_wordMute.softDescription') }}</mk-info>
-		<mk-textarea v-model="softMutedWords">
+		<mk-textarea v-model:value="softMutedWords">
 			<span>{{ $t('_wordMute.muteWords') }}</span>
 			<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
 		</mk-textarea>
 	</div>
 	<div class="_content" v-show="tab === 'hard'">
 		<mk-info>{{ $t('_wordMute.hardDescription') }}</mk-info>
-		<mk-textarea v-model="hardMutedWords" style="margin-bottom: 16px;">
+		<mk-textarea v-model:value="hardMutedWords" style="margin-bottom: 16px;">
 			<span>{{ $t('_wordMute.muteWords') }}</span>
 			<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
 		</mk-textarea>

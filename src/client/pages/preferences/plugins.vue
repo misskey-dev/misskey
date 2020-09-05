@@ -5,7 +5,7 @@
 		<details>
 			<summary><fa :icon="faDownload"/> {{ $t('install') }}</summary>
 			<mk-info warn>{{ $t('pluginInstallWarn') }}</mk-info>
-			<mk-textarea v-model="script" tall>
+			<mk-textarea v-model:value="script" tall>
 				<span>{{ $t('script') }}</span>
 			</mk-textarea>
 			<mk-button @click="install()" primary><fa :icon="faSave"/> {{ $t('install') }}</mk-button>
@@ -14,7 +14,7 @@
 	<div class="_content">
 		<details>
 			<summary><fa :icon="faFolderOpen"/> {{ $t('manage') }}</summary>
-			<mk-select v-model="selectedPluginId">
+			<mk-select v-model:value="selectedPluginId">
 				<option v-for="x in $store.state.deviceUser.plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</mk-select>
 			<template v-if="selectedPlugin">

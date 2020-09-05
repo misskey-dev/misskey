@@ -1,6 +1,6 @@
 <template>
 <div class="hkcxmtwj">
-	<mk-switch v-model="v">{{ hpml.interpolate(value.text) }}</mk-switch>
+	<mk-switch v-model:value="v">{{ hpml.interpolate(value.text) }}</mk-switch>
 </div>
 </template>
 

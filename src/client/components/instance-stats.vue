@@ -87,7 +87,7 @@
 		<div class="_title" style="position: relative;"><fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><fa :icon="faSync"/></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
-				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
+				<mk-select v-model:value="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="$t('federation')">
 						<option value="federation-instances">{{ $t('_charts.federationInstancesIncDec') }}</option>
 						<option value="federation-instances-total">{{ $t('_charts.federationInstancesTotal') }}</option>
@@ -110,7 +110,7 @@
 						<option value="drive-total">{{ $t('_charts.storageUsageTotal') }}</option>
 					</optgroup>
 				</mk-select>
-				<mk-select v-model="chartSpan" style="margin: 0;">
+				<mk-select v-model:value="chartSpan" style="margin: 0;">
 					<option value="hour">{{ $t('perHour') }}</option>
 					<option value="day">{{ $t('perDay') }}</option>
 				</mk-select>

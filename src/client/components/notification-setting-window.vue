@@ -3,7 +3,7 @@
 	<template #header>{{ $t('notificationSetting') }}</template>
 	<div class="vv94n3oa">
 		<div v-if="showGlobalToggle">
-			<mk-switch v-model="useGlobalSetting">
+			<mk-switch v-model:value="useGlobalSetting">
 				{{ $t('useGlobalSetting') }}
 				<template #desc>{{ $t('useGlobalSettingDesc') }}</template>
 			</mk-switch>
@@ -12,7 +12,7 @@
 			<mk-info>{{ $t('notificationSettingDesc') }}</mk-info>
 			<mk-button inline @click="disableAll">{{ $t('disableAll') }}</mk-button>
 			<mk-button inline @click="enableAll">{{ $t('enableAll') }}</mk-button>
-			<mk-switch v-for="type in notificationTypes" :key="type" v-model="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</mk-switch>
+			<mk-switch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</mk-switch>
 		</div>
 	</div>
 </x-window>

@@ -2,10 +2,10 @@
 <div class="shaynizk _card">
 	<div class="_title" v-if="antenna.name">{{ antenna.name }}</div>
 	<div class="_content body">
-		<mk-input v-model="name">
+		<mk-input v-model:value="name">
 			<span>{{ $t('name') }}</span>
 		</mk-input>
-		<mk-select v-model="src">
+		<mk-select v-model:value="src">
 			<template #label>{{ $t('antennaSource') }}</template>
 			<option value="all">{{ $t('_antennaSources.all') }}</option>
 			<option value="home">{{ $t('_antennaSources.homeTimeline') }}</option>
@@ -13,30 +13,30 @@
 			<option value="list">{{ $t('_antennaSources.userList') }}</option>
 			<option value="group">{{ $t('_antennaSources.userGroup') }}</option>
 		</mk-select>
-		<mk-select v-model="userListId" v-if="src === 'list'">
+		<mk-select v-model:value="userListId" v-if="src === 'list'">
 			<template #label>{{ $t('userList') }}</template>
 			<option v-for="list in userLists" :value="list.id" :key="list.id">{{ list.name }}</option>
 		</mk-select>
-		<mk-select v-model="userGroupId" v-else-if="src === 'group'">
+		<mk-select v-model:value="userGroupId" v-else-if="src === 'group'">
 			<template #label>{{ $t('userGroup') }}</template>
 			<option v-for="group in userGroups" :value="group.id" :key="group.id">{{ group.name }}</option>
 		</mk-select>
-		<mk-textarea v-model="users" v-else-if="src === 'users'">
+		<mk-textarea v-model:value="users" v-else-if="src === 'users'">
 			<span>{{ $t('users') }}</span>
 			<template #desc>{{ $t('antennaUsersDescription') }} <button class="_textButton" @click="addUser">{{ $t('addUser') }}</button></template>
 		</mk-textarea>
-		<mk-switch v-model="withReplies">{{ $t('withReplies') }}</mk-switch>
-		<mk-textarea v-model="keywords">
+		<mk-switch v-model:value="withReplies">{{ $t('withReplies') }}</mk-switch>
+		<mk-textarea v-model:value="keywords">
 			<span>{{ $t('antennaKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
 		</mk-textarea>
-		<mk-textarea v-model="excludeKeywords">
+		<mk-textarea v-model:value="excludeKeywords">
 			<span>{{ $t('antennaExcludeKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
 		</mk-textarea>
-		<mk-switch v-model="caseSensitive">{{ $t('caseSensitive') }}</mk-switch>
-		<mk-switch v-model="withFile">{{ $t('withFileAntenna') }}</mk-switch>
-		<mk-switch v-model="notify">{{ $t('notifyAntenna') }}</mk-switch>
+		<mk-switch v-model:value="caseSensitive">{{ $t('caseSensitive') }}</mk-switch>
+		<mk-switch v-model:value="withFile">{{ $t('withFileAntenna') }}</mk-switch>
+		<mk-switch v-model:value="notify">{{ $t('notifyAntenna') }}</mk-switch>
 	</div>
 	<div class="_footer">
 		<mk-button inline @click="saveAntenna()" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>

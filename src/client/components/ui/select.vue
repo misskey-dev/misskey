@@ -58,7 +58,7 @@ export default defineComponent({
 				return this.value;
 			},
 			set(v) {
-				this.$emit('input', v);
+				this.$emit('update:value', v);
 			}
 		},
 		filled(): boolean {

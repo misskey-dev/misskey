@@ -1,6 +1,6 @@
 <template>
 <div class="pxhvhrfw" v-size="{ max: [500] }">
-	<button v-for="item in items" class="_button" @click="$emit('input', item.value)" :class="{ active: value === item.value }" :key="item.value"><fa v-if="item.icon" :icon="item.icon" class="icon"/>{{ item.label }}</button>
+	<button v-for="item in items" class="_button" @click="$emit('update:value', item.value)" :class="{ active: value === item.value }" :key="item.value"><fa v-if="item.icon" :icon="item.icon" class="icon"/>{{ item.label }}</button>
 </div>
 </template>
 

@@ -11,7 +11,7 @@
 	</template>
 
 	<section class="ilrvjyvi">
-		<x-blocks class="children" v-model="value.children" :hpml="hpml"/>
+		<x-blocks class="children" v-model:value="value.children" :hpml="hpml"/>
 	</section>
 </x-container>
 </template>

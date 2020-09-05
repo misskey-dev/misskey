@@ -41,7 +41,7 @@
 			<div class="body" ref="noteBody">
 				<p v-if="appearNote.cw != null" class="cw">
 				<mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
-					<x-cw-button v-model="showContent" :note="appearNote"/>
+					<x-cw-button v-model:value="showContent" :note="appearNote"/>
 				</p>
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">

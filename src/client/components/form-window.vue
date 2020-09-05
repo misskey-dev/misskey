@@ -5,19 +5,19 @@
 	</template>
 	<div class="xkpnjxcv">
 		<label v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
-			<mk-input v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
+			<mk-input v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
 				<span v-text="form[item].label || item"></span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</mk-input>
-			<mk-input v-else-if="form[item].type === 'string' && !item.multiline" v-model="values[item]" type="text">
+			<mk-input v-else-if="form[item].type === 'string' && !item.multiline" v-model:value="values[item]" type="text">
 				<span v-text="form[item].label || item"></span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</mk-input>
-			<mk-textarea v-else-if="form[item].type === 'string' && item.multiline" v-model="values[item]">
+			<mk-textarea v-else-if="form[item].type === 'string' && item.multiline" v-model:value="values[item]">
 				<span v-text="form[item].label || item"></span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</mk-textarea>
-			<mk-switch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
+			<mk-switch v-else-if="form[item].type === 'boolean'" v-model:value="values[item]">
 				<span v-text="form[item].label || item"></span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</mk-switch>

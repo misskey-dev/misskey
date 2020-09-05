@@ -74,7 +74,7 @@ export default defineComponent({
 		},
 		onInput(ev) {
 			this.changed = true;
-			this.$emit('input', ev.target.value);
+			this.$emit('update:value', ev.target.value);
 		}
 	}
 });

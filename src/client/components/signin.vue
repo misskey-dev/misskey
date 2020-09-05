@@ -2,12 +2,12 @@
 <form class="eppvobhk" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 	<div class="normal-signin" v-if="!totpLogin">
-		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @input="onUsernameChange">
+		<mk-input v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @onUpdate:value="onUsernameChange">
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</mk-input>
-		<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
+		<mk-input v-model:value="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
 		</mk-input>
@@ -28,11 +28,11 @@
 		</div>
 		<div class="twofa-group totp-group">
 			<p style="margin-bottom:0;">{{ $t('twoStepAuthentication') }}</p>
-			<mk-input v-model="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
+			<mk-input v-model:value="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
 				<span>{{ $t('password') }}</span>
 				<template #prefix><fa :icon="faLock"/></template>
 			</mk-input>
-			<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
+			<mk-input v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 				<span>{{ $t('token') }}</span>
 				<template #prefix><fa :icon="faGavel"/></template>
 			</mk-input>

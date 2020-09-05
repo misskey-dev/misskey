@@ -2,7 +2,7 @@
 <div>
 	<portal to="header"><fa :icon="faStickyNote"/>{{ $t('pages') }}</portal>
 
-	<mk-tab v-model="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
+	<mk-tab v-model:value="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
 
 	<div class="rknalgpo my" v-if="tab === 'my'">
 		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>

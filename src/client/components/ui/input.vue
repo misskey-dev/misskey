@@ -169,9 +169,9 @@ export default defineComponent({
 		},
 		v(v) {
 			if (this.type === 'number') {
-				this.$emit('input', parseFloat(v));
+				this.$emit('update:value', parseFloat(v));
 			} else {
-				this.$emit('input', v);
+				this.$emit('update:value', v);
 			}
 
 			this.invalid = this.$refs.input.validity.badInput;
@@ -228,7 +228,7 @@ export default defineComponent({
 		},
 		onChangeFile() {
 			this.v = Array.from((this.$refs.file as any).files);
-			this.$emit('input', this.v);
+			this.$emit('update:value', this.v);
 			this.$emit('change', this.v);
 		},
 		onInput(ev) {

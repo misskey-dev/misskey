@@ -36,7 +36,7 @@ export default defineComponent({
 		length,
 
 		toggle() {
-			this.$emit('input', !this.value);
+			this.$emit('update:value', !this.value);
 		}
 	}
 });

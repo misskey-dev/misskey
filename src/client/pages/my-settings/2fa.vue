@@ -20,7 +20,7 @@
 					</div>
 				</div>
 
-				<mk-switch v-model="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
+				<mk-switch v-model:value="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
 
 				<mk-info warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</mk-info>
 				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</mk-button>
@@ -32,7 +32,7 @@
 					</li>
 					<li v-if="registration.stage >= 1">
 						<mk-form :disabled="registration.stage != 1 || registration.saving">
-							<mk-input v-model="keyName" :max="30">
+							<mk-input v-model:value="keyName" :max="30">
 								<span>{{ $t('securityKeyName') }}</span>
 							</mk-input>
 							<mk-button @click="registerKey" :disabled="keyName.length == 0">{{ $t('registerSecurityKey') }}</mk-button>
@@ -52,7 +52,7 @@
 				</li>
 				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
 				<li>{{ $t('_2fa.step3') }}<br>
-					<mk-input v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</mk-input>
+					<mk-input v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</mk-input>
 					<mk-button primary @click="submit">{{ $t('done') }}</mk-button>
 				</li>
 			</ol>

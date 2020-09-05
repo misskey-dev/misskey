@@ -4,9 +4,9 @@
 
 	<div class="_card">
 		<div class="_content">
-			<mk-input v-model="name">{{ $t('name') }}</mk-input>
+			<mk-input v-model:value="name">{{ $t('name') }}</mk-input>
 
-			<mk-textarea v-model="description">{{ $t('description') }}</mk-textarea>
+			<mk-textarea v-model:value="description">{{ $t('description') }}</mk-textarea>
 
 			<div class="banner">
 				<mk-button v-if="bannerId == null" @click="setBannerImage"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>

@@ -150,10 +150,10 @@
 				<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
 				<div class="_content">
 					<div class="_inputs">
-						<mk-input v-model="logDomain" :debounce="true">
+						<mk-input v-model:value="logDomain" :debounce="true">
 							<span>{{ $t('domain') }}</span>
 						</mk-input>
-						<mk-select v-model="logLevel">
+						<mk-select v-model:value="logLevel">
 							<template #label>{{ $t('level') }}</template>
 							<option value="all">{{ $t('levels.all') }}</option>
 							<option value="info">{{ $t('levels.info') }}</option>

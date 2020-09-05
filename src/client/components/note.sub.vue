@@ -7,7 +7,7 @@
 			<div class="body">
 				<p v-if="note.cw != null" class="cw">
 					<mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis" />
-					<x-cw-button v-model="showContent" :note="note"/>
+					<x-cw-button v-model:value="showContent" :note="note"/>
 				</p>
 				<div class="content" v-show="note.cw == null || showContent">
 					<x-sub-note-content class="text" :note="note"/>

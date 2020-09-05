@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-input class="kudkigyw" v-model="v" type="number">{{ hpml.interpolate(value.text) }}</mk-input>
+	<mk-input class="kudkigyw" v-model:value="v" type="number">{{ hpml.interpolate(value.text) }}</mk-input>
 </div>
 </template>
 

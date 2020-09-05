@@ -2,7 +2,7 @@
 <div>
 	<portal to="header"><fa :icon="faSatelliteDish"/>{{ $t('channel') }}</portal>
 
-	<mk-tab v-model="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
+	<mk-tab v-model:value="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 
 	<div class="grwlizim featured" v-if="tab === 'featured'">
 		<mk-pagination :pagination="featuredPagination" #default="{items}">

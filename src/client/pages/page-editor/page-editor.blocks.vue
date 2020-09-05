@@ -1,6 +1,6 @@
 <template>
 <x-draggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
-	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @input="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
+	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @onUpdate:value="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
 </x-draggable>
 </template>
 
@@ -51,7 +51,7 @@ export default defineComponent({
 				v,
 				...this.blocks.slice(i + 1)
 			];
-			this.$emit('input', newValue);
+			this.$emit('update:value', newValue);
 		},
 
 		removeItem(el) {
@@ -60,7 +60,7 @@ export default defineComponent({
 				...this.blocks.slice(0, i),
 				...this.blocks.slice(i + 1)
 			];
-			this.$emit('input', newValue);
+			this.$emit('update:value', newValue);
 		},
 	}
 });

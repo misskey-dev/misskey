@@ -1,11 +1,11 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
-		<mk-input v-if="meta.disableRegistration" v-model="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<mk-input v-if="meta.disableRegistration" v-model:value="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<span>{{ $t('invitationCode') }}</span>
 			<template #prefix><fa :icon="faKey"/></template>
 		</mk-input>
-		<mk-input v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @input="onChangeUsername">
+		<mk-input v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @onUpdate:value="onChangeUsername">
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,7 +19,7 @@
 				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooLong') }}</span>
 			</template>
 		</mk-input>
-		<mk-input v-model="password" type="password" :autocomplete="Math.random()" required @input="onChangePassword">
+		<mk-input v-model:value="password" type="password" :autocomplete="Math.random()" required @onUpdate:value="onChangePassword">
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
@@ -28,7 +28,7 @@
 				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('strongPassword') }}</p>
 			</template>
 		</mk-input>
-		<mk-input v-model="retypedPassword" type="password" :autocomplete="Math.random()" required @input="onChangePasswordRetype">
+		<mk-input v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @onUpdate:value="onChangePasswordRetype">
 			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
@@ -36,13 +36,13 @@
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('passwordNotMatched') }}</p>
 			</template>
 		</mk-input>
-		<mk-switch v-model="ToSAgreement" v-if="meta.tosUrl">
+		<mk-switch v-model:value="ToSAgreement" v-if="meta.tosUrl">
 			<i18n-t path="agreeTo">
 				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n-t>
 		</mk-switch>
-		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
+		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model:value="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
+		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model:value="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
 		<mk-button type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</mk-button>
 	</template>
 </form>

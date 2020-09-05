@@ -5,7 +5,7 @@
 	<section class="_card _vMargin add">
 		<div class="_title"><fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
 		<div class="_content">
-			<mk-input v-model="inbox">
+			<mk-input v-model:value="inbox">
 				<span>{{ $t('inboxUrl') }}</span>
 			</mk-input>
 			<mk-button @click="add(inbox)" primary><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>

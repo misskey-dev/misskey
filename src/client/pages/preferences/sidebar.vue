@@ -2,16 +2,16 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faListUl"/> {{ $t('sidebar') }}</div>
 	<div class="_content">
-		<mk-textarea v-model="items" tall>
+		<mk-textarea v-model:value="items" tall>
 			<span>{{ $t('sidebar') }}</span>
 			<template #desc><button class="_textButton" @click="addItem">{{ $t('addItem') }}</button></template>
 		</mk-textarea>
 	</div>
 	<div class="_content">
 		<div>{{ $t('display') }}</div>
-		<mk-radio v-model="sidebarDisplay" value="full">{{ $t('_sidebar.full') }}</mk-radio>
-		<mk-radio v-model="sidebarDisplay" value="icon">{{ $t('_sidebar.icon') }}</mk-radio>
-		<!-- <mk-radio v-model="sidebarDisplay" value="hide" disabled>{{ $t('_sidebar.hide') }}</mk-radio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
+		<mk-radio v-model:value="sidebarDisplay" value="full">{{ $t('_sidebar.full') }}</mk-radio>
+		<mk-radio v-model:value="sidebarDisplay" value="icon">{{ $t('_sidebar.icon') }}</mk-radio>
+		<!-- <mk-radio v-model:value="sidebarDisplay" value="hide" disabled>{{ $t('_sidebar.hide') }}</mk-radio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</div>
 	<div class="_footer">
 		<mk-button inline @click="save()" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>

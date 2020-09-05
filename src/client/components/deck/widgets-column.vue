@@ -5,7 +5,7 @@
 	<div class="wtdtxvec">
 		<template v-if="edit">
 			<header>
-				<mk-select v-model="widgetAdderSelected" style="margin-bottom: var(--margin)">
+				<mk-select v-model:value="widgetAdderSelected" style="margin-bottom: var(--margin)">
 					<template #label>{{ $t('selectWidget') }}</template>
 					<option v-for="widget in widgets" :value="widget" :key="widget">{{ $t(`_widgets.${widget}`) }}</option>
 				</mk-select>

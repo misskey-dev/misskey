@@ -72,7 +72,7 @@
 			<div class="header">
 				<span class="label">{{ $t('charts') }}</span>
 				<div class="selects">
-					<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
+					<mk-select v-model:value="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
 						<option value="users">{{ $t('_instanceCharts.users') }}</option>
 						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
@@ -85,7 +85,7 @@
 						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
 						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
 					</mk-select>
-					<mk-select v-model="chartSpan" style="margin: 0;">
+					<mk-select v-model:value="chartSpan" style="margin: 0;">
 						<option value="hour">{{ $t('perHour') }}</option>
 						<option value="day">{{ $t('perDay') }}</option>
 					</mk-select>
@@ -97,7 +97,7 @@
 		</div>
 		<div class="operations">
 			<span class="label">{{ $t('operations') }}</span>
-			<mk-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
+			<mk-switch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
 			<mk-switch :value="isBlocked" class="switch" @change="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
 			<details>
 				<summary>{{ $t('deleteAllFiles') }}</summary>

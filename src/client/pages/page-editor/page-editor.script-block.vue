@@ -40,17 +40,17 @@
 		<input v-model="value.value"/>
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
-		<mk-textarea v-model="slots">
+		<mk-textarea v-model:value="slots">
 			<span>{{ $t('_pages.script.blocks._fn.slots') }}</span>
 			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</mk-textarea>
-		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
+		<x-v v-if="value.value.expression" v-model:value="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="hpml.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model:value="value.args[i]" :title="hpml.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name" :key="i"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`_pages.script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model:value="value.args[i]" :title="$t(`_pages.script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots" :key="i"/>
 	</section>
 </x-container>
 </template>

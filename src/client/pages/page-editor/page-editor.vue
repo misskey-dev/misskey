@@ -13,29 +13,29 @@
 		<section>
 			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
 
-			<mk-input v-model="title">
+			<mk-input v-model:value="title">
 				<span>{{ $t('_pages.title') }}</span>
 			</mk-input>
 
 			<template v-if="showOptions">
-				<mk-input v-model="summary">
+				<mk-input v-model:value="summary">
 					<span>{{ $t('_pages.summary') }}</span>
 				</mk-input>
 
-				<mk-input v-model="name">
+				<mk-input v-model:value="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<span>{{ $t('_pages.url') }}</span>
 				</mk-input>
 
-				<mk-switch v-model="alignCenter">{{ $t('_pages.alignCenter') }}</mk-switch>
+				<mk-switch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</mk-switch>
 
-				<mk-select v-model="font">
+				<mk-select v-model:value="font">
 					<template #label>{{ $t('_pages.font') }}</template>
 					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
 					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
 				</mk-select>
 
-				<mk-switch v-model="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</mk-switch>
+				<mk-switch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</mk-switch>
 
 				<div class="eyeCatch">
 					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</mk-button>
@@ -46,7 +46,7 @@
 				</div>
 			</template>
 
-			<x-blocks class="content" v-model="content" :hpml="hpml"/>
+			<x-blocks class="content" v-model:value="content" :hpml="hpml"/>
 
 			<mk-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
 		</section>
@@ -59,7 +59,7 @@
 				<x-variable v-for="variable in variables"
 					:value="variable"
 					:removable="true"
-					@input="v => updateVariable(v)"
+					@onUpdate:value="v => updateVariable(v)"
 					@remove="() => removeVariable(variable)"
 					:key="variable.name"
 					:hpml="hpml"
@@ -76,7 +76,7 @@
 	<mk-container :body-togglable="true" :expanded="true">
 		<template #header><fa :icon="faCode"/> {{ $t('script') }}</template>
 		<div>
-			<prism-editor class="_code" v-model="script" :highlight="highlighter" :line-numbers="false"/>
+			<prism-editor class="_code" v-model:value="script" :highlight="highlighter" :line-numbers="false"/>
 		</div>
 	</mk-container>
 </div>
