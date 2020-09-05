@@ -107,7 +107,7 @@ export default defineComponent({
 .form-enter-active, .form-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.form-enter, .form-leave-to {
+.form-enter-from, .form-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
 }
@@ -115,7 +115,7 @@ export default defineComponent({
 .form-fade-enter-active, .form-fade-leave-active {
 	transition: opacity 0.3s !important;
 }
-.form-fade-enter, .form-fade-leave-to {
+.form-fade-enter-from, .form-fade-leave-to {
 	opacity: 0;
 }
 

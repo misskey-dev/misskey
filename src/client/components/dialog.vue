@@ -3,7 +3,7 @@
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg _modalBg" @click="onBgClick" v-if="!closing"></div>
 	</transition>
-	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="$emit('closed')">
+	<transition :name="$store.state.device.animation ? 'dialog' : ''" appear @after-leave="$store.commit('removeDialog', id)">
 		<div class="main" v-if="!closing">
 			<template v-if="type == 'signin'">
 				<mk-signin/>
@@ -59,8 +59,6 @@ import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
 
 export default defineComponent({
-	emits: ['done', 'closed'],
-
 	components: {
 		MkButton,
 		MkInput,
@@ -69,6 +67,9 @@ export default defineComponent({
 	},
 
 	props: {
+		id: {
+			required: true
+		},
 		type: {
 			type: String,
 			required: false,
@@ -117,14 +118,11 @@ export default defineComponent({
 			type: Boolean,
 			default: false
 		},
-		closing: {
-			type: Boolean,
-			default: false
-		},
 	},
 
 	data() {
 		return {
+			closing: false,
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			userInputValue: null,
 			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
@@ -150,7 +148,7 @@ export default defineComponent({
 
 		if (this.autoClose) {
 			setTimeout(() => {
-				this.$emit('done');
+				this.done(false);
 			}, 1000);
 		}
 
@@ -162,6 +160,11 @@ export default defineComponent({
 	},
 
 	methods: {
+		done(canceled, result?) {
+			this.closing = true;
+			this.$store.commit('dialogDone', { id: this.id, result: { canceled, result } });
+		},
+
 		async ok() {
 			if (!this.canOk) return;
 			if (!this.showOkButton) return;
@@ -169,19 +172,19 @@ export default defineComponent({
 			if (this.user) {
 				const user = await this.$root.api('users/show', parseAcct(this.userInputValue));
 				if (user) {
-					this.$emit('done', { canceled: false, result: user });
+					this.done(false, user);
 				}
 			} else {
 				const result =
 					this.input ? this.inputValue :
 					this.select ? this.selectedValue :
 					true;
-				this.$emit('done', { canceled: false, result });
+				this.done(false, result);
 			}
 		},
 
 		cancel() {
-			this.$emit('done', { canceled: true });
+			this.done(true);
 		},
 
 		onBgClick() {

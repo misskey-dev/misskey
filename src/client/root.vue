@@ -2,8 +2,10 @@
 <DeckUI v-if="deckmode"/>
 <DefaultUI v-else/>
 
-<XDialog v-if="dialog" v-bind="dialog" :key="dialog.id"
+<XPostFormDialog v-if="$store.state.postForm" v-bind="$store.state.postForm"
 	@done="onDialogDone" @closed="onDialogClosed"/>
+
+<XDialog v-if="dialog" v-bind="dialog" :key="dialog.id"/>
 </template>
 
 <script lang="ts">
@@ -56,14 +58,6 @@ export default defineComponent({
 		api(endpoint: string, data: Record<string, any> = {}, token?) {
 			return this.$store.dispatch('api', { endpoint, data, token });
 		},
-
-		onDialogDone(result) {
-			this.$store.commit('dialogDone', { id: this.dialog.id, result });
-		},
-
-		onDialogClosed() {
-			this.$store.commit('removeDialog', this.dialog.id);
-		}
 	}
 });
 </script>

@@ -270,7 +270,6 @@ export const store = createStore({
 		dialogDone(state, { id: dialogId, result }) {
 			const dialog = state.dialogs.find(d => d.id === dialogId);
 			dialog.result = result;
-			dialog.closing = true;
 		},
 
 		removeDialog(state, dialogId) {
