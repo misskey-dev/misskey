@@ -9,10 +9,10 @@
 	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
-			<mk-switch v-model:value="$store.state.i.autoWatch" @change="onChangeAutoWatch">
+			<mk-switch v-model:value="$store.state.i.autoWatch" @update:value="onChangeAutoWatch">
 				{{ $t('autoNoteWatch') }}<template #desc>{{ $t('autoNoteWatchDescription') }}</template>
 			</mk-switch>
-			<mk-switch v-model:value="$store.state.i.injectFeaturedNote" @change="onChangeInjectFeaturedNote">
+			<mk-switch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
 				{{ $t('showFeaturedNotesInTimeline') }}
 			</mk-switch>
 		</div>

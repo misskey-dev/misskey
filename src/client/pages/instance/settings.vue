@@ -23,19 +23,19 @@
 			<mk-input v-model:value="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</mk-input>
 		</div>
 		<div class="_content">
-			<mk-switch v-model:value="enableLocalTimeline" @change="save()">{{ $t('enableLocalTimeline') }}</mk-switch>
-			<mk-switch v-model:value="enableGlobalTimeline" @change="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
+			<mk-switch v-model:value="enableLocalTimeline" @update:value="save()">{{ $t('enableLocalTimeline') }}</mk-switch>
+			<mk-switch v-model:value="enableGlobalTimeline" @update:value="save()">{{ $t('enableGlobalTimeline') }}</mk-switch>
 			<mk-info>{{ $t('disablingTimelinesInfo') }}</mk-info>
 		</div>
 		<div class="_content">
-			<mk-switch v-model:value="useStarForReactionFallback" @change="save()">{{ $t('useStarForReactionFallback') }}</mk-switch>
+			<mk-switch v-model:value="useStarForReactionFallback" @update:value="save()">{{ $t('useStarForReactionFallback') }}</mk-switch>
 		</div>
 	</section>
 
 	<section class="_card _vMargin info">
 		<div class="_title"><fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
-			<mk-switch v-model:value="enableRegistration" @change="save()">{{ $t('enableRegistration') }}</mk-switch>
+			<mk-switch v-model:value="enableRegistration" @update:value="save()">{{ $t('enableRegistration') }}</mk-switch>
 			<mk-button v-if="!enableRegistration" @click="invite">{{ $t('invite') }}</mk-button>
 		</div>
 	</section>
@@ -79,7 +79,7 @@
 	<section class="_card _vMargin">
 		<div class="_title"><fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
 		<div class="_content">
-			<mk-switch v-model:value="enableEmail" @change="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
+			<mk-switch v-model:value="enableEmail" @update:value="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></mk-switch>
 			<mk-input v-model:value="email" type="email" :disabled="!enableEmail">{{ $t('email') }}</mk-input>
 			<div><b>{{ $t('smtpConfig') }}</b></div>
 			<div class="_inputs">

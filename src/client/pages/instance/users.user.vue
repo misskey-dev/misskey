@@ -14,9 +14,9 @@
 		</div>
 		<div class="_content actions">
 			<div style="flex: 1; padding-left: 1em;">
-				<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @change="toggleModerator()" v-model:value="moderator">{{ $t('moderator') }}</mk-switch>
-				<mk-switch @change="toggleSilence()" v-model:value="silenced">{{ $t('silence') }}</mk-switch>
-				<mk-switch @change="toggleSuspend()" v-model:value="suspended">{{ $t('suspend') }}</mk-switch>
+				<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator()" v-model:value="moderator">{{ $t('moderator') }}</mk-switch>
+				<mk-switch @update:value="toggleSilence()" v-model:value="silenced">{{ $t('silence') }}</mk-switch>
+				<mk-switch @update:value="toggleSuspend()" v-model:value="suspended">{{ $t('suspend') }}</mk-switch>
 			</div>
 			<div style="flex: 1; padding-left: 1em;">
 				<mk-button @click="openProfile"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</mk-button>

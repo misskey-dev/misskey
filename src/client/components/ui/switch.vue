@@ -28,10 +28,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 export default defineComponent({
-	model: {
-		prop: 'value',
-		event: 'change'
-	},
 	props: {
 		value: {
 			type: Boolean,
@@ -50,7 +46,7 @@ export default defineComponent({
 	methods: {
 		toggle() {
 			if (this.disabled) return;
-			this.$emit('change', !this.checked);
+			this.$emit('update:value', !this.checked);
 		}
 	}
 });

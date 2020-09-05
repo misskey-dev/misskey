@@ -98,7 +98,7 @@
 		<div class="operations">
 			<span class="label">{{ $t('operations') }}</span>
 			<mk-switch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
-			<mk-switch :value="isBlocked" class="switch" @change="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
+			<mk-switch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
 			<details>
 				<summary>{{ $t('deleteAllFiles') }}</summary>
 				<mk-button @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>

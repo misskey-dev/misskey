@@ -2,11 +2,11 @@
 <section class="_card">
 	<div class="_title"><fa :icon="faLock"/> {{ $t('privacy') }}</div>
 	<div class="_content">
-		<mk-switch v-model:value="isLocked" @change="save()">{{ $t('makeFollowManuallyApprove') }}</mk-switch>
-		<mk-switch v-model:value="autoAcceptFollowed" v-if="isLocked" @change="save()">{{ $t('autoAcceptFollowed') }}</mk-switch>
+		<mk-switch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</mk-switch>
+		<mk-switch v-model:value="autoAcceptFollowed" v-if="isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</mk-switch>
 	</div>
 	<div class="_content">
-		<mk-switch v-model:value="rememberNoteVisibility" @change="save()">{{ $t('rememberNoteVisibility') }}</mk-switch>
+		<mk-switch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</mk-switch>
 		<mk-select v-model:value="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
 			<template #label>{{ $t('defaultNoteVisibility') }}</template>
 			<option value="public">{{ $t('_visibility.public') }}</option>

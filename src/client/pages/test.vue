@@ -8,6 +8,12 @@
 			<mk-input v-model:value="dialogTitle">
 				<span>Title</span>
 			</mk-input>
+			<mk-input v-model:value="dialogBody">
+				<span>Body</span>
+			</mk-input>
+			<mk-switch v-model:value="dialogCancel">
+				<span>With cancel button</span>
+			</mk-switch>
 			<mk-button @click="showDialog()">Show</mk-button>
 		</div>
 		<div class="_content">
@@ -22,11 +28,13 @@ import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../components/ui/button.vue';
 import MkInput from '../components/ui/input.vue';
+import MkSwitch from '../components/ui/switch.vue';
 
 export default defineComponent({
 	components: {
 		MkButton,
 		MkInput,
+		MkSwitch,
 	},
 
 	metaInfo() {
@@ -37,8 +45,10 @@ export default defineComponent({
 
 	data() {
 		return {
-			dialogTitle: 'Title',
+			dialogTitle: 'Hello',
+			dialogBody: 'World!',
 			dialogResult: null,
+			dialogCancel: false,
 			faExclamationTriangle
 		}
 	},
@@ -47,6 +57,8 @@ export default defineComponent({
 		async showDialog() {
 			this.dialogResult = await this.$store.dispatch('showDialog', {
 				title: this.dialogTitle,
+				text: this.dialogBody,
+				showCancelButton: this.dialogCancel,
 			});
 		}
 	}

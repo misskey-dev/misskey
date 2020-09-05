@@ -20,7 +20,7 @@
 					</div>
 				</div>
 
-				<mk-switch v-model:value="usePasswordLessLogin" @change="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
+				<mk-switch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
 
 				<mk-info warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</mk-info>
 				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</mk-button>

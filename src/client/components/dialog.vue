@@ -59,6 +59,8 @@ import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
 
 export default defineComponent({
+	emits: ['done', 'closed'],
+
 	components: {
 		MkButton,
 		MkInput,

@@ -19,7 +19,7 @@
 			</mk-select>
 			<template v-if="selectedPlugin">
 				<div style="margin: -8px 0 8px 0;">
-					<mk-switch :value="selectedPlugin.active" @change="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</mk-switch>
+					<mk-switch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</mk-switch>
 				</div>
 				<div class="_keyValue">
 					<div>{{ $t('version') }}:</div>
