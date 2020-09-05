@@ -148,7 +148,7 @@ export default defineComponent({
 
 		if (this.autoClose) {
 			setTimeout(() => {
-				this.$emit('ok');
+				this.$emit('done');
 			}, 1000);
 		}
 
@@ -167,19 +167,19 @@ export default defineComponent({
 			if (this.user) {
 				const user = await this.$root.api('users/show', parseAcct(this.userInputValue));
 				if (user) {
-					this.$emit('ok', user);
+					this.$emit('done', { canceled: false, result: user });
 				}
 			} else {
 				const result =
 					this.input ? this.inputValue :
 					this.select ? this.selectedValue :
 					true;
-				this.$emit('ok', result);
+				this.$emit('done', { canceled: false, result });
 			}
 		},
 
 		cancel() {
-			this.$emit('cancel');
+			this.$emit('done', { canceled: true });
 		},
 
 		onBgClick() {

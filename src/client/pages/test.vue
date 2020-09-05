@@ -10,6 +10,9 @@
 			</mk-input>
 			<mk-button @click="showDialog()">Show</mk-button>
 		</div>
+		<div class="_content">
+			<span>Result: {{ dialogResult }}</span>
+		</div>
 	</div>
 </div>
 </template>
@@ -35,15 +38,16 @@ export default defineComponent({
 	data() {
 		return {
 			dialogTitle: 'Title',
+			dialogResult: null,
 			faExclamationTriangle
 		}
 	},
 
 	methods: {
-		showDialog() {
-			this.$root.showDialog({
+		async showDialog() {
+			this.dialogResult = await this.$store.dispatch('showDialog', {
 				title: this.dialogTitle,
-			})
+			});
 		}
 	}
 });

@@ -13,6 +13,7 @@ import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import { acct, userPage } from '../filters/user';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		user: {
 			type: Object,

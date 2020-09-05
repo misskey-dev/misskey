@@ -2,7 +2,8 @@
 <DeckUI v-if="deckmode"/>
 <DefaultUI v-else/>
 
-<XDialog v-if="dialog" v-bind="dialog" :key="dialog.id" @ok="onDialogOk" @closed="onDialogClosed"/>
+<XDialog v-if="dialog" v-bind="dialog" :key="dialog.id"
+	@done="onDialogDone" @closed="onDialogClosed"/>
 </template>
 
 <script lang="ts">
@@ -52,16 +53,12 @@ export default defineComponent({
 	},
 
 	methods: {
-		api(endpoint: string, data: { [x: string]: any } = {}, token?) {
+		api(endpoint: string, data: Record<string, any> = {}, token?) {
 			return this.$store.dispatch('api', { endpoint, data, token });
 		},
 
-		showDialog(opts) {
-			this.$store.commit('showDialog', opts);
-		},
-
-		onDialogOk(result) {
-			this.$store.commit('requestDialogClose', this.dialog.id);
+		onDialogDone(result) {
+			this.$store.commit('dialogDone', { id: this.dialog.id, result });
 		},
 
 		onDialogClosed() {

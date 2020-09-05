@@ -1,3 +1,4 @@
+import { reactive, watch } from 'vue';
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
@@ -262,15 +263,14 @@ export const store = createStore({
 			state.i[key] = value;
 		},
 
-		showDialog(state, dialog) {
-			state.dialogs.push({
-				...dialog,
-				id: Math.random().toString() // TODO: uuidとか使う
-			});
+		addDialog(state, dialog) {
+			state.dialogs.push(dialog);
 		},
 
-		requestDialogClose(state, dialogId) {
-			state.dialogs.find(d => d.id === dialogId).closing = true;
+		dialogDone(state, { id: dialogId, result }) {
+			const dialog = state.dialogs.find(d => d.id === dialogId);
+			dialog.result = result;
+			dialog.closing = true;
 		},
 
 		removeDialog(state, dialogId) {
@@ -370,6 +370,21 @@ export const store = createStore({
 			if (me.clientData) {
 				ctx.commit('settings/init', me.clientData);
 			}
+		},
+
+		showDialog(ctx, opts) {
+			return new Promise((res, rej) => {
+				const dialog = reactive({
+					...opts,
+					result: null,
+					id: Math.random().toString() // TODO: uuidとか使う
+				});
+				ctx.commit('addDialog', dialog);
+				const unwatch = watch(() => dialog.result, result => {
+					unwatch();
+					res(result);
+				});
+			});
 		},
 
 		api(ctx, { endpoint, data, token }) {
