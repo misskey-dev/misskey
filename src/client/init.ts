@@ -5,7 +5,6 @@
 import { createApp } from 'vue';
 import VueMeta from 'vue-meta';
 import VAnimateCss from 'v-animate-css';
-import { createI18n } from 'vue-i18n';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
@@ -16,14 +15,13 @@ import Stream from './scripts/stream';
 import widgets from './widgets';
 import directives from './directives';
 import components from './components';
-import { version, langs, getLocale, apiUrl } from './config';
+import { version, apiUrl } from './config';
 import { store } from './store';
 import { router } from './router';
 import { applyTheme, lightTheme } from './scripts/theme';
 import { isDeviceDarkmode } from './scripts/is-device-darkmode';
-import { clientDb, get, count } from './db';
-import { setI18nContexts } from './scripts/set-i18n-contexts';
 import { createPluginEnv } from './scripts/aiscript/api';
+import { i18n, lang } from './i18n';
 
 console.info(`Misskey v${version}`);
 
@@ -39,25 +37,6 @@ window.addEventListener('resize', () => {
 	const vh = window.innerHeight * 0.01;
 	document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
-//#endregion
-
-//#region Detect the user language
-let lang = localStorage.getItem('lang');
-
-if (lang == null) {
-	if (langs.map(x => x[0]).includes(navigator.language)) {
-		lang = navigator.language;
-	} else {
-		lang = langs.map(x => x[0]).find(x => x.split('-')[0] == navigator.language);
-
-		if (lang == null) {
-			// Fallback
-			lang = 'en-US';
-		}
-	}
-
-	localStorage.setItem('lang', lang);
-}
 //#endregion
 
 // Detect the user agent
@@ -151,27 +130,10 @@ const app = createApp(Root, {
 
 app.use(store);
 app.use(router);
+app.use(i18n);
 app.use(VueHotkey);
 app.use(VAnimateCss);
 app.component('fa', FontAwesomeIcon);
-
-//#region Init i18n
-const locale = await count(clientDb.i18n).then(async n => {
-	if (n === 0) return await setI18nContexts(lang, version);
-	if ((await get('_version_', clientDb.i18n) !== version)) return await setI18nContexts(lang, version, true);
-
-	return await getLocale();
-});
-
-const i18n = createI18n({
-	legacy: true,
-	sync: false,
-	locale: lang,
-	messages: { [lang]: locale }
-});
-
-app.use(i18n);
-//#endregion
 
 widgets(app);
 directives(app);

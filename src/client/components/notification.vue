@@ -66,6 +66,7 @@ import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
+import { locale } from '../i18n';
 
 export default defineComponent({
 	components: {
@@ -89,7 +90,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			getNoteSummary: (text: string) => noteSummary(text, this.$root.i18n.messages[this.$root.i18n.locale]),
+			getNoteSummary: (text: string) => noteSummary(text, locale),
 			followRequestDone: false,
 			groupInviteDone: false,
 			connection: null,

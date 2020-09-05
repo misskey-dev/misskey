@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import XWindow from './window.vue';
 import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
 import { notificationTypes } from '../../types';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XWindow,
 		MkSwitch,

@@ -2,8 +2,7 @@
 <DeckUI v-if="deckmode"/>
 <DefaultUI v-else/>
 
-<XPostFormDialog v-if="$store.state.postForm" v-bind="$store.state.postForm"
-	@done="onDialogDone" @closed="onDialogClosed"/>
+<XPostFormDialog v-if="$store.state.postForm" v-bind="$store.state.postForm"/>
 
 <XDialog v-if="dialog" v-bind="dialog" :key="dialog.id"/>
 </template>
@@ -19,6 +18,7 @@ export default defineComponent({
 		DefaultUI,
 		DeckUI,
 		XDialog: defineAsyncComponent(() => import('./components/dialog.vue')),
+		XPostFormDialog: defineAsyncComponent(() => import('./components/post-form-dialog.vue')),
 	},
 
 	metaInfo: {

@@ -1,3 +1,4 @@
+import { Directive } from 'vue';
 import MkTooltip from '../components/ui/tooltip.vue';
 import { isDeviceTouch } from '../scripts/is-device-touch';
 
@@ -5,7 +6,7 @@ const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
 
 export default {
-	bind(el: HTMLElement, binding, vn) {
+	mounted(el: HTMLElement, binding, vn) {
 		const self = (el as any)._tooltipDirective_ = {} as any;
 
 		self.text = binding.value as string;
@@ -55,8 +56,8 @@ export default {
 		});
 	},
 
-	unbind(el, binding, vn) {
+	unmounted(el, binding, vn) {
 		const self = el._tooltipDirective_;
 		clearInterval(self.checkTimer);
 	},
-};
+} as Directive;

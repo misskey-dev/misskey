@@ -193,6 +193,7 @@ export default defineComponent({
 			id,
 			v,
 			focused,
+			invalid,
 			changed,
 			filled,
 			inputEl,

@@ -9,6 +9,7 @@ import MkFormula from './formula.vue';
 import MkCode from './code.vue';
 import MkGoogle from './google.vue';
 import { host } from '../config';
+import { RouterLink } from 'vue-router';
 
 export default defineComponent({
 	props: {
@@ -71,17 +72,13 @@ export default defineComponent({
 
 				case 'italic': {
 					return h('i', {
-						attrs: {
-							style: 'font-style: oblique;'
-						},
+						style: 'font-style: oblique;'
 					}, genEl(token.children));
 				}
 
 				case 'big': {
 					return h('strong', {
-						attrs: {
-							style: `display: inline-block; font-size: 150%;`
-						},
+						style: `display: inline-block; font-size: 150%;`,
 						directives: [this.$store.state.device.animatedMfm ? {
 							name: 'animate-css',
 							value: { classes: 'tada', iteration: 'infinite' }
@@ -99,17 +96,13 @@ export default defineComponent({
 
 				case 'center': {
 					return [h('div', {
-						attrs: {
-							style: 'text-align:center;'
-						}
+						style: 'text-align:center;'
 					}, genEl(token.children))];
 				}
 
 				case 'motion': {
 					return h('span', {
-						attrs: {
-							style: 'display: inline-block;'
-						},
+						style: 'display: inline-block;',
 						directives: [this.$store.state.device.animatedMfm ? {
 							name: 'animate-css',
 							value: { classes: 'rubberBand', iteration: 'infinite' }
@@ -125,95 +118,75 @@ export default defineComponent({
 					const style = this.$store.state.device.animatedMfm
 						? `animation: spin 1.5s linear infinite; animation-direction: ${direction};` : '';
 					return h('span', {
-						attrs: {
-							style: 'display: inline-block;' + style
-						},
+						style: 'display: inline-block;' + style
 					}, genEl(token.children));
 				}
 
 				case 'jump': {
 					return h('span', {
-						attrs: {
-							style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: jump 0.75s linear infinite;' : 'display: inline-block;'
-						},
+						style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: jump 0.75s linear infinite;' : 'display: inline-block;'
 					}, genEl(token.children));
 				}
 
 				case 'flip': {
 					return h('span', {
-						attrs: {
-							style: 'display: inline-block; transform: scaleX(-1);'
-						},
+						style: 'display: inline-block; transform: scaleX(-1);'
 					}, genEl(token.children));
 				}
 
 				case 'url': {
 					return [h(MkUrl, {
 						key: Math.random(),
-						props: {
-							url: token.node.props.url,
-							rel: 'nofollow noopener',
-						},
+						url: token.node.props.url,
+						rel: 'nofollow noopener',
 					})];
 				}
 
 				case 'link': {
 					return [h(MkLink, {
 						key: Math.random(),
-						props: {
-							url: token.node.props.url,
-							rel: 'nofollow noopener',
-						},
+						url: token.node.props.url,
+						rel: 'nofollow noopener',
 					}, genEl(token.children))];
 				}
 
 				case 'mention': {
 					return [h(MkMention, {
 						key: Math.random(),
-						props: {
-							host: (token.node.props.host == null && this.author && this.author.host != null ? this.author.host : token.node.props.host) || host,
-							username: token.node.props.username
-						}
+						host: (token.node.props.host == null && this.author && this.author.host != null ? this.author.host : token.node.props.host) || host,
+						username: token.node.props.username
 					})];
 				}
 
 				case 'hashtag': {
-					return [h('router-link', {
+					return [h(RouterLink, {
 						key: Math.random(),
-						attrs: {
-							to: this.isNote ? `/tags/${encodeURIComponent(token.node.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.node.props.hashtag)}`,
-							style: 'color:var(--hashtag);'
-						}
+						to: this.isNote ? `/tags/${encodeURIComponent(token.node.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.node.props.hashtag)}`,
+						style: 'color:var(--hashtag);'
 					}, `#${token.node.props.hashtag}`)];
 				}
 
 				case 'blockCode': {
 					return [h(MkCode, {
 						key: Math.random(),
-						props: {
-							code: token.node.props.code,
-							lang: token.node.props.lang,
-						}
+						code: token.node.props.code,
+						lang: token.node.props.lang,
 					})];
 				}
 
 				case 'inlineCode': {
 					return [h(MkCode, {
 						key: Math.random(),
-						props: {
-							code: token.node.props.code,
-							lang: token.node.props.lang,
-							inline: true
-						}
+						code: token.node.props.code,
+						lang: token.node.props.lang,
+						inline: true
 					})];
 				}
 
 				case 'quote': {
 					if (this.shouldBreak) {
 						return [h('div', {
-							attrs: {
-								class: 'quote'
-							}
+							class: 'quote'
 						}, genEl(token.children))];
 					} else {
 						return [h('span', {
@@ -226,57 +199,45 @@ export default defineComponent({
 
 				case 'title': {
 					return [h('div', {
-						attrs: {
-							class: 'title'
-						}
+						class: 'title'
 					}, genEl(token.children))];
 				}
 
 				case 'emoji': {
 					return [h('mk-emoji', {
 						key: Math.random(),
-						attrs: {
-							emoji: token.node.props.emoji,
-							name: token.node.props.name
-						},
-						props: {
-							customEmojis: this.customEmojis,
-							normal: this.plain
-						}
+						emoji: token.node.props.emoji,
+						name: token.node.props.name,
+						customEmojis: this.customEmojis,
+						normal: this.plain
 					})];
 				}
 
 				case 'mathInline': {
 					return [h(MkFormula, {
 						key: Math.random(),
-						props: {
-							formula: token.node.props.formula,
-							block: false
-						}
+						formula: token.node.props.formula,
+						block: false
 					})];
 				}
 
 				case 'mathBlock': {
 					return [h(MkFormula, {
 						key: Math.random(),
-						props: {
-							formula: token.node.props.formula,
-							block: true
-						}
+						formula: token.node.props.formula,
+						block: true
 					})];
 				}
 
 				case 'search': {
 					return [h(MkGoogle, {
 						key: Math.random(),
-						props: {
-							q: token.node.props.query
-						}
+						q: token.node.props.query
 					})];
 				}
 
 				default: {
-					console.log('unknown ast type:', token.node.type);
+					console.log('unrecognized ast type:', token.node.type);
 
 					return [];
 				}

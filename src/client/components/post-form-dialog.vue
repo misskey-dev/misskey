@@ -1,14 +1,14 @@
 <template>
-<div class="ulveipgl">
-	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear @after-leave="$emit('closed');">
-		<div class="bg _modalBg" ref="bg" v-if="show" @click="close()"></div>
+<div class="ulveipgl" :style="{ pointerEvents: closing ? 'none' : 'auto' }">
+	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear @after-leave="$store.commit('setPostForm', null)">
+		<div class="bg _modalBg" ref="bg" v-if="!closing" @click="close()"></div>
 	</transition>
 	<div class="main" ref="main" @click.self="close()" @keydown="onKeydown">
 		<transition :name="$store.state.device.animation ? 'form' : ''" appear
 			@after-leave="destroyDom"
 		>
 			<x-post-form ref="form"
-				v-if="show"
+				v-if="!closing"
 				:reply="reply"
 				:renote="renote"
 				:mention="mention"
@@ -18,7 +18,8 @@
 				:instant="instant"
 				@posted="onPosted"
 				@cancel="onCanceled"
-				style="border-radius: var(--radius);"/>
+				style="border-radius: var(--radius);"
+			/>
 		</transition>
 	</div>
 </div>
@@ -67,7 +68,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			show: true
+			closing: false
 		};
 	},
 
@@ -77,9 +78,7 @@ export default defineComponent({
 		},
 
 		close() {
-			this.show = false;
-			(this.$refs.bg as any).style.pointerEvents = 'none';
-			(this.$refs.main as any).style.pointerEvents = 'none';
+			this.closing = true;
 		},
 
 		onPosted() {

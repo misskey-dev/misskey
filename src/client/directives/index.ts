@@ -12,5 +12,5 @@ export default function(app: App) {
 	app.directive('user-preview', userPreview);
 	app.directive('size', size);
 	//app.directive('particle', particle);
-	//app.directive('tooltip', tooltip);
+	app.directive('tooltip', tooltip);
 }

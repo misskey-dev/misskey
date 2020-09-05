@@ -115,6 +115,7 @@ export const store = createStore({
 			text: string;
 			result: any;
 		}[],
+		postForm: null,
 		fullView: false,
 
 		// Plugin
@@ -274,6 +275,11 @@ export const store = createStore({
 
 		removeDialog(state, dialogId) {
 			state.dialogs = state.dialogs.filter(d => d.id !== dialogId);
+		},
+
+		setPostForm(state, postForm) {
+			if (state.postForm != null && postForm != null) return;
+			state.postForm = postForm;
 		},
 
 		setFullView(state, v) {
