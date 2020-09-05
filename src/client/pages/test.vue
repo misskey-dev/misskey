@@ -14,6 +14,9 @@
 			<mk-switch v-model:value="dialogCancel">
 				<span>With cancel button</span>
 			</mk-switch>
+			<mk-switch v-model:value="dialogCancelByBgClick">
+				<span>Can cancel by modal bg click</span>
+			</mk-switch>
 			<mk-switch v-model:value="dialogInput">
 				<span>With input field</span>
 			</mk-switch>
@@ -51,6 +54,7 @@ export default defineComponent({
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',
 			dialogCancel: false,
+			dialogCancelByBgClick: true,
 			dialogInput: false,
 			dialogResult: null,
 			faExclamationTriangle
@@ -59,10 +63,12 @@ export default defineComponent({
 
 	methods: {
 		async showDialog() {
+			this.dialogResult = null;
 			this.dialogResult = await this.$store.dispatch('showDialog', {
 				title: this.dialogTitle,
 				text: this.dialogBody,
 				showCancelButton: this.dialogCancel,
+				cancelableByBgClick: this.dialogCancelByBgClick,
 				input: this.dialogInput ? {} : null
 			});
 		}
