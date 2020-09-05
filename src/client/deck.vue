@@ -141,7 +141,7 @@ export default defineComponent({
 		search() {
 			if (this.searching) return;
 
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
@@ -183,7 +183,7 @@ export default defineComponent({
 				'direct',
 			];
 
-			const { canceled, result: column } = await this.$root.showDialog({
+			const { canceled, result: column } = await this.$store.dispatch('showDialog', {
 				title: this.$t('_deck.addColumn'),
 				type: null,
 				select: {

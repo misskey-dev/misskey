@@ -152,7 +152,7 @@ export default defineComponent({
 				let _notFound = false;
 				const notFound = () => {
 					if (_notFound) {
-						this.$root.showDialog({
+						this.$store.dispatch('showDialog', {
 							type: 'error',
 							text: this.$t('noSuchUser')
 						});
@@ -185,19 +185,19 @@ export default defineComponent({
 		},
 
 		async addUser() {
-			const { canceled: canceled1, result: username } = await this.$root.showDialog({
+			const { canceled: canceled1, result: username } = await this.$store.dispatch('showDialog', {
 				title: this.$t('username'),
 				input: true
 			});
 			if (canceled1) return;
 
-			const { canceled: canceled2, result: password } = await this.$root.showDialog({
+			const { canceled: canceled2, result: password } = await this.$store.dispatch('showDialog', {
 				title: this.$t('password'),
 				input: { type: 'password' }
 			});
 			if (canceled2) return;
 
-			const dialog = this.$root.showDialog({
+			const dialog = this.$store.dispatch('showDialog', {
 				type: 'waiting',
 				iconOnly: true
 			});
@@ -207,12 +207,12 @@ export default defineComponent({
 				password: password,
 			}).then(res => {
 				this.$refs.users.reload();
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: e.id
 				});

@@ -519,7 +519,7 @@ export default defineComponent({
 			this.$root.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -527,7 +527,7 @@ export default defineComponent({
 		},
 
 		del() {
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('noteDeleteConfirm'),
 				showCancelButton: true
@@ -541,7 +541,7 @@ export default defineComponent({
 		},
 
 		delEdit() {
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('deleteAndEditConfirm'),
 				showCancelButton: true
@@ -560,7 +560,7 @@ export default defineComponent({
 			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -571,7 +571,7 @@ export default defineComponent({
 			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -716,7 +716,7 @@ export default defineComponent({
 
 		copyContent() {
 			copyToClipboard(this.appearNote.text);
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -724,7 +724,7 @@ export default defineComponent({
 
 		copyLink() {
 			copyToClipboard(`${url}/notes/${this.appearNote.id}`);
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -734,13 +734,13 @@ export default defineComponent({
 			this.$root.api(pin ? 'i/pin' : 'i/unpin', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'error',
 						text: this.$t('pinLimitExceeded')
 					});
@@ -749,7 +749,7 @@ export default defineComponent({
 		},
 
 		async promote() {
-			const { canceled, result: days } = await this.$root.showDialog({
+			const { canceled, result: days } = await this.$store.dispatch('showDialog', {
 				title: this.$t('numberOfDays'),
 				input: { type: 'number' }
 			});
@@ -760,12 +760,12 @@ export default defineComponent({
 				noteId: this.appearNote.id,
 				expiresAt: Date.now() + (86400000 * days)
 			}).then(() => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: e
 				});

@@ -77,7 +77,7 @@ export default defineComponent({
 			}), {
 				in: (q) => {
 					return new Promise(ok => {
-						this.$root.showDialog({
+						this.$store.dispatch('showDialog', {
 							title: q,
 							input: {}
 						}).then(({ canceled, result: a }) => {
@@ -108,7 +108,7 @@ export default defineComponent({
 			try {
 				ast = parse(this.code);
 			} catch (e) {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: 'Syntax error :('
 				});
@@ -117,7 +117,7 @@ export default defineComponent({
 			try {
 				await aiscript.exec(ast);
 			} catch (e) {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: e
 				});

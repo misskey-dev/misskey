@@ -57,7 +57,7 @@ export default defineComponent({
 			}).catch(() => {
 				this.submitting = false;
 
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: this.$t('error')
 				});

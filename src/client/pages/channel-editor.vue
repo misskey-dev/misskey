@@ -92,7 +92,7 @@ export default defineComponent({
 				params.channelId = this.channelId;
 				this.$root.api('channels/update', params)
 				.then(channel => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
@@ -100,7 +100,7 @@ export default defineComponent({
 			} else {
 				this.$root.api('channels/create', params)
 				.then(channel => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});

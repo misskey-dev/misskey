@@ -10,7 +10,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const dialog = component.$root.showDialog({
+				const dialog = component.$store.dispatch('showDialog', {
 					type: 'waiting',
 					text: component.$t('uploading') + '...',
 					showOkButton: false,
@@ -35,7 +35,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
 				}).catch(e => {
-					component.$root.showDialog({
+					component.$store.dispatch('showDialog', {
 						type: 'error',
 						text: e
 					});

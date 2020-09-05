@@ -60,7 +60,7 @@ export default defineComponent({
 	methods: {
 		async setAntenna() {
 			const antennas = await this.$root.api('antennas/list');
-			const { canceled, result: antenna } = await this.$root.showDialog({
+			const { canceled, result: antenna } = await this.$store.dispatch('showDialog', {
 				title: this.$t('selectAntenna'),
 				type: null,
 				select: {

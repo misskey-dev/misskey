@@ -44,7 +44,7 @@ export default defineComponent({
 	methods: {
 		upload() {
 			return new Promise((ok) => {
-				const dialog = this.$root.showDialog({
+				const dialog = this.$store.dispatch('showDialog', {
 					type: 'waiting',
 					text: this.$t('uploading') + '...',
 					showOkButton: false,
@@ -80,7 +80,7 @@ export default defineComponent({
 				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

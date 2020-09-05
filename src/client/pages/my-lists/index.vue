@@ -42,14 +42,14 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await this.$root.showDialog({
+			const { canceled, result: name } = await this.$store.dispatch('showDialog', {
 				title: this.$t('enterListName'),
 				input: true
 			});
 			if (canceled) return;
 			await this.$root.api('users/lists/create', { name: name });
 			this.$refs.list.reload();
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

@@ -62,7 +62,7 @@ export default defineComponent({
 
 	methods: {
 		async rename() {
-			const { canceled, result: title } = await this.$root.showDialog({
+			const { canceled, result: title } = await this.$store.dispatch('showDialog', {
 				title: 'Enter title',
 				input: {
 					type: 'text',
@@ -75,7 +75,7 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: type } = await this.$root.showDialog({
+			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {

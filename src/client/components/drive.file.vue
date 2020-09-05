@@ -128,7 +128,7 @@ export default defineComponent({
 		},
 
 		rename() {
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				title: this.$t('renameFile'),
 				input: {
 					placeholder: this.$t('inputNewFileName'),
@@ -153,7 +153,7 @@ export default defineComponent({
 
 		copyUrl() {
 			copyToClipboard(this.file.url);
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -172,7 +172,7 @@ export default defineComponent({
 		},
 
 		async deleteFile() {
-			const { canceled } = await this.$root.showDialog({
+			const { canceled } = await this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('driveFileDeleteConfirm', { name: this.file.name }),
 				showCancelButton: true

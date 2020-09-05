@@ -150,14 +150,14 @@ export default defineComponent({
 				});
 			}
 
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
 		},
 
 		async deleteAntenna() {
-			const { canceled } = await this.$root.showDialog({
+			const { canceled } = await this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.antenna.name }),
 				showCancelButton: true
@@ -168,7 +168,7 @@ export default defineComponent({
 				antennaId: this.antenna.id,
 			});
 
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

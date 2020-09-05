@@ -122,7 +122,7 @@ export default defineComponent({
 				}).then(i => {
 					this.$store.state.i.includingNotificationTypes = i.includingNotificationTypes;
 				}).catch(err => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'error',
 						text: err.message
 					});

@@ -61,7 +61,7 @@ export default defineComponent({
 	methods: {
 		async addItem() {
 			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.deviceUser.menu.includes(k));
-			const { canceled, result: item } = await this.$root.showDialog({
+			const { canceled, result: item } = await this.$store.dispatch('showDialog', {
 				type: null,
 				title: this.$t('addItem'),
 				select: {

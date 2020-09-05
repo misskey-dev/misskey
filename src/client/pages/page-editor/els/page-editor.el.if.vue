@@ -64,7 +64,7 @@ export default defineComponent({
 
 	methods: {
 		async add() {
-			const { canceled, result: type } = await this.$root.showDialog({
+			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {

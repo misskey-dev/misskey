@@ -25,7 +25,7 @@ export default defineComponent({
 
 	methods: {
 		async change() {
-			const { canceled: canceled1, result: currentPassword } = await this.$root.showDialog({
+			const { canceled: canceled1, result: currentPassword } = await this.$store.dispatch('showDialog', {
 				title: this.$t('currentPassword'),
 				input: {
 					type: 'password'
@@ -33,7 +33,7 @@ export default defineComponent({
 			});
 			if (canceled1) return;
 
-			const { canceled: canceled2, result: newPassword } = await this.$root.showDialog({
+			const { canceled: canceled2, result: newPassword } = await this.$store.dispatch('showDialog', {
 				title: this.$t('newPassword'),
 				input: {
 					type: 'password'
@@ -41,7 +41,7 @@ export default defineComponent({
 			});
 			if (canceled2) return;
 
-			const { canceled: canceled3, result: newPassword2 } = await this.$root.showDialog({
+			const { canceled: canceled3, result: newPassword2 } = await this.$store.dispatch('showDialog', {
 				title: this.$t('newPasswordRetype'),
 				input: {
 					type: 'password'
@@ -50,14 +50,14 @@ export default defineComponent({
 			if (canceled3) return;
 
 			if (newPassword !== newPassword2) {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: this.$t('retypedNotMatch')
 				});
 				return;
 			}
 
-			const dialog = this.$root.showDialog({
+			const dialog = this.$store.dispatch('showDialog', {
 				type: 'waiting',
 				iconOnly: true
 			});
@@ -66,12 +66,12 @@ export default defineComponent({
 				currentPassword,
 				newPassword
 			}).then(() => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: e
 				});

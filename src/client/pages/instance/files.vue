@@ -34,7 +34,7 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('clearCachedFilesConfirm'),
 				showCancelButton: true
@@ -42,7 +42,7 @@ export default defineComponent({
 				if (canceled) return;
 
 				this.$root.api('admin/drive/clean-remote-files', {}).then(() => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});

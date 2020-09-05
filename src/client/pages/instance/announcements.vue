@@ -68,7 +68,7 @@ export default defineComponent({
 		},
 
 		remove(announcement) {
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: announcement.title }),
 				showCancelButton: true
@@ -82,24 +82,24 @@ export default defineComponent({
 		save(announcement) {
 			if (announcement.id == null) {
 				this.$root.api('admin/announcements/create', announcement).then(() => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						text: this.$t('saved')
 					});
 				}).catch(e => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'error',
 						text: e
 					});
 				});
 			} else {
 				this.$root.api('admin/announcements/update', announcement).then(() => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						text: this.$t('saved')
 					});
 				}).catch(e => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'error',
 						text: e
 					});

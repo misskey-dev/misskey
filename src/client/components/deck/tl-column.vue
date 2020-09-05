@@ -78,7 +78,7 @@ export default defineComponent({
 
 	methods: {
 		async setType() {
-			const { canceled, result: src } = await this.$root.showDialog({
+			const { canceled, result: src } = await this.$store.dispatch('showDialog', {
 				title: this.$t('timeline'),
 				type: null,
 				select: {

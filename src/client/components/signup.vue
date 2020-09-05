@@ -193,7 +193,7 @@ export default defineComponent({
 				this.$refs.hcaptcha?.reset?.();
 				this.$refs.recaptcha?.reset?.();
 
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: this.$t('error')
 				});

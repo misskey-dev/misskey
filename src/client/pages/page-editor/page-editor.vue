@@ -239,14 +239,14 @@ export default defineComponent({
 			const onError = err => {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
 					if (err.info.param == 'name') {
-						this.$root.showDialog({
+						this.$store.dispatch('showDialog', {
 							type: 'error',
 							title: this.$t('_pages.invalidNameTitle'),
 							text: this.$t('_pages.invalidNameText')
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'error',
 						text: this.$t('_pages.nameAlreadyExists')
 					});
@@ -258,7 +258,7 @@ export default defineComponent({
 				this.$root.api('pages/update', options)
 				.then(page => {
 					this.currentName = this.name.trim();
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						text: this.$t('_pages.updated')
 					});
@@ -268,7 +268,7 @@ export default defineComponent({
 				.then(page => {
 					this.pageId = page.id;
 					this.currentName = this.name.trim();
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						text: this.$t('_pages.created')
 					});
@@ -278,7 +278,7 @@ export default defineComponent({
 		},
 
 		del() {
-			this.$root.showDialog({
+			this.$store.dispatch('showDialog', {
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.title.trim() }),
 				showCancelButton: true
@@ -287,7 +287,7 @@ export default defineComponent({
 				this.$root.api('pages/delete', {
 					pageId: this.pageId,
 				}).then(() => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						type: 'success',
 						text: this.$t('_pages.deleted')
 					});
@@ -297,7 +297,7 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: type } = await this.$root.showDialog({
+			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {
@@ -312,7 +312,7 @@ export default defineComponent({
 		},
 
 		async addVariable() {
-			let { canceled, result: name } = await this.$root.showDialog({
+			let { canceled, result: name } = await this.$store.dispatch('showDialog', {
 				title: this.$t('_pages.enterVariableName'),
 				input: {
 					type: 'text',
@@ -324,7 +324,7 @@ export default defineComponent({
 			name = name.trim();
 
 			if (this.hpml.isUsedName(name)) {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'error',
 					text: this.$t('_pages.variableNameIsAlreadyUsed')
 				});

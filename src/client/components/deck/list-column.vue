@@ -60,7 +60,7 @@ export default defineComponent({
 	methods: {
 		async setList() {
 			const lists = await this.$root.api('users/lists/list');
-			const { canceled, result: list } = await this.$root.showDialog({
+			const { canceled, result: list } = await this.$store.dispatch('showDialog', {
 				title: this.$t('selectList'),
 				type: null,
 				select: {

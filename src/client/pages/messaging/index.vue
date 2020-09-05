@@ -140,14 +140,14 @@ export default defineComponent({
 			const groups1 = await this.$root.api('users/groups/owned');
 			const groups2 = await this.$root.api('users/groups/joined');
 			if (groups1.length === 0 && groups2.length === 0) {
-				this.$root.showDialog({
+				this.$store.dispatch('showDialog', {
 					type: 'warning',
 					title: this.$t('youHaveNoGroups'),
 					text: this.$t('joinOrCreateGroup'),
 				});
 				return;
 			}
-			const { canceled, result: group } = await this.$root.showDialog({
+			const { canceled, result: group } = await this.$store.dispatch('showDialog', {
 				type: null,
 				title: this.$t('group'),
 				select: {

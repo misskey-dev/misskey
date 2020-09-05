@@ -137,7 +137,7 @@ export default defineComponent({
 				icon: faPencilAlt,
 				text: this.$t('rename'),
 				action: () => {
-					this.$root.showDialog({
+					this.$store.dispatch('showDialog', {
 						title: this.$t('rename'),
 						input: {
 							default: this.column.name,
