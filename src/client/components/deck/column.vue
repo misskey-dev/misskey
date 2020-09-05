@@ -207,7 +207,7 @@ export default defineComponent({
 		},
 
 		showMenu() {
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: this.getMenu(),
 				source: this.$refs.menu,
 			});

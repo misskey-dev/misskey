@@ -14,6 +14,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+// memo: popup.vueのfixedプロパティに相当するものはsource要素の祖先を辿るなどして自動で判定できるのでは
+
 export default defineComponent({
 	emits: ['click', 'esc', 'closed'],
 	props: {
@@ -26,6 +28,9 @@ export default defineComponent({
 			required: false,
 			default: true,
 		},
+		sourceEl: {
+			required: false,
+		}
 	},
 	computed: {
 		keymap(): any {
@@ -33,6 +38,64 @@ export default defineComponent({
 				'esc': () => this.$emit('esc'),
 			};
 		},
+	},
+	mounted() {
+		this.$nextTick(() => {
+			const popover = this.$refs.content as any;
+
+			const rect = this.source.getBoundingClientRect();
+			const width = popover.offsetWidth;
+			const height = popover.offsetHeight;
+
+			let left;
+			let top;
+
+			if (this.$root.isMobile && !this.noCenter) {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.source.offsetHeight / 2);
+				left = (x - (width / 2));
+				top = (y - (height / 2));
+				popover.style.transformOrigin = 'center';
+			} else {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.source.offsetHeight;
+				left = (x - (width / 2));
+				top = y;
+			}
+
+			if (this.fixed) {
+				if (left + width > window.innerWidth) {
+					left = window.innerWidth - width;
+					popover.style.transformOrigin = 'center';
+				}
+
+				if (top + height > window.innerHeight) {
+					top = window.innerHeight - height;
+					popover.style.transformOrigin = 'center';
+				}
+			} else {
+				if (left + width - window.pageXOffset > window.innerWidth) {
+					left = window.innerWidth - width + window.pageXOffset;
+					popover.style.transformOrigin = 'center';
+				}
+
+				if (top + height - window.pageYOffset > window.innerHeight) {
+					top = window.innerHeight - height + window.pageYOffset;
+					popover.style.transformOrigin = 'center';
+				}
+			}
+
+			if (top < 0) {
+				top = 0;
+			}
+
+			if (left < 0) {
+				left = 0;
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
+		});
 	},
 });
 </script>

@@ -82,7 +82,7 @@ export default defineComponent({
 			if (this.selectMode) {
 				this.$emit('chosen', this.file);
 			} else {
-				this.$root.menu({
+				this.$store.dispatch('showMenu', {
 					items: [{
 						text: this.$t('rename'),
 						icon: faICursor,

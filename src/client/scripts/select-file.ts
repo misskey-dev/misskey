@@ -65,7 +65,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 
 		};
 
-		component.$root.menu({
+		component.$store.dispatch('showMenu', {
 			items: [label ? {
 				text: label,
 				type: 'label'

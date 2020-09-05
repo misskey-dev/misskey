@@ -4,6 +4,8 @@
 
 <XPostFormDialog v-if="$store.state.postForm" v-bind="$store.state.postForm"/>
 
+<XMenu v-if="menu" v-bind="menu" :key="menu.id"/>
+
 <XDialog v-if="dialog" v-bind="dialog" :key="dialog.id"/>
 </template>
 
@@ -18,6 +20,7 @@ export default defineComponent({
 		DefaultUI,
 		DeckUI,
 		XDialog: defineAsyncComponent(() => import('./components/dialog.vue')),
+		XMenu: defineAsyncComponent(() => import('./components/menu.vue')),
 		XPostFormDialog: defineAsyncComponent(() => import('./components/post-form-dialog.vue')),
 	},
 
@@ -51,6 +54,12 @@ export default defineComponent({
 			// what: ダイアログが複数ある場合は、一番最後に追加されたダイアログを表示する
 			// why: ダイアログが一度に複数表示されるとユーザビリティが悪いため。
 			return this.$store.state.dialogs[this.$store.state.dialogs.length - 1];
+		},
+
+		menu() {
+			if (this.$store.state.menus.length === 0) return null;
+
+			return this.$store.state.menus[this.$store.state.menus.length - 1];
 		}
 	},
 

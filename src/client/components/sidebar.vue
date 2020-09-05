@@ -149,7 +149,7 @@ export default defineComponent({
 				action: () => { this.switchAccount(account); }
 			}));
 
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [...[{
 					type: 'link',
 					text: this.$t('profile'),
@@ -164,7 +164,7 @@ export default defineComponent({
 					icon: faPlus,
 					text: this.$t('addAcount'),
 					action: () => {
-						this.$root.menu({
+						this.$store.dispatch('showMenu', {
 							items: [{
 								text: this.$t('existingAcount'),
 								action: () => { this.addAcount(); },
@@ -187,7 +187,7 @@ export default defineComponent({
 		},
 
 		oepnInstanceMenu(ev) {
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					type: 'link',
 					text: this.$t('dashboard'),
@@ -250,7 +250,7 @@ export default defineComponent({
 				action: def.action,
 				indicate: def.indicated,
 			}));
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [...items, null, {
 					type: 'link',
 					text: this.$t('help'),

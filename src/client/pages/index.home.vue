@@ -171,7 +171,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					text: this.$t('_timelines.home'),
 					icon: faHome,

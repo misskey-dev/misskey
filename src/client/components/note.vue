@@ -452,7 +452,7 @@ export default defineComponent({
 		renote(viaKeyboard = false) {
 			pleaseLogin(this.$root);
 			this.blur();
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					text: this.$t('renote'),
 					icon: faRetweet,
@@ -685,7 +685,7 @@ export default defineComponent({
 				}))]);
 			}
 
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: menu,
 				source: this.$refs.menuButton,
 				viaKeyboard
@@ -694,7 +694,7 @@ export default defineComponent({
 
 		showRenoteMenu(viaKeyboard = false) {
 			if (!this.isMyRenote) return;
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					text: this.$t('unrenote'),
 					icon: faTrashAlt,

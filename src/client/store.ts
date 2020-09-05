@@ -115,6 +115,7 @@ export const store = createStore({
 			text: string;
 			result: any;
 		}[],
+		menus: [],
 		postForm: null,
 		fullView: false,
 
@@ -277,6 +278,10 @@ export const store = createStore({
 			state.dialogs = state.dialogs.filter(d => d.id !== dialogId);
 		},
 
+		addMenu(state, menu) {
+			state.menus.push(menu);
+		},
+
 		setPostForm(state, postForm) {
 			if (state.postForm != null && postForm != null) return;
 			state.postForm = postForm;
@@ -386,6 +391,21 @@ export const store = createStore({
 				});
 				ctx.commit('addDialog', dialog);
 				const unwatch = watch(() => dialog.result, result => {
+					unwatch();
+					res(result);
+				});
+			});
+		},
+
+		showMenu(ctx, opts) {
+			return new Promise((res, rej) => {
+				const menu = reactive({
+					...opts,
+					result: null,
+					id: Math.random().toString() // TODO: uuidとか使う
+				});
+				ctx.commit('addMenu', menu);
+				const unwatch = watch(() => menu.result, result => {
 					unwatch();
 					res(result);
 				});

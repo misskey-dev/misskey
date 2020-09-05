@@ -80,7 +80,7 @@ export default defineComponent({
 		},
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
-			this.menu = this.$root.menu({
+			this.menu = this.$store.dispatch('showMenu', {
 				items: [{
 					text: this.$t('renameFile'),
 					icon: faICursor,

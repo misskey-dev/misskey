@@ -88,7 +88,7 @@ export default defineComponent({
 					this.setSrc('list');
 				}
 			}));
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					text: this.$t('_timelines.home'),
 					icon: faHome,

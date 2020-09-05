@@ -1,6 +1,6 @@
 <template>
-<x-popup :source="source" :no-center="noCenter" :fixed="fixed" :width="width" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
-	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items">
+<x-modal :source="source" :no-center="noCenter" ref="popup" @click="" @closed="$store.commit('removeMenu', id)" :showing="showing">
+	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i"></div>
 			<span v-else-if="item.type === 'label'" class="label item" :key="i">
@@ -29,18 +29,18 @@
 			</button>
 		</template>
 	</div>
-</x-popup>
+</x-modal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
-import XPopup from './popup.vue';
+import XModal from './modal.vue';
 import { focusPrev, focusNext } from '../scripts/focus';
 
 export default defineComponent({
 	components: {
-		XPopup
+		XModal
 	},
 	props: {
 		source: {
@@ -55,10 +55,6 @@ export default defineComponent({
 			required: false
 		},
 		noCenter: {
-			type: Boolean,
-			required: false
-		},
-		fixed: {
 			type: Boolean,
 			required: false
 		},

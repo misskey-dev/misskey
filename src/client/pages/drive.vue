@@ -39,7 +39,7 @@ export default defineComponent({
 	methods: {
 		menu(ev) {
 			this.menuOpened = true;
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					text: this.$t('addFile'),
 					type: 'label'

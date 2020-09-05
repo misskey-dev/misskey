@@ -1,3 +1,5 @@
+// popupはmodalと統合
+
 <template>
 <div class="mk-popup" v-hotkey.global="keymap">
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>

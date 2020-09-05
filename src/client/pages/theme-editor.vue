@@ -255,7 +255,7 @@ export default defineComponent({
 	
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
-				this.$root.menu({
+				this.$store.dispatch('showMenu', {
 					items: [{
 						text: this.$t('_theme.defaultValue'),
 						action: () => resolve(null),

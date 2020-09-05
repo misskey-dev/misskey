@@ -346,7 +346,7 @@ export default defineComponent({
 		},
 
 		chooseFileFrom(ev) {
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: [{
 					type: 'label',
 					text: this.$t('attachFile'),
@@ -612,7 +612,7 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			this.$root.menu({
+			this.$store.dispatch('showMenu', {
 				items: this.$store.state.postFormActions.map(action => ({
 					text: action.title,
 					action: () => {
