@@ -66,6 +66,7 @@ export default defineComponent({
 		bottom: 0;
 		left: 0;
 		right: 0;
+		margin: auto;
 		max-width: calc(100% - 16px);
 		max-height: calc(100% - 16px);
 		overflow: auto;

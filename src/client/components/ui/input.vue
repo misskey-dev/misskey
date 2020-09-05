@@ -145,7 +145,7 @@ export default defineComponent({
 		});
 
 		watch(v, newValue => {
-			if (type.value === 'number') {
+			if (type?.value === 'number') {
 				context.emit('update:value', parseFloat(newValue));
 			} else {
 				context.emit('update:value', newValue);

@@ -209,14 +209,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-dialog {
-	display: block;
-	position: fixed;
-	margin: auto;
+	position: relative;
 	padding: 32px;
 	min-width: 320px;
 	max-width: 480px;
 	box-sizing: border-box;
-	width: calc(100% - 32px);
 	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
