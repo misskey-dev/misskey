@@ -14,6 +14,9 @@
 			<mk-switch v-model:value="dialogCancel">
 				<span>With cancel button</span>
 			</mk-switch>
+			<mk-switch v-model:value="dialogInput">
+				<span>With input field</span>
+			</mk-switch>
 			<mk-button @click="showDialog()">Show</mk-button>
 		</div>
 		<div class="_content">
@@ -47,8 +50,9 @@ export default defineComponent({
 		return {
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',
-			dialogResult: null,
 			dialogCancel: false,
+			dialogInput: false,
+			dialogResult: null,
 			faExclamationTriangle
 		}
 	},
@@ -59,6 +63,7 @@ export default defineComponent({
 				title: this.dialogTitle,
 				text: this.dialogBody,
 				showCancelButton: this.dialogCancel,
+				input: this.dialogInput ? {} : null
 			});
 		}
 	}

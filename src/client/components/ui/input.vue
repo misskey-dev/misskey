@@ -2,66 +2,51 @@
 <div class="juejbjww" :class="{ focused, filled, inline, disabled }">
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
 	<div class="input">
-		<span class="label" ref="label"><slot></slot></span>
+		<span class="label" ref="labelEl"><slot></slot></span>
 		<span class="title" ref="title">
 			<slot name="title"></slot>
 			<span class="warning" v-if="invalid"><fa :icon="faExclamationCircle"/>{{ $refs.input.validationMessage }}</span>
 		</span>
-		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
-		<template v-if="type != 'file'">
-			<input v-if="debounce" ref="input"
-				v-debounce="500"
-				:type="type"
-				v-model.lazy="v"
-				:disabled="disabled"
-				:required="required"
-				:readonly="readonly"
-				:placeholder="placeholder"
-				:pattern="pattern"
-				:autocomplete="autocomplete"
-				:spellcheck="spellcheck"
-				:step="step"
-				@focus="focused = true"
-				@blur="focused = false"
-				@keydown="$emit('keydown', $event)"
-				@input="onInput"
-				:list="id"
-			>
-			<input v-else ref="input"
-				:type="type"
-				v-model="v"
-				:disabled="disabled"
-				:required="required"
-				:readonly="readonly"
-				:placeholder="placeholder"
-				:pattern="pattern"
-				:autocomplete="autocomplete"
-				:spellcheck="spellcheck"
-				:step="step"
-				@focus="focused = true"
-				@blur="focused = false"
-				@keydown="$emit('keydown', $event)"
-				@input="onInput"
-				:list="id"
-			>
-			<datalist :id="id" v-if="datalist">
-				<option v-for="data in datalist" :value="data"/>
-			</datalist>
-		</template>
-		<template v-else>
-			<input ref="input"
-				type="text"
-				:value="filePlaceholder"
-				readonly
-				@click="chooseFile"
-			>
-			<input ref="file"
-				type="file"
-				:value="value"
-				@change="onChangeFile"
-			>
-		</template>
-		<div class="suffix" ref="suffix"><slot name="suffix"></slot></div>
+		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+		<input v-if="debounce" ref="inputEl"
+			v-debounce="500"
+			:type="type"
+			v-model.lazy="v"
+			:disabled="disabled"
+			:required="required"
+			:readonly="readonly"
+			:placeholder="placeholder"
+			:pattern="pattern"
+			:autocomplete="autocomplete"
+			:spellcheck="spellcheck"
+			:step="step"
+			@focus="focused = true"
+			@blur="focused = false"
+			@keydown="$emit('keydown', $event)"
+			@input="onInput"
+			:list="id"
+		>
+		<input v-else ref="inputEl"
+			:type="type"
+			v-model="v"
+			:disabled="disabled"
+			:required="required"
+			:readonly="readonly"
+			:placeholder="placeholder"
+			:pattern="pattern"
+			:autocomplete="autocomplete"
+			:spellcheck="spellcheck"
+			:step="step"
+			@focus="focused = true"
+			@blur="focused = false"
+			@keydown="$emit('keydown', $event)"
+			@input="onInput"
+			:list="id"
+		>
+		<datalist :id="id" v-if="datalist">
+			<option v-for="data in datalist" :value="data"/>
+		</datalist>
+		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
 	</div>
 	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
 	<div class="desc _caption"><slot name="desc"></slot></div>
@@ -69,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import debounce from 'v-debounce';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
@@ -136,107 +121,88 @@ export default defineComponent({
 			required: false,
 		},
 	},
-	data() {
-		return {
-			v: this.value,
-			focused: false,
-			invalid: false,
-			changed: false,
-			id: Math.random().toString(),
-			faExclamationCircle
+	setup(props, context) {
+		const { value, type, autofocus } = toRefs(props);
+		const v = ref(value.value);
+		const id = Math.random().toString(); // TODO: uuid?
+		const focused = ref(false);
+		const changed = ref(false);
+		const invalid = ref(false);
+		const filled = computed(() => v.value !== '' && v.value != null);
+		const inputEl = ref(null);
+		const prefixEl = ref(null);
+		const suffixEl = ref(null);
+		const labelEl = ref(null);
+
+		const focus = () => inputEl.value.focus();
+		const onInput = (ev) => {
+			changed.value = true;
+			context.emit('change', ev);
 		};
-	},
-	computed: {
-		filled(): boolean {
-			return this.v !== '' && this.v != null;
-		},
-		filePlaceholder(): string | null {
-			if (this.type != 'file') return null;
-			if (this.v == null) return null;
 
-			if (typeof this.v == 'string') return this.v;
+		watch(value, newValue => {
+			v.value = newValue;
+		});
 
-			if (Array.isArray(this.v)) {
-				return this.v.map(file => file.name).join(', ');
+		watch(v, newValue => {
+			if (type.value === 'number') {
+				context.emit('update:value', parseFloat(newValue));
 			} else {
-				return this.v.name;
-			}
-		}
-	},
-	watch: {
-		value(v) {
-			this.v = v;
-		},
-		v(v) {
-			if (this.type === 'number') {
-				this.$emit('update:value', parseFloat(v));
-			} else {
-				this.$emit('update:value', v);
+				context.emit('update:value', newValue);
 			}
 
-			this.invalid = this.$refs.input.validity.badInput;
-		}
-	},
-	mounted() {
-		if (this.autofocus) {
-			this.$nextTick(() => {
-				this.$refs.input.focus();
-			});
-		}
+			invalid.value = inputEl.value.validity.badInput;
+		});
 
-		this.$nextTick(() => {
-			// このコンポーネントが作成された時、非表示状態である場合がある
-			// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
-			const clock = setInterval(() => {
-				if (this.$refs.prefix) {
-					this.$refs.label.style.left = (this.$refs.prefix.offsetLeft + this.$refs.prefix.offsetWidth) + 'px';
-					if (this.$refs.prefix.offsetWidth) {
-						this.$refs.input.style.paddingLeft = this.$refs.prefix.offsetWidth + 'px';
-					}
+		onMounted(() => {
+			// TODO: vue3
+			/*this.$on('keydown', (e: KeyboardEvent) => {
+				if (e.code == 'Enter') {
+					this.$emit('enter');
 				}
-				if (this.$refs.suffix) {
-					if (this.$refs.suffix.offsetWidth) {
-						this.$refs.input.style.paddingRight = this.$refs.suffix.offsetWidth + 'px';
-					}
-				}
-			}, 100);
+			});*/
 
-			this.$once('hook:beforeDestroy', () => {
-				clearInterval(clock);
+			nextTick(() => {
+				if (autofocus.value) {
+					focus();
+				}
+
+				// このコンポーネントが作成された時、非表示状態である場合がある
+				// 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
+				const clock = setInterval(() => {
+					if (prefixEl.value) {
+						labelEl.value.style.left = (prefixEl.value.offsetLeft + prefixEl.value.offsetWidth) + 'px';
+						if (prefixEl.value.offsetWidth) {
+							inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
+						}
+					}
+					if (suffixEl.value) {
+						if (suffixEl.value.offsetWidth) {
+							inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
+						}
+					}
+				}, 100);
+
+				onUnmounted(() => {
+					clearInterval(clock);
+				});
 			});
 		});
 
-		// TODO: vue3
-		/*this.$on('keydown', (e: KeyboardEvent) => {
-			if (e.code == 'Enter') {
-				this.$emit('enter');
-			}
-		});*/
+		return {
+			id,
+			focused,
+			changed,
+			filled,
+			inputEl,
+			prefixEl,
+			suffixEl,
+			labelEl,
+			focus,
+			onInput,
+			faExclamationCircle,
+		};
 	},
-	methods: {
-		focus() {
-			this.$refs.input.focus();
-		},
-		togglePassword() {
-			if (this.type == 'password') {
-				this.type = 'text'
-			} else {
-				this.type = 'password'
-			}
-		},
-		chooseFile() {
-			this.$refs.file.click();
-		},
-		onChangeFile() {
-			this.v = Array.from((this.$refs.file as any).files);
-			this.$emit('update:value', this.v);
-			this.$emit('change', this.v);
-		},
-		onInput(ev) {
-			this.changed = true;
-			this.$emit('change', ev);
-		}
-	}
 });
 </script>
 
