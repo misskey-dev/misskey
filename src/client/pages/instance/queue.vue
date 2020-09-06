@@ -38,7 +38,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			connection: this.$root.stream.useSharedConnection('queueStats'),
+			connection: os.stream.useSharedConnection('queueStats'),
 			faExchangeAlt, faTrashAlt
 		}
 	},

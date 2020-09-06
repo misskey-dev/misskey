@@ -108,7 +108,7 @@ export default defineComponent({
 		window.addEventListener('wheel', this.onWheel);
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection = os.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
 		}
 	},
@@ -162,7 +162,7 @@ export default defineComponent({
 			}
 
 			if (document.visibilityState === 'visible') {
-				this.$root.stream.send('readNotification', {
+				os.stream.send('readNotification', {
 					id: notification.id
 				});
 

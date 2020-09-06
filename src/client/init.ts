@@ -11,7 +11,6 @@ import { deserialize } from '@syuilo/aiscript/built/serializer';
 
 import VueHotkey from '@/scripts/hotkey';
 import Root from './root.vue';
-import Stream from '@/scripts/stream';
 import widgets from './widgets';
 import directives from './directives';
 import components from '@/components';
@@ -22,6 +21,7 @@ import { applyTheme, lightTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { createPluginEnv } from '@/scripts/aiscript/api';
 import { i18n, lang } from './i18n';
+import { stream } from '@/os';
 
 console.info(`Misskey v${version}`);
 
@@ -112,7 +112,7 @@ if (store.state.i != null) {
 	if (i != null && i !== 'null') {
 		try {
 			const me = await fetchme(i);
-			store.dispatch('login', me);
+			await store.dispatch('login', me);
 		} catch (e) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)
@@ -122,11 +122,9 @@ if (store.state.i != null) {
 }
 //#endregion
 
-const stream = new Stream(store.state.i);
+stream.init(store.state.i);
 
-const app = createApp(Root, {
-	stream
-});
+const app = createApp(Root);
 
 app.use(store);
 app.use(router);

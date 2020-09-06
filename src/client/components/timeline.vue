@@ -88,36 +88,36 @@ export default defineComponent({
 			this.query = {
 				antennaId: this.antenna
 			};
-			this.connection = this.$root.stream.connectToChannel('antenna', {
+			this.connection = os.stream.connectToChannel('antenna', {
 				antennaId: this.antenna
 			});
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			endpoint = 'notes/timeline';
-			this.connection = this.$root.stream.useSharedConnection('homeTimeline');
+			this.connection = os.stream.useSharedConnection('homeTimeline');
 			this.connection.on('note', prepend);
 
-			this.connection2 = this.$root.stream.useSharedConnection('main');
+			this.connection2 = os.stream.useSharedConnection('main');
 			this.connection2.on('follow', onChangeFollowing);
 			this.connection2.on('unfollow', onChangeFollowing);
 		} else if (this.src == 'local') {
 			endpoint = 'notes/local-timeline';
-			this.connection = this.$root.stream.useSharedConnection('localTimeline');
+			this.connection = os.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'social') {
 			endpoint = 'notes/hybrid-timeline';
-			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
+			this.connection = os.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			endpoint = 'notes/global-timeline';
-			this.connection = this.$root.stream.useSharedConnection('globalTimeline');
+			this.connection = os.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'list') {
 			endpoint = 'notes/user-list-timeline';
 			this.query = {
 				listId: this.list
 			};
-			this.connection = this.$root.stream.connectToChannel('userList', {
+			this.connection = os.stream.connectToChannel('userList', {
 				listId: this.list
 			});
 			this.connection.on('note', prepend);
@@ -128,7 +128,7 @@ export default defineComponent({
 			this.query = {
 				channelId: this.channel
 			};
-			this.connection = this.$root.stream.connectToChannel('channel', {
+			this.connection = os.stream.connectToChannel('channel', {
 				channelId: this.channel
 			});
 			this.connection.on('note', prepend);

@@ -75,7 +75,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = this.$root.stream.useSharedConnection('main');
+		this.connection = os.stream.useSharedConnection('main');
 		this.connection.on('notification', this.onNotification);
 	},
 
@@ -88,7 +88,7 @@ export default defineComponent({
 			// 
 			const isMuted = !!this.allIncludeTypes && !this.allIncludeTypes.includes(notification.type);
 			if (isMuted || document.visibilityState === 'visible') {
-				this.$root.stream.send('readNotification', {
+				os.stream.send('readNotification', {
 					id: notification.id
 				});
 			}

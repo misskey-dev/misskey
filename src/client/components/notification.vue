@@ -104,7 +104,7 @@ export default defineComponent({
 		if (!this.notification.isRead) {
 			this.readObserver = new IntersectionObserver((entries, observer) => {
 				if (!entries.some(entry => entry.isIntersecting)) return;
-				this.$root.stream.send('readNotification', {
+				os.stream.send('readNotification', {
 					id: this.notification.id
 				});
 				entries.map(({ target }) => observer.unobserve(target));
@@ -112,7 +112,7 @@ export default defineComponent({
 
 			this.readObserver.observe(this.$el);
 
-			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection = os.stream.useSharedConnection('main');
 			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
 		}
 	},

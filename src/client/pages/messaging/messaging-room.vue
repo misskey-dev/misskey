@@ -107,7 +107,7 @@ export default defineComponent({
 				this.group = group;
 			}
 
-			this.connection = this.$root.stream.connectToChannel('messaging', {
+			this.connection = os.stream.connectToChannel('messaging', {
 				otherparty: this.user ? this.user.id : undefined,
 				group: this.group ? this.group.id : undefined,
 			});

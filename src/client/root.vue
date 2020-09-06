@@ -23,10 +23,6 @@ export default defineComponent({
 	},
 
 	props: {
-		// TODO: propで渡すとvueによって無駄なobserveがされるのでどうにかする
-		stream: {
-
-		},
 		isMobile: {
 			type: Boolean,
 			required: false,

@@ -141,7 +141,7 @@ export default defineComponent({
 			});
 		}
 
-		this.connection = this.$root.stream.useSharedConnection('drive');
+		this.connection = os.stream.useSharedConnection('drive');
 
 		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
 		this.connection.on('fileUpdated', this.onStreamDriveFileUpdated);

@@ -8,16 +8,13 @@ import { wsUrl } from '@/config';
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	public state: 'initializing' | 'reconnecting' | 'connected';
+	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 
-	constructor(user) {
-		super();
-
-		this.state = 'initializing';
-
+	@autobind
+	public init(user): void {
 		this.stream = new ReconnectingWebsocket(wsUrl + (user ? `?i=${user.token}` : ''), '', { minReconnectionDelay: 1 }); // https://github.com/pladaria/reconnecting-websocket/issues/91
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);

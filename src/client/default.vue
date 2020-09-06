@@ -202,7 +202,7 @@ export default defineComponent({
 		document.documentElement.style.overflowY = 'scroll';
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = this.$root.stream.useSharedConnection('main');
+			this.connection = os.stream.useSharedConnection('main');
 			this.connection.on('notification', this.onNotification);
 
 			if (this.$store.state.deviceUser.widgets.length === 0) {
@@ -331,7 +331,7 @@ export default defineComponent({
 				return;
 			}
 			if (document.visibilityState === 'visible') {
-				this.$root.stream.send('readNotification', {
+				os.stream.send('readNotification', {
 					id: notification.id
 				});
 

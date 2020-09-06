@@ -20,14 +20,14 @@ export default defineComponent({
 	},
 	computed: {
 		stream() {
-			return this.$root.stream;
+			return os.stream;
 		},
 	},
 	created() {
-		this.$root.stream.on('_disconnected_', this.onDisconnected);
+		os.stream.on('_disconnected_', this.onDisconnected);
 	},
 	beforeDestroy() {
-		this.$root.stream.off('_disconnected_', this.onDisconnected);
+		os.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
 		onDisconnected() {

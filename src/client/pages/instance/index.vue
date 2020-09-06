@@ -234,7 +234,7 @@ export default defineComponent({
 			stats: null,
 			serverInfo: null,
 			connection: null,
-			queueConnection: this.$root.stream.useSharedConnection('queueStats'),
+			queueConnection: os.stream.useSharedConnection('queueStats'),
 			memUsage: 0,
 			chartCpuMem: null,
 			chartNet: null,
@@ -499,7 +499,7 @@ export default defineComponent({
 		os.api('admin/server-info', {}).then(res => {
 			this.serverInfo = res;
 
-			this.connection = this.$root.stream.useSharedConnection('serverStats');
+			this.connection = os.stream.useSharedConnection('serverStats');
 			this.connection.on('stats', this.onStats);
 			this.connection.on('statsLog', this.onStatsLog);
 			this.connection.send('requestLog', {

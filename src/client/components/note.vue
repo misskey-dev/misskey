@@ -253,7 +253,7 @@ export default defineComponent({
 
 	async created() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = this.$root.stream;
+			this.connection = os.stream;
 		}
 
 		// plugin
