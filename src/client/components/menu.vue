@@ -1,5 +1,5 @@
 <template>
-<x-modal :source="source" :no-center="noCenter" ref="popup" @click="close()" @closed="$emit('closed')" :showing="showing">
+<x-modal :source="source" :no-center="noCenter" @click="close()" @closed="$emit('closed')" :showing="showing">
 	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i"></div>

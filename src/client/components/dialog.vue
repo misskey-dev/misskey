@@ -1,5 +1,5 @@
 <template>
-<x-modal ref="modal" @closed="$emit('closed')" @click="onBgClick" :showing="showing">
+<x-modal @closed="$emit('closed')" @click="onBgClick" :showing="showing">
 	<div class="mk-dialog" :class="{ iconOnly }">
 		<template v-if="type == 'signin'">
 			<mk-signin/>
