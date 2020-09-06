@@ -24,14 +24,6 @@ export default defineComponent({
 		titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
 	},
 
-	props: {
-		isMobile: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
-	},
-
 	data() {
 		return {
 			deckmode

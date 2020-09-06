@@ -3,6 +3,9 @@ import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
 
+const ua = navigator.userAgent.toLowerCase();
+export const isMobile = /mobile|iphone|ipad|android/.test(ua);
+
 export const stream = new Stream();
 
 export const dialogCallbacks = {};

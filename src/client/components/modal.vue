@@ -66,7 +66,7 @@ export default defineComponent({
 			let left;
 			let top;
 
-			if (this.$root.isMobile && !this.noCenter) {
+			if (os.isMobile && !this.noCenter) {
 				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
 				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.source.offsetHeight / 2);
 				left = (x - (width / 2));

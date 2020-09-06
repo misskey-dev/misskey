@@ -21,7 +21,7 @@ import { applyTheme, lightTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { createPluginEnv } from '@/scripts/aiscript/api';
 import { i18n, lang } from './i18n';
-import { stream, sound } from '@/os';
+import { stream, sound, isMobile } from '@/os';
 
 console.info(`Misskey v${version}`);
 
@@ -38,10 +38,6 @@ window.addEventListener('resize', () => {
 	document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
 //#endregion
-
-// Detect the user agent
-const ua = navigator.userAgent.toLowerCase();
-const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 // Get the <head> element
 const head = document.getElementsByTagName('head')[0];
