@@ -25,6 +25,10 @@ import { stream, sound, isMobile } from '@/os';
 
 console.info(`Misskey v${version}`);
 
+if (_DEV_) {
+	console.log('Development mode');
+}
+
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }

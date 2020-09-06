@@ -132,7 +132,8 @@ module.exports = {
 		new webpack.DefinePlugin({
 			_VERSION_: JSON.stringify(meta.version),
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]: [string, any]) => [k, v._lang_])),
-			_ENV_: JSON.stringify(process.env.NODE_ENV)
+			_ENV_: JSON.stringify(process.env.NODE_ENV),
+			_DEV_: JSON.stringify(process.env.NODE_ENV) !== 'production',
 		}),
 		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin((stats: any) => {

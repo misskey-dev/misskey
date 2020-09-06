@@ -4,6 +4,8 @@ import { onScrollTop, isTopVisible } from './scroll';
 const SECOND_FETCH_LIMIT = 30;
 
 export default (opts) => ({
+	emits: ['queue'],
+
 	data() {
 		return {
 			items: [],

@@ -1,9 +1,5 @@
 import { clientDb, entries } from './db';
 
-declare const _LANGS_: string[];
-declare const _VERSION_: string;
-declare const _ENV_: string;
-
 const address = new URL(location.href);
 const siteName = (document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement)?.content;
 
@@ -16,7 +12,5 @@ export const lang = localStorage.getItem('lang');
 export const langs = _LANGS_;
 export const getLocale = async () => Object.fromEntries((await entries(clientDb.i18n)) as [string, string][]);
 export const version = _VERSION_;
-export const env = _ENV_;
 export const instanceName = siteName === 'Misskey' ? null : siteName;
 export const deckmode = localStorage.getItem('deckmode') === 'true';
-export const _DEV_ = env !== 'production';
