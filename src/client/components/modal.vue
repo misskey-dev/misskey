@@ -1,10 +1,10 @@
 <template>
 <div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none' }">
-	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
+	<transition :name="$store.state.device.animation ? 'modal-bg' : ''" appear>
 		<div class="bg _modalBg" v-if="showing" @click="$emit('click')"></div>
 	</transition>
 	<div class="content" :class="{ popup, fixed }" @click.self="$emit('click')" ref="content">
-		<transition :name="$store.state.device.animation ? 'modal' : ''" appear @after-leave="$emit('closed')">
+		<transition :name="$store.state.device.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')">
 			<slot v-if="showing"></slot>
 		</transition>
 	</div>
@@ -114,20 +114,31 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal-enter-active, .modal-leave-active {
+.modal-bg-enter-active, .modal-bg-leave-active {
+	transition: opacity 0.3s !important;
+}
+.modal-bg-enter-from, .modal-bg-leave-to {
+	opacity: 0;
+}
+
+.modal-content-enter-active, .modal-content-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.modal-enter-from, .modal-leave-to {
+.modal-content-enter-from, .modal-content-leave-to {
 	pointer-events: none;
 	opacity: 0;
 	transform: scale(0.9);
 }
 
-.bg-fade-enter-active, .bg-fade-leave-active {
-	transition: opacity 0.3s !important;
+.modal-popup-content-enter-active, .modal-popup-content-leave-active {
+	transform-origin: center top;
+	transition: opacity 0.3s, transform 0.3s !important;
 }
-.bg-fade-enter-from, .bg-fade-leave-to {
+.modal-popup-content-enter-from, .modal-popup-content-leave-to {
+	transform-origin: center top;
+	pointer-events: none;
 	opacity: 0;
+	transform: scale(0.9);
 }
 
 .mk-modal {
