@@ -3,7 +3,7 @@
 	<transition :name="$store.state.device.animation ? 'bg-fade' : ''" appear>
 		<div class="bg _modalBg" v-if="showing" @click="$emit('click')"></div>
 	</transition>
-	<div class="content" @click.self="$emit('click')">
+	<div class="content" :class="{ popup, fixed }" @click.self="$emit('click')" ref="content">
 		<transition :name="$store.state.device.animation ? 'modal' : ''" appear @after-leave="$emit('closed')">
 			<slot v-if="showing"></slot>
 		</transition>
@@ -28,9 +28,19 @@ export default defineComponent({
 			required: false,
 			default: true,
 		},
-		sourceEl: {
+		// TODO: 要る？
+		noCenter: {
+			type: Boolean,
+			required: false
+		},
+		source: {
 			required: false,
 		}
+	},
+	data() {
+		return {
+			fixed: false,
+		};
 	},
 	computed: {
 		keymap(): any {
@@ -38,6 +48,9 @@ export default defineComponent({
 				'esc': () => this.$emit('esc'),
 			};
 		},
+		popup(): boolean {
+			return this.source != null;
+		}
 	},
 	mounted() {
 		this.$nextTick(() => {
@@ -122,7 +135,7 @@ export default defineComponent({
 		z-index: 10000;
 	}
 
-	> .content {
+	> .content:not(.popup) {
 		position: fixed;
 		z-index: 10000;
 		top: 0;
@@ -136,6 +149,15 @@ export default defineComponent({
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	> .content.popup {
+		position: absolute;
+		z-index: 10000;
+
+		&.fixed {
+			position: fixed;
+		}
 	}
 }
 </style>

@@ -113,6 +113,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
+	background: var(--panel);
+	border-radius: 8px;
+	box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 
 	&.left {
 		> .item {
