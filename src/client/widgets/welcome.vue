@@ -13,11 +13,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
-import XSigninDialog from '../components/signin-dialog.vue';
-import XSignupDialog from '../components/signup-dialog.vue';
-import MkButton from '../components/ui/button.vue';
-import { host } from '../config';
+import XSigninDialog from '@/components/signin-dialog.vue';
+import XSignupDialog from '@/components/signup-dialog.vue';
+import MkButton from '@/components/ui/button.vue';
+import { host } from '@/config';
 import define from './define';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'welcome',
@@ -44,7 +45,7 @@ export default defineComponent({
 	},
 
 	created() {
-		this.$root.api('stats').then(stats => {
+		os.api('stats').then(stats => {
 			this.stats = stats;
 		});
 	},

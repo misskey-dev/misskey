@@ -57,6 +57,7 @@
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import debounce from 'v-debounce';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	directives: {

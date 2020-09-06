@@ -24,6 +24,7 @@ import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkInput from './ui/input.vue';
 import XWindow from './window.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -58,7 +59,7 @@ export default defineComponent({
 				this.users = [];
 				return;
 			}
-			this.$root.api('users/search-by-username-and-host', {
+			os.api('users/search-by-username-and-host', {
 				username: this.username,
 				host: this.host,
 				limit: 10,

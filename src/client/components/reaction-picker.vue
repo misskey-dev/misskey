@@ -14,6 +14,7 @@ import { defineComponent } from 'vue';
 import { emojiRegex } from '../../misc/emoji-regex';
 import XReactionIcon from './reaction-icon.vue';
 import XModal from './modal.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

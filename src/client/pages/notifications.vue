@@ -8,8 +8,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../scripts/loading';
-import XNotifications from '../components/notifications.vue';
+import Progress from '@/scripts/loading';
+import XNotifications from '@/components/notifications.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

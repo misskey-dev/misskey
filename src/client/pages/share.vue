@@ -17,8 +17,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import PostFormDialog from '../components/post-form-dialog.vue';
-import MkButton from '../components/ui/button.vue';
+import PostFormDialog from '@/components/post-form-dialog.vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -64,7 +65,7 @@ export default defineComponent({
 				initialText: text.trim()
 			}).$once('posted', () => {
 				this.posted = true;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

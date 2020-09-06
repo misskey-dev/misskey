@@ -67,6 +67,7 @@ import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
 import { locale } from '../i18n';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -126,23 +127,23 @@ export default defineComponent({
 	methods: {
 		acceptFollowRequest() {
 			this.followRequestDone = true;
-			this.$root.api('following/requests/accept', { userId: this.notification.user.id });
+			os.api('following/requests/accept', { userId: this.notification.user.id });
 		},
 		rejectFollowRequest() {
 			this.followRequestDone = true;
-			this.$root.api('following/requests/reject', { userId: this.notification.user.id });
+			os.api('following/requests/reject', { userId: this.notification.user.id });
 		},
 		acceptGroupInvitation() {
 			this.groupInviteDone = true;
-			this.$root.api('users/groups/invitations/accept', { invitationId: this.notification.invitation.id });
-			this.$store.dispatch('showDialog', {
+			os.api('users/groups/invitations/accept', { invitationId: this.notification.invitation.id });
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
 		},
 		rejectGroupInvitation() {
 			this.groupInviteDone = true;
-			this.$root.api('users/groups/invitations/reject', { invitationId: this.notification.invitation.id });
+			os.api('users/groups/invitations/reject', { invitationId: this.notification.invitation.id });
 		},
 		notePage,
 		userPage

@@ -1,5 +1,5 @@
 import { Directive } from 'vue';
-import MkUserPreview from '../components/user-preview.vue';
+import MkUserPreview from '@/components/user-preview.vue';
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {

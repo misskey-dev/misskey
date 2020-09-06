@@ -10,8 +10,9 @@ import { parse } from '@syuilo/aiscript';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
-import { Hpml } from '../../scripts/hpml/evaluator';
-import { url } from '../../config';
+import { Hpml } from '@/scripts/hpml/evaluator';
+import { url } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -49,7 +50,7 @@ export default defineComponent({
 					ast = parse(this.page.script);
 				} catch (e) {
 					console.error(e);
-					/*this.$store.dispatch('showDialog', {
+					/*os.dialog({
 						type: 'error',
 						text: 'Syntax error :('
 					});*/
@@ -59,7 +60,7 @@ export default defineComponent({
 					this.hpml.eval();
 				}).catch(e => {
 					console.error(e);
-					/*this.$store.dispatch('showDialog', {
+					/*os.dialog({
 						type: 'error',
 						text: e
 					});*/

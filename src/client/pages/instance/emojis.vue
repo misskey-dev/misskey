@@ -60,11 +60,12 @@
 import { defineComponent } from 'vue';
 import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkPagination from '../../components/ui/pagination.vue';
-import { selectFile } from '../../scripts/select-file';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import { selectFile } from '@/scripts/select-file';
 import { unique } from '../../../prelude/array';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -128,7 +129,7 @@ export default defineComponent({
 		async add(e) {
 			const files = await selectFile(this, e.currentTarget || e.target, null, true);
 
-			const dialog = this.$store.dispatch('showDialog', {
+			const dialog = os.dialog({
 				type: 'waiting',
 				text: this.$t('doing') + '...',
 				showOkButton: false,
@@ -136,12 +137,12 @@ export default defineComponent({
 				cancelableByBgClick: false
 			});
 			
-			Promise.all(files.map(file => this.$root.api('admin/emoji/add', {
+			Promise.all(files.map(file => os.api('admin/emoji/add', {
 				fileId: file.id,
 			})))
 			.then(() => {
 				this.$refs.emojis.reload();
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -152,14 +153,14 @@ export default defineComponent({
 		},
 
 		async update() {
-			await this.$root.api('admin/emoji/update', {
+			await os.api('admin/emoji/update', {
 				id: this.selected.id,
 				name: this.name,
 				category: this.category,
 				aliases: this.aliases.split(' '),
 			});
 
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -168,14 +169,14 @@ export default defineComponent({
 		},
 
 		async del() {
-			const { canceled } = await this.$store.dispatch('showDialog', {
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.selected.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			this.$root.api('admin/emoji/remove', {
+			os.api('admin/emoji/remove', {
 				id: this.selected.id
 			}).then(() => {
 				this.$refs.emojis.reload();
@@ -183,16 +184,16 @@ export default defineComponent({
 		},
 
 		im() {
-			this.$root.api('admin/emoji/copy', {
+			os.api('admin/emoji/copy', {
 				emojiId: this.selectedRemote.id,
 			}).then(() => {
 				this.$refs.emojis.reload();
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});

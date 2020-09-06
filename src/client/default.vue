@@ -90,19 +90,20 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
-import { host } from './config';
-import { search } from './scripts/search';
-import { StickySidebar } from './scripts/sticky-sidebar';
+import { host } from '@/config';
+import { search } from '@/scripts/search';
+import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { widgets } from './widgets';
-import XSidebar from './components/sidebar.vue';
+import XSidebar from '@/components/sidebar.vue';
+import * as os from './os';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
 		XSidebar,
-		XClock: defineAsyncComponent(() => import('./components/header-clock.vue')),
-		MkButton: defineAsyncComponent(() => import('./components/ui/button.vue')),
+		XClock: defineAsyncComponent(() => import('@/components/header-clock.vue')),
+		MkButton: defineAsyncComponent(() => import('@/components/ui/button.vue')),
 		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
 	},
 
@@ -301,7 +302,7 @@ export default defineComponent({
 		search() {
 			if (this.searching) return;
 
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
@@ -334,7 +335,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				this.$root.new(await import('./components/toast.vue'), {
+				this.$root.new(await import('@/components/toast.vue'), {
 					notification
 				});
 			}
@@ -351,7 +352,7 @@ export default defineComponent({
 		},
 
 		async addWidget(place) {
-			const { canceled, result: widget } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: widget } = await os.dialog({
 				type: null,
 				title: this.$t('chooseWidget'),
 				select: {

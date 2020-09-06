@@ -18,6 +18,7 @@ import * as XDraggable from 'vuedraggable';
 import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
 import XFileThumbnail from './drive-file-thumbnail.vue'
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -53,7 +54,7 @@ export default defineComponent({
 			}
 		},
 		toggleSensitive(file) {
-			this.$root.api('drive/files/update', {
+			os.api('drive/files/update', {
 				fileId: file.id,
 				isSensitive: !file.isSensitive
 			}).then(() => {
@@ -62,7 +63,7 @@ export default defineComponent({
 			});
 		},
 		async rename(file) {
-			const { canceled, result } = await this.$store.dispatch('showDialog', {
+			const { canceled, result } = await os.dialog({
 				title: this.$t('enterFileName'),
 				input: {
 					default: file.name
@@ -70,7 +71,7 @@ export default defineComponent({
 				allowEmpty: false
 			});
 			if (canceled) return;
-			this.$root.api('drive/files/update', {
+			os.api('drive/files/update', {
 				fileId: file.id,
 				name: result
 			}).then(() => {
@@ -80,7 +81,7 @@ export default defineComponent({
 		},
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
-			this.menu = this.$store.dispatch('showMenu', {
+			this.menu = os.menu({
 				items: [{
 					text: this.$t('renameFile'),
 					icon: faICursor,

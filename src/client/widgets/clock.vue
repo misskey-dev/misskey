@@ -9,8 +9,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import define from './define';
-import MkContainer from '../components/ui/container.vue';
-import MkAnalogClock from '../components/analog-clock.vue';
+import MkContainer from '@/components/ui/container.vue';
+import MkAnalogClock from '@/components/analog-clock.vue';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'clock',

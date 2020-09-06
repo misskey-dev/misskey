@@ -53,6 +53,7 @@ import MkSelect from './ui/select.vue';
 import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
 import XModal from './modal.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -131,7 +132,7 @@ export default defineComponent({
 	watch: {
 		userInputValue() {
 			if (this.user) {
-				this.$root.api('users/show', parseAcct(this.userInputValue)).then(u => {
+				os.api('users/show', parseAcct(this.userInputValue)).then(u => {
 					this.canOk = u != null;
 				}).catch(() => {
 					this.canOk = false;
@@ -167,7 +168,7 @@ export default defineComponent({
 			if (!this.showOkButton) return;
 
 			if (this.user) {
-				const user = await this.$root.api('users/show', parseAcct(this.userInputValue));
+				const user = await os.api('users/show', parseAcct(this.userInputValue));
 				if (user) {
 					this.done(false, user);
 				}

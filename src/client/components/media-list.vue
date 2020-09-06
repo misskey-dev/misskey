@@ -19,6 +19,7 @@ import { defineComponent } from 'vue';
 import XBanner from './media-banner.vue';
 import XImage from './media-image.vue';
 import XVideo from './media-video.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

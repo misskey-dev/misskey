@@ -32,7 +32,8 @@
 import { defineComponent } from 'vue';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons';
-import XPage from '../components/page/page.vue';
+import XPage from '@/components/page/page.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -75,7 +76,7 @@ export default defineComponent({
 
 	methods: {
 		fetch() {
-			this.$root.api('pages/show', {
+			os.api('pages/show', {
 				name: this.pageName,
 				username: this.username,
 			}).then(page => {
@@ -84,7 +85,7 @@ export default defineComponent({
 		},
 
 		like() {
-			this.$root.api('pages/like', {
+			os.api('pages/like', {
 				pageId: this.page.id,
 			}).then(() => {
 				this.page.isLiked = true;
@@ -93,7 +94,7 @@ export default defineComponent({
 		},
 
 		unlike() {
-			this.$root.api('pages/unlike', {
+			os.api('pages/unlike', {
 				pageId: this.page.id,
 			}).then(() => {
 				this.page.isLiked = false;
@@ -102,10 +103,10 @@ export default defineComponent({
 		},
 
 		pin(pin) {
-			this.$root.api('i/update', {
+			os.api('i/update', {
 				pinnedPageId: pin ? this.page.id : null,
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

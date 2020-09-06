@@ -14,8 +14,9 @@
 import { defineComponent } from 'vue';
 import { faBolt, faMagic } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkTextarea from '../../../components/ui/textarea.vue';
-import MkInput from '../../../components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkInput from '@/components/ui/input.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

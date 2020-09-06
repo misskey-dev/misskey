@@ -78,16 +78,17 @@ import { defineComponent } from 'vue';
 import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 
-import MkRadio from '../components/ui/radio.vue';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import MkTextarea from '../components/ui/textarea.vue';
-import MkSelect from '../components/ui/select.vue';
+import MkRadio from '@/components/ui/radio.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkSelect from '@/components/ui/select.vue';
 
-import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '../scripts/theme-editor';
-import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '../scripts/theme';
+import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '@/scripts/theme-editor';
+import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
 import { toUnicode } from 'punycode';
-import { host } from '../config';
+import { host } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -155,7 +156,7 @@ export default defineComponent({
 		},
 
 		async confirm(): Promise<boolean> {
-			const { canceled } = await this.$store.dispatch('showDialog', {
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('leaveConfirm'),
 				showCancelButton: true
@@ -172,7 +173,7 @@ export default defineComponent({
 		},
 	
 		async del(i: number) {
-			const { canceled } = await this.$store.dispatch('showDialog', { 
+			const { canceled } = await os.dialog({ 
 				type: 'warning',
 				showCancelButton: true,
 				text: this.$t('_theme.deleteConstantConfirm', { const: this.theme[i][0] }),
@@ -182,7 +183,7 @@ export default defineComponent({
 		},
 	
 		async addConst() {
-			const { canceled, result } = await this.$store.dispatch('showDialog', {
+			const { canceled, result } = await os.dialog({
 				title: this.$t('_theme.inputConstantName'),
 				input: true
 			});
@@ -196,7 +197,7 @@ export default defineComponent({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
 			});
@@ -208,7 +209,7 @@ export default defineComponent({
 			try {
 				applyTheme(theme, false);
 			} catch (e) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -229,7 +230,7 @@ export default defineComponent({
 				this.theme = convertToViewModel(theme);
 				this.themeToImport = '';
 			} catch (e) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -255,7 +256,7 @@ export default defineComponent({
 	
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
-				this.$store.dispatch('showMenu', {
+				os.menu({
 					items: [{
 						text: this.$t('_theme.defaultValue'),
 						action: () => resolve(null),

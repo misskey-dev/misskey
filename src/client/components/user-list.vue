@@ -31,10 +31,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import paging from '../scripts/paging';
+import paging from '@/scripts/paging';
 import MkContainer from './ui/container.vue';
 import MkFollowButton from './follow-button.vue';
 import { userPage } from '../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

@@ -6,7 +6,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as katex from 'katex';
+import * as katex from 'katex';import * as os from '@/os';
+
 export default defineComponent({
 	props: {
 		formula: {

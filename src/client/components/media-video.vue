@@ -23,6 +23,7 @@
 import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

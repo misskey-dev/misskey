@@ -36,6 +36,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as tinycolor from 'tinycolor2';
+import * as os from '@/os';
 
 export default defineComponent({
 	data() {

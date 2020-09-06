@@ -19,9 +19,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { apiUrl } from '../config';
-//import getMD5 from '../../scripts/get-md5';
+import { apiUrl } from '@/config';
+//import getMD5 from '@/scripts/get-md5';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	data() {
@@ -36,7 +37,7 @@ export default defineComponent({
 				const data = new FormData();
 				data.append('md5', getMD5(fileData));
 
-				this.$root.api('drive/files/find-by-hash', {
+				os.api('drive/files/find-by-hash', {
 					md5: getMD5(fileData)
 				}).then(resp => {
 					resolve(resp.length > 0 ? resp[0] : null);

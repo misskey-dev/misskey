@@ -21,6 +21,7 @@ import XPost from './els/page-editor.el.post.vue';
 import XCounter from './els/page-editor.el.counter.vue';
 import XRadioButton from './els/page-editor.el.radio-button.vue';
 import XCanvas from './els/page-editor.el.canvas.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

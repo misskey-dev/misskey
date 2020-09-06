@@ -22,9 +22,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import { host } from '../config';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import { host } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	
@@ -48,7 +49,7 @@ export default defineComponent({
 			if (this.submitting) return;
 			this.submitting = true;
 
-			this.$root.api('admin/accounts/create', {
+			os.api('admin/accounts/create', {
 				username: this.username,
 				password: this.password,
 			}).then(res => {
@@ -57,7 +58,7 @@ export default defineComponent({
 			}).catch(() => {
 				this.submitting = false;
 
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('error')
 				});

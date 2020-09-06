@@ -137,6 +137,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -217,7 +218,7 @@ export default defineComponent({
 	},
 
 	async created() {
-		this.info = await this.$root.api('stats');
+		this.info = await os.api('stats');
 
 		this.now = new Date();
 
@@ -227,17 +228,17 @@ export default defineComponent({
 	methods: {
 		async fetchChart() {
 			const [perHour, perDay] = await Promise.all([Promise.all([
-				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
 			]), Promise.all([
-				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/users', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
 			])]);
 
 			const chart = {

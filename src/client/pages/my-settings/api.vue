@@ -11,8 +11,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faKey, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -25,15 +26,15 @@ export default defineComponent({
 	},
 	methods: {
 		async generateToken() {
-			this.$root.new(await import('../../components/token-generate-window.vue'), {
+			this.$root.new(await import('@/components/token-generate-window.vue'), {
 			}).$on('ok', async ({ name, permissions }) => {
-				const { token } = await this.$root.api('miauth/gen-token', {
+				const { token } = await os.api('miauth/gen-token', {
 					session: null,
 					name: name,
 					permission: permissions,
 				});
 
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					title: this.$t('token'),
 					text: token
@@ -41,14 +42,14 @@ export default defineComponent({
 			});
 		},
 		regenerateToken() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('password'),
 				input: {
 					type: 'password'
 				}
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
-				this.$root.api('i/regenerate_token', {
+				os.api('i/regenerate_token', {
 					password: password
 				});
 			});

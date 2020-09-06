@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
-import { version } from '../../config';
+import { version } from '@/config';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
@@ -42,7 +42,7 @@ export class Hpml {
 			}), ...initLib(this)}, {
 				in: (q) => {
 					return new Promise(ok => {
-						vm.$store.dispatch('showDialog', {
+						vm.os.dialog({
 							title: q,
 							input: {}
 						}).then(({ canceled, result: a }) => {

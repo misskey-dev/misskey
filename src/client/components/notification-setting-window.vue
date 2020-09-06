@@ -25,6 +25,7 @@ import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
 import { notificationTypes } from '../../types';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

@@ -22,6 +22,7 @@ import { v4 as uuid } from 'uuid';
 import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -62,7 +63,7 @@ export default defineComponent({
 
 	methods: {
 		async rename() {
-			const { canceled, result: title } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: title } = await os.dialog({
 				title: 'Enter title',
 				input: {
 					type: 'text',
@@ -75,7 +76,7 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: type } = await os.dialog({
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {

@@ -32,9 +32,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import MkSwitch from '../components/ui/switch.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -64,7 +65,7 @@ export default defineComponent({
 	methods: {
 		async showDialog() {
 			this.dialogResult = null;
-			this.dialogResult = await this.$store.dispatch('showDialog', {
+			this.dialogResult = await os.dialog({
 				title: this.dialogTitle,
 				text: this.dialogBody,
 				showCancelButton: this.dialogCancel,

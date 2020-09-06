@@ -53,10 +53,11 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
-import { host, url } from '../config';
+import { host, url } from '@/config';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -143,7 +144,7 @@ export default defineComponent({
 
 			this.usernameState = 'wait';
 
-			this.$root.api('username/available', {
+			os.api('username/available', {
 				username: this.username
 			}).then(result => {
 				this.usernameState = result.available ? 'ok' : 'unavailable';
@@ -175,14 +176,14 @@ export default defineComponent({
 			if (this.submitting) return;
 			this.submitting = true;
 
-			this.$root.api('signup', {
+			os.api('signup', {
 				username: this.username,
 				password: this.password,
 				invitationCode: this.invitationCode,
 				'hcaptcha-response': this.hCaptchaResponse,
 				'g-recaptcha-response': this.reCaptchaResponse,
 			}).then(() => {
-				this.$root.api('signin', {
+				os.api('signin', {
 					username: this.username,
 					password: this.password
 				}).then(res => {
@@ -193,7 +194,7 @@ export default defineComponent({
 				this.$refs.hcaptcha?.reset?.();
 				this.$refs.recaptcha?.reset?.();
 
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('error')
 				});

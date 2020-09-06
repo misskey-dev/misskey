@@ -48,13 +48,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkUserSelect from '@/components/user-select.vue';
 import getAcct from '../../../misc/acct/render';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -90,12 +91,12 @@ export default defineComponent({
 	watch: {
 		async src() {
 			if (this.src === 'list' && this.userLists === null) {
-				this.userLists = await this.$root.api('users/lists/list');
+				this.userLists = await os.api('users/lists/list');
 			}
 
 			if (this.src === 'group' && this.userGroups === null) {
-				const groups1 = await this.$root.api('users/groups/owned');
-				const groups2 = await this.$root.api('users/groups/joined');
+				const groups1 = await os.api('users/groups/owned');
+				const groups2 = await os.api('users/groups/joined');
 
 				this.userGroups = [...groups1, ...groups2];
 			}
@@ -119,7 +120,7 @@ export default defineComponent({
 	methods: {
 		async saveAntenna() {
 			if (this.antenna.id == null) {
-				await this.$root.api('antennas/create', {
+				await os.api('antennas/create', {
 					name: this.name,
 					src: this.src,
 					userListId: this.userListId,
@@ -134,7 +135,7 @@ export default defineComponent({
 				});
 				this.$emit('created');
 			} else {
-				await this.$root.api('antennas/update', {
+				await os.api('antennas/update', {
 					antennaId: this.antenna.id,
 					name: this.name,
 					src: this.src,
@@ -150,25 +151,25 @@ export default defineComponent({
 				});
 			}
 
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
 		},
 
 		async deleteAntenna() {
-			const { canceled } = await this.$store.dispatch('showDialog', {
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.antenna.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			await this.$root.api('antennas/delete', {
+			await os.api('antennas/delete', {
 				antennaId: this.antenna.id,
 			});
 
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

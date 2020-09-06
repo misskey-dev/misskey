@@ -97,17 +97,18 @@ import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkContainer from '../../components/ui/container.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkInput from '../../components/ui/input.vue';
-import { blockDefs } from '../../scripts/hpml/index';
-import { HpmlTypeChecker } from '../../scripts/hpml/type-checker';
-import { url } from '../../config';
-import { collectPageVars } from '../../scripts/collect-page-vars';
-import { selectDriveFile } from '../../scripts/select-drive-file';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkContainer from '@/components/ui/container.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkInput from '@/components/ui/input.vue';
+import { blockDefs } from '@/scripts/hpml/index';
+import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
+import { url } from '@/config';
+import { collectPageVars } from '@/scripts/collect-page-vars';
+import { selectDriveFile } from '@/scripts/select-drive-file';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -159,7 +160,7 @@ export default defineComponent({
 			if (this.eyeCatchingImageId == null) {
 				this.eyeCatchingImage = null;
 			} else {
-				this.eyeCatchingImage = await this.$root.api('drive/files/show', {
+				this.eyeCatchingImage = await os.api('drive/files/show', {
 					fileId: this.eyeCatchingImageId,
 				});
 			}
@@ -178,11 +179,11 @@ export default defineComponent({
 		}, { deep: true });
 
 		if (this.initPageId) {
-			this.page = await this.$root.api('pages/show', {
+			this.page = await os.api('pages/show', {
 				pageId: this.initPageId,
 			});
 		} else if (this.initPageName && this.initUser) {
-			this.page = await this.$root.api('pages/show', {
+			this.page = await os.api('pages/show', {
 				name: this.initPageName,
 				username: this.initUser,
 			});
@@ -239,14 +240,14 @@ export default defineComponent({
 			const onError = err => {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
 					if (err.info.param == 'name') {
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							title: this.$t('_pages.invalidNameTitle'),
 							text: this.$t('_pages.invalidNameText')
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: this.$t('_pages.nameAlreadyExists')
 					});
@@ -255,20 +256,20 @@ export default defineComponent({
 
 			if (this.pageId) {
 				options.pageId = this.pageId;
-				this.$root.api('pages/update', options)
+				os.api('pages/update', options)
 				.then(page => {
 					this.currentName = this.name.trim();
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						text: this.$t('_pages.updated')
 					});
 				}).catch(onError);
 			} else {
-				this.$root.api('pages/create', options)
+				os.api('pages/create', options)
 				.then(page => {
 					this.pageId = page.id;
 					this.currentName = this.name.trim();
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						text: this.$t('_pages.created')
 					});
@@ -278,16 +279,16 @@ export default defineComponent({
 		},
 
 		del() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.title.trim() }),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
-				this.$root.api('pages/delete', {
+				os.api('pages/delete', {
 					pageId: this.pageId,
 				}).then(() => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						text: this.$t('_pages.deleted')
 					});
@@ -297,7 +298,7 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: type } = await os.dialog({
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {
@@ -312,7 +313,7 @@ export default defineComponent({
 		},
 
 		async addVariable() {
-			let { canceled, result: name } = await this.$store.dispatch('showDialog', {
+			let { canceled, result: name } = await os.dialog({
 				title: this.$t('_pages.enterVariableName'),
 				input: {
 					type: 'text',
@@ -324,7 +325,7 @@ export default defineComponent({
 			name = name.trim();
 
 			if (this.hpml.isUsedName(name)) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('_pages.variableNameIsAlreadyUsed')
 				});

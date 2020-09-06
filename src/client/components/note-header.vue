@@ -28,6 +28,7 @@ import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } fr
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

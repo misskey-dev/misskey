@@ -1,6 +1,6 @@
 export function selectDriveFile($root: any, multiple) {
 	return new Promise((res, rej) => {
-		import('../components/drive-window.vue').then(dialog => {
+		import('@/components/drive-window.vue').then(dialog => {
 			const w = $root.new(dialog, {
 				type: 'file',
 				multiple

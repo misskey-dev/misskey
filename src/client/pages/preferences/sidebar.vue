@@ -23,10 +23,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkRadio from '../../components/ui/radio.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkRadio from '@/components/ui/radio.vue';
 import { defaultDeviceUserSettings } from '../../store';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -61,7 +62,7 @@ export default defineComponent({
 	methods: {
 		async addItem() {
 			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.deviceUser.menu.includes(k));
-			const { canceled, result: item } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: item } = await os.dialog({
 				type: null,
 				title: this.$t('addItem'),
 				select: {

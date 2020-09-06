@@ -18,6 +18,7 @@ import XPost from './page.post.vue';
 import XCounter from './page.counter.vue';
 import XRadioButton from './page.radio-button.vue';
 import XCanvas from './page.canvas.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

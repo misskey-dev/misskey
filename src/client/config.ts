@@ -19,3 +19,4 @@ export const version = _VERSION_;
 export const env = _ENV_;
 export const instanceName = siteName === 'Misskey' ? null : siteName;
 export const deckmode = localStorage.getItem('deckmode') === 'true';
+export const _DEV_ = env !== 'production';

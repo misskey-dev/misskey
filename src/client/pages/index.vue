@@ -5,6 +5,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import Home from './index.home.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	name: 'index',

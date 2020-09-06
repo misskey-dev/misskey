@@ -7,9 +7,10 @@ import { defineComponent } from 'vue';
 import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import XMenu from './menu.vue';
-import copyToClipboard from '../scripts/copy-to-clipboard';
-import { host } from '../config';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { host } from '@/config';
 import getAcct from '../../misc/acct/render';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -98,15 +99,15 @@ export default defineComponent({
 	methods: {
 		async pushList() {
 			const t = this.$t('selectList'); // なぜか後で参照すると null になるので最初にメモリに確保しておく
-			const lists = await this.$root.api('users/lists/list');
+			const lists = await os.api('users/lists/list');
 			if (lists.length === 0) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('youHaveNoLists')
 				});
 				return;
 			}
-			const { canceled, result: listId } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: listId } = await os.dialog({
 				type: null,
 				title: t,
 				select: {
@@ -117,16 +118,16 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			this.$root.api('users/lists/push', {
+			os.api('users/lists/push', {
 				listId: listId,
 				userId: this.user.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -134,15 +135,15 @@ export default defineComponent({
 		},
 
 		async inviteGroup() {
-			const groups = await this.$root.api('users/groups/owned');
+			const groups = await os.api('users/groups/owned');
 			if (groups.length === 0) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('youHaveNoGroups')
 				});
 				return;
 			}
-			const { canceled, result: groupId } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: groupId } = await os.dialog({
 				type: null,
 				title: this.$t('group'),
 				select: {
@@ -153,16 +154,16 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			this.$root.api('users/groups/invite', {
+			os.api('users/groups/invite', {
 				groupId: groupId,
 				userId: this.user.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -170,16 +171,16 @@ export default defineComponent({
 		},
 
 		async toggleMute() {
-			this.$root.api(this.user.isMuted ? 'mute/delete' : 'mute/create', {
+			os.api(this.user.isMuted ? 'mute/delete' : 'mute/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = !this.user.isMuted;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -189,16 +190,16 @@ export default defineComponent({
 		async toggleBlock() {
 			if (!await this.getConfirmed(this.user.isBlocking ? this.$t('unblockConfirm') : this.$t('blockConfirm'))) return;
 
-			this.$root.api(this.user.isBlocking ? 'blocking/delete' : 'blocking/create', {
+			os.api(this.user.isBlocking ? 'blocking/delete' : 'blocking/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = !this.user.isBlocking;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -208,16 +209,16 @@ export default defineComponent({
 		async toggleSilence() {
 			if (!await this.getConfirmed(this.$t(this.user.isSilenced ? 'unsilenceConfirm' : 'silenceConfirm'))) return;
 
-			this.$root.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
+			os.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isSilenced = !this.user.isSilenced;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -227,16 +228,16 @@ export default defineComponent({
 		async toggleSuspend() {
 			if (!await this.getConfirmed(this.$t(this.user.isSuspended ? 'unsuspendConfirm' : 'suspendConfirm'))) return;
 
-			this.$root.api(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
+			os.api(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isSuspended = !this.user.isSuspended;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}, e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -244,7 +245,7 @@ export default defineComponent({
 		},
 
 		async getConfirmed(text: string): Promise<Boolean> {
-			const confirm = await this.$store.dispatch('showDialog', {
+			const confirm = await os.dialog({
 				type: 'warning',
 				showCancelButton: true,
 				title: 'confirm',

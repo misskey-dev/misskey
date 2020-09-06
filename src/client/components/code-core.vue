@@ -6,7 +6,8 @@
 import { defineComponent } from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
-import XPrism from 'vue-prism-component';
+import XPrism from 'vue-prism-component';import * as os from '@/os';
+
 export default defineComponent({
 	components: {
 		XPrism

@@ -31,6 +31,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSpinner, faPlus, faMinus, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -58,7 +59,7 @@ export default defineComponent({
 	created() {
 		// 渡されたユーザー情報が不完全な場合
 		if (this.user.isFollowing == null) {
-			this.$root.api('users/show', {
+			os.api('users/show', {
 				userId: this.user.id
 			}).then(u => {
 				this.isFollowing = u.isFollowing;
@@ -91,7 +92,7 @@ export default defineComponent({
 
 			try {
 				if (this.isFollowing) {
-					const { canceled } = await this.$store.dispatch('showDialog', {
+					const { canceled } = await os.dialog({
 						type: 'warning',
 						text: this.$t('unfollowConfirm', { name: this.user.name || this.user.username }),
 						showCancelButton: true
@@ -99,21 +100,21 @@ export default defineComponent({
 
 					if (canceled) return;
 
-					await this.$root.api('following/delete', {
+					await os.api('following/delete', {
 						userId: this.user.id
 					});
 				} else {
 					if (this.hasPendingFollowRequestFromYou) {
-						await this.$root.api('following/requests/cancel', {
+						await os.api('following/requests/cancel', {
 							userId: this.user.id
 						});
 					} else if (this.user.isLocked) {
-						await this.$root.api('following/create', {
+						await os.api('following/create', {
 							userId: this.user.id
 						});
 						this.hasPendingFollowRequestFromYou = true;
 					} else {
-						await this.$root.api('following/create', {
+						await os.api('following/create', {
 							userId: this.user.id
 						});
 						this.hasPendingFollowRequestFromYou = true;

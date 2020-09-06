@@ -2,26 +2,19 @@
 <DeckUI v-if="deckmode"/>
 <DefaultUI v-else/>
 
-<XPostFormDialog v-if="$store.state.postForm" v-bind="$store.state.postForm"/>
-
-<XMenu v-if="menu" v-bind="menu" :key="menu.id"/>
-
-<XDialog v-if="dialog" v-bind="dialog" :key="dialog.id"/>
+<component v-for="dialog in $store.state.dialogs" :is="dialog.component" v-bind="dialog.props" :key="dialog.id"/>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent } from 'vue';
 import DefaultUI from './default.vue';
 import DeckUI from './deck.vue';
-import { instanceName, deckmode } from './config';
+import { instanceName, deckmode } from '@/config';
 
 export default defineComponent({
 	components: {
 		DefaultUI,
 		DeckUI,
-		XDialog: defineAsyncComponent(() => import('./components/dialog.vue')),
-		XMenu: defineAsyncComponent(() => import('./components/menu.vue')),
-		XPostFormDialog: defineAsyncComponent(() => import('./components/post-form-dialog.vue')),
 	},
 
 	metaInfo: {
@@ -46,27 +39,5 @@ export default defineComponent({
 			deckmode
 		};
 	},
-
-	computed: {
-		dialog() {
-			if (this.$store.state.dialogs.length === 0) return null;
-
-			// what: ダイアログが複数ある場合は、一番最後に追加されたダイアログを表示する
-			// why: ダイアログが一度に複数表示されるとユーザビリティが悪いため。
-			return this.$store.state.dialogs[this.$store.state.dialogs.length - 1];
-		},
-
-		menu() {
-			if (this.$store.state.menus.length === 0) return null;
-
-			return this.$store.state.menus[this.$store.state.menus.length - 1];
-		}
-	},
-
-	methods: {
-		api(endpoint: string, data: Record<string, any> = {}, token?) {
-			return this.$store.dispatch('api', { endpoint, data, token });
-		},
-	}
 });
 </script>

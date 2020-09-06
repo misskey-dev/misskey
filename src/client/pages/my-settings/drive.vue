@@ -12,8 +12,9 @@
 import { defineComponent } from 'vue';
 import { faCloud, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import { selectDriveFolder } from '../../scripts/select-drive-folder';
+import MkButton from '@/components/ui/button.vue';
+import { selectDriveFolder } from '@/scripts/select-drive-folder';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -29,7 +30,7 @@ export default defineComponent({
 
 	async created() {
 		if (this.$store.state.settings.uploadFolder) {
-			this.uploadFolder = await this.$root.api('drive/folders/show', {
+			this.uploadFolder = await os.api('drive/folders/show', {
 				folderId: this.$store.state.settings.uploadFolder
 			});
 		}
@@ -39,12 +40,12 @@ export default defineComponent({
 		chooseUploadFolder() {
 			selectDriveFolder(this.$root, false).then(async folder => {
 				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 				if (this.$store.state.settings.uploadFolder) {
-					this.uploadFolder = await this.$root.api('drive/folders/show', {
+					this.uploadFolder = await os.api('drive/folders/show', {
 						folderId: this.$store.state.settings.uploadFolder
 					});
 				} else {

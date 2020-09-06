@@ -31,7 +31,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XForm from './auth.form.vue';
-import MkSignin from '../components/signin.vue';
+import MkSignin from '@/components/signin.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -54,7 +55,7 @@ export default defineComponent({
 		if (!this.$store.getters.isSignedIn) return;
 
 		// Fetch session
-		this.$root.api('auth/session/show', {
+		os.api('auth/session/show', {
 			token: this.token
 		}).then(session => {
 			this.session = session;
@@ -62,7 +63,7 @@ export default defineComponent({
 
 			// 既に連携していた場合
 			if (this.session.app.isAuthorized) {
-				this.$root.api('auth/accept', {
+				os.api('auth/accept', {
 					token: this.session.token
 				}).then(() => {
 					this.accepted();

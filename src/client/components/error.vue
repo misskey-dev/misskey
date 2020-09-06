@@ -12,6 +12,7 @@
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from './ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

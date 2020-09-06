@@ -15,6 +15,7 @@ import { defineComponent } from 'vue';
 import XDrive from './drive.vue';
 import XWindow from './window.vue';
 import number from '../filters/number';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

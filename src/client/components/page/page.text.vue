@@ -9,6 +9,7 @@
 import { defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

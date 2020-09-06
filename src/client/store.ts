@@ -5,7 +5,7 @@ import * as nestedProperty from 'nested-property';
 import { faSatelliteDish, faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { AiScript, utils, values } from '@syuilo/aiscript';
-import { apiUrl, deckmode } from './config';
+import { apiUrl, deckmode } from '@/config';
 import { erase } from '../prelude/array';
 
 export const defaultSettings = {
@@ -110,13 +110,10 @@ export const store = createStore({
 		spinner: null,
 		dialogs: [] as {
 			id: any;
-			type: 'info' | 'question' | 'warn' | 'success' | 'error';
-			title: string;
-			text: string;
+			component: any;
+			props: Record<string, any>;
 			result: any;
 		}[],
-		menus: [],
-		postForm: null,
 		fullView: false,
 
 		// Plugin
@@ -278,24 +275,6 @@ export const store = createStore({
 			state.dialogs = state.dialogs.filter(d => d.id !== dialogId);
 		},
 
-		addMenu(state, menu) {
-			state.menus.push(menu);
-		},
-
-		menuDone(state, { id: menuId }) {
-			const menu = state.menus.find(d => d.id === menuId);
-			menu.result = 'hoge';
-		},
-
-		removeMenu(state, menuId) {
-			state.menus = state.menus.filter(d => d.id !== menuId);
-		},
-
-		setPostForm(state, postForm) {
-			if (state.postForm != null && postForm != null) return;
-			state.postForm = postForm;
-		},
-
 		setFullView(state, v) {
 			state.fullView = v;
 		},
@@ -391,30 +370,20 @@ export const store = createStore({
 			}
 		},
 
-		showDialog(ctx, opts) {
+		showDialog(ctx, { component, props }) {
 			return new Promise((res, rej) => {
+				const id = Math.random().toString(); // TODO: uuidとか使う
 				const dialog = reactive({
-					...opts,
+					component,
+					props: {
+						...props,
+						id
+					},
 					result: null,
-					id: Math.random().toString() // TODO: uuidとか使う
+					id,
 				});
 				ctx.commit('addDialog', dialog);
 				const unwatch = watch(() => dialog.result, result => {
-					unwatch();
-					res(result);
-				});
-			});
-		},
-
-		showMenu(ctx, opts) {
-			return new Promise((res, rej) => {
-				const menu = reactive({
-					...opts,
-					result: null,
-					id: Math.random().toString() // TODO: uuidとか使う
-				});
-				ctx.commit('addMenu', menu);
-				const unwatch = watch(() => menu.result, result => {
 					unwatch();
 					res(result);
 				});

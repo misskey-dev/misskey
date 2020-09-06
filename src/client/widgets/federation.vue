@@ -21,9 +21,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
-import MkMiniChart from '../components/mini-chart.vue';
+import MkMiniChart from '@/components/mini-chart.vue';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'federation',
@@ -69,11 +70,11 @@ export default defineComponent({
 	},
 	methods: {
 		async fetch() {
-			const instances = await this.$root.api('federation/instances', {
+			const instances = await os.api('federation/instances', {
 				sort: '+lastCommunicatedAt',
 				limit: 5
 			});
-			const charts = await Promise.all(instances.map(i => this.$root.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
+			const charts = await Promise.all(instances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
 			this.instances = instances;
 			this.charts = charts;
 			this.fetching = false;

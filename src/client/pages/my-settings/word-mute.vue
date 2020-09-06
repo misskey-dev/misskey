@@ -28,10 +28,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCommentSlash, faSave } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkTab from '../../components/tab.vue';
-import MkInfo from '../../components/ui/info.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkTab from '@/components/tab.vue';
+import MkInfo from '@/components/ui/info.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -65,13 +66,13 @@ export default defineComponent({
 		this.softMutedWords = this.$store.state.settings.mutedWords.map(x => x.join(' ')).join('\n');
 		this.hardMutedWords = this.$store.state.i.mutedWords.map(x => x.join(' ')).join('\n');
 
-		this.hardWordMutedNotesCount = (await this.$root.api('i/get-word-muted-notes-count', {})).count;
+		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
 	},
 
 	methods: {
 		async save() {
 			this.$store.dispatch('settings/set', { key: 'mutedWords', value: this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')) });
-			await this.$root.api('i/update', {
+			await os.api('i/update', {
 				mutedWords: this.hardMutedWords.trim().split('\n').map(x => x.trim().split(' ')),
 			});
 			this.changed = false;

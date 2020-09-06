@@ -29,7 +29,8 @@ import { defineComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkSelect from '../../../components/ui/select.vue';
+import MkSelect from '@/components/ui/select.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -64,7 +65,7 @@ export default defineComponent({
 
 	methods: {
 		async add() {
-			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: type } = await os.dialog({
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {

@@ -1,6 +1,6 @@
 import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { selectDriveFile } from './select-drive-file';
-import { apiUrl } from '../config';
+import { apiUrl } from '@/config';
 
 // TODO: component引数は消せる(各種操作がstoreに移動し、かつstoreが複数ファイルで共有されるようになったため)
 export function selectFile(component: any, src: any, label: string | null, multiple = false) {
@@ -10,7 +10,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const dialog = component.$store.dispatch('showDialog', {
+				const dialog = component.os.dialog({
 					type: 'waiting',
 					text: component.$t('uploading') + '...',
 					showOkButton: false,
@@ -35,7 +35,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
 				}).catch(e => {
-					component.$store.dispatch('showDialog', {
+					component.os.dialog({
 						type: 'error',
 						text: e
 					});
@@ -65,7 +65,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 
 		};
 
-		component.$store.dispatch('showMenu', {
+		component.os.menu({
 			items: [label ? {
 				text: label,
 				type: 'label'

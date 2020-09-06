@@ -62,8 +62,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { version } from '../config';
-import MkLink from '../components/link.vue';
+import { version } from '@/config';
+import MkLink from '@/components/link.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

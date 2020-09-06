@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faFileImage } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

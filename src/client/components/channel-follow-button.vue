@@ -21,6 +21,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSpinner, faPlus, faMinus, } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -49,12 +50,12 @@ export default defineComponent({
 
 			try {
 				if (this.isFollowing) {
-					await this.$root.api('channels/unfollow', {
+					await os.api('channels/unfollow', {
 						channelId: this.channel.id
 					});
 					this.isFollowing = false;
 				} else {
-					await this.$root.api('channels/follow', {
+					await os.api('channels/follow', {
 						channelId: this.channel.id
 					});
 					this.isFollowing = true;

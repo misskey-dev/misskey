@@ -28,6 +28,7 @@ declare global {
 	interface Window extends CaptchaContainer {
 	}
 }
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

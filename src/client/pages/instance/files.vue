@@ -11,8 +11,9 @@
 import { defineComponent } from 'vue';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkPagination from '../../components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -34,15 +35,15 @@ export default defineComponent({
 
 	methods: {
 		clear() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('clearCachedFilesConfirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
-				this.$root.api('admin/drive/clean-remote-files', {}).then(() => {
-					this.$store.dispatch('showDialog', {
+				os.api('admin/drive/clean-remote-files', {}).then(() => {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});

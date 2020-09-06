@@ -27,8 +27,9 @@
 import { defineComponent } from 'vue';
 import { faPlus, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -56,12 +57,12 @@ export default defineComponent({
 
 	methods: {
 		add(inbox: string) {
-			this.$root.api('admin/relays/add', {
+			os.api('admin/relays/add', {
 				inbox
 			}).then((relay: any) => {
 				this.refresh();
 			}).catch((e: any) => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message || e
 				});
@@ -69,12 +70,12 @@ export default defineComponent({
 		},
 
 		remove(inbox: string) {
-			this.$root.api('admin/relays/remove', {
+			os.api('admin/relays/remove', {
 				inbox
 			}).then(() => {
 				this.refresh();
 			}).catch((e: any) => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message || e
 				});
@@ -82,7 +83,7 @@ export default defineComponent({
 		},
 
 		refresh() {
-			this.$root.api('admin/relays/list').then((relays: any) => {
+			os.api('admin/relays/list').then((relays: any) => {
 				this.relays = relays;
 			});
 		}

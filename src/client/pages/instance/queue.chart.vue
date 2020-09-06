@@ -36,6 +36,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -188,7 +189,7 @@ export default defineComponent({
 		},
 
 		fetchJobs() {
-			this.$root.api(this.domain === 'inbox' ? 'admin/queue/inbox-delayed' : this.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
+			os.api(this.domain === 'inbox' ? 'admin/queue/inbox-delayed' : this.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
 				this.jobs = jobs;
 			});
 		},

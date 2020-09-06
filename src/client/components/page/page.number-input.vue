@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkInput from '../ui/input.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

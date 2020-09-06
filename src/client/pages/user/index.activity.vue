@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ApexCharts from 'apexcharts';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -28,7 +29,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		this.$root.api('charts/user/notes', {
+		os.api('charts/user/notes', {
 			userId: this.user.id,
 			span: 'day',
 			limit: this.limit

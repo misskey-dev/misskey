@@ -3,7 +3,7 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import composeNotification from './scripts/compose-notification';
+import composeNotification from '@/scripts/compose-notification';
 
 // eslint-disable-next-line no-undef
 const version = _VERSION_;

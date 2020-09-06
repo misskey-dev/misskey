@@ -27,10 +27,11 @@
 import { defineComponent } from 'vue';
 import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkTextarea from '../components/ui/textarea.vue';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import { selectFile } from '../scripts/select-file';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -60,7 +61,7 @@ export default defineComponent({
 			if (this.bannerId == null) {
 				this.bannerUrl = null;
 			} else {
-				this.bannerUrl = (await this.$root.api('drive/files/show', {
+				this.bannerUrl = (await os.api('drive/files/show', {
 					fileId: this.bannerId,
 				})).url;
 			}
@@ -69,7 +70,7 @@ export default defineComponent({
 
 	async created() {
 		if (this.channelId) {
-			this.channel = await this.$root.api('channels/show', {
+			this.channel = await os.api('channels/show', {
 				channelId: this.channelId,
 			});
 
@@ -90,17 +91,17 @@ export default defineComponent({
 
 			if (this.channelId) {
 				params.channelId = this.channelId;
-				this.$root.api('channels/update', params)
+				os.api('channels/update', params)
 				.then(channel => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				});
 			} else {
-				this.$root.api('channels/create', params)
+				os.api('channels/create', params)
 				.then(channel => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});

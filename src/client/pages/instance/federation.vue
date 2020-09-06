@@ -61,11 +61,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkPagination from '../../components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 import MkInstanceInfo from './instance.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

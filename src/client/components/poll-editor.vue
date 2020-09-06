@@ -58,6 +58,7 @@ import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
 import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

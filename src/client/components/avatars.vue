@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -21,7 +22,7 @@ export default defineComponent({
 		};
 	},
 	async created() {
-		this.us = await this.$root.api('users/show', {
+		this.us = await os.api('users/show', {
 			userIds: this.userIds
 		});
 	}

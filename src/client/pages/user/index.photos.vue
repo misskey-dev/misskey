@@ -14,8 +14,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getStaticImageUrl } from '../../scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import notePage from '../../filters/note';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: ['user'],
@@ -33,7 +34,7 @@ export default defineComponent({
 			'image/apng',
 			'image/vnd.mozilla.apng',
 		];
-		this.$root.api('users/notes', {
+		os.api('users/notes', {
 			userId: this.user.id,
 			fileType: image,
 			excludeNsfw: !this.$store.state.device.alwaysShowNsfw,

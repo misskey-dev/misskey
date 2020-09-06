@@ -10,7 +10,8 @@ import { defineComponent } from 'vue';
 import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
-import { apiUrl } from '../../config';
+import { apiUrl } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -44,7 +45,7 @@ export default defineComponent({
 	methods: {
 		upload() {
 			return new Promise((ok) => {
-				const dialog = this.$store.dispatch('showDialog', {
+				const dialog = os.dialog({
 					type: 'waiting',
 					text: this.$t('uploading') + '...',
 					showOkButton: false,
@@ -75,12 +76,12 @@ export default defineComponent({
 		async post() {
 			this.posting = true;
 			const file = this.value.attachCanvasImage ? await this.upload() : null;
-			this.$root.api('notes/create', {
+			os.api('notes/create', {
 				text: this.text === '' ? null : this.text,
 				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

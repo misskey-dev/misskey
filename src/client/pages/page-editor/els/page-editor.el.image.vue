@@ -18,8 +18,9 @@ import { defineComponent } from 'vue';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faImage, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkFileThumbnail from '../../../components/drive-file-thumbnail.vue';
-import { selectDriveFile } from '../../../scripts/select-drive-file';
+import MkFileThumbnail from '@/components/drive-file-thumbnail.vue';
+import { selectDriveFile } from '@/scripts/select-drive-file';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -47,7 +48,7 @@ export default defineComponent({
 		if (this.value.fileId == null) {
 			this.choose();
 		} else {
-			this.$root.api('drive/files/show', {
+			os.api('drive/files/show', {
 				fileId: this.value.fileId
 			}).then(file => {
 				this.file = file;

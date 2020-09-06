@@ -21,6 +21,7 @@
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import XModal from './modal.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

@@ -1,7 +1,7 @@
 import { createI18n } from 'vue-i18n';
 import { clientDb, get, count } from './db';
-import { setI18nContexts } from './scripts/set-i18n-contexts';
-import { version, langs, getLocale } from './config';
+import { setI18nContexts } from '@/scripts/set-i18n-contexts';
+import { version, langs, getLocale } from '@/config';
 
 let _lang = localStorage.getItem('lang');
 

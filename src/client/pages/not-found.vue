@@ -12,6 +12,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

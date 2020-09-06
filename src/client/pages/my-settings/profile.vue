@@ -58,12 +58,13 @@
 import { defineComponent } from 'vue';
 import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import { host } from '../../config';
-import { selectFile } from '../../scripts/select-file';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import { host } from '@/config';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -120,7 +121,7 @@ export default defineComponent({
 	methods: {
 		changeAvatar(e) {
 			selectFile(this, e.currentTarget || e.target, this.$t('avatar')).then(file => {
-				this.$root.api('i/update', {
+				os.api('i/update', {
 					avatarId: file.id,
 				});
 			});
@@ -128,7 +129,7 @@ export default defineComponent({
 
 		changeBanner(e) {
 			selectFile(this, e.currentTarget || e.target, this.$t('banner')).then(file => {
-				this.$root.api('i/update', {
+				os.api('i/update', {
 					bannerId: file.id,
 				});
 			});
@@ -144,7 +145,7 @@ export default defineComponent({
 
 			this.saving = true;
 
-			this.$root.api('i/update', {
+			os.api('i/update', {
 				name: this.name || null,
 				description: this.description || null,
 				location: this.location || null,
@@ -160,14 +161,14 @@ export default defineComponent({
 				this.$store.state.i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}
 			}).catch(err => {
 				this.saving = false;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: err.id
 				});

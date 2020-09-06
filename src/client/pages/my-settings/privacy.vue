@@ -22,8 +22,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import MkSelect from '../../components/ui/select.vue';
-import MkSwitch from '../../components/ui/switch.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -63,7 +64,7 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			this.$root.api('i/update', {
+			os.api('i/update', {
 				isLocked: !!this.isLocked,
 				autoAcceptFollowed: !!this.autoAcceptFollowed,
 			});

@@ -24,6 +24,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

@@ -9,18 +9,18 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
 
-import VueHotkey from './scripts/hotkey';
+import VueHotkey from '@/scripts/hotkey';
 import Root from './root.vue';
-import Stream from './scripts/stream';
+import Stream from '@/scripts/stream';
 import widgets from './widgets';
 import directives from './directives';
-import components from './components';
-import { version, apiUrl } from './config';
+import components from '@/components';
+import { version, apiUrl } from '@/config';
 import { store } from './store';
 import { router } from './router';
-import { applyTheme, lightTheme } from './scripts/theme';
-import { isDeviceDarkmode } from './scripts/is-device-darkmode';
-import { createPluginEnv } from './scripts/aiscript/api';
+import { applyTheme, lightTheme } from '@/scripts/theme';
+import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
+import { createPluginEnv } from '@/scripts/aiscript/api';
 import { i18n, lang } from './i18n';
 
 console.info(`Misskey v${version}`);
@@ -156,7 +156,7 @@ window.addEventListener('storage', e => {
 }, false);
 
 store.watch(state => state.device.darkMode, darkMode => {
-	import('./scripts/theme').then(({ builtinThemes }) => {
+	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(store.state.device.themes);
 		applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
 	});

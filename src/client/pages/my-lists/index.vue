@@ -15,8 +15,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faListUl, faPlus } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../../components/ui/pagination.vue';
-import MkButton from '../../components/ui/button.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -42,14 +43,14 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: name } = await os.dialog({
 				title: this.$t('enterListName'),
 				input: true
 			});
 			if (canceled) return;
-			await this.$root.api('users/lists/create', { name: name });
+			await os.api('users/lists/create', { name: name });
 			this.$refs.list.reload();
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

@@ -110,13 +110,14 @@ import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
 import MkUrlPreview from './url-preview.vue';
 import MkReactionPicker from './reaction-picker.vue';
-import pleaseLogin from '../scripts/please-login';
-import { focusPrev, focusNext } from '../scripts/focus';
-import { url } from '../config';
-import copyToClipboard from '../scripts/copy-to-clipboard';
-import { checkWordMute } from '../scripts/check-word-mute';
+import pleaseLogin from '@/scripts/please-login';
+import { focusPrev, focusNext } from '@/scripts/focus';
+import { url } from '@/config';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { checkWordMute } from '@/scripts/check-word-mute';
 import { utils } from '@syuilo/aiscript';
 import { userPage } from '../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	model: {
@@ -267,7 +268,7 @@ export default defineComponent({
 		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);
 
 		if (this.detail) {
-			this.$root.api('notes/children', {
+			os.api('notes/children', {
 				noteId: this.appearNote.id,
 				limit: 30
 			}).then(replies => {
@@ -275,7 +276,7 @@ export default defineComponent({
 			});
 
 			if (this.appearNote.replyId) {
-				this.$root.api('notes/conversation', {
+				os.api('notes/conversation', {
 					noteId: this.appearNote.replyId
 				}).then(conversation => {
 					this.conversation = conversation.reverse();
@@ -317,7 +318,7 @@ export default defineComponent({
 		},
 
 		readPromo() {
-			(this as any).$root.api('promo/read', {
+			(this as any).os.api('promo/read', {
 				noteId: this.appearNote.id
 			});
 			this.isDeleted = true;
@@ -452,12 +453,12 @@ export default defineComponent({
 		renote(viaKeyboard = false) {
 			pleaseLogin(this.$root);
 			this.blur();
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					text: this.$t('renote'),
 					icon: faRetweet,
 					action: () => {
-						(this as any).$root.api('notes/create', {
+						(this as any).os.api('notes/create', {
 							renoteId: this.appearNote.id
 						});
 					}
@@ -476,7 +477,7 @@ export default defineComponent({
 		},
 
 		renoteDirectly() {
-			(this as any).$root.api('notes/create', {
+			(this as any).os.api('notes/create', {
 				renoteId: this.appearNote.id
 			});
 		},
@@ -489,7 +490,7 @@ export default defineComponent({
 				showFocus: viaKeyboard,
 			});
 			picker.$once('chosen', reaction => {
-				this.$root.api('notes/reactions/create', {
+				os.api('notes/reactions/create', {
 					noteId: this.appearNote.id,
 					reaction: reaction
 				}).then(() => {
@@ -500,7 +501,7 @@ export default defineComponent({
 		},
 
 		reactDirectly(reaction) {
-			this.$root.api('notes/reactions/create', {
+			os.api('notes/reactions/create', {
 				noteId: this.appearNote.id,
 				reaction: reaction
 			});
@@ -509,17 +510,17 @@ export default defineComponent({
 		undoReact(note) {
 			const oldReaction = note.myReaction;
 			if (!oldReaction) return;
-			this.$root.api('notes/reactions/delete', {
+			os.api('notes/reactions/delete', {
 				noteId: note.id
 			});
 		},
 
 		favorite() {
 			pleaseLogin(this.$root);
-			this.$root.api('notes/favorites/create', {
+			os.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -527,28 +528,28 @@ export default defineComponent({
 		},
 
 		del() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('noteDeleteConfirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
-				this.$root.api('notes/delete', {
+				os.api('notes/delete', {
 					noteId: this.appearNote.id
 				});
 			});
 		},
 
 		delEdit() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('deleteAndEditConfirm'),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
-				this.$root.api('notes/delete', {
+				os.api('notes/delete', {
 					noteId: this.appearNote.id
 				});
 
@@ -557,10 +558,10 @@ export default defineComponent({
 		},
 
 		toggleFavorite(favorite: boolean) {
-			this.$root.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
+			os.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -568,10 +569,10 @@ export default defineComponent({
 		},
 
 		toggleWatch(watch: boolean) {
-			this.$root.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
+			os.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -581,7 +582,7 @@ export default defineComponent({
 		async menu(viaKeyboard = false) {
 			let menu;
 			if (this.$store.getters.isSignedIn) {
-				const state = await this.$root.api('notes/state', {
+				const state = await os.api('notes/state', {
 					noteId: this.appearNote.id
 				});
 				menu = [{
@@ -685,7 +686,7 @@ export default defineComponent({
 				}))]);
 			}
 
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: menu,
 				source: this.$refs.menuButton,
 				viaKeyboard
@@ -694,12 +695,12 @@ export default defineComponent({
 
 		showRenoteMenu(viaKeyboard = false) {
 			if (!this.isMyRenote) return;
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					text: this.$t('unrenote'),
 					icon: faTrashAlt,
 					action: () => {
-						this.$root.api('notes/delete', {
+						os.api('notes/delete', {
 							noteId: this.note.id
 						});
 						this.isDeleted = true;
@@ -716,7 +717,7 @@ export default defineComponent({
 
 		copyContent() {
 			copyToClipboard(this.appearNote.text);
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -724,23 +725,23 @@ export default defineComponent({
 
 		copyLink() {
 			copyToClipboard(`${url}/notes/${this.appearNote.id}`);
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
 		},
 
 		togglePin(pin: boolean) {
-			this.$root.api(pin ? 'i/pin' : 'i/unpin', {
+			os.api(pin ? 'i/pin' : 'i/unpin', {
 				noteId: this.appearNote.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: this.$t('pinLimitExceeded')
 					});
@@ -749,23 +750,23 @@ export default defineComponent({
 		},
 
 		async promote() {
-			const { canceled, result: days } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: days } = await os.dialog({
 				title: this.$t('numberOfDays'),
 				input: { type: 'number' }
 			});
 
 			if (canceled) return;
 
-			this.$root.api('admin/promo/create', {
+			os.api('admin/promo/create', {
 				noteId: this.appearNote.id,
 				expiresAt: Date.now() + (86400000 * days)
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});

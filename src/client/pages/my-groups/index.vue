@@ -43,10 +43,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faUsers, faPlus, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../../components/ui/pagination.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkContainer from '../../components/ui/container.vue';
-import MkAvatars from '../../components/avatars.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkContainer from '@/components/ui/container.vue';
+import MkAvatars from '@/components/avatars.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -82,23 +83,23 @@ export default defineComponent({
 
 	methods: {
 		async create() {
-			const { canceled, result: name } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: name } = await os.dialog({
 				title: this.$t('groupName'),
 				input: true
 			});
 			if (canceled) return;
-			await this.$root.api('users/groups/create', { name: name });
+			await os.api('users/groups/create', { name: name });
 			this.$refs.owned.reload();
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
 		},
 		acceptInvite(invitation) {
-			this.$root.api('users/groups/invitations/accept', {
+			os.api('users/groups/invitations/accept', {
 				invitationId: invitation.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -107,7 +108,7 @@ export default defineComponent({
 			});
 		},
 		rejectInvite(invitation) {
-			this.$root.api('users/groups/invitations/reject', {
+			os.api('users/groups/invitations/reject', {
 				invitationId: invitation.id
 			}).then(() => {
 				this.$refs.invitations.reload();

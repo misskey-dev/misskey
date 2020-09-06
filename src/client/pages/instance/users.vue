@@ -86,12 +86,13 @@ import { defineComponent } from 'vue';
 import { faPlus, faUsers, faSearch, faBookmark, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import parseAcct from '../../../misc/acct/parse';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkPagination from '../../components/ui/pagination.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkUserSelect from '@/components/user-select.vue';
 import { acct } from '../../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -147,12 +148,12 @@ export default defineComponent({
 		/** テキストエリアのユーザーを解決する */
 		fetchUser() {
 			return new Promise((res) => {
-				const usernamePromise = this.$root.api('users/show', parseAcct(this.target));
-				const idPromise = this.$root.api('users/show', { userId: this.target });
+				const usernamePromise = os.api('users/show', parseAcct(this.target));
+				const idPromise = os.api('users/show', { userId: this.target });
 				let _notFound = false;
 				const notFound = () => {
 					if (_notFound) {
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							text: this.$t('noSuchUser')
 						});
@@ -185,34 +186,34 @@ export default defineComponent({
 		},
 
 		async addUser() {
-			const { canceled: canceled1, result: username } = await this.$store.dispatch('showDialog', {
+			const { canceled: canceled1, result: username } = await os.dialog({
 				title: this.$t('username'),
 				input: true
 			});
 			if (canceled1) return;
 
-			const { canceled: canceled2, result: password } = await this.$store.dispatch('showDialog', {
+			const { canceled: canceled2, result: password } = await os.dialog({
 				title: this.$t('password'),
 				input: { type: 'password' }
 			});
 			if (canceled2) return;
 
-			const dialog = this.$store.dispatch('showDialog', {
+			const dialog = os.dialog({
 				type: 'waiting',
 				iconOnly: true
 			});
 
-			this.$root.api('admin/accounts/create', {
+			os.api('admin/accounts/create', {
 				username: username,
 				password: password,
 			}).then(res => {
 				this.$refs.users.reload();
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.id
 				});

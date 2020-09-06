@@ -11,7 +11,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XNotes from '../../components/notes.vue';
+import XNotes from '@/components/notes.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

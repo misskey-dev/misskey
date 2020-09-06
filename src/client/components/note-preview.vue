@@ -21,6 +21,7 @@ import { defineComponent } from 'vue';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

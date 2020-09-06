@@ -25,6 +25,7 @@
 import { defineComponent } from 'vue';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { sum } from '../../prelude/array';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -85,7 +86,7 @@ export default defineComponent({
 		},
 		vote(id) {
 			if (this.closed || !this.poll.multiple && this.poll.choices.some(c => c.isVoted)) return;
-			this.$root.api('notes/polls/vote', {
+			os.api('notes/polls/vote', {
 				noteId: this.note.id,
 				choice: id
 			}).then(() => {

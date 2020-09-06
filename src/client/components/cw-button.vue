@@ -9,6 +9,7 @@
 import { defineComponent } from 'vue';
 import { length } from 'stringz';
 import { concat } from '../../prelude/array';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

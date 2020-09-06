@@ -15,9 +15,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSatellite, faPlus } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../../components/ui/pagination.vue';
-import MkButton from '../../components/ui/button.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
 import XAntenna from './index.antenna.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

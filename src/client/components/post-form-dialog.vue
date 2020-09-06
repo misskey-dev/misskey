@@ -28,6 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XPostForm from './post-form.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

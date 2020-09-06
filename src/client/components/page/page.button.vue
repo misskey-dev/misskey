@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from '../ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -24,14 +25,14 @@ export default defineComponent({
 		click() {
 			if (this.value.action === 'dialog') {
 				this.hpml.eval();
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					text: this.hpml.interpolate(this.value.content)
 				});
 			} else if (this.value.action === 'resetRandom') {
 				this.hpml.updateRandomSeed(Math.random());
 				this.hpml.eval();
 			} else if (this.value.action === 'pushEvent') {
-				this.$root.api('page-push', {
+				os.api('page-push', {
 					pageId: this.hpml.page.id,
 					event: this.value.event,
 					...(this.value.var ? {
@@ -39,7 +40,7 @@ export default defineComponent({
 					} : {})
 				});
 
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					text: this.hpml.interpolate(this.value.message)
 				});

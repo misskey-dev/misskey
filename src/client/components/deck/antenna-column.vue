@@ -13,6 +13,7 @@ import { defineComponent } from 'vue';
 import { faSatellite, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -59,8 +60,8 @@ export default defineComponent({
 
 	methods: {
 		async setAntenna() {
-			const antennas = await this.$root.api('antennas/list');
-			const { canceled, result: antenna } = await this.$store.dispatch('showDialog', {
+			const antennas = await os.api('antennas/list');
+			const { canceled, result: antenna } = await os.dialog({
 				title: this.$t('selectAntenna'),
 				type: null,
 				select: {

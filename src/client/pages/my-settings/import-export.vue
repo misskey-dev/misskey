@@ -19,9 +19,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faDownload, faUpload, faBoxes } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkSelect from '../../components/ui/select.vue';
-import { apiUrl } from '../../config';
+import MkButton from '@/components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import { apiUrl } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -38,19 +39,19 @@ export default defineComponent({
 
 	methods: {
 		doExport() {
-			this.$root.api(
+			os.api(
 				this.exportTarget == 'notes' ? 'i/export-notes' :
 				this.exportTarget == 'following' ? 'i/export-following' :
 				this.exportTarget == 'blocking' ? 'i/export-blocking' :
 				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
 				null, {})
 			.then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'info',
 					text: this.$t('exportRequested')
 				});
 			}).catch((e: any) => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -68,7 +69,7 @@ export default defineComponent({
 			data.append('file', file);
 			data.append('i', this.$store.state.i.token);
 
-			const dialog = this.$store.dispatch('showDialog', {
+			const dialog = os.dialog({
 				type: 'waiting',
 				text: this.$t('uploading') + '...',
 				showOkButton: false,
@@ -85,7 +86,7 @@ export default defineComponent({
 				this.reqImport(f);
 			})
 			.catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -96,18 +97,18 @@ export default defineComponent({
 		},
 
 		reqImport(file) {
-			this.$root.api(
+			os.api(
 				this.exportTarget == 'following' ? 'i/import-following' :
 				this.exportTarget == 'user-lists' ? 'i/import-user-lists' :
 				null, {
 					fileId: file.id
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'info',
 					text: this.$t('importRequested')
 				});
 			}).catch((e: any) => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});

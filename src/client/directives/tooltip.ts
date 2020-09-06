@@ -1,6 +1,6 @@
 import { Directive } from 'vue';
-import MkTooltip from '../components/ui/tooltip.vue';
-import { isDeviceTouch } from '../scripts/is-device-touch';
+import MkTooltip from '@/components/ui/tooltip.vue';
+import { isDeviceTouch } from '@/scripts/is-device-touch';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';

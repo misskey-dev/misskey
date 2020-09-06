@@ -26,7 +26,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue';import * as os from '@/os';
+
 export default defineComponent({
 	props: {
 		value: {

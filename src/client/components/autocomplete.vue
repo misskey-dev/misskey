@@ -30,9 +30,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { emojilist } from '../../misc/emojilist';
-import contains from '../scripts/contains';
+import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
-import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import MkUserSelect from './user-select.vue';
 import { acct } from '../filters/user';
 
@@ -74,6 +74,7 @@ for (const x of lib) {
 }
 
 emjdb.sort((a, b) => a.name.length - b.name.length);
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -237,7 +238,7 @@ export default defineComponent({
 					this.users = users;
 					this.fetching = false;
 				} else {
-					this.$root.api('users/search', {
+					os.api('users/search', {
 						query: this.q,
 						limit: 10,
 						detail: false
@@ -261,7 +262,7 @@ export default defineComponent({
 						this.hashtags = hashtags;
 						this.fetching = false;
 					} else {
-						this.$root.api('hashtags/search', {
+						os.api('hashtags/search', {
 							query: this.q,
 							limit: 30
 						}).then(hashtags => {

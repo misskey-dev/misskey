@@ -18,8 +18,9 @@ import { defineComponent } from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
-import { url, lang } from '../config';
-import MkLink from '../components/link.vue';
+import { url, lang } from '@/config';
+import MkLink from '@/components/link.vue';
+import * as os from '@/os';
 
 const markdown = MarkdownIt({
 	html: true

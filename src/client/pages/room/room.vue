@@ -59,16 +59,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Room } from '../../scripts/room/room';
+import { Room } from '@/scripts/room/room';
 import parseAcct from '../../../misc/acct/parse';
 import XPreview from './preview.vue';
-const storeItems = require('../../scripts/room/furnitures.json5');
+const storeItems = require('@/scripts/room/furnitures.json5');
 import { faBoxOpen, faUndo, faArrowsAlt, faBan, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../prelude/url';
-import MkButton from '../../components/ui/button.vue';
-import MkSelect from '../../components/ui/select.vue';
-import { selectFile } from '../../scripts/select-file';
+import MkButton from '@/components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
 
 let room: Room;
 
@@ -106,13 +107,13 @@ export default defineComponent({
 	async mounted() {
 		window.addEventListener('beforeunload', this.beforeunload);
 
-		this.user = await this.$root.api('users/show', {
+		this.user = await os.api('users/show', {
 			...parseAcct(this.acct)
 		});
 
 		this.isMyRoom = this.$store.getters.isSignedIn && (this.$store.state.i.id === this.user.id);
 
-		const roomInfo = await this.$root.api('room/show', {
+		const roomInfo = await os.api('room/show', {
 			userId: this.user.id
 		});
 
@@ -141,7 +142,7 @@ export default defineComponent({
 
 	beforeRouteLeave(to, from, next) {
 		if (this.changed) {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('leaveConfirm'),
 				showCancelButton: true
@@ -171,7 +172,7 @@ export default defineComponent({
 		},
 
 		async add() {
-			const { canceled, result: id } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: id } = await os.dialog({
 				type: null,
 				title: this.$t('_rooms.addFurniture'),
 				select: {
@@ -194,16 +195,16 @@ export default defineComponent({
 		},
 
 		save() {
-			this.$root.api('room/update', {
+			os.api('room/update', {
 				room: room.getRoomInfo()
 			}).then(() => {
 				this.changed = false;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			}).catch((e: any) => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -211,7 +212,7 @@ export default defineComponent({
 		},
 
 		clear() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('_rooms.clearConfirm'),
 				showCancelButton: true

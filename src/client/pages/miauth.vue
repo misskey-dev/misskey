@@ -40,8 +40,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkSignin from '../components/signin.vue';
-import MkButton from '../components/ui/button.vue';
+import MkSignin from '@/components/signin.vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -73,7 +74,7 @@ export default defineComponent({
 	methods: {
 		async accept() {
 			this.state = 'waiting';
-			await this.$root.api('miauth/gen-token', {
+			await os.api('miauth/gen-token', {
 				session: this.session,
 				name: this.name,
 				iconUrl: this.icon,

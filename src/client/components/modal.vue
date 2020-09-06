@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import * as os from '@/os';
 
 // memo: popup.vueのfixedプロパティに相当するものはsource要素の祖先を辿るなどして自動で判定できるのでは
 
@@ -54,6 +55,8 @@ export default defineComponent({
 	},
 	mounted() {
 		this.$nextTick(() => {
+			if (!this.popup) return;
+
 			const popover = this.$refs.content as any;
 
 			const rect = this.source.getBoundingClientRect();

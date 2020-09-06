@@ -62,7 +62,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faInfoCircle, faChevronLeft, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons'
-import MkButton from '../components/ui/button.vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

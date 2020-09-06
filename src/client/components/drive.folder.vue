@@ -28,6 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faFolder, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -125,7 +126,7 @@ export default defineComponent({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				this.$root.api('drive/files/update', {
+				os.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder.id
 				});
@@ -141,7 +142,7 @@ export default defineComponent({
 				if (folder.id == this.folder.id) return;
 
 				this.browser.removeFolder(folder.id);
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder.id
 				}).then(() => {
@@ -149,13 +150,13 @@ export default defineComponent({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$store.dispatch('showDialog', {
+							os.dialog({
 								title: this.$t('unableToProcess'),
 								text: this.$t('circularReferenceFolder')
 							});
 							break;
 						default:
-							this.$store.dispatch('showDialog', {
+							os.dialog({
 								type: 'error',
 								text: this.$t('error')
 							});
@@ -189,7 +190,7 @@ export default defineComponent({
 		},
 
 		rename() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('renameFolder'),
 				input: {
 					placeholder: this.$t('inputNewFolderName'),
@@ -197,7 +198,7 @@ export default defineComponent({
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: this.folder.id,
 					name: name
 				});
@@ -205,7 +206,7 @@ export default defineComponent({
 		},
 
 		deleteFolder() {
-			this.$root.api('drive/folders/delete', {
+			os.api('drive/folders/delete', {
 				folderId: this.folder.id
 			}).then(() => {
 				if (this.$store.state.settings.uploadFolder === this.folder.id) {
@@ -217,14 +218,14 @@ export default defineComponent({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							title: this.$t('unableToDelete'),
 							text: this.$t('hasChildFilesOrFolders')
 						});
 						break;
 					default:
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							text: this.$t('unableToDelete')
 						});

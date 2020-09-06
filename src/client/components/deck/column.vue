@@ -35,6 +35,7 @@
 import { defineComponent } from 'vue';
 import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -137,7 +138,7 @@ export default defineComponent({
 				icon: faPencilAlt,
 				text: this.$t('rename'),
 				action: () => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						title: this.$t('rename'),
 						input: {
 							default: this.column.name,
@@ -207,7 +208,7 @@ export default defineComponent({
 		},
 
 		showMenu() {
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: this.getMenu(),
 				source: this.$refs.menu,
 			});

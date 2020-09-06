@@ -42,9 +42,10 @@
 import { defineComponent } from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '../../../misc/acct/render';
-import MkButton from '../../components/ui/button.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkUserSelect from '@/components/user-select.vue';
 import { acct } from '../../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -67,8 +68,8 @@ export default defineComponent({
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		this.$root.api('messaging/history', { group: false }).then(userMessages => {
-			this.$root.api('messaging/history', { group: true }).then(groupMessages => {
+		os.api('messaging/history', { group: false }).then(userMessages => {
+			os.api('messaging/history', { group: true }).then(groupMessages => {
 				const messages = userMessages.concat(groupMessages);
 				messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 				this.messages = messages;
@@ -115,7 +116,7 @@ export default defineComponent({
 		},
 
 		start(ev) {
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					text: this.$t('messagingWithUser'),
 					icon: faUser,
@@ -137,17 +138,17 @@ export default defineComponent({
 		},
 
 		async startGroup() {
-			const groups1 = await this.$root.api('users/groups/owned');
-			const groups2 = await this.$root.api('users/groups/joined');
+			const groups1 = await os.api('users/groups/owned');
+			const groups2 = await os.api('users/groups/joined');
 			if (groups1.length === 0 && groups2.length === 0) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'warning',
 					title: this.$t('youHaveNoGroups'),
 					text: this.$t('joinOrCreateGroup'),
 				});
 				return;
 			}
-			const { canceled, result: group } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: group } = await os.dialog({
 				type: null,
 				title: this.$t('group'),
 				select: {

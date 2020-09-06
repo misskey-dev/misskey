@@ -33,10 +33,11 @@ import { defineComponent } from 'vue';
 import * as XDraggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
 import { faWindowMaximize, faTimes, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
-import MkSelect from '../../components/ui/select.vue';
-import MkButton from '../../components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkButton from '@/components/ui/button.vue';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

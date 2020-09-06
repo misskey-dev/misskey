@@ -32,12 +32,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import copyToClipboard from '../scripts/copy-to-clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 //import updateAvatar from '../api/update-avatar';
 //import updateBanner from '../api/update-banner';
 import XFileThumbnail from './drive-file-thumbnail.vue';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import bytes from '../filters/bytes';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -82,7 +83,7 @@ export default defineComponent({
 			if (this.selectMode) {
 				this.$emit('chosen', this.file);
 			} else {
-				this.$store.dispatch('showMenu', {
+				os.menu({
 					items: [{
 						text: this.$t('rename'),
 						icon: faICursor,
@@ -128,7 +129,7 @@ export default defineComponent({
 		},
 
 		rename() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('renameFile'),
 				input: {
 					placeholder: this.$t('inputNewFileName'),
@@ -137,7 +138,7 @@ export default defineComponent({
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
-				this.$root.api('drive/files/update', {
+				os.api('drive/files/update', {
 					fileId: this.file.id,
 					name: name
 				});
@@ -145,7 +146,7 @@ export default defineComponent({
 		},
 
 		toggleSensitive() {
-			this.$root.api('drive/files/update', {
+			os.api('drive/files/update', {
 				fileId: this.file.id,
 				isSensitive: !this.file.isSensitive
 			});
@@ -153,7 +154,7 @@ export default defineComponent({
 
 		copyUrl() {
 			copyToClipboard(this.file.url);
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});
@@ -172,14 +173,14 @@ export default defineComponent({
 		},
 
 		async deleteFile() {
-			const { canceled } = await this.$store.dispatch('showDialog', {
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('driveFileDeleteConfirm', { name: this.file.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			this.$root.api('drive/files/delete', {
+			os.api('drive/files/delete', {
 				fileId: this.file.id
 			});
 		},

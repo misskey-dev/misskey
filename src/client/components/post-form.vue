@@ -62,14 +62,15 @@ import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
 import { parse } from '../../mfm/parse';
-import { host, url } from '../config';
+import { host, url } from '@/config';
 import { erase, unique } from '../../prelude/array';
 import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
-import { selectDriveFile } from '../scripts/select-drive-file';
+import { selectDriveFile } from '@/scripts/select-drive-file';
 import { noteVisibilities } from '../../types';
 import { utils } from '@syuilo/aiscript';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -246,14 +247,14 @@ export default defineComponent({
 		if (this.reply && ['home', 'followers', 'specified'].includes(this.reply.visibility)) {
 			this.visibility = this.reply.visibility;
 			if (this.reply.visibility === 'specified') {
-				this.$root.api('users/show', {
+				os.api('users/show', {
 					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.reply.userId)
 				}).then(users => {
 					this.visibleUsers.push(...users);
 				});
 
 				if (this.reply.userId !== this.$store.state.i.id) {
-					this.$root.api('users/show', { userId: this.reply.userId }).then(user => {
+					os.api('users/show', { userId: this.reply.userId }).then(user => {
 						this.visibleUsers.push(user);
 					});
 				}
@@ -346,7 +347,7 @@ export default defineComponent({
 		},
 
 		chooseFileFrom(ev) {
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					type: 'label',
 					text: this.$t('attachFile'),
@@ -469,7 +470,7 @@ export default defineComponent({
 			if (!this.renote && !this.quoteId && paste.startsWith(url + '/notes/')) {
 				e.preventDefault();
 
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'info',
 					text: this.$t('quoteQuestion'),
 					showCancelButton: true
@@ -575,7 +576,7 @@ export default defineComponent({
 			}
 
 			this.posting = true;
-			this.$root.api('notes/create', data).then(() => {
+			os.api('notes/create', data).then(() => {
 				this.clear();
 				this.deleteDraft();
 				this.$emit('posted');
@@ -612,7 +613,7 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: this.$store.state.postFormActions.map(action => ({
 					text: action.title,
 					action: () => {

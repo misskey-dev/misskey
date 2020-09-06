@@ -23,7 +23,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkButton from '../components/ui/button.vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -42,7 +43,7 @@ export default defineComponent({
 	},
 	methods: {
 		cancel() {
-			this.$root.api('auth/deny', {
+			os.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('denied');
@@ -50,7 +51,7 @@ export default defineComponent({
 		},
 
 		accept() {
-			this.$root.api('auth/accept', {
+			os.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('accepted');

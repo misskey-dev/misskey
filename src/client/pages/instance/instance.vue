@@ -121,12 +121,12 @@
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '../../components/window.vue';
-import MkUsersDialog from '../../components/users-dialog.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkInfo from '../../components/ui/info.vue';
+import XWindow from '@/components/window.vue';
+import MkUsersDialog from '@/components/users-dialog.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkInfo from '@/components/ui/info.vue';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
 
@@ -140,6 +140,7 @@ const alpha = hex => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, 0.1)`;
 };
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -207,7 +208,7 @@ export default defineComponent({
 
 	watch: {
 		isSuspended() {
-			this.$root.api('admin/federation/update-instance', {
+			os.api('admin/federation/update-instance', {
 				host: this.instance.host,
 				isSuspended: this.isSuspended
 			});
@@ -226,8 +227,8 @@ export default defineComponent({
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([
-			this.$root.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'day' }),
+			os.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'hour' }),
+			os.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'day' }),
 		]);
 
 		const chart = {
@@ -242,7 +243,7 @@ export default defineComponent({
 
 	methods: {
 		changeBlock(e) {
-			this.$root.api('admin/update-meta', {
+			os.api('admin/update-meta', {
 				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
 			});
 		},
@@ -252,10 +253,10 @@ export default defineComponent({
 		},
 
 		removeAllFollowing() {
-			this.$root.api('admin/federation/remove-all-following', {
+			os.api('admin/federation/remove-all-following', {
 				host: this.instance.host
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -263,10 +264,10 @@ export default defineComponent({
 		},
 
 		deleteAllFiles() {
-			this.$root.api('admin/federation/delete-all-files', {
+			os.api('admin/federation/delete-all-files', {
 				host: this.instance.host
 			}).then(() => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

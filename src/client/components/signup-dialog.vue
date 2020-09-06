@@ -9,6 +9,7 @@
 import { defineComponent } from 'vue';
 import XWindow from './window.vue';
 import XSignup from './signup.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

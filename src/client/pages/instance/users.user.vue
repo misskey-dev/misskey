@@ -36,10 +36,11 @@
 import { defineComponent } from 'vue';
 import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import Progress from '../../scripts/loading';
+import MkButton from '@/components/ui/button.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import Progress from '@/scripts/loading';
 import { acct, userPage } from '../../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -69,8 +70,8 @@ export default defineComponent({
 	methods: {
 		async fetch() {
 			Progress.start();
-			this.user = await this.$root.api('users/show', { userId: this.$route.params.user });
-			this.info = await this.$root.api('admin/show-user', { userId: this.$route.params.user });
+			this.user = await os.api('users/show', { userId: this.$route.params.user });
+			this.info = await os.api('admin/show-user', { userId: this.$route.params.user });
 			this.moderator = this.info.isModerator;
 			this.silenced = this.info.isSilenced;
 			this.suspended = this.info.isSuspended;
@@ -79,8 +80,8 @@ export default defineComponent({
 
 		/** 処理対象ユーザーの情報を更新する */
 		async refreshUser() {
-			this.user = await this.$root.api('users/show', { userId: this.user.id });
-			this.info = await this.$root.api('admin/show-user', { userId: this.user.id });
+			this.user = await os.api('users/show', { userId: this.user.id });
+			this.info = await os.api('admin/show-user', { userId: this.user.id });
 		},
 
 		openProfile() {
@@ -88,8 +89,8 @@ export default defineComponent({
 		},
 
 		async updateRemoteUser() {
-			await this.$root.api('admin/update-remote-user', { userId: this.user.id }).then(res => {
-				this.$store.dispatch('showDialog', {
+			await os.api('admin/update-remote-user', { userId: this.user.id }).then(res => {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -98,20 +99,20 @@ export default defineComponent({
 		},
 
 		async resetPassword() {
-			const dialog = this.$store.dispatch('showDialog', {
+			const dialog = os.dialog({
 				type: 'waiting',
 				iconOnly: true
 			});
 
-			this.$root.api('admin/reset-password', {
+			os.api('admin/reset-password', {
 				userId: this.user.id,
 			}).then(({ password }) => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					text: this.$t('newPasswordIs', { password })
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -121,7 +122,7 @@ export default defineComponent({
 		},
 
 		async toggleSilence() {
-			const confirm = await this.$store.dispatch('showDialog', {
+			const confirm = await os.dialog({
 				type: 'warning',
 				showCancelButton: true,
 				text: this.silenced ? this.$t('silenceConfirm') : this.$t('unsilenceConfirm'),
@@ -129,13 +130,13 @@ export default defineComponent({
 			if (confirm.canceled) {
 				this.silenced = !this.silenced;
 			} else {
-				await this.$root.api(this.silenced ? 'admin/silence-user' : 'admin/unsilence-user', { userId: this.user.id });
+				await os.api(this.silenced ? 'admin/silence-user' : 'admin/unsilence-user', { userId: this.user.id });
 				await this.refreshUser();
 			}
 		},
 
 		async toggleSuspend() {
-			const confirm = await this.$store.dispatch('showDialog', {
+			const confirm = await os.dialog({
 				type: 'warning',
 				showCancelButton: true,
 				text: this.suspended ? this.$t('suspendConfirm') : this.$t('unsuspendConfirm'),
@@ -143,32 +144,32 @@ export default defineComponent({
 			if (confirm.canceled) {
 				this.suspended = !this.suspended;
 			} else {
-				await this.$root.api(this.suspended ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
+				await os.api(this.suspended ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
 				await this.refreshUser();
 			}
 		},
 
 		async toggleModerator() {
-			await this.$root.api(this.moderator ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: this.user.id });
+			await os.api(this.moderator ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: this.user.id });
 			await this.refreshUser();
 		},
 
 		async deleteAllFiles() {
-			const confirm = await this.$store.dispatch('showDialog', {
+			const confirm = await os.dialog({
 				type: 'warning',
 				showCancelButton: true,
 				text: this.$t('deleteAllFilesConfirm'),
 			});
 			if (confirm.canceled) return;
 			const process = async () => {
-				await this.$root.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
-				this.$store.dispatch('showDialog', {
+				await os.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
 			};
 			await process().catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e.toString()
 				});

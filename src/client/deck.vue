@@ -38,12 +38,13 @@ import { defineComponent } from 'vue';
 import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
-import { host } from './config';
-import { search } from './scripts/search';
-import DeckColumnCore from './components/deck/column-core.vue';
-import DeckColumn from './components/deck/column.vue';
-import XSidebar from './components/sidebar.vue';
-import { getScrollContainer } from './scripts/scroll';
+import { host } from '@/config';
+import { search } from '@/scripts/search';
+import DeckColumnCore from '@/components/deck/column-core.vue';
+import DeckColumn from '@/components/deck/column.vue';
+import XSidebar from '@/components/sidebar.vue';
+import { getScrollContainer } from '@/scripts/scroll';
+import * as os from './os';
 
 export default defineComponent({
 	components: {
@@ -141,7 +142,7 @@ export default defineComponent({
 		search() {
 			if (this.searching) return;
 
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
@@ -165,7 +166,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				this.$root.new(await import('./components/toast.vue'), {
+				this.$root.new(await import('@/components/toast.vue'), {
 					notification
 				});
 			}
@@ -183,7 +184,7 @@ export default defineComponent({
 				'direct',
 			];
 
-			const { canceled, result: column } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: column } = await os.dialog({
 				title: this.$t('_deck.addColumn'),
 				type: null,
 				select: {

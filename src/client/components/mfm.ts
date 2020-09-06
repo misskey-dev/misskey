@@ -8,8 +8,9 @@ import { concat } from '../../prelude/array';
 import MkFormula from './formula.vue';
 import MkCode from './code.vue';
 import MkGoogle from './google.vue';
-import { host } from '../config';
+import { host } from '@/config';
 import { RouterLink } from 'vue-router';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {

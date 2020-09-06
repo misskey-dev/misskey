@@ -24,6 +24,7 @@ import { defineComponent } from 'vue';
 import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -78,7 +79,7 @@ export default defineComponent({
 
 	methods: {
 		async setType() {
-			const { canceled, result: src } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: src } = await os.dialog({
 				title: this.$t('timeline'),
 				type: null,
 				select: {

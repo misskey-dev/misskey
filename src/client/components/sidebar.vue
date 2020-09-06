@@ -48,8 +48,9 @@
 import { defineComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
-import { host, instanceName } from '../config';
-import { search } from '../scripts/search';
+import { host, instanceName } from '@/config';
+import { search } from '@/scripts/search';
+import * as os from '@/os';
 
 export default defineComponent({
 	data() {
@@ -127,7 +128,7 @@ export default defineComponent({
 		search() {
 			if (this.searching) return;
 
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('search'),
 				input: true
 			}).then(async ({ canceled, result: query }) => {
@@ -141,7 +142,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const accounts = (await this.$root.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
+			const accounts = (await os.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
 
 			const accountItems = accounts.map(account => ({
 				type: 'user',
@@ -149,7 +150,7 @@ export default defineComponent({
 				action: () => { this.switchAccount(account); }
 			}));
 
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [...[{
 					type: 'link',
 					text: this.$t('profile'),
@@ -164,7 +165,7 @@ export default defineComponent({
 					icon: faPlus,
 					text: this.$t('addAcount'),
 					action: () => {
-						this.$store.dispatch('showMenu', {
+						os.menu({
 							items: [{
 								text: this.$t('existingAcount'),
 								action: () => { this.addAcount(); },
@@ -187,7 +188,7 @@ export default defineComponent({
 		},
 
 		oepnInstanceMenu(ev) {
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					type: 'link',
 					text: this.$t('dashboard'),
@@ -250,7 +251,7 @@ export default defineComponent({
 				action: def.action,
 				indicate: def.indicated,
 			}));
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [...items, null, {
 					type: 'link',
 					text: this.$t('help'),
@@ -277,7 +278,7 @@ export default defineComponent({
 		async addAcount() {
 			this.$root.new(await import('./signin-dialog.vue')).$once('login', res => {
 				this.$store.dispatch('addAcount', res);
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});
@@ -297,12 +298,12 @@ export default defineComponent({
 		},
 
 		switchAccountWithToken(token: string) {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'waiting',
 				iconOnly: true
 			});
 
-			this.$root.api('i', {}, token).then((i: any) => {
+			os.api('i', {}, token).then((i: any) => {
 				this.$store.dispatch('switchAccount', {
 					...i,
 					token: token

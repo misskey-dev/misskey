@@ -14,8 +14,9 @@
 import { defineComponent } from 'vue';
 import { faBolt, faMagic } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkSwitch from '../../../components/ui/switch.vue';
-import MkInput from '../../../components/ui/input.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkInput from '@/components/ui/input.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

@@ -28,11 +28,12 @@ import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-sol
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
 import { formatTimeString } from '../../../misc/format-time-string';
-import { selectFile } from '../../scripts/select-file';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XUploader: defineAsyncComponent(() => import('../../components/uploader.vue')),
+		XUploader: defineAsyncComponent(() => import('@/components/uploader.vue')),
 	},
 	props: {
 		user: {
@@ -97,7 +98,7 @@ export default defineComponent({
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
 					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
-						? await this.$store.dispatch('showDialog', {
+						? await os.dialog({
 							title: this.$t('enterFileName'),
 							input: {
 								default: formatted
@@ -109,7 +110,7 @@ export default defineComponent({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: this.$t('onlyOneFileCanBeAttached')
 					});
@@ -134,7 +135,7 @@ export default defineComponent({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('onlyOneFileCanBeAttached')
 				});
@@ -176,7 +177,7 @@ export default defineComponent({
 
 		send() {
 			this.sending = true;
-			this.$root.api('messaging/messages/create', {
+			os.api('messaging/messages/create', {
 				userId: this.user ? this.user.id : undefined,
 				groupId: this.group ? this.group.id : undefined,
 				text: this.text ? this.text : undefined,
@@ -219,7 +220,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			const vm = this.$root.new(await import('../../components/emoji-picker.vue'), {
+			const vm = this.$root.new(await import('@/components/emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);

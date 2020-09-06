@@ -20,9 +20,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
-import MkMiniChart from '../components/mini-chart.vue';
+import MkMiniChart from '@/components/mini-chart.vue';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'hashtags',
@@ -55,7 +56,7 @@ export default defineComponent({
 	},
 	methods: {
 		fetch() {
-			this.$root.api('hashtags/trend').then(stats => {
+			os.api('hashtags/trend').then(stats => {
 				this.stats = stats;
 				this.fetching = false;
 			});

@@ -33,8 +33,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../../components/ui/pagination.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 import { userPage } from '../../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

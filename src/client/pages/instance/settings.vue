@@ -237,14 +237,15 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkInfo from '../../components/ui/info.vue';
-import MkUserSelect from '../../components/user-select.vue';
-import { url } from '../../config';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkInfo from '@/components/ui/info.vue';
+import MkUserSelect from '@/components/user-select.vue';
+import { url } from '@/config';
 import getAcct from '../../../misc/acct/render';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -259,7 +260,7 @@ export default defineComponent({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
-		Captcha: defineAsyncComponent(() => import('../../components/captcha.vue')),
+		Captcha: defineAsyncComponent(() => import('@/components/captcha.vue')),
 	},
 
 	data() {
@@ -393,7 +394,7 @@ export default defineComponent({
 		this.summalyProxy = this.meta.summalyProxy;
 
 		if (this.proxyAccountId) {
-			this.$root.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
+			os.api('users/show', { userId: this.proxyAccountId }).then(proxyAccount => {
 				this.proxyAccount = proxyAccount;
 			});
 		}
@@ -402,7 +403,7 @@ export default defineComponent({
 	mounted() {
 		this.$refs.enableHcaptcha.$on('change', () => {
 			if (this.enableHcaptcha && this.enableRecaptcha) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'question', // warning だと間違って cancel するかもしれない
 					showCancelButton: true,
 					title: this.$t('settingGuide'),
@@ -419,7 +420,7 @@ export default defineComponent({
 
 		this.$refs.enableRecaptcha.$on('change', () => {
 			if (this.enableRecaptcha && this.enableHcaptcha) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'question', // warning だと間違って cancel するかもしれない
 					showCancelButton: true,
 					title: this.$t('settingGuide'),
@@ -437,13 +438,13 @@ export default defineComponent({
 
 	methods: {
 		invite() {
-			this.$root.api('admin/invite').then(x => {
-				this.$store.dispatch('showDialog', {
+			os.api('admin/invite').then(x => {
+				os.dialog({
 					type: 'info',
 					text: x.code
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -467,17 +468,17 @@ export default defineComponent({
 		},
 
 		async testEmail() {
-			this.$root.api('admin/send-email', {
+			os.api('admin/send-email', {
 				to: this.maintainerEmail,
 				subject: 'Test email',
 				text: 'Yo'
 			}).then(x => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'success',
 					splash: true
 				});
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});
@@ -485,7 +486,7 @@ export default defineComponent({
 		},
 
 		save(withDialog = false) {
-			this.$root.api('admin/update-meta', {
+			os.api('admin/update-meta', {
 				name: this.name,
 				description: this.description,
 				tosUrl: this.tosUrl,
@@ -546,13 +547,13 @@ export default defineComponent({
 			}).then(() => {
 				this.$store.dispatch('instance/fetch');
 				if (withDialog) {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}
 			}).catch(e => {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: e
 				});

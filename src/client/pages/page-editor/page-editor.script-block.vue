@@ -60,8 +60,9 @@ import { defineComponent } from 'vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/hpml/index';
+import MkTextarea from '@/components/ui/textarea.vue';
+import { isLiteralBlock, funcDefs, blockDefs } from '@/scripts/hpml/index';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -210,7 +211,7 @@ export default defineComponent({
 
 	methods: {
 		async changeType() {
-			const { canceled, result: type } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: type } = await os.dialog({
 				type: null,
 				title: this.$t('_pages.selectType'),
 				select: {

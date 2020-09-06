@@ -16,10 +16,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faChartBar, faSort } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'activity',
@@ -55,7 +56,7 @@ export default defineComponent({
 		};
 	},
 	mounted() {
-		this.$root.api('charts/user/notes', {
+		os.api('charts/user/notes', {
 			userId: this.$store.state.i.id,
 			span: 'day',
 			limit: 7 * 21

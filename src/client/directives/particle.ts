@@ -1,4 +1,4 @@
-import Particle from '../components/particle.vue';
+import Particle from '@/components/particle.vue';
 
 export default {
 	bind(el, binding, vn) {

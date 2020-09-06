@@ -34,6 +34,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import define from './define';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'calendar',

@@ -32,6 +32,7 @@ import XWindow from './window.vue';
 import MkInput from './ui/input.vue';
 import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

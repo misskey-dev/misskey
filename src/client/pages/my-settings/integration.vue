@@ -29,8 +29,9 @@
 import { defineComponent } from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import { apiUrl } from '../../config';
-import MkButton from '../../components/ui/button.vue';
+import { apiUrl } from '@/config';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

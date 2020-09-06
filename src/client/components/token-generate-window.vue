@@ -27,6 +27,7 @@ import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
 import MkInfo from './ui/info.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

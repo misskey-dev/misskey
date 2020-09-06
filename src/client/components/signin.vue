@@ -49,8 +49,9 @@ import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
-import { apiUrl, host } from '../config';
-import { byteify, hexify } from '../scripts/2fa';
+import { apiUrl, host } from '@/config';
+import { byteify, hexify } from '@/scripts/2fa';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -105,7 +106,7 @@ export default defineComponent({
 
 	methods: {
 		onUsernameChange() {
-			this.$root.api('users/show', {
+			os.api('users/show', {
 				username: this.username
 			}).then(user => {
 				this.user = user;
@@ -132,7 +133,7 @@ export default defineComponent({
 			}).then(credential => {
 				this.queryingKey = false;
 				this.signing = true;
-				return this.$root.api('signin', {
+				return os.api('signin', {
 					username: this.username,
 					password: this.password,
 					signature: hexify(credential.response.signature),
@@ -145,7 +146,7 @@ export default defineComponent({
 				this.$emit('login', res);
 			}).catch(err => {
 				if (err === null) return;
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('signinFailed')
 				});
@@ -157,7 +158,7 @@ export default defineComponent({
 			this.signing = true;
 			if (!this.totpLogin && this.user && this.user.twoFactorEnabled) {
 				if (window.PublicKeyCredential && this.user.securityKeys) {
-					this.$root.api('signin', {
+					os.api('signin', {
 						username: this.username,
 						password: this.password
 					}).then(res => {
@@ -166,7 +167,7 @@ export default defineComponent({
 						this.challengeData = res;
 						return this.queryKey();
 					}).catch(() => {
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							text: this.$t('signinFailed')
 						});
@@ -179,14 +180,14 @@ export default defineComponent({
 					this.signing = false;
 				}
 			} else {
-				this.$root.api('signin', {
+				os.api('signin', {
 					username: this.username,
 					password: this.password,
 					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
 				}).then(res => {
 					this.$emit('login', res);
 				}).catch(() => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: this.$t('loginFailed')
 					});

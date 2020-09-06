@@ -30,9 +30,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import paging from '../scripts/paging';
+import paging from '@/scripts/paging';
 import XModal from './modal.vue';
 import { userPage } from '../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

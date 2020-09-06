@@ -16,7 +16,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import { url, lang } from '../config';
+import { url, lang } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

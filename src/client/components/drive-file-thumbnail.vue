@@ -27,6 +27,7 @@ import {
 	faFilm
 	} from '@fortawesome/free-solid-svg-icons';
 import ImgWithBlurhash from './img-with-blurhash.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

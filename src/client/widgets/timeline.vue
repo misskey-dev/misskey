@@ -23,9 +23,10 @@
 import { defineComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
-import MkContainer from '../components/ui/container.vue';
-import XTimeline from '../components/timeline.vue';
+import MkContainer from '@/components/ui/container.vue';
+import XTimeline from '@/components/timeline.vue';
 import define from './define';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'timeline',
@@ -69,8 +70,8 @@ export default defineComponent({
 		async choose(ev) {
 			this.menuOpened = true;
 			const [antennas, lists] = await Promise.all([
-				this.$root.api('antennas/list'),
-				this.$root.api('users/lists/list')
+				os.api('antennas/list'),
+				os.api('users/lists/list')
 			]);
 			const antennaItems = antennas.map(antenna => ({
 				text: antenna.name,
@@ -88,7 +89,7 @@ export default defineComponent({
 					this.setSrc('list');
 				}
 			}));
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					text: this.$t('_timelines.home'),
 					icon: faHome,

@@ -39,7 +39,8 @@
 import { defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
-import MkUrlPreview from '../../components/url-preview.vue';
+import MkUrlPreview from '@/components/url-preview.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -70,7 +71,7 @@ export default defineComponent({
 	},
 	methods: {
 		del() {
-			this.$root.api('messaging/messages/delete', {
+			os.api('messaging/messages/delete', {
 				messageId: this.message.id
 			});
 		}

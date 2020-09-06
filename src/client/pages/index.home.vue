@@ -28,10 +28,11 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
-import Progress from '../scripts/loading';
-import XTimeline from '../components/timeline.vue';
-import XPostForm from '../components/post-form.vue';
-import { scroll } from '../scripts/scroll';
+import Progress from '@/scripts/loading';
+import XTimeline from '@/components/timeline.vue';
+import XPostForm from '@/components/post-form.vue';
+import { scroll } from '@/scripts/scroll';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -136,9 +137,9 @@ export default defineComponent({
 			if (this.meta == null) return;
 			this.menuOpened = true;
 			const [antennas, lists, channels] = await Promise.all([
-				this.$root.api('antennas/list'),
-				this.$root.api('users/lists/list'),
-				this.$root.api('channels/followed'),
+				os.api('antennas/list'),
+				os.api('users/lists/list'),
+				os.api('channels/followed'),
 			]);
 			const antennaItems = antennas.map(antenna => ({
 				text: antenna.name,
@@ -171,7 +172,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					text: this.$t('_timelines.home'),
 					icon: faHome,

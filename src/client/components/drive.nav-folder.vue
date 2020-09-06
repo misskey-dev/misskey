@@ -15,6 +15,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -94,7 +95,7 @@ export default defineComponent({
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				this.$root.api('drive/files/update', {
+				os.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder ? this.folder.id : null
 				});
@@ -108,7 +109,7 @@ export default defineComponent({
 				// 移動先が自分自身ならreject
 				if (this.folder && folder.id == this.folder.id) return;
 				this.browser.removeFolder(folder.id);
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder ? this.folder.id : null
 				});

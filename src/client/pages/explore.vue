@@ -56,9 +56,10 @@
 import { defineComponent } from 'vue';
 import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
-import XUserList from '../components/user-list.vue';
-import MkContainer from '../components/ui/container.vue';
+import XUserList from '@/components/user-list.vue';
+import MkContainer from '@/components/ui/container.vue';
 import number from '../filters/number';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -141,21 +142,21 @@ export default defineComponent({
 	},
 
 	created() {
-		this.$root.api('hashtags/list', {
+		os.api('hashtags/list', {
 			sort: '+attachedLocalUsers',
 			attachedToLocalUserOnly: true,
 			limit: 30
 		}).then(tags => {
 			this.tagsLocal = tags;
 		});
-		this.$root.api('hashtags/list', {
+		os.api('hashtags/list', {
 			sort: '+attachedRemoteUsers',
 			attachedToRemoteUserOnly: true,
 			limit: 30
 		}).then(tags => {
 			this.tagsRemote = tags;
 		});
-		this.$root.api('stats').then(stats => {
+		os.api('stats').then(stats => {
 			this.stats = stats;
 		});
 	},

@@ -20,8 +20,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCheck, faBroadcastTower } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../components/ui/pagination.vue';
-import MkButton from '../components/ui/button.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -52,7 +53,7 @@ export default defineComponent({
 				...announcement,
 				isRead: true,
 			});
-			this.$root.api('i/read-announcement', { announcementId: announcement.id });
+			os.api('i/read-announcement', { announcementId: announcement.id });
 		},
 	}
 });

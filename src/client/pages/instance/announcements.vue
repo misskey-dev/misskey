@@ -27,9 +27,10 @@
 import { defineComponent } from 'vue';
 import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -52,7 +53,7 @@ export default defineComponent({
 	},
 
 	created() {
-		this.$root.api('admin/announcements/list').then(announcements => {
+		os.api('admin/announcements/list').then(announcements => {
 			this.announcements = announcements;
 		});
 	},
@@ -68,38 +69,38 @@ export default defineComponent({
 		},
 
 		remove(announcement) {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: announcement.title }),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
 				this.announcements = this.announcements.filter(x => x != announcement);
-				this.$root.api('admin/announcements/delete', announcement);
+				os.api('admin/announcements/delete', announcement);
 			});
 		},
 
 		save(announcement) {
 			if (announcement.id == null) {
-				this.$root.api('admin/announcements/create', announcement).then(() => {
-					this.$store.dispatch('showDialog', {
+				os.api('admin/announcements/create', announcement).then(() => {
+					os.dialog({
 						type: 'success',
 						text: this.$t('saved')
 					});
 				}).catch(e => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: e
 					});
 				});
 			} else {
-				this.$root.api('admin/announcements/update', announcement).then(() => {
-					this.$store.dispatch('showDialog', {
+				os.api('admin/announcements/update', announcement).then(() => {
+					os.dialog({
 						type: 'success',
 						text: this.$t('saved')
 					});
 				}).catch(e => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: e
 					});

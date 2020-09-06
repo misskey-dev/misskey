@@ -23,8 +23,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { version } from '../config';
-import MkInstanceStats from '../components/instance-stats.vue';
+import { version } from '@/config';
+import MkInstanceStats from '@/components/instance-stats.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

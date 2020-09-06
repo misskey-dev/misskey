@@ -53,6 +53,7 @@ import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import XUploader from './uploader.vue';
 import MkButton from './ui/button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -258,7 +259,7 @@ export default defineComponent({
 				const file = JSON.parse(driveFile);
 				if (this.files.some(f => f.id == file.id)) return;
 				this.removeFile(file.id);
-				this.$root.api('drive/files/update', {
+				os.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder ? this.folder.id : null
 				});
@@ -274,7 +275,7 @@ export default defineComponent({
 				if (this.folder && folder.id == this.folder.id) return false;
 				if (this.folders.some(f => f.id == folder.id)) return false;
 				this.removeFolder(folder.id);
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder ? this.folder.id : null
 				}).then(() => {
@@ -282,13 +283,13 @@ export default defineComponent({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$store.dispatch('showDialog', {
+							os.dialog({
 								title: this.$t('unableToProcess'),
 								text: this.$t('circularReferenceFolder')
 							});
 							break;
 						default:
-							this.$store.dispatch('showDialog', {
+							os.dialog({
 								type: 'error',
 								text: this.$t('error')
 							});
@@ -303,19 +304,19 @@ export default defineComponent({
 		},
 
 		urlUpload() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('uploadFromUrl'),
 				input: {
 					placeholder: this.$t('uploadFromUrlDescription')
 				}
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
-				this.$root.api('drive/files/upload_from_url', {
+				os.api('drive/files/upload_from_url', {
 					url: url,
 					folderId: this.folder ? this.folder.id : undefined
 				});
 
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					title: this.$t('uploadFromUrlRequested'),
 					text: this.$t('uploadFromUrlMayTakeTime')
 				});
@@ -323,14 +324,14 @@ export default defineComponent({
 		},
 
 		createFolder() {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('createFolder'),
 				input: {
 					placeholder: this.$t('folderName')
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
-				this.$root.api('drive/folders/create', {
+				os.api('drive/folders/create', {
 					name: name,
 					parentId: this.folder ? this.folder.id : undefined
 				}).then(folder => {
@@ -340,7 +341,7 @@ export default defineComponent({
 		},
 
 		renameFolder(folder) {
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				title: this.$t('renameFolder'),
 				input: {
 					placeholder: this.$t('inputNewFolderName'),
@@ -348,7 +349,7 @@ export default defineComponent({
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: folder.id,
 					name: name
 				}).then(folder => {
@@ -359,7 +360,7 @@ export default defineComponent({
 		},
 
 		deleteFolder(folder) {
-			this.$root.api('drive/folders/delete', {
+			os.api('drive/folders/delete', {
 				folderId: folder.id
 			}).then(() => {
 				// 削除時に親フォルダに移動
@@ -367,14 +368,14 @@ export default defineComponent({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							title: this.$t('unableToDelete'),
 							text: this.$t('hasChildFilesOrFolders')
 						});
 						break;
 					default:
-						this.$store.dispatch('showDialog', {
+						os.dialog({
 							type: 'error',
 							text: this.$t('unableToDelete')
 						});
@@ -441,7 +442,7 @@ export default defineComponent({
 
 			this.fetching = true;
 
-			this.$root.api('drive/folders/show', {
+			os.api('drive/folders/show', {
 				folderId: target
 			}).then(folder => {
 				this.folder = folder;
@@ -543,7 +544,7 @@ export default defineComponent({
 			const filesMax = 30;
 
 			// フォルダ一覧取得
-			this.$root.api('drive/folders', {
+			os.api('drive/folders', {
 				folderId: this.folder ? this.folder.id : null,
 				limit: foldersMax + 1
 			}).then(folders => {
@@ -556,7 +557,7 @@ export default defineComponent({
 			});
 
 			// ファイル一覧取得
-			this.$root.api('drive/files', {
+			os.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
 				type: this.type,
 				limit: filesMax + 1
@@ -587,7 +588,7 @@ export default defineComponent({
 			const max = 30;
 
 			// ファイル一覧取得
-			this.$root.api('drive/files', {
+			os.api('drive/files', {
 				folderId: this.folder ? this.folder.id : null,
 				type: this.type,
 				untilId: this.files[this.files.length - 1].id,

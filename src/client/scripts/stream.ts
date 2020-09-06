@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
-import { wsUrl } from '../config';
+import { wsUrl } from '@/config';
 
 /**
  * Misskey stream connection

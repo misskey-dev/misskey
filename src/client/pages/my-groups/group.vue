@@ -40,9 +40,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../../scripts/loading';
-import MkButton from '../../components/ui/button.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import Progress from '@/scripts/loading';
+import MkButton from '@/components/ui/button.vue';
+import MkUserSelect from '@/components/user-select.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -74,11 +75,11 @@ export default defineComponent({
 	methods: {
 		fetch() {
 			Progress.start();
-			this.$root.api('users/groups/show', {
+			os.api('users/groups/show', {
 				groupId: this.$route.params.group
 			}).then(group => {
 				this.group = group;
-				this.$root.api('users/show', {
+				os.api('users/show', {
 					userIds: this.group.userIds
 				}).then(users => {
 					this.users = users;
@@ -89,16 +90,16 @@ export default defineComponent({
 
 		invite() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('users/groups/invite', {
+				os.api('users/groups/invite', {
 					groupId: this.group.id,
 					userId: user.id
 				}).then(() => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}).catch(e => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: e
 					});
@@ -107,7 +108,7 @@ export default defineComponent({
 		},
 
 		removeUser(user) {
-			this.$root.api('users/groups/pull', {
+			os.api('users/groups/pull', {
 				groupId: this.group.id,
 				userId: user.id
 			}).then(() => {
@@ -116,7 +117,7 @@ export default defineComponent({
 		},
 
 		async renameGroup() {
-			const { canceled, result: name } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: name } = await os.dialog({
 				title: this.$t('groupName'),
 				input: {
 					default: this.group.name
@@ -124,7 +125,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/groups/update', {
+			await os.api('users/groups/update', {
 				groupId: this.group.id,
 				name: name
 			});
@@ -134,16 +135,16 @@ export default defineComponent({
 
 		transfer() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('users/groups/transfer', {
+				os.api('users/groups/transfer', {
 					groupId: this.group.id,
 					userId: user.id
 				}).then(() => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}).catch(e => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: e
 					});
@@ -152,17 +153,17 @@ export default defineComponent({
 		},
 
 		async deleteGroup() {
-			const { canceled } = await this.$store.dispatch('showDialog', {
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.group.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/groups/delete', {
+			await os.api('users/groups/delete', {
 				groupId: this.group.id
 			});
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

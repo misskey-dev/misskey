@@ -32,10 +32,11 @@
 import { defineComponent } from 'vue';
 import { faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
-import MkContainer from '../components/ui/container.vue';
-import XPostForm from '../components/post-form.vue';
-import XTimeline from '../components/timeline.vue';
-import XChannelFollowButton from '../components/channel-follow-button.vue';
+import MkContainer from '@/components/ui/container.vue';
+import XPostForm from '@/components/post-form.vue';
+import XTimeline from '@/components/timeline.vue';
+import XChannelFollowButton from '@/components/channel-follow-button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -76,7 +77,7 @@ export default defineComponent({
 	watch: {
 		channelId: {
 			async handler() {
-				this.channel = await this.$root.api('channels/show', {
+				this.channel = await os.api('channels/show', {
 					channelId: this.channelId,
 				});
 			},

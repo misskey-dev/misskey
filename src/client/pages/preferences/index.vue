@@ -122,16 +122,17 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkRadio from '../../components/ui/radio.vue';
-import MkRange from '../../components/ui/range.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkRadio from '@/components/ui/radio.vue';
+import MkRange from '@/components/ui/range.vue';
 import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
 import XPlugins from './plugins.vue';
-import { langs } from '../../config';
+import { langs } from '@/config';
 import { clientDb, set } from '../../db';
+import * as os from '@/os';
 
 const sounds = [
 	null,
@@ -295,7 +296,7 @@ export default defineComponent({
 
 	watch: {
 		lang() {
-			const dialog = this.$store.dispatch('showDialog', {
+			const dialog = os.dialog({
 				type: 'waiting',
 				iconOnly: true
 			});
@@ -306,7 +307,7 @@ export default defineComponent({
 				.then(() => location.reload())
 				.catch(() => {
 					dialog.close();
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						iconOnly: true,
 						autoClose: true

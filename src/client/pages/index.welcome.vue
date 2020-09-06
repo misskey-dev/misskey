@@ -10,7 +10,8 @@
 import { defineComponent } from 'vue';
 import XSetup from './index.welcome.setup.vue';
 import XEntrance from './index.welcome.entrance.vue';
-import { instanceName } from '../config';
+import { instanceName } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

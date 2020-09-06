@@ -19,9 +19,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import parseAcct from '../../../misc/acct/parse';
-import MkFollowButton from '../../components/follow-button.vue';
-import MkPagination from '../../components/ui/pagination.vue';
+import MkFollowButton from '@/components/follow-button.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 import { userPage, acct } from '../../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

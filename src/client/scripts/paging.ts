@@ -1,3 +1,4 @@
+import * as os from '@/os';
 import { onScrollTop, isTopVisible } from './scroll';
 
 const SECOND_FETCH_LIMIT = 30;
@@ -85,7 +86,7 @@ export default (opts) => ({
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(true) : this.pagination.params;
 			if (params && params.then) params = await params;
 			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
-			await this.$root.api(endpoint, {
+			await os.api(endpoint, {
 				...params,
 				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 			}).then(items => {
@@ -117,7 +118,7 @@ export default (opts) => ({
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(false) : this.pagination.params;
 			if (params && params.then) params = await params;
 			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
-			await this.$root.api(endpoint, {
+			await os.api(endpoint, {
 				...params,
 				limit: SECOND_FETCH_LIMIT + 1,
 				...(this.pagination.offsetMode ? {

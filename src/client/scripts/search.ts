@@ -26,7 +26,7 @@ export async function search(v: any, q: string) {
 		}
 
 		v.$root.$emit('warp', date);
-		v.$store.dispatch('showDialog', {
+		v.os.dialog({
 			icon: faHistory,
 			iconOnly: true, autoClose: true
 		});
@@ -34,7 +34,7 @@ export async function search(v: any, q: string) {
 	}
 
 	if (q.startsWith('https://')) {
-		const dialog = v.$store.dispatch('showDialog', {
+		const dialog = v.os.dialog({
 			type: 'waiting',
 			text: v.$t('fetchingAsApObject') + '...',
 			showOkButton: false,
@@ -43,7 +43,7 @@ export async function search(v: any, q: string) {
 		});
 
 		try {
-			const res = await v.$root.api('ap/show', {
+			const res = await v.os.api('ap/show', {
 				uri: q
 			});
 			dialog.close();

@@ -35,11 +35,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import XList from '../../components/date-separated-list.vue';
+import XList from '@/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import parseAcct from '../../../misc/acct/parse';
-import { isBottom, onScrollBottom } from '../../scripts/scroll';
+import { isBottom, onScrollBottom } from '@/scripts/scroll';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -99,10 +100,10 @@ export default defineComponent({
 		async fetch() {
 			this.fetching = true;
 			if (this.$route.params.user) {
-				const user = await this.$root.api('users/show', parseAcct(this.$route.params.user));
+				const user = await os.api('users/show', parseAcct(this.$route.params.user));
 				this.user = user;
 			} else {
-				const group = await this.$root.api('users/groups/show', { groupId: this.$route.params.group });
+				const group = await os.api('users/groups/show', { groupId: this.$route.params.group });
 				this.group = group;
 			}
 
@@ -144,7 +145,7 @@ export default defineComponent({
 				this.form.upload(e.dataTransfer.files[0]);
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
-				this.$store.dispatch('showDialog', {
+				os.dialog({
 					type: 'error',
 					text: this.$t('onlyOneFileCanBeAttached')
 				});
@@ -164,7 +165,7 @@ export default defineComponent({
 			return new Promise((resolve, reject) => {
 				const max = this.existMoreMessages ? 20 : 10;
 
-				this.$root.api('messaging/messages', {
+				os.api('messaging/messages', {
 					userId: this.user ? this.user.id : undefined,
 					groupId: this.group ? this.group.id : undefined,
 					limit: max + 1,

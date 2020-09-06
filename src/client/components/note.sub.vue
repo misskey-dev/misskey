@@ -24,6 +24,7 @@ import { defineComponent } from 'vue';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	name: 'x-sub',
@@ -65,7 +66,7 @@ export default defineComponent({
 
 	created() {
 		if (this.detail) {
-			this.$root.api('notes/children', {
+			os.api('notes/children', {
 				noteId: this.note.id,
 				limit: 5
 			}).then(replies => {

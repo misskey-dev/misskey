@@ -34,8 +34,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faUserClock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../components/ui/pagination.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 import { userPage, acct } from '../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -60,12 +61,12 @@ export default defineComponent({
 
 	methods: {
 		accept(user) {
-			this.$root.api('following/requests/accept', { userId: user.id }).then(() => {
+			os.api('following/requests/accept', { userId: user.id }).then(() => {
 				this.$refs.list.reload();
 			});
 		},
 		reject(user) {
-			this.$root.api('following/requests/reject', { userId: user.id }).then(() => {
+			os.api('following/requests/reject', { userId: user.id }).then(() => {
 				this.$refs.list.reload();
 			});
 		},

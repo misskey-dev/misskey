@@ -187,14 +187,14 @@ import { defineComponent } from 'vue';
 import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import VueJsonPretty from 'vue-json-pretty';
-import MkInstanceStats from '../../components/instance-stats.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkContainer from '../../components/ui/container.vue';
-import MkFolder from '../../components/ui/folder.vue';
+import MkInstanceStats from '@/components/instance-stats.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkContainer from '@/components/ui/container.vue';
+import MkFolder from '@/components/ui/folder.vue';
 import MkwFederation from '../../widgets/federation.vue';
-import { version, url } from '../../config';
+import { version, url } from '@/config';
 import bytes from '../../filters/bytes';
 import XQueue from './index.queue-chart.vue';
 import MkInstanceInfo from './instance.vue';
@@ -206,6 +206,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -495,7 +496,7 @@ export default defineComponent({
 			}
 		});
 
-		this.$root.api('admin/server-info', {}).then(res => {
+		os.api('admin/server-info', {}).then(res => {
 			this.serverInfo = res;
 
 			this.connection = this.$root.stream.useSharedConnection('serverStats');
@@ -514,7 +515,7 @@ export default defineComponent({
 			});
 		});
 
-		this.$root.api('admin/get-table-stats', {}).then(res => {
+		os.api('admin/get-table-stats', {}).then(res => {
 			this.dbInfo = Object.entries(res).sort((a, b) => b[1].size - a[1].size);
 		});
 
@@ -545,7 +546,7 @@ export default defineComponent({
 		async showInstanceInfo(q) {
 			let instance = q;
 			if (typeof q === 'string') {
-				instance = await this.$root.api('federation/show-instance', {
+				instance = await os.api('federation/show-instance', {
 					host: q
 				});
 			}
@@ -555,7 +556,7 @@ export default defineComponent({
 		},
 
 		fetchLogs() {
-			this.$root.api('admin/logs', {
+			os.api('admin/logs', {
 				level: this.logLevel === 'all' ? null : this.logLevel,
 				domain: this.logDomain === '' ? null : this.logDomain,
 				limit: 30
@@ -565,20 +566,20 @@ export default defineComponent({
 		},
 
 		fetchJobs() {
-			this.$root.api('admin/queue/deliver-delayed', {}).then(jobs => {
+			os.api('admin/queue/deliver-delayed', {}).then(jobs => {
 				this.jobs = jobs;
 			});
 		},
 
 		fetchModLogs() {
-			this.$root.api('admin/show-moderation-logs', {}).then(logs => {
+			os.api('admin/show-moderation-logs', {}).then(logs => {
 				this.modLogs = logs;
 			});
 		},
 
 		deleteAllLogs() {
-			this.$root.api('admin/delete-logs').then(() => {
-				this.$store.dispatch('showDialog', {
+			os.api('admin/delete-logs').then(() => {
+				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
 				});

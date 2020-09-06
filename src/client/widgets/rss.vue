@@ -15,8 +15,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faRssSquare, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
+import * as os from '@/os';
 
 const widget = define({
 	name: 'rss',

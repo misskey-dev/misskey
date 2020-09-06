@@ -30,10 +30,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../scripts/loading';
-import XNote from '../components/note.vue';
-import XNotes from '../components/notes.vue';
-import MkRemoteCaution from '../components/remote-caution.vue';
+import Progress from '@/scripts/loading';
+import XNote from '@/components/note.vue';
+import XNotes from '@/components/notes.vue';
+import MkRemoteCaution from '@/components/remote-caution.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -83,16 +84,16 @@ export default defineComponent({
 	methods: {
 		fetch() {
 			Progress.start();
-			this.$root.api('notes/show', {
+			os.api('notes/show', {
 				noteId: this.$route.params.note
 			}).then(note => {
 				Promise.all([
-					this.$root.api('users/notes', {
+					os.api('users/notes', {
 						userId: note.userId,
 						untilId: note.id,
 						limit: 1,
 					}),
-					this.$root.api('users/notes', {
+					os.api('users/notes', {
 						userId: note.userId,
 						sinceId: note.id,
 						limit: 1,

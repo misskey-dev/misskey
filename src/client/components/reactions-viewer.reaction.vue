@@ -20,6 +20,7 @@
 import { defineComponent } from 'vue';
 import XDetails from './reactions-viewer.details.vue';
 import XReactionIcon from './reaction-icon.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -70,18 +71,18 @@ export default defineComponent({
 
 			const oldReaction = this.note.myReaction;
 			if (oldReaction) {
-				this.$root.api('notes/reactions/delete', {
+				os.api('notes/reactions/delete', {
 					noteId: this.note.id
 				}).then(() => {
 					if (oldReaction !== this.reaction) {
-						this.$root.api('notes/reactions/create', {
+						os.api('notes/reactions/create', {
 							noteId: this.note.id,
 							reaction: this.reaction
 						});
 					}
 				});
 			} else {
-				this.$root.api('notes/reactions/create', {
+				os.api('notes/reactions/create', {
 					noteId: this.note.id,
 					reaction: this.reaction
 				});
@@ -99,7 +100,7 @@ export default defineComponent({
 			this.closeDetails();
 		},
 		openDetails() {
-			this.$root.api('notes/reactions', {
+			os.api('notes/reactions', {
 				noteId: this.note.id,
 				type: this.reaction,
 				limit: 11

@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { Form } from '../scripts/form';
+import { Form } from '@/scripts/form';
 
 export default function <T extends Form>(data: {
 	name: string;

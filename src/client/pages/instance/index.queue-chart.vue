@@ -21,7 +21,7 @@
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -30,6 +30,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

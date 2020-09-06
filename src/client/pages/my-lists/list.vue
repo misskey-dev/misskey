@@ -39,9 +39,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../../scripts/loading';
-import MkButton from '../../components/ui/button.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import Progress from '@/scripts/loading';
+import MkButton from '@/components/ui/button.vue';
+import MkUserSelect from '@/components/user-select.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -73,11 +74,11 @@ export default defineComponent({
 	methods: {
 		fetch() {
 			Progress.start();
-			this.$root.api('users/lists/show', {
+			os.api('users/lists/show', {
 				listId: this.$route.params.list
 			}).then(list => {
 				this.list = list;
-				this.$root.api('users/show', {
+				os.api('users/show', {
 					userIds: this.list.userIds
 				}).then(users => {
 					this.users = users;
@@ -88,17 +89,17 @@ export default defineComponent({
 
 		addUser() {
 			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('users/lists/push', {
+				os.api('users/lists/push', {
 					listId: this.list.id,
 					userId: user.id
 				}).then(() => {
 					this.users.push(user);
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'success',
 						iconOnly: true, autoClose: true
 					});
 				}).catch(e => {
-					this.$store.dispatch('showDialog', {
+					os.dialog({
 						type: 'error',
 						text: e
 					});
@@ -107,7 +108,7 @@ export default defineComponent({
 		},
 
 		removeUser(user) {
-			this.$root.api('users/lists/pull', {
+			os.api('users/lists/pull', {
 				listId: this.list.id,
 				userId: user.id
 			}).then(() => {
@@ -116,7 +117,7 @@ export default defineComponent({
 		},
 
 		async renameList() {
-			const { canceled, result: name } = await this.$store.dispatch('showDialog', {
+			const { canceled, result: name } = await os.dialog({
 				title: this.$t('enterListName'),
 				input: {
 					default: this.list.name
@@ -124,7 +125,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/lists/update', {
+			await os.api('users/lists/update', {
 				listId: this.list.id,
 				name: name
 			});
@@ -133,17 +134,17 @@ export default defineComponent({
 		},
 
 		async deleteList() {
-			const { canceled } = await this.$store.dispatch('showDialog', {
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.list.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/lists/delete', {
+			await os.api('users/lists/delete', {
 				listId: this.list.id
 			});
-			this.$store.dispatch('showDialog', {
+			os.dialog({
 				type: 'success',
 				iconOnly: true, autoClose: true
 			});

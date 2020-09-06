@@ -31,6 +31,7 @@ import { defineComponent } from 'vue';
 import parseAcct from '../../misc/acct/parse';
 import MkFollowButton from './follow-button.vue';
 import { userPage } from '../filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -66,7 +67,7 @@ export default defineComponent({
 				parseAcct(this.user.substr(1)) :
 				{ userId: this.user };
 
-			this.$root.api('users/show', query).then(user => {
+			os.api('users/show', query).then(user => {
 				if (this.closed) return;
 				this.u = user;
 				this.show = true;

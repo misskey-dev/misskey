@@ -8,8 +8,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faAt } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../scripts/loading';
-import XNotes from '../components/notes.vue';
+import Progress from '@/scripts/loading';
+import XNotes from '@/components/notes.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {

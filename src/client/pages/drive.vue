@@ -15,7 +15,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCloud, faAngleDown, faAngleUp, faFolderPlus, faUpload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import XDrive from '../components/drive.vue';
+import XDrive from '@/components/drive.vue';
+import * as os from '@/os';
 
 export default defineComponent({
 	metaInfo() {
@@ -39,7 +40,7 @@ export default defineComponent({
 	methods: {
 		menu(ev) {
 			this.menuOpened = true;
-			this.$store.dispatch('showMenu', {
+			os.menu({
 				items: [{
 					text: this.$t('addFile'),
 					type: 'label'
