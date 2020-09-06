@@ -2,7 +2,7 @@
 <DeckUI v-if="deckmode"/>
 <DefaultUI v-else/>
 
-<component v-for="popup in $store.state.popups" :is="popup.component" v-bind="popup.props" :key="popup.id"/>
+<component v-for="popup in $store.state.popups" :is="popup.component" v-bind="popup.props" :key="popup.id" @done="popup.done" @closed="popup.closed"/>
 
 <div id="wait" v-if="$store.state.pendingApiRequestsCount > 0"></div>
 </template>

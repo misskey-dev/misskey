@@ -18,7 +18,6 @@ import * as os from '@/os';
 // memo: 旧popup.vueのfixedプロパティに相当するものはsource要素の祖先を辿るなどして自動で判定できるのでは
 
 export default defineComponent({
-	emits: ['click', 'esc', 'closed'],
 	props: {
 		showing: {
 			type: Boolean,
@@ -38,6 +37,7 @@ export default defineComponent({
 			required: false,
 		}
 	},
+	emits: ['click', 'esc', 'closed'],
 	data() {
 		return {
 			fixed: false,

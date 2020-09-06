@@ -1,5 +1,5 @@
 <template>
-<x-modal ref="modal" @closed="destroy" @click="onBgClick" :showing="showing">
+<x-modal ref="modal" @closed="$emit('closed')" @click="onBgClick" :showing="showing">
 	<div class="mk-dialog" :class="{ iconOnly }">
 		<template v-if="type == 'signin'">
 			<mk-signin/>
@@ -65,10 +65,7 @@ export default defineComponent({
 	},
 
 	props: {
-		destroy: {
-			required: true
-		},
-		emit: {
+		showing: {
 			required: true
 		},
 		type: {
@@ -121,9 +118,10 @@ export default defineComponent({
 		},
 	},
 
+	emits: ['done', 'closed'],
+
 	data() {
 		return {
-			showing: true,
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			userInputValue: null,
 			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
@@ -162,8 +160,7 @@ export default defineComponent({
 
 	methods: {
 		done(canceled, result?) {
-			this.showing = false;
-			this.emit({ canceled, result });
+			this.$emit('done', { canceled, result });
 		},
 
 		async ok() {

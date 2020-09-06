@@ -1,4 +1,4 @@
-import { Component, defineAsyncComponent } from 'vue';
+import { Component, defineAsyncComponent, ref } from 'vue';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
@@ -44,25 +44,29 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	return promise;
 }
 
-export function popup(component: Component, props: Record<string, any>, eventHandler?: Function, closedCallback?: Function) {
+export function popup(component: Component, props: Record<string, any>, callback?: Function) {
 	const id = Math.random().toString(); // TODO: uuidとか使う
-	const destroy = () => {
-		store.commit('removePopup', id);
-		if (closedCallback) closedCallback();
-	};
+	const showing = ref(true);
 	const popup = {
 		component,
 		props: {
 			...props,
-			destroy,
-			emit: (...args) => {
-				if (eventHandler) eventHandler(...args);
-			}
+			showing
+		},
+		showing,
+		done: (...args) => {
+			if (callback) callback(...args);
+			showing.value = false;
+		},
+		closed: () => {
+			store.commit('removePopup', id);
 		},
 		id,
 	};
 	store.commit('addPopup', popup);
-	return destroy;
+	return () => {
+		showing.value = false;
+	};
 }
 
 export function dialog(props: Record<string, any>) {
