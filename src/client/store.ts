@@ -282,6 +282,15 @@ export const store = createStore({
 			state.menus.push(menu);
 		},
 
+		menuDone(state, { id: menuId }) {
+			const menu = state.menus.find(d => d.id === menuId);
+			menu.result = 'hoge';
+		},
+
+		removeMenu(state, menuId) {
+			state.menus = state.menus.filter(d => d.id !== menuId);
+		},
+
 		setPostForm(state, postForm) {
 			if (state.postForm != null && postForm != null) return;
 			state.postForm = postForm;

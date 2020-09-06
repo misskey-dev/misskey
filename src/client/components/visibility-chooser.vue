@@ -1,5 +1,5 @@
 <template>
-<x-popup :source="source" ref="popup" @closed="closed">
+<XModal :source="source" ref="popup" @closed="closed">
 	<div class="gqyayizv">
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 			<div><fa :icon="faGlobe"/></div>
@@ -39,18 +39,18 @@
 			<div><fa :icon="localOnly ? faToggleOn : faToggleOff"/></div>
 		</button>
 	</div>
-</x-popup>
+</XModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import XPopup from './popup.vue';
+import XModal from './modal.vue';
 
 export default defineComponent({
 	components: {
-		XPopup
+		XModal
 	},
 	props: {
 		source: {

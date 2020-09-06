@@ -1,5 +1,5 @@
 <template>
-<x-modal :source="source" :no-center="noCenter" ref="popup" @click="" @closed="$store.commit('removeMenu', id)" :showing="showing">
+<x-modal :source="source" :no-center="noCenter" ref="popup" @click="close()" @closed="$store.commit('removeMenu', id)" :showing="showing">
 	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i"></div>
@@ -43,6 +43,9 @@ export default defineComponent({
 		XModal
 	},
 	props: {
+		id: {
+			required: true
+		},
 		source: {
 			required: true
 		},
@@ -98,7 +101,8 @@ export default defineComponent({
 			this.close();
 		},
 		close() {
-			this.$refs.popup.close();
+			this.showing = false;
+			this.$store.commit('menuDone', { id: this.id });
 		},
 		focusUp() {
 			focusPrev(document.activeElement);

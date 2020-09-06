@@ -1,5 +1,5 @@
 <template>
-<x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
+<XModal :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<div class="omfetrab">
 		<header>
 			<button v-for="(category, i) in categories"
@@ -59,7 +59,7 @@
 			</template>
 		</div>
 	</div>
-</x-popup>
+</XModal>
 </template>
 
 <script lang="ts">
@@ -69,11 +69,11 @@ import { getStaticImageUrl } from '../scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import { groupByX } from '../../prelude/array';
-import XPopup from './popup.vue';
+import XModal from './modal.vue';
 
 export default defineComponent({
 	components: {
-		XPopup,
+		XModal,
 	},
 
 	props: {
