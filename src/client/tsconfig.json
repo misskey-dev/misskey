@@ -18,6 +18,7 @@
     "strictNullChecks": false,
     "experimentalDecorators": true,
 		"resolveJsonModule": true,
+		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./*"]
 		},
