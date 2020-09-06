@@ -56,3 +56,12 @@ export function menu(props: Record<string, any>) {
 		props
 	});
 }
+
+export function sound(type: string) {
+	if (store.state.device.sfxVolume === 0) return;
+	const sound = store.state.device['sfx' + type.substr(0, 1).toUpperCase() + type.substr(1)];
+	if (sound == null) return;
+	const audio = new Audio(`/assets/sounds/${sound}.mp3`);
+	audio.volume = store.state.device.sfxVolume;
+	audio.play();
+}

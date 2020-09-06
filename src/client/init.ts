@@ -21,7 +21,7 @@ import { applyTheme, lightTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { createPluginEnv } from '@/scripts/aiscript/api';
 import { i18n, lang } from './i18n';
-import { stream } from '@/os';
+import { stream, sound } from '@/os';
 
 console.info(`Misskey v${version}`);
 
@@ -292,7 +292,7 @@ if (store.getters.isSignedIn) {
 			hasUnreadMessagingMessage: true
 		});
 
-		app.sound('chatBg');
+		sound('chatBg');
 	});
 
 	main.on('readAllAntennas', () => {
@@ -306,7 +306,7 @@ if (store.getters.isSignedIn) {
 			hasUnreadAntenna: true
 		});
 
-		app.sound('antenna');
+		sound('antenna');
 	});
 
 	main.on('readAllAnnouncements', () => {
@@ -326,7 +326,7 @@ if (store.getters.isSignedIn) {
 			hasUnreadChannel: true
 		});
 
-		app.sound('channel');
+		sound('channel');
 	});
 
 	main.on('readAllAnnouncements', () => {
