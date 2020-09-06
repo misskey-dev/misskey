@@ -111,7 +111,7 @@ export default defineComponent({
 
 				this.closeDetails();
 				if (!this.isHovering) return;
-				this.details = this.$root.new(XDetails, {
+				this.details = os.popup(XDetails, {
 					reaction: this.reaction,
 					users,
 					count: this.count,

@@ -166,7 +166,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				this.$root.new(await import('@/components/toast.vue'), {
+				os.popup(await import('@/components/toast.vue'), {
 					notification
 				});
 			}

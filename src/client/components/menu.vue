@@ -1,5 +1,5 @@
 <template>
-<x-modal :source="source" :no-center="noCenter" ref="popup" @click="close()" @closed="$store.commit('removePopup', id)" :showing="showing">
+<x-modal :source="source" :no-center="noCenter" ref="popup" @click="close()" @closed="destroy" :showing="showing">
 	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
 		<template v-for="(item, i) in items.filter(item => item !== undefined)">
 			<div v-if="item === null" class="divider" :key="i"></div>
@@ -44,7 +44,7 @@ export default defineComponent({
 		XModal
 	},
 	props: {
-		id: {
+		destroy: {
 			required: true
 		},
 		source: {

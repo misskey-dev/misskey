@@ -417,7 +417,7 @@ export default defineComponent({
 				// TODO: information dialog
 				return;
 			}
-			const w = this.$root.new(MkVisibilityChooser, {
+			const w = os.popup(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly
@@ -433,7 +433,7 @@ export default defineComponent({
 		},
 
 		addVisibleUser() {
-			const vm = this.$root.new(MkUserSelect, {});
+			const vm = os.popup(MkUserSelect, {});
 			vm.$once('selected', user => {
 				this.visibleUsers.push(user);
 			});
@@ -597,14 +597,14 @@ export default defineComponent({
 		},
 
 		insertMention() {
-			const vm = this.$root.new(MkUserSelect, {});
+			const vm = os.popup(MkUserSelect, {});
 			vm.$once('selected', user => {
 				insertTextAtCursor(this.$refs.text, getAcct(user) + ' ');
 			});
 		},
 
 		async insertEmoji(ev) {
-			const vm = this.$root.new(await import('./emoji-picker.vue'), {
+			const vm = os.popup(await import('./emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);

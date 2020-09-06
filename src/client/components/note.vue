@@ -110,7 +110,7 @@ import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
 import MkUrlPreview from './url-preview.vue';
 import MkReactionPicker from './reaction-picker.vue';
-import pleaseLogin from '@/scripts/please-login';
+import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { url } from '@/config';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
@@ -441,7 +441,7 @@ export default defineComponent({
 		},
 
 		reply(viaKeyboard = false) {
-			pleaseLogin(this.$root);
+			pleaseLogin();
 			this.$root.post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
@@ -451,7 +451,7 @@ export default defineComponent({
 		},
 
 		renote(viaKeyboard = false) {
-			pleaseLogin(this.$root);
+			pleaseLogin();
 			this.blur();
 			os.menu({
 				items: [{
@@ -483,21 +483,19 @@ export default defineComponent({
 		},
 
 		react(viaKeyboard = false) {
-			pleaseLogin(this.$root);
+			pleaseLogin();
 			this.blur();
-			const picker = this.$root.new(MkReactionPicker, {
+			const close = os.popup(MkReactionPicker, {
 				source: this.$refs.reactButton,
 				showFocus: viaKeyboard,
-			});
-			picker.$once('chosen', reaction => {
+			}, reaction => {
 				os.api('notes/reactions/create', {
 					noteId: this.appearNote.id,
 					reaction: reaction
 				}).then(() => {
-					picker.close();
+					close();
 				});
-			});
-			picker.$once('closed', this.focus);
+			}, this.focus);
 		},
 
 		reactDirectly(reaction) {
@@ -516,7 +514,7 @@ export default defineComponent({
 		},
 
 		favorite() {
-			pleaseLogin(this.$root);
+			pleaseLogin();
 			os.api('notes/favorites/create', {
 				noteId: this.appearNote.id
 			}).then(() => {

@@ -88,7 +88,7 @@ export default defineComponent({
 		},
 
 		addUser() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.popup(MkUserSelect, {}).$once('selected', user => {
 				os.api('users/lists/push', {
 					listId: this.list.id,
 					userId: user.id

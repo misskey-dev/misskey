@@ -89,7 +89,7 @@ export default defineComponent({
 		},
 
 		invite() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.popup(MkUserSelect, {}).$once('selected', user => {
 				os.api('users/groups/invite', {
 					groupId: this.group.id,
 					userId: user.id
@@ -134,7 +134,7 @@ export default defineComponent({
 		},
 
 		transfer() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.popup(MkUserSelect, {}).$once('selected', user => {
 				os.api('users/groups/transfer', {
 					groupId: this.group.id,
 					userId: user.id

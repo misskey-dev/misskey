@@ -189,7 +189,7 @@ export default defineComponent({
 		},
 
 		menu() {
-			this.$root.new(XUserMenu, {
+			os.popup(XUserMenu, {
 				source: this.$refs.menu,
 				user: this.user
 			});

@@ -550,7 +550,7 @@ export default defineComponent({
 					host: q
 				});
 			}
-			this.$root.new(MkInstanceInfo, {
+			os.popup(MkInstanceInfo, {
 				instance: instance
 			});
 		},

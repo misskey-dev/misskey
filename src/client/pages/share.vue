@@ -60,7 +60,7 @@ export default defineComponent({
 			if (this.title) text += `【${this.title}】\n`;
 			if (this.text) text += `${this.text}\n`;
 			if (this.url) text += `${this.url}`;
-			this.$root.new(PostFormDialog, {
+			os.popup(PostFormDialog, {
 				instant: true,
 				initialText: text.trim()
 			}).$once('posted', () => {

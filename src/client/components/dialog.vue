@@ -1,5 +1,5 @@
 <template>
-<x-modal ref="modal" @closed="$store.commit('removePopup', id)" @click="onBgClick" :showing="showing">
+<x-modal ref="modal" @closed="destroy" @click="onBgClick" :showing="showing">
 	<div class="mk-dialog" :class="{ iconOnly }">
 		<template v-if="type == 'signin'">
 			<mk-signin/>
@@ -65,7 +65,10 @@ export default defineComponent({
 	},
 
 	props: {
-		id: {
+		destroy: {
+			required: true
+		},
+		emit: {
 			required: true
 		},
 		type: {
@@ -160,7 +163,7 @@ export default defineComponent({
 	methods: {
 		done(canceled, result?) {
 			this.showing = false;
-			os.dialogCallbacks[this.id]({ canceled, result });
+			this.emit({ canceled, result });
 		},
 
 		async ok() {

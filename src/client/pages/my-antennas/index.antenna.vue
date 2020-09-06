@@ -177,7 +177,7 @@ export default defineComponent({
 		},
 
 		addUser() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.popup(MkUserSelect, {}).$once('selected', user => {
 				this.users = this.users.trim();
 				this.users += '\n@' + getAcct(user);
 				this.users = this.users.trim();

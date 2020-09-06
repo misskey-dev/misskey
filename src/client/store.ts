@@ -5,7 +5,7 @@ import { faSatelliteDish, faTerminal, faHashtag, faBroadcastTower, faFireAlt, fa
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { deckmode } from '@/config';
-import { api, dialogCallbacks } from '@/os';
+import { api } from '@/os';
 import { erase } from '../prelude/array';
 
 export const defaultSettings = {
@@ -370,25 +370,6 @@ export const store = createStore({
 			if (me.clientData) {
 				ctx.commit('settings/init', me.clientData);
 			}
-		},
-
-		popup(ctx, { component, props }) {
-			return new Promise((res, rej) => {
-				const id = Math.random().toString(); // TODO: uuidとか使う
-				const popup = {
-					component,
-					props: {
-						...props,
-						id
-					},
-					id,
-				};
-				dialogCallbacks[id] = result => {
-					delete dialogCallbacks[id];
-					res(result);
-				};
-				ctx.commit('addPopup', popup);
-			});
 		},
 	},
 

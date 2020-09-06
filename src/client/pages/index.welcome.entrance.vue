@@ -54,13 +54,13 @@ export default defineComponent({
 
 	methods: {
 		signin() {
-			this.$root.new(XSigninDialog, {
+			os.popup(XSigninDialog, {
 				autoSet: true
 			});
 		},
 
 		signup() {
-			this.$root.new(XSignupDialog, {
+			os.popup(XSignupDialog, {
 				autoSet: true
 			});
 		}

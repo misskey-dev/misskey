@@ -114,7 +114,7 @@ export default defineComponent({
 		},
 
 		async configure() {
-			this.$root.new(await import('@/components/notification-setting-window.vue'), {
+			os.popup(await import('@/components/notification-setting-window.vue'), {
 				includingTypes: this.$store.state.i.includingNotificationTypes,
 				showGlobalToggle: false,
 			}).$on('ok', async ({ includingTypes: value }: any) => {

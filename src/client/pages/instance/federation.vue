@@ -125,7 +125,7 @@ export default defineComponent({
 		},
 
 		info(instance) {
-			this.$root.new(MkInstanceInfo, {
+			os.popup(MkInstanceInfo, {
 				instance: instance
 			});
 		}

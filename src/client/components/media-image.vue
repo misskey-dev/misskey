@@ -72,7 +72,7 @@ export default defineComponent({
 			if (this.$store.state.device.imageNewTab) {
 				window.open(this.image.url, '_blank');
 			} else {
-				const viewer = this.$root.new(ImageViewer, {
+				const viewer = os.popup(ImageViewer, {
 					image: this.image
 				});
 				this.$once('hook:beforeDestroy', () => {

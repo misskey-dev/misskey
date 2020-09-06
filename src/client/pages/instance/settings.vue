@@ -452,7 +452,7 @@ export default defineComponent({
 		},
 
 		addPinUser() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.popup(MkUserSelect, {}).$once('selected', user => {
 				this.pinnedUsers = this.pinnedUsers.trim();
 				this.pinnedUsers += '\n@' + getAcct(user);
 				this.pinnedUsers = this.pinnedUsers.trim();
@@ -460,7 +460,7 @@ export default defineComponent({
 		},
 
 		chooseProxyAccount() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.popup(MkUserSelect, {}).$once('selected', user => {
 				this.proxyAccount = user;
 				this.proxyAccountId = user.id;
 				this.save(true);
