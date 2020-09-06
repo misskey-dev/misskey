@@ -1,11 +1,11 @@
-import { reactive, watch } from 'vue';
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { faSatelliteDish, faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { AiScript, utils, values } from '@syuilo/aiscript';
-import { apiUrl, deckmode } from '@/config';
+import { deckmode } from '@/config';
+import { api, dialogCallbacks } from '@/os';
 import { erase } from '../prelude/array';
 
 export const defaultSettings = {
@@ -108,11 +108,10 @@ export const store = createStore({
 		i: null,
 		pendingApiRequestsCount: 0,
 		spinner: null,
-		dialogs: [] as {
+		popups: [] as {
 			id: any;
 			component: any;
 			props: Record<string, any>;
-			result: any;
 		}[],
 		fullView: false,
 
@@ -262,17 +261,20 @@ export const store = createStore({
 			state.i[key] = value;
 		},
 
-		addDialog(state, dialog) {
-			state.dialogs.push(dialog);
+		beginApiRequest(state) {
+			state.pendingApiRequestsCount++;
 		},
 
-		dialogDone(state, { id: dialogId, result }) {
-			const dialog = state.dialogs.find(d => d.id === dialogId);
-			dialog.result = result;
+		endApiRequest(state) {
+			state.pendingApiRequestsCount--;
 		},
 
-		removeDialog(state, dialogId) {
-			state.dialogs = state.dialogs.filter(d => d.id !== dialogId);
+		addPopup(state, popup) {
+			state.popups.push(popup);
+		},
+
+		removePopup(state, popupId) {
+			state.popups = state.popups.filter(x => x.id !== popupId);
 		},
 
 		setFullView(state, v) {
@@ -370,66 +372,24 @@ export const store = createStore({
 			}
 		},
 
-		showDialog(ctx, { component, props }) {
+		popup(ctx, { component, props }) {
 			return new Promise((res, rej) => {
 				const id = Math.random().toString(); // TODO: uuidとか使う
-				const dialog = reactive({
+				const popup = {
 					component,
 					props: {
 						...props,
 						id
 					},
-					result: null,
 					id,
-				});
-				ctx.commit('addDialog', dialog);
-				const unwatch = watch(() => dialog.result, result => {
-					unwatch();
+				};
+				dialogCallbacks[id] = result => {
+					delete dialogCallbacks[id];
 					res(result);
-				});
+				};
+				ctx.commit('addPopup', popup);
 			});
 		},
-
-		api(ctx, { endpoint, data, token }) {
-			if (++ctx.state.pendingApiRequestsCount === 1) {
-				// TODO: spinnerの表示はstoreでやらない
-				ctx.state.spinner = document.createElement('div');
-				ctx.state.spinner.setAttribute('id', 'wait');
-				document.body.appendChild(ctx.state.spinner);
-			}
-
-			const onFinally = () => {
-				if (--ctx.state.pendingApiRequestsCount === 0) ctx.state.spinner.parentNode.removeChild(ctx.state.spinner);
-			};
-
-			const promise = new Promise((resolve, reject) => {
-				// Append a credential
-				if (ctx.getters.isSignedIn) (data as any).i = ctx.state.i.token;
-				if (token !== undefined) (data as any).i = token;
-
-				// Send request
-				fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
-					method: 'POST',
-					body: JSON.stringify(data),
-					credentials: 'omit',
-					cache: 'no-cache'
-				}).then(async (res) => {
-					const body = res.status === 204 ? null : await res.json();
-
-					if (res.status === 200) {
-						resolve(body);
-					} else if (res.status === 204) {
-						resolve();
-					} else {
-						reject(body.error);
-					}
-				}).catch(reject);
-			});
-
-			promise.then(onFinally, onFinally);
-
-			return promise;
-		}
 	},
 
 	modules: {
@@ -448,12 +408,9 @@ export const store = createStore({
 
 			actions: {
 				async fetch(ctx) {
-					const meta = await ctx.dispatch('api', {
-						endpoint: 'meta',
-						data: {
-							detail: false
-						}
-					}, { root: true });
+					const meta = await api('meta', {
+						detail: false
+					});
 
 					ctx.commit('set', meta);
 				}
@@ -716,13 +673,10 @@ export const store = createStore({
 					ctx.commit('set', x);
 
 					if (ctx.rootGetters.isSignedIn) {
-						ctx.dispatch('api', {
-							endpoint: 'i/update-client-setting',
-							data: {
-								name: x.key,
-								value: x.value
-							}
-						}, { root: true });
+						api('i/update-client-setting', {
+							name: x.key,
+							value: x.value
+						});
 					}
 				},
 			}

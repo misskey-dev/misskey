@@ -1,5 +1,5 @@
 <template>
-<x-modal ref="modal" @closed="$store.commit('removeDialog', id)" @click="onBgClick" :showing="showing">
+<x-modal ref="modal" @closed="$store.commit('removePopup', id)" @click="onBgClick" :showing="showing">
 	<div class="mk-dialog" :class="{ iconOnly }">
 		<template v-if="type == 'signin'">
 			<mk-signin/>
@@ -160,7 +160,7 @@ export default defineComponent({
 	methods: {
 		done(canceled, result?) {
 			this.showing = false;
-			this.$store.commit('dialogDone', { id: this.id, result: { canceled, result } });
+			os.dialogCallbacks[this.id]({ canceled, result });
 		},
 
 		async ok() {
