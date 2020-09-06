@@ -15,7 +15,7 @@
 import { defineComponent } from 'vue';
 import * as os from '@/os';
 
-// memo: popup.vueのfixedプロパティに相当するものはsource要素の祖先を辿るなどして自動で判定できるのでは
+// memo: 旧popup.vueのfixedプロパティに相当するものはsource要素の祖先を辿るなどして自動で判定できるのでは
 
 export default defineComponent({
 	emits: ['click', 'esc', 'closed'],
