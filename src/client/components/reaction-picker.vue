@@ -1,5 +1,5 @@
 <template>
-<XModal :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
+<XModal :source="source" ref="popup" @closed="destroy" v-hotkey.global="keymap">
 	<div class="rdfaahpb">
 		<div class="buttons" ref="buttons" :class="{ showFocus }">
 			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><x-reaction-icon :reaction="reaction"/></button>
@@ -23,6 +23,13 @@ export default defineComponent({
 	},
 
 	props: {
+		destroy: {
+			required: true
+		},
+		emit: {
+			required: true
+		},
+
 		source: {
 			required: true
 		},
