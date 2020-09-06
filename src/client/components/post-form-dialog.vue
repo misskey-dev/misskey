@@ -1,6 +1,6 @@
 <template>
 <div class="ulveipgl" :style="{ pointerEvents: closing ? 'none' : 'auto' }">
-	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear @after-leave="$store.commit('setPostForm', null)">
+	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear @after-leave="destroy">
 		<div class="bg _modalBg" ref="bg" v-if="!closing" @click="close()"></div>
 	</transition>
 	<div class="main" ref="main" @click.self="close()" @keydown="onKeydown">
@@ -36,6 +36,12 @@ export default defineComponent({
 	},
 
 	props: {
+		destroy: {
+			required: true
+		},
+		emit: {
+			required: true
+		},
 		reply: {
 			type: Object,
 			required: false

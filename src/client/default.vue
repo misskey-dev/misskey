@@ -296,7 +296,7 @@ export default defineComponent({
 		},
 
 		post() {
-			this.$store.commit('setPostForm', {});
+			os.post();
 		},
 
 		search() {

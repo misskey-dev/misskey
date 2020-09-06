@@ -73,7 +73,13 @@ export function dialog(props: Record<string, any>) {
 
 export function menu(props: Record<string, any>) {
 	return new Promise((res, rej) => {
-		return popup(defineAsyncComponent(() => import('@/components/menu.vue')), props, res);
+		popup(defineAsyncComponent(() => import('@/components/menu.vue')), props, res);
+	});
+}
+
+export function post(props: Record<string, any>) {
+	return new Promise((res, rej) => {
+		popup(defineAsyncComponent(() => import('@/components/post-form-dialog.vue')), props, res);
 	});
 }
 
