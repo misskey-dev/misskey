@@ -93,7 +93,7 @@ const fetchme = (token) => new Promise((done, fail) => {
 if (store.state.i != null) {
 	// TODO: i.token が null になるケースってどんな時だっけ？
 	if (store.state.i.token == null) {
-		this.signout();
+		signout();
 	}
 
 	// 後から新鮮なデータをフェッチ
