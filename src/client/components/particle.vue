@@ -57,9 +57,6 @@ import * as os from '@/os';
 
 export default defineComponent({
 	props: {
-		destroy: {
-			required: true
-		},
 		x: {
 			type: Number,
 			required: true
@@ -94,7 +91,7 @@ export default defineComponent({
 	},
 	mounted() {
 		setTimeout(() => {
-			this.destroy();
+			this.$emit('closed');
 		}, 1100);
 	}
 });

@@ -111,6 +111,7 @@ export const store = createStore({
 		popups: [] as {
 			id: any;
 			component: any;
+			type: 'popup' | 'modal',
 			props: Record<string, any>;
 		}[],
 		fullView: false,

@@ -276,7 +276,7 @@ export default defineComponent({
 		},
 
 		async addAcount() {
-			os.popup(await import('./signin-dialog.vue')).$once('login', res => {
+			os.modal(await import('./signin-dialog.vue')).$once('login', res => {
 				this.$store.dispatch('addAcount', res);
 				os.dialog({
 					type: 'success',
@@ -286,7 +286,7 @@ export default defineComponent({
 		},
 
 		async createAccount() {
-			os.popup(await import('./signup-dialog.vue')).$once('signup', res => {
+			os.modal(await import('./signup-dialog.vue')).$once('signup', res => {
 				this.$store.dispatch('addAcount', res);
 				this.switchAccountWithToken(res.i);
 			});

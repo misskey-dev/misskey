@@ -43,7 +43,7 @@ export default defineComponent({
 			icon: faCog,
 			text: this.$t('notificationSetting'),
 			action: async () => {
-				os.popup(await import('../notification-setting-window.vue'), {
+				os.modal(await import('../notification-setting-window.vue'), {
 					includingTypes: this.column.includingTypes,
 				}).$on('ok', async ({ includingTypes }) => {
 					this.$set(this.column, 'includingTypes', includingTypes);

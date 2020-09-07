@@ -132,7 +132,7 @@ export default defineComponent({
 		},
 
 		async startUser() {
-			os.popup(MkUserSelect, {}).$once('selected', user => {
+			os.modal(MkUserSelect, {}).$once('selected', user => {
 				this.$router.push(`/my/messaging/${getAcct(user)}`);
 			});
 		},

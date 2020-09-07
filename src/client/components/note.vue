@@ -96,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
@@ -108,8 +108,6 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import MkUrlPreview from './url-preview.vue';
-import MkReactionPicker from './reaction-picker.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { url } from '@/config';
@@ -133,7 +131,7 @@ export default defineComponent({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		MkUrlPreview,
+		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
 	},
 
 	inject: {
@@ -485,17 +483,17 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			const close = os.popup(MkReactionPicker, {
-				source: this.$refs.reactButton,
+			os.modal(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
 				showFocus: viaKeyboard,
 			}, reaction => {
 				os.api('notes/reactions/create', {
 					noteId: this.appearNote.id,
 					reaction: reaction
-				}).then(() => {
-					close();
 				});
-			}, this.focus);
+				this.focus();
+			}, {
+				source: this.$refs.reactButton
+			});
 		},
 
 		reactDirectly(reaction) {

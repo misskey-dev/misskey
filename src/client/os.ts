@@ -1,4 +1,4 @@
-import { Component, defineAsyncComponent, ref } from 'vue';
+import { Component, defineAsyncComponent, markRaw, ref } from 'vue';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
@@ -44,46 +44,81 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	return promise;
 }
 
-export function popup(component: Component, props: Record<string, any>, callback?: Function) {
+export function popup(component: Component, props: Record<string, any>, callback?: Function, option?) {
+	markRaw(component);
 	const id = Math.random().toString(); // TODO: uuidとか使う
 	const showing = ref(true);
-	const popup = {
+	const close = (...args) => {
+		if (callback) callback(...args);
+		showing.value = false;
+	};
+	const modal = {
+		type: 'popup',
 		component,
-		props: {
-			...props,
-			showing
-		},
+		props,
 		showing,
-		done: (...args) => {
-			if (callback) callback(...args);
-			showing.value = false;
-		},
+		source: option?.source,
+		done: close,
+		bgClick: () => close(),
 		closed: () => {
 			store.commit('removePopup', id);
 		},
 		id,
 	};
-	store.commit('addPopup', popup);
-	return () => {
+	store.commit('addPopup', modal);
+	return close;
+}
+
+export function modal(component: Component, props: Record<string, any>, callback?: Function, option?) {
+	markRaw(component);
+	const id = Math.random().toString(); // TODO: uuidとか使う
+	const showing = ref(true);
+	const close = (...args) => {
+		if (callback) callback(...args);
 		showing.value = false;
 	};
+	const modal = {
+		type: 'modal',
+		component,
+		props,
+		showing,
+		source: option?.source,
+		done: close,
+		bgClick: () => close(),
+		closed: () => {
+			store.commit('removePopup', id);
+		},
+		id,
+	};
+	store.commit('addPopup', modal);
+	return close;
 }
 
 export function dialog(props: Record<string, any>) {
 	return new Promise((res, rej) => {
-		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), props, res);
+		modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, result => {
+			if (result) {
+				res(result);
+			} else {
+				res({ canceled: true });
+			}
+		});
 	});
 }
 
 export function menu(props: Record<string, any>) {
+	const source = props.source; // TODO: sourceはpropsの外に出して追加の引数として受け取るようにする
 	return new Promise((res, rej) => {
-		popup(defineAsyncComponent(() => import('@/components/menu.vue')), props, res);
+		modal(defineAsyncComponent(() => import('@/components/menu.vue')), props, res, {
+			position: 'source',
+			source
+		});
 	});
 }
 
 export function post(props: Record<string, any>) {
 	return new Promise((res, rej) => {
-		popup(defineAsyncComponent(() => import('@/components/post-form-dialog.vue')), props, res);
+		modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props, res);
 	});
 }
 

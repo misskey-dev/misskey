@@ -1,5 +1,5 @@
 <template>
-<div class="gafaadew"
+<div class="gafaadew" :class="{ modal }"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -79,6 +79,8 @@ export default defineComponent({
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
 		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
 	},
+
+	inject: ['modal'],
 
 	props: {
 		reply: {
@@ -417,7 +419,7 @@ export default defineComponent({
 				// TODO: information dialog
 				return;
 			}
-			const w = os.popup(MkVisibilityChooser, {
+			const w = os.modal(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly
@@ -433,7 +435,7 @@ export default defineComponent({
 		},
 
 		addVisibleUser() {
-			const vm = os.popup(MkUserSelect, {});
+			const vm = os.modal(MkUserSelect, {});
 			vm.$once('selected', user => {
 				this.visibleUsers.push(user);
 			});
@@ -593,18 +595,18 @@ export default defineComponent({
 		},
 
 		cancel() {
-			this.$emit('cancel');
+			this.$emit('done');
 		},
 
 		insertMention() {
-			const vm = os.popup(MkUserSelect, {});
+			const vm = os.modal(MkUserSelect, {});
 			vm.$once('selected', user => {
 				insertTextAtCursor(this.$refs.text, getAcct(user) + ' ');
 			});
 		},
 
 		async insertEmoji(ev) {
-			const vm = os.popup(await import('./emoji-picker.vue'), {
+			const vm = os.modal(await import('./emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
@@ -635,6 +637,12 @@ export default defineComponent({
 .gafaadew {
 	position: relative;
 	background: var(--panel);
+
+	&.modal {
+		width: 100%;
+		max-width: 500px;
+		border-radius: var(--radius);
+	}
 
 	> header {
 		z-index: 1000;

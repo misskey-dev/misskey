@@ -32,12 +32,11 @@ import { defineComponent } from 'vue';
 import paging from '@/scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
-import MkButton from './ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XNote, XList, MkButton
+		XNote, XList,
 	},
 
 	mixins: [
@@ -83,9 +82,9 @@ export default defineComponent({
 		updated(oldValue, newValue) {
 			const i = this.notes.findIndex(n => n === oldValue);
 			if (this.prop) {
-				Vue.set(this.items[i], this.prop, newValue);
+				this.items[i][this.prop] = newValue;
 			} else {
-				Vue.set(this.items, i, newValue);
+				this.items[i] = newValue;
 			}
 		},
 

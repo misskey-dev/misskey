@@ -1,46 +1,44 @@
 <template>
-<x-modal @closed="$emit('closed')" @click="onBgClick" :showing="showing">
-	<div class="mk-dialog" :class="{ iconOnly }">
-		<template v-if="type == 'signin'">
-			<mk-signin/>
-		</template>
-		<template v-else>
-			<div class="icon" v-if="icon">
-				<fa :icon="icon"/>
-			</div>
-			<div class="icon" v-else-if="!input && !select && !user" :class="type">
-				<fa :icon="faCheck" v-if="type === 'success'"/>
-				<fa :icon="faTimesCircle" v-if="type === 'error'"/>
-				<fa :icon="faExclamationTriangle" v-if="type === 'warning'"/>
-				<fa :icon="faInfoCircle" v-if="type === 'info'"/>
-				<fa :icon="faQuestionCircle" v-if="type === 'question'"/>
-				<fa :icon="faSpinner" pulse v-if="type === 'waiting'"/>
-			</div>
-			<header v-if="title" v-html="title"></header>
-			<header v-if="title == null && user">{{ $t('enterUsername') }}</header>
-			<div class="body" v-if="text" v-html="text"></div>
-			<mk-input v-if="input" v-model:value="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></mk-input>
-			<mk-input v-if="user" v-model:value="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></mk-input>
-			<mk-select v-if="select" v-model:value="selectedValue" autofocus>
-				<template v-if="select.items">
-					<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
-				</template>
-				<template v-else>
-					<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
-						<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
-					</optgroup>
-				</template>
-			</mk-select>
-			<div class="buttons" v-if="!iconOnly && (showOkButton || showCancelButton) && !actions">
-				<mk-button inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('ok') : $t('gotIt') }}</mk-button>
-				<mk-button inline @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('cancel') }}</mk-button>
-			</div>
-			<div class="buttons" v-if="actions">
-				<mk-button v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</mk-button>
-			</div>
-		</template>
-	</div>
-</x-modal>
+<div class="mk-dialog" :class="{ iconOnly }">
+	<template v-if="type == 'signin'">
+		<mk-signin/>
+	</template>
+	<template v-else>
+		<div class="icon" v-if="icon">
+			<fa :icon="icon"/>
+		</div>
+		<div class="icon" v-else-if="!input && !select && !user" :class="type">
+			<fa :icon="faCheck" v-if="type === 'success'"/>
+			<fa :icon="faTimesCircle" v-if="type === 'error'"/>
+			<fa :icon="faExclamationTriangle" v-if="type === 'warning'"/>
+			<fa :icon="faInfoCircle" v-if="type === 'info'"/>
+			<fa :icon="faQuestionCircle" v-if="type === 'question'"/>
+			<fa :icon="faSpinner" pulse v-if="type === 'waiting'"/>
+		</div>
+		<header v-if="title" v-html="title"></header>
+		<header v-if="title == null && user">{{ $t('enterUsername') }}</header>
+		<div class="body" v-if="text" v-html="text"></div>
+		<mk-input v-if="input" v-model:value="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></mk-input>
+		<mk-input v-if="user" v-model:value="userInputValue" autofocus @keydown="onInputKeydown"><template #prefix>@</template></mk-input>
+		<mk-select v-if="select" v-model:value="selectedValue" autofocus>
+			<template v-if="select.items">
+				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+			</template>
+			<template v-else>
+				<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
+					<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
+				</optgroup>
+			</template>
+		</mk-select>
+		<div class="buttons" v-if="!iconOnly && (showOkButton || showCancelButton) && !actions">
+			<mk-button inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('ok') : $t('gotIt') }}</mk-button>
+			<mk-button inline @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('cancel') }}</mk-button>
+		</div>
+		<div class="buttons" v-if="actions">
+			<mk-button v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</mk-button>
+		</div>
+	</template>
+</div>
 </template>
 
 <script lang="ts">
@@ -52,12 +50,10 @@ import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
 import MkSignin from './signin.vue';
 import parseAcct from '../../misc/acct/parse';
-import XModal from './modal.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XModal,
 		MkButton,
 		MkInput,
 		MkSelect,
@@ -65,9 +61,6 @@ export default defineComponent({
 	},
 
 	props: {
-		showing: {
-			required: true
-		},
 		type: {
 			type: String,
 			required: false,
@@ -118,7 +111,7 @@ export default defineComponent({
 		},
 	},
 
-	emits: ['done', 'closed'],
+	emits: ['done'],
 
 	data() {
 		return {

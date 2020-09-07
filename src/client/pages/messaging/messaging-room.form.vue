@@ -220,7 +220,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			const vm = os.popup(await import('@/components/emoji-picker.vue'), {
+			const vm = os.modal(await import('@/components/emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);

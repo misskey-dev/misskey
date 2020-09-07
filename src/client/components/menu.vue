@@ -1,55 +1,43 @@
 <template>
-<x-modal :source="source" :no-center="noCenter" @click="close()" @closed="$emit('closed')" :showing="showing">
-	<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
-		<template v-for="(item, i) in items.filter(item => item !== undefined)">
-			<div v-if="item === null" class="divider" :key="i"></div>
-			<span v-else-if="item.type === 'label'" class="label item" :key="i">
-				<span>{{ item.text }}</span>
-			</span>
-			<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i">
-				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
-				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
-				<span>{{ item.text }}</span>
-				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
-			</router-link>
-			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i">
-				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
-				<span>{{ item.text }}</span>
-				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
-			</a>
-			<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
-				<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
-				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
-			</button>
-			<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
-				<fa v-if="item.icon" :icon="item.icon" fixed-width/>
-				<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
-				<span>{{ item.text }}</span>
-				<i v-if="item.indicate"><fa :icon="faCircle"/></i>
-			</button>
-		</template>
-	</div>
-</x-modal>
+<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
+	<template v-for="(item, i) in items.filter(item => item !== undefined)">
+		<div v-if="item === null" class="divider" :key="i"></div>
+		<span v-else-if="item.type === 'label'" class="label item" :key="i">
+			<span>{{ item.text }}</span>
+		</span>
+		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i">
+			<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+			<span>{{ item.text }}</span>
+			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+		</router-link>
+		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i">
+			<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<span>{{ item.text }}</span>
+			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+		</a>
+		<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
+			<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
+			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+		</button>
+		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
+			<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+			<span>{{ item.text }}</span>
+			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+		</button>
+	</template>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
-import XModal from './modal.vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import * as os from '@/os';
 
 export default defineComponent({
-	components: {
-		XModal
-	},
 	props: {
-		showing: {
-			required: true
-		},
-		source: {
-			required: true
-		},
 		items: {
 			type: Array,
 			required: true

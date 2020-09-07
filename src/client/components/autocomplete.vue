@@ -376,7 +376,7 @@ export default defineComponent({
 
 		chooseUser() {
 			this.close();
-			const vm = os.popup(MkUserSelect, {});
+			const vm = os.modal(MkUserSelect, {});
 			vm.$once('selected', user => {
 				this.complete('user', user);
 			});

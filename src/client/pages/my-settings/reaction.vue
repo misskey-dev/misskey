@@ -58,7 +58,7 @@ export default defineComponent({
 		},
 
 		preview(ev) {
-			const picker = os.popup(MkReactionPicker, {
+			const picker = os.modal(MkReactionPicker, {
 				source: ev.currentTarget || ev.target,
 				reactions: this.splited,
 				showFocus: false,
@@ -73,7 +73,7 @@ export default defineComponent({
 		},
 
 		async chooseEmoji(ev) {
-			const vm = os.popup(await import('@/components/emoji-picker.vue'), {
+			const vm = os.modal(await import('@/components/emoji-picker.vue'), {
 				source: ev.currentTarget || ev.target
 			}).$once('chosen', emoji => {
 				this.reactions += emoji;

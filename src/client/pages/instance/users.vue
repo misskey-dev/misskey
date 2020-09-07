@@ -180,7 +180,7 @@ export default defineComponent({
 		},
 
 		searchUser() {
-			os.popup(MkUserSelect, {}).$once('selected', user => {
+			os.modal(MkUserSelect, {}).$once('selected', user => {
 				this.show(user);
 			});
 		},
