@@ -2,6 +2,7 @@ import { Component, defineAsyncComponent, markRaw, ref } from 'vue';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
+import * as EventEmitter from 'eventemitter3';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -70,6 +71,8 @@ export function popup(component: Component, props: Record<string, any>, callback
 }
 
 export function modal(component: Component, props: Record<string, any>, callback?: Function, option?) {
+	//const controller = new EventEmitter();
+	//markRaw(controller);
 	markRaw(component);
 	const id = Math.random().toString(); // TODO: uuidとか使う
 	const showing = ref(true);
@@ -84,7 +87,10 @@ export function modal(component: Component, props: Record<string, any>, callback
 		showing,
 		source: option?.source,
 		done: close,
-		bgClick: () => close(),
+		bgClick: () => {
+			if (option?.cancelableByBgClick === false) return;
+			close();
+		},
 		closed: () => {
 			store.commit('removePopup', id);
 		},
@@ -95,6 +101,7 @@ export function modal(component: Component, props: Record<string, any>, callback
 }
 
 export function dialog(props: Record<string, any>) {
+	const cancelableByBgClick = props.cancelableByBgClick;
 	return new Promise((res, rej) => {
 		modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, result => {
 			if (result) {
@@ -102,6 +109,8 @@ export function dialog(props: Record<string, any>) {
 			} else {
 				res({ canceled: true });
 			}
+		}, {
+			cancelableByBgClick
 		});
 	});
 }
