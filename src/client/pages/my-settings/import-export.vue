@@ -43,6 +43,7 @@ export default Vue.extend({
 				this.exportTarget == 'following' ? 'i/export-following' :
 				this.exportTarget == 'blocking' ? 'i/export-blocking' :
 				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
+				this.exportTarget == 'mute' ? 'i/export-mute' :
 				null, {})
 			.then(() => {
 				this.$root.dialog({
