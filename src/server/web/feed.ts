@@ -44,8 +44,8 @@ export default async function(user: User) {
 		const files = note.fileIds.length > 0 ? await DriveFiles.find({
 			id: In(note.fileIds)
 		}) : [];
-		var fileEle = ""
-		files.forEach(function(file){
+		let fileEle = '';
+		for (const file of files){
 			if(file.type.startsWith('image/')){
 				fileEle += ` <br><img src="${DriveFiles.getPublicUrl(file)}">`;
 			}else if(file.type.startsWith('audio/')){
@@ -55,14 +55,14 @@ export default async function(user: User) {
 			}else{
 				fileEle += ` <br><a href="${DriveFiles.getPublicUrl(file)}" download="${file.name}">${file.name}</a>`;
 			}
-		});
+		}
 
 		feed.addItem({
-			title: `${author.name}: ${(note.text ? note.text : "empty").substring(0,50)}`,
+			title: `${author.name}: ${(note.text ? note.text : 'post a new note').substring(0,50)}`,
 			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
 			description: note.cw || undefined,
-			content: `${note.text || ""}${fileEle}`
+			content: `${note.text || ''}${fileEle}`
 		});
 	}
 
