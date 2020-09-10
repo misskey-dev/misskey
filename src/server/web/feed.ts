@@ -8,6 +8,7 @@ import { ensure } from '../../prelude/ensure';
 export default async function(user: User) {
 	const author = {
 		link: `${config.url}/@${user.username}`,
+		email: `${user.username}@${config.host}`,
 		name: user.name || user.username
 	};
 
@@ -43,15 +44,25 @@ export default async function(user: User) {
 		const files = note.fileIds.length > 0 ? await DriveFiles.find({
 			id: In(note.fileIds)
 		}) : [];
-		const file = files.find(file => file.type.startsWith('image/'));
+		var fileEle = ""
+		files.forEach(function(file){
+			if(file.type.startsWith('image/')){
+				fileEle += ` <br><img src="${DriveFiles.getPublicUrl(file)}">`;
+			}else if(file.type.startsWith('audio/')){
+				fileEle += ` <br><audio controls src="${DriveFiles.getPublicUrl(file)}" type="${file.type}">`;
+			}else if(file.type.startsWith('video/')){
+				fileEle += ` <br><video controls src="${DriveFiles.getPublicUrl(file)}" type="${file.type}">`;
+			}else{
+				fileEle += ` <br><a href="${DriveFiles.getPublicUrl(file)}" download="${file.name}">${file.name}</a>`;
+			}
+		});
 
 		feed.addItem({
-			title: `New note by ${author.name}`,
+			title: `${author.name}: ${(note.text ? note.text : "empty").substring(0,50)}`,
 			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
 			description: note.cw || undefined,
-			content: note.text || undefined,
-			image: file ? DriveFiles.getPublicUrl(file) || undefined : undefined
+			content: `${note.text || ""}${fileEle}`
 		});
 	}
 
