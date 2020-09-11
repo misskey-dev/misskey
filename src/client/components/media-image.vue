@@ -64,7 +64,13 @@ export default Vue.extend({
 		}
 	},
 	created() {
-		this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
+		this.$watch('image', () => {
+			this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+		}, {
+			deep: true,
+			immediate: true,
+		});
 	},
 	methods: {
 		onClick() {
