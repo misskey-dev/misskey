@@ -2,47 +2,45 @@ import { Directive } from 'vue';
 import MkUserPreview from '@/components/user-preview.vue';
 
 export default {
+	// modal側でcontentのmouseoverイベントなどを発行してもらう必要がありそう
+	/*
 	mounted(el: HTMLElement, binding, vn) {
 		// TODO: 新たにプロパティを作るのをやめMapを使う
 		// ただメモリ的には↓の方が省メモリかもしれないので検討中
 		const self = (el as any)._userPreviewDirective_ = {} as any;
 
 		self.user = binding.value;
-		self.tag = null;
+		self.close = null;
 		self.showTimer = null;
 		self.hideTimer = null;
 		self.checkTimer = null;
 
 		self.close = () => {
-			if (self.tag) {
+			if (self.close) {
 				clearInterval(self.checkTimer);
-				self.tag.close();
-				self.tag = null;
+				self.close.close();
+				self.close = null;
 			}
 		};
 
 		const show = () => {
 			if (!document.body.contains(el)) return;
-			if (self.tag) return;
+			if (self.close) return;
 
-			self.tag = new MkUserPreview({
-				parent: vn.context,
-				propsData: {
-					user: self.user,
-					source: el
-				}
-			}).$mount();
+			self.close = os.popup(MkUserPreview, {
+				user: self.user,
+			}, null, {
+				source: el
+			});
 
-			self.tag.$on('mouseover', () => {
+			self.close.$on('mouseover', () => {
 				clearTimeout(self.hideTimer);
 			});
 
-			self.tag.$on('mouseleave', () => {
+			self.close.$on('mouseleave', () => {
 				clearTimeout(self.showTimer);
 				self.hideTimer = setTimeout(self.close, 500);
 			});
-
-			document.body.appendChild(self.tag.$el);
 
 			self.checkTimer = setInterval(() => {
 				if (!document.body.contains(el)) {
@@ -74,5 +72,5 @@ export default {
 	unmounted(el, binding, vn) {
 		const self = el._userPreviewDirective_;
 		clearInterval(self.checkTimer);
-	}
+	}*/
 } as Directive;
