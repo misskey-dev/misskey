@@ -8,10 +8,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 import bytes from '@/filters/bytes';
 
 export default defineComponent({
+	emits: ['done'],
+
 	props: {
 		image: {
 			type: Object,
