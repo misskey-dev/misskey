@@ -8749,7 +8749,7 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sortablejs@^1.10.1:
+sortablejs@^1.10.2:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.10.2.tgz#6e40364d913f98b85a14f6678f92b5c1221f5290"
   integrity sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==
@@ -10091,6 +10091,13 @@ vue-cropperjs@4.1.0:
   dependencies:
     cropperjs "^1.5.6"
 
+vue-draggable-next@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/vue-draggable-next/-/vue-draggable-next-1.0.5.tgz#ec872539c6d5ef383a5b17e5fe153eb5741be40f"
+  integrity sha512-YeR0INdg7Kgp13qCUrFsF+q7Cy+E6I7dyFhfAtRkCGb1gaSh6WdQwEa3k33HR/kjB0rAXWmoxcE7T1d+N3eGcg==
+  dependencies:
+    sortablejs "^1.10.2"
+
 vue-eslint-parser@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-7.1.0.tgz#9cdbcc823e656b087507a1911732b867ac101e83"
@@ -10103,20 +10110,20 @@ vue-eslint-parser@^7.1.0:
     esquery "^1.0.1"
     lodash "^4.17.15"
 
-vue-i18n@9.0.0-alpha.13:
-  version "9.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-9.0.0-alpha.13.tgz#6354915cfaee66e9973b21669c8bcb6cf81eeab2"
-  integrity sha512-0kkZYImEcLwmcEqHuQIRUKxISOrm1iAWDOUPvtQ0yWW7MGkKAMHCTgn6toGQywPc4v48P+YDTgsGsBpHFpQJFA==
+vue-i18n@9.0.0-alpha.17:
+  version "9.0.0-alpha.17"
+  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-9.0.0-alpha.17.tgz#a096c8ed0ccc51e16d835192aa8421e89157802b"
+  integrity sha512-5GIDvYKHPU8DuysdQM7tcALWmBlFbwtM9jKWGI4wBDbych4dK9OMjGCVrC2PvaGD/zo96VLJMYLNpgg0GCk6QA==
 
 vue-json-pretty@1.6.7:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/vue-json-pretty/-/vue-json-pretty-1.6.7.tgz#7dbc0d50d7b30f2ad99dade6541cd57479ff3725"
   integrity sha512-M7fGSj6yQxl9x3n4cViD5OUUXeXeIfjVfnOQOH+T95qo4wz2BzthBDZzRsKKsf9W5YIFbC1ZWkw50j9cPxxs9w==
 
-vue-loader@16.0.0-beta.5:
-  version "16.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-16.0.0-beta.5.tgz#04edc889492b03a445e7ac66e9226a70175ca8a0"
-  integrity sha512-ciWfzNefqWlmzKznCWY9hl+fPP4KlQ0A9MtHbJ/8DpyY+dAM8gDrjufIdxwTgC4szE4EZC3A6ip/BbrqM84GqA==
+vue-loader@16.0.0-beta.7:
+  version "16.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-16.0.0-beta.7.tgz#6f2726fa0e2b1fbae67895c47593bbf69f2b9ab8"
+  integrity sha512-xQ8/GZmRPdQ3EinnE0IXwdVoDzh7Dowo0MowoyBuScEBXrRabw6At5/IdtD3waKklKW5PGokPsm8KRN6rvQ1cw==
   dependencies:
     "@types/mini-css-extract-plugin" "^0.9.1"
     chalk "^3.0.0"
@@ -10193,13 +10200,6 @@ vue@^2.5.13, vue@^2.5.17:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
-
-vuedraggable@2.24.1:
-  version "2.24.1"
-  resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-2.24.1.tgz#304abd7644dde05c1f199a227bf9e9107f56197a"
-  integrity sha512-G1fxO1oshx+WLdieSGl6jSJdlHOQFga1FpjuUpgXldbpKNzxpjsGn4xYNnRHVrOAqm8aG5FfpdQlh5LHesxCeA==
-  dependencies:
-    sortablejs "^1.10.1"
 
 vuex-persistedstate@3.1.0:
   version "3.1.0"

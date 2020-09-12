@@ -29,8 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import * as XDraggable from 'vuedraggable';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faWindowMaximize, faTimes, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import MkSelect from '@/components/ui/select.vue';
@@ -42,7 +41,7 @@ import * as os from '@/os';
 export default defineComponent({
 	components: {
 		XColumn,
-		XDraggable,
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
 		MkSelect,
 		MkButton,
 	},

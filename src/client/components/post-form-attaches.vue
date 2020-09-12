@@ -13,8 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import * as XDraggable from 'vuedraggable';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
 import XFileThumbnail from './drive-file-thumbnail.vue'
@@ -22,7 +21,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XDraggable,
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
 		XFileThumbnail
 	},
 

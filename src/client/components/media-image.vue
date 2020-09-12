@@ -72,11 +72,8 @@ export default defineComponent({
 			if (this.$store.state.device.imageNewTab) {
 				window.open(this.image.url, '_blank');
 			} else {
-				const viewer = os.modal(ImageViewer, {
+				os.modal(ImageViewer, {
 					image: this.image
-				});
-				this.$once('hook:beforeDestroy', () => {
-					viewer.close();
 				});
 			}
 		}

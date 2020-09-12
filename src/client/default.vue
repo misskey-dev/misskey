@@ -104,7 +104,7 @@ export default defineComponent({
 		XSidebar,
 		XClock: defineAsyncComponent(() => import('@/components/header-clock.vue')),
 		MkButton: defineAsyncComponent(() => import('@/components/ui/button.vue')),
-		XDraggable: defineAsyncComponent(() => import('vuedraggable')),
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
 	},
 
 	data() {

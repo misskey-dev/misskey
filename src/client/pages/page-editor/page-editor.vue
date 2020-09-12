@@ -83,8 +83,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import * as XDraggable from 'vuedraggable';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -112,7 +111,8 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput, PrismEditor
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput, PrismEditor
 	},
 
 	props: {

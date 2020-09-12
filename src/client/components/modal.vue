@@ -166,8 +166,10 @@ export default defineComponent({
 		max-height: calc(100% - 16px);
 		overflow: auto;
 		display: flex;
-		justify-content: center;
-		align-items: center;
+
+		> * {
+			margin: auto;
+		}
 	}
 
 	> .content.popup {

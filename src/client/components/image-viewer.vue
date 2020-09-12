@@ -1,19 +1,17 @@
 <template>
-<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<img class="xubzgfga" ref="img" :src="image.url" :alt="image.name" :title="image.name" @click="close" tabindex="-1"/>
-</x-modal>
+<div class="xubzgfga">
+	<header>{{ image.name }}</header>
+	<img :src="image.url" :alt="image.name" :title="image.name" @click="close"/>
+	<footer>{{ image.type }}, {{ bytes(image.size) }}</footer>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XModal from './modal.vue';
 import * as os from '@/os';
+import bytes from '@/filters/bytes';
 
 export default defineComponent({
-	components: {
-		XModal,
-	},
-
 	props: {
 		image: {
 			type: Object,
@@ -21,32 +19,34 @@ export default defineComponent({
 		},
 	},
 
-	mounted() {
-		this.$nextTick(() => {
-			this.$refs.img.focus();
-		});
-	},
-
 	methods: {
 		close() {
-			this.$refs.modal.close();
+			this.$emit('done');
 		},
+
+		bytes,
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .xubzgfga {
-	position: fixed;
-	z-index: 2;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	max-width: 100%;
-	max-height: 100%;
-	margin: auto;
-	cursor: zoom-out;
-	image-orientation: from-image;
+	max-width: 1024px;
+
+	> header {
+		margin-bottom: 8px;
+	}
+
+	> img {
+		display: block;
+		max-width: 100%;
+		cursor: zoom-out;
+		image-orientation: from-image;
+	}
+
+	> footer {
+		margin-top: 8px;
+		opacity: 0.7;
+	}
 }
 </style>
