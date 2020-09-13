@@ -1,65 +1,63 @@
 <template>
-<XModal :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="omfetrab">
-		<header>
-			<button v-for="(category, i) in categories"
-				class="_button"
-				@click="go(category)"
-				:class="{ active: category.isActive }"
-				:key="i"
-			>
-				<fa :icon="category.icon" fixed-width/>
-			</button>
-		</header>
+<div class="omfetrab">
+	<header>
+		<button v-for="(category, i) in categories"
+			class="_button"
+			@click="go(category)"
+			:class="{ active: category.isActive }"
+			:key="i"
+		>
+			<fa :icon="category.icon" fixed-width/>
+		</button>
+	</header>
 
-		<div class="emojis">
-			<template v-if="categories[0].isActive">
-				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
+	<div class="emojis">
+		<template v-if="categories[0].isActive">
+			<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
+			<div class="list">
+				<button v-for="(emoji, i) in ($store.state.device.recentEmojis || [])"
+					class="_button"
+					:title="emoji.name"
+					@click="chosen(emoji)"
+					:key="i"
+				>
+					<mk-emoji v-if="emoji.char != null" :emoji="emoji.char"/>
+					<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+				</button>
+			</div>
+
+			<header class="category"><fa :icon="faAsterisk" fixed-width/> {{ $t('customEmojis') }}</header>
+		</template>
+
+		<template v-if="categories.find(x => x.isActive).name">
+			<div class="list">
+				<button v-for="emoji in emojilist.filter(e => e.category === categories.find(x => x.isActive).name)"
+					class="_button"
+					:title="emoji.name"
+					@click="chosen(emoji)"
+					:key="emoji.name"
+				>
+					<mk-emoji :emoji="emoji.char"/>
+				</button>
+			</div>
+		</template>
+		<template v-else>
+			<div v-for="(key, i) in Object.keys(customEmojis)" :key="i">
+				<header class="sub" v-if="key">{{ key }}</header>
 				<div class="list">
-					<button v-for="(emoji, i) in ($store.state.device.recentEmojis || [])"
-						class="_button"
-						:title="emoji.name"
-						@click="chosen(emoji)"
-						:key="i"
-					>
-						<mk-emoji v-if="emoji.char != null" :emoji="emoji.char"/>
-						<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
-					</button>
-				</div>
-
-				<header class="category"><fa :icon="faAsterisk" fixed-width/> {{ $t('customEmojis') }}</header>
-			</template>
-
-			<template v-if="categories.find(x => x.isActive).name">
-				<div class="list">
-					<button v-for="emoji in emojilist.filter(e => e.category === categories.find(x => x.isActive).name)"
+					<button v-for="emoji in customEmojis[key]"
 						class="_button"
 						:title="emoji.name"
 						@click="chosen(emoji)"
 						:key="emoji.name"
 					>
-						<mk-emoji :emoji="emoji.char"/>
+						<img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
-			</template>
-			<template v-else>
-				<div v-for="(key, i) in Object.keys(customEmojis)" :key="i">
-					<header class="sub" v-if="key">{{ key }}</header>
-					<div class="list">
-						<button v-for="emoji in customEmojis[key]"
-							class="_button"
-							:title="emoji.name"
-							@click="chosen(emoji)"
-							:key="emoji.name"
-						>
-							<img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
-						</button>
-					</div>
-				</div>
-			</template>
-		</div>
+			</div>
+		</template>
 	</div>
-</XModal>
+</div>
 </template>
 
 <script lang="ts">
@@ -69,13 +67,10 @@ import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import { groupByX } from '../../prelude/array';
-import XModal from './modal.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	components: {
-		XModal,
-	},
+	emits: ['done'],
 
 	props: {
 		source: {
@@ -163,12 +158,8 @@ export default defineComponent({
 			recents = recents.filter((e: any) => getKey(e) !== getKey(emoji));
 			recents.unshift(emoji)
 			this.$store.commit('device/set', { key: 'recentEmojis', value: recents.splice(0, 16) });
-			this.$emit('chosen', getKey(emoji));
+			this.$emit('done', getKey(emoji));
 		},
-
-		close() {
-			this.$refs.popup.close();
-		}
 	}
 });
 </script>

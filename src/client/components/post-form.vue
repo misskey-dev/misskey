@@ -606,11 +606,10 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			const vm = os.modal(await import('./emoji-picker.vue'), {
-				source: ev.currentTarget || ev.target
-			}).$once('chosen', emoji => {
+			os.modal(defineAsyncComponent(() => import('@/components/emoji-picker.vue')), {}, emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
-				vm.close();
+			}, {
+				source: ev.currentTarget || ev.target
 			});
 		},
 
