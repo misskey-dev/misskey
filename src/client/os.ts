@@ -1,8 +1,8 @@
 import { Component, defineAsyncComponent, markRaw, ref } from 'vue';
+import * as PCancelable from 'p-cancelable';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
-import * as EventEmitter from 'eventemitter3';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -45,90 +45,92 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	return promise;
 }
 
-export function popup(component: Component, props: Record<string, any>, callback?: Function, option?) {
-	markRaw(component);
-	const id = Math.random().toString(); // TODO: uuidとか使う
-	const showing = ref(true);
-	const close = (...args) => {
-		if (callback) callback(...args);
-		showing.value = false;
-	};
-	const modal = {
-		type: 'popup',
-		component,
-		props,
-		showing,
-		source: option?.source,
-		done: close,
-		bgClick: () => close(),
-		closed: () => {
-			store.commit('removePopup', id);
-		},
-		id,
-	};
-	store.commit('addPopup', modal);
-	return close;
-}
+export function popup(component: Component, props: Record<string, any>, events = {}, option?) {
+	return new PCancelable((resolve, reject, onCancel) => {
+		markRaw(component);
+		const id = Math.random().toString(); // TODO: uuidとか使う
+		const showing = ref(true);
+		const close = (...args) => {
+			resolve(...args);
+			showing.value = false;
+		};
+		const modal = {
+			type: 'popup',
+			component,
+			props,
+			showing,
+			events,
+			source: option?.source,
+			done: close,
+			bgClick: () => close(),
+			closed: () => {
+				store.commit('removePopup', id);
+			},
+			id,
+		};
+		store.commit('addPopup', modal);
 
-export function modal(component: Component, props: Record<string, any>, callback?: Function, option?) {
-	//const controller = new EventEmitter();
-	//markRaw(controller);
-	markRaw(component);
-	const id = Math.random().toString(); // TODO: uuidとか使う
-	const showing = ref(true);
-	const close = (...args) => {
-		if (callback) callback(...args);
-		showing.value = false;
-	};
-	const modal = {
-		type: 'modal',
-		component,
-		props,
-		showing,
-		source: option?.source,
-		done: close,
-		bgClick: () => {
-			if (option?.cancelableByBgClick === false) return;
+		onCancel.shouldReject = false;
+		onCancel(() => {
 			close();
-		},
-		closed: () => {
-			store.commit('removePopup', id);
-		},
-		id,
-	};
-	store.commit('addPopup', modal);
-	return close;
-}
-
-export function dialog(props: Record<string, any>) {
-	const cancelableByBgClick = props.cancelableByBgClick;
-	return new Promise((res, rej) => {
-		modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, result => {
-			if (result) {
-				res(result);
-			} else {
-				res({ canceled: true });
-			}
-		}, {
-			cancelableByBgClick
 		});
 	});
 }
 
-export function menu(props: Record<string, any>) {
-	const source = props.source; // TODO: sourceはpropsの外に出して追加の引数として受け取るようにする
-	return new Promise((res, rej) => {
-		modal(defineAsyncComponent(() => import('@/components/menu.vue')), props, res, {
-			position: 'source',
-			source
+export function modal(component: Component, props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
+	return new PCancelable((resolve, reject, onCancel) => {
+		markRaw(component);
+		const id = Math.random().toString(); // TODO: uuidとか使う
+		const showing = ref(true);
+		const close = (...args) => {
+			resolve(...args);
+			showing.value = false;
+		};
+		const modal = {
+			type: 'modal',
+			component,
+			props,
+			showing,
+			events,
+			source: option?.source,
+			done: close,
+			bgClick: () => {
+				if (option?.cancelableByBgClick === false) return;
+				close();
+			},
+			closed: () => {
+				store.commit('removePopup', id);
+			},
+			id,
+		};
+		store.commit('addPopup', modal);
+
+		onCancel.shouldReject = false;
+		onCancel(() => {
+			close();
 		});
+	});
+}
+
+export function dialog(props: Record<string, any>, opts?: { cancelableByBgClick: boolean; }) {
+	return modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {}, { cancelableByBgClick: opts?.cancelableByBgClick }).then(result => {
+		if (result) {
+			return result;
+		} else {
+			return { canceled: true };
+		}
+	});
+}
+
+export function menu(props: Record<string, any>, opts?: { source: any; }) {
+	return modal(defineAsyncComponent(() => import('@/components/menu.vue')), props, {}, {
+		position: 'source',
+		source: opts?.source
 	});
 }
 
 export function post(props: Record<string, any>) {
-	return new Promise((res, rej) => {
-		modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props, res);
-	});
+	return modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props);
 }
 
 export function sound(type: string) {

@@ -188,6 +188,7 @@
 		"nprogress": "0.2.0",
 		"object-assign-deep": "0.4.0",
 		"os-utils": "0.0.14",
+		"p-cancelable": "2.0.0",
 		"parse5": "6.0.1",
 		"parsimmon": "1.15.0",
 		"pg": "8.3.2",
