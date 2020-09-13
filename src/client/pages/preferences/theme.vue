@@ -188,7 +188,7 @@ export default defineComponent({
 
 	methods: {
 		setWallpaper(e) {
-			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				this.wallpaper = file.url;
 			});
 		},

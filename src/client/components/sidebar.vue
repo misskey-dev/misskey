@@ -176,6 +176,7 @@ export default defineComponent({
 							align: 'left',
 							fixed: true,
 							width: 240,
+						}, {
 							source: ev.currentTarget || ev.target,
 						});
 					},
@@ -183,6 +184,7 @@ export default defineComponent({
 				align: 'left',
 				fixed: true,
 				width: 240,
+			}, {
 				source: ev.currentTarget || ev.target,
 			});
 		},
@@ -238,6 +240,7 @@ export default defineComponent({
 				align: 'left',
 				fixed: true,
 				width: 200,
+			}, {
 				source: ev.currentTarget || ev.target,
 			});
 		},
@@ -271,6 +274,7 @@ export default defineComponent({
 				align: 'left',
 				fixed: true,
 				width: 200,
+			}, {
 				source: ev.currentTarget || ev.target,
 			});
 		},

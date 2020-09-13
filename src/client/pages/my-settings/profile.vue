@@ -120,7 +120,7 @@ export default defineComponent({
 
 	methods: {
 		changeAvatar(e) {
-			selectFile(this, e.currentTarget || e.target, this.$t('avatar')).then(file => {
+			selectFile(e.currentTarget || e.target, this.$t('avatar')).then(file => {
 				os.api('i/update', {
 					avatarId: file.id,
 				});
@@ -128,7 +128,7 @@ export default defineComponent({
 		},
 
 		changeBanner(e) {
-			selectFile(this, e.currentTarget || e.target, this.$t('banner')).then(file => {
+			selectFile(e.currentTarget || e.target, this.$t('banner')).then(file => {
 				os.api('i/update', {
 					bannerId: file.id,
 				});

@@ -158,7 +158,7 @@ export default defineComponent({
 		},
 
 		chooseFile(e) {
-			selectFile(this, e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
+			selectFile(e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
 				this.file = file;
 			});
 		},

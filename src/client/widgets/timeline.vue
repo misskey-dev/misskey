@@ -108,7 +108,8 @@ export default defineComponent({
 					action: () => { this.setSrc('global') }
 				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems],
 				noCenter: true,
-				source: ev.currentTarget || ev.target
+			}, {
+				source: ev.currentTarget || ev.target,
 			}).then(() => {
 				this.menuOpened = false;
 			});

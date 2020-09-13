@@ -70,7 +70,8 @@ export default defineComponent({
 				}],
 				fixed: true,
 				noCenter: true,
-				source: ev.currentTarget || ev.target
+			}, {
+				source: ev.currentTarget || ev.target,
 			}).then(() => {
 				this.menuOpened = false;
 			});

@@ -224,7 +224,7 @@ export default defineComponent({
 		},
 
 		chooseImage(key, e) {
-			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				room.updateProp(key, `/proxy/?${urlQuery({ url: file.thumbnailUrl })}`);
 				this.$refs.preview.selected(room.getSelectedObject());
 				this.changed = true;

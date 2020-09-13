@@ -468,9 +468,10 @@ export default defineComponent({
 							renote: this.appearNote,
 						});
 					}
-				}]
-				source: this.$refs.renoteButton,
+				}],
 				viaKeyboard
+			}, {
+				source: this.$refs.renoteButton,
 			});
 		},
 
@@ -684,8 +685,9 @@ export default defineComponent({
 
 			os.menu({
 				items: menu,
-				source: this.$refs.menuButton,
 				viaKeyboard
+			}, {
+				source: this.$refs.menuButton,
 			}).then(this.focus);
 		},
 
@@ -702,8 +704,9 @@ export default defineComponent({
 						this.isDeleted = true;
 					}
 				}],
-				source: this.$refs.renoteTime,
 				viaKeyboard: viaKeyboard
+			}, {
+				source: this.$refs.renoteTime,
 			});
 		},
 

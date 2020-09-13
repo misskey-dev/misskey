@@ -108,6 +108,7 @@ export default defineComponent({
 						icon: faTrashAlt,
 						action: this.deleteFile
 					}],
+				}, {
 					source: ev.currentTarget || ev.target,
 				});
 			}

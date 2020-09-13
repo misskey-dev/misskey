@@ -127,7 +127,7 @@ export default defineComponent({
 
 	methods: {
 		async add(e) {
-			const files = await selectFile(this, e.currentTarget || e.target, null, true);
+			const files = await selectFile(e.currentTarget || e.target, null, true);
 
 			const dialog = os.dialog({
 				type: 'waiting',

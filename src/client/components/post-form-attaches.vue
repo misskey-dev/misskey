@@ -94,7 +94,8 @@ export default defineComponent({
 					icon: faTimesCircle,
 					action: () => { this.detachMedia(file.id) }
 				}],
-				source: ev.currentTarget || ev.target
+			}, {
+				source: ev.currentTarget || ev.target,
 			}).then(() => this.menu = null);
 		}
 	}

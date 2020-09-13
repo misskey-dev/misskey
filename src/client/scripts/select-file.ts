@@ -1,18 +1,20 @@
 import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { selectDriveFile } from './select-drive-file';
 import { apiUrl } from '@/config';
+import { store } from '@/store';
+import * as os from '@/os';
+import { locale } from '@/i18n';
 
-// TODO: component引数は消せる(各種操作がstoreに移動し、かつstoreが複数ファイルで共有されるようになったため)
-export function selectFile(component: any, src: any, label: string | null, multiple = false) {
+export function selectFile(src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
 		const chooseFileFromPc = () => {
 			const input = document.createElement('input');
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const dialog = component.os.dialog({
+				const dialog = os.dialog({
 					type: 'waiting',
-					text: component.$t('uploading') + '...',
+					text: locale['uploading'] + '...',
 					showOkButton: false,
 					showCancelButton: false,
 					cancelableByBgClick: false
@@ -21,7 +23,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 				const promises = Array.from(input.files).map(file => new Promise((ok, err) => {
 					const data = new FormData();
 					data.append('file', file);
-					data.append('i', component.$store.state.i.token);
+					data.append('i', store.state.i.token);
 
 					fetch(apiUrl + '/drive/files/create', {
 						method: 'POST',
@@ -35,12 +37,12 @@ export function selectFile(component: any, src: any, label: string | null, multi
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
 				}).catch(e => {
-					component.os.dialog({
+					os.dialog({
 						type: 'error',
 						text: e
 					});
 				}).finally(() => {
-					dialog.close();
+					dialog.cancel();
 				});
 
 				// 一応廃棄
@@ -55,7 +57,7 @@ export function selectFile(component: any, src: any, label: string | null, multi
 		};
 
 		const chooseFileFromDrive = () => {
-			selectDriveFile(component.$root, multiple).then(files => {
+			selectDriveFile(multiple).then(files => {
 				res(files);
 			});
 		};
@@ -65,24 +67,25 @@ export function selectFile(component: any, src: any, label: string | null, multi
 
 		};
 
-		component.os.menu({
+		os.menu({
 			items: [label ? {
 				text: label,
 				type: 'label'
 			} : undefined, {
-				text: component.$t('upload'),
+				text: locale['upload'],
 				icon: faUpload,
 				action: chooseFileFromPc
 			}, {
-				text: component.$t('fromDrive'),
+				text: locale['fromDrive'],
 				icon: faCloud,
 				action: chooseFileFromDrive
 			}, /*{
-				text: component.$t('fromUrl'),
+				text: locale('fromUrl'),
 				icon: faLink,
 				action: chooseFileFromUrl
 			}*/],
-			source: src
+		}, {
+			source: src,
 		});
 	});
 }

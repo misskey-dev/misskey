@@ -113,12 +113,23 @@ export function modal(component: Component, props: Record<string, any>, events =
 }
 
 export function dialog(props: Record<string, any>, opts?: { cancelableByBgClick: boolean; }) {
-	return modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {}, { cancelableByBgClick: opts?.cancelableByBgClick }).then(result => {
-		if (result) {
-			return result;
-		} else {
-			return { canceled: true };
-		}
+	return new PCancelable((resolve, reject, onCancel) => {
+		const dialog = modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {}, { cancelableByBgClick: opts?.cancelableByBgClick });
+
+		dialog.then(result => {
+			if (result) {
+				resolve(result);
+			} else {
+				resolve({ canceled: true });
+			}
+		});
+
+		dialog.catch(reject);
+
+		onCancel.shouldReject = false;
+		onCancel(() => {
+			dialog.cancel();
+		});
 	});
 }
 

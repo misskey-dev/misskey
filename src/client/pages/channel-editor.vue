@@ -111,7 +111,7 @@ export default defineComponent({
 		},
 
 		setBannerImage(e) {
-			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				this.bannerId = file.id;
 			});
 		},

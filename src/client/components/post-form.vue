@@ -366,7 +366,8 @@ export default defineComponent({
 					icon: faLink,
 					action: () => { this.chooseFileFromUrl() }
 				}],
-				source: ev.currentTarget || ev.target
+			}, {
+				source: ev.currentTarget || ev.target,
 			});
 		},
 
@@ -625,6 +626,7 @@ export default defineComponent({
 						});
 					}
 				})),
+			}, {
 				source: ev.currentTarget || ev.target,
 			});
 		}

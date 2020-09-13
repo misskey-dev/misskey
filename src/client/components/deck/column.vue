@@ -210,6 +210,7 @@ export default defineComponent({
 		showMenu() {
 			os.menu({
 				items: this.getMenu(),
+			}, {
 				source: this.$refs.menu,
 			});
 		},

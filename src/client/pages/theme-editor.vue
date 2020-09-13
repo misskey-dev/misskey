@@ -279,6 +279,7 @@ export default defineComponent({
 							type: 'refConst', key: '',
 						}),
 					},],
+				}, {
 					source: e.currentTarget || e.target,
 				});
 			});

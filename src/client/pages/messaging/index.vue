@@ -127,6 +127,7 @@ export default defineComponent({
 					action: () => { this.startGroup() }
 				}],
 				noCenter: true,
+			}, {
 				source: ev.currentTarget || ev.target,
 			});
 		},

@@ -192,7 +192,8 @@ export default defineComponent({
 				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems],
 				fixed: true,
 				noCenter: true,
-				source: ev.currentTarget || ev.target
+			}, {
+				source: ev.currentTarget || ev.target,
 			}).then(() => {
 				this.menuOpened = false;
 			});
