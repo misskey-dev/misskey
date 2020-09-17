@@ -328,8 +328,7 @@ export default Vue.extend({
 		},
 
 		async onNotification(notification) {
-			const t = this.$store.state.i.includingNotificationTypes;
-			if (!!t && !t.includes(notification.type)) {
+			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
 				return;
 			}
 			if (document.visibilityState === 'visible') {
