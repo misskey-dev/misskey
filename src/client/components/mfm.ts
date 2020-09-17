@@ -279,7 +279,7 @@ export default Vue.component('misskey-flavored-markdown', {
 				}
 
 				default: {
-					console.log('unknown ast type:', token.node.type);
+					console.log('unrecognized ast type:', token.node.type);
 
 					return [];
 				}
