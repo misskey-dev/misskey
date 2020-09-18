@@ -58,7 +58,7 @@ export default Vue.extend({
 
 	computed: {
 		allIncludeTypes() {
-			return this.includeTypes ?? this.$store.state.i.includingNotificationTypes;
+			return this.includeTypes ?? notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
 		}
 	},
 
@@ -66,7 +66,7 @@ export default Vue.extend({
 		includeTypes() {
 			this.reload();
 		},
-		'$store.state.i.includingNotificationTypes'() {
+		'$store.state.i.mutingNotificationTypes'() {
 			if (this.includeTypes === null) {
 				this.reload();
 			}
@@ -84,8 +84,7 @@ export default Vue.extend({
 
 	methods: {
 		onNotification(notification) {
-			// 
-			const isMuted = !!this.allIncludeTypes && !this.allIncludeTypes.includes(notification.type);
+			const isMuted = !this.allIncludeTypes.includes(notification.type);
 			if (isMuted || document.visibilityState === 'visible') {
 				this.$root.stream.send('readNotification', {
 					id: notification.id

@@ -58,6 +58,7 @@ import XIntegration from './integration.vue';
 import XApi from './api.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkSwitch from '../../components/ui/switch.vue';
+import { notificationTypes } from '../../../types';
 
 export default Vue.extend({
 	metaInfo() {
@@ -114,14 +115,15 @@ export default Vue.extend({
 		},
 
 		async configure() {
+			const includingTypes = notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
 			this.$root.new(await import('../../components/notification-setting-window.vue').then(m => m.default), {
-				includingTypes: this.$store.state.i.includingNotificationTypes,
+				includingTypes,
 				showGlobalToggle: false,
 			}).$on('ok', async ({ includingTypes: value }: any) => {
 				await this.$root.api('i/update', {
-					includingNotificationTypes: value,
+					mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
 				}).then(i => {
-					this.$store.state.i.includingNotificationTypes = i.includingNotificationTypes;
+					this.$store.state.i.mutingNotificationTypes = i.mutingNotificationTypes;
 				}).catch(err => {
 					this.$root.dialog({
 						type: 'error',
