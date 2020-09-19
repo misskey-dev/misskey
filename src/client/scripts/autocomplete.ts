@@ -41,6 +41,8 @@ export class Autocomplete {
 		this.vm = vm;
 		this.opts = opts;
 		this.opening = false;
+
+		this.attach();
 	}
 
 	/**
