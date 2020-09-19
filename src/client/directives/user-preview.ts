@@ -29,7 +29,6 @@ export default {
 
 			self.close = os.popup(MkUserPreview, {
 				user: self.user,
-			}, null, {
 				source: el
 			});
 

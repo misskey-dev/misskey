@@ -60,7 +60,6 @@ export function popup(component: Component, props: Record<string, any>, events =
 			props,
 			showing,
 			events,
-			source: option?.source,
 			done: close,
 			bgClick: () => close(),
 			closed: () => {

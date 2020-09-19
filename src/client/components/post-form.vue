@@ -33,8 +33,8 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
-		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
+		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')">
+		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<x-post-form-attaches class="attaches" :files="files"/>
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
@@ -68,6 +68,7 @@ import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
 import { selectDriveFile } from '@/scripts/select-drive-file';
+import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
 import { utils } from '@syuilo/aiscript';
 import * as os from '@/os';
@@ -279,6 +280,9 @@ export default defineComponent({
 		this.$nextTick(() => {
 			this.focus();
 		});
+
+		new Autocomplete(this.$refs.text, this, { model: 'text' });
+		new Autocomplete(this.$refs.cw, this, { model: 'cw' });
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元

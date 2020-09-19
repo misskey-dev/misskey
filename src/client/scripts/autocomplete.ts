@@ -1,25 +1,15 @@
-import { Directive } from 'vue';
+import { Ref, ref } from 'vue';
 import * as getCaretCoordinates from 'textarea-caret';
 import { toASCII } from 'punycode';
+import { popup } from '@/os';
 
-export default {
-	mounted(el, binding, vn) {
-		const self = el._autoCompleteDirective_ = {} as any;
-		self.x = new Autocomplete(el, vn.context, binding.value);
-		self.x.attach();
-	},
-
-	unmounted(el, binding, vn) {
-		const self = el._autoCompleteDirective_;
-		self.x.detach();
-	}
-} as Directive;
-
-/**
- * オートコンプリートを管理するクラス。
- */
-class Autocomplete {
-	private suggestion: any;
+export class Autocomplete {
+	private suggestion: {
+		x: Ref<number>;
+		y: Ref<number>;
+		q: Ref<string>;
+		close: Function;
+	};
 	private textarea: any;
 	private vm: any;
 	private currentType: string;
@@ -148,31 +138,34 @@ class Autocomplete {
 		//#endregion
 
 		if (this.suggestion) {
-			// TODO: Vueの警告が出るのでなんとかする
-			this.suggestion.x = x;
-			this.suggestion.y = y;
-			this.suggestion.q = q;
+			this.suggestion.x.value = x;
+			this.suggestion.y.value = y;
+			this.suggestion.q.value = q;
 
 			this.opening = false;
 		} else {
 			const MkAutocomplete = await import('@/components/autocomplete.vue');
 
-			// サジェスト要素作成
-			this.suggestion = new MkAutocomplete({
-				parent: this.vm,
-				propsData: {
-					textarea: this.textarea,
-					complete: this.complete,
-					close: this.close,
-					type: type,
-					q: q,
-					x,
-					y
-				}
-			}).$mount();
+			const _x = ref(x);
+			const _y = ref(y);
+			const _q = ref(q);
 
-			// 要素追加
-			document.body.appendChild(this.suggestion.$el);
+			const promise = popup(MkAutocomplete, {
+				textarea: this.textarea,
+				complete: this.complete,
+				close: this.close,
+				type: type,
+				q: _q,
+				x: _x,
+				y: _y,
+			});
+
+			this.suggestion = {
+				q: _q,
+				x: _x,
+				y: _y,
+				close: () => promise.cancel(),
+			};
 
 			this.opening = false;
 		}
@@ -184,7 +177,7 @@ class Autocomplete {
 	private close() {
 		if (this.suggestion == null) return;
 
-		this.suggestion.destroyDom();
+		this.suggestion.close();
 		this.suggestion = null;
 
 		this.textarea.focus();
