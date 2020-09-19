@@ -35,6 +35,7 @@ import { twemojiSvgBase } from '../../misc/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import MkUserSelect from './user-select.vue';
 import { acct } from '../filters/user';
+import * as os from '@/os';
 
 type EmojiDef = {
 	emoji: string;
@@ -74,7 +75,6 @@ for (const x of lib) {
 }
 
 emjdb.sort((a, b) => a.name.length - b.name.length);
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {

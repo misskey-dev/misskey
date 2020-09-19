@@ -9,7 +9,6 @@
 		@keypress="onKeypress"
 		@paste="onPaste"
 		:placeholder="$t('inputMessageHere')"
-		v-autocomplete="{ model: 'text' }"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
 	<x-uploader ref="uploader" @uploaded="onUploaded"/>
@@ -30,6 +29,7 @@ import * as autosize from 'autosize';
 import { formatTimeString } from '../../../misc/format-time-string';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
+import { Autocomplete } from '@/scripts/autocomplete';
 
 export default defineComponent({
 	components: {
@@ -78,6 +78,8 @@ export default defineComponent({
 	},
 	mounted() {
 		autosize(this.$refs.text);
+
+		new Autocomplete(this.$refs.text, this, { model: 'text' });
 
 		// 書きかけの投稿を復元
 		const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[this.draftKey];

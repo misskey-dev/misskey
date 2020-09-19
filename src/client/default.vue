@@ -16,7 +16,7 @@
 			</template>
 			<div class="search">
 				<fa :icon="faSearch"/>
-				<input type="search" :placeholder="$t('search')" v-model="searchQuery" v-autocomplete="{ model: 'searchQuery' }" :disabled="searchWait" @keypress="searchKeypress"/>
+				<input type="search" ref="search" :placeholder="$t('search')" v-model="searchQuery" :disabled="searchWait" @keypress="searchKeypress"/>
 			</div>
 			<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
 			<x-clock v-if="isDesktop" class="clock"/>
@@ -95,6 +95,7 @@ import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { widgets } from './widgets';
 import XSidebar from '@/components/sidebar.vue';
+import { Autocomplete } from '@/scripts/autocomplete';
 import * as os from './os';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -239,6 +240,8 @@ export default defineComponent({
 
 		// widget follow
 		this.attachSticky();
+
+		new Autocomplete(this.$refs.search, this, { model: 'searchQuery' });
 
 		this.$nextTick(() => {
 			this.calcHeaderWidth();
