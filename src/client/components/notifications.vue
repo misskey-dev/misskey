@@ -59,7 +59,7 @@ export default defineComponent({
 
 	computed: {
 		allIncludeTypes() {
-			return this.includeTypes ?? this.$store.state.i.includingNotificationTypes;
+			return this.includeTypes ?? notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
 		}
 	},
 
@@ -67,7 +67,7 @@ export default defineComponent({
 		includeTypes() {
 			this.reload();
 		},
-		'$store.state.i.includingNotificationTypes'() {
+		'$store.state.i.mutingNotificationTypes'() {
 			if (this.includeTypes === null) {
 				this.reload();
 			}
@@ -85,8 +85,7 @@ export default defineComponent({
 
 	methods: {
 		onNotification(notification) {
-			// 
-			const isMuted = !!this.allIncludeTypes && !this.allIncludeTypes.includes(notification.type);
+			const isMuted = !this.allIncludeTypes.includes(notification.type);
 			if (isMuted || document.visibilityState === 'visible') {
 				os.stream.send('readNotification', {
 					id: notification.id

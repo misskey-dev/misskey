@@ -58,6 +58,7 @@ import XApi from './api.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import * as os from '@/os';
+import { notificationTypes } from '../../../types';
 
 export default defineComponent({
 	metaInfo() {
@@ -114,14 +115,15 @@ export default defineComponent({
 		},
 
 		async configure() {
+			const includingTypes = notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
 			os.modal(await import('@/components/notification-setting-window.vue'), {
-				includingTypes: this.$store.state.i.includingNotificationTypes,
+				includingTypes,
 				showGlobalToggle: false,
 			}).$on('ok', async ({ includingTypes: value }: any) => {
 				await os.api('i/update', {
-					includingNotificationTypes: value,
+					mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
 				}).then(i => {
-					this.$store.state.i.includingNotificationTypes = i.includingNotificationTypes;
+					this.$store.state.i.mutingNotificationTypes = i.mutingNotificationTypes;
 				}).catch(err => {
 					os.dialog({
 						type: 'error',
