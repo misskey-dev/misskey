@@ -123,7 +123,9 @@ export default defineComponent({
 					information: this.$t('pluginTokenRequestedDescription'),
 					initialName: name,
 					initialPermissions: permissions
-				}).then(async ({ name, permissions }) => {
+				}).then(async result => {
+					if (result == null) return;
+					const { name, permissions } = result;
 					const { token } = await os.api('miauth/gen-token', {
 						session: null,
 						name: name,

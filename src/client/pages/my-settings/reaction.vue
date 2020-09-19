@@ -58,13 +58,10 @@ export default defineComponent({
 		},
 
 		preview(ev) {
-			const picker = os.modal(MkReactionPicker, {
+			os.modal(MkReactionPicker, {
 				source: ev.currentTarget || ev.target,
 				reactions: this.splited,
 				showFocus: false,
-			});
-			picker.$once('chosen', reaction => {
-				picker.close();
 			});
 		},
 

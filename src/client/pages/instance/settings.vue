@@ -453,6 +453,7 @@ export default defineComponent({
 
 		addPinUser() {
 			os.modal(MkUserSelect, {}).then(user => {
+				if (user == null) return;
 				this.pinnedUsers = this.pinnedUsers.trim();
 				this.pinnedUsers += '\n@' + getAcct(user);
 				this.pinnedUsers = this.pinnedUsers.trim();
@@ -461,6 +462,7 @@ export default defineComponent({
 
 		chooseProxyAccount() {
 			os.modal(MkUserSelect, {}).then(user => {
+				if (user == null) return;
 				this.proxyAccount = user;
 				this.proxyAccountId = user.id;
 				this.save(true);
