@@ -55,7 +55,7 @@ export default defineComponent({
 			this.tickId = window.requestAnimationFrame(this.tick);
 		}
 	},
-	destroyed() {
+	unmounted() {
 		if (this.mode === 'relative' || this.mode === 'detail') {
 			window.clearTimeout(this.tickId);
 		}

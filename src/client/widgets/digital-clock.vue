@@ -55,7 +55,7 @@ export default defineComponent({
 			this.clock = setInterval(this.tick, this.props.showMs ? 10 : 1000);
 		}, { immediate: true });
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {

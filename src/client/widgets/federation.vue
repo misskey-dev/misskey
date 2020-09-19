@@ -65,7 +65,7 @@ export default defineComponent({
 		this.fetch();
 		this.clock = setInterval(this.fetch, 1000 * 60);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {

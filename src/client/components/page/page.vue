@@ -71,7 +71,7 @@ export default defineComponent({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.hpml.aiscript) this.hpml.aiscript.abort();
 	},
 });

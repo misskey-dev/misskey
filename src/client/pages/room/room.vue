@@ -158,7 +158,7 @@ export default defineComponent({
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		room.destroy();
 		window.removeEventListener('beforeunload', this.beforeunload);
 	},

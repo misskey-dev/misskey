@@ -47,7 +47,7 @@ export default defineComponent({
 		this.size();
 		window.addEventListener('resize', this.size);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.size);
 	},
 	activated() {

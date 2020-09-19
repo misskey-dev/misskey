@@ -124,7 +124,7 @@ export default defineComponent({
 		},
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.beforeunload);
 	},
 

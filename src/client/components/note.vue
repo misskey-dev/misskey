@@ -293,7 +293,7 @@ export default defineComponent({
 		this.noteBody = this.$refs.noteBody;
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.decapture(true);
 
 		if (this.$store.getters.isSignedIn) {

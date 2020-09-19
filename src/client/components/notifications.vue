@@ -79,7 +79,7 @@ export default defineComponent({
 		this.connection.on('notification', this.onNotification);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 

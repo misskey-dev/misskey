@@ -136,7 +136,7 @@ export default defineComponent({
  		},
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		(window as any).removeEventListener('message', this.adjustTweetHeight);
 	},
 });

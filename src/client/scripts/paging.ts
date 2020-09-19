@@ -70,7 +70,7 @@ export default (opts) => ({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.ilObserver.disconnect();
 		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click', this.fetchMore);
 	},

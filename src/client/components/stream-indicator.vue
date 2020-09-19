@@ -26,7 +26,7 @@ export default defineComponent({
 	created() {
 		os.stream.on('_disconnected_', this.onDisconnected);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		os.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {

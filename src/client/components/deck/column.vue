@@ -112,7 +112,7 @@ export default defineComponent({
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (!this.isMainColumn) {
 			this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
 			this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);

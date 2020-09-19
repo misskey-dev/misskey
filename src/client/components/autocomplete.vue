@@ -191,7 +191,7 @@ export default defineComponent({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.textarea.removeEventListener('keydown', this.onKeydown);
 
 		for (const el of Array.from(document.querySelectorAll('body *'))) {

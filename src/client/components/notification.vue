@@ -117,7 +117,7 @@ export default defineComponent({
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (!this.notification.isRead) {
 			this.readObserver.unobserve(this.$el);
 			this.connection.dispose();

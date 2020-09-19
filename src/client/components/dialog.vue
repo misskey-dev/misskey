@@ -147,7 +147,7 @@ export default defineComponent({
 		document.addEventListener('keydown', this.onKeydown);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		document.removeEventListener('keydown', this.onKeydown);
 	},
 

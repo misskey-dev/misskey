@@ -156,7 +156,7 @@ export default defineComponent({
 		this.connection.on('statsLog', this.onStatsLog);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.off('stats', this.onStats);
 		this.connection.off('statsLog', this.onStatsLog);
 	},

@@ -534,7 +534,7 @@ export default defineComponent({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.off('stats', this.onStats);
 		this.connection.off('statsLog', this.onStatsLog);
 		this.connection.dispose();

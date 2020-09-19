@@ -62,7 +62,7 @@ export default defineComponent({
 			this.fetching = false;
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 	methods: {

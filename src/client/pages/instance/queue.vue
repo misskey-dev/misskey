@@ -52,7 +52,7 @@ export default defineComponent({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 

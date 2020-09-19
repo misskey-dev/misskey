@@ -66,7 +66,7 @@ export default defineComponent({
 		this.tick();
 		this.clock = setInterval(this.tick, 1000);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {

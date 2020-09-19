@@ -75,7 +75,7 @@ export default defineComponent({
 		this.connection.on('unfollow', this.onFollowChange);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 

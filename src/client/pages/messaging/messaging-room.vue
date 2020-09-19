@@ -88,7 +88,7 @@ export default defineComponent({
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 
 		document.removeEventListener('visibilitychange', this.onVisibilitychange);

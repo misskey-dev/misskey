@@ -165,7 +165,7 @@ export default defineComponent({
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 		this.ilFilesObserver.disconnect();
 	},
