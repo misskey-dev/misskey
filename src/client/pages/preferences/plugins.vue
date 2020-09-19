@@ -123,7 +123,7 @@ export default defineComponent({
 					information: this.$t('pluginTokenRequestedDescription'),
 					initialName: name,
 					initialPermissions: permissions
-				}).$on('ok', async ({ name, permissions }) => {
+				}).then(async ({ name, permissions }) => {
 					const { token } = await os.api('miauth/gen-token', {
 						session: null,
 						name: name,

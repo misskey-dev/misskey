@@ -1,5 +1,5 @@
 <template>
-<x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<x-window ref="window" :width="400" :height="450" :no-padding="true" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
 	<div class="ugkkpisj">
 		<div v-if="information">
@@ -62,6 +62,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['done'],
+
 	data() {
 		return {
 			name: this.initialName,
@@ -73,11 +75,11 @@ export default defineComponent({
 	created() {
 		if (this.initialPermissions) {
 			for (const kind of this.initialPermissions) {
-				Vue.set(this.permissions, kind, true);
+				this.permissions[kind] = true;
 			}
 		} else {
 			for (const kind of this.kinds) {
-				Vue.set(this.permissions, kind, false);
+				this.permissions[kind] = false;
 			}
 		}
 	},
