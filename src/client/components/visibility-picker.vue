@@ -71,6 +71,7 @@ export default defineComponent({
 	},
 	methods: {
 		choose(visibility) {
+			this.v = visibility;
 			if (this.$store.state.settings.rememberNoteVisibility) {
 				this.$store.commit('deviceUser/setVisibility', visibility);
 			}
