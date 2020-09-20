@@ -1,5 +1,5 @@
 <template>
-<div class="omfetrab">
+<div class="omfetrab _panel">
 	<header>
 		<button v-for="(category, i) in categories"
 			class="_button"
@@ -71,12 +71,6 @@ import * as os from '@/os';
 
 export default defineComponent({
 	emits: ['done'],
-
-	props: {
-		source: {
-			required: true
-		},
-	},
 
 	data() {
 		return {
