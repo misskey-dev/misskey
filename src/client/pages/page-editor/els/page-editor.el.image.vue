@@ -58,7 +58,7 @@ export default defineComponent({
 
 	methods: {
 		async choose() {
-			selectDriveFile(this.$root, false).then(file => {
+			selectDriveFile(false).then(file => {
 				this.file = file;
 				this.value.fileId = file.id;
 			});

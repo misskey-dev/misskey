@@ -1,6 +1,8 @@
 <template>
 <div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
-	<mk-url-preview :url="url"/>
+	<transition name="zoom" @after-leave="$emit('closed')">
+		<mk-url-preview :url="url" v-if="showing"/>
+	</transition>
 </div>
 </template>
 
@@ -21,7 +23,11 @@ export default defineComponent({
 		},
 		source: {
 			required: true
-		}
+		},
+		showing: {
+			type: Boolean,
+			required: true
+		},
 	},
 
 	data() {

@@ -342,7 +342,7 @@ export default defineComponent({
 				});
 			}
 
-			this.$root.sound('notification');
+			os.sound('notification');
 		},
 
 		widgetFunc(id) {

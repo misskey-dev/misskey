@@ -414,7 +414,7 @@ export default defineComponent({
 		},
 
 		setEyeCatchingImage() {
-			selectDriveFile(this.$root, false).then(file => {
+			selectDriveFile(false).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},

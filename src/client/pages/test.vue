@@ -2,7 +2,7 @@
 <div>
 	<portal to="header"><fa :icon="faExclamationTriangle"/>TEST</portal>
 
-	<div class="_card">
+	<div class="_card _vMargin">
 		<div class="_title">Dialog</div>
 		<div class="_content">
 			<mk-input v-model:value="dialogTitle">
@@ -26,6 +26,18 @@
 			<span>Result: {{ dialogResult }}</span>
 		</div>
 	</div>
+
+	<div class="_card _vMargin">
+		<div class="_title">MFM</div>
+		<div class="_content">
+			<mk-textarea v-model:value="mfm">
+				<span>MFM</span>
+			</mk-textarea>
+		</div>
+		<div class="_content">
+			<mfm :text="mfm"/>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -35,6 +47,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSwitch from '@/components/ui/switch.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -42,6 +55,7 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkSwitch,
+		MkTextarea,
 	},
 
 	metaInfo() {
@@ -58,6 +72,7 @@ export default defineComponent({
 			dialogCancelByBgClick: true,
 			dialogInput: false,
 			dialogResult: null,
+			mfm: '',
 			faExclamationTriangle
 		}
 	},

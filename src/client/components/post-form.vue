@@ -379,7 +379,7 @@ export default defineComponent({
 		},
 
 		chooseFileFromDrive() {
-			selectDriveFile(this.$root, true).then(files => {
+			selectDriveFile(true).then(files => {
 				for (const file of files) {
 					this.attachMedia(file);
 				}

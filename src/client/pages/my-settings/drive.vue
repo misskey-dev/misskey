@@ -38,7 +38,7 @@ export default defineComponent({
 
 	methods: {
 		chooseUploadFolder() {
-			selectDriveFolder(this.$root, false).then(async folder => {
+			selectDriveFolder(false).then(async folder => {
 				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
 				os.dialog({
 					type: 'success',

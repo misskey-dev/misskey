@@ -169,7 +169,7 @@ export default defineComponent({
 					notification
 				});
 			}
-			this.$root.sound('notification');
+			os.sound('notification');
 		},
 
 		async addColumn(ev) {

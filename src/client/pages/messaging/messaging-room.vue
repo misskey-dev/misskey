@@ -192,7 +192,7 @@ export default defineComponent({
 		},
 
 		onMessage(message) {
-			this.$root.sound('chat');
+			os.sound('chat');
 
 			const _isBottom = isBottom(this.$el, 64);
 

@@ -20,7 +20,6 @@ import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import MkInput from '@/components/ui/input.vue';
 import MkButton from '@/components/ui/button.vue';
-import MkReactionPicker from '@/components/reaction-picker.vue';
 import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
 import { defaultSettings } from '../../store';
 import * as os from '@/os';
@@ -57,11 +56,12 @@ export default defineComponent({
 			this.changed = false;
 		},
 
-		preview(ev) {
-			os.modal(MkReactionPicker, {
-				source: ev.currentTarget || ev.target,
+		async preview(ev) {
+			os.modal(await import('@/components/reaction-picker.vue'), {
 				reactions: this.splited,
 				showFocus: false,
+			}, {}, {
+				source: ev.currentTarget || ev.target,
 			});
 		},
 
@@ -70,11 +70,11 @@ export default defineComponent({
 		},
 
 		async chooseEmoji(ev) {
-			const vm = os.modal(await import('@/components/emoji-picker.vue'), {
+			os.modal(await import('@/components/emoji-picker.vue'), {
+			}, {}, {
 				source: ev.currentTarget || ev.target
-			}).$once('chosen', emoji => {
+			}).then(emoji => {
 				this.reactions += emoji;
-				vm.close();
 			});
 		}
 	}

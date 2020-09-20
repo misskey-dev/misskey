@@ -23,7 +23,6 @@ import { defineComponent } from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode as decodePunycode } from 'punycode';
 import { url as local } from '@/config';
-import MkUrlPreview from './url-preview-popup.vue';
 import { isDeviceTouch } from '@/scripts/is-device-touch';
 import * as os from '@/os';
 
@@ -54,7 +53,7 @@ export default defineComponent({
 			showTimer: null,
 			hideTimer: null,
 			checkTimer: null,
-			preview: null,
+			close: null,
 			faExternalLinkSquareAlt
 		};
 	},
@@ -68,29 +67,26 @@ export default defineComponent({
 		this.hash = decodeURIComponent(url.hash);
 	},
 	methods: {
-		showPreview() {
+		async showPreview() {
 			if (!document.body.contains(this.$el)) return;
-			if (this.preview) return;
+			if (this.close) return;
 
-			this.preview = new MkUrlPreview({
-				parent: this,
-				propsData: {
-					url: this.url,
-					source: this.$el
-				}
-			}).$mount();
+			const promise = os.popup(await import('@/components/url-preview-popup.vue'), {
+				url: this.url,
+				source: this.$el
+			});
 
-			document.body.appendChild(this.preview.$el);
+			this.close = promise.cancel;
 
 			this.checkTimer = setInterval(() => {
 				if (!document.body.contains(this.$el)) this.closePreview();
 			}, 1000);
 		},
 		closePreview() {
-			if (this.preview) {
+			if (this.close) {
 				clearInterval(this.checkTimer);
-				this.preview.destroyDom();
-				this.preview = null;
+				this.close();
+				this.close = null;
 			}
 		},
 		onMouseover() {
