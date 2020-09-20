@@ -143,6 +143,31 @@ export function dialog(props: Record<string, any>, opts?: { cancelableByBgClick:
 	});
 }
 
+export function selectDriveFile(multiple) {
+	return new Promise(async (res, rej) => {
+		modal(await import('@/components/drive-window.vue'), {
+			type: 'file',
+			multiple
+		}).then(files => {
+			res(multiple ? files : files[0]);
+		});
+	});
+}
+
+export function selectDriveFolder(multiple) {
+	return new Promise((res, rej) => {
+		import('@/components/drive-window.vue').then(dialog => {
+			const w = $root.new(dialog, {
+				type: 'folder',
+				multiple
+			});
+			w.$once('selected', folders => {
+				res(multiple ? folders : (folders.length === 0 ? null : folders[0]));
+			});
+		});
+	});
+}
+
 export function menu(props: Record<string, any>, opts?: { source: any; }) {
 	return modal(defineAsyncComponent(() => import('@/components/menu.vue')), props, {}, {
 		position: 'source',

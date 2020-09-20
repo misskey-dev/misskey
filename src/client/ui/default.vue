@@ -93,10 +93,10 @@ import { v4 as uuid } from 'uuid';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
-import { widgets } from './widgets';
+import { widgets } from '@/widgets';
 import XSidebar from '@/components/sidebar.vue';
 import { Autocomplete } from '@/scripts/autocomplete';
-import * as os from './os';
+import * as os from '@/os';
 
 const DESKTOP_THRESHOLD = 1100;
 

@@ -13,7 +13,6 @@ import { defineComponent } from 'vue';
 import { faCloud, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
-import { selectDriveFolder } from '@/scripts/select-drive-folder';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -38,7 +37,7 @@ export default defineComponent({
 
 	methods: {
 		chooseUploadFolder() {
-			selectDriveFolder(false).then(async folder => {
+			os.selectDriveFolder(false).then(async folder => {
 				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
 				os.dialog({
 					type: 'success',

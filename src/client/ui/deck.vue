@@ -44,7 +44,7 @@ import DeckColumnCore from '@/components/deck/column-core.vue';
 import DeckColumn from '@/components/deck/column.vue';
 import XSidebar from '@/components/sidebar.vue';
 import { getScrollContainer } from '@/scripts/scroll';
-import * as os from './os';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {

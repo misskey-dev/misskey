@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import DefaultUI from './default.vue';
-import DeckUI from './deck.vue';
+import DefaultUI from '@/ui/default.vue';
+import DeckUI from '@/ui/deck.vue';
 import { instanceName, deckmode } from '@/config';
 
 export default defineComponent({

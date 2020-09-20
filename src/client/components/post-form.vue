@@ -66,7 +66,6 @@ import { erase, unique } from '../../prelude/array';
 import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
-import { selectDriveFile } from '@/scripts/select-drive-file';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
 import { utils } from '@syuilo/aiscript';
@@ -379,7 +378,7 @@ export default defineComponent({
 		},
 
 		chooseFileFromDrive() {
-			selectDriveFile(true).then(files => {
+			os.selectDriveFile(true).then(files => {
 				for (const file of files) {
 					this.attachMedia(file);
 				}

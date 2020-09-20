@@ -1,5 +1,4 @@
 import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
-import { selectDriveFile } from './select-drive-file';
 import { apiUrl } from '@/config';
 import { store } from '@/store';
 import * as os from '@/os';
@@ -57,7 +56,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 		};
 
 		const chooseFileFromDrive = () => {
-			selectDriveFile(multiple).then(files => {
+			os.selectDriveFile(multiple).then(files => {
 				res(files);
 			});
 		};

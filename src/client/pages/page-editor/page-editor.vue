@@ -106,7 +106,6 @@ import { blockDefs } from '@/scripts/hpml/index';
 import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
 import { url } from '@/config';
 import { collectPageVars } from '@/scripts/collect-page-vars';
-import { selectDriveFile } from '@/scripts/select-drive-file';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -414,7 +413,7 @@ export default defineComponent({
 		},
 
 		setEyeCatchingImage() {
-			selectDriveFile(false).then(file => {
+			os.selectDriveFile(false).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},
