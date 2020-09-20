@@ -154,12 +154,15 @@ export class Autocomplete {
 
 			const promise = popup(MkAutocomplete, {
 				textarea: this.textarea,
-				complete: this.complete,
 				close: this.close,
 				type: type,
 				q: _q,
 				x: _x,
 				y: _y,
+			}, {
+				done: (res) => {
+					this.complete(res);
+				}
 			});
 
 			this.suggestion = {
@@ -188,7 +191,7 @@ export class Autocomplete {
 	/**
 	 * オートコンプリートする
 	 */
-	private complete(type, value) {
+	private complete({ type, value }) {
 		this.close();
 
 		const caret = this.textarea.selectionStart;

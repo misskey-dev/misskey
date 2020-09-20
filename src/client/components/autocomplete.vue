@@ -93,11 +93,6 @@ export default defineComponent({
 			required: true,
 		},
 
-		complete: {
-			type: Function,
-			required: true,
-		},
-
 		close: {
 			type: Function,
 			required: true,
@@ -113,6 +108,8 @@ export default defineComponent({
 			required: true,
 		},
 	},
+
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -200,6 +197,11 @@ export default defineComponent({
 	},
 
 	methods: {
+		complete(type, value) {
+			this.$emit('done', { type, value });
+			this.$emit('closed');
+		},
+
 		setPosition() {
 			if (this.x + this.$el.offsetWidth > window.innerWidth) {
 				this.$el.style.left = (window.innerWidth - this.$el.offsetWidth) + 'px';

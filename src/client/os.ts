@@ -54,20 +54,15 @@ export function popup(component: Component, props: Record<string, any>, events =
 		markRaw(component);
 		const id = Math.random().toString(); // TODO: uuidとか使う
 		const showing = ref(true);
-		const close = (...args) => {
-			resolve(...args);
-			showing.value = false;
-		};
 		const modal = {
 			type: 'popup',
 			component,
 			props,
 			showing,
 			events,
-			done: close,
-			bgClick: () => close(),
 			closed: () => {
 				store.commit('removePopup', id);
+				resolve();
 			},
 			id,
 		};
@@ -75,7 +70,7 @@ export function popup(component: Component, props: Record<string, any>, events =
 
 		onCancel.shouldReject = false;
 		onCancel(() => {
-			close();
+			showing.value = false;
 		});
 	});
 }
