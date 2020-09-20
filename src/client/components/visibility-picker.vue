@@ -1,5 +1,5 @@
 <template>
-<div class="gqyayizv">
+<div class="gqyayizv _panel">
 	<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 		<div><fa :icon="faGlobe"/></div>
 		<div>
@@ -35,7 +35,7 @@
 			<span>{{ $t('_visibility.localOnly') }}</span>
 			<span>{{ $t('_visibility.localOnlyDescription') }}</span>
 		</div>
-		<div><fa :icon="localOnly ? faToggleOn : faToggleOff"/></div>
+		<div><fa :icon="localOnly ? faToggleOn : faToggleOff" :key="localOnly"/></div>
 	</button>
 </div>
 </template>

@@ -423,7 +423,7 @@ export default defineComponent({
 				// TODO: information dialog
 				return;
 			}
-			os.modal(await import('./visibility-chooser.vue'), {
+			os.modal(await import('./visibility-picker.vue'), {
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly
 			}, {
