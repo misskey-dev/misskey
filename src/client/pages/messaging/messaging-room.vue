@@ -383,7 +383,7 @@ export default defineComponent({
 	transition: opacity 0.1s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter-from, .fade-leave-to {
 	transition: opacity 0.5s;
 	opacity: 0;
 }

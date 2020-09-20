@@ -97,7 +97,7 @@ export default defineComponent({
 .popup-enter-active, .popup-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.popup-enter, .popup-leave-to {
+.popup-enter-from, .popup-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
 }

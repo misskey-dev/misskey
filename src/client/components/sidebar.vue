@@ -329,7 +329,7 @@ export default defineComponent({
 	transform: translateX(0);
 	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.nav-enter,
+.nav-enter-from,
 .nav-leave-active {
 	opacity: 0;
 	transform: translateX(-240px);
@@ -340,7 +340,7 @@ export default defineComponent({
 	opacity: 1;
 	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.nav-back-enter,
+.nav-back-enter-from,
 .nav-back-leave-active {
 	opacity: 0;
 }

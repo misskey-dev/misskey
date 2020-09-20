@@ -72,7 +72,7 @@ export default defineComponent({
 	overflow-y: hidden;
 	transition: opacity 0.5s, height 0.5s !important;
 }
-.folder-toggle-enter {
+.folder-toggle-enter-from {
 	opacity: 0;
 }
 .folder-toggle-leave-to {

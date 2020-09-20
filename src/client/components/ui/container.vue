@@ -110,7 +110,7 @@ export default defineComponent({
 	overflow-y: hidden;
 	transition: opacity 0.5s, height 0.5s !important;
 }
-.container-toggle-enter {
+.container-toggle-enter-from {
 	opacity: 0;
 }
 .container-toggle-leave-to {

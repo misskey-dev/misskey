@@ -38,7 +38,7 @@ export default defineComponent({
 .notification-slide-enter-active, .notification-slide-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.notification-slide-enter, .notification-slide-leave-to {
+.notification-slide-enter-from, .notification-slide-leave-to {
 	opacity: 0;
 	transform: translateX(-250px);
 }

@@ -464,7 +464,7 @@ hr {
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
-.zoom-enter, .zoom-leave-to {
+.zoom-enter-from, .zoom-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
 }
@@ -476,7 +476,7 @@ hr {
 	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 	transform-origin: center top;
 }
-.zoom-in-top-enter,
+.zoom-in-top-enter-from,
 .zoom-in-top-leave-active {
 	opacity: 0;
 	transform: scaleY(0);
