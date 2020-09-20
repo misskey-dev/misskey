@@ -50,6 +50,7 @@ export default defineComponent({
 
 	methods: {
 		draw() {
+			if (this.hash == null) return;
 			const pixels = decode(this.hash, this.size, this.size);
 			const ctx = (this.$refs.canvas as HTMLCanvasElement).getContext('2d');
 			const imageData = ctx!.createImageData(this.size, this.size);

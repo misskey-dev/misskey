@@ -1,5 +1,5 @@
 <template>
-<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent">
+<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
 	<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
 
 	<div class="">

@@ -126,7 +126,7 @@ import { defineComponent } from 'vue';
 import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
-import number from '../filters/number';
+import number from '@/filters/number';
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);

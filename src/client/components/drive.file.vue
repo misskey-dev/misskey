@@ -1,6 +1,6 @@
 <template>
 <div class="ncvczrfv"
-	:data-is-selected="isSelected"
+	:class="{ isSelected }"
 	@click="onClick"
 	draggable="true"
 	@dragstart="onDragstart"
@@ -238,7 +238,7 @@ export default defineComponent({
 		}
 	}
 
-	&[data-is-selected] {
+	&.isSelected {
 		background: var(--accent);
 
 		&:hover {

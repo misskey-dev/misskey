@@ -58,7 +58,7 @@ import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-soli
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import XUserList from '@/components/user-list.vue';
 import MkContainer from '@/components/ui/container.vue';
-import number from '../filters/number';
+import number from '@/filters/number';
 import * as os from '@/os';
 
 export default defineComponent({

@@ -1,6 +1,6 @@
 <template>
 <div class="rghtznwe"
-	:data-draghover="draghover"
+	:class="{ draghover }"
 	@click="onClick"
 	@mouseover="onMouseover"
 	@mouseout="onMouseout"
@@ -273,7 +273,7 @@ export default defineComponent({
 		}
 	}
 
-	&[data-draghover] {
+	&.draghover {
 		&:after {
 			content: "";
 			pointer-events: none;

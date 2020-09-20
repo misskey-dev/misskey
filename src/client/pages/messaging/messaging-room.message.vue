@@ -1,8 +1,8 @@
 <template>
-<div class="thvuemwp" :data-is-me="isMe">
+<div class="thvuemwp" :class="{ isMe }">
 	<mk-avatar class="avatar" :user="message.user"/>
 	<div class="content">
-		<div class="balloon" :data-no-text="message.text == null">
+		<div class="balloon" :class="{ noText: message.text == null }" >
 			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
 				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
@@ -241,7 +241,7 @@ export default defineComponent({
 		}
 	}
 
-	&:not([data-is-me]) {
+	&:not(.isMe) {
 		padding-left: var(--margin);
 
 		> .content {
@@ -252,11 +252,11 @@ export default defineComponent({
 				$color: var(--messageBg);
 				background: $color;
 
-				&[data-no-text] {
+				&.noText {
 					background: transparent;
 				}
 
-				&:not([data-no-text]):before {
+				&:not(.noText):before {
 					left: -14px;
 					border-top: solid 8px transparent;
 					border-right: solid 8px $color;
@@ -277,7 +277,7 @@ export default defineComponent({
 		}
 	}
 
-	&[data-is-me] {
+	&.isMe {
 		flex-direction: row-reverse;
 		padding-right: var(--margin);
 
@@ -290,11 +290,11 @@ export default defineComponent({
 				background: $me-balloon-color;
 				text-align: left;
 
-				&[data-no-text] {
+				&.noText {
 					background: transparent;
 				}
 
-				&:not([data-no-text]):before {
+				&:not(.noText):before {
 					right: -14px;
 					left: auto;
 					border-top: solid 8px transparent;
@@ -324,12 +324,6 @@ export default defineComponent({
 					user-select: none;
 				}
 			}
-		}
-	}
-
-	&[data-is-deleted] {
-		> .balloon {
-			opacity: 0.5;
 		}
 	}
 }

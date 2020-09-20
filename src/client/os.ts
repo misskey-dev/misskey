@@ -149,7 +149,9 @@ export function selectDriveFile(multiple) {
 			type: 'file',
 			multiple
 		}).then(files => {
-			res(multiple ? files : files[0]);
+			if (files) {
+				res(multiple ? files : files[0]);
+			}
 		});
 	});
 }

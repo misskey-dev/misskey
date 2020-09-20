@@ -7,9 +7,8 @@
 	<div class="history" v-if="messages.length > 0">
 		<router-link v-for="(message, i) in messages"
 			class="message _panel"
+			:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
 			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-			:data-is-me="isMe(message)"
-			:data-is-read="message.groupId ? message.reads.includes($store.state.i.id) : message.isRead"
 			:data-index="i"
 			:key="message.id"
 		>
@@ -195,12 +194,12 @@ export default defineComponent({
 			&:active {
 			}
 
-			&[data-is-read],
-			&[data-is-me] {
+			&.isRead,
+			&.isMe {
 				opacity: 0.8;
 			}
 
-			&:not([data-is-me]):not([data-is-read]) {
+			&:not(.isMe):not(.isRead) {
 				> div {
 					background-image: url("/assets/unread.svg");
 					background-repeat: no-repeat;
@@ -287,7 +286,7 @@ export default defineComponent({
 	&.max-width_400px {
 		> .history {
 			> .message {
-				&:not([data-is-me]):not([data-is-read]) {
+				&:not(.isMe):not(.isRead) {
 					> div {
 						background-image: none;
 						border-left: solid 4px #3aa2dc;

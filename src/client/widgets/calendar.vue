@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-calendar" :class="{ _panel: !props.transparent }">
-	<div class="calendar" :data-is-holiday="isHoliday">
+	<div class="calendar" :class="{ isHoliday }">
 		<p class="month-and-year">
 			<span class="year">{{ $t('yearX', { year }) }}</span>
 			<span class="month">{{ $t('monthX', { month }) }}</span>
@@ -121,7 +121,7 @@ export default defineComponent({
 		width: 60%;
 		text-align: center;
 
-		&[data-is-holiday] {
+		&.isHoliday {
 			> .day {
 				color: #ef95a0;
 			}
