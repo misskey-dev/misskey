@@ -2,7 +2,6 @@ import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { Channels, ChannelFollowings } from '../../../../models';
-import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
 	tags: ['channels', 'account'],
@@ -38,8 +37,18 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const query = makePaginationQuery(ChannelFollowings.createQueryBuilder(), ps.sinceId, ps.untilId)
-		.andWhere({ followerId: me.id });
+	const query = ChannelFollowings.createQueryBuilder('following').andWhere({ followerId: me.id });
+	if (ps.sinceId) {
+		query.andWhere('following."followeeId" > :sinceId', { sinceId: ps.sinceId });
+	}
+	if (ps.untilId) {
+		query.andWhere('following."followeeId" < :untilId', { untilId: ps.untilId });
+	}
+	if (ps.sinceId && !ps.untilId) {
+		query.orderBy('following."followeeId"', 'ASC');
+	} else {
+		query.orderBy('following."followeeId"', 'DESC');
+	}
 
 	const followings = await query
 		.take(ps.limit!)
