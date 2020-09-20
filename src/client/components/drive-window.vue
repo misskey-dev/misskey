@@ -1,5 +1,5 @@
 <template>
-<x-window ref="window" :width="800" :height="500" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="(type === 'file') && (selected.length === 0)" @ok="ok()">
+<x-window ref="window" :width="800" :height="500" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="(type === 'file') && (selected.length === 0)" @ok="ok()">
 	<template #header>
 		{{ multiple ? ((type === 'file') ? $t('selectFiles') : $t('selectFolders')) : ((type === 'file') ? $t('selectFile') : $t('selectFolder')) }}
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(number) }})</span>
@@ -35,6 +35,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['done'],
+
 	data() {
 		return {
 			selected: []
@@ -43,8 +45,7 @@ export default defineComponent({
 
 	methods: {
 		ok() {
-			this.$emit('selected', this.selected);
-			this.$refs.window.close();
+			this.$emit('done', this.selected);
 		},
 
 		onChangeSelection(xs) {
