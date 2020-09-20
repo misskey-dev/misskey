@@ -1,13 +1,12 @@
+import * as os from '@/os';
+
 export function selectDriveFile(multiple) {
-	return new Promise((res, rej) => {
-		import('@/components/drive-window.vue').then(dialog => {
-			const w = $root.new(dialog, {
-				type: 'file',
-				multiple
-			});
-			w.$once('selected', files => {
-				res(multiple ? files : files[0]);
-			});
+	return new Promise(async (res, rej) => {
+		os.modal(await import('@/components/drive-window.vue'), {
+			type: 'file',
+			multiple
+		}).then(files => {
+			res(multiple ? files : files[0]);
 		});
 	});
 }

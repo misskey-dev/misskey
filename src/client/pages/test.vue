@@ -38,6 +38,16 @@
 			<mfm :text="mfm"/>
 		</div>
 	</div>
+
+	<div class="_card _vMargin">
+		<div class="_title">selectDriveFile</div>
+		<div class="_content">
+			<mk-button @click="selectDriveFile()">selectDriveFile</mk-button>
+		</div>
+		<div class="_content">
+
+		</div>
+	</div>
 </div>
 </template>
 
@@ -48,6 +58,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
+import { selectDriveFile } from '@/scripts/select-drive-file';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -87,6 +98,10 @@ export default defineComponent({
 				cancelableByBgClick: this.dialogCancelByBgClick,
 				input: this.dialogInput ? {} : null
 			});
+		},
+
+		async selectDriveFile() {
+			const files = await selectDriveFile();
 		}
 	}
 });
