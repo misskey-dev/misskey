@@ -440,7 +440,7 @@ export default defineComponent({
 
 		reply(viaKeyboard = false) {
 			pleaseLogin();
-			this.$root.post({
+			os.post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
 			}, () => {
@@ -464,7 +464,7 @@ export default defineComponent({
 					text: this.$t('quote'),
 					icon: faQuoteRight,
 					action: () => {
-						this.$root.post({
+						os.post({
 							renote: this.appearNote,
 						});
 					}
@@ -550,7 +550,7 @@ export default defineComponent({
 					noteId: this.appearNote.id
 				});
 
-				this.$root.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
+				os.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
 			});
 		},
 

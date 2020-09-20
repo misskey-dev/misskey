@@ -136,7 +136,7 @@ export default defineComponent({
 		},
 
 		post() {
-			this.$root.post();
+			os.post();
 		},
 
 		search() {
