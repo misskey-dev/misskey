@@ -33,8 +33,8 @@ import { emojilist } from '../../misc/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import MkUserSelect from './user-select.vue';
-import { acct } from '../filters/user';
+import MkUserSelect from '@/components/user-select.vue';
+import { acct } from '@/filters/user';
 import * as os from '@/os';
 
 type EmojiDef = {

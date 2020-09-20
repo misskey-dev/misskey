@@ -249,7 +249,7 @@
 		"vue-content-loading": "1.6.0",
 		"vue-cropperjs": "4.1.0",
 		"vue-draggable-next": "1.0.5",
-		"vue-i18n": "9.0.0-alpha.17",
+		"vue-i18n": "9.0.0-beta.2",
 		"vue-json-pretty": "1.6.7",
 		"vue-loader": "16.0.0-beta.7",
 		"vue-marquee-text-component": "1.1.1",

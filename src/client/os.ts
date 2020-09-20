@@ -46,6 +46,10 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 }
 
 export function popup(component: Component, props: Record<string, any>, events = {}, option?) {
+	if (_DEV_) {
+		console.log('os:popup', component, props, events);
+	}
+
 	return new PCancelable((resolve, reject, onCancel) => {
 		markRaw(component);
 		const id = Math.random().toString(); // TODO: uuidとか使う
@@ -77,6 +81,10 @@ export function popup(component: Component, props: Record<string, any>, events =
 }
 
 export function modal(component: Component, props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
+	if (_DEV_) {
+		console.log('os:modal', component, props, events, option);
+	}
+
 	return new PCancelable((resolve, reject, onCancel) => {
 		markRaw(component);
 		const id = Math.random().toString(); // TODO: uuidとか使う
