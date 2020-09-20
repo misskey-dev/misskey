@@ -16,6 +16,7 @@
 				:initial-text="initialText"
 				:initial-note="initialNote"
 				:instant="instant"
+				:channel="channel"
 				@posted="onPosted"
 				@cancel="onCanceled"
 				style="border-radius: var(--radius);"/>
@@ -62,7 +63,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		channel: {
+			type: Object,
+			required: false
+		},
 	},
 
 	data() {
