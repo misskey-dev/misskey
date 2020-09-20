@@ -58,7 +58,6 @@ import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
-import MkVisibilityChooser from './visibility-chooser.vue';
 import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
 import { parse } from '../../mfm/parse';
@@ -419,18 +418,23 @@ export default defineComponent({
 			this.saveDraft();
 		},
 
-		setVisibility() {
+		async setVisibility() {
 			if (this.channel) {
 				// TODO: information dialog
 				return;
 			}
-			os.modal(MkVisibilityChooser, {
-				source: this.$refs.visibilityButton,
+			os.modal(await import('./visibility-chooser.vue'), {
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly
-			}).then(({ visibility, localOnly }) => {
-				this.applyVisibility(visibility);
-				this.localOnly = localOnly;
+			}, {
+				'change-visibility': visibility => {
+					this.applyVisibility(visibility);
+				},
+				'change-local-only': localOnly => {
+					this.localOnly = localOnly;
+				}
+			}, {
+				source: this.$refs.visibilityButton
 			});
 		},
 

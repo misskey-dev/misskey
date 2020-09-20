@@ -46,11 +46,7 @@ import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from 
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 
 export default defineComponent({
-	emits: ['done'],
 	props: {
-		source: {
-			required: true
-		},
 		currentVisibility: {
 			type: String,
 			required: false
@@ -60,6 +56,7 @@ export default defineComponent({
 			required: false
 		}
 	},
+	emits: ['done', 'change-visibility', 'change-local-only'],
 	data() {
 		return {
 			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
@@ -67,12 +64,18 @@ export default defineComponent({
 			faGlobe, faUnlock, faEnvelope, faHome, faBiohazard, faToggleOn, faToggleOff
 		}
 	},
+	watch: {
+		localOnly() {
+			this.$emit('change-local-only', this.localOnly);
+		}
+	},
 	methods: {
 		choose(visibility) {
 			if (this.$store.state.settings.rememberNoteVisibility) {
 				this.$store.commit('deviceUser/setVisibility', visibility);
 			}
-			this.$emit('done', { visibility, localOnly: this.localOnly });
+			this.$emit('change-visibility', visibility);
+			this.$emit('done');
 		},
 	}
 });
