@@ -1,6 +1,6 @@
 <template>
 <div class="drylbebk"
-	:data-draghover="draghover"
+	:class="{ draghover }"
 	@click="onClick"
 	@dragover.prevent.stop="onDragover"
 	@dragenter="onDragenter"
@@ -126,7 +126,7 @@ export default defineComponent({
 		pointer-events: none;
 	}
 
-	&[data-draghover] {
+	&.draghover {
 		background: #eee;
 	}
 
