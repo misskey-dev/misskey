@@ -134,6 +134,8 @@ module.exports = {
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]: [string, any]) => [k, v._lang_])),
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: JSON.stringify(process.env.NODE_ENV) !== 'production',
+			_DATA_TRANSFER_DRIVE_FILE_: JSON.stringify('mk_drive_file'),
+			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
 		}),
 		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin((stats: any) => {
