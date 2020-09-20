@@ -424,12 +424,11 @@ export default defineComponent({
 				// TODO: information dialog
 				return;
 			}
-			const w = os.modal(MkVisibilityChooser, {
+			os.modal(MkVisibilityChooser, {
 				source: this.$refs.visibilityButton,
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly
-			});
-			w.$once('chosen', ({ visibility, localOnly }) => {
+			}).then(({ visibility, localOnly }) => {
 				this.applyVisibility(visibility);
 				this.localOnly = localOnly;
 			});
@@ -440,8 +439,7 @@ export default defineComponent({
 		},
 
 		addVisibleUser() {
-			const vm = os.modal(MkUserSelect, {});
-			vm.$once('selected', user => {
+			os.modal(MkUserSelect, {}).then(user => {
 				this.visibleUsers.push(user);
 			});
 		},
@@ -604,8 +602,7 @@ export default defineComponent({
 		},
 
 		insertMention() {
-			const vm = os.modal(MkUserSelect, {});
-			vm.$once('selected', user => {
+			os.modal(MkUserSelect, {}).then(user => {
 				insertTextAtCursor(this.$refs.text, getAcct(user) + ' ');
 			});
 		},

@@ -378,11 +378,8 @@ export default defineComponent({
 
 		chooseUser() {
 			this.close();
-			const vm = os.modal(MkUserSelect, {});
-			vm.$once('selected', user => {
+			os.modal(MkUserSelect, {}).then(user => {
 				this.complete('user', user);
-			});
-			vm.$once('closed', () => {
 				this.textarea.focus();
 			});
 		},
