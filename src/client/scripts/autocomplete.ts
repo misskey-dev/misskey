@@ -146,7 +146,7 @@ export class Autocomplete {
 
 			this.opening = false;
 		} else {
-			const MkAutocomplete = await import('@/components/autocomplete.vue').then(x => x.default);
+			const MkAutocomplete = await import('@/components/autocomplete.vue');
 
 			const _x = ref(x);
 			const _y = ref(y);

@@ -38,6 +38,7 @@ const widget = define({
 
 export default defineComponent({
 	extends: widget,
+
 	components: {
 		MkContainer,
 		XNotifications,
@@ -51,7 +52,7 @@ export default defineComponent({
 
 	methods: {
 		async configure() {
-			os.modal(await import('@/components/notification-setting-window.vue').then(x => x.default), {
+			os.modal(await import('@/components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
 			}).then(async ({ includingTypes }) => {
 				this.props.includingTypes = includingTypes;

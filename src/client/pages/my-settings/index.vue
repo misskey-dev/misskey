@@ -116,7 +116,7 @@ export default defineComponent({
 
 		async configure() {
 			const includingTypes = notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
-			os.modal(await import('@/components/notification-setting-window.vue').then(x => x.default), {
+			os.modal(await import('@/components/notification-setting-window.vue'), {
 				includingTypes,
 				showGlobalToggle: false,
 			}).then(async (res) => {

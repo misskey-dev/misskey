@@ -45,7 +45,13 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	return promise;
 }
 
-export function popup(component: Component, props: Record<string, any>, events = {}, option?) {
+function isModule(x: any): x is typeof import('*.vue') {
+	return x.default != null;
+}
+
+export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?) {
+	if (isModule(component)) component = component.default;
+
 	if (_DEV_) {
 		console.log('os:popup', component, props, events);
 	}
@@ -75,7 +81,9 @@ export function popup(component: Component, props: Record<string, any>, events =
 	});
 }
 
-export function modal(component: Component, props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
+export function modal(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
+	if (isModule(component)) component = component.default;
+
 	if (_DEV_) {
 		console.log('os:modal', component, props, events, option);
 	}
