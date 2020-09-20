@@ -61,7 +61,7 @@ export default defineComponent({
 		this.useGlobalSetting = this.includingTypes === null && this.showGlobalToggle;
 
 		for (const type of this.notificationTypes) {
-			Vue.set(this.typesMap, type, this.includingTypes === null || this.includingTypes.includes(type));
+			this.typesMap[type] = this.includingTypes === null || this.includingTypes.includes(type);
 		}
 	},
 
