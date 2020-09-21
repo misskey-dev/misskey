@@ -1,5 +1,5 @@
 <template>
-<x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
+<x-window :width="400" :height="450" :no-padding="true" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
 	<template #header>{{ $t('notificationSetting') }}</template>
 	<div class="vv94n3oa">
 		<div v-if="showGlobalToggle">
@@ -49,6 +49,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['done'],
+
 	data() {
 		return {
 			typesMap: {} as Record<typeof notificationTypes[number], boolean>,
@@ -70,8 +72,7 @@ export default defineComponent({
 			const includingTypes = this.useGlobalSetting ? null : (Object.keys(this.typesMap) as typeof notificationTypes[number][])
 				.filter(type => this.typesMap[type]);
 
-			this.$emit('ok', { includingTypes });
-			this.$refs.window.close();
+			this.$emit('done', { includingTypes });
 		},
 
 		disableAll() {

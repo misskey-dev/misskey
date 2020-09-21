@@ -72,6 +72,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['login'],
+
 	data() {
 		return {
 			signing: false,
@@ -95,15 +97,6 @@ export default defineComponent({
 		},
 	},
 
-	created() {
-		if (this.autoSet) {
-			this.$once('login', res => {
-				localStorage.setItem('i', res.i);
-				location.reload();
-			});
-		}
-	},
-
 	methods: {
 		onUsernameChange() {
 			os.api('users/show', {
@@ -113,6 +106,13 @@ export default defineComponent({
 			}, () => {
 				this.user = null;
 			});
+		},
+
+		onLogin(res) {
+			if (this.autoSet) {
+				localStorage.setItem('i', res.i);
+				location.reload();
+			}
 		},
 
 		queryKey() {
@@ -144,6 +144,7 @@ export default defineComponent({
 				});
 			}).then(res => {
 				this.$emit('login', res);
+				this.onLogin(res);
 			}).catch(err => {
 				if (err === null) return;
 				os.dialog({
@@ -186,6 +187,7 @@ export default defineComponent({
 					token: this.user && this.user.twoFactorEnabled ? this.token : undefined
 				}).then(res => {
 					this.$emit('login', res);
+					this.onLogin(res);
 				}).catch(() => {
 					os.dialog({
 						type: 'error',

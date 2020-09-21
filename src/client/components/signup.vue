@@ -75,6 +75,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['signup'],
+
 	data() {
 		return {
 			host: toUnicode(host),
@@ -112,15 +114,6 @@ export default defineComponent({
 				this.usernameState != 'invalid-format' &&
 				this.usernameState != 'min-range' &&
 				this.usernameState != 'max-range');
-		}
-	},
-
-	created() {
-		if (this.autoSet) {
-			this.$once('signup', res => {
-				localStorage.setItem('i', res.i);
-				location.reload();
-			});
 		}
 	},
 
@@ -188,6 +181,11 @@ export default defineComponent({
 					password: this.password
 				}).then(res => {
 					this.$emit('signup', res);
+
+					if (this.autoSet) {
+						localStorage.setItem('i', res.i);
+						location.reload();
+					}
 				});
 			}).catch(() => {
 				this.submitting = false;
