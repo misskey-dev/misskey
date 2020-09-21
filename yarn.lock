@@ -10129,10 +10129,10 @@ vue-cropperjs@4.1.0:
   dependencies:
     cropperjs "^1.5.6"
 
-vue-draggable-next@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/vue-draggable-next/-/vue-draggable-next-1.0.5.tgz#ec872539c6d5ef383a5b17e5fe153eb5741be40f"
-  integrity sha512-YeR0INdg7Kgp13qCUrFsF+q7Cy+E6I7dyFhfAtRkCGb1gaSh6WdQwEa3k33HR/kjB0rAXWmoxcE7T1d+N3eGcg==
+vue-draggable-next@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/vue-draggable-next/-/vue-draggable-next-1.0.8.tgz#89a8b347422d20f694f977a125b9af2f67e85b99"
+  integrity sha512-c15YO8HC2Lo2+rWXNoLDwiAFzf4pY5L4ESJsWp526qWeLAf6WjIXYSchmsO6AD0ozFIc+sp6B9zKafpFotxNIQ==
   dependencies:
     sortablejs "^1.10.2"
 
