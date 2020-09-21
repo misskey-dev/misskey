@@ -74,6 +74,7 @@ export default defineComponent({
 			}, {}, {
 				source: ev.currentTarget || ev.target
 			}).then(emoji => {
+				if (emoji == null) return;
 				this.reactions += emoji;
 			});
 		}
