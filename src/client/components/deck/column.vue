@@ -87,10 +87,10 @@ export default defineComponent({
 
 		keymap(): any {
 			return {
-				'shift+up': () => this.$parent.$emit('parentFocus', 'up'),
-				'shift+down': () => this.$parent.$emit('parentFocus', 'down'),
-				'shift+left': () => this.$parent.$emit('parentFocus', 'left'),
-				'shift+right': () => this.$parent.$emit('parentFocus', 'right'),
+				'shift+up': () => this.$parent.$emit('parent-focus', 'up'),
+				'shift+down': () => this.$parent.$emit('parent-focus', 'down'),
+				'shift+left': () => this.$parent.$emit('parent-focus', 'left'),
+				'shift+right': () => this.$parent.$emit('parent-focus', 'right'),
 			};
 		}
 	},
@@ -101,21 +101,21 @@ export default defineComponent({
 		},
 
 		dragging(v) {
-			this.$root.$emit(v ? 'deck.column.dragStart' : 'deck.column.dragEnd');
+			os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd');
 		}
 	},
 
 	mounted() {
 		if (!this.isMainColumn) {
-			this.$root.$on('deck.column.dragStart', this.onOtherDragStart);
-			this.$root.$on('deck.column.dragEnd', this.onOtherDragEnd);
+			os.deckGlobalEvents.on('column.dragStart', this.onOtherDragStart);
+			os.deckGlobalEvents.on('column.dragEnd', this.onOtherDragEnd);
 		}
 	},
 
 	beforeUnmount() {
 		if (!this.isMainColumn) {
-			this.$root.$off('deck.column.dragStart', this.onOtherDragStart);
-			this.$root.$off('deck.column.dragEnd', this.onOtherDragEnd);
+			os.deckGlobalEvents.off('column.dragStart', this.onOtherDragStart);
+			os.deckGlobalEvents.off('column.dragEnd', this.onOtherDragEnd);
 		}
 	},
 
@@ -234,7 +234,7 @@ export default defineComponent({
 			}
 
 			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('mk-deck-column', this.column.id);
+			e.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, this.column.id);
 			this.dragging = true;
 		},
 
@@ -256,7 +256,7 @@ export default defineComponent({
 				return;
 			}
 
-			const isDeckColumn = e.dataTransfer.types[0] == 'mk-deck-column';
+			const isDeckColumn = e.dataTransfer.types[0] == _DATA_TRANSFER_DECK_COLUMN_;
 
 			e.dataTransfer.dropEffect = isDeckColumn ? 'move' : 'none';
 
@@ -269,9 +269,9 @@ export default defineComponent({
 
 		onDrop(e) {
 			this.draghover = false;
-			this.$root.$emit('deck.column.dragEnd');
+			os.deckGlobalEvents.emit('column.dragEnd');
 
-			const id = e.dataTransfer.getData('mk-deck-column');
+			const id = e.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
 			if (id != null && id != '') {
 				this.$store.commit('deviceUser/swapDeckColumn', {
 					a: this.column.id,

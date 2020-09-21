@@ -1,5 +1,6 @@
 import { Component, defineAsyncComponent, markRaw, ref } from 'vue';
 import * as PCancelable from 'p-cancelable';
+import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
@@ -201,3 +202,5 @@ export function sound(type: string) {
 	audio.volume = store.state.device.sfxVolume;
 	audio.play();
 }
+
+export const deckGlobalEvents = new EventEmitter();

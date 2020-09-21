@@ -136,6 +136,7 @@ module.exports = {
 			_DEV_: JSON.stringify(process.env.NODE_ENV) !== 'production',
 			_DATA_TRANSFER_DRIVE_FILE_: JSON.stringify('mk_drive_file'),
 			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
+			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
 		}),
 		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin((stats: any) => {
