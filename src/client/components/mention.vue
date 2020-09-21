@@ -1,5 +1,5 @@
 <template>
-<router-link class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
+<router-link class="ldlomzub" :class="{ isMe }" :to="url" v-if="url.startsWith('/')">
 	<span class="me" v-if="isMe">{{ $t('you') }}</span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
@@ -18,6 +18,7 @@
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode';
 import { host as localHost } from '@/config';
+import { UserPreview } from '@/scripts/user-preview';
 import { wellKnownServices } from '../../well-known-services';
 import * as os from '@/os';
 
@@ -54,6 +55,9 @@ export default defineComponent({
 				`@${this.username}@${toUnicode(this.host)}` === `@${this.$store.state.i.username}@${toUnicode(localHost)}`.toLowerCase()
 			);
 		}
+	},
+	mounted() {
+		new UserPreview(this.$el, this.canonical);
 	},
 	methods: {
 		toUnicode

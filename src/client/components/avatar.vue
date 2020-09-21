@@ -1,8 +1,8 @@
 <template>
-<span class="eiwwqkts" :class="{ cat }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
+<span class="eiwwqkts" :class="{ cat }" :title="acct(user)" v-if="disableLink" @click="onClick">
 	<img class="inner" :src="url"/>
 </span>
-<router-link class="eiwwqkts" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
+<router-link class="eiwwqkts" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else>
 	<img class="inner" :src="url"/>
 </router-link>
 </template>
@@ -10,11 +10,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { UserPreview } from '@/scripts/user-preview';
 import { acct, userPage } from '../filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		user: {
 			type: Object,
@@ -33,6 +33,7 @@ export default defineComponent({
 			default: false
 		}
 	},
+	emits: ['click'],
 	computed: {
 		cat(): boolean {
 			return this.user.isCat;
@@ -50,6 +51,10 @@ export default defineComponent({
 	},
 	mounted() {
 		this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+
+		if (!this.disablePreview) {
+			new UserPreview(this.$el, this.user.id);
+		}
 	},
 	methods: {
 		getBlurhashAvgColor(s) {
