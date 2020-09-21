@@ -1,6 +1,6 @@
 import { Directive } from 'vue';
-import MkTooltip from '@/components/ui/tooltip.vue';
 import { isDeviceTouch } from '@/scripts/is-device-touch';
+import { popup } from '@/os';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
@@ -10,32 +10,31 @@ export default {
 		const self = (el as any)._tooltipDirective_ = {} as any;
 
 		self.text = binding.value as string;
-		self.tag = null;
+		self._close = null;
 		self.showTimer = null;
 		self.hideTimer = null;
 		self.checkTimer = null;
 
 		self.close = () => {
-			if (self.tag) {
+			if (self._close) {
 				clearInterval(self.checkTimer);
-				self.tag.close();
-				self.tag = null;
+				self._close();
+				self._close = null;
 			}
 		};
 
-		const show = e => {
+		const show = async e => {
 			if (!document.body.contains(el)) return;
-			if (self.tag) return;
+			if (self._close) return;
 
-			self.tag = new MkTooltip({
-				parent: vn.context,
-				propsData: {
-					text: self.text,
-					source: el
-				}
-			}).$mount();
+			const promise = popup(await import('@/components/ui/tooltip.vue'), {
+				text: self.text,
+				source: el
+			});
 
-			document.body.appendChild(self.tag.$el);
+			self._close = () => {
+				promise.cancel();
+			};
 		};
 
 		el.addEventListener(start, () => {

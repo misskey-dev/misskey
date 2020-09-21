@@ -76,7 +76,9 @@ export default defineComponent({
 				source: this.$el
 			});
 
-			this.close = promise.cancel;
+			this.close = () => {
+				promise.cancel();
+			};
 
 			this.checkTimer = setInterval(() => {
 				if (!document.body.contains(this.$el)) this.closePreview();

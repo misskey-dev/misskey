@@ -1,6 +1,6 @@
 <template>
-<transition name="zoom-in-top" appear>
-	<div class="buebdbiu" v-if="show">
+<transition name="zoom-in-top" appear @after-leave="$emit('closed')">
+	<div class="buebdbiu" v-if="showing">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
@@ -12,6 +12,10 @@ import * as os from '@/os';
 
 export default defineComponent({
 	props: {
+		showing: {
+			type: Boolean,
+			required: true,
+		},
 		source: {
 			required: true,
 		},
@@ -21,20 +25,13 @@ export default defineComponent({
 		}
 	},
 
-	data() {
-		return {
-			show: false
-		};
-	},
-
 	mounted() {
-		this.show = true;
-
 		this.$nextTick(() => {
 			if (this.source == null) {
-				this.destroyDom();
+				this.$emit('closed');
 				return;
 			}
+
 			const rect = this.source.getBoundingClientRect();
 
 			const x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
@@ -43,13 +40,6 @@ export default defineComponent({
 			this.$el.style.top = (y + 16) + 'px';
 		});
 	},
-
-	methods: {
-		close() {
-			this.show = false;
-			setTimeout(this.destroyDom, 300);
-		}
-	}
 })
 </script>
 
