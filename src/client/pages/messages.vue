@@ -1,7 +1,7 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faEnvelope"/>{{ $t('directNotes') }}</portal>
-	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
+	<portal to="header"><Fa :icon="faEnvelope"/>{{ $t('directNotes') }}</portal>
+	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
 </div>
 </template>
 

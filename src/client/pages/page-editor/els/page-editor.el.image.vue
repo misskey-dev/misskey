@@ -1,16 +1,16 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faImage"/> {{ $t('_pages.blocks.image') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faImage"/> {{ $t('_pages.blocks.image') }}</template>
 	<template #func>
 		<button @click="choose()">
-			<fa :icon="faFolderOpen"/>
+			<Fa :icon="faFolderOpen"/>
 		</button>
 	</template>
 
 	<section class="oyyftmcf">
-		<mk-file-thumbnail class="preview" v-if="file" :file="file" fit="contain" @click="choose()"/>
+		<MkFileThumbnail class="preview" v-if="file" :file="file" fit="contain" @click="choose()"/>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

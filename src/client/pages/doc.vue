@@ -1,13 +1,13 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faFileAlt"/>{{ title }}</portal>
+	<portal to="header"><Fa :icon="faFileAlt"/>{{ title }}</portal>
 	<main class="_card">
-		<div class="_title"><fa :icon="faFileAlt"/> {{ title }}</div>
+		<div class="_title"><Fa :icon="faFileAlt"/> {{ title }}</div>
 		<div class="_content">
 			<div v-html="body" class="qyqbqfal"></div>
 		</div>
 		<div class="_footer">
-			<mk-link :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $t('docSource') }}</mk-link>
+			<MkLink :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $t('docSource') }}</MkLink>
 		</div>
 	</main>
 </div>

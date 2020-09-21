@@ -1,13 +1,13 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faPaintBrush"/> {{ $t('_pages.blocks.canvas') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faPaintBrush"/> {{ $t('_pages.blocks.canvas') }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
-		<mk-input v-model:value="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._canvas.id') }}</span></mk-input>
-		<mk-input v-model:value="value.width" type="number"><span>{{ $t('_pages.blocks._canvas.width') }}</span><template #suffix>px</template></mk-input>
-		<mk-input v-model:value="value.height" type="number"><span>{{ $t('_pages.blocks._canvas.height') }}</span><template #suffix>px</template></mk-input>
+		<MkInput v-model:value="value.name"><template #prefix><Fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._canvas.id') }}</span></MkInput>
+		<MkInput v-model:value="value.width" type="number"><span>{{ $t('_pages.blocks._canvas.width') }}</span><template #suffix>px</template></MkInput>
+		<MkInput v-model:value="value.height" type="number"><span>{{ $t('_pages.blocks._canvas.height') }}</span><template #suffix>px</template></MkInput>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

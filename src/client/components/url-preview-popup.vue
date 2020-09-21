@@ -1,7 +1,7 @@
 <template>
 <div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
 	<transition name="zoom" @after-leave="$emit('closed')">
-		<mk-url-preview :url="url" v-if="showing"/>
+		<MkUrlPreview :url="url" v-if="showing"/>
 	</transition>
 </div>
 </template>

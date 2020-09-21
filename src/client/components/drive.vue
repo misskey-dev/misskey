@@ -2,12 +2,12 @@
 <div class="yfudmmck">
 	<nav>
 		<div class="path" @contextmenu.prevent.stop="() => {}">
-			<x-nav-folder :class="{ current: folder == null }"/>
+			<XNavFolder :class="{ current: folder == null }"/>
 			<template v-for="f in hierarchyFolders">
-				<span class="separator" :key="f.id + ':separator'"><fa :icon="faAngleRight"/></span>
-				<x-nav-folder :folder="f" :key="f.id"/>
+				<span class="separator" :key="f.id + ':separator'"><Fa :icon="faAngleRight"/></span>
+				<XNavFolder :folder="f" :key="f.id"/>
 			</template>
-			<span class="separator" v-if="folder != null"><fa :icon="faAngleRight"/></span>
+			<span class="separator" v-if="folder != null"><Fa :icon="faAngleRight"/></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 	</nav>
@@ -20,16 +20,16 @@
 	>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-show="folders.length > 0">
-				<x-folder v-for="f in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
+				<XFolder v-for="f in folders" :key="f.id" class="folder" :folder="f" :select-mode="select === 'folder'" :is-selected="selectedFolders.some(x => x.id === f.id)" @chosen="chooseFolder"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<mk-button ref="moreFolders" v-if="moreFolders">{{ $t('loadMore') }}</mk-button>
+				<MkButton ref="moreFolders" v-if="moreFolders">{{ $t('loadMore') }}</MkButton>
 			</div>
 			<div class="files" ref="filesContainer" v-show="files.length > 0">
-				<x-file v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
+				<XFile v-for="file in files" :key="file.id" class="file" :file="file" :select-mode="select === 'file'" :is-selected="selectedFiles.some(x => x.id === file.id)" @chosen="chooseFile"/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div class="padding" v-for="(n, i) in 16" :key="i"></div>
-				<mk-button ref="loadMoreFiles" @click="fetchMoreFiles" v-show="moreFiles">{{ $t('loadMore') }}</mk-button>
+				<MkButton ref="loadMoreFiles" @click="fetchMoreFiles" v-show="moreFiles">{{ $t('loadMore') }}</MkButton>
 			</div>
 			<div class="empty" v-if="files.length == 0 && folders.length == 0 && !fetching">
 				<p v-if="draghover">{{ $t('empty-draghover') }}</p>
@@ -37,10 +37,10 @@
 				<p v-if="!draghover && folder != null">{{ $t('emptyFolder') }}</p>
 			</div>
 		</div>
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 	</div>
 	<div class="dropzone" v-if="draghover"></div>
-	<x-uploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
+	<XUploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>

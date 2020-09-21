@@ -1,6 +1,6 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faQuestionCircle"/>{{ $t('help') }}</portal>
+	<portal to="header"><Fa :icon="faQuestionCircle"/>{{ $t('help') }}</portal>
 	<main class="_card">
 		<div class="_content">
 			<ul>

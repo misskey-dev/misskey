@@ -1,19 +1,19 @@
 <template>
 <div v-if="channel">
-	<portal to="header"><fa :icon="faSatelliteDish"/>{{ channel.name }}</portal>
+	<portal to="header"><Fa :icon="faSatelliteDish"/>{{ channel.name }}</portal>
 
 	<div class="wpgynlbz _panel _vMargin" :class="{ hide: !showBanner }">
-		<x-channel-follow-button :channel="channel" :full="true" class="subscribe"/>
+		<XChannelFollow-button :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
-			<template v-if="showBanner"><fa :icon="faAngleUp"/></template>
-			<template v-else><fa :icon="faAngleDown"/></template>
+			<template v-if="showBanner"><Fa :icon="faAngleUp"/></template>
+			<template v-else><Fa :icon="faAngleDown"/></template>
 		</button>
 		<div class="hideOverlay" v-if="!showBanner">
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><fa :icon="faUsers" fixed-width/><i18n path="_channel.usersCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.usersCount }}</b></i18n></div>
-				<div><fa :icon="faPencilAlt" fixed-width/><i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.notesCount }}</b></i18n></div>
+				<div><Fa :icon="faUsers" fixed-width/><i18n path="_channel.usersCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.usersCount }}</b></i18n></div>
+				<div><Fa :icon="faPencilAlt" fixed-width/><i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.notesCount }}</b></i18n></div>
 			</div>
 			<div class="fade"></div>
 		</div>
@@ -22,9 +22,9 @@
 		</div>
 	</div>
 
-	<x-post-form :channel="channel" class="post-form _panel _vMargin" fixed/>
+	<XPostForm :channel="channel" class="post-form _panel _vMargin" fixed/>
 
-	<x-timeline class="_vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline class="_vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 

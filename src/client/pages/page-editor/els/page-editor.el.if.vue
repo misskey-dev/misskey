@@ -1,14 +1,14 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faQuestion"/> {{ $t('_pages.blocks.if') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faQuestion"/> {{ $t('_pages.blocks.if') }}</template>
 	<template #func>
 		<button @click="add()" class="_button">
-			<fa :icon="faPlus"/>
+			<Fa :icon="faPlus"/>
 		</button>
 	</template>
 
 	<section class="romcojzs">
-		<mk-select v-model:value="value.var">
+		<MkSelect v-model:value="value.var">
 			<template #label>{{ $t('_pages.blocks._if.variable') }}</template>
 			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('_pages.script.pageVariables')">
@@ -17,11 +17,11 @@
 			<optgroup :label="$t('_pages.script.enviromentVariables')">
 				<option v-for="v in hpml.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
-		</mk-select>
+		</MkSelect>
 
-		<x-blocks class="children" v-model:value="value.children" :hpml="hpml"/>
+		<XBlocks class="children" v-model:value="value.children" :hpml="hpml"/>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

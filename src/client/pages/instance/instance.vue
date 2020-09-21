@@ -1,5 +1,5 @@
 <template>
-<x-window @closed="() => { $emit('closed'); destroyDom(); }" :no-padding="true" :width="520" :height="500">
+<XWindow @closed="() => { $emit('closed'); destroyDom(); }" :no-padding="true" :width="520" :height="500">
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
 		<div class="_table">
@@ -18,7 +18,7 @@
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('registeredAt') }}</div>
-					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<mk-time :time="instance.caughtAt"/>)</div>
+					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<MkTime :time="instance.caughtAt"/>)</div>
 				</div>
 			</div>
 			<div class="_row">
@@ -54,7 +54,7 @@
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('latestRequestSentAt') }}</div>
-					<div class="_data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
+					<div class="_data"><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
 				</div>
 				<div class="_cell">
 					<div class="_label">{{ $t('latestStatus') }}</div>
@@ -64,7 +64,7 @@
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('latestRequestReceivedAt') }}</div>
-					<div class="_data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
+					<div class="_data"><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
 				</div>
 			</div>
 		</div>
@@ -72,7 +72,7 @@
 			<div class="header">
 				<span class="label">{{ $t('charts') }}</span>
 				<div class="selects">
-					<mk-select v-model:value="chartSrc" style="margin: 0; flex: 1;">
+					<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
 						<option value="users">{{ $t('_instanceCharts.users') }}</option>
 						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
@@ -84,11 +84,11 @@
 						<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
 						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
 						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
-					</mk-select>
-					<mk-select v-model:value="chartSpan" style="margin: 0;">
+					</MkSelect>
+					<MkSelect v-model:value="chartSpan" style="margin: 0;">
 						<option value="hour">{{ $t('perHour') }}</option>
 						<option value="day">{{ $t('perDay') }}</option>
-					</mk-select>
+					</MkSelect>
 				</div>
 			</div>
 			<div class="chart">
@@ -97,16 +97,16 @@
 		</div>
 		<div class="operations">
 			<span class="label">{{ $t('operations') }}</span>
-			<mk-switch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
-			<mk-switch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
+			<MkSwitch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</MkSwitch>
+			<MkSwitch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $t('blockThisInstance') }}</MkSwitch>
 			<details>
 				<summary>{{ $t('deleteAllFiles') }}</summary>
-				<mk-button @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
+				<MkButton @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
 			</details>
 			<details>
 				<summary>{{ $t('removeAllFollowing') }}</summary>
-				<mk-button @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</mk-button>
-				<mk-info warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</mk-info>
+				<MkButton @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</MkButton>
+				<MkInfo warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</MkInfo>
 			</details>
 		</div>
 		<details class="metadata">
@@ -114,7 +114,7 @@
 			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
 	</div>
-</x-window>
+</XWindow>
 </template>
 
 <script lang="ts">

@@ -1,14 +1,14 @@
 <template>
 <div class="qkcjvfiv">
-	<portal to="header"><fa :icon="faListUl"/>{{ $t('manageLists') }}</portal>
+	<portal to="header"><Fa :icon="faListUl"/>{{ $t('manageLists') }}</portal>
 
-	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('createList') }}</mk-button>
+	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('createList') }}</MkButton>
 
-	<mk-pagination :pagination="pagination" #default="{items}" class="lists" ref="list">
+	<MkPagination :pagination="pagination" #default="{items}" class="lists" ref="list">
 		<div class="list _panel" v-for="(list, i) in items" :key="list.id">
 			<router-link :to="`/my/lists/${ list.id }`">{{ list.name }}</router-link>
 		</div>
-	</mk-pagination>
+	</MkPagination>
 </div>
 </template>
 

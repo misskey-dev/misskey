@@ -1,12 +1,12 @@
 <template>
 <div class="mk-federation">
-	<portal to="header"><fa :icon="faGlobe"/>{{ $t('federation') }}</portal>
+	<portal to="header"><Fa :icon="faGlobe"/>{{ $t('federation') }}</portal>
 
 	<section class="_card instances">
 		<div class="_content">
-			<mk-input v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
+			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
 			<div class="inputs" style="display: flex;">
-				<mk-select v-model:value="state" style="margin: 0; flex: 1;">
+				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('state') }}</template>
 					<option value="all">{{ $t('all') }}</option>
 					<option value="federating">{{ $t('federating') }}</option>
@@ -15,8 +15,8 @@
 					<option value="suspended">{{ $t('suspended') }}</option>
 					<option value="blocked">{{ $t('blocked') }}</option>
 					<option value="notResponding">{{ $t('notResponding') }}</option>
-				</mk-select>
-				<mk-select v-model:value="sort" style="margin: 0; flex: 1;">
+				</MkSelect>
+				<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('sort') }}</template>
 					<option value="+pubSub">{{ $t('pubSub') }} ({{ $t('descendingOrder') }})</option>
 					<option value="-pubSub">{{ $t('pubSub') }} ({{ $t('ascendingOrder') }})</option>
@@ -36,23 +36,23 @@
 					<option value="-driveUsage">{{ $t('driveUsage') }} ({{ $t('ascendingOrder') }})</option>
 					<option value="+driveFiles">{{ $t('driveFiles') }} ({{ $t('descendingOrder') }})</option>
 					<option value="-driveFiles">{{ $t('driveFiles') }} ({{ $t('ascendingOrder') }})</option>
-				</mk-select>
+				</MkSelect>
 			</div>
 		</div>
 		<div class="_content">
-			<mk-pagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
+			<MkPagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
 				<div class="instance" v-for="instance in items" :key="instance.id" @click="info(instance)">
-					<div class="host"><fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
+					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
-						<span class="sub" v-if="instance.followersCount > 0"><fa :icon="faCaretDown" class="icon"/>Sub</span>
-						<span class="sub" v-else><fa :icon="faCaretDown" class="icon"/>-</span>
-						<span class="pub" v-if="instance.followingCount > 0"><fa :icon="faCaretUp" class="icon"/>Pub</span>
-						<span class="pub" v-else><fa :icon="faCaretUp" class="icon"/>-</span>
-						<span class="lastCommunicatedAt"><fa :icon="faExchangeAlt" class="icon"/><mk-time :time="instance.lastCommunicatedAt"/></span>
-						<span class="latestStatus"><fa :icon="faTrafficLight" class="icon"/>{{ instance.latestStatus || '-' }}</span>
+						<span class="sub" v-if="instance.followersCount > 0"><Fa :icon="faCaretDown" class="icon"/>Sub</span>
+						<span class="sub" v-else><Fa :icon="faCaretDown" class="icon"/>-</span>
+						<span class="pub" v-if="instance.followingCount > 0"><Fa :icon="faCaretUp" class="icon"/>Pub</span>
+						<span class="pub" v-else><Fa :icon="faCaretUp" class="icon"/>-</span>
+						<span class="lastCommunicatedAt"><Fa :icon="faExchangeAlt" class="icon"/><MkTime :time="instance.lastCommunicatedAt"/></span>
+						<span class="latestStatus"><Fa :icon="faTrafficLight" class="icon"/>{{ instance.latestStatus || '-' }}</span>
 					</div>
 				</div>
-			</mk-pagination>
+			</MkPagination>
 		</div>
 	</section>
 </div>

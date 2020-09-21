@@ -1,30 +1,30 @@
 <template>
-<x-modal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
+<XModal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
 	<div class="mk-users-dialog">
 		<div class="header">
 			<span>{{ title }}</span>
-			<button class="_button" @click="close()"><fa :icon="faTimes"/></button>
+			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 		</div>
 
 		<div class="users">
 			<router-link v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
-				<mk-avatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
+				<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
 				<div class="body">
-					<mk-user-name :user="extract ? extract(item) : item" class="name"/>
-					<mk-acct :user="extract ? extract(item) : item" class="acct"/>
+					<MkUserName :user="extract ? extract(item) : item" class="name"/>
+					<MkAcct :user="extract ? extract(item) : item" class="acct"/>
 				</div>
 			</router-link>
 		</div>
 		<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
+			<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
 		</button>
 
 		<p class="empty" v-if="empty">{{ $t('noUsers') }}</p>
 
-		<mk-error v-if="error" @retry="init()"/>
+		<MkError v-if="error" @retry="init()"/>
 	</div>
-</x-modal>
+</XModal>
 </template>
 
 <script lang="ts">

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-toast">
 	<transition name="notification-slide" appear @after-leave="() => { destroyDom(); }">
-		<x-notification :notification="notification" class="notification" v-if="show"/>
+		<XNotification :notification="notification" class="notification" v-if="show"/>
 	</transition>
 </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-<x-prism :inline="inline" :language="prismLang">{{ code }}</x-prism>
+<XPrism :inline="inline" :language="prismLang">{{ code }}</XPrism>
 </template>
 
 <script lang="ts">

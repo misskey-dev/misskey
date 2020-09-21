@@ -1,6 +1,6 @@
 <template>
 <div class="thvuemwp" :class="{ isMe }">
-	<mk-avatar class="avatar" :user="message.user"/>
+	<MkAvatar class="avatar" :user="message.user"/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }" >
 			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div></div>
-		<mk-url-preview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
+		<MkUrlPreview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
 		<footer>
 			<template v-if="isGroup">
 				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
@@ -28,8 +28,8 @@
 			<template v-else>
 				<span class="read" v-if="isMe && message.isRead">{{ $t('messageRead') }}</span>
 			</template>
-			<mk-time :time="message.createdAt"/>
-			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
+			<MkTime :time="message.createdAt"/>
+			<template v-if="message.is_edited"><Fa icon="pencil-alt"/></template>
 		</footer>
 	</div>
 </div>

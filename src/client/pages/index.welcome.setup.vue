@@ -3,17 +3,17 @@
 	<h1>Welcome to Misskey!</h1>
 	<div>
 		<p>{{ $t('intro') }}</p>
-		<mk-input v-model:value="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
+		<MkInput v-model:value="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
-		</mk-input>
-		<mk-input v-model:value="password" type="password">
+		</MkInput>
+		<MkInput v-model:value="password" type="password">
 			<span>{{ $t('password') }}</span>
-			<template #prefix><fa :icon="faLock"/></template>
-		</mk-input>
+			<template #prefix><Fa :icon="faLock"/></template>
+		</MkInput>
 		<footer>
-			<mk-button primary type="submit" :disabled="submitting">{{ submitting ? $t('processing') : $t('done') }}<mk-ellipsis v-if="submitting"/></mk-button>
+			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $t('processing') : $t('done') }}<MkEllipsis v-if="submitting"/></MkButton>
 		</footer>
 	</div>
 </form>

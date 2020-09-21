@@ -1,7 +1,7 @@
 <template>
 <div class="mk-note-page">
 	<portal to="header" v-if="note">
-		<mk-avatar class="avatar" :user="note.user" :disable-preview="true"/>
+		<MkAvatar class="avatar" :user="note.user" :disable-preview="true"/>
 		<mfm 
 			:text="$t('noteOf', { user: note.user.name || note.user.username })"
 			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
@@ -9,20 +9,20 @@
 	</portal>
 
 	<div v-if="note">
-		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><fa :icon="faChevronUp"/></button>
-		<x-notes v-if="showNext" ref="next" :pagination="next"/>
+		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faChevronUp"/></button>
+		<XNotes v-if="showNext" ref="next" :pagination="next"/>
 		<hr v-if="showNext"/>
 
-		<mk-remote-caution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
-		<x-note v-model:value="note" :key="note.id" :detail="true"/>
+		<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
+		<XNote v-model:value="note" :key="note.id" :detail="true"/>
 
-		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><fa :icon="faChevronDown"/></button>
+		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><Fa :icon="faChevronDown"/></button>
 		<hr v-if="showPrev"/>
-		<x-notes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
+		<XNotes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
 	</div>
 
 	<div v-if="error">
-		<mk-error @retry="fetch()"/>
+		<MkError @retry="fetch()"/>
 	</div>
 </div>
 </template>

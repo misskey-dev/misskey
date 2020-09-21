@@ -1,9 +1,9 @@
 <template>
-<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
-	<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
+<MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
+	<template #header><Fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
 
 	<div class="">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.stream">
 			<div v-for="(image, i) in images" :key="i"
 				:class="$style.img"
@@ -11,7 +11,7 @@
 			></div>
 		</div>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

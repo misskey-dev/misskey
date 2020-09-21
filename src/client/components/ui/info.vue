@@ -1,7 +1,7 @@
 <template>
 <div class="fpezltsf" :class="{ warn }">
-	<i v-if="warn"><fa :icon="faExclamationTriangle"/></i>
-	<i v-else><fa :icon="faInfoCircle"/></i>
+	<i v-if="warn"><Fa :icon="faExclamationTriangle"/></i>
+	<i v-else><Fa :icon="faInfoCircle"/></i>
 	<slot></slot>
 </div>
 </template>

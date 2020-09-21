@@ -1,6 +1,6 @@
 <template>
 <div class="xcukqgmh">
-	<portal to="header" v-if="page"><mk-avatar class="avatar" :user="page.user" :disable-preview="true"/>{{ page.title || page.name }}</portal>
+	<portal to="header" v-if="page"><MkAvatar class="avatar" :user="page.user" :disable-preview="true"/>{{ page.title || page.name }}</portal>
 
 	<div class="_card" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>
@@ -8,7 +8,7 @@
 			<img :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId"/>
 		</div>
 		<div class="_content">
-			<x-page :page="page"/>
+			<XPage :page="page"/>
 		</div>
 		<div class="_footer">
 			<small>@{{ page.user.username }}</small>
@@ -19,8 +19,8 @@
 			</template>
 			<router-link :to="`./${page.name}/view-source`">{{ $t('_pages.viewSource') }}</router-link>
 			<div class="like">
-				<button class="_button" @click="unlike()" v-if="page.isLiked" :title="$t('_pages.unlike')"><fa :icon="faHeartS"/></button>
-				<button class="_button" @click="like()" v-else :title="$t('_pages.like')"><fa :icon="faHeartR"/></button>
+				<button class="_button" @click="unlike()" v-if="page.isLiked" :title="$t('_pages.unlike')"><Fa :icon="faHeartS"/></button>
+				<button class="_button" @click="like()" v-else :title="$t('_pages.like')"><Fa :icon="faHeartR"/></button>
 				<span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span>
 			</div>
 		</div>

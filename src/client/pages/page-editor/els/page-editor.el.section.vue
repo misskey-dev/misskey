@@ -1,19 +1,19 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faStickyNote"/> {{ value.title }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faStickyNote"/> {{ value.title }}</template>
 	<template #func>
 		<button @click="rename()" class="_button">
-			<fa :icon="faPencilAlt"/>
+			<Fa :icon="faPencilAlt"/>
 		</button>
 		<button @click="add()" class="_button">
-			<fa :icon="faPlus"/>
+			<Fa :icon="faPlus"/>
 		</button>
 	</template>
 
 	<section class="ilrvjyvi">
-		<x-blocks class="children" v-model:value="value.children" :hpml="hpml"/>
+		<XBlocks class="children" v-model:value="value.children" :hpml="hpml"/>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

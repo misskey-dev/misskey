@@ -1,121 +1,121 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faCog"/>{{ $t('clinetSettings') }}</portal>
+	<portal to="header"><Fa :icon="faCog"/>{{ $t('clinetSettings') }}</portal>
 
 	<router-link v-if="$store.getters.isSignedIn" class="_panel _buttonPrimary" to="/my/settings" style="margin-bottom: var(--margin);">{{ $t('accountSettings') }}</router-link>
 
-	<x-theme class="_vMargin"/>
+	<XTheme class="_vMargin"/>
 
-	<x-sidebar class="_vMargin"/>
+	<XSidebar class="_vMargin"/>
 
-	<x-plugins class="_vMargin"/>
+	<XPlugins class="_vMargin"/>
 
 	<section class="_card _vMargin">
-		<div class="_title"><fa :icon="faMusic"/> {{ $t('sounds') }}</div>
+		<div class="_title"><Fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
-			<mk-range v-model:value="sfxVolume" :min="0" :max="1" :step="0.1">
-				<fa slot="icon" :icon="volumeIcon"/>
+			<MkRange v-model:value="sfxVolume" :min="0" :max="1" :step="0.1">
+				<Fa slot="icon" :icon="volumeIcon"/>
 				<span slot="title">{{ $t('volume') }}</span>
-			</mk-range>
+			</MkRange>
 		</div>
 		<div class="_content">
-			<mk-select v-model:value="sfxNote">
+			<MkSelect v-model:value="sfxNote">
 				<template #label>{{ $t('_sfx.note') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxNote)" v-if="sfxNote"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
-			<mk-select v-model:value="sfxNoteMy">
+				<template #text><button class="_textButton" @click="listen(sfxNote)" v-if="sfxNote"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
+			<MkSelect v-model:value="sfxNoteMy">
 				<template #label>{{ $t('_sfx.noteMy') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxNoteMy)" v-if="sfxNoteMy"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
-			<mk-select v-model:value="sfxNotification">
+				<template #text><button class="_textButton" @click="listen(sfxNoteMy)" v-if="sfxNoteMy"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
+			<MkSelect v-model:value="sfxNotification">
 				<template #label>{{ $t('_sfx.notification') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxNotification)" v-if="sfxNotification"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
-			<mk-select v-model:value="sfxChat">
+				<template #text><button class="_textButton" @click="listen(sfxNotification)" v-if="sfxNotification"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
+			<MkSelect v-model:value="sfxChat">
 				<template #label>{{ $t('_sfx.chat') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxChat)" v-if="sfxChat"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
-			<mk-select v-model:value="sfxChatBg">
+				<template #text><button class="_textButton" @click="listen(sfxChat)" v-if="sfxChat"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
+			<MkSelect v-model:value="sfxChatBg">
 				<template #label>{{ $t('_sfx.chatBg') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxChatBg)" v-if="sfxChatBg"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
-			<mk-select v-model:value="sfxAntenna">
+				<template #text><button class="_textButton" @click="listen(sfxChatBg)" v-if="sfxChatBg"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
+			<MkSelect v-model:value="sfxAntenna">
 				<template #label>{{ $t('_sfx.antenna') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxAntenna)" v-if="sfxAntenna"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
-			<mk-select v-model:value="sfxChannel">
+				<template #text><button class="_textButton" @click="listen(sfxAntenna)" v-if="sfxAntenna"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
+			<MkSelect v-model:value="sfxChannel">
 				<template #label>{{ $t('_sfx.channel') }}</template>
 				<option v-for="sound in sounds" :value="sound" :key="sound">{{ sound || $t('none') }}</option>
-				<template #text><button class="_textButton" @click="listen(sfxChannel)" v-if="sfxChannel"><fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
-			</mk-select>
+				<template #text><button class="_textButton" @click="listen(sfxChannel)" v-if="sfxChannel"><Fa :icon="faPlay"/> {{ $t('listen') }}</button></template>
+			</MkSelect>
 		</div>
 	</section>
 
 	<section class="_card _vMargin">
-		<div class="_title"><fa :icon="faColumns"/> {{ $t('deck') }}</div>
+		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
 		<div class="_content">
-			<mk-switch v-model:value="deckAlwaysShowMainColumn">
+			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
 				{{ $t('_deck.alwaysShowMainColumn') }}
-			</mk-switch>
+			</MkSwitch>
 		</div>
 		<div class="_content">
 			<div>{{ $t('_deck.columnAlign') }}</div>
-			<mk-radio v-model:value="deckColumnAlign" value="left">{{ $t('left') }}</mk-radio>
-			<mk-radio v-model:value="deckColumnAlign" value="center">{{ $t('center') }}</mk-radio>
+			<MkRadio v-model:value="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
+			<MkRadio v-model:value="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
 		</div>
 	</section>
 
 	<section class="_card _vMargin">
-		<div class="_title"><fa :icon="faCog"/> {{ $t('appearance') }}</div>
+		<div class="_title"><Fa :icon="faCog"/> {{ $t('appearance') }}</div>
 		<div class="_content">
-			<mk-switch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</mk-switch>
-			<mk-switch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</mk-switch>
-			<mk-switch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</mk-switch>
-			<mk-switch v-model:value="useOsNativeEmojis">
+			<MkSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</MkSwitch>
+			<MkSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</MkSwitch>
+			<MkSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</MkSwitch>
+			<MkSwitch v-model:value="useOsNativeEmojis">
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
-			</mk-switch>
+			</MkSwitch>
 		</div>
 		<div class="_content">
 			<div>{{ $t('fontSize') }}</div>
-			<mk-radio v-model:value="fontSize" value="small"><span style="font-size: 14px;">Aa</span></mk-radio>
-			<mk-radio v-model:value="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></mk-radio>
-			<mk-radio v-model:value="fontSize" value="large"><span style="font-size: 18px;">Aa</span></mk-radio>
-			<mk-radio v-model:value="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></mk-radio>
+			<MkRadio v-model:value="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
+			<MkRadio v-model:value="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
+			<MkRadio v-model:value="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
+			<MkRadio v-model:value="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
 		</div>
 	</section>
 
 	<section class="_card _vMargin">
-		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
+		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<div>{{ $t('whenServerDisconnected') }}</div>
-			<mk-radio v-model:value="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</mk-radio>
-			<mk-radio v-model:value="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</mk-radio>
-			<mk-radio v-model:value="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</mk-radio>
+			<MkRadio v-model:value="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
+			<MkRadio v-model:value="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
+			<MkRadio v-model:value="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</MkRadio>
 		</div>
 		<div class="_content">
-			<mk-switch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</mk-switch>
-			<mk-switch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</mk-switch>
-			<mk-switch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</mk-switch>
-			<mk-switch v-model:value="fixedWidgetsPosition">{{ $t('fixedWidgetsPosition') }}</mk-switch>
-			<mk-switch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</mk-switch>
+			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
+			<MkSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</MkSwitch>
+			<MkSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</MkSwitch>
+			<MkSwitch v-model:value="fixedWidgetsPosition">{{ $t('fixedWidgetsPosition') }}</MkSwitch>
+			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
 		</div>
 		<div class="_content">
-			<mk-select v-model:value="lang">
+			<MkSelect v-model:value="lang">
 				<template #label>{{ $t('uiLanguage') }}</template>
 
 				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-			</mk-select>
+			</MkSelect>
 		</div>
 	</section>
 
-	<mk-button @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</mk-button>
+	<MkButton @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</MkButton>
 </div>
 </template>
 

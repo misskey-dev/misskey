@@ -1,7 +1,7 @@
 <template>
 <div class="ngbfujlo">
-	<mk-textarea :value="text" readonly style="margin: 0;"></mk-textarea>
-	<mk-button class="button" primary @click="post()" :disabled="posting || posted"><fa v-if="posted" :icon="faCheck"/><fa v-else :icon="faPaperPlane"/></mk-button>
+	<MkTextarea :value="text" readonly style="margin: 0;"></MkTextarea>
+	<MkButton class="button" primary @click="post()" :disabled="posting || posted"><Fa v-if="posted" :icon="faCheck"/><Fa v-else :icon="faPaperPlane"/></MkButton>
 </div>
 </template>
 

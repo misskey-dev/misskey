@@ -6,25 +6,25 @@
 			<span>{{ item.text }}</span>
 		</span>
 		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i">
-			<fa v-if="item.icon" :icon="item.icon" fixed-width/>
-			<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</router-link>
 		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i">
-			<fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</a>
 		<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
-			<mk-avatar :user="item.user" class="avatar"/><mk-user-name :user="item.user"/>
-			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
+			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</button>
 		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
-			<fa v-if="item.icon" :icon="item.icon" fixed-width/>
-			<mk-avatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
+			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</button>
 	</template>
 </div>

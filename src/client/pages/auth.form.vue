@@ -15,8 +15,8 @@
 		</ul>
 	</div>
 	<div class="_footer">
-		<mk-button @click="cancel" inline>{{ $t('cancel') }}</mk-button>
-		<mk-button @click="accept" inline primary>{{ $t('accept') }}</mk-button>
+		<MkButton @click="cancel" inline>{{ $t('cancel') }}</MkButton>
+		<MkButton @click="accept" inline primary>{{ $t('accept') }}</MkButton>
 	</div>
 </section>
 </template>

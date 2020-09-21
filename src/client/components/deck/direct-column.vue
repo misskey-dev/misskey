@@ -1,9 +1,9 @@
 <template>
-<x-column :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
-	<template #header><fa :icon="faEnvelope" style="margin-right: 8px;"/>{{ column.name }}</template>
+<XColumn :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
+	<template #header><Fa :icon="faEnvelope" style="margin-right: 8px;"/>{{ column.name }}</template>
 
-	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
-</x-column>
+	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
+</XColumn>
 </template>
 
 <script lang="ts">

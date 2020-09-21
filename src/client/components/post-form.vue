@@ -6,45 +6,45 @@
 	@drop.stop="onDrop"
 >
 	<header>
-		<button v-if="!fixed" class="cancel _button" @click="cancel"><fa :icon="faTimes"/></button>
+		<button v-if="!fixed" class="cancel _button" @click="cancel"><Fa :icon="faTimes"/></button>
 		<div>
 			<span class="local-only" v-if="localOnly" v-text="$t('_visibility.localOnly')" />
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
 			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')" :disabled="channel != null">
-				<span v-if="visibility === 'public'"><fa :icon="faGlobe"/></span>
-				<span v-if="visibility === 'home'"><fa :icon="faHome"/></span>
-				<span v-if="visibility === 'followers'"><fa :icon="faUnlock"/></span>
-				<span v-if="visibility === 'specified'"><fa :icon="faEnvelope"/></span>
+				<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
+				<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
+				<span v-if="visibility === 'followers'"><Fa :icon="faUnlock"/></span>
+				<span v-if="visibility === 'specified'"><Fa :icon="faEnvelope"/></span>
 			</button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
+			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
-		<x-note-preview class="preview" v-if="reply" :note="reply"/>
-		<x-note-preview class="preview" v-if="renote" :note="renote"/>
-		<div class="with-quote" v-if="quoteId"><fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><fa icon="times"/></button></div>
+		<XNotePreview class="preview" v-if="reply" :note="reply"/>
+		<XNotePreview class="preview" v-if="renote" :note="renote"/>
+		<div class="with-quote" v-if="quoteId"><Fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><Fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers" :key="u.id">
-					<mk-acct :user="u"/>
-					<button class="_button" @click="removeVisibleUser(u)"><fa :icon="faTimes"/></button>
+					<MkAcct :user="u"/>
+					<button class="_button" @click="removeVisibleUser(u)"><Fa :icon="faTimes"/></button>
 				</span>
-				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
+				<button @click="addVisibleUser" class="_buttonPrimary"><Fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
-		<x-post-form-attaches class="attaches" :files="files"/>
-		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
-		<x-uploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
+		<XPostForm-attaches class="attaches" :files="files"/>
+		<XPollEditor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
+		<XUploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll" :class="{ active: poll }" v-tooltip="$t('poll')"><fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$t('useCw')"><fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention" v-tooltip="$t('mention')"><fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="$store.state.postFormActions.length > 0"><fa :icon="faPlug"/></button>
+			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><Fa :icon="faPhotoVideo"/></button>
+			<button class="_button" @click="poll = !poll" :class="{ active: poll }" v-tooltip="$t('poll')"><Fa :icon="faPollH"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$t('useCw')"><Fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="insertMention" v-tooltip="$t('mention')"><Fa :icon="faAt"/></button>
+			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><Fa :icon="faLaughSquint"/></button>
+			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="$store.state.postFormActions.length > 0"><Fa :icon="faPlug"/></button>
 		</footer>
 		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>

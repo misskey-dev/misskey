@@ -1,22 +1,22 @@
 <template>
-<x-column :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
-		<fa v-if="column.tl === 'home'" :icon="faHome"/>
-		<fa v-else-if="column.tl === 'local'" :icon="faComments"/>
-		<fa v-else-if="column.tl === 'social'" :icon="faShareAlt"/>
-		<fa v-else-if="column.tl === 'global'" :icon="faGlobe"/>
+		<Fa v-if="column.tl === 'home'" :icon="faHome"/>
+		<Fa v-else-if="column.tl === 'local'" :icon="faComments"/>
+		<Fa v-else-if="column.tl === 'social'" :icon="faShareAlt"/>
+		<Fa v-else-if="column.tl === 'global'" :icon="faGlobe"/>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<div class="iwaalbte" v-if="disabled">
 		<p>
-			<fa :icon="faMinusCircle"/>
+			<Fa :icon="faMinusCircle"/>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<x-timeline v-else-if="column.tl" ref="timeline" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote" :key="column.tl"/>
-</x-column>
+	<XTimeline v-else-if="column.tl" ref="timeline" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote" :key="column.tl"/>
+</XColumn>
 </template>
 
 <script lang="ts">

@@ -1,6 +1,6 @@
 <template>
 <div class="ujigsodd">
-	<mk-loading v-if="fetching"/>
+	<MkLoading v-if="fetching"/>
 	<div class="stream" v-if="!fetching && images.length > 0">
 		<router-link v-for="(image, i) in images" :key="i"
 			class="img"

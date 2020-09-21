@@ -8,7 +8,7 @@
 		</time>
 	</div>
 	<div class="content _panel _ghost">
-		<mk-clock/>
+		<MkClock/>
 	</div>
 </div>
 </template>

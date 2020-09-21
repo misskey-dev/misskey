@@ -4,7 +4,7 @@
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1" class="user">
 			<img class="avatar" :src="user.avatarUrl"/>
 			<span class="name">
-				<mk-user-name :user="user" :key="user.id"/>
+				<MkUserName :user="user" :key="user.id"/>
 			</span>
 			<span class="username">@{{ acct(user) }}</span>
 		</li>

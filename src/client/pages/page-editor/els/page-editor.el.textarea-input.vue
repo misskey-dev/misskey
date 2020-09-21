@@ -1,13 +1,13 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.textareaInput') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faBolt"/> {{ $t('_pages.blocks.textareaInput') }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
-		<mk-input v-model:value="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._textareaInput.name') }}</span></mk-input>
-		<mk-input v-model:value="value.text"><span>{{ $t('_pages.blocks._textareaInput.text') }}</span></mk-input>
-		<mk-textarea v-model:value="value.default"><span>{{ $t('_pages.blocks._textareaInput.default') }}</span></mk-textarea>
+		<MkInput v-model:value="value.name"><template #prefix><Fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._textareaInput.name') }}</span></MkInput>
+		<MkInput v-model:value="value.text"><span>{{ $t('_pages.blocks._textareaInput.text') }}</span></MkInput>
+		<MkTextarea v-model:value="value.default"><span>{{ $t('_pages.blocks._textareaInput.default') }}</span></MkTextarea>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

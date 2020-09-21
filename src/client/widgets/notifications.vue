@@ -1,12 +1,12 @@
 <template>
-<mk-container :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
-	<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
-	<template #func><button @click="configure()" class="_button"><fa :icon="faCog"/></button></template>
+<MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
+	<template #header><Fa :icon="faBell"/>{{ $t('notifications') }}</template>
+	<template #func><button @click="configure()" class="_button"><Fa :icon="faCog"/></button></template>
 
 	<div>
-		<x-notifications :include-types="props.includingTypes"/>
+		<XNotifications :include-types="props.includingTypes"/>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

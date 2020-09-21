@@ -1,13 +1,13 @@
 <template>
 <div class="mk-group-page">
-	<portal to="header"><fa :icon="faUsers"/>{{ group.name }}</portal>
+	<portal to="header"><Fa :icon="faUsers"/>{{ group.name }}</portal>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_card _vMargin">
 			<div class="_content">
-				<mk-button inline @click="renameGroup()">{{ $t('rename') }}</mk-button>
-				<mk-button inline @click="transfer()">{{ $t('transfer') }}</mk-button>
-				<mk-button inline @click="deleteGroup()">{{ $t('delete') }}</mk-button>
+				<MkButton inline @click="renameGroup()">{{ $t('rename') }}</MkButton>
+				<MkButton inline @click="transfer()">{{ $t('transfer') }}</MkButton>
+				<MkButton inline @click="deleteGroup()">{{ $t('delete') }}</MkButton>
 			</div>
 		</div>
 	</transition>
@@ -18,19 +18,19 @@
 			<div class="_content">
 				<div class="users">
 					<div class="user" v-for="user in users" :key="user.id">
-						<mk-avatar :user="user" class="avatar"/>
+						<MkAvatar :user="user" class="avatar"/>
 						<div class="body">
-							<mk-user-name :user="user" class="name"/>
-							<mk-acct :user="user" class="acct"/>
+							<MkUserName :user="user" class="name"/>
+							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="_footer">
-				<mk-button inline @click="invite()">{{ $t('invite') }}</mk-button>
+				<MkButton inline @click="invite()">{{ $t('invite') }}</MkButton>
 			</div>
 		</div>
 	</transition>

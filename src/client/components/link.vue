@@ -5,7 +5,7 @@
 	:title="url"
 >
 	<slot></slot>
-	<fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
+	<Fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
 </component>
 </template>
 

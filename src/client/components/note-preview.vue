@@ -1,15 +1,15 @@
 <template>
 <div class="yohlumlk">
-	<mk-avatar class="avatar" :user="note.user"/>
+	<MkAvatar class="avatar" :user="note.user"/>
 	<div class="main">
-		<x-note-header class="header" :note="note" :mini="true"/>
+		<XNoteHeader class="header" :note="note" :mini="true"/>
 		<div class="body">
 			<p v-if="note.cw != null" class="cw">
 				<span class="text" v-if="note.cw != ''">{{ note.cw }}</span>
-				<x-cw-button v-model:value="showContent" :note="note"/>
+				<XCwButton v-model:value="showContent" :note="note"/>
 			</p>
 			<div class="content" v-show="note.cw == null || showContent">
-				<x-sub-note-content class="text" :note="note"/>
+				<XSubNote-content class="text" :note="note"/>
 			</div>
 		</div>
 	</div>

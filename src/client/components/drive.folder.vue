@@ -14,8 +14,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover"><fa :icon="faFolderOpen" fixed-width/></template>
-		<template v-if="!hover"><fa :icon="faFolder" fixed-width/></template>
+		<template v-if="hover"><Fa :icon="faFolderOpen" fixed-width/></template>
+		<template v-if="!hover"><Fa :icon="faFolder" fixed-width/></template>
 		{{ folder.name }}
 	</p>
 	<p class="upload" v-if="$store.state.settings.uploadFolder == folder.id">

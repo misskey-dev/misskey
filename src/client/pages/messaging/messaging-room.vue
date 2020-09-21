@@ -4,30 +4,30 @@
 	@drop.prevent.stop="onDrop"
 >
 	<template v-if="!fetching && user">
-		<portal to="header"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
+		<portal to="header"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
 	</template>
 	<template v-if="!fetching && group">
-		<portal to="header"><fa :icon="faUsers"/>{{ group.name }}</portal>
+		<portal to="header"><Fa :icon="faUsers"/>{{ group.name }}</portal>
 	</template>
 
 	<div class="body">
-		<mk-loading v-if="fetching"/>
-		<p class="empty" v-if="!fetching && messages.length == 0"><fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
-		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
+		<MkLoading v-if="fetching"/>
+		<p class="empty" v-if="!fetching && messages.length == 0"><Fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
+		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><Fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
 		<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages"><fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
+			<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
 		</button>
-		<x-list class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
-			<x-message :message="message" :is-group="group != null" :key="message.id"/>
-		</x-list>
+		<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
+			<XMessage :message="message" :is-group="group != null" :key="message.id"/>
+		</XList>
 	</div>
 	<footer>
 		<transition name="fade">
 			<div class="new-message" v-show="showIndicator">
-				<button class="_buttonPrimary" @click="onIndicatorClick"><i><fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
+				<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
 			</div>
 		</transition>
-		<x-form v-if="!fetching" :user="user" :group="group" ref="form"/>
+		<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
 	</footer>
 </div>
 </template>

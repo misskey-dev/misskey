@@ -1,7 +1,7 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faSearch"/>{{ $t('searchWith', { q: $route.query.q }) }}</portal>
-	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+	<portal to="header"><Fa :icon="faSearch"/>{{ $t('searchWith', { q: $route.query.q }) }}</portal>
+	<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>
 

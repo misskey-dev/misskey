@@ -1,22 +1,22 @@
 <template>
-<x-window @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
+<XWindow @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
 	<template #header>{{ $t('selectUser') }}</template>
 	<div class="tbhwbxda">
 		<div class="inputs">
-			<mk-input v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></mk-input>
-			<mk-input v-model:value="host" class="input" @update:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></mk-input>
+			<MkInput v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></MkInput>
+			<MkInput v-model:value="host" class="input" @update:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></MkInput>
 		</div>
 		<div class="users">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
-				<mk-avatar :user="user" class="avatar" :disable-link="true"/>
+				<MkAvatar :user="user" class="avatar" :disable-link="true"/>
 				<div class="body">
-					<mk-user-name :user="user" class="name"/>
-					<mk-acct :user="user" class="acct"/>
+					<MkUserName :user="user" class="name"/>
+					<MkAcct :user="user" class="acct"/>
 				</div>
 			</div>
 		</div>
 	</div>
-</x-window>
+</XWindow>
 </template>
 
 <script lang="ts">

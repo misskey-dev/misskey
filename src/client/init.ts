@@ -136,7 +136,7 @@ app.use(i18n);
 app.use(VueHotkey);
 app.use(VAnimateCss);
 // eslint-disable-next-line vue/component-definition-name-casing
-app.component('fa', FontAwesomeIcon);
+app.component('Fa', FontAwesomeIcon);
 
 widgets(app);
 directives(app);

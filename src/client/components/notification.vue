@@ -1,36 +1,36 @@
 <template>
 <div class="qglefbjs" :class="notification.type" v-size="{ max: [500, 600] }">
 	<div class="head">
-		<mk-avatar v-if="notification.user" class="icon" :user="notification.user"/>
+		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
-			<fa :icon="faPlus" v-if="notification.type === 'follow'"/>
-			<fa :icon="faClock" v-else-if="notification.type === 'receiveFollowRequest'"/>
-			<fa :icon="faCheck" v-else-if="notification.type === 'followRequestAccepted'"/>
-			<fa :icon="faIdCardAlt" v-else-if="notification.type === 'groupInvited'"/>
-			<fa :icon="faRetweet" v-else-if="notification.type === 'renote'"/>
-			<fa :icon="faReply" v-else-if="notification.type === 'reply'"/>
-			<fa :icon="faAt" v-else-if="notification.type === 'mention'"/>
-			<fa :icon="faQuoteLeft" v-else-if="notification.type === 'quote'"/>
-			<fa :icon="faPollH" v-else-if="notification.type === 'pollVote'"/>
-			<x-reaction-icon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
+			<Fa :icon="faPlus" v-if="notification.type === 'follow'"/>
+			<Fa :icon="faClock" v-else-if="notification.type === 'receiveFollowRequest'"/>
+			<Fa :icon="faCheck" v-else-if="notification.type === 'followRequestAccepted'"/>
+			<Fa :icon="faIdCardAlt" v-else-if="notification.type === 'groupInvited'"/>
+			<Fa :icon="faRetweet" v-else-if="notification.type === 'renote'"/>
+			<Fa :icon="faReply" v-else-if="notification.type === 'reply'"/>
+			<Fa :icon="faAt" v-else-if="notification.type === 'mention'"/>
+			<Fa :icon="faQuoteLeft" v-else-if="notification.type === 'quote'"/>
+			<Fa :icon="faPollH" v-else-if="notification.type === 'pollVote'"/>
+			<XReactionIcon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
 		</div>
 	</div>
 	<div class="tail">
 		<header>
-			<router-link v-if="notification.user" class="name" :to="userPage(notification.user)" v-user-preview="notification.user.id"><mk-user-name :user="notification.user"/></router-link>
+			<router-link v-if="notification.user" class="name" :to="userPage(notification.user)" v-user-preview="notification.user.id"><MkUserName :user="notification.user"/></router-link>
 			<span v-else>{{ notification.header }}</span>
-			<mk-time :time="notification.createdAt" v-if="withTime"/>
+			<MkTime :time="notification.createdAt" v-if="withTime"/>
 		</header>
 		<router-link v-if="notification.type === 'reaction'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<fa :icon="faQuoteLeft"/>
+			<Fa :icon="faQuoteLeft"/>
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
-			<fa :icon="faQuoteRight"/>
+			<Fa :icon="faQuoteRight"/>
 		</router-link>
 		<router-link v-if="notification.type === 'renote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
-			<fa :icon="faQuoteLeft"/>
+			<Fa :icon="faQuoteLeft"/>
 			<mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.renote.emojis"/>
-			<fa :icon="faQuoteRight"/>
+			<Fa :icon="faQuoteRight"/>
 		</router-link>
 		<router-link v-if="notification.type === 'reply'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
@@ -42,11 +42,11 @@
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</router-link>
 		<router-link v-if="notification.type === 'pollVote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<fa :icon="faQuoteLeft"/>
+			<Fa :icon="faQuoteLeft"/>
 			<mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
-			<fa :icon="faQuoteRight"/>
+			<Fa :icon="faQuoteRight"/>
 		</router-link>
-		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><mk-follow-button :user="notification.user" :full="true"/></div></span>
+		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
 		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
 		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
 		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ $t('groupInvited') }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ $t('reject') }}</button></div></span>

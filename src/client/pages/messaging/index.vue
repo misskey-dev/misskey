@@ -1,8 +1,8 @@
 <template>
 <div class="mk-messaging" v-size="{ max: [400] }">
-	<portal to="header"><fa :icon="faComments"/>{{ $t('messaging') }}</portal>
+	<portal to="header"><Fa :icon="faComments"/>{{ $t('messaging') }}</portal>
 
-	<mk-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</mk-button>
+	<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
 
 	<div class="history" v-if="messages.length > 0">
 		<router-link v-for="(message, i) in messages"
@@ -13,15 +13,15 @@
 			:key="message.id"
 		>
 			<div>
-				<mk-avatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
+				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
 				<header v-if="message.groupId">
 					<span class="name">{{ message.group.name }}</span>
-					<mk-time :time="message.createdAt"/>
+					<MkTime :time="message.createdAt"/>
 				</header>
 				<header v-else>
-					<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
+					<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
 					<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
-					<mk-time :time="message.createdAt"/>
+					<MkTime :time="message.createdAt"/>
 				</header>
 				<div class="body">
 					<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
@@ -33,7 +33,7 @@
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $t('noHistory') }}</div>
 	</div>
-	<mk-loading v-if="fetching"/>
+	<MkLoading v-if="fetching"/>
 </div>
 </template>
 

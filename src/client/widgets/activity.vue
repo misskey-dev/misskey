@@ -1,16 +1,16 @@
 <template>
-<mk-container :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
-	<template #func><button @click="toggleView()" class="_button"><fa :icon="faSort"/></button></template>
+<MkContainer :show-header="props.showHeader" :naked="props.transparent">
+	<template #header><Fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
+	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
 
 	<div>
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<x-calendar v-show="props.view === 0" :data="[].concat(activity)"/>
-			<x-chart v-show="props.view === 1" :data="[].concat(activity)"/>
+			<XCalendar v-show="props.view === 0" :data="[].concat(activity)"/>
+			<XChart v-show="props.view === 1" :data="[].concat(activity)"/>
 		</template>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

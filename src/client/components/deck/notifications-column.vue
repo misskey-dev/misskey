@@ -1,9 +1,9 @@
 <template>
-<x-column :column="column" :is-stacked="isStacked" :menu="menu">
-	<template #header><fa :icon="faBell" style="margin-right: 8px;"/>{{ column.name }}</template>
+<XColumn :column="column" :is-stacked="isStacked" :menu="menu">
+	<template #header><Fa :icon="faBell" style="margin-right: 8px;"/>{{ column.name }}</template>
 
-	<x-notifications :include-types="column.includingTypes"/>
-</x-column>
+	<XNotifications :include-types="column.includingTypes"/>
+</XColumn>
 </template>
 
 <script lang="ts">

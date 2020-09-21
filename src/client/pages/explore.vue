@@ -1,6 +1,6 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faHashtag"/>{{ $t('explore') }}</portal>
+	<portal to="header"><Fa :icon="faHashtag"/>{{ $t('explore') }}</portal>
 
 	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
@@ -8,46 +8,46 @@
 	</div>
 
 	<template v-if="tag == null">
-		<x-user-list :pagination="pinnedUsers" :expanded="false">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="popularUsers" :expanded="false">
-			<fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyUpdatedUsers" :expanded="false">
-			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyRegisteredUsers" :expanded="false">
-			<fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}
-		</x-user-list>
+		<XUserList :pagination="pinnedUsers" :expanded="false">
+			<Fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}
+		</XUserList>
+		<XUserList :pagination="popularUsers" :expanded="false">
+			<Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
+		</XUserList>
+		<XUserList :pagination="recentlyUpdatedUsers" :expanded="false">
+			<Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
+		</XUserList>
+		<XUserList :pagination="recentlyRegisteredUsers" :expanded="false">
+			<Fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}
+		</XUserList>
 	</template>
 
 	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
 		<header><span>{{ $t('exploreFediverse') }}</span></header>
 	</div>
 
-	<mk-container :body-togglable="true" :expanded="false" ref="tags">
-		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
+	<MkContainer :body-togglable="true" :expanded="false" ref="tags">
+		<template #header><Fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
 			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
 		</div>
-	</mk-container>
+	</MkContainer>
 
-	<x-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
-		<fa :icon="faHashtag" fixed-width/>{{ tag }}
-	</x-user-list>
+	<XUserList v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
+		<Fa :icon="faHashtag" fixed-width/>{{ tag }}
+	</XUserList>
 	<template v-if="tag == null">
-		<x-user-list :pagination="popularUsersF" :expanded="false">
-			<fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyUpdatedUsersF" :expanded="false">
-			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
-			<fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}
-		</x-user-list>
+		<XUserList :pagination="popularUsersF" :expanded="false">
+			<Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
+		</XUserList>
+		<XUserList :pagination="recentlyUpdatedUsersF" :expanded="false">
+			<Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
+		</XUserList>
+		<XUserList :pagination="recentlyRegisteredUsersF" :expanded="false">
+			<Fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}
+		</XUserList>
 	</template>
 </div>
 </template>

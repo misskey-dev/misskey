@@ -5,7 +5,7 @@
 		<span class="label" ref="labelEl"><slot></slot></span>
 		<span class="title" ref="title">
 			<slot name="title"></slot>
-			<span class="warning" v-if="invalid"><fa :icon="faExclamationCircle"/>{{ $refs.input.validationMessage }}</span>
+			<span class="warning" v-if="invalid"><Fa :icon="faExclamationCircle"/>{{ $refs.input.validationMessage }}</span>
 		</span>
 		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
 		<input v-if="debounce" ref="inputEl"

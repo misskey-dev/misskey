@@ -1,39 +1,39 @@
 <template>
 <div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<portal to="header" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
+	<portal to="header" v-if="user"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
 
-	<mk-remote-caution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
-	<div class="punished _panel" v-if="user.isSuspended"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div>
-	<div class="punished _panel" v-if="user.isSilenced"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div>
+	<MkRemoteCaution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
+	<div class="punished _panel" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div>
+	<div class="punished _panel" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div>
 	<div class="profile _panel" :key="user.id">
 		<div class="banner-container" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
 			<div class="fade"></div>
 			<div class="title">
-				<mk-user-name class="name" :user="user" :nowrap="true"/>
+				<MkUserName class="name" :user="user" :nowrap="true"/>
 				<div class="bottom">
-					<span class="username"><mk-acct :user="user" :detail="true" /></span>
-					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
-					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
-					<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
-					<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
+					<span class="username"><MkAcct :user="user" :detail="true" /></span>
+					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
+					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
+					<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
+					<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
 				</div>
 			</div>
 			<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
 			<div class="actions" v-if="$store.getters.isSignedIn">
-				<button @click="menu" class="menu _button" ref="menu"><fa :icon="faEllipsisH"/></button>
-				<mk-follow-button v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+				<button @click="menu" class="menu _button" ref="menu"><Fa :icon="faEllipsisH"/></button>
+				<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 			</div>
 		</div>
-		<mk-avatar class="avatar" :user="user" :disable-preview="true"/>
+		<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
 		<div class="title">
-			<mk-user-name :user="user" :nowrap="false" class="name"/>
+			<MkUserName :user="user" :nowrap="false" class="name"/>
 			<div class="bottom">
-				<span class="username"><mk-acct :user="user" :detail="true" /></span>
-				<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><fa :icon="faBookmark"/></span>
-				<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><fa :icon="farBookmark"/></span>
-				<span v-if="user.isLocked" :title="$t('isLocked')"><fa :icon="faLock"/></span>
-				<span v-if="user.isBot" :title="$t('isBot')"><fa :icon="faRobot"/></span>
+				<span class="username"><MkAcct :user="user" :detail="true" /></span>
+				<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
+				<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
+				<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
+				<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
 			</div>
 		</div>
 		<div class="description">
@@ -42,16 +42,16 @@
 		</div>
 		<div class="fields system">
 			<dl class="field" v-if="user.location">
-				<dt class="name"><fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
+				<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
 				<dd class="value">{{ user.location }}</dd>
 			</dl>
 			<dl class="field" v-if="user.birthday">
-				<dt class="name"><fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
+				<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
 				<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 			</dl>
 			<dl class="field">
-				<dt class="name"><fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
-				<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<mk-time :time="user.createdAt"/>)</dd>
+				<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
+				<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 			</dl>
 		</div>
 		<div class="fields" v-if="user.fields.length > 0">
@@ -82,25 +82,25 @@
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
 		<div class="pins">
-			<x-note v-for="note in user.pinnedNotes" class="note" :note="note" @updated="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+			<XNote v-for="note in user.pinnedNotes" class="note" :note="note" @updated="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
 		</div>
-		<mk-container :body-togglable="true" class="content">
-			<template #header><fa :icon="faImage"/>{{ $t('images') }}</template>
+		<MkContainer :body-togglable="true" class="content">
+			<template #header><Fa :icon="faImage"/>{{ $t('images') }}</template>
 			<div>
-				<x-photos :user="user" :key="user.id"/>
+				<XPhotos :user="user" :key="user.id"/>
 			</div>
-		</mk-container>
-		<mk-container :body-togglable="true" class="content">
-			<template #header><fa :icon="faChartBar"/>{{ $t('activity') }}</template>
+		</MkContainer>
+		<MkContainer :body-togglable="true" class="content">
+			<template #header><Fa :icon="faChartBar"/>{{ $t('activity') }}</template>
 			<div style="padding:8px;">
-				<x-activity :user="user" :key="user.id"/>
+				<XActivity :user="user" :key="user.id"/>
 			</div>
-		</mk-container>
-		<x-user-timeline :user="user"/>
+		</MkContainer>
+		<XUserTimeline :user="user"/>
 	</template>
 </div>
 <div v-else-if="error">
-	<mk-error @retry="fetch()"/>
+	<MkError @retry="fetch()"/>
 </div>
 </template>
 

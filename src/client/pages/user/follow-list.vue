@@ -1,19 +1,19 @@
 <template>
-<mk-pagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
+<MkPagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
 	<div class="user _panel" v-for="(user, i) in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id">
-		<mk-avatar class="avatar" :user="user"/>
+		<MkAvatar class="avatar" :user="user"/>
 		<div class="body">
 			<div class="name">
-				<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
+				<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><MkUserName :user="user"/></router-link>
 				<p class="acct">@{{ acct(user) }}</p>
 			</div>
 			<div class="description" v-if="user.description" :title="user.description">
 				<mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
 			</div>
-			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+			<MkFollowButton class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
 	</div>
-</mk-pagination>
+</MkPagination>
 </template>
 
 <script lang="ts">

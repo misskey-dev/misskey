@@ -1,16 +1,16 @@
 <template>
 <section class="_card">
-	<div class="_title"><fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
+	<div class="_title"><Fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
-		<mk-select v-model:value="exportTarget">
+		<MkSelect v-model:value="exportTarget">
 			<option value="notes">{{ $t('_exportOrImport.allNotes') }}</option>
 			<option value="following">{{ $t('_exportOrImport.followingList') }}</option>
 			<option value="user-lists">{{ $t('_exportOrImport.userLists') }}</option>
 			<option value="mute">{{ $t('_exportOrImport.muteList') }}</option>
 			<option value="blocking">{{ $t('_exportOrImport.blockingList') }}</option>
-		</mk-select>
-		<mk-button inline @click="doExport()"><fa :icon="faDownload"/> {{ $t('export') }}</mk-button>
-		<mk-button inline @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><fa :icon="faUpload"/> {{ $t('import') }}</mk-button>
+		</MkSelect>
+		<MkButton inline @click="doExport()"><Fa :icon="faDownload"/> {{ $t('export') }}</MkButton>
+		<MkButton inline @click="doImport()" :disabled="!['following', 'user-lists'].includes(exportTarget)"><Fa :icon="faUpload"/> {{ $t('import') }}</MkButton>
 	</div>
 	<input ref="file" type="file" style="display: none;" @change="onChangeFile"/>
 </section>

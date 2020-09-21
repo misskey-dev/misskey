@@ -1,7 +1,7 @@
 <template>
-<mk-container :body-togglable="false">
+<MkContainer :body-togglable="false">
 	<template #header><slot name="title"></slot></template>
-	<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
+	<template #func><button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button></template>
 
 	<div class="_content _table">
 		<div class="_row">
@@ -14,7 +14,7 @@
 	<div class="_content" style="margin-bottom: -8px;">
 		<canvas ref="chart"></canvas>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

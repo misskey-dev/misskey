@@ -5,23 +5,23 @@
 		<div>{{ $t('noNotes') }}</div>
 	</div>
 
-	<mk-error v-if="error" @retry="init()"/>
+	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
 		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
+			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
 	</div>
 
-	<x-list ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<x-note :note="note" @updated="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
-	</x-list>
+	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
+		<XNote :note="note" @updated="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
+	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
 		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
+			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
 	</div>
 </div>

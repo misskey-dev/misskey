@@ -1,16 +1,16 @@
 <template>
 <div v-if="meta" class="xhexznfu" v-size="{ min: [1600] }">
-	<portal to="header"><fa :icon="faServer"/>{{ $t('instance') }}</portal>
+	<portal to="header"><Fa :icon="faServer"/>{{ $t('instance') }}</portal>
 
-	<mk-folder>
-		<template #header><fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>
+	<MkFolder>
+		<template #header><Fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>
 
 		<div class="sboqnrfi" :style="{ gridTemplateRows: overviewHeight }">
-			<mk-instance-stats :chart-limit="300" :detailed="true" class="stats" ref="stats"/>
+			<MkInstanceStats :chart-limit="300" :detailed="true" class="stats" ref="stats"/>
 
 			<div class="column">
-				<mk-container :body-togglable="true" :resize-base-el="() => $el" class="info">
-					<template #header><fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
+				<MkContainer :body-togglable="true" :resize-base-el="() => $el" class="info">
+					<template #header><Fa :icon="faInfoCircle"/>{{ $t('instanceInfo') }}</template>
 
 					<div class="_content">
 						<div class="_keyValue"><b>Misskey</b><span>v{{ version }}</span></div>
@@ -20,10 +20,10 @@
 						<div class="_keyValue"><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
 						<div class="_keyValue"><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
 					</div>
-				</mk-container>
+				</MkContainer>
 				
-				<mk-container :body-togglable="true" :scrollable="true" :resize-base-el="() => $el" class="db">
-					<template #header><fa :icon="faDatabase"/>{{ $t('database') }}</template>
+				<MkContainer :body-togglable="true" :scrollable="true" :resize-base-el="() => $el" class="db">
+					<template #header><Fa :icon="faDatabase"/>{{ $t('database') }}</template>
 
 					<div class="_content" v-if="dbInfo">
 						<table style="border-collapse: collapse; width: 100%;">
@@ -39,20 +39,20 @@
 							</tr>
 						</table>
 					</div>
-				</mk-container>
+				</MkContainer>
 
-				<mkw-federation class="fed" :body-togglable="true" :scrollable="true"/>
+				<MkwFederation class="fed" :body-togglable="true" :scrollable="true"/>
 			</div>
 		</div>
-	</mk-folder>
+	</MkFolder>
 
-	<mk-folder style="margin: var(--margin) 0;">
-		<template #header><fa :icon="faHeartbeat"/> {{ $t('metrics') }}</template>
+	<MkFolder style="margin: var(--margin) 0;">
+		<template #header><Fa :icon="faHeartbeat"/> {{ $t('metrics') }}</template>
 
 		<div class="segusily">
-			<mk-container :body-togglable="false" :resize-base-el="() => $el">
-				<template #header><fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
-				<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
+			<MkContainer :body-togglable="false" :resize-base-el="() => $el">
+				<template #header><Fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
+				<template #func><button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button></template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 					<canvas ref="cpumem"></canvas>
@@ -71,11 +71,11 @@
 						</div>
 					</div>
 				</div>
-			</mk-container>
+			</MkContainer>
 
-			<mk-container :body-togglable="false" :resize-base-el="() => $el">
-				<template #header><fa :icon="faHdd"/> {{ $t('disk') }}</template>
-				<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
+			<MkContainer :body-togglable="false" :resize-base-el="() => $el">
+				<template #header><Fa :icon="faHdd"/> {{ $t('disk') }}</template>
+				<template #func><button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button></template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 					<canvas ref="disk"></canvas>
@@ -89,11 +89,11 @@
 						</div>
 					</div>
 				</div>
-			</mk-container>
+			</MkContainer>
 
-			<mk-container :body-togglable="false" :resize-base-el="() => $el">
-				<template #header><fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
-				<template #func><button class="_button" @click="resume" :disabled="!paused"><fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><fa :icon="faPause"/></button></template>
+			<MkContainer :body-togglable="false" :resize-base-el="() => $el">
+				<template #header><Fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
+				<template #func><button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button><button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button></template>
 
 				<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
 					<canvas ref="net"></canvas>
@@ -105,16 +105,16 @@
 						</div>
 					</div>
 				</div>
-			</mk-container>
+			</MkContainer>
 		</div>
-	</mk-folder>
+	</MkFolder>
 
-	<mk-folder>
-		<template #header><fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
+	<MkFolder>
+		<template #header><Fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
 
 		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
-			<mk-container :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
-				<template #header><fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
+			<MkContainer :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
+				<template #header><Fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
 
 				<div class="_content">
 					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
@@ -122,38 +122,38 @@
 						<div style="text-align: right;">{{ number(job[1]) }} jobs</div>
 					</div>
 				</div>
-			</mk-container>
-			<x-queue :connection="queueConnection" domain="inbox" ref="queue" class="queue">
-				<template #title><fa :icon="faExchangeAlt"/> In</template>
-			</x-queue>
-			<x-queue :connection="queueConnection" domain="deliver" class="queue">
-				<template #title><fa :icon="faExchangeAlt"/> Out</template>
-			</x-queue>
+			</MkContainer>
+			<XQueue :connection="queueConnection" domain="inbox" ref="queue" class="queue">
+				<template #title><Fa :icon="faExchangeAlt"/> In</template>
+			</XQueue>
+			<XQueue :connection="queueConnection" domain="deliver" class="queue">
+				<template #title><Fa :icon="faExchangeAlt"/> Out</template>
+			</XQueue>
 		</div>
-	</mk-folder>
+	</MkFolder>
 
-	<mk-folder>
-		<template #header><fa :icon="faStream"/> {{ $t('logs') }}</template>
+	<MkFolder>
+		<template #header><Fa :icon="faStream"/> {{ $t('logs') }}</template>
 
 		<div class="uwuemslx">
-			<mk-container :body-togglable="false" :resize-base-el="() => $el">
-				<template #header><fa :icon="faInfoCircle"/>{{ $t('') }}</template>
+			<MkContainer :body-togglable="false" :resize-base-el="() => $el">
+				<template #header><Fa :icon="faInfoCircle"/>{{ $t('') }}</template>
 
 				<div class="_content">
 					<div class="_keyValue" v-for="log in modLogs">
-						<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><mk-time :time="log.createdAt" style="opacity: 0.7;"/>
+						<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><MkTime :time="log.createdAt" style="opacity: 0.7;"/>
 					</div>
 				</div>
-			</mk-container>
+			</MkContainer>
 
 			<section class="_card logs">
-				<div class="_title"><fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
+				<div class="_title"><Fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
 				<div class="_content">
 					<div class="_inputs">
-						<mk-input v-model:value="logDomain" :debounce="true">
+						<MkInput v-model:value="logDomain" :debounce="true">
 							<span>{{ $t('domain') }}</span>
-						</mk-input>
-						<mk-select v-model:value="logLevel">
+						</MkInput>
+						<MkSelect v-model:value="logLevel">
 							<template #label>{{ $t('level') }}</template>
 							<option value="all">{{ $t('levels.all') }}</option>
 							<option value="info">{{ $t('levels.info') }}</option>
@@ -161,24 +161,24 @@
 							<option value="warning">{{ $t('levels.warning') }}</option>
 							<option value="error">{{ $t('levels.error') }}</option>
 							<option value="debug">{{ $t('levels.debug') }}</option>
-						</mk-select>
+						</MkSelect>
 					</div>
 
 					<div class="logs">
 						<code v-for="log in logs" :key="log.id" :class="log.level">
 							<details>
-								<summary><mk-time :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
+								<summary><MkTime :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
 								<vue-json-pretty v-if="log.data" :data="log.data"></vue-json-pretty>
 							</details>
 						</code>
 					</div>
 				</div>
 				<div class="_footer">
-					<mk-button @click="deleteAllLogs()" primary><fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</mk-button>
+					<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</MkButton>
 				</div>
 			</section>
 		</div>
-	</mk-folder>
+	</MkFolder>
 </div>
 </template>
 

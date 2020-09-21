@@ -1,20 +1,20 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faStickyNote"/>{{ $t('pages') }}</portal>
+	<portal to="header"><Fa :icon="faStickyNote"/>{{ $t('pages') }}</portal>
 
-	<mk-tab v-model:value="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
+	<MkTab v-model:value="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
 
 	<div class="rknalgpo my" v-if="tab === 'my'">
-		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
-		<mk-pagination :pagination="myPagesPagination" #default="{items}">
-			<mk-page-preview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
-		</mk-pagination>
+		<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
+		<MkPagination :pagination="myPagesPagination" #default="{items}">
+			<MkPagePreview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
+		</MkPagination>
 	</div>
 
 	<div class="rknalgpo" v-if="tab === 'liked'">
-		<mk-pagination :pagination="likedPagesPagination" #default="{items}">
-			<mk-page-preview v-for="like in items" class="ckltabjg" :page="like.page" :key="like.page.id"/>
-		</mk-pagination>
+		<MkPagination :pagination="likedPagesPagination" #default="{items}">
+			<MkPagePreview v-for="like in items" class="ckltabjg" :page="like.page" :key="like.page.id"/>
+		</MkPagination>
 	</div>
 </div>
 </template>

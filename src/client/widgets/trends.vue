@@ -1,20 +1,20 @@
 <template>
-<mk-container :show-header="props.showHeader">
-	<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
+<MkContainer :show-header="props.showHeader">
+	<template #header><Fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
 	<div class="wbrkwala">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<transition-group tag="div" name="chart" class="tags" v-else>
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
 					<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 				</div>
-				<mk-mini-chart class="chart" :src="stat.chart"/>
+				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>
 		</transition-group>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

@@ -4,8 +4,8 @@
 		<slot :item="item"></slot>
 		<div class="separator" v-if="showDate(i, item)" :key="item.id + '_date'">
 			<p class="date">
-				<span><fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
-				<span>{{ getDateText(items[i + 1].createdAt) }}<fa class="icon" :icon="faAngleDown"/></span>
+				<span><Fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
+				<span>{{ getDateText(items[i + 1].createdAt) }}<Fa class="icon" :icon="faAngleDown"/></span>
 			</p>
 		</div>
 	</template>

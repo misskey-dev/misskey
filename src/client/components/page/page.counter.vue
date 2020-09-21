@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-button class="llumlmnx" @click="click()">{{ hpml.interpolate(value.text) }}</mk-button>
+	<MkButton class="llumlmnx" @click="click()">{{ hpml.interpolate(value.text) }}</MkButton>
 </div>
 </template>
 

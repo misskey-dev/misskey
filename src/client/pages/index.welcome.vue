@@ -1,8 +1,8 @@
 <template>
 <div v-if="meta" class="mk-welcome">
 	<portal to="header">{{ instanceName }}</portal>
-	<x-setup v-if="meta.requireSetup"/>
-	<x-entrance v-else/>
+	<XSetup v-if="meta.requireSetup"/>
+	<XEntrance v-else/>
 </div>
 </template>
 

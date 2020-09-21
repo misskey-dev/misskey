@@ -1,7 +1,7 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faBell"/>{{ $t('notifications') }}</portal>
-	<x-notifications @before="before" @after="after" page/>
+	<portal to="header"><Fa :icon="faBell"/>{{ $t('notifications') }}</portal>
+	<XNotifications @before="before" @after="after" page/>
 </div>
 </template>
 

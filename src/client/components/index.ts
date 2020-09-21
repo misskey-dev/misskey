@@ -13,15 +13,15 @@ import error from './error.vue';
 import streamIndicator from './stream-indicator.vue';
 
 export default function(app: App) {
-	app.component('mfm', mfm);
-	app.component('mk-acct', acct);
-	app.component('mk-avatar', avatar);
-	app.component('mk-emoji', emoji);
-	app.component('mk-user-name', userName);
-	app.component('mk-ellipsis', ellipsis);
-	app.component('mk-time', time);
-	app.component('mk-url', url);
-	app.component('mk-loading', loading);
-	app.component('mk-error', error);
-	app.component('stream-indicator', streamIndicator);
+	app.component('Mfm', mfm);
+	app.component('MkAcct', acct);
+	app.component('MkAvatar', avatar);
+	app.component('MkEmoji', emoji);
+	app.component('MkUserName', userName);
+	app.component('MkEllipsis', ellipsis);
+	app.component('MkTime', time);
+	app.component('MkUrl', url);
+	app.component('MkLoading', loading);
+	app.component('MkError', error);
+	app.component('StreamIndicator', streamIndicator);
 }

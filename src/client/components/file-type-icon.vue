@@ -1,6 +1,6 @@
 <template>
 <span class="mk-file-type-icon">
-	<template v-if="kind == 'image'"><fa :icon="faFileImage"/></template>
+	<template v-if="kind == 'image'"><Fa :icon="faFileImage"/></template>
 </span>
 </template>
 

@@ -1,42 +1,42 @@
 <template>
 <div class="">
-	<portal to="header"><fa :icon="faUsers"/>{{ $t('groups') }}</portal>
+	<portal to="header"><Fa :icon="faUsers"/>{{ $t('groups') }}</portal>
 
-	<mk-button @click="create" primary style="margin: 0 auto var(--margin) auto;"><fa :icon="faPlus"/> {{ $t('createGroup') }}</mk-button>
+	<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('createGroup') }}</MkButton>
 
-	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faUsers"/> {{ $t('ownedGroups') }}</template>
-		<mk-pagination :pagination="ownedPagination" #default="{items}" ref="owned">
+	<MkContainer :body-togglable="true">
+		<template #header><Fa :icon="faUsers"/> {{ $t('ownedGroups') }}</template>
+		<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
 			<div class="_card" v-for="group in items" :key="group.id">
 				<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
-				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
+				<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 			</div>
-		</mk-pagination>
-	</mk-container>
+		</MkPagination>
+	</MkContainer>
 
-	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
-		<mk-pagination :pagination="invitationPagination" #default="{items}" ref="invitations">
+	<MkContainer :body-togglable="true">
+		<template #header><Fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
+		<MkPagination :pagination="invitationPagination" #default="{items}" ref="invitations">
 			<div class="_card" v-for="invitation in items" :key="invitation.id">
 				<div class="_title">{{ invitation.group.name }}</div>
-				<div class="_content"><mk-avatars :user-ids="invitation.group.userIds"/></div>
+				<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
 				<div class="_footer">
-					<mk-button @click="acceptInvite(invitation)" primary inline><fa :icon="faCheck"/> {{ $t('accept') }}</mk-button>
-					<mk-button @click="rejectInvite(invitation)" primary inline><fa :icon="faBan"/> {{ $t('reject') }}</mk-button>
+					<MkButton @click="acceptInvite(invitation)" primary inline><Fa :icon="faCheck"/> {{ $t('accept') }}</MkButton>
+					<MkButton @click="rejectInvite(invitation)" primary inline><Fa :icon="faBan"/> {{ $t('reject') }}</MkButton>
 				</div>
 			</div>
-		</mk-pagination>
-	</mk-container>
+		</MkPagination>
+	</MkContainer>
 
-	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faUsers"/> {{ $t('joinedGroups') }}</template>
-		<mk-pagination :pagination="joinedPagination" #default="{items}" ref="joined">
+	<MkContainer :body-togglable="true">
+		<template #header><Fa :icon="faUsers"/> {{ $t('joinedGroups') }}</template>
+		<MkPagination :pagination="joinedPagination" #default="{items}" ref="joined">
 			<div class="_card" v-for="group in items" :key="group.id">
 				<div class="_title">{{ group.name }}</div>
-				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
+				<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 			</div>
-		</mk-pagination>
-	</mk-container>
+		</MkPagination>
+	</MkContainer>
 </div>
 </template>
 

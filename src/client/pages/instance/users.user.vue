@@ -1,28 +1,28 @@
 <template>
 <div class="vrcsvlkm" v-if="user && info">
-	<portal to="header" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/><mk-user-name :user="user" :nowrap="false" class="name"/></portal>
+	<portal to="header" v-if="user"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
 
 	<section class="_card">
 		<div class="_title">
-			<mk-avatar class="avatar" :user="user"/>
-			<mk-user-name class="name" :user="user"/>
+			<MkAvatar class="avatar" :user="user"/>
+			<MkUserName class="name" :user="user"/>
 			<span class="acct">@{{ acct(user) }}</span>
-			<span class="staff" v-if="user.isAdmin"><fa :icon="faBookmark"/></span>
-			<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
-			<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
-			<span class="punished" v-if="user.isSuspended"><fa :icon="faSnowflake"/></span>
+			<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
+			<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
+			<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
+			<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
 		</div>
 		<div class="_content actions">
 			<div style="flex: 1; padding-left: 1em;">
-				<mk-switch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator()" v-model:value="moderator">{{ $t('moderator') }}</mk-switch>
-				<mk-switch @update:value="toggleSilence()" v-model:value="silenced">{{ $t('silence') }}</mk-switch>
-				<mk-switch @update:value="toggleSuspend()" v-model:value="suspended">{{ $t('suspend') }}</mk-switch>
+				<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator()" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
+				<MkSwitch @update:value="toggleSilence()" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
+				<MkSwitch @update:value="toggleSuspend()" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
 			</div>
 			<div style="flex: 1; padding-left: 1em;">
-				<mk-button @click="openProfile"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</mk-button>
-				<mk-button v-if="user.host != null" @click="updateRemoteUser"><fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</mk-button>
-				<mk-button @click="resetPassword"><fa :icon="faKey"/> {{ $t('resetPassword') }}</mk-button>
-				<mk-button @click="deleteAllFiles"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
+				<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</MkButton>
+				<MkButton v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</MkButton>
+				<MkButton @click="resetPassword"><Fa :icon="faKey"/> {{ $t('resetPassword') }}</MkButton>
+				<MkButton @click="deleteAllFiles"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
 			</div>
 		</div>
 		<div class="_content rawdata">

@@ -1,23 +1,23 @@
 <template>
 <header class="kkwtjztg">
 	<router-link class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
-		<mk-user-name :user="note.user"/>
+		<MkUserName :user="note.user"/>
 	</router-link>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
-	<span class="username"><mk-acct :user="note.user"/></span>
-	<span class="admin" v-if="note.user.isAdmin"><fa :icon="faBookmark"/></span>
-	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><fa :icon="farBookmark"/></span>
+	<span class="username"><MkAcct :user="note.user"/></span>
+	<span class="admin" v-if="note.user.isAdmin"><Fa :icon="faBookmark"/></span>
+	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><Fa :icon="farBookmark"/></span>
 	<div class="info">
-		<span class="mobile" v-if="note.viaMobile"><fa :icon="faMobileAlt"/></span>
+		<span class="mobile" v-if="note.viaMobile"><Fa :icon="faMobileAlt"/></span>
 		<router-link class="created-at" :to="notePage(note)">
-			<mk-time :time="note.createdAt"/>
+			<MkTime :time="note.createdAt"/>
 		</router-link>
 		<span class="visibility" v-if="note.visibility !== 'public'">
-			<fa v-if="note.visibility === 'home'" :icon="faHome"/>
-			<fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
-			<fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
+			<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
+			<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
+			<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
 		</span>
-		<span class="localOnly" v-if="note.localOnly"><fa :icon="faBiohazard"/></span>
+		<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
 	</div>
 </header>
 </template>

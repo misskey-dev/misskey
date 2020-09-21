@@ -1,12 +1,12 @@
 <template>
 <div class="mk-list-page">
-	<portal to="header"><fa :icon="faListUl"/>{{ list.name }}</portal>
+	<portal to="header"><Fa :icon="faListUl"/>{{ list.name }}</portal>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_card _vMargin">
 			<div class="_content">
-				<mk-button inline @click="renameList()">{{ $t('rename') }}</mk-button>
-				<mk-button inline @click="deleteList()">{{ $t('delete') }}</mk-button>
+				<MkButton inline @click="renameList()">{{ $t('rename') }}</MkButton>
+				<MkButton inline @click="deleteList()">{{ $t('delete') }}</MkButton>
 			</div>
 		</div>
 	</transition>
@@ -17,19 +17,19 @@
 			<div class="_content">
 				<div class="users">
 					<div class="user" v-for="user in users" :key="user.id">
-						<mk-avatar :user="user" class="avatar"/>
+						<MkAvatar :user="user" class="avatar"/>
 						<div class="body">
-							<mk-user-name :user="user" class="name"/>
-							<mk-acct :user="user" class="acct"/>
+							<MkUserName :user="user" class="name"/>
+							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="_footer">
-				<mk-button inline @click="addUser()">{{ $t('addUser') }}</mk-button>
+				<MkButton inline @click="addUser()">{{ $t('addUser') }}</MkButton>
 			</div>
 		</div>
 	</transition>

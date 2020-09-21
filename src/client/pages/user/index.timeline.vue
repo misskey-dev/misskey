@@ -5,7 +5,7 @@
 		<button class="_button" @click="with_ = 'replies'" :class="{ active: with_ === 'replies' }">{{ $t('notesAndReplies') }}</button>
 		<button class="_button" @click="with_ = 'files'" :class="{ active: with_ === 'files' }">{{ $t('withFiles') }}</button>
 	</div>
-	<x-notes ref="timeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
+	<XNotes ref="timeline" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
 </div>
 </template>
 

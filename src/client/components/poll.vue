@@ -4,7 +4,7 @@
 		<li v-for="(choice, i) in poll.choices" :key="i" @click="vote(i)" :class="{ voted: choice.voted }">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
-				<template v-if="choice.isVoted"><fa :icon="faCheck"/></template>
+				<template v-if="choice.isVoted"><Fa :icon="faCheck"/></template>
 				<mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
 				<span class="votes" v-if="showResult">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>

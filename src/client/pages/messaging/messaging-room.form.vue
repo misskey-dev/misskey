@@ -11,12 +11,12 @@
 		:placeholder="$t('inputMessageHere')"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<x-uploader ref="uploader" @uploaded="onUploaded"/>
+	<XUploader ref="uploader" @uploaded="onUploaded"/>
 	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
-		<template v-if="!sending"><fa :icon="faPaperPlane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
+		<template v-if="!sending"><Fa :icon="faPaperPlane"/></template><template v-if="sending"><Fa icon="spinner .spin"/></template>
 	</button>
-	<button class="_button" @click="chooseFile"><fa :icon="faPhotoVideo"/></button>
-	<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
+	<button class="_button" @click="chooseFile"><Fa :icon="faPhotoVideo"/></button>
+	<button class="_button" @click="insertEmoji"><Fa :icon="faLaughSquint"/></button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
 </template>

@@ -1,8 +1,8 @@
 <template>
-<x-window @close="$emit('done')">
+<XWindow @close="$emit('done')">
 	<template #header>{{ $t('login') }}</template>
-	<mk-signin :auto-set="autoSet" @login="onLogin"/>
-</x-window>
+	<MkSignin :auto-set="autoSet" @login="onLogin"/>
+</XWindow>
 </template>
 
 <script lang="ts">

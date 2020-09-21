@@ -1,22 +1,22 @@
 <template>
 <div class="ztgjmzrw">
-	<portal to="header"><fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
-	<mk-button @click="add()" primary style="margin: 0 auto 16px auto;"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+	<portal to="header"><Fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
+	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
 	<section class="_card announcements">
 		<div class="_content announcement" v-for="announcement in announcements">
-			<mk-input v-model:value="announcement.title">
+			<MkInput v-model:value="announcement.title">
 				<span>{{ $t('title') }}</span>
-			</mk-input>
-			<mk-textarea v-model:value="announcement.text">
+			</MkInput>
+			<MkTextarea v-model:value="announcement.text">
 				<span>{{ $t('text') }}</span>
-			</mk-textarea>
-			<mk-input v-model:value="announcement.imageUrl">
+			</MkTextarea>
+			<MkInput v-model:value="announcement.imageUrl">
 				<span>{{ $t('imageUrl') }}</span>
-			</mk-input>
+			</MkInput>
 			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 			<div class="buttons">
-				<mk-button class="button" inline @click="save(announcement)" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
-				<mk-button class="button" inline @click="remove(announcement)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</mk-button>
+				<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+				<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
 			</div>
 		</div>
 	</section>

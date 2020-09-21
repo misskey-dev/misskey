@@ -5,10 +5,10 @@
 		<slot name="empty"></slot>
 	</div>
 	<div class="more" v-show="more" key="_more_">
-		<mk-button class="button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
+		<MkButton class="button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><mk-loading inline/></template>
-		</mk-button>
+			<template v-if="moreFetching"><MkLoading inline/></template>
+		</MkButton>
 	</div>
 </div>
 </template>

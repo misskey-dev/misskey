@@ -14,7 +14,7 @@
 	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
-	<fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
+	<Fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
 </component>
 </template>
 

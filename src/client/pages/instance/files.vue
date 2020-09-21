@@ -1,8 +1,8 @@
 <template>
 <section class="_card">
-	<div class="_title"><fa :icon="faCloud"/> {{ $t('files') }}</div>
+	<div class="_title"><Fa :icon="faCloud"/> {{ $t('files') }}</div>
 	<div class="_content">
-		<mk-button primary @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearCachedFiles') }}</mk-button>
+		<MkButton primary @click="clear()"><Fa :icon="faTrashAlt"/> {{ $t('clearCachedFiles') }}</MkButton>
 	</div>
 </section>
 </template>

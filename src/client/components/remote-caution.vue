@@ -1,5 +1,5 @@
 <template>
-<div class="jmgmzlwq _panel"><fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="href" rel="nofollow noopener" target="_blank">{{ $t('showOnRemote') }}</a></div>
+<div class="jmgmzlwq _panel"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="href" rel="nofollow noopener" target="_blank">{{ $t('showOnRemote') }}</a></div>
 </template>
 
 <script lang="ts">

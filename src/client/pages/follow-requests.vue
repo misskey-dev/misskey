@@ -1,8 +1,8 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faUserClock"/>{{ $t('followRequests') }}</portal>
+	<portal to="header"><Fa :icon="faUserClock"/>{{ $t('followRequests') }}</portal>
 
-	<mk-pagination :pagination="pagination" class="mk-follow-requests" ref="list">
+	<MkPagination :pagination="pagination" class="mk-follow-requests" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -11,23 +11,23 @@
 		</template>
 		<template #default="{items}">
 			<div class="user _panel" v-for="req in items" :key="req.id">
-				<mk-avatar class="avatar" :user="req.follower"/>
+				<MkAvatar class="avatar" :user="req.follower"/>
 				<div class="body">
 					<div class="name">
-						<router-link class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><mk-user-name :user="req.follower"/></router-link>
+						<router-link class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><MkUserName :user="req.follower"/></router-link>
 						<p class="acct">@{{ acct(req.follower) }}</p>
 					</div>
 					<div class="description" v-if="req.follower.description" :title="req.follower.description">
 						<mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$store.state.i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="accept(req.follower)"><fa :icon="faCheck"/></button>
-						<button class="_button" @click="reject(req.follower)"><fa :icon="faTimes"/></button>
+						<button class="_button" @click="accept(req.follower)"><Fa :icon="faCheck"/></button>
+						<button class="_button" @click="reject(req.follower)"><Fa :icon="faTimes"/></button>
 					</div>
 				</div>
 			</div>
 		</template>
-	</mk-pagination>
+	</MkPagination>
 </div>
 </template>
 

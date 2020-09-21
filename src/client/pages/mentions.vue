@@ -1,7 +1,7 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faAt"/>{{ $t('mentions') }}</portal>
-	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
+	<portal to="header"><Fa :icon="faAt"/>{{ $t('mentions') }}</portal>
+	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
 </div>
 </template>
 

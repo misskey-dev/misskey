@@ -1,9 +1,9 @@
 <template>
-<mk-container :naked="props.transparent" :show-header="false">
+<MkContainer :naked="props.transparent" :show-header="false">
 	<div class="vubelbmv">
-		<mk-analog-clock class="clock"/>
+		<MkAnalogClock class="clock"/>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

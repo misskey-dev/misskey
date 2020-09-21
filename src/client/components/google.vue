@@ -1,7 +1,7 @@
 <template>
 <div class="mk-google">
 	<input type="search" v-model="query" :placeholder="q">
-	<button @click="search"><fa :icon="faSearch"/> {{ $t('search') }}</button>
+	<button @click="search"><Fa :icon="faSearch"/> {{ $t('search') }}</button>
 </div>
 </template>
 

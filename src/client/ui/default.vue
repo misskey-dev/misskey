@@ -3,7 +3,7 @@
 	<header class="header" ref="header">
 		<div class="title" ref="title">
 			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-				<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
+				<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
 			</transition>
 			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
 				<portal-target class="body" :key="pageKey" name="header"></portal-target>
@@ -11,19 +11,19 @@
 		</div>
 		<div class="sub">
 			<template v-if="$store.getters.isSignedIn">
-				<button v-if="widgetsEditMode" class="_button edit active" @click="widgetsEditMode = false"><fa :icon="faGripVertical"/></button>
-				<button v-else class="_button edit" @click="widgetsEditMode = true"><fa :icon="faGripVertical"/></button>
+				<button v-if="widgetsEditMode" class="_button edit active" @click="widgetsEditMode = false"><Fa :icon="faGripVertical"/></button>
+				<button v-else class="_button edit" @click="widgetsEditMode = true"><Fa :icon="faGripVertical"/></button>
 			</template>
 			<div class="search">
-				<fa :icon="faSearch"/>
+				<Fa :icon="faSearch"/>
 				<input type="search" ref="search" :placeholder="$t('search')" v-model="searchQuery" :disabled="searchWait" @keypress="searchKeypress"/>
 			</div>
-			<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
-			<x-clock v-if="isDesktop" class="clock"/>
+			<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
+			<XClock v-if="isDesktop" class="clock"/>
 		</div>
 	</header>
 
-	<x-sidebar ref="nav" @change-view-mode="calcHeaderWidth"/>
+	<XSidebar ref="nav" @change-view-mode="calcHeaderWidth"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper, full: $store.state.fullView }">
 		<main ref="main">
@@ -46,8 +46,8 @@
 			<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition, empty: widgets[place].length === 0 && !widgetsEditMode }" :key="place">
 				<div class="spacer"></div>
 				<div class="container" v-if="widgetsEditMode">
-					<mk-button primary @click="addWidget(place)" class="add"><fa :icon="faPlus"/></mk-button>
-					<x-draggable
+					<MkButton primary @click="addWidget(place)" class="add"><Fa :icon="faPlus"/></MkButton>
+					<XDraggable
 						:list="widgets[place]"
 						handle=".handle"
 						animation="150"
@@ -56,13 +56,13 @@
 					>
 						<div v-for="widget in widgets[place]" class="customize-container _panel" :key="widget.id">
 							<header>
-								<span class="handle"><fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><fa :icon="faTimes"/></button>
+								<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><Fa :icon="faTimes"/></button>
 							</header>
 							<div @click="widgetFunc(widget.id)">
 								<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
 							</div>
 						</div>
-					</x-draggable>
+					</XDraggable>
 				</div>
 				<div class="container" v-else>
 					<component v-for="widget in widgets[place]" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
@@ -72,16 +72,16 @@
 	</div>
 
 	<div class="buttons" :class="{ navHidden }">
-		<button class="button nav _button" @click="showNav" ref="navButton"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
-		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><fa :icon="faHome"/></button>
-		<button v-else class="button home _button" @click="$router.push('/')"><fa :icon="faHome"/></button>
-		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')"><fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><fa :icon="faCircle"/></i></button>
-		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
+		<button class="button nav _button" @click="showNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><Fa :icon="faHome"/></button>
+		<button v-else class="button home _button" @click="$router.push('/')"><Fa :icon="faHome"/></button>
+		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
+		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
 	</div>
 
-	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" :class="{ navHidden }" @click="post()"><fa :icon="faPencilAlt"/></button>
+	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" :class="{ navHidden }" @click="post()"><Fa :icon="faPencilAlt"/></button>
 
-	<stream-indicator v-if="$store.getters.isSignedIn"/>
+	<StreamIndicator v-if="$store.getters.isSignedIn"/>
 </div>
 </template>
 

@@ -1,8 +1,8 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faHashtag"/>{{ $route.params.tag }}</portal>
+	<portal to="header"><Fa :icon="faHashtag"/>{{ $route.params.tag }}</portal>
 
-	<x-notes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+	<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>
 

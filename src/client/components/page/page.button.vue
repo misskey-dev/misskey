@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-button class="kudkigyw" @click="click()" :primary="value.primary">{{ hpml.interpolate(value.text) }}</mk-button>
+	<MkButton class="kudkigyw" @click="click()" :primary="value.primary">{{ hpml.interpolate(value.text) }}</MkButton>
 </div>
 </template>
 

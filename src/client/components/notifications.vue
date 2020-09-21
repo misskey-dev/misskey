@@ -1,18 +1,18 @@
 <template>
 <div class="mfcuwfyp">
-	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
-		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @updated="noteUpdated(notification.note, $event)" :key="notification.id"/>
-		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
-	</x-list>
+	<XList class="notifications" :items="items" v-slot="{ item: notification }">
+		<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @updated="noteUpdated(notification.note, $event)" :key="notification.id"/>
+		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
+	</XList>
 
 	<button class="_panel _button" ref="loadMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-		<template v-if="moreFetching"><mk-loading inline/></template>
+		<template v-if="moreFetching"><MkLoading inline/></template>
 	</button>
 
 	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
 
-	<mk-error v-if="error" @retry="init()"/>
+	<MkError v-if="error" @retry="init()"/>
 </div>
 </template>
 

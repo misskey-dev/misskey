@@ -1,25 +1,25 @@
 <template>
 <section class="_card">
-	<div class="_title"><fa :icon="faPlug"/> {{ $t('plugins') }}</div>
+	<div class="_title"><Fa :icon="faPlug"/> {{ $t('plugins') }}</div>
 	<div class="_content">
 		<details>
-			<summary><fa :icon="faDownload"/> {{ $t('install') }}</summary>
-			<mk-info warn>{{ $t('pluginInstallWarn') }}</mk-info>
-			<mk-textarea v-model:value="script" tall>
+			<summary><Fa :icon="faDownload"/> {{ $t('install') }}</summary>
+			<MkInfo warn>{{ $t('pluginInstallWarn') }}</MkInfo>
+			<MkTextarea v-model:value="script" tall>
 				<span>{{ $t('script') }}</span>
-			</mk-textarea>
-			<mk-button @click="install()" primary><fa :icon="faSave"/> {{ $t('install') }}</mk-button>
+			</MkTextarea>
+			<MkButton @click="install()" primary><Fa :icon="faSave"/> {{ $t('install') }}</MkButton>
 		</details>
 	</div>
 	<div class="_content">
 		<details>
-			<summary><fa :icon="faFolderOpen"/> {{ $t('manage') }}</summary>
-			<mk-select v-model:value="selectedPluginId">
+			<summary><Fa :icon="faFolderOpen"/> {{ $t('manage') }}</summary>
+			<MkSelect v-model:value="selectedPluginId">
 				<option v-for="x in $store.state.deviceUser.plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
-			</mk-select>
+			</MkSelect>
 			<template v-if="selectedPlugin">
 				<div style="margin: -8px 0 8px 0;">
-					<mk-switch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</mk-switch>
+					<MkSwitch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</MkSwitch>
 				</div>
 				<div class="_keyValue">
 					<div>{{ $t('version') }}:</div>
@@ -34,8 +34,8 @@
 					<div>{{ selectedPlugin.description }}</div>
 				</div>
 				<div style="margin-top: 8px;">
-					<mk-button @click="config()" inline v-if="selectedPlugin.config"><fa :icon="faCog"/> {{ $t('settings') }}</mk-button>
-					<mk-button @click="uninstall()" inline><fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</mk-button>
+					<MkButton @click="config()" inline v-if="selectedPlugin.config"><Fa :icon="faCog"/> {{ $t('settings') }}</MkButton>
+					<MkButton @click="uninstall()" inline><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</MkButton>
 				</div>
 			</template>
 		</details>

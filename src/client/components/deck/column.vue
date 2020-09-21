@@ -15,15 +15,15 @@
 		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<button class="toggleActive _button" @click="toggleActive" v-if="isStacked">
-			<template v-if="active"><fa :icon="faAngleUp"/></template>
-			<template v-else><fa :icon="faAngleDown"/></template>
+			<template v-if="active"><Fa :icon="faAngleUp"/></template>
+			<template v-else><Fa :icon="faAngleDown"/></template>
 		</button>
 		<div class="action">
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><fa :icon="faCaretDown"/></button>
-		<button v-else-if="$route.name !== 'index'" class="close _button" @click.stop="close"><fa :icon="faTimes"/></button>
+		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><Fa :icon="faCaretDown"/></button>
+		<button v-else-if="$route.name !== 'index'" class="close _button" @click.stop="close"><Fa :icon="faTimes"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>

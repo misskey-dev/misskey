@@ -1,47 +1,47 @@
 <template>
 <div class="zmdxowus">
 	<p class="caution" v-if="choices.length < 2">
-		<fa :icon="faExclamationTriangle"/>{{ $t('_poll.noOnlyOneChoice') }}
+		<Fa :icon="faExclamationTriangle"/>{{ $t('_poll.noOnlyOneChoice') }}
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
-			<mk-input class="input" :value="choice" @update:value="onInput(i, $event)">
+			<MkInput class="input" :value="choice" @update:value="onInput(i, $event)">
 				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
-			</mk-input>
+			</MkInput>
 			<button @click="remove(i)" class="_button">
-				<fa :icon="faTimes"/>
+				<Fa :icon="faTimes"/>
 			</button>
 		</li>
 	</ul>
-	<mk-button class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</mk-button>
-	<mk-button class="add" v-else disabled>{{ $t('_poll.noMore') }}</mk-button>
+	<MkButton class="add" v-if="choices.length < 10" @click="add">{{ $t('add') }}</MkButton>
+	<MkButton class="add" v-else disabled>{{ $t('_poll.noMore') }}</MkButton>
 	<section>
-		<mk-switch v-model:value="multiple">{{ $t('_poll.canMultipleVote') }}</mk-switch>
+		<MkSwitch v-model:value="multiple">{{ $t('_poll.canMultipleVote') }}</MkSwitch>
 		<div>
-			<mk-select v-model:value="expiration">
+			<MkSelect v-model:value="expiration">
 				<template #label>{{ $t('_poll.expiration') }}</template>
 				<option value="infinite">{{ $t('_poll.infinite') }}</option>
 				<option value="at">{{ $t('_poll.at') }}</option>
 				<option value="after">{{ $t('_poll.after') }}</option>
-			</mk-select>
+			</MkSelect>
 			<section v-if="expiration === 'at'">
-				<mk-input v-model:value="atDate" type="date" class="input">
+				<MkInput v-model:value="atDate" type="date" class="input">
 					<span>{{ $t('_poll.deadlineDate') }}</span>
-				</mk-input>
-				<mk-input v-model:value="atTime" type="time" class="input">
+				</MkInput>
+				<MkInput v-model:value="atTime" type="time" class="input">
 					<span>{{ $t('_poll.deadlineTime') }}</span>
-				</mk-input>
+				</MkInput>
 			</section>
 			<section v-if="expiration === 'after'">
-				<mk-input v-model:value="after" type="number" class="input">
+				<MkInput v-model:value="after" type="number" class="input">
 					<span>{{ $t('_poll.duration') }}</span>
-				</mk-input>
-				<mk-select v-model:value="unit">
+				</MkInput>
+				<MkSelect v-model:value="unit">
 					<option value="second">{{ $t('_time.second') }}</option>
 					<option value="minute">{{ $t('_time.minute') }}</option>
 					<option value="hour">{{ $t('_time.hour') }}</option>
 					<option value="day">{{ $t('_time.day') }}</option>
-				</mk-select>
+				</MkSelect>
 			</section>
 		</div>
 	</section>

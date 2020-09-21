@@ -1,15 +1,15 @@
 <template>
-<mk-container :show-header="props.showHeader">
-	<template #header><fa :icon="faRssSquare"/>RSS</template>
-	<template #func><button class="_button" @click="setting"><fa :icon="faCog"/></button></template>
+<MkContainer :show-header="props.showHeader">
+	<template #header><Fa :icon="faRssSquare"/>RSS</template>
+	<template #func><button class="_button" @click="setting"><Fa :icon="faCog"/></button></template>
 
 	<div class="ekmkgxbj">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<div class="feed" v-else>
 			<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

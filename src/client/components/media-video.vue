@@ -1,12 +1,12 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
+		<b><Fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
 		<span>{{ $t('clickToShow') }}</span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
 	<a
 		:href="video.url"
 		rel="nofollow noopener"
@@ -14,7 +14,7 @@
 		:style="imageStyle"
 		:title="video.name"
 	>
-		<fa :icon="faPlayCircle"/>
+		<Fa :icon="faPlayCircle"/>
 	</a>
 </div>
 </template>

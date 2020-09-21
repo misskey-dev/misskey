@@ -2,61 +2,61 @@
 <div>
 	<div class="gwbmwxkm _panel">
 		<header>
-			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
+			<div class="title"><Fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
 			<div class="buttons">
-				<button class="_button" @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
-				<button class="_button" @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
-				<button class="_button" @click="save()" v-if="!readonly"><fa :icon="faSave"/></button>
+				<button class="_button" @click="del()" v-if="!readonly"><Fa :icon="faTrashAlt"/></button>
+				<button class="_button" @click="() => showOptions = !showOptions"><Fa :icon="faCog"/></button>
+				<button class="_button" @click="save()" v-if="!readonly"><Fa :icon="faSave"/></button>
 			</div>
 		</header>
 
 		<section>
-			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
+			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
 
-			<mk-input v-model:value="title">
+			<MkInput v-model:value="title">
 				<span>{{ $t('_pages.title') }}</span>
-			</mk-input>
+			</MkInput>
 
 			<template v-if="showOptions">
-				<mk-input v-model:value="summary">
+				<MkInput v-model:value="summary">
 					<span>{{ $t('_pages.summary') }}</span>
-				</mk-input>
+				</MkInput>
 
-				<mk-input v-model:value="name">
+				<MkInput v-model:value="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<span>{{ $t('_pages.url') }}</span>
-				</mk-input>
+				</MkInput>
 
-				<mk-switch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</mk-switch>
+				<MkSwitch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</MkSwitch>
 
-				<mk-select v-model:value="font">
+				<MkSelect v-model:value="font">
 					<template #label>{{ $t('_pages.font') }}</template>
 					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
 					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
-				</mk-select>
+				</MkSelect>
 
-				<mk-switch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</mk-switch>
+				<MkSwitch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</mk-button>
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><Fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-						<mk-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</mk-button>
+						<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</MkButton>
 					</div>
 				</div>
 			</template>
 
-			<x-blocks class="content" v-model:value="content" :hpml="hpml"/>
+			<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
 
-			<mk-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
+			<MkButton @click="add()" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
 		</section>
 	</div>
 
-	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
+	<MkContainer :body-togglable="true">
+		<template #header><Fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
 		<div class="qmuvgica">
-			<x-draggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
-				<x-variable v-for="variable in variables"
+			<XDraggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+				<XVariable v-for="variable in variables"
 					:value="variable"
 					:removable="true"
 					@update:value="v => updateVariable(v)"
@@ -67,18 +67,18 @@
 					:title="variable.name"
 					:draggable="true"
 				/>
-			</x-draggable>
+			</XDraggable>
 
-			<mk-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
+			<MkButton @click="addVariable()" class="add" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
 		</div>
-	</mk-container>
+	</MkContainer>
 
-	<mk-container :body-togglable="true" :expanded="true">
-		<template #header><fa :icon="faCode"/> {{ $t('script') }}</template>
+	<MkContainer :body-togglable="true" :expanded="true">
+		<template #header><Fa :icon="faCode"/> {{ $t('script') }}</template>
 		<div>
 			<prism-editor class="_code" v-model:value="script" :highlight="highlighter" :line-numbers="false"/>
 		</div>
-	</mk-container>
+	</MkContainer>
 </div>
 </template>
 

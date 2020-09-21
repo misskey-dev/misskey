@@ -1,32 +1,32 @@
 <template>
-<mk-container :body-togglable="true" :expanded="expanded">
+<MkContainer :body-togglable="true" :expanded="expanded">
 	<template #header><slot></slot></template>
 
-	<mk-error v-if="error" @retry="init()"/>
+	<MkError v-if="error" @retry="init()"/>
 
 	<div class="efvhhmdq">
 		<div class="no-users" v-if="empty">
 			<p>{{ $t('noUsers') }}</p>
 		</div>
 		<div class="user" v-for="user in users" :key="user.id">
-			<mk-avatar class="avatar" :user="user"/>
+			<MkAvatar class="avatar" :user="user"/>
 			<div class="body">
 				<div class="name">
-					<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><mk-user-name :user="user"/></router-link>
-					<span class="username"><mk-acct :user="user"/></span>
+					<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><MkUserName :user="user"/></router-link>
+					<span class="username"><MkAcct :user="user"/></span>
 				</div>
 				<div class="description">
 					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 					<span v-else class="empty">{{ $t('noAccountDescription') }}</span>
 				</div>
 			</div>
-			<mk-follow-button class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+			<MkFollowButton class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
 		</div>
 		<button class="more" ref="loadMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
-			<template v-if="moreFetching"><fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
+			<template v-if="moreFetching"><Fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
 		</button>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

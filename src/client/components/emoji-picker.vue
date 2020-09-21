@@ -7,13 +7,13 @@
 			:class="{ active: category.isActive }"
 			:key="i"
 		>
-			<fa :icon="category.icon" fixed-width/>
+			<Fa :icon="category.icon" fixed-width/>
 		</button>
 	</header>
 
 	<div class="emojis">
 		<template v-if="categories[0].isActive">
-			<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
+			<header class="category"><Fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
 			<div class="list">
 				<button v-for="emoji in ($store.state.device.recentEmojis || [])"
 					class="_button"
@@ -21,12 +21,12 @@
 					@click="chosen(emoji)"
 					:key="emoji"
 				>
-					<mk-emoji v-if="emoji.char != null" :emoji="emoji.char"/>
+					<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
 					<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 				</button>
 			</div>
 
-			<header class="category"><fa :icon="faAsterisk" fixed-width/> {{ $t('customEmojis') }}</header>
+			<header class="category"><Fa :icon="faAsterisk" fixed-width/> {{ $t('customEmojis') }}</header>
 		</template>
 
 		<template v-if="categories.find(x => x.isActive).name">
@@ -37,7 +37,7 @@
 					@click="chosen(emoji)"
 					:key="emoji.name"
 				>
-					<mk-emoji :emoji="emoji.char"/>
+					<MkEmoji :emoji="emoji.char"/>
 				</button>
 			</div>
 		</template>

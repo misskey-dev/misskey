@@ -1,8 +1,8 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faPlug"/>{{ $t('installedApps') }}</portal>
+	<portal to="header"><Fa :icon="faPlug"/>{{ $t('installedApps') }}</portal>
 
-	<mk-pagination :pagination="pagination" class="bfomjevm" ref="list">
+	<MkPagination :pagination="pagination" class="bfomjevm" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -17,14 +17,14 @@
 					<div class="description">{{ token.description }}</div>
 					<div class="_keyValue">
 						<div>{{ $t('installedDate') }}:</div>
-						<div><mk-time :time="token.createdAt"/></div>
+						<div><MkTime :time="token.createdAt"/></div>
 					</div>
 					<div class="_keyValue">
 						<div>{{ $t('lastUsedDate') }}:</div>
-						<div><mk-time :time="token.lastUsedAt"/></div>
+						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="revoke(token)"><fa :icon="faTrashAlt"/></button>
+						<button class="_button" @click="revoke(token)"><Fa :icon="faTrashAlt"/></button>
 					</div>
 					<details>
 						<summary>{{ $t('details') }}</summary>
@@ -35,7 +35,7 @@
 				</div>
 			</div>
 		</template>
-	</mk-pagination>
+	</MkPagination>
 </div>
 </template>
 

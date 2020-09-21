@@ -1,23 +1,23 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faSatelliteDish"/>{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
+	<portal to="header"><Fa :icon="faSatelliteDish"/>{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
 
 	<div class="_card">
 		<div class="_content">
-			<mk-input v-model:value="name">{{ $t('name') }}</mk-input>
+			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
 
-			<mk-textarea v-model:value="description">{{ $t('description') }}</mk-textarea>
+			<MkTextarea v-model:value="description">{{ $t('description') }}</MkTextarea>
 
 			<div class="banner">
-				<mk-button v-if="bannerId == null" @click="setBannerImage"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<mk-button @click="removeBannerImage()"><fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</mk-button>
+					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</MkButton>
 				</div>
 			</div>
 		</div>
 		<div class="_footer">
-			<mk-button @click="save()" primary><fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</mk-button>
+			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</MkButton>
 		</div>
 	</div>
 </div>

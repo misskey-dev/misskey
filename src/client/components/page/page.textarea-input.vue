@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-textarea v-model:value="v">{{ hpml.interpolate(value.text) }}</mk-textarea>
+	<MkTextarea v-model:value="v">{{ hpml.interpolate(value.text) }}</MkTextarea>
 </div>
 </template>
 

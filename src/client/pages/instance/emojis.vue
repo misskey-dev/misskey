@@ -1,11 +1,11 @@
 <template>
 <div class="mk-instance-emojis">
-	<portal to="header"><fa :icon="faLaugh"/>{{ $t('customEmojis') }}</portal>
+	<portal to="header"><Fa :icon="faLaugh"/>{{ $t('customEmojis') }}</portal>
 
 	<section class="_card _vMargin local">
-		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
+		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">
-			<mk-pagination :pagination="pagination" class="emojis" ref="emojis">
+			<MkPagination :pagination="pagination" class="emojis" ref="emojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selected = emoji" :class="{ selected: selected && (selected.id === emoji.id) }">
@@ -19,24 +19,24 @@
 						</div>
 					</div>
 				</template>
-			</mk-pagination>
+			</MkPagination>
 		</div>
 		<div class="_content" v-if="selected">
-			<mk-input v-model:value="name"><span>{{ $t('name') }}</span></mk-input>
-			<mk-input v-model:value="category" :datalist="categories"><span>{{ $t('category') }}</span></mk-input>
-			<mk-input v-model:value="aliases"><span>{{ $t('tags') }}</span></mk-input>
-			<mk-button inline primary @click="update"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
-			<mk-button inline :disabled="selected == null" @click="del()"><fa :icon="faTrashAlt"/> {{ $t('delete') }}</mk-button>
+			<MkInput v-model:value="name"><span>{{ $t('name') }}</span></MkInput>
+			<MkInput v-model:value="category" :datalist="categories"><span>{{ $t('category') }}</span></MkInput>
+			<MkInput v-model:value="aliases"><span>{{ $t('tags') }}</span></MkInput>
+			<MkButton inline primary @click="update"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+			<MkButton inline :disabled="selected == null" @click="del()"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
 		</div>
 		<div class="_footer">
-			<mk-button inline primary @click="add"><fa :icon="faPlus"/> {{ $t('addEmoji') }}</mk-button>
+			<MkButton inline primary @click="add"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
 		</div>
 	</section>
 	<section class="_card _vMargin remote">
-		<div class="_title"><fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
+		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
 		<div class="_content">
-			<mk-input v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
-			<mk-pagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
+			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
+			<MkPagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
@@ -47,10 +47,10 @@
 						</div>
 					</div>
 				</template>
-			</mk-pagination>
+			</MkPagination>
 		</div>
 		<div class="_footer">
-			<mk-button inline primary :disabled="selectedRemote == null" @click="im()"><fa :icon="faPlus"/> {{ $t('import') }}</mk-button>
+			<MkButton inline primary :disabled="selectedRemote == null" @click="im()"><Fa :icon="faPlus"/> {{ $t('import') }}</MkButton>
 		</div>
 	</section>
 </div>

@@ -1,32 +1,32 @@
 <template>
 <div class="mk-instance-users">
-	<portal to="header"><fa :icon="faUsers"/>{{ $t('users') }}</portal>
+	<portal to="header"><Fa :icon="faUsers"/>{{ $t('users') }}</portal>
 
 	<section class="_card _vMargin lookup">
-		<div class="_title"><fa :icon="faSearch"/> {{ $t('lookup') }}</div>
+		<div class="_title"><Fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
-			<mk-input class="target" v-model:value="target" type="text" @enter="showUser()">
+			<MkInput class="target" v-model:value="target" type="text" @enter="showUser()">
 				<span>{{ $t('usernameOrUserId') }}</span>
-			</mk-input>
-			<mk-button @click="showUser()" primary><fa :icon="faSearch"/> {{ $t('lookup') }}</mk-button>
+			</MkInput>
+			<MkButton @click="showUser()" primary><Fa :icon="faSearch"/> {{ $t('lookup') }}</MkButton>
 		</div>
 		<div class="_footer">
-			<mk-button inline primary @click="searchUser()"><fa :icon="faSearch"/> {{ $t('search') }}</mk-button>
+			<MkButton inline primary @click="searchUser()"><Fa :icon="faSearch"/> {{ $t('search') }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _vMargin users">
-		<div class="_title"><fa :icon="faUsers"/> {{ $t('users') }}</div>
+		<div class="_title"><Fa :icon="faUsers"/> {{ $t('users') }}</div>
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
-				<mk-select v-model:value="sort" style="margin: 0; flex: 1;">
+				<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('sort') }}</template>
 					<option value="-createdAt">{{ $t('registeredDate') }} ({{ $t('ascendingOrder') }})</option>
 					<option value="+createdAt">{{ $t('registeredDate') }} ({{ $t('descendingOrder') }})</option>
 					<option value="-updatedAt">{{ $t('lastUsed') }} ({{ $t('ascendingOrder') }})</option>
 					<option value="+updatedAt">{{ $t('lastUsed') }} ({{ $t('descendingOrder') }})</option>
-				</mk-select>
-				<mk-select v-model:value="state" style="margin: 0; flex: 1;">
+				</MkSelect>
+				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('state') }}</template>
 					<option value="all">{{ $t('all') }}</option>
 					<option value="available">{{ $t('normal') }}</option>
@@ -34,48 +34,48 @@
 					<option value="moderator">{{ $t('moderator') }}</option>
 					<option value="silenced">{{ $t('silence') }}</option>
 					<option value="suspended">{{ $t('suspend') }}</option>
-				</mk-select>
-				<mk-select v-model:value="origin" style="margin: 0; flex: 1;">
+				</MkSelect>
+				<MkSelect v-model:value="origin" style="margin: 0; flex: 1;">
 					<template #label>{{ $t('instance') }}</template>
 					<option value="combined">{{ $t('all') }}</option>
 					<option value="local">{{ $t('local') }}</option>
 					<option value="remote">{{ $t('remote') }}</option>
-				</mk-select>
+				</MkSelect>
 			</div>
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<mk-input v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()">
+				<MkInput v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()">
 					<span>{{ $t('username') }}</span>
-				</mk-input>
-				<mk-input v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+				</MkInput>
+				<MkInput v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
 					<span>{{ $t('host') }}</span>
-				</mk-input>
+				</MkInput>
 			</div>
 		</div>
 		<div class="_content _list">
-			<mk-pagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
+			<MkPagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
 				<button class="user _button _listItem" v-for="(user, i) in items" :key="user.id" @click="show(user)">
-					<mk-avatar class="avatar" :user="user" :disable-link="true"/>
+					<MkAvatar class="avatar" :user="user" :disable-link="true"/>
 					<div class="body">
 						<header>
-							<mk-user-name class="name" :user="user"/>
+							<MkUserName class="name" :user="user"/>
 							<span class="acct">@{{ acct(user) }}</span>
-							<span class="staff" v-if="user.isAdmin"><fa :icon="faBookmark"/></span>
-							<span class="staff" v-if="user.isModerator"><fa :icon="farBookmark"/></span>
-							<span class="punished" v-if="user.isSilenced"><fa :icon="faMicrophoneSlash"/></span>
-							<span class="punished" v-if="user.isSuspended"><fa :icon="faSnowflake"/></span>
+							<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
+							<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
+							<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
+							<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
 						</header>
 						<div>
-							<span>{{ $t('lastUsed') }}: <mk-time :time="user.updatedAt" mode="detail"/></span>
+							<span>{{ $t('lastUsed') }}: <MkTime :time="user.updatedAt" mode="detail"/></span>
 						</div>
 						<div>
-							<span>{{ $t('registeredDate') }}: <mk-time :time="user.createdAt" mode="detail"/></span>
+							<span>{{ $t('registeredDate') }}: <MkTime :time="user.createdAt" mode="detail"/></span>
 						</div>
 					</div>
 				</button>
-			</mk-pagination>
+			</MkPagination>
 		</div>
 		<div class="_footer">
-			<mk-button inline primary @click="addUser()"><fa :icon="faPlus"/> {{ $t('addUser') }}</mk-button>
+			<MkButton inline primary @click="addUser()"><Fa :icon="faPlus"/> {{ $t('addUser') }}</MkButton>
 		</div>
 	</section>
 </div>

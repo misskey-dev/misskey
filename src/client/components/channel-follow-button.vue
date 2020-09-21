@@ -6,14 +6,14 @@
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ $t('unfollow') }}</span><fa :icon="faMinus"/>
+			<span v-if="full">{{ $t('unfollow') }}</span><Fa :icon="faMinus"/>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ $t('follow') }}</span><fa :icon="faPlus"/>
+			<span v-if="full">{{ $t('follow') }}</span><Fa :icon="faPlus"/>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $t('processing') }}</span><fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse fixed-width/>
 	</template>
 </button>
 </template>

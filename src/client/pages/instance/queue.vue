@@ -1,16 +1,16 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faExchangeAlt"/>{{ $t('jobQueue') }}</portal>
+	<portal to="header"><Fa :icon="faExchangeAlt"/>{{ $t('jobQueue') }}</portal>
 
-	<x-queue :connection="connection" domain="inbox">
-		<template #title><fa :icon="faExchangeAlt"/> In</template>
-	</x-queue>
-	<x-queue :connection="connection" domain="deliver">
-		<template #title><fa :icon="faExchangeAlt"/> Out</template>
-	</x-queue>
+	<XQueue :connection="connection" domain="inbox">
+		<template #title><Fa :icon="faExchangeAlt"/> In</template>
+	</XQueue>
+	<XQueue :connection="connection" domain="deliver">
+		<template #title><Fa :icon="faExchangeAlt"/> Out</template>
+	</XQueue>
 	<section class="_card">
 		<div class="_content">
-			<mk-button @click="clear()"><fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</mk-button>
+			<MkButton @click="clear()"><Fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</MkButton>
 		</div>
 	</section>
 </div>

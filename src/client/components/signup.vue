@@ -1,49 +1,49 @@
 <template>
 <form class="mk-signup" @submit.prevent="onSubmit" :autocomplete="Math.random()">
 	<template v-if="meta">
-		<mk-input v-if="meta.disableRegistration" v-model:value="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
+		<MkInput v-if="meta.disableRegistration" v-model:value="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<span>{{ $t('invitationCode') }}</span>
-			<template #prefix><fa :icon="faKey"/></template>
-		</mk-input>
-		<mk-input v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:value="onChangeUsername">
+			<template #prefix><Fa :icon="faKey"/></template>
+		</MkInput>
+		<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:value="onChangeUsername">
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #desc>
-				<span v-if="usernameState == 'wait'" style="color:#999"><fa :icon="faSpinner" pulse fixed-width/> {{ $t('checking') }}</span>
-				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('available') }}</span>
-				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('unavailable') }}</span>
-				<span v-if="usernameState == 'error'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('error') }}</span>
-				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('usernameInvalidFormat') }}</span>
-				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooShort') }}</span>
-				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooLong') }}</span>
+				<span v-if="usernameState == 'wait'" style="color:#999"><Fa :icon="faSpinner" pulse fixed-width/> {{ $t('checking') }}</span>
+				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $t('available') }}</span>
+				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('unavailable') }}</span>
+				<span v-if="usernameState == 'error'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('error') }}</span>
+				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('usernameInvalidFormat') }}</span>
+				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooShort') }}</span>
+				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooLong') }}</span>
 			</template>
-		</mk-input>
-		<mk-input v-model:value="password" type="password" :autocomplete="Math.random()" required @update:value="onChangePassword">
+		</MkInput>
+		<MkInput v-model:value="password" type="password" :autocomplete="Math.random()" required @update:value="onChangePassword">
 			<span>{{ $t('password') }}</span>
-			<template #prefix><fa :icon="faLock"/></template>
+			<template #prefix><Fa :icon="faLock"/></template>
 			<template #desc>
-				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('weakPassword') }}</p>
-				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('normalPassword') }}</p>
-				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('strongPassword') }}</p>
+				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('weakPassword') }}</p>
+				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $t('normalPassword') }}</p>
+				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $t('strongPassword') }}</p>
 			</template>
-		</mk-input>
-		<mk-input v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @update:value="onChangePasswordRetype">
+		</MkInput>
+		<MkInput v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @update:value="onChangePasswordRetype">
 			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
-			<template #prefix><fa :icon="faLock"/></template>
+			<template #prefix><Fa :icon="faLock"/></template>
 			<template #desc>
-				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('passwordMatched') }}</p>
-				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('passwordNotMatched') }}</p>
+				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $t('passwordMatched') }}</p>
+				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('passwordNotMatched') }}</p>
 			</template>
-		</mk-input>
-		<mk-switch v-model:value="ToSAgreement" v-if="meta.tosUrl">
+		</MkInput>
+		<MkSwitch v-model:value="ToSAgreement" v-if="meta.tosUrl">
 			<i18n-t path="agreeTo">
 				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n-t>
-		</mk-switch>
+		</MkSwitch>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model:value="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
 		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model:value="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
-		<mk-button type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</mk-button>
+		<MkButton type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</MkButton>
 	</template>
 </form>
 </template>

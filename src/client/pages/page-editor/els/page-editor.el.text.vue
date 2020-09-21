@@ -1,11 +1,11 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faAlignLeft"/> {{ $t('_pages.blocks.text') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faAlignLeft"/> {{ $t('_pages.blocks.text') }}</template>
 
 	<section class="vckmsadr">
 		<textarea v-model="value.text"></textarea>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

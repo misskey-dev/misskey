@@ -2,7 +2,7 @@
 <div v-if="$store.getters.isSignedIn">
 	<div class="waiting _card _vMargin" v-if="state == 'waiting'">
 		<div class="_content">
-			<mk-loading/>
+			<MkLoading/>
 		</div>
 	</div>
 	<div class="denied _card _vMargin" v-if="state == 'denied'">
@@ -12,7 +12,7 @@
 	</div>
 	<div class="accepted _card _vMargin" v-else-if="state == 'accepted'">
 		<div class="_content">
-			<p v-if="callback">{{ $t('_auth.callback') }}<mk-ellipsis/></p>
+			<p v-if="callback">{{ $t('_auth.callback') }}<MkEllipsis/></p>
 			<p v-else>{{ $t('_auth.pleaseGoBack') }}</p>
 		</div>
 	</div>
@@ -28,13 +28,13 @@
 			</ul>
 		</div>
 		<div class="_footer">
-			<mk-button @click="deny" inline>{{ $t('cancel') }}</mk-button>
-			<mk-button @click="accept" inline primary>{{ $t('accept') }}</mk-button>
+			<MkButton @click="deny" inline>{{ $t('cancel') }}</MkButton>
+			<MkButton @click="accept" inline primary>{{ $t('accept') }}</MkButton>
 		</div>
 	</div>
 </div>
 <div class="signin" v-else>
-	<mk-signin @login="onLogin"/>
+	<MkSignin @login="onLogin"/>
 </div>
 </template>
 

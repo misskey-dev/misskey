@@ -13,21 +13,21 @@
 			<div style="margin-bottom: 1em;">{{ $t('aboutMisskeyText') }}</div>
 			<div>🛠️ {{ $t('misskeyMembers') }}</div>
 			<ul class="members">
-				<li><mk-link url="https://github.com/syuilo" class="at">@syuilo</mk-link></li>
-				<li><mk-link url="https://github.com/AyaMorisawa" class="at">@AyaMorisawa</mk-link></li>
-				<li><mk-link url="https://github.com/mei23" class="at">@mei23</mk-link></li>
-				<li><mk-link url="https://github.com/acid-chicken" class="at">@acid-chicken</mk-link></li>
-				<li><mk-link url="https://github.com/tamaina" class="at">@tamaina</mk-link></li>
-				<li><mk-link url="https://github.com/rinsuki" class="at">@rinsuki</mk-link></li>
-				<li><mk-link url="https://github.com/Xeltica" class="at">@Xeltica</mk-link></li>
-				<li><mk-link url="https://github.com/u1-liquid" class="at">@u1-liquid</mk-link></li>
+				<li><MkLink url="https://github.com/syuilo" class="at">@syuilo</MkLink></li>
+				<li><MkLink url="https://github.com/AyaMorisawa" class="at">@AyaMorisawa</MkLink></li>
+				<li><MkLink url="https://github.com/mei23" class="at">@mei23</MkLink></li>
+				<li><MkLink url="https://github.com/acid-chicken" class="at">@acid-chicken</MkLink></li>
+				<li><MkLink url="https://github.com/tamaina" class="at">@tamaina</MkLink></li>
+				<li><MkLink url="https://github.com/rinsuki" class="at">@rinsuki</MkLink></li>
+				<li><MkLink url="https://github.com/Xeltica" class="at">@Xeltica</MkLink></li>
+				<li><MkLink url="https://github.com/u1-liquid" class="at">@u1-liquid</MkLink></li>
 			</ul>
 			<div style="margin-top: 1em;">📦 {{ $t('misskeySource') }}</div>
-			<mk-url url="https://github.com/syuilo/misskey"/>
+			<MkUrl url="https://github.com/syuilo/misskey"/>
 			<div style="margin-top: 1em;">🌏 {{ $t('misskeyTranslation') }}</div>
-			<mk-url url="https://crowdin.com/project/misskey"/>
+			<MkUrl url="https://crowdin.com/project/misskey"/>
 			<div style="margin-top: 1em;">💴 {{ $t('misskeyDonate') }}</div>
-			<mk-url url="https://www.patreon.com/syuilo"/>
+			<MkUrl url="https://www.patreon.com/syuilo"/>
 		</div>
 		<div class="_content">
 			<span><mfm text="<motion>❤</motion>"/> {{ $t('patrons') }}</span>

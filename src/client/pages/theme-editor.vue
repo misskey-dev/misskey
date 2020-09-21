@@ -1,16 +1,16 @@
 <template>
 <div class="t9makv94">
-	<portal to="header"><fa :icon="faPalette"/>{{ $t('themeEditor') }}</portal>
+	<portal to="header"><Fa :icon="faPalette"/>{{ $t('themeEditor') }}</portal>
 
 	<section class="_card">
 		<div class="_content">
-			<mk-input v-model:value="name" required><span>{{ $t('name') }}</span></mk-input>
-			<mk-input v-model:value="author" required><span>{{ $t('author') }}</span></mk-input>
-			<mk-textarea v-model:value="description"><span>{{ $t('description') }}</span></mk-textarea>
+			<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
+			<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
+			<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
 			<div class="_inputs">
 				<div v-text="$t('_theme.base')" />
-				<mk-radio v-model:value="baseTheme" value="light">{{ $t('light') }}</mk-radio>
-				<mk-radio v-model:value="baseTheme" value="dark">{{ $t('dark') }}</mk-radio>
+				<MkRadio v-model:value="baseTheme" value="light">{{ $t('light') }}</MkRadio>
+				<MkRadio v-model:value="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
 			</div>
 		</div>
 		<div class="_content">
@@ -23,51 +23,51 @@
 						</div>
 						<div>
 							<div class="type" @click="chooseType($event, i)">
-								{{ getTypeOf(v) }} <fa :icon="faChevronDown"/>
+								{{ getTypeOf(v) }} <Fa :icon="faChevronDown"/>
 							</div>
 							<!-- default -->
 							<div v-if="v === null" v-text="baseProps[k]" class="default-value" />
 							<!-- color -->
 							<div v-else-if="typeof v === 'string'" class="color">
 								<input type="color" :value="v" @input="colorChanged($event.target.value, i)"/>
-								<mk-input class="select" :value="v" @update:value="colorChanged($event, i)"/>
+								<MkInput class="select" :value="v" @update:value="colorChanged($event, i)"/>
 							</div>
 							<!-- ref const -->
-							<mk-input v-else-if="v.type === 'refConst'" v-model:value="v.key">
+							<MkInput v-else-if="v.type === 'refConst'" v-model:value="v.key">
 								<template #prefix>$</template>
 								<span>{{ $t('name') }}</span>
-							</mk-input>
+							</MkInput>
 							<!-- ref props -->
-							<mk-select class="select" v-else-if="v.type === 'refProp'" v-model:value="v.key">
+							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model:value="v.key">
 								<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
-							</mk-select>
+							</MkSelect>
 							<!-- func -->
 							<template v-else-if="v.type === 'func'">
-								<mk-select class="select" v-model:value="v.name">
+								<MkSelect class="select" v-model:value="v.name">
 									<template #label>{{ $t('_theme.funcKind') }}</template>
 									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
-								</mk-select>
-								<mk-input type="number" v-model:value="v.arg"><span>{{ $t('_theme.argument') }}</span></mk-input>
-								<mk-select class="select" v-model:value="v.value">
+								</MkSelect>
+								<MkInput type="number" v-model:value="v.arg"><span>{{ $t('_theme.argument') }}</span></MkInput>
+								<MkSelect class="select" v-model:value="v.value">
 									<template #label>{{ $t('_theme.basedProp') }}</template>
 									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
-								</mk-select>
+								</MkSelect>
 							</template>
 						</div>
 					</div>
 				</div>
-				<mk-button primary @click="addConst">{{ $t('_theme.addConstant') }}</mk-button>
+				<MkButton primary @click="addConst">{{ $t('_theme.addConstant') }}</MkButton>
 			</div>
 		</div>
 		<div class="_content">
-				<mk-textarea v-model:value="themeToImport">
+				<MkTextarea v-model:value="themeToImport">
 					{{ $t('_theme.importInfo') }}
-				</mk-textarea>
-				<mk-button :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</mk-button>
+				</MkTextarea>
+				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</MkButton>
 		</div>
 		<div class="_footer">
-			<mk-button inline @click="preview">{{ $t('preview') }}</mk-button>
-			<mk-button inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</mk-button>
+			<MkButton inline @click="preview">{{ $t('preview') }}</MkButton>
+			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</MkButton>
 		</div>
 	</section>
 </div>

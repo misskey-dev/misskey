@@ -1,21 +1,21 @@
 <template>
-<x-window ref="window" :width="400" :height="450" :no-padding="true" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<XWindow ref="window" :width="400" :height="450" :no-padding="true" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
 	<div class="ugkkpisj">
 		<div v-if="information">
-			<mk-info warn>{{ information }}</mk-info>
+			<MkInfo warn>{{ information }}</MkInfo>
 		</div>
 		<div>
-			<mk-input v-model:value="name">{{ $t('name') }}</mk-input>
+			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
 		</div>
 		<div>
 			<div style="margin-bottom: 16px;"><b>{{ $t('permission') }}</b></div>
-			<mk-button inline @click="disableAll">{{ $t('disableAll') }}</mk-button>
-			<mk-button inline @click="enableAll">{{ $t('enableAll') }}</mk-button>
-			<mk-switch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model:value="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</mk-switch>
+			<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
+			<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
+			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model:value="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
 		</div>
 	</div>
-</x-window>
+</XWindow>
 </template>
 
 <script lang="ts">

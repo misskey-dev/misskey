@@ -1,14 +1,14 @@
 <template>
 <div class="ieepwinx">
-	<portal to="header"><fa :icon="faSatellite"/>{{ $t('manageAntennas') }}</portal>
+	<portal to="header"><Fa :icon="faSatellite"/>{{ $t('manageAntennas') }}</portal>
 
-	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
 
-	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
+	<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
-	<mk-pagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-		<x-antenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
-	</mk-pagination>
+	<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
+		<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
+	</MkPagination>
 </div>
 </template>
 

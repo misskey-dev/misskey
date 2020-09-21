@@ -1,13 +1,13 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<x-draggable class="files" :list="files" animation="150" delay="100" delayOnTouchOnly="true">
+	<XDraggable class="files" :list="files" animation="150" delay="100" delayOnTouchOnly="true">
 		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
-			<x-file-thumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
+			<XFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<div class="sensitive" v-if="file.isSensitive">
-				<fa class="icon" :icon="faExclamationTriangle"/>
+				<Fa class="icon" :icon="faExclamationTriangle"/>
 			</div>
 		</div>
-	</x-draggable>
+	</XDraggable>
 	<p class="remain">{{ 4 - files.length }}/4</p>
 </div>
 </template>

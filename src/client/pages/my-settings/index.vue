@@ -1,39 +1,39 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faCog"/>{{ $t('accountSettings') }}</portal>
+	<portal to="header"><Fa :icon="faCog"/>{{ $t('accountSettings') }}</portal>
 
-	<x-profile-setting class="_vMargin"/>
-	<x-privacy-setting class="_vMargin"/>
-	<x-reaction-setting class="_vMargin"/>
+	<XProfileSetting class="_vMargin"/>
+	<XPrivacySetting class="_vMargin"/>
+	<XReactionSetting class="_vMargin"/>
 
 	<section class="_card _vMargin">
-		<div class="_title"><fa :icon="faCog"/> {{ $t('general') }}</div>
+		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
-			<mk-switch v-model:value="$store.state.i.autoWatch" @update:value="onChangeAutoWatch">
+			<MkSwitch v-model:value="$store.state.i.autoWatch" @update:value="onChangeAutoWatch">
 				{{ $t('autoNoteWatch') }}<template #desc>{{ $t('autoNoteWatchDescription') }}</template>
-			</mk-switch>
-			<mk-switch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
+			</MkSwitch>
+			<MkSwitch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
 				{{ $t('showFeaturedNotesInTimeline') }}
-			</mk-switch>
+			</MkSwitch>
 		</div>
 		<div class="_content">
-			<mk-button @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</mk-button>
-			<mk-button @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</mk-button>
-			<mk-button @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</mk-button>
+			<MkButton @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</MkButton>
+			<MkButton @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</MkButton>
+			<MkButton @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</MkButton>
 		</div>
 		<div class="_content">
-			<mk-button @click="configure">{{ $t('notificationSetting') }}</mk-button>
+			<MkButton @click="configure">{{ $t('notificationSetting') }}</MkButton>
 		</div>
 	</section>
 
-	<x-import-export class="_vMargin"/>
-	<x-drive class="_vMargin"/>
-	<x-mute-block class="_vMargin"/>
-	<x-word-mute class="_vMargin"/>
-	<x-security class="_vMargin"/>
+	<XImportExport class="_vMargin"/>
+	<XDrive class="_vMargin"/>
+	<XMuteBlock class="_vMargin"/>
+	<XWordMute class="_vMargin"/>
+	<XSecurity class="_vMargin"/>
 	<x-2fa class="_vMargin"/>
-	<x-integration class="_vMargin"/>
-	<x-api class="_vMargin"/>
+	<XIntegration class="_vMargin"/>
+	<XApi class="_vMargin"/>
 
 	<router-link class="_panel _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;">{{ $t('installedApps') }}</router-link>
 

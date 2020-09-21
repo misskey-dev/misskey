@@ -1,13 +1,13 @@
 <template>
 <div class="">
-	<portal to="header"><fa :icon="faShareAlt"/>{{ $t('share') }}</portal>
+	<portal to="header"><Fa :icon="faShareAlt"/>{{ $t('share') }}</portal>
 
 	<section class="_card">
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<div>{{ text }}</div>
-			<x-post-form v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true"/>
-			<mk-button v-else primary @click="close()">{{ $t('close') }}</mk-button>
+			<XPostForm v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true"/>
+			<MkButton v-else primary @click="close()">{{ $t('close') }}</MkButton>
 		</div>
 		<div class="_footer" v-if="url">{{ url }}</div>
 	</section>

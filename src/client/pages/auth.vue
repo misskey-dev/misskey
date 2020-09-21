@@ -1,9 +1,9 @@
 <template>
 <div class="_panel" v-if="$store.getters.isSignedIn && fetching">
-	<mk-loading/>
+	<MkLoading/>
 </div>
 <div v-else-if="$store.getters.isSignedIn">
-	<x-form
+	<XForm
 		class="form"
 		ref="form"
 		v-if="state == 'waiting'"
@@ -16,7 +16,7 @@
 	</div>
 	<div class="accepted _panel" v-if="state == 'accepted'">
 		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
-		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<mk-ellipsis/></p>
+		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<MkEllipsis/></p>
 		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
 	</div>
 	<div class="error _panel" v-if="state == 'fetch-session-error'">
@@ -24,7 +24,7 @@
 	</div>
 </div>
 <div class="signin" v-else>
-	<mk-signin @login="onLogin"/>
+	<MkSignin @login="onLogin"/>
 </div>
 </template>
 

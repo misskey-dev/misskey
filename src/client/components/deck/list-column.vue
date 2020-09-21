@@ -1,11 +1,11 @@
 <template>
-<x-column :menu="menu" :column="column" :is-stacked="isStacked">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
+		<Fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<x-timeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
-</x-column>
+	<XTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
+</XColumn>
 </template>
 
 <script lang="ts">

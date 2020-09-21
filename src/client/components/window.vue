@@ -1,13 +1,13 @@
 <template>
 <div class="ebkgoccj" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: `${height}px` }">
 	<div class="header">
-		<button class="_button" v-if="withOkButton" @click="close()"><fa :icon="faTimes"/></button>
+		<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
 		<span class="title">
-			<mk-avatar :user="avatar" v-if="avatar" class="avatar"/>
+			<MkAvatar :user="avatar" v-if="avatar" class="avatar"/>
 			<slot name="header"></slot>
 		</span>
-		<button class="_button" v-if="!withOkButton" @click="close()"><fa :icon="faTimes"/></button>
-		<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><fa :icon="faCheck"/></button>
+		<button class="_button" v-if="!withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
+		<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><Fa :icon="faCheck"/></button>
 	</div>
 	<div class="body">
 		<slot></slot>

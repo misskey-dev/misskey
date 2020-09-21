@@ -1,26 +1,26 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faSatelliteDish"/>{{ $t('channel') }}</portal>
+	<portal to="header"><Fa :icon="faSatelliteDish"/>{{ $t('channel') }}</portal>
 
-	<mk-tab v-model:value="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
+	<MkTab v-model:value="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 
 	<div class="grwlizim featured" v-if="tab === 'featured'">
-		<mk-pagination :pagination="featuredPagination" #default="{items}">
-			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
-		</mk-pagination>
+		<MkPagination :pagination="featuredPagination" #default="{items}">
+			<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+		</MkPagination>
 	</div>
 
 	<div class="grwlizim following" v-if="tab === 'following'">
-		<mk-pagination :pagination="followingPagination" #default="{items}">
-			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
-		</mk-pagination>
+		<MkPagination :pagination="followingPagination" #default="{items}">
+			<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+		</MkPagination>
 	</div>
 
 	<div class="grwlizim owned" v-if="tab === 'owned'">
-		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
-		<mk-pagination :pagination="ownedPagination" #default="{items}">
-			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
-		</mk-pagination>
+		<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
+		<MkPagination :pagination="ownedPagination" #default="{items}">
+			<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+		</MkPagination>
 	</div>
 </div>
 </template>

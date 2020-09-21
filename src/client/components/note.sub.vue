@@ -1,21 +1,21 @@
 <template>
 <div class="wrpstxzv" :class="{ children }" v-size="{ max: [450] }">
 	<div class="main">
-		<mk-avatar class="avatar" :user="note.user"/>
+		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
-			<x-note-header class="header" :note="note" :mini="true"/>
+			<XNoteHeader class="header" :note="note" :mini="true"/>
 			<div class="body">
 				<p v-if="note.cw != null" class="cw">
 					<mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis" />
-					<x-cw-button v-model:value="showContent" :note="note"/>
+					<XCwButton v-model:value="showContent" :note="note"/>
 				</p>
 				<div class="content" v-show="note.cw == null || showContent">
-					<x-sub-note-content class="text" :note="note"/>
+					<XSubNote-content class="text" :note="note"/>
 				</div>
 			</div>
 		</div>
 	</div>
-	<x-sub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :children="true"/>
+	<XSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :children="true"/>
 </div>
 </template>
 
@@ -27,7 +27,7 @@ import XCwButton from './cw-button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	name: 'x-sub',
+	name: 'XSub',
 
 	components: {
 		XNoteHeader,

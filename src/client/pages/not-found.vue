@@ -1,6 +1,6 @@
 <template>
 <div class="ipledcug">
-	<portal to="header"><fa :icon="faExclamationTriangle"/>{{ $t('notFound') }}</portal>
+	<portal to="header"><Fa :icon="faExclamationTriangle"/>{{ $t('notFound') }}</portal>
 
 	<div class="_fullinfo">
 		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>

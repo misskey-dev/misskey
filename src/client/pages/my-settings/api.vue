@@ -1,9 +1,9 @@
 <template>
 <section class="_card">
-	<div class="_title"><fa :icon="faKey"/> API</div>
+	<div class="_title"><Fa :icon="faKey"/> API</div>
 	<div class="_content">
-		<mk-button @click="generateToken">{{ $t('generateAccessToken') }}</mk-button>
-		<mk-button @click="regenerateToken"><fa :icon="faSyncAlt"/> {{ $t('regenerate') }}</mk-button>
+		<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
+		<MkButton @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $t('regenerate') }}</MkButton>
 	</div>
 </section>
 </template>

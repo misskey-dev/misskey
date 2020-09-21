@@ -1,5 +1,5 @@
 <template>
-<x-code :code="code" :lang="lang" :inline="inline"/>
+<XCode :code="code" :lang="lang" :inline="inline"/>
 </template>
 
 <script lang="ts">

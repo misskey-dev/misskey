@@ -5,11 +5,11 @@
 		<div class="body">
 			<h1 class="name" v-html="meta.name || host"></h1>
 			<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-			<mk-button @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</mk-button>
-			<mk-button @click="signin()" style="display: inline-block;">{{ $t('login') }}</mk-button>
+			<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
+			<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
 		</div>
 	</div>
-	<x-notes :pagination="featuredPagination"/>
+	<XNotes :pagination="featuredPagination"/>
 </div>
 </template>
 

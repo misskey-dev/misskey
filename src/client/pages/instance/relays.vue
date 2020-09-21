@@ -1,23 +1,23 @@
 <template>
 <div class="relaycxt">
-	<portal to="header"><fa :icon="faProjectDiagram"/>{{ $t('relays') }}</portal>
+	<portal to="header"><Fa :icon="faProjectDiagram"/>{{ $t('relays') }}</portal>
 
 	<section class="_card _vMargin add">
-		<div class="_title"><fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
+		<div class="_title"><Fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
 		<div class="_content">
-			<mk-input v-model:value="inbox">
+			<MkInput v-model:value="inbox">
 				<span>{{ $t('inboxUrl') }}</span>
-			</mk-input>
-			<mk-button @click="add(inbox)" primary><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+			</MkInput>
+			<MkButton @click="add(inbox)" primary><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _vMargin relays">
-		<div class="_title"><fa :icon="faProjectDiagram"/> {{ $t('addedRelays') }}</div>
+		<div class="_title"><Fa :icon="faProjectDiagram"/> {{ $t('addedRelays') }}</div>
 		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
-			<mk-button class="button" inline @click="remove(relay.inbox)"><fa :icon="faTrashAlt"/> {{ $t('remove') }}</mk-button>
+			<MkButton class="button" inline @click="remove(relay.inbox)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
 		</div>
 	</section>
 </div>

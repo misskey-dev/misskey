@@ -1,5 +1,5 @@
 <template>
-<x-menu :source="source" :items="items" @closed="$emit('closed')"/>
+<XMenu :source="source" :items="items" @closed="$emit('closed')"/>
 </template>
 
 <script lang="ts">

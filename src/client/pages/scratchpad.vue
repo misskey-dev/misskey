@@ -1,18 +1,18 @@
 <template>
 <div class="">
-	<portal to="header"><fa :icon="faTerminal"/>{{ $t('scratchpad') }}</portal>
+	<portal to="header"><Fa :icon="faTerminal"/>{{ $t('scratchpad') }}</portal>
 
 	<div class="_panel">
 		<prism-editor class="_code" v-model:value="code" :highlight="highlighter" :line-numbers="false"/>
-		<mk-button style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><fa :icon="faPlay"/></mk-button>
+		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
-	<mk-container :body-togglable="true">
-		<template #header><fa fixed-width/>{{ $t('output') }}</template>
+	<MkContainer :body-togglable="true">
+		<template #header><Fa fixed-width/>{{ $t('output') }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
-	</mk-container>
+	</MkContainer>
 
 	<section class="_card" style="margin-top: var(--margin);">
 		<div class="_content">{{ $t('scratchpadDescription') }}</div>

@@ -1,18 +1,18 @@
 import { App, defineAsyncComponent } from 'vue';
 
 export default function(app: App) {
-	app.component('mkw-welcome', defineAsyncComponent(() => import('./welcome.vue')));
-	app.component('mkw-memo', defineAsyncComponent(() => import('./memo.vue')));
-	app.component('mkw-notifications', defineAsyncComponent(() => import('./notifications.vue')));
-	app.component('mkw-timeline', defineAsyncComponent(() => import('./timeline.vue')));
-	app.component('mkw-calendar', defineAsyncComponent(() => import('./calendar.vue')));
-	app.component('mkw-rss', defineAsyncComponent(() => import('./rss.vue')));
-	app.component('mkw-trends', defineAsyncComponent(() => import('./trends.vue')));
-	app.component('mkw-clock', defineAsyncComponent(() => import('./clock.vue')));
-	app.component('mkw-activity', defineAsyncComponent(() => import('./activity.vue')));
-	app.component('mkw-photos', defineAsyncComponent(() => import('./photos.vue')));
-	app.component('mkw-digitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
-	app.component('mkw-federation', defineAsyncComponent(() => import('./federation.vue')));
+	app.component('MkwWelcome', defineAsyncComponent(() => import('./welcome.vue')));
+	app.component('MkwMemo', defineAsyncComponent(() => import('./memo.vue')));
+	app.component('MkwNotifications', defineAsyncComponent(() => import('./notifications.vue')));
+	app.component('MkwTimeline', defineAsyncComponent(() => import('./timeline.vue')));
+	app.component('MkwCalendar', defineAsyncComponent(() => import('./calendar.vue')));
+	app.component('MkwRss', defineAsyncComponent(() => import('./rss.vue')));
+	app.component('MkwTrends', defineAsyncComponent(() => import('./trends.vue')));
+	app.component('MkwClock', defineAsyncComponent(() => import('./clock.vue')));
+	app.component('MkwActivity', defineAsyncComponent(() => import('./activity.vue')));
+	app.component('MkwPhotos', defineAsyncComponent(() => import('./photos.vue')));
+	app.component('MkwDigitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
+	app.component('MkwFederation', defineAsyncComponent(() => import('./federation.vue')));
 }
 
 export const widgets = [

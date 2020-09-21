@@ -1,11 +1,11 @@
 <template>
 <section class="_card">
-	<div class="_title"><fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
+	<div class="_title"><Fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
 	<div class="_content">
-		<p v-if="!data && !$store.state.i.twoFactorEnabled"><mk-button @click="register">{{ $t('_2fa.registerDevice') }}</mk-button></p>
+		<p v-if="!data && !$store.state.i.twoFactorEnabled"><MkButton @click="register">{{ $t('_2fa.registerDevice') }}</MkButton></p>
 		<template v-if="$store.state.i.twoFactorEnabled">
 			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
-			<mk-button @click="unregister">{{ $t('unregister') }}</mk-button>
+			<MkButton @click="unregister">{{ $t('unregister') }}</MkButton>
 
 			<template v-if="supportsCredentials">
 				<hr class="totp-method-sep">
@@ -15,29 +15,29 @@
 				<div class="key-list">
 					<div class="key" v-for="key in $store.state.i.securityKeysList">
 						<h3>{{ key.name }}</h3>
-						<div class="last-used">{{ $t('lastUsed') }}<mk-time :time="key.lastUsed"/></div>
-						<mk-button @click="unregisterKey(key)">{{ $t('unregister') }}</mk-button>
+						<div class="last-used">{{ $t('lastUsed') }}<MkTime :time="key.lastUsed"/></div>
+						<MkButton @click="unregisterKey(key)">{{ $t('unregister') }}</MkButton>
 					</div>
 				</div>
 
-				<mk-switch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</mk-switch>
+				<MkSwitch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</MkSwitch>
 
-				<mk-info warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</mk-info>
-				<mk-button v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</mk-button>
+				<MkInfo warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</MkInfo>
+				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</MkButton>
 
 				<ol v-if="registration && !registration.error">
 					<li v-if="registration.stage >= 0">
 						{{ $t('tapSecurityKey') }}
-						<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 0" />
+						<Fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 0" />
 					</li>
 					<li v-if="registration.stage >= 1">
-						<mk-form :disabled="registration.stage != 1 || registration.saving">
-							<mk-input v-model:value="keyName" :max="30">
+						<MkForm :disabled="registration.stage != 1 || registration.saving">
+							<MkInput v-model:value="keyName" :max="30">
 								<span>{{ $t('securityKeyName') }}</span>
-							</mk-input>
-							<mk-button @click="registerKey" :disabled="keyName.length == 0">{{ $t('registerSecurityKey') }}</mk-button>
-							<fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
-						</mk-form>
+							</MkInput>
+							<MkButton @click="registerKey" :disabled="keyName.length == 0">{{ $t('registerSecurityKey') }}</MkButton>
+							<Fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
+						</MkForm>
 					</li>
 				</ol>
 			</template>
@@ -52,11 +52,11 @@
 				</li>
 				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
 				<li>{{ $t('_2fa.step3') }}<br>
-					<mk-input v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</mk-input>
-					<mk-button primary @click="submit">{{ $t('done') }}</mk-button>
+					<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</MkInput>
+					<MkButton primary @click="submit">{{ $t('done') }}</MkButton>
 				</li>
 			</ol>
-			<mk-info>{{ $t('_2fa.step4') }}</mk-info>
+			<MkInfo>{{ $t('_2fa.step4') }}</MkInfo>
 		</div>
 	</div>
 </section>

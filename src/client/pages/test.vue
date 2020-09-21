@@ -1,26 +1,26 @@
 <template>
 <div>
-	<portal to="header"><fa :icon="faExclamationTriangle"/>TEST</portal>
+	<portal to="header"><Fa :icon="faExclamationTriangle"/>TEST</portal>
 
 	<div class="_card _vMargin">
 		<div class="_title">Dialog</div>
 		<div class="_content">
-			<mk-input v-model:value="dialogTitle">
+			<MkInput v-model:value="dialogTitle">
 				<span>Title</span>
-			</mk-input>
-			<mk-input v-model:value="dialogBody">
+			</MkInput>
+			<MkInput v-model:value="dialogBody">
 				<span>Body</span>
-			</mk-input>
-			<mk-switch v-model:value="dialogCancel">
+			</MkInput>
+			<MkSwitch v-model:value="dialogCancel">
 				<span>With cancel button</span>
-			</mk-switch>
-			<mk-switch v-model:value="dialogCancelByBgClick">
+			</MkSwitch>
+			<MkSwitch v-model:value="dialogCancelByBgClick">
 				<span>Can cancel by modal bg click</span>
-			</mk-switch>
-			<mk-switch v-model:value="dialogInput">
+			</MkSwitch>
+			<MkSwitch v-model:value="dialogInput">
 				<span>With input field</span>
-			</mk-switch>
-			<mk-button @click="showDialog()">Show</mk-button>
+			</MkSwitch>
+			<MkButton @click="showDialog()">Show</MkButton>
 		</div>
 		<div class="_content">
 			<span>Result: {{ dialogResult }}</span>
@@ -30,9 +30,9 @@
 	<div class="_card _vMargin">
 		<div class="_title">MFM</div>
 		<div class="_content">
-			<mk-textarea v-model:value="mfm">
+			<MkTextarea v-model:value="mfm">
 				<span>MFM</span>
-			</mk-textarea>
+			</MkTextarea>
 		</div>
 		<div class="_content">
 			<mfm :text="mfm"/>
@@ -42,7 +42,7 @@
 	<div class="_card _vMargin">
 		<div class="_title">selectDriveFile</div>
 		<div class="_content">
-			<mk-button @click="selectDriveFile()">selectDriveFile</mk-button>
+			<MkButton @click="selectDriveFile()">selectDriveFile</MkButton>
 		</div>
 		<div class="_content">
 
@@ -52,7 +52,7 @@
 	<div class="_card _vMargin">
 		<div class="_title">selectDriveFolder</div>
 		<div class="_content">
-			<mk-button @click="selectDriveFolder()">selectDriveFolder</mk-button>
+			<MkButton @click="selectDriveFolder()">selectDriveFolder</MkButton>
 		</div>
 		<div class="_content">
 
@@ -63,7 +63,7 @@
 	<div class="_card _vMargin">
 		<div class="_title">selectUser</div>
 		<div class="_content">
-			<mk-button @click="selectUser()">selectUser</mk-button>
+			<MkButton @click="selectUser()">selectUser</MkButton>
 		</div>
 		<div class="_content">
 			<span>Result: {{ user }}</span>

@@ -11,7 +11,7 @@
 	ref="reaction"
 	v-particle="canToggle"
 >
-	<x-reaction-icon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
+	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
 	<span>{{ count }}</span>
 </button>
 </template>

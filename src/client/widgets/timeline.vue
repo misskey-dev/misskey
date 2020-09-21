@@ -1,22 +1,22 @@
 <template>
-<mk-container :show-header="props.showHeader" :style="`height: ${props.height}px;`" :scrollable="true">
+<MkContainer :show-header="props.showHeader" :style="`height: ${props.height}px;`" :scrollable="true">
 	<template #header>
 		<button @click="choose" class="_button">
-			<fa v-if="props.src === 'home'" :icon="faHome"/>
-			<fa v-if="props.src === 'local'" :icon="faComments"/>
-			<fa v-if="props.src === 'social'" :icon="faShareAlt"/>
-			<fa v-if="props.src === 'global'" :icon="faGlobe"/>
-			<fa v-if="props.src === 'list'" :icon="faListUl"/>
-			<fa v-if="props.src === 'antenna'" :icon="faSatellite"/>
+			<Fa v-if="props.src === 'home'" :icon="faHome"/>
+			<Fa v-if="props.src === 'local'" :icon="faComments"/>
+			<Fa v-if="props.src === 'social'" :icon="faShareAlt"/>
+			<Fa v-if="props.src === 'global'" :icon="faGlobe"/>
+			<Fa v-if="props.src === 'list'" :icon="faListUl"/>
+			<Fa v-if="props.src === 'antenna'" :icon="faSatellite"/>
 			<span style="margin-left: 8px;">{{ props.src === 'list' ? props.list.name : props.src === 'antenna' ? props.antenna.name : $t('_timelines.' + props.src) }}</span>
-			<fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
+			<Fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</template>
 
 	<div>
-		<x-timeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src === 'antenna' ? `antenna:${props.antenna.id}` : props.src" :src="props.src" :list="props.list ? props.list.id : null" :antenna="props.antenna ? props.antenna.id : null"/>
+		<XTimeline :key="props.src === 'list' ? `list:${props.list.id}` : props.src === 'antenna' ? `antenna:${props.antenna.id}` : props.src" :src="props.src" :list="props.list ? props.list.id : null" :antenna="props.antenna ? props.antenna.id : null"/>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">

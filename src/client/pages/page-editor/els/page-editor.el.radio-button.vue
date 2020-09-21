@@ -1,14 +1,14 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.radioButton') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faBolt"/> {{ $t('_pages.blocks.radioButton') }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
-		<mk-input v-model:value="value.name"><template #prefix><fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._radioButton.name') }}</span></mk-input>
-		<mk-input v-model:value="value.title"><span>{{ $t('_pages.blocks._radioButton.title') }}</span></mk-input>
-		<mk-textarea v-model:value="values"><span>{{ $t('_pages.blocks._radioButton.values') }}</span></mk-textarea>
-		<mk-input v-model:value="value.default"><span>{{ $t('_pages.blocks._radioButton.default') }}</span></mk-input>
+		<MkInput v-model:value="value.name"><template #prefix><Fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._radioButton.name') }}</span></MkInput>
+		<MkInput v-model:value="value.title"><span>{{ $t('_pages.blocks._radioButton.title') }}</span></MkInput>
+		<MkTextarea v-model:value="values"><span>{{ $t('_pages.blocks._radioButton.values') }}</span></MkTextarea>
+		<MkInput v-model:value="value.default"><span>{{ $t('_pages.blocks._radioButton.default') }}</span></MkInput>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">

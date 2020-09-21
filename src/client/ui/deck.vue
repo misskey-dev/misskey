@@ -1,11 +1,11 @@
 <template>
 <div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap">
-	<x-sidebar ref="nav"/>
+	<XSidebar ref="nav"/>
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
 	<deck-column class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
 		<template #action>
-			<button class="_button back" v-if="canBack" @click="back()"><fa :icon="faChevronLeft"/></button>
+			<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
 		</template>
 
 		<template #header>
@@ -24,12 +24,12 @@
 		<deck-column-core v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>
 
-	<button @click="addColumn" class="_button add"><fa :icon="faPlus"/></button>
+	<button @click="addColumn" class="_button add"><Fa :icon="faPlus"/></button>
 
-	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><fa :icon="faBars"/><i v-if="navIndicated"><fa :icon="faCircle"/></i></button>
-	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><fa :icon="faPencilAlt"/></button>
+	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
 
-	<stream-indicator v-if="$store.getters.isSignedIn"/>
+	<StreamIndicator v-if="$store.getters.isSignedIn"/>
 </div>
 </template>
 
