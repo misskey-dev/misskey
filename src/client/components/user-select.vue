@@ -1,10 +1,10 @@
 <template>
-<x-window ref="window" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
+<x-window @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
 	<template #header>{{ $t('selectUser') }}</template>
 	<div class="tbhwbxda">
 		<div class="inputs">
-			<mk-input v-model:value="username" class="input" @onUpdate:value="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></mk-input>
-			<mk-input v-model:value="host" class="input" @onUpdate:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></mk-input>
+			<mk-input v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></mk-input>
+			<mk-input v-model:value="host" class="input" @update:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></mk-input>
 		</div>
 		<div class="users">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
@@ -34,6 +34,8 @@ export default defineComponent({
 
 	props: {
 	},
+
+	emits: ['done'],
 
 	data() {
 		return {
@@ -73,13 +75,8 @@ export default defineComponent({
 			this.$refs.username.focus();
 		},
 
-		close() {
-			this.$refs.window.close();
-		},
-
 		ok() {
-			this.$emit('selected', this.selected);
-			this.close();
+			this.$emit('done', this.selected);
 		},
 	}
 });

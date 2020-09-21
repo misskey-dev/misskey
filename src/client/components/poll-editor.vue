@@ -5,7 +5,7 @@
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
-			<mk-input class="input" :value="choice" @onUpdate:value="onInput(i, $event)">
+			<mk-input class="input" :value="choice" @update:value="onInput(i, $event)">
 				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
 			</mk-input>
 			<button @click="remove(i)" class="_button">

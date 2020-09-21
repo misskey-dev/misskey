@@ -42,7 +42,6 @@ import { defineComponent } from 'vue';
 import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import MkButton from '@/components/ui/button.vue';
-import MkUserSelect from '@/components/user-select.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -89,7 +88,7 @@ export default defineComponent({
 		},
 
 		invite() {
-			os.modal(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				os.api('users/groups/invite', {
 					groupId: this.group.id,
 					userId: user.id
@@ -134,7 +133,7 @@ export default defineComponent({
 		},
 
 		transfer() {
-			os.modal(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				os.api('users/groups/transfer', {
 					groupId: this.group.id,
 					userId: user.id

@@ -41,7 +41,6 @@ import { defineComponent } from 'vue';
 import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import MkButton from '@/components/ui/button.vue';
-import MkUserSelect from '@/components/user-select.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -88,7 +87,7 @@ export default defineComponent({
 		},
 
 		addUser() {
-			os.modal(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				os.api('users/lists/push', {
 					listId: this.list.id,
 					userId: user.id

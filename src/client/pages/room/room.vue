@@ -39,7 +39,7 @@
 			<mk-button @click="add()"><fa :icon="faBoxOpen"/> {{ $t('_rooms.addFurniture') }}</mk-button>
 		</div>
 		<div class="_content">
-			<mk-select :value="roomType" @onUpdate:value="updateRoomType($event)">
+			<mk-select :value="roomType" @update:value="updateRoomType($event)">
 				<template #label>{{ $t('_rooms.roomType') }}</template>
 				<option value="default">{{ $t('_rooms._roomType.default') }}</option>
 				<option value="washitsu">{{ $t('_rooms._roomType.washitsu') }}</option>

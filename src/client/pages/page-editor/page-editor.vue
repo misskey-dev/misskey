@@ -59,7 +59,7 @@
 				<x-variable v-for="variable in variables"
 					:value="variable"
 					:removable="true"
-					@onUpdate:value="v => updateVariable(v)"
+					@update:value="v => updateVariable(v)"
 					@remove="() => removeVariable(variable)"
 					:key="variable.name"
 					:hpml="hpml"

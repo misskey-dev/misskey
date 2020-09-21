@@ -58,7 +58,6 @@ import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
-import MkUserSelect from './user-select.vue';
 import XNotePreview from './note-preview.vue';
 import { parse } from '../../mfm/parse';
 import { host, url } from '@/config';
@@ -442,7 +441,7 @@ export default defineComponent({
 		},
 
 		addVisibleUser() {
-			os.modal(MkUserSelect, {}).then(user => {
+			os.selectUser().then(user => {
 				this.visibleUsers.push(user);
 			});
 		},
@@ -605,7 +604,7 @@ export default defineComponent({
 		},
 
 		insertMention() {
-			os.modal(MkUserSelect, {}).then(user => {
+			os.selectUser().then(user => {
 				insertTextAtCursor(this.$refs.text, getAcct(user) + ' ');
 			});
 		},

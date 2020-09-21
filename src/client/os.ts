@@ -143,9 +143,21 @@ export function dialog(props: Record<string, any>, opts?: { cancelableByBgClick:
 	});
 }
 
-export function selectDriveFile(multiple) {
-	return new Promise(async (res, rej) => {
-		modal(await import('@/components/drive-window.vue'), {
+export async function selectUser() {
+	const component = await import('@/components/user-select.vue');
+	return new Promise((res, rej) => {
+		modal(component, {}).then(user => {
+			if (user) {
+				res(user);
+			}
+		});
+	});
+}
+
+export async function selectDriveFile(multiple: boolean) {
+	const component = await import('@/components/drive-window.vue');
+	return new Promise((res, rej) => {
+		modal(component, {
 			type: 'file',
 			multiple
 		}).then(files => {
@@ -156,16 +168,16 @@ export function selectDriveFile(multiple) {
 	});
 }
 
-export function selectDriveFolder(multiple) {
+export async function selectDriveFolder(multiple: boolean) {
+	const component = await import('@/components/drive-window.vue');
 	return new Promise((res, rej) => {
-		import('@/components/drive-window.vue').then(dialog => {
-			const w = $root.new(dialog, {
-				type: 'folder',
-				multiple
-			});
-			w.$once('selected', folders => {
-				res(multiple ? folders : (folders.length === 0 ? null : folders[0]));
-			});
+		modal(component, {
+			type: 'folder',
+			multiple
+		}).then(folders => {
+			if (folders) {
+				res(folders[0]);
+			}
 		});
 	});
 }

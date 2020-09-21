@@ -242,7 +242,6 @@ import MkInput from '@/components/ui/input.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkInfo from '@/components/ui/info.vue';
-import MkUserSelect from '@/components/user-select.vue';
 import { url } from '@/config';
 import getAcct from '../../../misc/acct/render';
 import * as os from '@/os';
@@ -452,8 +451,7 @@ export default defineComponent({
 		},
 
 		addPinUser() {
-			os.modal(MkUserSelect, {}).then(user => {
-				if (user == null) return;
+			os.selectUser().then(user => {
 				this.pinnedUsers = this.pinnedUsers.trim();
 				this.pinnedUsers += '\n@' + getAcct(user);
 				this.pinnedUsers = this.pinnedUsers.trim();
@@ -461,8 +459,7 @@ export default defineComponent({
 		},
 
 		chooseProxyAccount() {
-			os.modal(MkUserSelect, {}).then(user => {
-				if (user == null) return;
+			os.selectUser().then(user => {
 				this.proxyAccount = user;
 				this.proxyAccountId = user.id;
 				this.save(true);

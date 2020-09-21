@@ -5,7 +5,7 @@
 			<span>{{ $t('invitationCode') }}</span>
 			<template #prefix><fa :icon="faKey"/></template>
 		</mk-input>
-		<mk-input v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @onUpdate:value="onChangeUsername">
+		<mk-input v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:value="onChangeUsername">
 			<span>{{ $t('username') }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
@@ -19,7 +19,7 @@
 				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><fa :icon="faExclamationTriangle" fixed-width/> {{ $t('tooLong') }}</span>
 			</template>
 		</mk-input>
-		<mk-input v-model:value="password" type="password" :autocomplete="Math.random()" required @onUpdate:value="onChangePassword">
+		<mk-input v-model:value="password" type="password" :autocomplete="Math.random()" required @update:value="onChangePassword">
 			<span>{{ $t('password') }}</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>
@@ -28,7 +28,7 @@
 				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><fa :icon="faCheck" fixed-width/> {{ $t('strongPassword') }}</p>
 			</template>
 		</mk-input>
-		<mk-input v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @onUpdate:value="onChangePasswordRetype">
+		<mk-input v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @update:value="onChangePasswordRetype">
 			<span>{{ $t('password') }} ({{ $t('retype') }})</span>
 			<template #prefix><fa :icon="faLock"/></template>
 			<template #desc>

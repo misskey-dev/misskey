@@ -30,7 +30,7 @@
 							<!-- color -->
 							<div v-else-if="typeof v === 'string'" class="color">
 								<input type="color" :value="v" @input="colorChanged($event.target.value, i)"/>
-								<mk-input class="select" :value="v" @onUpdate:value="colorChanged($event, i)"/>
+								<mk-input class="select" :value="v" @update:value="colorChanged($event, i)"/>
 							</div>
 							<!-- ref const -->
 							<mk-input v-else-if="v.type === 'refConst'" v-model:value="v.key">

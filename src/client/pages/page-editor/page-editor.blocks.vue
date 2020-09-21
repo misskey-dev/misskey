@@ -1,6 +1,6 @@
 <template>
 <x-draggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
-	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @onUpdate:value="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
+	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @update:value="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
 </x-draggable>
 </template>
 

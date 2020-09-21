@@ -48,6 +48,27 @@
 
 		</div>
 	</div>
+
+	<div class="_card _vMargin">
+		<div class="_title">selectDriveFolder</div>
+		<div class="_content">
+			<mk-button @click="selectDriveFolder()">selectDriveFolder</mk-button>
+		</div>
+		<div class="_content">
+
+		</div>
+	</div>
+
+
+	<div class="_card _vMargin">
+		<div class="_title">selectUser</div>
+		<div class="_content">
+			<mk-button @click="selectUser()">selectUser</mk-button>
+		</div>
+		<div class="_content">
+			<span>Result: {{ user }}</span>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -83,6 +104,7 @@ export default defineComponent({
 			dialogInput: false,
 			dialogResult: null,
 			mfm: '',
+			user: null,
 			faExclamationTriangle
 		}
 	},
@@ -101,7 +123,15 @@ export default defineComponent({
 
 		async selectDriveFile() {
 			const files = await os.selectDriveFile();
-		}
+		},
+
+		async selectDriveFolder() {
+			const folder = await os.selectDriveFolder();
+		},
+
+		async selectUser() {
+			this.user = await os.selectUser();
+		},
 	}
 });
 </script>

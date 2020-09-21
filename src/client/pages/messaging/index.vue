@@ -42,7 +42,6 @@ import { defineComponent } from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '../../../misc/acct/render';
 import MkButton from '@/components/ui/button.vue';
-import MkUserSelect from '@/components/user-select.vue';
 import { acct } from '../../filters/user';
 import * as os from '@/os';
 
@@ -132,7 +131,7 @@ export default defineComponent({
 		},
 
 		async startUser() {
-			os.modal(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				this.$router.push(`/my/messaging/${getAcct(user)}`);
 			});
 		},

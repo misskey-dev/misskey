@@ -280,7 +280,8 @@ export default defineComponent({
 		},
 
 		async addAcount() {
-			os.modal(await import('./signin-dialog.vue')).$once('login', res => {
+			os.modal(await import('./signin-dialog.vue')).then(res => {
+				if (res == null) return;
 				this.$store.dispatch('addAcount', res);
 				os.dialog({
 					type: 'success',
@@ -290,7 +291,8 @@ export default defineComponent({
 		},
 
 		async createAccount() {
-			os.modal(await import('./signup-dialog.vue')).$once('signup', res => {
+			os.modal(await import('./signup-dialog.vue')).then(res => {
+				if (res == null) return;
 				this.$store.dispatch('addAcount', res);
 				this.switchAccountWithToken(res.i);
 			});

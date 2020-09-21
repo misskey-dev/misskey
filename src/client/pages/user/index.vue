@@ -171,9 +171,10 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		this.$once('hook:beforeUnmount', () => {
-			window.cancelAnimationFrame(this.parallaxAnimationId);
-		});
+	},
+
+	beforeUnmount() {
+		window.cancelAnimationFrame(this.parallaxAnimationId);
 	},
 
 	methods: {

@@ -53,7 +53,6 @@ import MkInput from '@/components/ui/input.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkSwitch from '@/components/ui/switch.vue';
-import MkUserSelect from '@/components/user-select.vue';
 import getAcct from '../../../misc/acct/render';
 import * as os from '@/os';
 
@@ -177,7 +176,7 @@ export default defineComponent({
 		},
 
 		addUser() {
-			os.modal(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				this.users = this.users.trim();
 				this.users += '\n@' + getAcct(user);
 				this.users = this.users.trim();

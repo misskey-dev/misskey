@@ -33,7 +33,6 @@ import { emojilist } from '../../misc/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import MkUserSelect from '@/components/user-select.vue';
 import { acct } from '@/filters/user';
 import * as os from '@/os';
 
@@ -378,7 +377,7 @@ export default defineComponent({
 
 		chooseUser() {
 			this.close();
-			os.modal(MkUserSelect, {}).then(user => {
+			os.selectUser().then(user => {
 				this.complete('user', user);
 				this.textarea.focus();
 			});

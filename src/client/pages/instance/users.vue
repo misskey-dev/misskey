@@ -43,10 +43,10 @@
 				</mk-select>
 			</div>
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<mk-input v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @onUpdate:value="$refs.users.reload()">
+				<mk-input v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()">
 					<span>{{ $t('username') }}</span>
 				</mk-input>
-				<mk-input v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @onUpdate:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+				<mk-input v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
 					<span>{{ $t('host') }}</span>
 				</mk-input>
 			</div>
@@ -90,7 +90,6 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkPagination from '@/components/ui/pagination.vue';
-import MkUserSelect from '@/components/user-select.vue';
 import { acct } from '../../filters/user';
 import * as os from '@/os';
 
@@ -180,7 +179,7 @@ export default defineComponent({
 		},
 
 		searchUser() {
-			os.modal(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				this.show(user);
 			});
 		},
