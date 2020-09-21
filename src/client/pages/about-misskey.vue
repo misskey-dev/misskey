@@ -30,7 +30,7 @@
 			<MkUrl url="https://www.patreon.com/syuilo"/>
 		</div>
 		<div class="_content">
-			<span><mfm text="<motion>❤</motion>"/> {{ $t('patrons') }}</span>
+			<span><Mfm text="<motion>❤</motion>"/> {{ $t('patrons') }}</span>
 			<ul>
 				<li>Gargron</li>
 				<li>Satsuki Yanagi</li>

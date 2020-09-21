@@ -79,7 +79,7 @@
 			<MkSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</MkSwitch>
 			<MkSwitch v-model:value="useOsNativeEmojis">
 				{{ $t('useOsNativeEmojis') }}
-				<template #desc><mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
+				<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</MkSwitch>
 		</div>
 		<div class="_content">

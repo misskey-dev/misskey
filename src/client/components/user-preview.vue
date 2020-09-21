@@ -8,7 +8,7 @@
 			<p class="username"><MkAcct :user="u"/></p>
 		</div>
 		<div class="description">
-			<mfm v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
+			<Mfm v-if="u.description" :text="u.description" :author="u" :i="$store.state.i" :custom-emojis="u.emojis"/>
 		</div>
 		<div class="status">
 			<div>

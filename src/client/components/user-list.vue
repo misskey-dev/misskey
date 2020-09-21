@@ -16,7 +16,7 @@
 					<span class="username"><MkAcct :user="user"/></span>
 				</div>
 				<div class="description">
-					<mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 					<span v-else class="empty">{{ $t('noAccountDescription') }}</span>
 				</div>
 			</div>

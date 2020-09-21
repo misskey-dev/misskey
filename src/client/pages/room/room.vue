@@ -2,7 +2,7 @@
 <div class="hveuntkp">
 	<portal to="header" v-if="user">
 		<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
-		<mfm 
+		<Mfm 
 			:text="$t('_rooms.roomOf', { user: user.name || user.username })"
 			:plain="true" :nowrap="true" :custom-emojis="user.emojis" :is-note="false"
 		/>

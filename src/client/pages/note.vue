@@ -2,7 +2,7 @@
 <div class="mk-note-page">
 	<portal to="header" v-if="note">
 		<MkAvatar class="avatar" :user="note.user" :disable-preview="true"/>
-		<mfm 
+		<Mfm 
 			:text="$t('noteOf', { user: note.user.name || note.user.username })"
 			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
 		/>

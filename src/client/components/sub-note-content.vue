@@ -4,7 +4,7 @@
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
 		<router-link class="reply" v-if="note.replyId" :to="`/notes/${note.replyId}`"><Fa :icon="faReply"/></router-link>
-		<mfm v-if="note.text" :text="note.text" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis"/>
+		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis"/>
 		<router-link class="rp" v-if="note.renoteId" :to="`/notes/${note.renoteId}`">RN: ...</router-link>
 	</div>
 	<details v-if="note.files.length > 0">

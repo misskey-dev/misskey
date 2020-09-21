@@ -35,7 +35,7 @@
 			</MkTextarea>
 		</div>
 		<div class="_content">
-			<mfm :text="mfm"/>
+			<Mfm :text="mfm"/>
 		</div>
 	</div>
 
