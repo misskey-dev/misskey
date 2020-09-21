@@ -48,6 +48,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['chosen'],
+
 	data() {
 		return {
 			hover: false,

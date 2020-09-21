@@ -5,7 +5,7 @@
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
 	<div>
-		<XDrive :multiple="multiple" @change-selection="onChangeSelection" :select="type"/>
+		<XDrive :multiple="multiple" @change-selection="onChangeSelection" @selected="ok()" :select="type"/>
 	</div>
 </XWindow>
 </template>

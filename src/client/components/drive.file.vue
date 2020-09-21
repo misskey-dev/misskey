@@ -60,6 +60,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['chosen'],
+
 	data() {
 		return {
 			isDragging: false

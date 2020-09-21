@@ -23,7 +23,7 @@
 			<MkButton @click="showDialog()">Show</MkButton>
 		</div>
 		<div class="_content">
-			<span>Result: {{ dialogResult }}</span>
+			<code>Result: {{ dialogResult }}</code>
 		</div>
 	</div>
 
@@ -42,20 +42,26 @@
 	<div class="_card _vMargin">
 		<div class="_title">selectDriveFile</div>
 		<div class="_content">
+			<MkSwitch v-model:value="selectDriveFileMultiple">
+				<span>Multiple</span>
+			</MkSwitch>
 			<MkButton @click="selectDriveFile()">selectDriveFile</MkButton>
 		</div>
 		<div class="_content">
-
+			<code>Result: {{ JSON.stringify(selectDriveFileResult) }}</code>
 		</div>
 	</div>
 
 	<div class="_card _vMargin">
 		<div class="_title">selectDriveFolder</div>
 		<div class="_content">
+			<MkSwitch v-model:value="selectDriveFolderMultiple">
+				<span>Multiple</span>
+			</MkSwitch>
 			<MkButton @click="selectDriveFolder()">selectDriveFolder</MkButton>
 		</div>
 		<div class="_content">
-
+			<code>Result: {{ JSON.stringify(selectDriveFolderResult) }}</code>
 		</div>
 	</div>
 
@@ -66,7 +72,7 @@
 			<MkButton @click="selectUser()">selectUser</MkButton>
 		</div>
 		<div class="_content">
-			<span>Result: {{ user }}</span>
+			<code>Result: {{ user }}</code>
 		</div>
 	</div>
 </div>
@@ -104,6 +110,10 @@ export default defineComponent({
 			dialogInput: false,
 			dialogResult: null,
 			mfm: '',
+			selectDriveFileMultiple: false,
+			selectDriveFolderMultiple: false,
+			selectDriveFileResult: null,
+			selectDriveFolderResult: null,
 			user: null,
 			faExclamationTriangle
 		}
@@ -122,11 +132,11 @@ export default defineComponent({
 		},
 
 		async selectDriveFile() {
-			const files = await os.selectDriveFile();
+			this.selectDriveFileResult = await os.selectDriveFile(this.selectDriveFileMultiple);
 		},
 
 		async selectDriveFolder() {
-			const folder = await os.selectDriveFolder();
+			this.selectDriveFolderResult = await os.selectDriveFolder(this.selectDriveFolderMultiple);
 		},
 
 		async selectUser() {

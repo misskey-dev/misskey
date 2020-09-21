@@ -86,6 +86,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['selected', 'change-selection', 'move-root', 'cd', 'open-folder'],
+
 	data() {
 		return {
 			/**
