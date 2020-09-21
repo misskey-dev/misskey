@@ -68,6 +68,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['before', 'after'],
+
 	computed: {
 		notes(): any[] {
 			return this.prop ? this.items.map(item => item[this.prop]) : this.items;

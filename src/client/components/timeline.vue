@@ -12,6 +12,12 @@ export default defineComponent({
 		XNotes
 	},
 
+	provide() {
+		return {
+			inChannel: this.src === 'channel'
+		};
+	},
+
 	props: {
 		src: {
 			type: String,
@@ -36,11 +42,7 @@ export default defineComponent({
 		}
 	},
 
-	provide() {
-		return {
-			inChannel: this.src === 'channel'
-		};
-	},
+	emits: ['note', 'queue', 'before', 'after'],
 
 	data() {
 		return {
