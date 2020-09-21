@@ -43,7 +43,7 @@
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
-			<MkSwitch v-model:value="enableHcaptcha" ref="enableHcaptcha">{{ $t('enableHcaptcha') }}</MkSwitch>
+			<MkSwitch v-model:value="enableHcaptcha">{{ $t('enableHcaptcha') }}</MkSwitch>
 			<template v-if="enableHcaptcha">
 				<MkInput v-model:value="hcaptchaSiteKey" :disabled="!enableHcaptcha"><template #icon><Fa :icon="faKey"/></template>{{ $t('hcaptchaSiteKey') }}</MkInput>
 				<MkInput v-model:value="hcaptchaSecretKey" :disabled="!enableHcaptcha"><template #icon><Fa :icon="faKey"/></template>{{ $t('hcaptchaSecretKey') }}</MkInput>
@@ -400,7 +400,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$refs.enableHcaptcha.$on('change', () => {
+		this.$watch('enableHcaptcha', () => {
 			if (this.enableHcaptcha && this.enableRecaptcha) {
 				os.dialog({
 					type: 'question', // warning だと間違って cancel するかもしれない
@@ -417,7 +417,7 @@ export default defineComponent({
 			}
 		});
 
-		this.$refs.enableRecaptcha.$on('change', () => {
+		this.$watch('enableRecaptcha', () => {
 			if (this.enableRecaptcha && this.enableHcaptcha) {
 				os.dialog({
 					type: 'question', // warning だと間違って cancel するかもしれない

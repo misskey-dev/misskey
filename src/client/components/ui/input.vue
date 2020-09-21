@@ -22,7 +22,7 @@
 			:step="step"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="$emit('keydown', $event)"
+			@keydown="onKeydown($event)"
 			@input="onInput"
 			:list="id"
 		>
@@ -39,7 +39,7 @@
 			:step="step"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="$emit('keydown', $event)"
+			@keydown="onKeydown($event)"
 			@input="onInput"
 			:list="id"
 		>
@@ -122,6 +122,7 @@ export default defineComponent({
 			required: false,
 		},
 	},
+	emits: ['change', 'keydown', 'enter'],
 	setup(props, context) {
 		const { value, type, autofocus } = toRefs(props);
 		const v = ref(value.value);
@@ -140,6 +141,13 @@ export default defineComponent({
 			changed.value = true;
 			context.emit('change', ev);
 		};
+		const onKeydown = (ev: KeyboardEvent) => {
+			context.emit('keydown', ev);
+
+			if (ev.code === 'Enter') {
+				context.emit('enter');
+			}
+		};
 
 		watch(value, newValue => {
 			v.value = newValue;
@@ -156,13 +164,6 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			// TODO: vue3
-			/*this.$on('keydown', (e: KeyboardEvent) => {
-				if (e.code == 'Enter') {
-					this.$emit('enter');
-				}
-			});*/
-
 			nextTick(() => {
 				if (autofocus.value) {
 					focus();
@@ -203,6 +204,7 @@ export default defineComponent({
 			labelEl,
 			focus,
 			onInput,
+			onKeydown,
 			faExclamationCircle,
 		};
 	},
