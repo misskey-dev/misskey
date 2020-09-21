@@ -1,6 +1,6 @@
 <template>
 <header class="kkwtjztg">
-	<router-link class="name" :to="userPage(note.user)" ref="name">
+	<router-link class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
 		<mk-user-name :user="note.user"/>
 	</router-link>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
@@ -26,7 +26,6 @@
 import { defineComponent } from 'vue';
 import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
-import { UserPreview } from '@/scripts/user-preview';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
 import * as os from '@/os';
@@ -43,10 +42,6 @@ export default defineComponent({
 		return {
 			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark, faBiohazard
 		};
-	},
-
-	mounted() {
-		new UserPreview(this.$refs.name.$el, this.note.user.id);
 	},
 
 	methods: {
