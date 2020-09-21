@@ -121,6 +121,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['posted', 'done'],
+
 	data() {
 		return {
 			posting: false,
