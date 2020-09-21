@@ -612,10 +612,11 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.modal(defineAsyncComponent(() => import('@/components/emoji-picker.vue')), {}, emoji => {
-				insertTextAtCursor(this.$refs.text, emoji);
-			}, {
+			os.modal(defineAsyncComponent(() => import('@/components/emoji-picker.vue')), {}, {}, {
 				source: ev.currentTarget || ev.target
+			}).then(emoji => {
+				if (emoji == null) return;
+				insertTextAtCursor(this.$refs.text, emoji);
 			});
 		},
 

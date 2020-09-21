@@ -222,11 +222,11 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			const vm = os.modal(await import('@/components/emoji-picker.vue'), {
+			os.modal(await import('@/components/emoji-picker.vue'), {}, {}, {
 				source: ev.currentTarget || ev.target
-			}).$once('chosen', emoji => {
+			}).then(emoji => {
+				if (emoji == null) return;
 				insertTextAtCursor(this.$refs.text, emoji);
-				vm.close();
 			});
 		}
 	}
