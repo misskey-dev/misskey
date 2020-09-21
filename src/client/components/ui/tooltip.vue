@@ -25,6 +25,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['closed'],
+
 	mounted() {
 		this.$nextTick(() => {
 			if (this.source == null) {
@@ -45,43 +47,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .buebdbiu {
-	z-index: 11000;
-	display: block;
 	position: absolute;
+	z-index: 11000;
 	max-width: 240px;
 	font-size: 0.8em;
-	padding: 6px 8px;
-	background: var(--panel);
+	padding: 8px 12px;
 	text-align: center;
+	background: var(--acrylicPanel);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 	pointer-events: none;
 	transform-origin: center -16px;
-
-	&:before {
-		content: "";
-		pointer-events: none;
-		display: block;
-		position: absolute;
-		top: -28px;
-		left: 12px;
-		border-top: solid 14px transparent;
-		border-right: solid 14px transparent;
-		border-bottom: solid 14px rgba(0,0,0,0.1);
-		border-left: solid 14px transparent;
-	}
-
-	&:after {
-		content: "";
-		pointer-events: none;
-		display: block;
-		position: absolute;
-		top: -27px;
-		left: 12px;
-		border-top: solid 14px transparent;
-		border-right: solid 14px transparent;
-		border-bottom: solid 14px var(--panel);
-		border-left: solid 14px transparent;
-	}
 }
 </style>
