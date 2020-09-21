@@ -2,7 +2,7 @@
 <div class="qglefbjs" :class="notification.type" v-size="{ max: [500, 600] }">
 	<div class="head">
 		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
-		<img v-else class="icon" :src="notification.icon" alt=""/>
+		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
 			<Fa :icon="faPlus" v-if="notification.type === 'follow'"/>
 			<Fa :icon="faClock" v-else-if="notification.type === 'receiveFollowRequest'"/>

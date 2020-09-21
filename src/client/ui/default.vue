@@ -338,8 +338,12 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				os.modal(await import('@/components/toast.vue'), {
+				const promise = os.popup(await import('@/components/toast.vue'), {
 					notification
+				}, {
+					done: () => {
+						promise.cancel();
+					}
 				});
 			}
 

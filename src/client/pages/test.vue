@@ -65,7 +65,6 @@
 		</div>
 	</div>
 
-
 	<div class="_card _vMargin">
 		<div class="_title">selectUser</div>
 		<div class="_content">
@@ -73,6 +72,22 @@
 		</div>
 		<div class="_content">
 			<code>Result: {{ user }}</code>
+		</div>
+	</div>
+
+	<div class="_card _vMargin">
+		<div class="_title">Notification</div>
+		<div class="_content">
+			<MkInput v-model:value="notificationIconUrl">
+				<span>Icon URL</span>
+			</MkInput>
+			<MkInput v-model:value="notificationHeader">
+				<span>Header</span>
+			</MkInput>
+			<MkTextarea v-model:value="notificationBody">
+				<span>Body</span>
+			</MkTextarea>
+			<MkButton @click="createNotification()">createNotification</MkButton>
 		</div>
 	</div>
 </div>
@@ -115,6 +130,9 @@ export default defineComponent({
 			selectDriveFileResult: null,
 			selectDriveFolderResult: null,
 			user: null,
+			notificationIconUrl: null,
+			notificationHeader: '',
+			notificationBody: '',
 			faExclamationTriangle
 		}
 	},
@@ -141,6 +159,14 @@ export default defineComponent({
 
 		async selectUser() {
 			this.user = await os.selectUser();
+		},
+
+		async createNotification() {
+			os.api('notifications/create', {
+				header: this.notificationHeader,
+				body: this.notificationBody,
+				icon: this.notificationIconUrl,
+			});
 		},
 	}
 });
