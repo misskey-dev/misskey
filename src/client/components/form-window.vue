@@ -1,5 +1,5 @@
 <template>
-<x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<x-window ref="window" :width="400" :height="450" :no-padding="true" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>
 		{{ title }}
 	</template>
@@ -53,6 +53,8 @@ export default defineComponent({
 		},
 	},
 
+	emits: ['done'],
+
 	data() {
 		return {
 			values: {}
@@ -61,14 +63,13 @@ export default defineComponent({
 
 	created() {
 		for (const item in this.form) {
-			Vue.set(this.values, item, this.form[item].hasOwnProperty('default') ? this.form[item].default : null);
+			this.values[item] = this.form[item].hasOwnProperty('default') ? this.form[item].default : null;
 		}
 	},
 
 	methods: {
 		ok() {
-			this.$emit('ok', this.values);
-			this.$refs.window.close();
+			this.$emit('done', this.values);
 		},
 	}
 });

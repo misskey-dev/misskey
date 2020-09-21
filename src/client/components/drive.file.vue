@@ -32,11 +32,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-//import updateAvatar from '../api/update-avatar';
-//import updateBanner from '../api/update-banner';
-import XFileThumbnail from './drive-file-thumbnail.vue';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import XFileThumbnail from './drive-file-thumbnail.vue';
 import bytes from '../filters/bytes';
 import * as os from '@/os';
 
@@ -162,11 +160,11 @@ export default defineComponent({
 		},
 
 		setAsAvatar() {
-			updateAvatar(this.$root)(this.file);
+			os.updateAvatar(this.file);
 		},
 
 		setAsBanner() {
-			updateBanner(this.$root)(this.file);
+			os.updateBanner(this.file);
 		},
 
 		addApp() {

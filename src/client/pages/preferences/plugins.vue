@@ -173,7 +173,7 @@ export default defineComponent({
 				config[key].default = this.selectedPlugin.configData[key];
 			}
 
-			const { canceled, result } = await this.$root.form(this.selectedPlugin.name, config);
+			const { canceled, result } = await os.form(this.selectedPlugin.name, config);
 			if (canceled) return;
 
 			this.$store.commit('deviceUser/configPlugin', {

@@ -144,6 +144,27 @@ export function dialog(props: Record<string, any>, opts?: { cancelableByBgClick:
 	});
 }
 
+export function form(title, form, opts?) {
+	return new PCancelable((resolve, reject, onCancel) => {
+		const dialog = modal(defineAsyncComponent(() => import('@/components/form-window.vue')), { title, form }, {}, { cancelableByBgClick: opts?.cancelableByBgClick });
+
+		dialog.then(result => {
+			if (result) {
+				resolve(result);
+			} else {
+				resolve({ canceled: true });
+			}
+		});
+
+		dialog.catch(reject);
+
+		onCancel.shouldReject = false;
+		onCancel(() => {
+			dialog.cancel();
+		});
+	});
+}
+
 export async function selectUser() {
 	const component = await import('@/components/user-select.vue');
 	return new Promise((res, rej) => {

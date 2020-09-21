@@ -51,7 +51,7 @@ export default function <T extends Form>(data: {
 				for (const item of Object.keys(form)) {
 					form[item].default = this.props[item];
 				}
-				const { canceled, result } = await this.$root.form(data.name, form);
+				const { canceled, result } = await os.form(data.name, form);
 				if (canceled) return;
 
 				for (const key of Object.keys(result)) {
