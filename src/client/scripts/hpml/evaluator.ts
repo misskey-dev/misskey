@@ -6,6 +6,7 @@ import { AiScript, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
 import { initLib } from './lib';
+import * as os from '@/os';
 
 type Fn = {
 	slots: string[];
@@ -30,19 +31,19 @@ export class Hpml {
 		enableAiScript: boolean;
 	};
 
-	constructor(vm: any, page: Hpml['page'], opts: Hpml['opts']) {
+	constructor(page: Hpml['page'], opts: Hpml['opts']) {
 		this.page = page;
 		this.variables = this.page.variables;
 		this.pageVars = collectPageVars(this.page.content);
 		this.opts = opts;
 
 		if (this.opts.enableAiScript) {
-			this.aiscript = new AiScript({ ...createAiScriptEnv(vm, {
+			this.aiscript = new AiScript({ ...createAiScriptEnv({
 				storageKey: 'pages:' + this.page.id
 			}), ...initLib(this)}, {
 				in: (q) => {
 					return new Promise(ok => {
-						vm.os.dialog({
+						os.dialog({
 							title: q,
 							input: {}
 						}).then(({ canceled, result: a }) => {

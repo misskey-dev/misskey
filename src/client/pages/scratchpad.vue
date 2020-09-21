@@ -73,7 +73,7 @@ export default defineComponent({
 	methods: {
 		async run() {
 			this.logs = [];
-			const aiscript = new AiScript(createAiScriptEnv(this, {
+			const aiscript = new AiScript(createAiScriptEnv({
 				storageKey: 'scratchpad'
 			}), {
 				in: (q) => {
