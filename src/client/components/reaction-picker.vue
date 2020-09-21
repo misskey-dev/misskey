@@ -71,6 +71,7 @@ export default defineComponent({
 	mounted() {
 		this.focus = 0;
 
+		// TODO: detach when unmount
 		new Autocomplete(this.$refs.text, this, { model: 'text' });
 	},
 

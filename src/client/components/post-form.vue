@@ -280,6 +280,7 @@ export default defineComponent({
 			this.focus();
 		});
 
+		// TODO: detach when unmount
 		new Autocomplete(this.$refs.text, this, { model: 'text' });
 		new Autocomplete(this.$refs.cw, this, { model: 'cw' });
 

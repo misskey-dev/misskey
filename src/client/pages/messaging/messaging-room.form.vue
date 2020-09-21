@@ -79,6 +79,7 @@ export default defineComponent({
 	mounted() {
 		autosize(this.$refs.text);
 
+		// TODO: detach when unmount
 		new Autocomplete(this.$refs.text, this, { model: 'text' });
 
 		// 書きかけの投稿を復元
