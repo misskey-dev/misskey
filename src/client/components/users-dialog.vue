@@ -1,45 +1,38 @@
 <template>
-<XModal ref="modal" @closed="() => { $emit('closed'); destroyDom(); }">
-	<div class="mk-users-dialog">
-		<div class="header">
-			<span>{{ title }}</span>
-			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
-		</div>
-
-		<div class="users">
-			<router-link v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
-				<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
-				<div class="body">
-					<MkUserName :user="extract ? extract(item) : item" class="name"/>
-					<MkAcct :user="extract ? extract(item) : item" class="acct"/>
-				</div>
-			</router-link>
-		</div>
-		<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-			<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
-		</button>
-
-		<p class="empty" v-if="empty">{{ $t('noUsers') }}</p>
-
-		<MkError v-if="error" @retry="init()"/>
+<div class="mk-users-dialog">
+	<div class="header">
+		<span>{{ title }}</span>
+		<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 	</div>
-</XModal>
+
+	<div class="users">
+		<router-link v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
+			<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
+			<div class="body">
+				<MkUserName :user="extract ? extract(item) : item" class="name"/>
+				<MkAcct :user="extract ? extract(item) : item" class="acct"/>
+			</div>
+		</router-link>
+	</div>
+	<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
+		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
+	</button>
+
+	<p class="empty" v-if="empty">{{ $t('noUsers') }}</p>
+
+	<MkError v-if="error" @retry="init()"/>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import paging from '@/scripts/paging';
-import XModal from './modal.vue';
 import { userPage } from '../filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
-	components: {
-		XModal,
-	},
-
 	mixins: [
 		paging({}),
 	],
@@ -63,9 +56,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		close() {
-			this.$refs.modal.close();
-		},
 		userPage
 	}
 });

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-toast">
-	<transition name="notification-slide" appear @after-leave="() => { destroyDom(); }">
-		<XNotification :notification="notification" class="notification" v-if="show"/>
+	<transition name="notification-slide" appear @after-leave="$emit('closed')">
+		<XNotification :notification="notification" class="notification" v-if="showing"/>
 	</transition>
 </div>
 </template>
@@ -16,19 +16,19 @@ export default defineComponent({
 		XNotification
 	},
 	props: {
+		showing: {
+			type: Boolean,
+			required: true
+		},
 		notification: {
 			type: Object,
 			required: true
 		}
 	},
-	data() {
-		return {
-			show: true
-		};
-	},
+	emits: ['done', 'closed'],
 	mounted() {
 		setTimeout(() => {
-			this.show = false;
+			this.$emit('done');
 		}, 6000);
 	}
 });
