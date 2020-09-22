@@ -1,6 +1,6 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<XDraggable class="files" :list="files" animation="150" delay="100" delayOnTouchOnly="true">
+	<XDraggable class="files" :list="files" animation="150" delay="100" delay-on-touch-only="true">
 		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
 			<XFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<div class="sensitive" v-if="file.isSensitive">

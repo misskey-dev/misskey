@@ -51,7 +51,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { erase } from '../../prelude/array';
 import { addTime } from '../../prelude/time';
 import { formatDateTimeString } from '../../misc/format-time-string';
 import MkInput from './ui/input.vue';
@@ -67,7 +66,16 @@ export default defineComponent({
 		MkSwitch,
 		MkButton,
 	},
+
+	props: {
+		poll: {
+			type: Object,
+			required: true
+		}
+	},
+
 	emits: ['updated'],
+
 	data() {
 		return {
 			choices: ['', ''],
@@ -80,14 +88,56 @@ export default defineComponent({
 			faExclamationTriangle, faTimes
 		};
 	},
+
 	watch: {
+		poll: {
+			handler(poll) {
+				if (poll == null) return;
+				if (poll.choices.length == 0) return;
+				this.choices = poll.choices;
+				if (poll.choices.length == 1) this.choices = this.choices.concat('');
+				this.multiple = poll.multiple;
+				if (poll.expiresAt) {
+					this.expiration = 'at';
+					this.atDate = this.atTime = poll.expiresAt;
+				} else if (typeof poll.expiredAfter === 'number') {
+					this.expiration = 'after';
+					this.after = poll.expiredAfter;
+				} else {
+					this.expiration = 'infinite';
+				}
+			},
+			deep: true,
+			immediate: true
+		},
 		choices: {
 			handler() {
-				this.$emit('updated');
+				this.$emit('updated', this.get());
 			},
 			deep: true
-		}
+		},
+		multiple: {
+			handler() {
+				this.$emit('updated', this.get());
+			},
+		},
+		expiration: {
+			handler() {
+				this.$emit('updated', this.get());
+			},
+		},
+		atDate: {
+			handler() {
+				this.$emit('updated', this.get());
+			},
+		},
+		after: {
+			handler() {
+				this.$emit('updated', this.get());
+			},
+		},
 	},
+
 	methods: {
 		onInput(i, e) {
 			this.choices[i] = e;
@@ -96,7 +146,8 @@ export default defineComponent({
 		add() {
 			this.choices.push('');
 			this.$nextTick(() => {
-				(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+				// TODO
+				//(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
 			});
 		},
 
@@ -121,29 +172,14 @@ export default defineComponent({
 			};
 
 			return {
-				choices: erase('', this.choices),
+				choices: this.choices,
 				multiple: this.multiple,
 				...(
 					this.expiration === 'at' ? { expiresAt: at() } :
-					this.expiration === 'after' ? { expiredAfter: after() } : {})
+					this.expiration === 'after' ? { expiredAfter: after() } : {}
+				)
 			};
 		},
-
-		set(data) {
-			if (data.choices.length == 0) return;
-			this.choices = data.choices;
-			if (data.choices.length == 1) this.choices = this.choices.concat('');
-			this.multiple = data.multiple;
-			if (data.expiresAt) {
-				this.expiration = 'at';
-				this.atDate = this.atTime = data.expiresAt;
-			} else if (typeof data.expiredAfter === 'number') {
-				this.expiration = 'after';
-				this.after = data.expiredAfter;
-			} else {
-				this.expiration = 'infinite';
-			}
-		}
 	}
 });
 </script>

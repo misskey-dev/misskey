@@ -36,11 +36,11 @@
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateMedia" @detach="detachMedia"/>
-		<XPollEditor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
+		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<XUploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><Fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="poll = !poll" :class="{ active: poll }" v-tooltip="$t('poll')"><Fa :icon="faPollH"/></button>
+			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$t('poll')"><Fa :icon="faPollH"/></button>
 			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$t('useCw')"><Fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="insertMention" v-tooltip="$t('mention')"><Fa :icon="faAt"/></button>
 			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><Fa :icon="faLaughSquint"/></button>
@@ -129,10 +129,7 @@ export default defineComponent({
 			text: '',
 			files: [],
 			uploadings: [],
-			poll: false,
-			pollChoices: [],
-			pollMultiple: false,
-			pollExpiration: [],
+			poll: null,
 			useCw: false,
 			cw: null,
 			localOnly: false,
@@ -193,7 +190,7 @@ export default defineComponent({
 			return !this.posting &&
 				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
 				(length(this.text.trim()) <= this.max) &&
-				(!this.poll || this.pollChoices.length >= 2);
+				(!this.poll || this.poll.choices.length >= 2);
 		},
 
 		max(): number {
@@ -296,10 +293,7 @@ export default defineComponent({
 					this.localOnly = draft.data.localOnly;
 					this.files = (draft.data.files || []).filter(e => e);
 					if (draft.data.poll) {
-						this.poll = true;
-						this.$nextTick(() => {
-							(this.$refs.poll as any).set(draft.data.poll);
-						});
+						this.poll = draft.data.poll;
 					}
 				}
 			}
@@ -312,13 +306,7 @@ export default defineComponent({
 				this.cw = init.cw;
 				this.useCw = init.cw != null;
 				if (init.poll) {
-					this.poll = true;
-					this.$nextTick(() => {
-						(this.$refs.poll as any).set({
-							choices: init.poll.choices.map(c => c.text),
-							multiple: init.poll.multiple
-						});
-					});
+					this.poll = init.poll;
 				}
 				this.visibility = init.visibility;
 				this.localOnly = init.localOnly;
@@ -338,6 +326,19 @@ export default defineComponent({
 			this.$watch('files', () => this.saveDraft(), { deep: true });
 			this.$watch('visibility', () => this.saveDraft());
 			this.$watch('localOnly', () => this.saveDraft());
+		},
+
+		togglePoll() {
+			if (this.poll) {
+				this.poll = null;
+			} else {
+				this.poll = {
+					choices: ['', ''],
+					multiple: false,
+					expiresAt: null,
+					expiredAfter: null,
+				};
+			}
 		},
 
 		trimmedLength(text: string) {
@@ -411,11 +412,8 @@ export default defineComponent({
 			this.$emit('change-uploadings', uploads);
 		},
 
-		onPollUpdate() {
-			const got = this.$refs.poll.get();
-			this.pollChoices = got.choices;
-			this.pollMultiple = got.multiple;
-			this.pollExpiration = [got.expiration, got.expiresAt || got.expiredAfter];
+		onPollUpdate(poll) {
+			this.poll = poll;
 			this.saveDraft();
 		},
 
@@ -456,7 +454,7 @@ export default defineComponent({
 		clear() {
 			this.text = '';
 			this.files = [];
-			this.poll = false;
+			this.poll = null;
 			this.quoteId = null;
 		},
 
@@ -548,7 +546,7 @@ export default defineComponent({
 					visibility: this.visibility,
 					localOnly: this.localOnly,
 					files: this.files,
-					poll: this.poll && this.$refs.poll ? (this.$refs.poll as any).get() : undefined
+					poll: this.poll
 				}
 			};
 
@@ -570,7 +568,7 @@ export default defineComponent({
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
 				channelId: this.channel ? this.channel.id : undefined,
-				poll: this.poll ? (this.$refs.poll as any).get() : undefined,
+				poll: this.poll,
 				cw: this.useCw ? this.cw || '' : undefined,
 				localOnly: this.localOnly,
 				visibility: this.visibility,
