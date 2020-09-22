@@ -28,6 +28,22 @@
 	</div>
 
 	<div class="_card _vMargin">
+		<div class="_title">Form</div>
+		<div class="_content">
+			<MkInput v-model:value="formTitle">
+				<span>Title</span>
+			</MkInput>
+			<MkTextarea v-model:value="formForm">
+				<span>Form</span>
+			</MkTextarea>
+			<MkButton @click="form()">Show</MkButton>
+		</div>
+		<div class="_content">
+			<code>Result: {{ formResult }}</code>
+		</div>
+	</div>
+
+	<div class="_card _vMargin">
 		<div class="_title">MFM</div>
 		<div class="_content">
 			<MkTextarea v-model:value="mfm">
@@ -124,6 +140,25 @@ export default defineComponent({
 			dialogCancelByBgClick: true,
 			dialogInput: false,
 			dialogResult: null,
+			formTitle: null,
+			formForm: JSON.stringify({
+				foo: {
+					type: 'boolean',
+					default: true,
+					label: 'This is a boolean property'
+				},
+				bar: {
+					type: 'number',
+					default: 300,
+					label: 'This is a number property'
+				},
+				baz: {
+					type: 'string',
+					default: 'Misskey makes you happy.',
+					label: 'This is a string property'
+				},
+			}, null, '\t'),
+			formResult: null,
 			mfm: '',
 			selectDriveFileMultiple: false,
 			selectDriveFolderMultiple: false,
@@ -147,6 +182,11 @@ export default defineComponent({
 				cancelableByBgClick: this.dialogCancelByBgClick,
 				input: this.dialogInput ? {} : null
 			});
+		},
+
+		async form() {
+			this.formResult = null;
+			this.formResult = await os.form(this.formTitle, JSON.parse(this.formForm));
 		},
 
 		async selectDriveFile() {
