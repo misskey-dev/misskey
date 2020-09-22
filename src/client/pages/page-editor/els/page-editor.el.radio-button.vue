@@ -35,14 +35,17 @@ export default defineComponent({
 		};
 	},
 	watch: {
-		values() {
-			Vue.set(this.value, 'values', this.values.split('\n'));
+		values: {
+			handler() {
+				this.value.values = this.values.split('\n');
+			},
+			deep: true
 		}
 	},
 	created() {
-		if (this.value.name == null) Vue.set(this.value, 'name', '');
-		if (this.value.title == null) Vue.set(this.value, 'title', '');
-		if (this.value.values == null) Vue.set(this.value, 'values', []);
+		if (this.value.name == null) this.value.name = '';
+		if (this.value.title == null) this.value.title = '';
+		if (this.value.values == null) this.value.values = [];
 		this.values = this.value.values.join('\n');
 	},
 });

@@ -54,11 +54,17 @@ export default defineComponent({
 	},
 
 	watch: {
-		softMutedWords() {
-			this.changed = true;
+		softMutedWords: {
+			handler() {
+				this.changed = true;
+			},
+			deep: true
 		},
-		hardMutedWords() {
-			this.changed = true;
+		hardMutedWords: {
+			handler() {
+				this.changed = true;
+			},
+			deep: true
 		},
 	},
 

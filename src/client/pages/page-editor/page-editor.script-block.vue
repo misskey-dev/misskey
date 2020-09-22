@@ -124,11 +124,14 @@ export default defineComponent({
 	},
 
 	watch: {
-		slots() {
-			this.value.value.slots = this.slots.split('\n').map(x => ({
-				name: x,
-				type: null
-			}));
+		slots: {
+			handler() {
+				this.value.value.slots = this.slots.split('\n').map(x => ({
+					name: x,
+					type: null
+				}));
+			},
+			deep: true
 		}
 	},
 

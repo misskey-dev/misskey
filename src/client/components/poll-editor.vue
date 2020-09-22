@@ -67,6 +67,7 @@ export default defineComponent({
 		MkSwitch,
 		MkButton,
 	},
+	emits: ['updated'],
 	data() {
 		return {
 			choices: ['', ''],
@@ -80,13 +81,16 @@ export default defineComponent({
 		};
 	},
 	watch: {
-		choices() {
-			this.$emit('updated');
+		choices: {
+			handler() {
+				this.$emit('updated');
+			},
+			deep: true
 		}
 	},
 	methods: {
 		onInput(i, e) {
-			Vue.set(this.choices, i, e);
+			this.choices[i] = e;
 		},
 
 		add() {

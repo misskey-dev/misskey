@@ -64,13 +64,19 @@ export default defineComponent({
 	},
 
 	watch: {
-		includeTypes() {
-			this.reload();
-		},
-		'$store.state.i.mutingNotificationTypes'() {
-			if (this.includeTypes === null) {
+		includeTypes: {
+			handler() {
 				this.reload();
-			}
+			},
+			deep: true
+		},
+		'$store.state.i.mutingNotificationTypes': {
+			handler() {
+				if (this.includeTypes === null) {
+					this.reload();
+				}
+			},
+			deep: true
 		}
 	},
 

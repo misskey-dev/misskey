@@ -335,7 +335,7 @@ export default defineComponent({
 			this.$watch('useCw', () => this.saveDraft());
 			this.$watch('cw', () => this.saveDraft());
 			this.$watch('poll', () => this.saveDraft());
-			this.$watch('files', () => this.saveDraft());
+			this.$watch('files', () => this.saveDraft(), { deep: true });
 			this.$watch('visibility', () => this.saveDraft());
 			this.$watch('localOnly', () => this.saveDraft());
 		},

@@ -45,8 +45,11 @@ export default defineComponent({
 	},
 
 	watch: {
-		reactions() {
-			this.changed = true;
+		reactions: {
+			handler() {
+				this.changed = true;
+			},
+			deep: true
 		}
 	},
 

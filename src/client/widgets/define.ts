@@ -32,7 +32,7 @@ export default function <T extends Form>(data: {
 
 			this.$watch('props', () => {
 				this.mergeProps();
-			});
+			}, { deep: true });
 		},
 
 		methods: {
