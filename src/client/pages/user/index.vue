@@ -216,7 +216,7 @@ export default defineComponent({
 
 		pinnedNoteUpdated(oldValue, newValue) {
 			const i = this.user.pinnedNotes.findIndex(n => n === oldValue);
-			Vue.set(this.user.pinnedNotes, i, newValue);
+			this.user.pinnedNotes[i] = newValue;
 		},
 
 		number,

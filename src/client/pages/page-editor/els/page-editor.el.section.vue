@@ -51,8 +51,8 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.title == null) Vue.set(this.value, 'title', null);
-		if (this.value.children == null) Vue.set(this.value, 'children', []);
+		if (this.value.title == null) this.value.title = null;
+		if (this.value.children == null) this.value.children = [];
 	},
 
 	mounted() {

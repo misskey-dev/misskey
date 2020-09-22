@@ -59,8 +59,8 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.children == null) Vue.set(this.value, 'children', []);
-		if (this.value.var === undefined) Vue.set(this.value, 'var', null);
+		if (this.value.children == null) this.value.children = [];
+		if (this.value.var === undefined) this.value.var = null;
 	},
 
 	methods: {

@@ -32,7 +32,7 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.text == null) Vue.set(this.value, 'text', '');
+		if (this.value.text == null) this.value.text = '';
 	},
 });
 </script>

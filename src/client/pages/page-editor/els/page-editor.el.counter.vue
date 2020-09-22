@@ -35,7 +35,7 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.name == null) Vue.set(this.value, 'name', '');
+		if (this.value.name == null) this.value.name = '';
 	},
 });
 </script>

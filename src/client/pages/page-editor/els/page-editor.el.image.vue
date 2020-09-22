@@ -40,7 +40,7 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.fileId === undefined) Vue.set(this.value, 'fileId', null);
+		if (this.value.fileId === undefined) this.value.fileId = null;
 	},
 
 	mounted() {

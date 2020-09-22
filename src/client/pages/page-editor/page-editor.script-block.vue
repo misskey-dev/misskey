@@ -140,7 +140,7 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.value == null) Vue.set(this.value, 'value', null);
+		if (this.value.value == null) this.value.value = null;
 
 		if (this.value.value && this.value.value.slots) this.slots = this.value.value.slots.map(x => x.name).join('\n');
 
@@ -149,9 +149,10 @@ export default defineComponent({
 
 			if (this.value.type === 'fn') {
 				const id = uuid();
-				this.value.value = {};
-				Vue.set(this.value.value, 'slots', []);
-				Vue.set(this.value.value, 'expression', { id, type: null });
+				this.value.value = {
+					slots: [],
+					expression: { id, type: null }
+				};
 				return;
 			}
 
@@ -164,7 +165,7 @@ export default defineComponent({
 					const id = uuid();
 					empties.push({ id, type: null });
 				}
-				Vue.set(this.value, 'args', empties);
+				this.value.args = empties;
 				return;
 			}
 
@@ -175,7 +176,7 @@ export default defineComponent({
 				const id = uuid();
 				empties.push({ id, type: null });
 			}
-			Vue.set(this.value, 'args', empties);
+			this.value.args = empties;
 
 			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {
 				const inType = funcDefs[this.value.type].in[i];

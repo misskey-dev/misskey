@@ -35,9 +35,9 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.name == null) Vue.set(this.value, 'name', '');
-		if (this.value.width == null) Vue.set(this.value, 'width', 300);
-		if (this.value.height == null) Vue.set(this.value, 'height', 200);
+		if (this.value.name == null) this.value.name = '';
+		if (this.value.width == null) this.value.width = 300;
+		if (this.value.height == null) this.value.height = 200;
 	},
 });
 </script>

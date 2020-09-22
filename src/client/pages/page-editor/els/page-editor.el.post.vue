@@ -37,9 +37,9 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.text == null) Vue.set(this.value, 'text', '');
-		if (this.value.attachCanvasImage == null) Vue.set(this.value, 'attachCanvasImage', false);
-		if (this.value.canvasId == null) Vue.set(this.value, 'canvasId', '');
+		if (this.value.text == null) this.value.text = '';
+		if (this.value.attachCanvasImage == null) this.value.attachCanvasImage = false;
+		if (this.value.canvasId == null) this.value.canvasId = '';
 	},
 });
 </script>

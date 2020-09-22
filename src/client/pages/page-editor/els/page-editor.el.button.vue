@@ -67,14 +67,14 @@ export default defineComponent({
 	},
 
 	created() {
-		if (this.value.text == null) Vue.set(this.value, 'text', '');
-		if (this.value.action == null) Vue.set(this.value, 'action', 'dialog');
-		if (this.value.content == null) Vue.set(this.value, 'content', null);
-		if (this.value.event == null) Vue.set(this.value, 'event', null);
-		if (this.value.message == null) Vue.set(this.value, 'message', null);
-		if (this.value.primary == null) Vue.set(this.value, 'primary', false);
-		if (this.value.var == null) Vue.set(this.value, 'var', null);
-		if (this.value.fn == null) Vue.set(this.value, 'fn', null);
+		if (this.value.text == null) this.value.text = '';
+		if (this.value.action == null) this.value.action = 'dialog';
+		if (this.value.content == null) this.value.content = null;
+		if (this.value.event == null) this.value.event = null;
+		if (this.value.message == null) this.value.message = null;
+		if (this.value.primary == null) this.value.primary = false;
+		if (this.value.var == null) this.value.var = null;
+		if (this.value.fn == null) this.value.fn = null;
 	},
 });
 </script>
