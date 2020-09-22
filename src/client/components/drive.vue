@@ -468,7 +468,7 @@ export default defineComponent({
 
 			if (this.folders.some(f => f.id == folder.id)) {
 				const exist = this.folders.map(f => f.id).indexOf(folder.id);
-				Vue.set(this.folders, exist, folder);
+				this.folders[exist] = folder;
 				return;
 			}
 
@@ -485,7 +485,7 @@ export default defineComponent({
 
 			if (this.files.some(f => f.id == file.id)) {
 				const exist = this.files.map(f => f.id).indexOf(file.id);
-				Vue.set(this.files, exist, file);
+				this.files[exist] = file;
 				return;
 			}
 

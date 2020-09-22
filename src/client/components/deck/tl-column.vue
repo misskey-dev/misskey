@@ -100,7 +100,7 @@ export default defineComponent({
 				}
 				return;
 			}
-			Vue.set(this.column, 'tl', src);
+			this.column.tl = src;
 			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		},
 

@@ -238,7 +238,7 @@ export default defineComponent({
 		},
 	
 		colorChanged(color: string, i: number) {
-			Vue.set(this.theme, i, [this.theme[i][0], color]);
+			this.theme[i] = [this.theme[i][0], color];
 		},
 	
 		getTypeOf(v: ThemeValue) {
@@ -251,7 +251,7 @@ export default defineComponent({
 	
 		async chooseType(e: MouseEvent, i: number) {
 			const newValue = await this.showTypeMenu(e);
-			Vue.set(this.theme, i, [ this.theme[i][0], newValue ]);
+			this.theme[i] = [ this.theme[i][0], newValue ];
 		},
 	
 		showTypeMenu(e: MouseEvent) {

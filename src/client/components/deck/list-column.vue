@@ -73,7 +73,7 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			Vue.set(this.column, 'listId', list.id);
+			this.column.listId = list.id;
 			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		},
 

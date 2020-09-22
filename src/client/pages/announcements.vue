@@ -49,10 +49,10 @@ export default defineComponent({
 	methods: {
 		// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
 		read(items, announcement, i) {
-			Vue.set(items, i, {
+			items[i] = {
 				...announcement,
 				isRead: true,
-			});
+			};
 			os.api('i/read-announcement', { announcementId: announcement.id });
 		},
 	}

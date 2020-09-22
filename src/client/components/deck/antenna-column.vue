@@ -73,7 +73,7 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			Vue.set(this.column, 'antennaId', antenna.id);
+			this.column.antennaId = antenna.id;
 			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		},
 
