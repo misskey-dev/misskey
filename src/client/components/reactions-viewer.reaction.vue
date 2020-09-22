@@ -46,7 +46,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			details: null,
+			close: null,
 			detailsTimeoutId: null,
 			isHovering: false
 		};
@@ -59,7 +59,7 @@ export default defineComponent({
 	watch: {
 		count(newCount, oldCount) {
 			if (oldCount < newCount) this.anime();
-			if (this.details != null) this.openDetails();
+			if (this.close != null) this.openDetails();
 		},
 	},
 	mounted() {
@@ -111,18 +111,22 @@ export default defineComponent({
 
 				this.closeDetails();
 				if (!this.isHovering) return;
-				this.details = os.modal(XDetails, {
+				const promise = os.popup(XDetails, {
 					reaction: this.reaction,
 					users,
 					count: this.count,
 					source: this.$refs.reaction
 				});
+
+				this.close = () => {
+					promise.cancel();
+				};
 			});
 		},
 		closeDetails() {
-			if (this.details != null) {
-				this.details.close();
-				this.details = null;
+			if (this.close != null) {
+				this.close();
+				this.close = null;
 			}
 		},
 		anime() {

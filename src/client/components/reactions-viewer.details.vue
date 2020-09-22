@@ -42,11 +42,5 @@ export default defineComponent({
 			required: true,
 		}
 	},
-
-	methods: {
-		close() {
-			this.$refs.tooltip.close();
-		}
-	}
 })
 </script>
