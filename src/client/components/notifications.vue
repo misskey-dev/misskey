@@ -108,10 +108,10 @@ export default defineComponent({
 
 		noteUpdated(oldValue, newValue) {
 			const i = this.items.findIndex(n => n.note === oldValue);
-			Vue.set(this.items, i, {
+			this.items[i] = {
 				...this.items[i],
 				note: newValue
-			});
+			};
 		},
 	}
 });

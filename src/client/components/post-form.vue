@@ -35,7 +35,7 @@
 		</div>
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
-		<XPostForm-attaches class="attaches" :files="files"/>
+		<XPostFormAttaches class="attaches" :files="files" @updated="updateMedia" @detach="detachMedia"/>
 		<XPollEditor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
 		<XUploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
@@ -396,7 +396,7 @@ export default defineComponent({
 		},
 
 		updateMedia(file) {
-			Vue.set(this.files, this.files.findIndex(x => x.id === file.id), file);
+			this.files[this.files.findIndex(x => x.id === file.id)] = file;
 		},
 
 		onChangeFile() {

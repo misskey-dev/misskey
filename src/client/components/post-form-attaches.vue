@@ -36,6 +36,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['updated', 'detach'],
+
 	data() {
 		return {
 			menu: null as Promise<null> | null,
@@ -48,8 +50,8 @@ export default defineComponent({
 		detachMedia(id) {
 			if (this.detachMediaFn) {
 				this.detachMediaFn(id);
-			} else if (this.$parent.detachMedia) {
-				this.$parent.detachMedia(id);
+			} else {
+				this.$emit('detach', id);
 			}
 		},
 		toggleSensitive(file) {
@@ -58,7 +60,7 @@ export default defineComponent({
 				isSensitive: !file.isSensitive
 			}).then(() => {
 				file.isSensitive = !file.isSensitive;
-				this.$parent.updateMedia(file);
+				this.$emit('updated', file);
 			});
 		},
 		async rename(file) {
@@ -75,7 +77,7 @@ export default defineComponent({
 				name: result
 			}).then(() => {
 				file.name = result;
-				this.$parent.updateMedia(file);
+				this.$emit('updated', file);
 			});
 		},
 		showFileMenu(file, ev: MouseEvent) {
