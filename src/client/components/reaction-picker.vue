@@ -31,6 +31,8 @@ export default defineComponent({
 		},
 	},
 
+	emits: ['done'],
+
 	data() {
 		return {
 			rs: this.reactions || this.$store.state.settings.reactions,

@@ -486,14 +486,14 @@ export default defineComponent({
 			this.blur();
 			os.modal(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
 				showFocus: viaKeyboard,
-			}, reaction => {
+			}, {}, {
+				source: this.$refs.reactButton
+			}).then(reaction => {
 				os.api('notes/reactions/create', {
 					noteId: this.appearNote.id,
 					reaction: reaction
 				});
 				this.focus();
-			}, {
-				source: this.$refs.reactButton
 			});
 		},
 
