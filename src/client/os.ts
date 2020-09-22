@@ -103,6 +103,7 @@ export function modal(component: Component | typeof import('*.vue'), props: Reco
 			props,
 			showing,
 			events,
+			position: option?.position,
 			source: option?.source,
 			done: close,
 			bgClick: () => {
@@ -212,7 +213,9 @@ export function menu(props: Record<string, any>, opts?: { source: any; }) {
 }
 
 export function post(props: Record<string, any>) {
-	return modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props);
+	return modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props, {}, {
+		position: 'top'
+	});
 }
 
 export function sound(type: string) {

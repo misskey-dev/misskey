@@ -3,7 +3,7 @@
 	<transition :name="$store.state.device.animation ? 'modal-bg' : ''" appear>
 		<div class="bg _modalBg" v-if="showing" @click="$emit('click')"></div>
 	</transition>
-	<div class="content" :class="{ popup, fixed }" @click.self="$emit('click')" ref="content">
+	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="$emit('click')" ref="content">
 		<transition :name="$store.state.device.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')">
 			<slot v-if="showing"></slot>
 		</transition>
@@ -38,6 +38,9 @@ export default defineComponent({
 		},
 		source: {
 			required: false,
+		},
+		position: {
+			required: false
 		}
 	},
 	emits: ['click', 'esc', 'closed'],
@@ -162,13 +165,24 @@ export default defineComponent({
 		left: 0;
 		right: 0;
 		margin: auto;
-		max-width: calc(100% - 16px);
-		max-height: calc(100% - 16px);
+		max-width: calc(100% - 32px);
+		max-height: calc(100% - 32px);
 		overflow: auto;
 		display: flex;
 
+		@media (max-width: 500px) {
+			max-width: calc(100% - 16px);
+			max-height: calc(100% - 16px);
+		}
+
 		> * {
 			margin: auto;
+		}
+
+		&.top {
+			> * {
+				margin-top: 0;
+			}
 		}
 	}
 

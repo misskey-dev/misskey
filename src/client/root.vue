@@ -8,6 +8,7 @@
 	@click="modal.bgClick"
 	:showing="modal.showing"
 	:source="modal.source"
+	:position="modal.position"
 >
 	<component :is="modal.component" v-bind="modal.props" v-on="modal.events" @done="modal.done"/>
 </XModal>
