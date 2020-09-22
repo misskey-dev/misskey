@@ -1,1 +1,1 @@
-export default n => n == null ? 'N/A' : n.toLocaleString()
+export default n => n == null ? 'N/A' : n.toLocaleString();
