@@ -37,7 +37,7 @@
 			</template>
 		</MkInput>
 		<MkSwitch v-model:value="ToSAgreement" v-if="meta.tosUrl">
-			<i18n-t path="agreeTo">
+			<i18n-t keypath="agreeTo">
 				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n-t>
 		</MkSwitch>
