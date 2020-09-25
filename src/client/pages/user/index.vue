@@ -82,7 +82,7 @@
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
 		<div class="pins">
-			<XNote v-for="note in user.pinnedNotes" class="note" :note="note" @updated="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+			<XNote v-for="note in user.pinnedNotes" class="note" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
 		</div>
 		<MkContainer :body-togglable="true" class="content">
 			<template #header><Fa :icon="faImage"/>{{ $t('images') }}</template>
