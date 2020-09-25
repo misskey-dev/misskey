@@ -171,7 +171,7 @@ export default defineComponent({
 	}
 
 	> div {
-		> ::v-deep ._content {
+		> ::v-deep(._content) {
 			padding: 24px;
 
 			& + ._content {
@@ -188,7 +188,7 @@ export default defineComponent({
 		}
 
 		> div {
-			> ::v-deep ._content {
+			> ::v-deep(._content) {
 				padding: 16px;
 			}
 		}

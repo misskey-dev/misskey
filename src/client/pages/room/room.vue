@@ -286,7 +286,7 @@ export default defineComponent({
 	position: relative;
 	min-height: 500px;
 
-	> ::v-deep canvas {
+	> ::v-deep(canvas) {
 		display: block;
 	}
 }

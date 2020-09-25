@@ -25,7 +25,7 @@ export default defineComponent({
 		text-overflow: ellipsis;
 	}
 
-	::v-deep .quote {
+	::v-deep(.quote) {
 		display: block;
 		margin: 8px;
 		padding: 6px 0 6px 12px;
@@ -34,15 +34,15 @@ export default defineComponent({
 		opacity: 0.7;
 	}
 
-	::v-deep pre {
+	::v-deep(pre) {
 		font-size: 0.8em;
 	}
 
-	::v-deep > code {
+	> ::v-deep(code) {
 		word-break: break-all;
 	}
 
-	::v-deep .title {
+	::v-deep(.title) {
 		text-align: center;
 		border-bottom: solid 1px var(--divider);
 	}

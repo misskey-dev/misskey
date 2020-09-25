@@ -148,7 +148,7 @@ export default defineComponent({
 	}
 
 	> .body {
-		::v-deep .juejbjww, ::v-deep .eiipwacr {
+		::v-deep(.juejbjww), ::v-deep(.eiipwacr) {
 			&:not(.inline):first-child {
 				margin-top: 28px;
 			}

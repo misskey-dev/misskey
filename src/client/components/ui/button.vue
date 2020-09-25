@@ -183,7 +183,7 @@ export default defineComponent({
 		border-radius: 6px;
 		overflow: hidden;
 
-		::v-deep div {
+		::v-deep(div) {
 			position: absolute;
 			width: 2px;
 			height: 2px;
@@ -195,7 +195,7 @@ export default defineComponent({
 		}
 	}
 
-	&.primary > .ripples ::v-deep div {
+	&.primary > .ripples ::v-deep(div) {
 		background: rgba(0, 0, 0, 0.15);
 	}
 

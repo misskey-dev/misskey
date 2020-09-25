@@ -120,11 +120,11 @@ export default defineComponent({
 		margin-bottom: 0;
 	}
 
-	::v-deep a {
+	::v-deep(a) {
 		color: var(--link);
 	}
 
-	::v-deep blockquote {
+	::v-deep(blockquote) {
 		display: block;
 		margin: 8px;
 		padding: 6px 0 6px 12px;
@@ -137,19 +137,19 @@ export default defineComponent({
 		}
 	}
 
-	::v-deep h2 {
+	::v-deep(h2) {
 		font-size: 1.25em;
 		padding: 0 0 0.5em 0;
 		border-bottom: solid 1px var(--divider);
 	}
 
-	::v-deep table {
+	::v-deep(table) {
 		width: 100%;
 		max-width: 100%;
 		overflow: auto;
 	}
 
-	::v-deep kbd.group {
+	::v-deep(kbd.group) {
 		display: inline-block;
 		padding: 2px;
 		border: 1px solid var(--divider);
@@ -157,7 +157,7 @@ export default defineComponent({
 		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 	}
 
-	::v-deep kbd.key {
+	::v-deep(kbd.key) {
 		display: inline-block;
 		padding: 6px 8px;
 		border: solid 1px var(--divider);

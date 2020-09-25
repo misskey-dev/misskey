@@ -343,7 +343,7 @@ export default defineComponent({
 		}
 
 		> .messages {
-			> ::v-deep * {
+			> ::v-deep(*) {
 				margin-bottom: 16px;
 			}
 		}

@@ -310,7 +310,7 @@ export default defineComponent({
 					}
 
 					> .text {
-						&, ::v-deep * {
+						&, ::v-deep(*) {
 							color: #fff !important;
 						}
 					}
