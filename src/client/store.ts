@@ -114,7 +114,6 @@ export const store = createStore({
 			type: 'popup' | 'modal',
 			props: Record<string, any>;
 		}[],
-		fullView: false,
 
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
@@ -276,10 +275,6 @@ export const store = createStore({
 
 		removePopup(state, popupId) {
 			state.popups = state.popups.filter(x => x.id !== popupId);
-		},
-
-		setFullView(state, v) {
-			state.fullView = v;
 		},
 
 		initPlugin(state, { plugin, aiscript }) {

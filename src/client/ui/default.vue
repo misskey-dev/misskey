@@ -2,7 +2,7 @@
 <div class="mk-app" v-hotkey.global="keymap">
 	<XSidebar ref="nav"/>
 
-	<div class="contents" ref="contents" :class="{ wallpaper, full: $store.state.fullView }">
+	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
 			<div class="title" ref="title">
 				<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>

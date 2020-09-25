@@ -268,10 +268,6 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-		this.$store.commit('setFullView', true);
-	},
-
 	mounted() {
 		this.fetchLogs();
 		this.fetchJobs();
@@ -539,7 +535,6 @@ export default defineComponent({
 		this.connection.off('statsLog', this.onStatsLog);
 		this.connection.dispose();
 		this.queueConnection.dispose();
-		this.$store.commit('setFullView', false);
 	},
 
 	methods: {

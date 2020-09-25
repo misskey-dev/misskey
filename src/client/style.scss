@@ -331,6 +331,10 @@ hr {
 	padding: 32px;
 	border-bottom: solid 1px var(--divider);
 
+	@media (max-width: 500px) {
+		padding: 16px;
+	}
+
 	> ._title, > ._content {
 		max-width: 750px;
 		margin: 0 auto;
@@ -353,12 +357,9 @@ hr {
 	}
 }
 
-._frame {
-	border: solid 1px var(--divider);
-	border-radius: var(--radius);
-}
+._narrow_ ._section {
+	padding: 0;
 
-._narrow_ ._card {
 	> ._title {
 		padding: 16px;
 		font-size: 1em;
@@ -371,6 +372,14 @@ hr {
 	> ._footer {
 		padding: 16px;
 	}
+}
+
+._frame {
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	border: solid 1px var(--divider);
+	border-radius: var(--radius);
 }
 
 ._vMargin {
