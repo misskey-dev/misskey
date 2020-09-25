@@ -13,7 +13,7 @@
 		accentDarken: ':darken<10<@accent',
 		accentLighten: ':lighten<10<@accent',
 		focus: ':alpha<0.3<@accent',
-		bg: '#fafafa',
+		bg: '#fff',
 		fg: '#5c6a73',
 		fgHighlighted: ':darken<3<@fg',
 		divider: 'rgba(0, 0, 0, 0.1)',

@@ -2,7 +2,7 @@
 <div class="mfcuwfyp">
 	<XList class="notifications" :items="items" v-slot="{ item: notification }">
 		<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
-		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
+		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_frame notification" :key="notification.id"/>
 	</XList>
 
 	<button class="_panel _button" ref="loadMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">

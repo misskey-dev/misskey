@@ -295,7 +295,7 @@ hr {
 }
 
 ._close_ ._list_ > * {
-	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
+	border-bottom: solid 1px var(--divider);
 	border-radius: 0;
 	margin: 0 !important;
 }
@@ -346,50 +346,15 @@ hr {
 		margin-top: 16px;
 		padding-top: 16px;
 	}
+
+	&._fitBottom {
+		padding-bottom: 0;
+	}
 }
 
-._card {
-	@extend ._panel;
-
-	> ._title {
-		margin: 0;
-		padding: 22px 32px;
-		font-size: 1.1em;
-		border-bottom: solid 1px var(--panelHeaderDivider);
-		font-weight: bold;
-		background: var(--panelHeaderBg);
-		color: var(--panelHeaderFg);
-
-		@media (max-width: 500px) {
-			padding: 16px;
-			font-size: 1em;
-		}
-	}
-
-	> ._content {
-		padding: 32px;
-
-		@media (max-width: 500px) {
-			padding: 16px;
-		}
-
-		&._noPad {
-			padding: 0 !important;
-		}
-
-		& + ._content {
-			border-top: solid 1px var(--divider);
-		}
-	}
-
-	> ._footer {
-		border-top: solid 1px var(--divider);
-		padding: 24px 32px;
-
-		@media (max-width: 500px) {
-			padding: 16px;
-		}
-	}
+._frame {
+	border: solid 1px var(--divider);
+	border-radius: var(--radius);
 }
 
 ._narrow_ ._card {

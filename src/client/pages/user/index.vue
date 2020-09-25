@@ -6,7 +6,7 @@
 	<div class="punished _panel" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div>
 	<div class="punished _panel" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div>
 
-	<div class="profile _section">
+	<div class="profile _section _fitBottom">
 		<div class="_content" :key="user.id">
 			<div class="banner-container" :style="style">
 				<div class="banner" ref="banner" :style="style"></div>
@@ -255,6 +255,7 @@ export default defineComponent({
 				overflow: hidden;
 				background-size: cover;
 				background-position: center;
+				border-radius: 12px;
 
 				> .banner {
 					height: 100%;

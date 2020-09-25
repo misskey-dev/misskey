@@ -676,8 +676,4 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-._frame {
-	border: solid 1px var(--divider);
-	border-radius: var(--radius);
-}
 </style>>
