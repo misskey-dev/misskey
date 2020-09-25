@@ -295,6 +295,7 @@ hr {
 }
 
 ._close_ ._list_ > * {
+	border: none;
 	border-bottom: solid 1px var(--divider);
 	border-radius: 0;
 	margin: 0 !important;
@@ -331,7 +332,7 @@ hr {
 	border-bottom: solid 1px var(--divider);
 
 	> ._title, > ._content {
-		max-width: 800px;
+		max-width: 750px;
 		margin: 0 auto;
 	}
 

@@ -8,7 +8,7 @@
 	base: 'light',
 
 	props: {
-		bg: '#f2f2f2',
+		bg: '#fff',
 		header: ':alpha<0.7<@bg',
 		navBg: '@bg',
 		panelHeaderDivider: '@divider',

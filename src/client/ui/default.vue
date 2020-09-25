@@ -227,9 +227,6 @@ export default defineComponent({
 
 		// widget follow
 		this.attachSticky();
-
-		// TODO: detach when unmount
-		new Autocomplete(this.$refs.search, this, { model: 'searchQuery' });
 	},
 
 	methods: {

@@ -84,7 +84,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ebkgoccj {
-	background: var(--panel);
+	background: var(--bg);
 	border-radius: var(--radius);
 	overflow: hidden;
 	display: flex;
