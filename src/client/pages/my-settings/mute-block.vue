@@ -1,5 +1,5 @@
 <template>
-<section class="rrfwjxfl _card">
+<section class="rrfwjxfl _section">
 	<div class="_title"><Fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
 	<div class="_content">
 		<span>{{ $t('mutedUsers') }}</span>

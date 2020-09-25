@@ -1,5 +1,5 @@
 <template>
-<section class="rfqxtzch _card">
+<section class="rfqxtzch _section">
 	<div class="_title"><Fa :icon="faPalette"/> {{ $t('theme') }}</div>
 	<div class="_content">
 		<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">

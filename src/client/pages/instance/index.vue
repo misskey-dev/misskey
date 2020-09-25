@@ -146,7 +146,7 @@
 				</div>
 			</MkContainer>
 
-			<section class="_card logs">
+			<section class="_section logs">
 				<div class="_title"><Fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
 				<div class="_content">
 					<div class="_inputs">

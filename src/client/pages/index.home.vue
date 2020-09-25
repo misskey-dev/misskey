@@ -20,7 +20,10 @@
 	<XTutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
 	<XPostForm class="post-form _panel" fixed v-if="$store.state.device.showFixedPostForm"/>
-	<XTimeline ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src" :src="src" :list="list ? list.id : null" :antenna="antenna ? antenna.id : null" :channel="channel ? channel.id : null" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
+
+	<div class="_section">
+		<XTimeline class="_content" ref="tl" :key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src" :src="src" :list="list ? list.id : null" :antenna="antenna ? antenna.id : null" :channel="channel ? channel.id : null" :sound="true" @before="before()" @after="after()" @queue="queueUpdated"/>
+	</div>
 </div>
 </template>
 

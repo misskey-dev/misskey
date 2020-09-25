@@ -2,7 +2,7 @@
 <div>
 	<portal to="header"><Fa :icon="faExclamationTriangle"/>TEST</portal>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">Dialog</div>
 		<div class="_content">
 			<MkInput v-model:value="dialogTitle">
@@ -27,7 +27,7 @@
 		</div>
 	</div>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">Form</div>
 		<div class="_content">
 			<MkInput v-model:value="formTitle">
@@ -43,7 +43,7 @@
 		</div>
 	</div>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">MFM</div>
 		<div class="_content">
 			<MkTextarea v-model:value="mfm">
@@ -55,7 +55,7 @@
 		</div>
 	</div>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">selectDriveFile</div>
 		<div class="_content">
 			<MkSwitch v-model:value="selectDriveFileMultiple">
@@ -68,7 +68,7 @@
 		</div>
 	</div>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">selectDriveFolder</div>
 		<div class="_content">
 			<MkSwitch v-model:value="selectDriveFolderMultiple">
@@ -81,7 +81,7 @@
 		</div>
 	</div>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">selectUser</div>
 		<div class="_content">
 			<MkButton @click="selectUser()">selectUser</MkButton>
@@ -91,7 +91,7 @@
 		</div>
 	</div>
 
-	<div class="_card _vMargin">
+	<div class="_section">
 		<div class="_title">Notification</div>
 		<div class="_content">
 			<MkInput v-model:value="notificationIconUrl">

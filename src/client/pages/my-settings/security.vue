@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faLock"/> {{ $t('password') }}</div>
 	<div class="_content">
 		<MkButton primary @click="change()">{{ $t('changePassword') }}</MkButton>

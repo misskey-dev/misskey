@@ -1,5 +1,5 @@
 <template>
-<section class="_card" v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
+<section class="_section" v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
 	<div class="_title"><Fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 
 	<div class="_content" v-if="enableTwitterIntegration">

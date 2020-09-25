@@ -2,7 +2,7 @@
 <div class="mk-instance-users">
 	<portal to="header"><Fa :icon="faUsers"/>{{ $t('users') }}</portal>
 
-	<section class="_card _vMargin lookup">
+	<section class="_section lookup">
 		<div class="_title"><Fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
 			<MkInput class="target" v-model:value="target" type="text" @enter="showUser()">
@@ -15,7 +15,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin users">
+	<section class="_section users">
 		<div class="_title"><Fa :icon="faUsers"/> {{ $t('users') }}</div>
 		<div class="_content">
 			<div class="inputs" style="display: flex;">

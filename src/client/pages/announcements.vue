@@ -3,7 +3,7 @@
 	<portal to="header"><Fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
 
 	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
-		<section class="_card announcement" v-for="(announcement, i) in items" :key="announcement.id">
+		<section class="_section announcement" v-for="(announcement, i) in items" :key="announcement.id">
 			<div class="_title"><span v-if="$store.getters.isSignedIn && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>

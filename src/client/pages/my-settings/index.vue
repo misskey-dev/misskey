@@ -6,7 +6,7 @@
 	<XPrivacySetting class="_vMargin"/>
 	<XReactionSetting class="_vMargin"/>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="$store.state.i.autoWatch" @update:value="onChangeAutoWatch">

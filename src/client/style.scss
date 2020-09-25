@@ -326,6 +326,28 @@ hr {
 	}
 }
 
+._section {
+	padding: 32px;
+	border-bottom: solid 1px var(--divider);
+
+	> ._title, > ._content {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	> ._title {
+		margin-bottom: 24px;
+		font-size: 1.25em;
+		font-weight: bold;
+	}
+
+	> ._content + ._content {
+		border-top: solid 1px var(--divider);
+		margin-top: 16px;
+		padding-top: 16px;
+	}
+}
+
 ._card {
 	@extend ._panel;
 

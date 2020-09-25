@@ -4,13 +4,13 @@
 
 	<router-link v-if="$store.getters.isSignedIn" class="_panel _buttonPrimary" to="/my/settings" style="margin-bottom: var(--margin);">{{ $t('accountSettings') }}</router-link>
 
-	<XTheme class="_vMargin"/>
+	<XTheme/>
 
-	<XSidebar class="_vMargin"/>
+	<XSidebar/>
 
-	<XPlugins class="_vMargin"/>
+	<XPlugins/>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
 			<MkRange v-model:value="sfxVolume" :min="0" :max="1" :step="0.1">
@@ -57,7 +57,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
@@ -71,7 +71,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('appearance') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</MkSwitch>
@@ -91,7 +91,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<div>{{ $t('whenServerDisconnected') }}</div>

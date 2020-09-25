@@ -2,7 +2,7 @@
 <div class="t9makv94">
 	<portal to="header"><Fa :icon="faPalette"/>{{ $t('themeEditor') }}</portal>
 
-	<section class="_card">
+	<section class="_section">
 		<div class="_content">
 			<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
 			<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
@@ -290,7 +290,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .t9makv94 {
-	> ._card {
+	> ._section {
 		> ._content {
 			> .list-view {
 				height: 480px;

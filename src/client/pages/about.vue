@@ -2,7 +2,7 @@
 <div class="mmnnbwxb">
 	<portal to="header"><Fa :icon="faInfoCircle"/>{{ $t('about') }}</portal>
 
-	<section class="_card info" v-if="meta">
+	<section class="_section info" v-if="meta">
 		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content" v-if="meta.description">
 			<div v-html="meta.description"></div>

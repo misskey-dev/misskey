@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="header"><Fa :icon="faFileAlt"/>{{ title }}</portal>
-	<main class="_card">
+	<main class="_section">
 		<div class="_title"><Fa :icon="faFileAlt"/> {{ title }}</div>
 		<div class="_content">
 			<div v-html="body" class="qyqbqfal"></div>

@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faCommentSlash"/> {{ $t('wordMute') }}</div>
 	<div class="_content _noPad">
 		<MkTab v-model:value="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]"/>

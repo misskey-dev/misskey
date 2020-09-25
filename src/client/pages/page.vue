@@ -2,7 +2,7 @@
 <div class="xcukqgmh">
 	<portal to="header" v-if="page"><MkAvatar class="avatar" :user="page.user" :disable-preview="true"/>{{ page.title || page.name }}</portal>
 
-	<div class="_card" v-if="page" :key="page.id">
+	<div class="_section" v-if="page" :key="page.id">
 		<div class="_title">{{ page.title }}</div>
 		<div class="banner">
 			<img :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId"/>
@@ -118,7 +118,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xcukqgmh {
-	> ._card {
+	> ._section {
 		> .banner {
 			> img {
 				display: block;

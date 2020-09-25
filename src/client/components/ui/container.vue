@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
+<div class="ukygtjoj _frame" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
@@ -139,8 +139,6 @@ export default defineComponent({
 		position: relative;
 		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 		z-index: 2;
-		background: var(--panelHeaderBg);
-		color: var(--panelHeaderFg);
 		line-height: 1.4em;
 
 		> .title {

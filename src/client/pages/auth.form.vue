@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title">{{ $t('_auth.shareAccess', { name: app.name }) }}</div>
 	<div class="_content">
 		<h2>{{ app.name }}</h2>

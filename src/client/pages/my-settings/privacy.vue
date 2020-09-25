@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faLock"/> {{ $t('privacy') }}</div>
 	<div class="_content">
 		<MkSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</MkSwitch>

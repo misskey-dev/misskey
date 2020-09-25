@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
 	<div class="_content">
 		<p v-if="!data && !$store.state.i.twoFactorEnabled"><MkButton @click="register">{{ $t('_2fa.registerDevice') }}</MkButton></p>

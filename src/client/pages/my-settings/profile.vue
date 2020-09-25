@@ -1,5 +1,5 @@
 <template>
-<section class="llvierxe _card">
+<section class="llvierxe _section">
 	<div class="_title"><Fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
 	<div class="_content">
 		<div class="header" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">

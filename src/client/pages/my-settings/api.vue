@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faKey"/> API</div>
 	<div class="_content">
 		<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>

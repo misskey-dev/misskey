@@ -3,7 +3,7 @@
 	<portal to="header"><Fa :icon="faUsers"/>{{ group.name }}</portal>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_card _vMargin">
+		<div v-if="group" class="_section">
 			<div class="_content">
 				<MkButton inline @click="renameGroup()">{{ $t('rename') }}</MkButton>
 				<MkButton inline @click="transfer()">{{ $t('transfer') }}</MkButton>
@@ -13,7 +13,7 @@
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_card members _vMargin">
+		<div v-if="group" class="_section members _vMargin">
 			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">

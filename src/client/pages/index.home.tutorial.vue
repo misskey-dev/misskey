@@ -1,5 +1,5 @@
 <template>
-<div class="_card tbkwesmv">
+<div class="_section tbkwesmv">
 	<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('_tutorial.title') }}</div>
 	<div class="_content" v-if="tutorial === 0">
 		<div>{{ $t('_tutorial.step1_1') }}</div>

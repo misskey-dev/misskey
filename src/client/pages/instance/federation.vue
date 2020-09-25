@@ -2,7 +2,7 @@
 <div class="mk-federation">
 	<portal to="header"><Fa :icon="faGlobe"/>{{ $t('federation') }}</portal>
 
-	<section class="_card instances">
+	<section class="_section instances">
 		<div class="_content">
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
 			<div class="inputs" style="display: flex;">

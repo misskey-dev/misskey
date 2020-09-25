@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faBoxes"/> {{ $t('importAndExport') }}</div>
 	<div class="_content">
 		<MkSelect v-model:value="exportTarget">

@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><Fa :icon="faListUl"/> {{ $t('sidebar') }}</div>
 	<div class="_content">
 		<MkTextarea v-model:value="items" tall>
