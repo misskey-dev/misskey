@@ -328,6 +328,11 @@ hr {
 
 	@media (max-width: 500px) {
 		padding: 16px;
+
+		> ._title {
+			font-size: 1.1em;
+			font-weight: bold;
+		}
 	}
 
 	> ._title, > ._content {

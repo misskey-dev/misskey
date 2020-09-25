@@ -1,5 +1,5 @@
 <template>
-<component :is="$store.getters.isSignedIn ? 'home' : 'welcome'" :show-title="showTitle"></component>
+<component :is="$store.getters.isSignedIn ? 'home' : 'welcome'" :show-title="showTitle" ref="page"></component>
 </template>
 
 <script lang="ts">
@@ -27,6 +27,18 @@ export default defineComponent({
 
 	deactivated() {
 		this.showTitle = false;
+	},
+
+	methods: {
+		getPageInfo() {
+			return new Promise((res) => {
+				this.$nextTick(() => {
+					if (this.$refs.page) {
+						res(this.$refs.page.getPageInfo());
+					}
+				});
+			});
+		}
 	}
 });
 </script>

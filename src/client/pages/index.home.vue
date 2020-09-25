@@ -1,20 +1,5 @@
 <template>
 <div class="mk-home" v-hotkey.global="keymap">
-	<portal to="header" v-if="showTitle">
-		<button @click="choose" class="_button _kjvfvyph_">
-			<i><Fa v-if="$store.state.i.hasUnreadAntenna || $store.state.i.hasUnreadChannel" :icon="faCircle"/></i>
-			<Fa v-if="src === 'home'" :icon="faHome"/>
-			<Fa v-if="src === 'local'" :icon="faComments"/>
-			<Fa v-if="src === 'social'" :icon="faShareAlt"/>
-			<Fa v-if="src === 'global'" :icon="faGlobe"/>
-			<Fa v-if="src === 'list'" :icon="faListUl"/>
-			<Fa v-if="src === 'antenna'" :icon="faSatellite"/>
-			<Fa v-if="src === 'channel'" :icon="faSatelliteDish"/>
-			<span style="margin-left: 8px;">{{ src === 'list' ? list.name : src === 'antenna' ? antenna.name : src === 'channel' ? channel.name : $t('_timelines.' + src) }}</span>
-			<Fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
-		</button>
-	</portal>
-
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 
 	<XTutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
@@ -30,8 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { defineComponent, defineAsyncComponent, computed } from 'vue';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '@/scripts/loading';
 import XTimeline from '@/components/timeline.vue';
@@ -68,6 +53,38 @@ export default defineComponent({
 			menuOpened: false,
 			queue: 0,
 			width: 0,
+			info: {
+				header: [{
+					id: 'home',
+					title: this.$t('_timelines.home'),
+					icon: faHome,
+					onClick: () => { this.src = 'home'; this.saveSrc(); },
+					selected: computed(() => this.src === 'home')
+				}, {
+					id: 'local',
+					title: this.$t('_timelines.local'),
+					icon: faComments,
+					onClick: () => { this.src = 'local'; this.saveSrc(); },
+					selected: computed(() => this.src === 'local')
+				}, {
+					id: 'social',
+					title: this.$t('_timelines.social'),
+					icon: faShareAlt,
+					onClick: () => { this.src = 'social'; this.saveSrc(); },
+					selected: computed(() => this.src === 'social')
+				}, {
+					id: 'global',
+					title: this.$t('_timelines.global'),
+					icon: faGlobe,
+					onClick: () => { this.src = 'global'; this.saveSrc(); },
+					selected: computed(() => this.src === 'global')
+				}, {
+					id: 'other',
+					title: null,
+					icon: faEllipsisH,
+					indicate: this.$store.state.i.hasUnreadAntenna || this.$store.state.i.hasUnreadChannel
+				}],
+			},
 			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle
 		};
 	},
@@ -121,6 +138,10 @@ export default defineComponent({
 	},
 
 	methods: {
+		getPageInfo() {
+			return this.info;
+		},
+
 		before() {
 			Progress.start();
 		},

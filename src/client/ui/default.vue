@@ -4,21 +4,22 @@
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
-			<div class="title" ref="title">
-				<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-					<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
-				</transition>
-				<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-					<portal-target class="body" :key="pageKey" name="header"></portal-target>
-				</transition>
-			</div>
+			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
+				<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
+			</transition>
+			<template v-if="pageInfo">
+				<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ clickable: header.onClick, selected: header.selected }" @click="header.onClick">
+					<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
+					<span>{{ header.title }}</span>
+				</div>
+			</template>
 		</header>
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['index']">
-							<component :is="Component" />
+							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
 					</transition>
 				</router-view>
@@ -82,7 +83,6 @@ import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { widgets } from '@/widgets';
 import XSidebar from '@/components/sidebar.vue';
-import { Autocomplete } from '@/scripts/autocomplete';
 import * as os from '@/os';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -99,6 +99,7 @@ export default defineComponent({
 		return {
 			host: host,
 			pageKey: 0,
+			pageInfo: null,
 			searching: false,
 			connection: null,
 			searchQuery: '',
@@ -230,6 +231,12 @@ export default defineComponent({
 	},
 
 	methods: {
+		async changePage(page) {
+			if (page && page.getPageInfo) {
+				this.pageInfo = await page.getPageInfo();
+			}
+		},
+
 		calcHeaderWidth() {
 			const width = this.$refs.contents.offsetWidth;
 			this.$refs.header.style.width = `${width}px`;
@@ -392,64 +399,46 @@ export default defineComponent({
 			top: 0;
 			height: $header-height;
 			width: 100%;
+			line-height: $header-height;
+			text-align: center;
 			//background-color: var(--panel);
 			-webkit-backdrop-filter: blur(32px);
 			backdrop-filter: blur(32px);
 			background-color: var(--header);
 			border-bottom: solid 1px var(--divider);
 
-			> .title {
-				position: relative;
-				line-height: $header-height;
+			> .back {
+				position: absolute;
+				z-index: 1;
+				top: 0;
+				left: 0;
 				height: $header-height;
-				text-align: center;
+				width: $header-height;
+			}
 
-				> .back {
-					position: absolute;
-					z-index: 1;
-					top: 0;
-					left: 0;
-					height: $header-height;
-					width: $header-height;
+			> .title {
+				display: inline-block;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				height: $header-height;
+				padding: 0 16px;
+
+				> .icon {
+					margin-right: 8px;
 				}
 
-				> .body {
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					height: $header-height;
+				&.clickable {
+					cursor: pointer;
 
-					> .default {
-						padding: 0 $header-height;
-
-						> .avatar {
-							$size: 32px;
-							display: inline-block;
-							width: $size;
-							height: $size;
-							vertical-align: bottom;
-							margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
-						}
-
-						> .title {
-							display: inline-block;
-							font-size: $ui-font-size;
-							margin: 0;
-							line-height: $header-height;
-
-							> [data-icon] {
-								margin-right: 8px;
-							}
-						}
+					&:hover {
+						color: var(--fgHighlighted);
 					}
+				}
 
-					> .custom {
-						position: absolute;
-						top: 0;
-						left: 0;
-						height: 100%;
-						width: 100%;
-					}
+				&.selected {
+					box-shadow: 0 -2px 0 0 var(--accent) inset;
+					color: var(--fgHighlighted);
 				}
 			}
 		}
