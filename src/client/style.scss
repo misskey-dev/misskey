@@ -301,35 +301,30 @@ hr {
 	margin: 0 !important;
 }
 
-.__panelButton {
+.__frameButton {
 	display: flex;
 	width: 100%;
 	min-height: 48px;
 	align-items: center;
 	justify-content: center;
+	background: transparent;
 }
 
-._panel._button {
-	@extend .__panelButton;
+._frame._button {
+	@extend .__frameButton;
 }
 
-._panel._buttonPrimary {
-	@extend .__panelButton;
+._frame._buttonPrimary {
+	@extend .__frameButton;
 	color: var(--accent);
-	background: var(--panel);
-
-	&:not(:disabled):hover {
-		background: var(--panel);
-	}
-
-	&:not(:disabled):active {
-		background: var(--panel);
-	}
 }
 
 ._section {
 	padding: 32px;
-	border-bottom: solid 1px var(--divider);
+
+	& + ._section {
+		border-top: solid 1px var(--divider);
+	}
 
 	@media (max-width: 500px) {
 		padding: 16px;

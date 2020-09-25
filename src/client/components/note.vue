@@ -86,7 +86,7 @@
 	</article>
 	<XSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
-<div v-else class="_panel muted" @click="muted = false">
+<div v-else class="_frame muted" @click="muted = false">
 	<i18n-t keypath="userSaysSomething" tag="small">
 		<router-link class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId" place="name">
 			<MkUserName :user="appearNote.user"/>

@@ -9,16 +9,24 @@
 	</portal>
 
 	<div v-if="note">
-		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faChevronUp"/></button>
-		<XNotes v-if="showNext" ref="next" :pagination="next"/>
-		<hr v-if="showNext"/>
+		<button class="_frame _button" v-if="hasNext && !showNext" @click="showNext = true"><Fa :icon="faChevronUp"/></button>
 
-		<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
-		<XNote v-model:note="note" :key="note.id" :detail="true"/>
+		<div class="_section" v-if="showNext">
+			<XNotes class="_content" ref="next" :pagination="next"/>
+		</div>
 
-		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><Fa :icon="faChevronDown"/></button>
-		<hr v-if="showPrev"/>
-		<XNotes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
+		<div class="_section">
+			<div class="_content">
+				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
+				<XNote v-model:note="note" :key="note.id" :detail="true"/>
+			</div>
+		</div>
+
+		<div class="_section" v-if="showPrev">
+			<XNotes class="_content" ref="prev" :pagination="prev"/>
+		</div>
+
+		<button class="_frame _button" v-if="hasPrev && !showPrev" @click="showPrev = true"><Fa :icon="faChevronDown"/></button>
 	</div>
 
 	<div v-if="error">

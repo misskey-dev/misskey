@@ -1,5 +1,5 @@
 <template>
-<div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
+<div class="fgmtyycl _shadow" :style="{ top: top + 'px', left: left + 'px' }">
 	<transition name="zoom" @after-leave="$emit('closed')">
 		<MkUrlPreview :url="url" v-if="showing"/>
 	</transition>
@@ -57,5 +57,7 @@ export default defineComponent({
 	max-width: calc(90vw - 12px);
 	overflow: hidden;
 	pointer-events: none;
+	background: var(--bg);
+	border-radius: var(--radius);
 }
 </style>

@@ -3,8 +3,10 @@
 	<portal to="header" v-if="user"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
 
 	<MkRemoteCaution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
-	<div class="punished _panel" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div>
-	<div class="punished _panel" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div>
+
+	<!-- TODO -->
+	<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
+	<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
 
 	<div class="profile _section _fitBottom">
 		<div class="_content" :key="user.id">
@@ -246,7 +248,6 @@ export default defineComponent({
 	> .profile {
 		> ._content {
 			position: relative;
-			margin-bottom: var(--margin);
 			overflow: hidden;
 
 			> .banner-container {

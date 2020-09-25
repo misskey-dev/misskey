@@ -642,7 +642,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .gafaadew {
 	position: relative;
-	background: var(--panel);
 
 	&.modal {
 		width: 100%;

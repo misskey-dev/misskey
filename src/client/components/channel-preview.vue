@@ -1,5 +1,5 @@
 <template>
-<router-link :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
+<router-link :to="`/channels/${channel.id}`" class="eftoefju _frame" tabindex="-1">
 	<div class="banner" v-if="channel.bannerUrl" :style="`background-image: url('${channel.bannerUrl}')`">
 		<div class="fade"></div>
 		<div class="name"><Fa :icon="faSatelliteDish"/> {{ channel.name }}</div>
@@ -45,7 +45,6 @@ export default defineComponent({
 	display: block;
 	overflow: hidden;
 	width: 100%;
-	border: 1px solid var(--divider);
 
 	&:hover {
 		text-decoration: none;

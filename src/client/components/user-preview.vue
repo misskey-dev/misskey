@@ -1,6 +1,6 @@
 <template>
 <transition name="popup" appear @after-leave="$emit('closed')">
-	<div v-if="show && showing" class="fxxzrfni _panel _shadow" ref="content" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
+	<div v-if="show && showing" class="fxxzrfni _shadow" ref="content" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div class="banner" :style="u.bannerUrl ? `background-image: url(${u.bannerUrl})` : ''"></div>
 		<MkAvatar class="avatar" :user="u" :disable-preview="true"/>
 		<div class="title">
@@ -109,6 +109,8 @@ export default defineComponent({
 }
 
 .fxxzrfni {
+	background: var(--bg);
+	border-radius: var(--radius);
 	position: absolute;
 	z-index: 11000;
 	width: 300px;

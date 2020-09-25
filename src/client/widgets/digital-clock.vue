@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-digitalClock" :class="{ _panel: !props.transparent }" :style="{ fontSize: `${props.fontSize}em` }">
+<div class="mkw-digitalClock" :class="{ _frame: !props.transparent }" :style="{ fontSize: `${props.fontSize}em` }">
 	<span>
 		<span v-text="hh"></span>
 		<span :style="{ visibility: showColon ? 'visible' : 'hidden' }">:</span>

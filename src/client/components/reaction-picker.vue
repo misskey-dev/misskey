@@ -122,8 +122,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rdfaahpb {
-	background: var(--panel);
-	border-radius: 8px;
+	background: var(--bg);
+	border-radius: var(--radius);
 	box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 
 	> .buttons {
