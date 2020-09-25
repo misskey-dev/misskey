@@ -118,11 +118,6 @@ import { userPage } from '../filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
-	model: {
-		prop: 'note',
-		event: 'updated'
-	},
-
 	components: {
 		XSub,
 		XNoteHeader,
@@ -156,6 +151,8 @@ export default defineComponent({
 			default: false
 		},
 	},
+
+	emits: ['update:note'],
 
 	data() {
 		return {
@@ -260,7 +257,7 @@ export default defineComponent({
 			for (const interruptor of this.$store.state.noteViewInterruptors) {
 				result = utils.valToJs(await interruptor.handler(JSON.parse(JSON.stringify(result))));
 			}
-			this.$emit('updated', Object.freeze(result));
+			this.$emit('update:note', Object.freeze(result));
 		}
 
 		this.muted = await checkWordMute(this.appearNote, this.$store.state.i, this.$store.state.settings.mutedWords);
@@ -303,7 +300,7 @@ export default defineComponent({
 
 	methods: {
 		updateAppearNote(v) {
-			this.$emit('updated', Object.freeze(this.isRenote ? {
+			this.$emit('update:note', Object.freeze(this.isRenote ? {
 				...this.note,
 				renote: {
 					...this.note.renote,

@@ -147,6 +147,8 @@ widgets(app);
 directives(app);
 components(app);
 
+await router.isReady();
+
 document.body.innerHTML = '<div id="app"></div>';
 
 app.mount('#app');

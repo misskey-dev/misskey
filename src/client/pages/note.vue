@@ -14,7 +14,7 @@
 		<hr v-if="showNext"/>
 
 		<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
-		<XNote v-model:value="note" :key="note.id" :detail="true"/>
+		<XNote v-model:note="note" :key="note.id" :detail="true"/>
 
 		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><Fa :icon="faChevronDown"/></button>
 		<hr v-if="showPrev"/>
