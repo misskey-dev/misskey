@@ -1,23 +1,23 @@
 <template>
 <section class="_section">
 	<div class="_title"><Fa :icon="faCommentSlash"/> {{ $t('wordMute') }}</div>
-	<div class="_content _noPad">
-		<MkTab v-model:value="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]"/>
-	</div>
-	<div class="_content" v-show="tab === 'soft'">
-		<MkInfo>{{ $t('_wordMute.softDescription') }}</MkInfo>
-		<MkTextarea v-model:value="softMutedWords">
-			<span>{{ $t('_wordMute.muteWords') }}</span>
-			<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
-		</MkTextarea>
-	</div>
-	<div class="_content" v-show="tab === 'hard'">
-		<MkInfo>{{ $t('_wordMute.hardDescription') }}</MkInfo>
-		<MkTextarea v-model:value="hardMutedWords" style="margin-bottom: 16px;">
-			<span>{{ $t('_wordMute.muteWords') }}</span>
-			<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
-		</MkTextarea>
-		<div v-if="hardWordMutedNotesCount != null" class="_caption">{{ $t('_wordMute.mutedNotes') }}: {{ hardWordMutedNotesCount | number }}</div>
+	<div class="_content">
+		<MkTab v-model:value="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]" style="margin-bottom: var(--margin);"/>
+		<div v-show="tab === 'soft'">
+			<MkInfo>{{ $t('_wordMute.softDescription') }}</MkInfo>
+			<MkTextarea v-model:value="softMutedWords">
+				<span>{{ $t('_wordMute.muteWords') }}</span>
+				<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
+			</MkTextarea>
+		</div>
+		<div v-show="tab === 'hard'">
+			<MkInfo>{{ $t('_wordMute.hardDescription') }}</MkInfo>
+			<MkTextarea v-model:value="hardMutedWords" style="margin-bottom: 16px;">
+				<span>{{ $t('_wordMute.muteWords') }}</span>
+				<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
+			</MkTextarea>
+			<div v-if="hardWordMutedNotesCount != null" class="_caption">{{ $t('_wordMute.mutedNotes') }}: {{ hardWordMutedNotesCount | number }}</div>
+		</div>
 	</div>
 	<div class="_footer">
 		<MkButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
