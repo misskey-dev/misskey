@@ -583,6 +583,7 @@ export default defineComponent({
 			}).catch(err => {
 			}).then(() => {
 				this.posting = false;
+				this.$emit('done');
 			});
 
 			if (this.text && this.text != '') {
