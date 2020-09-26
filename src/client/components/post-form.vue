@@ -639,6 +639,7 @@ export default defineComponent({
 		width: 100%;
 		max-width: 500px;
 		border-radius: var(--radius);
+		background: var(--bg);
 	}
 
 	> header {
