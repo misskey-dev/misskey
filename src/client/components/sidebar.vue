@@ -22,7 +22,7 @@
 				</router-link>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" @click="() => { if (menuDef[item].action) menuDef[item].action() }" :to="menuDef[item].to">
+					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
 						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
 						<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
 					</component>
