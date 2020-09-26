@@ -22,6 +22,8 @@
 	@closed="popup.closed"
 />
 
+<XUpload v-if="uploads.length > 0"/>
+
 <div id="wait" v-if="$store.state.pendingApiRequestsCount > 0"></div>
 </template>
 
@@ -30,12 +32,14 @@ import { defineAsyncComponent, defineComponent } from 'vue';
 import DefaultUI from '@/ui/default.vue';
 import DeckUI from '@/ui/deck.vue';
 import { instanceName, deckmode } from '@/config';
+import { uploads } from '@/os';
 
 export default defineComponent({
 	components: {
 		DefaultUI,
 		DeckUI,
-		XModal: defineAsyncComponent(() => import('@/components/modal.vue'))
+		XModal: defineAsyncComponent(() => import('@/components/modal.vue')),
+		XUpload: defineAsyncComponent(() => import('@/components/upload.vue')),
 	},
 
 	metaInfo: {
@@ -45,7 +49,8 @@ export default defineComponent({
 
 	data() {
 		return {
-			deckmode
+			deckmode,
+			uploads,
 		};
 	},
 });

@@ -37,7 +37,6 @@
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateMedia" @detach="detachMedia"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
-		<XUploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><Fa :icon="faPhotoVideo"/></button>
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$t('poll')"><Fa :icon="faPollH"/></button>
@@ -73,7 +72,6 @@ import * as os from '@/os';
 export default defineComponent({
 	components: {
 		XNotePreview,
-		XUploader: defineAsyncComponent(() => import('./uploader.vue')),
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
 		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
 	},
@@ -383,13 +381,9 @@ export default defineComponent({
 		chooseFileFromDrive() {
 			os.selectDriveFile(true).then(files => {
 				for (const file of files) {
-					this.attachMedia(file);
+					this.files.push(file);
 				}
 			});
-		},
-
-		attachMedia(driveFile) {
-			this.files.push(driveFile);
 		},
 
 		detachMedia(id) {
@@ -405,11 +399,9 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
-		},
-
-		onChangeUploadings(uploads) {
-			this.$emit('change-uploadings', uploads);
+			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+				this.files.push(res);
+			});
 		},
 
 		onPollUpdate(poll) {
@@ -828,11 +820,6 @@ export default defineComponent({
 			&.withCw {
 				padding-top: 8px;
 			}
-		}
-
-		> .mk-uploader {
-			margin: 8px 0 0 0;
-			padding: 8px;
 		}
 
 		> .file {

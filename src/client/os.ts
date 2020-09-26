@@ -1,4 +1,4 @@
-import { Component, defineAsyncComponent, markRaw, ref } from 'vue';
+import { Component, defineAsyncComponent, markRaw, reactive, ref } from 'vue';
 import * as PCancelable from 'p-cancelable';
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
@@ -228,3 +228,68 @@ export function sound(type: string) {
 }
 
 export const deckGlobalEvents = new EventEmitter();
+
+export const uploads = ref([]);
+
+export function upload(file: File, folder: any, name?: string) {
+	if (folder && typeof folder == 'object') folder = folder.id;
+
+	return new Promise((resolve, reject) => {
+		const id = Math.random();
+
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			const ctx = reactive({
+				id: id,
+				name: name || file.name || 'untitled',
+				progressMax: undefined,
+				progressValue: undefined,
+				img: window.URL.createObjectURL(file)
+			});
+
+			uploads.value.push(ctx);
+
+			const data = new FormData();
+			data.append('i', store.state.i.token);
+			data.append('force', 'true');
+			data.append('file', file);
+
+			if (folder) data.append('folderId', folder);
+			if (name) data.append('name', name);
+
+			const xhr = new XMLHttpRequest();
+			xhr.open('POST', apiUrl + '/drive/files/create', true);
+			xhr.onload = (e: any) => {
+				const driveFile = JSON.parse(e.target.response);
+
+				resolve(driveFile);
+
+				uploads.value = uploads.value.filter(x => x.id != id);
+			};
+
+			xhr.upload.onprogress = e => {
+				if (e.lengthComputable) {
+					ctx.progressMax = e.total;
+					ctx.progressValue = e.loaded;
+				}
+			};
+	
+			xhr.send(data);
+		};
+		reader.readAsArrayBuffer(file);
+	});
+}
+
+/*
+export function checkExistence(fileData: ArrayBuffer): Promise<any> {
+	return new Promise((resolve, reject) => {
+		const data = new FormData();
+		data.append('md5', getMD5(fileData));
+
+		os.api('drive/files/find-by-hash', {
+			md5: getMD5(fileData)
+		}).then(resp => {
+			resolve(resp.length > 0 ? resp[0] : null);
+		});
+	});
+}*/
