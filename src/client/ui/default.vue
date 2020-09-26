@@ -234,7 +234,10 @@ export default defineComponent({
 
 	methods: {
 		async changePage(page) {
-			if (page && page.getPageInfo) {
+			if (page == null) return;
+			if (page.info) {
+				this.pageInfo = page.info;
+			} else if (page.getPageInfo) {
 				this.pageInfo = await page.getPageInfo();
 			}
 		},

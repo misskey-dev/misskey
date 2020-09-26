@@ -3,7 +3,6 @@
  */
 
 import { createApp } from 'vue';
-import VueMeta from 'vue-meta';
 import VAnimateCss from 'v-animate-css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
