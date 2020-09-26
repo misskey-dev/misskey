@@ -8,9 +8,11 @@
 				<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
 			</transition>
 			<template v-if="pageInfo">
-				<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ clickable: header.onClick, selected: header.selected }" @click="header.onClick">
-					<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
-					<span>{{ header.title }}</span>
+				<div class="titleContainer">
+					<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ clickable: header.onClick, selected: header.selected }" @click="header.onClick">
+						<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
+						<span>{{ header.title }}</span>
+					</div>
 				</div>
 				<button class="_button action" v-if="pageInfo.action" @click="pageInfo.action.handler()"><Fa :icon="pageInfo.action.icon"/></button>
 			</template>
@@ -430,29 +432,37 @@ export default defineComponent({
 				width: $header-height;
 			}
 
-			> .title {
-				display: inline-block;
+			> .titleContainer {
+				width: calc(100% - (#{$header-height} * 2));
+				margin: 0 auto;
+				overflow: auto;
 				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				height: $header-height;
-				padding: 0 16px;
 
-				> .icon {
-					margin-right: 8px;
-				}
+				> .title {
+					display: inline-block;
+					vertical-align: bottom;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					height: $header-height;
+					padding: 0 16px;
 
-				&.clickable {
-					cursor: pointer;
+					> .icon {
+						margin-right: 8px;
+					}
 
-					&:hover {
+					&.clickable {
+						cursor: pointer;
+
+						&:hover {
+							color: var(--fgHighlighted);
+						}
+					}
+
+					&.selected {
+						box-shadow: 0 -2px 0 0 var(--accent) inset;
 						color: var(--fgHighlighted);
 					}
-				}
-
-				&.selected {
-					box-shadow: 0 -2px 0 0 var(--accent) inset;
-					color: var(--fgHighlighted);
 				}
 			}
 		}
