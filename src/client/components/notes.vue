@@ -14,9 +14,10 @@
 		</button>
 	</div>
 
-	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<XNote :note="note" @update:note="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
-	</XList>
+	<!-- 使うとcreatedが何度も呼ばれるなど、挙動がおかしくなる(Vueのバグ？) -->
+	<!-- <XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed"> -->
+		<XNote v-for="note in notes" :note="note" @update:note="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
+	<!-- </XList> -->
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
 		<button class="_frame _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
