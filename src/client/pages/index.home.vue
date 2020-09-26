@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
 import Progress from '@/scripts/loading';
 import XTimeline from '@/components/timeline.vue';
@@ -82,8 +82,13 @@ export default defineComponent({
 					id: 'other',
 					title: null,
 					icon: faEllipsisH,
-					indicate: this.$store.state.i.hasUnreadAntenna || this.$store.state.i.hasUnreadChannel
+					onClick: this.choose,
+					indicate: computed(() => this.$store.state.i.hasUnreadAntenna || this.$store.state.i.hasUnreadChannel)
 				}],
+				action: {
+					icon: faPencilAlt,
+					handler: () => os.post()
+				}
 			},
 			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle
 		};
@@ -161,7 +166,6 @@ export default defineComponent({
 
 		async choose(ev) {
 			if (this.meta == null) return;
-			this.menuOpened = true;
 			const [antennas, lists, channels] = await Promise.all([
 				os.api('antennas/list'),
 				os.api('users/lists/list'),
@@ -199,29 +203,11 @@ export default defineComponent({
 				}
 			}));
 			os.menu({
-				items: [{
-					text: this.$t('_timelines.home'),
-					icon: faHome,
-					action: () => { this.src = 'home'; this.saveSrc(); }
-				}, this.meta.disableLocalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
-					text: this.$t('_timelines.local'),
-					icon: faComments,
-					action: () => { this.src = 'local'; this.saveSrc(); }
-				}, this.meta.disableLocalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
-					text: this.$t('_timelines.social'),
-					icon: faShareAlt,
-					action: () => { this.src = 'social'; this.saveSrc(); }
-				}, this.meta.disableGlobalTimeline && !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin ? undefined : {
-					text: this.$t('_timelines.global'),
-					icon: faGlobe,
-					action: () => { this.src = 'global'; this.saveSrc(); }
-				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems],
+				items: [...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems],
 				fixed: true,
 				noCenter: true,
 			}, {
 				source: ev.currentTarget || ev.target,
-			}).then(() => {
-				this.menuOpened = false;
 			});
 		},
 

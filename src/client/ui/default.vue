@@ -12,6 +12,7 @@
 					<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
 					<span>{{ header.title }}</span>
 				</div>
+				<button class="_button action" v-if="pageInfo.action" @click="pageInfo.action.handler()"><Fa :icon="pageInfo.action.icon"/></button>
 			</template>
 		</header>
 		<main ref="main">
@@ -412,6 +413,15 @@ export default defineComponent({
 				z-index: 1;
 				top: 0;
 				left: 0;
+				height: $header-height;
+				width: $header-height;
+			}
+
+			> .action {
+				position: absolute;
+				z-index: 1;
+				top: 0;
+				right: 0;
 				height: $header-height;
 				width: $header-height;
 			}
