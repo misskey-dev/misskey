@@ -4,8 +4,8 @@
 
 	<XTutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
-	<div class="_section">
-		<XPostForm class="post-form _content _frame" fixed v-if="$store.state.device.showFixedPostForm"/>
+	<div class="_section" v-if="$store.state.device.showFixedPostForm">
+		<XPostForm class="post-form _content _frame" fixed/>
 	</div>
 
 	<div class="_section">
