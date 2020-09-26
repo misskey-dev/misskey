@@ -1,5 +1,5 @@
 <template>
-<div class="gafaadew" :class="{ modal }"
+<div class="gafaadew" :class="{ modal, _popup: modal }"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -638,8 +638,6 @@ export default defineComponent({
 	&.modal {
 		width: 100%;
 		max-width: 500px;
-		border-radius: var(--radius);
-		background: var(--bg);
 	}
 
 	> header {

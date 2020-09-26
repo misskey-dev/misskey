@@ -57,7 +57,5 @@ export default defineComponent({
 	max-width: calc(90vw - 12px);
 	overflow: hidden;
 	pointer-events: none;
-	background: var(--bg);
-	border-radius: var(--radius);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div class="omfetrab">
+<div class="omfetrab _popup">
 	<header>
 		<button v-for="(category, i) in categories"
 			class="_button"
@@ -160,8 +160,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .omfetrab {
-	background: var(--bg);
-	border-radius: var(--radius);
 	width: 350px;
 
 	> header {

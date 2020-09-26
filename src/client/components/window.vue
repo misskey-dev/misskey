@@ -1,5 +1,5 @@
 <template>
-<div class="ebkgoccj" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: `${height}px` }">
+<div class="ebkgoccj _popup" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: `${height}px` }">
 	<div class="header">
 		<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
 		<span class="title">
@@ -84,8 +84,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ebkgoccj {
-	background: var(--bg);
-	border-radius: var(--radius);
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;

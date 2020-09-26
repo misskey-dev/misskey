@@ -1,5 +1,5 @@
 <template>
-<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
+<div class="rrevdjwt _popup" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
 	<template v-for="(item, i) in items.filter(item => item !== undefined)">
 		<div v-if="item === null" class="divider" :key="i"></div>
 		<span v-else-if="item.type === 'label'" class="label item" :key="i">
@@ -104,9 +104,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
-	background: var(--bg);
-	border-radius: 8px;
-	box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
 
 	&.left {
 		> .item {

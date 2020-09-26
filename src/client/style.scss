@@ -319,6 +319,11 @@ hr {
 	color: var(--accent);
 }
 
+._popup {
+	background: var(--bg);
+	border-radius: var(--radius);
+}
+
 ._section {
 	padding: 32px;
 
