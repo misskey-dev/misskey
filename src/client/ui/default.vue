@@ -9,9 +9,9 @@
 			</transition>
 			<template v-if="pageInfo">
 				<div class="titleContainer">
-					<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ clickable: header.onClick, selected: header.selected }" @click="header.onClick">
+					<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ clickable: header.onClick, selected: header.selected }" @click="header.onClick" v-tooltip="header.tooltip">
 						<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
-						<span>{{ header.title }}</span>
+						<span v-if="header.title">{{ header.title }}</span>
 					</div>
 				</div>
 				<button class="_button action" v-if="pageInfo.action" @click="pageInfo.action.handler()"><Fa :icon="pageInfo.action.icon"/></button>
@@ -447,8 +447,8 @@ export default defineComponent({
 					height: $header-height;
 					padding: 0 16px;
 
-					> .icon {
-						margin-right: 8px;
+					> .icon + span {
+						margin-left: 8px;
 					}
 
 					&.clickable {

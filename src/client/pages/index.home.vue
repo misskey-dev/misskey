@@ -56,25 +56,29 @@ export default defineComponent({
 			info: {
 				header: [{
 					id: 'home',
-					title: this.$t('_timelines.home'),
+					title: null,
+					tooltip: this.$t('_timelines.home'),
 					icon: faHome,
 					onClick: () => { this.src = 'home'; this.saveSrc(); },
 					selected: computed(() => this.src === 'home')
 				}, {
 					id: 'local',
-					title: this.$t('_timelines.local'),
+					title: null,
+					tooltip: this.$t('_timelines.local'),
 					icon: faComments,
 					onClick: () => { this.src = 'local'; this.saveSrc(); },
 					selected: computed(() => this.src === 'local')
 				}, {
 					id: 'social',
-					title: this.$t('_timelines.social'),
+					title: null,
+					tooltip: this.$t('_timelines.social'),
 					icon: faShareAlt,
 					onClick: () => { this.src = 'social'; this.saveSrc(); },
 					selected: computed(() => this.src === 'social')
 				}, {
 					id: 'global',
-					title: this.$t('_timelines.global'),
+					title: null,
+					tooltip: this.$t('_timelines.global'),
 					icon: faGlobe,
 					onClick: () => { this.src = 'global'; this.saveSrc(); },
 					selected: computed(() => this.src === 'global')

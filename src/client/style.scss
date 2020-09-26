@@ -387,6 +387,12 @@ hr {
 	border-radius: var(--radius);
 }
 
+._acrylic {
+	background: var(--acrylicPanel);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+
 ._vMargin {
 	& + ._vMargin {
 		margin-top: var(--margin);

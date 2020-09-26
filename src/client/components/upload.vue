@@ -1,5 +1,5 @@
 <template>
-<div class="mk-uploader">
+<div class="mk-uploader _acrylic">
 	<ol v-if="uploads.length > 0">
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
@@ -41,12 +41,8 @@ export default defineComponent({
 	top: 32px;
 	padding: 16px 20px;
 	pointer-events: none;
-	-webkit-backdrop-filter: blur(12px);
-	backdrop-filter: blur(12px);
-	background-color: var(--toastBg);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 	border-radius: 8px;
-	color: var(--toastFg);
 }
 .mk-uploader:empty {
   display: none;

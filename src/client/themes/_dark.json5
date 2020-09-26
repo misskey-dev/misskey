@@ -47,8 +47,6 @@
 		cwBg: '#687390',
 		cwFg: '#393f4f',
 		cwHoverBg: '#707b97',
-		toastBg: 'rgba(0, 0, 0, 0.5)',
-		toastFg: '#c7d1d8',
 		buttonBg: 'rgba(255, 255, 255, 0.05)',
 		buttonHoverBg: 'rgba(255, 255, 255, 0.1)',
 		inputBorder: '#959da2',
