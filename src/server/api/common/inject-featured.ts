@@ -2,7 +2,7 @@ import rndstr from 'rndstr';
 import { Note } from '../../../models/entities/note';
 import { User } from '../../../models/entities/user';
 import { Notes, UserProfiles, NoteReactions } from '../../../models';
-import { generateMuteQuery } from './generate-mute-query';
+import { generateMutedUserQuery } from './generate-muted-user-query';
 import { ensure } from '../../../prelude/ensure';
 
 // TODO: リアクション、Renote、返信などをしたノートは除外する
@@ -29,7 +29,7 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 	if (user) {
 		query.andWhere('note.userId != :userId', { userId: user.id });
 
-		generateMuteQuery(query, user);
+		generateMutedUserQuery(query, user);
 
 		const reactionQuery = NoteReactions.createQueryBuilder('reaction')
 			.select('reaction.noteId')

@@ -1,34 +1,38 @@
 <template>
-<div class="mkw-notifications" :style="`flex-basis: calc(${basis}% - var(--margin)); height: ${previewHeight}px;`">
-	<mk-container :show-header="!props.compact" class="container">
-		<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
+<mk-container :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
+	<template #header><fa :icon="faBell"/>{{ $t('notifications') }}</template>
+	<template #func><button @click="configure()" class="_button"><fa :icon="faCog"/></button></template>
 
-		<div class="tl">
-			<x-notifications/>
-		</div>
-	</mk-container>
-</div>
+	<div>
+		<x-notifications :include-types="props.includingTypes"/>
+	</div>
+</mk-container>
 </template>
 
 <script lang="ts">
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '../components/ui/container.vue';
 import XNotifications from '../components/notifications.vue';
 import define from './define';
-import i18n from '../i18n';
-
-const basisSteps = [25, 50, 75, 100]
-const previewHeights = [200, 300, 400, 500]
 
 export default define({
 	name: 'notifications',
 	props: () => ({
-		compact: false,
-		basisStep: 0
+		showHeader: {
+			type: 'boolean',
+			default: true,
+		},
+		height: {
+			type: 'number',
+			default: 300,
+		},
+		includingTypes: {
+			type: 'array',
+			hidden: true,
+			default: null,
+		},
 	})
 }).extend({
-	i18n,
-	
 	components: {
 		MkContainer,
 		XNotifications,
@@ -36,55 +40,19 @@ export default define({
 
 	data() {
 		return {
-			faBell
+			faBell, faCog
 		};
 	},
 
-	computed: {
-		basis(): number {
-			return basisSteps[this.props.basisStep] || 25
-		},
-
-		previewHeight(): number {
-			return previewHeights[this.props.basisStep] || 200
-		}
-	},
-
 	methods: {
-		func() {
-			if (this.props.basisStep === basisSteps.length - 1) {
-				this.props.basisStep = 0
-				this.props.compact = !this.props.compact;
-			} else {
-				this.props.basisStep += 1
-			}
-
-			this.save();
+		async configure() {
+			this.$root.new(await import('../components/notification-setting-window.vue').then(m => m.default), {
+				includingTypes: this.props.includingTypes,
+			}).$on('ok', async ({ includingTypes }) => {
+				this.props.includingTypes = includingTypes;
+				this.save();
+			});
 		}
 	}
 });
 </script>
-
-<style lang="scss">
-.mkw-notifications {
-	flex-grow: 1;
-	flex-shrink: 0;
-	min-height: 0; // https://www.gwtcenter.com/min-height-required-on-firefox-flexbox
-
-	.container {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-
-		> div {
-			overflow: auto;
-			flex-grow: 1;
-		}
-	}
-
-	.tl {
-		background: var(--bg);
-		padding: 8px;
-	}
-}
-</style>

@@ -80,6 +80,9 @@ html
 						= meta.maintainerName
 						|  &lt;#{meta.maintainerEmail}&gt;
 				tr
+					th Proxy account name
+					td= proxyAccountName || '(none)'
+				tr
 					th System
 					td= os
 				tr
@@ -106,6 +109,9 @@ html
 				tr
 					th Registration
 					td= !meta.disableRegistration ? 'yes' : 'no'
+				tr
+					th hCaptcha enabled
+					td= meta.enableHcaptcha ? 'enabled' : 'disabled'
 				tr
 					th reCAPTCHA enabled
 					td= meta.enableRecaptcha ? 'enabled' : 'disabled'

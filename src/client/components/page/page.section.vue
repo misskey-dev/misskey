@@ -3,7 +3,7 @@
 	<component :is="'h' + h">{{ value.title }}</component>
 
 	<div class="children">
-		<x-block v-for="child in value.children" :value="child" :page="page" :script="script" :key="child.id" :h="h + 1"/>
+		<x-block v-for="child in value.children" :value="child" :page="page" :hpml="hpml" :key="child.id" :h="h + 1"/>
 	</div>
 </section>
 </template>
@@ -16,7 +16,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		},
 		page: {

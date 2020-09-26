@@ -7,7 +7,7 @@ import { deleteFile } from './delete-file';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { GenerateVideoThumbnail } from './generate-video-thumbnail';
 import { driveLogger } from './logger';
-import { IImage, convertToJpeg, convertToWebp, convertToPng, convertToPngOrJpeg } from './image-processor';
+import { IImage, convertSharpToJpeg, convertSharpToWebp, convertSharpToPng, convertSharpToPngOrJpeg } from './image-processor';
 import { contentDisposition } from '../../misc/content-disposition';
 import { getFileInfo } from '../../misc/get-file-info';
 import { DriveFiles, DriveFolders, Users, Instances, UserProfiles } from '../../models';
@@ -19,6 +19,7 @@ import { genId } from '../../misc/gen-id';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
 import * as S3 from 'aws-sdk/clients/s3';
 import { getS3 } from './s3';
+import * as sharp from 'sharp';
 
 const logger = driveLogger.createSubLogger('register', 'yellow');
 
@@ -143,6 +144,52 @@ async function save(file: DriveFile, path: string, name: string, type: string, h
  * @param generateWeb Generate webpublic or not
  */
 export async function generateAlts(path: string, type: string, generateWeb: boolean) {
+	if (type.startsWith('video/')) {
+		try {
+			const thumbnail = await GenerateVideoThumbnail(path);
+			return {
+				webpublic: null,
+				thumbnail
+			};
+		} catch (e) {
+			logger.warn(`GenerateVideoThumbnail failed: ${e}`);
+			return {
+				webpublic: null,
+				thumbnail: null
+			};
+		}
+	}
+
+	if (!['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+		logger.debug(`web image and thumbnail not created (not an required file)`);
+		return {
+			webpublic: null,
+			thumbnail: null
+		};
+	}
+
+	let img: sharp.Sharp | null = null;
+
+	try {
+		img = sharp(path);
+		const metadata = await img.metadata();
+		const isAnimated = metadata.pages && metadata.pages > 1;
+
+		// skip animated
+		if (isAnimated) {
+			return {
+				webpublic: null,
+				thumbnail: null
+			};
+		}
+	} catch (e) {
+		logger.warn(`sharp failed: ${e}`);
+		return {
+			webpublic: null,
+			thumbnail: null
+		};
+	}
+
 	// #region webpublic
 	let webpublic: IImage | null = null;
 
@@ -151,11 +198,11 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 
 		try {
 			if (['image/jpeg'].includes(type)) {
-				webpublic = await convertToJpeg(path, 2048, 2048);
+				webpublic = await convertSharpToJpeg(img, 2048, 2048);
 			} else if (['image/webp'].includes(type)) {
-				webpublic = await convertToWebp(path, 2048, 2048);
+				webpublic = await convertSharpToWebp(img, 2048, 2048);
 			} else if (['image/png'].includes(type)) {
-				webpublic = await convertToPng(path, 2048, 2048);
+				webpublic = await convertSharpToPng(img, 2048, 2048);
 			} else {
 				logger.debug(`web image not created (not an required image)`);
 			}
@@ -172,15 +219,9 @@ export async function generateAlts(path: string, type: string, generateWeb: bool
 
 	try {
 		if (['image/jpeg', 'image/webp'].includes(type)) {
-			thumbnail = await convertToJpeg(path, 498, 280);
+			thumbnail = await convertSharpToJpeg(img, 498, 280);
 		} else if (['image/png'].includes(type)) {
-			thumbnail = await convertToPngOrJpeg(path, 498, 280);
-		} else if (type.startsWith('video/')) {
-			try {
-				thumbnail = await GenerateVideoThumbnail(path);
-			} catch (e) {
-				logger.warn(`GenerateVideoThumbnail failed: ${e}`);
-			}
+			thumbnail = await convertSharpToPngOrJpeg(img, 498, 280);
 		} else {
 			logger.debug(`thumbnail not created (not an required file)`);
 		}
@@ -212,12 +253,16 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 	} as S3.PutObjectRequest;
 
 	if (filename) params.ContentDisposition = contentDisposition('inline', filename);
+	if (meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
 	const s3 = getS3(meta);
 
-	const upload = s3.upload(params);
+	const upload = s3.upload(params, {
+		partSize: s3.endpoint?.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024
+	});
 
-	await upload.promise();
+	const result = await upload.promise();
+	if (result) logger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
 }
 
 async function deleteOldFile(user: IRemoteUser) {
@@ -326,16 +371,11 @@ export default async function(
 	const properties: {
 		width?: number;
 		height?: number;
-		avgColor?: string;
 	} = {};
 
 	if (info.width) {
 		properties['width'] = info.width;
 		properties['height'] = info.height;
-	}
-
-	if (info.avgColor) {
-		properties['avgColor'] = `rgb(${info.avgColor.join(',')})`;
 	}
 
 	const profile = user ? await UserProfiles.findOne(user.id) : null;
@@ -350,6 +390,7 @@ export default async function(
 	file.folderId = folder !== null ? folder.id : null;
 	file.comment = comment;
 	file.properties = properties;
+	file.blurhash = info.blurhash || null;
 	file.isLink = isLink;
 	file.isSensitive = user
 		? Users.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :

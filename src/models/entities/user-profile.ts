@@ -2,6 +2,7 @@ import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'type
 import { id } from '../id';
 import { User } from './user';
 import { Page } from './page';
+import { notificationTypes } from '../../types';
 
 @Entity()
 export class UserProfile {
@@ -146,6 +147,24 @@ export class UserProfile {
 		default: {}
 	})
 	public integrations: Record<string, any>;
+
+	@Index()
+	@Column('boolean', {
+		default: false, select: false,
+	})
+	public enableWordMute: boolean;
+
+	@Column('jsonb', {
+		default: []
+	})
+	public mutedWords: string[][];
+
+	@Column('enum', {
+		enum: notificationTypes,
+		array: true,
+		default: [],
+	})
+	public mutingNotificationTypes: typeof notificationTypes[number][];
 
 	//#region Denormalized fields
 	@Index()

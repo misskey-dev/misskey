@@ -1,6 +1,6 @@
 <template>
 <div>
-	<mk-input class="kudkigyw" v-model="v" type="number">{{ script.interpolate(value.text) }}</mk-input>
+	<mk-input class="kudkigyw" v-model="v" type="number">{{ hpml.interpolate(value.text) }}</mk-input>
 </div>
 </template>
 
@@ -16,7 +16,7 @@ export default Vue.extend({
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		}
 	},
@@ -27,8 +27,8 @@ export default Vue.extend({
 	},
 	watch: {
 		v() {
-			this.script.aiScript.updatePageVar(this.value.name, this.v);
-			this.script.eval();
+			this.hpml.updatePageVar(this.value.name, this.v);
+			this.hpml.eval();
 		}
 	}
 });

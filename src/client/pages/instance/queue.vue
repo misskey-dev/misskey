@@ -1,5 +1,8 @@
 <template>
 <div>
+	<portal to="icon"><fa :icon="faExchangeAlt"/></portal>
+	<portal to="title">{{ $t('jobQueue') }}</portal>
+
 	<x-queue :connection="connection" domain="inbox">
 		<template #title><fa :icon="faExchangeAlt"/> In</template>
 	</x-queue>
@@ -18,13 +21,10 @@
 import Vue from 'vue';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
-import XQueue from './queue.queue.vue';
+import XQueue from './queue.chart.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: `${this.$t('jobQueue')} | ${this.$t('instance')}`

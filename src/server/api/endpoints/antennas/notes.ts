@@ -4,11 +4,11 @@ import define from '../../define';
 import { Antennas, Notes, AntennaNotes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { ApiError } from '../../error';
 
 export const meta = {
-	tags: ['account', 'notes', 'antennas'],
+	tags: ['antennas', 'account', 'notes'],
 
 	requireCredential: true as const,
 
@@ -62,7 +62,7 @@ export default define(meta, async (ps, user) => {
 		.setParameters(antennaQuery.getParameters());
 
 	generateVisibilityQuery(query, user);
-	generateMuteQuery(query, user);
+	generateMutedUserQuery(query, user);
 
 	const notes = await query
 		.take(ps.limit!)

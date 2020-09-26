@@ -2,12 +2,11 @@
 <x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }">
 	<div class="omfetrab">
 		<header>
-			<button v-for="category in categories"
+			<button v-for="(category, i) in categories"
 				class="_button"
-				:title="category.text"
 				@click="go(category)"
 				:class="{ active: category.isActive }"
-				:key="category.text"
+				:key="i"
 			>
 				<fa :icon="category.icon" fixed-width/>
 			</button>
@@ -15,7 +14,7 @@
 
 		<div class="emojis">
 			<template v-if="categories[0].isActive">
-				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsedEmojis') }}</header>
+				<header class="category"><fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
 				<div class="list">
 					<button v-for="(emoji, i) in ($store.state.device.recentEmojis || [])"
 						class="_button"
@@ -27,9 +26,10 @@
 						<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
+
+				<header class="category"><fa :icon="faAsterisk" fixed-width/> {{ $t('customEmojis') }}</header>
 			</template>
 
-			<header class="category"><fa :icon="categories.find(x => x.isActive).icon" fixed-width/> {{ categories.find(x => x.isActive).text }}</header>
 			<template v-if="categories.find(x => x.isActive).name">
 				<div class="list">
 					<button v-for="emoji in emojilist.filter(e => e.category === categories.find(x => x.isActive).name)"
@@ -64,17 +64,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import i18n from '../i18n';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '../scripts/get-static-image-url';
-import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory } from '@fortawesome/free-solid-svg-icons';
+import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import { groupByX } from '../../prelude/array';
 import XPopup from './popup.vue';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XPopup,
 	},
@@ -92,50 +89,46 @@ export default Vue.extend({
 			customEmojis: {},
 			faGlobe, faHistory,
 			categories: [{
-				text: this.$t('customEmoji'),
 				icon: faAsterisk,
 				isActive: true
 			}, {
-				name: 'people',
-				text: this.$t('people'),
+				name: 'face',
 				icon: faLaugh,
 				isActive: false
 			}, {
+				name: 'people',
+				icon: faUser,
+				isActive: false
+			}, {
 				name: 'animals_and_nature',
-				text: this.$t('animals-and-nature'),
 				icon: faLeaf,
 				isActive: false
 			}, {
 				name: 'food_and_drink',
-				text: this.$t('food-and-drink'),
 				icon: faUtensils,
 				isActive: false
 			}, {
 				name: 'activity',
-				text: this.$t('activity'),
 				icon: faFutbol,
 				isActive: false
 			}, {
 				name: 'travel_and_places',
-				text: this.$t('travel-and-places'),
 				icon: faCity,
 				isActive: false
 			}, {
 				name: 'objects',
-				text: this.$t('objects'),
 				icon: faDice,
 				isActive: false
 			}, {
 				name: 'symbols',
-				text: this.$t('symbols'),
 				icon: faHeart,
 				isActive: false
 			}, {
 				name: 'flags',
-				text: this.$t('flags'),
 				icon: faFlag,
 				isActive: false
-			}]
+			}],
+			faAsterisk
 		};
 	},
 

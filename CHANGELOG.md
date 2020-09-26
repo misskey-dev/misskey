@@ -1,9 +1,506 @@
 ChangeLog
 =========
 
+12.47.0 (2020/8/19)
+------------------
+
+
+### ✨Improvements
+- **チャンネル機能を実装**
+- 管理パネルを刷新
+- ワードミュートの設定欄から、ミュートされたノート数を閲覧できるように
+- テーマコードをコピーできるように
+- オブジェクトストレージ設定に `アップロード時に'public-read'を設定する` を追加
+- サーバーから切断されたときの警告をダイアログで表示するオプションを追加
+
+### 🐛Fixes
+
+- ユーザーのトークンが管理画面で見られるようになっていた不具合を修正
+- GCSに大きいファイルがアップロードできない不具合を修正
+- WebP 画像ファイルのアニメーションが失われる不具合を修正
+
+
+12.46.0 (2020/8/2)
+------------------
+
+### ✨Improvements
+
+- チャットでCmd+Enterショートカットが使用できない問題を修正 [#6614](https://github.com/syuilo/misskey/pull/6614)
+- サイドバーを折り畳めるように [#6610](https://github.com/syuilo/misskey/pull/6610)
+	
+### 🐛Fixes
+- お知らせを既読にできない問題を修正 [9008664](https://github.com/syuilo/misskey/commit/9008664606483e2902f03929f0f696ac43de6db4)
+- シンタックスハイライト構文が壊れている問題を修正 [60736ba](https://github.com/syuilo/misskey/commit/60736bab2ac974c2d2c2c106d297fa67fdaff87a)
+
+12.45.1 (2020/8/1)
+-------------------
+
+### ✨Improvements
+- 自分のノートにリアクションを押せるように [#6506](https://github.com/syuilo/misskey/pull/6506)
+- 非ログイン時にウェルカムメッセージが被る問題を修正 [#6509](https://github.com/syuilo/misskey/pull/6509)
+
+### 🐛Fixes
+- 最新の投票結果がタイムラインなどに反映されない問題を修正 [2522e73](https://github.com/syuilo/misskey/commit/2522e7388d4d0b92d4517f2c07190e8f88394026)
+
+
+12.45.0 (2020/7/30)
+-------------------
+
+### ✨Improvements
+- プラグインのIDを不要に [57203de](https://github.com/syuilo/misskey/commit/57203de4cbf3947825f422dd746a076d79e353c7)
+- プラグインの設定にdescriptionを表示できるように [9eee564](https://github.com/syuilo/misskey/commit/9eee5644b9b112ed6d8863edce569f4d554459f5)
+- AiScript: Plugin:register_note_post_interruptor 関数を追加(ノート作成時の割り込み処理を登録できる) [e7de5f6](https://github.com/syuilo/misskey/commit/e7de5f60513774e9c599a2e3aac0fbeefb88236f)
+- AiScript: Plugin:open_url 関数を追加 [60d81d7](https://github.com/syuilo/misskey/commit/60d81d74e35879f52a374d5e35fe25dc115d75a4)
+
+### 🐛Fixes
+- 通知のノートがリアクティブではない問題を修正 [2701a7e](https://github.com/syuilo/misskey/commit/2701a7e85fcf745e75b46b88b0fc9b3f76218e44)
+- ピン留めされたノートがリアクティブではない問題を修正 [31a0afd](https://github.com/syuilo/misskey/commit/31a0afdaab309cd2e9fd22f0524730488202704d)
+- プラグインの設定がnullになることがある問題を修正 [01e9b3c](https://github.com/syuilo/misskey/commit/01e9b3c2f634f37cee6820ca25d7576ef3ab6442)
+
+12.44.1 (2020/7/29)
+-------------------
+### 🐛Fixes
+- 通知が流れない問題を修正 [9f94f60](https://github.com/syuilo/misskey/commit/9f94f60ededccfb3ff109aef1241be633d27eaa7)
+
+12.44.0 (2020/7/29)
+-------------------
+### ✨Improvements
+- ワードミュートの実装 [#6594](https://github.com/syuilo/misskey/pull/6594)
+- ページのリストをタブUIに [6b8354c](https://github.com/syuilo/misskey/commit/6b8354ccbfa1d96b4445013d2e93af8e06550516)
+- プラグインを無効にできるように [595ad04](https://github.com/syuilo/misskey/commit/595ad04ddbbf9ff9fc6842f345d4738a9f1cc150)
+- AiScript: ノート書き換えAPI [30df8ea](https://github.com/syuilo/misskey/commit/30df8ea1213013072f139aa26a635330457cf2bc)
+- クライアントのソースコードのリファクタ [b5a1fdd](https://github.com/syuilo/misskey/commit/b5a1fdd4c7597ebdd4ab6022e189da9ca3451dbb), [14b7f05](https://github.com/syuilo/misskey/commit/14b7f05af40ede154a767334dbbefc3458584290), [0efa969](https://github.com/syuilo/misskey/commit/0efa969a153a060d232a0e31b10577ece87faeae), [a8adc46](https://github.com/syuilo/misskey/commit/a8adc46f3ba42e86c64a64f2633f5796aeca01f4), [1b9d316](https://github.com/syuilo/misskey/commit/1b9d316e7c2446211f4b5b6ec27dce0d9b4f0968)
+
+12.43.0 (2020/7/26)
+-------------------
+*このアップデートでは、データベースのマイグレーション(`npm run migrate`/`yarn migrate`)が必要です。*
+
+### ✨Improvements
+- 連合ウィジェットを追加 [186b26e](https://github.com/syuilo/misskey/commit/186b26e103d5dc893a741ab9c5805b5dc81f14c0), [e1f2e36](https://github.com/syuilo/misskey/commit/e1f2e364a4347a8da78a32ed741c789a288d3957), [bd54e44](https://github.com/syuilo/misskey/commit/bd54e44b35f7aeae8766054322e2908881323041), [58211fc](https://github.com/syuilo/misskey/commit/58211fc6a72536b066bd8a78fb4bb083cfc1051a), [e5863c2](https://github.com/syuilo/misskey/commit/e5863c2867c1ee8d0d6f2257de7f7fc7791cf8a6), [55be9cc](https://github.com/syuilo/misskey/commit/55be9cc9d130cca541cfe0569885db4d79a58128)
+  * 連合ウィジェットは、最近着信のあったリモートのインスタンスを表示します。
+- リモートのインスタンスのアイコンを取得して表示するように [#6591](https://github.com/syuilo/misskey/pull/6591), [b07d037](https://github.com/syuilo/misskey/commit/b07d037cb5b1531c38cb2d56ff612bdba5c58a3f), [3f2ffce](https://github.com/syuilo/misskey/commit/3f2ffcea97b6496053fd4027192976bfad2626b0)
+- インスタンス設定の不足分を追加 [#6576](https://github.com/syuilo/misskey/pull/6576)
+- クライアントでのソースコードのリファクタ・パフォーマンス改善
+  * lintでのエラーを修正 [#6568](https://github.com/syuilo/misskey/pull/6568)
+  * ~~vue-i18nのv-tを使うように [9c30b23](https://github.com/syuilo/misskey/commit/9c30b23358699a530f2bcb0f5ae6efe17146bcb3)~~ [166bc19](https://github.com/syuilo/misskey/commit/166bc19131ae4b40bdd5e85269729f6eb5e3d931)
+  * 静的な内容にv-onceを付加 [da874f3](https://github.com/syuilo/misskey/commit/da874f3383088dddbf7ce441b0c9d8f6512dfc9b)
+
+### 🐛Fixes
+- 投票の残り時間表示の修正 [#6565](https://github.com/syuilo/misskey/pull/6565)
+- blurhashにした影響で猫耳の色をアイコンに合わせられなくなっているのを修正 [#6585](https://github.com/syuilo/misskey/pull/6585), [7e2b6b6](https://github.com/syuilo/misskey/commit/7e2b6b6369a5eecad2374b84527dca1a712053c9)
+- 脆弱性のある依存関係をアップデート [#6572](https://github.com/syuilo/misskey/pull/6572)
+- blurhashのテストを修正 [#6573](https://github.com/syuilo/misskey/pull/6573)
+- Deckであなた宛て・ダイレクトカラムを追加するとメインカラムに文字が重なる問題を修正 [#6577](https://github.com/syuilo/misskey/pull/6577)
+- Deckの翻訳を追加 [#6567](https://github.com/syuilo/misskey/pull/6567)
+- アンテナカラムの挙動を正常化 [#6567](https://github.com/syuilo/misskey/pull/6567)
+- ウィジェットカラムの挙動を正常化して編集モードの見栄えを良くした [#6567](https://github.com/syuilo/misskey/pull/6567)
+
+12.42.0 (2020/7/19)
+-------------------
+*このアップデートでは、データベースのマイグレーション(`npm run migrate`/`yarn migrate`)が必要です。*
+
+### ✨Improvements
+- Deckでマウスホイールを使って横スクロールできるように [e18caa3](https://github.com/syuilo/misskey/commit/e18caa339624b566e76d19d0e132028b6377f7f8), [eb275a6](https://github.com/syuilo/misskey/commit/eb275a62a6ae5699b38cf3bca516d34b44e9d944)
+- 設定画面を整理 [b663a47](https://github.com/syuilo/misskey/commit/b663a47331000b61010ad91fdc422b60b2eeb660)
+  * アクセシビリティ → アピアランス
+- リモートで削除されており、ローカルで削除されている若しくは未認知のActorからActivityを受信した場合に、エラーでリトライしないように [#6554](https://github.com/syuilo/misskey/pull/6554)
+- トークン手動発行機能を実装 [0c1de7b](https://github.com/syuilo/misskey/commit/0c1de7b1b6e9ac10b62d8b3157cb064c79aa21d1), [b9c5e95](https://github.com/syuilo/misskey/commit/b9c5e95b855fcf599b339037d4753252a1f786d4)
+- AiScriptからAPIにアクセスできるように [b39850d](https://github.com/syuilo/misskey/commit/b39850de012fa7b05959c7f4bbbbade841d186ff)
+- Blurhashを実装 [3f71b14](https://github.com/syuilo/misskey/commit/3f71b1463719bee476d39b7ceca5a2eea4b5cb67)
+  * avgColor, avatarColor, bannerColor は使われなくなります。
+- デザイン・挙動の調整 [280eeb9](https://github.com/syuilo/misskey/commit/280eeb9d7539e5b7c8d09dfa21a7679eebb09407)
+
+### 🐛Fixes
+- AiScriptのアップデートとプラグインの動作の修正 [705d40a](https://github.com/syuilo/misskey/commit/705d40ab37bedb1e43e4677457497c342517a23d)
+
+12.41.3 (2020/7/15)
+-------------------
+### ✨Improvements
+- サウンドを追加 [b9e9631](https://github.com/syuilo/misskey/commit/b9e9631195a8ca5ed1386daeacdc835456d52975)
+
+### 🐛Fixes
+- サイドバーのsticky動作の修正 [937df57](https://github.com/syuilo/misskey/commit/937df577f1b005ff4da2122e642c5c9f687d0069)
+- iOS/macOS Safariで投稿フォームやノートメニューをたまに表示できない問題を修正 [9d3beb3](https://github.com/syuilo/misskey/commit/9d3beb3174f87f05c50e2e7304a03d2c55a3f7ec)
+  * windowのstorageイベントが発火すると永続化されたstateのみが残る問題を修正
+- iOS Safariで設定を選べなくなってしまうことがある問題を修正 [e7f1ab2](https://github.com/syuilo/misskey/commit/e7f1ab2d01f92558ff5e230663d951686390d35a)
+  * Safariのvh計算のバグに対処
+
+12.41.2 (2020/7/12)
+-------------------
+### ✨Improvements
+- モーダルにぼかし効果を使用するオプション [aae9bc4c](https://github.com/syuilo/misskey/commit/aae9bc4cf4c583b4d675391fe3da2fa53b7f18e0)
+- スタイルの調整 [eb84445](https://github.com/syuilo/misskey/commit/eb84445796039b93d124fa615e96c08fedcd9bf9), [dab7282](https://github.com/syuilo/misskey/commit/dab728278ca577622c575d1968eb6a22c7b444b9), [35a8c379](https://github.com/syuilo/misskey/commit/35a8c37922193317b3f6397562c762f9a9169b91)
+
+### 🐛Fixes
+- Deckのタイムラインを追加した直後のタイムライン種別の選択がキャンセルできない問題を修正 [#6535](https://github.com/syuilo/misskey/pull/6535)
+- ノート詳細 /notes/:id ページの直リンを踏むと Not Found になる問題を修正 [364bd9a](https://github.com/syuilo/misskey/commit/364bd9ae74226c46ccdad810884bce11b2bef156)
+- Deckでメインカラムの「投稿があります」をクリックしても上に行かない問題を修正 [5b5b64d](https://github.com/syuilo/misskey/commit/5b5b64d2514cf445aa81a6750ac4185f4e7dd8cd)
+- 翻訳の修正 [7555ab0](https://github.com/syuilo/misskey/commit/7555ab097a6aab68851782b641a33fb3fdf2f101), [426c2fa](https://github.com/syuilo/misskey/commit/426c2fa5d152610516337cc5a53810e136d573db)
+
+12.41.1 (2020/7/12)
+-------------------
+### ✨Improvements
+- ResizeObserver Polyfillを削除 [c89abda](https://github.com/syuilo/misskey/commit/c89abda3fb55857bb81c4f2163a4a0396a04fc27)
+  * Misskey Webのパフォーマンスが劇的に改善されました
+- スタイルの調整 [7cbe95a](https://github.com/syuilo/misskey/commit/7cbe95a1cf67f2536a6332bbccc7129afcd92f73), [320352b](https://github.com/syuilo/misskey/commit/320352bf4ba56ddd67c9c6bc0816dab94c53191b)
+
+### 🐛Fixes
+- サイドバーのホームを押すことでのトップへのスクロールが動作しなくなっている問題を修正 [3c66990](https://github.com/syuilo/misskey/commit/3c669902632570bb1354f6b53253037f183718b5)
+
+12.41.0 (2020/7/12)
+-------------------
+### ✨Improvements
+- デッキの実装 [#6504](https://github.com/syuilo/misskey/pull/6504), [065ec8e](https://github.com/syuilo/misskey/commit/065ec8e17080887814b1912233d38e412b2811d2), [debc008](https://github.com/syuilo/misskey/commit/debc0086fab6c131cf37f00e8b03fbe5d6f09c64)
+- テーマエディターの実装 [#6482](https://github.com/syuilo/misskey/pull/6482)
+- プラグインシステムの実装 [#6479](https://github.com/syuilo/misskey/pull/6479)
+- ウィジェットの位置を固定するオプションを追加 [3799708](https://github.com/syuilo/misskey/commit/3799708daf52c221c03ff0b1c11d8b888b22d32f)
+- ウィジェットの位置を固定しない場合、Twitterのようにstickyに画面追従するように [c25cf7f](https://github.com/syuilo/misskey/commit/c25cf7f89a1d3d7e55331396bbc3f44920a38de5)
+- サウンドを追加 (syuilo/pirori) [d4b4b61](https://github.com/syuilo/misskey/commit/d4b4b61535ee4f5f759ba3342b55e978e43f1c7b)
+- タイムライン上でTwitterの埋め込みプレビューを表示できるように [#6496](https://github.com/syuilo/misskey/pull/6496)
+- デザインや挙動の調整 [#6495](https://github.com/syuilo/misskey/pull/6495), [752669b](https://github.com/syuilo/misskey/commit/752669bf5ea83b81ddcabb804e795a24debe6dc0), [#6497](https://github.com/syuilo/misskey/pull/6497), [ade11aa](https://github.com/syuilo/misskey/commit/ade11aa447f0102c9202955e01c59fcb501f794e), [27a17b4](https://github.com/syuilo/misskey/commit/27a17b467d72aea81774c04b8ca3e01ed6874b24), [4fd0636](https://github.com/syuilo/misskey/commit/4fd06369d355f032b5eb245dfd98faadee2289f9), [ca2e53b](https://github.com/syuilo/misskey/commit/ca2e53bd6e3de50f2fdf62da16734873be37fcc4), [8ff2694](https://github.com/syuilo/misskey/commit/8ff2694cadd3ab3d51f96fc2ea3bbfde29475660), [11f8d74](https://github.com/syuilo/misskey/commit/11f8d742eb53e8b815abc8ed1c34627dcbaa9e2f)
+- ソースコードのリファクタ [a591a33](https://github.com/syuilo/misskey/commit/a591a334ed6fd7f8ed936bf7e7edfcce08de035a)
+
+### 🐛Fixes
+- 依存パッケージの更新 [#6491](https://github.com/syuilo/misskey/pull/6491), [#6516](https://github.com/syuilo/misskey/pull/6516), [d327bb8](https://github.com/syuilo/misskey/commit/d327bb8ff1b8765e92d6815d244e74f0793f6157)
+- サーバーへのファイルダウンロードのタイムアウトを11秒から60秒に緩和 [#6503](https://github.com/syuilo/misskey/pull/6503)
+- 非ログイン時にキーボードショートカットで投稿フォームが開けてしまう問題を修正 [#6508](https://github.com/syuilo/misskey/pull/6508)
+- キャッシュされてないリモートファイルのURLが相対URLで返ってくる問題を修正 [#6514](https://github.com/syuilo/misskey/pull/6514)
+  * リモートファイルをキャッシュしない設定のインスタンスにおいてサードパーティークライアントでリモートの画像が表示できない問題が修正されます
+- Mastodon v2.5.0未満からのActivityが受け取れない問題の修正 [#6518](https://github.com/syuilo/misskey/pull/6518)
+- music.youtube.comのURLプレビューの修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
+- URLプレビューの翻訳を修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
+- ノートの表示幅が狭いとTwitterウィジェットがはみ出すのをなんとか修正 [#6496](https://github.com/syuilo/misskey/pull/6496)
+- HiDPi環境でMisskey v12 Roomの家具を選択できない問題を修正 [#6507](https://github.com/syuilo/misskey/pull/6507)
+- Safariでの検索インプット・検索ボタンのデザインが適用されないのを修正 [#6484](https://github.com/syuilo/misskey/pull/6484)
+- フォロワーではないリモートユーザーに削除通知が配信されない問題を修正 [#6475](https://github.com/syuilo/misskey/pull/6475)
+
+12.40.0 (2020/7/5)
+-------------------
+### ✨Improvements
+- AP向けのアンケートのfallbackリンク（`リモートで結果を表示`）、`番号を返信して投票`、`_misskey_fallback_content`を削除 [#6466](https://github.com/syuilo/misskey/pull/6466)
+- 英語のNyaizeを改良 [#6456](https://github.com/syuilo/misskey/pull/6456)
+- プロフィールの「場所」「誕生日」を連合するように [#6463](https://github.com/syuilo/misskey/pull/6463)
+- リアクションピッカーの入力で空白を無視するように [90c07a2](https://github.com/syuilo/misskey/commit/90c07a220f1787cd25a17feefe2df667db5b630d)
+- ウィジェットを左に置けるように [624c9f3](https://github.com/syuilo/misskey/commit/624c9f3418ce1c2597fbe2cb75caf01939e4d845)
+- ウェルカムウィジェットの追加 [ea13efe](https://github.com/syuilo/misskey/commit/ea13efe495272fcfc9fb29c4f2127e4f908f9802)
+- 全体的なデザインの変更
+
+### 🐛Fixes
+- アカウント切り替え後にインスタンス設定の表示値が変わらないのを修正 [#6454](https://github.com/syuilo/misskey/pull/6454)
+- isCatがLD-Signatureの対象になってないのを修正 [#6463](https://github.com/syuilo/misskey/pull/6463)
+- タップ不可能なリアクションを押してもパーティクルが出るのを修正 [#6472](https://github.com/syuilo/misskey/pull/6472)
+- サイドバーの設定に不具合があるとページが表示できなくなる問題を修正 [#6473](https://github.com/syuilo/misskey/pull/6473)
+- 投稿詳細でTwitterウィジェットが表示されなくなっているのを修正 [#6488](https://github.com/syuilo/misskey/pull/6488)
+- 「すべて既読にする」でグループメッセージが既読にならない問題を修正 [#6476](https://github.com/syuilo/misskey/pull/6476)
+
+12.39.1 (2020/6/5)
+-------------------
+### ✨Improvements
+- メンションの色をテーマで指定できるように [071c7e6](https://github.com/syuilo/misskey/commit/071c7e6a581ca5d025d414869e03536011219370)
+
+### 🐛Fixes
+- リモートからのノートが受信できない問題を修正 [3c2d94ac](https://github.com/syuilo/misskey/commit/3c2d94ace31c0dbbbd18606d16828df60d0392eb), [7f76a73e](https://github.com/syuilo/misskey/commit/7f76a73eeef5df3b1fc02a00a0ca5710383a2429)
+  * MiAuthのレスポンスが返ってこない問題を修正を差し戻し
+- ドキュメントのMiAuthのURLを現状利用できるものに修正 [ddf92c3e](https://github.com/syuilo/misskey/commit/ddf92c3e2c5bdfc89e5c223a3cc2794f6a023400), [7f76a73e](https://github.com/syuilo/misskey/commit/7f76a73eeef5df3b1fc02a00a0ca5710383a2429)
+
+12.39.0 (2020/6/4)
+-------------------
+**12.39.0にはリモートからのノートが受信できないという重大なバグがありますので、使わないでください。**  
+**NEVER USE 12.39.0 because it has a serious bug that Misskey cannot recieve notes from remotes.**  
+
+### ✨Improvements
+- アラビア語を追加 [#6416](https://github.com/syuilo/misskey/pull/6416)
+- 自動でもっと見る [#6403](https://github.com/syuilo/misskey/pull/6403)
+- MFMのテキストノードは、HTMLではspanタグではなくテキストノードに変換するように [#6399](https://github.com/syuilo/misskey/pull/6399)
+- ローカルのみボタンを公開範囲ピッカーに統合 [#6428](https://github.com/syuilo/misskey/pull/6428)
+- ユーザーが画面を見てないと思われるとき（ブラウザやタブがアクティブではない時）は通知を既読にしないように [#6407](https://github.com/syuilo/misskey/pull/6407)
+- 通知一覧で、通知が画面に表示されると既読にするように [#6407](https://github.com/syuilo/misskey/pull/6407)
+- APIのNotificationでisRead（既読かどうか）を含めるように [#6407](https://github.com/syuilo/misskey/pull/6407)
+
+### 🐛Fixes
+- 引用ノートのフォントサイズがおかしいときがあるのを修正 [#6414](https://github.com/syuilo/misskey/pull/6414)
+- iOS Safari 上で アイコンおよびバナーのアップロードができない不具合を修正 [#6427](https://github.com/syuilo/misskey/pull/6427)
+- APで `HTTP-Signature検証失敗 かつ LD-Signatureなし` がキューに溜まってリトライし続けるのを修正 [#6437](https://github.com/syuilo/misskey/pull/6437)
+- MiAuthでトークンが利用できない問題を修正 [6b2c2890](https://github.com/syuilo/misskey/commit/6b2c289029cbf01537c2a67a3e61d615aad30c34)
+- Twitterのプレビューが利用できなくなっている問題を修正 [f296410](https://github.com/syuilo/misskey/commit/f2964101d162fb64ac9e7ad99123c5bb568ac52b)
+- IDの重複が起きてしまう問題を修正 [#6440](https://github.com/syuilo/misskey/pull/6440)
+- ※MiAuthのレスポンスが返ってこない問題を修正 [#6418](https://github.com/syuilo/misskey/issues/6418)
+
+12.38.0 (2020/5/17)
+-------------------
+### ✨Improvements
+* Renoteの削除をわかりやすく [#6366](https://github.com/syuilo/misskey/pull/6366), [#6373](https://github.com/syuilo/misskey/pull/6373)
+* Unicode 13.0の絵文字に対応 [#6365](https://github.com/syuilo/misskey/pull/6365)
+* リレーのHTTP-Signatureは投稿者の鍵でするように [#6357](https://github.com/syuilo/misskey/pull/6357)
+* 追加のAPオブジェクトをキャッシュ出来るように [#6349](https://github.com/syuilo/misskey/pull/6349)
+* ローカルのみボタンを公開範囲ボタンの横に移動 [51cf097](https://github.com/syuilo/misskey/commit/51cf0970b3b990cd67c94c5fcc5d7c1c3f7f13df)
+* 公開範囲がローカルのみであることを表示するように [#6291](https://github.com/syuilo/misskey/pull/6291)
+* Roomに藍ちゃん人形と札束を追加 [#6350](https://github.com/syuilo/misskey/pull/6350), [6cee608](https://github.com/syuilo/misskey/commit/6cee608c91850c035c35f605296410e72d1ef793), [7dd8dbe](https://github.com/syuilo/misskey/commit/7dd8dbeb5b2f33b679248ecc2138f556b72d9a06)
+* ユーザーページの画像欄の画像をクリックしたとき、UIが再読み込みされないように [ca2a33e](https://github.com/syuilo/misskey/commit/ca2a33edc928c0dfe59f50502d3eedb9e97e88db)
+
+### 🐛Fixes
+* reCAPTCHAが動かなくなっているのを修正 [#6367](https://github.com/syuilo/misskey/pull/6367)
+* インスタンスブロックがリレーに適用されない問題を修正 [#6355](https://github.com/syuilo/misskey/pull/6355)
+* リレーに不正なURLを追加できてしまう問題を修正 [#6351](https://github.com/syuilo/misskey/pull/6351)
+* Pages: Mk:api関数にトークンを渡せない問題を修正 [9244efe](https://github.com/syuilo/misskey/commit/9244efe3513dd72be04d7588dea8ec27509e96d1)
+* nyaizeが適用されるとMFMのオプションが失われるのを修正 [#6371](https://github.com/syuilo/misskey/pull/6371)
+* 上流ノートの削除に伴うノートの削除が連合リレーに伝達されない問題を修正 [#6374](https://github.com/syuilo/misskey/pull/6374)
+* 引用元の削除に伴う引用RNの削除がリモートに伝達されない問題を修正 [#6374](https://github.com/syuilo/misskey/pull/6374)
+
+12.37.0 (2020/5/10)
+-------------------
+### ✨Improvements
+* Node.js v14をサポート [#6294](https://github.com/syuilo/misskey/pull/6294)
+* 依存パッケージを最新に [#6297](https://github.com/syuilo/misskey/pull/6297)
+* nginxサンプルのSSL/TLS設定の変更 [#6298](https://github.com/syuilo/misskey/pull/6298)
+* DockerイメージでPostgreSQL v12・Node.js v14を使用するように [2bb0a61](https://github.com/syuilo/misskey/commit/2bb0a61a891445df4d78bfc0d4a64551ac9b7a39), [808c680](https://github.com/syuilo/misskey/commit/808c6801843b9e10fa575f5f7fbd3a4a3a80252a)
+* hCaptchaサポート
+* サイドバーカスタマイズ機能
+* LD-Signatureの検証に対応 [#6300](https://github.com/syuilo/misskey/pull/6300)
+* リモートからの通報の受信に対応 [#6331](https://github.com/syuilo/misskey/pull/6331)
+* Misskey Rooms復活
+* ノートへの返信を再帰的に表示するように(threaded replies)
+* pub-relay [#6341](https://github.com/syuilo/misskey/pull/6341)
+
+### 🐛Fixes
+* CatだとMFMでURLプレビューを隠しても表示される問題を修正 [7d7c206](https://github.com/syuilo/misskey/commit/7d7c206f245387d32283fbb4e82bd9d526427936)
+* アップロードプログレスバーが動かないのを修正 [#6307](https://github.com/syuilo/misskey/pull/6307)
+* WebAuthnでログインできないのを修正 [#6327](https://github.com/syuilo/misskey/pull/6327)
+* あなた宛て/メッセージで個々のノートが展開されるのを修正
+* アンケートへの投票通知が正しく表示されない問題を修正
+
+12.36.1 (2020/4/23)
+-------------------
+### 🐛Fixes
+* Pagesのifブロックが機能しない [2ee5835](https://github.com/syuilo/misskey/commit/2ee583518608333312caa4c4303a74835b087069)
+* AiScriptのアップデート
+
+12.36.0 (2020/4/22)
+-------------------
+### ✨Improvements
+* ドライブの画面を広く [1f99816](https://github.com/syuilo/misskey/commit/1f998168e2f6ff94d0119fe5f95ad03b47d19d60)
+* ドライブのデフォルトのアップロード先フォルダを設定できるように [1f99816](https://github.com/syuilo/misskey/commit/1f998168e2f6ff94d0119fe5f95ad03b47d19d60)
+* AiScriptのアップデート
+* Webpackを5に [e72011f](https://github.com/syuilo/misskey/commit/e72011f1dafc11ea70dd60b653d25b0e48832cce)
+
+### 🐛Fixes
+* WebUIでアンテナを保存するとexcludeKeywordsに空文字列が入るせいで動かない [5a9530c](https://github.com/syuilo/misskey/commit/5a9530ccd4249cf37d50769015adbffba34014ab)
+* 管理画面のカスタム絵文字でカテゴリが空だと更新できない [0df3e22](https://github.com/syuilo/misskey/commit/0df3e22e519d854c88ae8f5eabdc8eee4b18aeed)
+
+12.35.2 (2020/4/19)
+-------------------
+### ✨Improvements
+* Pagesの環境変数を調整 [0a1b83c](https://github.com/syuilo/misskey/commit/0a1b83c70fc546d7514176a220e1381ecc0b13ec)
+* Pagesのチャートを調整 [f704e7a](https://github.com/syuilo/misskey/commit/f704e7a6025cb3f8ec7e474df70de1b171722bde)
+* AiScriptのアップデート
+* デザインの調整
+
+### 🐛Fixes
+* 画像のみのノートができない問題を修正 [8cefcaa](https://github.com/syuilo/misskey/commit/8cefcaa55f86e03f3965c5cb419787778681c269)
+
+12.35.1 (2020/4/19)
+-------------------
+### 🐛Fixes
+* Pagesのチャート描画を調整
+
+12.35.0 (2020/4/19)
+-------------------
+### ✨Improvements
+* Pagesでチャートを描画できるように
+* Pagesでキャンバスの画像を投稿フォームで添付できるように
+* AiScriptのバージョンアップ
+
+### 🐛Fixes
+* タイムラインウィジェットの数が多ければ多いほど、リアクションが多く付いて見える問題を修正
+* カスタム絵文字リアクションがプレビューされない不具合を修正
+
+12.34.0 (2020/4/17)
+-------------------
+### ✨Improvements
+* Pagesでrectメソッドを追加
+* AiScriptのバージョンアップ
+
+12.33.0 (2020/4/16)
+-------------------
+### ✨Improvements
+* Pagesで円を書くメソッドを追加
+* AiScriptのバージョンアップ
+
+### 🐛Fixes
+* PagesでAiScript変数があると編集が機能しなくなる問題を修正
+
+12.32.0 (2020/4/16)
+-------------------
+### ✨Improvements
+* Pagesで画像を描画できるように
+* AiScriptのバージョンアップ
+* 0以下のリアクションは送らないように
+
+### 🐛Fixes
+* リアクションの修正
+* Fix Media List in CW Content
+
+12.31.0 (2020/4/14)
+-------------------
+### ✨Improvements
+* プロキシの除外ホスト指定とオブジェクトストレージへの適用を除外するオプション
+* AiScript
+* モデレーション関連機能
+* sensitiveではないメディアも非表示にできるように
+* 投稿のURLプレビューポップアップを改良
+* リモートのカスタム絵文字リアクションを表示できるように
+
+### 🐛Fixes
+* リアクションカウントがおかしくなることがあるのを修正
+
+12.30.0 (2020/4/11)
+-------------------
+### ✨Improvements
+* リクエストライブラリをrequestからnode-fetchに変更
+* オブジェクトストレージのhttpスキーマリクエストでもProxyが適用されるように
+* DNSキャッシュとKeep-Alive適用箇所を増やす
+* ドイツ語と中国語（繁体）を有効に
+* NSFWを再度隠せるように
+* Implement AiScript scratchpad (/scratchpad)
+
+### 🐛Fixes
+* APのurl処理の修正
+
+12.29.0 (2020/4/5)
+-------------------
+### ✨Improvements
+* トークン系の乱数ソースではcryptoを使うように
+* broadcast stream が追加され emojiAdded イベントをサポート
+* APIリファレンスの高速化等
+* Ability to set header image for a Page
+* ログの改善
+
+### 🐛Fixes
+* アプリ一覧に1回も使用していないアプリが表示されないのを修正
+* admin/accounts/createで一般ユーザーがアカウントを作成し放題なのを修正
+* 翻訳の未適用箇所を修正
+* APIの権限設定漏れを修正
+* インストール直後にアクティビティが飛んで来たりするともう初期管理者セットアップがができなくなるのを修正
+* リモート投稿でurlがあればそちらをリンクするように修正
+
+12.28.0 (2020/3/29)
+-------------------
+### ✨Improvements
+* インストールされたアプリのページでアプリの権限を確認できるように
+* API: api/meta.features.miauthを追加  
+  MiAuthに対応しているかどうかを確認するために利用できます。  
+  値はつねにtrueを取ります。
+* インスタンス一覧でソートできるように 
+
+12.27.1 (2020/03/28)
+-------------------
+
+### ✨Improvements
+* MiAuthのバグを修正
+
+12.27.0 (2020/03/28)
+-------------------
+
+### ✨Improvements
+* サードパーティーアプリケーションの認証方法にMiAuthを追加 ([Misskey API ドキュメント](https://github.com/syuilo/misskey/blob/b8088dc01a0c53b264c0697082ff5b16b06c4cda/src/docs/api.ja-JP.md#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%81%97%E3%81%A6%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B))  
+  従来の、API `app/create` => `auth/session/generate` => `auth/session/userkey` を使用する方法は依然として使用可能です。  
+UIからアプリを作成する画面 (`/dev/apps`) は廃止されました、同等の操作を行いたい場合は API `app/create` で可能です。  
+  MiAuthに対応しているかどうかは`api/meta.features.miauth`で確認できます（12.28.0～）。
+* テーマをインポートする前にプレビューできるように
+* アプリから通知を作成できるように
+* インストールしたアプリを見たり削除したりできるように
+
+12.26.0 (2020/03/25)
+-------------------
+
+### ✨Improvements
+* ロゴが新しく
+* インスタンス設定の「ユーザー」が登録の逆順で表示されるように
+
+### 🐛Fixes
+* 新規登録フォームの「利用規約」のリンク色が通常の文字と同じだった問題を修正
+* ダークモードの同期の問題を修正
+
+12.25.0 (2020/03/24)
+-------------------
+
+### ✨Improvements
+* テーマインポート機能を実装
+
+### 🐛Fixes
+* 誰もフォローしていないときにタイムラインの読み込みが遅い問題を修正
+
+
+12.24.2 (2020/03/22)
+-------------------
+
+### 🐛Fixes
+* ダークモードの同期を修正
+
+12.24.1 (2020/03/22)
+-------------------
+
+### ✨Improvements
+* SVG形式のアイコンファイルを追加
+
+### 🐛Fixes
+* iOSで起動できない問題を修正
+* Pages画面にタイトルがない問題を修正
+
+12.24.0 (2020/03/22)
+-------------------
+
+### ✨Improvements
+* クライアント設定にアカウント設定へのリンクを追加
+* ダークモードの同期を強化
+
+### 🐛Fixes
+* 画面が小さいとメニューがすべて見えない問題を修正
+
+12.23.0 (2020/03/22)
+-------------------
+
+### ✨Improvements
+* 削除して編集できるように
+* 基底テーマ分離
+* 端末がダークモードか否かでテーマを切り替えられるように
+
+### 🐛Fixes
+* ユーザー名のサジェストをアクティブであるユーザー順に表示するのがうまくいっていないのを修正
+* 招待コードが発行できない問題を修正
+* CIが通らない問題を修正
+
+12.22.0 (2020/03/21)
+-------------------
+
+### ✨Improvements
+* Web UI のデザインを大幅に変更
+* 通知のポップアップ表示を廃止
+* リモートユーザーであっても投稿数、フォロー・フォロワー数を表示
+* リモートユーザーであるという警告を投稿ページでも表示
+* ユーザー名のサジェストをアクティブであるユーザー順に表示
+* 通知音の音量スライダーなど、スライダーへのデザイン適用
+* リアクション設定機能を刷新
+* 同じホットキーが連続で発動しないように
+* 同じノートを何回リノートしても一回として数えるように
+* ElasticSearch で認証ができるように
+
+### 🐛Fixes
+
+* ユーザー名を設定していないユーザーのノートページのタイトルが「のノート」になる問題を修正
+* ソーシャルアカウントでの連携ログインができない問題を修正
+* アプリ認証画面でログインしたときに正常に遷移できない問題を修正
+* オブジェクトストレージでS3のvirtual-host形式のサポートなど
+* GIF 画像のバッジの色合いを修正
+* ノートのテキストがMFMの使い方によってははみ出る問題を修正
+* ダークテーマ利用時にセレクトが使いにくくなる問題を修正
+* ボリュームを0にしてもサウンドが鳴動している問題を修正
+* 検索窓のスタイルが適用されていなかった問題を修正
+
 12.21.0 (2020/02/23)
 -------------------
 ### ✨Improvements
+* タイムラインに挿入されるおすすめノートに自分がリアクションしたものは含めないように
 * ノートのメニューに詳細ページへのリンクを追加
 * UIの調整
 

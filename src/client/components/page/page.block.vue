@@ -1,5 +1,5 @@
 <template>
-<component :is="'x-' + value.type" :value="value" :page="page" :script="script" :key="value.id" :h="h"/>
+<component :is="'x-' + value.type" :value="value" :page="page" :hpml="hpml" :key="value.id" :h="h"/>
 </template>
 
 <script lang="ts">
@@ -17,16 +17,17 @@ import XTextarea from './page.textarea.vue';
 import XPost from './page.post.vue';
 import XCounter from './page.counter.vue';
 import XRadioButton from './page.radio-button.vue';
+import XCanvas from './page.canvas.vue';
 
 export default Vue.extend({
 	components: {
-		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton
+		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton, XCanvas
 	},
 	props: {
 		value: {
 			required: true
 		},
-		script: {
+		hpml: {
 			required: true
 		},
 		page: {

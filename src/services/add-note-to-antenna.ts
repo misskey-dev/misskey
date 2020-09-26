@@ -2,7 +2,7 @@ import { Antenna } from '../models/entities/antenna';
 import { Note } from '../models/entities/note';
 import { AntennaNotes, Mutings, Notes } from '../models';
 import { genId } from '../misc/gen-id';
-import shouldMuteThisNote from '../misc/should-mute-this-note';
+import { isMutedUserRelated } from '../misc/is-muted-user-related';
 import { ensure } from '../prelude/ensure';
 import { publishAntennaStream, publishMainStream } from './stream';
 import { User } from '../models/entities/user';
@@ -28,6 +28,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 			select: ['muteeId']
 		});
 
+		// Copy
 		const _note: Note = {
 			...note
 		};
@@ -38,8 +39,8 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 		if (note.renoteId != null) {
 			_note.renote = await Notes.findOne(note.renoteId).then(ensure);
 		}
-		
-		if (shouldMuteThisNote(_note, mutings.map(x => x.muteeId))) {
+
+		if (isMutedUserRelated(_note, mutings.map(x => x.muteeId))) {
 			return;
 		}
 

@@ -124,14 +124,13 @@ export default Vue.extend({
 	&.primary {
 		color: #fff;
 		background: var(--accent);
-		box-shadow: 0 6px 16px var(--accentShadow);
 
 		&:not(:disabled):hover {
-			background: var(--jkhztclx);
+			background: var(--X8);
 		}
 
 		&:not(:disabled):active {
-			background: var(--jkhztclx);
+			background: var(--X8);
 		}
 	}
 

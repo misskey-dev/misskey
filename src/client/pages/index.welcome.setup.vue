@@ -25,10 +25,8 @@ import { faLock } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '../components/ui/button.vue';
 import MkInput from '../components/ui/input.vue';
 import { host } from '../config';
-import i18n from '../i18n';
 
 export default Vue.extend({
-	i18n,
 	
 	components: {
 		MkButton,
@@ -61,7 +59,7 @@ export default Vue.extend({
 
 				this.$root.dialog({
 					type: 'error',
-					text: this.$t('some-error')
+					text: this.$t('error')
 				});
 			});
 		}

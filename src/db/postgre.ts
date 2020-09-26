@@ -38,7 +38,7 @@ import { FollowRequest } from '../models/entities/follow-request';
 import { Emoji } from '../models/entities/emoji';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 import { ReversiMatching } from '../models/entities/games/reversi/matching';
-import { UserNotePining } from '../models/entities/user-note-pinings';
+import { UserNotePining } from '../models/entities/user-note-pining';
 import { Poll } from '../models/entities/poll';
 import { UserKeypair } from '../models/entities/user-keypair';
 import { UserPublickey } from '../models/entities/user-publickey';
@@ -57,6 +57,12 @@ import { Antenna } from '../models/entities/antenna';
 import { AntennaNote } from '../models/entities/antenna-note';
 import { PromoNote } from '../models/entities/promo-note';
 import { PromoRead } from '../models/entities/promo-read';
+import { program } from '../argv';
+import { Relay } from '../models/entities/relay';
+import { MutedNote } from '../models/entities/muted-note';
+import { Channel } from '../models/entities/channel';
+import { ChannelFollowing } from '../models/entities/channel-following';
+import { ChannelNotePining } from '../models/entities/channel-note-pining';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -68,7 +74,9 @@ class MyCustomLogger implements Logger {
 	}
 
 	public logQuery(query: string, parameters?: any[]) {
-		sqlLogger.info(this.highlight(query));
+		if (program.verbose) {
+			sqlLogger.info(this.highlight(query));
+		}
 	}
 
 	public logQueryError(error: string, query: string, parameters?: any[]) {
@@ -146,16 +154,23 @@ export const entities = [
 	PromoRead,
 	ReversiGame,
 	ReversiMatching,
+	Relay,
+	MutedNote,
+	Channel,
+	ChannelFollowing,
+	ChannelNotePining,
 	...charts as any
 ];
 
-export function initDb(justBorrow = false, sync = false, log = false, forceRecreate = false) {
+export function initDb(justBorrow = false, sync = false, forceRecreate = false) {
 	if (!forceRecreate) {
 		try {
 			const conn = getConnection();
 			return Promise.resolve(conn);
 		} catch (e) {}
 	}
+
+	const log = process.env.NODE_ENV != 'production';
 
 	return createConnection({
 		type: 'postgres',

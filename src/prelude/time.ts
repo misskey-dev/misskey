@@ -1,17 +1,25 @@
 const dateTimeIntervals = {
-	'days': 86400000,
-	'hours': 3600000,
+	'day': 86400000,
+	'hour': 3600000,
+	'ms': 1,
 };
 
-export function DateUTC(time: number[]): Date {
-	const r = new Date(0);
-	r.setUTCFullYear(time[0], time[1], time[2]);
-	if (time[3]) r.setUTCHours(time[3], ...time.slice(4));
-	return r;
+export function dateUTC(time: number[]): Date {
+	const d = time.length === 2 ? Date.UTC(time[0], time[1])
+					: time.length === 3 ? Date.UTC(time[0], time[1], time[2])
+					: time.length === 4 ? Date.UTC(time[0], time[1], time[2], time[3])
+					: time.length === 5 ? Date.UTC(time[0], time[1], time[2], time[3], time[4])
+					: time.length === 6 ? Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5])
+					: time.length === 7 ? Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5], time[6])
+					: null;
+
+	if (!d) throw 'wrong number of arguments';
+
+	return new Date(d);
 }
 
 export function isTimeSame(a: Date, b: Date): boolean {
-	return (a.getTime() - b.getTime()) === 0;
+	return a.getTime() === b.getTime();
 }
 
 export function isTimeBefore(a: Date, b: Date): boolean {
@@ -22,10 +30,10 @@ export function isTimeAfter(a: Date, b: Date): boolean {
 	return (a.getTime() - b.getTime()) > 0;
 }
 
-export function addTimespan(x: Date, value: number, span: keyof typeof dateTimeIntervals): Date {
+export function addTime(x: Date, value: number, span: keyof typeof dateTimeIntervals = 'ms'): Date {
 	return new Date(x.getTime() + (value * dateTimeIntervals[span]));
 }
 
-export function subtractTimespan(x: Date, value: number, span: keyof typeof dateTimeIntervals): Date {
+export function subtractTime(x: Date, value: number, span: keyof typeof dateTimeIntervals = 'ms'): Date {
 	return new Date(x.getTime() - (value * dateTimeIntervals[span]));
 }

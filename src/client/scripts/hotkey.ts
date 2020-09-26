@@ -57,9 +57,9 @@ const ignoreElemens = ['input', 'textarea'];
 function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
 	const key = e.code.toLowerCase();
 	return patterns.some(pattern => pattern.which.includes(key) &&
-		pattern.ctrl == e.ctrlKey &&
-		pattern.shift == e.shiftKey &&
-		pattern.alt == e.altKey &&
+		pattern.ctrl === e.ctrlKey &&
+		pattern.shift === e.shiftKey &&
+		pattern.alt === e.altKey &&
 		!e.metaKey
 	);
 }
@@ -80,6 +80,7 @@ export default {
 				el._keyHandler = (e: KeyboardEvent) => {
 					const targetReservedKeys = document.activeElement ? ((document.activeElement as any)._misskey_reservedKeys || []) : [];
 					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
+					if (document.activeElement && document.activeElement.attributes['contenteditable']) return;
 
 					for (const action of actions) {
 						const matched = match(e, action.patterns);

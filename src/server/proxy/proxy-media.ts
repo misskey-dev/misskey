@@ -3,7 +3,7 @@ import * as Koa from 'koa';
 import { serverLogger } from '..';
 import { IImage, convertToPng, convertToJpeg } from '../../services/drive/image-processor';
 import { createTemp } from '../../misc/create-temp';
-import { downloadUrl } from '../../misc/donwload-url';
+import { downloadUrl } from '../../misc/download-url';
 import { detectType } from '../../misc/get-file-info';
 
 export async function proxyMedia(ctx: Koa.Context) {
@@ -21,7 +21,7 @@ export async function proxyMedia(ctx: Koa.Context) {
 
 		let image: IImage;
 
-		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(mime)) {
+		if ('static' in ctx.query && ['image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng', 'image/webp'].includes(mime)) {
 			image = await convertToPng(path, 498, 280);
 		} else if ('preview' in ctx.query && ['image/jpeg', 'image/png', 'image/gif', 'image/apng', 'image/vnd.mozilla.apng'].includes(mime)) {
 			image = await convertToJpeg(path, 200, 200);

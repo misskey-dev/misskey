@@ -5,8 +5,10 @@
 .vscode
 Dockerfile
 build/
+built/
 db/
 docker-compose.yml
 elasticsearch/
 node_modules/
 redis/
+files/

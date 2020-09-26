@@ -85,6 +85,12 @@ export class Page {
 	})
 	public variables: Record<string, any>[];
 
+	@Column('varchar', {
+		length: 16384,
+		default: ''
+	})
+	public script: string;
+
 	/**
 	 * public ... 公開
 	 * followers ... フォロワーのみ

@@ -68,7 +68,7 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onOpen() {
-		const isReconnect = this.state == 'reconnecting';
+		const isReconnect = this.state === 'reconnecting';
 
 		this.state = 'connected';
 		this.emit('_connected_');
@@ -87,7 +87,7 @@ export default class Stream extends EventEmitter {
 	 */
 	@autobind
 	private onClose() {
-		if (this.state == 'connected') {
+		if (this.state === 'connected') {
 			this.state = 'reconnecting';
 			this.emit('_disconnected_');
 		}
@@ -100,7 +100,7 @@ export default class Stream extends EventEmitter {
 	private onMessage(message) {
 		const { type, body } = JSON.parse(message.data);
 
-		if (type == 'channel') {
+		if (type === 'channel') {
 			const id = body.id;
 
 			let connections: Connection[];
@@ -112,10 +112,10 @@ export default class Stream extends EventEmitter {
 			}
 
 			for (const c of connections.filter(c => c != null)) {
-				c.emit(body.type, body.body);
+				c.emit(body.type, Object.freeze(body.body));
 			}
 		} else {
-			this.emit(type, body);
+			this.emit(type, Object.freeze(body));
 		}
 	}
 

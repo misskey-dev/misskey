@@ -14,6 +14,7 @@ import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
 import { ensure } from '../../../../prelude/ensure';
+import { notificationTypes } from '../../../../types';
 
 export const meta = {
 	desc: {
@@ -142,7 +143,15 @@ export const meta = {
 			desc: {
 				'ja-JP': 'ピン留めするページID'
 			}
-		}
+		},
+
+		mutedWords: {
+			validator: $.optional.arr($.arr($.str))
+		},
+
+		mutingNotificationTypes: {
+			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[]))
+		},
 	},
 
 	errors: {
@@ -178,8 +187,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, app) => {
-	const isSecure = user != null && app == null;
+export default define(meta, async (ps, user, token) => {
+	const isSecure = token == null;
 
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
@@ -193,14 +202,19 @@ export default define(meta, async (ps, user, app) => {
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
 	if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
-	if (typeof ps.isLocked == 'boolean') updates.isLocked = ps.isLocked;
-	if (typeof ps.isBot == 'boolean') updates.isBot = ps.isBot;
-	if (typeof ps.carefulBot == 'boolean') profileUpdates.carefulBot = ps.carefulBot;
-	if (typeof ps.autoAcceptFollowed == 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
-	if (typeof ps.isCat == 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch == 'boolean') profileUpdates.autoWatch = ps.autoWatch;
-	if (typeof ps.injectFeaturedNote == 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
-	if (typeof ps.alwaysMarkNsfw == 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (ps.mutedWords !== undefined) {
+		profileUpdates.mutedWords = ps.mutedWords;
+		profileUpdates.enableWordMute = ps.mutedWords.length > 0;
+	}
+	if (ps.mutingNotificationTypes !== undefined) profileUpdates.mutingNotificationTypes = ps.mutingNotificationTypes as typeof notificationTypes[number][];
+	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
+	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
+	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
+	if (typeof ps.autoWatch === 'boolean') profileUpdates.autoWatch = ps.autoWatch;
+	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
+	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);
@@ -210,8 +224,8 @@ export default define(meta, async (ps, user, app) => {
 
 		updates.avatarUrl = DriveFiles.getPublicUrl(avatar, true);
 
-		if (avatar.properties.avgColor) {
-			updates.avatarColor = avatar.properties.avgColor;
+		if (avatar.blurhash) {
+			updates.avatarBlurhash = avatar.blurhash;
 		}
 	}
 
@@ -223,8 +237,8 @@ export default define(meta, async (ps, user, app) => {
 
 		updates.bannerUrl = DriveFiles.getPublicUrl(banner, false);
 
-		if (banner.properties.avgColor) {
-			updates.bannerColor = banner.properties.avgColor;
+		if (banner.blurhash) {
+			updates.bannerBlurhash = banner.blurhash;
 		}
 	}
 

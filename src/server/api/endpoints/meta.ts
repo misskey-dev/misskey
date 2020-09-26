@@ -99,6 +99,8 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
+	const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
@@ -122,6 +124,8 @@ export default define(meta, async (ps, me) => {
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
 		cacheRemoteFiles: instance.cacheRemoteFiles,
 		proxyRemoteFiles: instance.proxyRemoteFiles,
+		enableHcaptcha: instance.enableHcaptcha,
+		hcaptchaSiteKey: instance.hcaptchaSiteKey,
 		enableRecaptcha: instance.enableRecaptcha,
 		recaptchaSiteKey: instance.recaptchaSiteKey,
 		swPublickey: instance.swPublicKey,
@@ -130,14 +134,10 @@ export default define(meta, async (ps, me) => {
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
-		emojis: emojis.map(e => ({
-			id: e.id,
-			aliases: e.aliases,
-			name: e.name,
-			category: e.category,
-			url: e.url,
-		})),
-		requireSetup: (await Users.count({})) === 0,
+		emojis: await Emojis.packMany(emojis),
+		requireSetup: (await Users.count({
+			host: null,
+		})) === 0,
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,
@@ -145,6 +145,8 @@ export default define(meta, async (ps, me) => {
 		enableDiscordIntegration: instance.enableDiscordIntegration,
 
 		enableServiceWorker: instance.enableServiceWorker,
+
+		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 	};
 
 	if (ps.detail) {
@@ -153,12 +155,14 @@ export default define(meta, async (ps, me) => {
 			localTimeLine: !instance.disableLocalTimeline,
 			globalTimeLine: !instance.disableGlobalTimeline,
 			elasticsearch: config.elasticsearch ? true : false,
+			hcaptcha: instance.enableHcaptcha,
 			recaptcha: instance.enableRecaptcha,
 			objectStorage: instance.useObjectStorage,
 			twitter: instance.enableTwitterIntegration,
 			github: instance.enableGithubIntegration,
 			discord: instance.enableDiscordIntegration,
 			serviceWorker: instance.enableServiceWorker,
+			miauth: true,
 		};
 	}
 
@@ -167,6 +171,7 @@ export default define(meta, async (ps, me) => {
 		response.pinnedUsers = instance.pinnedUsers;
 		response.hiddenTags = instance.hiddenTags;
 		response.blockedHosts = instance.blockedHosts;
+		response.hcaptchaSecretKey = instance.hcaptchaSecretKey;
 		response.recaptchaSecretKey = instance.recaptchaSecretKey;
 		response.proxyAccountId = instance.proxyAccountId;
 		response.twitterConsumerKey = instance.twitterConsumerKey;
@@ -193,6 +198,8 @@ export default define(meta, async (ps, me) => {
 		response.objectStorageAccessKey = instance.objectStorageAccessKey;
 		response.objectStorageSecretKey = instance.objectStorageSecretKey;
 		response.objectStorageUseSSL = instance.objectStorageUseSSL;
+		response.objectStorageUseProxy = instance.objectStorageUseProxy;
+		response.objectStorageSetPublicRead = instance.objectStorageSetPublicRead;
 	}
 
 	return response;

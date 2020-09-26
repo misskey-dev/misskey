@@ -21,12 +21,10 @@ import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import MkInput from '../../components/ui/input.vue';
 import MkButton from '../../components/ui/button.vue';
 import MkReactionPicker from '../../components/reaction-picker.vue';
-import i18n from '../../i18n';
 import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
+import { defaultSettings } from '../../store';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		MkInput,
 		MkButton,
@@ -40,16 +38,16 @@ export default Vue.extend({
 		}
 	},
 
-	watch: {
-		reactions() {
-			this.changed = true;
-		}
-	},
-
 	computed: {
 		splited(): any {
 			return this.reactions.match(emojiRegexWithCustom);
 		},
+	},
+
+	watch: {
+		reactions() {
+			this.changed = true;
+		}
 	},
 
 	methods: {
@@ -70,7 +68,7 @@ export default Vue.extend({
 		},
 
 		setDefault() {
-			this.reactions = '👍❤😆🤔😮🎉💢😥😇🍮';
+			this.reactions = defaultSettings.reactions.join('');
 		},
 
 		async chooseEmoji(ev) {

@@ -11,5 +11,6 @@
 		bg: 'rgb(220, 229, 232)',
 		fg: 'rgb(139, 153, 161)',
 		renote: '@accent',
+		panelHeaderDivider: '@divider',
 	},
 }

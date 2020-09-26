@@ -1,7 +1,7 @@
 <template>
-<div class="ulveipglmagnxfgvitaxyszerjwiqmwl">
+<div class="ulveipgl">
 	<transition :name="$store.state.device.animation ? 'form-fade' : ''" appear @after-leave="$emit('closed');">
-		<div class="bg" ref="bg" v-if="show" @click="close()"></div>
+		<div class="bg _modalBg" ref="bg" v-if="show" @click="close()"></div>
 	</transition>
 	<div class="main" ref="main" @click.self="close()" @keydown="onKeydown">
 		<transition :name="$store.state.device.animation ? 'form' : ''" appear
@@ -16,8 +16,10 @@
 				:initial-text="initialText"
 				:initial-note="initialNote"
 				:instant="instant"
+				:channel="channel"
 				@posted="onPosted"
-				@cancel="onCanceled"/>
+				@cancel="onCanceled"
+				style="border-radius: var(--radius);"/>
 		</transition>
 	</div>
 </div>
@@ -61,7 +63,11 @@ export default Vue.extend({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		channel: {
+			type: Object,
+			required: false
+		},
 	},
 
 	data() {
@@ -118,16 +124,9 @@ export default Vue.extend({
 	opacity: 0;
 }
 
-.ulveipglmagnxfgvitaxyszerjwiqmwl {
+.ulveipgl {
 	> .bg {
-		display: block;
-		position: fixed;
 		z-index: 10000;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(#000, 0.7);
 	}
 
 	> .main {

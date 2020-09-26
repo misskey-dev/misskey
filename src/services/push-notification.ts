@@ -2,8 +2,13 @@ import * as push from 'web-push';
 import config from '../config';
 import { SwSubscriptions } from '../models';
 import { fetchMeta } from '../misc/fetch-meta';
+import { PackedNotification } from '../models/repositories/notification';
+import { PackedMessagingMessage } from '../models/repositories/messaging-message';
 
-export default async function(userId: string, type: string, body?: any) {
+type notificationType = 'notification' | 'unreadMessagingMessage';
+type notificationBody = PackedNotification | PackedMessagingMessage;
+
+export default async function(userId: string, type: notificationType, body: notificationBody) {
 	const meta = await fetchMeta();
 
 	if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
@@ -36,7 +41,7 @@ export default async function(userId: string, type: string, body?: any) {
 			//swLogger.info(err.headers);
 			//swLogger.info(err.body);
 
-			if (err.statusCode == 410) {
+			if (err.statusCode === 410) {
 				SwSubscriptions.delete({
 					userId: userId,
 					endpoint: subscription.endpoint,

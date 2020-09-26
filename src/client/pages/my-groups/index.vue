@@ -8,7 +8,7 @@
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('ownedGroups') }}</template>
 		<mk-pagination :pagination="ownedPagination" #default="{items}" ref="owned">
-			<div class="_frame" v-for="group in items" :key="group.id">
+			<div class="_card" v-for="group in items" :key="group.id">
 				<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
 				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
 			</div>
@@ -18,7 +18,7 @@
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
 		<mk-pagination :pagination="invitationPagination" #default="{items}" ref="invitations">
-			<div class="_frame" v-for="invitation in items" :key="invitation.id">
+			<div class="_card" v-for="invitation in items" :key="invitation.id">
 				<div class="_title">{{ invitation.group.name }}</div>
 				<div class="_content"><mk-avatars :user-ids="invitation.group.userIds"/></div>
 				<div class="_footer">
@@ -32,7 +32,7 @@
 	<mk-container :body-togglable="true">
 		<template #header><fa :icon="faUsers"/> {{ $t('joinedGroups') }}</template>
 		<mk-pagination :pagination="joinedPagination" #default="{items}" ref="joined">
-			<div class="_frame" v-for="group in items" :key="group.id">
+			<div class="_card" v-for="group in items" :key="group.id">
 				<div class="_title">{{ group.name }}</div>
 				<div class="_content"><mk-avatars :user-ids="group.userIds"/></div>
 			</div>

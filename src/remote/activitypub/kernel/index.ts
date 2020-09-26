@@ -1,4 +1,4 @@
-import { IObject, isCreate, isDelete, isUpdate, isRead, isFollow, isAccept, isReject, isAdd, isRemove, isAnnounce, isLike, isUndo, isBlock, isCollectionOrOrderedCollection, isCollection } from '../type';
+import { IObject, isCreate, isDelete, isUpdate, isRead, isFollow, isAccept, isReject, isAdd, isRemove, isAnnounce, isLike, isUndo, isBlock, isCollectionOrOrderedCollection, isCollection, isFlag } from '../type';
 import { IRemoteUser } from '../../../models/entities/user';
 import create from './create';
 import performDeleteActivity from './delete';
@@ -13,6 +13,7 @@ import reject from './reject';
 import add from './add';
 import remove from './remove';
 import block from './block';
+import flag from './flag';
 import { apLogger } from '../logger';
 import Resolver from '../resolver';
 import { toArray } from '../../../prelude/array';
@@ -62,7 +63,9 @@ async function performOneActivity(actor: IRemoteUser, activity: IObject): Promis
 		await undo(actor, activity);
 	} else if (isBlock(activity)) {
 		await block(actor, activity);
+	} else if (isFlag(activity)) {
+		await flag(actor, activity);
 	} else {
-		apLogger.warn(`unknown activity type: ${(activity as any).type}`);
+		apLogger.warn(`unrecognized activity type: ${(activity as any).type}`);
 	}
 }

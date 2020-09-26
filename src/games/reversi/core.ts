@@ -226,10 +226,10 @@ export default class Reversi {
 				// 座標が指し示す位置がボード外に出たとき
 				if (this.opts.loopedBoard && this.transformXyToPos(
 					(x = ((x % this.mapWidth) + this.mapWidth) % this.mapWidth),
-					(y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight)) == initPos)
+					(y = ((y % this.mapHeight) + this.mapHeight) % this.mapHeight)) === initPos)
 						// 盤面の境界でループし、自分が石を置く位置に戻ってきたとき、挟めるようにしている (ref: Test4のマップ)
 					return found;
-				else if (x == -1 || y == -1 || x == this.mapWidth || y == this.mapHeight)
+				else if (x === -1 || y === -1 || x === this.mapWidth || y === this.mapHeight)
 					return []; // 挟めないことが確定 (盤面外に到達)
 
 				const pos = this.transformXyToPos(x, y);

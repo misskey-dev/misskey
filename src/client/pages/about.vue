@@ -25,12 +25,9 @@
 import Vue from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { version } from '../config';
-import i18n from '../i18n';
 import MkInstanceStats from '../components/instance-stats.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('instance') as string

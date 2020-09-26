@@ -2,7 +2,7 @@
 <x-container :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn" :draggable="draggable">
 	<template #header><fa v-if="icon" :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
-		<button @click="changeType()">
+		<button @click="changeType()" class="_button">
 			<fa :icon="faPencilAlt"/>
 		</button>
 	</template>
@@ -24,30 +24,33 @@
 	</section>
 	<section v-else-if="value.type === 'ref'" class="hpdwcrvs">
 		<select v-model="value.value">
-			<option v-for="v in aiScript.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$t('_pages.script.argVariables')">
 				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
 			</optgroup>
 			<optgroup :label="$t('_pages.script.pageVariables')">
-				<option v-for="v in aiScript.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$t('_pages.script.enviromentVariables')">
-				<option v-for="v in aiScript.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
+	</section>
+	<section v-else-if="value.type === 'aiScriptVar'" class="tbwccoaw">
+		<input v-model="value.value"/>
 	</section>
 	<section v-else-if="value.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
 		<mk-textarea v-model="slots">
 			<span>{{ $t('_pages.script.blocks._fn.slots') }}</span>
 			<template #desc>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</mk-textarea>
-		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :ai-script="aiScript" :fn-slots="value.value.slots" :name="name"/>
+		<x-v v-if="value.value.expression" v-model="value.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="value.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="value.type.startsWith('fn:')" class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="aiScript.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :ai-script="aiScript" :name="name" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="hpml.getVarByName(value.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name" :key="i"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`_pages.script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :ai-script="aiScript" :name="name" :fn-slots="fnSlots" :key="i"/>
+		<x-v v-for="(x, i) in value.args" v-model="value.args[i]" :title="$t(`_pages.script.blocks._${value.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots" :key="i"/>
 	</section>
 </x-container>
 </template>
@@ -56,14 +59,11 @@
 import Vue from 'vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
-import i18n from '../../i18n';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '../../components/ui/textarea.vue';
-import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/aiscript/index';
+import { isLiteralBlock, funcDefs, blockDefs } from '../../scripts/hpml/index';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XContainer, MkTextarea
 	},
@@ -85,7 +85,7 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-		aiScript: {
+		hpml: {
 			required: true,
 		},
 		name: {
@@ -153,7 +153,7 @@ export default Vue.extend({
 
 			if (this.value.type && this.value.type.startsWith('fn:')) {
 				const fnName = this.value.type.split(':')[1];
-				const fn = this.aiScript.getVarByName(fnName);
+				const fn = this.hpml.getVarByName(fnName);
 
 				const empties = [];
 				for (let i = 0; i < fn.value.slots.length; i++) {
@@ -199,9 +199,9 @@ export default Vue.extend({
 			deep: true
 		});
 
-		this.$watch('aiScript.variables', () => {
+		this.$watch('hpml.variables', () => {
 			if (this.type != null && this.value) {
-				this.error = this.aiScript.typeCheck(this.value);
+				this.error = this.hpml.typeCheck(this.value);
 			}
 		}, {
 			deep: true
@@ -212,7 +212,7 @@ export default Vue.extend({
 		async changeType() {
 			const { canceled, result: type } = await this.$root.dialog({
 				type: null,
-				title: this.$t('select-type'),
+				title: this.$t('_pages.selectType'),
 				select: {
 					groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 				},
@@ -223,7 +223,7 @@ export default Vue.extend({
 		},
 
 		_getExpectedType(slot: number) {
-			return this.aiScript.getExpectedType(this.value, slot);
+			return this.hpml.getExpectedType(this.value, slot);
 		}
 	}
 });
@@ -258,6 +258,7 @@ export default Vue.extend({
 		font-size: 16px;
 		background: transparent;
 		color: var(--fg);
+		box-sizing: border-box;
 	}
 
 	> textarea {

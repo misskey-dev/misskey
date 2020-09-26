@@ -1,11 +1,14 @@
 <template>
 <div class="mk-federation">
+	<portal to="icon"><fa :icon="faGlobe"/></portal>
+	<portal to="title">{{ $t('federation') }}</portal>
+
 	<section class="_card instances">
-		<div class="_title"><fa :icon="faGlobe"/> {{ $t('instances') }}</div>
 		<div class="_content">
+			<mk-input v-model="host" :debounce="true"><span>{{ $t('host') }}</span></mk-input>
 			<div class="inputs" style="display: flex;">
-				<mk-input v-model="host" :debounce="true" style="margin: 0; flex: 1;"><span>{{ $t('host') }}</span></mk-input>
-				<mk-select v-model="state" style="margin: 0;">
+				<mk-select v-model="state" style="margin: 0; flex: 1;">
+					<template #label>{{ $t('state') }}</template>
 					<option value="all">{{ $t('all') }}</option>
 					<option value="federating">{{ $t('federating') }}</option>
 					<option value="subscribing">{{ $t('subscribing') }}</option>
@@ -14,11 +17,32 @@
 					<option value="blocked">{{ $t('blocked') }}</option>
 					<option value="notResponding">{{ $t('notResponding') }}</option>
 				</mk-select>
+				<mk-select v-model="sort" style="margin: 0; flex: 1;">
+					<template #label>{{ $t('sort') }}</template>
+					<option value="+pubSub">{{ $t('pubSub') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-pubSub">{{ $t('pubSub') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+notes">{{ $t('notes') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-notes">{{ $t('notes') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+users">{{ $t('users') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-users">{{ $t('users') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+following">{{ $t('following') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-following">{{ $t('following') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+followers">{{ $t('followers') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-followers">{{ $t('followers') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+caughtAt">{{ $t('caughtAt') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-caughtAt">{{ $t('caughtAt') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+lastCommunicatedAt">{{ $t('lastCommunicatedAt') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-lastCommunicatedAt">{{ $t('lastCommunicatedAt') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+driveUsage">{{ $t('driveUsage') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-driveUsage">{{ $t('driveUsage') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+driveFiles">{{ $t('driveFiles') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-driveFiles">{{ $t('driveFiles') }} ({{ $t('ascendingOrder') }})</option>
+				</mk-select>
 			</div>
 		</div>
 		<div class="_content">
 			<mk-pagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
-				<div class="instance" v-for="(instance, i) in items" :key="instance.id" @click="info(instance)">
+				<div class="instance" v-for="instance in items" :key="instance.id" @click="info(instance)">
 					<div class="host"><fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
 						<span class="sub" v-if="instance.followersCount > 0"><fa :icon="faCaretDown" class="icon"/>Sub</span>
@@ -38,16 +62,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../../i18n';
 import MkButton from '../../components/ui/button.vue';
 import MkInput from '../../components/ui/input.vue';
 import MkSelect from '../../components/ui/select.vue';
 import MkPagination from '../../components/ui/pagination.vue';
-import MkInstanceInfo from './federation.instance.vue';
+import MkInstanceInfo from './instance.vue';
 
 export default Vue.extend({
-	i18n,
-
 	metaInfo() {
 		return {
 			title: this.$t('federation') as string

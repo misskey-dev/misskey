@@ -6,9 +6,10 @@ import { IdentifiableError } from '../../misc/identifiable-error';
 import { User } from '../../models/entities/user';
 import { Note } from '../../models/entities/note';
 import { Notes, UserNotePinings, Users } from '../../models';
-import { UserNotePining } from '../../models/entities/user-note-pinings';
+import { UserNotePining } from '../../models/entities/user-note-pining';
 import { genId } from '../../misc/gen-id';
 import { deliverToFollowers } from '../../remote/activitypub/deliver-manager';
+import { deliverToRelays } from '../relay';
 
 /**
  * 指定した投稿をピン留めします
@@ -87,4 +88,5 @@ export async function deliverPinnedChange(userId: User['id'], noteId: Note['id']
 	const content = renderActivity(isAddition ? renderAdd(user, target, item) : renderRemove(user, target, item));
 
 	deliverToFollowers(user, content);
+	deliverToRelays(user, content);
 }

@@ -2,6 +2,8 @@ import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typ
 import { User } from './user';
 import { DriveFile } from './drive-file';
 import { id } from '../id';
+import { noteVisibilities } from '../../types';
+import { Channel } from './channel';
 
 @Entity()
 @Index('IDX_NOTE_TAGS', { synchronize: false })
@@ -102,8 +104,8 @@ export class Note {
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
 	 */
-	@Column('enum', { enum: ['public', 'home', 'followers', 'specified'] })
-	public visibility: 'public' | 'home' | 'followers' | 'specified';
+	@Column('enum', { enum: noteVisibilities })
+	public visibility: typeof noteVisibilities[number];
 
 	@Index({ unique: true })
 	@Column('varchar', {
@@ -111,6 +113,12 @@ export class Note {
 		comment: 'The URI of a note. it will be null when the note is local.'
 	})
 	public uri: string | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The human readable url of a note. it will be null when the note is local.'
+	})
+	public url: string | null;
 
 	@Column('integer', {
 		default: 0, select: false
@@ -164,6 +172,20 @@ export class Note {
 		default: false
 	})
 	public hasPoll: boolean;
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true, default: null,
+		comment: 'The ID of source channel.'
+	})
+	public channelId: Channel['id'] | null;
+
+	@ManyToOne(type => Channel, {
+		onDelete: 'CASCADE'
+	})
+	@JoinColumn()
+	public channel: Channel | null;
 
 	//#region Denormalized fields
 	@Index()

@@ -1,13 +1,13 @@
 <template>
-<div class="mk-notifications" :class="{ page }">
+<div class="mfcuwfyp">
 	<x-list class="notifications" :items="items" v-slot="{ item: notification }">
-		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" :key="notification.id"/>
-		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="notification" :class="{ _panel: page }" :key="notification.id"/>
+		<x-note v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @updated="noteUpdated(notification.note, $event)" :key="notification.id"/>
+		<x-notification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</x-list>
 
-	<button class="more _button" v-if="more" @click="fetchMore" :disabled="moreFetching">
+	<button class="_panel _button" ref="loadMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
-		<template v-if="moreFetching"><fa :icon="faSpinner" pulse fixed-width/></template>
+		<template v-if="moreFetching"><mk-loading inline/></template>
 	</button>
 
 	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
@@ -17,17 +17,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import i18n from '../i18n';
+import Vue, { PropType } from 'vue';
 import paging from '../scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
+import { notificationTypes } from '../../types';
 
 export default Vue.extend({
-	i18n,
-
 	components: {
 		XNotification,
 		XList,
@@ -39,15 +36,11 @@ export default Vue.extend({
 	],
 
 	props: {
-		type: {
-			type: String,
-			required: false
-		},
-		page: {
-			type: Boolean,
+		includeTypes: {
+			type: Array as PropType<typeof notificationTypes[number][]>,
 			required: false,
-			default: false
-		}
+			default: null,
+		},
 	},
 
 	data() {
@@ -57,16 +50,26 @@ export default Vue.extend({
 				endpoint: 'i/notifications',
 				limit: 10,
 				params: () => ({
-					includeTypes: this.type ? [this.type] : undefined
+					includeTypes: this.allIncludeTypes || undefined,
 				})
 			},
-			faSpinner
 		};
 	},
 
+	computed: {
+		allIncludeTypes() {
+			return this.includeTypes ?? notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
+		}
+	},
+
 	watch: {
-		type() {
+		includeTypes() {
 			this.reload();
+		},
+		'$store.state.i.mutingNotificationTypes'() {
+			if (this.includeTypes === null) {
+				this.reload();
+			}
 		}
 	},
 
@@ -81,51 +84,34 @@ export default Vue.extend({
 
 	methods: {
 		onNotification(notification) {
-			// TODO: ユーザーが画面を見てないと思われるとき(ブラウザやタブがアクティブじゃないなど)は送信しない
-			this.$root.stream.send('readNotification', {
-				id: notification.id
-			});
+			const isMuted = !this.allIncludeTypes.includes(notification.type);
+			if (isMuted || document.visibilityState === 'visible') {
+				this.$root.stream.send('readNotification', {
+					id: notification.id
+				});
+			}
 
-			this.prepend(notification);
+			if (!isMuted) {
+				this.prepend({
+					...notification,
+					isRead: document.visibilityState === 'visible'
+				});
+			}
+		},
+
+		noteUpdated(oldValue, newValue) {
+			const i = this.items.findIndex(n => n.note === oldValue);
+			Vue.set(this.items, i, {
+				...this.items[i],
+				note: newValue
+			});
 		},
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-notifications {
-	&.page {
-		> .notifications {
-			> ::v-deep * {
-				margin-bottom: var(--margin);
-			}
-		}
-	}
-
-	&:not(.page) {
-		> .notifications {
-			> ::v-deep * {
-				margin-bottom: 8px;
-			}
-
-			> .notification {
-				background: var(--panel);
-				border-radius: 6px;
-				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-			}
-		}
-	}
-
-	> .more {
-		display: block;
-		width: 100%;
-		padding: 16px;
-
-		> [data-icon] {
-			margin-right: 4px;
-		}
-	}
-
+.mfcuwfyp {
 	> .empty {
 		margin: 0;
 		padding: 16px;

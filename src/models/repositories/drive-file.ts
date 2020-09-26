@@ -39,7 +39,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			const key = thumbnail ? file.thumbnailAccessKey : file.webpublicAccessKey;
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
-				return `/files/${key}`;
+				return `${config.url}/files/${key}`;
 			}
 		}
 
@@ -115,6 +115,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			md5: file.md5,
 			size: file.size,
 			isSensitive: file.isSensitive,
+			blurhash: file.blurhash,
 			properties: file.properties,
 			url: opts.self ? file.url : this.getPublicUrl(file, false, meta),
 			thumbnailUrl: this.getPublicUrl(file, true, meta),

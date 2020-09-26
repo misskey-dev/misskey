@@ -1,16 +1,16 @@
 <template>
-<sequential-entrance class="cxiknjgy" :class="{ autoMargin }">
+<div class="cxiknjgy" :class="{ autoMargin }">
 	<slot :items="items"></slot>
 	<div class="empty" v-if="empty" key="_empty_">
 		<slot name="empty"></slot>
 	</div>
-	<div class="more" v-if="more" key="_more_">
-		<mk-button class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" @click="fetchMore()" primary>
+	<div class="more" v-show="more" key="_more_">
+		<mk-button class="button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><mk-loading inline/></template>
 		</mk-button>
 	</div>
-</sequential-entrance>
+</div>
 </template>
 
 <script lang="ts">
@@ -19,13 +19,13 @@ import MkButton from './button.vue';
 import paging from '../../scripts/paging';
 
 export default Vue.extend({
-	mixins: [
-		paging({}),
-	],
-
 	components: {
 		MkButton
 	},
+
+	mixins: [
+		paging({}),
+	],
 
 	props: {
 		pagination: {

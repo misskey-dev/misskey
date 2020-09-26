@@ -27,13 +27,15 @@ export type Source = {
 	elasticsearch: {
 		host: string;
 		port: number;
-		pass: string;
-		index?: string;
 		ssl?: boolean;
+		user?: string;
+		pass?: string;
+		index?: string;
 	};
 
 	proxy?: string;
 	proxySmtp?: string;
+	proxyBypassHosts?: string[];
 
 	accesslog?: string;
 
