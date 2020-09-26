@@ -45,6 +45,7 @@ import DeckColumn from '@/components/deck/column.vue';
 import XSidebar from '@/components/sidebar.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
+import { sidebarDef } from '@/sidebar';
 
 export default defineComponent({
 	components: {
@@ -62,7 +63,7 @@ export default defineComponent({
 			searchQuery: '',
 			searchWait: false,
 			canBack: false,
-			menuDef: this.$store.getters.nav({}),
+			menuDef: sidebarDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
 		};

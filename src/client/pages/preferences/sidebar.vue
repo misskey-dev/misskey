@@ -28,6 +28,7 @@ import MkTextarea from '@/components/ui/textarea.vue';
 import MkRadio from '@/components/ui/radio.vue';
 import { defaultDeviceUserSettings } from '../../store';
 import * as os from '@/os';
+import { sidebarDef } from '@/sidebar';
 
 export default defineComponent({
 	components: {
@@ -38,7 +39,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			menuDef: this.$store.getters.nav({}),
+			menuDef: sidebarDef,
 			items: '',
 			faListUl, faSave, faRedo
 		}

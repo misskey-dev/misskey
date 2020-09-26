@@ -51,6 +51,7 @@ import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regul
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
+import { sidebarDef } from '@/sidebar';
 
 export default defineComponent({
 	data() {
@@ -60,9 +61,7 @@ export default defineComponent({
 			searching: false,
 			accounts: [],
 			connection: null,
-			menuDef: this.$store.getters.nav({
-				search: this.search
-			}),
+			menuDef: sidebarDef,
 			iconOnly: false,
 			hidden: false,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram

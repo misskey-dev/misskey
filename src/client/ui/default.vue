@@ -85,6 +85,7 @@ import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { widgets } from '@/widgets';
 import XSidebar from '@/components/sidebar.vue';
 import * as os from '@/os';
+import { sidebarDef } from '@/sidebar';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -108,7 +109,7 @@ export default defineComponent({
 			widgetsEditMode: false,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
-			menuDef: this.$store.getters.nav({}),
+			menuDef: sidebarDef,
 			navHidden: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram

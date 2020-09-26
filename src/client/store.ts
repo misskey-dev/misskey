@@ -1,10 +1,7 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-import { faSatelliteDish, faTerminal, faHashtag, faBroadcastTower, faFireAlt, faSearch, faStar, faAt, faListUl, faUserClock, faUsers, faCloud, faGamepad, faFileAlt, faSatellite, faDoorClosed, faColumns } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { AiScript, utils, values } from '@syuilo/aiscript';
-import { deckmode } from '@/config';
 import { api } from '@/os';
 import { erase } from '../prelude/array';
 
@@ -126,130 +123,6 @@ export const store = createStore({
 
 	getters: {
 		isSignedIn: state => state.i != null,
-
-		nav: (state, getters) => actions => ({
-			notifications: {
-				title: 'notifications',
-				icon: faBell,
-				get show() { return getters.isSignedIn; },
-				get indicated() { return getters.isSignedIn && state.i.hasUnreadNotification; },
-				to: '/my/notifications',
-			},
-			messaging: {
-				title: 'messaging',
-				icon: faComments,
-				get show() { return getters.isSignedIn; },
-				get indicated() { return getters.isSignedIn && state.i.hasUnreadMessagingMessage; },
-				to: '/my/messaging',
-			},
-			drive: {
-				title: 'drive',
-				icon: faCloud,
-				get show() { return getters.isSignedIn; },
-				to: '/my/drive',
-			},
-			followRequests: {
-				title: 'followRequests',
-				icon: faUserClock,
-				get show() { return getters.isSignedIn && state.i.isLocked; },
-				get indicated() { return getters.isSignedIn && state.i.hasPendingReceivedFollowRequest; },
-				to: '/my/follow-requests',
-			},
-			featured: {
-				title: 'featured',
-				icon: faFireAlt,
-				to: '/featured',
-			},
-			explore: {
-				title: 'explore',
-				icon: faHashtag,
-				to: '/explore',
-			},
-			announcements: {
-				title: 'announcements',
-				icon: faBroadcastTower,
-				get indicated() { return getters.isSignedIn && state.i.hasUnreadAnnouncement; },
-				to: '/announcements',
-			},
-			search: {
-				title: 'search',
-				icon: faSearch,
-				action: () => actions.search(),
-			},
-			lists: {
-				title: 'lists',
-				icon: faListUl,
-				get show() { return getters.isSignedIn; },
-				to: '/my/lists',
-			},
-			groups: {
-				title: 'groups',
-				icon: faUsers,
-				get show() { return getters.isSignedIn; },
-				to: '/my/groups',
-			},
-			antennas: {
-				title: 'antennas',
-				icon: faSatellite,
-				get show() { return getters.isSignedIn; },
-				to: '/my/antennas',
-			},
-			mentions: {
-				title: 'mentions',
-				icon: faAt,
-				get show() { return getters.isSignedIn; },
-				get indicated() { return getters.isSignedIn && state.i.hasUnreadMentions; },
-				to: '/my/mentions',
-			},
-			messages: {
-				title: 'directNotes',
-				icon: faEnvelope,
-				get show() { return getters.isSignedIn; },
-				get indicated() { return getters.isSignedIn && state.i.hasUnreadSpecifiedNotes; },
-				to: '/my/messages',
-			},
-			favorites: {
-				title: 'favorites',
-				icon: faStar,
-				get show() { return getters.isSignedIn; },
-				to: '/my/favorites',
-			},
-			pages: {
-				title: 'pages',
-				icon: faFileAlt,
-				get show() { return getters.isSignedIn; },
-				to: '/my/pages',
-			},
-			channels: {
-				title: 'channel',
-				icon: faSatelliteDish,
-				to: '/channels',
-			},
-			games: {
-				title: 'games',
-				icon: faGamepad,
-				to: '/games',
-			},
-			scratchpad: {
-				title: 'scratchpad',
-				icon: faTerminal,
-				to: '/scratchpad',
-			},
-			rooms: {
-				title: 'rooms',
-				icon: faDoorClosed,
-				get show() { return getters.isSignedIn; },
-				get to() { return `/@${state.i.username}/room`; },
-			},
-			deck: {
-				title: deckmode ? 'undeck' : 'deck',
-				icon: faColumns,
-				action: () => {
-					localStorage.setItem('deckmode', (!deckmode).toString());
-					location.reload();
-				},
-			},
-		}),
 	},
 
 	mutations: {
