@@ -1,5 +1,5 @@
 <template>
-<div class="mk-notes">
+<div class="_list_">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $t('noNotes') }}</div>
@@ -97,4 +97,3 @@ export default defineComponent({
 	}
 });
 </script>
-
