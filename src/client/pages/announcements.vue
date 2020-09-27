@@ -1,8 +1,6 @@
 <template>
-<div>
-	<portal to="header"><Fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
-
-	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk" ref="list">
+<div class="_section">
+	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content" ref="list">
 		<section class="_section announcement" v-for="(announcement, i) in items" :key="announcement.id">
 			<div class="_title"><span v-if="$store.getters.isSignedIn && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
@@ -25,12 +23,6 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('announcements') as string
-		};
-	},
-
 	components: {
 		MkPagination,
 		MkButton
@@ -38,11 +30,17 @@ export default defineComponent({
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('announcements'),
+					icon: faBroadcastTower
+				}]
+			},
 			pagination: {
 				endpoint: 'announcements',
 				limit: 10,
 			},
-			faCheck, faBroadcastTower
+			faCheck,
 		};
 	},
 

@@ -1,7 +1,6 @@
 <template>
-<div>
-	<portal to="header"><Fa :icon="faStar"/>{{ $t('favorites') }}</portal>
-	<XNotes :pagination="pagination" :detail="true" :prop="'note'" @before="before()" @after="after()"/>
+<div class="_section">
+	<XNotes class="_content" :pagination="pagination" :detail="true" :prop="'note'" @before="before()" @after="after()"/>
 </div>
 </template>
 
@@ -13,25 +12,24 @@ import XNotes from '@/components/notes.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('favorites') as string
-		};
-	},
-
 	components: {
 		XNotes
 	},
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('favorites'),
+					icon: faStar
+				}]
+			},
 			pagination: {
 				endpoint: 'i/favorites',
 				limit: 10,
 				params: () => ({
 				})
 			},
-			faStar
 		};
 	},
 
