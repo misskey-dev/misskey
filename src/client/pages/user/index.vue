@@ -23,7 +23,7 @@
 				</div>
 				<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
 				<div class="actions" v-if="$store.getters.isSignedIn">
-					<button @click="menu" class="menu _button" ref="menu"><Fa :icon="faEllipsisH"/></button>
+					<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
 					<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 				</div>
 			</div>
@@ -157,7 +157,11 @@ export default defineComponent({
 				header: [{
 					userName: this.user,
 					avatar: this.user,
-				}]
+				}],
+				action: {
+					icon: faEllipsisH,
+					handler: this.menu
+				}
 			} : null),
 			user: null,
 			error: null,
@@ -208,10 +212,11 @@ export default defineComponent({
 			});
 		},
 
-		menu() {
+		menu(ev) {
 			os.modal(XUserMenu, {
-				source: this.$refs.menu,
 				user: this.user
+			}, {}, {
+				source: ev.currentTarget || ev.target,
 			});
 		},
 

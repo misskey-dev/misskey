@@ -16,7 +16,7 @@
 						<MkUserName v-else-if="header.userName" :user="header.userName" :nowrap="false" class="text"/>
 					</div>
 				</div>
-				<button class="_button action" v-if="pageInfo.action" @click="pageInfo.action.handler()"><Fa :icon="pageInfo.action.icon"/></button>
+				<button class="_button action" v-if="pageInfo.action" @click="pageInfo.action.handler"><Fa :icon="pageInfo.action.icon"/></button>
 			</template>
 		</header>
 		<main ref="main">
