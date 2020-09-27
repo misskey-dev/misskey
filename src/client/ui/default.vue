@@ -259,7 +259,7 @@ export default defineComponent({
 		attachSticky() {
 			if (!this.isDesktop) return;
 
-			// NOTE: Vue3の仕様かどうか知らんけど this.$refs.widgets が要素が一つしかない場合に配列ではないので配列にする
+			// TODO: v-for refs
 			const widgets = Array.isArray(this.$refs.widgets) ? this.$refs.widgets : [this.$refs.widgets];
 
 			const stickyWidgetColumns = widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
