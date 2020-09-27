@@ -313,7 +313,7 @@ export default defineComponent({
 		},
 
 		readPromo() {
-			(this as any).os.api('promo/read', {
+			os.api('promo/read', {
 				noteId: this.appearNote.id
 			});
 			this.isDeleted = true;
@@ -453,7 +453,7 @@ export default defineComponent({
 					text: this.$t('renote'),
 					icon: faRetweet,
 					action: () => {
-						(this as any).os.api('notes/create', {
+						os.api('notes/create', {
 							renoteId: this.appearNote.id
 						});
 					}
@@ -473,7 +473,7 @@ export default defineComponent({
 		},
 
 		renoteDirectly() {
-			(this as any).os.api('notes/create', {
+			os.api('notes/create', {
 				renoteId: this.appearNote.id
 			});
 		},
