@@ -14,7 +14,6 @@ import { acct, userPage } from '../filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
-	emits: ['click'],
 	props: {
 		user: {
 			type: Object,
@@ -33,6 +32,7 @@ export default defineComponent({
 			default: false
 		}
 	},
+	emits: ['click'],
 	computed: {
 		cat(): boolean {
 			return this.user.isCat;
@@ -45,6 +45,7 @@ export default defineComponent({
 	},
 	watch: {
 		'user.avatarBlurhash'() {
+			if (this.$el == null) return;
 			this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
 		}
 	},

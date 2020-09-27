@@ -1,7 +1,5 @@
 <template>
 <div class="mk-messaging" v-size="{ max: [400] }">
-	<portal to="header"><Fa :icon="faComments"/>{{ $t('messaging') }}</portal>
-
 	<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
 
 	<div class="history" v-if="messages.length > 0">
@@ -52,6 +50,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('messaging'),
+					icon: faComments
+				}]
+			},
 			fetching: true,
 			moreFetching: false,
 			messages: [],

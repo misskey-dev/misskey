@@ -247,6 +247,7 @@ export default defineComponent({
 		},
 
 		calcHeaderWidth() {
+			if (this.$refs.contents == null) return;
 			const width = this.$refs.contents.offsetWidth;
 			this.$refs.header.style.width = `${width}px`;
 		},
