@@ -465,7 +465,7 @@ export default defineComponent({
 	}
 
 	&.max-width_500px {
-		> .profile {
+		> .profile > ._content {
 			> .banner-container {
 				height: 140px;
 
