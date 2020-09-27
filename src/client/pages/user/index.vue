@@ -85,8 +85,10 @@
 
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
-		<div class="pins">
-			<XNote v-for="note in user.pinnedNotes" class="note" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+		<div class="_section">
+			<div class="_content">
+				<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+			</div>
 		</div>
 		<div class="_section">
 			<MkContainer :body-togglable="true" class="_content">
@@ -450,12 +452,6 @@ export default defineComponent({
 					}
 				}
 			}
-		}
-	}
-
-	> .pins {
-		> .note {
-			margin-bottom: var(--margin);
 		}
 	}
 
