@@ -1,7 +1,5 @@
 <template>
 <div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<portal to="header" v-if="user"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
-
 	<MkRemoteCaution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
 
 	<!-- TODO -->
@@ -117,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, computed } from 'vue';
 import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
@@ -153,6 +151,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			info: computed(() => this.user ? {
+				header: [{
+					userName: this.user,
+					avatar: this.user,
+				}]
+			} : null),
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
