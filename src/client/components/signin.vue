@@ -12,9 +12,9 @@
 			<template #prefix><Fa :icon="faLock"/></template>
 		</MkInput>
 		<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</MkButton>
-		<a class="_frame _button" style="margin: 8px auto;" v-if="meta && meta.enableTwitterIntegration" :href="`${apiUrl}/signin/twitter`"><Fa :icon="faTwitter" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
-		<a class="_frame _button" style="margin: 8px auto;" v-if="meta && meta.enableGithubIntegration"  :href="`${apiUrl}/signin/github`"><Fa :icon="faGithub" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
-		<a class="_frame _button" style="margin: 8px auto;" v-if="meta && meta.enableDiscordIntegration" :href="`${apiUrl}/signin/discord`"><Fa :icon="faDiscord" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Discord' }) }}</a>
+		<a class="_panel _button" style="margin: 8px auto;" v-if="meta && meta.enableTwitterIntegration" :href="`${apiUrl}/signin/twitter`"><Fa :icon="faTwitter" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
+		<a class="_panel _button" style="margin: 8px auto;" v-if="meta && meta.enableGithubIntegration"  :href="`${apiUrl}/signin/github`"><Fa :icon="faGithub" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
+		<a class="_panel _button" style="margin: 8px auto;" v-if="meta && meta.enableDiscordIntegration" :href="`${apiUrl}/signin/discord`"><Fa :icon="faDiscord" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Discord' }) }}</a>
 	</div>
 	<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 		<div v-if="user && user.securityKeys" class="twofa-group tap-group">

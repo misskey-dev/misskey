@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _frame" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">

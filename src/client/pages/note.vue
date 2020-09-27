@@ -9,7 +9,7 @@
 	</portal>
 
 	<div v-if="note">
-		<button class="_frame _button" v-if="hasNext && !showNext" @click="showNext = true"><Fa :icon="faChevronUp"/></button>
+		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true"><Fa :icon="faChevronUp"/></button>
 
 		<div class="_section" v-if="showNext">
 			<XNotes class="_content" ref="next" :pagination="next"/>
@@ -26,7 +26,7 @@
 			<XNotes class="_content" ref="prev" :pagination="prev"/>
 		</div>
 
-		<button class="_frame _button" v-if="hasPrev && !showPrev" @click="showPrev = true"><Fa :icon="faChevronDown"/></button>
+		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true"><Fa :icon="faChevronDown"/></button>
 	</div>
 
 	<div v-if="error">

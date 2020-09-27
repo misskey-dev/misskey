@@ -83,30 +83,6 @@ body {
 	overflow-wrap: break-word;
 }
 
-#ini {
-	position: fixed;
-	z-index: 1;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	cursor: wait;
-
-	> svg {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		margin: auto;
-		width: 64px;
-		height: 64px;
-		animation: ini 0.6s infinite linear;
-		color: var(--accent);
-		fill: currentColor;
-	}
-}
-
 html, body {
 	margin: 0;
 	padding: 0;
@@ -130,54 +106,6 @@ hr {
 	border: none;
 	height: 1px;
 	background: var(--divider);
-}
-
-#nprogress {
-	pointer-events: none;
-	position: absolute;
-	z-index: 10000;
-
-	.bar {
-		background: var(--accent);
-		position: fixed;
-		z-index: 10001;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 2px;
-	}
-
-	.peg {
-		display: block;
-		position: absolute;
-		right: 0;
-		width: 100px;
-		height: 100%;
-		box-shadow: 0 0 10px var(--accent), 0 0 5px var(--accent);
-		opacity: 1;
-		transform: rotate(3deg) translate(0px, -4px);
-	}
-}
-
-#wait {
-	display: block;
-	position: fixed;
-	z-index: 10000;
-	top: 15px;
-	right: 15px;
-
-	&:before {
-		content: "";
-		display: block;
-		width: 18px;
-		height: 18px;
-		box-sizing: border-box;
-		border: solid 2px transparent;
-		border-top-color: var(--accent);
-		border-left-color: var(--accent);
-		border-radius: 50%;
-		animation: progress-spinner 400ms linear infinite;
-	}
 }
 
 ._noSelect {
@@ -301,7 +229,7 @@ hr {
 	margin: 0 !important;
 }
 
-.__frameButton {
+.__panelButton {
 	display: flex;
 	width: 100%;
 	min-height: 48px;
@@ -310,12 +238,12 @@ hr {
 	background: transparent;
 }
 
-._frame._button {
-	@extend .__frameButton;
+._panel._button {
+	@extend .__panelButton;
 }
 
-._frame._buttonPrimary {
-	@extend .__frameButton;
+._panel._buttonPrimary {
+	@extend .__panelButton;
 	color: var(--accent);
 }
 
@@ -366,25 +294,17 @@ hr {
 	padding: 0;
 
 	> ._title {
-		padding: 16px;
+		padding: 8px;
 		font-size: 1em;
 	}
 
 	> ._content {
-		padding: 16px;
+		padding: 8px;
 	}
 
 	> ._footer {
-		padding: 16px;
+		padding: 8px;
 	}
-}
-
-._frame {
-	position: relative;
-	z-index: 1;
-	overflow: hidden;
-	border: solid 1px var(--divider);
-	border-radius: var(--radius);
 }
 
 ._acrylic {
@@ -488,24 +408,6 @@ hr {
 .zoom-in-top-leave-active {
 	opacity: 0;
 	transform: scaleY(0);
-}
-
-@keyframes progress-spinner {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes ini {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
 }
 
 @keyframes spin {

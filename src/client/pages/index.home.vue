@@ -5,7 +5,7 @@
 	<XTutorial class="tutorial" v-if="$store.state.settings.tutorial != -1"/>
 
 	<div class="_section" v-if="$store.state.device.showFixedPostForm">
-		<XPostForm class="post-form _content _frame" fixed/>
+		<XPostForm class="post-form _content _panel" fixed/>
 	</div>
 
 	<div class="_section">

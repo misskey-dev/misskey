@@ -4,7 +4,7 @@
 
 	<div class="history" v-if="messages.length > 0">
 		<router-link v-for="(message, i) in messages"
-			class="message _frame"
+			class="message _panel"
 			:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
 			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 			:data-index="i"

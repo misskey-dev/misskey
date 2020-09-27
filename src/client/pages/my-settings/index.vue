@@ -35,9 +35,9 @@
 	<XIntegration class="_vMargin"/>
 	<XApi class="_vMargin"/>
 
-	<router-link class="_frame _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;">{{ $t('installedApps') }}</router-link>
+	<router-link class="_panel _buttonPrimary" to="/my/apps" style="margin: var(--margin) auto;">{{ $t('installedApps') }}</router-link>
 
-	<button class="_frame _buttonPrimary" @click="signout()" style="margin: var(--margin) auto;">{{ $t('logout') }}</button>
+	<button class="_panel _buttonPrimary" @click="signout()" style="margin: var(--margin) auto;">{{ $t('logout') }}</button>
 </div>
 </template>
 

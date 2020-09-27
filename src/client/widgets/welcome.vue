@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-welcome _frame" v-if="meta">
+<div class="mkw-welcome _panel" v-if="meta">
 	<div class="banner" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }"></div>
 	<div class="body">
 		<h1 class="name" v-html="meta.name || host"></h1>

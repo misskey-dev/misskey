@@ -8,7 +8,7 @@
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_frame _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
@@ -16,11 +16,11 @@
 
 	<!-- 使うとcreatedが何度も呼ばれるなど、挙動がおかしくなる(Vueのバグ？) -->
 	<!-- <XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed"> -->
-		<XNote v-for="note in notes" :note="note" @update:note="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id" style="margin-bottom: var(--margin);"/>
+		<XNote v-for="note in notes" :note="note" @update:note="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id" class="_vMargin"/>
 	<!-- </XList> -->
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_frame _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_panel _button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>

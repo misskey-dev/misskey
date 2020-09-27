@@ -2,6 +2,8 @@
  * Client entry point
  */
 
+import '@/style.scss';
+
 import { createApp } from 'vue';
 import VAnimateCss from 'v-animate-css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -25,7 +27,7 @@ import { stream, sound, isMobile, dialog } from '@/os';
 console.info(`Misskey v${version}`);
 
 if (_DEV_) {
-	console.log('Development mode');
+	console.warn('Development mode');
 }
 
 if (localStorage.getItem('theme') == null) {

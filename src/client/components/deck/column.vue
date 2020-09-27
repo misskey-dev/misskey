@@ -1,6 +1,6 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section class="dnpfarvg _frame _narrow_" :class="{ naked, _close_: !isMainColumn, active, isStacked, draghover, dragging, dropready }"
+<section class="dnpfarvg _panel _narrow_" :class="{ naked, _close_: !isMainColumn, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"

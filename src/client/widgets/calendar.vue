@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-calendar" :class="{ _frame: !props.transparent }">
+<div class="mkw-calendar" :class="{ _panel: !props.transparent }">
 	<div class="calendar" :class="{ isHoliday }">
 		<p class="month-and-year">
 			<span class="year">{{ $t('yearX', { year }) }}</span>

@@ -55,3 +55,35 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss">
+#wait {
+	display: block;
+	position: fixed;
+	z-index: 10000;
+	top: 15px;
+	right: 15px;
+
+	&:before {
+		content: "";
+		display: block;
+		width: 18px;
+		height: 18px;
+		box-sizing: border-box;
+		border: solid 2px transparent;
+		border-top-color: var(--accent);
+		border-left-color: var(--accent);
+		border-radius: 50%;
+		animation: progress-spinner 400ms linear infinite;
+	}
+}
+
+@keyframes progress-spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+</style>
