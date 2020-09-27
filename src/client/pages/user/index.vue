@@ -195,6 +195,7 @@ export default defineComponent({
 
 	methods: {
 		fetch() {
+			if (this.$route.params.user == null) return;
 			Progress.start();
 			os.api('users/show', parseAcct(this.$route.params.user)).then(user => {
 				this.user = user;
