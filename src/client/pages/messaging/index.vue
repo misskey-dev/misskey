@@ -1,37 +1,39 @@
 <template>
-<div class="mk-messaging" v-size="{ max: [400] }">
-	<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
+<div class="_section">
+	<div class="mk-messaging _content" v-size="{ max: [400] }">
+		<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
 
-	<div class="history" v-if="messages.length > 0">
-		<router-link v-for="(message, i) in messages"
-			class="message _panel"
-			:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
-			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-			:data-index="i"
-			:key="message.id"
-		>
-			<div>
-				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
-				<header v-if="message.groupId">
-					<span class="name">{{ message.group.name }}</span>
-					<MkTime :time="message.createdAt"/>
-				</header>
-				<header v-else>
-					<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
-					<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
-					<MkTime :time="message.createdAt"/>
-				</header>
-				<div class="body">
-					<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
+		<div class="history" v-if="messages.length > 0">
+			<router-link v-for="(message, i) in messages"
+				class="message _panel"
+				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
+				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+				:data-index="i"
+				:key="message.id"
+			>
+				<div>
+					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
+					<header v-if="message.groupId">
+						<span class="name">{{ message.group.name }}</span>
+						<MkTime :time="message.createdAt"/>
+					</header>
+					<header v-else>
+						<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
+						<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
+						<MkTime :time="message.createdAt"/>
+					</header>
+					<div class="body">
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
+					</div>
 				</div>
-			</div>
-		</router-link>
+			</router-link>
+		</div>
+		<div class="_fullinfo" v-if="!fetching && messages.length == 0">
+			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<div>{{ $t('noHistory') }}</div>
+		</div>
+		<MkLoading v-if="fetching"/>
 	</div>
-	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
-		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-		<div>{{ $t('noHistory') }}</div>
-	</div>
-	<MkLoading v-if="fetching"/>
 </div>
 </template>
 
