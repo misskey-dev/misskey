@@ -9,7 +9,7 @@
 			</transition>
 			<template v-if="pageInfo">
 				<div class="titleContainer">
-					<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ clickable: header.onClick, selected: header.selected }" @click="header.onClick" v-tooltip="header.tooltip">
+					<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ _button: header.onClick, selected: header.selected }" @click="header.onClick" v-tooltip="header.tooltip">
 						<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
 						<MkAvatar v-else-if="header.avatar" class="avatar" :user="header.avatar" :disable-preview="true"/>
 						<span v-if="header.title" class="text">{{ header.title }}</span>
@@ -463,9 +463,7 @@ export default defineComponent({
 						margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
 					}
 
-					&.clickable {
-						cursor: pointer;
-
+					&._button {
 						&:hover {
 							color: var(--fgHighlighted);
 						}
