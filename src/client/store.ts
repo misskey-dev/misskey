@@ -73,7 +73,6 @@ export const defaultDeviceSettings = {
 	showFixedPostForm: false,
 	disablePagesScript: true,
 	enableInfiniteScroll: true,
-	fixedWidgetsPosition: false,
 	useBlurEffectForModal: true,
 	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',

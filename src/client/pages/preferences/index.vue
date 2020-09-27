@@ -103,7 +103,6 @@
 			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
 			<MkSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</MkSwitch>
 			<MkSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</MkSwitch>
-			<MkSwitch v-model:value="fixedWidgetsPosition">{{ $t('fixedWidgetsPosition') }}</MkSwitch>
 			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
 		</div>
 		<div class="_content">
@@ -232,11 +231,6 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'enableInfiniteScroll', value }); }
 		},
 
-		fixedWidgetsPosition: {
-			get() { return this.$store.state.device.fixedWidgetsPosition; },
-			set(value) { this.$store.commit('device/set', { key: 'fixedWidgetsPosition', value }); }
-		},
-
 		deckAlwaysShowMainColumn: {
 			get() { return this.$store.state.device.deckAlwaysShowMainColumn; },
 			set(value) { this.$store.commit('device/set', { key: 'deckAlwaysShowMainColumn', value }); }
@@ -322,10 +316,6 @@ export default defineComponent({
 				localStorage.setItem('fontSize', this.fontSize);
 			}
 			location.reload();
-		},
-
-		fixedWidgetsPosition() {
-			location.reload()
 		},
 
 		enableInfiniteScroll() {

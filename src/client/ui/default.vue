@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app" v-hotkey.global="keymap">
-	<XSidebar ref="nav"/>
+	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
@@ -37,7 +37,7 @@
 	</div>
 
 	<template v-if="isDesktop">
-		<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, fixed: $store.state.device.fixedWidgetsPosition, empty: widgets[place].length === 0 && !widgetsEditMode }" :key="place">
+		<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="[{ edit: widgetsEditMode, empty: widgets[place].length === 0 && !widgetsEditMode }, place]" :key="place">
 			<div class="spacer"></div>
 			<div class="container" v-if="widgetsEditMode">
 				<MkButton primary @click="addWidget(place)" class="add"><Fa :icon="faPlus"/></MkButton>
@@ -258,7 +258,6 @@ export default defineComponent({
 
 		attachSticky() {
 			if (!this.isDesktop) return;
-			if (this.$store.state.device.fixedWidgetsPosition) return;
 
 			// NOTE: Vue3の仕様かどうか知らんけど this.$refs.widgets が要素が一つしかない場合に配列ではないので配列にする
 			const widgets = Array.isArray(this.$refs.widgets) ? this.$refs.widgets : [this.$refs.widgets];
@@ -393,7 +392,12 @@ export default defineComponent({
 
 	display: flex;
 
+	> .sidebar {
+		order: 1;
+	}
+
 	> .contents {
+		order: 3;
 		width: 100%;
 		min-width: 0;
 		padding-top: $header-height;
@@ -524,20 +528,16 @@ export default defineComponent({
 		padding: 0 var(--margin);
 		box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
 
-		&.fixed {
-			position: sticky;
-			overflow: auto;
-			// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-			height: calc((var(--vh, 1vh) * 100) - #{$header-height});
-			top: $header-height;
-		}
-
-		&:first-of-type {
-			order: -1;
+		&.left {
+			order: 2;
 
 			@media (max-width: $left-widgets-hide-threshold) {
 				display: none;
 			}
+		}
+
+		&.right {
+			order: 4;
 		}
 
 		&.empty {
