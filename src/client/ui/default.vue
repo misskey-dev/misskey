@@ -262,7 +262,7 @@ export default defineComponent({
 			// TODO: v-for refs
 			const widgets = Array.isArray(this.$refs.widgets) ? this.$refs.widgets : [this.$refs.widgets];
 
-			const stickyWidgetColumns = widgets.map(w => new StickySidebar(w.children[1], w.children[0], w.offsetTop));
+			const stickyWidgetColumns = widgets.map(w => new StickySidebar(w.children[1], w.children[0]));
 			window.addEventListener('scroll', () => {
 				for (const stickyWidgetColumn of stickyWidgetColumns) {
 					stickyWidgetColumn.calc(window.scrollY);

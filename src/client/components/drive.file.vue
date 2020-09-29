@@ -202,6 +202,10 @@ export default defineComponent({
 		cursor: pointer;
 	}
 
+	> * {
+		pointer-events: none;
+	}
+
 	&:hover {
 		background: rgba(#000, 0.05);
 
