@@ -1,5 +1,6 @@
 <template>
-<DeckUI v-if="deckmode"/>
+<VisitorUI v-if="!$store.getters.isSignedIn"/>
+<DeckUI v-else-if="deckmode"/>
 <DefaultUI v-else/>
 
 <XModal v-for="modal in $store.state.popups.filter(x => x.type === 'modal')"
@@ -29,15 +30,14 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import DefaultUI from '@/ui/default.vue';
-import DeckUI from '@/ui/deck.vue';
 import { instanceName, deckmode } from '@/config';
 import { uploads } from '@/os';
 
 export default defineComponent({
 	components: {
-		DefaultUI,
-		DeckUI,
+		DefaultUI: defineAsyncComponent(() => import('@/ui/default.vue')),
+		DeckUI: defineAsyncComponent(() => import('@/ui/deck.vue')),
+		VisitorUI: defineAsyncComponent(() => import('@/ui/visitor.vue')),
 		XModal: defineAsyncComponent(() => import('@/components/modal.vue')),
 		XUpload: defineAsyncComponent(() => import('@/components/upload.vue')),
 	},
