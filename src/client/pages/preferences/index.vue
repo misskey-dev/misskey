@@ -14,8 +14,8 @@
 		<div class="_title"><Fa :icon="faMusic"/> {{ $t('sounds') }}</div>
 		<div class="_content">
 			<MkRange v-model:value="sfxVolume" :min="0" :max="1" :step="0.1">
-				<Fa slot="icon" :icon="volumeIcon"/>
-				<span slot="title">{{ $t('volume') }}</span>
+				<template #icon><Fa :icon="volumeIcon"/></template>
+				<template #title><span>{{ $t('volume') }}</span></template>
 			</MkRange>
 		</div>
 		<div class="_content">
@@ -88,6 +88,12 @@
 			<MkRadio v-model:value="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
 			<MkRadio v-model:value="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
 			<MkRadio v-model:value="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
+		</div>
+		<div class="_content">
+			<div>{{ $t('lineHeight') }}</div>
+			<MkRange v-model:value="lineHeight" :min="1.2" :max="1.7" :step="0.05">
+				<template #title><span>{{ lineHeight }}</span></template>
+			</MkRange>
 		</div>
 	</section>
 
@@ -180,6 +186,7 @@ export default defineComponent({
 			langs,
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
+			lineHeight: Number(localStorage.getItem('lineHeight')) || 1.5,
 			sounds,
 			faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns
 		}
@@ -309,13 +316,18 @@ export default defineComponent({
 				});
 		},
 
-		fontSize() {
-			if (this.fontSize == null) {
+		fontSize(val) {
+			if (val == null) {
 				localStorage.removeItem('fontSize');
 			} else {
-				localStorage.setItem('fontSize', this.fontSize);
+				localStorage.setItem('fontSize', val);
 			}
 			location.reload();
+		},
+
+		lineHeight(val) {
+			localStorage.setItem('lineHeight', val);
+			document.documentElement.style.setProperty('--lineHeight', `${val}`);
 		},
 
 		enableInfiniteScroll() {

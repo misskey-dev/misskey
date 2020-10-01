@@ -166,6 +166,10 @@ window.addEventListener('storage', e => {
 	}
 }, false);
 
+//#region set line height
+document.documentElement.style.setProperty('--lineHeight', `${localStorage.getItem('lineHeight') || 1.5}`);
+//#endregion
+
 store.watch(state => state.device.darkMode, darkMode => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(store.state.device.themes);
