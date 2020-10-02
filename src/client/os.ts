@@ -13,8 +13,20 @@ export const stream = new Stream();
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
 	store.commit('beginApiRequest');
 
+	if (_DEV_) {
+		performance.mark(_PERF_PREFIX_ + 'api:begin');
+	}
+
 	const onFinally = () => {
 		store.commit('endApiRequest');
+
+		if (_DEV_) {
+			performance.mark(_PERF_PREFIX_ + 'api:end');
+
+			performance.measure(_PERF_PREFIX_ + 'api',
+				_PERF_PREFIX_ + 'api:begin',
+				_PERF_PREFIX_ + 'api:end');
+		}
 	};
 
 	const promise = new Promise((resolve, reject) => {

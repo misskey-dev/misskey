@@ -27,7 +27,25 @@ import { stream, sound, isMobile, dialog } from '@/os';
 console.info(`Misskey v${version}`);
 
 if (_DEV_) {
-	console.warn('Development mode');
+	console.warn('Development mode!!!');
+
+	window.addEventListener('error', event => {
+		console.error(event);
+		dialog({
+			type: 'error',
+			title: 'DEV: Unhandled error',
+			text: event.message
+		});
+	});
+
+	window.addEventListener('unhandledrejection', event => {
+		console.error(event);
+		dialog({
+			type: 'error',
+			title: 'DEV: Unhandled promise rejection',
+			text: event.reason
+		});
+	});
 }
 
 if (localStorage.getItem('theme') == null) {
