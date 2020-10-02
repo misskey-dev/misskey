@@ -49,30 +49,30 @@
 		<MkButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</MkButton>
 		<MkButton primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</MkButton>
 	</div>
+</section>
+<section class="_section">
+	<div class="_title"><Fa :icon="faDownload"/> {{ $t('_theme.install') }}</div>
 	<div class="_content">
-		<details>
-			<summary><Fa :icon="faDownload"/> {{ $t('_theme.install') }}</summary>
-			<MkTextarea v-model:value="installThemeCode">
-				<span>{{ $t('_theme.code') }}</span>
-			</MkTextarea>
-			<MkButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><Fa :icon="faCheck"/> {{ $t('install') }}</MkButton>
-			<MkButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
-		</details>
+		<MkTextarea v-model:value="installThemeCode">
+			<span>{{ $t('_theme.code') }}</span>
+		</MkTextarea>
+		<MkButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><Fa :icon="faCheck"/> {{ $t('install') }}</MkButton>
+		<MkButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
 	</div>
+</section>
+<section class="_section">
+	<div class="_title"><Fa :icon="faFolderOpen"/> {{ $t('_theme.manage') }}</div>
 	<div class="_content">
-		<details>
-			<summary><Fa :icon="faFolderOpen"/> {{ $t('_theme.manage') }}</summary>
-			<MkSelect v-model:value="selectedThemeId">
-				<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-			</MkSelect>
-			<template v-if="selectedTheme">
-				<MkTextarea readonly tall :value="selectedThemeCode">
-					<span>{{ $t('_theme.code') }}</span>
-					<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $t('copy') }}</button></template>
-				</MkTextarea>
-				<MkButton @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</MkButton>
-			</template>
-		</details>
+		<MkSelect v-model:value="selectedThemeId">
+			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</MkSelect>
+		<template v-if="selectedTheme">
+			<MkTextarea readonly tall :value="selectedThemeCode">
+				<span>{{ $t('_theme.code') }}</span>
+				<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $t('copy') }}</button></template>
+			</MkTextarea>
+			<MkButton @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</MkButton>
+		</template>
 	</div>
 </section>
 </template>

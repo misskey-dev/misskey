@@ -35,7 +35,7 @@
 					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 					<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 				</button>
-				<router-link class="item" active-class="active" to="/preferences">
+				<router-link class="item" active-class="active" to="/settings">
 					<Fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
 				</router-link>
 			</div>

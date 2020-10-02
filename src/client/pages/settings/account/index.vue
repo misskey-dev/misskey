@@ -58,7 +58,7 @@ import XApi from './api.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import * as os from '@/os';
-import { notificationTypes } from '../../../types';
+import { notificationTypes } from '../../../../types';
 
 export default defineComponent({
 	metaInfo() {

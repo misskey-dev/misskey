@@ -26,7 +26,7 @@ import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
 import MkRadio from '@/components/ui/radio.vue';
-import { defaultDeviceUserSettings } from '../../store';
+import { defaultDeviceUserSettings } from '@/store';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 

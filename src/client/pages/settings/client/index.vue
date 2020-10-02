@@ -130,7 +130,7 @@ import XTheme from './theme.vue';
 import XSidebar from './sidebar.vue';
 import XPlugins from './plugins.vue';
 import { langs } from '@/config';
-import { clientDb, set } from '../../db';
+import { clientDb, set } from '@/db';
 import * as os from '@/os';
 
 const sounds = [
