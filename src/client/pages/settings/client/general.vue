@@ -1,40 +1,6 @@
 <template>
-<div>
-	<section class="_section">
-		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
-		<div class="_content">
-			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
-				{{ $t('_deck.alwaysShowMainColumn') }}
-			</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('_deck.columnAlign') }}</div>
-			<MkRadio v-model:value="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
-			<MkRadio v-model:value="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
-		</div>
-	</section>
-
-	<section class="_section">
-		<div class="_title"><Fa :icon="faCog"/> {{ $t('appearance') }}</div>
-		<div class="_content">
-			<MkSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</MkSwitch>
-			<MkSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</MkSwitch>
-			<MkSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</MkSwitch>
-			<MkSwitch v-model:value="useOsNativeEmojis">
-				{{ $t('useOsNativeEmojis') }}
-				<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
-			</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('fontSize') }}</div>
-			<MkRadio v-model:value="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
-			<MkRadio v-model:value="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
-			<MkRadio v-model:value="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
-			<MkRadio v-model:value="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
-		</div>
-	</section>
-
-	<section class="_section">
+<div class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<div>{{ $t('whenServerDisconnected') }}</div>
@@ -57,60 +23,58 @@
 		</div>
 	</section>
 
+	<section class="_card _vMargin">
+		<div class="_title"><Fa :icon="faCog"/> {{ $t('appearance') }}</div>
+		<div class="_content">
+			<MkSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</MkSwitch>
+			<MkSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</MkSwitch>
+			<MkSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</MkSwitch>
+			<MkSwitch v-model:value="useOsNativeEmojis">
+				{{ $t('useOsNativeEmojis') }}
+				<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
+			</MkSwitch>
+		</div>
+		<div class="_content">
+			<div>{{ $t('fontSize') }}</div>
+			<MkRadio v-model:value="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
+			<MkRadio v-model:value="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
+			<MkRadio v-model:value="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
+			<MkRadio v-model:value="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
+		</div>
+	</section>
+
+	<section class="_card _vMargin">
+		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
+		<div class="_content">
+			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
+				{{ $t('_deck.alwaysShowMainColumn') }}
+			</MkSwitch>
+		</div>
+		<div class="_content">
+			<div>{{ $t('_deck.columnAlign') }}</div>
+			<MkRadio v-model:value="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
+			<MkRadio v-model:value="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
+		</div>
+	</section>
+
 	<MkButton @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faCog, faColumns, faCogs } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkRadio from '@/components/ui/radio.vue';
 import MkRange from '@/components/ui/range.vue';
-import XTheme from './theme.vue';
-import XSidebar from './sidebar.vue';
-import XPlugins from './plugins.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
 
-const sounds = [
-	null,
-	'syuilo/up',
-	'syuilo/down',
-	'syuilo/pope1',
-	'syuilo/pope2',
-	'syuilo/waon',
-	'syuilo/popo',
-	'syuilo/triple',
-	'syuilo/poi1',
-	'syuilo/poi2',
-	'syuilo/pirori',
-	'syuilo/pirori-wet',
-	'syuilo/pirori-square-wet',
-	'syuilo/square-pico',
-	'syuilo/reverved',
-	'syuilo/ryukyu',
-	'aisha/1',
-	'aisha/2',
-	'aisha/3',
-	'noizenecio/kick_gaba',
-	'noizenecio/kick_gaba2',
-];
-
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('settings') as string
-		};
-	},
-
 	components: {
-		XTheme,
-		XSidebar,
-		XPlugins,
 		MkButton,
 		MkSwitch,
 		MkSelect,
@@ -118,13 +82,20 @@ export default defineComponent({
 		MkRange,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('general'),
+					icon: faCogs
+				}]
+			},
 			langs,
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
-			sounds,
-			faImage, faCog, faMusic, faPlay, faVolumeUp, faVolumeMute, faColumns
+			faImage, faCog, faColumns
 		}
 	},
 
@@ -183,52 +154,6 @@ export default defineComponent({
 			get() { return this.$store.state.device.deckColumnAlign; },
 			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
 		},
-
-		sfxVolume: {
-			get() { return this.$store.state.device.sfxVolume; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxVolume', value: parseFloat(value, 10) }); }
-		},
-
-		sfxNote: {
-			get() { return this.$store.state.device.sfxNote; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxNote', value }); }
-		},
-
-		sfxNoteMy: {
-			get() { return this.$store.state.device.sfxNoteMy; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxNoteMy', value }); }
-		},
-
-		sfxNotification: {
-			get() { return this.$store.state.device.sfxNotification; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxNotification', value }); }
-		},
-
-		sfxChat: {
-			get() { return this.$store.state.device.sfxChat; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxChat', value }); }
-		},
-
-		sfxChatBg: {
-			get() { return this.$store.state.device.sfxChatBg; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxChatBg', value }); }
-		},
-
-		sfxAntenna: {
-			get() { return this.$store.state.device.sfxAntenna; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxAntenna', value }); }
-		},
-
-		sfxChannel: {
-			get() { return this.$store.state.device.sfxChannel; },
-			set(value) { this.$store.commit('device/set', { key: 'sfxChannel', value }); }
-		},
-
-		volumeIcon: {
-			get() {
-				return this.sfxVolume === 0 ? faVolumeMute : faVolumeUp;
-			}
-		}
 	},
 
 	watch: {
@@ -266,13 +191,11 @@ export default defineComponent({
 		},
 	},
 
-	methods: {
-		listen(sound) {
-			const audio = new Audio(`/assets/sounds/${sound}.mp3`);
-			audio.volume = this.$store.state.device.sfxVolume;
-			audio.play();
-		},
+	mounted() {
+		this.$emit('info', this.info);
+	},
 
+	methods: {
 		cacheClear() {
 			// Clear cache (service worker)
 			try {

@@ -11,6 +11,7 @@
 		</div>
 		<div class="menu client">
 			<div class="label">{{ $t('clientSettings') }}</div>
+			<router-link class="item" to="/settings/client/general"><Fa :icon="faCogs" fixed-width class="icon"/>{{ $t('general') }}</router-link>
 			<router-link class="item" to="/settings/client/theme"><Fa :icon="faPalette" fixed-width class="icon"/>{{ $t('theme') }}</router-link>
 			<router-link class="item" to="/settings/client/sidebar"><Fa :icon="faListUl" fixed-width class="icon"/>{{ $t('sidebar') }}</router-link>
 			<router-link class="item" to="/settings/client/sounds"><Fa :icon="faMusic" fixed-width class="icon"/>{{ $t('sounds') }}</router-link>
@@ -32,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh, faBell } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
 
@@ -61,7 +62,7 @@ export default defineComponent({
 			view,
 			el,
 			onInfo,
-			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell,
+			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs,
 		};
 	},
 });
