@@ -17,6 +17,7 @@ export default defineComponent({
 
 	data() {
 		return {
+			info: null,
 			showTitle: true,
 		}
 	},
@@ -29,16 +30,10 @@ export default defineComponent({
 		this.showTitle = false;
 	},
 
-	methods: {
-		getPageInfo() {
-			return new Promise((res) => {
-				this.$nextTick(() => {
-					if (this.$refs.page) {
-						res(this.$refs.page.getPageInfo());
-					}
-				});
-			});
-		}
-	}
+	mounted() {
+		this.$nextTick(() => {
+			this.info = this.$refs.page.info;
+		});
+	},
 });
 </script>

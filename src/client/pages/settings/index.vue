@@ -1,5 +1,5 @@
 <template>
-<div class="vvcocwet" :class="{ wide: !narrow }">
+<div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
 	<div class="nav" v-if="!narrow || $route.name === 'settings'">
 		<div class="menu account">
 			<div class="label">{{ $t('accountSettings') }}</div>
@@ -22,7 +22,7 @@
 	<div class="main">
 		<router-view v-slot="{ Component }">
 			<transition :name="$store.state.device.animation ? 'view-slide' : ''" appear mode="out-in">
-				<component :is="Component"/>
+				<component :is="Component" @info="onInfo"/>
 			</transition>
 		</router-view>
 	</div>
@@ -30,28 +30,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
 
 export default defineComponent({
-	data() {
+	setup(props, context) {
+		const info = ref({
+			header: [{
+				title: ('settings'),
+				icon: faCog
+			}]
+		});
+		const narrow = ref(false);
+		const view = ref(null);
+		const el = ref(null);
+		const onInfo = (viewInfo) => {
+			info.value = viewInfo;
+		};
+
+		onMounted(() => {
+			narrow.value = el.value.offsetWidth < 650;
+		});
+
 		return {
-			info: {
-				header: [{
-					title: this.$t('settings'),
-					icon: faCog
-				}]
-			},
-			narrow: false,
+			info,
+			narrow,
+			view,
+			el,
+			onInfo,
 			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic,
 		};
 	},
-
-	mounted() {
-		this.narrow = this.$el.offsetWidth < 650;
-	}
 });
 </script>
 

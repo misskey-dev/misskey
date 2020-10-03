@@ -1,7 +1,6 @@
 <template>
 <div class="_section">
 	<div class="rfqxtzch _card _vMargin">
-		<div class="_title"><Fa :icon="faPalette"/> {{ $t('theme') }}</div>
 		<div class="_content">
 			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
 				<div class="toggleWrapper">
@@ -100,9 +99,17 @@ export default defineComponent({
 		MkSwitch,
 		MkTextarea,
 	},
+
+	emits: ['info'],
 	
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('theme'),
+					icon: faPalette
+				}]
+			},
 			builtinThemes,
 			installThemeCode: null,
 			selectedThemeId: null,
@@ -186,6 +193,10 @@ export default defineComponent({
 			}
 			location.reload();
 		}
+	},
+
+	mounted() {
+		this.$emit('info', this.info);
 	},
 
 	methods: {

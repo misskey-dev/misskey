@@ -38,9 +38,17 @@ export default defineComponent({
 		MkTextarea,
 		MkRadio,
 	},
+
+	emits: ['info'],
 	
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('sidebar'),
+					icon: faListUl
+				}]
+			},
 			menuDef: sidebarDef,
 			items: '',
 			faListUl, faSave, faRedo
@@ -60,6 +68,10 @@ export default defineComponent({
 
 	created() {
 		this.items = this.$store.state.deviceUser.menu.join('\n');
+	},
+
+	mounted() {
+		this.$emit('info', this.info);
 	},
 
 	methods: {

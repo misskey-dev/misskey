@@ -147,10 +147,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		getPageInfo() {
-			return this.info;
-		},
-
 		before() {
 			Progress.start();
 		},
