@@ -29,64 +29,48 @@
 					</transition>
 				</router-view>
 			</div>
-			<div class="powerd-by" :class="{ visible: !$store.getters.isSignedIn }">
-				<b><router-link to="/">{{ host }}</router-link></b>
-				<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
-			</div>
+			<div class="spacer"></div>
 		</main>
 	</div>
 
-	<template v-if="isDesktop">
-		<div ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, empty: widgets.length === 0 && !widgetsEditMode }">
-			<div class="spacer"></div>
-			<div class="container" v-if="widgetsEditMode">
-				<MkButton primary @click="addWidget" class="add"><Fa :icon="faPlus"/></MkButton>
-				<XDraggable
-					:list="widgets"
-					handle=".handle"
-					animation="150"
-					class="sortable"
-					@sort="onWidgetSort"
-				>
-					<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
-						<header>
-							<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><Fa :icon="faTimes"/></button>
-						</header>
-						<div @click="widgetFunc(widget.id)">
-							<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
-						</div>
-					</div>
-				</XDraggable>
-			</div>
-			<div class="container" v-else>
-				<component v-for="widget in widgets" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
-			</div>
-		</div>
-	</template>
+	<div v-if="isDesktop" class="widgets">
+		<div ref="widgetsSpacer"></div>
+		<XWidgets @mounted="attachSticky"/>
+	</div>
 
 	<div class="buttons" :class="{ navHidden }">
 		<button class="button nav _button" @click="showNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><Fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><Fa :icon="faHome"/></button>
-		<button v-if="$store.getters.isSignedIn" class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
-		<button v-if="$store.getters.isSignedIn" class="button post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
+		<button class="button widget _button" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
 	</div>
 
-	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" :class="{ navHidden }" @click="post()"><Fa :icon="faPencilAlt"/></button>
+	<button class="widgetButton _button" :class="{ navHidden }" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
 
-	<StreamIndicator v-if="$store.getters.isSignedIn"/>
+	<transition name="tray-back">
+		<div class="tray-back _modalBg"
+			v-if="widgetsShowing"
+			@click="widgetsShowing = false"
+			@touchstart="widgetsShowing = false"
+		></div>
+	</transition>
+
+	<transition name="tray">
+		<XWidgets v-if="widgetsShowing" class="tray"/>
+	</transition>
+
+	<StreamIndicator/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
-import { v4 as uuid } from 'uuid';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
-import { widgets } from '@/widgets';
 import XSidebar from '@/components/sidebar.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
@@ -96,9 +80,7 @@ const DESKTOP_THRESHOLD = 1100;
 export default defineComponent({
 	components: {
 		XSidebar,
-		XClock: defineAsyncComponent(() => import('@/components/header-clock.vue')),
-		MkButton: defineAsyncComponent(() => import('@/components/ui/button.vue')),
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
 	},
 
 	data() {
@@ -110,13 +92,13 @@ export default defineComponent({
 			connection: null,
 			searchQuery: '',
 			searchWait: false,
-			widgetsEditMode: false,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			canBack: false,
 			menuDef: sidebarDef,
 			navHidden: false,
+			widgetsShowing: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
+			faLayerGroup, faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
 	},
 
@@ -143,7 +125,6 @@ export default defineComponent({
 		},
 
 		navIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
 			for (const def in this.menuDef) {
 				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
 				if (this.menuDef[def].indicated) return true;
@@ -157,55 +138,44 @@ export default defineComponent({
 			this.pageKey++;
 			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
-
-		isDesktop() {
-			this.$nextTick(() => {
-				this.attachSticky();
-			});
-		}
 	},
 
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
 
-		if (this.$store.getters.isSignedIn) {
-			this.connection = os.stream.useSharedConnection('main');
-			this.connection.on('notification', this.onNotification);
+		this.connection = os.stream.useSharedConnection('main');
+		this.connection.on('notification', this.onNotification);
 
-			if (this.$store.state.deviceUser.widgets.length === 0) {
-				this.$store.commit('deviceUser/setWidgets', [{
-					name: 'calendar',
-					id: 'a', place: 'right', data: {}
-				}, {
-					name: 'notifications',
-					id: 'b', place: 'right', data: {}
-				}, {
-					name: 'trends',
-					id: 'c', place: 'right', data: {}
-				}]);
-			}
+		if (this.$store.state.deviceUser.widgets.length === 0) {
+			this.$store.commit('deviceUser/setWidgets', [{
+				name: 'calendar',
+				id: 'a', place: 'right', data: {}
+			}, {
+				name: 'notifications',
+				id: 'b', place: 'right', data: {}
+			}, {
+				name: 'trends',
+				id: 'c', place: 'right', data: {}
+			}]);
 		}
 	},
 
 	mounted() {
-		this.calcHeaderWidth();
+		this.adjustUI();
 
 		const ro = new ResizeObserver((entries, observer) => {
-			this.calcHeaderWidth();
+			this.adjustUI();
 		});
 
 		ro.observe(this.$refs.contents);
 
-		window.addEventListener('resize', this.calcHeaderWidth, { passive: true });
+		window.addEventListener('resize', this.adjustUI, { passive: true });
 
 		if (!this.isDesktop) {
 			window.addEventListener('resize', () => {
 				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
 			}, { passive: true });
 		}
-
-		// widget follow
-		this.attachSticky();
 	},
 
 	methods: {
@@ -218,7 +188,9 @@ export default defineComponent({
 			}
 		},
 
-		calcHeaderWidth() {
+		adjustUI() {
+			const navWidth = this.$refs.nav.$el.offsetWidth;
+			this.navHidden = navWidth === 0;
 			if (this.$refs.contents == null) return;
 			const width = this.$refs.contents.offsetWidth;
 			this.$refs.header.style.width = `${width}px`;
@@ -228,12 +200,10 @@ export default defineComponent({
 			this.$refs.nav.show();
 		},
 
-		attachSticky() {
-			if (!this.isDesktop) return;
-
-			const stickyWidgetColumn = new StickySidebar(this.$refs.widgets.children[1], this.$refs.widgets.children[0]);
+		attachSticky(el) {
+			const sticky = new StickySidebar(el, this.$refs.widgetsSpacer);
 			window.addEventListener('scroll', () => {
-				stickyWidgetColumn.calc(window.scrollY);
+				sticky.calc(window.scrollY);
 			}, { passive: true });
 		},
 
@@ -303,55 +273,37 @@ export default defineComponent({
 
 			os.sound('notification');
 		},
-
-		widgetFunc(id) {
-			this.$refs[id][0].setting();
-		},
-
-		onWidgetSort() {
-			this.saveHome();
-		},
-
-		async addWidget() {
-			const { canceled, result: widget } = await os.dialog({
-				type: null,
-				title: this.$t('chooseWidget'),
-				select: {
-					items: widgets.map(widget => ({
-						value: widget,
-						text: this.$t('_widgets.' + widget),
-					}))
-				},
-				showCancelButton: true
-			});
-			if (canceled) return;
-
-			this.$store.commit('deviceUser/addWidget', {
-				name: widget,
-				id: uuid(),
-				place: null,
-				data: {}
-			});
-		},
-
-		removeWidget(widget) {
-			this.$store.commit('deviceUser/removeWidget', widget);
-		},
-
-		saveHome() {
-			this.$store.commit('deviceUser/setWidgets', [...this.widgets.left, ...this.widgets.right, ...this.widgets.mobile]);
-		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
+.tray-enter-active,
+.tray-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-enter-from,
+.tray-leave-active {
+	opacity: 0;
+	transform: translateX(240px);
+}
+
+.tray-back-enter-active,
+.tray-back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-back-enter-from,
+.tray-back-leave-active {
+	opacity: 0;
+}
+
 .mk-app {
 	$header-height: 60px;
 	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$header-sub-hide-threshold: 1090px;
-	$left-widgets-hide-threshold: 1600px;
-	$right-widgets-hide-threshold: 1090px;
+	$widgets-hide-threshold: 1090px;
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
@@ -453,35 +405,8 @@ export default defineComponent({
 				}
 			}
 
-			> .powerd-by {
-				font-size: 14px;
-				text-align: center;
-				margin: 32px 0;
-				visibility: hidden;
-
-				&.visible {
-					visibility: visible;
-				}
-
-				&:not(.visible) {
-					@media (min-width: 850px) {
-						display: none;
-					}
-				}
-
-				@media (max-width: 500px) {
-					margin-top: 16px;
-				}
-
-				> small {
-					display: block;
-					margin-top: 8px;
-					opacity: 0.5;
-
-					@media (max-width: 500px) {
-						margin-top: 4px;
-					}
-				}
+			> .spacer {
+				height: 82px;
 			}
 		}
 	}
@@ -490,72 +415,12 @@ export default defineComponent({
 		padding: 0 var(--margin);
 		border-left: solid 1px var(--divider);
 
-		&.empty {
+		@media (max-width: $widgets-hide-threshold) {
 			display: none;
-		}
-
-		@media (max-width: $right-widgets-hide-threshold) {
-			display: none;
-		}
-
-		> .container {
-			position: sticky;
-			height: min-content;
-			// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-			min-height: calc((var(--vh, 1vh) * 100) - #{$header-height});
-			padding: var(--margin) 0;
-			box-sizing: border-box;
-
-			> * {
-				margin: var(--margin) 0;
-				width: 300px;
-
-				&:first-child {
-					margin-top: 0;
-				}
-
-				&:last-child {
-					margin-bottom: 0;
-				}
-			}
-		}
-
-		> .add {
-			margin: 0 auto;
-		}
-
-		.customize-container {
-			margin: 8px 0;
-
-			> header {
-				position: relative;
-				line-height: 32px;
-
-				> .handle {
-					padding: 0 8px;
-					cursor: move;
-				}
-
-				> .remove {
-					position: absolute;
-					top: 0;
-					right: 0;
-					padding: 0 8px;
-					line-height: 32px;
-				}
-			}
-
-			> div {
-				padding: 8px;
-
-				> * {
-					pointer-events: none;
-				}
-			}
 		}
 	}
 
-	> .post {
+	> .widgetButton {
 		display: block;
 		position: fixed;
 		z-index: 1000;
@@ -566,12 +431,13 @@ export default defineComponent({
 		border-radius: 100%;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
+		background: var(--panel);
 
 		&.navHidden {
 			display: none;
 		}
 
-		@media (min-width: ($header-sub-hide-threshold + 1px)) {
+		@media (min-width: ($widgets-hide-threshold + 1px)) {
 			display: none;
 		}
 	}
@@ -602,6 +468,21 @@ export default defineComponent({
 			height: 64px;
 			border-radius: 100%;
 			box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+			background: var(--panel);
+			color: var(--fg);
+
+			&:hover {
+				background: var(--X2);
+			}
+
+			> i {
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: var(--indicator);
+				font-size: 16px;
+				animation: blink 1s infinite;
+			}
 
 			&:first-child {
 				margin-left: 0;
@@ -622,25 +503,24 @@ export default defineComponent({
 					opacity: 0.5;
 				}
 			}
-
-			&:not(.post) {
-				background: var(--panel);
-				color: var(--fg);
-
-				&:hover {
-					background: var(--X2);
-				}
-
-				> i {
-					position: absolute;
-					top: 0;
-					left: 0;
-					color: var(--indicator);
-					font-size: 16px;
-					animation: blink 1s infinite;
-				}
-			}
 		}
+	}
+
+	> .tray-back {
+		z-index: 1001;
+	}
+
+	> .tray {
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: 1001;
+		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+		height: calc(var(--vh, 1vh) * 100);
+		padding: var(--margin);
+		box-sizing: border-box;
+		overflow: auto;
+		background: var(--bg);
 	}
 }
 </style>

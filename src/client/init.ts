@@ -31,11 +31,13 @@ if (_DEV_) {
 
 	window.addEventListener('error', event => {
 		console.error(event);
+		/*
 		dialog({
 			type: 'error',
 			title: 'DEV: Unhandled error',
 			text: event.message
 		});
+		*/
 	});
 
 	window.addEventListener('unhandledrejection', event => {
