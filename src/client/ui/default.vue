@@ -37,18 +37,18 @@
 	</div>
 
 	<template v-if="isDesktop">
-		<div v-for="place in ['left', 'right']" ref="widgets" class="widgets" :class="[{ edit: widgetsEditMode, empty: widgets[place].length === 0 && !widgetsEditMode }, place]" :key="place">
+		<div ref="widgets" class="widgets" :class="{ edit: widgetsEditMode, empty: widgets.length === 0 && !widgetsEditMode }">
 			<div class="spacer"></div>
 			<div class="container" v-if="widgetsEditMode">
-				<MkButton primary @click="addWidget(place)" class="add"><Fa :icon="faPlus"/></MkButton>
+				<MkButton primary @click="addWidget" class="add"><Fa :icon="faPlus"/></MkButton>
 				<XDraggable
-					:list="widgets[place]"
+					:list="widgets"
 					handle=".handle"
 					animation="150"
 					class="sortable"
 					@sort="onWidgetSort"
 				>
-					<div v-for="widget in widgets[place]" class="customize-container _panel" :key="widget.id">
+					<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
 						<header>
 							<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><Fa :icon="faTimes"/></button>
 						</header>
@@ -59,7 +59,7 @@
 				</XDraggable>
 			</div>
 			<div class="container" v-else>
-				<component v-for="widget in widgets[place]" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+				<component v-for="widget in widgets" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
 			</div>
 		</div>
 	</template>
@@ -135,35 +135,7 @@ export default defineComponent({
 		},
 
 		widgets(): any {
-			if (this.$store.getters.isSignedIn) {
-				const widgets = this.$store.state.deviceUser.widgets;
-				return {
-					left: widgets.filter(x => x.place === 'left'),
-					right: widgets.filter(x => x.place == null || x.place === 'right'),
-					mobile: widgets.filter(x => x.place === 'mobile'),
-				};
-			} else {
-				const right = [{
-					name: 'calendar',
-					id: 'b', place: 'right', data: {}
-				}, {
-					name: 'trends',
-					id: 'c', place: 'right', data: {}
-				}];
-
-				if (this.$route.name !== 'index') {
-					right.unshift({
-						name: 'welcome',
-						id: 'a', place: 'right', data: {}
-					});
-				}
-
-				return {
-					left: [],
-					right,
-					mobile: [],
-				};
-			}
+			return this.$store.state.deviceUser.widgets;
 		},
 
 		menu(): string[] {
@@ -259,14 +231,9 @@ export default defineComponent({
 		attachSticky() {
 			if (!this.isDesktop) return;
 
-			// TODO: v-for refs
-			const widgets = Array.isArray(this.$refs.widgets) ? this.$refs.widgets : [this.$refs.widgets];
-
-			const stickyWidgetColumns = widgets.map(w => new StickySidebar(w.children[1], w.children[0]));
+			const stickyWidgetColumn = new StickySidebar(this.$refs.widgets.children[1], this.$refs.widgets.children[0]);
 			window.addEventListener('scroll', () => {
-				for (const stickyWidgetColumn of stickyWidgetColumns) {
-					stickyWidgetColumn.calc(window.scrollY);
-				}
+				stickyWidgetColumn.calc(window.scrollY);
 			}, { passive: true });
 		},
 
@@ -345,7 +312,7 @@ export default defineComponent({
 			this.saveHome();
 		},
 
-		async addWidget(place) {
+		async addWidget() {
 			const { canceled, result: widget } = await os.dialog({
 				type: null,
 				title: this.$t('chooseWidget'),
@@ -362,7 +329,7 @@ export default defineComponent({
 			this.$store.commit('deviceUser/addWidget', {
 				name: widget,
 				id: uuid(),
-				place: place,
+				place: null,
 				data: {}
 			});
 		},
@@ -392,12 +359,7 @@ export default defineComponent({
 
 	display: flex;
 
-	> .sidebar {
-		order: 1;
-	}
-
 	> .contents {
-		order: 3;
 		width: 100%;
 		min-width: 0;
 		padding-top: $header-height;
@@ -526,19 +488,7 @@ export default defineComponent({
 
 	> .widgets {
 		padding: 0 var(--margin);
-		box-shadow: 1px 0 0 0 var(--divider), -1px 0 0 0 var(--divider);
-
-		&.left {
-			order: 2;
-
-			@media (max-width: $left-widgets-hide-threshold) {
-				display: none;
-			}
-		}
-
-		&.right {
-			order: 4;
-		}
+		border-left: solid 1px var(--divider);
 
 		&.empty {
 			display: none;

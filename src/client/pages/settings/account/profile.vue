@@ -1,57 +1,59 @@
 <template>
-<section class="llvierxe _section">
-	<div class="_title"><Fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
-	<div class="_content">
-		<div class="header" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
-			<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
+<div class="_section">
+	<div class="llvierxe _card">
+		<div class="_title"><Fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
+		<div class="_content">
+			<div class="header" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
+				<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
+			</div>
+		
+			<MkInput v-model:value="name" :max="30">
+				<span>{{ $t('_profile.name') }}</span>
+			</MkInput>
+
+			<MkTextarea v-model:value="description" :max="500">
+				<span>{{ $t('_profile.description') }}</span>
+				<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
+			</MkTextarea>
+
+			<MkInput v-model:value="location">
+				<span>{{ $t('location') }}</span>
+				<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
+			</MkInput>
+
+			<MkInput v-model:value="birthday" type="date">
+				<template #title>{{ $t('birthday') }}</template>
+				<template #prefix><Fa :icon="faBirthdayCake"/></template>
+			</MkInput>
+
+			<details class="fields">
+				<summary>{{ $t('_profile.metadata') }}</summary>
+				<div class="row">
+					<MkInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</MkInput>
+					<MkInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</MkInput>
+				</div>
+				<div class="row">
+					<MkInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</MkInput>
+					<MkInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</MkInput>
+				</div>
+				<div class="row">
+					<MkInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</MkInput>
+					<MkInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</MkInput>
+				</div>
+				<div class="row">
+					<MkInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</MkInput>
+					<MkInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</MkInput>
+				</div>
+			</details>
+
+			<MkSwitch v-model:value="isBot">{{ $t('flagAsBot') }}</MkSwitch>
+			<MkSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</MkSwitch>
 		</div>
-	
-		<MkInput v-model:value="name" :max="30">
-			<span>{{ $t('_profile.name') }}</span>
-		</MkInput>
-
-		<MkTextarea v-model:value="description" :max="500">
-			<span>{{ $t('_profile.description') }}</span>
-			<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
-		</MkTextarea>
-
-		<MkInput v-model:value="location">
-			<span>{{ $t('location') }}</span>
-			<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
-		</MkInput>
-
-		<MkInput v-model:value="birthday" type="date">
-			<template #title>{{ $t('birthday') }}</template>
-			<template #prefix><Fa :icon="faBirthdayCake"/></template>
-		</MkInput>
-
-		<details class="fields">
-			<summary>{{ $t('_profile.metadata') }}</summary>
-			<div class="row">
-				<MkInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</MkInput>
-				<MkInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</MkInput>
-			</div>
-			<div class="row">
-				<MkInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</MkInput>
-				<MkInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</MkInput>
-			</div>
-			<div class="row">
-				<MkInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</MkInput>
-				<MkInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</MkInput>
-			</div>
-			<div class="row">
-				<MkInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</MkInput>
-				<MkInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</MkInput>
-			</div>
-		</details>
-
-		<MkSwitch v-model:value="isBot">{{ $t('flagAsBot') }}</MkSwitch>
-		<MkSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</MkSwitch>
+		<div class="_footer">
+			<MkButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+		</div>
 	</div>
-	<div class="_footer">
-		<MkButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts">
