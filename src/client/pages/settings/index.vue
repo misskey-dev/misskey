@@ -110,12 +110,12 @@ export default defineComponent({
 
 				&.router-link-active {
 					color: var(--accent);
-					padding-left: 48px;
+					padding-left: 42px;
 				}
 
 				&:hover {
 					text-decoration: none;
-					padding-left: 48px;
+					padding-left: 42px;
 				}
 
 				> .icon {
