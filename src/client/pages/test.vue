@@ -1,109 +1,109 @@
 <template>
-<div>
-	<portal to="header"><Fa :icon="faExclamationTriangle"/>TEST</portal>
+<div class="_section">
+	<div class="_content">
+		<div class="_card _vMargin">
+			<div class="_title">Dialog</div>
+			<div class="_content">
+				<MkInput v-model:value="dialogTitle">
+					<span>Title</span>
+				</MkInput>
+				<MkInput v-model:value="dialogBody">
+					<span>Body</span>
+				</MkInput>
+				<MkSwitch v-model:value="dialogCancel">
+					<span>With cancel button</span>
+				</MkSwitch>
+				<MkSwitch v-model:value="dialogCancelByBgClick">
+					<span>Can cancel by modal bg click</span>
+				</MkSwitch>
+				<MkSwitch v-model:value="dialogInput">
+					<span>With input field</span>
+				</MkSwitch>
+				<MkButton @click="showDialog()">Show</MkButton>
+			</div>
+			<div class="_content">
+				<code>Result: {{ dialogResult }}</code>
+			</div>
+		</div>
 
-	<div class="_section">
-		<div class="_title">Dialog</div>
-		<div class="_content">
-			<MkInput v-model:value="dialogTitle">
-				<span>Title</span>
-			</MkInput>
-			<MkInput v-model:value="dialogBody">
-				<span>Body</span>
-			</MkInput>
-			<MkSwitch v-model:value="dialogCancel">
-				<span>With cancel button</span>
-			</MkSwitch>
-			<MkSwitch v-model:value="dialogCancelByBgClick">
-				<span>Can cancel by modal bg click</span>
-			</MkSwitch>
-			<MkSwitch v-model:value="dialogInput">
-				<span>With input field</span>
-			</MkSwitch>
-			<MkButton @click="showDialog()">Show</MkButton>
+		<div class="_card _vMargin">
+			<div class="_title">Form</div>
+			<div class="_content">
+				<MkInput v-model:value="formTitle">
+					<span>Title</span>
+				</MkInput>
+				<MkTextarea v-model:value="formForm">
+					<span>Form</span>
+				</MkTextarea>
+				<MkButton @click="form()">Show</MkButton>
+			</div>
+			<div class="_content">
+				<code>Result: {{ formResult }}</code>
+			</div>
 		</div>
-		<div class="_content">
-			<code>Result: {{ dialogResult }}</code>
-		</div>
-	</div>
 
-	<div class="_section">
-		<div class="_title">Form</div>
-		<div class="_content">
-			<MkInput v-model:value="formTitle">
-				<span>Title</span>
-			</MkInput>
-			<MkTextarea v-model:value="formForm">
-				<span>Form</span>
-			</MkTextarea>
-			<MkButton @click="form()">Show</MkButton>
+		<div class="_card _vMargin">
+			<div class="_title">MFM</div>
+			<div class="_content">
+				<MkTextarea v-model:value="mfm">
+					<span>MFM</span>
+				</MkTextarea>
+			</div>
+			<div class="_content">
+				<Mfm :text="mfm"/>
+			</div>
 		</div>
-		<div class="_content">
-			<code>Result: {{ formResult }}</code>
-		</div>
-	</div>
 
-	<div class="_section">
-		<div class="_title">MFM</div>
-		<div class="_content">
-			<MkTextarea v-model:value="mfm">
-				<span>MFM</span>
-			</MkTextarea>
+		<div class="_card _vMargin">
+			<div class="_title">selectDriveFile</div>
+			<div class="_content">
+				<MkSwitch v-model:value="selectDriveFileMultiple">
+					<span>Multiple</span>
+				</MkSwitch>
+				<MkButton @click="selectDriveFile()">selectDriveFile</MkButton>
+			</div>
+			<div class="_content">
+				<code>Result: {{ JSON.stringify(selectDriveFileResult) }}</code>
+			</div>
 		</div>
-		<div class="_content">
-			<Mfm :text="mfm"/>
-		</div>
-	</div>
 
-	<div class="_section">
-		<div class="_title">selectDriveFile</div>
-		<div class="_content">
-			<MkSwitch v-model:value="selectDriveFileMultiple">
-				<span>Multiple</span>
-			</MkSwitch>
-			<MkButton @click="selectDriveFile()">selectDriveFile</MkButton>
+		<div class="_card _vMargin">
+			<div class="_title">selectDriveFolder</div>
+			<div class="_content">
+				<MkSwitch v-model:value="selectDriveFolderMultiple">
+					<span>Multiple</span>
+				</MkSwitch>
+				<MkButton @click="selectDriveFolder()">selectDriveFolder</MkButton>
+			</div>
+			<div class="_content">
+				<code>Result: {{ JSON.stringify(selectDriveFolderResult) }}</code>
+			</div>
 		</div>
-		<div class="_content">
-			<code>Result: {{ JSON.stringify(selectDriveFileResult) }}</code>
-		</div>
-	</div>
 
-	<div class="_section">
-		<div class="_title">selectDriveFolder</div>
-		<div class="_content">
-			<MkSwitch v-model:value="selectDriveFolderMultiple">
-				<span>Multiple</span>
-			</MkSwitch>
-			<MkButton @click="selectDriveFolder()">selectDriveFolder</MkButton>
+		<div class="_card _vMargin">
+			<div class="_title">selectUser</div>
+			<div class="_content">
+				<MkButton @click="selectUser()">selectUser</MkButton>
+			</div>
+			<div class="_content">
+				<code>Result: {{ user }}</code>
+			</div>
 		</div>
-		<div class="_content">
-			<code>Result: {{ JSON.stringify(selectDriveFolderResult) }}</code>
-		</div>
-	</div>
 
-	<div class="_section">
-		<div class="_title">selectUser</div>
-		<div class="_content">
-			<MkButton @click="selectUser()">selectUser</MkButton>
-		</div>
-		<div class="_content">
-			<code>Result: {{ user }}</code>
-		</div>
-	</div>
-
-	<div class="_section">
-		<div class="_title">Notification</div>
-		<div class="_content">
-			<MkInput v-model:value="notificationIconUrl">
-				<span>Icon URL</span>
-			</MkInput>
-			<MkInput v-model:value="notificationHeader">
-				<span>Header</span>
-			</MkInput>
-			<MkTextarea v-model:value="notificationBody">
-				<span>Body</span>
-			</MkTextarea>
-			<MkButton @click="createNotification()">createNotification</MkButton>
+		<div class="_card _vMargin">
+			<div class="_title">Notification</div>
+			<div class="_content">
+				<MkInput v-model:value="notificationIconUrl">
+					<span>Icon URL</span>
+				</MkInput>
+				<MkInput v-model:value="notificationHeader">
+					<span>Header</span>
+				</MkInput>
+				<MkTextarea v-model:value="notificationBody">
+					<span>Body</span>
+				</MkTextarea>
+				<MkButton @click="createNotification()">createNotification</MkButton>
+			</div>
 		</div>
 	</div>
 </div>
@@ -126,14 +126,14 @@ export default defineComponent({
 		MkTextarea,
 	},
 
-	metaInfo() {
-		return {
-			title: this.$t('notFound') as string
-		};
-	},
-
 	data() {
 		return {
+			info: {
+				header: [{
+					title: 'TEST',
+					icon: faExclamationTriangle
+				}]
+			},
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',
 			dialogCancel: false,
@@ -168,7 +168,6 @@ export default defineComponent({
 			notificationIconUrl: null,
 			notificationHeader: '',
 			notificationBody: '',
-			faExclamationTriangle
 		}
 	},
 
