@@ -27,6 +27,7 @@ export const router = createRouter({
 			{ path: 'account/profile', component: page('settings/account/profile') },
 			{ path: 'account/privacy', component: page('settings/account/privacy') },
 			{ path: 'account/reaction', component: page('settings/account/reaction') },
+			{ path: 'account/notifications', component: page('settings/account/notifications') },
 			{ path: 'client/theme', component: page('settings/client/theme') },
 			{ path: 'client/sidebar', component: page('settings/client/sidebar') },
 			{ path: 'client/sounds', component: page('settings/client/sounds') },

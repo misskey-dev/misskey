@@ -3,20 +3,9 @@
 	<section class="_section">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
-			<MkSwitch v-model:value="$store.state.i.autoWatch" @update:value="onChangeAutoWatch">
-				{{ $t('autoNoteWatch') }}<template #desc>{{ $t('autoNoteWatchDescription') }}</template>
-			</MkSwitch>
 			<MkSwitch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
 				{{ $t('showFeaturedNotesInTimeline') }}
 			</MkSwitch>
-		</div>
-		<div class="_content">
-			<MkButton @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</MkButton>
-			<MkButton @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</MkButton>
-			<MkButton @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</MkButton>
-		</div>
-		<div class="_content">
-			<MkButton @click="configure">{{ $t('notificationSetting') }}</MkButton>
 		</div>
 	</section>
 
