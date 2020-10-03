@@ -336,6 +336,21 @@ hr {
 	}
 }
 
+._narrow_ ._card {
+	> ._title {
+		padding: 16px;
+		font-size: 1em;
+	}
+
+	> ._content {
+		padding: 16px;
+	}
+
+	> ._footer {
+		padding: 16px;
+	}
+}
+
 ._narrow_ ._section {
 	padding: 0;
 

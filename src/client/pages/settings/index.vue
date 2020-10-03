@@ -21,7 +21,7 @@
 	</div>
 	<div class="main">
 		<router-view v-slot="{ Component }">
-			<transition :name="$store.state.device.animation ? 'view-slide' : ''" appear mode="out-in">
+			<transition :name="($store.state.device.animation && !narrow) ? 'view-slide' : ''" appear mode="out-in">
 				<component :is="Component" @info="onInfo"/>
 			</transition>
 		</router-view>
