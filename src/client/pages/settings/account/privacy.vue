@@ -1,22 +1,24 @@
 <template>
-<section class="_section">
-	<div class="_title"><Fa :icon="faLock"/> {{ $t('privacy') }}</div>
-	<div class="_content">
-		<MkSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</MkSwitch>
-		<MkSwitch v-model:value="autoAcceptFollowed" v-if="isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</MkSwitch>
+<div class="_section">
+	<div class="_card">
+		<div class="_title"><Fa :icon="faLock"/> {{ $t('privacy') }}</div>
+		<div class="_content">
+			<MkSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</MkSwitch>
+			<MkSwitch v-model:value="autoAcceptFollowed" v-if="isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</MkSwitch>
+		</div>
+		<div class="_content">
+			<MkSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</MkSwitch>
+			<MkSelect v-model:value="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
+				<template #label>{{ $t('defaultNoteVisibility') }}</template>
+				<option value="public">{{ $t('_visibility.public') }}</option>
+				<option value="home">{{ $t('_visibility.home') }}</option>
+				<option value="followers">{{ $t('_visibility.followers') }}</option>
+				<option value="specified">{{ $t('_visibility.specified') }}</option>
+			</MkSelect>
+			<MkSwitch v-model:value="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</MkSwitch>
+		</div>
 	</div>
-	<div class="_content">
-		<MkSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</MkSwitch>
-		<MkSelect v-model:value="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
-			<template #label>{{ $t('defaultNoteVisibility') }}</template>
-			<option value="public">{{ $t('_visibility.public') }}</option>
-			<option value="home">{{ $t('_visibility.home') }}</option>
-			<option value="followers">{{ $t('_visibility.followers') }}</option>
-			<option value="specified">{{ $t('_visibility.specified') }}</option>
-		</MkSelect>
-		<MkSwitch v-model:value="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</MkSwitch>
-	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts">

@@ -12,6 +12,7 @@
 			<div class="label">{{ $t('clientSettings') }}</div>
 			<router-link class="item" to="/settings/client/theme"><Fa :icon="faPalette" fixed-width class="icon"/>{{ $t('theme') }}</router-link>
 			<router-link class="item" to="/settings/client/sidebar"><Fa :icon="faListUl" fixed-width class="icon"/>{{ $t('sidebar') }}</router-link>
+			<router-link class="item" to="/settings/client/sounds"><Fa :icon="faMusic" fixed-width class="icon"/>{{ $t('sounds') }}</router-link>
 			<router-link class="item" to="/settings/client/plugins"><Fa :icon="faPlug" fixed-width class="icon"/>{{ $t('plugins') }}</router-link>
 		</div>
 		<div class="menu other">
@@ -19,14 +20,18 @@
 		</div>
 	</div>
 	<div class="main">
-		<router-view></router-view>
+		<router-view v-slot="{ Component }">
+			<transition :name="$store.state.device.animation ? 'view-slide' : ''" appear mode="out-in">
+				<component :is="Component"/>
+			</transition>
+		</router-view>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
 
@@ -40,7 +45,7 @@ export default defineComponent({
 				}]
 			},
 			narrow: false,
-			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash,
+			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic,
 		};
 	},
 
@@ -51,6 +56,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.view-slide-enter-active, .view-slide-leave-active {
+	transition: opacity 0.3s, transform 0.3s !important;
+}
+.view-slide-enter-from, .view-slide-leave-to {
+	opacity: 0;
+	transform: translateX(32px);
+}
+
 .vvcocwet {
 	max-width: 1000px;
 	margin: 0 auto;
@@ -76,6 +89,7 @@ export default defineComponent({
 				text-overflow: ellipsis;
 				//background: var(--panel);
 				//border-bottom: solid 1px var(--divider);
+				transition: padding 0.2s ease, color 0.1s ease;
 
 				&:first-of-type {
 					//border-top: solid 1px var(--divider);
@@ -83,10 +97,12 @@ export default defineComponent({
 
 				&.router-link-active {
 					color: var(--accent);
+					padding-left: 48px;
 				}
 
 				&:hover {
 					text-decoration: none;
+					padding-left: 48px;
 				}
 
 				> .icon {

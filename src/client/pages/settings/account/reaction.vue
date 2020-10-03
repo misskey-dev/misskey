@@ -1,17 +1,19 @@
 <template>
-<section class="_section">
-	<div class="_title"><Fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
-	<div class="_content">
-		<MkInput v-model:value="reactions" style="font-family: 'Segoe UI Emoji', 'Noto Color Emoji', Roboto, HelveticaNeue, Arial, sans-serif">
-			{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></template>
-		</MkInput>
-		<MkButton inline @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</MkButton>
+<div class="_section">
+	<div class="_card">
+		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
+		<div class="_content">
+			<MkInput v-model:value="reactions" style="font-family: 'Segoe UI Emoji', 'Noto Color Emoji', Roboto, HelveticaNeue, Arial, sans-serif">
+				{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></template>
+			</MkInput>
+			<MkButton inline @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</MkButton>
+		</div>
+		<div class="_footer">
+			<MkButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+			<MkButton inline @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
+		</div>
 	</div>
-	<div class="_footer">
-		<MkButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-		<MkButton inline @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
-	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts">
