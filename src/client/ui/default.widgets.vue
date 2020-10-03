@@ -1,36 +1,43 @@
 <template>
-<div class="efzpzdvf" v-if="editMode">
-	<MkButton primary @click="addWidget" class="add"><Fa :icon="faPlus"/></MkButton>
-	<XDraggable
-		:list="widgets"
-		handle=".handle"
-		animation="150"
-		class="sortable"
-		@sort="onWidgetSort"
-	>
-		<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
-			<header>
-				<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><Fa :icon="faTimes"/></button>
-			</header>
-			<div @click="widgetFunc(widget.id)">
-				<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+<div class="efzpzdvf">
+	<template v-if="editMode">
+		<MkButton primary @click="addWidget" class="add"><Fa :icon="faPlus"/></MkButton>
+		<XDraggable
+			:list="widgets"
+			handle=".handle"
+			animation="150"
+			class="sortable"
+			@sort="onWidgetSort"
+		>
+			<div v-for="widget in widgets" class="customize-container _panel" :key="widget.id">
+				<header>
+					<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><Fa :icon="faTimes"/></button>
+				</header>
+				<div @click="widgetFunc(widget.id)">
+					<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true"/>
+				</div>
 			</div>
-		</div>
-	</XDraggable>
-</div>
-<div class="efzpzdvf" v-else ref="container">
-	<component v-for="widget in widgets" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+		</XDraggable>
+		<button @click="editMode = false" class="_textButton"><Fa :icon="faCheck"/> {{ $t('editWidgetsExit') }}</button>
+	</template>
+	<template v-else>
+		<component v-for="widget in widgets" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
+		<button @click="editMode = true" class="_textButton"><Fa :icon="faPencilAlt"/> {{ $t('editWidgets') }}</button>
+	</template>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
+import { faPencilAlt, faPlus, faBars, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { widgets } from '@/widgets';
 import * as os from '@/os';
+import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
 	components: {
+		MkButton,
 		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
 	},
 
@@ -39,6 +46,7 @@ export default defineComponent({
 	data() {
 		return {
 			editMode: false,
+			faPencilAlt, faPlus, faBars, faTimes, faCheck,
 		};
 	},
 
@@ -49,7 +57,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('mounted', this.$refs.container);
+		this.$emit('mounted', this.$el);
 	},
 
 	methods: {
@@ -88,7 +96,7 @@ export default defineComponent({
 		},
 
 		saveHome() {
-			this.$store.commit('deviceUser/setWidgets', [...this.widgets.left, ...this.widgets.right, ...this.widgets.mobile]);
+			this.$store.commit('deviceUser/setWidgets', this.widgets);
 		}
 	}
 });
@@ -108,10 +116,6 @@ export default defineComponent({
 
 		&:first-child {
 			margin-top: 0;
-		}
-
-		&:last-child {
-			margin-bottom: 0;
 		}
 	}
 
