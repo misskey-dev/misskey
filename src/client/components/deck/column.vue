@@ -23,7 +23,6 @@
 		</div>
 		<span class="header"><slot name="header"></slot></span>
 		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><Fa :icon="faCaretDown"/></button>
-		<button v-else-if="$route.name !== 'index'" class="close _button" @click.stop="close"><Fa :icon="faTimes"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -33,7 +32,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
 
@@ -72,7 +71,7 @@ export default defineComponent({
 			dragging: false,
 			draghover: false,
 			dropready: false,
-			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes,
+			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown,
 		};
 	},
 
@@ -213,10 +212,6 @@ export default defineComponent({
 			}, {
 				source: this.$refs.menu,
 			});
-		},
-
-		close() {
-			this.$router.push('/');
 		},
 
 		goTop() {
@@ -379,8 +374,7 @@ export default defineComponent({
 
 		> .toggleActive,
 		> .action > *,
-		> .menu,
-		> .close {
+		> .menu {
 			z-index: 1;
 			width: $header-height;
 			line-height: $header-height;
@@ -408,8 +402,7 @@ export default defineComponent({
 			display: none;
 		}
 
-		> .menu,
-		> .close {
+		> .menu {
 			margin-left: auto;
 			margin-right: -16px;
 		}
