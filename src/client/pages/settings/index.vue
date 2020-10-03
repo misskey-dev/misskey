@@ -57,7 +57,7 @@ export default defineComponent({
 			margin: 16px 0;
 
 			> .label {
-				padding: 8px;
+				padding: 8px 32px;
 				font-size: 80%;
 				opacity: 0.7;
 			}
@@ -66,16 +66,16 @@ export default defineComponent({
 				display: block;
 				width: 100%;
 				box-sizing: border-box;
-				padding: 0 16px;
+				padding: 0 32px;
 				line-height: 48px;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				background: var(--panel);
-				border-bottom: solid 1px var(--divider);
+				//background: var(--panel);
+				//border-bottom: solid 1px var(--divider);
 
 				&:first-of-type {
-					border-top: solid 1px var(--divider);
+					//border-top: solid 1px var(--divider);
 				}
 
 				&.router-link-active {

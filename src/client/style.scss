@@ -218,7 +218,8 @@ hr {
 	z-index: 1;
 	background: var(--panel);
 	border-radius: var(--radius);
-	box-shadow: 0 0 0 1px var(--panelBorder);
+	//border: var(--panelBorder);
+	box-shadow: var(--panelShadow);
 	overflow: hidden;
 }
 

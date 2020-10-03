@@ -55,7 +55,6 @@
 		wallpaperOverlay: 'rgba(0, 0, 0, 0.5)',
 		badge: '#31b1ce',
 		messageBg: ':lighten<5<@bg',
-		deckColumnBorder: ':lighten<10<@panel',
 		htmlThemeColor: '@bg',
 		X1: ':alpha<0<@bg',
 		X2: ':darken<2<@panel',

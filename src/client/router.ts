@@ -1,8 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import MkIndex from './pages/index.vue';
 import { defineAsyncComponent } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import MkLoading from '@/pages/_loading_.vue';
+import MkError from '@/pages/_error_.vue';
+import MkIndex from '@/pages/index.vue';
 
-const page = (path: string) => defineAsyncComponent(() => import(`./pages/${path}.vue`));
+const page = (path: string) => defineAsyncComponent({
+	loader: () => import(`./pages/${path}.vue`),
+	loadingComponent: MkLoading,
+	errorComponent: MkError,
+});
 
 let indexScrollPos = 0;
 
