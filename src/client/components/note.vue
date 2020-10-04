@@ -17,9 +17,11 @@
 		<MkAvatar class="avatar" :user="note.user"/>
 		<Fa :icon="faRetweet"/>
 		<i18n-t keypath="renotedBy" tag="span">
-			<router-link class="name" :to="userPage(note.user)" v-user-preview="note.userId" place="user">
-				<MkUserName :user="note.user"/>
-			</router-link>
+			<template #user>
+				<router-link class="name" :to="userPage(note.user)" v-user-preview="note.userId">
+					<MkUserName :user="note.user"/>
+				</router-link>
+			</template>
 		</i18n-t>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
@@ -88,9 +90,11 @@
 </div>
 <div v-else class="_panel muted" @click="muted = false">
 	<i18n-t keypath="userSaysSomething" tag="small">
-		<router-link class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId" place="name">
-			<MkUserName :user="appearNote.user"/>
-		</router-link>
+		<template #name>
+			<router-link class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
+				<MkUserName :user="appearNote.user"/>
+			</router-link>
+		</template>
 	</i18n-t>
 </div>
 </template>
