@@ -1,7 +1,6 @@
 <template>
 <div class="_section">
 	<div class="_card">
-		<div class="_title"><Fa :icon="faListUl"/> {{ $t('sidebar') }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="items" tall>
 				<span>{{ $t('sidebar') }}</span>
@@ -51,7 +50,7 @@ export default defineComponent({
 			},
 			menuDef: sidebarDef,
 			items: '',
-			faListUl, faSave, faRedo
+			faSave, faRedo
 		}
 	},
 

@@ -1,7 +1,6 @@
 <template>
 <div class="_section">
 	<div class="_card">
-		<div class="_title"><Fa :icon="faLock"/> {{ $t('privacy') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</MkSwitch>
 			<MkSwitch v-model:value="autoAcceptFollowed" v-if="isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</MkSwitch>
@@ -33,12 +32,19 @@ export default defineComponent({
 		MkSelect,
 		MkSwitch,
 	},
+
+	emits: ['info'],
 	
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('privacy'),
+					icon: faLock
+				}]
+			},
 			isLocked: false,
 			autoAcceptFollowed: false,
-			faLock
 		}
 	},
 
@@ -62,6 +68,10 @@ export default defineComponent({
 	created() {
 		this.isLocked = this.$store.state.i.isLocked;
 		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
+	},
+
+	mounted() {
+		this.$emit('info', this.info);
 	},
 
 	methods: {

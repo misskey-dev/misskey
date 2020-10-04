@@ -571,6 +571,7 @@ notificationSetting: "通知設定"
 notificationSettingDesc: "表示する通知の種別を選択してください。"
 useGlobalSetting: "グローバル設定を使う"
 useGlobalSettingDesc: "オンにすると、アカウントの通知設定が使用されます。オフにすると、個別に設定できるようになります。"
+other: "その他"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"
