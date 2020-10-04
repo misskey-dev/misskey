@@ -18,11 +18,11 @@
 				</div>
 			</div>
 		</XDraggable>
-		<button @click="editMode = false" class="_textButton"><Fa :icon="faCheck"/> {{ $t('editWidgetsExit') }}</button>
+		<button @click="editMode = false" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $t('editWidgetsExit') }}</button>
 	</template>
 	<template v-else>
 		<component v-for="widget in widgets" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget"/>
-		<button @click="editMode = true" class="_textButton"><Fa :icon="faPencilAlt"/> {{ $t('editWidgets') }}</button>
+		<button @click="editMode = true" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $t('editWidgets') }}</button>
 	</template>
 </div>
 </template>
