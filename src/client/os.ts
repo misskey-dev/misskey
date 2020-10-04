@@ -77,7 +77,10 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 			events,
 			closed: () => {
 				if (_DEV_) console.log('os:popup close', id, component, props, events);
-				store.commit('removePopup', id);
+				// このsetTimeoutが無いと挙動がおかしくなる。Vueのバグ？
+				setTimeout(() => {
+					store.commit('removePopup', id);
+				}, 0);
 				resolve();
 			},
 			id,
