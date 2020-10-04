@@ -1,6 +1,9 @@
 <template>
 <div>
 	<div class="_section">
+		<X2fa/>
+	</div>
+	<div class="_section">
 		<MkButton primary @click="change()" style="width: 100%;">{{ $t('changePassword') }}</MkButton>
 	</div>
 	<div class="_section">
@@ -14,11 +17,13 @@
 import { defineComponent } from 'vue';
 import { faLock, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
+import X2fa from './security.2fa.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		MkButton,
+		X2fa,
 	},
 	
 	emits: ['info'],

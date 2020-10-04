@@ -32,6 +32,7 @@ export const router = createRouter({
 			{ path: 'word-mute', component: page('settings/word-mute') },
 			{ path: 'integration', component: page('settings/integration') },
 			{ path: 'security', component: page('settings/security') },
+			{ path: 'api', component: page('settings/api') },
 			{ path: 'other', component: page('settings/other') },
 			{ path: 'general', component: page('settings/general') },
 			{ path: 'theme', component: page('settings/theme') },

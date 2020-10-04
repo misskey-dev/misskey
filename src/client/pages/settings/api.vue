@@ -1,6 +1,5 @@
 <template>
 <section class="_section">
-	<div class="_title"><Fa :icon="faKey"/> API</div>
 	<div class="_content">
 		<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
 	</div>
@@ -18,11 +17,24 @@ export default defineComponent({
 	components: {
 		MkButton, MkInput
 	},
+
+	emits: ['info'],
+
 	data() {
 		return {
-			faKey
+			info: {
+				header: [{
+					title: 'API',
+					icon: faKey
+				}]
+			},
 		};
 	},
+
+	mounted() {
+		this.$emit('info', this.info);
+	},
+
 	methods: {
 		async generateToken() {
 			os.modal(await import('@/components/token-generate-window.vue'), {}).then(async result => {
