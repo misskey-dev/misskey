@@ -10,9 +10,9 @@
 		</div>
 		<div class="_content">
 			<div>{{ $t('display') }}</div>
-			<MkRadio v-model:value="sidebarDisplay" value="full">{{ $t('_sidebar.full') }}</MkRadio>
-			<MkRadio v-model:value="sidebarDisplay" value="icon">{{ $t('_sidebar.icon') }}</MkRadio>
-			<!-- <MkRadio v-model:value="sidebarDisplay" value="hide" disabled>{{ $t('_sidebar.hide') }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
+			<MkRadio v-model="sidebarDisplay" value="full">{{ $t('_sidebar.full') }}</MkRadio>
+			<MkRadio v-model="sidebarDisplay" value="icon">{{ $t('_sidebar.icon') }}</MkRadio>
+			<!-- <MkRadio v-model="sidebarDisplay" value="hide" disabled>{{ $t('_sidebar.hide') }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 		</div>
 		<div class="_footer">
 			<MkButton inline @click="save()" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>

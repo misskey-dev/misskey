@@ -21,12 +21,8 @@ import { defineComponent } from 'vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	model: {
-		prop: 'model',
-		event: 'change'
-	},
 	props: {
-		model: {
+		modelValue: {
 			required: false
 		},
 		value: {
@@ -39,13 +35,13 @@ export default defineComponent({
 	},
 	computed: {
 		checked(): boolean {
-			return this.model === this.value;
+			return this.modelValue === this.value;
 		}
 	},
 	methods: {
 		toggle() {
 			if (this.disabled) return;
-			this.$emit('change', this.value);
+			this.$emit('update:modelValue', this.value);
 		}
 	}
 });

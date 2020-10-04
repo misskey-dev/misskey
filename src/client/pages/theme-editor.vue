@@ -9,8 +9,8 @@
 			<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
 			<div class="_inputs">
 				<div v-text="$t('_theme.base')" />
-				<MkRadio v-model:value="baseTheme" value="light">{{ $t('light') }}</MkRadio>
-				<MkRadio v-model:value="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
+				<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
+				<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
 			</div>
 		</div>
 		<div class="_content">

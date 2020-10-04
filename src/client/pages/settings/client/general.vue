@@ -4,9 +4,9 @@
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
 			<div>{{ $t('whenServerDisconnected') }}</div>
-			<MkRadio v-model:value="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
-			<MkRadio v-model:value="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
-			<MkRadio v-model:value="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</MkRadio>
+			<MkRadio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
+			<MkRadio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
+			<MkRadio v-model="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</MkRadio>
 		</div>
 		<div class="_content">
 			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
@@ -36,10 +36,10 @@
 		</div>
 		<div class="_content">
 			<div>{{ $t('fontSize') }}</div>
-			<MkRadio v-model:value="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
-			<MkRadio v-model:value="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
-			<MkRadio v-model:value="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
-			<MkRadio v-model:value="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
+			<MkRadio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
+			<MkRadio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
+			<MkRadio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
+			<MkRadio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
 		</div>
 	</section>
 
@@ -52,8 +52,8 @@
 		</div>
 		<div class="_content">
 			<div>{{ $t('_deck.columnAlign') }}</div>
-			<MkRadio v-model:value="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
-			<MkRadio v-model:value="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
+			<MkRadio v-model="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
+			<MkRadio v-model="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
 		</div>
 	</section>
 
