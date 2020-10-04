@@ -21,10 +21,22 @@ export default defineComponent({
 		MkButton,
 	},
 	
+	emits: ['info'],
+	
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('security'),
+					icon: faLock
+				}]
+			},
 			faLock, faSyncAlt
 		}
+	},
+
+	mounted() {
+		this.$emit('info', this.info);
 	},
 
 	methods: {
