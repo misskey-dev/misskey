@@ -1,39 +1,34 @@
 <template>
-<div class="mk-messaging-room"
+<div class="_section"
 	@dragover.prevent.stop="onDragover"
 	@drop.prevent.stop="onDrop"
 >
-	<template v-if="!fetching && user">
-		<portal to="header"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
-	</template>
-	<template v-if="!fetching && group">
-		<portal to="header"><Fa :icon="faUsers"/>{{ group.name }}</portal>
-	</template>
-
-	<div class="body">
-		<MkLoading v-if="fetching"/>
-		<p class="empty" v-if="!fetching && messages.length == 0"><Fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
-		<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><Fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
-		<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-			<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
-		</button>
-		<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
-			<XMessage :message="message" :is-group="group != null" :key="message.id"/>
-		</XList>
+	<div class="_content mk-messaging-room">
+		<div class="body">
+			<MkLoading v-if="fetching"/>
+			<p class="empty" v-if="!fetching && messages.length == 0"><Fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
+			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><Fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
+			<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
+				<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
+			</button>
+			<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
+				<XMessage :message="message" :is-group="group != null" :key="message.id"/>
+			</XList>
+		</div>
+		<footer>
+			<transition name="fade">
+				<div class="new-message" v-show="showIndicator">
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
+				</div>
+			</transition>
+			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
+		</footer>
 	</div>
-	<footer>
-		<transition name="fade">
-			<div class="new-message" v-show="showIndicator">
-				<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
-			</div>
-		</transition>
-		<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
-	</footer>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import XList from '@/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
@@ -51,6 +46,17 @@ export default defineComponent({
 
 	data() {
 		return {
+			info: computed(() => !this.fetching ? this.user ? {
+				header: [{
+					userName: this.user,
+					avatar: this.user,
+				}],
+			} : {
+				header: [{
+					title: this.group.name,
+					icon: faUsers
+				}],
+			} : null),
 			fetching: true,
 			user: null,
 			group: null,
@@ -67,7 +73,7 @@ export default defineComponent({
 					&& this.existMoreMessages
 					&& this.fetchMoreMessages()
 			),
-			faArrowCircleDown, faFlag, faUsers, faInfoCircle
+			faArrowCircleDown, faFlag, faInfoCircle
 		};
 	},
 
@@ -285,10 +291,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-messaging-room {
-
 	> .body {
-		width: 100%;
-
 		> .empty {
 			width: 100%;
 			margin: 0;
