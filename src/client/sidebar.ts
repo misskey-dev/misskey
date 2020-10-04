@@ -5,7 +5,6 @@ import { store } from '@/store';
 import { deckmode } from '@/config';
 import { search } from '@/scripts/search';
 
-
 export const sidebarDef = {
 	notifications: {
 		title: 'notifications',

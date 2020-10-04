@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
 
-import VueHotkey from '@/scripts/hotkey';
 import Root from './root.vue';
 import widgets from './widgets';
 import directives from './directives';
@@ -159,7 +158,6 @@ if (_DEV_) {
 app.use(store);
 app.use(router);
 app.use(i18n);
-app.use(VueHotkey);
 app.use(VAnimateCss);
 // eslint-disable-next-line vue/component-definition-name-casing
 app.component('Fa', FontAwesomeIcon);
