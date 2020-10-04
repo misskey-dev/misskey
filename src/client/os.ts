@@ -77,7 +77,7 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 			events,
 			closed: () => {
 				if (_DEV_) console.log('os:popup close', id, component, props, events);
-				// このsetTimeoutが無いと挙動がおかしくなる。Vueのバグ？
+				// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
 				setTimeout(() => {
 					store.commit('removePopup', id);
 				}, 0);
