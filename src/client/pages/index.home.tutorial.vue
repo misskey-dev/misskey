@@ -26,8 +26,12 @@
 			<div class="_content" v-else-if="tutorial === 4">
 				<div>{{ $t('_tutorial.step5_1') }}</div>
 				<i18n-t keypath="_tutorial.step5_2" tag="div">
-					<router-link class="_link" place="featured" to="/featured">{{ $t('featured') }}</router-link>
-					<router-link class="_link" place="explore" to="/explore">{{ $t('explore') }}</router-link>
+					<template #featured>
+						<router-link class="_link" to="/featured">{{ $t('featured') }}</router-link>
+					</template>
+					<template #explore>
+						<router-link class="_link" to="/explore">{{ $t('explore') }}</router-link>
+					</template>
 				</i18n-t>
 				<div>{{ $t('_tutorial.step5_3') }}</div>
 				<small>{{ $t('_tutorial.step5_4') }}</small>
@@ -40,7 +44,9 @@
 			<div class="_content" v-else-if="tutorial === 6">
 				<div>{{ $t('_tutorial.step7_1') }}</div>
 				<i18n-t keypath="_tutorial.step7_2" tag="div">
-					<router-link class="_link" place="help" to="/docs">{{ $t('help') }}</router-link>
+					<template #help>
+						<router-link class="_link" to="/docs">{{ $t('help') }}</router-link>
+					</template>
 				</i18n-t>
 				<div>{{ $t('_tutorial.step7_3') }}</div>
 			</div>
