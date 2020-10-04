@@ -22,7 +22,7 @@ import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import MkInput from '@/components/ui/input.vue';
 import MkButton from '@/components/ui/button.vue';
-import { emojiRegexWithCustom } from '../../../../misc/emoji-regex';
+import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
 import { defaultSettings } from '@/store';
 import * as os from '@/os';
 

@@ -26,7 +26,7 @@ import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
-import { notificationTypes } from '../../../../types';
+import { notificationTypes } from '../../../types';
 import * as os from '@/os';
 
 export default defineComponent({
