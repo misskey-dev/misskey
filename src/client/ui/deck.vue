@@ -61,10 +61,7 @@ export default defineComponent({
 			host: host,
 			pageInfo: null,
 			pageKey: 0,
-			searching: false,
 			connection: null,
-			searchQuery: '',
-			searchWait: false,
 			menuDef: sidebarDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
@@ -142,22 +139,6 @@ export default defineComponent({
 
 		post() {
 			os.post();
-		},
-
-		search() {
-			if (this.searching) return;
-
-			os.dialog({
-				title: this.$t('search'),
-				input: true
-			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query === '') return;
-
-				this.searching = true;
-				search(this, query).finally(() => {
-					this.searching = false;
-				});
-			});
 		},
 
 		async onNotification(notification) {
