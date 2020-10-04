@@ -71,7 +71,7 @@ export const defaultDeviceSettings = {
 	animatedMfm: true,
 	imageNewTab: false,
 	showFixedPostForm: false,
-	disablePagesScript: true,
+	disablePagesScript: false,
 	enableInfiniteScroll: true,
 	useBlurEffectForModal: true,
 	sidebarDisplay: 'full', // full, icon, hide
