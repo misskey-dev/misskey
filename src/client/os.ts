@@ -65,10 +65,6 @@ function isModule(x: any): x is typeof import('*.vue') {
 export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?) {
 	if (isModule(component)) component = component.default;
 
-	if (_DEV_) {
-		console.log('os:popup', component, props, events);
-	}
-
 	return new PCancelable((resolve, reject, onCancel) => {
 		markRaw(component);
 		const id = Math.random().toString(); // TODO: uuidとか使う
@@ -80,11 +76,14 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 			showing,
 			events,
 			closed: () => {
+				if (_DEV_) console.log('os:popup close', id, component, props, events);
 				store.commit('removePopup', id);
 				resolve();
 			},
 			id,
 		};
+
+		if (_DEV_) console.log('os:popup open', id, component, props, events);
 		store.commit('addPopup', modal);
 
 		onCancel.shouldReject = false;
@@ -96,10 +95,6 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 
 export function modal(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
 	if (isModule(component)) component = component.default;
-
-	if (_DEV_) {
-		console.log('os:modal', component, props, events, option);
-	}
 
 	return new PCancelable((resolve, reject, onCancel) => {
 		markRaw(component);
@@ -123,10 +118,13 @@ export function modal(component: Component | typeof import('*.vue'), props: Reco
 				close();
 			},
 			closed: () => {
+				if (_DEV_) console.log('os:modal close', id, component, props, events, option);
 				store.commit('removePopup', id);
 			},
 			id,
 		};
+
+		if (_DEV_) console.log('os:modal open', id, component, props, events, option);
 		store.commit('addPopup', modal);
 
 		onCancel.shouldReject = false;

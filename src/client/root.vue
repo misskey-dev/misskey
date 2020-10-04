@@ -3,7 +3,7 @@
 <DeckUI v-else-if="deckmode"/>
 <DefaultUI v-else/>
 
-<XModal v-for="modal in $store.state.popups.filter(x => x.type === 'modal')"
+<XModal v-for="modal in modals"
 	:key="modal.id"
 	@closed="modal.closed"
 	@click="modal.bgClick"
@@ -14,7 +14,7 @@
 	<component :is="modal.component" v-bind="modal.props" v-on="modal.events" @done="modal.done"/>
 </XModal>
 
-<component v-for="popup in $store.state.popups.filter(x => x.type === 'popup')"
+<component v-for="popup in popups"
 	:key="popup.id"
 	:is="popup.component"
 	v-bind="popup.props"
@@ -29,9 +29,10 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
-import { instanceName, deckmode } from '@/config';
+import { computed, defineAsyncComponent, defineComponent } from 'vue';
+import { deckmode } from '@/config';
 import { uploads } from '@/os';
+import { store } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -42,13 +43,10 @@ export default defineComponent({
 		XUpload: defineAsyncComponent(() => import('@/components/upload.vue')),
 	},
 
-	metaInfo: {
-		title: null,
-		titleTemplate: title => title ? `${title} | ${(instanceName || 'Misskey')}` : (instanceName || 'Misskey')
-	},
-
-	data() {
+	setup() {
 		return {
+			modals: computed(() => store.state.popups.filter(x => x.type === 'modal')),
+			popups: computed(() => store.state.popups.filter(x => x.type === 'popup')),
 			deckmode,
 			uploads,
 		};
