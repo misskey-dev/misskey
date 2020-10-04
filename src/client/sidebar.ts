@@ -3,6 +3,8 @@ import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, fa
 import { computed } from 'vue';
 import { store } from '@/store';
 import { deckmode } from '@/config';
+import { search } from '@/scripts/search';
+
 
 export const sidebarDef = {
 	notifications: {

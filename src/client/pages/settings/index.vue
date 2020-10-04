@@ -3,19 +3,19 @@
 	<div class="nav" v-if="!narrow || $route.name === 'settings'">
 		<div class="menu account">
 			<div class="label">{{ $t('accountSettings') }}</div>
-			<router-link class="item" to="/settings/account/profile"><Fa :icon="faUser" fixed-width class="icon"/>{{ $t('profile') }}</router-link>
-			<router-link class="item" to="/settings/account/privacy"><Fa :icon="faLock" fixed-width class="icon"/>{{ $t('privacy') }}</router-link>
-			<router-link class="item" to="/settings/account/reaction"><Fa :icon="faLaugh" fixed-width class="icon"/>{{ $t('reaction') }}</router-link>
-			<router-link class="item" to="/settings/account/notifications"><Fa :icon="faBell" fixed-width class="icon"/>{{ $t('notifications') }}</router-link>
-			<router-link class="item" to="/settings/account/word-mute"><Fa :icon="faCommentSlash" fixed-width class="icon"/>{{ $t('wordMute') }}</router-link>
+			<router-link class="item" replace to="/settings/account/profile"><Fa :icon="faUser" fixed-width class="icon"/>{{ $t('profile') }}</router-link>
+			<router-link class="item" replace to="/settings/account/privacy"><Fa :icon="faLock" fixed-width class="icon"/>{{ $t('privacy') }}</router-link>
+			<router-link class="item" replace to="/settings/account/reaction"><Fa :icon="faLaugh" fixed-width class="icon"/>{{ $t('reaction') }}</router-link>
+			<router-link class="item" replace to="/settings/account/notifications"><Fa :icon="faBell" fixed-width class="icon"/>{{ $t('notifications') }}</router-link>
+			<router-link class="item" replace to="/settings/account/word-mute"><Fa :icon="faCommentSlash" fixed-width class="icon"/>{{ $t('wordMute') }}</router-link>
 		</div>
 		<div class="menu client">
 			<div class="label">{{ $t('clientSettings') }}</div>
-			<router-link class="item" to="/settings/client/general"><Fa :icon="faCogs" fixed-width class="icon"/>{{ $t('general') }}</router-link>
-			<router-link class="item" to="/settings/client/theme"><Fa :icon="faPalette" fixed-width class="icon"/>{{ $t('theme') }}</router-link>
-			<router-link class="item" to="/settings/client/sidebar"><Fa :icon="faListUl" fixed-width class="icon"/>{{ $t('sidebar') }}</router-link>
-			<router-link class="item" to="/settings/client/sounds"><Fa :icon="faMusic" fixed-width class="icon"/>{{ $t('sounds') }}</router-link>
-			<router-link class="item" to="/settings/client/plugins"><Fa :icon="faPlug" fixed-width class="icon"/>{{ $t('plugins') }}</router-link>
+			<router-link class="item" replace to="/settings/client/general"><Fa :icon="faCogs" fixed-width class="icon"/>{{ $t('general') }}</router-link>
+			<router-link class="item" replace to="/settings/client/theme"><Fa :icon="faPalette" fixed-width class="icon"/>{{ $t('theme') }}</router-link>
+			<router-link class="item" replace to="/settings/client/sidebar"><Fa :icon="faListUl" fixed-width class="icon"/>{{ $t('sidebar') }}</router-link>
+			<router-link class="item" replace to="/settings/client/sounds"><Fa :icon="faMusic" fixed-width class="icon"/>{{ $t('sounds') }}</router-link>
+			<router-link class="item" replace to="/settings/client/plugins"><Fa :icon="faPlug" fixed-width class="icon"/>{{ $t('plugins') }}</router-link>
 		</div>
 		<div class="menu other">
 			<button class="_button item" @click="logout">{{ $t('logout') }}</button>

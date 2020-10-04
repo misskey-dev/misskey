@@ -77,10 +77,7 @@ export default defineComponent({
 			host: host,
 			pageKey: 0,
 			pageInfo: null,
-			searching: false,
 			connection: null,
-			searchQuery: '',
-			searchWait: false,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: sidebarDef,
 			navHidden: false,
@@ -97,9 +94,9 @@ export default defineComponent({
 					if (this.$store.state.device.syncDeviceDarkMode) return;
 					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
 				},
-				'p': this.post,
-				'n': this.post,
-				's': this.search,
+				'p': os.post,
+				'n': os.post,
+				's': search,
 				'h|/': this.help
 			};
 		},
@@ -202,36 +199,6 @@ export default defineComponent({
 
 		onTransition() {
 			if (window._scroll) window._scroll();
-		},
-
-		post() {
-			os.post();
-		},
-
-		search() {
-			if (this.searching) return;
-
-			os.dialog({
-				title: this.$t('search'),
-				input: true
-			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query === '') return;
-
-				this.searching = true;
-				search(this, query).finally(() => {
-					this.searching = false;
-				});
-			});
-		},
-
-		searchKeypress(e) {
-			if (e.keyCode === 13) {
-				this.searchWait = true;
-				search(this, this.searchQuery).finally(() => {
-					this.searchWait = false;
-					this.searchQuery = '';
-				});
-			}
 		},
 
 		async onNotification(notification) {
