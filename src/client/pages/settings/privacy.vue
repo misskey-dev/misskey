@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import MkSelect from '@/components/ui/select.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import * as os from '@/os';
@@ -40,7 +40,7 @@ export default defineComponent({
 			info: {
 				header: [{
 					title: this.$t('privacy'),
-					icon: faLock
+					icon: faLockOpen
 				}]
 			},
 			isLocked: false,

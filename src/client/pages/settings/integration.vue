@@ -1,7 +1,5 @@
 <template>
 <section class="_section" v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
-	<div class="_title"><Fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
-
 	<div class="_content" v-if="enableTwitterIntegration">
 		<header><Fa :icon="faTwitter"/> Twitter</header>
 		<p v-if="integrations.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
@@ -38,8 +36,16 @@ export default defineComponent({
 		MkButton
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('integration'),
+					icon: faShareAlt
+				}]
+			},
 			apiUrl,
 			twitterForm: null,
 			discordForm: null,
@@ -68,6 +74,8 @@ export default defineComponent({
 	},
 
 	mounted() {
+		this.$emit('info', this.info);
+
 		document.cookie = `igi=${this.$store.state.i.token}; path=/;` +
 			` max-age=31536000;` +
 			(document.location.protocol.startsWith('https') ? ' secure' : '');

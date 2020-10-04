@@ -1,15 +1,18 @@
 <template>
-<section class="_section">
-	<div class="_title"><Fa :icon="faLock"/> {{ $t('password') }}</div>
-	<div class="_content">
-		<MkButton primary @click="change()">{{ $t('changePassword') }}</MkButton>
+<div>
+	<div class="_section">
+		<MkButton primary @click="change()" style="width: 100%;">{{ $t('changePassword') }}</MkButton>
 	</div>
-</section>
+	<div class="_section">
+		<MkButton class="_vMargin" primary @click="regenerateToken" style="width: 100%;"><Fa :icon="faSyncAlt"/> {{ $t('regenerateLoginToken') }}</MkButton>
+		<div class="_caption _vMargin">{{ $t('regenerateLoginTokenDescription') }}</div>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
@@ -20,7 +23,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			faLock
+			faLock, faSyncAlt
 		}
 	},
 
@@ -79,7 +82,21 @@ export default defineComponent({
 			}).finally(() => {
 				dialog.close();
 			});
-		}
+		},
+
+		regenerateToken() {
+			os.dialog({
+				title: this.$t('password'),
+				input: {
+					type: 'password'
+				}
+			}).then(({ canceled, result: password }) => {
+				if (canceled) return;
+				os.api('i/regenerate_token', {
+					password: password
+				});
+			});
+		},
 	}
 });
 </script>

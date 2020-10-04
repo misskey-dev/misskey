@@ -3,14 +3,13 @@
 	<div class="_title"><Fa :icon="faKey"/> API</div>
 	<div class="_content">
 		<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
-		<MkButton @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $t('regenerate') }}</MkButton>
 	</div>
 </section>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faKey, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import * as os from '@/os';
@@ -21,7 +20,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faKey, faSyncAlt
+			faKey
 		};
 	},
 	methods: {
@@ -39,19 +38,6 @@ export default defineComponent({
 					type: 'success',
 					title: this.$t('token'),
 					text: token
-				});
-			});
-		},
-		regenerateToken() {
-			os.dialog({
-				title: this.$t('password'),
-				input: {
-					type: 'password'
-				}
-			}).then(({ canceled, result: password }) => {
-				if (canceled) return;
-				os.api('i/regenerate_token', {
-					password: password
 				});
 			});
 		},

@@ -572,6 +572,8 @@ notificationSettingDesc: "表示する通知の種別を選択してください
 useGlobalSetting: "グローバル設定を使う"
 useGlobalSettingDesc: "オンにすると、アカウントの通知設定が使用されます。オフにすると、個別に設定できるようになります。"
 other: "その他"
+regenerateLoginToken: "ログイントークンを再生成"
+regenerateLoginTokenDescription: "ログインに使用される内部トークンを再生成します。通常この操作を行う必要はありません。再生成すると、全てのデバイスでログアウトされます。"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"
