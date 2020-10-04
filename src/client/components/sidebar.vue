@@ -155,11 +155,6 @@ export default defineComponent({
 					text: this.$t('profile'),
 					to: `/@${ this.$store.state.i.username }`,
 					avatar: this.$store.state.i,
-				}, {
-					type: 'link',
-					text: this.$t('accountSettings'),
-					to: '/my/settings',
-					icon: faCog,
 				}, null, ...accountItems, {
 					icon: faPlus,
 					text: this.$t('addAcount'),
