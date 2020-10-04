@@ -41,11 +41,13 @@ if (_DEV_) {
 
 	window.addEventListener('unhandledrejection', event => {
 		console.error(event);
+		/*
 		dialog({
 			type: 'error',
 			title: 'DEV: Unhandled promise rejection',
 			text: event.reason
 		});
+		*/
 	});
 }
 
