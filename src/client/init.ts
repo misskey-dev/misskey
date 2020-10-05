@@ -170,9 +170,9 @@ components(app);
 
 await router.isReady();
 
-document.body.innerHTML = '<div id="app"></div>';
+//document.body.innerHTML = '<div id="app"></div>';
 
-app.mount('#app');
+app.mount('body');
 
 // 他のタブと永続化されたstateを同期
 window.addEventListener('storage', e => {
