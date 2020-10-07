@@ -806,6 +806,7 @@ _widgets:
   photos: "フォト"
   digitalClock: "デジタル時計"
   federation: "連合"
+  postForm: "投稿フォーム"
 
 _cw:
   hide: "隠す"
