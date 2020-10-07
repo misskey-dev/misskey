@@ -43,19 +43,22 @@ export default {
 
 		calc();
 
+		window.addEventListener('resize', calc);
+
 		// Vue3では使えなくなった
 		// 無くても大丈夫か...？
 		//vn.context.$on('hook:activated', calc);
 
-		const ro = new ResizeObserver((entries, observer) => {
-			calc();
-		});
+		//const ro = new ResizeObserver((entries, observer) => {
+		//	calc();
+		//});
 
-		ro.observe(el);
+		//ro.observe(el);
 
 		// TODO: 新たにプロパティを作るのをやめMapを使う
 		// ただメモリ的には↓の方が省メモリかもしれないので検討中
-		el._ro_ = ro;
+		//el._ro_ = ro;
+		el._calc_ = calc;
 	},
 
 	unmounted(src, binding, vn) {
@@ -63,6 +66,7 @@ export default {
 
 		const el = query.el ? query.el() : src;
 
-		el._ro_.unobserve(el);
+		//el._ro_.unobserve(el);
+		window.removeEventListener('resize', el._calc_);
 	}
 } as Directive;
