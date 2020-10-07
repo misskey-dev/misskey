@@ -103,6 +103,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .bghgjjyj {
 	position: relative;
+	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため
 	display: block;
 	min-width: 100px;
 	padding: 8px 14px;

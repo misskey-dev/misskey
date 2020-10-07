@@ -1,6 +1,7 @@
 @charset "utf-8";
 
 :root {
+	--baseContentWidth: 750px;
 	--radius: 8px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
@@ -301,7 +302,11 @@ hr {
 ._section {
 	padding: 32px;
 
-	& + ._section {
+	&:empty {
+		display: none;
+	}
+
+	&:not(:empty) + ._section {
 		border-top: solid 1px var(--divider);
 	}
 
@@ -316,7 +321,7 @@ hr {
 
 	> ._title,
 	> ._content {
-		max-width: 750px;
+		max-width: var(--baseContentWidth);
 		margin: 0 auto;
 	}
 

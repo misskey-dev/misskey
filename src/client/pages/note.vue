@@ -1,18 +1,9 @@
 <template>
-<div class="mk-note-page">
-	<portal to="header" v-if="note">
-		<MkAvatar class="avatar" :user="note.user" :disable-preview="true"/>
-		<Mfm 
-			:text="$t('noteOf', { user: note.user.name || note.user.username })"
-			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
-		/>
-	</portal>
-
-	<div v-if="note">
-		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true"><Fa :icon="faChevronUp"/></button>
-
-		<div class="_section" v-if="showNext">
-			<XNotes class="_content" ref="next" :pagination="next"/>
+<div class="fcuexfpr">
+	<div v-if="note" class="note">
+		<div class="_section">
+			<XNotes v-if="showNext" class="_content" ref="next" :pagination="next"/>
+			<MkButton v-else-if="hasNext" class="load _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
 		</div>
 
 		<div class="_section">
@@ -22,11 +13,10 @@
 			</div>
 		</div>
 
-		<div class="_section" v-if="showPrev">
-			<XNotes class="_content" ref="prev" :pagination="prev"/>
+		<div class="_section">
+			<XNotes v-if="showPrev" class="_content" ref="prev" :pagination="prev"/>
+			<MkButton v-else-if="hasPrev" class="load _content" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
 		</div>
-
-		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true"><Fa :icon="faChevronDown"/></button>
 	</div>
 
 	<div v-if="error">
@@ -42,18 +32,15 @@ import Progress from '@/scripts/loading';
 import XNote from '@/components/note.vue';
 import XNotes from '@/components/notes.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
+import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('note') as string
-		};
-	},
 	components: {
 		XNote,
 		XNotes,
 		MkRemoteCaution,
+		MkButton,
 	},
 	data() {
 		return {
@@ -120,3 +107,16 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.fcuexfpr {
+	> .note {
+		> ._section {
+			> .load {
+				min-width: 0;
+				border-radius: 999px;
+			}
+		}
+	}
+}
+</style>
