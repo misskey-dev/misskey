@@ -186,14 +186,16 @@ export default defineComponent({
 		left: 0;
 		right: 0;
 		margin: auto;
-		max-width: calc(100% - 32px);
-		max-height: calc(100% - 32px);
+		padding: 32px;
+		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
+		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 		overflow: auto;
 		display: flex;
 
 		@media (max-width: 500px) {
-			max-width: calc(100% - 16px);
-			max-height: calc(100% - 16px);
+			padding: 16px;
+			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
+			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 		}
 
 		> * {
