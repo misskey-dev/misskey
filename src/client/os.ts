@@ -232,6 +232,17 @@ export function menu(props: Record<string, any>, opts?: { source: any; }) {
 	});
 }
 
+export function contextmenu(props: Record<string, any>, e: MouseEvent) {
+	e.preventDefault();
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.addEventListener('mousedown', this.onMousedown);
+	}
+	return popup(defineAsyncComponent(() => import('@/components/menu.vue')), {
+		...props,
+		contextmenuEvent: e,
+	}, {});
+}
+
 export function post(props: Record<string, any>) {
 	return modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props, {}, {
 		position: 'top'

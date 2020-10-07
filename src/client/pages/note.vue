@@ -2,7 +2,7 @@
 <div class="fcuexfpr">
 	<div v-if="note" class="note">
 		<div class="_section">
-			<XNotes v-if="showNext" class="_content" ref="next" :pagination="next"/>
+			<XNotes v-if="showNext" class="_content" :pagination="next"/>
 			<MkButton v-else-if="hasNext" class="load _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
 		</div>
 
@@ -14,7 +14,7 @@
 		</div>
 
 		<div class="_section">
-			<XNotes v-if="showPrev" class="_content" ref="prev" :pagination="prev"/>
+			<XNotes v-if="showPrev" class="_content" :pagination="prev"/>
 			<MkButton v-else-if="hasPrev" class="load _content" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
 		</div>
 	</div>

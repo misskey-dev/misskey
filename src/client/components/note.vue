@@ -36,7 +36,7 @@
 			<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
 		</div>
 	</div>
-	<article class="article">
+	<article class="article" @contextmenu="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref } from 'vue';
 import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
@@ -577,13 +577,15 @@ export default defineComponent({
 			});
 		},
 
-		async menu(viaKeyboard = false) {
+		getMenu() {
 			let menu;
 			if (this.$store.getters.isSignedIn) {
-				const state = await os.api('notes/state', {
+				const state = ref(null);
+				os.api('notes/state', {
 					noteId: this.appearNote.id
-				});
-				menu = [{
+				}).then(res => state.value = res);
+
+				menu = computed(() => [{
 					type: 'link',
 					icon: faInfoCircle,
 					text: this.$t('details'),
@@ -604,7 +606,7 @@ export default defineComponent({
 					}
 				} : undefined,
 				null,
-				state.isFavorited ? {
+				state.value ? state.value.isFavorited ? {
 					icon: faStar,
 					text: this.$t('unfavorite'),
 					action: () => this.toggleFavorite(false)
@@ -612,8 +614,8 @@ export default defineComponent({
 					icon: faStar,
 					text: this.$t('favorite'),
 					action: () => this.toggleFavorite(true)
-				},
-				this.appearNote.userId != this.$store.state.i.id ? state.isWatching ? {
+				} : undefined,
+				(this.appearNote.userId != this.$store.state.i.id) && state.value ? state.value.isWatching ? {
 					icon: faEyeSlash,
 					text: this.$t('unwatch'),
 					action: () => this.toggleWatch(false)
@@ -654,7 +656,7 @@ export default defineComponent({
 					}]
 					: []
 				)]
-				.filter(x => x !== undefined);
+				.filter(x => x !== undefined));
 			} else {
 				menu = [{
 					icon: faCopy,
@@ -684,8 +686,19 @@ export default defineComponent({
 				}))]);
 			}
 
+			return menu;
+		},
+
+		onContextmenu(e) {
+			if (window.getSelection().toString() !== '') return;
+			os.contextmenu({
+				items: this.getMenu(),
+			}, e).then(this.focus);
+		},
+
+		menu(viaKeyboard = false) {
 			os.menu({
-				items: menu,
+				items: this.getMenu(),
 				viaKeyboard
 			}, {
 				source: this.$refs.menuButton,
