@@ -38,6 +38,10 @@ export default {
 			};
 		};
 
+		el.addEventListener('selectstart', e => {
+			e.preventDefault();
+		});
+
 		el.addEventListener(start, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
