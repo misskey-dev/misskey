@@ -266,7 +266,7 @@ export default defineComponent({
 
 		&.wallpaper {
 			background: var(--wallpaperOverlay);
-			backdrop-filter: blur(4px);
+			//backdrop-filter: blur(4px);
 		}
 
 		> .header {

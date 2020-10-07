@@ -105,6 +105,13 @@
 				<MkButton @click="createNotification()">createNotification</MkButton>
 			</div>
 		</div>
+
+		<div class="_card _vMargin">
+			<div class="_title">Messaging window</div>
+			<div class="_content">
+				<MkButton @click="messagingWindowOpen()">open</MkButton>
+			</div>
+		</div>
 	</div>
 </div>
 </template>
@@ -116,6 +123,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
+import XMessaging from './messaging/index.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -207,6 +215,10 @@ export default defineComponent({
 				icon: this.notificationIconUrl,
 			});
 		},
+
+		messagingWindowOpen() {
+			os.window_(XMessaging);
+		}
 	}
 });
 </script>

@@ -3,7 +3,6 @@
 	<div class="header">
 		<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
 		<span class="title">
-			<MkAvatar :user="avatar" v-if="avatar" class="avatar"/>
 			<slot name="header"></slot>
 		</span>
 		<button class="_button" v-if="!withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
@@ -22,10 +21,6 @@ import * as os from '@/os';
 
 export default defineComponent({
 	props: {
-		avatar: {
-			type: Object,
-			required: false
-		},
 		withOkButton: {
 			type: Boolean,
 			required: false,
@@ -117,20 +112,6 @@ export default defineComponent({
 			@media (max-width: 500px) {
 				line-height: $height-narrow;
 				padding-left: 16px;
-			}
-
-			> .avatar {
-				$size: 32px;
-				height: $size;
-				width: $size;
-				margin: (($height - $size) / 2) 8px (($height - $size) / 2) 0;
-
-				@media (max-width: 500px) {
-					$size: 24px;
-					height: $size;
-					width: $size;
-					margin: (($height-narrow - $size) / 2) 8px (($height-narrow - $size) / 2) 0;
-				}
 			}
 		}
 

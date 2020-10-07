@@ -12,6 +12,7 @@ export default function(app: App) {
 	app.component('MkwPhotos', defineAsyncComponent(() => import('./photos.vue')));
 	app.component('MkwDigitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
 	app.component('MkwFederation', defineAsyncComponent(() => import('./federation.vue')));
+	app.component('MkwPostForm', defineAsyncComponent(() => import('./post-form.vue')));
 }
 
 export const widgets = [
@@ -26,4 +27,5 @@ export const widgets = [
 	'photos',
 	'digitalClock',
 	'federation',
+	'postForm',
 ];
