@@ -1,5 +1,5 @@
 <template>
-<div class="rdfaahpb">
+<div class="rdfaahpb _popup">
 	<div class="buttons" ref="buttons" :class="{ showFocus }">
 		<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><XReactionIcon :reaction="reaction"/></button>
 	</div>
@@ -122,10 +122,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rdfaahpb {
-	background: var(--panel);
-	border-radius: 8px;
-	box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
-
 	> .buttons {
 		padding: 6px 6px 0 6px;
 		width: 212px;

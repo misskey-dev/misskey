@@ -106,7 +106,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .skeikyzd {
-	padding: 4px;
+	padding: 8px 16px;
 	position: relative;
 
 	> .files {
@@ -117,7 +117,9 @@ export default defineComponent({
 			position: relative;
 			width: 64px;
 			height: 64px;
-			margin: 4px;
+			margin-right: 4px;
+			border-radius: 4px;
+			overflow: hidden;
 			cursor: move;
 
 			&:hover > .remove {

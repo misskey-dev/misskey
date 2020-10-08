@@ -4,6 +4,7 @@ import { parse, parsePlain } from '../../mfm/parse';
 import MkUrl from './url.vue';
 import MkLink from './link.vue';
 import MkMention from './mention.vue';
+import MkEmoji from './emoji.vue';
 import { concat } from '../../prelude/array';
 import MkFormula from './formula.vue';
 import MkCode from './code.vue';
@@ -205,7 +206,7 @@ export default defineComponent({
 				}
 
 				case 'emoji': {
-					return [h('mk-emoji', {
+					return [h(MkEmoji, {
 						key: Math.random(),
 						emoji: token.node.props.emoji,
 						name: token.node.props.name,

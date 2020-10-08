@@ -1,4 +1,4 @@
-import { Component, defineAsyncComponent, markRaw, ref } from 'vue';
+import { Component, defineAsyncComponent, markRaw, reactive, ref } from 'vue';
 import * as PCancelable from 'p-cancelable';
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
@@ -13,8 +13,20 @@ export const stream = new Stream();
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
 	store.commit('beginApiRequest');
 
+	if (_DEV_) {
+		performance.mark(_PERF_PREFIX_ + 'api:begin');
+	}
+
 	const onFinally = () => {
 		store.commit('endApiRequest');
+
+		if (_DEV_) {
+			performance.mark(_PERF_PREFIX_ + 'api:end');
+
+			performance.measure(_PERF_PREFIX_ + 'api',
+				_PERF_PREFIX_ + 'api:begin',
+				_PERF_PREFIX_ + 'api:end');
+		}
 	};
 
 	const promise = new Promise((resolve, reject) => {
@@ -53,10 +65,6 @@ function isModule(x: any): x is typeof import('*.vue') {
 export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?) {
 	if (isModule(component)) component = component.default;
 
-	if (_DEV_) {
-		console.log('os:popup', component, props, events);
-	}
-
 	return new PCancelable((resolve, reject, onCancel) => {
 		markRaw(component);
 		const id = Math.random().toString(); // TODO: uuidとか使う
@@ -68,11 +76,17 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 			showing,
 			events,
 			closed: () => {
-				store.commit('removePopup', id);
+				if (_DEV_) console.log('os:popup close', id, component, props, events);
+				// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+				setTimeout(() => {
+					store.commit('removePopup', id);
+				}, 0);
 				resolve();
 			},
 			id,
 		};
+
+		if (_DEV_) console.log('os:popup open', id, component, props, events);
 		store.commit('addPopup', modal);
 
 		onCancel.shouldReject = false;
@@ -84,10 +98,6 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 
 export function modal(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
 	if (isModule(component)) component = component.default;
-
-	if (_DEV_) {
-		console.log('os:modal', component, props, events, option);
-	}
 
 	return new PCancelable((resolve, reject, onCancel) => {
 		markRaw(component);
@@ -111,16 +121,26 @@ export function modal(component: Component | typeof import('*.vue'), props: Reco
 				close();
 			},
 			closed: () => {
+				if (_DEV_) console.log('os:modal close', id, component, props, events, option);
 				store.commit('removePopup', id);
 			},
 			id,
 		};
+
+		if (_DEV_) console.log('os:modal open', id, component, props, events, option);
 		store.commit('addPopup', modal);
 
 		onCancel.shouldReject = false;
 		onCancel(() => {
 			close();
 		});
+	});
+}
+
+// window にするとグローバルのアレと名前が被ってバグる
+export function window_(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}) {
+	modal(defineAsyncComponent(() => import('@/components/page-window.vue')), {
+		component: component
 	});
 }
 
@@ -212,6 +232,17 @@ export function menu(props: Record<string, any>, opts?: { source: any; }) {
 	});
 }
 
+export function contextmenu(props: Record<string, any>, e: MouseEvent) {
+	e.preventDefault();
+	for (const el of Array.from(document.querySelectorAll('body *'))) {
+		el.addEventListener('mousedown', this.onMousedown);
+	}
+	return popup(defineAsyncComponent(() => import('@/components/menu.vue')), {
+		...props,
+		contextmenuEvent: e,
+	}, {});
+}
+
 export function post(props: Record<string, any>) {
 	return modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props, {}, {
 		position: 'top'
@@ -228,3 +259,68 @@ export function sound(type: string) {
 }
 
 export const deckGlobalEvents = new EventEmitter();
+
+export const uploads = ref([]);
+
+export function upload(file: File, folder: any, name?: string) {
+	if (folder && typeof folder == 'object') folder = folder.id;
+
+	return new Promise((resolve, reject) => {
+		const id = Math.random();
+
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			const ctx = reactive({
+				id: id,
+				name: name || file.name || 'untitled',
+				progressMax: undefined,
+				progressValue: undefined,
+				img: window.URL.createObjectURL(file)
+			});
+
+			uploads.value.push(ctx);
+
+			const data = new FormData();
+			data.append('i', store.state.i.token);
+			data.append('force', 'true');
+			data.append('file', file);
+
+			if (folder) data.append('folderId', folder);
+			if (name) data.append('name', name);
+
+			const xhr = new XMLHttpRequest();
+			xhr.open('POST', apiUrl + '/drive/files/create', true);
+			xhr.onload = (e: any) => {
+				const driveFile = JSON.parse(e.target.response);
+
+				resolve(driveFile);
+
+				uploads.value = uploads.value.filter(x => x.id != id);
+			};
+
+			xhr.upload.onprogress = e => {
+				if (e.lengthComputable) {
+					ctx.progressMax = e.total;
+					ctx.progressValue = e.loaded;
+				}
+			};
+	
+			xhr.send(data);
+		};
+		reader.readAsArrayBuffer(file);
+	});
+}
+
+/*
+export function checkExistence(fileData: ArrayBuffer): Promise<any> {
+	return new Promise((resolve, reject) => {
+		const data = new FormData();
+		data.append('md5', getMD5(fileData));
+
+		os.api('drive/files/find-by-hash', {
+			md5: getMD5(fileData)
+		}).then(resp => {
+			resolve(resp.length > 0 ? resp[0] : null);
+		});
+	});
+}*/

@@ -170,6 +170,7 @@ export default defineComponent({
 
 			option,
 			optgroup {
+				color: var(--fg);
 				background: var(--bg);
 			}
 		}

@@ -2,14 +2,14 @@
  * Client entry point
  */
 
+import '@/style.scss';
+
 import { createApp } from 'vue';
-import VueMeta from 'vue-meta';
 import VAnimateCss from 'v-animate-css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { AiScript } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
 
-import VueHotkey from '@/scripts/hotkey';
 import Root from './root.vue';
 import widgets from './widgets';
 import directives from './directives';
@@ -26,8 +26,33 @@ import { stream, sound, isMobile, dialog } from '@/os';
 console.info(`Misskey v${version}`);
 
 if (_DEV_) {
-	console.log('Development mode');
+	console.warn('Development mode!!!');
+
+	window.addEventListener('error', event => {
+		console.error(event);
+		/*
+		dialog({
+			type: 'error',
+			title: 'DEV: Unhandled error',
+			text: event.message
+		});
+		*/
+	});
+
+	window.addEventListener('unhandledrejection', event => {
+		console.error(event);
+		/*
+		dialog({
+			type: 'error',
+			title: 'DEV: Unhandled promise rejection',
+			text: event.reason
+		});
+		*/
+	});
 }
+
+// タッチデバイスでCSSの:hoverを機能させる
+document.addEventListener('touchstart', () => {}, { passive: true });
 
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
@@ -138,7 +163,6 @@ if (_DEV_) {
 app.use(store);
 app.use(router);
 app.use(i18n);
-app.use(VueHotkey);
 app.use(VAnimateCss);
 // eslint-disable-next-line vue/component-definition-name-casing
 app.component('Fa', FontAwesomeIcon);
@@ -149,9 +173,9 @@ components(app);
 
 await router.isReady();
 
-document.body.innerHTML = '<div id="app"></div>';
+//document.body.innerHTML = '<div id="app"></div>';
 
-app.mount('#app');
+app.mount('body');
 
 // 他のタブと永続化されたstateを同期
 window.addEventListener('storage', e => {

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-uploader">
+<div class="mk-uploader _acrylic">
 	<ol v-if="uploads.length > 0">
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
@@ -11,7 +11,7 @@
 					<span class="percentage" v-if="ctx.progressValue !== undefined">{{ Math.floor((ctx.progressValue / ctx.progressMax) * 100) }}</span>
 				</p>
 			</div>
-			<progress :value="ctx.progressValue" :max="ctx.progressMax" :class="{ initing: ctx.progressValue === undefined, waiting: ctx.progressValue !== undefined && ctx.progressValue === ctx.progressMax }"></progress>
+			<progress :value="ctx.progressValue || 0" :max="ctx.progressMax || 0" :class="{ initing: ctx.progressValue === undefined, waiting: ctx.progressValue !== undefined && ctx.progressValue === ctx.progressMax }"></progress>
 		</li>
 	</ol>
 </div>
@@ -19,87 +19,30 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { apiUrl } from '@/config';
-//import getMD5 from '@/scripts/get-md5';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
 
 export default defineComponent({
 	data() {
 		return {
-			uploads: [],
+			uploads: os.uploads,
 			faSpinner
 		};
 	},
-	methods: {
-		checkExistence(fileData: ArrayBuffer): Promise<any> {
-			return new Promise((resolve, reject) => {
-				const data = new FormData();
-				data.append('md5', getMD5(fileData));
-
-				os.api('drive/files/find-by-hash', {
-					md5: getMD5(fileData)
-				}).then(resp => {
-					resolve(resp.length > 0 ? resp[0] : null);
-				});
-			});
-		},
-
-		upload(file: File, folder: any, name?: string) {
-			if (folder && typeof folder == 'object') folder = folder.id;
-
-			const id = Math.random();
-
-			const reader = new FileReader();
-			reader.onload = (e: any) => {
-				const ctx = {
-					id: id,
-					name: name || file.name || 'untitled',
-					progressMax: undefined,
-					progressValue: undefined,
-					img: window.URL.createObjectURL(file)
-				};
-
-				this.uploads.push(ctx);
-				this.$emit('change', this.uploads);
-
-				const data = new FormData();
-				data.append('i', this.$store.state.i.token);
-				data.append('force', 'true');
-				data.append('file', file);
-
-				if (folder) data.append('folderId', folder);
-				if (name) data.append('name', name);
-
-				const xhr = new XMLHttpRequest();
-				xhr.open('POST', apiUrl + '/drive/files/create', true);
-				xhr.onload = (e: any) => {
-					const driveFile = JSON.parse(e.target.response);
-
-					this.$emit('uploaded', driveFile);
-
-					this.uploads = this.uploads.filter(x => x.id != id);
-					this.$emit('change', this.uploads);
-				};
-
-				xhr.upload.onprogress = e => {
-					if (e.lengthComputable) {
-						ctx.progressMax = e.total;
-						ctx.progressValue = e.loaded;
-					}
-				};
-
-				xhr.send(data);
-			}
-			reader.readAsArrayBuffer(file);
-		}
-	}
 });
 </script>
 
 <style lang="scss" scoped>
 .mk-uploader {
-  overflow: auto;
+	position: fixed;
+	z-index: 10000;
+	right: 16px;
+	width: 260px;
+	top: 32px;
+	padding: 16px 20px;
+	pointer-events: none;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+	border-radius: 8px;
 }
 .mk-uploader:empty {
   display: none;

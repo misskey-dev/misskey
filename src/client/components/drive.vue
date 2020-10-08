@@ -40,7 +40,6 @@
 		<MkLoading v-if="fetching"/>
 	</div>
 	<div class="dropzone" v-if="draghover"></div>
-	<XUploader ref="uploader" @change="onChangeUploaderUploads" @uploaded="onUploaderUploaded"/>
 	<input ref="fileInput" type="file" accept="*/*" multiple="multiple" tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>
@@ -51,7 +50,6 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
-import XUploader from './uploader.vue';
 import MkButton from './ui/button.vue';
 import * as os from '@/os';
 
@@ -60,7 +58,6 @@ export default defineComponent({
 		XNavFolder,
 		XFolder,
 		XFile,
-		XUploader,
 		MkButton,
 	},
 
@@ -103,7 +100,7 @@ export default defineComponent({
 			hierarchyFolders: [],
 			selectedFiles: [],
 			selectedFolders: [],
-			uploadings: [],
+			uploadings: os.uploads,
 			connection: null,
 
 			/**
@@ -205,14 +202,6 @@ export default defineComponent({
 
 		onStreamDriveFolderDeleted(folderId) {
 			this.removeFolder(folderId);
-		},
-
-		onChangeUploaderUploads(uploads) {
-			this.uploadings = uploads;
-		},
-
-		onUploaderUploaded(file) {
-			this.addFile(file, true);
 		},
 
 		onDragover(e): any {
@@ -393,7 +382,9 @@ export default defineComponent({
 
 		upload(file, folder) {
 			if (folder && typeof folder == 'object') folder = folder.id;
-			(this.$refs.uploader as any).upload(file, folder);
+			os.upload(file, folder).then(res => {
+				this.addFile(res, true);
+			});
 		},
 
 		chooseFile(file) {
@@ -735,11 +726,6 @@ export default defineComponent({
 		height: calc(100% - 38px);
 		border: dashed 2px var(--focus);
 		pointer-events: none;
-	}
-
-	> .mk-uploader {
-		height: 100px;
-		padding: 16px;
 	}
 
 	> input {

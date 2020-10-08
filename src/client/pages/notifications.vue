@@ -1,7 +1,8 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faBell"/>{{ $t('notifications') }}</portal>
-	<XNotifications @before="before" @after="after" page/>
+	<div class="_section">
+		<XNotifications class="_content" @before="before" @after="after" page/>
+	</div>
 </div>
 </template>
 
@@ -13,19 +14,18 @@ import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('notifications') as string
-		};
-	},
-
 	components: {
 		XNotifications
 	},
 
 	data() {
 		return {
-			faBell
+			info: {
+				header: [{
+					title: this.$t('notifications'),
+					icon: faBell
+				}]
+			},
 		};
 	},
 

@@ -1,5 +1,5 @@
 <template>
-<div class="_panel" v-if="$store.getters.isSignedIn && fetching">
+<div class="" v-if="$store.getters.isSignedIn && fetching">
 	<MkLoading/>
 </div>
 <div v-else-if="$store.getters.isSignedIn">
@@ -11,15 +11,15 @@
 		@denied="state = 'denied'"
 		@accepted="accepted"
 	/>
-	<div class="denied _panel" v-if="state == 'denied'">
+	<div class="denied" v-if="state == 'denied'">
 		<h1>{{ $t('_auth.denied') }}</h1>
 	</div>
-	<div class="accepted _panel" v-if="state == 'accepted'">
+	<div class="accepted" v-if="state == 'accepted'">
 		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
 		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<MkEllipsis/></p>
 		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
 	</div>
-	<div class="error _panel" v-if="state == 'fetch-session-error'">
+	<div class="error" v-if="state == 'fetch-session-error'">
 		<p>{{ $t('error') }}</p>
 	</div>
 </div>

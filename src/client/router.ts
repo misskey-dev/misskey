@@ -1,8 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import MkIndex from './pages/index.vue';
 import { defineAsyncComponent } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import MkLoading from '@/pages/_loading_.vue';
+import MkError from '@/pages/_error_.vue';
+import MkIndex from '@/pages/index.vue';
 
-const page = (path: string) => defineAsyncComponent(() => import(`./pages/${path}.vue`));
+const page = (path: string) => defineAsyncComponent({
+	loader: () => import(`./pages/${path}.vue`),
+	loadingComponent: MkLoading,
+	errorComponent: MkError,
+});
 
 let indexScrollPos = 0;
 
@@ -17,6 +23,23 @@ export const router = createRouter({
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/@:acct/room', props: true, component: page('room/room') },
+		{ path: '/settings', name: 'settings', component: page('settings/index'), children: [
+			{ path: 'profile', component: page('settings/profile') },
+			{ path: 'privacy', component: page('settings/privacy') },
+			{ path: 'reaction', component: page('settings/reaction') },
+			{ path: 'notifications', component: page('settings/notifications') },
+			{ path: 'mute-block', component: page('settings/mute-block') },
+			{ path: 'word-mute', component: page('settings/word-mute') },
+			{ path: 'integration', component: page('settings/integration') },
+			{ path: 'security', component: page('settings/security') },
+			{ path: 'api', component: page('settings/api') },
+			{ path: 'other', component: page('settings/other') },
+			{ path: 'general', component: page('settings/general') },
+			{ path: 'theme', component: page('settings/theme') },
+			{ path: 'sidebar', component: page('settings/sidebar') },
+			{ path: 'sounds', component: page('settings/sounds') },
+			{ path: 'plugins', component: page('settings/plugins') },
+		]},
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
 		{ path: '/about-misskey', component: page('about-misskey') },
@@ -43,7 +66,6 @@ export const router = createRouter({
 		{ path: '/my/pages', name: 'pages', component: page('pages') },
 		{ path: '/my/pages/new', component: page('page-editor/page-editor') },
 		{ path: '/my/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
-		{ path: '/my/settings', component: page('my-settings/index') },
 		{ path: '/my/follow-requests', component: page('follow-requests') },
 		{ path: '/my/lists', component: page('my-lists/index') },
 		{ path: '/my/lists/:list', component: page('my-lists/list') },
@@ -51,7 +73,6 @@ export const router = createRouter({
 		{ path: '/my/groups/:group', component: page('my-groups/group') },
 		{ path: '/my/antennas', component: page('my-antennas/index') },
 		{ path: '/my/apps', component: page('apps') },
-		{ path: '/preferences', component: page('preferences/index') },
 		{ path: '/scratchpad', component: page('scratchpad') },
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },

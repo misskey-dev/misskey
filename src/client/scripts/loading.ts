@@ -1,21 +1,11 @@
-import * as NProgress from 'nprogress';
-NProgress.configure({
-	trickleSpeed: 500,
-	showSpinner: false
-});
-
-const root = document.getElementsByTagName('html')[0];
-
 export default {
 	start: () => {
-		root.classList.add('progress');
-		NProgress.start();
+		// TODO
 	},
 	done: () => {
-		root.classList.remove('progress');
-		NProgress.done();
+		// TODO
 	},
 	set: val => {
-		NProgress.set(val);
+		// TODO
 	}
 };

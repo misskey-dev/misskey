@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><slot name="title"></slot></div>
 	<div class="_content _table">
 		<div class="_row">

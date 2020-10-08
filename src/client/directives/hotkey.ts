@@ -1,4 +1,5 @@
-import keyCode from './keycode';
+import { Directive } from 'vue';
+import keyCode from '../scripts/keycode';
 import { concat } from '../../prelude/array';
 
 type pattern = {
@@ -65,52 +66,48 @@ function match(e: KeyboardEvent, patterns: action['patterns']): boolean {
 }
 
 export default {
-	install(Vue) {
-		Vue.directive('hotkey', {
-			bind(el, binding) {
-				el._hotkey_global = binding.modifiers.global === true;
+	mounted(el, binding) {
+		el._hotkey_global = binding.modifiers.global === true;
 
-				const actions = getKeyMap(binding.value);
+		const actions = getKeyMap(binding.value);
 
-				// flatten
-				const reservedKeys = concat(actions.map(a => a.patterns));
+		// flatten
+		const reservedKeys = concat(actions.map(a => a.patterns));
 
-				el._misskey_reservedKeys = reservedKeys;
+		el._misskey_reservedKeys = reservedKeys;
 
-				el._keyHandler = (e: KeyboardEvent) => {
-					const targetReservedKeys = document.activeElement ? ((document.activeElement as any)._misskey_reservedKeys || []) : [];
-					if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
-					if (document.activeElement && document.activeElement.attributes['contenteditable']) return;
+		el._keyHandler = (e: KeyboardEvent) => {
+			const targetReservedKeys = document.activeElement ? ((document.activeElement as any)._misskey_reservedKeys || []) : [];
+			if (document.activeElement && ignoreElemens.some(el => document.activeElement.matches(el))) return;
+			if (document.activeElement && document.activeElement.attributes['contenteditable']) return;
 
-					for (const action of actions) {
-						const matched = match(e, action.patterns);
+			for (const action of actions) {
+				const matched = match(e, action.patterns);
 
-						if (matched) {
-							if (!action.allowRepeat && e.repeat) return;
-							if (el._hotkey_global && match(e, targetReservedKeys)) return;
+				if (matched) {
+					if (!action.allowRepeat && e.repeat) return;
+					if (el._hotkey_global && match(e, targetReservedKeys)) return;
 
-							e.preventDefault();
-							e.stopPropagation();
-							action.callback(e);
-							break;
-						}
-					}
-				};
-
-				if (el._hotkey_global) {
-					document.addEventListener('keydown', el._keyHandler);
-				} else {
-					el.addEventListener('keydown', el._keyHandler);
-				}
-			},
-
-			unbind(el) {
-				if (el._hotkey_global) {
-					document.removeEventListener('keydown', el._keyHandler);
-				} else {
-					el.removeEventListener('keydown', el._keyHandler);
+					e.preventDefault();
+					e.stopPropagation();
+					action.callback(e);
+					break;
 				}
 			}
-		});
+		};
+
+		if (el._hotkey_global) {
+			document.addEventListener('keydown', el._keyHandler);
+		} else {
+			el.addEventListener('keydown', el._keyHandler);
+		}
+	},
+
+	unmounted(el) {
+		if (el._hotkey_global) {
+			document.removeEventListener('keydown', el._keyHandler);
+		} else {
+			el.removeEventListener('keydown', el._keyHandler);
+		}
 	}
-};
+} as Directive;

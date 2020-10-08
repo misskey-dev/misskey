@@ -2,7 +2,7 @@
 <div class="vrcsvlkm" v-if="user && info">
 	<portal to="header" v-if="user"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
 
-	<section class="_card">
+	<section class="_section">
 		<div class="_title">
 			<MkAvatar class="avatar" :user="user"/>
 			<MkUserName class="name" :user="user"/>
@@ -187,7 +187,7 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 
-	> ._card {
+	> ._section {
 		> .actions {
 			display: flex;
 			box-sizing: border-box;

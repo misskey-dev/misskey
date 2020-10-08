@@ -2,7 +2,7 @@
 <div>
 	<portal to="header"><Fa :icon="faSatelliteDish"/>{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
 
-	<div class="_card">
+	<div class="_section">
 		<div class="_content">
 			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
 

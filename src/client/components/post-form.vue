@@ -1,5 +1,6 @@
 <template>
-<div class="gafaadew" :class="{ modal }"
+<div class="gafaadew" :class="{ modal, _popup: modal }"
+	v-size="{ max: [500] }"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -37,7 +38,6 @@
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateMedia" @detach="detachMedia"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
-		<XUploader ref="uploader" @uploaded="attachMedia" @change="onChangeUploadings"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><Fa :icon="faPhotoVideo"/></button>
 			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$t('poll')"><Fa :icon="faPollH"/></button>
@@ -73,7 +73,6 @@ import * as os from '@/os';
 export default defineComponent({
 	components: {
 		XNotePreview,
-		XUploader: defineAsyncComponent(() => import('./uploader.vue')),
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
 		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
 	},
@@ -383,13 +382,9 @@ export default defineComponent({
 		chooseFileFromDrive() {
 			os.selectDriveFile(true).then(files => {
 				for (const file of files) {
-					this.attachMedia(file);
+					this.files.push(file);
 				}
 			});
-		},
-
-		attachMedia(driveFile) {
-			this.files.push(driveFile);
 		},
 
 		detachMedia(id) {
@@ -405,11 +400,9 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
-		},
-
-		onChangeUploadings(uploads) {
-			this.$emit('change-uploadings', uploads);
+			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+				this.files.push(res);
+			});
 		},
 
 		onPollUpdate(poll) {
@@ -591,6 +584,7 @@ export default defineComponent({
 			}).catch(err => {
 			}).then(() => {
 				this.posting = false;
+				this.$emit('done');
 			});
 
 			if (this.text && this.text != '') {
@@ -642,32 +636,21 @@ export default defineComponent({
 <style lang="scss" scoped>
 .gafaadew {
 	position: relative;
-	background: var(--panel);
 
 	&.modal {
 		width: 100%;
-		max-width: 500px;
-		border-radius: var(--radius);
+		max-width: 520px;
 	}
 
 	> header {
 		z-index: 1000;
 		height: 66px;
 
-		@media (max-width: 500px) {
-			height: 50px;
-		}
-
 		> .cancel {
 			padding: 0;
 			font-size: 20px;
 			width: 64px;
 			line-height: 66px;
-
-			@media (max-width: 500px) {
-				width: 50px;
-				line-height: 50px;
-			}
 		}
 
 		> div {
@@ -678,10 +661,6 @@ export default defineComponent({
 			> .text-count {
 				opacity: 0.7;
 				line-height: 66px;
-
-				@media (max-width: 500px) {
-					line-height: 50px;
-				}
 			}
 
 			> .visibility {
@@ -706,10 +685,6 @@ export default defineComponent({
 				vertical-align: bottom;
 				border-radius: 4px;
 
-				@media (max-width: 500px) {
-					margin: 8px;
-				}
-
 				&:disabled {
 					opacity: 0.7;
 				}
@@ -722,13 +697,6 @@ export default defineComponent({
 	}
 
 	> .form {
-		max-width: 500px;
-		margin: 0 auto;
-
-		&.fixed {
-			max-width: unset;
-		}
-
 		> .preview {
 			padding: 16px;
 		}
@@ -756,10 +724,6 @@ export default defineComponent({
 			margin-bottom: 8px;
 			overflow: auto;
 			white-space: nowrap;
-
-			@media (max-width: 500px) {
-				padding: 6px 16px;
-			}
 
 			> .visibleUsers {
 				display: inline;
@@ -798,10 +762,6 @@ export default defineComponent({
 			color: var(--fg);
 			font-family: inherit;
 
-			@media (max-width: 500px) {
-				padding: 0 16px;
-			}
-
 			&:focus {
 				outline: none;
 			}
@@ -822,18 +782,9 @@ export default defineComponent({
 			min-width: 100%;
 			min-height: 90px;
 
-			@media (max-width: 500px) {
-				min-height: 80px;
-			}
-
 			&.withCw {
 				padding-top: 8px;
 			}
-		}
-
-		> .mk-uploader {
-			margin: 8px 0 0 0;
-			padding: 8px;
 		}
 
 		> .file {
@@ -842,10 +793,6 @@ export default defineComponent({
 
 		> footer {
 			padding: 0 16px 16px 16px;
-
-			@media (max-width: 500px) {
-				padding: 0 8px 8px 8px;
-			}
 
 			> button {
 				display: inline-block;
@@ -863,6 +810,46 @@ export default defineComponent({
 				&.active {
 					color: var(--accent);
 				}
+			}
+		}
+	}
+
+	&.max-width_500px {
+		> header {
+			height: 50px;
+
+			> .cancel {
+				width: 50px;
+				line-height: 50px;
+			}
+
+			> div {
+				> .text-count {
+					line-height: 50px;
+				}
+
+				> .submit {
+					margin: 8px;
+				}
+			}
+		}
+
+		> .form {
+			> .to-specified {
+				padding: 6px 16px;
+			}
+
+			> .cw,
+			> .text {
+				padding: 0 16px;
+			}
+
+			> .text {
+				min-height: 80px;
+			}
+
+			> footer {
+				padding: 0 8px 8px 8px;
 			}
 		}
 	}

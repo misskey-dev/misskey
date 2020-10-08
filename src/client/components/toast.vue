@@ -1,7 +1,7 @@
 <template>
 <div class="mk-toast">
 	<transition name="notification-slide" appear @after-leave="$emit('closed')">
-		<XNotification :notification="notification" class="notification" v-if="showing"/>
+		<XNotification :notification="notification" class="notification _acrylic" v-if="showing"/>
 	</transition>
 </div>
 </template>
@@ -65,12 +65,8 @@ export default defineComponent({
 
 	> .notification {
 		height: 100%;
-		-webkit-backdrop-filter: blur(12px);
-		backdrop-filter: blur(12px);
-		background-color: var(--toastBg);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		border-radius: 8px;
-		color: var(--toastFg);
 		overflow: hidden;
 	}
 }

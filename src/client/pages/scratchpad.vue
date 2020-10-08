@@ -14,7 +14,7 @@
 		</div>
 	</MkContainer>
 
-	<section class="_card" style="margin-top: var(--margin);">
+	<section class="_section" style="margin-top: var(--margin);">
 		<div class="_content">{{ $t('scratchpadDescription') }}</div>
 	</section>
 </div>

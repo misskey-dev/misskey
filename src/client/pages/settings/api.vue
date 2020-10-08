@@ -1,16 +1,14 @@
 <template>
-<section class="_card">
-	<div class="_title"><Fa :icon="faKey"/> API</div>
+<section class="_section">
 	<div class="_content">
 		<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
-		<MkButton @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $t('regenerate') }}</MkButton>
 	</div>
 </section>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faKey, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import * as os from '@/os';
@@ -19,11 +17,24 @@ export default defineComponent({
 	components: {
 		MkButton, MkInput
 	},
+
+	emits: ['info'],
+
 	data() {
 		return {
-			faKey, faSyncAlt
+			info: {
+				header: [{
+					title: 'API',
+					icon: faKey
+				}]
+			},
 		};
 	},
+
+	mounted() {
+		this.$emit('info', this.info);
+	},
+
 	methods: {
 		async generateToken() {
 			os.modal(await import('@/components/token-generate-window.vue'), {}).then(async result => {
@@ -39,19 +50,6 @@ export default defineComponent({
 					type: 'success',
 					title: this.$t('token'),
 					text: token
-				});
-			});
-		},
-		regenerateToken() {
-			os.dialog({
-				title: this.$t('password'),
-				input: {
-					type: 'password'
-				}
-			}).then(({ canceled, result: password }) => {
-				if (canceled) return;
-				os.api('i/regenerate_token', {
-					password: password
 				});
 			});
 		},

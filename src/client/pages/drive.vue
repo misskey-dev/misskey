@@ -8,7 +8,10 @@
 			<Fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
 		</button>
 	</portal>
+
+	<div style="padding: 16px;">
 	<XDrive ref="drive" @cd="x => folder = x"/>
+	</div>
 </div>
 </template>
 

@@ -2,7 +2,7 @@
 <div class="ztgjmzrw">
 	<portal to="header"><Fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
 	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
-	<section class="_card announcements">
+	<section class="_section announcements">
 		<div class="_content announcement" v-for="announcement in announcements">
 			<MkInput v-model:value="announcement.title">
 				<span>{{ $t('title') }}</span>
