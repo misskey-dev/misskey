@@ -2,7 +2,7 @@
 <div class="">
 	<portal to="header"><Fa :icon="faShareAlt"/>{{ $t('share') }}</portal>
 
-	<section class="_card">
+	<section class="_section">
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<div>{{ text }}</div>

@@ -11,7 +11,6 @@
 		:placeholder="$t('inputMessageHere')"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<XUploader ref="uploader" @uploaded="onUploaded"/>
 	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
 		<template v-if="!sending"><Fa :icon="faPaperPlane"/></template><template v-if="sending"><Fa icon="spinner .spin"/></template>
 	</button>
@@ -32,9 +31,6 @@ import * as os from '@/os';
 import { Autocomplete } from '@/scripts/autocomplete';
 
 export default defineComponent({
-	components: {
-		XUploader: defineAsyncComponent(() => import('@/components/uploader.vue')),
-	},
 	props: {
 		user: {
 			type: Object,
@@ -171,11 +167,9 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
-		},
-
-		onUploaded(file) {
-			this.file = file;
+			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+				this.file = res;
+			});
 		},
 
 		send() {

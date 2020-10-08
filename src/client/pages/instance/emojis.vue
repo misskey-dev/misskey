@@ -2,7 +2,7 @@
 <div class="mk-instance-emojis">
 	<portal to="header"><Fa :icon="faLaugh"/>{{ $t('customEmojis') }}</portal>
 
-	<section class="_card _vMargin local">
+	<section class="_section local">
 		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('customEmojis') }}</div>
 		<div class="_content">
 			<MkPagination :pagination="pagination" class="emojis" ref="emojis">
@@ -32,7 +32,7 @@
 			<MkButton inline primary @click="add"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
 		</div>
 	</section>
-	<section class="_card _vMargin remote">
+	<section class="_section remote">
 		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('customEmojisOfRemote') }}</div>
 		<div class="_content">
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>

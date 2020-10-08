@@ -4,17 +4,17 @@
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
 	<deck-column class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
-		<template #action>
-			<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
-		</template>
-
 		<template #header>
-			<div class="iwnjqeul">
-				<div class="body" id="_teleport_header"></div>
-			</div>
+			<XHeader :info="pageInfo"/>
 		</template>
 
-		<router-view></router-view>
+		<router-view v-slot="{ Component }">
+			<transition>
+				<keep-alive :include="['index']">
+					<component :is="Component" :ref="changePage"/>
+				</keep-alive>
+			</transition>
+		</router-view>
 	</deck-column>
 
 	<template v-for="ids in layout">
@@ -43,12 +43,15 @@ import { search } from '@/scripts/search';
 import DeckColumnCore from '@/components/deck/column-core.vue';
 import DeckColumn from '@/components/deck/column.vue';
 import XSidebar from '@/components/sidebar.vue';
+import XHeader from './_common_/header.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
+import { sidebarDef } from '@/sidebar';
 
 export default defineComponent({
 	components: {
 		XSidebar,
+		XHeader,
 		DeckColumn,
 		DeckColumnCore,
 	},
@@ -56,13 +59,10 @@ export default defineComponent({
 	data() {
 		return {
 			host: host,
+			pageInfo: null,
 			pageKey: 0,
-			searching: false,
 			connection: null,
-			searchQuery: '',
-			searchWait: false,
-			canBack: false,
-			menuDef: this.$store.getters.nav({}),
+			menuDef: sidebarDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
 		};
@@ -98,7 +98,6 @@ export default defineComponent({
 	watch: {
 		$route(to, from) {
 			this.pageKey++;
-			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
 	},
 
@@ -117,6 +116,13 @@ export default defineComponent({
 	},
 
 	methods: {
+		async changePage(page) {
+			if (page == null) return;
+			if (page.info) {
+				this.pageInfo = page.info;
+			}
+		},
+
 		onWheel(e) {
 			if (getScrollContainer(e.target) == null) {
 				document.documentElement.scrollLeft += e.deltaY > 0 ? 96 : -96;
@@ -131,28 +137,8 @@ export default defineComponent({
 			this.$router.push('/docs/keyboard-shortcut');
 		},
 
-		back() {
-			if (this.canBack) window.history.back();
-		},
-
 		post() {
 			os.post();
-		},
-
-		search() {
-			if (this.searching) return;
-
-			os.dialog({
-				title: this.$t('search'),
-				input: true
-			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query === '') return;
-
-				this.searching = true;
-				search(this, query).finally(() => {
-					this.searching = false;
-				});
-			});
 		},
 
 		async onNotification(notification) {
@@ -289,36 +275,6 @@ export default defineComponent({
 			font-size: 16px;
 			animation: blink 1s infinite;
 		}
-	}
-}
-
-.iwnjqeul {
-	$header-height: 42px; // TODO: column.vueのそれを参照するようにしたい(出来るのか？)
-
-	> .default {
-		> .avatar {
-			$size: 28px;
-			display: inline-block;
-			width: $size;
-			height: $size;
-			vertical-align: bottom;
-			margin: (($header-height - $size) / 2) 8px (($header-height - $size) / 2) 0;
-		}
-
-		> .title {
-			display: inline-block;
-			margin: 0;
-			line-height: $header-height;
-
-			> [data-icon] {
-				margin-right: 8px;
-			}
-		}
-	}
-
-	> .custom {
-		position: absolute;
-		top: 0;
 	}
 }
 </style>

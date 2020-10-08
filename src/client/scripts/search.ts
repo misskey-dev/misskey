@@ -1,15 +1,29 @@
 import { faHistory } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { router } from '@/router';
 
-export async function search(v: any, q: string) {
+export async function search(q?: string | null | undefined) {
+	if (q == null) {
+		const { canceled, result: query } = await os.dialog({
+			title: i18n.global.t('search'),
+			input: true
+		});
+
+		if (canceled || query == null || query === '') return;
+
+		q = query;
+	}
+
 	q = q.trim();
 
 	if (q.startsWith('@') && !q.includes(' ')) {
-		v.$router.push(`/${q}`);
+		router.push(`/${q}`);
 		return;
 	}
 
 	if (q.startsWith('#')) {
-		v.$router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+		router.push(`/tags/${encodeURIComponent(q.substr(1))}`);
 		return;
 	}
 
@@ -26,7 +40,7 @@ export async function search(v: any, q: string) {
 		}
 
 		v.$root.$emit('warp', date);
-		v.os.dialog({
+		os.dialog({
 			icon: faHistory,
 			iconOnly: true, autoClose: true
 		});
@@ -34,31 +48,31 @@ export async function search(v: any, q: string) {
 	}
 
 	if (q.startsWith('https://')) {
-		const dialog = v.os.dialog({
+		const dialog = os.dialog({
 			type: 'waiting',
-			text: v.$t('fetchingAsApObject') + '...',
+			text: i18n.global.t('fetchingAsApObject') + '...',
 			showOkButton: false,
 			showCancelButton: false,
 			cancelableByBgClick: false
 		});
 
 		try {
-			const res = await v.os.api('ap/show', {
+			const res = await os.api('ap/show', {
 				uri: q
 			});
-			dialog.close();
+			dialog.cancel();
 			if (res.type === 'User') {
-				v.$router.push(`/@${res.object.username}@${res.object.host}`);
+				router.push(`/@${res.object.username}@${res.object.host}`);
 			} else if (res.type === 'Note') {
-				v.$router.push(`/notes/${res.object.id}`);
+				router.push(`/notes/${res.object.id}`);
 			}
 		} catch (e) {
-			dialog.close();
+			dialog.cancel();
 			// TODO: Show error
 		}
 
 		return;
 	}
 
-	v.$router.push(`/search?q=${encodeURIComponent(q)}`);
+	router.push(`/search?q=${encodeURIComponent(q)}`);
 }

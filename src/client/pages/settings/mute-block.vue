@@ -1,12 +1,11 @@
 <template>
-<section class="rrfwjxfl _card">
-	<div class="_title"><Fa :icon="faBan"/> {{ $t('muteAndBlock') }}</div>
-	<div class="_content">
-		<span>{{ $t('mutedUsers') }}</span>
+<section class="rrfwjxfl _section">
+	<MkTab v-model:value="tab" :items="[{ label: $t('mutedUsers'), value: 'mute' }, { label: $t('blockedUsers'), value: 'block' }]" style="margin-bottom: var(--margin);"/>
+	<div class="_content" v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
-			<template #empty><span>{{ $t('noUsers') }}</span></template>
+			<template #empty><MkInfo>{{ $t('noUsers') }}</MkInfo></template>
 			<template #default="{items}">
-				<div class="user" v-for="(mute, i) in items" :key="mute.id">
+				<div class="user" v-for="mute in items" :key="mute.id">
 					<router-link class="name" :to="userPage(mute.mutee)">
 						<MkAcct :user="mute.mutee"/>
 					</router-link>
@@ -14,12 +13,11 @@
 			</template>
 		</MkPagination>
 	</div>
-	<div class="_content">
-		<span>{{ $t('blockedUsers') }}</span>
+	<div class="_content" v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
-			<template #empty><span>{{ $t('noUsers') }}</span></template>
+			<template #empty><MkInfo>{{ $t('noUsers') }}</MkInfo></template>
 			<template #default="{items}">
-				<div class="user" v-for="(block, i) in items" :key="block.id">
+				<div class="user" v-for="block in items" :key="block.id">
 					<router-link class="name" :to="userPage(block.blockee)">
 						<MkAcct :user="block.blockee"/>
 					</router-link>
@@ -34,16 +32,29 @@
 import { defineComponent } from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@/components/ui/pagination.vue';
-import { userPage } from '../../filters/user';
+import MkTab from '@/components/tab.vue';
+import MkInfo from '@/components/ui/info.vue';
+import { userPage } from '@/filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		MkPagination,
+		MkTab,
+		MkInfo,
 	},
+
+	emits: ['info'],
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('muteAndBlock'),
+					icon: faBan
+				}]
+			},
+			tab: 'mute',
 			mutingPagination: {
 				endpoint: 'mute/list',
 				limit: 10,
@@ -52,8 +63,11 @@ export default defineComponent({
 				endpoint: 'blocking/list',
 				limit: 10,
 			},
-			faBan
 		}
+	},
+
+	mounted() {
+		this.$emit('info', this.info);
 	},
 
 	methods: {

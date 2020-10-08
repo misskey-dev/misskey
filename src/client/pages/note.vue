@@ -1,24 +1,22 @@
 <template>
-<div class="mk-note-page">
-	<portal to="header" v-if="note">
-		<MkAvatar class="avatar" :user="note.user" :disable-preview="true"/>
-		<Mfm 
-			:text="$t('noteOf', { user: note.user.name || note.user.username })"
-			:plain="true" :nowrap="true" :custom-emojis="note.user.emojis" :is-note="false"
-		/>
-	</portal>
+<div class="fcuexfpr">
+	<div v-if="note" class="note">
+		<div class="_section">
+			<XNotes v-if="showNext" class="_content" :pagination="next"/>
+			<MkButton v-else-if="hasNext" class="load _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
+		</div>
 
-	<div v-if="note">
-		<button class="_panel _button" v-if="hasNext && !showNext" @click="showNext = true" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faChevronUp"/></button>
-		<XNotes v-if="showNext" ref="next" :pagination="next"/>
-		<hr v-if="showNext"/>
+		<div class="_section">
+			<div class="_content">
+				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
+				<XNote v-model:note="note" :key="note.id" :detail="true"/>
+			</div>
+		</div>
 
-		<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
-		<XNote v-model:note="note" :key="note.id" :detail="true"/>
-
-		<button class="_panel _button" v-if="hasPrev && !showPrev" @click="showPrev = true" style="margin: var(--margin) auto 0 auto;"><Fa :icon="faChevronDown"/></button>
-		<hr v-if="showPrev"/>
-		<XNotes v-if="showPrev" ref="prev" :pagination="prev" style="margin-top: var(--margin);"/>
+		<div class="_section">
+			<XNotes v-if="showPrev" class="_content" :pagination="prev"/>
+			<MkButton v-else-if="hasPrev" class="load _content" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
+		</div>
 	</div>
 
 	<div v-if="error">
@@ -34,18 +32,15 @@ import Progress from '@/scripts/loading';
 import XNote from '@/components/note.vue';
 import XNotes from '@/components/notes.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
+import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('note') as string
-		};
-	},
 	components: {
 		XNote,
 		XNotes,
 		MkRemoteCaution,
+		MkButton,
 	},
 	data() {
 		return {
@@ -112,3 +107,16 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.fcuexfpr {
+	> .note {
+		> ._section {
+			> .load {
+				min-width: 0;
+				border-radius: 999px;
+			}
+		}
+	}
+}
+</style>

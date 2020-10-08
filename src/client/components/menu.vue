@@ -1,26 +1,26 @@
 <template>
-<div class="rrevdjwt" :class="{ left: align === 'left' }" ref="items" :style="{ width: width + 'px' }">
+<div class="rrevdjwt _popup" :class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, contextmenu: contextmenuEvent != null }" ref="items" :style="{ width: width + 'px' }" @contextmenu.self="e => e.preventDefault()">
 	<template v-for="(item, i) in items.filter(item => item !== undefined)">
-		<div v-if="item === null" class="divider" :key="i"></div>
-		<span v-else-if="item.type === 'label'" class="label item" :key="i">
+		<div v-if="item === null" class="divider"></div>
+		<span v-else-if="item.type === 'label'" class="label item">
 			<span>{{ item.text }}</span>
 		</span>
-		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item" :key="i">
+		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</router-link>
-		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item" :key="i">
+		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<span>{{ item.text }}</span>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</a>
-		<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
+		<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item">
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</button>
-		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :key="i">
+		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
@@ -35,6 +35,7 @@ import { defineComponent } from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import * as os from '@/os';
+import contains from '@/scripts/contains';
 
 export default defineComponent({
 	props: {
@@ -62,7 +63,11 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		contextmenuEvent: {
+			required: false
+		},
 	},
+	emits: ['done', 'closed'],
 	data() {
 		return {
 			faCircle
@@ -82,6 +87,20 @@ export default defineComponent({
 				focusNext(this.$refs.items.children[0], true);
 			});
 		}
+
+		if (this.contextmenuEvent) {
+			this.$el.style.top = this.contextmenuEvent.pageY + 'px';
+			this.$el.style.left = this.contextmenuEvent.pageX + 'px';
+
+			for (const el of Array.from(document.querySelectorAll('body *'))) {
+				el.addEventListener('mousedown', this.onMousedown);
+			}
+		}
+	},
+	beforeUnmount() {
+		for (const el of Array.from(document.querySelectorAll('body *'))) {
+			el.removeEventListener('mousedown', this.onMousedown);
+		}
 	},
 	methods: {
 		clicked(fn) {
@@ -89,14 +108,18 @@ export default defineComponent({
 			this.close();
 		},
 		close() {
-			this.$emit('done');
+			this.$emit('done'); // for as modal
+			this.$emit('closed'); // for as popup
 		},
 		focusUp() {
 			focusPrev(document.activeElement);
 		},
 		focusDown() {
 			focusNext(document.activeElement);
-		}
+		},
+		onMousedown(e) {
+			if (!contains(this.$el, e.target) && (this.$el != e.target)) this.close();
+		},
 	}
 });
 </script>
@@ -104,9 +127,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
-	background: var(--panel);
-	border-radius: 8px;
-	box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
+
+	&.contextmenu {
+		position: absolute;
+		z-index: 65535;
+	}
 
 	&.left {
 		> .item {

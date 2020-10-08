@@ -83,7 +83,7 @@
 		</div>
 	</div>
 
-	<section class="_card">
+	<section class="_section">
 		<div class="_title" style="position: relative;"><Fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><Fa :icon="faSync"/></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">

@@ -8,11 +8,10 @@
 	base: 'light',
 
 	props: {
-		bg: '#f2f2f2',
+		bg: '#F6F7F7',
 		header: ':alpha<0.7<@bg',
 		navBg: '@bg',
 		panelHeaderDivider: '@divider',
 		messageBg: '#dedede',
-		deckColumnBorder: '#cccccc',
 	},
 }

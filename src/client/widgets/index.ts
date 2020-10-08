@@ -1,7 +1,6 @@
 import { App, defineAsyncComponent } from 'vue';
 
 export default function(app: App) {
-	app.component('MkwWelcome', defineAsyncComponent(() => import('./welcome.vue')));
 	app.component('MkwMemo', defineAsyncComponent(() => import('./memo.vue')));
 	app.component('MkwNotifications', defineAsyncComponent(() => import('./notifications.vue')));
 	app.component('MkwTimeline', defineAsyncComponent(() => import('./timeline.vue')));
@@ -13,6 +12,7 @@ export default function(app: App) {
 	app.component('MkwPhotos', defineAsyncComponent(() => import('./photos.vue')));
 	app.component('MkwDigitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
 	app.component('MkwFederation', defineAsyncComponent(() => import('./federation.vue')));
+	app.component('MkwPostForm', defineAsyncComponent(() => import('./post-form.vue')));
 }
 
 export const widgets = [
@@ -27,4 +27,5 @@ export const widgets = [
 	'photos',
 	'digitalClock',
 	'federation',
+	'postForm',
 ];

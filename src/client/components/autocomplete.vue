@@ -1,5 +1,5 @@
 <template>
-<div class="swhvrteh" @contextmenu.prevent="() => {}">
+<div class="swhvrteh _popup _shadow" @contextmenu.prevent="() => {}">
 	<ol class="users" ref="suggests" v-if="type === 'user'">
 		<li v-for="user in users" @click="complete(type, user)" @keydown="onKeydown" tabindex="-1" class="user">
 			<img class="avatar" :src="user.avatarUrl"/>
@@ -106,6 +106,11 @@ export default defineComponent({
 			type: Number,
 			required: true,
 		},
+
+		showing: {
+			type: Boolean,
+			required: true
+		},
 	},
 
 	emits: ['done', 'closed'],
@@ -130,6 +135,14 @@ export default defineComponent({
 
 		useOsNativeEmojis(): boolean {
 			return this.$store.state.device.useOsNativeEmojis;
+		}
+	},
+
+	watch: {
+		showing() {
+			if (!this.showing) {
+				this.$emit('closed');
+			}
 		}
 	},
 
@@ -395,9 +408,6 @@ export default defineComponent({
 	max-width: 100%;
 	margin-top: calc(1em + 8px);
 	overflow: hidden;
-	background: var(--panel);
-	border: solid 1px rgba(#000, 0.1);
-	border-radius: 4px;
 	transition: top 0.1s ease, left 0.1s ease;
 
 	> ol {

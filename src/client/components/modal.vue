@@ -1,10 +1,10 @@
 <template>
 <div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none' }">
 	<transition :name="$store.state.device.animation ? 'modal-bg' : ''" appear>
-		<div class="bg _modalBg" v-if="showing" @click="$emit('click')"></div>
+		<div class="bg _modalBg" v-if="showing" @click="onBgClick"></div>
 	</transition>
-	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="$emit('click')" ref="content">
-		<transition :name="$store.state.device.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')">
+	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
+		<transition :name="$store.state.device.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @after-enter="childRendered">
 			<slot v-if="showing"></slot>
 		</transition>
 	</div>
@@ -47,6 +47,7 @@ export default defineComponent({
 	data() {
 		return {
 			fixed: false,
+			contentClicking: false,
 		};
 	},
 	computed: {
@@ -121,6 +122,26 @@ export default defineComponent({
 			}).observe(popover);
 		});
 	},
+	methods: {
+		childRendered() {
+			// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
+			const content = this.$refs.content.children[0];
+			content.addEventListener('mousedown', e => {
+				this.contentClicking = true;
+				window.addEventListener('mouseup', e => {
+					// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
+					setTimeout(() => {
+						this.contentClicking = false;
+					}, 100);
+				}, { passive: true, once: true });
+			}, { passive: true });
+		},
+
+		onBgClick() {
+			if (this.contentClicking) return;
+			this.$emit('click');
+		}
+	}
 });
 </script>
 
@@ -165,14 +186,16 @@ export default defineComponent({
 		left: 0;
 		right: 0;
 		margin: auto;
-		max-width: calc(100% - 32px);
-		max-height: calc(100% - 32px);
+		padding: 32px;
+		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
+		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 		overflow: auto;
 		display: flex;
 
 		@media (max-width: 500px) {
-			max-width: calc(100% - 16px);
-			max-height: calc(100% - 16px);
+			padding: 16px;
+			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
+			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 		}
 
 		> * {

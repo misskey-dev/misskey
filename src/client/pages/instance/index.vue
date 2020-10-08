@@ -1,7 +1,5 @@
 <template>
 <div v-if="meta" class="xhexznfu" v-size="{ min: [1600] }">
-	<portal to="header"><Fa :icon="faServer"/>{{ $t('instance') }}</portal>
-
 	<MkFolder>
 		<template #header><Fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>
 
@@ -146,7 +144,7 @@
 				</div>
 			</MkContainer>
 
-			<section class="_card logs">
+			<section class="_section logs">
 				<div class="_title"><Fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
 				<div class="_content">
 					<div class="_inputs">
@@ -196,6 +194,7 @@ import MkFolder from '@/components/ui/folder.vue';
 import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '@/config';
 import bytes from '../../filters/bytes';
+import number from '../../filters/number';
 import XQueue from './index.queue-chart.vue';
 import MkInstanceInfo from './instance.vue';
 
@@ -209,12 +208,6 @@ const alpha = (hex, a) => {
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('instance') as string
-		};
-	},
-
 	components: {
 		MkInstanceStats,
 		MkButton,
@@ -229,6 +222,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('instance'),
+					icon: faServer
+				}]
+			},
 			version,
 			url,
 			stats: null,
@@ -266,10 +265,6 @@ export default defineComponent({
 			this.logs = [];
 			this.fetchLogs();
 		}
-	},
-
-	created() {
-		this.$store.commit('setFullView', true);
 	},
 
 	mounted() {
@@ -539,7 +534,6 @@ export default defineComponent({
 		this.connection.off('statsLog', this.onStatsLog);
 		this.connection.dispose();
 		this.queueConnection.dispose();
-		this.$store.commit('setFullView', false);
 	},
 
 	methods: {
@@ -628,6 +622,8 @@ export default defineComponent({
 		},
 
 		bytes,
+
+		number,
 
 		pause() {
 			this.paused = true;

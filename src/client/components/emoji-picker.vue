@@ -1,5 +1,5 @@
 <template>
-<div class="omfetrab _panel">
+<div class="omfetrab _popup">
 	<header>
 		<button v-for="(category, i) in categories"
 			class="_button"

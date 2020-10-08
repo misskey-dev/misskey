@@ -26,6 +26,7 @@ export default {
 		const show = async e => {
 			if (!document.body.contains(el)) return;
 			if (self._close) return;
+			if (self.text == null) return;
 
 			const promise = popup(await import('@/components/ui/tooltip.vue'), {
 				text: self.text,
@@ -36,6 +37,10 @@ export default {
 				promise.cancel();
 			};
 		};
+
+		el.addEventListener('selectstart', e => {
+			e.preventDefault();
+		});
 
 		el.addEventListener(start, () => {
 			clearTimeout(self.showTimer);

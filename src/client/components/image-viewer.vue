@@ -2,17 +2,20 @@
 <div class="xubzgfga">
 	<header>{{ image.name }}</header>
 	<img :src="image.url" :alt="image.name" :title="image.name" @click="close"/>
-	<footer>{{ image.type }}, {{ bytes(image.size) }}</footer>
+	<footer>
+		<span>{{ image.type }}</span>
+		<span>{{ bytes(image.size) }}</span>
+		<span v-if="image.properties?.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
+	</footer>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import bytes from '@/filters/bytes';
+import number from '@/filters/number';
 
 export default defineComponent({
-	emits: ['done'],
-
 	props: {
 		image: {
 			type: Object,
@@ -20,12 +23,15 @@ export default defineComponent({
 		},
 	},
 
+	emits: ['done'],
+
 	methods: {
 		close() {
 			this.$emit('done');
 		},
 
 		bytes,
+		number,
 	}
 });
 </script>
@@ -34,8 +40,19 @@ export default defineComponent({
 .xubzgfga {
 	max-width: 1024px;
 
+	> header,
+	> footer {
+		display: inline-block;
+		padding: 6px 9px;
+		font-size: 90%;
+		background: rgba(0, 0, 0, 0.5);
+		border-radius: 6px;
+		color: #fff;
+	}
+
 	> header {
 		margin-bottom: 8px;
+		opacity: 0.9;
 	}
 
 	> img {
@@ -47,7 +64,13 @@ export default defineComponent({
 
 	> footer {
 		margin-top: 8px;
-		opacity: 0.7;
+		opacity: 0.8;
+
+		> span + span {
+			margin-left: 0.5em;
+			padding-left: 0.5em;
+			border-left: solid 1px rgba(255, 255, 255, 0.5);
+		}
 	}
 }
 </style>

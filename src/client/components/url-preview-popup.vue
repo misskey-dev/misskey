@@ -1,7 +1,7 @@
 <template>
-<div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
+<div class="fgmtyycl" :style="{ top: top + 'px', left: left + 'px' }">
 	<transition name="zoom" @after-leave="$emit('closed')">
-		<MkUrlPreview :url="url" v-if="showing"/>
+		<MkUrlPreview class="_popup _shadow" :url="url" v-if="showing"/>
 	</transition>
 </div>
 </template>
@@ -55,7 +55,6 @@ export default defineComponent({
 	z-index: 11000;
 	width: 500px;
 	max-width: calc(90vw - 12px);
-	overflow: hidden;
 	pointer-events: none;
 }
 </style>

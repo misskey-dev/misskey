@@ -2,7 +2,7 @@ import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { apiUrl } from '@/config';
 import { store } from '@/store';
 import * as os from '@/os';
-import { locale } from '@/i18n';
+import { i18n } from '@/i18n';
 
 export function selectFile(src: any, label: string | null, multiple = false) {
 	return new Promise((res, rej) => {
@@ -13,7 +13,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			input.onchange = () => {
 				const dialog = os.dialog({
 					type: 'waiting',
-					text: locale['uploading'] + '...',
+					text: i18n.global.t('uploading') + '...',
 					showOkButton: false,
 					showCancelButton: false,
 					cancelableByBgClick: false
@@ -71,11 +71,11 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 				text: label,
 				type: 'label'
 			} : undefined, {
-				text: locale['upload'],
+				text: i18n.global.t('upload'),
 				icon: faUpload,
 				action: chooseFileFromPc
 			}, {
-				text: locale['fromDrive'],
+				text: i18n.global.t('fromDrive'),
 				icon: faCloud,
 				action: chooseFileFromDrive
 			}, /*{

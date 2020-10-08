@@ -1,6 +1,6 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section class="dnpfarvg _panel _narrow_" :class="{ naked, paged: isMainColumn, _close_: !isMainColumn, active, isStacked, draghover, dragging, dropready }"
+<section class="dnpfarvg _panel _narrow_" :class="{ paged: isMainColumn, naked, _close_: !isMainColumn, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -23,7 +23,6 @@
 		</div>
 		<span class="header"><slot name="header"></slot></span>
 		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><Fa :icon="faCaretDown"/></button>
-		<button v-else-if="$route.name !== 'index'" class="close _button" @click.stop="close"><Fa :icon="faTimes"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -33,7 +32,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
 
@@ -72,7 +71,7 @@ export default defineComponent({
 			dragging: false,
 			draghover: false,
 			dropready: false,
-			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faTimes,
+			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown,
 		};
 	},
 
@@ -215,10 +214,6 @@ export default defineComponent({
 			});
 		},
 
-		close() {
-			this.$router.push('/');
-		},
-
 		goTop() {
 			this.$refs.body.scrollTo({
 				top: 0,
@@ -289,7 +284,6 @@ export default defineComponent({
 
 	height: 100%;
 	overflow: hidden;
-	box-shadow: 0 0 0 1px var(--deckColumnBorder);
 
 	&.draghover {
 		box-shadow: 0 0 0 2px var(--focus);
@@ -343,7 +337,6 @@ export default defineComponent({
 	&.paged {
 		> div {
 			background: var(--bg);
-			padding: var(--margin);
 		}
 	}
 
@@ -381,8 +374,7 @@ export default defineComponent({
 
 		> .toggleActive,
 		> .action > *,
-		> .menu,
-		> .close {
+		> .menu {
 			z-index: 1;
 			width: $header-height;
 			line-height: $header-height;
@@ -410,8 +402,7 @@ export default defineComponent({
 			display: none;
 		}
 
-		> .menu,
-		> .close {
+		> .menu {
 			margin-left: auto;
 			margin-right: -16px;
 		}

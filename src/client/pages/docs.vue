@@ -1,7 +1,7 @@
 <template>
 <div>
 	<portal to="header"><Fa :icon="faQuestionCircle"/>{{ $t('help') }}</portal>
-	<main class="_card">
+	<main class="_section">
 		<div class="_content">
 			<ul>
 				<li v-for="doc in docs" :key="doc.path">

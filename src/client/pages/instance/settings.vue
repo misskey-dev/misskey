@@ -2,7 +2,7 @@
 <div v-if="meta">
 	<portal to="header"><Fa :icon="faCog"/>{{ $t('settings') }}</portal>
 
-	<section class="_card _vMargin info">
+	<section class="_section info">
 		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
 			<MkInput v-model:value="name">{{ $t('instanceName') }}</MkInput>
@@ -18,7 +18,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin info">
+	<section class="_section info">
 		<div class="_content">
 			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</MkInput>
 		</div>
@@ -32,7 +32,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin info">
+	<section class="_section info">
 		<div class="_title"><Fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRegistration" @update:value="save()">{{ $t('enableRegistration') }}</MkSwitch>
@@ -40,7 +40,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableHcaptcha">{{ $t('enableHcaptcha') }}</MkSwitch>
@@ -58,7 +58,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRecaptcha" ref="enableRecaptcha">{{ $t('enableRecaptcha') }}</MkSwitch>
@@ -76,7 +76,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableEmail" @update:value="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></MkSwitch>
@@ -99,7 +99,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></MkSwitch>
@@ -115,7 +115,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="pinnedUsers">
@@ -127,7 +127,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></MkSwitch>
@@ -140,7 +140,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faCloud"/> {{ $t('objectStorage') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="useObjectStorage">{{ $t('useObjectStorage') }}</MkSwitch>
@@ -168,7 +168,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
 			<MkInput :value="proxyAccount ? proxyAccount.username : null" style="margin: 0;" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></MkInput>
@@ -176,7 +176,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="blockedHosts">
@@ -188,7 +188,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
 			<header><Fa :icon="faTwitter"/> Twitter</header>
@@ -222,7 +222,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_section">
 		<div class="_title"><Fa :icon="faArchway" /> Summaly Proxy</div>
 		<div class="_content">
 			<MkInput v-model:value="summalyProxy">URL</MkInput>

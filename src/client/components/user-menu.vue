@@ -76,7 +76,7 @@ export default defineComponent({
 				icon: faPencilAlt,
 				text: this.$t('editProfile'),
 				action: () => {
-					this.$router.push('/my/settings');
+					this.$router.push('/settings/profile');
 				}
 			}]);
 		}

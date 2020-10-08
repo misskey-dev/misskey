@@ -139,8 +139,6 @@ export default defineComponent({
 		position: relative;
 		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 		z-index: 2;
-		background: var(--panelHeaderBg);
-		color: var(--panelHeaderFg);
 		line-height: 1.4em;
 
 		> .title {

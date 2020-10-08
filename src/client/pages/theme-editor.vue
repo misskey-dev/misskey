@@ -2,15 +2,15 @@
 <div class="t9makv94">
 	<portal to="header"><Fa :icon="faPalette"/>{{ $t('themeEditor') }}</portal>
 
-	<section class="_card">
+	<section class="_section">
 		<div class="_content">
 			<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
 			<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
 			<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
 			<div class="_inputs">
 				<div v-text="$t('_theme.base')" />
-				<MkRadio v-model:value="baseTheme" value="light">{{ $t('light') }}</MkRadio>
-				<MkRadio v-model:value="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
+				<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
+				<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
 			</div>
 		</div>
 		<div class="_content">
@@ -290,7 +290,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .t9makv94 {
-	> ._card {
+	> ._section {
 		> ._content {
 			> .list-view {
 				height: 480px;

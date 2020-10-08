@@ -8,7 +8,7 @@
 	<XQueue :connection="connection" domain="deliver">
 		<template #title><Fa :icon="faExchangeAlt"/> Out</template>
 	</XQueue>
-	<section class="_card">
+	<section class="_section">
 		<div class="_content">
 			<MkButton @click="clear()"><Fa :icon="faTrashAlt"/> {{ $t('clearQueue') }}</MkButton>
 		</div>

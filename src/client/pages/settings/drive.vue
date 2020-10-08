@@ -1,5 +1,5 @@
 <template>
-<section class="uawsfosz _card">
+<section class="uawsfosz _section">
 	<div class="_title"><Fa :icon="faCloud"/> {{ $t('drive') }}</div>
 	<div class="_content">
 		<span>{{ $t('uploadFolder') }}: {{ uploadFolder ? uploadFolder.name : '-' }}</span>

@@ -22,7 +22,7 @@
 				</router-link>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" @click="() => { if (menuDef[item].action) menuDef[item].action() }" :to="menuDef[item].to">
+					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
 						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
 						<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
 					</component>
@@ -35,7 +35,7 @@
 					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 					<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 				</button>
-				<router-link class="item" active-class="active" to="/preferences">
+				<router-link class="item" active-class="active" to="/settings">
 					<Fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
 				</router-link>
 			</div>
@@ -51,6 +51,7 @@ import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regul
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
+import { sidebarDef } from '@/sidebar';
 
 export default defineComponent({
 	data() {
@@ -60,9 +61,7 @@ export default defineComponent({
 			searching: false,
 			accounts: [],
 			connection: null,
-			menuDef: this.$store.getters.nav({
-				search: this.search
-			}),
+			menuDef: sidebarDef,
 			iconOnly: false,
 			hidden: false,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
@@ -156,11 +155,6 @@ export default defineComponent({
 					text: this.$t('profile'),
 					to: `/@${ this.$store.state.i.username }`,
 					avatar: this.$store.state.i,
-				}, {
-					type: 'link',
-					text: this.$t('accountSettings'),
-					to: '/my/settings',
-					icon: faCog,
 				}, null, ...accountItems, {
 					icon: faPlus,
 					text: this.$t('addAcount'),
