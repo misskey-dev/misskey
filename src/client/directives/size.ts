@@ -21,6 +21,9 @@ export default {
 		const calc = () => {
 			const width = el.clientWidth;
 
+			// 要素が(一時的に)DOMに存在しないときは計算スキップ
+			if (width === 0) return;
+
 			if (query.max) {
 				for (const v of query.max) {
 					if (width <= v) {

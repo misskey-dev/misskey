@@ -172,6 +172,9 @@ export default defineComponent({
 	},
 
 	computed: {
+		rs() {
+			return this.$store.state.settings.reactions;
+		},
 		keymap(): any {
 			return {
 				'r': () => this.reply(true),
@@ -185,16 +188,16 @@ export default defineComponent({
 				'esc': this.blur,
 				'm|o': () => this.menu(true),
 				's': this.toggleShowContent,
-				'1': () => this.reactDirectly(this.$store.state.settings.reactions[0]),
-				'2': () => this.reactDirectly(this.$store.state.settings.reactions[1]),
-				'3': () => this.reactDirectly(this.$store.state.settings.reactions[2]),
-				'4': () => this.reactDirectly(this.$store.state.settings.reactions[3]),
-				'5': () => this.reactDirectly(this.$store.state.settings.reactions[4]),
-				'6': () => this.reactDirectly(this.$store.state.settings.reactions[5]),
-				'7': () => this.reactDirectly(this.$store.state.settings.reactions[6]),
-				'8': () => this.reactDirectly(this.$store.state.settings.reactions[7]),
-				'9': () => this.reactDirectly(this.$store.state.settings.reactions[8]),
-				'0': () => this.reactDirectly(this.$store.state.settings.reactions[9]),
+				'1': () => this.reactDirectly(this.rs[0]),
+				'2': () => this.reactDirectly(this.rs[1]),
+				'3': () => this.reactDirectly(this.rs[2]),
+				'4': () => this.reactDirectly(this.rs[3]),
+				'5': () => this.reactDirectly(this.rs[4]),
+				'6': () => this.reactDirectly(this.rs[5]),
+				'7': () => this.reactDirectly(this.rs[6]),
+				'8': () => this.reactDirectly(this.rs[7]),
+				'9': () => this.reactDirectly(this.rs[8]),
+				'0': () => this.reactDirectly(this.rs[9]),
 			};
 		},
 
