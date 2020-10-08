@@ -1,5 +1,5 @@
 <template>
-<div class="rrevdjwt _popup" :class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, _acrylic: contextmenuEvent != null, contextmenu: contextmenuEvent != null }" ref="items" :style="{ width: width + 'px' }">
+<div class="rrevdjwt _popup" :class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, contextmenu: contextmenuEvent != null }" ref="items" :style="{ width: width + 'px' }" @contextmenu.self="e => e.preventDefault()">
 	<template v-for="(item, i) in items.filter(item => item !== undefined)">
 		<div v-if="item === null" class="divider"></div>
 		<span v-else-if="item.type === 'label'" class="label item">

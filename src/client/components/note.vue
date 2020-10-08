@@ -690,6 +690,13 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
+			const isLink = (el: HTMLElement) => {
+				if (el.tagName === 'A') return true;
+				if (el.parentElement) {
+					return isLink(el.parentElement);
+				}
+			};
+			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
 			os.contextmenu({
 				items: this.getMenu(),
