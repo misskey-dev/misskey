@@ -51,6 +51,9 @@ if (_DEV_) {
 	});
 }
 
+// タッチデバイスでCSSの:hoverを機能させる
+document.addEventListener('touchstart', () => {}, { passive: true });
+
 if (localStorage.getItem('theme') == null) {
 	applyTheme(lightTheme);
 }
