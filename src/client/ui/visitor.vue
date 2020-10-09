@@ -1,9 +1,9 @@
 <template>
 <div class="mk-app">
 	<header>
-		<router-link to="">foo</router-link>
-		<router-link to="">foo</router-link>
-		<router-link to="">foo</router-link>
+		<router-link class="link" to="/">{{ $t('home') }}</router-link>
+		<router-link class="link" to="">foo</router-link>
+		<router-link class="link" to="">foo</router-link>
 	</header>
 
 	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }"></div>
@@ -120,6 +120,12 @@ export default defineComponent({
 
 	> header {
 		background: var(--panel);
+		padding: 0 8px;
+
+		> .link {
+			line-height: 54px;
+			padding: 0 0.5em;
+		}
 	}
 
 	> .banner {

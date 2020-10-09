@@ -25,23 +25,10 @@ import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('timeline') as string
-		};
-	},
-
 	components: {
 		XTimeline,
-		XTutorial: defineAsyncComponent(() => import('./index.home.tutorial.vue')),
+		XTutorial: defineAsyncComponent(() => import('./timeline.tutorial.vue')),
 		XPostForm,
-	},
-
-	props: {
-		showTitle: {
-			type: Boolean,
-			required: true
-		}
 	},
 
 	data() {

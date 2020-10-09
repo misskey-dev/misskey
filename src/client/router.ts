@@ -2,7 +2,9 @@ import { defineAsyncComponent } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import MkIndex from '@/pages/index.vue';
+import TimelinePage from '@/pages/timeline.vue';
+import WelcomePage from '@/pages/welcome.vue';
+import { store } from './store';
 
 const page = (path: string) => defineAsyncComponent({
 	loader: () => import(`./pages/${path}.vue`),
@@ -15,7 +17,7 @@ let indexScrollPos = 0;
 export const router = createRouter({
 	history: createWebHistory(),
 	routes: [
-		{ path: '/', name: 'index', component: MkIndex },
+		{ path: '/', name: 'index', component: store.getters.isSignedIn ? TimelinePage : WelcomePage },
 		{ path: '/@:user', name: 'user', component: page('user/index'), children: [
 			{ path: 'following', name: 'userFollowing', component: page('user/follow-list'), props: { type: 'following' } },
 			{ path: 'followers', name: 'userFollowers', component: page('user/follow-list'), props: { type: 'followers' } },

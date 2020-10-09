@@ -1,6 +1,5 @@
 <template>
-<div v-if="meta" class="mk-welcome">
-	<portal to="header">{{ instanceName }}</portal>
+<div v-if="meta">
 	<XSetup v-if="meta.requireSetup"/>
 	<XEntrance v-else/>
 </div>
@@ -8,8 +7,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XSetup from './index.welcome.setup.vue';
-import XEntrance from './index.welcome.entrance.vue';
+import XSetup from './welcome.setup.vue';
+import XEntrance from './welcome.entrance.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
 
@@ -21,7 +20,12 @@ export default defineComponent({
 
 	data() {
 		return {
-			instanceName: instanceName || 'Misskey',
+			info: {
+				header: [{
+					title: instanceName || 'Misskey',
+					icon: null
+				}]
+			},
 		}
 	},
 

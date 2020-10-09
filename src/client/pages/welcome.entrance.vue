@@ -1,12 +1,14 @@
 <template>
 <div class="rsqzvsbo">
-	<div class="_panel about" v-if="meta">
-		<div class="banner" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }"></div>
-		<div class="body">
-			<h1 class="name" v-html="meta.name || host"></h1>
-			<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-			<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
-			<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
+	<div class="_section">
+		<div class="_content _panel about" v-if="meta">
+			<div class="banner" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }"></div>
+			<div class="body">
+				<h1 class="name" v-html="meta.name || host"></h1>
+				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
+				<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
+				<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
+			</div>
 		</div>
 	</div>
 	<XNotes :pagination="featuredPagination"/>
@@ -70,25 +72,27 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rsqzvsbo {
-	> .about {
-		overflow: hidden;
-		margin-bottom: var(--margin);
+	> ._section {
+		> .about {
+			overflow: hidden;
+			margin-bottom: var(--margin);
 
-		> .banner {
-			height: 170px;
-			background-size: cover;
-			background-position: center center;
-		}
-
-		> .body {
-			padding: 32px;
-
-			@media (max-width: 500px) {
-				padding: 16px;
+			> .banner {
+				height: 170px;
+				background-size: cover;
+				background-position: center center;
 			}
 
-			> .name {
-				margin: 0 0 0.5em 0;
+			> .body {
+				padding: 32px;
+
+				@media (max-width: 500px) {
+					padding: 16px;
+				}
+
+				> .name {
+					margin: 0 0 0.5em 0;
+				}
 			}
 		}
 	}

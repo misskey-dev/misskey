@@ -28,7 +28,6 @@ import { host } from '@/config';
 import * as os from '@/os';
 
 export default defineComponent({
-	
 	components: {
 		MkButton,
 		MkInput,
