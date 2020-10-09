@@ -16,20 +16,18 @@
 			<XHeader v-if="pageInfo" :info="pageInfo"/>
 		</header>
 		<main ref="main">
-			<div class="content">
-				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['index']">
-							<component :is="Component" :ref="changePage"/>
-						</keep-alive>
-					</transition>
-				</router-view>
-			</div>
-			<div class="powerd-by" :class="{ visible: !$store.getters.isSignedIn }">
-				<b><router-link to="/">{{ host }}</router-link></b>
-				<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
-			</div>
+			<router-view v-slot="{ Component }">
+				<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<keep-alive :include="['index']">
+						<component :is="Component" :ref="changePage"/>
+					</keep-alive>
+				</transition>
+			</router-view>
 		</main>
+		<div class="powered-by">
+			<b><router-link to="/">{{ host }}</router-link></b>
+			<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
+		</div>
 	</div>
 
 	<StreamIndicator v-if="$store.getters.isSignedIn"/>
@@ -124,10 +122,16 @@ export default defineComponent({
 	> header {
 		background: var(--panel);
 		padding: 0 16px;
+		text-align: center;
 
 		> .link {
+			display: inline-block;
 			line-height: 60px;
 			padding: 0 0.7em;
+
+			&.router-link-active {
+				box-shadow: 0 -2px 0 0 var(--accent) inset;
+			}
 		}
 	}
 
@@ -172,6 +176,19 @@ export default defineComponent({
 			backdrop-filter: blur(32px);
 			background-color: var(--header);
 			border-bottom: 1px solid var(--divider);
+		}
+
+		> .powered-by {
+			padding: 28px;
+			font-size: 14px;
+			text-align: center;
+			border-top: 1px solid var(--divider);
+
+			> small {
+				display: block;
+				margin-top: 8px;
+				opacity: 0.5;
+			}
 		}
 	}
 }
