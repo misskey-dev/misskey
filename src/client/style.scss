@@ -13,6 +13,11 @@
 	}
 }
 
+::selection {
+	color: #fff;
+	background-color: var(--accent);
+} 
+
 html {
 	touch-action: manipulation;
 	background-color: var(--bg);
