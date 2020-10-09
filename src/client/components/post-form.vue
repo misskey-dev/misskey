@@ -33,7 +33,7 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }">
+		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" v-autocomplete="{ model: 'cw' }" @keydown="onKeydown">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" v-autocomplete="{ model: 'text' }" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<x-post-form-attaches class="attaches" :files="files"/>
 		<x-poll-editor v-if="poll" ref="poll" @destroyed="poll = false" @updated="onPollUpdate()"/>
