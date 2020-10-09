@@ -2,8 +2,9 @@
 <div class="mk-app">
 	<header>
 		<router-link class="link" to="/">{{ $t('home') }}</router-link>
+		<router-link class="link" to="/announcements">{{ $t('announcements') }}</router-link>
+		<router-link class="link" to="/channels">{{ $t('channel') }}</router-link>
 		<router-link class="link" to="/about">{{ $t('aboutX', { x: instanceName || host }) }}</router-link>
-		<router-link class="link" to="">foo</router-link>
 	</header>
 
 	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }"></div>

@@ -23,7 +23,7 @@
 		panelHeaderFg: '@fg',
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		panelBorder: 'rgba(0, 0, 0, 0)',
-		panelShadow: '" 0 8px 24px rgba(74, 21, 75, 0.08)',
+		panelShadow: '" 0 8px 24px rgb(21 43 75 / 8%)',
 		acrylicPanel: ':alpha<0.5<@panel',
 		shadow: 'rgba(0, 0, 0, 0.1)',
 		header: ':alpha<0.7<@bg',
