@@ -10,20 +10,7 @@
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
-			<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-				<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
-			</transition>
-			<template v-if="pageInfo">
-				<div class="titleContainer">
-					<div class="title" v-for="header in pageInfo.header" :key="header.id" :class="{ _button: header.onClick, selected: header.selected }" @click="header.onClick" v-tooltip="header.tooltip">
-						<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
-						<MkAvatar v-else-if="header.avatar" class="avatar" :user="header.avatar" :disable-preview="true"/>
-						<span v-if="header.title" class="text">{{ header.title }}</span>
-						<MkUserName v-else-if="header.userName" :user="header.userName" :nowrap="false" class="text"/>
-					</div>
-				</div>
-				<button class="_button action" v-if="pageInfo.action" @click="pageInfo.action.handler"><Fa :icon="pageInfo.action.icon"/></button>
-			</template>
+			<XHeader v-if="pageInfo" :info="pageInfo"/>
 		</header>
 		<main ref="main">
 			<div class="content">
@@ -48,17 +35,17 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
+import { } from '@fortawesome/free-solid-svg-icons';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
+import XHeader from './_common_/header.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
-		MkButton: defineAsyncComponent(() => import('@/components/ui/button.vue')),
+		XHeader
 	},
 
 	data() {
@@ -66,13 +53,8 @@ export default defineComponent({
 			host: host,
 			pageKey: 0,
 			pageInfo: null,
-			searching: false,
 			connection: null,
-			searchQuery: '',
-			searchWait: false,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
-			canBack: false,
-			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
 	},
 
@@ -83,9 +65,7 @@ export default defineComponent({
 					if (this.$store.state.device.syncDeviceDarkMode) return;
 					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
 				},
-				'p': this.post,
-				'n': this.post,
-				's': this.search,
+				's': search,
 				'h|/': this.help
 			};
 		},
@@ -94,7 +74,6 @@ export default defineComponent({
 	watch: {
 		$route(to, from) {
 			this.pageKey++;
-			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
 		},
 	},
 
@@ -126,38 +105,8 @@ export default defineComponent({
 			this.$router.push('/docs/keyboard-shortcut');
 		},
 
-		back() {
-			if (this.canBack) window.history.back();
-		},
-
 		onTransition() {
 			if (window._scroll) window._scroll();
-		},
-
-		search() {
-			if (this.searching) return;
-
-			os.dialog({
-				title: this.$t('search'),
-				input: true
-			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query === '') return;
-
-				this.searching = true;
-				search(this, query).finally(() => {
-					this.searching = false;
-				});
-			});
-		},
-
-		searchKeypress(e) {
-			if (e.keyCode === 13) {
-				this.searchWait = true;
-				search(this, this.searchQuery).finally(() => {
-					this.searchWait = false;
-					this.searchQuery = '';
-				});
-			}
 		},
 	}
 });
@@ -165,20 +114,48 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-app {
+	max-width: 1300px;
+	margin: 0 auto;
+	box-shadow: 1px 0 var(--divider), -1px 0 var(--divider);
+
 	> header {
 		background: var(--panel);
 	}
 
 	> .banner {
+		position: relative;
 		width: 100%;
 		height: 200px;
 		background-size: cover;
 		background-position: center;
+
+		&:after {
+			content: "";
+			display: block;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 64px;
+			background: linear-gradient(transparent, var(--bg));
+		}
 	}
 
 	> .contents {
-		max-width: 1300px;
-		margin: 0 auto;
+		> .header {
+			position: sticky;
+			top: 0;
+			left: 0;
+			z-index: 1000;
+			height: 60px;
+			width: 100%;
+			line-height: 60px;
+			text-align: center;
+			-webkit-backdrop-filter: blur(32px);
+			backdrop-filter: blur(32px);
+			background-color: var(--header);
+			border-bottom: 1px solid var(--divider);
+		}
 	}
 }
 </style>
