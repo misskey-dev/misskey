@@ -133,8 +133,10 @@ if (store.state.i != null) {
 
 	if (i != null && i !== 'null') {
 		try {
+			document.body.innerHTML = '<div>Please wait...</div>';
 			const me = await fetchme(i);
 			await store.dispatch('login', me);
+			location.reload();
 		} catch (e) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)
