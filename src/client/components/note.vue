@@ -554,7 +554,7 @@ export default defineComponent({
 					noteId: this.appearNote.id
 				});
 
-				os.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply });
+				os.post({ initialNote: this.appearNote, renote: this.appearNote.renote, reply: this.appearNote.reply, channel: this.appearNote.channel });
 			});
 		},
 
