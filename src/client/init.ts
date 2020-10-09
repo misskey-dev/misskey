@@ -15,7 +15,7 @@ import components from '@/components';
 import { version, apiUrl } from '@/config';
 import { store } from './store';
 import { router } from './router';
-import { applyTheme, lightTheme } from '@/scripts/theme';
+import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, sound, isMobile, dialog } from '@/os';
@@ -52,7 +52,7 @@ if (_DEV_) {
 document.addEventListener('touchstart', () => {}, { passive: true });
 
 if (localStorage.getItem('theme') == null) {
-	applyTheme(lightTheme);
+	applyTheme(require('@/themes/white.json5'));
 }
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
