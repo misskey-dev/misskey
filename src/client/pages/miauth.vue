@@ -22,9 +22,7 @@
 		<div class="_content">
 			<p>{{ $t('_auth.permissionAsk') }}</p>
 			<ul>
-				<template v-for="p in permission">
-					<li :key="p">{{ $t(`_permissions.${p}`) }}</li>
-				</template>
+				<li v-for="p in permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 			</ul>
 		</div>
 		<div class="_footer">

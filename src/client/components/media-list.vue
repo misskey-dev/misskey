@@ -1,8 +1,6 @@
 <template>
 <div class="mk-media-list">
-	<template v-for="media in mediaList.filter(media => !previewable(media))">
-		<XBanner :media="media" :key="media.id"/>
-	</template>
+	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :media="media" :key="media.id"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container" ref="gridOuter">
 		<div :data-count="mediaList.filter(media => previewable(media)).length" :style="gridInnerStyle">
 			<template v-for="media in mediaList">
