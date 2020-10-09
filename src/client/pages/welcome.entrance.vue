@@ -2,9 +2,7 @@
 <div class="rsqzvsbo">
 	<div class="_section">
 		<div class="_content _panel about" v-if="meta">
-			<div class="banner" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }"></div>
 			<div class="body">
-				<h1 class="name" v-html="meta.name || host"></h1>
 				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
 				<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
 				<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
@@ -76,12 +74,6 @@ export default defineComponent({
 		> .about {
 			overflow: hidden;
 			margin-bottom: var(--margin);
-
-			> .banner {
-				height: 170px;
-				background-size: cover;
-				background-position: center center;
-			}
 
 			> .body {
 				padding: 32px;

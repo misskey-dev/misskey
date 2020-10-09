@@ -1,5 +1,5 @@
 <template>
-<XWindow @close="$emit('done')">
+<XWindow @close="$emit('done')" :width="370">
 	<template #header>{{ $t('login') }}</template>
 	<MkSignin :auto-set="autoSet" @login="onLogin"/>
 </XWindow>

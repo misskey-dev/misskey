@@ -2,7 +2,7 @@
 <div class="mk-app">
 	<header>
 		<router-link class="link" to="/">{{ $t('home') }}</router-link>
-		<router-link class="link" to="">foo</router-link>
+		<router-link class="link" to="/about">{{ $t('aboutX', { x: instanceName || host }) }}</router-link>
 		<router-link class="link" to="">foo</router-link>
 	</header>
 
@@ -36,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { } from '@fortawesome/free-solid-svg-icons';
-import { host } from '@/config';
+import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import XHeader from './_common_/header.vue';
@@ -50,10 +50,10 @@ export default defineComponent({
 
 	data() {
 		return {
-			host: host,
+			host,
+			instanceName,
 			pageKey: 0,
 			pageInfo: null,
-			connection: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 		};
 	},
