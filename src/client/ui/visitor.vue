@@ -7,7 +7,9 @@
 		<router-link class="link" to="/about">{{ $t('aboutX', { x: instanceName || host }) }}</router-link>
 	</header>
 
-	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }"></div>
+	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+		<h1>{{ instanceName || host }}</h1>
+	</div>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
@@ -145,6 +147,14 @@ export default defineComponent({
 			width: 100%;
 			height: 64px;
 			background: linear-gradient(transparent, var(--bg));
+		}
+
+		> h1 {
+			margin: 0;
+			text-align: center;
+			color: #fff;
+			text-shadow: 0 0 8px #000;
+			line-height: 200px;
 		}
 	}
 
