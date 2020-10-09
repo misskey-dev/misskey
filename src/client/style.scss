@@ -13,11 +13,6 @@
 	}
 }
 
-* {
-	tap-highlight-color: transparent;
-	-webkit-tap-highlight-color: transparent;
-}
-
 html {
 	touch-action: manipulation;
 	background-color: var(--bg);
@@ -96,6 +91,8 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 	color: inherit;
+	tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
 
 	&:hover {
 		text-decoration: underline;
@@ -145,6 +142,8 @@ hr {
 	cursor: pointer;
 	color: var(--fg);
 	touch-action: manipulation;
+	tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
 
 	&, * {
