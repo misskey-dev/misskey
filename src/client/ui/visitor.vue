@@ -121,11 +121,11 @@ export default defineComponent({
 
 	> header {
 		background: var(--panel);
-		padding: 0 8px;
+		padding: 0 16px;
 
 		> .link {
-			line-height: 54px;
-			padding: 0 0.5em;
+			line-height: 60px;
+			padding: 0 0.7em;
 		}
 	}
 
