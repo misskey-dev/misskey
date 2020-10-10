@@ -19,7 +19,7 @@
 
 	<template v-for="ids in layout">
 		<div v-if="ids.length > 1" class="folder column">
-			<deck-column-core v-for="id, i in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
+			<deck-column-core v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</div>
 		<deck-column-core v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>

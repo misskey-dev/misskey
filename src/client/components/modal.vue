@@ -15,7 +15,15 @@
 import { defineComponent } from 'vue';
 import * as os from '@/os';
 
-// memo: 旧popup.vueのfixedプロパティに相当するものはsource要素の祖先を辿るなどして自動で判定できるのでは
+function getFixedContainer(el: Element | null): Element | null {
+	if (el == null || el.tagName === 'BODY') return null;
+	const position = window.getComputedStyle(el).getPropertyValue('position');
+	if (position === 'fixed') {
+		return el;
+	} else {
+		return getFixedContainer(el.parentElement);
+	}
+}
 
 export default defineComponent({
 	provide: {
@@ -47,6 +55,7 @@ export default defineComponent({
 	data() {
 		return {
 			fixed: false,
+			transformOrigin: 'center top',
 			contentClicking: false,
 		};
 	},
@@ -61,6 +70,8 @@ export default defineComponent({
 		}
 	},
 	mounted() {
+		this.fixed = getFixedContainer(this.source) != null;
+
 		this.$nextTick(() => {
 			if (!this.popup) return;
 
@@ -79,7 +90,7 @@ export default defineComponent({
 					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.source.offsetHeight / 2);
 					left = (x - (width / 2));
 					top = (y - (height / 2));
-					popover.style.transformOrigin = 'center';
+					this.transformOrigin = 'center';
 				} else {
 					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
 					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.source.offsetHeight;
@@ -90,22 +101,22 @@ export default defineComponent({
 				if (this.fixed) {
 					if (left + width > window.innerWidth) {
 						left = window.innerWidth - width;
-						popover.style.transformOrigin = 'center';
+						this.transformOrigin = 'center';
 					}
 
 					if (top + height > window.innerHeight) {
 						top = window.innerHeight - height;
-						popover.style.transformOrigin = 'center';
+						this.transformOrigin = 'center';
 					}
 				} else {
 					if (left + width - window.pageXOffset > window.innerWidth) {
 						left = window.innerWidth - width + window.pageXOffset;
-						popover.style.transformOrigin = 'center';
+						this.transformOrigin = 'center';
 					}
 
 					if (top + height - window.pageYOffset > window.innerHeight) {
 						top = window.innerHeight - height + window.pageYOffset;
-						popover.style.transformOrigin = 'center';
+						this.transformOrigin = 'center';
 					}
 				}
 
@@ -145,6 +156,13 @@ export default defineComponent({
 });
 </script>
 
+<style vars="{ transformOrigin }">
+.modal-popup-content-enter-active, .modal-popup-content-leave-active,
+.modal-content-enter-from, .modal-content-leave-to {
+  transform-origin: var(--transformOrigin);
+}
+</style>
+
 <style lang="scss" scoped>
 .modal-bg-enter-active, .modal-bg-leave-active {
 	transition: opacity 0.3s !important;
@@ -163,11 +181,9 @@ export default defineComponent({
 }
 
 .modal-popup-content-enter-active, .modal-popup-content-leave-active {
-	transform-origin: center top;
 	transition: opacity 0.3s, transform 0.3s !important;
 }
 .modal-popup-content-enter-from, .modal-popup-content-leave-to {
-	transform-origin: center top;
 	pointer-events: none;
 	opacity: 0;
 	transform: scale(0.9);
