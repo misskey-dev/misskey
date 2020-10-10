@@ -104,6 +104,11 @@ a {
 	}
 }
 
+textarea, input {
+	tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
+}
+
 hr {
 	margin: var(--margin) 0 var(--margin) 0;
 	border: none;
