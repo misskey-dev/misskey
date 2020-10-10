@@ -5,7 +5,7 @@
 		<span v-else-if="item.type === 'label'" class="label item">
 			<span>{{ item.text }}</span>
 		</span>
-		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.native="close()" :tabindex="i" class="_button item">
+		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.passive="close()" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
