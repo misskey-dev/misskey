@@ -573,6 +573,7 @@ useGlobalSettingDesc: "オンにすると、アカウントの通知設定が使
 other: "その他"
 regenerateLoginToken: "ログイントークンを再生成"
 regenerateLoginTokenDescription: "ログインに使用される内部トークンを再生成します。通常この操作を行う必要はありません。再生成すると、全てのデバイスでログアウトされます。"
+setMultipleBySeparatingWithSpace: "スペースで区切って複数設定できます。"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"

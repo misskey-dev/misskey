@@ -280,22 +280,13 @@ hr {
 	margin: 0 !important;
 }
 
-.__panelButton {
+._panelButton {
 	display: flex;
 	width: 100%;
 	min-height: 48px;
 	align-items: center;
 	justify-content: center;
 	background: transparent;
-}
-
-._panel._button {
-	@extend .__panelButton;
-}
-
-._panel._buttonPrimary {
-	@extend .__panelButton;
-	color: var(--accent);
 }
 
 ._popup {

@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible } from './scroll';
 
@@ -85,6 +86,16 @@ export default (opts) => ({
 			this.init();
 		},
 
+		replaceItem(finder, data) {
+			const i = this.items.findIndex(finder);
+			this.items[i] = data;
+		},
+
+		removeItem(finder) {
+			const i = this.items.findIndex(finder);
+			this.items.splice(i, 1);
+		},
+
 		async init() {
 			this.queue = [];
 			this.fetching = true;
@@ -97,7 +108,7 @@ export default (opts) => ({
 				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 			}).then(items => {
 				for (const item of items) {
-					Object.freeze(item);
+					markRaw(item);
 				}
 				if (!this.pagination.noPaging && (items.length > (this.pagination.limit || 10))) {
 					items.pop();
@@ -136,7 +147,7 @@ export default (opts) => ({
 				}),
 			}).then(items => {
 				for (const item of items) {
-					Object.freeze(item);
+					markRaw(item);
 				}
 				if (items.length > SECOND_FETCH_LIMIT) {
 					items.pop();
@@ -178,10 +189,6 @@ export default (opts) => ({
 
 		append(item) {
 			this.items.push(item);
-		},
-
-		remove(find) {
-			this.items = this.items.filter(x => !find(x));
 		},
 	}
 });

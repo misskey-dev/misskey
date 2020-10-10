@@ -5,13 +5,13 @@
 	</div>
 
 	<div class="_section">
-		<section class="_content local" v-if="tab === 'local'">
-			<MkButton inline primary @click="add"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
-			<div class="_content">
-				<MkPagination :pagination="pagination" class="emojis" ref="emojis">
-					<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
-					<template #default="{items}">
-						<div class="emoji _panel" v-for="(emoji, i) in items" :key="emoji.id" @click="edit(emoji)">
+		<div class="_content local" v-if="tab === 'local'">
+			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
+			<MkPagination :pagination="pagination" ref="emojis">
+				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
+				<template #default="{items}">
+					<div class="emojis">
+						<button class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="edit(emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
@@ -20,19 +20,19 @@
 									<span class="aliases">{{ emoji.aliases.join(' ') }}</span>
 								</span>
 							</div>
-						</div>
-					</template>
-				</MkPagination>
-			</div>
-		</section>
+						</button>
+					</div>
+				</template>
+			</MkPagination>
+		</div>
 
-		<section class="_card _content remote" v-else-if="tab === 'remote'">
+		<div class="_card _content remote" v-else-if="tab === 'remote'">
 			<div class="_content">
 				<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
 				<MkPagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
 					<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 					<template #default="{items}">
-						<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
+						<div class="emoji" v-for="emoji in items" :key="emoji.id" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
@@ -45,7 +45,7 @@
 			<div class="_footer">
 				<MkButton inline primary :disabled="selectedRemote == null" @click="im()"><Fa :icon="faPlus"/> {{ $t('import') }}</MkButton>
 			</div>
-		</section>
+		</div>
 	</div>
 </div>
 </template>
@@ -137,14 +137,26 @@ export default defineComponent({
 				});
 			})
 			.finally(() => {
-				dialog.close();
+				dialog.cancel();
 			});
 		},
 
 		async edit(emoji) {
-			os.modal(await import('./emoji-edit-dialog.vue'), {
+			const result = await os.modal(await import('./emoji-edit-dialog.vue'), {
 				emoji: emoji
+			}, {}, {
+				cancelableByBgClick: false
 			});
+			if (result == null) return;
+
+			if (result.updated) {
+				this.$refs.emojis.replaceItem(item => item.id === emoji.id, {
+					...emoji,
+					...result.updated
+				});
+			} else if (result.deleted) {
+				this.$refs.emojis.removeItem(item => item.id === emoji.id);
+			}
 		},
 
 		im() {
@@ -171,40 +183,45 @@ export default defineComponent({
 .mk-instance-emojis {
 	> ._section {
 		> .local {
-			> ._content {
-				> .emojis {
-					> .emoji {
-						display: flex;
-						align-items: center;
+			.emojis {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				grid-gap: var(--margin);
+		
+				> .emoji {
+					display: flex;
+					align-items: center;
+					padding: 12px;
 
-						&.selected {
-							background: var(--accent);
-							box-shadow: 0 0 0 8px var(--accent);
-							color: #fff;
+					&:hover {
+						color: var(--accent);
+					}
+
+					> .img {
+						width: 50px;
+						height: 50px;
+					}
+
+					> .body {
+						padding: 8px;
+						white-space: nowrap;
+						overflow: hidden;
+
+						> .name {
+							display: block;
+							text-overflow: ellipsis;
+							overflow: hidden;
 						}
 
-						> .img {
-							width: 50px;
-							height: 50px;
-						}
+						> .info {
+							opacity: 0.5;
 
-						> .body {
-							padding: 8px;
-
-							> .name {
-								display: block;
+							> .category {
+								margin-right: 16px;
 							}
 
-							> .info {
-								opacity: 0.5;
-
-								> .category {
-									margin-right: 16px;
-								}
-
-								> .aliases {
-									font-style: oblique;
-								}
+							> .aliases {
+								font-style: oblique;
 							}
 						}
 					}

@@ -1,5 +1,5 @@
 <template>
-<div class="ebkgoccj _popup" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: `${height}px` }">
+<div class="ebkgoccj _popup" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
 	<div class="header">
 		<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
 		<span class="title">
@@ -17,7 +17,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -44,7 +43,7 @@ export default defineComponent({
 		height: {
 			type: Number,
 			required: false,
-			default: 400
+			default: null
 		},
 		canClose: {
 			type: Boolean,
