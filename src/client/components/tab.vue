@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -24,6 +23,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .pxhvhrfw {
 	display: flex;
+	max-width: var(--baseContentWidth);
+	margin: 0 auto;
 
 	> button {
 		flex: 1;
