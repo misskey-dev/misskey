@@ -5,7 +5,6 @@
 import '@/style.scss';
 
 import { createApp } from 'vue';
-import VAnimateCss from 'v-animate-css';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import Root from './root.vue';
@@ -162,7 +161,6 @@ if (_DEV_) {
 app.use(store);
 app.use(router);
 app.use(i18n);
-app.use(VAnimateCss);
 // eslint-disable-next-line vue/component-definition-name-casing
 app.component('Fa', FontAwesomeIcon);
 

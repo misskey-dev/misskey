@@ -80,11 +80,7 @@ export default defineComponent({
 
 				case 'big': {
 					return h('strong', {
-						style: `display: inline-block; font-size: 150%;`,
-						directives: [this.$store.state.device.animatedMfm ? {
-							name: 'animate-css',
-							value: { classes: 'tada', iteration: 'infinite' }
-						}: {}]
+						style: `display: inline-block; font-size: 150%;` + (this.$store.state.device.animatedMfm ? 'animation: anime-tada 1s linear infinite both;' : ''),
 					}, genEl(token.children));
 				}
 
@@ -104,11 +100,7 @@ export default defineComponent({
 
 				case 'motion': {
 					return h('span', {
-						style: 'display: inline-block;',
-						directives: [this.$store.state.device.animatedMfm ? {
-							name: 'animate-css',
-							value: { classes: 'rubberBand', iteration: 'infinite' }
-						} : {}]
+						style: 'display: inline-block;' + (this.$store.state.device.animatedMfm ? 'animation: anime-rubberBand 1s linear infinite both;' : ''),
 					}, genEl(token.children));
 				}
 
@@ -118,7 +110,7 @@ export default defineComponent({
 						token.node.props.attr == 'alternate' ? 'alternate' :
 						'normal';
 					const style = this.$store.state.device.animatedMfm
-						? `animation: spin 1.5s linear infinite; animation-direction: ${direction};` : '';
+						? `animation: anime-spin 1.5s linear infinite; animation-direction: ${direction};` : '';
 					return h('span', {
 						style: 'display: inline-block;' + style
 					}, genEl(token.children));
@@ -126,7 +118,7 @@ export default defineComponent({
 
 				case 'jump': {
 					return h('span', {
-						style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: jump 0.75s linear infinite;' : 'display: inline-block;'
+						style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: anime-jump 0.75s linear infinite;' : 'display: inline-block;'
 					}, genEl(token.children));
 				}
 
