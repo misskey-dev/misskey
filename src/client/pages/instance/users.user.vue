@@ -1,6 +1,6 @@
 <template>
 <div class="vrcsvlkm" v-if="user && info">
-	<section class="_section">
+	<div class="_section">
 		<div class="_title">
 			<MkAvatar class="avatar" :user="user"/>
 			<MkUserName class="name" :user="user"/>
@@ -23,10 +23,12 @@
 				<MkButton @click="deleteAllFiles"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
 			</div>
 		</div>
+	</div>
+	<div class="_section">
 		<div class="_content rawdata">
 			<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
 		</div>
-	</section>
+	</div>
 </div>
 </template>
 
