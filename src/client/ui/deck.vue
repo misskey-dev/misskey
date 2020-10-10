@@ -118,8 +118,8 @@ export default defineComponent({
 	methods: {
 		async changePage(page) {
 			if (page == null) return;
-			if (page.info) {
-				this.pageInfo = page.info;
+			if (page.INFO) {
+				this.pageInfo = page.INFO;
 			}
 		},
 

@@ -40,7 +40,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: this.$t('integration'),
 					icon: faShareAlt
@@ -74,7 +74,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.info);
+		this.$emit('info', this.INFO);
 
 		document.cookie = `igi=${this.$store.state.i.token}; path=/;` +
 			` max-age=31536000;` +

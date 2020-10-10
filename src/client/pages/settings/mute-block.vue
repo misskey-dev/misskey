@@ -48,7 +48,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: this.$t('muteAndBlock'),
 					icon: faBan
@@ -67,7 +67,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.info);
+		this.$emit('info', this.INFO);
 	},
 
 	methods: {

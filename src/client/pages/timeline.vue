@@ -42,7 +42,7 @@ export default defineComponent({
 			menuOpened: false,
 			queue: 0,
 			width: 0,
-			info: {
+			INFO: {
 				header: [{
 					id: 'home',
 					title: null,

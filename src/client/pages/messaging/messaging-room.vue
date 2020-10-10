@@ -46,7 +46,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: computed(() => !this.fetching ? this.user ? {
+			INFO: computed(() => !this.fetching ? this.user ? {
 				header: [{
 					userName: this.user,
 					avatar: this.user,

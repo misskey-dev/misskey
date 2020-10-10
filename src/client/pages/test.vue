@@ -136,7 +136,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: 'TEST',
 					icon: faExclamationTriangle

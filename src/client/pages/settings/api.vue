@@ -22,7 +22,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: 'API',
 					icon: faKey
@@ -32,7 +32,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.info);
+		this.$emit('info', this.INFO);
 	},
 
 	methods: {

@@ -1,7 +1,5 @@
 <template>
 <div class="vrcsvlkm" v-if="user && info">
-	<portal to="header" v-if="user"><MkAvatar class="avatar" :user="user" :disable-preview="true"/><MkUserName :user="user" :nowrap="false" class="name"/></portal>
-
 	<section class="_section">
 		<div class="_title">
 			<MkAvatar class="avatar" :user="user"/>
@@ -33,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
@@ -50,6 +48,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: computed(() => this.user ? {
+				header: [{
+					userName: this.user,
+					avatar: this.user,
+				}],
+			} : null),
 			user: null,
 			info: null,
 			moderator: false,

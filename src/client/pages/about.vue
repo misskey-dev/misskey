@@ -36,7 +36,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: this.$t('about'),
 					icon: faInfoCircle

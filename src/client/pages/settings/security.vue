@@ -30,7 +30,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: this.$t('security'),
 					icon: faLock
@@ -41,7 +41,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.info);
+		this.$emit('info', this.INFO);
 	},
 
 	methods: {

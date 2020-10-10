@@ -47,7 +47,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: this.$t('wordMute'),
 					icon: faCommentSlash
@@ -85,7 +85,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.info);
+		this.$emit('info', this.INFO);
 	},
 
 	methods: {

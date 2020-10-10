@@ -15,7 +15,7 @@ import * as os from '@/os';
 export default defineComponent({
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: this.$t('notFound'),
 					icon: faExclamationTriangle

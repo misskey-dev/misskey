@@ -145,15 +145,9 @@ export default defineComponent({
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},
 
-	metaInfo() {
-		return {
-			title: (this.user ? '@' + acct(this.user).replace('@', ' | ') : null) as string
-		};
-	},
-
 	data() {
 		return {
-			info: computed(() => this.user ? {
+			INFO: computed(() => this.user ? {
 				header: [{
 					userName: this.user,
 					avatar: this.user,

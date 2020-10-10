@@ -19,7 +19,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: {
+			INFO: {
 				header: [{
 					title: computed(() => this.folder ? this.folder.name : this.$t('drive')),
 					icon: faCloud,

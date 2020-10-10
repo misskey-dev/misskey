@@ -44,7 +44,7 @@ import { store } from '@/store';
 
 export default defineComponent({
 	setup(props, context) {
-		const info = ref({
+		const INFO = ref({
 			header: [{
 				title: ('settings'),
 				icon: faCog
@@ -54,7 +54,7 @@ export default defineComponent({
 		const view = ref(null);
 		const el = ref(null);
 		const onInfo = (viewInfo) => {
-			info.value = viewInfo;
+			INFO.value = viewInfo;
 		};
 
 		onMounted(() => {
@@ -62,7 +62,7 @@ export default defineComponent({
 		});
 
 		return {
-			info,
+			INFO,
 			narrow,
 			view,
 			el,
