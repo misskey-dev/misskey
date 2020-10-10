@@ -586,7 +586,7 @@ _channel:
   notesCount: "{n} Notizen"
 _sidebar:
   full: "Voll"
-  icon: "Profilbild"
+  icon: "Symbol"
   hide: "Ausblenden"
 _wordMute:
   muteWords: "Wort stummschalten"
