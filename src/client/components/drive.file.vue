@@ -2,6 +2,7 @@
 <div class="ncvczrfv"
 	:class="{ isSelected }"
 	@click="onClick"
+	@contextmenu.stop="onContextmenu"
 	draggable="true"
 	@dragstart="onDragstart"
 	@dragend="onDragend"
@@ -79,39 +80,49 @@ export default defineComponent({
 	},
 
 	methods: {
+		getMenu() {
+			return [{
+				text: this.$t('rename'),
+				icon: faICursor,
+				action: this.rename
+			}, {
+				text: this.file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
+				icon: this.file.isSensitive ? faEye : faEyeSlash,
+				action: this.toggleSensitive
+			}, null, {
+				text: this.$t('copyUrl'),
+				icon: faLink,
+				action: this.copyUrl
+			}, {
+				type: 'a',
+				href: this.file.url,
+				target: '_blank',
+				text: this.$t('download'),
+				icon: faDownload,
+				download: this.file.name
+			}, null, {
+				text: this.$t('delete'),
+				icon: faTrashAlt,
+				action: this.deleteFile
+			}];
+		},
+
 		onClick(ev) {
 			if (this.selectMode) {
 				this.$emit('chosen', this.file);
 			} else {
 				os.menu({
-					items: [{
-						text: this.$t('rename'),
-						icon: faICursor,
-						action: this.rename
-					}, {
-						text: this.file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-						icon: this.file.isSensitive ? faEye : faEyeSlash,
-						action: this.toggleSensitive
-					}, null, {
-						text: this.$t('copyUrl'),
-						icon: faLink,
-						action: this.copyUrl
-					}, {
-						type: 'a',
-						href: this.file.url,
-						target: '_blank',
-						text: this.$t('download'),
-						icon: faDownload,
-						download: this.file.name
-					}, null, {
-						text: this.$t('delete'),
-						icon: faTrashAlt,
-						action: this.deleteFile
-					}],
+					items: this.getMenu(),
 				}, {
 					source: ev.currentTarget || ev.target,
 				});
 			}
+		},
+
+		onContextmenu(e) {
+			os.contextmenu({
+				items: this.getMenu(),
+			}, e);
 		},
 
 		onDragstart(e) {

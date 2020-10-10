@@ -17,6 +17,7 @@
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
+		@contextmenu="onContextmenu"
 	>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-show="folders.length > 0">
@@ -46,12 +47,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faFolderPlus, faICursor, faLink, faUpload } from '@fortawesome/free-solid-svg-icons';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import MkButton from './ui/button.vue';
 import * as os from '@/os';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default defineComponent({
 	components: {
@@ -596,7 +598,43 @@ export default defineComponent({
 				for (const x of files) this.appendFile(x);
 				this.fetching = false;
 			});
-		}
+		},
+
+		getMenu() {
+			return [{
+				text: this.$t('addFile'),
+				type: 'label'
+			}, {
+				text: this.$t('upload'),
+				icon: faUpload,
+				action: () => { this.selectLocalFile(); }
+			}, {
+				text: this.$t('fromUrl'),
+				icon: faLink,
+				action: () => { this.urlUpload(); }
+			}, null, {
+				text: this.folder ? this.folder.name : this.$t('drive'),
+				type: 'label'
+			}, this.folder ? {
+				text: this.$t('renameFolder'),
+				icon: faICursor,
+				action: () => { this.renameFolder(this.folder); }
+			} : undefined, this.folder ? {
+				text: this.$t('deleteFolder'),
+				icon: faTrashAlt,
+				action: () => { this.deleteFolder(this.folder); }
+			} : undefined, {
+				text: this.$t('createFolder'),
+				icon: faFolderPlus,
+				action: () => { this.createFolder(); }
+			}];
+		},
+
+		onContextmenu(e) {
+			os.contextmenu({
+				items: this.getMenu(),
+			}, e);
+		},
 	}
 });
 </script>
