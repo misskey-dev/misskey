@@ -10,7 +10,7 @@
 			<div class="content">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-						<keep-alive :include="['index']">
+						<keep-alive :include="['timeline']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
 					</transition>

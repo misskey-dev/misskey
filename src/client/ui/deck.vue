@@ -10,7 +10,7 @@
 
 		<router-view v-slot="{ Component }">
 			<transition>
-				<keep-alive :include="['index']">
+				<keep-alive :include="['timeline']">
 					<component :is="Component" :ref="changePage"/>
 				</keep-alive>
 			</transition>

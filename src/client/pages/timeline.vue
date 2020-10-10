@@ -25,6 +25,8 @@ import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 
 export default defineComponent({
+	name: 'timeline',
+
 	components: {
 		XTimeline,
 		XTutorial: defineAsyncComponent(() => import('./timeline.tutorial.vue')),

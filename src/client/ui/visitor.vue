@@ -18,9 +18,7 @@
 		<main ref="main">
 			<router-view v-slot="{ Component }">
 				<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
-					<keep-alive :include="['index']">
-						<component :is="Component" :ref="changePage"/>
-					</keep-alive>
+					<component :is="Component" :ref="changePage"/>
 				</transition>
 			</router-view>
 		</main>
