@@ -1,25 +1,28 @@
 <template>
 <div class="ztgjmzrw">
-	<portal to="header"><Fa :icon="faBroadcastTower"/>{{ $t('announcements') }}</portal>
-	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
-	<section class="_section announcements">
-		<div class="_content announcement" v-for="announcement in announcements">
-			<MkInput v-model:value="announcement.title">
-				<span>{{ $t('title') }}</span>
-			</MkInput>
-			<MkTextarea v-model:value="announcement.text">
-				<span>{{ $t('text') }}</span>
-			</MkTextarea>
-			<MkInput v-model:value="announcement.imageUrl">
-				<span>{{ $t('imageUrl') }}</span>
-			</MkInput>
-			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
-			<div class="buttons">
-				<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-				<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
-			</div>
+	<div class="_section">
+		<div class="_content">
+			<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
+			<section class="_card _vMargin announcements" v-for="announcement in announcements">
+				<div class="_content announcement">
+					<MkInput v-model:value="announcement.title">
+						<span>{{ $t('title') }}</span>
+					</MkInput>
+					<MkTextarea v-model:value="announcement.text">
+						<span>{{ $t('text') }}</span>
+					</MkTextarea>
+					<MkInput v-model:value="announcement.imageUrl">
+						<span>{{ $t('imageUrl') }}</span>
+					</MkInput>
+					<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
+					<div class="buttons">
+						<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+						<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
+					</div>
+				</div>
+			</section>
 		</div>
-	</section>
+	</div>
 </div>
 </template>
 
@@ -33,12 +36,6 @@ import MkTextarea from '@/components/ui/textarea.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('announcements') as string
-		};
-	},
-
 	components: {
 		MkButton,
 		MkInput,
@@ -47,6 +44,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('announcements'),
+					icon: faBroadcastTower
+				}]
+			},
 			announcements: [],
 			faBroadcastTower, faSave, faTrashAlt, faPlus
 		}
@@ -110,17 +113,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.ztgjmzrw {
-	> .announcements {
-		> .announcement {
-			> .buttons {
-				> .button:first-child {
-					margin-right: 8px;
-				}
-			}
-		}
-	}
-}
-</style>
