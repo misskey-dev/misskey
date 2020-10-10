@@ -75,7 +75,11 @@ export default defineComponent({
 				header: [{
 					title: this.$t('customEmojis'),
 					icon: faLaugh
-				}]
+				}],
+				action: {
+					icon: faPlus,
+					handler: this.add
+				}
 			},
 			tab: 'local',
 			selectedRemote: null,
