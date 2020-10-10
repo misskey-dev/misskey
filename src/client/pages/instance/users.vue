@@ -1,5 +1,11 @@
 <template>
 <div class="mk-instance-users">
+	<div class="_section">
+		<div class="_content">
+			<MkButton inline primary @click="addUser()"><Fa :icon="faPlus"/> {{ $t('addUser') }}</MkButton>
+		</div>
+	</div>
+
 	<div class="_section lookup">
 		<div class="_title"><Fa :icon="faSearch"/> {{ $t('lookup') }}</div>
 		<div class="_content">
@@ -11,68 +17,62 @@
 	</div>
 
 	<div class="_section users">
-		<div class="_card _content">
-			<div class="_title"><Fa :icon="faUsers"/> {{ $t('users') }}</div>
-			<div class="_content">
-				<div class="inputs" style="display: flex;">
-					<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
-						<template #label>{{ $t('sort') }}</template>
-						<option value="-createdAt">{{ $t('registeredDate') }} ({{ $t('ascendingOrder') }})</option>
-						<option value="+createdAt">{{ $t('registeredDate') }} ({{ $t('descendingOrder') }})</option>
-						<option value="-updatedAt">{{ $t('lastUsed') }} ({{ $t('ascendingOrder') }})</option>
-						<option value="+updatedAt">{{ $t('lastUsed') }} ({{ $t('descendingOrder') }})</option>
-					</MkSelect>
-					<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
-						<template #label>{{ $t('state') }}</template>
-						<option value="all">{{ $t('all') }}</option>
-						<option value="available">{{ $t('normal') }}</option>
-						<option value="admin">{{ $t('administrator') }}</option>
-						<option value="moderator">{{ $t('moderator') }}</option>
-						<option value="silenced">{{ $t('silence') }}</option>
-						<option value="suspended">{{ $t('suspend') }}</option>
-					</MkSelect>
-					<MkSelect v-model:value="origin" style="margin: 0; flex: 1;">
-						<template #label>{{ $t('instance') }}</template>
-						<option value="combined">{{ $t('all') }}</option>
-						<option value="local">{{ $t('local') }}</option>
-						<option value="remote">{{ $t('remote') }}</option>
-					</MkSelect>
-				</div>
-				<div class="inputs" style="display: flex; padding-top: 1.2em;">
-					<MkInput v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()">
-						<span>{{ $t('username') }}</span>
-					</MkInput>
-					<MkInput v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
-						<span>{{ $t('host') }}</span>
-					</MkInput>
-				</div>
+		<div class="_title"><Fa :icon="faUsers"/> {{ $t('users') }}</div>
+		<div class="_content">
+			<div class="inputs" style="display: flex;">
+				<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
+					<template #label>{{ $t('sort') }}</template>
+					<option value="-createdAt">{{ $t('registeredDate') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+createdAt">{{ $t('registeredDate') }} ({{ $t('descendingOrder') }})</option>
+					<option value="-updatedAt">{{ $t('lastUsed') }} ({{ $t('ascendingOrder') }})</option>
+					<option value="+updatedAt">{{ $t('lastUsed') }} ({{ $t('descendingOrder') }})</option>
+				</MkSelect>
+				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
+					<template #label>{{ $t('state') }}</template>
+					<option value="all">{{ $t('all') }}</option>
+					<option value="available">{{ $t('normal') }}</option>
+					<option value="admin">{{ $t('administrator') }}</option>
+					<option value="moderator">{{ $t('moderator') }}</option>
+					<option value="silenced">{{ $t('silence') }}</option>
+					<option value="suspended">{{ $t('suspend') }}</option>
+				</MkSelect>
+				<MkSelect v-model:value="origin" style="margin: 0; flex: 1;">
+					<template #label>{{ $t('instance') }}</template>
+					<option value="combined">{{ $t('all') }}</option>
+					<option value="local">{{ $t('local') }}</option>
+					<option value="remote">{{ $t('remote') }}</option>
+				</MkSelect>
 			</div>
-			<div class="_content _list">
-				<MkPagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
-					<button class="user _button _listItem" v-for="user in items" :key="user.id" @click="show(user)">
-						<MkAvatar class="avatar" :user="user" :disable-link="true"/>
-						<div class="body">
-							<header>
-								<MkUserName class="name" :user="user"/>
-								<span class="acct">@{{ acct(user) }}</span>
-								<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
-								<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
-								<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
-								<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
-							</header>
-							<div>
-								<span>{{ $t('lastUsed') }}: <MkTime v-if="user.updatedAt" :time="user.updatedAt" mode="detail"/></span>
-							</div>
-							<div>
-								<span>{{ $t('registeredDate') }}: <MkTime :time="user.createdAt" mode="detail"/></span>
-							</div>
+			<div class="inputs" style="display: flex; padding-top: 1.2em;">
+				<MkInput v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()">
+					<span>{{ $t('username') }}</span>
+				</MkInput>
+				<MkInput v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.users.reload()" :disabled="pagination.params().origin === 'local'">
+					<span>{{ $t('host') }}</span>
+				</MkInput>
+			</div>
+
+			<MkPagination :pagination="pagination" #default="{items}" class="users" ref="users" :auto-margin="false">
+				<button class="user _panel _button _vMargin" v-for="user in items" :key="user.id" @click="show(user)">
+					<MkAvatar class="avatar" :user="user" :disable-link="true"/>
+					<div class="body">
+						<header>
+							<MkUserName class="name" :user="user"/>
+							<span class="acct">@{{ acct(user) }}</span>
+							<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
+							<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
+							<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
+							<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
+						</header>
+						<div>
+							<span>{{ $t('lastUsed') }}: <MkTime v-if="user.updatedAt" :time="user.updatedAt" mode="detail"/></span>
 						</div>
-					</button>
-				</MkPagination>
-			</div>
-			<div class="_footer">
-				<MkButton inline primary @click="addUser()"><Fa :icon="faPlus"/> {{ $t('addUser') }}</MkButton>
-			</div>
+						<div>
+							<span>{{ $t('registeredDate') }}: <MkTime :time="user.createdAt" mode="detail"/></span>
+						</div>
+					</div>
+				</button>
+			</MkPagination>
 		</div>
 	</div>
 </div>
@@ -234,52 +234,54 @@ export default defineComponent({
 <style lang="scss" scoped>
 .mk-instance-users {
 	> .users {
-		> ._card {
-			> ._content {
-				max-height: 300px;
-				overflow: auto;
+		> ._content {
+			> .users {
+				margin-top: var(--margin);
 
-				> .users {
-					> .user {
-						display: flex;
-						width: 100%;
-						box-sizing: border-box;
-						text-align: left;
-						align-items: center;
+				> .user {
+					display: flex;
+					width: 100%;
+					box-sizing: border-box;
+					text-align: left;
+					align-items: center;
+					padding: 16px;
 
-						> .avatar {
-							width: 64px;
-							height: 64px;
+					&:hover {
+						color: var(--accent);
+					}
+
+					> .avatar {
+						width: 60px;
+						height: 60px;
+					}
+
+					> .body {
+						margin-left: 0.3em;
+						padding: 0 8px;
+						flex: 1;
+
+						@media (max-width: 500px) {
+							font-size: 14px;
 						}
 
-						> .body {
-							margin-left: 0.3em;
-							padding: 8px;
-							flex: 1;
-
-							@media (max-width: 500px) {
-								font-size: 14px;
+						> header {
+							> .name {
+								font-weight: bold;
 							}
 
-							> header {
-								> .name {
-									font-weight: bold;
-								}
+							> .acct {
+								margin-left: 8px;
+								opacity: 0.7;
+							}
 
-								> .acct {
-									margin-left: 8px;
-									opacity: 0.7;
-								}
+							> .staff {
+								margin-left: 0.5em;
+								color: var(--badge);
+							}
 
-								> .staff {
-									margin-left: 0.5em;
-									color: var(--badge);
-								}
-
-								> .punished {
-									margin-left: 0.5em;
-									color: #4dabf7;
-								}
+							> .punished {
+								margin-left: 0.5em;
+								color: #4dabf7;
 							}
 						}
 					}
