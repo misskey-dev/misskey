@@ -1,42 +1,36 @@
 <template>
-<div class="full">
-	<portal to="header">
-		<button @click="menu" class="_button _jmoebdiw_">
-			<Fa :icon="faCloud" style="margin-right: 8px;"/>
-			<span v-if="folder">{{ $t('drive') }} ({{ folder.name }})</span>
-			<span v-else>{{ $t('drive') }}</span>
-			<Fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
-		</button>
-	</portal>
-
+<div>
 	<div style="padding: 16px;">
-	<XDrive ref="drive" @cd="x => folder = x"/>
+		<XDrive ref="drive" @cd="x => folder = x"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { faCloud, faAngleDown, faAngleUp, faFolderPlus, faUpload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { computed, defineComponent } from 'vue';
+import { faCloud, faFolderPlus, faUpload, faLink, faICursor, faTrashAlt, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import XDrive from '@/components/drive.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('drive') as string
-		};
-	},
-
 	components: {
 		XDrive
 	},
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: computed(() => this.folder ? this.folder.name : this.$t('drive')),
+					icon: faCloud,
+				}],
+				action: {
+					icon: faEllipsisH,
+					handler: this.menu
+				}
+			},
 			menuOpened: false,
 			folder: null,
-			faCloud, faAngleDown, faAngleUp
 		};
 	},
 
@@ -82,11 +76,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss">
-._jmoebdiw_ {
-	height: 100%;
-	padding: 0 16px;
-	font-weight: bold;
-}
-</style>
