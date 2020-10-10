@@ -46,13 +46,13 @@ export default {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
 			self.showTimer = setTimeout(show, 300);
-		});
+		}, { passive: true });
 
 		el.addEventListener(end, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
 			self.hideTimer = setTimeout(self.close, 300);
-		});
+		}, { passive: true });
 
 		el.addEventListener('click', () => {
 			clearTimeout(self.showTimer);
