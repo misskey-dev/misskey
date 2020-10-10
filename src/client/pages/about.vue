@@ -1,7 +1,5 @@
 <template>
 <div class="mmnnbwxb">
-	<portal to="header"><Fa :icon="faInfoCircle"/>{{ $t('about') }}</portal>
-
 	<section class="_section info" v-if="meta">
 		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content" v-if="meta.description">
@@ -16,7 +14,11 @@
 		</div>
 	</section>
 
-	<MkInstanceStats style="margin-top: var(--margin);"/>
+	<div class="_section">
+		<div class="_content">
+			<MkInstanceStats/>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -28,18 +30,18 @@ import MkInstanceStats from '@/components/instance-stats.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('instance') as string
-		};
-	},
-
 	components: {
 		MkInstanceStats
 	},
 
 	data() {
 		return {
+			info: {
+				header: [{
+					title: this.$t('about'),
+					icon: faInfoCircle
+				}]
+			},
 			version,
 			serverInfo: null,
 			faInfoCircle
