@@ -26,25 +26,22 @@
 			</MkPagination>
 		</div>
 
-		<div class="_card _content remote" v-else-if="tab === 'remote'">
-			<div class="_content">
-				<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
-				<MkPagination :pagination="remotePagination" class="emojis" ref="remoteEmojis">
-					<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
-					<template #default="{items}">
-						<div class="emoji" v-for="emoji in items" :key="emoji.id" @click="selectedRemote = emoji" :class="{ selected: selectedRemote && (selectedRemote.id === emoji.id) }">
+		<div class="_content remote" v-else-if="tab === 'remote'">
+			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
+			<MkPagination :pagination="remotePagination" ref="remoteEmojis">
+				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
+				<template #default="{items}">
+					<div class="emojis">
+						<div class="emoji" v-for="emoji in items" :key="emoji.id">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
 								<span class="info">{{ emoji.host }}</span>
 							</div>
 						</div>
-					</template>
-				</MkPagination>
-			</div>
-			<div class="_footer">
-				<MkButton inline primary :disabled="selectedRemote == null" @click="im()"><Fa :icon="faPlus"/> {{ $t('import') }}</MkButton>
-			</div>
+					</div>
+				</template>
+			</MkPagination>
 		</div>
 	</div>
 </div>
@@ -82,10 +79,6 @@ export default defineComponent({
 				}
 			},
 			tab: 'local',
-			selectedRemote: null,
-			name: null,
-			category: null,
-			aliases: null,
 			host: '',
 			pagination: {
 				endpoint: 'admin/emoji/list',
@@ -106,12 +99,6 @@ export default defineComponent({
 		host() {
 			this.$refs.remoteEmojis.reload();
 		},
-
-		selected() {
-			this.name = this.selected ? this.selected.name : null;
-			this.category = this.selected ? this.selected.category : null;
-			this.aliases = this.selected ? this.selected.aliases.join(' ') : null;
-		}
 	},
 
 	methods: {
@@ -230,36 +217,34 @@ export default defineComponent({
 		}
 
 		> .remote {
-			> ._content {
-				max-height: 300px;
-				overflow: auto;
-				
-				> .emojis {
-					> .emoji {
-						display: flex;
-						align-items: center;
+			.emojis {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				grid-gap: var(--margin);
 
-						&.selected {
-							background: var(--accent);
-							box-shadow: 0 0 0 8px var(--accent);
-							color: #fff;
+				> .emoji {
+					display: flex;
+					align-items: center;
+					padding: 12px;
+
+					> .img {
+						width: 32px;
+						height: 32px;
+					}
+
+					> .body {
+						padding: 0 8px;
+						white-space: nowrap;
+						overflow: hidden;
+
+						> .name {
+							display: block;
+							text-overflow: ellipsis;
+							overflow: hidden;
 						}
 
-						> .img {
-							width: 32px;
-							height: 32px;
-						}
-
-						> .body {
-							padding: 0 8px;
-
-							> .name {
-								display: block;
-							}
-
-							> .info {
-								opacity: 0.5;
-							}
+						> .info {
+							opacity: 0.5;
 						}
 					}
 				}
