@@ -8,7 +8,7 @@
 	</div>
 	<div class="_section">
 		<MkButton class="_vMargin" primary @click="regenerateToken" style="width: 100%;"><Fa :icon="faSyncAlt"/> {{ $t('regenerateLoginToken') }}</MkButton>
-		<div class="_caption _vMargin">{{ $t('regenerateLoginTokenDescription') }}</div>
+		<div class="_caption _vMargin" style="padding: 0 6px;">{{ $t('regenerateLoginTokenDescription') }}</div>
 	</div>
 </div>
 </template>

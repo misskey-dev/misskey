@@ -9,7 +9,11 @@
 			</div>
 		</div>
 	</div>
-	<XNotes :pagination="featuredPagination"/>
+	<div class="_section">
+		<div class="_content">
+			<XNotes :pagination="featuredPagination"/>
+		</div>
+	</div>
 </div>
 </template>
 
