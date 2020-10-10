@@ -5,12 +5,13 @@
 	</div>
 
 	<div class="_section">
-		<section class="_card _content local" v-if="tab === 'local'">
+		<section class="_content local" v-if="tab === 'local'">
+			<MkButton inline primary @click="add"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
 			<div class="_content">
 				<MkPagination :pagination="pagination" class="emojis" ref="emojis">
 					<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 					<template #default="{items}">
-						<div class="emoji" v-for="(emoji, i) in items" :key="emoji.id" @click="selected = emoji" :class="{ selected: selected && (selected.id === emoji.id) }">
+						<div class="emoji _panel" v-for="(emoji, i) in items" :key="emoji.id" @click="edit(emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
@@ -22,16 +23,6 @@
 						</div>
 					</template>
 				</MkPagination>
-			</div>
-			<div class="_content" v-if="selected">
-				<MkInput v-model:value="name"><span>{{ $t('name') }}</span></MkInput>
-				<MkInput v-model:value="category" :datalist="categories"><span>{{ $t('category') }}</span></MkInput>
-				<MkInput v-model:value="aliases"><span>{{ $t('tags') }}</span></MkInput>
-				<MkButton inline primary @click="update"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-				<MkButton inline :disabled="selected == null" @click="del()"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
-			</div>
-			<div class="_footer">
-				<MkButton inline primary @click="add"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
 			</div>
 		</section>
 
@@ -68,7 +59,6 @@ import MkInput from '@/components/ui/input.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
 import { selectFile } from '@/scripts/select-file';
-import { unique } from '../../../prelude/array';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -88,7 +78,6 @@ export default defineComponent({
 				}]
 			},
 			tab: 'local',
-			selected: null,
 			selectedRemote: null,
 			name: null,
 			category: null,
@@ -106,16 +95,6 @@ export default defineComponent({
 				})
 			},
 			faTrashAlt, faPlus, faLaugh, faSave
-		}
-	},
-
-	computed: {
-		categories() {
-			if (this.$store.state.instance.meta) {
-				return unique(this.$store.state.instance.meta.emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
-			} else {
-				return [];
-			}
 		}
 	},
 
@@ -158,34 +137,9 @@ export default defineComponent({
 			});
 		},
 
-		async update() {
-			await os.api('admin/emoji/update', {
-				id: this.selected.id,
-				name: this.name,
-				category: this.category,
-				aliases: this.aliases.split(' '),
-			});
-
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
-
-			this.$refs.emojis.reload();
-		},
-
-		async del() {
-			const { canceled } = await os.dialog({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: this.selected.name }),
-				showCancelButton: true
-			});
-			if (canceled) return;
-
-			os.api('admin/emoji/remove', {
-				id: this.selected.id
-			}).then(() => {
-				this.$refs.emojis.reload();
+		async edit(emoji) {
+			os.modal(await import('./emoji-edit-dialog.vue'), {
+				emoji: emoji
 			});
 		},
 
@@ -214,9 +168,6 @@ export default defineComponent({
 	> ._section {
 		> .local {
 			> ._content {
-				max-height: 300px;
-				overflow: auto;
-				
 				> .emojis {
 					> .emoji {
 						display: flex;
