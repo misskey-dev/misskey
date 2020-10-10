@@ -55,7 +55,7 @@ export default defineComponent({
 	data() {
 		return {
 			fixed: false,
-			transformOrigin: 'center top',
+			transformOrigin: 'center',
 			contentClicking: false,
 		};
 	},
@@ -90,7 +90,6 @@ export default defineComponent({
 					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.source.offsetHeight / 2);
 					left = (x - (width / 2));
 					top = (y - (height / 2));
-					this.transformOrigin = 'center';
 				} else {
 					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
 					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.source.offsetHeight;
@@ -101,22 +100,18 @@ export default defineComponent({
 				if (this.fixed) {
 					if (left + width > window.innerWidth) {
 						left = window.innerWidth - width;
-						this.transformOrigin = 'center';
 					}
 
 					if (top + height > window.innerHeight) {
 						top = window.innerHeight - height;
-						this.transformOrigin = 'center';
 					}
 				} else {
 					if (left + width - window.pageXOffset > window.innerWidth) {
 						left = window.innerWidth - width + window.pageXOffset;
-						this.transformOrigin = 'center';
 					}
 
 					if (top + height - window.pageYOffset > window.innerHeight) {
 						top = window.innerHeight - height + window.pageYOffset;
-						this.transformOrigin = 'center';
 					}
 				}
 
@@ -126,6 +121,10 @@ export default defineComponent({
 
 				if (left < 0) {
 					left = 0;
+				}
+
+				if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
+					this.transformOrigin = 'center top';
 				}
 
 				popover.style.left = left + 'px';
