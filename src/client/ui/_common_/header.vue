@@ -44,9 +44,9 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.height = this.$el.offsetHeight + 'px';
+		this.height = this.$el.parentElement.offsetHeight + 'px';
 		new ResizeObserver((entries, observer) => {
-			this.height = this.$el.offsetHeight + 'px';
+			this.height = this.$el.parentElement.offsetHeight + 'px';
 		}).observe(this.$el);
 	},
 
