@@ -44,10 +44,10 @@ export default defineComponent({
 	},
 
 	mounted() {
+		this.height = this.$el.offsetHeight + 'px';
 		new ResizeObserver((entries, observer) => {
 			this.height = this.$el.offsetHeight + 'px';
 		}).observe(this.$el);
-		this.height = this.$el.offsetHeight + 'px';
 	},
 
 	methods: {
@@ -57,7 +57,6 @@ export default defineComponent({
 	}
 });
 </script>
-
 
 <style lang="scss" scoped vars="{ height }">
 .fdidabkb {

@@ -13,7 +13,7 @@
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
-			<XHeader v-if="pageInfo" :info="pageInfo"/>
+			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
 			<router-view v-slot="{ Component }">
