@@ -1,5 +1,5 @@
 <template>
-<div class="zbcjwnqg" v-size="{ max: [550, 1200] }">
+<div class="zbcjwnqg" v-size="{ max: [550, 1000] }">
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
@@ -83,7 +83,7 @@
 		</div>
 	</div>
 
-	<section class="_section">
+	<section class="_card">
 		<div class="_title" style="position: relative;"><Fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><Fa :icon="faSync"/></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
@@ -281,7 +281,7 @@ export default defineComponent({
 			const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-			this.chartInstance = new Chart(this.$refs.chart, {
+			this.chartInstance = markRaw(new Chart(this.$refs.chart, {
 				type: 'line',
 				data: {
 					labels: new Array(this.chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
@@ -346,7 +346,7 @@ export default defineComponent({
 						mode: 'index',
 					}
 				}
-			});
+			}));
 		},
 
 		getDate(ago: number) {
@@ -632,7 +632,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .zbcjwnqg {
-	&.max-width_1200px {
+	&.max-width_1000px {
 		> .stats {
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr 1fr;

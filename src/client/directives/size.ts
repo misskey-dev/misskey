@@ -6,10 +6,6 @@ export default {
 	mounted(src, binding, vn) {
 		const query = binding.value;
 
-		// TODO: 要素をもらうというよりはカスタム幅算出関数をもらうようにしてcalcで都度呼び出して計算するようにした方が柔軟そう
-		// その場合はunbindの方も改修することを忘れずに
-		const el = query.el ? query.el() : src;
-
 		const addClass = (el: Element, cls: string) => {
 			el.classList.add(cls);
 		};
@@ -19,7 +15,7 @@ export default {
 		};
 
 		const calc = () => {
-			const width = el.clientWidth;
+			const width = src.clientWidth;
 
 			// 要素が(一時的に)DOMに存在しないときは計算スキップ
 			if (width === 0) return;
@@ -61,15 +57,11 @@ export default {
 		// TODO: 新たにプロパティを作るのをやめMapを使う
 		// ただメモリ的には↓の方が省メモリかもしれないので検討中
 		//el._ro_ = ro;
-		el._calc_ = calc;
+		src._calc_ = calc;
 	},
 
 	unmounted(src, binding, vn) {
-		const query = binding.value;
-
-		const el = query.el ? query.el() : src;
-
 		//el._ro_.unobserve(el);
-		window.removeEventListener('resize', el._calc_);
+		window.removeEventListener('resize', src._calc_);
 	}
 } as Directive;
