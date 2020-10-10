@@ -76,18 +76,11 @@ export default defineComponent({
 .rsqzvsbo {
 	> ._section {
 		> .about {
-			overflow: hidden;
-			margin-bottom: var(--margin);
-
 			> .body {
 				padding: 32px;
 
 				@media (max-width: 500px) {
 					padding: 16px;
-				}
-
-				> .name {
-					margin: 0 0 0.5em 0;
 				}
 			}
 		}
