@@ -44,6 +44,9 @@ export default defineComponent({
 	},
 
 	mounted() {
+		new ResizeObserver((entries, observer) => {
+			this.height = this.$el.offsetHeight + 'px';
+		}).observe(this.$el);
 		this.height = this.$el.offsetHeight + 'px';
 	},
 
@@ -55,17 +58,41 @@ export default defineComponent({
 });
 </script>
 
+
+<style lang="scss" scoped vars="{ height }">
+.fdidabkb {
+	> .back {
+		height: var(--height);
+		width: var(--height);
+	}
+
+	> .action {
+		height: var(--height);
+		width: var(--height);
+	}
+
+	> .titleContainer {
+		width: calc(100% - (var(--height) * 2));
+
+		> .title {
+			height: var(--height);
+
+			> .avatar {
+				$size: 32px;
+				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
+			}
+		}
+	}
+}
+</style>
+
 <style lang="scss" scoped>
 .fdidabkb {
-	--height: 60px;
-
 	> .back {
 		position: absolute;
 		z-index: 1;
 		top: 0;
 		left: 0;
-		height: var(--height);
-		width: var(--height);
 	}
 
 	> .action {
@@ -73,12 +100,9 @@ export default defineComponent({
 		z-index: 1;
 		top: 0;
 		right: 0;
-		height: var(--height);
-		width: var(--height);
 	}
 
 	> .titleContainer {
-		width: calc(100% - (var(--height) * 2));
 		margin: 0 auto;
 		overflow: auto;
 		white-space: nowrap;
@@ -89,7 +113,6 @@ export default defineComponent({
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			height: var(--height);
 			padding: 0 16px;
 
 			> .icon + .text {
@@ -102,7 +125,6 @@ export default defineComponent({
 				width: $size;
 				height: $size;
 				vertical-align: bottom;
-				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
 			}
 
 			&._button {
