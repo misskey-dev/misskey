@@ -1,5 +1,5 @@
 <template>
-<component :is="$store.state.device.animation ? 'transition-group' : 'div'" class="sqadhkmv _list_" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
+<transition-group class="sqadhkmv _list_" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
 	<template v-for="(item, i) in items">
 		<slot :item="item"></slot>
 		<div class="separator" v-if="showDate(i, item)" :key="item.id + '_date'">
@@ -9,13 +9,12 @@
 			</p>
 		</div>
 	</template>
-</component>
+</transition-group>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -83,14 +82,14 @@ export default defineComponent({
 	}
 
 	&[data-direction="up"] {
-		> .list-enter {
+		> .list-enter-from {
 			opacity: 0;
 			transform: translateY(64px);
 		}
 	}
 
 	&[data-direction="down"] {
-		> .list-enter {
+		> .list-enter-from {
 			opacity: 0;
 			transform: translateY(-64px);
 		}
