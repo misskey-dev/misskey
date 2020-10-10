@@ -122,6 +122,8 @@ export default defineComponent({
 		background: var(--panel);
 		padding: 0 16px;
 		text-align: center;
+		overflow: auto;
+		white-space: nowrap;
 
 		> .link {
 			display: inline-block;
