@@ -12,9 +12,9 @@
 		</div>
 		<div class="_content actions">
 			<div style="flex: 1; padding-left: 1em;">
-				<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator()" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
-				<MkSwitch @update:value="toggleSilence()" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
-				<MkSwitch @update:value="toggleSuspend()" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
+				<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
+				<MkSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
+				<MkSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
 			</div>
 			<div style="flex: 1; padding-left: 1em;">
 				<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</MkButton>
@@ -121,40 +121,40 @@ export default defineComponent({
 					text: e
 				});
 			}).finally(() => {
-				dialog.close();
+				dialog.cancel();
 			});
 		},
 
-		async toggleSilence() {
+		async toggleSilence(v) {
 			const confirm = await os.dialog({
 				type: 'warning',
 				showCancelButton: true,
-				text: this.silenced ? this.$t('silenceConfirm') : this.$t('unsilenceConfirm'),
+				text: v ? this.$t('silenceConfirm') : this.$t('unsilenceConfirm'),
 			});
 			if (confirm.canceled) {
-				this.silenced = !this.silenced;
+				this.silenced = !v;
 			} else {
-				await os.api(this.silenced ? 'admin/silence-user' : 'admin/unsilence-user', { userId: this.user.id });
+				await os.api(v ? 'admin/silence-user' : 'admin/unsilence-user', { userId: this.user.id });
 				await this.refreshUser();
 			}
 		},
 
-		async toggleSuspend() {
+		async toggleSuspend(v) {
 			const confirm = await os.dialog({
 				type: 'warning',
 				showCancelButton: true,
-				text: this.suspended ? this.$t('suspendConfirm') : this.$t('unsuspendConfirm'),
+				text: v ? this.$t('suspendConfirm') : this.$t('unsuspendConfirm'),
 			});
 			if (confirm.canceled) {
-				this.suspended = !this.suspended;
+				this.suspended = !v;
 			} else {
-				await os.api(this.suspended ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
+				await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
 				await this.refreshUser();
 			}
 		},
 
-		async toggleModerator() {
-			await os.api(this.moderator ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: this.user.id });
+		async toggleModerator(v) {
+			await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: this.user.id });
 			await this.refreshUser();
 		},
 
