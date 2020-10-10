@@ -223,7 +223,9 @@ export default defineComponent({
 		},
 
 		async show(user) {
-			this.$router.push('./users/' + user.id);
+			os.modal(await import('./user-dialog.vue'), {
+				userId: user.id
+			});
 		},
 
 		acct

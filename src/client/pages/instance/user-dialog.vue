@@ -1,35 +1,43 @@
 <template>
-<div class="vrcsvlkm" v-if="user && info">
-	<div class="_section">
-		<div class="_title">
+<XWindow @close="$emit('done')" :width="370" :no-padding="true">
+	<template #header v-if="user && info"><MkUserName class="name" :user="user"/></template>
+	<div class="vrcsvlkm" v-if="user && info">
+		<div class="banner" :style="bannerStyle">
 			<MkAvatar class="avatar" :user="user"/>
-			<MkUserName class="name" :user="user"/>
-			<span class="acct">@{{ acct(user) }}</span>
-			<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
-			<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
-			<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
-			<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
 		</div>
-		<div class="_content actions">
-			<div style="flex: 1; padding-left: 1em;">
-				<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
-				<MkSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
-				<MkSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
+		<div class="_section">
+			<div class="title">
+				<span class="acct">@{{ acct(user) }}</span>
 			</div>
-			<div style="flex: 1; padding-left: 1em;">
-				<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</MkButton>
-				<MkButton v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</MkButton>
-				<MkButton @click="resetPassword"><Fa :icon="faKey"/> {{ $t('resetPassword') }}</MkButton>
-				<MkButton @click="deleteAllFiles"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
+			<div class="status">
+				<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
+				<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
+				<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
+				<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
+			</div>
+		</div>
+		<div class="_section">
+			<div class="actions">
+				<div style="flex: 1; padding-left: 1em;">
+					<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
+					<MkSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
+					<MkSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
+				</div>
+				<div style="flex: 1; padding-left: 1em;">
+					<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</MkButton>
+					<MkButton v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</MkButton>
+					<MkButton @click="resetPassword"><Fa :icon="faKey"/> {{ $t('resetPassword') }}</MkButton>
+					<MkButton @click="deleteAllFiles"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
+				</div>
+			</div>
+		</div>
+		<div class="_section">
+			<div class="_content rawdata">
+				<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
 			</div>
 		</div>
 	</div>
-	<div class="_section">
-		<div class="_content rawdata">
-			<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
-		</div>
-	</div>
-</div>
+</XWindow>
 </template>
 
 <script lang="ts">
@@ -38,6 +46,7 @@ import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSq
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
+import XWindow from '@/components/window.vue';
 import Progress from '@/scripts/loading';
 import { acct, userPage } from '../../filters/user';
 import * as os from '@/os';
@@ -46,6 +55,13 @@ export default defineComponent({
 	components: {
 		MkButton,
 		MkSwitch,
+		XWindow,
+	},
+
+	props: {
+		userId: {
+			required: true,
+		}
 	},
 
 	data() {
@@ -65,8 +81,13 @@ export default defineComponent({
 		};
 	},
 
-	watch: {
-		$route: 'fetch'
+	computed: {
+		bannerStyle(): any {
+			if (this.user.bannerUrl == null) return {};
+			return {
+				backgroundImage: `url(${ this.user.bannerUrl })`
+			};
+		},
 	},
 
 	created() {
@@ -76,8 +97,8 @@ export default defineComponent({
 	methods: {
 		async fetch() {
 			Progress.start();
-			this.user = await os.api('users/show', { userId: this.$route.params.user });
-			this.info = await os.api('admin/show-user', { userId: this.$route.params.user });
+			this.user = await os.api('users/show', { userId: this.userId });
+			this.info = await os.api('admin/show-user', { userId: this.userId });
 			this.moderator = this.info.isModerator;
 			this.silenced = this.info.isSilenced;
 			this.suspended = this.info.isSuspended;
@@ -190,25 +211,37 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vrcsvlkm {
-	display: flex;
-	flex-direction: column;
+	> .banner {
+		position: relative;
+		height: 100px;
+		background-color: #4c5e6d;
+		background-size: cover;
+		background-position: center;
+
+		> .avatar {
+			position: absolute;
+			top: 60px;
+			width: 64px;
+			height: 64px;
+			left: 0;
+			right: 0;
+			margin: 0 auto;
+			border: solid 4px var(--panel);
+		}
+	}
 
 	> ._section {
-		> .actions {
-			display: flex;
-			box-sizing: border-box;
-			text-align: left;
-			align-items: center;
-			margin-top: 16px;
-			margin-bottom: 16px;
+		> .title {
+			text-align: center;
+			padding: 8px 0;
+		}
+
+		> .status {
+			text-align: center;
 		}
 
 		> .rawdata {
-			> pre > code {
-				display: block;
-				width: 100%;
-				height: 100%;
-			}
+			overflow: auto;
 		}
 	}
 }
