@@ -46,6 +46,7 @@ export default {
 
 		// Vue3では使えなくなった
 		// 無くても大丈夫か...？
+		// TODO: ↑大丈夫じゃなかったので解決策を探す
 		//vn.context.$on('hook:activated', calc);
 
 		//const ro = new ResizeObserver((entries, observer) => {
