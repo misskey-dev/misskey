@@ -19,11 +19,11 @@
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @click="widgetFunc(widget.id)">
 					<button class="remove _button" @click.prevent.stop="removeWidget(widget)"><Fa :icon="faTimes"/></button>
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :is-customize-mode="true" :column="column"/>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :column="column"/>
 				</div>
 			</XDraggable>
 		</template>
-		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :ref="widget.id" :widget="widget" :column="column"/>
+		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :column="column"/>
 	</div>
 </XColumn>
 </template>

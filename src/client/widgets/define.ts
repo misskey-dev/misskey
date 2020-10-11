@@ -11,10 +11,6 @@ export default function <T extends Form>(data: {
 				type: Object,
 				required: false
 			},
-			isCustomizeMode: {
-				type: Boolean,
-				default: false
-			}
 		},
 
 		computed: {
