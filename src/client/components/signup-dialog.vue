@@ -1,7 +1,10 @@
 <template>
-<XWindow :width="366" :height="506" @close="$emit('done')">
+<XWindow :width="366" :height="500" @close="$emit('done')">
 	<template #header>{{ $t('signup') }}</template>
-	<XSignup :auto-set="autoSet" @signup="onSignup"/>
+
+	<div class="_section">
+		<XSignup :auto-set="autoSet" @signup="onSignup"/>
+	</div>
 </XWindow>
 </template>
 
@@ -9,7 +12,6 @@
 import { defineComponent } from 'vue';
 import XWindow from './window.vue';
 import XSignup from './signup.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {

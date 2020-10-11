@@ -204,8 +204,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-signup {
-	padding: 32px 0 0;
-
 	.captcha {
 		margin: 16px 0;
 	}

@@ -1,7 +1,10 @@
 <template>
-<XWindow @close="$emit('done')" :width="370">
+<XWindow @close="$emit('done')" :width="370" :height="400">
 	<template #header>{{ $t('login') }}</template>
-	<MkSignin :auto-set="autoSet" @login="onLogin"/>
+
+	<div class="_section">
+		<MkSignin :auto-set="autoSet" @login="onLogin"/>
+	</div>
 </XWindow>
 </template>
 
@@ -9,7 +12,6 @@
 import { defineComponent } from 'vue';
 import XWindow from './window.vue';
 import MkSignin from './signin.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
