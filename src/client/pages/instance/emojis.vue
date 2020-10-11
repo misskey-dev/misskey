@@ -94,7 +94,7 @@ export default defineComponent({
 				endpoint: 'admin/emoji/list-remote',
 				limit: 15,
 				params: () => ({
-					queryRemote: (this.queryRemote && this.queryRemote !== '') ? this.queryRemote : null,
+					query: (this.queryRemote && this.queryRemote !== '') ? this.queryRemote : null,
 					host: (this.host && this.host !== '') ? this.host : null
 				})
 			},
