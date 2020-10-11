@@ -32,7 +32,7 @@
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emojis">
-						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji)">
+						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu($event, emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
@@ -153,11 +153,10 @@ export default defineComponent({
 			}
 		},
 
-		im() {
+		im(emoji) {
 			os.api('admin/emoji/copy', {
-				emojiId: this.selectedRemote.id,
+				emojiId: emoji.id,
 			}).then(() => {
-				this.$refs.emojis.reload();
 				os.dialog({
 					type: 'success',
 					iconOnly: true, autoClose: true
@@ -169,6 +168,21 @@ export default defineComponent({
 				});
 			});
 		},
+
+		remoteMenu(ev, emoji) {
+			os.menu({
+				items: [{
+					type: 'label',
+					text: emoji.name,
+				}, {
+					text: this.$t('import'),
+					icon: faPlus,
+					action: () => { this.im(emoji) }
+				}],
+			}, {
+				source: ev.currentTarget || ev.target,
+			});
+		}
 	}
 });
 </script>
