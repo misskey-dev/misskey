@@ -212,7 +212,7 @@ export default defineComponent({
 					}
 
 					> .body {
-						padding: 0 8px;
+						padding: 0 0 0 8px;
 						white-space: nowrap;
 						overflow: hidden;
 
@@ -248,7 +248,7 @@ export default defineComponent({
 					}
 
 					> .body {
-						padding: 0 8px;
+						padding: 0 0 0 8px;
 						white-space: nowrap;
 						overflow: hidden;
 
