@@ -27,6 +27,7 @@
 		</div>
 
 		<div class="_content remote" v-else-if="tab === 'remote'">
+			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('search') }}</span></MkInput>
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
 			<MkPagination :pagination="remotePagination" ref="remoteEmojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
@@ -80,6 +81,7 @@ export default defineComponent({
 			},
 			tab: 'local',
 			query: null,
+			queryRemote: null,
 			host: '',
 			pagination: {
 				endpoint: 'admin/emoji/list',
@@ -92,6 +94,7 @@ export default defineComponent({
 				endpoint: 'admin/emoji/list-remote',
 				limit: 15,
 				params: () => ({
+					queryRemote: (this.queryRemote && this.queryRemote !== '') ? this.queryRemote : null,
 					host: (this.host && this.host !== '') ? this.host : null
 				})
 			},
@@ -101,6 +104,9 @@ export default defineComponent({
 
 	watch: {
 		query() {
+			this.$refs.emojis.reload();
+		},
+		queryRemote() {
 			this.$refs.emojis.reload();
 		},
 		host() {
@@ -173,7 +179,7 @@ export default defineComponent({
 			os.menu({
 				items: [{
 					type: 'label',
-					text: emoji.name,
+					text: ':' + emoji.name + ':',
 				}, {
 					text: this.$t('import'),
 					icon: faPlus,
