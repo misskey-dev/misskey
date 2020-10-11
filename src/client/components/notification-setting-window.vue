@@ -1,19 +1,17 @@
 <template>
 <XWindow :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
 	<template #header>{{ $t('notificationSetting') }}</template>
-	<div class="vv94n3oa">
-		<div v-if="showGlobalToggle">
-			<MkSwitch v-model:value="useGlobalSetting">
-				{{ $t('useGlobalSetting') }}
-				<template #desc>{{ $t('useGlobalSettingDesc') }}</template>
-			</MkSwitch>
-		</div>
-		<div v-if="!useGlobalSetting">
-			<MkInfo>{{ $t('notificationSettingDesc') }}</MkInfo>
-			<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
-			<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
-			<MkSwitch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</MkSwitch>
-		</div>
+	<div v-if="showGlobalToggle" class="_section">
+		<MkSwitch v-model:value="useGlobalSetting">
+			{{ $t('useGlobalSetting') }}
+			<template #desc>{{ $t('useGlobalSettingDesc') }}</template>
+		</MkSwitch>
+	</div>
+	<div v-if="!useGlobalSetting" class="_section">
+		<MkInfo>{{ $t('notificationSettingDesc') }}</MkInfo>
+		<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
+		<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
+		<MkSwitch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</MkSwitch>
 	</div>
 </XWindow>
 </template>
@@ -89,12 +87,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.vv94n3oa {
-	> div {
-		border-top: solid 1px var(--divider);
-		padding: 24px;
-	}
-}
-</style>
