@@ -1,9 +1,9 @@
 <template>
-<XWindow ref="window" :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<XWindow ref="window" :width="400" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>
 		{{ title }}
 	</template>
-	<div class="xkpnjxcv">
+	<div class="xkpnjxcv _section">
 		<label v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
 			<MkInput v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
 				<span v-text="form[item].label || item"></span>
@@ -32,7 +32,6 @@ import XWindow from './window.vue';
 import MkInput from './ui/input.vue';
 import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -69,7 +68,9 @@ export default defineComponent({
 
 	methods: {
 		ok() {
-			this.$emit('done', this.values);
+			this.$emit('done', {
+				result: this.values
+			});
 		},
 	}
 });
@@ -79,7 +80,10 @@ export default defineComponent({
 .xkpnjxcv {
 	> label {
 		display: block;
-		padding: 16px 24px;
+
+		&:not(:last-child) {
+			margin-bottom: 32px;
+		}
 	}
 }
 </style>

@@ -19,7 +19,7 @@
 			>
 				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @click="widgetFunc(widget.id)">
 					<button class="remove _button" @click.prevent.stop="removeWidget(widget)"><Fa :icon="faTimes"/></button>
-					<component :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :column="column"/>
+					<component :is="`mkw-${widget.name}`" :widget="widget" :setting-callback="setting => settings[widget.id] = setting" :column="column"/>
 				</div>
 			</XDraggable>
 		</template>
@@ -63,6 +63,7 @@ export default defineComponent({
 			menu: null,
 			widgetAdderSelected: null,
 			widgets,
+			setting: {},
 			faWindowMaximize, faTimes, faPlus
 		};
 	},
@@ -79,7 +80,7 @@ export default defineComponent({
 
 	methods: {
 		widgetFunc(id) {
-			this.$refs[id][0].setting();
+			this.settings[id]();
 		},
 
 		onWidgetSort() {

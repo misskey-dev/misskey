@@ -14,7 +14,7 @@
 					<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + widget.name) }}<button class="remove _button" @click="removeWidget(widget)"><Fa :icon="faTimes"/></button>
 				</header>
 				<div @click="widgetFunc(widget.id)">
-					<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id"/>
+					<component class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :widget="widget" :ref="widget.id" :setting-callback="setting => settings[widget.id] = setting"/>
 				</div>
 			</div>
 		</XDraggable>
@@ -46,6 +46,7 @@ export default defineComponent({
 	data() {
 		return {
 			editMode: false,
+			settings: {},
 			faPencilAlt, faPlus, faBars, faTimes, faCheck,
 		};
 	},
@@ -62,7 +63,7 @@ export default defineComponent({
 
 	methods: {
 		widgetFunc(id) {
-			this.$refs[id][0].setting();
+			this.settings[id]();
 		},
 
 		onWidgetSort() {
