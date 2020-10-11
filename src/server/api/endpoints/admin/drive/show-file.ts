@@ -12,7 +12,11 @@ export const meta = {
 
 	params: {
 		fileId: {
-			validator: $.type(ID),
+			validator: $.optional.type(ID),
+		},
+
+		url: {
+			validator: $.optional.str,
 		},
 	},
 
@@ -26,7 +30,15 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const file = await DriveFiles.findOne(ps.fileId);
+	const file = ps.fileId ? await DriveFiles.findOne(ps.fileId) : await DriveFiles.findOne({
+		where: [{
+			url: ps.url
+		}, {
+			thumbnailUrl: ps.url
+		}, {
+			webpublicUrl: ps.url
+		}]
+	});
 
 	if (file == null) {
 		throw new ApiError(meta.errors.noSuchFile);

@@ -6,6 +6,16 @@
 		</div>
 	</div>
 
+	<div class="_section lookup">
+		<div class="_title"><Fa :icon="faSearch"/> {{ $t('lookup') }}</div>
+		<div class="_content">
+			<MkInput class="target" v-model:value="q" type="text" @enter="find()">
+				<span>{{ $t('fileIdOrUrl') }}</span>
+			</MkInput>
+			<MkButton @click="find()" primary><Fa :icon="faSearch"/> {{ $t('lookup') }}</MkButton>
+		</div>
+	</div>
+
 	<div class="_section">
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
@@ -25,7 +35,7 @@
 				</MkInput>
 			</div>
 			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files" :auto-margin="false">
-				<button class="file _panel _button _vMargin" v-for="file in items" :key="file.id" @click="menu(file, $event)">
+				<button class="file _panel _button _vMargin" v-for="file in items" :key="file.id" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
 						<div>
@@ -51,7 +61,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCloud, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCloud, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
@@ -78,6 +88,7 @@ export default defineComponent({
 					icon: faCloud
 				}],
 			},
+			q: null,
 			origin: 'local',
 			type: null,
 			searchHost: '',
@@ -90,7 +101,7 @@ export default defineComponent({
 					hostname: (this.hostname && this.hostname !== '') ? this.hostname : null,
 				}),
 			},
-			faTrashAlt, faCloud
+			faTrashAlt, faCloud, faSearch,
 		}
 	},
 
@@ -124,9 +135,22 @@ export default defineComponent({
 			});
 		},
 
-		async menu(file, ev) {
+		async show(file, ev) {
 			os.modal(await import('./file-dialog.vue'), {
 				fileId: file.id
+			});
+		},
+
+		find() {
+			os.api('admin/drive/show-file', this.q.startsWith('http://') || this.q.startsWith('https://') ? { url: this.q.trim() } : { fileId: this.q.trim() }).then(file => {
+				this.show(file);
+			}).catch(e => {
+				if (e.code === 'NO_SUCH_FILE') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('notFound')
+					});
+				}
 			});
 		},
 
