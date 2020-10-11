@@ -1,8 +1,10 @@
 <template>
 <transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
-	<div class="mjndxjch">
-		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><Fa :icon="faExclamationTriangle"/> {{ $t('pageLoadError') }}</p>
+	<div class="_section">
+		<div class="mjndxjch _content">
+			<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+			<p><Fa :icon="faExclamationTriangle"/> {{ $t('pageLoadError') }}</p>
+		</div>
 	</div>
 </transition>
 </template>
@@ -32,7 +34,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mjndxjch {
-	padding: 32px;
 	text-align: center;
 
 	> p {
