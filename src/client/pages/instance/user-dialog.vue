@@ -1,6 +1,6 @@
 <template>
-<XWindow @close="$emit('done')" :width="370" :no-padding="true">
-	<template #header v-if="user && info"><MkUserName class="name" :user="user"/></template>
+<XWindow @close="$emit('done')" :width="370">
+	<template #header v-if="user"><MkUserName class="name" :user="user"/></template>
 	<div class="vrcsvlkm" v-if="user && info">
 		<div class="banner" :style="bannerStyle">
 			<MkAvatar class="avatar" :user="user"/>
@@ -24,7 +24,7 @@
 					<MkSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
 				</div>
 				<div style="flex: 1; padding-left: 1em;">
-					<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile')}}</MkButton>
+					<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile') }}</MkButton>
 					<MkButton v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</MkButton>
 					<MkButton @click="resetPassword"><Fa :icon="faKey"/> {{ $t('resetPassword') }}</MkButton>
 					<MkButton @click="deleteAllFiles"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
@@ -32,9 +32,9 @@
 			</div>
 		</div>
 		<div class="_section">
-			<div class="_content rawdata">
+			<details class="_content rawdata">
 				<pre><code>{{ JSON.stringify(info, null, 2) }}</code></pre>
-			</div>
+			</details>
 		</div>
 	</div>
 </XWindow>
@@ -66,12 +66,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.user ? {
-				header: [{
-					userName: this.user,
-					avatar: this.user,
-				}],
-			} : null),
 			user: null,
 			info: null,
 			moderator: false,

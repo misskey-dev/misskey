@@ -300,7 +300,7 @@ hr {
 }
 
 ._section {
-	padding: 32px;
+	padding: var(--section-padding, 32px);
 
 	&:empty {
 		display: none;
@@ -311,7 +311,7 @@ hr {
 	}
 
 	@media (max-width: 500px) {
-		padding: 10px;
+		padding: var(--section-padding, 10px);
 
 		> ._title {
 			font-size: 1.1em;
@@ -343,8 +343,6 @@ hr {
 }
 
 ._narrow_ ._section {
-	padding: 10px;
-
 	> ._title {
 		padding: 8px;
 		font-size: 1em;

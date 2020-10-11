@@ -1,5 +1,5 @@
 <template>
-<div class="ebkgoccj _popup" :class="{ noPadding }" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
+<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
 	<div class="header">
 		<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
 		<span class="title">
@@ -8,7 +8,12 @@
 		<button class="_button" v-if="!withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
 		<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><Fa :icon="faCheck"/></button>
 	</div>
-	<div class="body">
+	<div class="body" v-if="padding">
+		<div class="_section">
+			<slot></slot>
+		</div>
+	</div>
+	<div class="body" v-else>
 		<slot></slot>
 	</div>
 </div>
@@ -30,7 +35,7 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		noPadding: {
+		padding: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -82,11 +87,18 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 
+	--section-padding: 24px;
+
+	@media (max-width: 500px) {
+		--section-padding: 16px;
+	}
+
 	> .header {
 		$height: 58px;
 		$height-narrow: 42px;
 		display: flex;
 		flex-shrink: 0;
+		box-shadow: 0px 1px var(--divider);
 
 		> button {
 			height: $height;
@@ -121,14 +133,6 @@ export default defineComponent({
 
 	> .body {
 		overflow: auto;
-	}
-
-	&:not(.noPadding) > .body {
-		padding: 0 32px 32px 32px;
-
-		@media (max-width: 500px) {
-			padding: 0 16px 16px 16px;
-		}
 	}
 }
 </style>

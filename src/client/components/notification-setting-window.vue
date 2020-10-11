@@ -1,5 +1,5 @@
 <template>
-<XWindow :width="400" :height="450" :no-padding="true" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
+<XWindow :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
 	<template #header>{{ $t('notificationSetting') }}</template>
 	<div class="vv94n3oa">
 		<div v-if="showGlobalToggle">

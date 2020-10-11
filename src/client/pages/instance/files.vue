@@ -124,44 +124,9 @@ export default defineComponent({
 			});
 		},
 
-		async showUser(file) {
-			os.modal(await import('./user-dialog.vue'), {
-				userId: file.userId
-			});
-		},
-
-		async del(file) {
-			const { canceled } = await os.dialog({
-				type: 'warning',
-				text: this.$t('removeAreYouSure', { x: file.name }),
-				showCancelButton: true
-			});
-			if (canceled) return;
-
-			os.api('drive/files/delete', {
+		async menu(file, ev) {
+			os.modal(await import('./file-dialog.vue'), {
 				fileId: file.id
-			}).then(() => {
-				this.$refs.files.removeItem(x => x.id === file.id);
-			});
-		},
-
-		menu(file, ev) {
-			os.menu({
-				items: [{
-					type: 'label',
-					text: file.name,
-				}, {
-					text: this.$t('showUser'),
-					icon: faUser,
-					action: () => { this.showUser(file) }
-				}, {
-					text: this.$t('delete'),
-					icon: faTrashAlt,
-					danger: true,
-					action: () => { this.del(file) }
-				}],
-			}, {
-				source: ev.currentTarget || ev.target,
 			});
 		},
 

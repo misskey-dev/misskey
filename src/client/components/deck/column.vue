@@ -282,6 +282,8 @@ export default defineComponent({
 .dnpfarvg {
 	$header-height: 42px;
 
+	--section-padding: 10px;
+
 	height: 100%;
 	overflow: hidden;
 
