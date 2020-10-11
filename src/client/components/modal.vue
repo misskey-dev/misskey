@@ -77,6 +77,7 @@ export default defineComponent({
 
 			const popover = this.$refs.content as any;
 
+			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
 				const rect = this.source.getBoundingClientRect();
 				const width = popover.offsetWidth;
@@ -202,6 +203,7 @@ export default defineComponent({
 		right: 0;
 		margin: auto;
 		padding: 32px;
+		// TODO: mask-imageはiOSだとやたら重い。なんとかしたい
 		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 		overflow: auto;
