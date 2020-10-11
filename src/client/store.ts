@@ -96,8 +96,8 @@ function copy<T>(data: T): T {
 }
 
 export const store = createStore({
-	strict: _DEV_,
-	
+	//strict: _DEV_,
+
 	plugins: [createPersistedState({
 		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
 	})],
