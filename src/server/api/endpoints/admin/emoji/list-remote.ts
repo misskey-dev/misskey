@@ -46,8 +46,7 @@ export default define(meta, async (ps) => {
 	}
 
 	const emojis = await q
-		.orderBy('emoji.category', 'ASC')
-		.orderBy('emoji.name', 'ASC')
+		.orderBy('emoji.id', 'DESC')
 		.take(ps.limit!)
 		.getMany();
 
