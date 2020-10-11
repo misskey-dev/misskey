@@ -160,7 +160,7 @@ export default defineComponent({
 						default:
 							os.dialog({
 								type: 'error',
-								text: this.$t('error')
+								text: this.$t('somethingHappened')
 							});
 					}
 				});

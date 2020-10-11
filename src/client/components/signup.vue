@@ -194,7 +194,7 @@ export default defineComponent({
 
 				os.dialog({
 					type: 'error',
-					text: this.$t('error')
+					text: this.$t('somethingHappened')
 				});
 			});
 		}

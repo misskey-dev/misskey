@@ -154,10 +154,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.32"
 
-"@fortawesome/vue-fontawesome@3.0.0-1":
-  version "3.0.0-1"
-  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-3.0.0-1.tgz#dbb360f95d56c21c7f921c3d5f9c3c84b2f11be7"
-  integrity sha512-gwL7yUMz1voBPyXF2GVdy7WSDQIAvvixD/GxsXlxEgdELFKd9UmZsriE0WbXa6uy64YM3AWN4CN9xduRIue68w==
+"@fortawesome/vue-fontawesome@3.0.0-2":
+  version "3.0.0-2"
+  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-3.0.0-2.tgz#ebf06aeefd847e398d55cb3da357de2e9aebb574"
+  integrity sha512-SYFV7LXOe7mCKdcoVEhBAPbyyCueqEYn3zA7oOvsu9z9UO+BQpi60uFfA1AWcT8OyVWKbGvfHgvQus2DVA2Tjg==
 
 "@gulp-sourcemaps/identity-map@1.X":
   version "1.0.2"
@@ -10477,10 +10477,10 @@ webpack-sources@^2.0.1:
     source-list-map "^2.0.1"
     source-map "^0.6.1"
 
-webpack@5.0.0-rc.4:
-  version "5.0.0-rc.4"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.0.0-rc.4.tgz#713b5431414610a3719252f07c78a64acc31470a"
-  integrity sha512-xR10QF2UkPAOsy1Eqm59QPX1C5huX3+u9N3KIdpSxtKhyz7+w/eyL8KKDLqfPaOAcp6Lou7oaO1Nd1t4qv9e5w==
+webpack@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.0.0.tgz#c028b2f0c1db2322de1f4a30cc36f6e373d5a26a"
+  integrity sha512-OK+Q9xGgda3idw/DgCf75XsVFxRLPu48qPwygqI3W9ls5sDdKif5Ay4SM/1UVob0w4juJy14Zv9nNv0WeyV0aA==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.45"

@@ -20,7 +20,7 @@
 		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
 	</div>
 	<div class="error" v-if="state == 'fetch-session-error'">
-		<p>{{ $t('error') }}</p>
+		<p>{{ $t('somethingHappened') }}</p>
 	</div>
 </div>
 <div class="signin" v-else>

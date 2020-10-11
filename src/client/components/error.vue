@@ -2,7 +2,7 @@
 <transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><Fa :icon="faExclamationTriangle"/> {{ $t('error') }}</p>
+		<p><Fa :icon="faExclamationTriangle"/> {{ $t('somethingHappened') }}</p>
 		<MkButton @click="() => $emit('retry')" class="button">{{ $t('retry') }}</MkButton>
 	</div>
 </transition>
@@ -12,7 +12,6 @@
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from './ui/button.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
