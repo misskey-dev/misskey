@@ -16,7 +16,8 @@ export default async (
 	uri: string | null = null,
 	sensitive = false,
 	force = false,
-	link = false
+	link = false,
+	comment = null
 ): Promise<DriveFile> => {
 	let name = new URL(url).pathname.split('/').pop() || null;
 	if (name == null || !DriveFiles.validateFileName(name)) {
@@ -33,7 +34,7 @@ export default async (
 	let error;
 
 	try {
-		driveFile = await create(user, path, name, null, folderId, force, link, url, uri, sensitive);
+		driveFile = await create(user, path, name, comment, folderId, force, link, url, uri, sensitive);
 		logger.succ(`Got: ${driveFile.id}`);
 	} catch (e) {
 		error = e;

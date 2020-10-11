@@ -1,4 +1,4 @@
-import { faUpload, faCloud } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
 import { apiUrl } from '@/config';
 import { store } from '@/store';
 import * as os from '@/os';
@@ -11,27 +11,7 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			input.type = 'file';
 			input.multiple = multiple;
 			input.onchange = () => {
-				const dialog = os.dialog({
-					type: 'waiting',
-					text: i18n.global.t('uploading') + '...',
-					showOkButton: false,
-					showCancelButton: false,
-					cancelableByBgClick: false
-				});
-
-				const promises = Array.from(input.files).map(file => new Promise((ok, err) => {
-					const data = new FormData();
-					data.append('file', file);
-					data.append('i', store.state.i.token);
-
-					fetch(apiUrl + '/drive/files/create', {
-						method: 'POST',
-						body: data
-					})
-					.then(response => response.json())
-					.then(ok)
-					.catch(err);
-				}));
+				const promises = Array.from(input.files).map(file => os.upload(file));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
@@ -40,8 +20,6 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 						type: 'error',
 						text: e
 					});
-				}).finally(() => {
-					dialog.cancel();
 				});
 
 				// 一応廃棄
@@ -61,9 +39,35 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			});
 		};
 
-		// TODO
 		const chooseFileFromUrl = () => {
+			os.dialog({
+				title: i18n.global.t('uploadFromUrl'),
+				input: {
+					placeholder: i18n.global.t('uploadFromUrlDescription')
+				}
+			}).then(({ canceled, result: url }) => {
+				if (canceled) return;
 
+				const marker = Math.random().toString(); // TODO: UUIDとか使う
+
+				const connection = os.stream.useSharedConnection('main');
+				connection.on('urlUploadFinished', data => {
+					if (data.marker === marker) {
+						res(multiple ? [data.file] : data.file);
+						connection.dispose();
+					}
+				});
+
+				os.api('drive/files/upload_from_url', {
+					url: url,
+					marker
+				});
+
+				os.dialog({
+					title: i18n.global.t('uploadFromUrlRequested'),
+					text: i18n.global.t('uploadFromUrlMayTakeTime')
+				});
+			});
 		};
 
 		os.menu({
@@ -78,11 +82,11 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 				text: i18n.global.t('fromDrive'),
 				icon: faCloud,
 				action: chooseFileFromDrive
-			}, /*{
-				text: locale('fromUrl'),
+			}, {
+				text: i18n.global.t('fromUrl'),
 				icon: faLink,
 				action: chooseFileFromUrl
-			}*/],
+			}],
 		}, {
 			source: src,
 		});

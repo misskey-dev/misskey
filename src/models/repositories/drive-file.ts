@@ -119,6 +119,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			properties: file.properties,
 			url: opts.self ? file.url : this.getPublicUrl(file, false, meta),
 			thumbnailUrl: this.getPublicUrl(file, true, meta),
+			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
 				detail: true

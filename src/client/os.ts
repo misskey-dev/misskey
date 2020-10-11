@@ -262,7 +262,7 @@ export const deckGlobalEvents = new EventEmitter();
 
 export const uploads = ref([]);
 
-export function upload(file: File, folder: any, name?: string) {
+export function upload(file: File, folder?: any, name?: string) {
 	if (folder && typeof folder == 'object') folder = folder.id;
 
 	return new Promise((resolve, reject) => {
@@ -304,7 +304,7 @@ export function upload(file: File, folder: any, name?: string) {
 					ctx.progressValue = e.loaded;
 				}
 			};
-	
+
 			xhr.send(data);
 		};
 		reader.readAsArrayBuffer(file);

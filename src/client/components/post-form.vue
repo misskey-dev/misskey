@@ -46,14 +46,13 @@
 			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><Fa :icon="faLaughSquint"/></button>
 			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="$store.state.postFormActions.length > 0"><Fa :icon="faPlug"/></button>
 		</footer>
-		<input ref="file" class="file _button" type="file" multiple="multiple" @change="onChangeFile"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
@@ -69,6 +68,7 @@ import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
 import { utils } from '@syuilo/aiscript';
 import * as os from '@/os';
+import { selectFile } from '@/scripts/select-file';
 
 export default defineComponent({
 	components: {
@@ -127,7 +127,6 @@ export default defineComponent({
 			posting: false,
 			text: '',
 			files: [],
-			uploadings: [],
 			poll: null,
 			useCw: false,
 			cw: null,
@@ -138,7 +137,7 @@ export default defineComponent({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
-			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faCloud, faLink, faAt, faBiohazard, faPlug
+			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug
 		};
 	},
 
@@ -353,34 +352,7 @@ export default defineComponent({
 		},
 
 		chooseFileFrom(ev) {
-			os.menu({
-				items: [{
-					type: 'label',
-					text: this.$t('attachFile'),
-				}, {
-					text: this.$t('upload'),
-					icon: faUpload,
-					action: () => { this.chooseFileFromPc() }
-				}, {
-					text: this.$t('fromDrive'),
-					icon: faCloud,
-					action: () => { this.chooseFileFromDrive() }
-				}, {
-					text: this.$t('fromUrl'),
-					icon: faLink,
-					action: () => { this.chooseFileFromUrl() }
-				}],
-			}, {
-				source: ev.currentTarget || ev.target,
-			});
-		},
-
-		chooseFileFromPc() {
-			(this.$refs.file as any).click();
-		},
-
-		chooseFileFromDrive() {
-			os.selectDriveFile(true).then(files => {
+			selectFile(ev.currentTarget || ev.target, this.$t('attachFile'), true).then(files => {
 				for (const file of files) {
 					this.files.push(file);
 				}
@@ -393,10 +365,6 @@ export default defineComponent({
 
 		updateMedia(file) {
 			this.files[this.files.findIndex(x => x.id === file.id)] = file;
-		},
-
-		onChangeFile() {
-			for (const x of Array.from((this.$refs.file as any).files)) this.upload(x);
 		},
 
 		upload(file: File, name?: string) {
@@ -785,10 +753,6 @@ export default defineComponent({
 			&.withCw {
 				padding-top: 8px;
 			}
-		}
-
-		> .file {
-			display: none;
 		}
 
 		> footer {
