@@ -698,7 +698,7 @@ export default defineComponent({
 	}
 
 	> .main {
-		padding: 8px 0;
+		padding: 10px;
 		overflow: auto;
 
 		&, * {

@@ -1,8 +1,6 @@
 <template>
 <div>
-	<div style="padding: 16px;">
-		<XDrive ref="drive" @cd="x => folder = x"/>
-	</div>
+	<XDrive ref="drive" @cd="x => folder = x"/>
 </div>
 </template>
 
