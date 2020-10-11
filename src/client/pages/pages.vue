@@ -1,7 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faStickyNote"/>{{ $t('pages') }}</portal>
-
 	<MkTab v-model:value="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
 
 	<div class="rknalgpo my" v-if="tab === 'my'">
@@ -27,7 +25,6 @@ import MkPagePreview from '@/components/page-preview.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkTab from '@/components/tab.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -35,6 +32,16 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('pages'),
+					icon: faStickyNote
+				}],
+				action: {
+					icon: faPlus,
+					handler: this.create
+				}
+			},
 			tab: 'my',
 			myPagesPagination: {
 				endpoint: 'i/pages',
