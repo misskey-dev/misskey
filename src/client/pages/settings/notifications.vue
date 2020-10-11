@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="_section">
-		<MkButton style="width: 100%;" primary @click="configure"><Fa :icon="faCog"/> {{ $t('notificationSetting') }}</MkButton>
+		<MkButton full primary @click="configure"><Fa :icon="faCog"/> {{ $t('notificationSetting') }}</MkButton>
 	</div>
 	<div class="_section">
 		<div class="_card">
@@ -13,9 +13,9 @@
 		</div>
 	</div>
 	<div class="_section">
-		<MkButton style="width: 100%;" @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</MkButton>
-		<MkButton style="width: 100%;" @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</MkButton>
-		<MkButton style="width: 100%;" @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</MkButton>
+		<MkButton full @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</MkButton>
+		<MkButton full @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</MkButton>
+		<MkButton full @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</MkButton>
 	</div>
 </div>
 </template>

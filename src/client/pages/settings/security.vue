@@ -4,10 +4,10 @@
 		<X2fa/>
 	</div>
 	<div class="_section">
-		<MkButton primary @click="change()" style="width: 100%;">{{ $t('changePassword') }}</MkButton>
+		<MkButton primary @click="change()" full>{{ $t('changePassword') }}</MkButton>
 	</div>
 	<div class="_section">
-		<MkButton class="_vMargin" primary @click="regenerateToken" style="width: 100%;"><Fa :icon="faSyncAlt"/> {{ $t('regenerateLoginToken') }}</MkButton>
+		<MkButton class="_vMargin" primary @click="regenerateToken" full><Fa :icon="faSyncAlt"/> {{ $t('regenerateLoginToken') }}</MkButton>
 		<div class="_caption _vMargin" style="padding: 0 6px;">{{ $t('regenerateLoginTokenDescription') }}</div>
 	</div>
 </div>

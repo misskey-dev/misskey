@@ -2,7 +2,7 @@
 <XWindow @close="$emit('done')" :width="370" :with-ok-button="true" @ok="ok()">
 	<template #header>:{{ emoji.name }}:</template>
 
-	<div class="yigymqpb">
+	<div class="yigymqpb _section">
 		<img :src="emoji.url" class="img"/>
 		<MkInput v-model:value="name"><span>{{ $t('name') }}</span></MkInput>
 		<MkInput v-model:value="category" :datalist="categories"><span>{{ $t('category') }}</span></MkInput>
@@ -10,7 +10,7 @@
 			<span>{{ $t('tags') }}</span>
 			<template #desc>{{ $t('setMultipleBySeparatingWithSpace') }}</template>
 		</MkInput>
-		<MkButton inline @click="del()"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
+		<MkButton danger @click="del()"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
 	</div>
 </XWindow>
 </template>

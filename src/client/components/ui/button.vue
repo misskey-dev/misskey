@@ -1,7 +1,7 @@
 <template>
 <component class="bghgjjyj _button"
 	:is="link ? 'a' : 'button'"
-	:class="{ inline, primary }"
+	:class="{ inline, primary, danger, full }"
 	:type="type"
 	@click="$emit('click', $event)"
 	@mousedown="onMousedown"
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -44,6 +43,16 @@ export default defineComponent({
 			default: false
 		},
 		wait: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		danger: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		full: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -125,6 +134,10 @@ export default defineComponent({
 		background: var(--buttonHoverBg);
 	}
 
+	&.full {
+		width: 100%;
+	}
+
 	&.primary {
 		color: #fff;
 		background: var(--accent);
@@ -135,6 +148,23 @@ export default defineComponent({
 
 		&:not(:disabled):active {
 			background: var(--X8);
+		}
+	}
+
+	&.danger {
+		color: #ff2a2a;
+
+		&.primary {
+			color: #fff;
+			background: #ff2a2a;
+
+			&:not(:disabled):hover {
+				background: #ff4242;
+			}
+
+			&:not(:disabled):active {
+				background: #d42e2e;
+			}
 		}
 	}
 

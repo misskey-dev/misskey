@@ -2,8 +2,10 @@
 <XWindow @close="$emit('done')" :width="370">
 	<template #header v-if="user"><MkUserName class="name" :user="user"/></template>
 	<div class="vrcsvlkm" v-if="user && info">
-		<div class="banner" :style="bannerStyle">
-			<MkAvatar class="avatar" :user="user"/>
+		<div class="_section">
+			<div class="banner" :style="bannerStyle">
+				<MkAvatar class="avatar" :user="user"/>
+			</div>
 		</div>
 		<div class="_section">
 			<div class="title">
@@ -17,18 +19,18 @@
 			</div>
 		</div>
 		<div class="_section">
-			<div class="actions">
-				<div style="flex: 1; padding-left: 1em;">
-					<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
-					<MkSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
-					<MkSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
-				</div>
-				<div style="flex: 1; padding-left: 1em;">
-					<MkButton @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile') }}</MkButton>
-					<MkButton v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</MkButton>
-					<MkButton @click="resetPassword"><Fa :icon="faKey"/> {{ $t('resetPassword') }}</MkButton>
-					<MkButton @click="deleteAllFiles"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
-				</div>
+			<div class="_content">
+				<MkSwitch v-if="user.host == null && $store.state.i.isAdmin && (this.moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $t('moderator') }}</MkSwitch>
+				<MkSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $t('silence') }}</MkSwitch>
+				<MkSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $t('suspend') }}</MkSwitch>
+			</div>
+		</div>
+		<div class="_section">
+			<div class="_content">
+				<MkButton full @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('profile') }}</MkButton>
+				<MkButton full v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $t('updateRemoteUser') }}</MkButton>
+				<MkButton full @click="resetPassword"><Fa :icon="faKey"/> {{ $t('resetPassword') }}</MkButton>
+				<MkButton full @click="deleteAllFiles" danger><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
 			</div>
 		</div>
 		<div class="_section">
@@ -205,33 +207,34 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vrcsvlkm {
-	> .banner {
-		position: relative;
-		height: 100px;
-		background-color: #4c5e6d;
-		background-size: cover;
-		background-position: center;
-
-		> .avatar {
-			position: absolute;
-			top: 60px;
-			width: 64px;
-			height: 64px;
-			left: 0;
-			right: 0;
-			margin: 0 auto;
-			border: solid 4px var(--panel);
-		}
-	}
-
 	> ._section {
+		> .banner {
+			position: relative;
+			height: 100px;
+			background-color: #4c5e6d;
+			background-size: cover;
+			background-position: center;
+			border-radius: 8px;
+
+			> .avatar {
+				position: absolute;
+				top: 60px;
+				width: 64px;
+				height: 64px;
+				left: 0;
+				right: 0;
+				margin: 0 auto;
+				border: solid 4px var(--panel);
+			}
+		}
+
 		> .title {
 			text-align: center;
-			padding: 8px 0;
 		}
 
 		> .status {
 			text-align: center;
+			margin-top: 8px;
 		}
 
 		> .rawdata {
