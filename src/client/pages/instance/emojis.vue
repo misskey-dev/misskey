@@ -7,6 +7,7 @@
 	<div class="_section">
 		<div class="_content local" v-if="tab === 'local'">
 			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
+			<MkInput v-model:value="query" :debounce="true"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('search') }}</span></MkInput>
 			<MkPagination :pagination="pagination" ref="emojis">
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
@@ -49,7 +50,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
@@ -79,23 +80,30 @@ export default defineComponent({
 				}
 			},
 			tab: 'local',
+			query: null,
 			host: '',
 			pagination: {
 				endpoint: 'admin/emoji/list',
-				limit: 10,
+				limit: 15,
+				params: () => ({
+					query: (this.query && this.query !== '') ? this.query : null
+				})
 			},
 			remotePagination: {
 				endpoint: 'admin/emoji/list-remote',
-				limit: 10,
+				limit: 15,
 				params: () => ({
-					host: this.host ? this.host : null
+					host: (this.host && this.host !== '') ? this.host : null
 				})
 			},
-			faTrashAlt, faPlus, faLaugh, faSave
+			faTrashAlt, faPlus, faLaugh, faSave, faSearch,
 		}
 	},
 
 	watch: {
+		query() {
+			this.$refs.emojis.reload();
+		},
 		host() {
 			this.$refs.remoteEmojis.reload();
 		},

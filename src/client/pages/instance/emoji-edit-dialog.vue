@@ -1,6 +1,6 @@
 <template>
 <XWindow @close="$emit('done')" :width="370" :with-ok-button="true" @ok="ok()">
-	<template #header>{{ emoji.name }}</template>
+	<template #header>:{{ emoji.name }}:</template>
 
 	<div class="yigymqpb">
 		<img :src="emoji.url" class="img"/>
