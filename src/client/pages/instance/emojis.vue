@@ -248,6 +248,10 @@ export default defineComponent({
 					padding: 12px;
 					text-align: left;
 
+					&:hover {
+						color: var(--accent);
+					}
+
 					> .img {
 						width: 32px;
 						height: 32px;
@@ -266,6 +270,9 @@ export default defineComponent({
 
 						> .info {
 							opacity: 0.5;
+							display: block;
+							text-overflow: ellipsis;
+							overflow: hidden;
 						}
 					}
 				}
