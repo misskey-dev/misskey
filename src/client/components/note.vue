@@ -655,6 +655,7 @@ export default defineComponent({
 					{
 						icon: faTrashAlt,
 						text: this.$t('delete'),
+						danger: true,
 						action: this.del
 					}]
 					: []

@@ -20,7 +20,7 @@
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</button>
-		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item">
+		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ danger: item.danger }">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
@@ -34,7 +34,6 @@
 import { defineComponent } from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { focusPrev, focusNext } from '@/scripts/focus';
-import * as os from '@/os';
 import contains from '@/scripts/contains';
 
 export default defineComponent({
@@ -151,6 +150,20 @@ export default defineComponent({
 		text-align: center;
 		overflow: hidden;
 		text-overflow: ellipsis;
+
+		&.danger {
+			color: #ff2a2a;
+
+			&:hover {
+				color: #fff;
+				background: #ff4242;
+			}
+
+			&:active {
+				color: #fff;
+				background: #d42e2e;
+			}
+		}
 
 		&:hover {
 			color: #fff;

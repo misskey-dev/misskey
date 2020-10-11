@@ -103,6 +103,7 @@ export default defineComponent({
 			}, null, {
 				text: this.$t('delete'),
 				icon: faTrashAlt,
+				danger: true,
 				action: this.deleteFile
 			}];
 		},
