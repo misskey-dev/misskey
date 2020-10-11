@@ -44,18 +44,15 @@ export default defineComponent({
 			name: this.emoji.name,
 			category: this.emoji.category,
 			aliases: this.emoji.aliases?.join(' '),
+			categories: [],
 			faTrashAlt,
 		}
 	},
 
-	computed: {
-		categories() {
-			if (this.$store.state.instance.meta) {
-				return unique(this.$store.state.instance.meta.emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
-			} else {
-				return [];
-			}
-		}
+	created() {
+		os.api('meta', { detail: false }).then(({ emojis }) => {
+			this.categories = unique(emojis.map((x: any) => x.category || '').filter((x: string) => x !== ''));
+		});
 	},
 
 	methods: {
