@@ -4,6 +4,11 @@
 	<div class="cxqhhsmd" v-if="file">
 		<div class="_section">
 			<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
+			<div class="info">
+				<span style="margin-right: 1em;">{{ file.type }}</span>
+				<span>{{ bytes(file.size) }}</span>
+				<MkTime :time="file.createdAt" mode="detail" style="display: block;"/>
+			</div>
 		</div>
 		<div class="_section">
 			<div class="_content">
@@ -34,7 +39,7 @@ import MkSwitch from '@/components/ui/switch.vue';
 import XWindow from '@/components/window.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import Progress from '@/scripts/loading';
-import { bytes } from '../../filters/user';
+import bytes from '@/filters/bytes';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -110,6 +115,11 @@ export default defineComponent({
 		> .thumbnail {
 			height: 150px;
 			max-width: 100%;
+		}
+
+		> .info {
+			text-align: center;
+			margin-top: 8px;
 		}
 		
 		> .rawdata {

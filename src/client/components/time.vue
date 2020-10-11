@@ -1,14 +1,13 @@
 <template>
 <time class="mk-time" :title="absolute">
-	<span v-if="mode == 'relative'">{{ relative }}</span>
-	<span v-if="mode == 'absolute'">{{ absolute }}</span>
-	<span v-if="mode == 'detail'">{{ absolute }} ({{ relative }})</span>
+	<template v-if="mode == 'relative'">{{ relative }}</template>
+	<template v-else-if="mode == 'absolute'">{{ absolute }}</template>
+	<template v-else-if="mode == 'detail'">{{ absolute }} ({{ relative }})</template>
 </time>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
