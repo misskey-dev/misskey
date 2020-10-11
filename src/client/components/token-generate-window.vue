@@ -1,19 +1,17 @@
 <template>
 <XWindow ref="window" :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
-	<div class="ugkkpisj">
-		<div v-if="information">
-			<MkInfo warn>{{ information }}</MkInfo>
-		</div>
-		<div>
-			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
-		</div>
-		<div>
-			<div style="margin-bottom: 16px;"><b>{{ $t('permission') }}</b></div>
-			<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
-			<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
-			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model:value="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
-		</div>
+	<div v-if="information" class="_section">
+		<MkInfo warn>{{ information }}</MkInfo>
+	</div>
+	<div class="_section">
+		<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
+	</div>
+	<div class="_section">
+		<div style="margin-bottom: 16px;"><b>{{ $t('permission') }}</b></div>
+		<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
+		<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
+		<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model:value="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
 	</div>
 </XWindow>
 </template>
@@ -107,12 +105,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.ugkkpisj {
-	> div {
-		padding: 24px;
-		border-top: solid 1px var(--divider);
-	}
-}
-</style>
