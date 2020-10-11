@@ -107,7 +107,7 @@ export default defineComponent({
 			this.$refs.emojis.reload();
 		},
 		queryRemote() {
-			this.$refs.emojis.reload();
+			this.$refs.remoteEmojis.reload();
 		},
 		host() {
 			this.$refs.remoteEmojis.reload();
