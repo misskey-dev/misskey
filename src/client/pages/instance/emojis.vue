@@ -17,8 +17,7 @@
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
 								<span class="info">
-									<b class="category">{{ emoji.category }}</b>
-									<span class="aliases">{{ emoji.aliases.join(' ') }}</span>
+									<span class="category">{{ emoji.category }}</span>
 								</span>
 							</div>
 						</button>
@@ -187,18 +186,19 @@ export default defineComponent({
 					display: flex;
 					align-items: center;
 					padding: 12px;
+					text-align: left;
 
 					&:hover {
 						color: var(--accent);
 					}
 
 					> .img {
-						width: 50px;
-						height: 50px;
+						width: 42px;
+						height: 42px;
 					}
 
 					> .body {
-						padding: 8px;
+						padding: 0 8px;
 						white-space: nowrap;
 						overflow: hidden;
 
@@ -210,14 +210,6 @@ export default defineComponent({
 
 						> .info {
 							opacity: 0.5;
-
-							> .category {
-								margin-right: 16px;
-							}
-
-							> .aliases {
-								font-style: oblique;
-							}
 						}
 					}
 				}
@@ -234,6 +226,7 @@ export default defineComponent({
 					display: flex;
 					align-items: center;
 					padding: 12px;
+					text-align: left;
 
 					> .img {
 						width: 32px;
