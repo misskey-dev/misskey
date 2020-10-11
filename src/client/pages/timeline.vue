@@ -225,7 +225,7 @@ export default defineComponent({
 
 		> button {
 			display: block;
-			margin: 0 auto;
+			margin: var(--margin) auto 0 auto;
 			padding: 8px 16px;
 			border-radius: 32px;
 		}
