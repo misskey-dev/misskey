@@ -8,7 +8,7 @@
 	</template>
 
 	<section class="oyyftmcf">
-		<MkFileThumbnail class="preview" v-if="file" :file="file" fit="contain" @click="choose()"/>
+		<MkDriveFileThumbnail class="preview" v-if="file" :file="file" fit="contain" @click="choose()"/>
 	</section>
 </XContainer>
 </template>
@@ -18,12 +18,12 @@ import { defineComponent } from 'vue';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faImage, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkFileThumbnail from '@/components/drive-file-thumbnail.vue';
+import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XContainer, MkFileThumbnail
+		XContainer, MkDriveFileThumbnail
 	},
 
 	props: {

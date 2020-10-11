@@ -21,7 +21,7 @@
 		<p>{{ $t('nsfw') }}</p>
 	</div>
 
-	<XFileThumbnail class="thumbnail" :file="file" fit="contain"/>
+	<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 
 	<p class="name">
 		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
@@ -35,13 +35,13 @@ import { defineComponent } from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import XFileThumbnail from './drive-file-thumbnail.vue';
+import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
 import bytes from '../filters/bytes';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XFileThumbnail
+		MkDriveFileThumbnail
 	},
 
 	props: {

@@ -2,7 +2,7 @@
 <div class="skeikyzd" v-show="files.length != 0">
 	<XDraggable class="files" :list="files" animation="150" delay="100" delay-on-touch-only="true">
 		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
-			<XFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
+			<MkDriveFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<div class="sensitive" v-if="file.isSensitive">
 				<Fa class="icon" :icon="faExclamationTriangle"/>
 			</div>
@@ -16,13 +16,13 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
-import XFileThumbnail from './drive-file-thumbnail.vue'
+import MkDriveFileThumbnail from './drive-file-thumbnail.vue'
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
-		XFileThumbnail
+		MkDriveFileThumbnail
 	},
 
 	props: {

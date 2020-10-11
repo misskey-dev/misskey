@@ -32,7 +32,7 @@
 				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
 				<template #default="{items}">
 					<div class="emojis">
-						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu($event, emoji)">
+						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji, $event)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
 								<span class="name">{{ emoji.name }}</span>
@@ -169,7 +169,7 @@ export default defineComponent({
 			});
 		},
 
-		remoteMenu(ev, emoji) {
+		remoteMenu(emoji, ev) {
 			os.menu({
 				items: [{
 					type: 'label',
