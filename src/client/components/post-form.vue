@@ -9,8 +9,8 @@
 	<header>
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><Fa :icon="faTimes"/></button>
 		<div>
-			<span class="local-only" v-if="localOnly" v-text="$t('_visibility.localOnly')" />
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
+			<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
 			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')" :disabled="channel != null">
 				<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
@@ -641,8 +641,9 @@ export default defineComponent({
 				}
 			}
 			
-			.local-only {
-				margin: 0 8px;
+			> .local-only {
+				margin: 0 0 0 12px;
+				opacity: 0.7;
 			}
 
 			> .submit {

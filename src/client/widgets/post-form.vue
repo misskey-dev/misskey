@@ -1,12 +1,11 @@
 <template>
-<XPostForm class="_panel"/>
+<XPostForm class="_panel" :fixed="true"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XPostForm from '@/components/post-form.vue';
 import define from './define';
-import * as os from '@/os';
 
 const widget = define({
 	name: 'postForm',
@@ -20,13 +19,5 @@ export default defineComponent({
 	components: {
 		XPostForm,
 	},
-
-	data() {
-		return {
-		};
-	},
-
-	methods: {
-	}
 });
 </script>
