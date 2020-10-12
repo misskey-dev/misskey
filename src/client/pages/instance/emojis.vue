@@ -199,7 +199,7 @@ export default defineComponent({
 		> .local {
 			.emojis {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 				grid-gap: var(--margin);
 		
 				> .emoji {
@@ -239,7 +239,7 @@ export default defineComponent({
 		> .remote {
 			.emojis {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 				grid-gap: var(--margin);
 
 				> .emoji {
