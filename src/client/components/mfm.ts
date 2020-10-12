@@ -86,9 +86,7 @@ export default defineComponent({
 
 				case 'small': {
 					return [h('small', {
-						attrs: {
-							style: 'opacity: 0.7;'
-						},
+						style: 'opacity: 0.7;'
 					}, genEl(token.children))];
 				}
 
@@ -184,9 +182,7 @@ export default defineComponent({
 						}, genEl(token.children))];
 					} else {
 						return [h('span', {
-							attrs: {
-								class: 'quote'
-							}
+							class: 'quote'
 						}, genEl(token.children))];
 					}
 				}
