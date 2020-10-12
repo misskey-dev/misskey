@@ -827,7 +827,24 @@ export default defineComponent({
 
 	&:focus {
 		outline: none;
-		box-shadow: 0 0 0 3px var(--focus);
+
+		&:after {
+			content: "";
+			pointer-events: none;
+			display: block;
+			position: absolute;
+			z-index: 10;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+			width: calc(100% - 8px);
+			height: calc(100% - 8px);
+			border: dashed 1px var(--focus);
+			border-radius: var(--radius);
+			box-sizing: border-box;
+		}
 	}
 
 	&:hover > .article > .main > .footer > .button {
