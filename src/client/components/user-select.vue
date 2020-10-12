@@ -1,12 +1,14 @@
 <template>
 <XWindow @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
 	<template #header>{{ $t('selectUser') }}</template>
-	<div class="tbhwbxda">
+	<div class="tbhwbxda _section">
 		<div class="inputs">
 			<MkInput v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></MkInput>
 			<MkInput v-model:value="host" class="input" @update:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></MkInput>
 		</div>
-		<div class="users">
+	</div>
+	<div class="tbhwbxda _section" :style="users.length > 0 ? 'padding: 0;' : ''">
+		<div class="users" v-if="users.length > 0">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
 				<MkAvatar :user="user" class="avatar" :disable-link="true"/>
 				<div class="body">
@@ -14,6 +16,9 @@
 					<MkAcct :user="user" class="acct"/>
 				</div>
 			</div>
+		</div>
+		<div v-else class="empty">
+			<span>{{ $t('noUsers') }}</span>
 		</div>
 	</div>
 </XWindow>
@@ -88,10 +93,8 @@ export default defineComponent({
 	flex-direction: column;
 	overflow: auto;
 	height: 100%;
-		
-	> .inputs {
-		margin-top: 16px;
 
+	> .inputs {
 		> .input {
 			display: inline-block;
 			width: 50%;
@@ -102,11 +105,12 @@ export default defineComponent({
 	> .users {
 		flex: 1;
 		overflow: auto;
+		padding: 8px 0;
 
 		> .user {
 			display: flex;
 			align-items: center;
-			padding: 8px 16px;
+			padding: 8px var(--section-padding);
 			font-size: 14px;
 
 			&:hover {
@@ -142,6 +146,11 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+
+	> .empty {
+		opacity: 0.7;
+		text-align: center;
 	}
 }
 </style>
