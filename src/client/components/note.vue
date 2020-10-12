@@ -823,6 +823,7 @@ export default defineComponent({
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	overflow: hidden;
+	contain: content;
 
 	&:focus {
 		outline: none;

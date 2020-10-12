@@ -159,6 +159,7 @@ export default defineComponent({
 	font-size: 0.9em;
 	overflow-wrap: break-word;
 	display: flex;
+	contain: content;
 
 	&.max-width_600px {
 		padding: 16px;

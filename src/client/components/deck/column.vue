@@ -286,6 +286,7 @@ export default defineComponent({
 
 	height: 100%;
 	overflow: hidden;
+	contain: content;
 
 	&.draghover {
 		box-shadow: 0 0 0 2px var(--focus);
