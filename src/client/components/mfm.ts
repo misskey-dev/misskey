@@ -11,7 +11,6 @@ import MkCode from './code.vue';
 import MkGoogle from './google.vue';
 import { host } from '@/config';
 import { RouterLink } from 'vue-router';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -176,7 +175,7 @@ export default defineComponent({
 				}
 
 				case 'quote': {
-					if (this.shouldBreak) {
+					if (!this.nowrap) {
 						return [h('div', {
 							class: 'quote'
 						}, genEl(token.children))];
@@ -227,7 +226,7 @@ export default defineComponent({
 				}
 
 				default: {
-					console.log('unrecognized ast type:', token.node.type);
+					console.error('unrecognized ast type:', token.node.type);
 
 					return [];
 				}
