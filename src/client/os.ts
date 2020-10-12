@@ -117,7 +117,10 @@ export function modal(component: Component | typeof import('*.vue'), props: Reco
 			source: option?.source,
 			done: close,
 			bgClick: () => {
-				if (option?.cancelableByBgClick === false) return;
+				if (option?.cancelableByBgClick === false) {
+					// TODO: shake modal
+					return;
+				}
 				close();
 			},
 			closed: () => {
