@@ -86,6 +86,7 @@ export default defineComponent({
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+	contain: content;
 
 	--section-padding: 24px;
 
