@@ -11,7 +11,7 @@
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 	</nav>
-	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
+	<div class="main _section" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"
@@ -645,6 +645,8 @@ export default defineComponent({
 		display: block;
 		z-index: 2;
 		width: 100%;
+		padding: 0 8px;
+		box-sizing: border-box;
 		overflow: auto;
 		font-size: 0.9em;
 		box-shadow: 0 1px 0 var(--divider);
@@ -698,7 +700,6 @@ export default defineComponent({
 	}
 
 	> .main {
-		padding: 10px;
 		overflow: auto;
 
 		&, * {
