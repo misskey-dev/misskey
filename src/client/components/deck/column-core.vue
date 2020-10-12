@@ -19,7 +19,6 @@ import XNotificationsColumn from './notifications-column.vue';
 import XWidgetsColumn from './widgets-column.vue';
 import XMentionsColumn from './mentions-column.vue';
 import XDirectColumn from './direct-column.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {

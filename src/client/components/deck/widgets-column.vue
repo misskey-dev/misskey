@@ -36,7 +36,6 @@ import MkSelect from '@/components/ui/select.vue';
 import MkButton from '@/components/ui/button.vue';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -63,7 +62,7 @@ export default defineComponent({
 			menu: null,
 			widgetAdderSelected: null,
 			widgets,
-			setting: {},
+			settings: {},
 			faWindowMaximize, faTimes, faPlus
 		};
 	},

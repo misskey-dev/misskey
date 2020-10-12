@@ -26,7 +26,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -64,11 +63,12 @@ export default defineComponent({
 	},
 	mounted() {
 		this.$watch('showBody', showBody => {
-			this.$el.style.minHeight = `${this.$refs.header.offsetHeight}px`;
+			const headerHeight = this.showHeader ? this.$refs.header.offsetHeight : 0;
+			this.$el.style.minHeight = `${headerHeight}px`;
 			if (showBody) {
 				this.$el.style.flexBasis = `auto`;
 			} else {
-				this.$el.style.flexBasis = `${this.$refs.header.offsetHeight}px`;
+				this.$el.style.flexBasis = `${headerHeight}px`;
 			}
 		}, {
 			immediate: true
