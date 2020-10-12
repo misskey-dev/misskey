@@ -48,7 +48,7 @@ if (_DEV_) {
 }
 
 // タッチデバイスでCSSの:hoverを機能させる
-document.addEventListener('touchstart', () => {}, { passive: true });
+document.addEventListener('touchend', () => {}, { passive: true });
 
 if (localStorage.getItem('theme') == null) {
 	applyTheme(require('@/themes/white.json5'));
