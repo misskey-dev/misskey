@@ -6,19 +6,19 @@
 	</div>
 
 	<template v-if="tag == null">
-		<MkFolder class="_vMargin">
+		<MkFolder class="_vMargin" persist-key="explore-pinned-users">
 			<template #header><Fa :icon="faBookmark" fixed-width style="margin-right: 0.5em;"/>{{ $t('pinnedUsers') }}</template>
 			<XUserList :pagination="pinnedUsers"/>
 		</MkFolder>
-		<MkFolder class="_vMargin">
+		<MkFolder class="_vMargin" persist-key="explore-popular-users">
 			<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
 			<XUserList :pagination="popularUsers"/>
 		</MkFolder>
-		<MkFolder class="_vMargin">
+		<MkFolder class="_vMargin" persist-key="explore-recently-updated-users">
 			<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
 			<XUserList :pagination="recentlyUpdatedUsers"/>
 		</MkFolder>
-		<MkFolder class="_vMargin">
+		<MkFolder class="_vMargin" persist-key="explore-recently-registered-users">
 			<template #header><Fa :icon="faPlus" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyRegisteredUsers') }}</template>
 			<XUserList :pagination="recentlyRegisteredUsers"/>
 		</MkFolder>
