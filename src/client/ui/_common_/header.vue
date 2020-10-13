@@ -6,7 +6,7 @@
 	<template v-if="info">
 		<div class="titleContainer">
 			<div class="title" v-for="header in info.header" :key="header.id" :class="{ _button: header.onClick, selected: header.selected }" @click="header.onClick" v-tooltip="header.tooltip">
-				<Fa v-if="header.icon" :icon="header.icon" class="icon"/>
+				<Fa v-if="header.icon" :icon="header.icon" :key="header.icon" class="icon"/>
 				<MkAvatar v-else-if="header.avatar" class="avatar" :user="header.avatar" :disable-preview="true"/>
 				<span v-if="header.title" class="text">{{ header.title }}</span>
 				<MkUserName v-else-if="header.userName" :user="header.userName" :nowrap="false" class="text"/>
@@ -20,7 +20,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
