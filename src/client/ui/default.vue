@@ -39,7 +39,7 @@
 		<div class="tray-back _modalBg"
 			v-if="widgetsShowing"
 			@click="widgetsShowing = false"
-			@touchstart="widgetsShowing = false"
+			@touchstart.passive="widgetsShowing = false"
 		></div>
 	</transition>
 

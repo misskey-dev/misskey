@@ -4,7 +4,7 @@
 		<div class="nav-back _modalBg"
 			v-if="showing"
 			@click="showing = false"
-			@touchstart="showing = false"
+			@touchstart.passive="showing = false"
 		></div>
 	</transition>
 
