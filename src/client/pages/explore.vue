@@ -1,6 +1,6 @@
 <template>
 <div class="_section">
-	<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('search') }}</span></MkInput>
+	<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('searchUser') }}</span></MkInput>
 
 	<XUserList v-if="query" class="_vMargin" :pagination="searchPagination" ref="search"/>
 

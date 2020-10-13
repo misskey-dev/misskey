@@ -40,6 +40,7 @@ deleteAndEditConfirm: "このノートを削除してもう一度編集します
 addToList: "リストに追加"
 sendMessage: "メッセージを送信"
 copyUsername: "ユーザー名をコピー"
+searchUser: "ユーザーを検索"
 reply: "返信"
 loadMore: "もっと見る"
 youGotNewFollower: "フォローされました"
