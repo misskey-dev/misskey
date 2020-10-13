@@ -12,7 +12,7 @@
 				<MkUserName v-else-if="header.userName" :user="header.userName" :nowrap="false" class="text"/>
 			</div>
 		</div>
-		<button class="_button action" v-if="info.action" @click="info.action.handler"><Fa :icon="info.action.icon"/></button>
+		<button class="_button action" v-if="info.action" @click="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 	</template>
 </div>
 </template>
