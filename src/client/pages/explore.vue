@@ -1,53 +1,60 @@
 <template>
-<div>
-	<portal to="header"><Fa :icon="faHashtag"/>{{ $t('explore') }}</portal>
-
+<div class="_section">
 	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
 		<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 	</div>
 
 	<template v-if="tag == null">
-		<XUserList :pagination="pinnedUsers" :expanded="false">
-			<Fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}
-		</XUserList>
-		<XUserList :pagination="popularUsers" :expanded="false">
-			<Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
-		</XUserList>
-		<XUserList :pagination="recentlyUpdatedUsers" :expanded="false">
-			<Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
-		</XUserList>
-		<XUserList :pagination="recentlyRegisteredUsers" :expanded="false">
-			<Fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}
-		</XUserList>
+		<MkFolder>
+			<template #header><Fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}</template>
+			<XUserList :pagination="pinnedUsers"/>
+		</MkFolder>
+		<MkFolder>
+			<template #header><Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}</template>
+			<XUserList :pagination="popularUsers"/>
+		</MkFolder>
+		<MkFolder>
+			<template #header><Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}</template>
+			<XUserList :pagination="recentlyUpdatedUsers"/>
+		</MkFolder>
+		<MkFolder>
+			<template #header><Fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}</template>
+			<XUserList :pagination="recentlyRegisteredUsers"/>
+		</MkFolder>
 	</template>
 
 	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
 		<header><span>{{ $t('exploreFediverse') }}</span></header>
 	</div>
 
-	<MkContainer :body-togglable="true" :expanded="false" ref="tags">
+	<MkFolder :body-togglable="true" :expanded="false" ref="tags">
 		<template #header><Fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
 			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
 		</div>
-	</MkContainer>
+	</MkFolder>
 
-	<XUserList v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
-		<Fa :icon="faHashtag" fixed-width/>{{ tag }}
-	</XUserList>
+	<MkFolder v-if="tag != null" :key="`${tag}`">
+		<template #header><Fa :icon="faHashtag" fixed-width/>{{ tag }}</template>
+		<XUserList :pagination="tagUsers"/>
+	</MkFolder>
+
 	<template v-if="tag == null">
-		<XUserList :pagination="popularUsersF" :expanded="false">
-			<Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
-		</XUserList>
-		<XUserList :pagination="recentlyUpdatedUsersF" :expanded="false">
-			<Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
-		</XUserList>
-		<XUserList :pagination="recentlyRegisteredUsersF" :expanded="false">
-			<Fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}
-		</XUserList>
+		<MkFolder>
+			<template #header><Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}</template>
+			<XUserList :pagination="popularUsersF"/>
+		</MkFolder>
+		<MkFolder>
+			<template #header><Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}</template>
+			<XUserList :pagination="recentlyUpdatedUsersF"/>
+		</MkFolder>
+		<MkFolder>
+			<template #header><Fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}</template>
+			<XUserList :pagination="recentlyRegisteredUsersF"/>
+		</MkFolder>
 	</template>
 </div>
 </template>
@@ -57,7 +64,7 @@ import { defineComponent } from 'vue';
 import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import XUserList from '@/components/user-list.vue';
-import MkContainer from '@/components/ui/container.vue';
+import MkFolder from '@/components/ui/folder.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 
@@ -70,7 +77,7 @@ export default defineComponent({
 
 	components: {
 		XUserList,
-		MkContainer,
+		MkFolder,
 	},
 
 	props: {
@@ -82,6 +89,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('explore'),
+					icon: faHashtag
+				}],
+			},
 			pinnedUsers: { endpoint: 'pinned-users' },
 			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				state: 'alive',

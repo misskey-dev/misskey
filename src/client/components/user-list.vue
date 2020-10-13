@@ -1,46 +1,28 @@
 <template>
-<MkContainer :body-togglable="true" :expanded="expanded">
-	<template #header><slot></slot></template>
+<MkError v-if="error" @retry="init()"/>
 
-	<MkError v-if="error" @retry="init()"/>
-
-	<div class="efvhhmdq">
-		<div class="no-users" v-if="empty">
-			<p>{{ $t('noUsers') }}</p>
-		</div>
-		<div class="user" v-for="user in users" :key="user.id">
-			<MkAvatar class="avatar" :user="user"/>
-			<div class="body">
-				<div class="name">
-					<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><MkUserName :user="user"/></router-link>
-					<span class="username"><MkAcct :user="user"/></span>
-				</div>
-				<div class="description">
-					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-					<span v-else class="empty">{{ $t('noAccountDescription') }}</span>
-				</div>
-			</div>
-			<MkFollowButton class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
-		</div>
-		<button class="more" ref="loadMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
-			<template v-if="moreFetching"><Fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
-		</button>
+<div v-else class="efvhhmdq">
+	<div class="no-users" v-if="empty">
+		<p>{{ $t('noUsers') }}</p>
 	</div>
-</MkContainer>
+	<div class="users">
+		<MkUserInfo class="user" v-for="user in users" :user="user" :key="user.id"/>
+	</div>
+	<button class="more" ref="loadMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
+		<template v-if="moreFetching"><Fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
+	</button>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import paging from '@/scripts/paging';
-import MkContainer from './ui/container.vue';
-import MkFollowButton from './follow-button.vue';
+import MkUserInfo from './user-info.vue';
 import { userPage } from '../filters/user';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkContainer,
-		MkFollowButton,
+		MkUserInfo,
 	},
 
 	mixins: [
@@ -78,52 +60,10 @@ export default defineComponent({
 		text-align: center;
 	}
 
-	> .user {
-		position: relative;
-		display: flex;
-		padding: 16px;
-		border-bottom: solid 1px var(--divider);
-
-		&:last-child {
-			border-bottom: none;
-		}
-
-		> .avatar {
-			display: block;
-			flex-shrink: 0;
-			margin: 0 12px 0 0;
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-		}
-
-		> .body {
-			flex: 1;
-
-			> .name {
-				font-weight: bold;
-
-				> .name {
-					margin-right: 8px;
-				}
-
-				> .username {
-					opacity: 0.7;
-				}
-			}
-
-			> .description {
-				font-size: 90%;
-
-				> .empty {
-					opacity: 0.7;
-				}
-			}
-		}
-
-		> .koudoku-button {
-			flex-shrink: 0;
-		}
+	> .users {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		grid-gap: var(--margin);
 	}
 
 	> .more {
