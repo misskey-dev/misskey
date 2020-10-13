@@ -1,9 +1,12 @@
 <template>
 <div class="rrevdjwt _popup" :class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, contextmenu: contextmenuEvent != null }" ref="items" :style="{ width: width + 'px' }" @contextmenu.self="e => e.preventDefault()">
-	<template v-for="(item, i) in items.filter(item => item !== undefined)">
+	<template v-for="(item, i) in _items">
 		<div v-if="item === null" class="divider"></div>
 		<span v-else-if="item.type === 'label'" class="label item">
 			<span>{{ item.text }}</span>
+		</span>
+		<span v-else-if="item.type === 'pending'" :tabindex="i" class="pending item">
+			<span><MkEllipsis/></span>
 		</span>
 		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.passive="close()" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
@@ -31,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import contains from '@/scripts/contains';
@@ -69,7 +72,8 @@ export default defineComponent({
 	emits: ['done', 'closed'],
 	data() {
 		return {
-			faCircle
+			_items: [],
+			faCircle,
 		};
 	},
 	computed: {
@@ -79,6 +83,22 @@ export default defineComponent({
 				'down|j|tab': this.focusDown,
 			};
 		},
+	},
+	created() {
+		const items = ref(this.items.filter(item => item !== undefined));
+
+		for (let i = 0; i < items.value.length; i++) {
+			const item = items.value[i];
+			
+			if (item && item.then) { // if item is Promise
+				items.value[i] = { type: 'pending' };
+				item.then(actualItem => {
+					items.value[i] = actualItem;
+				});
+			}
+		}
+
+		this._items = items;
 	},
 	mounted() {
 		if (this.viaKeyboard) {
@@ -188,6 +208,11 @@ export default defineComponent({
 			> span {
 				opacity: 0.7;
 			}
+		}
+
+		&.pending {
+			pointer-events: none;
+			opacity: 0.7;
 		}
 
 		> [data-icon] {

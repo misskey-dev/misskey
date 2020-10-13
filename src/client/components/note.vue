@@ -583,12 +583,11 @@ export default defineComponent({
 		getMenu() {
 			let menu;
 			if (this.$store.getters.isSignedIn) {
-				const state = ref(null);
-				os.api('notes/state', {
+				const statePromise = os.api('notes/state', {
 					noteId: this.appearNote.id
-				}).then(res => state.value = res);
+				});
 
-				menu = computed(() => [{
+				menu = [{
 					type: 'link',
 					icon: faInfoCircle,
 					text: this.$t('details'),
@@ -609,7 +608,7 @@ export default defineComponent({
 					}
 				} : undefined,
 				null,
-				state.value ? state.value.isFavorited ? {
+				statePromise.then(state => state.isFavorited ? {
 					icon: faStar,
 					text: this.$t('unfavorite'),
 					action: () => this.toggleFavorite(false)
@@ -617,8 +616,8 @@ export default defineComponent({
 					icon: faStar,
 					text: this.$t('favorite'),
 					action: () => this.toggleFavorite(true)
-				} : undefined,
-				(this.appearNote.userId != this.$store.state.i.id) && state.value ? state.value.isWatching ? {
+				}),
+				(this.appearNote.userId != this.$store.state.i.id) ? statePromise.then(state => state.isWatching ? {
 					icon: faEyeSlash,
 					text: this.$t('unwatch'),
 					action: () => this.toggleWatch(false)
@@ -626,7 +625,7 @@ export default defineComponent({
 					icon: faEye,
 					text: this.$t('watch'),
 					action: () => this.toggleWatch(true)
-				} : undefined,
+				}) : undefined,
 				this.appearNote.userId == this.$store.state.i.id ? (this.$store.state.i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
 					icon: faThumbtack,
 					text: this.$t('unpin'),
@@ -660,7 +659,7 @@ export default defineComponent({
 					}]
 					: []
 				)]
-				.filter(x => x !== undefined));
+				.filter(x => x !== undefined);
 			} else {
 				menu = [{
 					icon: faCopy,
