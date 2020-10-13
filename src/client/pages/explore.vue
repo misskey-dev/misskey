@@ -1,6 +1,10 @@
 <template>
 <div class="_section">
-	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+	<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('search') }}</span></MkInput>
+
+	<XUserList v-if="query" class="_vMargin" :pagination="searchPagination" ref="search"/>
+
+	<div class="localfedi7 _panel _vMargin" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
 		<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 	</div>
@@ -60,24 +64,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { computed, defineComponent } from 'vue';
+import { faChartLine, faPlus, faHashtag, faRocket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import XUserList from '@/components/user-list.vue';
 import MkFolder from '@/components/ui/folder.vue';
+import MkInput from '@/components/ui/input.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('explore') as string
-		};
-	},
-
 	components: {
 		XUserList,
 		MkFolder,
+		MkInput,
 	},
 
 	props: {
@@ -123,11 +123,19 @@ export default defineComponent({
 				origin: 'combined',
 				sort: '+createdAt',
 			} },
+			searchPagination: {
+				endpoint: 'users/search',
+				limit: 10,
+				params: computed(() => (this.query && this.query !== '') ? {
+					query: this.query
+				} : null)
+			},
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
+			query: null,
 			num: number,
-			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
+			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket, faSearch,
 		};
 	},
 
@@ -151,7 +159,7 @@ export default defineComponent({
 	watch: {
 		tag() {
 			if (this.$refs.tags) this.$refs.tags.toggleContent(this.tag == null);
-		}
+		},
 	},
 
 	created() {

@@ -252,8 +252,8 @@ export default defineComponent({
 					this.users = users;
 					this.fetching = false;
 				} else {
-					os.api('users/search', {
-						query: this.q,
+					os.api('users/search-by-username-and-host', {
+						username: this.q,
 						limit: 10,
 						detail: false
 					}).then(users => {

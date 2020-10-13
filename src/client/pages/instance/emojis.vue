@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
@@ -86,32 +86,20 @@ export default defineComponent({
 			pagination: {
 				endpoint: 'admin/emoji/list',
 				limit: 15,
-				params: () => ({
+				params: computed(() => ({
 					query: (this.query && this.query !== '') ? this.query : null
-				})
+				}))
 			},
 			remotePagination: {
 				endpoint: 'admin/emoji/list-remote',
 				limit: 15,
-				params: () => ({
+				params: computed(() => ({
 					query: (this.queryRemote && this.queryRemote !== '') ? this.queryRemote : null,
 					host: (this.host && this.host !== '') ? this.host : null
-				})
+				}))
 			},
 			faTrashAlt, faPlus, faLaugh, faSave, faSearch,
 		}
-	},
-
-	watch: {
-		query() {
-			this.$refs.emojis.reload();
-		},
-		queryRemote() {
-			this.$refs.remoteEmojis.reload();
-		},
-		host() {
-			this.$refs.remoteEmojis.reload();
-		},
 	},
 
 	methods: {

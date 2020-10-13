@@ -39,8 +39,11 @@ export default (opts) => ({
 	},
 
 	watch: {
-		pagination() {
-			this.init();
+		pagination: {
+			handler() {
+				this.init();
+			},
+			deep: true
 		},
 
 		queue: {
@@ -102,6 +105,7 @@ export default (opts) => ({
 			if (opts.before) opts.before(this);
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(true) : this.pagination.params;
 			if (params && params.then) params = await params;
+			if (params === null) return;
 			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
 			await os.api(endpoint, {
 				...params,
