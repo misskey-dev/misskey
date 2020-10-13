@@ -7,19 +7,19 @@
 
 	<template v-if="tag == null">
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}</template>
+			<template #header><Fa :icon="faBookmark" fixed-width style="margin-right: 0.5em;"/>{{ $t('pinnedUsers') }}</template>
 			<XUserList :pagination="pinnedUsers"/>
 		</MkFolder>
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}</template>
+			<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
 			<XUserList :pagination="popularUsers"/>
 		</MkFolder>
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}</template>
+			<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
 			<XUserList :pagination="recentlyUpdatedUsers"/>
 		</MkFolder>
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}</template>
+			<template #header><Fa :icon="faPlus" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyRegisteredUsers') }}</template>
 			<XUserList :pagination="recentlyRegisteredUsers"/>
 		</MkFolder>
 	</template>
@@ -29,7 +29,7 @@
 	</div>
 
 	<MkFolder :body-togglable="true" :expanded="false" ref="tags" class="_vMargin">
-		<template #header><Fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
+		<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularTags') }}</template>
 
 		<div class="vxjfqztj">
 			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
@@ -38,21 +38,21 @@
 	</MkFolder>
 
 	<MkFolder v-if="tag != null" :key="`${tag}`" class="_vMargin">
-		<template #header><Fa :icon="faHashtag" fixed-width/>{{ tag }}</template>
+		<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ tag }}</template>
 		<XUserList :pagination="tagUsers"/>
 	</MkFolder>
 
 	<template v-if="tag == null">
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}</template>
+			<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
 			<XUserList :pagination="popularUsersF"/>
 		</MkFolder>
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}</template>
+			<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
 			<XUserList :pagination="recentlyUpdatedUsersF"/>
 		</MkFolder>
 		<MkFolder class="_vMargin">
-			<template #header><Fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}</template>
+			<template #header><Fa :icon="faRocket" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyDiscoveredUsers') }}</template>
 			<XUserList :pagination="recentlyRegisteredUsersF"/>
 		</MkFolder>
 	</template>
@@ -209,8 +209,6 @@ export default defineComponent({
 }
 
 .vxjfqztj {
-	padding: 16px;
-
 	> * {
 		margin-right: 16px;
 
