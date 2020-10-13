@@ -1,5 +1,11 @@
 <template>
-<div class="rrevdjwt _popup" :class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, contextmenu: contextmenuEvent != null }" ref="items" :style="{ width: width + 'px' }" @contextmenu.self="e => e.preventDefault()">
+<div class="rrevdjwt _popup"
+	:class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, contextmenu: contextmenuEvent != null }"
+	ref="items"
+	:style="{ width: width + 'px' }"
+	@contextmenu.self="e => e.preventDefault()"
+	v-hotkey="keymap"
+>
 	<template v-for="(item, i) in _items">
 		<div v-if="item === null" class="divider"></div>
 		<span v-else-if="item.type === 'label'" class="label item">
@@ -81,6 +87,7 @@ export default defineComponent({
 			return {
 				'up|k|shift+tab': this.focusUp,
 				'down|j|tab': this.focusDown,
+				'esc': this.close,
 			};
 		},
 	},
@@ -103,7 +110,7 @@ export default defineComponent({
 	mounted() {
 		if (this.viaKeyboard) {
 			this.$nextTick(() => {
-				focusNext(this.$refs.items.children[0], true);
+				focusNext(this.$refs.items.children[0], true, false);
 			});
 		}
 

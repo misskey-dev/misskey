@@ -1,5 +1,5 @@
 <template>
-<div class="rdfaahpb _popup">
+<div class="rdfaahpb _popup" v-hotkey="keymap">
 	<div class="buttons" ref="buttons" :class="{ showFocus }">
 		<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><XReactionIcon :reaction="reaction"/></button>
 	</div>
@@ -11,7 +11,6 @@
 import { defineComponent } from 'vue';
 import { emojiRegex } from '../../misc/emoji-regex';
 import XReactionIcon from './reaction-icon.vue';
-import * as os from '@/os';
 import { Autocomplete } from '@/scripts/autocomplete';
 
 export default defineComponent({
@@ -66,12 +65,16 @@ export default defineComponent({
 
 	watch: {
 		focus(i) {
-			this.$refs.buttons.children[i].focus();
+			this.$refs.buttons.children[i].focus({
+				preventScroll: true
+			});
 		}
 	},
 
 	mounted() {
-		this.focus = 0;
+		this.$nextTick(() => {
+			this.focus = 0;
+		});
 
 		// TODO: detach when unmount
 		new Autocomplete(this.$refs.text, this, { model: 'text' });
@@ -135,6 +138,7 @@ export default defineComponent({
 
 		&.showFocus {
 			> button:focus {
+				position: relative;
 				z-index: 1;
 
 				&:after {
