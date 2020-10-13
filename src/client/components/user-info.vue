@@ -7,7 +7,9 @@
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
 	<div class="description">
-		<Mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :nowrap="true"/>
+		<div class="mfm" v-if="user.description">
+			<Mfm :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :nowrap="true"/>
+		</div>
 		<span v-else style="opacity: 0.7;">{{ $t('noAccountDescription') }}</span>
 	</div>
 	<div class="status">
@@ -103,10 +105,13 @@ export default defineComponent({
 		padding: 16px;
 		font-size: 0.8em;
 		border-top: solid 1px var(--divider);
-		display: -webkit-box;
-		-webkit-line-clamp: 3;
-		-webkit-box-orient: vertical;  
-		overflow: hidden;
+
+		> .mfm {
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;  
+			overflow: hidden;
+		}
 	}
 
 	> .status {
