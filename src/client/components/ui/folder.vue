@@ -1,6 +1,6 @@
 <template>
 <div class="ssazuxis" v-size="{ max: [500] }">
-	<header @click="() => showBody = !showBody" class="_button">
+	<header @click="showBody = !showBody" class="_button">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
 		<button class="_button">
@@ -24,7 +24,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -93,7 +92,7 @@ export default defineComponent({
 
 		> .title {
 			margin: 0;
-			padding: 12px 16px 12px 8px;
+			padding: 12px 16px 12px 0;
 
 			> [data-icon] {
 				margin-right: 6px;
@@ -112,7 +111,7 @@ export default defineComponent({
 		}
 
 		> button {
-			width: 42px;
+			padding: 12px 0 12px 16px;
 		}
 	}
 

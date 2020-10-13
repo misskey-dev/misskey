@@ -6,29 +6,29 @@
 	</div>
 
 	<template v-if="tag == null">
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}</template>
 			<XUserList :pagination="pinnedUsers"/>
 		</MkFolder>
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}</template>
 			<XUserList :pagination="popularUsers"/>
 		</MkFolder>
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}</template>
 			<XUserList :pagination="recentlyUpdatedUsers"/>
 		</MkFolder>
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}</template>
 			<XUserList :pagination="recentlyRegisteredUsers"/>
 		</MkFolder>
 	</template>
 
-	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
+	<div class="localfedi7 _panel _vMargin" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
 		<header><span>{{ $t('exploreFediverse') }}</span></header>
 	</div>
 
-	<MkFolder :body-togglable="true" :expanded="false" ref="tags">
+	<MkFolder :body-togglable="true" :expanded="false" ref="tags" class="_vMargin">
 		<template #header><Fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
 
 		<div class="vxjfqztj">
@@ -37,21 +37,21 @@
 		</div>
 	</MkFolder>
 
-	<MkFolder v-if="tag != null" :key="`${tag}`">
+	<MkFolder v-if="tag != null" :key="`${tag}`" class="_vMargin">
 		<template #header><Fa :icon="faHashtag" fixed-width/>{{ tag }}</template>
 		<XUserList :pagination="tagUsers"/>
 	</MkFolder>
 
 	<template v-if="tag == null">
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}</template>
 			<XUserList :pagination="popularUsersF"/>
 		</MkFolder>
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}</template>
 			<XUserList :pagination="recentlyUpdatedUsersF"/>
 		</MkFolder>
-		<MkFolder>
+		<MkFolder class="_vMargin">
 			<template #header><Fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}</template>
 			<XUserList :pagination="recentlyRegisteredUsersF"/>
 		</MkFolder>
