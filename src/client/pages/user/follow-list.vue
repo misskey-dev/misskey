@@ -1,33 +1,24 @@
 <template>
-<MkPagination :pagination="pagination" #default="{items}" class="mk-following-or-followers" ref="list">
-	<div class="user _panel" v-for="(user, i) in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id">
-		<MkAvatar class="avatar" :user="user"/>
-		<div class="body">
-			<div class="name">
-				<router-link class="name" :to="userPage(user)" v-user-preview="user.id"><MkUserName :user="user"/></router-link>
-				<p class="acct">@{{ acct(user) }}</p>
-			</div>
-			<div class="description" v-if="user.description" :title="user.description">
-				<Mfm :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :plain="true" :nowrap="true"/>
-			</div>
-			<MkFollowButton class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+<div class="_section">
+	<MkPagination :pagination="pagination" #default="{items}" class="mk-following-or-followers _content" ref="list">
+		<div class="users">
+			<MkUserInfo class="user" v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :user="user" :key="user.id"/>
 		</div>
-	</div>
-</MkPagination>
+	</MkPagination>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import parseAcct from '../../../misc/acct/parse';
-import MkFollowButton from '@/components/follow-button.vue';
+import MkUserInfo from '@/components/user-info.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import { userPage, acct } from '../../filters/user';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		MkPagination,
-		MkFollowButton,
+		MkUserInfo,
 	},
 
 	props: {
@@ -69,77 +60,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-following-or-followers {
-	> .user {
-		display: flex;
-		padding: 16px;
-
-		> .avatar {
-			display: block;
-			flex-shrink: 0;
-			margin: 0 12px 0 0;
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-		}
-
-		> .body {
-			display: flex;
-			width: calc(100% - 54px);
-			position: relative;
-
-			> .name {
-				width: 45%;
-
-				@media (max-width: 500px) {
-					width: 100%;
-				}
-
-				> .name,
-				> .acct {
-					display: block;
-					white-space: nowrap;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					margin: 0;
-				}
-
-				> .name {
-					font-size: 16px;
-					line-height: 24px;
-				}
-
-				> .acct {
-					font-size: 15px;
-					line-height: 16px;
-					opacity: 0.7;
-				}
-			}
-
-			> .description {
-				width: 55%;
-				line-height: 42px;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				opacity: 0.7;
-				font-size: 14px;
-				padding-right: 40px;
-				padding-left: 8px;
-				box-sizing: border-box;
-
-				@media (max-width: 500px) {
-					display: none;
-				}
-			}
-
-			> .koudoku-button {
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				right: 0;
-				margin: auto 0;
-			}
-		}
+	> .users {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		grid-gap: var(--margin);
 	}
 }
 </style>

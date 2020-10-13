@@ -70,6 +70,8 @@ export default defineComponent({
 			},
 			deep: true
 		},
+		// TODO: vue/vuexのバグか仕様かは不明なものの、プロフィール更新するなどして $store.state.i が更新されると、
+		// mutingNotificationTypes に変化が無くてもこのハンドラーが呼び出され無駄なリロードが発生するのを直す
 		'$store.state.i.mutingNotificationTypes': {
 			handler() {
 				if (this.includeTypes === null) {
