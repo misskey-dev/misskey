@@ -102,7 +102,6 @@ export const popups = ref([]) as Ref<{
 	id: any;
 	component: any;
 	props: Record<string, any>;
-	vm: any;
 }[]>;
 
 export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}) {
@@ -110,20 +109,12 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 
 	markRaw(component);
 	const id = Math.random().toString(); // TODO: uuidとか使う
-	const vm = ref(null);
 	const state = {
 		component,
 		props,
 		events,
 		id,
-		vm,
 	};
-
-	const vmPromise = new Promise((resolve) => {
-		watch(vm, () => {
-			resolve(vm);
-		});
-	});
 
 	if (_DEV_) console.log('os:popup open', id, component, props, events);
 	popups.value.push(state);
@@ -136,7 +127,6 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 				popups.value = popups.value.filter(popup => popup.id !== id);
 			}, 0);
 		},
-		vm: vmPromise,
 	};
 }
 

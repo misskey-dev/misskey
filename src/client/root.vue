@@ -6,7 +6,6 @@
 <component v-for="popup in popups"
 	:key="popup.id"
 	:is="popup.component"
-	:ref="popup.vm"
 	v-bind="popup.props"
 	v-on="popup.events"
 />
@@ -34,10 +33,6 @@ export default defineComponent({
 			deckmode,
 			uploads,
 			popups,
-			setPopupRef: (id, vm) => {
-				console.log(id, vm, popups.value.find(popup => popup.id === id));
-				popups.value.find(popup => popup.id === id).vm.value = vm;
-			}
 		};
 	},
 });
