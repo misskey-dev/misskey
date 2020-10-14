@@ -1,5 +1,13 @@
 <template>
-<XModalWindow :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
+<XModalWindow ref="dialog"
+	:width="400"
+	:height="450"
+	:with-ok-button="true"
+	:ok-button-disabled="false"
+	@ok="ok()"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header>{{ $t('notificationSetting') }}</template>
 	<div v-if="showGlobalToggle" class="_section">
 		<MkSwitch v-model:value="useGlobalSetting">
@@ -23,7 +31,6 @@ import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
 import { notificationTypes } from '../../types';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -47,7 +54,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {

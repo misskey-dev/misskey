@@ -43,16 +43,17 @@ export default defineComponent({
 			icon: faCog,
 			text: this.$t('notificationSetting'),
 			action: async () => {
-				os.modal(await import('@/components/notification-setting-window.vue'), {
+				os.popup(await import('@/components/notification-setting-window.vue'), {
 					includingTypes: this.column.includingTypes,
-				}).then(async (res) => {
-					if (res == null) return;
-					const { includingTypes } = res;
-					this.$store.commit('deviceUser/updateDeckColumn', {
-						...this.column,
-						includingTypes: includingTypes
-					});
-				});
+				}, {
+					done: async (res) => {
+						const { includingTypes } = res;
+						this.$store.commit('deviceUser/updateDeckColumn', {
+							...this.column,
+							includingTypes: includingTypes
+						});
+					},
+				}, 'closed');
 			}
 		}];
 	},

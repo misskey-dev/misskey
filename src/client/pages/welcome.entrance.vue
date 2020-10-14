@@ -58,15 +58,15 @@ export default defineComponent({
 
 	methods: {
 		signin() {
-			os.modal(XSigninDialog, {
+			os.popup(XSigninDialog, {
 				autoSet: true
-			});
+			}, {}, 'closed');
 		},
 
 		signup() {
-			os.modal(XSignupDialog, {
+			os.popup(XSignupDialog, {
 				autoSet: true
-			});
+			}, {}, 'closed');
 		}
 	}
 });

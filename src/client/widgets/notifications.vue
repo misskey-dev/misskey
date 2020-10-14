@@ -52,14 +52,15 @@ export default defineComponent({
 
 	methods: {
 		async configure() {
-			os.modal(await import('@/components/notification-setting-window.vue'), {
+			os.popup(await import('@/components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
-			}).then(async (res) => {
-				if (res == null) return;
-				const { includingTypes } = res;
-				this.props.includingTypes = includingTypes;
-				this.save();
-			});
+			}, {
+				done: async (res) => {
+					const { includingTypes } = res;
+					this.props.includingTypes = includingTypes;
+					this.save();
+				}
+			}, 'closed');
 		}
 	}
 });
