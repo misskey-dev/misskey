@@ -120,7 +120,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['posted', 'done'],
+	emits: ['posted', 'done', 'esc'],
 
 	data() {
 		return {
@@ -420,7 +420,8 @@ export default defineComponent({
 		},
 
 		onKeydown(e) {
-			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
+			if ((e.which === 10 || e.which === 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
+			if (e.which === 27) this.$emit('esc');
 		},
 
 		async onPaste(e: ClipboardEvent) {
@@ -582,20 +583,16 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			os.menu({
-				items: this.$store.state.postFormActions.map(action => ({
-					text: action.title,
-					action: () => {
-						action.handler({
-							text: this.text
-						}, (key, value) => {
-							if (key === 'text') { this.text = value; }
-						});
-					}
-				})),
-			}, {
-				source: ev.currentTarget || ev.target,
-			});
+			os.modalMenu(this.$store.state.postFormActions.map(action => ({
+				text: action.title,
+				action: () => {
+					action.handler({
+						text: this.text
+					}, (key, value) => {
+						if (key === 'text') { this.text = value; }
+					});
+				}
+			})), ev.currentTarget || ev.target);
 		}
 	}
 });

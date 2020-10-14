@@ -1,9 +1,6 @@
 <template>
-<div class="mk-dialog" :class="{ iconOnly }">
-	<template v-if="type == 'signin'">
-		<MkSignin/>
-	</template>
-	<template v-else>
+<MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
+	<div class="mk-dialog">
 		<div class="icon" v-if="icon">
 			<Fa :icon="icon"/>
 		</div>
@@ -30,34 +27,34 @@
 				</optgroup>
 			</template>
 		</MkSelect>
-		<div class="buttons" v-if="!iconOnly && (showOkButton || showCancelButton) && !actions">
+		<div class="buttons" v-if="(showOkButton || showCancelButton) && !actions">
 			<MkButton inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select && !user" :disabled="!canOk">{{ (showCancelButton || input || select || user) ? $t('ok') : $t('gotIt') }}</MkButton>
 			<MkButton inline @click="cancel" v-if="showCancelButton || input || select || user">{{ $t('cancel') }}</MkButton>
 		</div>
 		<div class="buttons" v-if="actions">
 			<MkButton v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</MkButton>
 		</div>
-	</template>
-</div>
+	</div>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSpinner, faInfoCircle, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import MkButton from './ui/button.vue';
-import MkInput from './ui/input.vue';
-import MkSelect from './ui/select.vue';
-import MkSignin from './signin.vue';
+import MkModal from '@/components/ui/modal.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkSelect from '@/components/ui/select.vue';
 import parseAcct from '../../misc/acct/parse';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
+		MkModal,
 		MkButton,
 		MkInput,
 		MkSelect,
-		MkSignin,
 	},
 
 	props: {
@@ -101,17 +98,9 @@ export default defineComponent({
 			type: Boolean,
 			default: true
 		},
-		iconOnly: {
-			type: Boolean,
-			default: false
-		},
-		autoClose: {
-			type: Boolean,
-			default: false
-		},
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -138,12 +127,6 @@ export default defineComponent({
 	mounted() {
 		if (this.user) this.canOk = false;
 
-		if (this.autoClose) {
-			setTimeout(() => {
-				this.done(false);
-			}, 1000);
-		}
-
 		document.addEventListener('keydown', this.onKeydown);
 	},
 
@@ -154,6 +137,7 @@ export default defineComponent({
 	methods: {
 		done(canceled, result?) {
 			this.$emit('done', { canceled, result });
+			this.$refs.modal.close();
 		},
 
 		async ok() {
@@ -211,11 +195,6 @@ export default defineComponent({
 	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
-
-	&.iconOnly {
-		min-width: 0;
-		width: initial;
-	}
 
 	> .icon {
 		font-size: 32px;

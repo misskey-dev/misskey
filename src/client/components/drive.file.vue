@@ -112,18 +112,12 @@ export default defineComponent({
 			if (this.selectMode) {
 				this.$emit('chosen', this.file);
 			} else {
-				os.menu({
-					items: this.getMenu(),
-				}, {
-					source: ev.currentTarget || ev.target,
-				});
+				os.modalMenu(this.getMenu(), ev.currentTarget || ev.target);
 			}
 		},
 
 		onContextmenu(e) {
-			os.contextmenu({
-				items: this.getMenu(),
-			}, e);
+			os.contextMenu(this.getMenu(), e);
 		},
 
 		onDragstart(e) {
@@ -167,10 +161,7 @@ export default defineComponent({
 
 		copyUrl() {
 			copyToClipboard(this.file.url);
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 
 		setAsAvatar() {

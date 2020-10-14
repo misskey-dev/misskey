@@ -455,27 +455,24 @@ export default defineComponent({
 		renote(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.menu({
-				items: [{
-					text: this.$t('renote'),
-					icon: faRetweet,
-					action: () => {
-						os.api('notes/create', {
-							renoteId: this.appearNote.id
-						});
-					}
-				}, {
-					text: this.$t('quote'),
-					icon: faQuoteRight,
-					action: () => {
-						os.post({
-							renote: this.appearNote,
-						});
-					}
-				}],
-				viaKeyboard
+			os.modalMenu([{
+				text: this.$t('renote'),
+				icon: faRetweet,
+				action: () => {
+					os.api('notes/create', {
+						renoteId: this.appearNote.id
+					});
+				}
 			}, {
-				source: this.$refs.renoteButton,
+				text: this.$t('quote'),
+				icon: faQuoteRight,
+				action: () => {
+					os.post({
+						renote: this.appearNote,
+					});
+				}
+			}], this.$refs.renoteButton, {
+				viaKeyboard
 			});
 		},
 
@@ -518,13 +515,8 @@ export default defineComponent({
 
 		favorite() {
 			pleaseLogin();
-			os.api('notes/favorites/create', {
+			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 
@@ -559,24 +551,14 @@ export default defineComponent({
 		},
 
 		toggleFavorite(favorite: boolean) {
-			os.api(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
+			os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
 				noteId: this.appearNote.id
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 
 		toggleWatch(watch: boolean) {
-			os.api(watch ? 'notes/watching/create' : 'notes/watching/delete', {
+			os.apiWithDialog(watch ? 'notes/watching/create' : 'notes/watching/delete', {
 				noteId: this.appearNote.id
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 
@@ -701,36 +683,28 @@ export default defineComponent({
 			};
 			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
-			os.contextmenu({
-				items: this.getMenu(),
-			}, e).then(this.focus);
+			os.contextMenu(this.getMenu(), e).then(this.focus);
 		},
 
 		menu(viaKeyboard = false) {
-			os.menu({
-				items: this.getMenu(),
+			os.modalMenu(this.getMenu(), this.$refs.menuButton, {
 				viaKeyboard
-			}, {
-				source: this.$refs.menuButton,
 			}).then(this.focus);
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
 			if (!this.isMyRenote) return;
-			os.menu({
-				items: [{
-					text: this.$t('unrenote'),
-					icon: faTrashAlt,
-					action: () => {
-						os.api('notes/delete', {
-							noteId: this.note.id
-						});
-						this.isDeleted = true;
-					}
-				}],
+			os.modalMenu([{
+				text: this.$t('unrenote'),
+				icon: faTrashAlt,
+				action: () => {
+					os.api('notes/delete', {
+						noteId: this.note.id
+					});
+					this.isDeleted = true;
+				}
+			}], this.$refs.renoteTime, {
 				viaKeyboard: viaKeyboard
-			}, {
-				source: this.$refs.renoteTime,
 			});
 		},
 
@@ -740,29 +714,18 @@ export default defineComponent({
 
 		copyContent() {
 			copyToClipboard(this.appearNote.text);
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 
 		copyLink() {
 			copyToClipboard(`${url}/notes/${this.appearNote.id}`);
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 
 		togglePin(pin: boolean) {
-			os.api(pin ? 'i/pin' : 'i/unpin', {
+			os.apiWithDialog(pin ? 'i/pin' : 'i/unpin', {
 				noteId: this.appearNote.id
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
+			}, undefined, null, e => {
 				if (e.id === '72dab508-c64d-498f-8740-a8eec1ba385a') {
 					os.dialog({
 						type: 'error',
@@ -780,19 +743,9 @@ export default defineComponent({
 
 			if (canceled) return;
 
-			os.api('admin/promo/create', {
+			os.apiWithDialog('admin/promo/create', {
 				noteId: this.appearNote.id,
 				expiresAt: Date.now() + (86400000 * days)
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 

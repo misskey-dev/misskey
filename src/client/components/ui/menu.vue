@@ -1,6 +1,5 @@
 <template>
-<div class="rrevdjwt _popup"
-	:class="{ left: align === 'left' || contextmenuEvent != null, _shadow: contextmenuEvent != null, contextmenu: contextmenuEvent != null }"
+<div class="rrevdjwt"
 	ref="items"
 	:style="{ width: width + 'px' }"
 	@contextmenu.self="e => e.preventDefault()"
@@ -51,31 +50,12 @@ export default defineComponent({
 			type: Array,
 			required: true
 		},
-		align: {
-			type: String,
-			required: false
-		},
-		noCenter: {
-			type: Boolean,
-			required: false
-		},
-		width: {
-			type: Number,
-			required: false
-		},
-		direction: {
-			type: String,
-			required: false
-		},
 		viaKeyboard: {
 			type: Boolean,
 			required: false
 		},
-		contextmenuEvent: {
-			required: false
-		},
 	},
-	emits: ['done', 'closed'],
+	emits: ['close'],
 	data() {
 		return {
 			_items: [],
@@ -134,8 +114,7 @@ export default defineComponent({
 			this.close();
 		},
 		close() {
-			this.$emit('done'); // for as modal
-			this.$emit('closed'); // for as popup
+			this.$emit('close');
 		},
 		focusUp() {
 			focusPrev(document.activeElement);
@@ -153,11 +132,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rrevdjwt {
 	padding: 8px 0;
-
-	&.contextmenu {
-		position: absolute;
-		z-index: 65535;
-	}
 
 	&.left {
 		> .item {

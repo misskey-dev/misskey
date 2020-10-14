@@ -1,5 +1,4 @@
 import { Component, defineAsyncComponent, markRaw, reactive, ref } from 'vue';
-import * as PCancelable from 'p-cancelable';
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
@@ -58,86 +57,71 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	return promise;
 }
 
+export function apiWithDialog(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined, onSuccess?: (res: any) => void, onFailure?: (e: Error) => void) {
+	const showing = ref(true);
+	const state = ref('waiting');
+
+	const promise = api(endpoint, data, token);
+	promise.then(res => {
+		if (onSuccess) {
+			showing.value = false;
+			onSuccess(res);
+		} else {
+			state.value = 'success';
+			setTimeout(() => {
+				showing.value = false;
+			}, 1000);
+		}
+	}).catch(e => {
+		showing.value = false;
+		if (onFailure) {
+			onFailure(e);
+		} else {
+			dialog({
+				type: 'error',
+				text: e
+			});
+		}
+	});
+
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
+		type: state,
+		showing: showing
+	}, {
+		closed: () => dispose(),
+	});
+
+	return promise;
+}
+
 function isModule(x: any): x is typeof import('*.vue') {
 	return x.default != null;
 }
 
-export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?) {
+export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}) {
 	if (isModule(component)) component = component.default;
 
-	return new PCancelable((resolve, reject, onCancel) => {
-		markRaw(component);
-		const id = Math.random().toString(); // TODO: uuidとか使う
-		const showing = ref(true);
-		const modal = {
-			type: 'popup',
-			component,
-			props,
-			showing,
-			events,
-			closed: () => {
-				if (_DEV_) console.log('os:popup close', id, component, props, events);
-				// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-				setTimeout(() => {
-					store.commit('removePopup', id);
-				}, 0);
-				resolve();
-			},
-			id,
-		};
+	markRaw(component);
+	const id = Math.random().toString(); // TODO: uuidとか使う
+	const state = {
+		component,
+		props,
+		events,
+		id,
+	};
 
-		if (_DEV_) console.log('os:popup open', id, component, props, events);
-		store.commit('addPopup', modal);
+	if (_DEV_) console.log('os:popup open', id, component, props, events);
+	store.commit('addPopup', state);
 
-		onCancel.shouldReject = false;
-		onCancel(() => {
-			showing.value = false;
-		});
-	});
-}
-
-export function modal(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, option?: { source?: any; position?: any; cancelableByBgClick?: boolean; }) {
-	if (isModule(component)) component = component.default;
-
-	return new PCancelable((resolve, reject, onCancel) => {
-		markRaw(component);
-		const id = Math.random().toString(); // TODO: uuidとか使う
-		const showing = ref(true);
-		const close = (...args) => {
-			resolve(...args);
-			showing.value = false;
-		};
-		const modal = {
-			type: 'modal',
-			component,
-			props,
-			showing,
-			events,
-			position: option?.position,
-			source: option?.source,
-			done: close,
-			bgClick: () => {
-				if (option?.cancelableByBgClick === false) {
-					// TODO: shake modal
-					return;
-				}
-				close();
-			},
-			closed: () => {
-				if (_DEV_) console.log('os:modal close', id, component, props, events, option);
+	return {
+		dispose: () => {
+			if (_DEV_) console.log('os:popup close', id, component, props, events);
+			// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+			setTimeout(() => {
 				store.commit('removePopup', id);
-			},
-			id,
-		};
-
-		if (_DEV_) console.log('os:modal open', id, component, props, events, option);
-		store.commit('addPopup', modal);
-
-		onCancel.shouldReject = false;
-		onCancel(() => {
-			close();
-		});
-	});
+			}, 0);
+		},
+	};
 }
 
 // window にするとグローバルのアレと名前が被ってバグる
@@ -147,108 +131,138 @@ export function window_(component: Component | typeof import('*.vue'), props: Re
 	});
 }
 
-export function dialog(props: Record<string, any>, opts?: { cancelableByBgClick: boolean; }) {
-	return new PCancelable((resolve, reject, onCancel) => {
-		const dialog = modal(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {}, { cancelableByBgClick: opts?.cancelableByBgClick });
-
-		dialog.then(result => {
-			if (result) {
-				resolve(result);
-			} else {
-				resolve({ canceled: true });
-			}
-		});
-
-		dialog.catch(reject);
-
-		onCancel.shouldReject = false;
-		onCancel(() => {
-			dialog.cancel();
+export function dialog(props: Record<string, any>) {
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+			closed: () => dispose(),
 		});
 	});
 }
 
-export function form(title, form, opts?) {
-	return new PCancelable((resolve, reject, onCancel) => {
-		const dialog = modal(defineAsyncComponent(() => import('@/components/form-window.vue')), { title, form }, {}, { cancelableByBgClick: opts?.cancelableByBgClick });
-
-		dialog.then(result => {
-			if (result) {
-				resolve(result);
-			} else {
-				resolve({ canceled: true });
-			}
+export function success() {
+	return new Promise((resolve, reject) => {
+		const showing = ref(true);
+		setTimeout(() => {
+			showing.value = false;
+		}, 1000);
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
+			type: 'success',
+			showing: showing
+		}, {
+			done: () => resolve(),
+			closed: () => dispose(),
 		});
+	});
+}
 
-		dialog.catch(reject);
+export function waiting() {
+	return new Promise((resolve, reject) => {
+		const showing = ref(true);
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
+			type: 'waiting',
+			showing: showing
+		}, {
+			done: () => resolve(),
+			closed: () => dispose(),
+		});
+	});
+}
 
-		onCancel.shouldReject = false;
-		onCancel(() => {
-			dialog.cancel();
+export function form(title, form) {
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/form-dialog.vue')), { title, form }, {
+			done: result => {
+				resolve(result);
+			},
+			closed: () => dispose(),
 		});
 	});
 }
 
 export async function selectUser() {
-	const component = await import('@/components/user-select.vue');
-	return new Promise((res, rej) => {
-		modal(component, {}).then(user => {
-			if (user) {
-				res(user);
-			}
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/user-select-dialog.vue')), {}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
+			},
+			closed: () => dispose(),
 		});
 	});
 }
 
 export async function selectDriveFile(multiple: boolean) {
-	const component = await import('@/components/drive-window.vue');
-	return new Promise((res, rej) => {
-		modal(component, {
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
 			type: 'file',
 			multiple
-		}).then(files => {
-			if (files) {
-				res(multiple ? files : files[0]);
-			}
+		}, {
+			done: files => {
+				if (files) {
+					resolve(multiple ? files : files[0]);
+				}
+			},
+			closed: () => dispose(),
 		});
 	});
 }
 
 export async function selectDriveFolder(multiple: boolean) {
-	const component = await import('@/components/drive-window.vue');
-	return new Promise((res, rej) => {
-		modal(component, {
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
 			type: 'folder',
 			multiple
-		}).then(folders => {
-			if (folders) {
-				res(folders[0]);
-			}
+		}, {
+			done: folders => {
+				if (folders) {
+					resolve(multiple ? folders : folders[0]);
+				}
+			},
+			closed: () => dispose(),
 		});
 	});
 }
 
-export function menu(props: Record<string, any>, opts?: { source: any; }) {
-	return modal(defineAsyncComponent(() => import('@/components/menu.vue')), props, {}, {
-		position: 'source',
-		source: opts?.source
+export function modalMenu(items: any[], src?: HTMLElement, options?: { viaKeyboard?: boolean }) {
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/ui/modal-menu.vue')), {
+			items,
+			src,
+			viaKeyboard: options?.viaKeyboard
+		}, {
+			closed: () => {
+				resolve();
+				dispose();
+			},
+		});
 	});
 }
 
-export function contextmenu(props: Record<string, any>, e: MouseEvent) {
-	e.preventDefault();
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', this.onMousedown);
-	}
-	return popup(defineAsyncComponent(() => import('@/components/menu.vue')), {
-		...props,
-		contextmenuEvent: e,
-	}, {});
+export function contextMenu(items: any[], ev: MouseEvent) {
+	ev.preventDefault();
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/ui/context-menu.vue')), {
+			items,
+			ev,
+		}, {
+			closed: () => {
+				resolve();
+				dispose();
+			},
+		});
+	});
 }
 
 export function post(props: Record<string, any>) {
-	return modal(defineAsyncComponent(() => import('@/components/post-form.vue')), props, {}, {
-		position: 'top'
+	return new Promise((resolve, reject) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/post-form-dialog.vue')), props, {
+			closed: () => {
+				resolve();
+				dispose();
+			},
+		});
 	});
 }
 

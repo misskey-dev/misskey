@@ -36,7 +36,7 @@ import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSq
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
-import XModalWindow from '@/components/modal-window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import Progress from '@/scripts/loading';
 import bytes from '@/filters/bytes';

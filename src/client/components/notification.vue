@@ -135,11 +135,7 @@ export default defineComponent({
 		},
 		acceptGroupInvitation() {
 			this.groupInviteDone = true;
-			os.api('users/groups/invitations/accept', { invitationId: this.notification.invitation.id });
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.apiWithDialog('users/groups/invitations/accept', { invitationId: this.notification.invitation.id });
 		},
 		rejectGroupInvitation() {
 			this.groupInviteDone = true;

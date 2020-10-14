@@ -93,18 +93,12 @@ export default defineComponent({
 				params.channelId = this.channelId;
 				os.api('channels/update', params)
 				.then(channel => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 				});
 			} else {
 				os.api('channels/create', params)
 				.then(channel => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 					this.$router.push(`/channels/${channel.id}`);
 				});
 			}

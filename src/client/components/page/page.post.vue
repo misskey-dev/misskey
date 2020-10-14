@@ -76,15 +76,11 @@ export default defineComponent({
 		async post() {
 			this.posting = true;
 			const file = this.value.attachCanvasImage ? await this.upload() : null;
-			os.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				text: this.text === '' ? null : this.text,
 				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		}
 	}

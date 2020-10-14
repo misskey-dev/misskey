@@ -90,19 +90,13 @@ export default defineComponent({
 			if (canceled) return;
 			await os.api('users/groups/create', { name: name });
 			this.$refs.owned.reload();
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 		acceptInvite(invitation) {
 			os.api('users/groups/invitations/accept', {
 				invitationId: invitation.id
 			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 				this.$refs.invitations.reload();
 				this.$refs.joined.reload();
 			});

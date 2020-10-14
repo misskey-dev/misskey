@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import XModalWindow from './modal-window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';

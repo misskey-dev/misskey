@@ -66,12 +66,7 @@ export default defineComponent({
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
-				os.api('admin/queue/clear', {}).then(() => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				});
+				os.apiWithDialog('admin/queue/clear', {});
 			});
 		}
 	}

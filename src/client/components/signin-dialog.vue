@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XModalWindow from './modal-window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import MkSignin from './signin.vue';
 
 export default defineComponent({

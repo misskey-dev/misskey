@@ -631,9 +631,7 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
-			os.contextmenu({
-				items: this.getMenu(),
-			}, e);
+			os.contextMenu(this.getMenu(), e);
 		},
 	}
 });

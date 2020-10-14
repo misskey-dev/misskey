@@ -546,10 +546,7 @@ export default defineComponent({
 			}).then(() => {
 				this.$store.dispatch('instance/fetch');
 				if (withDialog) {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 				}
 			}).catch(e => {
 				os.dialog({

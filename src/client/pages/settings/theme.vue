@@ -208,10 +208,7 @@ export default defineComponent({
 
 		copyThemeCode() {
 			copyToClipboard(this.selectedThemeCode);
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 
 		parseThemeCode(code) {
@@ -268,10 +265,7 @@ export default defineComponent({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 	}
 });

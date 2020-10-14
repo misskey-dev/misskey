@@ -77,27 +77,10 @@ export default defineComponent({
 				});
 				return;
 			}
-
-			const dialog = os.dialog({
-				type: 'waiting',
-				iconOnly: true
-			});
 			
-			os.api('i/change-password', {
+			os.apiWithDialog('i/change-password', {
 				currentPassword,
 				newPassword
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
-			}).finally(() => {
-				dialog.close();
 			});
 		},
 

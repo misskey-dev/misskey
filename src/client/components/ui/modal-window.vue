@@ -1,29 +1,35 @@
 <template>
-<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
-	<div class="header">
-		<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
-		<span class="title">
-			<slot name="header"></slot>
-		</span>
-		<button class="_button" v-if="!withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
-		<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><Fa :icon="faCheck"/></button>
-	</div>
-	<div class="body" v-if="padding">
-		<div class="_section">
+<MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
+	<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
+		<div class="header">
+			<button class="_button" v-if="withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
+			<span class="title">
+				<slot name="header"></slot>
+			</span>
+			<button class="_button" v-if="!withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
+			<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><Fa :icon="faCheck"/></button>
+		</div>
+		<div class="body" v-if="padding">
+			<div class="_section">
+				<slot></slot>
+			</div>
+		</div>
+		<div class="body" v-else>
 			<slot></slot>
 		</div>
 	</div>
-	<div class="body" v-else>
-		<slot></slot>
-	</div>
-</div>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import MkModal from './modal.vue';
 
 export default defineComponent({
+	components: {
+		MkModal
+	},
 	props: {
 		withOkButton: {
 			type: Boolean,
@@ -57,7 +63,7 @@ export default defineComponent({
 		},
 	},
 
-	emits: ['close', 'ok'],
+	emits: ['click', 'close', 'closed', 'ok'],
 
 	data() {
 		return {
@@ -67,7 +73,7 @@ export default defineComponent({
 
 	methods: {
 		close() {
-			this.$emit('close');
+			this.$refs.modal.close();
 		},
 
 		onKeydown(e) {

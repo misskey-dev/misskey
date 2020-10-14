@@ -76,10 +76,7 @@ export default defineComponent({
 			os.api('following/create', {
 				userId: user.id
 			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				}).then(() => {
+				os.success().then(() => {
 					window.close();
 				});
 			}).catch(e => {

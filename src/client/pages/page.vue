@@ -103,13 +103,8 @@ export default defineComponent({
 		},
 
 		pin(pin) {
-			os.api('i/update', {
+			os.apiWithDialog('i/update', {
 				pinnedPageId: pin ? this.page.id : null,
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		}
 	}

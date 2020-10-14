@@ -207,11 +207,7 @@ export default defineComponent({
 		},
 
 		showMenu() {
-			os.menu({
-				items: this.getMenu(),
-			}, {
-				source: this.$refs.menu,
-			});
+			os.modalMenu(this.getMenu(), this.$refs.menu);
 		},
 
 		goTop() {

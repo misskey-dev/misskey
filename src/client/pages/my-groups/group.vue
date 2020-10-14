@@ -89,19 +89,9 @@ export default defineComponent({
 
 		invite() {
 			os.selectUser().then(user => {
-				os.api('users/groups/invite', {
+				os.apiWithDialog('users/groups/invite', {
 					groupId: this.group.id,
 					userId: user.id
-				}).then(() => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				}).catch(e => {
-					os.dialog({
-						type: 'error',
-						text: e
-					});
 				});
 			});
 		},
@@ -134,19 +124,9 @@ export default defineComponent({
 
 		transfer() {
 			os.selectUser().then(user => {
-				os.api('users/groups/transfer', {
+				os.apiWithDialog('users/groups/transfer', {
 					groupId: this.group.id,
 					userId: user.id
-				}).then(() => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				}).catch(e => {
-					os.dialog({
-						type: 'error',
-						text: e
-					});
 				});
 			});
 		},
@@ -159,12 +139,8 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			await os.api('users/groups/delete', {
+			await os.apiWithDialog('users/groups/delete', {
 				groupId: this.group.id
-			});
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
 			});
 			this.$router.push('/my/groups');
 		}

@@ -1,5 +1,12 @@
 <template>
-<XModalWindow @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="selected == null" @ok="ok()">
+<XModalWindow ref="dialog"
+	:with-ok-button="true"
+	:ok-button-disabled="selected == null"
+	@click="cancel()"
+	@close="cancel()"
+	@ok="ok()"
+	@closed="$emit('closed')"
+>
 	<template #header>{{ $t('selectUser') }}</template>
 	<div class="tbhwbxda _section">
 		<div class="inputs">
@@ -28,7 +35,7 @@
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkInput from './ui/input.vue';
-import XModalWindow from './modal-window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -82,6 +89,12 @@ export default defineComponent({
 
 		ok() {
 			this.$emit('done', this.selected);
+			this.$refs.dialog.close();
+		},
+
+		cancel() {
+			this.$emit('done');
+			this.$refs.dialog.close();
 		},
 	}
 });

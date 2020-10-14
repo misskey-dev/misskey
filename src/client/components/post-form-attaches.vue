@@ -82,23 +82,19 @@ export default defineComponent({
 		},
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
-			this.menu = os.menu({
-				items: [{
-					text: this.$t('renameFile'),
-					icon: faICursor,
-					action: () => { this.rename(file) }
-				}, {
-					text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-					icon: file.isSensitive ? faEyeSlash : faEye,
-					action: () => { this.toggleSensitive(file) }
-				}, {
-					text: this.$t('attachCancel'),
-					icon: faTimesCircle,
-					action: () => { this.detachMedia(file.id) }
-				}],
+			this.menu = os.modalMenu([{
+				text: this.$t('renameFile'),
+				icon: faICursor,
+				action: () => { this.rename(file) }
 			}, {
-				source: ev.currentTarget || ev.target,
-			}).then(() => this.menu = null);
+				text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
+				icon: file.isSensitive ? faEyeSlash : faEye,
+				action: () => { this.toggleSensitive(file) }
+			}, {
+				text: this.$t('attachCancel'),
+				icon: faTimesCircle,
+				action: () => { this.detachMedia(file.id) }
+			}], ev.currentTarget || ev.target).then(() => this.menu = null);
 		}
 	}
 });

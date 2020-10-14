@@ -88,20 +88,11 @@ export default defineComponent({
 
 		addUser() {
 			os.selectUser().then(user => {
-				os.api('users/lists/push', {
+				os.apiWithDialog('users/lists/push', {
 					listId: this.list.id,
 					userId: user.id
 				}).then(() => {
 					this.users.push(user);
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				}).catch(e => {
-					os.dialog({
-						type: 'error',
-						text: e
-					});
 				});
 			});
 		},
@@ -143,10 +134,7 @@ export default defineComponent({
 			await os.api('users/lists/delete', {
 				listId: this.list.id
 			});
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 			this.$router.push('/my/lists');
 		}
 	}

@@ -121,7 +121,7 @@
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import XModalWindow from '@/components/modal-window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import MkUsersDialog from '@/components/users-dialog.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -253,24 +253,14 @@ export default defineComponent({
 		},
 
 		removeAllFollowing() {
-			os.api('admin/federation/remove-all-following', {
+			os.apiWithDialog('admin/federation/remove-all-following', {
 				host: this.instance.host
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 
 		deleteAllFiles() {
-			os.api('admin/federation/delete-all-files', {
+			os.apiWithDialog('admin/federation/delete-all-files', {
 				host: this.instance.host
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 

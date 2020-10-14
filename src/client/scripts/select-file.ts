@@ -68,25 +68,21 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			});
 		};
 
-		os.menu({
-			items: [label ? {
-				text: label,
-				type: 'label'
-			} : undefined, {
-				text: i18n.global.t('upload'),
-				icon: faUpload,
-				action: chooseFileFromPc
-			}, {
-				text: i18n.global.t('fromDrive'),
-				icon: faCloud,
-				action: chooseFileFromDrive
-			}, {
-				text: i18n.global.t('fromUrl'),
-				icon: faLink,
-				action: chooseFileFromUrl
-			}],
+		os.modalMenu([label ? {
+			text: label,
+			type: 'label'
+		} : undefined, {
+			text: i18n.global.t('upload'),
+			icon: faUpload,
+			action: chooseFileFromPc
 		}, {
-			source: src,
-		});
+			text: i18n.global.t('fromDrive'),
+			icon: faCloud,
+			action: chooseFileFromDrive
+		}, {
+			text: i18n.global.t('fromUrl'),
+			icon: faLink,
+			action: chooseFileFromUrl
+		}], src);
 	});
 }

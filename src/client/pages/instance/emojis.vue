@@ -119,10 +119,7 @@ export default defineComponent({
 			})))
 			.then(() => {
 				this.$refs.emojis.reload();
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 			})
 			.finally(() => {
 				dialog.cancel();
@@ -148,34 +145,20 @@ export default defineComponent({
 		},
 
 		im(emoji) {
-			os.api('admin/emoji/copy', {
+			os.apiWithDialog('admin/emoji/copy', {
 				emojiId: emoji.id,
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 
 		remoteMenu(emoji, ev) {
-			os.menu({
-				items: [{
-					type: 'label',
-					text: ':' + emoji.name + ':',
-				}, {
-					text: this.$t('import'),
-					icon: faPlus,
-					action: () => { this.im(emoji) }
-				}],
+			os.modalMenu([{
+				type: 'label',
+				text: ':' + emoji.name + ':',
 			}, {
-				source: ev.currentTarget || ev.target,
-			});
+				text: this.$t('import'),
+				icon: faPlus,
+				action: () => { this.im(emoji) }
+			}], ev.currentTarget || ev.target);
 		}
 	}
 });

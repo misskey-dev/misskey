@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import XModalWindow from '@/components/modal-window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import * as os from '@/os';
@@ -61,16 +61,11 @@ export default defineComponent({
 		},
 
 		async update() {
-			await os.api('admin/emoji/update', {
+			await os.apiWithDialog('admin/emoji/update', {
 				id: this.emoji.id,
 				name: this.name,
 				category: this.category,
 				aliases: this.aliases.split(' '),
-			});
-
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
 			});
 
 			this.$emit('done', {

@@ -111,7 +111,7 @@ export default defineComponent({
 
 				this.closeDetails();
 				if (!this.isHovering) return;
-				const promise = os.popup(XDetails, {
+				const { dispose } = os.popup(XDetails, {
 					reaction: this.reaction,
 					users,
 					count: this.count,
@@ -119,7 +119,7 @@ export default defineComponent({
 				});
 
 				this.close = () => {
-					promise.cancel();
+					dispose();
 				};
 			});
 		},

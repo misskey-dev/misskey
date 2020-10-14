@@ -150,10 +150,7 @@ export default defineComponent({
 				});
 			}
 
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 
 		async deleteAntenna() {
@@ -168,10 +165,7 @@ export default defineComponent({
 				antennaId: this.antenna.id,
 			});
 
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 			this.$emit('deleted');
 		},
 

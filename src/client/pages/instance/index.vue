@@ -222,12 +222,7 @@ export default defineComponent({
 		},
 
 		deleteAllLogs() {
-			os.api('admin/delete-logs').then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			});
+			os.apiWithDialog('admin/delete-logs');
 		},
 
 		bytes,

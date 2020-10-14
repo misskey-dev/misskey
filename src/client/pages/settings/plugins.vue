@@ -145,10 +145,7 @@ export default defineComponent({
 				ast: serialize(ast)
 			});
 
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 
 			this.$nextTick(() => {
 				location.reload();
@@ -157,10 +154,7 @@ export default defineComponent({
 
 		uninstall() {
 			this.$store.commit('deviceUser/uninstallPlugin', this.selectedPluginId);
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 			this.$nextTick(() => {
 				location.reload();
 			});

@@ -149,94 +149,73 @@ export default defineComponent({
 				action: () => { this.switchAccount(account); }
 			}));
 
-			os.menu({
-				items: [...[{
-					type: 'link',
-					text: this.$t('profile'),
-					to: `/@${ this.$store.state.i.username }`,
-					avatar: this.$store.state.i,
-				}, null, ...accountItems, {
-					icon: faPlus,
-					text: this.$t('addAcount'),
-					action: () => {
-						os.menu({
-							items: [{
-								text: this.$t('existingAcount'),
-								action: () => { this.addAcount(); },
-							}, {
-								text: this.$t('createAccount'),
-								action: () => { this.createAccount(); },
-							}],
-							align: 'left',
-							fixed: true,
-							width: 240,
-						}, {
-							source: ev.currentTarget || ev.target,
-						});
-					},
-				}]],
-				align: 'left',
-				fixed: true,
-				width: 240,
-			}, {
-				source: ev.currentTarget || ev.target,
-			});
+			os.modalMenu([...[{
+				type: 'link',
+				text: this.$t('profile'),
+				to: `/@${ this.$store.state.i.username }`,
+				avatar: this.$store.state.i,
+			}, null, ...accountItems, {
+				icon: faPlus,
+				text: this.$t('addAcount'),
+				action: () => {
+					os.modalMenu([{
+						text: this.$t('existingAcount'),
+						action: () => { this.addAcount(); },
+					}, {
+						text: this.$t('createAccount'),
+						action: () => { this.createAccount(); },
+					}], ev.currentTarget || ev.target);
+				},
+			}]], ev.currentTarget || ev.target);
 		},
 
 		oepnInstanceMenu(ev) {
-			os.menu({
-				items: [{
-					type: 'link',
-					text: this.$t('dashboard'),
-					to: '/instance',
-					icon: faTachometerAlt,
-				}, null, {
-					type: 'link',
-					text: this.$t('settings'),
-					to: '/instance/settings',
-					icon: faCog,
-				}, {
-					type: 'link',
-					text: this.$t('customEmojis'),
-					to: '/instance/emojis',
-					icon: faLaugh,
-				}, {
-					type: 'link',
-					text: this.$t('users'),
-					to: '/instance/users',
-					icon: faUsers,
-				}, {
-					type: 'link',
-					text: this.$t('files'),
-					to: '/instance/files',
-					icon: faCloud,
-				}, {
-					type: 'link',
-					text: this.$t('jobQueue'),
-					to: '/instance/queue',
-					icon: faExchangeAlt,
-				}, {
-					type: 'link',
-					text: this.$t('federation'),
-					to: '/instance/federation',
-					icon: faGlobe,
-				}, {
-					type: 'link',
-					text: this.$t('relays'),
-					to: '/instance/relays',
-					icon: faProjectDiagram,
-				}, {
-					type: 'link',
-					text: this.$t('announcements'),
-					to: '/instance/announcements',
-					icon: faBroadcastTower,
-				}],
-				align: 'left',
-				fixed: true,
-				width: 200,
+			os.modalMenu([{
+				type: 'link',
+				text: this.$t('dashboard'),
+				to: '/instance',
+				icon: faTachometerAlt,
+			}, null, {
+				type: 'link',
+				text: this.$t('settings'),
+				to: '/instance/settings',
+				icon: faCog,
 			}, {
-				source: ev.currentTarget || ev.target,
-			});
+				type: 'link',
+				text: this.$t('customEmojis'),
+				to: '/instance/emojis',
+				icon: faLaugh,
+			}, {
+				type: 'link',
+				text: this.$t('users'),
+				to: '/instance/users',
+				icon: faUsers,
+			}, {
+				type: 'link',
+				text: this.$t('files'),
+				to: '/instance/files',
+				icon: faCloud,
+			}, {
+				type: 'link',
+				text: this.$t('jobQueue'),
+				to: '/instance/queue',
+				icon: faExchangeAlt,
+			}, {
+				type: 'link',
+				text: this.$t('federation'),
+				to: '/instance/federation',
+				icon: faGlobe,
+			}, {
+				type: 'link',
+				text: this.$t('relays'),
+				to: '/instance/relays',
+				icon: faProjectDiagram,
+			}, {
+				type: 'link',
+				text: this.$t('announcements'),
+				to: '/instance/announcements',
+				icon: faBroadcastTower,
+			}], ev.currentTarget || ev.target);
 		},
 
 		more(ev) {
@@ -248,39 +227,29 @@ export default defineComponent({
 				action: def.action,
 				indicate: def.indicated,
 			}));
-			os.menu({
-				items: [...items, null, {
-					type: 'link',
-					text: this.$t('help'),
-					to: '/docs',
-					icon: faQuestionCircle,
-				}, {
-					type: 'link',
-					text: this.$t('aboutX', { x: instanceName || host }),
-					to: '/about',
-					icon: faInfoCircle,
-				}, {
-					type: 'link',
-					text: this.$t('aboutMisskey'),
-					to: '/about-misskey',
-					icon: faInfoCircle,
-				}],
-				align: 'left',
-				fixed: true,
-				width: 200,
+			os.modalMenu([...items, null, {
+				type: 'link',
+				text: this.$t('help'),
+				to: '/docs',
+				icon: faQuestionCircle,
 			}, {
-				source: ev.currentTarget || ev.target,
-			});
+				type: 'link',
+				text: this.$t('aboutX', { x: instanceName || host }),
+				to: '/about',
+				icon: faInfoCircle,
+			}, {
+				type: 'link',
+				text: this.$t('aboutMisskey'),
+				to: '/about-misskey',
+				icon: faInfoCircle,
+			}], ev.currentTarget || ev.target);
 		},
 
 		async addAcount() {
 			os.modal(await import('./signin-dialog.vue')).then(res => {
 				if (res == null) return;
 				this.$store.dispatch('addAcount', res);
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 			});
 		},
 
@@ -298,10 +267,7 @@ export default defineComponent({
 		},
 
 		switchAccountWithToken(token: string) {
-			os.dialog({
-				type: 'waiting',
-				iconOnly: true
-			});
+			os.waiting();
 
 			os.api('i', {}, token).then((i: any) => {
 				this.$store.dispatch('switchAccount', {

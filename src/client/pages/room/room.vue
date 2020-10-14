@@ -199,10 +199,7 @@ export default defineComponent({
 				room: room.getRoomInfo()
 			}).then(() => {
 				this.changed = false;
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 			}).catch((e: any) => {
 				os.dialog({
 					type: 'error',

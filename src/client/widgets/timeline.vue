@@ -89,28 +89,23 @@ export default defineComponent({
 					this.setSrc('list');
 				}
 			}));
-			os.menu({
-				items: [{
-					text: this.$t('_timelines.home'),
-					icon: faHome,
-					action: () => { this.setSrc('home') }
-				}, {
-					text: this.$t('_timelines.local'),
-					icon: faComments,
-					action: () => { this.setSrc('local') }
-				}, {
-					text: this.$t('_timelines.social'),
-					icon: faShareAlt,
-					action: () => { this.setSrc('social') }
-				}, {
-					text: this.$t('_timelines.global'),
-					icon: faGlobe,
-					action: () => { this.setSrc('global') }
-				}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems],
-				noCenter: true,
+			os.modalMenu([{
+				text: this.$t('_timelines.home'),
+				icon: faHome,
+				action: () => { this.setSrc('home') }
 			}, {
-				source: ev.currentTarget || ev.target,
-			}).then(() => {
+				text: this.$t('_timelines.local'),
+				icon: faComments,
+				action: () => { this.setSrc('local') }
+			}, {
+				text: this.$t('_timelines.social'),
+				icon: faShareAlt,
+				action: () => { this.setSrc('social') }
+			}, {
+				text: this.$t('_timelines.global'),
+				icon: faGlobe,
+				action: () => { this.setSrc('global') }
+			}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget || ev.target).then(() => {
 				this.menuOpened = false;
 			});
 		},

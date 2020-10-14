@@ -71,13 +71,13 @@ export default defineComponent({
 			if (!document.body.contains(this.$el)) return;
 			if (this.close) return;
 
-			const promise = os.popup(await import('@/components/url-preview-popup.vue'), {
+			const { dispose } = os.popup(await import('@/components/url-preview-popup.vue'), {
 				url: this.url,
 				source: this.$el
 			});
 
 			this.close = () => {
-				promise.cancel();
+				dispose();
 			};
 
 			this.checkTimer = setInterval(() => {

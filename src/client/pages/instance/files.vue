@@ -126,12 +126,7 @@ export default defineComponent({
 			}).then(({ canceled }) => {
 				if (canceled) return;
 
-				os.api('admin/drive/clean-remote-files', {}).then(() => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				});
+				os.apiWithDialog('admin/drive/clean-remote-files', {});
 			});
 		},
 

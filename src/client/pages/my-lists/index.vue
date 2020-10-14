@@ -50,10 +50,7 @@ export default defineComponent({
 			if (canceled) return;
 			await os.api('users/lists/create', { name: name });
 			this.$refs.list.reload();
-			os.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 	}
 });

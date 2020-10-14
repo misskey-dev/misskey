@@ -33,13 +33,7 @@ export default defineComponent({
 
 	methods: {
 		menu(ev) {
-			os.menu({
-				items: this.$refs.drive.getMenu(),
-				fixed: true,
-				noCenter: true,
-			}, {
-				source: ev.currentTarget || ev.target,
-			});
+			os.modalMenu(this.$refs.drive.getMenu(), ev.currentTarget || ev.target);
 		}
 	}
 });

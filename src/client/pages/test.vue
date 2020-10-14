@@ -197,14 +197,17 @@ export default defineComponent({
 		},
 
 		async selectDriveFile() {
+			this.selectDriveFileResult = null;
 			this.selectDriveFileResult = await os.selectDriveFile(this.selectDriveFileMultiple);
 		},
 
 		async selectDriveFolder() {
+			this.selectDriveFolderResult = null;
 			this.selectDriveFolderResult = await os.selectDriveFolder(this.selectDriveFolderMultiple);
 		},
 
 		async selectUser() {
+			this.user = null;
 			this.user = await os.selectUser();
 		},
 

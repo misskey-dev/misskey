@@ -256,32 +256,28 @@ export default defineComponent({
 	
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
-				os.menu({
-					items: [{
-						text: this.$t('_theme.defaultValue'),
-						action: () => resolve(null),
-					}, {
-						text: this.$t('_theme.color'),
-						action: () => resolve('#000000'),
-					}, {
-						text: this.$t('_theme.func'),
-						action: () => resolve({
-							type: 'func', name: 'alpha', arg: 1, value: 'accent'
-						}),
-					}, {
-						text: this.$t('_theme.refProp'),
-						action: () => resolve({
-							type: 'refProp', key: 'accent',
-						}),
-					}, {
-						text: this.$t('_theme.refConst'),
-						action: () => resolve({
-							type: 'refConst', key: '',
-						}),
-					},],
+				os.modalMenu([{
+					text: this.$t('_theme.defaultValue'),
+					action: () => resolve(null),
 				}, {
-					source: e.currentTarget || e.target,
-				});
+					text: this.$t('_theme.color'),
+					action: () => resolve('#000000'),
+				}, {
+					text: this.$t('_theme.func'),
+					action: () => resolve({
+						type: 'func', name: 'alpha', arg: 1, value: 'accent'
+					}),
+				}, {
+					text: this.$t('_theme.refProp'),
+					action: () => resolve({
+						type: 'refProp', key: 'accent',
+					}),
+				}, {
+					text: this.$t('_theme.refConst'),
+					action: () => resolve({
+						type: 'refConst', key: '',
+					}),
+				},], e.currentTarget || e.target);
 			});
 		}
 	}

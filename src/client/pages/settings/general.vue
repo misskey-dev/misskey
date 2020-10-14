@@ -158,21 +158,13 @@ export default defineComponent({
 
 	watch: {
 		lang() {
-			const dialog = os.dialog({
-				type: 'waiting',
-				iconOnly: true
-			});
-
 			localStorage.setItem('lang', this.lang);
 
 			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18n)
 				.then(() => location.reload())
 				.catch(() => {
-					dialog.close();
 					os.dialog({
 						type: 'error',
-						iconOnly: true,
-						autoClose: true
 					});
 				});
 		},

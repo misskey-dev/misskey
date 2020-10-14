@@ -118,19 +118,9 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			os.api('users/lists/push', {
+			os.apiWithDialog('users/lists/push', {
 				listId: listId,
 				userId: this.user.id
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 
@@ -154,93 +144,47 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			os.api('users/groups/invite', {
+			os.apiWithDialog('users/groups/invite', {
 				groupId: groupId,
 				userId: this.user.id
-			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 
 		async toggleMute() {
-			os.api(this.user.isMuted ? 'mute/delete' : 'mute/create', {
+			os.apiWithDialog(this.user.isMuted ? 'mute/delete' : 'mute/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isMuted = !this.user.isMuted;
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}, e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 
 		async toggleBlock() {
 			if (!await this.getConfirmed(this.user.isBlocking ? this.$t('unblockConfirm') : this.$t('blockConfirm'))) return;
 
-			os.api(this.user.isBlocking ? 'blocking/delete' : 'blocking/create', {
+			os.apiWithDialog(this.user.isBlocking ? 'blocking/delete' : 'blocking/create', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isBlocking = !this.user.isBlocking;
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}, e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 
 		async toggleSilence() {
 			if (!await this.getConfirmed(this.$t(this.user.isSilenced ? 'unsilenceConfirm' : 'silenceConfirm'))) return;
 
-			os.api(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
+			os.apiWithDialog(this.user.isSilenced ? 'admin/unsilence-user' : 'admin/silence-user', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isSilenced = !this.user.isSilenced;
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}, e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 
 		async toggleSuspend() {
 			if (!await this.getConfirmed(this.$t(this.user.isSuspended ? 'unsuspendConfirm' : 'suspendConfirm'))) return;
 
-			os.api(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
+			os.apiWithDialog(this.user.isSuspended ? 'admin/unsuspend-user' : 'admin/suspend-user', {
 				userId: this.user.id
 			}).then(() => {
 				this.user.isSuspended = !this.user.isSuspended;
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}, e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
 			});
 		},
 

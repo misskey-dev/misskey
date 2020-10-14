@@ -198,27 +198,11 @@ export default defineComponent({
 			});
 			if (canceled2) return;
 
-			const dialog = os.dialog({
-				type: 'waiting',
-				iconOnly: true
-			});
-
-			os.api('admin/accounts/create', {
+			os.apiWithDialog('admin/accounts/create', {
 				username: username,
 				password: password,
 			}).then(res => {
 				this.$refs.users.reload();
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e.id
-				});
-			}).finally(() => {
-				dialog.close();
 			});
 		},
 

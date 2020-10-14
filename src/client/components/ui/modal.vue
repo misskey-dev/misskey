@@ -30,21 +30,12 @@ export default defineComponent({
 		modal: true
 	},
 	props: {
-		showing: {
-			type: Boolean,
-			required: true,
-		},
-		canClose: {
-			type: Boolean,
-			required: false,
-			default: true,
-		},
 		// TODO: 要る？
 		noCenter: {
 			type: Boolean,
 			required: false
 		},
-		source: {
+		src: {
 			required: false,
 		},
 		position: {
@@ -54,6 +45,7 @@ export default defineComponent({
 	emits: ['click', 'esc', 'closed'],
 	data() {
 		return {
+			showing: true,
 			fixed: false,
 			transformOrigin: 'center',
 			contentClicking: false,
@@ -66,11 +58,11 @@ export default defineComponent({
 			};
 		},
 		popup(): boolean {
-			return this.source != null;
+			return this.src != null;
 		}
 	},
 	mounted() {
-		this.fixed = getFixedContainer(this.source) != null;
+		this.fixed = getFixedContainer(this.src) != null;
 
 		this.$nextTick(() => {
 			if (!this.popup) return;
@@ -79,7 +71,7 @@ export default defineComponent({
 
 			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
-				const rect = this.source.getBoundingClientRect();
+				const rect = this.src.getBoundingClientRect();
 				const width = popover.offsetWidth;
 				const height = popover.offsetHeight;
 
@@ -87,13 +79,13 @@ export default defineComponent({
 				let top;
 
 				if (os.isMobile && !this.noCenter) {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.source.offsetHeight / 2);
+					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
 					left = (x - (width / 2));
 					top = (y - (height / 2));
 				} else {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.source.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.source.offsetHeight;
+					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
 					left = (x - (width / 2));
 					top = y;
 				}
@@ -146,6 +138,10 @@ export default defineComponent({
 					}, 100);
 				}, { passive: true, once: true });
 			}, { passive: true });
+		},
+
+		close() {
+			this.showing = false;
 		},
 
 		onBgClick() {

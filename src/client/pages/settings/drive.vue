@@ -39,10 +39,7 @@ export default defineComponent({
 		chooseUploadFolder() {
 			os.selectDriveFolder(false).then(async folder => {
 				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 				if (this.$store.state.settings.uploadFolder) {
 					this.uploadFolder = await os.api('drive/folders/show', {
 						folderId: this.$store.state.settings.uploadFolder

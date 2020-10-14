@@ -120,20 +120,15 @@ export default defineComponent({
 		},
 
 		start(ev) {
-			os.menu({
-				items: [{
-					text: this.$t('messagingWithUser'),
-					icon: faUser,
-					action: () => { this.startUser() }
-				}, {
-					text: this.$t('messagingWithGroup'),
-					icon: faUsers,
-					action: () => { this.startGroup() }
-				}],
-				noCenter: true,
+			os.modalMenu([{
+				text: this.$t('messagingWithUser'),
+				icon: faUser,
+				action: () => { this.startUser() }
 			}, {
-				source: ev.currentTarget || ev.target,
-			});
+				text: this.$t('messagingWithGroup'),
+				icon: faUsers,
+				action: () => { this.startGroup() }
+			}], ev.currentTarget || ev.target);
 		},
 
 		async startUser() {

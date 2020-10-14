@@ -123,10 +123,7 @@ export default defineComponent({
 					this.usePasswordLessLogin = false;
 					this.updatePasswordLessLogin();
 				}).then(() => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 					this.$store.state.i.twoFactorEnabled = false;
 				});
 			});
@@ -136,15 +133,12 @@ export default defineComponent({
 			os.api('i/2fa/done', {
 				token: this.token
 			}).then(() => {
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 				this.$store.state.i.twoFactorEnabled = true;
 			}).catch(e => {
 				os.dialog({
 					type: 'error',
-					iconOnly: true, autoClose: true
+					text: e
 				});
 			});
 		},
@@ -161,10 +155,7 @@ export default defineComponent({
 			}).then(key => {
 				this.registration = null;
 				key.lastUsed = new Date();
-				os.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 			})
 		},
 
@@ -183,10 +174,7 @@ export default defineComponent({
 					this.usePasswordLessLogin = false;
 					this.updatePasswordLessLogin();
 				}).then(() => {
-					os.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 				});
 			});
 		},

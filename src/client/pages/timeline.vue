@@ -191,13 +191,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			os.menu({
-				items: [...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems],
-				fixed: true,
-				noCenter: true,
-			}, {
-				source: ev.currentTarget || ev.target,
-			});
+			os.modalMenu([...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems], ev.currentTarget || ev.target);
 		},
 
 		saveSrc() {
