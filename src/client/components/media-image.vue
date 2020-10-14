@@ -78,9 +78,9 @@ export default defineComponent({
 			if (this.$store.state.device.imageNewTab) {
 				window.open(this.image.url, '_blank');
 			} else {
-				os.modal(ImageViewer, {
+				os.popup(ImageViewer, {
 					image: this.image
-				});
+				}, {}, 'closed');
 			}
 		}
 	}

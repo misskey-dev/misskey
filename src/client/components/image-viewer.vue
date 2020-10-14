@@ -1,21 +1,28 @@
 <template>
-<div class="xubzgfga">
-	<header>{{ image.name }}</header>
-	<img :src="image.url" :alt="image.name" :title="image.name" @click="close"/>
-	<footer>
-		<span>{{ image.type }}</span>
-		<span>{{ bytes(image.size) }}</span>
-		<span v-if="image.properties?.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
-	</footer>
-</div>
+<MkModal ref="modal" @click="$refs.modal.close()" @closed="$emit('closed')">
+	<div class="xubzgfga">
+		<header>{{ image.name }}</header>
+		<img :src="image.url" :alt="image.name" :title="image.name" @click="$refs.modal.close()"/>
+		<footer>
+			<span>{{ image.type }}</span>
+			<span>{{ bytes(image.size) }}</span>
+			<span v-if="image.properties?.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
+		</footer>
+	</div>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
+import MkModal from '@/components/ui/modal.vue';
 
 export default defineComponent({
+	components: {
+		MkModal,
+	},
+
 	props: {
 		image: {
 			type: Object,
@@ -23,13 +30,9 @@ export default defineComponent({
 		},
 	},
 
-	emits: ['done'],
+	emits: ['closed'],
 
 	methods: {
-		close() {
-			this.$emit('done');
-		},
-
 		bytes,
 		number,
 	}
