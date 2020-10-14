@@ -485,16 +485,20 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.modal(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
 				showFocus: viaKeyboard,
-			}, {}, {
-				source: this.$refs.reactButton
-			}).then(reaction => {
-				os.api('notes/reactions/create', {
-					noteId: this.appearNote.id,
-					reaction: reaction
-				});
-				this.focus();
+				src: this.$refs.reactButton,
+			}, {
+				done: reaction => {
+					if (reaction) {
+						os.api('notes/reactions/create', {
+							noteId: this.appearNote.id,
+							reaction: reaction
+						});
+					}
+					this.focus();
+				},
+				closed: () => dispose(),
 			});
 		},
 

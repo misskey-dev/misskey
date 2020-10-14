@@ -1,21 +1,25 @@
 <template>
-<div class="rdfaahpb _popup" v-hotkey="keymap">
-	<div class="buttons" ref="buttons" :class="{ showFocus }">
-		<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><XReactionIcon :reaction="reaction"/></button>
+<MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
+	<div class="rdfaahpb _popup" v-hotkey="keymap">
+		<div class="buttons" ref="buttons" :class="{ showFocus }">
+			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><XReactionIcon :reaction="reaction"/></button>
+		</div>
+		<input class="text" ref="text" v-model.trim="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText">
 	</div>
-	<input class="text" ref="text" v-model.trim="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText">
-</div>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { emojiRegex } from '../../misc/emoji-regex';
-import XReactionIcon from './reaction-icon.vue';
+import XReactionIcon from '@/components/reaction-icon.vue';
+import MkModal from '@/components/ui/modal.vue';
 import { Autocomplete } from '@/scripts/autocomplete';
 
 export default defineComponent({
 	components: {
 		XReactionIcon,
+		MkModal,
 	},
 
 	props: {
@@ -28,9 +32,13 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+
+		src: {
+			required: false
+		},
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -83,10 +91,12 @@ export default defineComponent({
 	methods: {
 		close() {
 			this.$emit('done');
+			this.$refs.modal.close();
 		},
 	
 		react(reaction) {
 			this.$emit('done', reaction);
+			this.$refs.modal.close();
 		},
 
 		reactText() {

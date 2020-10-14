@@ -62,11 +62,12 @@ export default defineComponent({
 		},
 
 		async preview(ev) {
-			os.modal(await import('@/components/reaction-picker.vue'), {
+			const { dispose } = os.popup(await import('@/components/reaction-picker.vue'), {
 				reactions: this.splited,
 				showFocus: false,
-			}, {}, {
-				source: ev.currentTarget || ev.target,
+				src: ev.currentTarget || ev.target,
+			}, {
+				closed: () => dispose(),
 			});
 		},
 
