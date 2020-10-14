@@ -127,21 +127,20 @@ export default defineComponent({
 		},
 
 		async edit(emoji) {
-			const result = await os.modal(await import('./emoji-edit-dialog.vue'), {
+			os.popup(await import('./emoji-edit-dialog.vue'), {
 				emoji: emoji
-			}, {}, {
-				cancelableByBgClick: false
-			});
-			if (result == null) return;
-
-			if (result.updated) {
-				this.$refs.emojis.replaceItem(item => item.id === emoji.id, {
-					...emoji,
-					...result.updated
-				});
-			} else if (result.deleted) {
-				this.$refs.emojis.removeItem(item => item.id === emoji.id);
-			}
+			}, {
+				done: result => {
+					if (result.updated) {
+						this.$refs.emojis.replaceItem(item => item.id === emoji.id, {
+							...emoji,
+							...result.updated
+						});
+					} else if (result.deleted) {
+						this.$refs.emojis.removeItem(item => item.id === emoji.id);
+					}
+				},
+			}, 'closed');
 		},
 
 		im(emoji) {

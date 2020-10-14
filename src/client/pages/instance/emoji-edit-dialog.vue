@@ -1,5 +1,11 @@
 <template>
-<XModalWindow @close="$emit('done')" :width="370" :with-ok-button="true" @ok="ok()">
+<XModalWindow ref="dialog"
+	:width="370"
+	:with-ok-button="true"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+	@ok="ok()"
+>
 	<template #header>:{{ emoji.name }}:</template>
 
 	<div class="yigymqpb _section">
@@ -37,7 +43,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -75,6 +81,7 @@ export default defineComponent({
 					aliases: this.aliases.split(' '),
 				}
 			});
+			this.$refs.dialog.close();
 		},
 
 		async del() {
@@ -91,6 +98,7 @@ export default defineComponent({
 				this.$emit('done', {
 					deleted: true
 				});
+				this.$refs.dialog.close();
 			});
 		},
 	}
