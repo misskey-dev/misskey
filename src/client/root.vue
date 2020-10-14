@@ -3,9 +3,10 @@
 <DeckUI v-else-if="deckmode"/>
 <DefaultUI v-else/>
 
-<component v-for="popup in $store.state.popups"
+<component v-for="popup in popups"
 	:key="popup.id"
 	:is="popup.component"
+	:ref="popup.vm"
 	v-bind="popup.props"
 	v-on="popup.events"
 />
@@ -18,7 +19,7 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { deckmode } from '@/config';
-import { uploads } from '@/os';
+import { popups, uploads } from '@/os';
 
 export default defineComponent({
 	components: {
@@ -32,6 +33,11 @@ export default defineComponent({
 		return {
 			deckmode,
 			uploads,
+			popups,
+			setPopupRef: (id, vm) => {
+				console.log(id, vm, popups.value.find(popup => popup.id === id));
+				popups.value.find(popup => popup.id === id).vm.value = vm;
+			}
 		};
 	},
 });

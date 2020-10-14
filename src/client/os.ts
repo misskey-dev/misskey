@@ -1,4 +1,4 @@
-import { Component, defineAsyncComponent, markRaw, reactive, ref } from 'vue';
+import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref, watch } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
@@ -98,29 +98,45 @@ function isModule(x: any): x is typeof import('*.vue') {
 	return x.default != null;
 }
 
+export const popups = ref([]) as Ref<{
+	id: any;
+	component: any;
+	props: Record<string, any>;
+	vm: any;
+}[]>;
+
 export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}) {
 	if (isModule(component)) component = component.default;
 
 	markRaw(component);
 	const id = Math.random().toString(); // TODO: uuidとか使う
+	const vm = ref(null);
 	const state = {
 		component,
 		props,
 		events,
 		id,
+		vm,
 	};
 
+	const vmPromise = new Promise((resolve) => {
+		watch(vm, () => {
+			resolve(vm);
+		});
+	});
+
 	if (_DEV_) console.log('os:popup open', id, component, props, events);
-	store.commit('addPopup', state);
+	popups.value.push(state);
 
 	return {
 		dispose: () => {
 			if (_DEV_) console.log('os:popup close', id, component, props, events);
 			// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
 			setTimeout(() => {
-				store.commit('removePopup', id);
+				popups.value = popups.value.filter(popup => popup.id !== id);
 			}, 0);
 		},
+		vm: vmPromise,
 	};
 }
 

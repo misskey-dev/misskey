@@ -106,12 +106,6 @@ export const store = createStore({
 		i: null,
 		pendingApiRequestsCount: 0,
 		spinner: null,
-		popups: [] as {
-			id: any;
-			component: any;
-			type: 'popup' | 'modal',
-			props: Record<string, any>;
-		}[],
 
 		// Plugin
 		pluginContexts: new Map<string, AiScript>(),
@@ -141,14 +135,6 @@ export const store = createStore({
 
 		endApiRequest(state) {
 			state.pendingApiRequestsCount--;
-		},
-
-		addPopup(state, popup) {
-			state.popups.push(popup);
-		},
-
-		removePopup(state, popupId) {
-			state.popups = state.popups.filter(x => x.id !== popupId);
 		},
 
 		initPlugin(state, { plugin, aiscript }) {

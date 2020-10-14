@@ -28,13 +28,13 @@ export default {
 			if (self._close) return;
 			if (self.text == null) return;
 
-			const promise = popup(await import('@/components/ui/tooltip.vue'), {
+			const { dispose } = popup(await import('@/components/ui/tooltip.vue'), {
 				text: self.text,
 				source: el
 			});
 
 			self._close = () => {
-				promise.cancel();
+				dispose();
 			};
 		};
 
