@@ -485,7 +485,7 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
+			os.popup(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
 				showFocus: viaKeyboard,
 				src: this.$refs.reactButton,
 			}, {
@@ -498,8 +498,7 @@ export default defineComponent({
 					}
 					this.focus();
 				},
-				closed: () => dispose(),
-			});
+			}, 'closed');
 		},
 
 		reactDirectly(reaction) {

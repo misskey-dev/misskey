@@ -84,12 +84,10 @@ export function apiWithDialog(endpoint: string, data: Record<string, any> = {}, 
 		}
 	});
 
-	const { dispose } = popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
+	popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
 		type: state,
 		showing: showing
-	}, {
-		closed: () => dispose(),
-	});
+	}, {}, 'closed');
 
 	return promise;
 }
@@ -143,12 +141,11 @@ export function window_(component: Component | typeof import('*.vue'), props: Re
 
 export function dialog(props: Record<string, any>) {
 	return new Promise((resolve, reject) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {
+		popup(defineAsyncComponent(() => import('@/components/dialog.vue')), props, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
 			},
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 
@@ -158,54 +155,50 @@ export function success() {
 		setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
 			type: 'success',
 			showing: showing
 		}, {
 			done: () => resolve(),
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
 			type: 'waiting',
 			showing: showing
 		}, {
 			done: () => resolve(),
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 
 export function form(title, form) {
 	return new Promise((resolve, reject) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/form-dialog.vue')), { title, form }, {
+		popup(defineAsyncComponent(() => import('@/components/form-dialog.vue')), { title, form }, {
 			done: result => {
 				resolve(result);
 			},
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 
 export async function selectUser() {
 	return new Promise((resolve, reject) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/user-select-dialog.vue')), {}, {
+		popup(defineAsyncComponent(() => import('@/components/user-select-dialog.vue')), {}, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
 			},
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 
 export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
 			type: 'file',
 			multiple
 		}, {
@@ -214,14 +207,13 @@ export async function selectDriveFile(multiple: boolean) {
 					resolve(multiple ? files : files[0]);
 				}
 			},
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 
 export async function selectDriveFolder(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
 			type: 'folder',
 			multiple
 		}, {
@@ -230,8 +222,7 @@ export async function selectDriveFolder(multiple: boolean) {
 					resolve(multiple ? folders : folders[0]);
 				}
 			},
-			closed: () => dispose(),
-		});
+		}, 'closed');
 	});
 }
 

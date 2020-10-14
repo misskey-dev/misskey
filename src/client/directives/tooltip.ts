@@ -29,13 +29,11 @@ export default {
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			const { dispose } = popup(await import('@/components/ui/tooltip.vue'), {
+			popup(await import('@/components/ui/tooltip.vue'), {
 				showing,
 				text: self.text,
 				source: el
-			}, {
-				closed: () => dispose(),
-			});
+			}, {}, 'closed');
 
 			self._close = () => {
 				showing.value = false;

@@ -210,11 +210,9 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				const { dispose } = os.popup(await import('@/components/toast.vue'), {
+				os.popup(await import('@/components/toast.vue'), {
 					notification
-				}, {
-					closed: () => dispose(),
-				});
+				}, {}, 'closed');
 			}
 
 			os.sound('notification');
