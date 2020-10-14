@@ -1,51 +1,57 @@
 <template>
-<div class="gqyayizv _panel">
-	<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
-		<div><Fa :icon="faGlobe"/></div>
-		<div>
-			<span>{{ $t('_visibility.public') }}</span>
-			<span>{{ $t('_visibility.publicDescription') }}</span>
-		</div>
-	</button>
-	<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
-		<div><Fa :icon="faHome"/></div>
-		<div>
-			<span>{{ $t('_visibility.home') }}</span>
-			<span>{{ $t('_visibility.homeDescription') }}</span>
-		</div>
-	</button>
-	<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
-		<div><Fa :icon="faUnlock"/></div>
-		<div>
-			<span>{{ $t('_visibility.followers') }}</span>
-			<span>{{ $t('_visibility.followersDescription') }}</span>
-		</div>
-	</button>
-	<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
-		<div><Fa :icon="faEnvelope"/></div>
-		<div>
-			<span>{{ $t('_visibility.specified') }}</span>
-			<span>{{ $t('_visibility.specifiedDescription') }}</span>
-		</div>
-	</button>
-	<div class="divider"></div>
-	<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
-		<div><Fa :icon="faBiohazard"/></div>
-		<div>
-			<span>{{ $t('_visibility.localOnly') }}</span>
-			<span>{{ $t('_visibility.localOnlyDescription') }}</span>
-		</div>
-		<div><Fa :icon="localOnly ? faToggleOn : faToggleOff" :key="localOnly"/></div>
-	</button>
-</div>
+<MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
+	<div class="gqyayizv _panel">
+		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
+			<div><Fa :icon="faGlobe"/></div>
+			<div>
+				<span>{{ $t('_visibility.public') }}</span>
+				<span>{{ $t('_visibility.publicDescription') }}</span>
+			</div>
+		</button>
+		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
+			<div><Fa :icon="faHome"/></div>
+			<div>
+				<span>{{ $t('_visibility.home') }}</span>
+				<span>{{ $t('_visibility.homeDescription') }}</span>
+			</div>
+		</button>
+		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
+			<div><Fa :icon="faUnlock"/></div>
+			<div>
+				<span>{{ $t('_visibility.followers') }}</span>
+				<span>{{ $t('_visibility.followersDescription') }}</span>
+			</div>
+		</button>
+		<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
+			<div><Fa :icon="faEnvelope"/></div>
+			<div>
+				<span>{{ $t('_visibility.specified') }}</span>
+				<span>{{ $t('_visibility.specifiedDescription') }}</span>
+			</div>
+		</button>
+		<div class="divider"></div>
+		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
+			<div><Fa :icon="faBiohazard"/></div>
+			<div>
+				<span>{{ $t('_visibility.localOnly') }}</span>
+				<span>{{ $t('_visibility.localOnlyDescription') }}</span>
+			</div>
+			<div><Fa :icon="localOnly ? faToggleOn : faToggleOff" :key="localOnly"/></div>
+		</button>
+	</div>
+</MkModal>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
+import MkModal from '@/components/ui/modal.vue';
 
 export default defineComponent({
+	components: {
+		MkModal,
+	},
 	props: {
 		currentVisibility: {
 			type: String,
@@ -54,9 +60,12 @@ export default defineComponent({
 		currentLocalOnly: {
 			type: Boolean,
 			required: false
-		}
+		},
+		src: {
+			required: false
+		},
 	},
-	emits: ['done', 'change-visibility', 'change-local-only'],
+	emits: ['change-visibility', 'change-local-only', 'closed'],
 	data() {
 		return {
 			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
@@ -76,7 +85,9 @@ export default defineComponent({
 				this.$store.commit('deviceUser/setVisibility', visibility);
 			}
 			this.$emit('change-visibility', visibility);
-			this.$emit('done');
+			this.$nextTick(() => {
+				this.$refs.modal.close();
+			});
 		},
 	}
 });

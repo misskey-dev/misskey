@@ -104,15 +104,25 @@ export const popups = ref([]) as Ref<{
 	props: Record<string, any>;
 }[]>;
 
-export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}) {
+export function popup(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}, disposeEvent?: string) {
 	if (isModule(component)) component = component.default;
-
 	markRaw(component);
+
 	const id = Math.random().toString(); // TODO: uuidとか使う
+	const dispose = () => {
+		if (_DEV_) console.log('os:popup close', id, component, props, events);
+		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+		setTimeout(() => {
+			popups.value = popups.value.filter(popup => popup.id !== id);
+		}, 0);
+	};
 	const state = {
 		component,
 		props,
-		events,
+		events: disposeEvent ? {
+			...events,
+			[disposeEvent]: dispose
+		} : events,
 		id,
 	};
 
@@ -120,13 +130,7 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	popups.value.push(state);
 
 	return {
-		dispose: () => {
-			if (_DEV_) console.log('os:popup close', id, component, props, events);
-			// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-			setTimeout(() => {
-				popups.value = popups.value.filter(popup => popup.id !== id);
-			}, 0);
-		},
+		dispose,
 	};
 }
 

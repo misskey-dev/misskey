@@ -383,9 +383,11 @@ export default defineComponent({
 				// TODO: information dialog
 				return;
 			}
-			os.modal(await import('./visibility-picker.vue'), {
+
+			os.popup(await import('./visibility-picker.vue'), {
 				currentVisibility: this.visibility,
-				currentLocalOnly: this.localOnly
+				currentLocalOnly: this.localOnly,
+				src: this.$refs.visibilityButton
 			}, {
 				'change-visibility': visibility => {
 					this.applyVisibility(visibility);
@@ -393,9 +395,7 @@ export default defineComponent({
 				'change-local-only': localOnly => {
 					this.localOnly = localOnly;
 				}
-			}, {
-				source: this.$refs.visibilityButton
-			});
+			}, 'closed');
 		},
 
 		applyVisibility(v: string) {
