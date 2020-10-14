@@ -1,5 +1,10 @@
 <template>
-<XModalWindow @close="$emit('done')" :width="370" :height="400">
+<XModalWindow ref="dialog"
+	:width="370"
+	:height="400"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header>{{ $t('login') }}</template>
 
 	<div class="_section">
@@ -27,11 +32,12 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	methods: {
 		onLogin(res) {
 			this.$emit('done', res);
+			this.$refs.dialog.close();
 		}
 	}
 });

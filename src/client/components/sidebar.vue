@@ -246,19 +246,21 @@ export default defineComponent({
 		},
 
 		async addAcount() {
-			os.modal(await import('./signin-dialog.vue')).then(res => {
-				if (res == null) return;
-				this.$store.dispatch('addAcount', res);
-				os.success();
-			});
+			os.popup(await import('./signin-dialog.vue'), {}, {
+				done: res => {
+					this.$store.dispatch('addAcount', res);
+					os.success();
+				},
+			}, 'closed');
 		},
 
 		async createAccount() {
-			os.modal(await import('./signup-dialog.vue')).then(res => {
-				if (res == null) return;
-				this.$store.dispatch('addAcount', res);
-				this.switchAccountWithToken(res.i);
-			});
+			os.popup(await import('./signup-dialog.vue'), {}, {
+				done: res => {
+					this.$store.dispatch('addAcount', res);
+					this.switchAccountWithToken(res.i);
+				},
+			}, 'closed');
 		},
 
 		async switchAccount(account: any) {

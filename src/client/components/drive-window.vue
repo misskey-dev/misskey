@@ -43,7 +43,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
