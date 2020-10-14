@@ -1,5 +1,5 @@
 <template>
-<XWindow @closed="$emit('closed')" :width="520" :height="500">
+<XModalWindow @closed="$emit('closed')" :width="520" :height="500">
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
 		<div class="_table">
@@ -114,14 +114,14 @@
 			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
 	</div>
-</XWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '@/components/window.vue';
+import XModalWindow from '@/components/modal-window.vue';
 import MkUsersDialog from '@/components/users-dialog.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -144,7 +144,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XWindow,
+		XModalWindow,
 		MkSelect,
 		MkButton,
 		MkSwitch,

@@ -1,5 +1,5 @@
 <template>
-<XWindow @close="$emit('done')" :width="370">
+<XModalWindow @close="$emit('done')" :width="370">
 	<template #header v-if="file">{{ file.name }}</template>
 	<div class="cxqhhsmd" v-if="file">
 		<div class="_section">
@@ -27,7 +27,7 @@
 			</details>
 		</div>
 	</div>
-</XWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts">
@@ -36,7 +36,7 @@ import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSq
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
-import XWindow from '@/components/window.vue';
+import XModalWindow from '@/components/modal-window.vue';
 import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
 import Progress from '@/scripts/loading';
 import bytes from '@/filters/bytes';
@@ -46,7 +46,7 @@ export default defineComponent({
 	components: {
 		MkButton,
 		MkSwitch,
-		XWindow,
+		XModalWindow,
 		MkDriveFileThumbnail,
 	},
 

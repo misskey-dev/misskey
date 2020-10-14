@@ -142,7 +142,7 @@ export function modal(component: Component | typeof import('*.vue'), props: Reco
 
 // window にするとグローバルのアレと名前が被ってバグる
 export function window_(component: Component | typeof import('*.vue'), props: Record<string, any>, events = {}) {
-	modal(defineAsyncComponent(() => import('@/components/page-window.vue')), {
+	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		component: component
 	});
 }

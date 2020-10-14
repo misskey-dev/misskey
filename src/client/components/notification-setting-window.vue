@@ -1,5 +1,5 @@
 <template>
-<XWindow :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
+<XModalWindow :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
 	<template #header>{{ $t('notificationSetting') }}</template>
 	<div v-if="showGlobalToggle" class="_section">
 		<MkSwitch v-model:value="useGlobalSetting">
@@ -13,12 +13,12 @@
 		<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
 		<MkSwitch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</MkSwitch>
 	</div>
-</XWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import XWindow from './window.vue';
+import XModalWindow from './modal-window.vue';
 import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
@@ -27,7 +27,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XWindow,
+		XModalWindow,
 		MkSwitch,
 		MkInfo,
 		MkButton

@@ -1,22 +1,22 @@
 <template>
-<XWindow :width="366" :height="500" @close="$emit('done')">
+<XModalWindow :width="366" :height="500" @close="$emit('done')">
 	<template #header>{{ $t('signup') }}</template>
 
 	<div class="_section">
 		<XSignup :auto-set="autoSet" @signup="onSignup"/>
 	</div>
-</XWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XWindow from './window.vue';
+import XModalWindow from './modal-window.vue';
 import XSignup from './signup.vue';
 
 export default defineComponent({
 	components: {
 		XSignup,
-		XWindow,
+		XModalWindow,
 	},
 
 	props: {

@@ -8,7 +8,7 @@
 	</div>
 	<div class="description">
 		<div class="mfm" v-if="user.description">
-			<Mfm :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :nowrap="true"/>
+			<Mfm :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
 		</div>
 		<span v-else style="opacity: 0.7;">{{ $t('noAccountDescription') }}</span>
 	</div>

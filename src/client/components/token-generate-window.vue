@@ -1,5 +1,5 @@
 <template>
-<XWindow ref="window" :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<XModalWindow ref="window" :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
 	<div v-if="information" class="_section">
 		<MkInfo warn>{{ information }}</MkInfo>
@@ -13,13 +13,13 @@
 		<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
 		<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model:value="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
 	</div>
-</XWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { kinds } from '../../misc/api-permissions';
-import XWindow from './window.vue';
+import XModalWindow from './modal-window.vue';
 import MkInput from './ui/input.vue';
 import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';
@@ -29,7 +29,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XWindow,
+		XModalWindow,
 		MkInput,
 		MkTextarea,
 		MkSwitch,

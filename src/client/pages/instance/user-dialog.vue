@@ -1,5 +1,5 @@
 <template>
-<XWindow @close="$emit('done')" :width="370">
+<XModalWindow @close="$emit('done')" :width="370">
 	<template #header v-if="user"><MkUserName class="name" :user="user"/></template>
 	<div class="vrcsvlkm" v-if="user && info">
 		<div class="_section">
@@ -39,7 +39,7 @@
 			</details>
 		</div>
 	</div>
-</XWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts">
@@ -48,7 +48,7 @@ import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSq
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
-import XWindow from '@/components/window.vue';
+import XModalWindow from '@/components/modal-window.vue';
 import Progress from '@/scripts/loading';
 import { acct, userPage } from '../../filters/user';
 import * as os from '@/os';
@@ -57,7 +57,7 @@ export default defineComponent({
 	components: {
 		MkButton,
 		MkSwitch,
-		XWindow,
+		XModalWindow,
 	},
 
 	props: {

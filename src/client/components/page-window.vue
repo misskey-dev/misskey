@@ -1,16 +1,17 @@
 <template>
-<XWindow ref="window" :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<XWindow ref="window" :initial-width="400" :initial-height="450" :can-resize="true">
 	<template #header>
 		tesst
 	</template>
-	<component :is="component"/>
+	<div style="height: 100%; background: var(--bg);">
+		<component :is="component"/>
+	</div>
 </XWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XWindow from './window.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
