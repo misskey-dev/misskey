@@ -152,7 +152,7 @@ export class Autocomplete {
 			const _y = ref(y);
 			const _q = ref(q);
 
-			const promise = popup(MkAutocomplete, {
+			const { dispose } = popup(MkAutocomplete, {
 				textarea: this.textarea,
 				close: this.close,
 				type: type,
@@ -169,7 +169,7 @@ export class Autocomplete {
 				q: _q,
 				x: _x,
 				y: _y,
-				close: () => promise.cancel(),
+				close: () => dispose(),
 			};
 
 			this.opening = false;
