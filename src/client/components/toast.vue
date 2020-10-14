@@ -9,26 +9,26 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XNotification from './notification.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		XNotification
 	},
 	props: {
-		showing: {
-			type: Boolean,
-			required: true
-		},
 		notification: {
 			type: Object,
 			required: true
 		}
 	},
-	emits: ['done', 'closed'],
+	emits: ['closed'],
+	data() {
+		return {
+			showing: true
+		};
+	},
 	mounted() {
 		setTimeout(() => {
-			this.$emit('done');
+			this.showing = false;
 		}, 6000);
 	}
 });
