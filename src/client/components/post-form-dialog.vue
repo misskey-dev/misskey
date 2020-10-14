@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" @click="$refs.modal.close()" @closed="$emit('closed')" :position="'top'">
-	<MkPostForm @esc="$refs.modal.close()"/>
+	<MkPostForm @done="$refs.modal.close()" @esc="$refs.modal.close()"/>
 </MkModal>
 </template>
 
