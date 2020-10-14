@@ -122,7 +122,6 @@ import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChar
 import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
-import XUserMenu from '@/components/user-menu.vue';
 import XNote from '@/components/note.vue';
 import MkFollowButton from '@/components/follow-button.vue';
 import MkContainer from '@/components/ui/container.vue';
@@ -130,6 +129,7 @@ import MkRemoteCaution from '@/components/remote-caution.vue';
 import Progress from '@/scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '@/scripts/scroll';
+import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '../../filters/number';
 import { userPage, acct } from '../../filters/user';
 import * as os from '@/os';
@@ -207,11 +207,7 @@ export default defineComponent({
 		},
 
 		menu(ev) {
-			os.modal(XUserMenu, {
-				user: this.user
-			}, {}, {
-				source: ev.currentTarget || ev.target,
-			});
+			os.modalMenu(getUserMenu(this.user), ev.currentTarget || ev.target);
 		},
 
 		parallaxLoop() {

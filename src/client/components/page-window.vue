@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XWindow from './window.vue';
+import XWindow from '@/components/ui/window.vue';
 
 export default defineComponent({
 	components: {
