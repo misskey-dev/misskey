@@ -1,4 +1,4 @@
-import { Directive } from 'vue';
+import { Directive, ref } from 'vue';
 import autobind from 'autobind-decorator';
 import { popup } from '@/os';
 
@@ -22,7 +22,10 @@ export class UserPreview {
 		if (!document.body.contains(this.el)) return;
 		if (this.promise) return;
 
-		this.promise = popup(await import('@/components/user-preview.vue'), {
+		const showing = ref(true);
+
+		const { dispose } = popup(await import('@/components/user-preview.vue'), {
+			showing,
 			user: this.user,
 			source: this.el
 		}, {
@@ -33,7 +36,14 @@ export class UserPreview {
 				clearTimeout(this.showTimer);
 				this.hideTimer = setTimeout(this.close, 500);
 			},
+			closed: () => dispose(),
 		});
+
+		this.promise = {
+			cancel: () => {
+				showing.value = false;
+			}
+		};
 
 		this.checkTimer = setInterval(() => {
 			if (!document.body.contains(this.el)) {

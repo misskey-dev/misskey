@@ -113,6 +113,7 @@ export default defineComponent({
 	z-index: 11000;
 	width: 300px;
 	overflow: hidden;
+	transform-origin: center top;
 
 	> .banner {
 		height: 84px;
