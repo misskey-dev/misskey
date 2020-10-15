@@ -24,7 +24,7 @@ export class UserPreview {
 
 		const showing = ref(true);
 
-		const { dispose } = popup(await import('@/components/user-preview.vue'), {
+		popup(await import('@/components/user-preview.vue'), {
 			showing,
 			user: this.user,
 			source: this.el
@@ -36,8 +36,7 @@ export class UserPreview {
 				clearTimeout(this.showTimer);
 				this.hideTimer = setTimeout(this.close, 500);
 			},
-			closed: () => dispose(),
-		});
+		}, 'closed');
 
 		this.promise = {
 			cancel: () => {
