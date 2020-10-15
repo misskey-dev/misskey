@@ -1,5 +1,13 @@
 <template>
-<XModalWindow ref="window" :width="400" :height="450" @close="$emit('done')" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()" :can-close="false">
+<XModalWindow ref="dialog"
+	:width="400"
+	:height="450"
+	:with-ok-button="true"
+	:ok-button-disabled="false"
+	:can-close="false"
+	@close="$refs.dialog.close()"
+	@ok="ok()"
+>
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
 	<div v-if="information" class="_section">
 		<MkInfo warn>{{ information }}</MkInfo>
@@ -25,7 +33,6 @@ import MkTextarea from './ui/textarea.vue';
 import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
 import MkInfo from './ui/info.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -60,7 +67,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -84,11 +91,11 @@ export default defineComponent({
 
 	methods: {
 		ok() {
-			this.$emit('ok', {
+			this.$emit('dialog', {
 				name: this.name,
 				permissions: Object.keys(this.permissions).filter(p => this.permissions[p])
 			});
-			this.$refs.window.close();
+			this.$refs.dialog.close();
 		},
 
 		disableAll() {

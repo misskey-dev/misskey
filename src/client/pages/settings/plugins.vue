@@ -118,22 +118,23 @@ export default defineComponent({
 			}
 
 			const token = permissions == null || permissions.length === 0 ? null : await new Promise(async (res, rej) => {
-				os.modal(await import('@/components/token-generate-window.vue'), {
+				os.popup(await import('@/components/token-generate-window.vue'), {
 					title: this.$t('tokenRequested'),
 					information: this.$t('pluginTokenRequestedDescription'),
 					initialName: name,
 					initialPermissions: permissions
-				}).then(async result => {
-					if (result == null) return;
-					const { name, permissions } = result;
-					const { token } = await os.api('miauth/gen-token', {
-						session: null,
-						name: name,
-						permission: permissions,
-					});
+				}, {
+					done: async result => {
+						const { name, permissions } = result;
+						const { token } = await os.api('miauth/gen-token', {
+							session: null,
+							name: name,
+							permission: permissions,
+						});
 
-					res(token);
-				});
+						res(token);
+					}
+				}, 'closed');
 			});
 
 			this.$store.commit('deviceUser/installPlugin', {
