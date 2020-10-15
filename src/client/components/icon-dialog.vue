@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" @click="done()" @closed="$emit('closed')">
+<MkModal ref="modal" @click="type === 'success' ? done() : () => {}" @closed="$emit('closed')">
 	<div class="iuyakobc" :class="type">
 		<Fa class="icon" v-if="type === 'success'" :icon="faCheck"/>
 		<Fa class="icon" v-else-if="type === 'waiting'" :icon="faSpinner" pulse/>
