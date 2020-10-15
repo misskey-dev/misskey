@@ -207,9 +207,9 @@ export default defineComponent({
 		},
 
 		async show(user) {
-			os.modal(await import('./user-dialog.vue'), {
+			os.popup(await import('./user-dialog.vue'), {
 				userId: user.id
-			});
+			}, {}, 'closed');
 		},
 
 		acct
