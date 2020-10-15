@@ -11,7 +11,6 @@
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { acct, userPage } from '../filters/user';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
