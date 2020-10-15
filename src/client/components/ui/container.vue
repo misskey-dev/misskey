@@ -142,7 +142,7 @@ export default defineComponent({
 			margin: 0;
 			padding: 12px 16px;
 
-			> [data-icon] {
+			> ::v-deep([data-icon]) {
 				margin-right: 6px;
 			}
 
@@ -158,7 +158,7 @@ export default defineComponent({
 			right: 0;
 			height: 100%;
 
-			> button {
+			> ::v-deep(button) {
 				width: 42px;
 				height: 100%;
 			}

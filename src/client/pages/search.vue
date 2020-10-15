@@ -1,7 +1,8 @@
 <template>
-<div>
-	<portal to="header"><Fa :icon="faSearch"/>{{ $t('searchWith', { q: $route.query.q }) }}</portal>
-	<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+<div class="_section">
+	<div class="_content">
+		<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+	</div>
 </div>
 </template>
 
@@ -10,21 +11,20 @@ import { defineComponent } from 'vue';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import XNotes from '@/components/notes.vue';
-import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('searchWith', { q: this.$route.query.q }) as string
-		};
-	},
-
 	components: {
 		XNotes
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('searchWith', { q: this.$route.query.q }),
+					icon: faSearch
+				}],
+			},
 			pagination: {
 				endpoint: 'notes/search',
 				limit: 10,
@@ -32,7 +32,6 @@ export default defineComponent({
 					query: this.$route.query.q,
 				})
 			},
-			faSearch
 		};
 	},
 

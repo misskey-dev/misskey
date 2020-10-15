@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
 import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
@@ -120,6 +120,14 @@ import { checkWordMute } from '@/scripts/check-word-mute';
 import { utils } from '@syuilo/aiscript';
 import { userPage } from '../filters/user';
 import * as os from '@/os';
+
+function markRawAll(...xs) {
+	for (const x of xs) {
+		markRaw(x);
+	}
+}
+
+markRawAll(faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish);
 
 export default defineComponent({
 	components: {
