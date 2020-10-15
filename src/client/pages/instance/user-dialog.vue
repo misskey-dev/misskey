@@ -1,5 +1,9 @@
 <template>
-<XModalWindow @close="$emit('done')" :width="370">
+<XModalWindow ref="dialog"
+	:width="370"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header v-if="user"><MkUserName class="name" :user="user"/></template>
 	<div class="vrcsvlkm" v-if="user && info">
 		<div class="_section">
@@ -65,6 +69,8 @@ export default defineComponent({
 			required: true,
 		}
 	},
+
+	emits: ['closed'],
 
 	data() {
 		return {

@@ -1,5 +1,9 @@
 <template>
-<XModalWindow @close="$emit('done')" :width="370">
+<XModalWindow ref="dialog"
+	:width="370"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header v-if="file">{{ file.name }}</template>
 	<div class="cxqhhsmd" v-if="file">
 		<div class="_section">
@@ -56,6 +60,8 @@ export default defineComponent({
 		}
 	},
 
+	emits: ['closed'],
+
 	data() {
 		return {
 			file: null,
@@ -79,9 +85,9 @@ export default defineComponent({
 		},
 
 		async showUser() {
-			os.modal(await import('./user-dialog.vue'), {
+			os.popup(await import('./user-dialog.vue'), {
 				userId: this.file.userId
-			});
+			}, {}, 'closed');
 		},
 
 		async del() {

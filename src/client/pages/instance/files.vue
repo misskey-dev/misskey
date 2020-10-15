@@ -131,9 +131,9 @@ export default defineComponent({
 		},
 
 		async show(file, ev) {
-			os.modal(await import('./file-dialog.vue'), {
+			os.popup(await import('./file-dialog.vue'), {
 				fileId: file.id
-			});
+			}, {}, 'closed');
 		},
 
 		find() {
