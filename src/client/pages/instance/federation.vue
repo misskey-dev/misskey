@@ -125,9 +125,9 @@ export default defineComponent({
 		},
 
 		info(instance) {
-			os.modal(MkInstanceInfo, {
+			os.popup(MkInstanceInfo, {
 				instance: instance
-			});
+			}, {}, 'closed');
 		}
 	}
 });

@@ -1,5 +1,10 @@
 <template>
-<XModalWindow @closed="$emit('closed')" :width="520" :height="500">
+<XModalWindow ref="dialog"
+	:width="520"
+	:height="500"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
 		<div class="_table">
@@ -157,6 +162,8 @@ export default defineComponent({
 			required: true
 		}
 	},
+
+	emits: ['closed'],
 
 	data() {
 		return {

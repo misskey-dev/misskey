@@ -194,9 +194,9 @@ export default defineComponent({
 					host: q
 				});
 			}
-			os.modal(MkInstanceInfo, {
+			os.popup(MkInstanceInfo, {
 				instance: instance
-			});
+			}, {}, 'closed');
 		},
 
 		fetchLogs() {
