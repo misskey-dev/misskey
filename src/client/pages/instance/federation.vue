@@ -1,8 +1,6 @@
 <template>
 <div class="mk-federation">
-	<portal to="header"><Fa :icon="faGlobe"/>{{ $t('federation') }}</portal>
-
-	<section class="_section instances">
+	<div class="_section">
 		<div class="_content">
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
 			<div class="inputs" style="display: flex;">
@@ -39,6 +37,8 @@
 				</MkSelect>
 			</div>
 		</div>
+	</div>
+	<div class="_section">
 		<div class="_content">
 			<MkPagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
 				<div class="instance" v-for="instance in items" :key="instance.id" @click="info(instance)">
@@ -54,7 +54,7 @@
 				</div>
 			</MkPagination>
 		</div>
-	</section>
+	</div>
 </div>
 </template>
 
@@ -84,6 +84,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('federation'),
+					icon: faGlobe
+				}],
+			},
 			host: '',
 			state: 'federating',
 			sort: '+pubSub',
@@ -140,6 +146,10 @@ export default defineComponent({
 			> .instances {
 				> .instance {
 					cursor: pointer;
+
+					&:hover {
+						color: var(--accent);
+					}
 
 					> .host {
 						> .indicator {

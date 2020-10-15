@@ -134,6 +134,7 @@ import MkSwitch from '@/components/ui/switch.vue';
 import MkInfo from '@/components/ui/info.vue';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
+import * as os from '@/os';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -145,7 +146,6 @@ const alpha = hex => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, 0.1)`;
 };
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
