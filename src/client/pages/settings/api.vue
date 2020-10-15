@@ -37,21 +37,22 @@ export default defineComponent({
 
 	methods: {
 		async generateToken() {
-			os.modal(await import('@/components/token-generate-window.vue'), {}).then(async result => {
-				if (result == null) return;
-				const { name, permissions } = result;
-				const { token } = await os.api('miauth/gen-token', {
-					session: null,
-					name: name,
-					permission: permissions,
-				});
+			os.popup(await import('@/components/token-generate-window.vue'), {}, {
+				done: async result => {
+					const { name, permissions } = result;
+					const { token } = await os.api('miauth/gen-token', {
+						session: null,
+						name: name,
+						permission: permissions,
+					});
 
-				os.dialog({
-					type: 'success',
-					title: this.$t('token'),
-					text: token
-				});
-			});
+					os.dialog({
+						type: 'success',
+						title: this.$t('token'),
+						text: token
+					});
+				},
+			}, 'closed');
 		},
 	}
 });

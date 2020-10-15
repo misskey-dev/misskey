@@ -6,6 +6,7 @@
 	:ok-button-disabled="false"
 	:can-close="false"
 	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || $t('generateAccessToken') }}</template>
@@ -91,7 +92,7 @@ export default defineComponent({
 
 	methods: {
 		ok() {
-			this.$emit('dialog', {
+			this.$emit('done', {
 				name: this.name,
 				permissions: Object.keys(this.permissions).filter(p => this.permissions[p])
 			});

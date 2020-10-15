@@ -78,6 +78,7 @@ export default defineComponent({
 				.filter(type => this.typesMap[type]);
 
 			this.$emit('done', { includingTypes });
+			this.$refs.dialog.close();
 		},
 
 		disableAll() {
