@@ -16,6 +16,7 @@ settings: "Настройки"
 profile: "Профиль"
 timeline: "Лента"
 login: "Войти"
+loggingIn: "Выполняется вход"
 logout: "Выйти"
 signup: "Регистрация"
 save: "Сохранить"
@@ -31,12 +32,19 @@ delete: "Удалить"
 addToList: "Добавить в список"
 reply: "Ответить"
 loadMore: "Показать еще"
+mention: "Упоминание"
 importAndExport: "Импорт / Экспорт"
-files: "Файл"
+import: "Импорт"
+export: "Экспорт"
+files: "Файлы"
+download: "Скачать"
 instances: "Экземпляр"
 remove: "Удалить"
 smtpUser: "Имя пользователя"
 smtpPass: "Пароль"
+_theme:
+  keys:
+    mention: "Упоминание"
 _sfx:
   notification: "Уведомления"
 _widgets:
@@ -46,6 +54,9 @@ _cw:
   show: "Показать еще"
 _profile:
   username: "Имя пользователя"
+_notification:
+  _types:
+    mention: "Упоминание"
 _deck:
   _columns:
     notifications: "Уведомления"
