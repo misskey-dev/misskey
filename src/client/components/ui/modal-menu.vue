@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<MkMenu :items="items" @close="$refs.modal.close()" class="_popup"/>
+	<MkMenu :items="items" :align="align" @close="$refs.modal.close()" class="_popup"/>
 </MkModal>
 </template>
 
@@ -21,14 +21,6 @@ export default defineComponent({
 		},
 		align: {
 			type: String,
-			required: false
-		},
-		noCenter: {
-			type: Boolean,
-			required: false
-		},
-		width: {
-			type: Number,
 			required: false
 		},
 		viaKeyboard: {

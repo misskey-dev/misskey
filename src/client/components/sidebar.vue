@@ -166,7 +166,9 @@ export default defineComponent({
 						action: () => { this.createAccount(); },
 					}], ev.currentTarget || ev.target);
 				},
-			}]], ev.currentTarget || ev.target);
+			}]], ev.currentTarget || ev.target, {
+				align: 'left'
+			});
 		},
 
 		oepnInstanceMenu(ev) {

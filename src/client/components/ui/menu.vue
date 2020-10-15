@@ -1,7 +1,6 @@
 <template>
 <div class="rrevdjwt" :class="{ left: align === 'left' }"
 	ref="items"
-	:style="{ width: width + 'px' }"
 	@contextmenu.self="e => e.preventDefault()"
 	v-hotkey="keymap"
 >

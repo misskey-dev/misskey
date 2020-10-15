@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -30,8 +29,7 @@ export default defineComponent({
 		modal: true
 	},
 	props: {
-		// TODO: 要る？
-		noCenter: {
+		srcCenter: {
 			type: Boolean,
 			required: false
 		},
@@ -78,7 +76,7 @@ export default defineComponent({
 				let left;
 				let top;
 
-				if (os.isMobile && !this.noCenter) {
+				if (this.srcCenter) {
 					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
 					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
 					left = (x - (width / 2));
