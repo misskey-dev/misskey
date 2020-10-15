@@ -47,7 +47,7 @@ export default defineComponent({
 	props: {
 	},
 
-	emits: ['done'],
+	emits: ['ok', 'cancel', 'closed'],
 
 	data() {
 		return {
@@ -88,12 +88,12 @@ export default defineComponent({
 		},
 
 		ok() {
-			this.$emit('done', this.selected);
+			this.$emit('ok', this.selected);
 			this.$refs.dialog.close();
 		},
 
 		cancel() {
-			this.$emit('done');
+			this.$emit('cancel');
 			this.$refs.dialog.close();
 		},
 	}

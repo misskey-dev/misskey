@@ -189,8 +189,8 @@ export function form(title, form) {
 export async function selectUser() {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/user-select-dialog.vue')), {}, {
-			done: result => {
-				resolve(result ? result : { canceled: true });
+			ok: user => {
+				resolve(user);
 			},
 		}, 'closed');
 	});

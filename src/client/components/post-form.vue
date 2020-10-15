@@ -569,7 +569,7 @@ export default defineComponent({
 
 		insertMention() {
 			os.selectUser().then(user => {
-				insertTextAtCursor(this.$refs.text, getAcct(user) + ' ');
+				insertTextAtCursor(this.$refs.text, '@' + getAcct(user) + ' ');
 			});
 		},
 
