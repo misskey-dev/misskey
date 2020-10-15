@@ -97,7 +97,7 @@
 				</div>
 			</div>
 			<div class="chart">
-				<canvas ref="chart"></canvas>
+				<canvas :ref="setChart"></canvas>
 			</div>
 		</div>
 		<div class="operations">
@@ -169,6 +169,7 @@ export default defineComponent({
 		return {
 			isSuspended: this.instance.isSuspended,
 			now: null,
+			canvas: null,
 			chart: null,
 			chartInstance: null,
 			chartSrc: 'requests',
@@ -244,11 +245,14 @@ export default defineComponent({
 		};
 
 		this.chart = chart;
-
-		this.renderChart();
 	},
 
 	methods: {
+		setChart(el) {
+			this.canvas = el;
+			this.renderChart();
+		},
+
 		changeBlock(e) {
 			os.api('admin/update-meta', {
 				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
@@ -277,7 +281,7 @@ export default defineComponent({
 			}
 
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-			this.chartInstance = new Chart(this.$refs.chart, {
+			this.chartInstance = new Chart(this.canvas, {
 				type: 'line',
 				data: {
 					labels: new Array(chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
