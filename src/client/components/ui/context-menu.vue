@@ -1,6 +1,6 @@
 <template>
 <div class="nvlagfpb">
-	<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow"/>
+	<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
 </div>
 </template>
 

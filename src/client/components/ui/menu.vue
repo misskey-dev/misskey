@@ -1,5 +1,5 @@
 <template>
-<div class="rrevdjwt"
+<div class="rrevdjwt" :class="{ left: align === 'left' }"
 	ref="items"
 	:style="{ width: width + 'px' }"
 	@contextmenu.self="e => e.preventDefault()"
@@ -54,6 +54,10 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		align: {
+			type: String,
+			requried: false
+		}
 	},
 	emits: ['close'],
 	data() {
