@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import XDetails from './reactions-viewer.details.vue';
 import XReactionIcon from './reaction-icon.vue';
 import * as os from '@/os';
@@ -111,15 +111,18 @@ export default defineComponent({
 
 				this.closeDetails();
 				if (!this.isHovering) return;
-				const { dispose } = os.popup(XDetails, {
+
+				const showing = ref(true);
+				os.popup(XDetails, {
+					showing,
 					reaction: this.reaction,
 					users,
 					count: this.count,
 					source: this.$refs.reaction
-				});
+				}, {}, 'closed');
 
 				this.close = () => {
-					dispose();
+					showing.value = false;
 				};
 			});
 		},

@@ -7,22 +7,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XReaction from './reactions-viewer.reaction.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		XReaction
-	},
-	data() {
-		return {
-			initialReactions: new Set(Object.keys(this.note.reactions))
-		};
 	},
 	props: {
 		note: {
 			type: Object,
 			required: true
 		},
+	},
+	data() {
+		return {
+			initialReactions: new Set(Object.keys(this.note.reactions))
+		};
 	},
 	computed: {
 		isMe(): boolean {
