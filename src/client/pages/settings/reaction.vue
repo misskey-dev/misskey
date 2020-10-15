@@ -74,10 +74,7 @@ export default defineComponent({
 		},
 
 		async chooseEmoji(ev) {
-			os.modal(await import('@/components/emoji-picker.vue'), {}, {}, {
-				source: ev.currentTarget || ev.target
-			}).then(emoji => {
-				if (emoji == null) return;
+			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
 				this.reactions += emoji;
 			});
 		}

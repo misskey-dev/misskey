@@ -217,10 +217,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.modal(await import('@/components/emoji-picker.vue'), {}, {}, {
-				source: ev.currentTarget || ev.target
-			}).then(emoji => {
-				if (emoji == null) return;
+			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
 			});
 		}

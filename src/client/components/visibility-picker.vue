@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<div class="gqyayizv _panel">
+	<div class="gqyayizv _popup">
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
 			<div><Fa :icon="faGlobe"/></div>
 			<div>

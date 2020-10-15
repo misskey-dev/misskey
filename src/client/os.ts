@@ -226,6 +226,18 @@ export async function selectDriveFolder(multiple: boolean) {
 	});
 }
 
+export async function pickEmoji(src?: HTMLElement) {
+	return new Promise((resolve, reject) => {
+		popup(defineAsyncComponent(() => import('@/components/emoji-picker.vue')), {
+			src
+		}, {
+			done: emoji => {
+				resolve(emoji);
+			},
+		}, 'closed');
+	});
+}
+
 export function modalMenu(items: any[], src?: HTMLElement, options?: { align?: string; viaKeyboard?: boolean }) {
 	return new Promise((resolve, reject) => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/ui/modal-menu.vue')), {
