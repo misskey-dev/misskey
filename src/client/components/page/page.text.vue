@@ -6,12 +6,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
-import * as os from '@/os';
 
 export default defineComponent({
+	components: {
+		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
+	},
 	props: {
 		value: {
 			required: true
