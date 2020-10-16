@@ -45,6 +45,8 @@ youGotNewFollower: "Новый подписчик"
 receiveFollowRequest: "Запрос на подписку"
 followRequestAccepted: "Запрос на подписку принят"
 mention: "Упоминание"
+mentions: "Упоминания"
+directNotes: "Прямые сообщения"
 importAndExport: "Импорт / Экспорт"
 import: "Импорт"
 export: "Экспорт"
@@ -85,3 +87,4 @@ _deck:
   _columns:
     notifications: "Уведомления"
     tl: "Лента"
+    mentions: "Упоминания"
