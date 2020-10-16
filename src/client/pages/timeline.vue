@@ -3,22 +3,20 @@
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 
 	<div class="_section">
-		<div class="_content">
-			<XTutorial v-if="$store.state.settings.tutorial != -1" class="tutorial _vMargin"/>
-			<XPostForm v-if="$store.state.device.showFixedPostForm" class="post-form _panel _vMargin" fixed/>
-			<XTimeline ref="tl"
-				class=" _vMargin"
-				:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
-				:src="src"
-				:list="list ? list.id : null"
-				:antenna="antenna ? antenna.id : null"
-				:channel="channel ? channel.id : null"
-				:sound="true"
-				@before="before()"
-				@after="after()"
-				@queue="queueUpdated"
-			/>
-		</div>
+		<XTutorial v-if="$store.state.settings.tutorial != -1" class="tutorial _content _vMargin"/>
+		<XPostForm v-if="$store.state.device.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
+		<XTimeline ref="tl"
+			class="_content _vMargin"
+			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
+			:src="src"
+			:list="list ? list.id : null"
+			:antenna="antenna ? antenna.id : null"
+			:channel="channel ? channel.id : null"
+			:sound="true"
+			@before="before()"
+			@after="after()"
+			@queue="queueUpdated"
+		/>
 	</div>
 </div>
 </template>

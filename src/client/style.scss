@@ -331,12 +331,6 @@ hr {
 		font-weight: bold;
 	}
 
-	> ._content + ._content {
-		border-top: solid 1px var(--divider);
-		margin-top: 16px;
-		padding-top: 16px;
-	}
-
 	&._fitBottom {
 		padding-bottom: 0;
 	}
