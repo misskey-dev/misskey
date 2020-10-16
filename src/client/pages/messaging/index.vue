@@ -10,6 +10,7 @@
 				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-index="i"
 				:key="message.id"
+				@click.prevent="go(message)"
 			>
 				<div>
 					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
@@ -38,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '../../../misc/acct/render';
 import MkButton from '@/components/ui/button.vue';
@@ -49,6 +50,8 @@ export default defineComponent({
 	components: {
 		MkButton
 	},
+
+	inject: ['navHook'],
 
 	data() {
 		return {
@@ -87,6 +90,17 @@ export default defineComponent({
 	},
 
 	methods: {
+		go(message) {
+			if (this.navHook) {
+				this.navHook(defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), {
+					userAcct: message.groupId ? null : getAcct(this.isMe(message) ? message.recipient : message.user),
+					groupId: message.groupId
+				});
+			} else {
+				this.$router.push(message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(this.isMe(message) ? message.recipient : message.user)}`);
+			}
+		},
+
 		getAcct,
 
 		isMe(message) {

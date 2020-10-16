@@ -222,7 +222,7 @@ export default defineComponent({
 		},
 
 		messagingWindowOpen() {
-			os.window_(XMessaging);
+			os.pageWindow(XMessaging);
 		},
 
 		resetTutorial() {

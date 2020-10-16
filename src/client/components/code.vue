@@ -4,7 +4,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {

@@ -44,6 +44,17 @@ export default defineComponent({
 		XList,
 	},
 
+	props: {
+		userAcct: {
+			type: String,
+			required: false,
+		},
+		groupId: {
+			type: String,
+			required: false,
+		},
+	},
+
 	data() {
 		return {
 			INFO: computed(() => !this.fetching ? this.user ? {
@@ -84,7 +95,8 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route: 'fetch'
+		userAcct: 'fetch',
+		groupId: 'fetch',
 	},
 
 	mounted() {
@@ -105,11 +117,11 @@ export default defineComponent({
 	methods: {
 		async fetch() {
 			this.fetching = true;
-			if (this.$route.params.user) {
-				const user = await os.api('users/show', parseAcct(this.$route.params.user));
+			if (this.userAcct) {
+				const user = await os.api('users/show', parseAcct(this.userAcct));
 				this.user = user;
 			} else {
-				const group = await os.api('users/groups/show', { groupId: this.$route.params.group });
+				const group = await os.api('users/groups/show', { groupId: this.groupId });
 				this.group = group;
 			}
 

@@ -2,7 +2,7 @@
 <div class="ebkgocck">
 	<div class="body _popup _shadow _narrow_" @keydown="onKeydown">
 		<div class="header" @mousedown.prevent="onHeaderMousedown">
-			<button class="_button" v-if="withOkButton" @click="close()"><Fa :icon="faTimes"/></button>
+			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 			<span class="title">
 				<slot name="header"></slot>
 			</span>
@@ -75,9 +75,17 @@ export default defineComponent({
 		},
 	},
 
+	emits: ['close'],
+
 	data() {
 		return {
+			faTimes
 		};
+	},
+
+	mounted() {
+		if (this.initialWidth) this.applyTransformWidth(this.initialWidth);
+		if (this.initialHeight) this.applyTransformHeight(this.initialHeight);
 	},
 
 	methods: {
@@ -304,6 +312,7 @@ export default defineComponent({
 			display: flex;
 			flex-shrink: 0;
 			box-shadow: 0px 1px var(--divider);
+			cursor: move;
 
 			> button {
 				height: $height;
