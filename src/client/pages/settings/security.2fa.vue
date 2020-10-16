@@ -2,7 +2,7 @@
 <section class="_card">
 	<div class="_title"><Fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
 	<div class="_content">
-		<p v-if="!data && !$store.state.i.twoFactorEnabled"><MkButton @click="register">{{ $t('_2fa.registerDevice') }}</MkButton></p>
+		<MkButton v-if="!data && !$store.state.i.twoFactorEnabled" @click="register">{{ $t('_2fa.registerDevice') }}</MkButton>
 		<template v-if="$store.state.i.twoFactorEnabled">
 			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
 			<MkButton @click="unregister">{{ $t('unregister') }}</MkButton>

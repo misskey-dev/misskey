@@ -31,9 +31,17 @@ export default defineComponent({
 		MkInput,
 		MkButton,
 	},
+
+	emits: ['info'],
 	
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('reaction'),
+					icon: faLaugh
+				}]
+			},
 			reactions: this.$store.state.settings.reactions.join(''),
 			changed: false,
 			faLaugh, faSave, faEye, faUndo
@@ -53,6 +61,10 @@ export default defineComponent({
 			},
 			deep: true
 		}
+	},
+
+	mounted() {
+		this.$emit('info', this.INFO);
 	},
 
 	methods: {
