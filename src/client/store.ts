@@ -109,8 +109,6 @@ export const store = createStore({
 
 	state: {
 		i: null,
-		pendingApiRequestsCount: 0,
-		spinner: null,
 	},
 
 	getters: {
@@ -124,14 +122,6 @@ export const store = createStore({
 
 		updateIKeyValue(state, { key, value }) {
 			state.i[key] = value;
-		},
-
-		beginApiRequest(state) {
-			state.pendingApiRequestsCount++;
-		},
-
-		endApiRequest(state) {
-			state.pendingApiRequestsCount--;
 		},
 	},
 

@@ -12,13 +12,13 @@
 
 <XUpload v-if="uploads.length > 0"/>
 
-<div id="wait" v-if="$store.state.pendingApiRequestsCount > 0"></div>
+<div id="wait" v-if="pendingApiRequestsCount > 0"></div>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { deckmode } from '@/config';
-import { popups, uploads } from '@/os';
+import { popups, uploads, pendingApiRequestsCount } from '@/os';
 
 export default defineComponent({
 	components: {
@@ -33,6 +33,7 @@ export default defineComponent({
 			deckmode,
 			uploads,
 			popups,
+			pendingApiRequestsCount,
 		};
 	},
 });

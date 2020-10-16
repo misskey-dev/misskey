@@ -9,15 +9,17 @@ export const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
 export const stream = new Stream();
 
+const pendingApiRequestsCount = ref(0);
+
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
-	store.commit('beginApiRequest');
+	pendingApiRequestsCount.value++;
 
 	if (_DEV_) {
 		performance.mark(_PERF_PREFIX_ + 'api:begin');
 	}
 
 	const onFinally = () => {
-		store.commit('endApiRequest');
+		pendingApiRequestsCount.value--;
 
 		if (_DEV_) {
 			performance.mark(_PERF_PREFIX_ + 'api:end');
