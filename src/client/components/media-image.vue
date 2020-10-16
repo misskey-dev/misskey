@@ -1,6 +1,6 @@
 <template>
 <div class="qjewsnkg" v-if="hide" @click="hide = false">
-	<img-with-blurhash class="bg" :hash="image.blurhash" :title="image.name"/>
+	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.name"/>
 	<div class="text">
 		<div>
 			<b><Fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
@@ -15,7 +15,7 @@
 		:title="image.name"
 		@click.prevent="onClick"
 	>
-		<img-with-blurhash :hash="image.blurhash" :src="url" :alt="image.name" :title="image.name"/>
+		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.name" :title="image.name" :cover="false"/>
 		<div class="gif" v-if="image.type === 'image/gif'">GIF</div>
 	</a>
 </div>
@@ -121,6 +121,7 @@ export default defineComponent({
 
 .gqnyydlz {
 	position: relative;
+	border: solid 1px var(--divider);
 
 	> i {
 		display: block;

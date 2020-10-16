@@ -1,5 +1,5 @@
 <template>
-<div class="xubzgfgb" :title="title">
+<div class="xubzgfgb" :class="{ cover }" :title="title">
 	<canvas ref="canvas" :width="size" :height="size" :title="title" v-if="!loaded"/>
 	<img v-if="src" :src="src" :title="title" :alt="alt" @load="onLoad"/>
 </div>
@@ -8,7 +8,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { decode } from 'blurhash';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -36,6 +35,11 @@ export default defineComponent({
 			required: false,
 			default: 64
 		},
+		cover: {
+			type: Boolean,
+			required: false,
+			default: true,
+		}
 	},
 
 	data() {
@@ -72,9 +76,23 @@ export default defineComponent({
 
 	> canvas,
 	> img {
+		display: block;
 		width: 100%;
 		height: 100%;
+	}
+
+	> canvas {
 		object-fit: cover;
+	}
+
+	> img {
+		object-fit: contain;
+	}
+
+	&.cover {
+		> img {
+			object-fit: cover;
+		}
 	}
 }
 </style>
