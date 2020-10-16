@@ -1,42 +1,43 @@
 <template>
 <div class="">
-	<portal to="header"><Fa :icon="faUsers"/>{{ $t('groups') }}</portal>
+	<div class="_section" style="padding: 0;">
+		<MkTab v-model:value="tab" :items="[{ label: $t('ownedGroups'), value: 'owned' }, { label: $t('joinedGroups'), value: 'joined' }, { label: $t('invites'), icon: faEnvelopeOpenText, value: 'invites' }]"/>
+	</div>
 
-	<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('createGroup') }}</MkButton>
+	<div class="_section">
+		<div class="_content" v-if="tab === 'owned'">
+			<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('createGroup') }}</MkButton>
 
-	<MkContainer :body-togglable="true">
-		<template #header><Fa :icon="faUsers"/> {{ $t('ownedGroups') }}</template>
-		<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
-			<div class="_section" v-for="group in items" :key="group.id">
-				<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
-				<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
-			</div>
-		</MkPagination>
-	</MkContainer>
-
-	<MkContainer :body-togglable="true">
-		<template #header><Fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</template>
-		<MkPagination :pagination="invitationPagination" #default="{items}" ref="invitations">
-			<div class="_section" v-for="invitation in items" :key="invitation.id">
-				<div class="_title">{{ invitation.group.name }}</div>
-				<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
-				<div class="_footer">
-					<MkButton @click="acceptInvite(invitation)" primary inline><Fa :icon="faCheck"/> {{ $t('accept') }}</MkButton>
-					<MkButton @click="rejectInvite(invitation)" primary inline><Fa :icon="faBan"/> {{ $t('reject') }}</MkButton>
+			<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
+				<div class="_card" v-for="group in items" :key="group.id">
+					<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
+					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 				</div>
-			</div>
-		</MkPagination>
-	</MkContainer>
+			</MkPagination>
+		</div>
 
-	<MkContainer :body-togglable="true">
-		<template #header><Fa :icon="faUsers"/> {{ $t('joinedGroups') }}</template>
-		<MkPagination :pagination="joinedPagination" #default="{items}" ref="joined">
-			<div class="_section" v-for="group in items" :key="group.id">
-				<div class="_title">{{ group.name }}</div>
-				<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
-			</div>
-		</MkPagination>
-	</MkContainer>
+		<div class="_content" v-else-if="tab === 'joined'">
+			<MkPagination :pagination="joinedPagination" #default="{items}" ref="joined">
+				<div class="_card" v-for="group in items" :key="group.id">
+					<div class="_title">{{ group.name }}</div>
+					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
+				</div>
+			</MkPagination>
+		</div>
+	
+		<div class="_content" v-else-if="tab === 'invites'">
+			<MkPagination :pagination="invitationPagination" #default="{items}" ref="invitations">
+				<div class="_card" v-for="invitation in items" :key="invitation.id">
+					<div class="_title">{{ invitation.group.name }}</div>
+					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
+					<div class="_footer">
+						<MkButton @click="acceptInvite(invitation)" primary inline><Fa :icon="faCheck"/> {{ $t('accept') }}</MkButton>
+						<MkButton @click="rejectInvite(invitation)" primary inline><Fa :icon="faBan"/> {{ $t('reject') }}</MkButton>
+					</div>
+				</div>
+			</MkPagination>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -47,24 +48,27 @@ import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkContainer from '@/components/ui/container.vue';
 import MkAvatars from '@/components/avatars.vue';
+import MkTab from '@/components/tab.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('groups') as string,
-		};
-	},
-
 	components: {
 		MkPagination,
 		MkButton,
 		MkContainer,
+		MkTab,
 		MkAvatars,
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('groups'),
+					icon: faUsers
+				}],
+			},
+			tab: 'owned',
 			ownedPagination: {
 				endpoint: 'users/groups/owned',
 				limit: 10,

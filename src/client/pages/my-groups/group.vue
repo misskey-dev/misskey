@@ -1,10 +1,9 @@
 <template>
 <div class="mk-group-page">
-	<portal to="header"><Fa :icon="faUsers"/>{{ group.name }}</portal>
-
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_section">
 			<div class="_content">
+				<MkButton inline @click="invite()">{{ $t('invite') }}</MkButton>
 				<MkButton inline @click="renameGroup()">{{ $t('rename') }}</MkButton>
 				<MkButton inline @click="transfer()">{{ $t('transfer') }}</MkButton>
 				<MkButton inline @click="deleteGroup()">{{ $t('delete') }}</MkButton>
@@ -17,7 +16,7 @@
 			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user" v-for="user in users" :key="user.id">
+					<div class="user _panel" v-for="user in users" :key="user.id">
 						<MkAvatar :user="user" class="avatar"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>
@@ -29,34 +28,31 @@
 					</div>
 				</div>
 			</div>
-			<div class="_footer">
-				<MkButton inline @click="invite()">{{ $t('invite') }}</MkButton>
-			</div>
 		</div>
 	</transition>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.group ? `${this.group.name} | ${this.$t('manageGroups')}` : this.$t('manageGroups')
-		};
-	},
-
 	components: {
 		MkButton
 	},
 
 	data() {
 		return {
+			INFO: computed(() => this.group ? {
+				header: [{
+					title: this.group.name,
+					icon: faUsers,
+				}],
+			} : null),
 			group: null,
 			users: [],
 			faTimes, faUsers
@@ -152,13 +148,11 @@ export default defineComponent({
 .mk-group-page {
 	> .members {
 		> ._content {
-			max-height: 400px;
-			overflow: auto;
-
 			> .users {
 				> .user {
 					display: flex;
 					align-items: center;
+					padding: 16px;
 
 					> .avatar {
 						width: 50px;

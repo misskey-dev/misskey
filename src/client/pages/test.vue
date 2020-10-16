@@ -112,6 +112,8 @@
 				<MkButton @click="messagingWindowOpen()">open</MkButton>
 			</div>
 		</div>
+
+		<MkButton @click="resetTutorial()">Reset tutorial</MkButton>
 	</div>
 </div>
 </template>
@@ -221,7 +223,11 @@ export default defineComponent({
 
 		messagingWindowOpen() {
 			os.window_(XMessaging);
-		}
+		},
+
+		resetTutorial() {
+			this.$store.dispatch('settings/set', { key: 'tutorial', value: 0 });
+		},
 	}
 });
 </script>
