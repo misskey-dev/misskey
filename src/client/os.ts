@@ -1,8 +1,9 @@
-import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref, watch } from 'vue';
+import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
+import MkPostFormDialog from '@/components/post-form-dialog.vue';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -273,7 +274,8 @@ export function contextMenu(items: any[], ev: MouseEvent) {
 
 export function post(props: Record<string, any>) {
 	return new Promise((resolve, reject) => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/post-form-dialog.vue')), props, {
+		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
+		const { dispose } = popup(MkPostFormDialog, props, {
 			closed: () => {
 				resolve();
 				dispose();
