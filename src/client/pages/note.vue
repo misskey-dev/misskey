@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import XNote from '@/components/note.vue';
@@ -44,6 +44,12 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			INFO: computed(() => this.note ? {
+				header: [{
+					title: this.$t('note'),
+					avatar: this.note.user,
+				}],
+			} : null),
 			note: null,
 			hasPrev: false,
 			hasNext: false,
