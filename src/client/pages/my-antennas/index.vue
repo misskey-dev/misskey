@@ -1,14 +1,14 @@
 <template>
-<div class="ieepwinx">
-	<portal to="header"><Fa :icon="faSatellite"/>{{ $t('manageAntennas') }}</portal>
-
+<div class="ieepwinx _section">
 	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
 
-	<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
+	<div class="_content">
+		<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
-	<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-		<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
-	</MkPagination>
+		<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
+			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
+		</MkPagination>
+	</div>
 </div>
 </template>
 
@@ -18,15 +18,8 @@ import { faSatellite, faPlus } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import XAntenna from './index.antenna.vue';
-import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('manageAntennas') as string,
-		};
-	},
-
 	components: {
 		MkPagination,
 		MkButton,
@@ -35,6 +28,16 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('manageAntennas'),
+					icon: faSatellite
+				}],
+				action: {
+					icon: faPlus,
+					handler: this.create
+				}
+			},
 			pagination: {
 				endpoint: 'antennas/list',
 				limit: 10,
