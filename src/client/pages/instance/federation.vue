@@ -1,5 +1,5 @@
 <template>
-<div class="mk-federation">
+<div>
 	<div class="_section">
 		<div class="_content">
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
@@ -40,8 +40,8 @@
 	</div>
 	<div class="_section">
 		<div class="_content">
-			<MkPagination :pagination="pagination" #default="{items}" class="instances" ref="instances" :key="host + state">
-				<div class="instance" v-for="instance in items" :key="instance.id" @click="info(instance)">
+			<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
+				<div class="ppgwaixt" v-for="instance in items" :key="instance.id" @click="info(instance)">
 					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
 						<span class="sub" v-if="instance.followersCount > 0"><Fa :icon="faCaretDown" class="icon"/>Sub</span>
@@ -140,55 +140,47 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mk-federation {
-	> .instances {
-		> ._content {
-			> .instances {
-				> .instance {
-					cursor: pointer;
+.ppgwaixt {
+	cursor: pointer;
 
-					&:hover {
-						color: var(--accent);
-					}
+	&:hover {
+		color: var(--accent);
+	}
 
-					> .host {
-						> .indicator {
-							font-size: 70%;
-							vertical-align: baseline;
-							margin-right: 4px;
+	> .host {
+		> .indicator {
+			font-size: 70%;
+			vertical-align: baseline;
+			margin-right: 4px;
 
-							&.green {
-								color: #49c5ba;
-							}
+			&.green {
+				color: #49c5ba;
+			}
 
-							&.yellow {
-								color: #c5a549;
-							}
+			&.yellow {
+				color: #c5a549;
+			}
 
-							&.red {
-								color: #c54949;
-							}
+			&.red {
+				color: #c54949;
+			}
 
-							&.off {
-								color: rgba(0, 0, 0, 0.5);
-							}
-						}
-					}
+			&.off {
+				color: rgba(0, 0, 0, 0.5);
+			}
+		}
+	}
 
-					> .status {
-						display: flex;
-						align-items: center;
-						font-size: 90%;
+	> .status {
+		display: flex;
+		align-items: center;
+		font-size: 90%;
 
-						> span {
-							flex: 1;
-							
-							> .icon {
-								margin-right: 6px;
-							}
-						}
-					}
-				}
+		> span {
+			flex: 1;
+			
+			> .icon {
+				margin-right: 6px;
 			}
 		}
 	}
