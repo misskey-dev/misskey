@@ -1,6 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faEnvelope"/>{{ $t('directNotes') }}</portal>
 	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
 </div>
 </template>
@@ -10,21 +9,20 @@ import { defineComponent } from 'vue';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import XNotes from '@/components/notes.vue';
-import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('directNotes') as string
-		};
-	},
-
 	components: {
 		XNotes
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('directNotes'),
+					icon: faEnvelope
+				}],
+			},
 			pagination: {
 				endpoint: 'notes/mentions',
 				limit: 10,
