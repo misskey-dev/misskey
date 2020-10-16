@@ -10,6 +10,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '../filters/user';
 
 export default defineComponent({
@@ -45,22 +46,13 @@ export default defineComponent({
 	watch: {
 		'user.avatarBlurhash'() {
 			if (this.$el == null) return;
-			this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+			this.$el.style.color = extractAvgColorFromBlurhash(this.user.avatarBlurhash);
 		}
 	},
 	mounted() {
-		this.$el.style.color = this.getBlurhashAvgColor(this.user.avatarBlurhash);
+		this.$el.style.color = extractAvgColorFromBlurhash(this.user.avatarBlurhash);
 	},
 	methods: {
-		getBlurhashAvgColor(s) {
-			return typeof s == 'string'
-				? '#' + [...s.slice(2, 6)]
-						.map(x => '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~'.indexOf(x))
-						.reduce((a, c) => a * 83 + c, 0)
-						.toString(16)
-						.padStart(6, '0')
-				: undefined;
-		},
 		onClick(e) {
 			this.$emit('click', e);
 		},

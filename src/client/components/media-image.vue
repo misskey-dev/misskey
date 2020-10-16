@@ -8,7 +8,7 @@
 		</div>
 	</div>
 </div>
-<div class="gqnyydlz" v-else>
+<div class="gqnyydlz" :style="{ background: color }" v-else>
 	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
 	<a
 		:href="image.url"
@@ -25,6 +25,7 @@
 import { defineComponent } from 'vue';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import ImageViewer from './image-viewer.vue';
 import ImgWithBlurhash from './img-with-blurhash.vue';
 import * as os from '@/os';
@@ -45,8 +46,8 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle,
-			faEyeSlash
+			color: null,
+			faExclamationTriangle, faEyeSlash,
 		};
 	},
 	computed: {
@@ -68,6 +69,9 @@ export default defineComponent({
 		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 		this.$watch('image', () => {
 			this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+			if (this.image.blurhash) {
+				this.color = extractAvgColorFromBlurhash(this.image.blurhash);
+			}
 		}, {
 			deep: true,
 			immediate: true,
