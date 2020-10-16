@@ -5,7 +5,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host } from '@/config';
 import getAcct from '../../misc/acct/render';
 import * as os from '@/os';
-import { store } from '@/store';
+import { store, userActions } from '@/store';
 import { router } from '@/router';
 
 export function getUserMenu(user) {
@@ -172,8 +172,8 @@ export function getUserMenu(user) {
 		}]);
 	}
 
-	if (store.state.userActions.length > 0) {
-		menu = menu.concat([null, ...store.state.userActions.map(action => ({
+	if (userActions.length > 0) {
+		menu = menu.concat([null, ...userActions.map(action => ({
 			icon: faPlug,
 			text: action.title,
 			action: () => {

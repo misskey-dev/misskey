@@ -1,5 +1,4 @@
 import { utils, values } from '@syuilo/aiscript';
-import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
 import { store } from '@/store';
 import * as os from '@/os';
 
@@ -41,46 +40,5 @@ export function createAiScriptEnv(opts) {
 			utils.assertString(key);
 			return utils.jsToVal(JSON.parse(localStorage.getItem('aiscript:' + opts.storageKey + ':' + key.value)));
 		}),
-	};
-}
-
-export function createPluginEnv(opts) {
-	const config = new Map();
-	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
-		config.set(k, jsToVal(opts.plugin.configData[k] || v.default));
-	}
-
-	return {
-		...createAiScriptEnv({ ...opts, token: opts.plugin.token }),
-		//#region Deprecated
-		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
-			store.commit('registerPostFormAction', { pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Mk:register_user_action': values.FN_NATIVE(([title, handler]) => {
-			store.commit('registerUserAction', { pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Mk:register_note_action': values.FN_NATIVE(([title, handler]) => {
-			store.commit('registerNoteAction', { pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		//#endregion
-		'Plugin:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
-			store.commit('registerPostFormAction', { pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Plugin:register_user_action': values.FN_NATIVE(([title, handler]) => {
-			store.commit('registerUserAction', { pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
-			store.commit('registerNoteAction', { pluginId: opts.plugin.id, title: title.value, handler });
-		}),
-		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
-			store.commit('registerNoteViewInterruptor', { pluginId: opts.plugin.id, handler });
-		}),
-		'Plugin:register_note_post_interruptor': values.FN_NATIVE(([handler]) => {
-			store.commit('registerNotePostInterruptor', { pluginId: opts.plugin.id, handler });
-		}),
-		'Plugin:open_url': values.FN_NATIVE(([url]) => {
-			window.open(url.value, '_blank');
-		}),
-		'Plugin:config': values.OBJ(config),
 	};
 }

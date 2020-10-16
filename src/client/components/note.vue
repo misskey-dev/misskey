@@ -117,9 +117,9 @@ import { focusPrev, focusNext } from '@/scripts/focus';
 import { url } from '@/config';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { checkWordMute } from '@/scripts/check-word-mute';
-import { utils } from '@syuilo/aiscript';
 import { userPage } from '../filters/user';
 import * as os from '@/os';
+import { noteActions, noteViewInterruptors } from '../store';
 
 function markRawAll(...xs) {
 	for (const x of xs) {
@@ -267,10 +267,10 @@ export default defineComponent({
 		}
 
 		// plugin
-		if (this.$store.state.noteViewInterruptors.length > 0) {
+		if (noteViewInterruptors.length > 0) {
 			let result = this.note;
-			for (const interruptor of this.$store.state.noteViewInterruptors) {
-				result = utils.valToJs(await interruptor.handler(JSON.parse(JSON.stringify(result))));
+			for (const interruptor of noteViewInterruptors) {
+				result = await interruptor.handler(JSON.parse(JSON.stringify(result)));
 			}
 			this.$emit('update:note', Object.freeze(result));
 		}
@@ -672,8 +672,8 @@ export default defineComponent({
 				.filter(x => x !== undefined);
 			}
 
-			if (this.$store.state.noteActions.length > 0) {
-				menu = menu.concat([null, ...this.$store.state.noteActions.map(action => ({
+			if (noteActions.length > 0) {
+				menu = menu.concat([null, ...noteActions.map(action => ({
 					icon: faPlug,
 					text: action.title,
 					action: () => {

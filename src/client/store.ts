@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-import { AiScript, utils, values } from '@syuilo/aiscript';
+import { AiScript } from '@syuilo/aiscript';
 import { api } from '@/os';
 import { erase } from '../prelude/array';
 
@@ -95,8 +95,15 @@ function copy<T>(data: T): T {
 	return JSON.parse(JSON.stringify(data));
 }
 
+export const pluginContexts = new Map<string, AiScript>();
+export const postFormActions = [];
+export const userActions = [];
+export const noteActions = [];
+export const noteViewInterruptors = [];
+export const notePostInterruptors = [];
+
 export const store = createStore({
-	//strict: _DEV_,
+	strict: _DEV_,
 
 	plugins: [createPersistedState({
 		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
@@ -106,14 +113,6 @@ export const store = createStore({
 		i: null,
 		pendingApiRequestsCount: 0,
 		spinner: null,
-
-		// Plugin
-		pluginContexts: new Map<string, AiScript>(),
-		postFormActions: [],
-		userActions: [],
-		noteActions: [],
-		noteViewInterruptors: [],
-		notePostInterruptors: [],
 	},
 
 	getters: {
@@ -135,52 +134,6 @@ export const store = createStore({
 
 		endApiRequest(state) {
 			state.pendingApiRequestsCount--;
-		},
-
-		initPlugin(state, { plugin, aiscript }) {
-			state.pluginContexts.set(plugin.id, aiscript);
-		},
-
-		registerPostFormAction(state, { pluginId, title, handler }) {
-			state.postFormActions.push({
-				title, handler: (form, update) => {
-					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
-						update(key.value, value.value);
-					})]);
-				}
-			});
-		},
-
-		registerUserAction(state, { pluginId, title, handler }) {
-			state.userActions.push({
-				title, handler: (user) => {
-					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
-				}
-			});
-		},
-
-		registerNoteAction(state, { pluginId, title, handler }) {
-			state.noteActions.push({
-				title, handler: (note) => {
-					state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
-				}
-			});
-		},
-
-		registerNoteViewInterruptor(state, { pluginId, handler }) {
-			state.noteViewInterruptors.push({
-				handler: (note) => {
-					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
-				}
-			});
-		},
-
-		registerNotePostInterruptor(state, { pluginId, handler }) {
-			state.notePostInterruptors.push({
-				handler: (note) => {
-					return state.pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
-				}
-			});
 		},
 	},
 

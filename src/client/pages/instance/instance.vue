@@ -7,7 +7,7 @@
 >
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
-		<div class="_table">
+		<div class="_table section">
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('software') }}</div>
@@ -19,7 +19,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="_table data">
+		<div class="_table data section">
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('registeredAt') }}</div>
@@ -100,7 +100,7 @@
 				<canvas :ref="setChart"></canvas>
 			</div>
 		</div>
-		<div class="operations">
+		<div class="operations section">
 			<span class="label">{{ $t('operations') }}</span>
 			<MkSwitch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</MkSwitch>
 			<MkSwitch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $t('blockThisInstance') }}</MkSwitch>
@@ -114,7 +114,7 @@
 				<MkInfo warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</MkInfo>
 			</details>
 		</div>
-		<details class="metadata">
+		<details class="metadata section">
 			<summary class="label">{{ $t('metadata') }}</summary>
 			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
@@ -492,34 +492,20 @@ export default defineComponent({
 .mk-instance-info {
 	overflow: auto;
 
-	> ._table {
-		padding: 0 32px;
+	> .section {
+		padding: 16px 32px;
 
 		@media (max-width: 500px) {
-			padding: 0 16px;
+			padding: 8px 16px;
 		}
-	}
 
-	> .data {
-		margin-top: 16px;
-		padding-top: 16px;
-		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			margin-top: 8px;
-			padding-top: 8px;
+		&:not(:first-child) {
+			border-top: solid 1px var(--divider);
 		}
 	}
 
 	> .chart {
-		margin-top: 16px;
-		padding-top: 16px;
 		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			margin-top: 8px;
-			padding-top: 8px;
-		}
 
 		> .header {
 			padding: 0 32px;
@@ -548,15 +534,6 @@ export default defineComponent({
 	}
 
 	> .operations {
-		padding: 16px 32px 16px 32px;
-		margin-top: 8px;
-		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			padding: 8px 16px 8px 16px;
-			margin-top: 0;
-		}
-
 		> .label {
 			font-size: 80%;
 			opacity: 0.7;
@@ -568,13 +545,6 @@ export default defineComponent({
 	}
 
 	> .metadata {
-		padding: 16px 32px 16px 32px;
-		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			padding: 8px 16px 8px 16px;
-		}
-
 		> .label {
 			font-size: 80%;
 			opacity: 0.7;

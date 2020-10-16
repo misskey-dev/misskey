@@ -235,8 +235,6 @@ stream.on('emojiAdded', data => {
 });
 
 for (const plugin of store.state.deviceUser.plugins.filter(p => p.active)) {
-	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
-
 	import('./plugin').then(({ install }) => {
 		install(plugin);
 	});

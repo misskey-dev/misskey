@@ -44,7 +44,7 @@
 			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$t('useCw')"><Fa :icon="faEyeSlash"/></button>
 			<button class="_button" @click="insertMention" v-tooltip="$t('mention')"><Fa :icon="faAt"/></button>
 			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><Fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="$store.state.postFormActions.length > 0"><Fa :icon="faPlug"/></button>
+			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
 		</footer>
 	</div>
 </div>
@@ -66,9 +66,9 @@ import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
-import { utils } from '@syuilo/aiscript';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
+import { notePostInterruptors, postFormActions } from '../store';
 
 export default defineComponent({
 	components: {
@@ -137,6 +137,7 @@ export default defineComponent({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			postFormActions,
 			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug
 		};
 	},
@@ -539,9 +540,9 @@ export default defineComponent({
 			};
 
 			// plugin
-			if (this.$store.state.notePostInterruptors.length > 0) {
-				for (const interruptor of this.$store.state.notePostInterruptors) {
-					data = utils.valToJs(await interruptor.handler(JSON.parse(JSON.stringify(data))));
+			if (notePostInterruptors.length > 0) {
+				for (const interruptor of notePostInterruptors) {
+					data = await interruptor.handler(JSON.parse(JSON.stringify(data)));
 				}
 			}
 
@@ -580,7 +581,7 @@ export default defineComponent({
 		},
 
 		showActions(ev) {
-			os.modalMenu(this.$store.state.postFormActions.map(action => ({
+			os.modalMenu(postFormActions.map(action => ({
 				text: action.title,
 				action: () => {
 					action.handler({
