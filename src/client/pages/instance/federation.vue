@@ -41,7 +41,7 @@
 	<div class="_section">
 		<div class="_content">
 			<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
-				<div class="ppgwaixt" v-for="instance in items" :key="instance.id" @click="info(instance)">
+				<div class="ppgwaixt _panel" v-for="instance in items" :key="instance.id" @click="info(instance)">
 					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
 						<span class="sub" v-if="instance.followersCount > 0"><Fa :icon="faCaretDown" class="icon"/>Sub</span>
@@ -136,6 +136,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ppgwaixt {
 	cursor: pointer;
+	padding: 16px;
 
 	&:hover {
 		color: var(--accent);

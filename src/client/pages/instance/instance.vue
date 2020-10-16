@@ -245,12 +245,13 @@ export default defineComponent({
 		};
 
 		this.chart = chart;
+
+		this.renderChart();
 	},
 
 	methods: {
 		setChart(el) {
 			this.canvas = el;
-			this.renderChart();
 		},
 
 		changeBlock(e) {
