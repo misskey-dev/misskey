@@ -34,7 +34,9 @@ unpin: "Открепить"
 copyContent: "Скопировать содержимое"
 copyLink: "Скопировать ссылку"
 delete: "Удалить"
+deleteAndEditConfirm: "Удалить этот пост и отредактировать заново? Все реакции, репосты и ответы на него также будут удалены."
 addToList: "Добавить в список"
+copyUsername: "Скопировать имя пользователя"
 reply: "Ответить"
 loadMore: "Показать еще"
 mention: "Упоминание"
@@ -43,6 +45,11 @@ import: "Импорт"
 export: "Экспорт"
 files: "Файлы"
 download: "Скачать"
+note: "Пост"
+notes: "Посты"
+following: "Подписки"
+followers: "Подписчики"
+follow: "Подписки"
 instances: "Узел"
 remove: "Удалить"
 smtpUser: "Имя пользователя"
@@ -51,16 +58,22 @@ _theme:
   keys:
     mention: "Упоминание"
 _sfx:
+  note: "Посты"
   notification: "Уведомления"
 _widgets:
   notifications: "Уведомления"
   timeline: "Лента"
 _cw:
   show: "Показать еще"
+_visibility:
+  followers: "Подписчики"
 _profile:
   username: "Имя пользователя"
+_exportOrImport:
+  followingList: "Подписки"
 _notification:
   _types:
+    follow: "Подписки"
     mention: "Упоминание"
 _deck:
   _columns:
