@@ -1,5 +1,5 @@
 <template>
-<div v-if="meta" v-show="page === 'index'" class="xhexznfu">
+<div v-if="meta" v-show="page === 'index'" class="xhexznfu _section">
 	<MkFolder>
 		<template #header><Fa :icon="faTachometerAlt"/> {{ $t('overview') }}</template>
 
@@ -39,52 +39,13 @@
 			</MkContainer>
 		</div>
 	</MkFolder>
-
+</div>
+<div v-if="page === 'logs'" class="_section">
 	<MkFolder>
 		<template #header><Fa :icon="faStream"/> {{ $t('logs') }}</template>
 
-		<div class="uwuemslx">
-			<MkContainer :body-togglable="false">
-				<template #header><Fa :icon="faInfoCircle"/>{{ $t('') }}</template>
-
-				<div class="_content">
-					<div class="_keyValue" v-for="log in modLogs">
-						<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><MkTime :time="log.createdAt" style="opacity: 0.7;"/>
-					</div>
-				</div>
-			</MkContainer>
-
-			<section class="_section logs">
-				<div class="_title"><Fa :icon="faStream"/> {{ $t('serverLogs') }}</div>
-				<div class="_content">
-					<div class="_inputs">
-						<MkInput v-model:value="logDomain" :debounce="true">
-							<span>{{ $t('domain') }}</span>
-						</MkInput>
-						<MkSelect v-model:value="logLevel">
-							<template #label>{{ $t('level') }}</template>
-							<option value="all">{{ $t('levels.all') }}</option>
-							<option value="info">{{ $t('levels.info') }}</option>
-							<option value="success">{{ $t('levels.success') }}</option>
-							<option value="warning">{{ $t('levels.warning') }}</option>
-							<option value="error">{{ $t('levels.error') }}</option>
-							<option value="debug">{{ $t('levels.debug') }}</option>
-						</MkSelect>
-					</div>
-
-					<div class="logs">
-						<code v-for="log in logs" :key="log.id" :class="log.level">
-							<details>
-								<summary><MkTime :time="log.createdAt"/> [{{ log.domain.join('.') }}] {{ log.message }}</summary>
-								<vue-json-pretty v-if="log.data" :data="log.data"></vue-json-pretty>
-							</details>
-						</code>
-					</div>
-				</div>
-				<div class="_footer">
-					<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</MkButton>
-				</div>
-			</section>
+		<div class="_keyValue" v-for="log in modLogs">
+			<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><MkTime :time="log.createdAt" style="opacity: 0.7;"/>
 		</div>
 	</MkFolder>
 </div>
@@ -139,6 +100,13 @@ export default defineComponent({
 					icon: faHeartbeat,
 					onClick: () => { this.page = 'metrics'; },
 					selected: computed(() => this.page === 'metrics')
+				}, {
+					id: 'logs',
+					title: null,
+					tooltip: this.$t('logs'),
+					icon: faStream,
+					onClick: () => { this.page = 'logs'; },
+					selected: computed(() => this.page === 'logs')
 				}]
 			},
 			page: 'index',
@@ -146,9 +114,6 @@ export default defineComponent({
 			url,
 			stats: null,
 			serverInfo: null,
-			logs: [],
-			logLevel: 'all',
-			logDomain: '',
 			modLogs: [],
 			dbInfo: null,
 			faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
@@ -161,19 +126,7 @@ export default defineComponent({
 		},
 	},
 
-	watch: {
-		logLevel() {
-			this.logs = [];
-			this.fetchLogs();
-		},
-		logDomain() {
-			this.logs = [];
-			this.fetchLogs();
-		}
-	},
-
 	mounted() {
-		this.fetchLogs();
 		this.fetchJobs();
 		this.fetchModLogs();
 
@@ -199,16 +152,6 @@ export default defineComponent({
 			}, {}, 'closed');
 		},
 
-		fetchLogs() {
-			os.api('admin/logs', {
-				level: this.logLevel === 'all' ? null : this.logLevel,
-				domain: this.logDomain === '' ? null : this.logDomain,
-				limit: 30
-			}).then(logs => {
-				this.logs = logs.reverse();
-			});
-		},
-
 		fetchJobs() {
 			os.api('admin/queue/deliver-delayed', {}).then(jobs => {
 				this.jobs = jobs;
@@ -221,21 +164,9 @@ export default defineComponent({
 			});
 		},
 
-		deleteAllLogs() {
-			os.apiWithDialog('admin/delete-logs');
-		},
-
 		bytes,
 
 		number,
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.xhexznfu {
-	.sboqnrfi {
-		padding: 0 var(--margin);
-	}
-}
-</style>

@@ -79,6 +79,7 @@ export const router = createRouter({
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/instance/emojis', component: page('instance/emojis') },
 		{ path: '/instance/users', component: page('instance/users') },
+		{ path: '/instance/logs', component: page('instance/logs') },
 		{ path: '/instance/files', component: page('instance/files') },
 		{ path: '/instance/queue', component: page('instance/queue') },
 		{ path: '/instance/settings', component: page('instance/settings') },
