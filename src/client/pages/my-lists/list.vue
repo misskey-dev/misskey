@@ -1,10 +1,9 @@
 <template>
 <div class="mk-list-page">
-	<portal to="header"><Fa :icon="faListUl"/>{{ list.name }}</portal>
-
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_section">
 			<div class="_content">
+				<MkButton inline @click="addUser()">{{ $t('addUser') }}</MkButton>
 				<MkButton inline @click="renameList()">{{ $t('rename') }}</MkButton>
 				<MkButton inline @click="deleteList()">{{ $t('delete') }}</MkButton>
 			</div>
@@ -16,7 +15,7 @@
 			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user" v-for="user in users" :key="user.id">
+					<div class="user _panel" v-for="user in users" :key="user.id">
 						<MkAvatar :user="user" class="avatar"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>
@@ -28,34 +27,31 @@
 					</div>
 				</div>
 			</div>
-			<div class="_footer">
-				<MkButton inline @click="addUser()">{{ $t('addUser') }}</MkButton>
-			</div>
 		</div>
 	</transition>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.list ? `${this.list.name} | ${this.$t('manageLists')}` : this.$t('manageLists')
-		};
-	},
-
 	components: {
 		MkButton
 	},
 
 	data() {
 		return {
+			INFO: computed(() => this.list ? {
+				header: [{
+					title: this.list.name,
+					icon: faListUl,
+				}],
+			} : null),
 			list: null,
 			users: [],
 			faTimes, faListUl
@@ -145,13 +141,11 @@ export default defineComponent({
 .mk-list-page {
 	> .members {
 		> ._content {
-			max-height: 400px;
-			overflow: auto;
-
 			> .users {
 				> .user {
 					display: flex;
 					align-items: center;
+					padding: 16px;
 
 					> .avatar {
 						width: 50px;

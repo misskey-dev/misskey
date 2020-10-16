@@ -1,10 +1,8 @@
 <template>
-<div class="qkcjvfiv">
-	<portal to="header"><Fa :icon="faListUl"/>{{ $t('manageLists') }}</portal>
-
+<div class="qkcjvfiv _section">
 	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('createList') }}</MkButton>
 
-	<MkPagination :pagination="pagination" #default="{items}" class="lists" ref="list">
+	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
 		<div class="list _panel" v-for="(list, i) in items" :key="list.id">
 			<router-link :to="`/my/lists/${ list.id }`">{{ list.name }}</router-link>
 		</div>
@@ -20,12 +18,6 @@ import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('manageLists') as string,
-		};
-	},
-
 	components: {
 		MkPagination,
 		MkButton,
@@ -33,6 +25,16 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('manageLists'),
+					icon: faListUl
+				}],
+				action: {
+					icon: faPlus,
+					handler: this.create
+				}
+			},
 			pagination: {
 				endpoint: 'users/lists/list',
 				limit: 10,
