@@ -34,11 +34,13 @@ unpin: "Открепить"
 copyContent: "Скопировать содержимое"
 copyLink: "Скопировать ссылку"
 delete: "Удалить"
+deleteAndEdit: "Удалить и отредактировать"
 deleteAndEditConfirm: "Удалить этот пост и отредактировать заново? Все реакции, репосты и ответы на него также будут удалены."
 addToList: "Добавить в список"
 copyUsername: "Скопировать имя пользователя"
 reply: "Ответить"
 loadMore: "Показать еще"
+youGotNewFollower: "Новый подписчик"
 mention: "Упоминание"
 importAndExport: "Импорт / Экспорт"
 import: "Импорт"
@@ -72,6 +74,7 @@ _profile:
 _exportOrImport:
   followingList: "Подписки"
 _notification:
+  youWereFollowed: "Новый подписчик"
   _types:
     follow: "Подписки"
     mention: "Упоминание"
