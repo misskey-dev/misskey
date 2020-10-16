@@ -14,7 +14,7 @@
 			</div>
 		</router-link>
 	</div>
-	<button class="more _button" ref="loadMore" v-show="more" @click="fetchMore" :disabled="moreFetching">
+	<button class="more _button" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 		<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
 	</button>
@@ -30,7 +30,6 @@ import { defineComponent } from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import paging from '@/scripts/paging';
 import { userPage } from '../filters/user';
-import * as os from '@/os';
 
 export default defineComponent({
 	mixins: [

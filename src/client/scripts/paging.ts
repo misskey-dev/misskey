@@ -18,13 +18,6 @@ export default (opts) => ({
 			more: false,
 			backed: false, // 遡り中か否か
 			isBackTop: false,
-			ilObserver: new IntersectionObserver(
-				(entries) => entries.some((entry) => entry.isIntersecting)
-					&& !this.moreFetching
-					&& !this.fetching
-					&& this.fetchMore()
-				),
-			loadMoreElement: null as Element,
 		};
 	},
 
@@ -66,21 +59,6 @@ export default (opts) => ({
 
 	deactivated() {
 		this.isBackTop = window.scrollY === 0;
-	},
-
-	mounted() {
-		this.$nextTick(() => {
-			if (this.$refs.loadMore) {
-				this.loadMoreElement = this.$refs.loadMore instanceof Element ? this.$refs.loadMore : this.$refs.loadMore.$el;
-				if (this.$store.state.device.enableInfiniteScroll) this.ilObserver.observe(this.loadMoreElement);
-				this.loadMoreElement.addEventListener('click', this.fetchMore);
-			}
-		});
-	},
-
-	beforeUnmount() {
-		this.ilObserver.disconnect();
-		if (this.$refs.loadMore) this.loadMoreElement.removeEventListener('click', this.fetchMore);
 	},
 
 	methods: {
@@ -133,7 +111,7 @@ export default (opts) => ({
 		},
 
 		async fetchMore() {
-			if (!this.more || this.moreFetching || this.items.length === 0) return;
+			if (!this.more || this.fetching || this.moreFetching || this.items.length === 0) return;
 			this.moreFetching = true;
 			this.backed = true;
 			let params = typeof this.pagination.params === 'function' ? this.pagination.params(false) : this.pagination.params;

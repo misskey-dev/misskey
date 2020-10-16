@@ -5,7 +5,7 @@
 		<slot name="empty"></slot>
 	</div>
 	<div class="more" v-show="more" key="_more_">
-		<MkButton class="button" ref="loadMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
+		<MkButton class="button" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</MkButton>

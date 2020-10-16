@@ -285,13 +285,11 @@ hr {
 	margin: 0 !important;
 }
 
-._panelButton {
-	display: flex;
+._loadMore {
+	@extend ._panel;
+	@extend ._button;
 	width: 100%;
-	min-height: 48px;
-	align-items: center;
-	justify-content: center;
-	background: transparent;
+	padding: 12px 0;
 }
 
 ._popup {
