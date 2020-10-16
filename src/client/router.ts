@@ -2,6 +2,7 @@ import { defineAsyncComponent } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
+import MkTimeline from '@/pages/timeline.vue';
 import { store } from './store';
 
 const page = (path: string) => defineAsyncComponent({
@@ -15,7 +16,8 @@ let indexScrollPos = 0;
 export const router = createRouter({
 	history: createWebHistory(),
 	routes: [
-		{ path: '/', name: 'index', component: store.getters.isSignedIn ? page('timeline') : page('welcome') },
+		// NOTE: MkTimelineをdynamic importするとAsyncComponentWrapperが間に入るせいでkeep-aliveのコンポーネント指定が効かなくなる
+		{ path: '/', name: 'index', component: store.getters.isSignedIn ? MkTimeline : page('welcome') },
 		{ path: '/@:user', name: 'user', component: page('user/index'), children: [
 			{ path: 'following', name: 'userFollowing', component: page('user/follow-list'), props: { type: 'following' } },
 			{ path: 'followers', name: 'userFollowers', component: page('user/follow-list'), props: { type: 'followers' } },
