@@ -1,8 +1,6 @@
 <template>
-<div>
-	<portal to="header"><Fa :icon="faHashtag"/>{{ $route.params.tag }}</portal>
-
-	<XNotes ref="notes" :pagination="pagination" @before="before" @after="after"/>
+<div class="_section">
+	<XNotes ref="notes" class="_content" :pagination="pagination" @before="before" @after="after"/>
 </div>
 </template>
 
@@ -11,21 +9,20 @@ import { defineComponent } from 'vue';
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import XNotes from '@/components/notes.vue';
-import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: '#' + this.$route.params.tag
-		};
-	},
-
 	components: {
 		XNotes
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$route.params.tag,
+					icon: faHashtag
+				}],
+			},
 			pagination: {
 				endpoint: 'notes/search-by-tag',
 				limit: 10,
