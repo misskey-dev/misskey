@@ -55,13 +55,22 @@ download: "Скачать"
 driveFileDeleteConfirm: "Удалить файл {name} ? Посты с ним также будут удалены"
 unfollowConfirm: "Удалить из подписок {name}?"
 exportRequested: "Вы запросили экспорт. Это может занять некоторое время. По завершению результат будет добавлен на «Диск»."
+importRequested: "Вы запросили импорт. Это может занять некоторое время."
+lists: "Списки"
+noLists: "Нет списков"
 note: "Пост"
 notes: "Посты"
 following: "Подписки"
 followers: "Подписчики"
+followsYou: "Подписчики"
+createList: "Создать список"
+manageLists: "Управление списками"
+error: "Что-то пошло не так"
+retry: "Повторить попытку"
 follow: "Подписки"
 instances: "Узел"
 remove: "Удалить"
+userList: "Списки"
 smtpUser: "Имя пользователя"
 smtpPass: "Пароль"
 _theme:
@@ -81,6 +90,26 @@ _profile:
   username: "Имя пользователя"
 _exportOrImport:
   followingList: "Подписки"
+  userLists: "Списки"
+_pages:
+  script:
+    categories:
+      list: "Списки"
+    blocks:
+      _join:
+        arg1: "Списки"
+      _randomPick:
+        arg1: "Списки"
+      _dailyRandomPick:
+        arg1: "Списки"
+      _seedRandomPick:
+        arg2: "Списки"
+      _pick:
+        arg1: "Списки"
+      _listLen:
+        arg1: "Списки"
+    types:
+      array: "Списки"
 _notification:
   youWereFollowed: "Новый подписчик"
   _types:
@@ -90,4 +119,5 @@ _deck:
   _columns:
     notifications: "Уведомления"
     tl: "Лента"
+    list: "Списки"
     mentions: "Упоминания"
