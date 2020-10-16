@@ -210,7 +210,7 @@ export default defineComponent({
 		},
 
 		isBlocked() {
-			return this.meta && this.meta.blockedHosts.includes(this.instance.host);
+			return this.meta && this.meta.blockedHosts && this.meta.blockedHosts.includes(this.instance.host);
 		}
 	},
 
