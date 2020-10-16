@@ -68,7 +68,7 @@ import { Autocomplete } from '@/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
-import { notePostInterruptors, postFormActions } from '../store';
+import { notePostInterruptors, postFormActions } from '@/store';
 
 export default defineComponent({
 	components: {

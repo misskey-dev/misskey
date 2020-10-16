@@ -117,9 +117,9 @@ import { focusPrev, focusNext } from '@/scripts/focus';
 import { url } from '@/config';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '../filters/user';
+import { userPage } from '@/filters/user';
 import * as os from '@/os';
-import { noteActions, noteViewInterruptors } from '../store';
+import { noteActions, noteViewInterruptors } from '@/store';
 
 function markRawAll(...xs) {
 	for (const x of xs) {

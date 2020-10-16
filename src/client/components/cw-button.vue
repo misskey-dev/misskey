@@ -1,7 +1,7 @@
 <template>
-<button class="nrvgflfuaxwgkxoynpnumyookecqrrvh _button" @click="toggle">
-	<b>{{ value ? this.$t('_cw.hide') : this.$t('_cw.show') }}</b>
-	<span v-if="!value">{{ this.label }}</span>
+<button class="nrvgflfu _button" @click="toggle">
+	<b>{{ value ? $t('_cw.hide') : $t('_cw.show') }}</b>
+	<span v-if="!value">{{ label }}</span>
 </button>
 </template>
 
@@ -9,7 +9,6 @@
 import { defineComponent } from 'vue';
 import { length } from 'stringz';
 import { concat } from '../../prelude/array';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -44,7 +43,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.nrvgflfuaxwgkxoynpnumyookecqrrvh {
+.nrvgflfu {
 	display: inline-block;
 	padding: 4px 8px;
 	font-size: 0.7em;

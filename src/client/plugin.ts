@@ -3,7 +3,9 @@ import { deserialize } from '@syuilo/aiscript/built/serializer';
 import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { dialog } from '@/os';
-import { noteActions, notePostInterruptors, noteViewInterruptors, pluginContexts, postFormActions, userActions } from '@/store';
+import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@/store';
+
+const pluginContexts = new Map<string, AiScript>();
 
 export function install(plugin) {
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
