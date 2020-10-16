@@ -73,6 +73,12 @@ defaultNoteVisibility: "Видимость постов по умолчанию"
 follow: "Подписки"
 followRequest: "Запрос на подписку"
 followRequests: "Запросы на подписку"
+unfollow: "Отписаться"
+followRequestPending: "Ожидающие запросы на подписку"
+enterEmoji: "Введите эмодзи"
+renote: "Репост"
+unrenote: "Отмена репоста"
+quote: "Цитата"
 instances: "Узел"
 remove: "Удалить"
 userList: "Списки"
@@ -81,6 +87,7 @@ smtpPass: "Пароль"
 _theme:
   keys:
     mention: "Упоминание"
+    renote: "Репост"
 _sfx:
   note: "Посты"
   notification: "Уведомления"
@@ -120,6 +127,8 @@ _notification:
   _types:
     follow: "Подписки"
     mention: "Упоминание"
+    renote: "Репост"
+    quote: "Цитата"
 _deck:
   _columns:
     notifications: "Уведомления"
