@@ -1,12 +1,9 @@
 <template>
 <div class="">
-	<portal to="header"><Fa :icon="faShareAlt"/>{{ $t('share') }}</portal>
-
 	<section class="_section">
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
-			<div>{{ text }}</div>
-			<XPostForm v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true"/>
+			<XPostForm v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true" class="_panel"/>
 			<MkButton v-else primary @click="close()">{{ $t('close') }}</MkButton>
 		</div>
 		<div class="_footer" v-if="url">{{ url }}</div>
@@ -22,12 +19,6 @@ import XPostForm from '@/components/post-form.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('share') as string
-		};
-	},
-
 	components: {
 		XPostForm,
 		MkButton,
@@ -35,6 +26,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('share'),
+					icon: faShareAlt
+				}],
+			},
 			title: null,
 			text: null,
 			url: null,

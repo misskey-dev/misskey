@@ -69,12 +69,6 @@ import MkInstanceInfo from './instance.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('federation') as string
-		};
-	},
-
 	components: {
 		MkButton,
 		MkInput,
