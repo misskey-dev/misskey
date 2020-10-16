@@ -1,7 +1,7 @@
 <template>
 <div class="ebkgocck">
-	<div class="body _popup _shadow _narrow_" @keydown="onKeydown">
-		<div class="header" @mousedown.prevent="onHeaderMousedown">
+	<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
+		<div class="header" @mousedown.prevent="onHeaderMousedown" @touchmove.prevent="onHeaderMousedown">
 			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 			<span class="title">
 				<slot name="header"></slot>
@@ -35,6 +35,7 @@
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import contains from '@/scripts/contains';
+import * as os from '@/os';
 
 const minHeight = 40;
 const minWidth = 200;
@@ -86,6 +87,12 @@ export default defineComponent({
 	mounted() {
 		if (this.initialWidth) this.applyTransformWidth(this.initialWidth);
 		if (this.initialHeight) this.applyTransformHeight(this.initialHeight);
+		// TODO: リファクタの余地がある。thisまるごと共有したくない
+		os.windows.add(this);
+	},
+
+	unmounted() {
+		os.windows.remove(this);
 	},
 
 	methods: {
@@ -99,6 +106,24 @@ export default defineComponent({
 				e.stopPropagation();
 				this.close();
 			}
+		},
+
+		// 最前面へ移動
+		top() {
+			let z = 0;
+			const ws = Array.from(os.windows.values()).filter(w => w !== this);
+			for (const w of ws) {
+				const m = w.$el;
+				const mz = Number(document.defaultView.getComputedStyle(m, null).zIndex);
+				if (mz > z) z = mz;
+			}
+			if (z > 0) {
+				(this.$el as any).style.zIndex = z + 1;
+			}
+		},
+
+		onBodyMousedown() {
+			this.top();
 		},
 
 		onHeaderMousedown(e) {

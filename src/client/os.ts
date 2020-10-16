@@ -12,6 +12,8 @@ export const stream = new Stream();
 
 export const pendingApiRequestsCount = ref(0);
 
+export const windows = new Set();
+
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
 	pendingApiRequestsCount.value++;
 
