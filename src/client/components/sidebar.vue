@@ -177,12 +177,12 @@ export default defineComponent({
 				text: this.$t('dashboard'),
 				to: '/instance',
 				icon: faTachometerAlt,
-			}, null, {
+			}, null, this.$store.state.i.isAdmin ? {
 				type: 'link',
 				text: this.$t('settings'),
 				to: '/instance/settings',
 				icon: faCog,
-			}, {
+			} : undefined, {
 				type: 'link',
 				text: this.$t('customEmojis'),
 				to: '/instance/emojis',
