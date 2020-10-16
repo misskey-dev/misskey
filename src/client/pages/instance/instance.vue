@@ -506,6 +506,7 @@ export default defineComponent({
 
 	> .chart {
 		border-top: solid 1px var(--divider);
+		padding: 16px 0 12px 0;
 
 		> .header {
 			padding: 0 32px;
