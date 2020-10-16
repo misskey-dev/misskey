@@ -216,10 +216,10 @@ stream.on('_disconnected_', async () => {
 	} else if (store.state.device.serverDisconnectedBehavior === 'dialog') {
 		if (reloadDialogShowing) return;
 		reloadDialogShowing = true;
-		const { canceled } = await app.dialog({
+		const { canceled } = await dialog({
 			type: 'warning',
-			title: app.$t('disconnectedFromServer'),
-			text: app.$t('reloadConfirm'),
+			title: i18n.global.t('disconnectedFromServer'),
+			text: i18n.global.t('reloadConfirm'),
 			showCancelButton: true
 		});
 		reloadDialogShowing = false;
