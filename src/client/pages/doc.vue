@@ -1,6 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faFileAlt"/>{{ title }}</portal>
 	<main class="_section">
 		<div class="_title"><Fa :icon="faFileAlt"/> {{ title }}</div>
 		<div class="_content">
@@ -20,7 +19,6 @@ import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import { url, lang } from '@/config';
 import MkLink from '@/components/link.vue';
-import * as os from '@/os';
 
 const markdown = MarkdownIt({
 	html: true
@@ -31,12 +29,6 @@ markdown.use(MarkdownItAnchor, {
 });
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.title,
-		};
-	},
-
 	components: {
 		MkLink
 	},
@@ -48,21 +40,27 @@ export default defineComponent({
 		}
 	},
 
+	data() {
+		return {
+			INFO: {
+				header: [{
+					title: this.title,
+					icon: faFileAlt
+				}],
+			},
+			faFileAlt,
+			title: '',
+			body: '',
+			markdown: '',
+		}
+	},
+
 	watch: {
 		doc: {
 			handler() {
 				this.fetchDoc();
 			},
 			immediate: true,
-		}
-	},
-
-	data() {
-		return {
-			faFileAlt,
-			title: '',
-			body: '',
-			markdown: '',
 		}
 	},
 

@@ -1,6 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faQuestionCircle"/>{{ $t('help') }}</portal>
 	<main class="_section">
 		<div class="_content">
 			<ul>
@@ -17,17 +16,16 @@
 import { defineComponent } from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { url, lang } from '@/config';
-import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('help') as string,
-		};
-	},
-
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('help'),
+					icon: faQuestionCircle
+				}],
+			},
 			docs: [],
 			faQuestionCircle
 		}
