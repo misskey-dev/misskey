@@ -1,7 +1,5 @@
 <template>
 <div class="relaycxt">
-	<portal to="header"><Fa :icon="faProjectDiagram"/>{{ $t('relays') }}</portal>
-
 	<section class="_section add">
 		<div class="_title"><Fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
 		<div class="_content">
@@ -32,12 +30,6 @@ import MkInput from '@/components/ui/input.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('relays') as string
-		};
-	},
-
 	components: {
 		MkButton,
 		MkInput,
@@ -45,6 +37,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('relays'),
+					icon: faProjectDiagram,
+				}],
+			},
 			relays: [],
 			inbox: '',
 			faPlus, faProjectDiagram, faSave, faTrashAlt

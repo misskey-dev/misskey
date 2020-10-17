@@ -1,7 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faPlug"/>{{ $t('installedApps') }}</portal>
-
 	<MkPagination :pagination="pagination" class="bfomjevm" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
@@ -46,18 +44,18 @@ import MkPagination from '@/components/ui/pagination.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('installedApps') as string
-		};
-	},
-
 	components: {
 		MkPagination
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('installedApps'),
+					icon: faPlug,
+				}],
+			},
 			pagination: {
 				endpoint: 'i/apps',
 				limit: 100,

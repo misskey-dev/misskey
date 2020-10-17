@@ -1,7 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faUserClock"/>{{ $t('followRequests') }}</portal>
-
 	<MkPagination :pagination="pagination" class="mk-follow-requests" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
@@ -39,18 +37,18 @@ import { userPage, acct } from '../filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('followRequests') as string
-		};
-	},
-
 	components: {
 		MkPagination
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('followRequests'),
+					icon: faUserClock,
+				}],
+			},
 			pagination: {
 				endpoint: 'following/requests/list',
 				limit: 10,

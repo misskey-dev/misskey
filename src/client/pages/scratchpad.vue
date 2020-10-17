@@ -1,7 +1,5 @@
 <template>
 <div class="">
-	<portal to="header"><Fa :icon="faTerminal"/>{{ $t('scratchpad') }}</portal>
-
 	<div class="_panel">
 		<prism-editor class="_code" v-model:value="code" :highlight="highlighter" :line-numbers="false"/>
 		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
@@ -37,12 +35,6 @@ import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('scratchpad') as string
-		};
-	},
-
 	components: {
 		MkContainer,
 		MkButton,
@@ -51,6 +43,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('scratchpad'),
+					icon: faTerminal,
+				}],
+			},
 			code: '',
 			logs: [],
 			faTerminal, faPlay

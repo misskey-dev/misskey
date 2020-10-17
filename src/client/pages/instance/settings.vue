@@ -1,7 +1,5 @@
 <template>
 <div v-if="meta">
-	<portal to="header"><Fa :icon="faCog"/>{{ $t('settings') }}</portal>
-
 	<section class="_section info">
 		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
@@ -247,12 +245,6 @@ import getAcct from '../../../misc/acct/render';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('instance') as string
-		};
-	},
-
 	components: {
 		MkButton,
 		MkInput,
@@ -264,6 +256,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('instance'),
+					icon: faCog,
+				}],
+			},
 			url,
 			proxyAccount: null,
 			proxyAccountId: null,

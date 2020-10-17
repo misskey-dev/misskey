@@ -1,7 +1,5 @@
 <template>
 <div v-if="channel">
-	<portal to="header"><Fa :icon="faSatelliteDish"/>{{ channel.name }}</portal>
-
 	<div class="wpgynlbz _panel _vMargin" :class="{ hide: !showBanner }">
 		<XChannelFollow-button :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
@@ -29,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '@/components/ui/container.vue';
@@ -39,12 +37,6 @@ import XChannelFollowButton from '@/components/channel-follow-button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: this.$t('channel') as string
-		};
-	},
-
 	components: {
 		MkContainer,
 		XPostForm,
@@ -61,6 +53,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: computed(() => this.channel ? {
+				header: [{
+					title: this.channel.name,
+					icon: faSatelliteDish,
+				}],
+			} : null),
 			channel: null,
 			showBanner: true,
 			pagination: {

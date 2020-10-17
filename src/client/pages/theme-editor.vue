@@ -1,7 +1,5 @@
 <template>
 <div class="t9makv94">
-	<portal to="header"><Fa :icon="faPalette"/>{{ $t('themeEditor') }}</portal>
-
 	<section class="_section">
 		<div class="_content">
 			<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
@@ -98,14 +96,15 @@ export default defineComponent({
 		MkTextarea,
 		MkSelect
 	},
-	metaInfo() {
-		return {
-			title: this.$t('themeEditor') + (this.changed ? '*' : '')
-		};
-	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('themeEditor'),
+					icon: faPalette,
+				}],
+			},
 			theme: [] as ThemeViewModel,
 			name: '',
 			description: '',
@@ -113,8 +112,8 @@ export default defineComponent({
 			author: `@${this.$store.state.i.username}@${toUnicode(host)}`,
 			themeToImport: '',
 			changed: false,
-			faPalette, faChevronDown, faKeyboard,
 			lightTheme, darkTheme, themeProps,
+			faPalette, faChevronDown, faKeyboard,
 		}
 	},
 

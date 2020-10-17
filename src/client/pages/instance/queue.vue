@@ -1,7 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faExchangeAlt"/>{{ $t('jobQueue') }}</portal>
-
 	<XQueue :connection="connection" domain="inbox">
 		<template #title><Fa :icon="faExchangeAlt"/> In</template>
 	</XQueue>
@@ -25,12 +23,6 @@ import XQueue from './queue.chart.vue';
 import * as os from '@/os';
 
 export default defineComponent({
-	metaInfo() {
-		return {
-			title: `${this.$t('jobQueue')} | ${this.$t('instance')}`
-		};
-	},
-
 	components: {
 		MkButton,
 		XQueue,
@@ -38,6 +30,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('jobQueue'),
+					icon: faExchangeAlt,
+				}],
+			},
 			connection: os.stream.useSharedConnection('queueStats'),
 			faExchangeAlt, faTrashAlt
 		}
