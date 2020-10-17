@@ -2,9 +2,9 @@
 <transition :name="$store.state.device.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div class="ebkgocck" v-if="showing">
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
-			<div class="header" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
+			<div class="header">
 				<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
-				<span class="title">
+				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 				<slot name="buttons"></slot>
@@ -46,6 +46,7 @@ function dragListen(fn) {
 	window.addEventListener('touchmove',  fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
 	window.addEventListener('mouseup',    dragClear.bind(null, fn));
+	window.addEventListener('touchend',   dragClear.bind(null, fn));
 }
 
 function dragClear(fn) {
@@ -53,6 +54,7 @@ function dragClear(fn) {
 	window.removeEventListener('touchmove',  fn);
 	window.removeEventListener('mouseleave', dragClear);
 	window.removeEventListener('mouseup',    dragClear);
+	window.removeEventListener('touchend',   dragClear);
 }
 
 export default defineComponent({
@@ -362,6 +364,7 @@ export default defineComponent({
 			flex-shrink: 0;
 			box-shadow: 0px 1px var(--divider);
 			cursor: move;
+			user-select: none;
 
 			> ::v-deep(button) {
 				height: $height;
@@ -375,7 +378,6 @@ export default defineComponent({
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				pointer-events: none;
 			}
 		}
 
