@@ -386,6 +386,10 @@ export default defineComponent({
 			> ::v-deep(button) {
 				height: $height;
 				width: $height;
+
+				&:hover {
+					color: var(--fgHighlighted);
+				}
 			}
 
 			> .title {
