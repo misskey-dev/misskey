@@ -293,6 +293,10 @@ export default defineComponent({
 
 			> .spacer {
 				height: 82px;
+
+				@media (min-width: ($widgets-hide-threshold + 1px)) {
+					display: none;
+				}
 			}
 		}
 	}
