@@ -2,17 +2,30 @@
 <div class="t9makv94">
 	<section class="_section">
 		<div class="_content">
-			<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
-			<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
-			<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
-			<div class="_inputs">
-				<div v-text="$t('_theme.base')" />
-				<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
-				<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
+			<details>
+				<summary>{{ $t('import') }}</summary>
+				<MkTextarea v-model:value="themeToImport">
+					{{ $t('_theme.importInfo') }}
+				</MkTextarea>
+				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</MkButton>
+			</details>
+		</div>
+	</section>
+	<section class="_section">
+		<div class="_content _card _vMargin">
+			<div class="_content">
+				<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
+				<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
+				<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
+				<div class="_inputs">
+					<div v-text="$t('_theme.base')" />
+					<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
+					<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
+				</div>
 			</div>
 		</div>
-		<div class="_content">
-			<div class="list-view">
+		<div class="_content _card _vMargin">
+			<div class="list-view _content">
 				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
 					<div class="_inputs">
 						<div>
@@ -51,19 +64,19 @@
 									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
 								</MkSelect>
 							</template>
+							<!-- CSS -->
+							<MkInput v-else-if="v.type === 'css'" v-model:value="v.key">
+								<span>CSS</span>
+							</MkInput>
 						</div>
 					</div>
 				</div>
 				<MkButton primary @click="addConst">{{ $t('_theme.addConstant') }}</MkButton>
 			</div>
 		</div>
+	</section>
+	<section class="_section">
 		<div class="_content">
-				<MkTextarea v-model:value="themeToImport">
-					{{ $t('_theme.importInfo') }}
-				</MkTextarea>
-				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</MkButton>
-		</div>
-		<div class="_footer">
 			<MkButton inline @click="preview">{{ $t('preview') }}</MkButton>
 			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</MkButton>
 		</div>
@@ -276,7 +289,12 @@ export default defineComponent({
 					action: () => resolve({
 						type: 'refConst', key: '',
 					}),
-				},], e.currentTarget || e.target);
+				}, {
+					text: 'CSS',
+					action: () => resolve({
+						type: 'css', key: '',
+					}),
+				}], e.currentTarget || e.target);
 			});
 		}
 	}
@@ -288,17 +306,12 @@ export default defineComponent({
 	> ._section {
 		> ._content {
 			> .list-view {
-				height: 480px;
-				overflow: auto;
-				border: 1px solid var(--divider);
-
 				> .item {
 					min-height: 48px;
-					padding: 0 16px;
 					word-break: break-all;
 
 					&:not(:last-child) {
-						padding-bottom: 8px;
+						margin-bottom: 8px;
 					}
 
 					.select {
