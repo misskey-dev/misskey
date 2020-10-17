@@ -86,25 +86,21 @@
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
 		<div class="_section" v-if="user.pinnedNotes.length > 0">
-			<div class="_content">
+			<div class="_content _vMargin">
 				<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
 			</div>
-		</div>
-		<div class="_section">
-			<MkContainer :body-togglable="true" class="_content">
-				<template #header><Fa :icon="faImage"/>{{ $t('images') }}</template>
+			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-images">
+				<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $t('images') }}</template>
 				<div>
 					<XPhotos :user="user" :key="user.id"/>
 				</div>
-			</MkContainer>
-		</div>
-		<div class="_section">
-			<MkContainer :body-togglable="true" class="_content">
-				<template #header><Fa :icon="faChartBar"/>{{ $t('activity') }}</template>
-				<div style="padding:8px;">
+			</MkFolder>
+			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-activity">
+				<template #header><Fa :icon="faChartBar" style="margin-right: 0.5em;"/>{{ $t('activity') }}</template>
+				<div>
 					<XActivity :user="user" :key="user.id"/>
 				</div>
-			</MkContainer>
+			</MkFolder>
 		</div>
 		<div class="_section">
 			<XUserTimeline :user="user" class="_content"/>
@@ -125,6 +121,7 @@ import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/note.vue';
 import MkFollowButton from '@/components/follow-button.vue';
 import MkContainer from '@/components/ui/container.vue';
+import MkFolder from '@/components/ui/folder.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
 import Progress from '@/scripts/loading';
 import parseAcct from '../../../misc/acct/parse';
@@ -141,6 +138,7 @@ export default defineComponent({
 		MkFollowButton,
 		MkContainer,
 		MkRemoteCaution,
+		MkFolder,
 		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},

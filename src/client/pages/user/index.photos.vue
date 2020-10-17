@@ -66,12 +66,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ujigsodd {
-
 	> .stream {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
-		padding: 8px;
 
 		> .img {
 			flex: 1 1 33%;
@@ -82,7 +80,7 @@ export default defineComponent({
 			background-size: cover;
 			background-clip: content-box;
 			border: solid 2px transparent;
-			border-radius: 4px;
+			border-radius: 6px;
 		}
 	}
 
