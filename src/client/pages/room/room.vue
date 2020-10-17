@@ -1,13 +1,5 @@
 <template>
 <div class="hveuntkp">
-	<portal to="header" v-if="user">
-		<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
-		<Mfm 
-			:text="$t('_rooms.roomOf', { user: user.name || user.username })"
-			:plain="true" :nowrap="true" :custom-emojis="user.emojis" :is-note="false"
-		/>
-	</portal>
-
 	<div class="controller _section" v-if="objectSelected">
 		<div class="_content">
 			<p class="name">{{ selectedFurnitureName }}</p>
@@ -58,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { Room } from '@/scripts/room/room';
 import parseAcct from '../../../misc/acct/parse';
 import XPreview from './preview.vue';
@@ -89,6 +81,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: computed(() => this.user ? {
+				header: [{
+					title: this.$t('room'),
+					avatar: this.user,
+				}],
+			} : null),
 			user: null,
 			objectSelected: false,
 			selectedFurnitureName: null,
