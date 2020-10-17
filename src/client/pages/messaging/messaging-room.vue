@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faArrowCircleDown, faFlag, faUsers, faInfoCircle, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleDown, faFlag, faUsers, faInfoCircle, faEllipsisH, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 import XList from '@/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
@@ -37,6 +37,7 @@ import XForm from './messaging-room.form.vue';
 import parseAcct from '../../../misc/acct/parse';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
+import { popout } from '@/scripts/popout';
 
 const Component = defineComponent({
 	components: {
@@ -310,12 +311,20 @@ const Component = defineComponent({
 		},
 
 		menu(ev) {
+			const url = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
+
 			os.modalMenu([this.inWindow ? undefined : {
 				text: this.$t('openInWindow'),
 				icon: faWindowMaximize,
 				action: () => {
-					const url = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
 					os.pageWindow(url, Component, this.$props);
+					this.$router.back();
+				},
+			}, this.inWindow ? undefined : {
+				text: this.$t('popout'),
+				icon: faExternalLinkAlt,
+				action: () => {
+					popout(url);
 					this.$router.back();
 				},
 			}], ev.currentTarget || ev.target);
