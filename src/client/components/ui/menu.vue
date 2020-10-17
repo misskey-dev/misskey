@@ -34,6 +34,9 @@
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</button>
 	</template>
+	<span v-if="_items.length === 0" class="none item">
+		<span>{{ $t('none') }}</span>
+	</span>
 </div>
 </template>
 
@@ -195,6 +198,11 @@ export default defineComponent({
 		}
 
 		&.pending {
+			pointer-events: none;
+			opacity: 0.7;
+		}
+
+		&.none {
 			pointer-events: none;
 			opacity: 0.7;
 		}
