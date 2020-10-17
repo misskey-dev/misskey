@@ -64,6 +64,8 @@ export default defineComponent({
 
 <style lang="scss" scoped vars="{ height }">
 .fdidabkb {
+	text-align: center;
+
 	> .back {
 		height: var(--height);
 		width: var(--height);

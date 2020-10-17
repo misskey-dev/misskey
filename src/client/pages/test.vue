@@ -119,13 +119,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
-import XMessaging from './messaging/index.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -222,7 +221,7 @@ export default defineComponent({
 		},
 
 		messagingWindowOpen() {
-			os.pageWindow('/my/messaging', XMessaging);
+			os.pageWindow('/my/messaging', defineAsyncComponent(() => import('@/pages/messaging/index.vue')));
 		},
 
 		resetTutorial() {

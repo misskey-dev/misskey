@@ -69,6 +69,7 @@ export const defaultDeviceSettings = {
 	animation: true,
 	animatedMfm: true,
 	imageNewTab: false,
+	chatOpenBehavior: 'page',
 	showFixedPostForm: false,
 	disablePagesScript: false,
 	enableInfiniteScroll: true,

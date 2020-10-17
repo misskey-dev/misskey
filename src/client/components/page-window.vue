@@ -4,8 +4,8 @@
 		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>
 	<template #buttons>
-		<button class="_button" @click="expand"><Fa :icon="faExpandAlt"/></button>
-		<button class="_button" @click="popout"><Fa :icon="faExternalLinkAlt"/></button>
+		<button class="_button" @click="expand" v-tooltip="$t('showInPage')"><Fa :icon="faExpandAlt"/></button>
+		<button class="_button" @click="popout" v-tooltip="$t('popout')"><Fa :icon="faExternalLinkAlt"/></button>
 	</template>
 	<div style="min-height: 100%; background: var(--bg);">
 		<component :is="component" v-bind="props" :ref="changePage"/>
@@ -18,7 +18,7 @@ import { defineComponent, markRaw } from 'vue';
 import { faExternalLinkAlt, faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
 import XHeader from '@/ui/_common_/header.vue';
-import * as config from '@/config';
+import { popout } from '@/scripts/popout';
 
 export default defineComponent({
 	components: {
@@ -78,24 +78,8 @@ export default defineComponent({
 		},
 
 		popout() {
-			let url = this.url.startsWith('http://') || this.url.startsWith('https://') ? this.url : config.url + this.url;
-			url += '?zen'; // TODO: ちゃんとURLパースしてクエリ付ける
-			const main = this.$el as any;
-			if (main) {
-				const position = main.getBoundingClientRect();
-				const width = parseInt(getComputedStyle(main, '').width, 10);
-				const height = parseInt(getComputedStyle(main, '').height, 10);
-				const x = window.screenX + position.left;
-				const y = window.screenY + position.top;
-				window.open(url, url,
-					`width=${width}, height=${height}, top=${y}, left=${x}`);
-				this.$refs.window.close();
-			} else {
-				const x = window.top.outerHeight / 2 + window.top.screenY - (parseInt(this.height, 10) / 2);
-				const y = window.top.outerWidth / 2 + window.top.screenX - (parseInt(this.width, 10) / 2);
-				window.open(url, url,
-					`width=${this.width}, height=${this.height}, top=${x}, left=${y}`);
-			}
+			popout(this.url, this.$el);
+			this.$refs.window.close();
 		},
 	},
 });

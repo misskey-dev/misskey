@@ -376,6 +376,7 @@ export default defineComponent({
 			box-shadow: 0px 1px var(--divider);
 			cursor: move;
 			user-select: none;
+			height: $height;
 
 			> ::v-deep(button) {
 				height: $height;

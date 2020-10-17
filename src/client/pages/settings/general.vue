@@ -15,6 +15,12 @@
 			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
 		</div>
 		<div class="_content">
+			<div>{{ $t('chatOpenBehavior') }}</div>
+			<MkRadio v-model="chatOpenBehavior" value="page">{{ $t('showInPage') }}</MkRadio>
+			<MkRadio v-model="chatOpenBehavior" value="window">{{ $t('openInWindow') }}</MkRadio>
+			<MkRadio v-model="chatOpenBehavior" value="popout">{{ $t('popout') }}</MkRadio>
+		</div>
+		<div class="_content">
 			<MkSelect v-model:value="lang">
 				<template #label>{{ $t('uiLanguage') }}</template>
 
@@ -138,6 +144,11 @@ export default defineComponent({
 		showFixedPostForm: {
 			get() { return this.$store.state.device.showFixedPostForm; },
 			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
+		},
+
+		chatOpenBehavior: {
+			get() { return this.$store.state.device.chatOpenBehavior; },
+			set(value) { this.$store.commit('device/set', { key: 'chatOpenBehavior', value }); }
 		},
 
 		enableInfiniteScroll: {
