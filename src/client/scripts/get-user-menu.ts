@@ -7,6 +7,8 @@ import getAcct from '../../misc/acct/render';
 import * as os from '@/os';
 import { store, userActions } from '@/store';
 import { router } from '@/router';
+import { defineAsyncComponent } from 'vue';
+import { popout } from './popout';
 
 export function getUserMenu(user) {
 	async function pushList() {
@@ -124,10 +126,16 @@ export function getUserMenu(user) {
 			os.post({ specified: user });
 		}
 	}, store.state.i.id != user.id ? {
-		type: 'link',
-		to: `/my/messaging/${getAcct(user)}`,
 		icon: faComments,
 		text: i18n.global.t('startMessaging'),
+		action: () => {
+			const acct = getAcct(user);
+			switch (store.state.device.chatOpenBehavior) {
+				case 'window': { os.pageWindow('/my/messaging/' + acct, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), { userAcct: acct }); break; }
+				case 'popout': { popout('/my/messaging'); break; }
+				default: { router.push('/my/messaging'); break; }
+			}
+		}
 	} : undefined, null, {
 		icon: faListUl,
 		text: i18n.global.t('addToList'),

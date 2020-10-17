@@ -23,20 +23,9 @@ export const sidebarDef = {
 		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadMessagingMessage),
 		action: () => {
 			switch (store.state.device.chatOpenBehavior) {
-				case 'window': {
-					os.pageWindow('/my/messaging', defineAsyncComponent(() => import('@/pages/messaging/index.vue')));
-					break;
-				}
-
-				case 'popout': {
-					popout('/my/messaging');
-					break;
-				}
-
-				default: {
-					router.push('/my/messaging');
-					break;
-				}
+				case 'window': { os.pageWindow('/my/messaging', defineAsyncComponent(() => import('@/pages/messaging/index.vue'))); break; }
+				case 'popout': { popout('/my/messaging'); break; }
+				default: { router.push('/my/messaging'); break; }
 			}
 		}
 	},
