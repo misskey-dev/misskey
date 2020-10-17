@@ -2,7 +2,7 @@
 <transition :name="$store.state.device.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div class="ebkgocck" v-if="showing">
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
-			<div class="header" @mousedown.prevent="onHeaderMousedown" @touchmove.prevent="onHeaderMousedown">
+			<div class="header" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 				<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 				<span class="title">
 					<slot name="header"></slot>
@@ -43,12 +43,14 @@ const minWidth = 200;
 
 function dragListen(fn) {
 	window.addEventListener('mousemove',  fn);
+	window.addEventListener('touchmove',  fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
 	window.addEventListener('mouseup',    dragClear.bind(null, fn));
 }
 
 function dragClear(fn) {
 	window.removeEventListener('mousemove',  fn);
+	window.removeEventListener('touchmove',  fn);
 	window.removeEventListener('mouseleave', dragClear);
 	window.removeEventListener('mouseup',    dragClear);
 }
@@ -143,8 +145,8 @@ export default defineComponent({
 
 			const position = main.getBoundingClientRect();
 
-			const clickX = e.clientX;
-			const clickY = e.clientY;
+			const clickX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+			const clickY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
 			const moveBaseX = clickX - position.left;
 			const moveBaseY = clickY - position.top;
 			const browserWidth = window.innerWidth;
@@ -154,8 +156,11 @@ export default defineComponent({
 
 			// 動かした時
 			dragListen(me => {
-				let moveLeft = me.clientX - moveBaseX;
-				let moveTop = me.clientY - moveBaseY;
+				const x = me.touches && me.touches.length > 0 ? me.touches[0].clientX : me.clientX;
+				const y = me.touches && me.touches.length > 0 ? me.touches[0].clientY : me.clientY;
+
+				let moveLeft = x - moveBaseX;
+				let moveTop = y - moveBaseY;
 
 				// 下はみ出し
 				if (moveTop + windowHeight > browserHeight) moveTop = browserHeight - windowHeight;
