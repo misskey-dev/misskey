@@ -1,7 +1,7 @@
 <template>
 <div class="fdidabkb">
 	<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-		<button class="_button back" v-if="canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button back" v-if="withBack && canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">
@@ -25,7 +25,12 @@ export default defineComponent({
 	props: {
 		info: {
 			required: true
-		}
+		},
+		withBack: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	},
 
 	data() {
@@ -78,6 +83,7 @@ export default defineComponent({
 			> .avatar {
 				$size: 32px;
 				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
+				pointer-events: none;
 			}
 		}
 	}

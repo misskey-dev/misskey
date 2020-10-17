@@ -1,14 +1,14 @@
 <template>
 <XWindow ref="window" :initial-width="400" :initial-height="450" :can-resize="true" @closed="$emit('closed')">
 	<template #header>
-		tesst
+		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>
 	<template #buttons>
 		<button class="_button" @click="expand"><Fa :icon="faExpandAlt"/></button>
 		<button class="_button" @click="popout"><Fa :icon="faExternalLinkAlt"/></button>
 	</template>
 	<div style="min-height: 100%; background: var(--bg);">
-		<component :is="component" v-bind="props"/>
+		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
 </XWindow>
 </template>
@@ -17,11 +17,13 @@
 import { defineComponent, markRaw } from 'vue';
 import { faExternalLinkAlt, faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
+import XHeader from '@/ui/_common_/header.vue';
 import * as config from '@/config';
 
 export default defineComponent({
 	components: {
 		XWindow,
+		XHeader,
 	},
 
 	props: {
@@ -44,6 +46,7 @@ export default defineComponent({
 
 	data() {
 		return {
+			pageInfo: null,
 			url: this.initialUrl,
 			component: this.initialComponent,
 			props: this.initialProps,
@@ -62,6 +65,13 @@ export default defineComponent({
 	},
 
 	methods: {
+		changePage(page) {
+			if (page == null) return;
+			if (page.INFO) {
+				this.pageInfo = page.INFO;
+			}
+		},
+
 		expand() {
 			this.$router.push(this.url);
 			this.$refs.window.close();

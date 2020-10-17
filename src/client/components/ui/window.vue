@@ -384,6 +384,7 @@ export default defineComponent({
 
 			> .title {
 				flex: 1;
+				position: relative;
 				line-height: $height;
 				font-weight: bold;
 				white-space: nowrap;
