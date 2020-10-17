@@ -408,7 +408,6 @@ export default defineComponent({
 
 		applyVisibility(v: string) {
 			this.visibility = (noteVisibilities as unknown as string[]).includes(v) ? v : 'public'; // v11互換性のため
-			console.log(v, this.visibility);
 		},
 
 		addVisibleUser() {
