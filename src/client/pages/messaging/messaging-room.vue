@@ -45,6 +45,8 @@ const Component = defineComponent({
 		XList,
 	},
 
+	inject: ['inWindow'],
+
 	props: {
 		userAcct: {
 			type: String,
@@ -308,7 +310,7 @@ const Component = defineComponent({
 		},
 
 		menu(ev) {
-			os.modalMenu([{
+			os.modalMenu([this.inWindow ? undefined : {
 				text: this.$t('openInWindow'),
 				icon: faWindowMaximize,
 				action: () => {
