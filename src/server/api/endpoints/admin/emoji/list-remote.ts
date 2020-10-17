@@ -16,6 +16,11 @@ export const meta = {
 	requireModerator: true,
 
 	params: {
+		query: {
+			validator: $.optional.nullable.str,
+			default: null as any
+		},
+
 		host: {
 			validator: $.optional.nullable.str,
 			default: null as any
@@ -45,9 +50,12 @@ export default define(meta, async (ps) => {
 		q.andWhere(`emoji.host = :host`, { host: toPuny(ps.host) });
 	}
 
+	if (ps.query) {
+		q.andWhere('emoji.name like :query', { query: '%' + ps.query + '%' });
+	}
+
 	const emojis = await q
-		.orderBy('emoji.category', 'ASC')
-		.orderBy('emoji.name', 'ASC')
+		.orderBy('emoji.id', 'DESC')
 		.take(ps.limit!)
 		.getMany();
 

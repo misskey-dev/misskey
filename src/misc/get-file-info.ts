@@ -181,7 +181,16 @@ function getBlurhash(path: string): Promise<string> {
 			.resize(64, 64, { fit: 'inside' })
 			.toBuffer((err, buffer, { width, height }) => {
 				if (err) return reject(err);
-				resolve(encode(new Uint8ClampedArray(buffer), width, height, 7, 7));
+
+				let hash;
+
+				try {
+					hash = encode(new Uint8ClampedArray(buffer), width, height, 7, 7);
+				} catch (e) {
+					return reject(e);
+				}
+
+				resolve(hash);
 			});
 	});
 }

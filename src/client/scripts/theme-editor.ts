@@ -5,11 +5,12 @@ import { themeProps, Theme } from './theme';
 export type Default = null;
 export type Color = string;
 export type FuncName = 'alpha' | 'darken' | 'lighten';
-export type Func = { type: 'func', name: FuncName, arg: number, value: string  };
-export type RefProp = { type: 'refProp', key: string  };
-export type RefConst = { type: 'refConst', key: string  };
+export type Func = { type: 'func'; name: FuncName; arg: number; value: string; };
+export type RefProp = { type: 'refProp'; key: string; };
+export type RefConst = { type: 'refConst'; key: string; };
+export type Css = { type: 'css'; value: string; };
 
-export type ThemeValue = Color | Func | RefProp | RefConst | Default;
+export type ThemeValue = Color | Func | RefProp | RefConst | Css | Default;
 
 export type ThemeViewModel = [ string, ThemeValue ][];
 
@@ -31,17 +32,23 @@ export const fromThemeString = (str?: string) : ThemeValue => {
 			type: 'refConst',
 			key: str.slice(1),
 		};
+	} else if (str.startsWith('"')) {
+		return {
+			type: 'css',
+			value: str.substr(1).trim(),
+		};
 	} else {
 		return str;
 	}
 };
 
-export const toThemeString = (value: Color | Func | RefProp | RefConst) => {
+export const toThemeString = (value: Color | Func | RefProp | RefConst | Css) => {
 	if (typeof value === 'string') return value;
 	switch (value.type) {
 		case 'func': return `:${value.name}<${value.arg}<@${value.value}`;
 		case 'refProp': return `@${value.key}`;
 		case 'refConst': return `$${value.key}`;
+		case 'css': return `" ${value.value}`;
 	}
 };
 

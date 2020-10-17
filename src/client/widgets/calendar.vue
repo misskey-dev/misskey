@@ -1,6 +1,6 @@
 <template>
 <div class="mkw-calendar" :class="{ _panel: !props.transparent }">
-	<div class="calendar" :data-is-holiday="isHoliday">
+	<div class="calendar" :class="{ isHoliday }">
 		<p class="month-and-year">
 			<span class="year">{{ $t('yearX', { year }) }}</span>
 			<span class="month">{{ $t('monthX', { month }) }}</span>
@@ -32,9 +32,11 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import define from './define';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'calendar',
 	props: () => ({
 		transparent: {
@@ -42,7 +44,10 @@ export default define({
 			default: false,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	data() {
 		return {
 			now: new Date(),
@@ -61,7 +66,7 @@ export default define({
 		this.tick();
 		this.clock = setInterval(this.tick, 1000);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {
@@ -116,7 +121,7 @@ export default define({
 		width: 60%;
 		text-align: center;
 
-		&[data-is-holiday] {
+		&.isHoliday {
 			> .day {
 				color: #ef95a0;
 			}

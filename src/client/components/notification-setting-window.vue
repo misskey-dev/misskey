@@ -1,34 +1,40 @@
 <template>
-<x-window ref="window" :width="400" :height="450" :no-padding="true" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="false" @ok="ok()">
+<XModalWindow ref="dialog"
+	:width="400"
+	:height="450"
+	:with-ok-button="true"
+	:ok-button-disabled="false"
+	@ok="ok()"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header>{{ $t('notificationSetting') }}</template>
-	<div class="vv94n3oa">
-		<div v-if="showGlobalToggle">
-			<mk-switch v-model="useGlobalSetting">
-				{{ $t('useGlobalSetting') }}
-				<template #desc>{{ $t('useGlobalSettingDesc') }}</template>
-			</mk-switch>
-		</div>
-		<div v-if="!useGlobalSetting">
-			<mk-info>{{ $t('notificationSettingDesc') }}</mk-info>
-			<mk-button inline @click="disableAll">{{ $t('disableAll') }}</mk-button>
-			<mk-button inline @click="enableAll">{{ $t('enableAll') }}</mk-button>
-			<mk-switch v-for="type in notificationTypes" :key="type" v-model="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</mk-switch>
-		</div>
+	<div v-if="showGlobalToggle" class="_section">
+		<MkSwitch v-model:value="useGlobalSetting">
+			{{ $t('useGlobalSetting') }}
+			<template #desc>{{ $t('useGlobalSettingDesc') }}</template>
+		</MkSwitch>
 	</div>
-</x-window>
+	<div v-if="!useGlobalSetting" class="_section">
+		<MkInfo>{{ $t('notificationSettingDesc') }}</MkInfo>
+		<MkButton inline @click="disableAll">{{ $t('disableAll') }}</MkButton>
+		<MkButton inline @click="enableAll">{{ $t('enableAll') }}</MkButton>
+		<MkSwitch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</MkSwitch>
+	</div>
+</XModalWindow>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
-import XWindow from './window.vue';
+import { defineComponent, PropType } from 'vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
 import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';
 import { notificationTypes } from '../../types';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
-		XWindow,
+		XModalWindow,
 		MkSwitch,
 		MkInfo,
 		MkButton
@@ -48,6 +54,8 @@ export default Vue.extend({
 		}
 	},
 
+	emits: ['done', 'closed'],
+
 	data() {
 		return {
 			typesMap: {} as Record<typeof notificationTypes[number], boolean>,
@@ -60,7 +68,7 @@ export default Vue.extend({
 		this.useGlobalSetting = this.includingTypes === null && this.showGlobalToggle;
 
 		for (const type of this.notificationTypes) {
-			Vue.set(this.typesMap, type, this.includingTypes === null || this.includingTypes.includes(type));
+			this.typesMap[type] = this.includingTypes === null || this.includingTypes.includes(type);
 		}
 	},
 
@@ -69,8 +77,8 @@ export default Vue.extend({
 			const includingTypes = this.useGlobalSetting ? null : (Object.keys(this.typesMap) as typeof notificationTypes[number][])
 				.filter(type => this.typesMap[type]);
 
-			this.$emit('ok', { includingTypes });
-			this.$refs.window.close();
+			this.$emit('done', { includingTypes });
+			this.$refs.dialog.close();
 		},
 
 		disableAll() {
@@ -87,12 +95,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.vv94n3oa {
-	> div {
-		border-top: solid 1px var(--divider);
-		padding: 24px;
-	}
-}
-</style>

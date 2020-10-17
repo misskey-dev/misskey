@@ -1,14 +1,15 @@
 <template>
 <div>
-	<mk-button class="llumlmnx" @click="click()">{{ hpml.interpolate(value.text) }}</mk-button>
+	<MkButton class="llumlmnx" @click="click()">{{ hpml.interpolate(value.text) }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkButton from '../ui/button.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},

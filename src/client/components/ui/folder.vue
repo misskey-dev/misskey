@@ -1,11 +1,11 @@
 <template>
 <div class="ssazuxis" v-size="{ max: [500] }">
-	<header @click="() => showBody = !showBody" class="_button">
+	<header @click="showBody = !showBody" class="_button">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
 		<button class="_button">
-			<template v-if="showBody"><fa :icon="faAngleUp"/></template>
-			<template v-else><fa :icon="faAngleDown"/></template>
+			<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
+			<template v-else><Fa :icon="faAngleDown"/></template>
 		</button>
 	</header>
 	<transition name="folder-toggle"
@@ -22,22 +22,36 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-export default Vue.extend({
+const localStoragePrefix = 'ui:folder:';
+
+export default defineComponent({
 	props: {
 		expanded: {
 			type: Boolean,
 			required: false,
 			default: true
 		},
+		persistKey: {
+			type: String,
+			required: false,
+			default: null
+		},
 	},
 	data() {
 		return {
-			showBody: this.expanded,
+			showBody: (this.persistKey && localStorage.getItem(localStoragePrefix + this.persistKey)) ? localStorage.getItem(localStoragePrefix + this.persistKey) === 't' : this.expanded,
 			faAngleUp, faAngleDown
 		};
+	},
+	watch: {
+		showBody() {
+			if (this.persistKey) {
+				localStorage.setItem(localStoragePrefix + this.persistKey, this.showBody ? 't' : 'f');
+			}
+		}
 	},
 	methods: {
 		toggleContent(show: boolean) {
@@ -71,7 +85,7 @@ export default Vue.extend({
 	overflow-y: hidden;
 	transition: opacity 0.5s, height 0.5s !important;
 }
-.folder-toggle-enter {
+.folder-toggle-enter-from {
 	opacity: 0;
 }
 .folder-toggle-leave-to {
@@ -92,7 +106,7 @@ export default Vue.extend({
 
 		> .title {
 			margin: 0;
-			padding: 12px 16px 12px 8px;
+			padding: 12px 16px 12px 0;
 
 			> [data-icon] {
 				margin-right: 6px;
@@ -111,7 +125,7 @@ export default Vue.extend({
 		}
 
 		> button {
-			width: 42px;
+			padding: 12px 0 12px 16px;
 		}
 	}
 

@@ -1,12 +1,12 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title"><slot name="title"></slot></div>
 	<div class="_content _table">
 		<div class="_row">
-			<div class="_cell"><div class="_label">Process</div>{{ activeSincePrevTick | number }}</div>
-			<div class="_cell"><div class="_label">Active</div>{{ active | number }}</div>
-			<div class="_cell"><div class="_label">Waiting</div>{{ waiting | number }}</div>
-			<div class="_cell"><div class="_label">Delayed</div>{{ delayed | number }}</div>
+			<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
+			<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
+			<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
+			<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
 		</div>
 	</div>
 	<div class="_content" style="margin-bottom: -8px;">
@@ -16,7 +16,7 @@
 		<div v-if="jobs.length > 0">
 			<div v-for="job in jobs" :key="job[0]">
 				<span>{{ job[0] }}</span>
-				<span style="margin-left: 8px; opacity: 0.7;">({{ job[1] | number }} jobs)</span>
+				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 			</div>
 		</div>
 		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
@@ -25,8 +25,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import Chart from 'chart.js';
+import number from '../../filters/number';
 
 const alpha = (hex, a) => {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)!;
@@ -35,8 +36,9 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		domain: {
 			required: true
@@ -154,7 +156,7 @@ export default Vue.extend({
 		this.connection.on('statsLog', this.onStatsLog);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.off('stats', this.onStats);
 		this.connection.off('statsLog', this.onStatsLog);
 	},
@@ -187,10 +189,12 @@ export default Vue.extend({
 		},
 
 		fetchJobs() {
-			this.$root.api(this.domain === 'inbox' ? 'admin/queue/inbox-delayed' : this.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
+			os.api(this.domain === 'inbox' ? 'admin/queue/inbox-delayed' : this.domain === 'deliver' ? 'admin/queue/deliver-delayed' : null, {}).then(jobs => {
 				this.jobs = jobs;
 			});
 		},
+
+		number
 	}
 });
 </script>

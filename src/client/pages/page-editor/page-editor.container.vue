@@ -5,14 +5,14 @@
 		<div class="buttons">
 			<slot name="func"></slot>
 			<button v-if="removable" @click="remove()" class="_button">
-				<fa :icon="faTrashAlt"/>
+				<Fa :icon="faTrashAlt"/>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
-				<fa :icon="faBars"/>
+				<Fa :icon="faBars"/>
 			</button>
 			<button @click="toggleContent(!showBody)" class="_button">
-				<template v-if="showBody"><fa :icon="faAngleUp"/></template>
-				<template v-else><fa :icon="faAngleDown"/></template>
+				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
+				<template v-else><Fa :icon="faAngleDown"/></template>
 			</button>
 		</div>
 	</header>
@@ -25,11 +25,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		expanded: {
 			type: Boolean,
@@ -147,7 +148,7 @@ export default Vue.extend({
 	}
 
 	> .body {
-		::v-deep .juejbjww, ::v-deep .eiipwacr {
+		::v-deep(.juejbjww), ::v-deep(.eiipwacr) {
 			&:not(.inline):first-child {
 				margin-top: 28px;
 			}

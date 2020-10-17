@@ -15,7 +15,7 @@
 		</select>
 		<div class="suffix">
 			<slot name="suffix">
-				<fa :icon="faChevronDown"/>
+				<Fa :icon="faChevronDown"/>
 			</slot>
 		</div>
 	</div>
@@ -24,10 +24,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		value: {
 			required: false
@@ -58,7 +59,7 @@ export default Vue.extend({
 				return this.value;
 			},
 			set(v) {
-				this.$emit('input', v);
+				this.$emit('update:value', v);
 			}
 		},
 		filled(): boolean {
@@ -169,6 +170,7 @@ export default Vue.extend({
 
 			option,
 			optgroup {
+				color: var(--fg);
 				background: var(--bg);
 			}
 		}

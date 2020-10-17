@@ -1,24 +1,24 @@
 <template>
-<x-container @remove="() => $emit('remove')" :draggable="true">
-	<template #header><fa :icon="faBolt"/> {{ $t('_pages.blocks.button') }}</template>
+<XContainer @remove="() => $emit('remove')" :draggable="true">
+	<template #header><Fa :icon="faBolt"/> {{ $t('_pages.blocks.button') }}</template>
 
 	<section class="xfhsjczc">
-		<mk-input v-model="value.text"><span>{{ $t('_pages.blocks._button.text') }}</span></mk-input>
-		<mk-switch v-model="value.primary"><span>{{ $t('_pages.blocks._button.colored') }}</span></mk-switch>
-		<mk-select v-model="value.action">
+		<MkInput v-model:value="value.text"><span>{{ $t('_pages.blocks._button.text') }}</span></MkInput>
+		<MkSwitch v-model:value="value.primary"><span>{{ $t('_pages.blocks._button.colored') }}</span></MkSwitch>
+		<MkSelect v-model:value="value.action">
 			<template #label>{{ $t('_pages.blocks._button.action') }}</template>
 			<option value="dialog">{{ $t('_pages.blocks._button._action.dialog') }}</option>
 			<option value="resetRandom">{{ $t('_pages.blocks._button._action.resetRandom') }}</option>
 			<option value="pushEvent">{{ $t('_pages.blocks._button._action.pushEvent') }}</option>
 			<option value="callAiScript">{{ $t('_pages.blocks._button._action.callAiScript') }}</option>
-		</mk-select>
+		</MkSelect>
 		<template v-if="value.action === 'dialog'">
-			<mk-input v-model="value.content"><span>{{ $t('_pages.blocks._button._action._dialog.content') }}</span></mk-input>
+			<MkInput v-model:value="value.content"><span>{{ $t('_pages.blocks._button._action._dialog.content') }}</span></MkInput>
 		</template>
 		<template v-else-if="value.action === 'pushEvent'">
-			<mk-input v-model="value.event"><span>{{ $t('_pages.blocks._button._action._pushEvent.event') }}</span></mk-input>
-			<mk-input v-model="value.message"><span>{{ $t('_pages.blocks._button._action._pushEvent.message') }}</span></mk-input>
-			<mk-select v-model="value.var">
+			<MkInput v-model:value="value.event"><span>{{ $t('_pages.blocks._button._action._pushEvent.event') }}</span></MkInput>
+			<MkInput v-model:value="value.message"><span>{{ $t('_pages.blocks._button._action._pushEvent.message') }}</span></MkInput>
+			<MkSelect v-model:value="value.var">
 				<template #label>{{ $t('_pages.blocks._button._action._pushEvent.variable') }}</template>
 				<option :value="null">{{ $t('_pages.blocks._button._action._pushEvent.no-variable') }}</option>
 				<option v-for="v in hpml.getVarsByType()" :value="v.name">{{ v.name }}</option>
@@ -28,24 +28,25 @@
 				<optgroup :label="$t('_pages.script.enviromentVariables')">
 					<option v-for="v in hpml.getEnvVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
-			</mk-select>
+			</MkSelect>
 		</template>
 		<template v-else-if="value.action === 'callAiScript'">
-			<mk-input v-model="value.fn"><span>{{ $t('_pages.blocks._button._action._callAiScript.functionName') }}</span></mk-input>
+			<MkInput v-model:value="value.fn"><span>{{ $t('_pages.blocks._button._action._callAiScript.functionName') }}</span></MkInput>
 		</template>
 	</section>
-</x-container>
+</XContainer>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkSelect from '../../../components/ui/select.vue';
-import MkInput from '../../../components/ui/input.vue';
-import MkSwitch from '../../../components/ui/switch.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XContainer, MkSelect, MkInput, MkSwitch
 	},
@@ -66,14 +67,14 @@ export default Vue.extend({
 	},
 
 	created() {
-		if (this.value.text == null) Vue.set(this.value, 'text', '');
-		if (this.value.action == null) Vue.set(this.value, 'action', 'dialog');
-		if (this.value.content == null) Vue.set(this.value, 'content', null);
-		if (this.value.event == null) Vue.set(this.value, 'event', null);
-		if (this.value.message == null) Vue.set(this.value, 'message', null);
-		if (this.value.primary == null) Vue.set(this.value, 'primary', false);
-		if (this.value.var == null) Vue.set(this.value, 'var', null);
-		if (this.value.fn == null) Vue.set(this.value, 'fn', null);
+		if (this.value.text == null) this.value.text = '';
+		if (this.value.action == null) this.value.action = 'dialog';
+		if (this.value.content == null) this.value.content = null;
+		if (this.value.event == null) this.value.event = null;
+		if (this.value.message == null) this.value.message = null;
+		if (this.value.primary == null) this.value.primary = false;
+		if (this.value.var == null) this.value.var = null;
+		if (this.value.fn == null) this.value.fn = null;
 	},
 });
 </script>

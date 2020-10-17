@@ -1,6 +1,6 @@
 <template>
 <div class="rghtznwe"
-	:data-draghover="draghover"
+	:class="{ draghover }"
 	@click="onClick"
 	@mouseover="onMouseover"
 	@mouseout="onMouseout"
@@ -14,8 +14,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover"><fa :icon="faFolderOpen" fixed-width/></template>
-		<template v-if="!hover"><fa :icon="faFolder" fixed-width/></template>
+		<template v-if="hover"><Fa :icon="faFolderOpen" fixed-width/></template>
+		<template v-if="!hover"><Fa :icon="faFolder" fixed-width/></template>
 		{{ folder.name }}
 	</p>
 	<p class="upload" v-if="$store.state.settings.uploadFolder == folder.id">
@@ -26,10 +26,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faFolder, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		folder: {
 			type: Object,
@@ -46,6 +47,8 @@ export default Vue.extend({
 			default: false,
 		}
 	},
+
+	emits: ['chosen'],
 
 	data() {
 		return {
@@ -91,8 +94,8 @@ export default Vue.extend({
 			}
 
 			const isFile = e.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
-			const isDriveFolder = e.dataTransfer.types[0] == 'mk_drive_folder';
+			const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+			const isDriveFolder = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FOLDER_;
 
 			if (isFile || isDriveFile || isDriveFolder) {
 				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
@@ -121,11 +124,11 @@ export default Vue.extend({
 			}
 
 			//#region ドライブのファイル
-			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				this.$root.api('drive/files/update', {
+				os.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder.id
 				});
@@ -133,7 +136,7 @@ export default Vue.extend({
 			//#endregion
 
 			//#region ドライブのフォルダ
-			const driveFolder = e.dataTransfer.getData('mk_drive_folder');
+			const driveFolder = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 			if (driveFolder != null && driveFolder != '') {
 				const folder = JSON.parse(driveFolder);
 
@@ -141,7 +144,7 @@ export default Vue.extend({
 				if (folder.id == this.folder.id) return;
 
 				this.browser.removeFolder(folder.id);
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder.id
 				}).then(() => {
@@ -149,15 +152,15 @@ export default Vue.extend({
 				}).catch(err => {
 					switch (err) {
 						case 'detected-circular-definition':
-							this.$root.dialog({
+							os.dialog({
 								title: this.$t('unableToProcess'),
 								text: this.$t('circularReferenceFolder')
 							});
 							break;
 						default:
-							this.$root.dialog({
+							os.dialog({
 								type: 'error',
-								text: this.$t('error')
+								text: this.$t('somethingHappened')
 							});
 					}
 				});
@@ -167,7 +170,7 @@ export default Vue.extend({
 
 		onDragstart(e) {
 			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('mk_drive_folder', JSON.stringify(this.folder));
+			e.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FOLDER_, JSON.stringify(this.folder));
 			this.isDragging = true;
 
 			// 親ブラウザに対して、ドラッグが開始されたフラグを立てる
@@ -189,7 +192,7 @@ export default Vue.extend({
 		},
 
 		rename() {
-			this.$root.dialog({
+			os.dialog({
 				title: this.$t('renameFolder'),
 				input: {
 					placeholder: this.$t('inputNewFolderName'),
@@ -197,7 +200,7 @@ export default Vue.extend({
 				}
 			}).then(({ canceled, result: name }) => {
 				if (canceled) return;
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: this.folder.id,
 					name: name
 				});
@@ -205,7 +208,7 @@ export default Vue.extend({
 		},
 
 		deleteFolder() {
-			this.$root.api('drive/folders/delete', {
+			os.api('drive/folders/delete', {
 				folderId: this.folder.id
 			}).then(() => {
 				if (this.$store.state.settings.uploadFolder === this.folder.id) {
@@ -217,14 +220,14 @@ export default Vue.extend({
 			}).catch(err => {
 				switch(err.id) {
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
-						this.$root.dialog({
+						os.dialog({
 							type: 'error',
 							title: this.$t('unableToDelete'),
 							text: this.$t('hasChildFilesOrFolders')
 						});
 						break;
 					default:
-						this.$root.dialog({
+						os.dialog({
 							type: 'error',
 							text: this.$t('unableToDelete')
 						});
@@ -272,7 +275,7 @@ export default Vue.extend({
 		}
 	}
 
-	&[data-draghover] {
+	&.draghover {
 		&:after {
 			content: "";
 			pointer-events: none;

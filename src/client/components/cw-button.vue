@@ -1,16 +1,16 @@
 <template>
-<button class="nrvgflfuaxwgkxoynpnumyookecqrrvh _button" @click="toggle">
-	<b>{{ value ? this.$t('_cw.hide') : this.$t('_cw.show') }}</b>
-	<span v-if="!value">{{ this.label }}</span>
+<button class="nrvgflfu _button" @click="toggle">
+	<b>{{ value ? $t('_cw.hide') : $t('_cw.show') }}</b>
+	<span v-if="!value">{{ label }}</span>
 </button>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { length } from 'stringz';
 import { concat } from '../../prelude/array';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		value: {
 			type: Boolean,
@@ -36,14 +36,14 @@ export default Vue.extend({
 		length,
 
 		toggle() {
-			this.$emit('input', !this.value);
+			this.$emit('update:value', !this.value);
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.nrvgflfuaxwgkxoynpnumyookecqrrvh {
+.nrvgflfu {
 	display: inline-block;
 	padding: 4px 8px;
 	font-size: 0.7em;

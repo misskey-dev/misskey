@@ -1,22 +1,14 @@
 <template>
 <div class="hveuntkp">
-	<portal to="avatar" v-if="user"><mk-avatar class="avatar" :user="user" :disable-preview="true"/></portal>
-	<portal to="title" v-if="user">
-		<mfm 
-			:text="$t('_rooms.roomOf', { user: user.name || user.username })"
-			:plain="true" :nowrap="true" :custom-emojis="user.emojis" :is-note="false"
-		/>
-	</portal>
-
-	<div class="controller _card _vMargin" v-if="objectSelected">
+	<div class="controller _section" v-if="objectSelected">
 		<div class="_content">
 			<p class="name">{{ selectedFurnitureName }}</p>
-			<x-preview ref="preview"/>
+			<XPreview ref="preview"/>
 			<template v-if="selectedFurnitureInfo.props">
 				<div v-for="k in Object.keys(selectedFurnitureInfo.props)" :key="k">
 					<p>{{ k }}</p>
 					<template v-if="selectedFurnitureInfo.props[k] === 'image'">
-						<mk-button @click="chooseImage(k, $event)">{{ $t('_rooms.chooseImage') }}</mk-button>
+						<MkButton @click="chooseImage(k, $event)">{{ $t('_rooms.chooseImage') }}</MkButton>
 					</template>
 					<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
 						<input type="color" :value="selectedFurnitureProps ? selectedFurnitureProps[k] : null" @change="updateColor(k, $event)"/>
@@ -25,54 +17,55 @@
 			</template>
 		</div>
 		<div class="_content">
-			<mk-button inline @click="translate()" :primary="isTranslateMode"><fa :icon="faArrowsAlt"/> {{ $t('_rooms.translate') }}</mk-button>
-			<mk-button inline @click="rotate()" :primary="isRotateMode"><fa :icon="faUndo"/> {{ $t('_rooms.rotate') }}</mk-button>
-			<mk-button inline v-if="isTranslateMode || isRotateMode" @click="exit()"><fa :icon="faBan"/> {{ $t('_rooms.exit') }}</mk-button>
+			<MkButton inline @click="translate()" :primary="isTranslateMode"><Fa :icon="faArrowsAlt"/> {{ $t('_rooms.translate') }}</MkButton>
+			<MkButton inline @click="rotate()" :primary="isRotateMode"><Fa :icon="faUndo"/> {{ $t('_rooms.rotate') }}</MkButton>
+			<MkButton inline v-if="isTranslateMode || isRotateMode" @click="exit()"><Fa :icon="faBan"/> {{ $t('_rooms.exit') }}</MkButton>
 		</div>
 		<div class="_content">
-			<mk-button @click="remove()"><fa :icon="faTrashAlt"/> {{ $t('_rooms.remove') }}</mk-button>
+			<MkButton @click="remove()"><Fa :icon="faTrashAlt"/> {{ $t('_rooms.remove') }}</MkButton>
 		</div>
 	</div>
 
-	<div class="menu _card _vMargin" v-if="isMyRoom">
+	<div class="menu _section" v-if="isMyRoom">
 		<div class="_content">
-			<mk-button @click="add()"><fa :icon="faBoxOpen"/> {{ $t('_rooms.addFurniture') }}</mk-button>
+			<MkButton @click="add()"><Fa :icon="faBoxOpen"/> {{ $t('_rooms.addFurniture') }}</MkButton>
 		</div>
 		<div class="_content">
-			<mk-select :value="roomType" @input="updateRoomType($event)">
+			<MkSelect :value="roomType" @update:value="updateRoomType($event)">
 				<template #label>{{ $t('_rooms.roomType') }}</template>
 				<option value="default">{{ $t('_rooms._roomType.default') }}</option>
 				<option value="washitsu">{{ $t('_rooms._roomType.washitsu') }}</option>
-			</mk-select>
+			</MkSelect>
 			<label v-if="roomType === 'default'">
 				<span>{{ $t('_rooms.carpetColor') }}</span>
 				<input type="color" :value="carpetColor" @change="updateCarpetColor($event)"/>
 			</label>
 		</div>
 		<div class="_content">
-			<mk-button inline :disabled="!changed" primary @click="save()"><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
-			<mk-button inline @click="clear()"><fa :icon="faBroom"/> {{ $t('_rooms.clear') }}</mk-button>
+			<MkButton inline :disabled="!changed" primary @click="save()"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+			<MkButton inline @click="clear()"><Fa :icon="faBroom"/> {{ $t('_rooms.clear') }}</MkButton>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Room } from '../../scripts/room/room';
+import { computed, defineComponent } from 'vue';
+import { Room } from '@/scripts/room/room';
 import parseAcct from '../../../misc/acct/parse';
 import XPreview from './preview.vue';
-const storeItems = require('../../scripts/room/furnitures.json5');
+const storeItems = require('@/scripts/room/furnitures.json5');
 import { faBoxOpen, faUndo, faArrowsAlt, faBan, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../prelude/url';
-import MkButton from '../../components/ui/button.vue';
-import MkSelect from '../../components/ui/select.vue';
-import { selectFile } from '../../scripts/select-file';
+import MkButton from '@/components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
 
 let room: Room;
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XPreview,
 		MkButton,
@@ -88,6 +81,12 @@ export default Vue.extend({
 
 	data() {
 		return {
+			INFO: computed(() => this.user ? {
+				header: [{
+					title: this.$t('room'),
+					avatar: this.user,
+				}],
+			} : null),
 			user: null,
 			objectSelected: false,
 			selectedFurnitureName: null,
@@ -106,13 +105,13 @@ export default Vue.extend({
 	async mounted() {
 		window.addEventListener('beforeunload', this.beforeunload);
 
-		this.user = await this.$root.api('users/show', {
+		this.user = await os.api('users/show', {
 			...parseAcct(this.acct)
 		});
 
 		this.isMyRoom = this.$store.getters.isSignedIn && (this.$store.state.i.id === this.user.id);
 
-		const roomInfo = await this.$root.api('room/show', {
+		const roomInfo = await os.api('room/show', {
 			userId: this.user.id
 		});
 
@@ -141,7 +140,7 @@ export default Vue.extend({
 
 	beforeRouteLeave(to, from, next) {
 		if (this.changed) {
-			this.$root.dialog({
+			os.dialog({
 				type: 'warning',
 				text: this.$t('leaveConfirm'),
 				showCancelButton: true
@@ -157,7 +156,7 @@ export default Vue.extend({
 		}
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		room.destroy();
 		window.removeEventListener('beforeunload', this.beforeunload);
 	},
@@ -171,7 +170,7 @@ export default Vue.extend({
 		},
 
 		async add() {
-			const { canceled, result: id } = await this.$root.dialog({
+			const { canceled, result: id } = await os.dialog({
 				type: null,
 				title: this.$t('_rooms.addFurniture'),
 				select: {
@@ -194,16 +193,13 @@ export default Vue.extend({
 		},
 
 		save() {
-			this.$root.api('room/update', {
+			os.api('room/update', {
 				room: room.getRoomInfo()
 			}).then(() => {
 				this.changed = false;
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
+				os.success();
 			}).catch((e: any) => {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -211,7 +207,7 @@ export default Vue.extend({
 		},
 
 		clear() {
-			this.$root.dialog({
+			os.dialog({
 				type: 'warning',
 				text: this.$t('_rooms.clearConfirm'),
 				showCancelButton: true
@@ -223,7 +219,7 @@ export default Vue.extend({
 		},
 
 		chooseImage(key, e) {
-			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				room.updateProp(key, `/proxy/?${urlQuery({ url: file.thumbnailUrl })}`);
 				this.$refs.preview.selected(room.getSelectedObject());
 				this.changed = true;
@@ -285,7 +281,7 @@ export default Vue.extend({
 	position: relative;
 	min-height: 500px;
 
-	> ::v-deep canvas {
+	> ::v-deep(canvas) {
 		display: block;
 	}
 }

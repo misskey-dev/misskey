@@ -1,10 +1,7 @@
 <template>
 <div class="mmnnbwxb">
-	<portal to="icon"><fa :icon="faInfoCircle"/></portal>
-	<portal to="title">{{ $t('about') }}</portal>
-
-	<section class="_card info" v-if="meta">
-		<div class="_title"><fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
+	<section class="_section info" v-if="meta">
+		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
 		<div class="_content" v-if="meta.description">
 			<div v-html="meta.description"></div>
 		</div>
@@ -17,29 +14,34 @@
 		</div>
 	</section>
 
-	<mk-instance-stats style="margin-top: var(--margin);"/>
+	<div class="_section">
+		<div class="_content">
+			<MkInstanceStats/>
+		</div>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { version } from '../config';
-import MkInstanceStats from '../components/instance-stats.vue';
+import { version } from '@/config';
+import MkInstanceStats from '@/components/instance-stats.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('instance') as string
-		};
-	},
-
+export default defineComponent({
 	components: {
 		MkInstanceStats
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('about'),
+					icon: faInfoCircle
+				}]
+			},
 			version,
 			serverInfo: null,
 			faInfoCircle

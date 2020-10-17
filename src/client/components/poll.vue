@@ -1,11 +1,11 @@
 <template>
-<div class="tivcixzd" :data-done="closed || isVoted">
+<div class="tivcixzd" :class="{ done: closed || isVoted }">
 	<ul>
 		<li v-for="(choice, i) in poll.choices" :key="i" @click="vote(i)" :class="{ voted: choice.voted }">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
-				<template v-if="choice.isVoted"><fa :icon="faCheck"/></template>
-				<mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
+				<template v-if="choice.isVoted"><Fa :icon="faCheck"/></template>
+				<Mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
 				<span class="votes" v-if="showResult">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
 		</li>
@@ -22,11 +22,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { sum } from '../../prelude/array';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		note: {
 			type: Object,
@@ -85,7 +86,7 @@ export default Vue.extend({
 		},
 		vote(id) {
 			if (this.closed || !this.poll.multiple && this.poll.choices.some(c => c.isVoted)) return;
-			this.$root.api('notes/polls/vote', {
+			os.api('notes/polls/vote', {
 				noteId: this.note.id,
 				choice: id
 			}).then(() => {
@@ -153,7 +154,7 @@ export default Vue.extend({
 		}
 	}
 
-	&[data-done] {
+	&.done {
 		> ul > li {
 			cursor: default;
 

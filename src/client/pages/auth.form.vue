@@ -1,5 +1,5 @@
 <template>
-<section class="_card">
+<section class="_section">
 	<div class="_title">{{ $t('_auth.shareAccess', { name: app.name }) }}</div>
 	<div class="_content">
 		<h2>{{ app.name }}</h2>
@@ -9,23 +9,22 @@
 	<div class="_content">
 		<h2>{{ $t('_auth.permissionAsk') }}</h2>
 		<ul>
-			<template v-for="p in app.permission">
-				<li :key="p">{{ $t(`_permissions.${p}`) }}</li>
-			</template>
+			<li v-for="p in app.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 		</ul>
 	</div>
 	<div class="_footer">
-		<mk-button @click="cancel" inline>{{ $t('cancel') }}</mk-button>
-		<mk-button @click="accept" inline primary>{{ $t('accept') }}</mk-button>
+		<MkButton @click="cancel" inline>{{ $t('cancel') }}</MkButton>
+		<MkButton @click="accept" inline primary>{{ $t('accept') }}</MkButton>
 	</div>
 </section>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import MkButton from '../components/ui/button.vue';
+import { defineComponent } from 'vue';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},
@@ -42,7 +41,7 @@ export default Vue.extend({
 	},
 	methods: {
 		cancel() {
-			this.$root.api('auth/deny', {
+			os.api('auth/deny', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('denied');
@@ -50,7 +49,7 @@ export default Vue.extend({
 		},
 
 		accept() {
-			this.$root.api('auth/accept', {
+			os.api('auth/accept', {
 				token: this.session.token
 			}).then(() => {
 				this.$emit('accepted');

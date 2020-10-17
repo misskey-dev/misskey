@@ -1,12 +1,11 @@
 <template>
-<x-draggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
-	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @input="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
-</x-draggable>
+<XDraggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
+	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @update:value="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
+</XDraggable>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import * as XDraggable from 'vuedraggable';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XTextarea from './els/page-editor.el.textarea.vue';
@@ -21,10 +20,12 @@ import XPost from './els/page-editor.el.post.vue';
 import XCounter from './els/page-editor.el.counter.vue';
 import XRadioButton from './els/page-editor.el.radio-button.vue';
 import XCanvas from './els/page-editor.el.canvas.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
-		XDraggable, XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas
 	},
 
 	props: {
@@ -51,7 +52,7 @@ export default Vue.extend({
 				v,
 				...this.blocks.slice(i + 1)
 			];
-			this.$emit('input', newValue);
+			this.$emit('update:value', newValue);
 		},
 
 		removeItem(el) {
@@ -60,7 +61,7 @@ export default Vue.extend({
 				...this.blocks.slice(0, i),
 				...this.blocks.slice(i + 1)
 			];
-			this.$emit('input', newValue);
+			this.$emit('update:value', newValue);
 		},
 	}
 });

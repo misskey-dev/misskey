@@ -1,8 +1,7 @@
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
-import { wsUrl } from '../config';
-import MiOS from '../mios';
+import { wsUrl } from '@/config';
 import { query as urlQuery } from '../../prelude/url';
 
 /**
@@ -10,18 +9,13 @@ import { query as urlQuery } from '../../prelude/url';
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	public state: 'initializing' | 'reconnecting' | 'connected';
+	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 
-	constructor(os: MiOS) {
-		super();
-
-		this.state = 'initializing';
-
-		const user = os.store.state.i;
-
+	@autobind
+	public init(user): void {
 		const query = urlQuery({
 			i: user?.token,
 			_t: Date.now(),

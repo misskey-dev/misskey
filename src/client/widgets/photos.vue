@@ -1,9 +1,9 @@
 <template>
-<mk-container :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent">
-	<template #header><fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
+<MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
+	<template #header><Fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
 
 	<div class="">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.stream">
 			<div v-for="(image, i) in images" :key="i"
 				:class="$style.img"
@@ -11,16 +11,18 @@
 			></div>
 		</div>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
-import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'photos',
 	props: () => ({
 		showHeader: {
@@ -32,7 +34,10 @@ export default define({
 			default: false,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer,
 	},
@@ -45,11 +50,11 @@ export default define({
 		};
 	},
 	mounted() {
-		this.connection = this.$root.stream.useSharedConnection('main');
+		this.connection = os.stream.useSharedConnection('main');
 
 		this.connection.on('driveFileCreated', this.onDriveFileCreated);
 
-		this.$root.api('drive/stream', {
+		os.api('drive/stream', {
 			type: 'image/*',
 			limit: 9
 		}).then(images => {
@@ -57,7 +62,7 @@ export default define({
 			this.fetching = false;
 		});
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 	methods: {

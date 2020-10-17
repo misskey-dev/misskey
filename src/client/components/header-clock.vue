@@ -8,16 +8,17 @@
 		</time>
 	</div>
 	<div class="content _panel _ghost">
-		<mk-clock/>
+		<MkClock/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkClock from './analog-clock.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkClock
 	},
@@ -48,7 +49,7 @@ export default Vue.extend({
 		this.tick();
 		this.clock = setInterval(this.tick, 1000);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {

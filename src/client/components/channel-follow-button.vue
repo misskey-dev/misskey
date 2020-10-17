@@ -6,23 +6,24 @@
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ $t('unfollow') }}</span><fa :icon="faMinus"/>
+			<span v-if="full">{{ $t('unfollow') }}</span><Fa :icon="faMinus"/>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ $t('follow') }}</span><fa :icon="faPlus"/>
+			<span v-if="full">{{ $t('follow') }}</span><Fa :icon="faPlus"/>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $t('processing') }}</span><fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse fixed-width/>
 	</template>
 </button>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSpinner, faPlus, faMinus, } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		channel: {
 			type: Object,
@@ -49,12 +50,12 @@ export default Vue.extend({
 
 			try {
 				if (this.isFollowing) {
-					await this.$root.api('channels/unfollow', {
+					await os.api('channels/unfollow', {
 						channelId: this.channel.id
 					});
 					this.isFollowing = false;
 				} else {
-					await this.$root.api('channels/follow', {
+					await os.api('channels/follow', {
 						channelId: this.channel.id
 					});
 					this.isFollowing = true;

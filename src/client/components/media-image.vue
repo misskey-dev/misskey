@@ -1,34 +1,36 @@
 <template>
 <div class="qjewsnkg" v-if="hide" @click="hide = false">
-	<img-with-blurhash class="bg" :hash="image.blurhash" :title="image.name"/>
+	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.name"/>
 	<div class="text">
 		<div>
-			<b><fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
+			<b><Fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
 			<span>{{ $t('clickToShow') }}</span>
 		</div>
 	</div>
 </div>
-<div class="gqnyydlz" v-else>
-	<i><fa :icon="faEyeSlash" @click="hide = true"/></i>
+<div class="gqnyydlz" :style="{ background: color }" v-else>
+	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
 	<a
 		:href="image.url"
 		:title="image.name"
 		@click.prevent="onClick"
 	>
-		<img-with-blurhash :hash="image.blurhash" :src="url" :alt="image.name" :title="image.name"/>
+		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.name" :title="image.name" :cover="false"/>
 		<div class="gif" v-if="image.type === 'image/gif'">GIF</div>
 	</a>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import ImageViewer from './image-viewer.vue';
 import ImgWithBlurhash from './img-with-blurhash.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		ImgWithBlurhash
 	},
@@ -44,8 +46,8 @@ export default Vue.extend({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle,
-			faEyeSlash
+			color: null,
+			faExclamationTriangle, faEyeSlash,
 		};
 	},
 	computed: {
@@ -67,6 +69,9 @@ export default Vue.extend({
 		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 		this.$watch('image', () => {
 			this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+			if (this.image.blurhash) {
+				this.color = extractAvgColorFromBlurhash(this.image.blurhash);
+			}
 		}, {
 			deep: true,
 			immediate: true,
@@ -77,12 +82,9 @@ export default Vue.extend({
 			if (this.$store.state.device.imageNewTab) {
 				window.open(this.image.url, '_blank');
 			} else {
-				const viewer = this.$root.new(ImageViewer, {
+				os.popup(ImageViewer, {
 					image: this.image
-				});
-				this.$once('hook:beforeDestroy', () => {
-					viewer.close();
-				});
+				}, {}, 'closed');
 			}
 		}
 	}
@@ -123,6 +125,7 @@ export default Vue.extend({
 
 .gqnyydlz {
 	position: relative;
+	border: solid 1px var(--divider);
 
 	> i {
 		display: block;

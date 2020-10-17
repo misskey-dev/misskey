@@ -1,20 +1,20 @@
 <template>
 <div class="zdjebgpv" ref="thumbnail">
-	<img-with-blurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :style="`object-fit: ${ fit }`"/>
-	<fa :icon="faFileImage" class="icon" v-else-if="is === 'image'"/>
-	<fa :icon="faFileVideo" class="icon" v-else-if="is === 'video'"/>
-	<fa :icon="faMusic" class="icon" v-else-if="is === 'audio' || is === 'midi'"/>
-	<fa :icon="faFileCsv" class="icon" v-else-if="is === 'csv'"/>
-	<fa :icon="faFilePdf" class="icon" v-else-if="is === 'pdf'"/>
-	<fa :icon="faFileAlt" class="icon" v-else-if="is === 'textfile'"/>
-	<fa :icon="faFileArchive" class="icon" v-else-if="is === 'archive'"/>
-	<fa :icon="faFile" class="icon" v-else/>
-	<fa :icon="faFilm" class="icon-sub" v-if="isThumbnailAvailable && is === 'video'"/>
+	<ImgWithBlurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :style="`object-fit: ${ fit }`"/>
+	<Fa :icon="faFileImage" class="icon" v-else-if="is === 'image'"/>
+	<Fa :icon="faFileVideo" class="icon" v-else-if="is === 'video'"/>
+	<Fa :icon="faMusic" class="icon" v-else-if="is === 'audio' || is === 'midi'"/>
+	<Fa :icon="faFileCsv" class="icon" v-else-if="is === 'csv'"/>
+	<Fa :icon="faFilePdf" class="icon" v-else-if="is === 'pdf'"/>
+	<Fa :icon="faFileAlt" class="icon" v-else-if="is === 'textfile'"/>
+	<Fa :icon="faFileArchive" class="icon" v-else-if="is === 'archive'"/>
+	<Fa :icon="faFile" class="icon" v-else/>
+	<Fa :icon="faFilm" class="icon-sub" v-if="isThumbnailAvailable && is === 'video'"/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import {
 	faFile,
 	faFileAlt,
@@ -28,7 +28,7 @@ import {
 	} from '@fortawesome/free-solid-svg-icons';
 import ImgWithBlurhash from './img-with-blurhash.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		ImgWithBlurhash
 	},

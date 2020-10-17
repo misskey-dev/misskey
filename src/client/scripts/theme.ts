@@ -101,7 +101,7 @@ function compile(theme: Theme): Record<string, string> {
 	for (const [k, v] of Object.entries(theme.props)) {
 		if (k.startsWith('$')) continue; // ignore const
 
-		props[k] = genValue(getColor(v));
+		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(v));
 	}
 
 	return props;
