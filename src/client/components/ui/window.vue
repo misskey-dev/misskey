@@ -376,6 +376,7 @@ export default defineComponent({
 		> .header {
 			$height: 50px;
 			display: flex;
+			position: relative;
 			flex-shrink: 0;
 			box-shadow: 0px 1px var(--divider);
 			cursor: move;
@@ -391,7 +392,6 @@ export default defineComponent({
 				flex: 1;
 				position: relative;
 				line-height: $height;
-				font-weight: bold;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;

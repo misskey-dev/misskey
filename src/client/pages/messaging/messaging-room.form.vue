@@ -66,10 +66,6 @@ export default defineComponent({
 		},
 		file() {
 			this.saveDraft();
-
-			if (this.room.isBottom()) {
-				this.room.scrollToBottom();
-			}
 		}
 	},
 	mounted() {
