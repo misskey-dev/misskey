@@ -65,7 +65,7 @@
 								</MkSelect>
 							</template>
 							<!-- CSS -->
-							<MkInput v-else-if="v.type === 'css'" v-model:value="v.key">
+							<MkInput v-else-if="v.type === 'css'" v-model:value="v.value">
 								<span>CSS</span>
 							</MkInput>
 						</div>
@@ -252,7 +252,7 @@ export default defineComponent({
 		colorChanged(color: string, i: number) {
 			this.theme[i] = [this.theme[i][0], color];
 		},
-	
+
 		getTypeOf(v: ThemeValue) {
 			return v === null
 				? this.$t('_theme.defaultValue')
@@ -292,7 +292,7 @@ export default defineComponent({
 				}, {
 					text: 'CSS',
 					action: () => resolve({
-						type: 'css', key: '',
+						type: 'css', value: '',
 					}),
 				}], e.currentTarget || e.target);
 			});
@@ -340,10 +340,6 @@ export default defineComponent({
 							display: inline-block;
 						}
 					}
-				}
-
-				> ._button {
-					margin: 16px;
 				}
 			}
 		}
