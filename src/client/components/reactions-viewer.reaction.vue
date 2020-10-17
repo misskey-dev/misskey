@@ -11,15 +11,15 @@
 	ref="reaction"
 	v-particle="canToggle"
 >
-	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis" ref="icon"/>
+	<XReactionIcon :reaction="reaction" :custom-emojis="note.emojis"/>
 	<span>{{ count }}</span>
 </button>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import XDetails from './reactions-viewer.details.vue';
-import XReactionIcon from './reaction-icon.vue';
+import XDetails from '@/components/reactions-viewer.details.vue';
+import XReactionIcon from '@/components/reaction-icon.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -116,6 +116,7 @@ export default defineComponent({
 				os.popup(XDetails, {
 					showing,
 					reaction: this.reaction,
+					emojis: this.note.emojis,
 					users,
 					count: this.count,
 					source: this.$refs.reaction
