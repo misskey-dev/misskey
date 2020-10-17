@@ -1,27 +1,27 @@
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
-import { wsUrl } from '../config';
-import MiOS from '../mios';
+import { wsUrl } from '@/config';
+import { query as urlQuery } from '../../prelude/url';
 
 /**
  * Misskey stream connection
  */
 export default class Stream extends EventEmitter {
 	private stream: ReconnectingWebsocket;
-	public state: 'initializing' | 'reconnecting' | 'connected';
+	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 
-	constructor(os: MiOS) {
-		super();
+	@autobind
+	public init(user): void {
+		const query = urlQuery({
+			i: user?.token,
+			_t: Date.now(),
+		});
 
-		this.state = 'initializing';
-
-		const user = os.store.state.i;
-
-		this.stream = new ReconnectingWebsocket(wsUrl + (user ? `?i=${user.token}` : ''), '', { minReconnectionDelay: 1 }); // https://github.com/pladaria/reconnecting-websocket/issues/91
+		this.stream = new ReconnectingWebsocket(`${wsUrl}?${query}`, '', { minReconnectionDelay: 1 }); // https://github.com/pladaria/reconnecting-websocket/issues/91
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);

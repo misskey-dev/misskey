@@ -1,32 +1,25 @@
 <template>
-<div class="ieepwinx">
-	<portal to="icon"><fa :icon="faSatellite"/></portal>
-	<portal to="title">{{ $t('manageAntennas') }}</portal>
+<div class="ieepwinx _section">
+	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
 
-	<mk-button @click="create" primary class="add"><fa :icon="faPlus"/> {{ $t('add') }}</mk-button>
+	<div class="_content">
+		<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
-	<x-antenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
-
-	<mk-pagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-		<x-antenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
-	</mk-pagination>
+		<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
+			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
+		</MkPagination>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSatellite, faPlus } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../../components/ui/pagination.vue';
-import MkButton from '../../components/ui/button.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
 import XAntenna from './index.antenna.vue';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('manageAntennas') as string,
-		};
-	},
-
+export default defineComponent({
 	components: {
 		MkPagination,
 		MkButton,
@@ -35,6 +28,16 @@ export default Vue.extend({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('manageAntennas'),
+					icon: faSatellite
+				}],
+				action: {
+					icon: faPlus,
+					handler: this.create
+				}
+			},
 			pagination: {
 				endpoint: 'antennas/list',
 				limit: 10,

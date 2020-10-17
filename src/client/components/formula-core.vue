@@ -5,9 +5,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import * as katex from 'katex';
-export default Vue.extend({
+import { defineComponent } from 'vue';
+import * as katex from 'katex';import * as os from '@/os';
+
+export default defineComponent({
 	props: {
 		formula: {
 			type: String,

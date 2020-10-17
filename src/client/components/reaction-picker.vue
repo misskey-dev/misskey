@@ -1,31 +1,28 @@
 <template>
-<x-popup :source="source" ref="popup" @closed="() => { $emit('closed'); destroyDom(); }" v-hotkey.global="keymap">
-	<div class="rdfaahpb">
+<MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
+	<div class="rdfaahpb _popup" v-hotkey="keymap">
 		<div class="buttons" ref="buttons" :class="{ showFocus }">
-			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><x-reaction-icon :reaction="reaction"/></button>
+			<button class="_button" v-for="(reaction, i) in rs" :key="reaction" @click="react(reaction)" :tabindex="i + 1" :title="reaction" v-particle><XReactionIcon :reaction="reaction"/></button>
 		</div>
-		<input class="text" v-model.trim="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText" v-autocomplete="{ model: 'text' }">
+		<input class="text" ref="text" v-model.trim="text" :placeholder="$t('enterEmoji')" @keyup.enter="reactText" @input="tryReactText">
 	</div>
-</x-popup>
+</MkModal>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { emojiRegex } from '../../misc/emoji-regex';
-import XReactionIcon from './reaction-icon.vue';
-import XPopup from './popup.vue';
+import XReactionIcon from '@/components/reaction-icon.vue';
+import MkModal from '@/components/ui/modal.vue';
+import { Autocomplete } from '@/scripts/autocomplete';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
-		XPopup,
 		XReactionIcon,
+		MkModal,
 	},
 
 	props: {
-		source: {
-			required: true
-		},
-
 		reactions: {
 			required: false
 		},
@@ -35,7 +32,13 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+
+		src: {
+			required: false
+		},
 	},
+
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -70,21 +73,30 @@ export default Vue.extend({
 
 	watch: {
 		focus(i) {
-			this.$refs.buttons.children[i].focus();
+			this.$refs.buttons.children[i].focus({
+				preventScroll: true
+			});
 		}
 	},
 
 	mounted() {
-		this.focus = 0;
+		this.$nextTick(() => {
+			this.focus = 0;
+		});
+
+		// TODO: detach when unmount
+		new Autocomplete(this.$refs.text, this, { model: 'text' });
 	},
 
 	methods: {
 		close() {
-			this.$refs.popup.close();
+			this.$emit('done');
+			this.$refs.modal.close();
 		},
 	
 		react(reaction) {
-			this.$emit('chosen', reaction);
+			this.$emit('done', reaction);
+			this.$refs.modal.close();
 		},
 
 		reactText() {
@@ -136,6 +148,7 @@ export default Vue.extend({
 
 		&.showFocus {
 			> button:focus {
+				position: relative;
 				z-index: 1;
 
 				&:after {

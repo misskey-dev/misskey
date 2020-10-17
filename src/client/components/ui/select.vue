@@ -13,16 +13,22 @@
 		>
 			<slot></slot>
 		</select>
-		<div class="suffix"><slot name="suffix"></slot></div>
+		<div class="suffix">
+			<slot name="suffix">
+				<Fa :icon="faChevronDown"/>
+			</slot>
+		</div>
 	</div>
 	<div class="text"><slot name="text"></slot></div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		value: {
 			required: false
@@ -43,7 +49,8 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			focused: false
+			focused: false,
+			faChevronDown,
 		};
 	},
 	computed: {
@@ -52,7 +59,7 @@ export default Vue.extend({
 				return this.value;
 			},
 			set(v) {
-				this.$emit('input', v);
+				this.$emit('update:value', v);
 			}
 		},
 		filled(): boolean {
@@ -157,10 +164,13 @@ export default Vue.extend({
 			border-radius: 0;
 			outline: none;
 			box-shadow: none;
+			appearance: none;
+			-webkit-appearance: none;
 			color: var(--fg);
 
 			option,
 			optgroup {
+				color: var(--fg);
 				background: var(--bg);
 			}
 		}
@@ -172,7 +182,7 @@ export default Vue.extend({
 			justify-self: center;
 			font-size: 1em;
 			line-height: 32px;
-			color: rgba(#000, 0.54);
+			color: var(--inputLabel);
 			pointer-events: none;
 
 			&:empty {

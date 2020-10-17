@@ -91,6 +91,7 @@ export default define(meta, async (ps, user) => {
 
 	return await DriveFiles.pack(file, {
 		detail: true,
+		withUser: true,
 		self: true
 	});
 });

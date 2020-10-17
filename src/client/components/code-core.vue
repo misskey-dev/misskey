@@ -1,13 +1,14 @@
 <template>
-<x-prism :inline="inline" :language="prismLang">{{ code }}</x-prism>
+<XPrism :inline="inline" :language="prismLang">{{ code }}</XPrism>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
-import XPrism from 'vue-prism-component';
-export default Vue.extend({
+import XPrism from 'vue-prism-component';import * as os from '@/os';
+
+export default defineComponent({
 	components: {
 		XPrism
 	},

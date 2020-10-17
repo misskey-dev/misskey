@@ -9,9 +9,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	data() {
 		return {
 			hasDisconnected: false,
@@ -19,14 +20,14 @@ export default Vue.extend({
 	},
 	computed: {
 		stream() {
-			return this.$root.stream;
+			return os.stream;
 		},
 	},
 	created() {
-		this.$root.stream.on('_disconnected_', this.onDisconnected);
+		os.stream.on('_disconnected_', this.onDisconnected);
 	},
-	beforeDestroy() {
-		this.$root.stream.off('_disconnected_', this.onDisconnected);
+	beforeUnmount() {
+		os.stream.off('_disconnected_', this.onDisconnected);
 	},
 	methods: {
 		onDisconnected() {

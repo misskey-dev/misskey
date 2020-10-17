@@ -1,12 +1,13 @@
 <template>
-<mk-textarea :value="text" readonly></mk-textarea>
+<MkTextarea :value="text" readonly></MkTextarea>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkTextarea from '../ui/textarea.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkTextarea
 	},

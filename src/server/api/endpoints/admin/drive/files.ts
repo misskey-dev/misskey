@@ -1,7 +1,8 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { fallback } from '../../../../../prelude/symbol';
 import { DriveFiles } from '../../../../../models';
+import { makePaginationQuery } from '../../../common/make-pagination-query';
+import { ID } from '../../../../../misc/cafy-id';
 
 export const meta = {
 	tags: ['admin'],
@@ -15,18 +16,16 @@ export const meta = {
 			default: 10
 		},
 
-		offset: {
-			validator: $.optional.num.min(0),
-			default: 0
+		sinceId: {
+			validator: $.optional.type(ID),
 		},
 
-		sort: {
-			validator: $.optional.str.or([
-				'+createdAt',
-				'-createdAt',
-				'+size',
-				'-size',
-			]),
+		untilId: {
+			validator: $.optional.type(ID),
+		},
+
+		type: {
+			validator: $.optional.nullable.str.match(/^[a-zA-Z\/\-*]+$/)
 		},
 
 		origin: {
@@ -36,30 +35,37 @@ export const meta = {
 				'remote',
 			]),
 			default: 'local'
-		}
+		},
+
+		hostname: {
+			validator: $.optional.nullable.str,
+			default: null
+		},
 	}
 };
 
-const sort: any = { // < https://github.com/Microsoft/TypeScript/issues/1863
-	'+createdAt': { createdAt: -1 },
-	'-createdAt': { createdAt: 1 },
-	'+size': { size: -1 },
-	'-size': { size: 1 },
-	[fallback]: { id: -1 }
-};
-
 export default define(meta, async (ps, me) => {
-	const q = {} as any;
+	const query = makePaginationQuery(DriveFiles.createQueryBuilder('file'), ps.sinceId, ps.untilId);
 
-	if (ps.origin === 'local') q['userHost'] = null;
-	if (ps.origin === 'remote') q['userHost'] = { $ne: null };
+	if (ps.origin === 'local') {
+		query.andWhere('file.userHost IS NULL');
+	} else if (ps.origin === 'remote') {
+		query.andWhere('file.userHost IS NOT NULL');
+	}
 
-	const files = await DriveFiles.find({
-		where: q,
-		take: ps.limit!,
-		order: sort[ps.sort!] || sort[fallback],
-		skip: ps.offset
-	});
+	if (ps.hostname) {
+		query.andWhere('file.userHost = :hostname', { hostname: ps.hostname });
+	}
+
+	if (ps.type) {
+		if (ps.type.endsWith('/*')) {
+			query.andWhere('file.type like :type', { type: ps.type.replace('/*', '/') + '%' });
+		} else {
+			query.andWhere('file.type = :type', { type: ps.type });
+		}
+	}
+
+	const files = await query.take(ps.limit!).getMany();
 
 	return await DriveFiles.packMany(files, { detail: true, withUser: true, self: true });
 });

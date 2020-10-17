@@ -7,32 +7,33 @@
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ $t('followRequestPending') }}</span><fa :icon="faHourglassHalf"/>
+			<span v-if="full">{{ $t('followRequestPending') }}</span><Fa :icon="faHourglassHalf"/>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ $t('processing') }}</span><fa :icon="faSpinner" pulse/>
+			<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ $t('unfollow') }}</span><fa :icon="faMinus"/>
+			<span v-if="full">{{ $t('unfollow') }}</span><Fa :icon="faMinus"/>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ $t('followRequest') }}</span><fa :icon="faPlus"/>
+			<span v-if="full">{{ $t('followRequest') }}</span><Fa :icon="faPlus"/>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ $t('follow') }}</span><fa :icon="faPlus"/>
+			<span v-if="full">{{ $t('follow') }}</span><Fa :icon="faPlus"/>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $t('processing') }}</span><fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse fixed-width/>
 	</template>
 </button>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSpinner, faPlus, faMinus, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		user: {
 			type: Object,
@@ -58,7 +59,7 @@ export default Vue.extend({
 	created() {
 		// 渡されたユーザー情報が不完全な場合
 		if (this.user.isFollowing == null) {
-			this.$root.api('users/show', {
+			os.api('users/show', {
 				userId: this.user.id
 			}).then(u => {
 				this.isFollowing = u.isFollowing;
@@ -68,13 +69,13 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = this.$root.stream.useSharedConnection('main');
+		this.connection = os.stream.useSharedConnection('main');
 
 		this.connection.on('follow', this.onFollowChange);
 		this.connection.on('unfollow', this.onFollowChange);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 
@@ -91,7 +92,7 @@ export default Vue.extend({
 
 			try {
 				if (this.isFollowing) {
-					const { canceled } = await this.$root.dialog({
+					const { canceled } = await os.dialog({
 						type: 'warning',
 						text: this.$t('unfollowConfirm', { name: this.user.name || this.user.username }),
 						showCancelButton: true
@@ -99,21 +100,21 @@ export default Vue.extend({
 
 					if (canceled) return;
 
-					await this.$root.api('following/delete', {
+					await os.api('following/delete', {
 						userId: this.user.id
 					});
 				} else {
 					if (this.hasPendingFollowRequestFromYou) {
-						await this.$root.api('following/requests/cancel', {
+						await os.api('following/requests/cancel', {
 							userId: this.user.id
 						});
 					} else if (this.user.isLocked) {
-						await this.$root.api('following/create', {
+						await os.api('following/create', {
 							userId: this.user.id
 						});
 						this.hasPendingFollowRequestFromYou = true;
 					} else {
-						await this.$root.api('following/create', {
+						await os.api('following/create', {
 							userId: this.user.id
 						});
 						this.hasPendingFollowRequestFromYou = true;

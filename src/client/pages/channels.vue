@@ -1,50 +1,57 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
-	<portal to="title">{{ $t('channel') }}</portal>
-
-	<mk-tab v-model="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
-
-	<div class="grwlizim featured" v-if="tab === 'featured'">
-		<mk-pagination :pagination="featuredPagination" #default="{items}">
-			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
-		</mk-pagination>
+	<div class="_section" style="padding: 0;">
+		<MkTab class="_content" v-model:value="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 	</div>
 
-	<div class="grwlizim following" v-if="tab === 'following'">
-		<mk-pagination :pagination="followingPagination" #default="{items}">
-			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
-		</mk-pagination>
-	</div>
+	<div class="_section">
+		<div class="_content grwlizim featured" v-if="tab === 'featured'">
+			<MkPagination :pagination="featuredPagination" #default="{items}">
+				<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+			</MkPagination>
+		</div>
 
-	<div class="grwlizim owned" v-if="tab === 'owned'">
-		<mk-button class="new" @click="create()"><fa :icon="faPlus"/></mk-button>
-		<mk-pagination :pagination="ownedPagination" #default="{items}">
-			<mk-channel-preview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
-		</mk-pagination>
+		<div class="_content grwlizim following" v-if="tab === 'following'">
+			<MkPagination :pagination="followingPagination" #default="{items}">
+				<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+			</MkPagination>
+		</div>
+
+		<div class="_content grwlizim owned" v-if="tab === 'owned'">
+			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
+			<MkPagination :pagination="ownedPagination" #default="{items}">
+				<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+			</MkPagination>
+		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSatelliteDish, faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
-import MkChannelPreview from '../components/channel-preview.vue';
-import MkPagination from '../components/ui/pagination.vue';
-import MkButton from '../components/ui/button.vue';
-import MkTab from '../components/tab.vue';
+import MkChannelPreview from '@/components/channel-preview.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkTab from '@/components/tab.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkChannelPreview, MkPagination, MkButton, MkTab
 	},
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('channel'),
+					icon: faSatelliteDish
+				}]
+			},
 			tab: 'featured',
 			featuredPagination: {
 				endpoint: 'channels/featured',
-				limit: 5,
+				noPaging: true,
 			},
 			followingPagination: {
 				endpoint: 'channels/followed',

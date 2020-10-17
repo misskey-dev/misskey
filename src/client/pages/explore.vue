@@ -1,75 +1,86 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faHashtag"/></portal>
-	<portal to="title">{{ $t('explore') }}</portal>
+	<div class="_section">
+		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('searchUser') }}</span></MkInput>
 
-	<div class="localfedi7 _panel" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
-		<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
-		<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
-	</div>
+		<XUserList v-if="query" class="_vMargin" :pagination="searchPagination" ref="search"/>
 
-	<template v-if="tag == null">
-		<x-user-list :pagination="pinnedUsers" :expanded="false">
-			<fa :icon="faBookmark" fixed-width/>{{ $t('pinnedUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="popularUsers" :expanded="false">
-			<fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyUpdatedUsers" :expanded="false">
-			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyRegisteredUsers" :expanded="false">
-			<fa :icon="faPlus" fixed-width/>{{ $t('recentlyRegisteredUsers') }}
-		</x-user-list>
-	</template>
-
-	<div class="localfedi7 _panel" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)`, marginTop: 'var(--margin)' }">
-		<header><span>{{ $t('exploreFediverse') }}</span></header>
-	</div>
-
-	<mk-container :body-togglable="true" :expanded="false" ref="tags">
-		<template #header><fa :icon="faHashtag" fixed-width/>{{ $t('popularTags') }}</template>
-
-		<div class="vxjfqztj">
-			<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
-			<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
+		<div class="localfedi7 _panel _vMargin" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+			<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
+			<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 		</div>
-	</mk-container>
 
-	<x-user-list v-if="tag != null" :pagination="tagUsers" :key="`${tag}`">
-		<fa :icon="faHashtag" fixed-width/>{{ tag }}
-	</x-user-list>
-	<template v-if="tag == null">
-		<x-user-list :pagination="popularUsersF" :expanded="false">
-			<fa :icon="faChartLine" fixed-width/>{{ $t('popularUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyUpdatedUsersF" :expanded="false">
-			<fa :icon="faCommentAlt" fixed-width/>{{ $t('recentlyUpdatedUsers') }}
-		</x-user-list>
-		<x-user-list :pagination="recentlyRegisteredUsersF" :expanded="false">
-			<fa :icon="faRocket" fixed-width/>{{ $t('recentlyDiscoveredUsers') }}
-		</x-user-list>
-	</template>
+		<template v-if="tag == null">
+			<MkFolder class="_vMargin" persist-key="explore-pinned-users">
+				<template #header><Fa :icon="faBookmark" fixed-width style="margin-right: 0.5em;"/>{{ $t('pinnedUsers') }}</template>
+				<XUserList :pagination="pinnedUsers"/>
+			</MkFolder>
+			<MkFolder class="_vMargin" persist-key="explore-popular-users">
+				<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
+				<XUserList :pagination="popularUsers"/>
+			</MkFolder>
+			<MkFolder class="_vMargin" persist-key="explore-recently-updated-users">
+				<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
+				<XUserList :pagination="recentlyUpdatedUsers"/>
+			</MkFolder>
+			<MkFolder class="_vMargin" persist-key="explore-recently-registered-users">
+				<template #header><Fa :icon="faPlus" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyRegisteredUsers') }}</template>
+				<XUserList :pagination="recentlyRegisteredUsers"/>
+			</MkFolder>
+		</template>
+	</div>
+	<div class="_section">
+		<div class="localfedi7 _panel _vMargin" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
+			<header><span>{{ $t('exploreFediverse') }}</span></header>
+		</div>
+
+		<MkFolder :body-togglable="true" :expanded="false" ref="tags" class="_vMargin">
+			<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularTags') }}</template>
+
+			<div class="vxjfqztj">
+				<router-link v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</router-link>
+				<router-link v-for="tag in tagsRemote" :to="`/explore/tags/${tag.tag}`" :key="'remote:' + tag.tag">{{ tag.tag }}</router-link>
+			</div>
+		</MkFolder>
+
+		<MkFolder v-if="tag != null" :key="`${tag}`" class="_vMargin">
+			<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ tag }}</template>
+			<XUserList :pagination="tagUsers"/>
+		</MkFolder>
+
+		<template v-if="tag == null">
+			<MkFolder class="_vMargin">
+				<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
+				<XUserList :pagination="popularUsersF"/>
+			</MkFolder>
+			<MkFolder class="_vMargin">
+				<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
+				<XUserList :pagination="recentlyUpdatedUsersF"/>
+			</MkFolder>
+			<MkFolder class="_vMargin">
+				<template #header><Fa :icon="faRocket" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyDiscoveredUsers') }}</template>
+				<XUserList :pagination="recentlyRegisteredUsersF"/>
+			</MkFolder>
+		</template>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { faChartLine, faPlus, faHashtag, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { computed, defineComponent } from 'vue';
+import { faChartLine, faPlus, faHashtag, faRocket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
-import XUserList from '../components/user-list.vue';
-import MkContainer from '../components/ui/container.vue';
+import XUserList from '@/components/user-list.vue';
+import MkFolder from '@/components/ui/folder.vue';
+import MkInput from '@/components/ui/input.vue';
+import number from '@/filters/number';
+import * as os from '@/os';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('explore') as string
-		};
-	},
-
+export default defineComponent({
 	components: {
 		XUserList,
-		MkContainer,
+		MkFolder,
+		MkInput,
 	},
 
 	props: {
@@ -81,6 +92,12 @@ export default Vue.extend({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('explore'),
+					icon: faHashtag
+				}],
+			},
 			pinnedUsers: { endpoint: 'pinned-users' },
 			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
 				state: 'alive',
@@ -109,11 +126,19 @@ export default Vue.extend({
 				origin: 'combined',
 				sort: '+createdAt',
 			} },
+			searchPagination: {
+				endpoint: 'users/search',
+				limit: 10,
+				params: computed(() => (this.query && this.query !== '') ? {
+					query: this.query
+				} : null)
+			},
 			tagsLocal: [],
 			tagsRemote: [],
 			stats: null,
-			num: Vue.filter('number'),
-			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket
+			query: null,
+			num: number,
+			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket, faSearch,
 		};
 	},
 
@@ -137,25 +162,25 @@ export default Vue.extend({
 	watch: {
 		tag() {
 			if (this.$refs.tags) this.$refs.tags.toggleContent(this.tag == null);
-		}
+		},
 	},
 
 	created() {
-		this.$root.api('hashtags/list', {
+		os.api('hashtags/list', {
 			sort: '+attachedLocalUsers',
 			attachedToLocalUserOnly: true,
 			limit: 30
 		}).then(tags => {
 			this.tagsLocal = tags;
 		});
-		this.$root.api('hashtags/list', {
+		os.api('hashtags/list', {
 			sort: '+attachedRemoteUsers',
 			attachedToRemoteUserOnly: true,
 			limit: 30
 		}).then(tags => {
 			this.tagsRemote = tags;
 		});
-		this.$root.api('stats').then(stats => {
+		os.api('stats').then(stats => {
 			this.stats = stats;
 		});
 	},
@@ -195,8 +220,6 @@ export default Vue.extend({
 }
 
 .vxjfqztj {
-	padding: 16px;
-
 	> * {
 		margin-right: 16px;
 

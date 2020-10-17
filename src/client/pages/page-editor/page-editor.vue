@@ -1,117 +1,118 @@
 <template>
-<div>
-	<div class="gwbmwxkm _panel">
-		<header>
-			<div class="title"><fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
-			<div class="buttons">
-				<button class="_button" @click="del()" v-if="!readonly"><fa :icon="faTrashAlt"/></button>
-				<button class="_button" @click="() => showOptions = !showOptions"><fa :icon="faCog"/></button>
-				<button class="_button" @click="save()" v-if="!readonly"><fa :icon="faSave"/></button>
-			</div>
-		</header>
-
-		<section>
-			<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
-
-			<mk-input v-model="title">
-				<span>{{ $t('_pages.title') }}</span>
-			</mk-input>
-
-			<template v-if="showOptions">
-				<mk-input v-model="summary">
-					<span>{{ $t('_pages.summary') }}</span>
-				</mk-input>
-
-				<mk-input v-model="name">
-					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-					<span>{{ $t('_pages.url') }}</span>
-				</mk-input>
-
-				<mk-switch v-model="alignCenter">{{ $t('_pages.alignCenter') }}</mk-switch>
-
-				<mk-select v-model="font">
-					<template #label>{{ $t('_pages.font') }}</template>
-					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
-					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
-				</mk-select>
-
-				<mk-switch v-model="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</mk-switch>
-
-				<div class="eyeCatch">
-					<mk-button v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</mk-button>
-					<div v-else-if="eyeCatchingImage">
-						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-						<mk-button @click="removeEyeCatchingImage()" v-if="!readonly"><fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</mk-button>
-					</div>
+<div class="_section">
+	<div class="_content">
+		<div class="gwbmwxkm _panel _vMargin">
+			<header>
+				<div class="title"><Fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
+				<div class="buttons">
+					<button class="_button" @click="del()" v-if="!readonly"><Fa :icon="faTrashAlt"/></button>
+					<button class="_button" @click="() => showOptions = !showOptions"><Fa :icon="faCog"/></button>
+					<button class="_button" @click="save()" v-if="!readonly"><Fa :icon="faSave"/></button>
 				</div>
-			</template>
+			</header>
 
-			<x-blocks class="content" v-model="content" :hpml="hpml"/>
+			<section>
+				<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
 
-			<mk-button @click="add()" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
-		</section>
+				<MkInput v-model:value="title">
+					<span>{{ $t('_pages.title') }}</span>
+				</MkInput>
+
+				<template v-if="showOptions">
+					<MkInput v-model:value="summary">
+						<span>{{ $t('_pages.summary') }}</span>
+					</MkInput>
+
+					<MkInput v-model:value="name">
+						<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
+						<span>{{ $t('_pages.url') }}</span>
+					</MkInput>
+
+					<MkSwitch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</MkSwitch>
+
+					<MkSelect v-model:value="font">
+						<template #label>{{ $t('_pages.font') }}</template>
+						<option value="serif">{{ $t('_pages.fontSerif') }}</option>
+						<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
+					</MkSelect>
+
+					<MkSwitch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</MkSwitch>
+
+					<div class="eyeCatch">
+						<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><Fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</MkButton>
+						<div v-else-if="eyeCatchingImage">
+							<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
+							<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</MkButton>
+						</div>
+					</div>
+				</template>
+
+				<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
+
+				<MkButton @click="add()" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
+			</section>
+		</div>
+
+		<MkContainer :body-togglable="true" class="_vMargin">
+			<template #header><Fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
+			<div class="qmuvgica">
+				<XDraggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+					<XVariable v-for="variable in variables"
+						:value="variable"
+						:removable="true"
+						@update:value="v => updateVariable(v)"
+						@remove="() => removeVariable(variable)"
+						:key="variable.name"
+						:hpml="hpml"
+						:name="variable.name"
+						:title="variable.name"
+						:draggable="true"
+					/>
+				</XDraggable>
+
+				<MkButton @click="addVariable()" class="add" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
+			</div>
+		</MkContainer>
+
+		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
+			<template #header><Fa :icon="faCode"/> {{ $t('script') }}</template>
+			<div>
+				<MkTextarea class="_code" v-model:value="script"/>
+			</div>
+		</MkContainer>
 	</div>
-
-	<mk-container :body-togglable="true">
-		<template #header><fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
-		<div class="qmuvgica">
-			<x-draggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
-				<x-variable v-for="variable in variables"
-					:value="variable"
-					:removable="true"
-					@input="v => updateVariable(v)"
-					@remove="() => removeVariable(variable)"
-					:key="variable.name"
-					:hpml="hpml"
-					:name="variable.name"
-					:title="variable.name"
-					:draggable="true"
-				/>
-			</x-draggable>
-
-			<mk-button @click="addVariable()" class="add" v-if="!readonly"><fa :icon="faPlus"/></mk-button>
-		</div>
-	</mk-container>
-
-	<mk-container :body-togglable="true" :expanded="true">
-		<template #header><fa :icon="faCode"/> {{ $t('script') }}</template>
-		<div>
-			<prism-editor class="_code" v-model="script" :highlight="highlighter" :line-numbers="false"/>
-		</div>
-	</mk-container>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import * as XDraggable from 'vuedraggable';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
-import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkContainer from '../../components/ui/container.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkInput from '../../components/ui/input.vue';
-import { blockDefs } from '../../scripts/hpml/index';
-import { HpmlTypeChecker } from '../../scripts/hpml/type-checker';
-import { url } from '../../config';
-import { collectPageVars } from '../../scripts/collect-page-vars';
-import { selectDriveFile } from '../../scripts/select-drive-file';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkContainer from '@/components/ui/container.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkInput from '@/components/ui/input.vue';
+import { blockDefs } from '@/scripts/hpml/index';
+import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
+import { url } from '@/config';
+import { collectPageVars } from '@/scripts/collect-page-vars';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
-		XDraggable, XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput, PrismEditor
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput,
 	},
 
 	props: {
@@ -159,7 +160,7 @@ export default Vue.extend({
 			if (this.eyeCatchingImageId == null) {
 				this.eyeCatchingImage = null;
 			} else {
-				this.eyeCatchingImage = await this.$root.api('drive/files/show', {
+				this.eyeCatchingImage = await os.api('drive/files/show', {
 					fileId: this.eyeCatchingImageId,
 				});
 			}
@@ -178,11 +179,11 @@ export default Vue.extend({
 		}, { deep: true });
 
 		if (this.initPageId) {
-			this.page = await this.$root.api('pages/show', {
+			this.page = await os.api('pages/show', {
 				pageId: this.initPageId,
 			});
 		} else if (this.initPageName && this.initUser) {
-			this.page = await this.$root.api('pages/show', {
+			this.page = await os.api('pages/show', {
 				name: this.initPageName,
 				username: this.initUser,
 			});
@@ -239,14 +240,14 @@ export default Vue.extend({
 			const onError = err => {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
 					if (err.info.param == 'name') {
-						this.$root.dialog({
+						os.dialog({
 							type: 'error',
 							title: this.$t('_pages.invalidNameTitle'),
 							text: this.$t('_pages.invalidNameText')
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
-					this.$root.dialog({
+					os.dialog({
 						type: 'error',
 						text: this.$t('_pages.nameAlreadyExists')
 					});
@@ -255,20 +256,20 @@ export default Vue.extend({
 
 			if (this.pageId) {
 				options.pageId = this.pageId;
-				this.$root.api('pages/update', options)
+				os.api('pages/update', options)
 				.then(page => {
 					this.currentName = this.name.trim();
-					this.$root.dialog({
+					os.dialog({
 						type: 'success',
 						text: this.$t('_pages.updated')
 					});
 				}).catch(onError);
 			} else {
-				this.$root.api('pages/create', options)
+				os.api('pages/create', options)
 				.then(page => {
 					this.pageId = page.id;
 					this.currentName = this.name.trim();
-					this.$root.dialog({
+					os.dialog({
 						type: 'success',
 						text: this.$t('_pages.created')
 					});
@@ -278,16 +279,16 @@ export default Vue.extend({
 		},
 
 		del() {
-			this.$root.dialog({
+			os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.title.trim() }),
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;
-				this.$root.api('pages/delete', {
+				os.api('pages/delete', {
 					pageId: this.pageId,
 				}).then(() => {
-					this.$root.dialog({
+					os.dialog({
 						type: 'success',
 						text: this.$t('_pages.deleted')
 					});
@@ -297,7 +298,7 @@ export default Vue.extend({
 		},
 
 		async add() {
-			const { canceled, result: type } = await this.$root.dialog({
+			const { canceled, result: type } = await os.dialog({
 				type: null,
 				title: this.$t('_pages.chooseBlock'),
 				select: {
@@ -312,7 +313,7 @@ export default Vue.extend({
 		},
 
 		async addVariable() {
-			let { canceled, result: name } = await this.$root.dialog({
+			let { canceled, result: name } = await os.dialog({
 				title: this.$t('_pages.enterVariableName'),
 				input: {
 					type: 'text',
@@ -324,7 +325,7 @@ export default Vue.extend({
 			name = name.trim();
 
 			if (this.hpml.isUsedName(name)) {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: this.$t('_pages.variableNameIsAlreadyUsed')
 				});
@@ -413,7 +414,7 @@ export default Vue.extend({
 		},
 
 		setEyeCatchingImage() {
-			selectDriveFile(this.$root, false).then(file => {
+			os.selectDriveFile(false).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},
@@ -431,7 +432,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .gwbmwxkm {
-	margin-bottom: var(--margin);
+	position: relative;
 
 	> header {
 		> .title {

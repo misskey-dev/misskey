@@ -1,15 +1,16 @@
 <template>
 <div>
 	<div v-for="user in us" :key="user.id" style="display:inline-block;width:32px;height:32px;margin-right:8px;">
-		<mk-avatar :user="user" style="width:32px;height:32px;"/>
+		<MkAvatar :user="user" style="width:32px;height:32px;"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		userIds: {
 			required: true
@@ -21,7 +22,7 @@ export default Vue.extend({
 		};
 	},
 	async created() {
-		this.us = await this.$root.api('users/show', {
+		this.us = await os.api('users/show', {
 			userIds: this.userIds
 		});
 	}

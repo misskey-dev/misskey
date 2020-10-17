@@ -1,19 +1,20 @@
 <template>
 <div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }" v-if="hpml">
-	<x-block v-for="child in page.content" :value="child" @input="v => updateBlock(v)" :page="page" :hpml="hpml" :key="child.id" :h="2"/>
+	<XBlock v-for="child in page.content" :value="child" @update:value="v => updateBlock(v)" :page="page" :hpml="hpml" :key="child.id" :h="2"/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { parse } from '@syuilo/aiscript';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
-import { Hpml } from '../../scripts/hpml/evaluator';
-import { url } from '../../config';
+import { Hpml } from '@/scripts/hpml/evaluator';
+import { url } from '@/config';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XBlock
 	},
@@ -33,7 +34,7 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.hpml = new Hpml(this, this.page, {
+		this.hpml = new Hpml(this.page, {
 			randomSeed: Math.random(),
 			visitor: this.$store.state.i,
 			url: url,
@@ -49,7 +50,7 @@ export default Vue.extend({
 					ast = parse(this.page.script);
 				} catch (e) {
 					console.error(e);
-					/*this.$root.dialog({
+					/*os.dialog({
 						type: 'error',
 						text: 'Syntax error :('
 					});*/
@@ -59,7 +60,7 @@ export default Vue.extend({
 					this.hpml.eval();
 				}).catch(e => {
 					console.error(e);
-					/*this.$root.dialog({
+					/*os.dialog({
 						type: 'error',
 						text: e
 					});*/
@@ -70,7 +71,7 @@ export default Vue.extend({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.hpml.aiscript) this.hpml.aiscript.abort();
 	},
 });

@@ -6,11 +6,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { getStaticImageUrl } from '../scripts/get-static-image-url';
+import { defineComponent } from 'vue';
+import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		name: {
 			type: String,

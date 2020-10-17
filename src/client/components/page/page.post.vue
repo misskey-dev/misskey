@@ -1,18 +1,19 @@
 <template>
 <div class="ngbfujlo">
-	<mk-textarea :value="text" readonly style="margin: 0;"></mk-textarea>
-	<mk-button class="button" primary @click="post()" :disabled="posting || posted"><fa v-if="posted" :icon="faCheck"/><fa v-else :icon="faPaperPlane"/></mk-button>
+	<MkTextarea :value="text" readonly style="margin: 0;"></MkTextarea>
+	<MkButton class="button" primary @click="post()" :disabled="posting || posted"><Fa v-if="posted" :icon="faCheck"/><Fa v-else :icon="faPaperPlane"/></MkButton>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
-import { apiUrl } from '../../config';
+import { apiUrl } from '@/config';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkTextarea,
 		MkButton,
@@ -44,7 +45,7 @@ export default Vue.extend({
 	methods: {
 		upload() {
 			return new Promise((ok) => {
-				const dialog = this.$root.dialog({
+				const dialog = os.dialog({
 					type: 'waiting',
 					text: this.$t('uploading') + '...',
 					showOkButton: false,
@@ -75,15 +76,11 @@ export default Vue.extend({
 		async post() {
 			this.posting = true;
 			const file = this.value.attachCanvasImage ? await this.upload() : null;
-			this.$root.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				text: this.text === '' ? null : this.text,
 				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		}
 	}

@@ -4,14 +4,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	created() {
 		const acct = new URL(location.href).searchParams.get('acct');
 		if (acct == null) return;
 
-		const dialog = this.$root.dialog({
+		const dialog = os.dialog({
 			type: 'waiting',
 			text: this.$t('fetchingAsApObject') + '...',
 			showOkButton: false,
@@ -20,13 +21,13 @@ export default Vue.extend({
 		});
 
 		if (acct.startsWith('https://')) {
-			this.$root.api('ap/show', {
+			os.api('ap/show', {
 				uri: acct
 			}).then(res => {
 				if (res.type == 'User') {
 					this.follow(res.object);
 				} else {
-					this.$root.dialog({
+					os.dialog({
 						type: 'error',
 						text: 'Not a user'
 					}).then(() => {
@@ -34,7 +35,7 @@ export default Vue.extend({
 					});
 				}
 			}).catch(e => {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e
 				}).then(() => {
@@ -44,10 +45,10 @@ export default Vue.extend({
 				dialog.close();
 			});
 		} else {
-			this.$root.api('users/show', parseAcct(acct)).then(user => {
+			os.api('users/show', parseAcct(acct)).then(user => {
 				this.follow(user);
 			}).catch(e => {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e
 				}).then(() => {
@@ -61,7 +62,7 @@ export default Vue.extend({
 
 	methods: {
 		async follow(user) {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await os.dialog({
 				type: 'question',
 				text: this.$t('followConfirm', { name: user.name || user.username }),
 				showCancelButton: true
@@ -72,17 +73,14 @@ export default Vue.extend({
 				return;
 			}
 			
-			this.$root.api('following/create', {
+			os.api('following/create', {
 				userId: user.id
 			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				}).then(() => {
+				os.success().then(() => {
 					window.close();
 				});
 			}).catch(e => {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e
 				}).then(() => {

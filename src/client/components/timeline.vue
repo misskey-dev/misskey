@@ -1,14 +1,21 @@
 <template>
-<x-notes ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XNotes
+	},
+
+	provide() {
+		return {
+			inChannel: this.src === 'channel'
+		};
 	},
 
 	props: {
@@ -35,11 +42,7 @@ export default Vue.extend({
 		}
 	},
 
-	provide() {
-		return {
-			inChannel: this.src === 'channel'
-		};
-	},
+	emits: ['note', 'queue', 'before', 'after'],
 
 	data() {
 		return {
@@ -56,18 +59,13 @@ export default Vue.extend({
 	},
 
 	created() {
-		this.$once('hook:beforeDestroy', () => {
-			this.connection.dispose();
-			if (this.connection2) this.connection2.dispose();
-		});
-
 		const prepend = note => {
 			(this.$refs.tl as any).prepend(note);
 
 			this.$emit('note');
 
 			if (this.sound) {
-				this.$root.sound(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
+				os.sound(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
 			}
 		};
 
@@ -92,36 +90,36 @@ export default Vue.extend({
 			this.query = {
 				antennaId: this.antenna
 			};
-			this.connection = this.$root.stream.connectToChannel('antenna', {
+			this.connection = os.stream.connectToChannel('antenna', {
 				antennaId: this.antenna
 			});
 			this.connection.on('note', prepend);
 		} else if (this.src == 'home') {
 			endpoint = 'notes/timeline';
-			this.connection = this.$root.stream.useSharedConnection('homeTimeline');
+			this.connection = os.stream.useSharedConnection('homeTimeline');
 			this.connection.on('note', prepend);
 
-			this.connection2 = this.$root.stream.useSharedConnection('main');
+			this.connection2 = os.stream.useSharedConnection('main');
 			this.connection2.on('follow', onChangeFollowing);
 			this.connection2.on('unfollow', onChangeFollowing);
 		} else if (this.src == 'local') {
 			endpoint = 'notes/local-timeline';
-			this.connection = this.$root.stream.useSharedConnection('localTimeline');
+			this.connection = os.stream.useSharedConnection('localTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'social') {
 			endpoint = 'notes/hybrid-timeline';
-			this.connection = this.$root.stream.useSharedConnection('hybridTimeline');
+			this.connection = os.stream.useSharedConnection('hybridTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'global') {
 			endpoint = 'notes/global-timeline';
-			this.connection = this.$root.stream.useSharedConnection('globalTimeline');
+			this.connection = os.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
 		} else if (this.src == 'list') {
 			endpoint = 'notes/user-list-timeline';
 			this.query = {
 				listId: this.list
 			};
-			this.connection = this.$root.stream.connectToChannel('userList', {
+			this.connection = os.stream.connectToChannel('userList', {
 				listId: this.list
 			});
 			this.connection.on('note', prepend);
@@ -132,7 +130,7 @@ export default Vue.extend({
 			this.query = {
 				channelId: this.channel
 			};
-			this.connection = this.$root.stream.connectToChannel('channel', {
+			this.connection = os.stream.connectToChannel('channel', {
 				channelId: this.channel
 			});
 			this.connection.on('note', prepend);
@@ -146,6 +144,11 @@ export default Vue.extend({
 				...this.baseQuery, ...this.query
 			})
 		};
+	},
+
+	beforeUnmount() {
+		this.connection.dispose();
+		if (this.connection2) this.connection2.dispose();
 	},
 
 	methods: {

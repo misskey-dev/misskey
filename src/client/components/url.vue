@@ -14,19 +14,19 @@
 	<span class="pathname" v-if="pathname != ''">{{ self ? pathname.substr(1) : pathname }}</span>
 	<span class="query">{{ query }}</span>
 	<span class="hash">{{ hash }}</span>
-	<fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
+	<Fa :icon="faExternalLinkSquareAlt" v-if="target === '_blank'" class="icon"/>
 </component>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode as decodePunycode } from 'punycode';
-import { url as local } from '../config';
-import MkUrlPreview from './url-preview-popup.vue';
-import { isDeviceTouch } from '../scripts/is-device-touch';
+import { url as local } from '@/config';
+import { isDeviceTouch } from '@/scripts/is-device-touch';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		url: {
 			type: String,
@@ -53,7 +53,7 @@ export default Vue.extend({
 			showTimer: null,
 			hideTimer: null,
 			checkTimer: null,
-			preview: null,
+			close: null,
 			faExternalLinkSquareAlt
 		};
 	},
@@ -67,29 +67,28 @@ export default Vue.extend({
 		this.hash = decodeURIComponent(url.hash);
 	},
 	methods: {
-		showPreview() {
+		async showPreview() {
 			if (!document.body.contains(this.$el)) return;
-			if (this.preview) return;
+			if (this.close) return;
 
-			this.preview = new MkUrlPreview({
-				parent: this,
-				propsData: {
-					url: this.url,
-					source: this.$el
-				}
-			}).$mount();
+			const { dispose } = os.popup(await import('@/components/url-preview-popup.vue'), {
+				url: this.url,
+				source: this.$el
+			});
 
-			document.body.appendChild(this.preview.$el);
+			this.close = () => {
+				dispose();
+			};
 
 			this.checkTimer = setInterval(() => {
 				if (!document.body.contains(this.$el)) this.closePreview();
 			}, 1000);
 		},
 		closePreview() {
-			if (this.preview) {
+			if (this.close) {
 				clearInterval(this.checkTimer);
-				this.preview.destroyDom();
-				this.preview = null;
+				this.close();
+				this.close = null;
 			}
 		},
 		onMouseover() {
