@@ -6,19 +6,19 @@
 		<div class="status">
 			<div>
 				<Fa :icon="faUsers" fixed-width/>
-				<i18n path="_channel.usersCount" tag="span" style="margin-left: 4px;">
+				<i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.usersCount }}</b>
 					</template>
-				</i18n>
+				</i18n-t>
 			</div>
 			<div>
 				<Fa :icon="faPencilAlt" fixed-width/>
-				<i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;">
+				<i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.notesCount }}</b>
 					</template>
-				</i18n>
+				</i18n-t>
 			</div>
 		</div>
 	</div>
@@ -26,7 +26,7 @@
 		<p :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
 	</article>
 	<footer>
-		<span>
+		<span v-if="channel.lastNotedAt">
 			{{ $t('updatedAt') }}: <MkTime :time="channel.lastNotedAt"/>
 		</span>
 	</footer>
@@ -36,7 +36,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
