@@ -95,9 +95,8 @@ export default defineComponent({
 		if (this.initialWidth) this.applyTransformWidth(this.initialWidth);
 		if (this.initialHeight) this.applyTransformHeight(this.initialHeight);
 
-		// TODO: calc center position
-		this.applyTransformTop(100);
-		this.applyTransformLeft(100);
+		this.applyTransformTop((window.innerHeight / 2) - (this.$el.offsetHeight / 2));
+		this.applyTransformLeft((window.innerWidth / 2) - (this.$el.offsetWidth / 2));
 
 		os.windows.set(this.id, {
 			z: Number(document.defaultView.getComputedStyle(this.$el, null).zIndex)
