@@ -289,7 +289,7 @@ export default defineComponent({
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			if (!this.instant && !this.mention) {
+			if (!this.instant && !this.mention && !this.specified) {
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftKey];
 				if (draft) {
 					this.text = draft.data.text;
@@ -397,10 +397,10 @@ export default defineComponent({
 				currentLocalOnly: this.localOnly,
 				src: this.$refs.visibilityButton
 			}, {
-				'change-visibility': visibility => {
+				changeVisibility: visibility => {
 					this.applyVisibility(visibility);
 				},
-				'change-local-only': localOnly => {
+				changeLocalOnly: localOnly => {
 					this.localOnly = localOnly;
 				}
 			}, 'closed');
@@ -408,6 +408,7 @@ export default defineComponent({
 
 		applyVisibility(v: string) {
 			this.visibility = (noteVisibilities as unknown as string[]).includes(v) ? v : 'public'; // v11互換性のため
+			console.log(v, this.visibility);
 		},
 
 		addVisibleUser() {
