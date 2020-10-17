@@ -585,6 +585,7 @@ regenerateLoginTokenDescription: "Den bei Logins intern verwendeten Token regene
 setMultipleBySeparatingWithSpace: "Trenne Elemente durch ein Leerzeichen um mehrere Einstellungen zu kofigurieren."
 fileIdOrUrl: "Datei-ID oder URL"
 chatOpenBehavior: "Verhalten des Chatfensters bei Öffnung"
+sample: "Beispiel"
 _serverDisconnectedBehavior:
   reload: "Automatisch aktualisieren"
   dialog: "Warnungsfenster zeigen"
