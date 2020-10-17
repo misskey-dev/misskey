@@ -67,6 +67,7 @@ export default defineComponent({
 		},
 
 		onWidgetSort() {
+			// TODO: vuexを直接書き換えているのでなんとかする
 			this.saveHome();
 		},
 
