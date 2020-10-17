@@ -1,7 +1,5 @@
 <template>
 <div>
-	<portal to="header"><Fa :icon="faSatelliteDish"/>{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
-
 	<div class="_section">
 		<div class="_content">
 			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
@@ -24,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkTextarea from '@/components/ui/textarea.vue';
@@ -47,6 +45,17 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: computed(() => this.channelId ? {
+				header: [{
+					title: this.$t('_channel.edit'),
+					icon: faSatelliteDish,
+				}],
+			} : {
+				header: [{
+					title: this.$t('_channel.create'),
+					icon: faSatelliteDish,
+				}],
+			}),
 			channel: null,
 			name: null,
 			description: null,
