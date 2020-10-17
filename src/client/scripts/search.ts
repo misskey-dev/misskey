@@ -48,6 +48,7 @@ export async function search(q?: string | null | undefined) {
 	}
 
 	if (q.startsWith('https://')) {
+		/*
 		const dialog = os.dialog({
 			type: 'waiting',
 			text: i18n.global.t('fetchingAsApObject') + '...',
@@ -55,19 +56,20 @@ export async function search(q?: string | null | undefined) {
 			showCancelButton: false,
 			cancelableByBgClick: false
 		});
+		*/
 
 		try {
 			const res = await os.api('ap/show', {
 				uri: q
 			});
-			dialog.cancel();
+			//dialog.cancel();
 			if (res.type === 'User') {
 				router.push(`/@${res.object.username}@${res.object.host}`);
 			} else if (res.type === 'Note') {
 				router.push(`/notes/${res.object.id}`);
 			}
 		} catch (e) {
-			dialog.cancel();
+			//dialog.cancel();
 			// TODO: Show error
 		}
 
