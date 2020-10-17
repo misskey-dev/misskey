@@ -38,8 +38,8 @@ import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
 
-const minHeight = 40;
-const minWidth = 200;
+const minHeight = 50;
+const minWidth = 250;
 
 function dragListen(fn) {
 	window.addEventListener('mousemove',  fn);
@@ -102,10 +102,13 @@ export default defineComponent({
 		os.windows.set(this.id, {
 			z: Number(document.defaultView.getComputedStyle(this.$el, null).zIndex)
 		});
+
+		window.addEventListener('resize', this.onBrowserResize);
 	},
 
 	unmounted() {
 		os.windows.delete(this.id);
+		window.removeEventListener('resize', this.onBrowserResize);
 	},
 
 	methods: {
@@ -324,6 +327,19 @@ export default defineComponent({
 		applyTransformLeft(left) {
 			(this.$el as any).style.left = left + 'px';
 		},
+
+		onBrowserResize() {
+			const main = this.$el as any;
+			const position = main.getBoundingClientRect();
+			const browserWidth = window.innerWidth;
+			const browserHeight = window.innerHeight;
+			const windowWidth = main.offsetWidth;
+			const windowHeight = main.offsetHeight;
+			if (position.left < 0) main.style.left = 0;     // 左はみ出し
+			if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';  // 下はみ出し
+			if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';    // 右はみ出し
+			if (position.top < 0) main.style.top = 0;       // 上はみ出し
+		}
 	}
 });
 </script>
@@ -352,11 +368,7 @@ export default defineComponent({
 		width: 100%;
     height: 100%;
 
-		--section-padding: 24px;
-
-		@media (max-width: 500px) {
-			--section-padding: 16px;
-		}
+		--section-padding: 16px;
 
 		> .header {
 			$height: 50px;
