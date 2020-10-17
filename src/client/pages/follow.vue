@@ -12,6 +12,7 @@ export default defineComponent({
 		const acct = new URL(location.href).searchParams.get('acct');
 		if (acct == null) return;
 
+		/*
 		const dialog = os.dialog({
 			type: 'waiting',
 			text: this.$t('fetchingAsApObject') + '...',
@@ -19,6 +20,7 @@ export default defineComponent({
 			showCancelButton: false,
 			cancelableByBgClick: false
 		});
+		*/
 
 		if (acct.startsWith('https://')) {
 			os.api('ap/show', {
@@ -26,6 +28,8 @@ export default defineComponent({
 			}).then(res => {
 				if (res.type == 'User') {
 					this.follow(res.object);
+				} else if (res.type === 'Note') {
+					this.$router.push(`/notes/${res.object.id}`);
 				} else {
 					os.dialog({
 						type: 'error',
@@ -42,7 +46,7 @@ export default defineComponent({
 					window.close();
 				});
 			}).finally(() => {
-				dialog.close();
+				//dialog.close();
 			});
 		} else {
 			os.api('users/show', parseAcct(acct)).then(user => {
@@ -55,7 +59,7 @@ export default defineComponent({
 					window.close();
 				});
 			}).finally(() => {
-				dialog.close();
+				//dialog.close();
 			});
 		}
 	},
