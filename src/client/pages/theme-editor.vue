@@ -76,6 +76,12 @@
 		</div>
 	</section>
 	<section class="_section">
+		<details class="_content">
+			<summary>{{ $t('sample') }}</summary>
+			<MkSample/>
+		</details>
+	</section>
+	<section class="_section">
 		<div class="_content">
 			<MkButton inline @click="preview">{{ $t('preview') }}</MkButton>
 			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</MkButton>
@@ -88,16 +94,17 @@
 import { defineComponent } from 'vue';
 import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
+import { toUnicode } from 'punycode';
 
 import MkRadio from '@/components/ui/radio.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
 import MkSelect from '@/components/ui/select.vue';
+import MkSample from '@/components/sample.vue';
 
 import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '@/scripts/theme-editor';
 import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
-import { toUnicode } from 'punycode';
 import { host } from '@/config';
 import * as os from '@/os';
 
@@ -107,7 +114,8 @@ export default defineComponent({
 		MkButton,
 		MkInput,
 		MkTextarea,
-		MkSelect
+		MkSelect,
+		MkSample,
 	},
 
 	data() {
