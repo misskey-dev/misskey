@@ -117,7 +117,12 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: false
-		}
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: true
+		},
 	},
 
 	emits: ['posted', 'done', 'esc'],
@@ -270,11 +275,13 @@ export default defineComponent({
 			this.cw = this.reply.cw;
 		}
 
-		this.focus();
-
-		this.$nextTick(() => {
+		if (this.autofocus) {
 			this.focus();
-		});
+
+			this.$nextTick(() => {
+				this.focus();
+			});
+		}
 
 		// TODO: detach when unmount
 		new Autocomplete(this.$refs.text, this, { model: 'text' });

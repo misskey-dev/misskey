@@ -1,5 +1,5 @@
 <template>
-<XPostForm class="_panel" :fixed="true"/>
+<XPostForm class="_panel" :fixed="true" :autofocus="false"/>
 </template>
 
 <script lang="ts">
