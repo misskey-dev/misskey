@@ -560,8 +560,15 @@ overview: "Aperçu"
 logs: "Journaux"
 database: "Base de données"
 channel: "Canaux"
+create: "Créer"
+notificationSetting: "Paramètres des notifications "
+notificationSettingDesc: "Sélectionnez le type de notification à afficher"
+useGlobalSetting: "Utiliser paramètre général"
+other: "Autre"
 _channel:
   featured: "Tendances"
+  usersCount: "{n} Participants"
+  notesCount: "{n} Notes"
 _sidebar:
   full: "Complet"
   icon: "Avatar"
@@ -601,6 +608,7 @@ _theme:
     renote: "Renote"
     divider: "Séparateur"
     infoWarnFg: "Texte d’avertissement"
+    cwBg: "Arrière-plan du CW"
     badge: "Badge"
     messageBg: "Arrière plan de la discussion"
 _sfx:
@@ -685,6 +693,7 @@ _permissions:
   "write:page-likes": "Mettre à jour les favoris sur les Pages"
   "read:user-groups": "Voir les groupes d'utilisateur·rice·s"
   "write:user-groups": "Éditer les groupes des utilisateur·rice·s"
+  "read:channels": "Lire les canaux"
 _auth:
   shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
   shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
@@ -1173,8 +1182,10 @@ _notification:
   yourFollowRequestAccepted: "Votre demande d’abonnement a été accepté"
   youWereInvitedToGroup: "Invité au groupe"
   _types:
+    all: "Toutes"
     follow: "Abonnements"
     mention: "Mentionner"
+    reply: "Réponses"
     renote: "Renote"
     quote: "Citer"
     reaction: "Réactions"
