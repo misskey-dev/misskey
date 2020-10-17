@@ -1217,6 +1217,8 @@ _notification:
     renote: "Renote"
     quote: "Citer"
     reaction: "Réactions"
+    groupInvited: "Invité aux groupes"
+    app: "Notifications provenant des apps"
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"
