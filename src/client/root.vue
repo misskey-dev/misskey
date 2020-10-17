@@ -1,5 +1,6 @@
 <template>
-<VisitorUI v-if="!$store.getters.isSignedIn"/>
+<ZenUI v-if="zen"/>
+<VisitorUI v-else-if="!$store.getters.isSignedIn"/>
 <DeckUI v-else-if="deckmode"/>
 <DefaultUI v-else/>
 
@@ -24,12 +25,14 @@ export default defineComponent({
 	components: {
 		DefaultUI: defineAsyncComponent(() => import('@/ui/default.vue')),
 		DeckUI: defineAsyncComponent(() => import('@/ui/deck.vue')),
+		ZenUI: defineAsyncComponent(() => import('@/ui/zen.vue')),
 		VisitorUI: defineAsyncComponent(() => import('@/ui/visitor.vue')),
 		XUpload: defineAsyncComponent(() => import('@/components/upload.vue')),
 	},
 
 	setup() {
 		return {
+			zen: window.location.search === '?zen',
 			deckmode,
 			uploads,
 			popups,

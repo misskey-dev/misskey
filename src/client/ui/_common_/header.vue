@@ -51,7 +51,7 @@ export default defineComponent({
 
 	methods: {
 		back() {
-			if (this.canBack) window.history.back();
+			if (this.canBack) this.$router.back();
 		},
 	}
 });

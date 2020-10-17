@@ -29,15 +29,16 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faArrowCircleDown, faFlag, faUsers, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faArrowCircleDown, faFlag, faUsers, faInfoCircle, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 import XList from '@/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import parseAcct from '../../../misc/acct/parse';
-import { isBottom, onScrollBottom } from '@/scripts/scroll';
+import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 
-export default defineComponent({
+const Component = defineComponent({
 	components: {
 		XMessage,
 		XForm,
@@ -62,11 +63,19 @@ export default defineComponent({
 					userName: this.user,
 					avatar: this.user,
 				}],
+				action: {
+					icon: faEllipsisH,
+					handler: this.menu,
+				},
 			} : {
 				header: [{
 					title: this.group.name,
 					icon: faUsers
 				}],
+				action: {
+					icon: faEllipsisH,
+					handler: this.menu,
+				},
 			} : null),
 			fetching: true,
 			user: null,
@@ -265,7 +274,7 @@ export default defineComponent({
 		},
 
 		scrollToBottom() {
-			window.scroll(0, document.body.offsetHeight);
+			scroll(this.$el, this.$el.offsetHeight);
 		},
 
 		onIndicatorClick() {
@@ -296,9 +305,23 @@ export default defineComponent({
 					});
 				}
 			}
+		},
+
+		menu(ev) {
+			os.modalMenu([{
+				text: this.$t('openInWindow'),
+				icon: faWindowMaximize,
+				action: () => {
+					const url = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
+					os.pageWindow(url, Component, this.$props);
+					this.$router.back();
+				},
+			}], ev.currentTarget || ev.target);
 		}
 	}
 });
+
+export default Component;
 </script>
 
 <style lang="scss" scoped>

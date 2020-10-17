@@ -91,13 +91,14 @@ export default defineComponent({
 
 	methods: {
 		go(message) {
+			const url = message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(this.isMe(message) ? message.recipient : message.user)}`;
 			if (this.navHook) {
-				this.navHook(defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), {
+				this.navHook(url, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), {
 					userAcct: message.groupId ? null : getAcct(this.isMe(message) ? message.recipient : message.user),
 					groupId: message.groupId
 				});
 			} else {
-				this.$router.push(message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(this.isMe(message) ? message.recipient : message.user)}`);
+				this.$router.push(url);
 			}
 		},
 

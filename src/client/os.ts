@@ -12,7 +12,7 @@ export const stream = new Stream();
 
 export const pendingApiRequestsCount = ref(0);
 
-export const windows = new Set();
+export const windows = new Map();
 
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
 	pendingApiRequestsCount.value++;
@@ -137,11 +137,12 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	};
 }
 
-export function pageWindow(component: Component | typeof import('*.vue'), props: Record<string, any>) {
+export function pageWindow(url: string, component: Component | typeof import('*.vue'), props: Record<string, any>) {
 	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
+		initialUrl: url,
 		initialComponent: markRaw(component),
 		initialProps: props,
-	});
+	}, {}, 'closed');
 }
 
 export function dialog(props: Record<string, any>) {

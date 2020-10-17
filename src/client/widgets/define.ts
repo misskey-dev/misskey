@@ -17,14 +17,16 @@ export default function <T extends Form>(data: {
 			}
 		},
 
+		data() {
+			return {
+				props: this.widget ? JSON.parse(JSON.stringify(this.widget.data)) : {}
+			};
+		},
+
 		computed: {
 			id(): string {
 				return this.widget ? this.widget.id : null;
 			},
-
-			props(): Record<string, any> {
-				return this.widget ? this.widget.data : {};
-			}
 		},
 
 		created() {
@@ -65,7 +67,10 @@ export default function <T extends Form>(data: {
 
 			save() {
 				if (this.widget) {
-					this.$store.commit('deviceUser/updateWidget', this.widget);
+					this.$store.commit('deviceUser/updateWidget', {
+						...this.widget,
+						data: this.props
+					});
 				}
 			}
 		}
