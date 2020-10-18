@@ -318,7 +318,8 @@ hr {
 	}
 
 	> ._title,
-	> ._content {
+	> ._content,
+	> ._footer {
 		max-width: var(--baseContentWidth);
 		margin: 0 auto;
 	}
