@@ -13,7 +13,7 @@ export function popout(path: string, w?: HTMLElement) {
 			`width=${width}, height=${height}, top=${y}, left=${x}`);
 	} else {
 		const width = 400;
-		const height = 450;
+		const height = 500;
 		const x = window.top.outerHeight / 2 + window.top.screenY - (height / 2);
 		const y = window.top.outerWidth / 2 + window.top.screenX - (width / 2);
 		window.open(url, url,
