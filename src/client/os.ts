@@ -70,7 +70,12 @@ export function apiWithDialog(
 	onFailure?: (e: Error) => void,
 ) {
 	const promise = api(endpoint, data, token);
-	promiseDialog(promise, onSuccess, onFailure);
+	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
+		dialog({
+			type: 'error',
+			text: e.message + '\n' + (e as any).id,
+		});
+	});
 
 	return promise;
 }
