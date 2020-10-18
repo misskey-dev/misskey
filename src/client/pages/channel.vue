@@ -1,7 +1,7 @@
 <template>
-<div v-if="channel">
-	<div class="wpgynlbz _panel _vMargin" :class="{ hide: !showBanner }">
-		<XChannelFollow-button :channel="channel" :full="true" class="subscribe"/>
+<div v-if="channel" class="_section">
+	<div class="wpgynlbz _content _panel _vMargin" :class="{ hide: !showBanner }">
+		<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
 			<template v-if="showBanner"><Fa :icon="faAngleUp"/></template>
 			<template v-else><Fa :icon="faAngleDown"/></template>
@@ -10,8 +10,8 @@
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><Fa :icon="faUsers" fixed-width/><i18n path="_channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></i18n></div>
-				<div><Fa :icon="faPencilAlt" fixed-width/><i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></i18n></div>
+				<div><Fa :icon="faUsers" fixed-width/><i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></i18n-t></div>
+				<div><Fa :icon="faPencilAlt" fixed-width/><i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></i18n-t></div>
 			</div>
 			<div class="fade"></div>
 		</div>
@@ -20,9 +20,9 @@
 		</div>
 	</div>
 
-	<XPostForm :channel="channel" class="post-form _panel _vMargin" fixed/>
+	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed/>
 
-	<XTimeline class="_vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline class="_content _vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 
@@ -91,6 +91,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wpgynlbz {
+	position: relative;
+
 	> .subscribe {
 		position: absolute;
 		z-index: 1;
