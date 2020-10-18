@@ -2,17 +2,19 @@
 <div>
 	<MkTab v-model:value="tab" :items="[{ label: $t('_pages.my'), value: 'my', icon: faEdit }, { label: $t('_pages.liked'), value: 'liked', icon: faHeart }]"/>
 
-	<div class="rknalgpo my" v-if="tab === 'my'">
-		<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
-		<MkPagination :pagination="myPagesPagination" #default="{items}">
-			<MkPagePreview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
-		</MkPagination>
-	</div>
+	<div class="_section">
+		<div class="rknalgpo _content my" v-if="tab === 'my'">
+			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
+			<MkPagination :pagination="myPagesPagination" #default="{items}">
+				<MkPagePreview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
+			</MkPagination>
+		</div>
 
-	<div class="rknalgpo" v-if="tab === 'liked'">
-		<MkPagination :pagination="likedPagesPagination" #default="{items}">
-			<MkPagePreview v-for="like in items" class="ckltabjg" :page="like.page" :key="like.page.id"/>
-		</MkPagination>
+		<div class="rknalgpo _content" v-if="tab === 'liked'">
+			<MkPagination :pagination="likedPagesPagination" #default="{items}">
+				<MkPagePreview v-for="like in items" class="ckltabjg" :page="like.page" :key="like.page.id"/>
+			</MkPagination>
+		</div>
 	</div>
 </div>
 </template>
@@ -64,8 +66,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rknalgpo {
-	padding: 16px;
-
 	&.my .ckltabjg:first-child {
 		margin-top: 16px;
 	}
