@@ -216,14 +216,6 @@ export default defineComponent({
 	position: relative;
 	margin: 32px 0;
 
-	&:not(.inline):first-child {
-		margin-top: 8px;
-	}
-
-	&:not(.inline):last-child {
-		margin-bottom: 8px;
-	}
-
 	> .icon {
 		position: absolute;
 		top: 0;
