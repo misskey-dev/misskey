@@ -28,7 +28,6 @@
 import { defineComponent } from 'vue';
 import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
