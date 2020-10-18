@@ -61,14 +61,6 @@ export default defineComponent({
 	cursor: pointer;
 	transition: all 0.3s;
 
-	&:first-child {
-		margin-top: 0;
-	}
-
-	&:last-child {
-		margin-bottom: 0;
-	}
-
 	> * {
 		user-select: none;
 	}
