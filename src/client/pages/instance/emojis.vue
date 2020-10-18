@@ -15,10 +15,8 @@
 						<button class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="edit(emoji)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
-								<span class="name">{{ emoji.name }}</span>
-								<span class="info">
-									<span class="category">{{ emoji.category }}</span>
-								</span>
+								<div class="name">{{ emoji.name }}</div>
+								<div class="info">{{ emoji.category }}</div>
 							</div>
 						</button>
 					</div>
@@ -36,8 +34,8 @@
 						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji, $event)">
 							<img :src="emoji.url" class="img" :alt="emoji.name"/>
 							<div class="body">
-								<span class="name">{{ emoji.name }}</span>
-								<span class="info">{{ emoji.host }}</span>
+								<div class="name">{{ emoji.name }}</div>
+								<div class="info">{{ emoji.host }}</div>
 							</div>
 						</div>
 					</div>
@@ -182,13 +180,14 @@ export default defineComponent({
 						overflow: hidden;
 
 						> .name {
-							display: block;
 							text-overflow: ellipsis;
 							overflow: hidden;
 						}
 
 						> .info {
 							opacity: 0.5;
+							text-overflow: ellipsis;
+							overflow: hidden;
 						}
 					}
 				}
@@ -222,14 +221,12 @@ export default defineComponent({
 						overflow: hidden;
 
 						> .name {
-							display: block;
 							text-overflow: ellipsis;
 							overflow: hidden;
 						}
 
 						> .info {
 							opacity: 0.5;
-							display: block;
 							text-overflow: ellipsis;
 							overflow: hidden;
 						}
