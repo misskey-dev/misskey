@@ -91,6 +91,8 @@ pinnedNote: "Закреплённый пост"
 you: "Вы"
 clickToShow: "Нажмите для просмотра"
 sensitive: "NSFW"
+add: "Добавить"
+reaction: "Реакции"
 instances: "Узел"
 remove: "Удалить"
 nsfw: "NSFW"
@@ -142,6 +144,7 @@ _notification:
     mention: "Упоминание"
     renote: "Репост"
     quote: "Цитата"
+    reaction: "Реакции"
 _deck:
   _columns:
     notifications: "Уведомления"
