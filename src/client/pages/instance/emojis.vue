@@ -106,24 +106,13 @@ export default defineComponent({
 		async add(e) {
 			const files = await selectFile(e.currentTarget || e.target, null, true);
 
-			const dialog = os.dialog({
-				type: 'waiting',
-				text: this.$t('doing') + '...',
-				showOkButton: false,
-				showCancelButton: false,
-				cancelableByBgClick: false
-			});
-			
-			Promise.all(files.map(file => os.api('admin/emoji/add', {
+			const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
 				fileId: file.id,
-			})))
-			.then(() => {
+			})));
+			promise.then(() => {
 				this.$refs.emojis.reload();
-				os.success();
-			})
-			.finally(() => {
-				dialog.cancel();
 			});
+			os.promiseDialog(promise);
 		},
 
 		async edit(emoji) {

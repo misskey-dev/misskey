@@ -6,26 +6,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as os from '@/os';
+import parseAcct from '../../misc/acct/parse';
 
 export default defineComponent({
 	created() {
 		const acct = new URL(location.href).searchParams.get('acct');
 		if (acct == null) return;
 
-		/*
-		const dialog = os.dialog({
-			type: 'waiting',
-			text: this.$t('fetchingAsApObject') + '...',
-			showOkButton: false,
-			showCancelButton: false,
-			cancelableByBgClick: false
-		});
-		*/
+		let promise;
 
 		if (acct.startsWith('https://')) {
-			os.api('ap/show', {
+			promise = os.api('ap/show', {
 				uri: acct
-			}).then(res => {
+			});
+			promise.then(res => {
 				if (res.type == 'User') {
 					this.follow(res.object);
 				} else if (res.type === 'Note') {
@@ -38,30 +32,15 @@ export default defineComponent({
 						window.close();
 					});
 				}
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				}).then(() => {
-					window.close();
-				});
-			}).finally(() => {
-				//dialog.close();
 			});
 		} else {
-			os.api('users/show', parseAcct(acct)).then(user => {
+			promise = os.api('users/show', parseAcct(acct));
+			promise.then(user => {
 				this.follow(user);
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				}).then(() => {
-					window.close();
-				});
-			}).finally(() => {
-				//dialog.close();
 			});
 		}
+
+		os.promiseDialog(promise, null, null, this.$t('fetchingAsApObject'));
 	},
 
 	methods: {
@@ -77,19 +56,8 @@ export default defineComponent({
 				return;
 			}
 			
-			os.api('following/create', {
+			os.apiWithDialog('following/create', {
 				userId: user.id
-			}).then(() => {
-				os.success().then(() => {
-					window.close();
-				});
-			}).catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				}).then(() => {
-					window.close();
-				});
 			});
 		}
 	}
