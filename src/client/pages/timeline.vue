@@ -49,47 +49,63 @@ export default defineComponent({
 			menuOpened: false,
 			queue: 0,
 			width: 0,
-			INFO: {
-				header: [{
+			INFO: computed(() => {
+				const header = [{
 					id: 'home',
 					title: null,
 					tooltip: this.$t('_timelines.home'),
 					icon: faHome,
 					onClick: () => { this.src = 'home'; this.saveSrc(); },
 					selected: computed(() => this.src === 'home')
-				}, {
-					id: 'local',
-					title: null,
-					tooltip: this.$t('_timelines.local'),
-					icon: faComments,
-					onClick: () => { this.src = 'local'; this.saveSrc(); },
-					selected: computed(() => this.src === 'local')
-				}, {
-					id: 'social',
-					title: null,
-					tooltip: this.$t('_timelines.social'),
-					icon: faShareAlt,
-					onClick: () => { this.src = 'social'; this.saveSrc(); },
-					selected: computed(() => this.src === 'social')
-				}, {
-					id: 'global',
-					title: null,
-					tooltip: this.$t('_timelines.global'),
-					icon: faGlobe,
-					onClick: () => { this.src = 'global'; this.saveSrc(); },
-					selected: computed(() => this.src === 'global')
-				}, {
+				}];
+
+				if (!this.$store.state.instance.meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
+					header.push({
+						id: 'local',
+						title: null,
+						tooltip: this.$t('_timelines.local'),
+						icon: faComments,
+						onClick: () => { this.src = 'local'; this.saveSrc(); },
+						selected: computed(() => this.src === 'local')
+					});
+
+					header.push({
+						id: 'social',
+						title: null,
+						tooltip: this.$t('_timelines.social'),
+						icon: faShareAlt,
+						onClick: () => { this.src = 'social'; this.saveSrc(); },
+						selected: computed(() => this.src === 'social')
+					});
+				}
+
+				if (!this.$store.state.instance.meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
+					header.push({
+						id: 'global',
+						title: null,
+						tooltip: this.$t('_timelines.global'),
+						icon: faGlobe,
+						onClick: () => { this.src = 'global'; this.saveSrc(); },
+						selected: computed(() => this.src === 'global')
+					});
+				}
+
+				header.push({
 					id: 'other',
 					title: null,
 					icon: faEllipsisH,
 					onClick: this.choose,
 					indicate: computed(() => this.$store.state.i.hasUnreadAntenna || this.$store.state.i.hasUnreadChannel)
-				}],
-				action: {
-					icon: faPencilAlt,
-					handler: () => os.post()
-				}
-			},
+				});
+
+				return {
+					header,
+					action: {
+						icon: faPencilAlt,
+						handler: () => os.post()
+					}
+				};
+			}),
 			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle
 		};
 	},
