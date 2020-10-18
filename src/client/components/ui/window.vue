@@ -377,6 +377,7 @@ export default defineComponent({
 			$height: 50px;
 			display: flex;
 			position: relative;
+			z-index: 1;
 			flex-shrink: 0;
 			box-shadow: 0px 1px var(--divider);
 			cursor: move;
