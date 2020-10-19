@@ -131,6 +131,9 @@ youHaveNoLists: "Нет списков"
 followConfirm: "Подписаться на {name}?"
 host: "Хост"
 selectUser: "Выбор пользователя"
+recipient: "Кому"
+annotation: "Описание"
+federation: "Федиверс"
 instances: "Узел"
 remove: "Удалить"
 nsfw: "NSFW"
@@ -148,6 +151,7 @@ _sfx:
 _widgets:
   notifications: "Уведомления"
   timeline: "Лента"
+  federation: "Федиверс"
 _cw:
   show: "Показать еще"
 _visibility:
