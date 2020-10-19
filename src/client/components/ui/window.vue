@@ -315,11 +315,13 @@ export default defineComponent({
 
 		// 高さを適用
 		applyTransformHeight(height) {
+			if (height > window.innerHeight) height = window.innerHeight;
 			(this.$el as any).style.height = height + 'px';
 		},
 
 		// 幅を適用
 		applyTransformWidth(width) {
+			if (width > window.innerWidth) width = window.innerWidth;
 			(this.$el as any).style.width = width + 'px';
 		},
 
