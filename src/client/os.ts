@@ -301,6 +301,10 @@ export function contextMenu(items: any[], ev: MouseEvent) {
 export function post(props: Record<string, any>) {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
+		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、
+		//       Vueが渡されたコンポーネントに内部的に__propsというプロパティを生やす影響で、
+		//       複数のpost formを開いたときに場合によってはエラーになる
+		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
 		const { dispose } = popup(MkPostFormDialog, props, {
 			closed: () => {
 				resolve();
