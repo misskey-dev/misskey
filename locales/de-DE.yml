@@ -586,6 +586,13 @@ setMultipleBySeparatingWithSpace: "Trenne Elemente durch ein Leerzeichen um mehr
 fileIdOrUrl: "Datei-ID oder URL"
 chatOpenBehavior: "Verhalten des Chatfensters bei Öffnung"
 sample: "Beispiel"
+abuseReports: "Melden"
+reportAbuse: "Melden"
+reportAbuseOf: "{name} melden"
+fillAbuseReportDescription: "Bitte gib Details für diese Meldung an. Falls es sich um eine spezielle Notiz handelt, bitte gib dessen URL an."
+abuseReported: "Die Meldung wurde versendet. Vielen Dank."
+send: "Senden"
+abuseMarkAsResolved: "Meldung als gelöst markieren"
 _serverDisconnectedBehavior:
   reload: "Automatisch aktualisieren"
   dialog: "Warnungsfenster zeigen"
