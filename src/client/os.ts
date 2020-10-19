@@ -4,6 +4,7 @@ import Stream from '@/scripts/stream';
 import { store } from '@/store';
 import { apiUrl } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
+import MkWaitingDialog from '@/components/waiting-dialog.vue';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -73,7 +74,7 @@ export function apiWithDialog(
 	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
 		dialog({
 			type: 'error',
-			text: e.message + '\n' + (e as any).id,
+			text: e.message + '<br>' + (e as any).id,
 		});
 	});
 
@@ -111,7 +112,8 @@ export function promiseDialog<T extends Promise<any>>(
 		}
 	});
 
-	popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
+	// NOTE: dynamic importすると挙動がおかしくなる(showingの変更が伝播しない)
+	popup(MkWaitingDialog, {
 		success: success,
 		showing: showing,
 		text: text,

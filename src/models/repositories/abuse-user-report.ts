@@ -15,14 +15,19 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 			id: report.id,
 			createdAt: report.createdAt,
 			comment: report.comment,
+			resolved: report.resolved,
 			reporterId: report.reporterId,
-			userId: report.userId,
+			targetUserId: report.targetUserId,
+			assigneeId: report.assigneeId,
 			reporter: Users.pack(report.reporter || report.reporterId, null, {
 				detail: true
 			}),
-			user: Users.pack(report.user || report.userId, null, {
+			targetUser: Users.pack(report.targetUser || report.targetUserId, null, {
 				detail: true
 			}),
+			assignee: report.assigneeId ? Users.pack(report.assignee || report.assigneeId, null, {
+				detail: true
+			}) : null,
 		});
 	}
 

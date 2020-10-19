@@ -7,7 +7,7 @@
 		<button class="_button" @click="expand" v-tooltip="$t('showInPage')"><Fa :icon="faExpandAlt"/></button>
 		<button class="_button" @click="popout" v-tooltip="$t('popout')"><Fa :icon="faExternalLinkAlt"/></button>
 	</template>
-	<div style="min-height: 100%; background: var(--bg);">
+	<div class="yrolvcoq" style="min-height: 100%; background: var(--bg);">
 		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
 </XWindow>
@@ -84,3 +84,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.yrolvcoq {
+	--section-padding: 16px;
+}
+</style>
