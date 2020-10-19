@@ -324,6 +324,7 @@ hr {
 
 	> ._title,
 	> ._content {
+		box-sizing: border-box;
 		max-width: var(--baseContentWidth);
 		margin: 0 auto;
 	}

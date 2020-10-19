@@ -8,8 +8,8 @@
 
 		<div class="_section">
 			<div class="_content">
-				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" style="margin-bottom: var(--margin)"/>
-				<XNote v-model:note="note" :key="note.id" :detail="true"/>
+				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_vMargin"/>
+				<XNote v-model:note="note" :key="note.id" :detail="true" class="_vMargin"/>
 			</div>
 		</div>
 
