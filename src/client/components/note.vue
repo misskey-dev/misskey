@@ -101,7 +101,7 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
@@ -634,6 +634,21 @@ export default defineComponent({
 						icon: faBullhorn,
 						text: this.$t('promote'),
 						action: this.promote
+					}]
+					: []
+				),
+				...(this.appearNote.userId != this.$store.state.i.id ? [
+					null,
+					{
+						icon: faExclamationCircle,
+						text: this.$t('reportAbuse'),
+						action: () => {
+							const u = `${url}/notes/${this.appearNote.id}`;
+							os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
+								user: this.appearNote.user,
+								initialComment: `Note: ${u}\n-----\n`
+							}, {}, 'closed');
+						}
 					}]
 					: []
 				),

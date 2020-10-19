@@ -6,7 +6,7 @@
 		<footer>
 			<span>{{ image.type }}</span>
 			<span>{{ bytes(image.size) }}</span>
-			<span v-if="image.properties?.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
+			<span v-if="image.properties && image.properties.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
 		</footer>
 	</div>
 </MkModal>

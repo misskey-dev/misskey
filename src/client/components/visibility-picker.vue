@@ -55,11 +55,11 @@ export default defineComponent({
 	props: {
 		currentVisibility: {
 			type: String,
-			required: false
+			required: true
 		},
 		currentLocalOnly: {
 			type: Boolean,
-			required: false
+			required: true
 		},
 		src: {
 			required: false
@@ -68,7 +68,7 @@ export default defineComponent({
 	emits: ['change-visibility', 'change-local-only', 'closed'],
 	data() {
 		return {
-			v: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : (this.currentVisibility || this.$store.state.settings.defaultNoteVisibility),
+			v: this.currentVisibility,
 			localOnly: this.currentLocalOnly,
 			faGlobe, faUnlock, faEnvelope, faHome, faBiohazard, faToggleOn, faToggleOff
 		}
@@ -81,9 +81,6 @@ export default defineComponent({
 	methods: {
 		choose(visibility) {
 			this.v = visibility;
-			if (this.$store.state.settings.rememberNoteVisibility) {
-				this.$store.commit('deviceUser/setVisibility', visibility);
-			}
 			this.$emit('change-visibility', visibility);
 			this.$nextTick(() => {
 				this.$refs.modal.close();

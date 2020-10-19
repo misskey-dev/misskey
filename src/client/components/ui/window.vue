@@ -7,7 +7,9 @@
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
-				<slot name="buttons"></slot>
+				<slot name="buttons">
+					<button class="_button" style="pointer-events: none;"></button>
+				</slot>
 			</div>
 			<div class="body" v-if="padding">
 				<div class="_section">
@@ -313,11 +315,13 @@ export default defineComponent({
 
 		// 高さを適用
 		applyTransformHeight(height) {
+			if (height > window.innerHeight) height = window.innerHeight;
 			(this.$el as any).style.height = height + 'px';
 		},
 
 		// 幅を適用
 		applyTransformWidth(width) {
+			if (width > window.innerWidth) width = window.innerWidth;
 			(this.$el as any).style.width = width + 'px';
 		},
 
@@ -371,8 +375,6 @@ export default defineComponent({
 		width: 100%;
     height: 100%;
 
-		--section-padding: 16px;
-
 		> .header {
 			$height: 50px;
 			display: flex;
@@ -380,7 +382,6 @@ export default defineComponent({
 			z-index: 1;
 			flex-shrink: 0;
 			box-shadow: 0px 1px var(--divider);
-			cursor: move;
 			user-select: none;
 			height: $height;
 
@@ -400,6 +401,8 @@ export default defineComponent({
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				text-align: center;
+				cursor: move;
 			}
 		}
 

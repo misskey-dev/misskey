@@ -16,12 +16,15 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const report = await AbuseUserReports.findOne(ps.reportId);
 
 	if (report == null) {
 		throw new Error('report not found');
 	}
 
-	await AbuseUserReports.delete(report.id);
+	await AbuseUserReports.update(report.id, {
+		resolved: true,
+		assigneeId: me.id,
+	});
 });

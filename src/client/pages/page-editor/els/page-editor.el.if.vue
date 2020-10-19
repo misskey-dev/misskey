@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
@@ -34,7 +34,8 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XContainer, MkSelect
+		XContainer, MkSelect,
+		XBlocks: defineAsyncComponent(() => import('../page-editor.blocks.vue')),
 	},
 
 	inject: ['getPageBlockList'],
@@ -52,10 +53,6 @@ export default defineComponent({
 		return {
 			faPlus, faQuestion
 		};
-	},
-
-	beforeCreate() {
-		this.$options.components.XBlocks = require('../page-editor.blocks.vue').default
 	},
 
 	created() {

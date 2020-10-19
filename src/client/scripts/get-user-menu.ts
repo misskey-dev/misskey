@@ -1,4 +1,4 @@
-import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
@@ -102,6 +102,12 @@ export function getUserMenu(user) {
 		});
 	}
 
+	async function reportAbuse() {
+		os.popup(await import('@/components/abuse-report-window.vue'), {
+			user: user,
+		}, {}, 'closed');
+	}
+
 	async function getConfirmed(text: string): Promise<boolean> {
 		const confirm = await os.dialog({
 			type: 'warning',
@@ -155,6 +161,12 @@ export function getUserMenu(user) {
 			icon: faBan,
 			text: user.isBlocking ? i18n.global.t('unblock') : i18n.global.t('block'),
 			action: toggleBlock
+		}]);
+
+		menu = menu.concat([null, {
+			icon: faExclamationCircle,
+			text: i18n.global.t('reportAbuse'),
+			action: reportAbuse
 		}]);
 
 		if (store.getters.isSignedIn && (store.state.i.isAdmin || store.state.i.isModerator)) {

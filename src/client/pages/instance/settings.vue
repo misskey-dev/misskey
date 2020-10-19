@@ -18,7 +18,7 @@
 
 	<section class="_section info">
 		<div class="_content">
-			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()" style="margin:0;"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</MkInput>
+			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</MkInput>
 		</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableLocalTimeline" @update:value="save()">{{ $t('enableLocalTimeline') }}</MkSwitch>
@@ -91,8 +91,8 @@
 			<MkInfo>{{ $t('emptyToDisableSmtpAuth') }}</MkInfo>
 			<MkSwitch v-model:value="smtpSecure" :disabled="!enableEmail">{{ $t('smtpSecure') }}<template #desc>{{ $t('smtpSecureInfo') }}</template></MkSwitch>
 			<div>
+			  <MkButton :disabled="!enableEmail" primary inline @click="save(true)"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
 				<MkButton :disabled="!enableEmail" inline @click="testEmail()">{{ $t('testEmail') }}</MkButton>
-				<MkButton :disabled="!enableEmail" primary inline @click="save(true)"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
 			</div>
 		</div>
 	</section>
@@ -131,7 +131,7 @@
 			<MkSwitch v-model:value="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></MkSwitch>
 			<MkSwitch v-model:value="proxyRemoteFiles">{{ $t('proxyRemoteFiles') }}<template #desc>{{ $t('proxyRemoteFilesDescription') }}</template></MkSwitch>
 			<MkInput v-model:value="localDriveCapacityMb" type="number">{{ $t('driveCapacityPerLocalAccount') }}<template #suffix>MB</template><template #desc>{{ $t('inMb') }}</template></MkInput>
-			<MkInput v-model:value="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles" style="margin-bottom: 0;">{{ $t('driveCapacityPerRemoteAccount') }}<template #suffix>MB</template><template #desc>{{ $t('inMb') }}</template></MkInput>
+			<MkInput v-model:value="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $t('driveCapacityPerRemoteAccount') }}<template #suffix>MB</template><template #desc>{{ $t('inMb') }}</template></MkInput>
 		</div>
 		<div class="_footer">
 			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
@@ -169,7 +169,7 @@
 	<section class="_section">
 		<div class="_title"><Fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
-			<MkInput :value="proxyAccount ? proxyAccount.username : null" style="margin: 0;" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></MkInput>
+			<MkInput :value="proxyAccount ? proxyAccount.username : null" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></MkInput>
 			<MkButton primary @click="chooseProxyAccount">{{ $t('chooseProxyAccount') }}</MkButton>
 		</div>
 	</section>

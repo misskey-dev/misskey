@@ -61,7 +61,7 @@ export const defaultDeviceSettings = {
 	accounts: [],
 	recentEmojis: [],
 	themes: [],
-	darkTheme: '8c539dc1-0fab-4d47-9194-39c508e9bfe1',
+	darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
 	lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 	darkMode: false,
 	deckMode: false,

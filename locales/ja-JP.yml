@@ -586,6 +586,13 @@ setMultipleBySeparatingWithSpace: "スペースで区切って複数設定でき
 fileIdOrUrl: "ファイルIDまたはURL"
 chatOpenBehavior: "チャットを開くときの動作"
 sample: "サンプル"
+abuseReports: "通報"
+reportAbuse: "通報"
+reportAbuseOf: "{name}を通報する"
+fillAbuseReportDescription: "通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。"
+abuseReported: "内容が送信されました。ご報告ありがとうございました。"
+send: "送信"
+abuseMarkAsResolved: "対応済みにする"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"

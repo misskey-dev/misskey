@@ -1,0 +1,29 @@
+{
+	id: 'ab4eb6d5-dcc0-4457-8a3c-98aad8ea3979',
+
+	name: 'Mi D Blue',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: 'rgb(81 185 189)',
+		bg: 'rgb(54, 54, 54)',
+		fg: 'rgb(199, 209, 216)',
+		fgHighlighted: '#fff',
+		divider: 'rgba(255, 255, 255, 0.14)',
+		panel: '@bg',
+		panelShadow: '" 0 0 0 1px var(--divider)',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		infoFg: '@accent',
+		infoBg: 'rgb(0, 0, 0)',
+		header: ':alpha<0.7<@bg',
+		navBg: 'rgb(71, 71, 71)',
+		renote: '@accent',
+		mention: '#da6d35',
+		mentionMe: '#d44c4c',
+		hashtag: '#4cb8d4',
+		link: '@accent',
+	},
+}

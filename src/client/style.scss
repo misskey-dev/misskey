@@ -109,6 +109,11 @@ textarea, input {
 	-webkit-tap-highlight-color: transparent;
 }
 
+optgroup, option {
+	background: var(--panel);
+	color: var(--fg);
+}
+
 hr {
 	margin: var(--margin) 0 var(--margin) 0;
 	border: none;
@@ -319,6 +324,7 @@ hr {
 
 	> ._title,
 	> ._content {
+		box-sizing: border-box;
 		max-width: var(--baseContentWidth);
 		margin: 0 auto;
 	}

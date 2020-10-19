@@ -1,13 +1,13 @@
 <template>
 <div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<MkRemoteCaution v-if="user.host != null" :href="user.url" style="margin-bottom: var(--margin)"/>
-
 	<!-- TODO -->
 	<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
 	<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
 
 	<div class="profile _section _fitBottom">
-		<div class="_content" :key="user.id">
+		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_content _vMargin"/>
+
+		<div class="_content _vMargin" :key="user.id">
 			<div class="banner-container" :style="style">
 				<div class="banner" ref="banner" :style="style"></div>
 				<div class="fade"></div>
