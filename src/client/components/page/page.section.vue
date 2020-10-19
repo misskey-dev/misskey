@@ -9,10 +9,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import * as os from '@/os';
 
 export default defineComponent({
+	components: {
+		XBlock: defineAsyncComponent(() => import('./page.block.vue'))
+	},
 	props: {
 		value: {
 			required: true
@@ -26,9 +29,6 @@ export default defineComponent({
 		h: {
 			required: true
 		}
-	},
-	beforeCreate() {
-		this.$options.components.XBlock = require('./page.block.vue').default;
 	},
 });
 </script>
