@@ -162,9 +162,9 @@ export class UserProfile {
 	@Column('enum', {
 		enum: notificationTypes,
 		array: true,
-		nullable: true,
+		default: [],
 	})
-	public includingNotificationTypes: typeof notificationTypes[number][] | null;
+	public mutingNotificationTypes: typeof notificationTypes[number][];
 
 	//#region Denormalized fields
 	@Index()

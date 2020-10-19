@@ -1,31 +1,32 @@
 <template>
-<x-column :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
+<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
-		<fa v-if="column.tl === 'home'" :icon="faHome"/>
-		<fa v-else-if="column.tl === 'local'" :icon="faComments"/>
-		<fa v-else-if="column.tl === 'social'" :icon="faShareAlt"/>
-		<fa v-else-if="column.tl === 'global'" :icon="faGlobe"/>
+		<Fa v-if="column.tl === 'home'" :icon="faHome"/>
+		<Fa v-else-if="column.tl === 'local'" :icon="faComments"/>
+		<Fa v-else-if="column.tl === 'social'" :icon="faShareAlt"/>
+		<Fa v-else-if="column.tl === 'global'" :icon="faGlobe"/>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<div class="iwaalbte" v-if="disabled">
 		<p>
-			<fa :icon="faMinusCircle"/>
+			<Fa :icon="faMinusCircle"/>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<x-timeline v-else-if="column.tl" ref="timeline" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote" :key="column.tl"/>
-</x-column>
+	<XTimeline v-else-if="column.tl" ref="timeline" :src="column.tl" @after="() => $emit('loaded')" @queue="queueUpdated" @note="onNote" :key="column.tl"/>
+</XColumn>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '../timeline.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XTimeline,
@@ -78,7 +79,7 @@ export default Vue.extend({
 
 	methods: {
 		async setType() {
-			const { canceled, result: src } = await this.$root.dialog({
+			const { canceled, result: src } = await os.dialog({
 				title: this.$t('timeline'),
 				type: null,
 				select: {
@@ -99,7 +100,7 @@ export default Vue.extend({
 				}
 				return;
 			}
-			Vue.set(this.column, 'tl', src);
+			this.column.tl = src;
 			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		},
 

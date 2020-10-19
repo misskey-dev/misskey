@@ -9,31 +9,28 @@
 		@keypress="onKeypress"
 		@paste="onPaste"
 		:placeholder="$t('inputMessageHere')"
-		v-autocomplete="{ model: 'text' }"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<x-uploader ref="uploader" @uploaded="onUploaded"/>
 	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
-		<template v-if="!sending"><fa :icon="faPaperPlane"/></template><template v-if="sending"><fa icon="spinner .spin"/></template>
+		<template v-if="!sending"><Fa :icon="faPaperPlane"/></template><template v-if="sending"><Fa icon="spinner .spin"/></template>
 	</button>
-	<button class="_button" @click="chooseFile"><fa :icon="faPhotoVideo"/></button>
-	<button class="_button" @click="insertEmoji"><fa :icon="faLaughSquint"/></button>
+	<button class="_button" @click="chooseFile"><Fa :icon="faPhotoVideo"/></button>
+	<button class="_button" @click="insertEmoji"><Fa :icon="faLaughSquint"/></button>
 	<input ref="file" type="file" @change="onChangeFile"/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
 import { formatTimeString } from '../../../misc/format-time-string';
-import { selectFile } from '../../scripts/select-file';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
+import { Autocomplete } from '@/scripts/autocomplete';
 
-export default Vue.extend({
-	components: {
-		XUploader: () => import('../../components/uploader.vue').then(m => m.default),
-	},
+export default defineComponent({
 	props: {
 		user: {
 			type: Object,
@@ -69,14 +66,13 @@ export default Vue.extend({
 		},
 		file() {
 			this.saveDraft();
-
-			if (this.room.isBottom()) {
-				this.room.scrollToBottom();
-			}
 		}
 	},
 	mounted() {
 		autosize(this.$refs.text);
+
+		// TODO: detach when unmount
+		new Autocomplete(this.$refs.text, this, { model: 'text' });
 
 		// 書きかけの投稿を復元
 		const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[this.draftKey];
@@ -97,7 +93,7 @@ export default Vue.extend({
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
 					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
 					const name = this.$store.state.settings.pasteDialog
-						? await this.$root.dialog({
+						? await os.dialog({
 							title: this.$t('enterFileName'),
 							input: {
 								default: formatted
@@ -109,7 +105,7 @@ export default Vue.extend({
 				}
 			} else {
 				if (items[0].kind == 'file') {
-					this.$root.dialog({
+					os.dialog({
 						type: 'error',
 						text: this.$t('onlyOneFileCanBeAttached')
 					});
@@ -119,7 +115,7 @@ export default Vue.extend({
 
 		onDragover(e) {
 			const isFile = e.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
+			const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
 			if (isFile || isDriveFile) {
 				e.preventDefault();
 				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
@@ -134,7 +130,7 @@ export default Vue.extend({
 				return;
 			} else if (e.dataTransfer.files.length > 1) {
 				e.preventDefault();
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: this.$t('onlyOneFileCanBeAttached')
 				});
@@ -142,7 +138,7 @@ export default Vue.extend({
 			}
 
 			//#region ドライブのファイル
-			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 			if (driveFile != null && driveFile != '') {
 				this.file = JSON.parse(driveFile);
 				e.preventDefault();
@@ -157,7 +153,7 @@ export default Vue.extend({
 		},
 
 		chooseFile(e) {
-			selectFile(this, e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
+			selectFile(e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
 				this.file = file;
 			});
 		},
@@ -167,16 +163,14 @@ export default Vue.extend({
 		},
 
 		upload(file: File, name?: string) {
-			(this.$refs.uploader as any).upload(file, this.$store.state.settings.uploadFolder, name);
-		},
-
-		onUploaded(file) {
-			this.file = file;
+			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+				this.file = res;
+			});
 		},
 
 		send() {
 			this.sending = true;
-			this.$root.api('messaging/messages/create', {
+			os.api('messaging/messages/create', {
 				userId: this.user ? this.user.id : undefined,
 				groupId: this.group ? this.group.id : undefined,
 				text: this.text ? this.text : undefined,
@@ -219,11 +213,8 @@ export default Vue.extend({
 		},
 
 		async insertEmoji(ev) {
-			const vm = this.$root.new(await import('../../components/emoji-picker.vue').then(m => m.default), {
-				source: ev.currentTarget || ev.target
-			}).$once('chosen', emoji => {
+			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
 				insertTextAtCursor(this.$refs.text, emoji);
-				vm.close();
 			});
 		}
 	}

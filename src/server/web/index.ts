@@ -326,6 +326,9 @@ router.get('/info', async ctx => {
 	const emojis = await Emojis.find({
 		where: { host: null }
 	});
+
+	const proxyAccount = meta.proxyAccountId ? await Users.pack(meta.proxyAccountId).catch(() => null) : null;
+
 	await ctx.render('info', {
 		version: config.version,
 		machine: os.hostname(),
@@ -339,6 +342,7 @@ router.get('/info', async ctx => {
 		},
 		emojis: emojis,
 		meta: meta,
+		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 		originalUsersCount: await Users.count({ host: null }),
 		originalNotesCount: await Notes.count({ userHost: null })
 	});
@@ -352,6 +356,12 @@ router.get('/reversi', async ctx => ctx.redirect(override(ctx.URL.pathname, 'gam
 
 router.get('/flush', async ctx => {
 	await ctx.render('flush');
+});
+
+// streamingに非WebSocketリクエストが来た場合にbase htmlをキャシュ付きで返すと、Proxy等でそのパスがキャッシュされておかしくなる
+router.get('/streaming', async ctx => {
+	ctx.status = 503;
+	ctx.set('Cache-Control', 'private, max-age=0');
 });
 
 // Render base html for all requests

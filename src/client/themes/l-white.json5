@@ -1,0 +1,21 @@
+{
+	id: '4eea646f-7afa-4645-83e9-83af0333cd37',
+
+	name: 'Mi White',
+	author: 'syuilo',
+	desc: 'Default light theme',
+
+	base: 'light',
+
+	props: {
+		bg: '#f9f9f9',
+		fg: '#636b71',
+		divider: 'rgb(223, 223, 223)',
+		header: ':alpha<0.7<@bg',
+		navBg: '@bg',
+		panel: '#fff',
+		panelShadow: '" 0 8px 24px rgb(21 43 75 / 8%)',
+		panelHeaderDivider: '@divider',
+		messageBg: '#dedede',
+	},
+}

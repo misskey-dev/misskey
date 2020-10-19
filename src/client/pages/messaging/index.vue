@@ -1,58 +1,66 @@
 <template>
-<div class="mk-messaging" v-size="{ max: [400] }">
-	<portal to="icon"><fa :icon="faComments"/></portal>
-	<portal to="title">{{ $t('messaging') }}</portal>
+<div class="_section">
+	<div class="mk-messaging _content" v-size="{ max: [400] }">
+		<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
 
-	<mk-button @click="start" primary class="start"><fa :icon="faPlus"/> {{ $t('startMessaging') }}</mk-button>
-
-	<div class="history" v-if="messages.length > 0">
-		<router-link v-for="(message, i) in messages"
-			class="message _panel"
-			:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
-			:data-is-me="isMe(message)"
-			:data-is-read="message.groupId ? message.reads.includes($store.state.i.id) : message.isRead"
-			:data-index="i"
-			:key="message.id"
-		>
-			<div>
-				<mk-avatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
-				<header v-if="message.groupId">
-					<span class="name">{{ message.group.name }}</span>
-					<mk-time :time="message.createdAt"/>
-				</header>
-				<header v-else>
-					<span class="name"><mk-user-name :user="isMe(message) ? message.recipient : message.user"/></span>
-					<span class="username">@{{ isMe(message) ? message.recipient : message.user | acct }}</span>
-					<mk-time :time="message.createdAt"/>
-				</header>
-				<div class="body">
-					<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
+		<div class="history" v-if="messages.length > 0">
+			<router-link v-for="(message, i) in messages"
+				class="message _panel"
+				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
+				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
+				:data-index="i"
+				:key="message.id"
+				@click.prevent="go(message)"
+			>
+				<div>
+					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
+					<header v-if="message.groupId">
+						<span class="name">{{ message.group.name }}</span>
+						<MkTime :time="message.createdAt"/>
+					</header>
+					<header v-else>
+						<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
+						<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
+						<MkTime :time="message.createdAt"/>
+					</header>
+					<div class="body">
+						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
+					</div>
 				</div>
-			</div>
-		</router-link>
+			</router-link>
+		</div>
+		<div class="_fullinfo" v-if="!fetching && messages.length == 0">
+			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<div>{{ $t('noHistory') }}</div>
+		</div>
+		<MkLoading v-if="fetching"/>
 	</div>
-	<div class="_fullinfo" v-if="!fetching && messages.length == 0">
-		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-		<div>{{ $t('noHistory') }}</div>
-	</div>
-	<mk-loading v-if="fetching"/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '../../../misc/acct/render';
-import MkButton from '../../components/ui/button.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import MkButton from '@/components/ui/button.vue';
+import { acct } from '../../filters/user';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},
 
+	inject: ['navHook'],
+
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('messaging'),
+					icon: faComments
+				}]
+			},
 			fetching: true,
 			moreFetching: false,
 			messages: [],
@@ -62,13 +70,13 @@ export default Vue.extend({
 	},
 
 	mounted() {
-		this.connection = this.$root.stream.useSharedConnection('messagingIndex');
+		this.connection = os.stream.useSharedConnection('messagingIndex');
 
 		this.connection.on('message', this.onMessage);
 		this.connection.on('read', this.onRead);
 
-		this.$root.api('messaging/history', { group: false }).then(userMessages => {
-			this.$root.api('messaging/history', { group: true }).then(groupMessages => {
+		os.api('messaging/history', { group: false }).then(userMessages => {
+			os.api('messaging/history', { group: true }).then(groupMessages => {
 				const messages = userMessages.concat(groupMessages);
 				messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 				this.messages = messages;
@@ -77,11 +85,23 @@ export default Vue.extend({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.dispose();
 	},
 
 	methods: {
+		go(message) {
+			const url = message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(this.isMe(message) ? message.recipient : message.user)}`;
+			if (this.navHook) {
+				this.navHook(url, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), {
+					userAcct: message.groupId ? null : getAcct(this.isMe(message) ? message.recipient : message.user),
+					groupId: message.groupId
+				});
+			} else {
+				this.$router.push(url);
+			}
+		},
+
 		getAcct,
 
 		isMe(message) {
@@ -115,39 +135,35 @@ export default Vue.extend({
 		},
 
 		start(ev) {
-			this.$root.menu({
-				items: [{
-					text: this.$t('messagingWithUser'),
-					icon: faUser,
-					action: () => { this.startUser() }
-				}, {
-					text: this.$t('messagingWithGroup'),
-					icon: faUsers,
-					action: () => { this.startGroup() }
-				}],
-				noCenter: true,
-				source: ev.currentTarget || ev.target,
-			});
+			os.modalMenu([{
+				text: this.$t('messagingWithUser'),
+				icon: faUser,
+				action: () => { this.startUser() }
+			}, {
+				text: this.$t('messagingWithGroup'),
+				icon: faUsers,
+				action: () => { this.startGroup() }
+			}], ev.currentTarget || ev.target);
 		},
 
 		async startUser() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				this.$router.push(`/my/messaging/${getAcct(user)}`);
 			});
 		},
 
 		async startGroup() {
-			const groups1 = await this.$root.api('users/groups/owned');
-			const groups2 = await this.$root.api('users/groups/joined');
+			const groups1 = await os.api('users/groups/owned');
+			const groups2 = await os.api('users/groups/joined');
 			if (groups1.length === 0 && groups2.length === 0) {
-				this.$root.dialog({
+				os.dialog({
 					type: 'warning',
 					title: this.$t('youHaveNoGroups'),
 					text: this.$t('joinOrCreateGroup'),
 				});
 				return;
 			}
-			const { canceled, result: group } = await this.$root.dialog({
+			const { canceled, result: group } = await os.dialog({
 				type: null,
 				title: this.$t('group'),
 				select: {
@@ -159,7 +175,9 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 			this.$router.push(`/my/messaging/group/${group.id}`);
-		}
+		},
+
+		acct
 	}
 });
 </script>
@@ -191,12 +209,12 @@ export default Vue.extend({
 			&:active {
 			}
 
-			&[data-is-read],
-			&[data-is-me] {
+			&.isRead,
+			&.isMe {
 				opacity: 0.8;
 			}
 
-			&:not([data-is-me]):not([data-is-read]) {
+			&:not(.isMe):not(.isRead) {
 				> div {
 					background-image: url("/assets/unread.svg");
 					background-repeat: no-repeat;
@@ -283,7 +301,7 @@ export default Vue.extend({
 	&.max-width_400px {
 		> .history {
 			> .message {
-				&:not([data-is-me]):not([data-is-read]) {
+				&:not(.isMe):not(.isRead) {
 					> div {
 						background-image: none;
 						border-left: solid 4px #3aa2dc;

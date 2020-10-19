@@ -19,9 +19,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		value: {
 			required: false
@@ -74,7 +75,7 @@ export default Vue.extend({
 		},
 		onInput(ev) {
 			this.changed = true;
-			this.$emit('input', ev.target.value);
+			this.$emit('update:value', ev.target.value);
 		}
 	}
 });

@@ -1,39 +1,37 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faSatelliteDish"/></portal>
-	<portal to="title">{{ channelId ? $t('_channel.edit') : $t('_channel.create') }}</portal>
-
-	<div class="_card">
+	<div class="_section">
 		<div class="_content">
-			<mk-input v-model="name">{{ $t('name') }}</mk-input>
+			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
 
-			<mk-textarea v-model="description">{{ $t('description') }}</mk-textarea>
+			<MkTextarea v-model:value="description">{{ $t('description') }}</MkTextarea>
 
 			<div class="banner">
-				<mk-button v-if="bannerId == null" @click="setBannerImage"><fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</mk-button>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<mk-button @click="removeBannerImage()"><fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</mk-button>
+					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</MkButton>
 				</div>
 			</div>
 		</div>
 		<div class="_footer">
-			<mk-button @click="save()" primary><fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</mk-button>
+			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</MkButton>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkTextarea from '../components/ui/textarea.vue';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import { selectFile } from '../scripts/select-file';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import { selectFile } from '@/scripts/select-file';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkTextarea, MkButton, MkInput,
 	},
@@ -47,6 +45,17 @@ export default Vue.extend({
 
 	data() {
 		return {
+			INFO: computed(() => this.channelId ? {
+				header: [{
+					title: this.$t('_channel.edit'),
+					icon: faSatelliteDish,
+				}],
+			} : {
+				header: [{
+					title: this.$t('_channel.create'),
+					icon: faSatelliteDish,
+				}],
+			}),
 			channel: null,
 			name: null,
 			description: null,
@@ -61,7 +70,7 @@ export default Vue.extend({
 			if (this.bannerId == null) {
 				this.bannerUrl = null;
 			} else {
-				this.bannerUrl = (await this.$root.api('drive/files/show', {
+				this.bannerUrl = (await os.api('drive/files/show', {
 					fileId: this.bannerId,
 				})).url;
 			}
@@ -70,7 +79,7 @@ export default Vue.extend({
 
 	async created() {
 		if (this.channelId) {
-			this.channel = await this.$root.api('channels/show', {
+			this.channel = await os.api('channels/show', {
 				channelId: this.channelId,
 			});
 
@@ -91,27 +100,21 @@ export default Vue.extend({
 
 			if (this.channelId) {
 				params.channelId = this.channelId;
-				this.$root.api('channels/update', params)
+				os.api('channels/update', params)
 				.then(channel => {
-					this.$root.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 				});
 			} else {
-				this.$root.api('channels/create', params)
+				os.api('channels/create', params)
 				.then(channel => {
-					this.$root.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
+					os.success();
 					this.$router.push(`/channels/${channel.id}`);
 				});
 			}
 		},
 
 		setBannerImage(e) {
-			selectFile(this, e.currentTarget || e.target, null, false).then(file => {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				this.bannerId = file.id;
 			});
 		},

@@ -135,6 +135,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	if (data.localOnly == null) data.localOnly = false;
 	if (data.channel != null) data.visibility = 'public';
 	if (data.channel != null) data.visibleUsers = [];
+	if (data.channel != null) data.localOnly = true;
 
 	// サイレンス
 	if (user.isSilenced && data.visibility === 'public' && data.channel == null) {

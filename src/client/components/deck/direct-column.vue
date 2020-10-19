@@ -1,19 +1,20 @@
 <template>
-<x-column :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
-	<template #header><fa :icon="faEnvelope" style="margin-right: 8px;"/>{{ column.name }}</template>
+<XColumn :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
+	<template #header><Fa :icon="faEnvelope" style="margin-right: 8px;"/>{{ column.name }}</template>
 
-	<x-notes :pagination="pagination" @before="before()" @after="after()"/>
-</x-column>
+	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
+</XColumn>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../../scripts/loading';
+import Progress from '@/scripts/loading';
 import XColumn from './column.vue';
 import XNotes from '../notes.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XColumn,
 		XNotes

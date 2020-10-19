@@ -1,22 +1,23 @@
 <template>
 <div class="drylbebk"
-	:data-draghover="draghover"
+	:class="{ draghover }"
 	@click="onClick"
 	@dragover.prevent.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<i v-if="folder == null"><fa :icon="faCloud"/></i>
+	<i v-if="folder == null"><Fa :icon="faCloud"/></i>
 	<span>{{ folder == null ? $t('drive') : folder.name }}</span>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		folder: {
 			type: Object,
@@ -58,8 +59,8 @@ export default Vue.extend({
 			}
 
 			const isFile = e.dataTransfer.items[0].kind == 'file';
-			const isDriveFile = e.dataTransfer.types[0] == 'mk_drive_file';
-			const isDriveFolder = e.dataTransfer.types[0] == 'mk_drive_folder';
+			const isDriveFile = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FILE_;
+			const isDriveFolder = e.dataTransfer.types[0] == _DATA_TRANSFER_DRIVE_FOLDER_;
 
 			if (isFile || isDriveFile || isDriveFolder) {
 				e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed == 'all' ? 'copy' : 'move';
@@ -90,11 +91,11 @@ export default Vue.extend({
 			}
 
 			//#region ドライブのファイル
-			const driveFile = e.dataTransfer.getData('mk_drive_file');
+			const driveFile = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 			if (driveFile != null && driveFile != '') {
 				const file = JSON.parse(driveFile);
 				this.browser.removeFile(file.id);
-				this.$root.api('drive/files/update', {
+				os.api('drive/files/update', {
 					fileId: file.id,
 					folderId: this.folder ? this.folder.id : null
 				});
@@ -102,13 +103,13 @@ export default Vue.extend({
 			//#endregion
 
 			//#region ドライブのフォルダ
-			const driveFolder = e.dataTransfer.getData('mk_drive_folder');
+			const driveFolder = e.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 			if (driveFolder != null && driveFolder != '') {
 				const folder = JSON.parse(driveFolder);
 				// 移動先が自分自身ならreject
 				if (this.folder && folder.id == this.folder.id) return;
 				this.browser.removeFolder(folder.id);
-				this.$root.api('drive/folders/update', {
+				os.api('drive/folders/update', {
 					folderId: folder.id,
 					parentId: this.folder ? this.folder.id : null
 				});
@@ -125,7 +126,7 @@ export default Vue.extend({
 		pointer-events: none;
 	}
 
-	&[data-draghover] {
+	&.draghover {
 		background: #eee;
 	}
 

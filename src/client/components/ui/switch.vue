@@ -26,12 +26,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({
-	model: {
-		prop: 'value',
-		event: 'change'
-	},
+import { defineComponent } from 'vue';
+
+export default defineComponent({
 	props: {
 		value: {
 			type: Boolean,
@@ -50,7 +47,7 @@ export default Vue.extend({
 	methods: {
 		toggle() {
 			if (this.disabled) return;
-			this.$emit('change', !this.checked);
+			this.$emit('update:value', !this.checked);
 		}
 	}
 });

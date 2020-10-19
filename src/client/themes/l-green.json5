@@ -1,0 +1,21 @@
+{
+	id: 'a55af79a-12bf-4f8d-a0cc-718957ad59b4',
+
+	name: 'Mi L Green',
+	author: 'syuilo',
+
+	base: 'light',
+
+	props: {
+		accent: '#8bcc4d',
+		bg: '#fff',
+		fg: '#5d5d5d',
+		divider: 'rgb(223, 223, 223)',
+		header: ':alpha<0.7<@bg',
+		navBg: '@bg',
+		panel: '@bg',
+		panelShadow: '" 0 0 0 1px var(--divider)',
+		panelHeaderDivider: '@divider',
+		messageBg: '#dedede',
+	},
+}

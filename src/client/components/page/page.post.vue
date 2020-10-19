@@ -1,18 +1,19 @@
 <template>
 <div class="ngbfujlo">
-	<mk-textarea :value="text" readonly style="margin: 0;"></mk-textarea>
-	<mk-button class="button" primary @click="post()" :disabled="posting || posted"><fa v-if="posted" :icon="faCheck"/><fa v-else :icon="faPaperPlane"/></mk-button>
+	<MkTextarea :value="text" readonly style="margin: 0;"></MkTextarea>
+	<MkButton class="button" primary @click="post()" :disabled="posting || posted"><Fa v-if="posted" :icon="faCheck"/><Fa v-else :icon="faPaperPlane"/></MkButton>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
-import { apiUrl } from '../../config';
+import { apiUrl } from '@/config';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkTextarea,
 		MkButton,
@@ -43,14 +44,7 @@ export default Vue.extend({
 	},
 	methods: {
 		upload() {
-			return new Promise((ok) => {
-				const dialog = this.$root.dialog({
-					type: 'waiting',
-					text: this.$t('uploading') + '...',
-					showOkButton: false,
-					showCancelButton: false,
-					cancelableByBgClick: false
-				});
+			const promise = new Promise((ok) => {
 				const canvas = this.hpml.canvases[this.value.canvasId];
 				canvas.toBlob(blob => {
 					const data = new FormData();
@@ -66,24 +60,21 @@ export default Vue.extend({
 					})
 					.then(response => response.json())
 					.then(f => {
-						dialog.close();
 						ok(f);
 					})
 				});
 			});
+			os.promiseDialog(promise);
+			return promise;
 		},
 		async post() {
 			this.posting = true;
 			const file = this.value.attachCanvasImage ? await this.upload() : null;
-			this.$root.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				text: this.text === '' ? null : this.text,
 				fileIds: file ? [file.id] : undefined,
 			}).then(() => {
 				this.posted = true;
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		}
 	}

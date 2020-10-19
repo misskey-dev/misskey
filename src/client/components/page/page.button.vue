@@ -1,14 +1,15 @@
 <template>
 <div>
-	<mk-button class="kudkigyw" @click="click()" :primary="value.primary">{{ hpml.interpolate(value.text) }}</mk-button>
+	<MkButton class="kudkigyw" @click="click()" :primary="value.primary">{{ hpml.interpolate(value.text) }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkButton from '../ui/button.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton
 	},
@@ -24,14 +25,14 @@ export default Vue.extend({
 		click() {
 			if (this.value.action === 'dialog') {
 				this.hpml.eval();
-				this.$root.dialog({
+				os.dialog({
 					text: this.hpml.interpolate(this.value.content)
 				});
 			} else if (this.value.action === 'resetRandom') {
 				this.hpml.updateRandomSeed(Math.random());
 				this.hpml.eval();
 			} else if (this.value.action === 'pushEvent') {
-				this.$root.api('page-push', {
+				os.api('page-push', {
 					pageId: this.hpml.page.id,
 					event: this.value.event,
 					...(this.value.var ? {
@@ -39,7 +40,7 @@ export default Vue.extend({
 					} : {})
 				});
 
-				this.$root.dialog({
+				os.dialog({
 					type: 'success',
 					text: this.hpml.interpolate(this.value.message)
 				});

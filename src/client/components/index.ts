@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { App } from 'vue';
 
 import mfm from './misskey-flavored-markdown.vue';
 import acct from './acct.vue';
@@ -12,14 +12,16 @@ import loading from './loading.vue';
 import error from './error.vue';
 import streamIndicator from './stream-indicator.vue';
 
-Vue.component('mfm', mfm);
-Vue.component('mk-acct', acct);
-Vue.component('mk-avatar', avatar);
-Vue.component('mk-emoji', emoji);
-Vue.component('mk-user-name', userName);
-Vue.component('mk-ellipsis', ellipsis);
-Vue.component('mk-time', time);
-Vue.component('mk-url', url);
-Vue.component('mk-loading', loading);
-Vue.component('mk-error', error);
-Vue.component('stream-indicator', streamIndicator);
+export default function(app: App) {
+	app.component('Mfm', mfm);
+	app.component('MkAcct', acct);
+	app.component('MkAvatar', avatar);
+	app.component('MkEmoji', emoji);
+	app.component('MkUserName', userName);
+	app.component('MkEllipsis', ellipsis);
+	app.component('MkTime', time);
+	app.component('MkUrl', url);
+	app.component('MkLoading', loading);
+	app.component('MkError', error);
+	app.component('StreamIndicator', streamIndicator);
+}

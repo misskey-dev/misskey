@@ -1,32 +1,33 @@
 <template>
 <div class="wrpstxzv" :class="{ children }" v-size="{ max: [450] }">
 	<div class="main">
-		<mk-avatar class="avatar" :user="note.user"/>
+		<MkAvatar class="avatar" :user="note.user"/>
 		<div class="body">
-			<x-note-header class="header" :note="note" :mini="true"/>
+			<XNoteHeader class="header" :note="note" :mini="true"/>
 			<div class="body">
 				<p v-if="note.cw != null" class="cw">
-					<mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis" />
-					<x-cw-button v-model="showContent" :note="note"/>
+					<Mfm v-if="note.cw != ''" class="text" :text="note.cw" :author="note.user" :i="$store.state.i" :custom-emojis="note.emojis" />
+					<XCwButton v-model:value="showContent" :note="note"/>
 				</p>
 				<div class="content" v-show="note.cw == null || showContent">
-					<x-sub-note-content class="text" :note="note"/>
+					<XSubNote-content class="text" :note="note"/>
 				</div>
 			</div>
 		</div>
 	</div>
-	<x-sub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :children="true"/>
+	<XSub v-for="reply in replies" :key="reply.id" :note="reply" class="reply" :detail="true" :children="true"/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
-	name: 'x-sub',
+export default defineComponent({
+	name: 'XSub',
 
 	components: {
 		XNoteHeader,
@@ -65,7 +66,7 @@ export default Vue.extend({
 
 	created() {
 		if (this.detail) {
-			this.$root.api('notes/children', {
+			os.api('notes/children', {
 				noteId: this.note.id,
 				limit: 5
 			}).then(replies => {

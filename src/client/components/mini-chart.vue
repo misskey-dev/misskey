@@ -30,10 +30,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		src: {
 			type: Array,
@@ -64,7 +65,7 @@ export default Vue.extend({
 		// Vueが何故かWatchを発動させない場合があるので
 		this.clock = setInterval(this.draw, 1000);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {
