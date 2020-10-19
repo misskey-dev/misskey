@@ -128,8 +128,7 @@ if (store.state.i != null) {
 	});
 } else {
 	// Get token from localStorage
-	const db = new VuexPersistDB();
-	let i = await db.get('i', 'store') as string;
+	let i = localStorage.getItem('i');
 
 	// 連携ログインの場合用にCookieを参照する
 	if (i == null || i === 'null') {
