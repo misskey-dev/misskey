@@ -1,9 +1,8 @@
 {
 	id: '8c539dc1-0fab-4d47-9194-39c508e9bfe1',
 
-	name: 'Black',
+	name: 'Battery Saver',
 	author: 'syuilo',
-	desc: 'Basic dark theme',
 
 	base: 'dark',
 

@@ -1,14 +1,14 @@
 {
 	id: '0ff48d43-aab3-46e7-ab12-8492110d2e2b',
 
-	name: 'Cafe',
+	name: 'Ai Apricot',
 	author: 'syuilo',
 
 	base: 'light',
 
 	props: {
 		accent: 'rgb(234, 154, 82)',
-		bg: '#DDD9D1',
+		bg: '#e6e5e2',
 		fg: 'rgb(149, 143, 139)',
 		panel: '#EEECE8',
 		renote: '@accent',
