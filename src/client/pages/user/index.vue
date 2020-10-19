@@ -85,8 +85,8 @@
 
 	<router-view :user="user"></router-view>
 	<template v-if="$route.name == 'user'">
-		<div class="_section" v-if="user.pinnedNotes.length > 0">
-			<div class="_content _vMargin">
+		<div class="_section">
+			<div class="_content _vMargin" v-if="user.pinnedNotes.length > 0">
 				<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
 			</div>
 			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-images">

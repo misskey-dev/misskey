@@ -585,6 +585,7 @@ regenerateLoginTokenDescription: "ログインに使用される内部トーク�
 setMultipleBySeparatingWithSpace: "スペースで区切って複数設定できます。"
 fileIdOrUrl: "ファイルIDまたはURL"
 chatOpenBehavior: "チャットを開くときの動作"
+sample: "サンプル"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"

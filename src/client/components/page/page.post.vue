@@ -44,14 +44,7 @@ export default defineComponent({
 	},
 	methods: {
 		upload() {
-			return new Promise((ok) => {
-				const dialog = os.dialog({
-					type: 'waiting',
-					text: this.$t('uploading') + '...',
-					showOkButton: false,
-					showCancelButton: false,
-					cancelableByBgClick: false
-				});
+			const promise = new Promise((ok) => {
 				const canvas = this.hpml.canvases[this.value.canvasId];
 				canvas.toBlob(blob => {
 					const data = new FormData();
@@ -67,11 +60,12 @@ export default defineComponent({
 					})
 					.then(response => response.json())
 					.then(f => {
-						dialog.close();
 						ok(f);
 					})
 				});
 			});
+			os.promiseDialog(promise);
+			return promise;
 		},
 		async post() {
 			this.posting = true;

@@ -12,7 +12,6 @@ import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { url } from '@/config';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {

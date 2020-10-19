@@ -1,8 +1,9 @@
 <template>
-<MkModal ref="modal" @click="type === 'success' ? done() : () => {}" @closed="$emit('closed')">
-	<div class="iuyakobc" :class="type">
-		<Fa class="icon" v-if="type === 'success'" :icon="faCheck"/>
-		<Fa class="icon" v-else-if="type === 'waiting'" :icon="faSpinner" pulse/>
+<MkModal ref="modal" @click="success ? done() : () => {}" @closed="$emit('closed')">
+	<div class="iuyakobc" :class="{ iconOnly: (text == null) || success }">
+		<Fa class="icon success" v-if="success" :icon="faCheck"/>
+		<Fa class="icon waiting" v-else :icon="faSpinner" pulse/>
+		<div class="text" v-if="text && !success">{{ text }}<MkEllipsis/></div>
 	</div>
 </MkModal>
 </template>
@@ -18,12 +19,18 @@ export default defineComponent({
 	},
 
 	props: {
-		type: {
-			required: true
+		success: {
+			type: Boolean,
+			required: true,
 		},
 		showing: {
-			required: true
-		}
+			type: Boolean,
+			required: true,
+		},
+		text: {
+			type: String,
+			required: false,
+		},
 	},
 
 	emits: ['done', 'closed'],
@@ -57,17 +64,32 @@ export default defineComponent({
 	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
-	width: initial;
-	font-size: 32px;
+	width: 250px;
 
-	&.success {
-		color: var(--accent);
+	&.iconOnly {
+		padding: 0;
+		width: 96px;
+		height: 96px;
+
+		> .icon {
+			height: 100%;
+		}
 	}
 
-	&.waiting {
-		> .icon {
+	> .icon {
+		font-size: 32px;
+
+		&.success {
+			color: var(--accent);
+		}
+
+		&.waiting {
 			opacity: 0.7;
 		}
+	}
+
+	> .text {
+		margin-top: 16px;
 	}
 }
 </style>

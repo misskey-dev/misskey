@@ -62,17 +62,39 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	return promise;
 }
 
-export function apiWithDialog(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined, onSuccess?: (res: any) => void, onFailure?: (e: Error) => void) {
-	const showing = ref(true);
-	const state = ref('waiting');
-
+export function apiWithDialog(
+	endpoint: string,
+	data: Record<string, any> = {},
+	token?: string | null | undefined,
+	onSuccess?: (res: any) => void,
+	onFailure?: (e: Error) => void,
+) {
 	const promise = api(endpoint, data, token);
+	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
+		dialog({
+			type: 'error',
+			text: e.message + '\n' + (e as any).id,
+		});
+	});
+
+	return promise;
+}
+
+export function promiseDialog<T extends Promise<any>>(
+	promise: T,
+	onSuccess?: (res: any) => void,
+	onFailure?: (e: Error) => void,
+	text?: string,
+): T {
+	const showing = ref(true);
+	const success = ref(false);
+
 	promise.then(res => {
 		if (onSuccess) {
 			showing.value = false;
 			onSuccess(res);
 		} else {
-			state.value = 'success';
+			success.value = true;
 			setTimeout(() => {
 				showing.value = false;
 			}, 1000);
@@ -89,9 +111,10 @@ export function apiWithDialog(endpoint: string, data: Record<string, any> = {}, 
 		}
 	});
 
-	popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
-		type: state,
-		showing: showing
+	popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
+		success: success,
+		showing: showing,
+		text: text,
 	}, {}, 'closed');
 
 	return promise;
@@ -161,8 +184,8 @@ export function success() {
 		setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
-			type: 'success',
+		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
+			success: true,
 			showing: showing
 		}, {
 			done: () => resolve(),
@@ -173,8 +196,8 @@ export function success() {
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		popup(defineAsyncComponent(() => import('@/components/icon-dialog.vue')), {
-			type: 'waiting',
+		popup(defineAsyncComponent(() => import('@/components/waiting-dialog.vue')), {
+			success: false,
 			showing: showing
 		}, {
 			done: () => resolve(),

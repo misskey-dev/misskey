@@ -708,6 +708,7 @@ export default defineComponent({
 			os.modalMenu([{
 				text: this.$t('unrenote'),
 				icon: faTrashAlt,
+				danger: true,
 				action: () => {
 					os.api('notes/delete', {
 						noteId: this.note.id

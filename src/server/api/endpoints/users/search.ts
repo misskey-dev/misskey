@@ -112,7 +112,7 @@ export default define(meta, async (ps, me) => {
 				.select('prof.userId')
 				.where('prof.userHost IS NOT NULL')
 				.andWhere('prof.description ilike :query', { query: '%' + ps.query + '%' });
-				
+
 			const otherUsers = await Users.createQueryBuilder('user')
 				.where(`user.id IN (${ profQuery2.getQuery() })`)
 				.setParameters(profQuery2.getParameters())

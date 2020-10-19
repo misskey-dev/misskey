@@ -48,27 +48,18 @@ export async function search(q?: string | null | undefined) {
 	}
 
 	if (q.startsWith('https://')) {
-		const dialog = os.dialog({
-			type: 'waiting',
-			text: i18n.global.t('fetchingAsApObject') + '...',
-			showOkButton: false,
-			showCancelButton: false,
-			cancelableByBgClick: false
+		const promise = os.api('ap/show', {
+			uri: q
 		});
 
-		try {
-			const res = await os.api('ap/show', {
-				uri: q
-			});
-			dialog.cancel();
-			if (res.type === 'User') {
-				router.push(`/@${res.object.username}@${res.object.host}`);
-			} else if (res.type === 'Note') {
-				router.push(`/notes/${res.object.id}`);
-			}
-		} catch (e) {
-			dialog.cancel();
-			// TODO: Show error
+		os.promiseDialog(promise, null, null, i18n.global.t('fetchingAsApObject'));
+
+		const res = await promise;
+
+		if (res.type === 'User') {
+			router.push(`/@${res.object.username}@${res.object.host}`);
+		} else if (res.type === 'Note') {
+			router.push(`/notes/${res.object.id}`);
 		}
 
 		return;

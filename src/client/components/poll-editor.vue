@@ -57,7 +57,6 @@ import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
 import MkSwitch from './ui/switch.vue';
 import MkButton from './ui/button.vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -78,8 +77,8 @@ export default defineComponent({
 
 	data() {
 		return {
-			choices: ['', ''],
-			multiple: false,
+			choices: this.poll.choices,
+			multiple: this.poll.multiple,
 			expiration: 'infinite',
 			atDate: formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'),
 			atTime: '00:00',
@@ -90,26 +89,6 @@ export default defineComponent({
 	},
 
 	watch: {
-		poll: {
-			handler(poll) {
-				if (poll == null) return;
-				if (poll.choices.length == 0) return;
-				this.choices = poll.choices;
-				if (poll.choices.length == 1) this.choices = this.choices.concat('');
-				this.multiple = poll.multiple;
-				if (poll.expiresAt) {
-					this.expiration = 'at';
-					this.atDate = this.atTime = poll.expiresAt;
-				} else if (typeof poll.expiredAfter === 'number') {
-					this.expiration = 'after';
-					this.after = poll.expiredAfter;
-				} else {
-					this.expiration = 'infinite';
-				}
-			},
-			deep: true,
-			immediate: true
-		},
 		choices: {
 			handler() {
 				this.$emit('updated', this.get());
@@ -136,6 +115,24 @@ export default defineComponent({
 				this.$emit('updated', this.get());
 			},
 		},
+		unit: {
+			handler() {
+				this.$emit('updated', this.get());
+			},
+		},
+	},
+
+	created() {
+		const poll = this.poll;
+		if (poll.expiresAt) {
+			this.expiration = 'at';
+			this.atDate = this.atTime = poll.expiresAt;
+		} else if (typeof poll.expiredAfter === 'number') {
+			this.expiration = 'after';
+			this.after = poll.expiredAfter / 1000;
+		} else {
+			this.expiration = 'infinite';
+		}
 	},
 
 	methods: {

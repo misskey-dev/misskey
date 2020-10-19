@@ -344,6 +344,7 @@ export default defineComponent({
 		display: flex;
 		z-index: 2;
 		line-height: $header-height;
+		height: $header-height;
 		padding: 0 16px;
 		font-size: 0.9em;
 		color: var(--panelHeaderFg);

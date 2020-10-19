@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
@@ -66,7 +66,8 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XContainer, MkTextarea
+		XContainer, MkTextarea,
+		XV: defineAsyncComponent(() => import('./page-editor.script-block.vue')),
 	},
 
 	inject: ['getScriptBlockList'],
@@ -133,10 +134,6 @@ export default defineComponent({
 			},
 			deep: true
 		}
-	},
-
-	beforeCreate() {
-		this.$options.components.XV = require('./page-editor.script-block.vue').default;
 	},
 
 	created() {

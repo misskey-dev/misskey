@@ -44,6 +44,7 @@ export default defineComponent({
 				this.exportTarget == 'following' ? 'i/export-following' :
 				this.exportTarget == 'blocking' ? 'i/export-blocking' :
 				this.exportTarget == 'user-lists' ? 'i/export-user-lists' :
+				this.exportTarget == 'mute' ? 'i/export-mute' :
 				null, {})
 			.then(() => {
 				os.dialog({
@@ -69,31 +70,15 @@ export default defineComponent({
 			data.append('file', file);
 			data.append('i', this.$store.state.i.token);
 
-			const dialog = os.dialog({
-				type: 'waiting',
-				text: this.$t('uploading') + '...',
-				showOkButton: false,
-				showCancelButton: false,
-				cancelableByBgClick: false
-			});
-
-			fetch(apiUrl + '/drive/files/create', {
+			const promise = fetch(apiUrl + '/drive/files/create', {
 				method: 'POST',
 				body: data
 			})
 			.then(response => response.json())
 			.then(f => {
 				this.reqImport(f);
-			})
-			.catch(e => {
-				os.dialog({
-					type: 'error',
-					text: e
-				});
-			})
-			.finally(() => {
-				dialog.close();
 			});
+			os.promiseDialog(promise);
 		},
 
 		reqImport(file) {

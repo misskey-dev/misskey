@@ -1,5 +1,5 @@
 <template>
-<XWindow ref="window" :initial-width="400" :initial-height="450" :can-resize="true" @closed="$emit('closed')">
+<XWindow ref="window" :initial-width="400" :initial-height="500" :can-resize="true" @closed="$emit('closed')">
 	<template #header>
 		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>

@@ -1,5 +1,5 @@
 <template>
-<div class="thvuemwp" :class="{ isMe }">
+<div class="thvuemwp" :class="{ isMe }" v-size="{ max: [400, 500] }">
 	<MkAvatar class="avatar" :user="message.user"/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }" >
@@ -92,11 +92,6 @@ export default defineComponent({
 		width: 54px;
 		height: 54px;
 		transition: all 0.1s ease;
-
-		@media (max-width: 400px) {
-			width: 48px;
-			height: 48px;
-		}
 	}
 
 	> .content {
@@ -174,14 +169,6 @@ export default defineComponent({
 					word-break: break-word;
 					font-size: 1em;
 					color: rgba(#000, 0.8);
-
-					@media (max-width: 500px) {
-						padding: 8px 16px;
-					}
-
-					@media (max-width: 400px) {
-						font-size: 0.9em;
-					}
 
 					& + .file {
 						> a {
@@ -322,6 +309,35 @@ export default defineComponent({
 
 				> .read {
 					user-select: none;
+				}
+			}
+		}
+	}
+
+	&.max-width_400px {
+		> .avatar {
+			width: 48px;
+			height: 48px;
+		}
+
+		> .content {
+			> .balloon {
+				> .content {
+					> .text {
+						font-size: 0.9em;
+					}
+				}
+			}
+		}
+	}
+
+	&.max-width_500px {
+		> .content {
+			> .balloon {
+				> .content {
+					> .text {
+						padding: 8px 16px;
+					}
 				}
 			}
 		}
