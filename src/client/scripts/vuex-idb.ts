@@ -5,6 +5,8 @@
 	https://github.com/jakearchibald/idb-keyval/blob/master/LICENCE
 */
 
+import * as deepcopy from 'deepcopy';
+
 // 現在使用しているストアを列挙。
 // storeストアは通常のstateの保存に使用し、残りはmodule
 const persistStores = ['store', 'device', 'deviceUser', 'settings', 'instance'] as const;
@@ -93,7 +95,8 @@ export class VuexPersistDB {
 		const tx = await this.openTransaction(storename, 'readwrite');
 		const st = tx.objectStore(storename);
 		for (const [key, value] of map) {
-			st.put(value, key);
+			// cloneできないデータは保存できないので、とりあえずdeepcopyで整える
+			st.put(deepcopy(value), key);
 		}
 		return new Promise((resolve, reject) => {
 			tx.oncomplete = () => resolve();

@@ -2,6 +2,8 @@ import { Store } from 'idb-keyval';
 // Provide functions from idb-keyval
 export { get, set, del, clear, keys } from 'idb-keyval';
 
+import * as deepcopy from 'deepcopy';
+
 //#region Construct DB
 export const clientDb = {
 	i18n: new Store('MisskeyClient', 'i18n')
@@ -51,7 +53,8 @@ export async function bulkSet(map: [IDBValidKey, any][], store: Store): Promise<
 	const tx = await openTransaction(store, 'readwrite');
 	const st = tx.objectStore(store.storeName);
 	for (const [key, value] of map) {
-		st.put(value, key);
+		// cloneできないデータは保存できないので、とりあえずdeepcopyで整える
+		st.put(deepcopy(value), key);
 	}
 	return new Promise((resolve, reject) => {
 		tx.oncomplete = () => resolve();
