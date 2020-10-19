@@ -142,6 +142,15 @@ latestRequestSentAt: "Последний запрос отправлен"
 charts: "Диаграммы"
 perHour: "Каждый час"
 perDay: "Каждый день"
+monitor: "Монитор"
+jobQueue: "Очередь заданий"
+cpuAndMemory: "CPU и память"
+network: "Сеть"
+disk: "Диск"
+instanceInfo: "Информация об узле"
+statistics: "Статистика"
+clearQueue: "Очистить очередь"
+clearQueueConfirmTitle: "Очистить очередь?"
 remove: "Удалить"
 nsfw: "NSFW"
 userList: "Списки"
@@ -170,6 +179,9 @@ _exportOrImport:
   muteList: "Приглушить"
   blockingList: "Заблокировать"
   userLists: "Списки"
+_rooms:
+  _furnitures:
+    monitor: "Монитор"
 _pages:
   script:
     categories:
