@@ -19,6 +19,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, sound, isMobile, dialog } from '@/os';
 import { vuexPersistAndShare } from './scripts/vuex-persist-and-share';
+import { VuexPersistDB } from './scripts/vuex-idb';
 
 console.info(`Misskey v${version}`);
 
@@ -47,9 +48,6 @@ if (_DEV_) {
 		*/
 	});
 }
-
-// vuex永続化・共有スクリプトを起動しておく
-vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'], []);
 
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
@@ -114,6 +112,9 @@ const fetchme = (token) => new Promise((done, fail) => {
 	.catch(fail);
 });
 
+// vuex永続化・共有
+await vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'], []);
+
 // キャッシュがあったとき
 if (store.state.i != null) {
 	// TODO: i.token が null になるケースってどんな時だっけ？
@@ -127,7 +128,8 @@ if (store.state.i != null) {
 	});
 } else {
 	// Get token from localStorage
-	let i = localStorage.getItem('i');
+	const db = new VuexPersistDB();
+	let i = await db.get('i', 'store') as string;
 
 	// 連携ログインの場合用にCookieを参照する
 	if (i == null || i === 'null') {

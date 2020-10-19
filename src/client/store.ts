@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 import * as nestedProperty from 'nested-property';
 import { api } from '@/os';
 import { erase } from '../prelude/array';
+import { VuexPersistDB } from './scripts/vuex-idb';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -127,7 +128,8 @@ export const store = createStore({
 			ctx.commit('settings/init', i.clientData);
 			ctx.commit('deviceUser/init', ctx.state.device.userData[i.id] || {});
 			// TODO: ローカルストレージを消してページリロードしたときは i が無いのでその場合のハンドリングをよしなにやる
-			await ctx.dispatch('addAcount', { id: i.id, i: localStorage.getItem('i') });
+			const db = new VuexPersistDB();
+			await ctx.dispatch('addAcount', { id: i.id, i: await db.get('i', 'store') });
 		},
 
 		addAcount(ctx, info) {
