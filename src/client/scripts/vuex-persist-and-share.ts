@@ -1,16 +1,16 @@
-import { Store, MutationPayload } from 'vuex';
+import { store } from '../store';
+import { MutationPayload } from 'vuex';
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
 import { VuexPersistDB, VuexPersistStore } from './vuex-idb';
 
 /**
  * Vuexのstate永続化を行い、moduleのcommitをタブ間で共有します
- * @param store vuexインスタンス
  * @param states 永続化するルートのstate
  * @param modules 永続化するmodule
  * @param ignoreMutations 共有しないcommit (mutation type)
  */
-export async function vuexPersistAndShare<State>(store: Store<State>, states: string[], modules: string[], ignoreMutations: string[]) {
+export async function vuexPersistAndShare(states: string[], modules: string[], ignoreMutations: string[]) {
 	const persistDB = new VuexPersistDB();
 	const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
 		webWorkerSupport: false

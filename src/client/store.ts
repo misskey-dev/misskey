@@ -3,6 +3,7 @@ import * as nestedProperty from 'nested-property';
 import { api } from '@/os';
 import { erase } from '../prelude/array';
 import { VuexPersistDB } from './scripts/vuex-idb';
+import { vuexPersistAndShare } from './scripts/vuex-persist-and-share';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -459,3 +460,5 @@ export const store = createStore({
 		}
 	}
 });
+
+await vuexPersistAndShare(['i'], ['device', 'deviceUser', 'settings', 'instance'], []);

@@ -18,8 +18,6 @@ import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, sound, isMobile, dialog } from '@/os';
-import { vuexPersistAndShare } from './scripts/vuex-persist-and-share';
-import { VuexPersistDB } from './scripts/vuex-idb';
 
 console.info(`Misskey v${version}`);
 
@@ -111,9 +109,6 @@ const fetchme = (token) => new Promise((done, fail) => {
 	})
 	.catch(fail);
 });
-
-// vuex永続化・共有
-await vuexPersistAndShare(store, ['i'], ['device', 'deviceUser', 'settings', 'instance'], []);
 
 // キャッシュがあったとき
 if (store.state.i != null) {
