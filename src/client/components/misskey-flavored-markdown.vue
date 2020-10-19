@@ -38,7 +38,9 @@ export default defineComponent({
 	}
 
 	> ::v-deep(code) {
+		font-size: 0.8em;
 		word-break: break-all;
+		padding: 4px 6px;
 	}
 
 	::v-deep(.title) {
