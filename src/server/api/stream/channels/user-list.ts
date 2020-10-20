@@ -43,6 +43,14 @@ export default class extends Channel {
 		});
 
 		this.listUsers = users.map(x => x.userId);
+
+		//ミュートユーザーの中でも、リストに含まれている場合は除外する
+		for (let i = 0; i < this.muting.length; i++) {
+			const muteeId = this.muting[i];
+			if (this.listUsers.includes(muteeId)) {
+				this.muting.splice(i, 1);
+			}
+		}
 	}
 
 	@autobind
@@ -72,7 +80,7 @@ export default class extends Channel {
 			}
 		}
 
-		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
+		// 流れてきたNoteがミュートしているユーザーに関わるものだったら無視する
 		if (isMutedUserRelated(note, this.muting)) return;
 
 		this.send('note', note);

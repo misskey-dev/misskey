@@ -134,7 +134,7 @@ export default define(meta, async (ps, me) => {
 		.leftJoinAndSelect('note.user', 'user');
 
 	generateVisibilityQuery(query, me);
-	if (me) generateMutedUserQuery(query, me, user);
+	if (me) generateMutedUserQuery(query, me, {exclude: user});
 
 	if (ps.withFiles) {
 		query.andWhere('note.fileIds != \'{}\'');

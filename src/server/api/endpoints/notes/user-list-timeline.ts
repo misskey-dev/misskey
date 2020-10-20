@@ -5,7 +5,7 @@ import { ApiError } from '../../error';
 import { UserLists, UserListJoinings, Notes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
-import { generateMuteQuery } from '../../common/generate-mute-query';
+import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { activeUsersChart } from '../../../../services/chart';
 import { Brackets } from 'typeorm';
 
@@ -135,7 +135,7 @@ export default define(meta, async (ps, user) => {
 		.setParameters(listQuery.getParameters());
 
 	generateVisibilityQuery(query, user);
-	generateMuteQuery(query, user);
+	generateMutedUserQuery(query, user, { whitelist: listQuery });
 
 	if (ps.includeMyRenotes === false) {
 		query.andWhere(new Brackets(qb => {
