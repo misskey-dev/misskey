@@ -5,7 +5,8 @@ import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
 	desc: {
-		'ja-JP': '招待コードを発行します。'
+		'ja-JP': '招待コードを発行します。',
+		'en-US': 'Issue an invitation code.'
 	},
 
 	tags: ['admin'],
@@ -13,7 +14,20 @@ export const meta = {
 	requireCredential: true as const,
 	requireModerator: true,
 
-	params: {}
+	params: {},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			code: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				description: 'Give this code to the applicant for registration.',
+				example: '2ERUA5VR'
+			}
+		}
+	}
 };
 
 export default define(meta, async () => {

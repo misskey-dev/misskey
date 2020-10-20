@@ -180,7 +180,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 					}
 				},
 				'403': {
-					description: 'Forbiddon error',
+					description: 'Forbidden error',
 					content: {
 						'application/json': {
 							schema: {
