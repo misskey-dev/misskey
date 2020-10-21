@@ -320,22 +320,22 @@ export const packedUserSchema = {
 			description: 'The unique identifier for this User.',
 			example: 'xxxxxxxxxx',
 		},
-		username: {
-			type: 'string' as const,
-			nullable: false as const, optional: false as const,
-			description: 'The screen name, handle, or alias that this user identifies themselves with.',
-			example: 'ai'
-		},
 		name: {
 			type: 'string' as const,
 			nullable: true as const, optional: false as const,
 			description: 'The name of the user, as they’ve defined it.',
 			example: '藍'
 		},
-		url: {
+		username: {
 			type: 'string' as const,
-			format: 'url',
-			nullable: true as const, optional: true as const,
+			nullable: false as const, optional: false as const,
+			description: 'The screen name, handle, or alias that this user identifies themselves with.',
+			example: 'ai'
+		},
+		host: {
+			type: 'string' as const,
+			nullable: true as const, optional: false as const,
+			example: 'misskey.example.com'
 		},
 		avatarUrl: {
 			type: 'string' as const,
@@ -346,34 +346,68 @@ export const packedUserSchema = {
 			type: 'any' as const,
 			nullable: true as const, optional: false as const,
 		},
-		bannerUrl: {
+		avatarColor: {
+			type: 'any' as const,
+			nullable: true as const, optional: false as const,
+			default: null
+		},
+		isAdmin: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: false as const,
+			description: 'Whether this account is the admin.',
+			default: false
+		},
+		isModerator: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: false as const,
+			description: 'Whether this account is a moderator.',
+			default: false
+		},
+		isBot: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+			description: 'Whether this account is a bot.'
+		},
+		isCat: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+			description: 'Whether this account is a cat.'
+		},
+		emojis: {
+			type: 'array' as const,
+			nullable: false as const, optional: false as const,
+			items: {
+				type: 'object' as const,
+				nullable: false as const, optional: false as const,
+				properties: {
+					name: {
+						type: 'string' as const,
+						nullable: false as const, optional: false as const
+					},
+					host: {
+						type: 'string' as const,
+						nullable: true as const, optional: false as const
+					},
+					url: {
+						type: 'string' as const,
+						nullable: false as const, optional: false as const,
+						format: 'url'
+					},
+					aliases: {
+						type: 'array' as const,
+						nullable: false as const, optional: false as const,
+						items: {
+							type: 'string' as const,
+							nullable: false as const, optional: false as const
+						}
+					}
+				}
+			}
+		},
+		url: {
 			type: 'string' as const,
 			format: 'url',
 			nullable: true as const, optional: true as const,
-		},
-		bannerBlurhash: {
-			type: 'any' as const,
-			nullable: true as const, optional: true as const,
-		},
-		emojis: {
-			type: 'any' as const,
-			nullable: true as const, optional: false as const,
-		},
-		host: {
-			type: 'string' as const,
-			nullable: true as const, optional: false as const,
-			example: 'misskey.example.com'
-		},
-		description: {
-			type: 'string' as const,
-			nullable: true as const, optional: true as const,
-			description: 'The user-defined UTF-8 string describing their account.',
-			example: 'Hi masters, I am Ai!'
-		},
-		birthday: {
-			type: 'string' as const,
-			nullable: true as const, optional: true as const,
-			example: '2018-03-12'
 		},
 		createdAt: {
 			type: 'string' as const,
@@ -386,9 +420,62 @@ export const packedUserSchema = {
 			nullable: true as const, optional: true as const,
 			format: 'date-time',
 		},
+		bannerUrl: {
+			type: 'string' as const,
+			format: 'url',
+			nullable: true as const, optional: true as const,
+		},
+		bannerBlurhash: {
+			type: 'any' as const,
+			nullable: true as const, optional: true as const,
+		},
+		bannerColor: {
+			type: 'any' as const,
+			nullable: true as const, optional: true as const,
+			default: null
+		},
+		isLocked: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		isSuspended: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: false as const,
+			example: false
+		},
+		description: {
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
+			description: 'The user-defined UTF-8 string describing their account.',
+			example: 'Hi masters, I am Ai!'
+		},
 		location: {
 			type: 'string' as const,
 			nullable: true as const, optional: true as const,
+		},
+		birthday: {
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
+			example: '2018-03-12'
+		},
+		fields: {
+			type: 'array' as const,
+			nullable: false as const, optional: false as const,
+			items: {
+				type: 'object' as const,
+				nullable: false as const, optional: false as const,
+				properties: {
+					name: {
+						type: 'string' as const,
+						nullable: false as const, optional: false as const
+					},
+					value: {
+						type: 'string' as const,
+						nullable: false as const, optional: false as const
+					}
+				},
+				maxLength: 4
+			}
 		},
 		followersCount: {
 			type: 'number' as const,
@@ -404,11 +491,6 @@ export const packedUserSchema = {
 			type: 'number' as const,
 			nullable: false as const, optional: true as const,
 			description: 'The number of Notes (including renotes) issued by the user.'
-		},
-		isBot: {
-			type: 'boolean' as const,
-			nullable: false as const, optional: true as const,
-			description: 'Whether this account is a bot.'
 		},
 		pinnedNoteIds: {
 			type: 'array' as const,
@@ -428,24 +510,59 @@ export const packedUserSchema = {
 				ref: 'Note'
 			}
 		},
-		isCat: {
-			type: 'boolean' as const,
-			nullable: false as const, optional: true as const,
-			description: 'Whether this account is a cat.'
+		pinnedPageId: {
+			type: 'string' as const,
+			nullable: true as const, optional: false as const
 		},
-		isAdmin: {
-			type: 'boolean' as const,
-			nullable: false as const, optional: true as const,
-			description: 'Whether this account is the admin.'
+		pinnedPage: {
+			type: 'object' as const,
+			nullable: true as const, optional: false as const,
+			ref: 'Page'
 		},
-		isModerator: {
+		twoFactorEnabled: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const,
-			description: 'Whether this account is a moderator.'
+			nullable: false as const, optional: false as const,
+			default: false
 		},
-		isLocked: {
+		usePasswordLessLogin: {
 			type: 'boolean' as const,
-			nullable: false as const, optional: true as const,
+			nullable: false as const, optional: false as const,
+			default: false
+		},
+		securityKeys: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: false as const,
+			default: false
+		},
+		avatarId: {
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
+			format: 'id'
+		},
+		bannerId: {
+			type: 'string' as const,
+			nullable: true as const, optional: true as const,
+			format: 'id'
+		},
+		autoWatch: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const
+		},
+		injectFeaturedNote: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const
+		},
+		alwaysMarkNsfw: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const
+		},
+		carefulBot: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const
+		},
+		autoAcceptFollowed: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const
 		},
 		hasUnreadSpecifiedNotes: {
 			type: 'boolean' as const,
@@ -455,5 +572,41 @@ export const packedUserSchema = {
 			type: 'boolean' as const,
 			nullable: false as const, optional: true as const,
 		},
+		hasUnreadAnnouncement: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		hasUnreadAntenna: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		hasUnreadChannel: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		hasUnreadMessagingMessage: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		hasUnreadNotification: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		hasPendingReceivedFollowRequest: {
+			type: 'boolean' as const,
+			nullable: false as const, optional: true as const,
+		},
+		integrations: {
+			type: 'object' as const,
+			nullable: false as const, optional: true as const
+		},
+		mutedWords: {
+			type: 'array' as const,
+			nullable: false as const, optional: true as const
+		},
+		mutingNotificationTypes: {
+			type: 'array' as const,
+			nullable: false as const, optional: true as const
+		}
 	},
 };

@@ -3,6 +3,11 @@ import define from '../../define';
 import { Users } from '../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': '管理者用のユーザー一覧を表示します。',
+		'en-US': 'Displays a list of users for administrators.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -60,6 +65,16 @@ export const meta = {
 		hostname: {
 			validator: $.optional.str,
 			default: null
+		}
+	},
+
+	res: {
+		type: 'array' as const,
+		nullable: false as const, optional: false as const,
+		items: {
+			type: 'object' as const,
+			nullable: false as const, optional: false as const,
+			ref: 'User'
 		}
 	}
 };
