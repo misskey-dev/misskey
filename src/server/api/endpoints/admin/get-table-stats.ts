@@ -3,7 +3,7 @@ import { getConnection } from 'typeorm';
 
 export const meta = {
 	requireCredential: true as const,
-	requireAdmin: true,
+	requireModerator: true,
 
 	desc: {
 		'ja-JP': 'テーブル情報を取得します。',
