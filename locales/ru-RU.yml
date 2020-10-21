@@ -289,6 +289,12 @@ enableRecaptcha: "Включить reCAPTCHA"
 recaptchaSiteKey: "Ключ сайта"
 recaptchaSecretKey: "Секретный ключ"
 antennas: "Антенны"
+manageAntennas: "Настройки антенн"
+name: "Имя"
+antennaSource: "Источник антенны"
+antennaKeywords: "Ключевые слова"
+antennaExcludeKeywords: "Исключения"
+antennaKeywordsDescription: "Разделяйте пробелами для условия \"И\". Разделяйте переводом строки для \"ИЛИ\"."
 connectedTo: "Вы подключены к следующим аккаунтам"
 withFiles: "с файлами"
 silence: "Заглушить"
@@ -354,6 +360,8 @@ smtpUser: "Имя пользователя"
 smtpPass: "Пароль"
 _sidebar:
   icon: "Иконка"
+_wordMute:
+  muteWordsDescription: "Разделяйте пробелами для условия \"И\". Разделяйте переводом строки для \"ИЛИ\"."
 _theme:
   keys:
     mention: "Упоминание"
@@ -373,6 +381,7 @@ _visibility:
   home: "Главная"
   followers: "Подписчики"
 _profile:
+  name: "Имя"
   username: "Имя пользователя"
 _exportOrImport:
   followingList: "Подписки"
