@@ -3,7 +3,14 @@ import { Users } from '../../../../../models';
 import { signup } from '../../../common/signup';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'アカウントを作成します。',
+		'en-US': 'Create a account.'
+	},
+
 	tags: ['admin'],
+
+	// TODO: requireCredentialやrequireModeratorが必要だと思われる by YuzuRyo61
 
 	params: {
 		username: {
@@ -12,6 +19,19 @@ export const meta = {
 
 		password: {
 			validator: Users.validatePassword,
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User',
+		properties: {
+			token: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				description: 'Token to access this user.'
+			}
 		}
 	}
 };
