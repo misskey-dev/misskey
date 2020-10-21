@@ -33,7 +33,11 @@ export const meta = {
 					}
 				]
 			}
-		}
+		},
+		example: [[
+			'example.com',
+			12
+		]]
 	}
 };
 

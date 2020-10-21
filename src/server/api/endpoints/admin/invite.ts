@@ -24,7 +24,9 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				description: 'Give this code to the applicant for registration.',
-				example: '2ERUA5VR'
+				example: '2ERUA5VR',
+				maxLength: 8,
+				minLength: 8
 			}
 		}
 	}

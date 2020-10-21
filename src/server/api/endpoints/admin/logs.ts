@@ -4,6 +4,11 @@ import { Logs } from '../../../../models';
 import { Brackets } from 'typeorm';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'ログを表示します。',
+		'en-US': 'Show logs.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -23,6 +28,60 @@ export const meta = {
 		domain: {
 			validator: $.optional.nullable.str,
 			default: null as any
+		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id',
+					description: 'The unique identifier for this log.',
+					example: 'xxxxxxxxxx',
+				},
+				createdAt: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'date-time',
+					description: 'The date that the Drive file was created on Misskey.'
+				},
+				domain: {
+					type: 'array' as const,
+					optional: false as const, nullable: false as const,
+					items: {
+						type: 'string' as const,
+						optional: true as const, nullable: false as const
+					}
+				},
+				level: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				},
+				worker: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				},
+				machine: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					description: 'The name of the running machine.'
+				},
+				message: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					description: 'Log body.'
+				},
+				data: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const
+				}
+			}
 		}
 	}
 };
