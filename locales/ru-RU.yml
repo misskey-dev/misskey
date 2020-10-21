@@ -206,9 +206,25 @@ upload: "Загрузить"
 fromDrive: "С диска"
 fromUrl: "URL-адрес"
 uploadFromUrl: "Загрузить по ссылке"
+uploadFromUrlMayTakeTime: "Загрузка может занять некоторое время."
+explore: "Обзор"
+games: "Игры Misskey"
+messageRead: "Прочитанных"
+noMoreHistory: "Истории больше нет"
+startMessaging: "Отправить сообщение"
+agreeTo: "Я согласен с {0}"
+tos: "Пользовательское соглашение"
+start: "Начать"
+home: "Главная"
+activity: "Активность"
+images: "Изображение"
+birthday: "День рождения"
+yearsOld: "{age} лет"
 registeredDate: "Дата регистрации"
 location: "Местоположение"
 theme: "Тема"
+themeForLightMode: "Темы для использования в световом режиме"
+themeForDarkMode: "Темы для использования в темном режиме"
 light: "Светлый"
 dark: "Тёмный"
 lightThemes: "Светлые темы"
@@ -227,6 +243,7 @@ renameFolder: "Переименовать папку"
 deleteFolder: "Удалить папку"
 addFile: "Добавить файл"
 emptyDrive: "Диск пуст"
+emptyFolder: "Папка пуста"
 unableToDelete: "Удаление невозможно"
 inputNewFileName: "Введите имя нового файла"
 inputNewFolderName: "Пожалуйста, введите новое имя папки!"
@@ -308,10 +325,12 @@ _sfx:
 _widgets:
   notifications: "Уведомления"
   timeline: "Лента"
+  activity: "Активность"
   federation: "Федиверс"
 _cw:
   show: "Показать еще"
 _visibility:
+  home: "Главная"
   followers: "Подписчики"
 _profile:
   username: "Имя пользователя"
@@ -320,12 +339,16 @@ _exportOrImport:
   muteList: "Приглушить"
   blockingList: "Заблокировать"
   userLists: "Списки"
+_timelines:
+  home: "Главная"
 _rooms:
   _roomType:
     default: "По умолчанию"
   _furnitures:
     monitor: "Монитор"
 _pages:
+  blocks:
+    image: "Изображение"
   script:
     categories:
       list: "Списки"
