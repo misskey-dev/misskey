@@ -321,6 +321,7 @@ connectedTo: "Вы подключены к следующим аккаунтам
 withFiles: "с файлами"
 silence: "Заглушить"
 popularUsers: "Популярные пользователи"
+recentlyUpdatedUsers: "Недавно активные"
 recentlyRegisteredUsers: "Недавно зарегистрированные пользователи"
 recentlyDiscoveredUsers: "Недавно обнаруженные пользователи"
 exploreFediverse: "Исследуйте Fediverse"
