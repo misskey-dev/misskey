@@ -396,6 +396,7 @@ text: "Текст"
 enable: "Включить."
 next: "Следующий"
 retype: "Введите повторно"
+noteOf: "Посты {user}"
 inviteToGroup: "Пригласить в группу"
 maxNoteTextLength: "Максимальная длина текста"
 quoteQuestion: "Хочешь добавить цитату?"
@@ -446,6 +447,7 @@ appearance: "Внешний вид"
 clientSettings: "Настройки клиента"
 accountSettings: "Настройки учетной записи"
 promotion: "Опубликовано"
+promote: "Продвинуть"
 numberOfDays: "Количество дней"
 hideThisNote: "Спрятать эту запись"
 objectStorage: "Хранилище"
@@ -664,8 +666,8 @@ _widgets:
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
-  chars: "Символ {count}"
-  files: "Файл {count}"
+  chars: "{count} символов"
+  files: "{count} файлов"
 _poll:
   noOnlyOneChoice: "Нужно как минимум два варианта."
   choiceN: "Выбрать{n}"
@@ -707,6 +709,7 @@ _exportOrImport:
 _timelines:
   home: "Главная"
 _rooms:
+  roomOf: "Комната {user}"
   _roomType:
     default: "По умолчанию"
   _furnitures:
@@ -755,6 +758,11 @@ _pages:
       _action:
         _dialog:
           content: "Содержание"
+        _pushEvent:
+          no-variable: "Не найдено"
+        callAiScript: "Справка AiScript"
+        _callAiScript:
+          functionName: "Имя функции"
     _radioButton:
       name: "Имя переменной"
       title: "Заголовок."
@@ -840,6 +848,7 @@ _pages:
         arg1: "Текст"
       _numberToString:
         arg1: "Номер"
+      ref: "Переменная"
       aiScriptVar: "Переменная AiScript"
       fn: "функции"
       _fn:
