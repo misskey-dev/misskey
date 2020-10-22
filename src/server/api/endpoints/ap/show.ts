@@ -16,7 +16,8 @@ export const meta = {
 	tags: ['federation'],
 
 	desc: {
-		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。'
+		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。',
+		'en-US': 'Browse to the ActivityPub object by specifying the URI.'
 	},
 
 	requireCredential: false as const,
@@ -36,6 +37,11 @@ export const meta = {
 			code: 'NO_SUCH_OBJECT',
 			id: 'dc94d745-1262-4e63-a17d-fecaa57efc82'
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const
 	}
 };
 
