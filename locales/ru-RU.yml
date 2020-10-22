@@ -509,6 +509,7 @@ _wordMute:
   mutedNotes: "Скрытые посты"
 _theme:
   explore: "Обзор"
+  defaultValue: "Значение по умолчанию"
   keys:
     navHoverFg: "Текст на боковой панели (Навести)"
     link: "Ссылка"
@@ -558,8 +559,11 @@ _permissions:
   "write:drive": "Редактирование или удаление файлов и папок диска"
   "read:favorites": "Просмотреть список избранных"
   "write:favorites": "Редактирование списка избранных"
+  "read:messaging": "Просмотр сообщений"
   "read:mutes": "Просмотр скрытых пользователей"
   "write:mutes": "Изменение списка скрытых"
+  "read:notifications": "Просмотреть уведомления"
+  "write:reactions": "Редактировать реакции"
 _weekday:
   saturday: "Суббота"
 _widgets:
@@ -611,7 +615,9 @@ _postForm:
 _profile:
   name: "Имя"
   username: "Имя пользователя"
+  metadataContent: "Содержание"
 _exportOrImport:
+  allNotes: "Все записи\n"
   followingList: "Подписки"
   muteList: "Скрыть"
   blockingList: "Заблокировать"
@@ -622,16 +628,110 @@ _rooms:
   _roomType:
     default: "По умолчанию"
   _furnitures:
+    pencil: "Карандаш"
+    book: "Книга"
+    server: "Сервер"
     monitor: "Монитор"
 _pages:
+  title: "Заголовок."
+  url: "URL страницы"
+  hideTitleWhenPinned: "Скрыть заголовок страницы при привязке к профилю"
+  font: "Шрифт"
   blocks:
+    section: "Раздел"
     image: "Изображение"
+    button: "Кнопка"
+    if: "Если"
+    _if:
+      variable: "Переменная"
+    post: "Форма отправки"
+    _post:
+      text: "Содержание"
+    textInput: "Ввод текста"
+    _textInput:
+      name: "Имя переменной"
+      text: "Заголовок."
+      default: "Значение по умолчанию"
+    textareaInput: "Многострочный ввод текста"
+    _textareaInput:
+      name: "Имя переменной"
+      text: "Заголовок."
+      default: "Значение по умолчанию"
+    _numberInput:
+      name: "Имя переменной"
+      text: "Заголовок."
+      default: "Значение по умолчанию"
+    _switch:
+      name: "Имя переменной"
+      text: "Заголовок."
+      default: "Значение по умолчанию"
+    _counter:
+      name: "Имя переменной"
+      text: "Заголовок."
+    _button:
+      text: "Заголовок."
+      _action:
+        _dialog:
+          content: "Содержание"
+    _radioButton:
+      name: "Имя переменной"
+      title: "Заголовок."
+      default: "Значение по умолчанию"
   script:
     categories:
       list: "Списки"
     blocks:
+      strLen: "Длина текста"
+      _strLen:
+        arg1: "Текст"
+      _strReplace:
+        arg1: "Текст"
+      _strReverse:
+        arg1: "Текст"
       _join:
         arg1: "Списки"
+      add: "Добавить"
+      _add:
+        arg1: "А"
+        arg2: "Б"
+      _subtract:
+        arg1: "А"
+        arg2: "Б"
+      _multiply:
+        arg1: "А"
+        arg2: "Б"
+      _divide:
+        arg1: "А"
+        arg2: "Б"
+      _mod:
+        arg1: "А"
+        arg2: "Б"
+      _eq:
+        arg1: "А"
+        arg2: "Б"
+      _notEq:
+        arg1: "А"
+        arg2: "Б"
+      _and:
+        arg1: "А"
+        arg2: "Б"
+      _or:
+        arg1: "А"
+        arg2: "Б"
+      _lt:
+        arg1: "А"
+        arg2: "Б"
+      _gt:
+        arg1: "А"
+        arg2: "Б"
+      _ltEq:
+        arg1: "А"
+        arg2: "Б"
+      _gtEq:
+        arg1: "А"
+        arg2: "Б"
+      _if:
+        arg1: "Если"
       _randomPick:
         arg1: "Списки"
       _dailyRandomPick:
