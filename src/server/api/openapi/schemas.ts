@@ -16,7 +16,7 @@ import { packedPageSchema } from '../../../models/repositories/page';
 import { packedUserGroupSchema } from '../../../models/repositories/user-group';
 import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favorite';
 import { packedChannelSchema } from '../../../models/repositories/channel';
-import {queue} from 'sharp';
+import { packedAntennaSchema } from '../../../models/repositories/antenna';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -118,4 +118,5 @@ export const schemas = {
 	Page: convertSchemaToOpenApiSchema(packedPageSchema),
 	Channel: convertSchemaToOpenApiSchema(packedChannelSchema),
 	QueueCount: convertSchemaToOpenApiSchema(queueSchema),
+	Antenna: convertSchemaToOpenApiSchema(packedAntennaSchema),
 };

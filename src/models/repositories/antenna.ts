@@ -42,20 +42,78 @@ export const packedAntennaSchema = {
 		id: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			format: 'id',
-			description: 'The unique identifier for this Antenna.',
-			example: 'xxxxxxxxxx',
+			format: 'id'
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			format: 'date-time',
-			description: 'The date that the Antenna was created.'
+			format: 'date-time'
 		},
 		name: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const,
-			description: 'The name of the Antenna.'
+			optional: false as const, nullable: false as const
 		},
+		keywords: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			}
+		},
+		execludeKeywords: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			}
+		},
+		src: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+			enum: ['home', 'all', 'users', 'list', 'group']
+		},
+		userListId: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			format: 'id'
+		},
+		userGroupId: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			format: 'id'
+		},
+		users: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			}
+		},
+		caseSensitive: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const,
+			default: false
+		},
+		notify: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const
+		},
+		withReplies: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const,
+			default: false
+		},
+		withFile: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const
+		},
+		hasUnreadNote: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const,
+			default: false
+		}
 	},
 };
