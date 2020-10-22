@@ -586,6 +586,13 @@ setMultipleBySeparatingWithSpace: "You can set multiple by separating them with 
 fileIdOrUrl: "File-ID or URL"
 chatOpenBehavior: "Behavior of the chat window when opened"
 sample: "Sample"
+abuseReports: "Reports"
+reportAbuse: "Report"
+reportAbuseOf: "Report {name}"
+fillAbuseReportDescription: "Please fill in the report details. If it is about a specific note, please include its URL."
+abuseReported: "Your report has been sent. Thank you very much."
+send: "Send"
+abuseMarkAsResolved: "Mark report as resolved"
 _serverDisconnectedBehavior:
   reload: "Automatically reload"
   dialog: "Show warning dialog"
