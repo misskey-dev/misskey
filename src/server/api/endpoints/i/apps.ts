@@ -16,6 +16,37 @@ export const meta = {
 				'-lastUsedAt',
 			]),
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			id: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			},
+			name: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			},
+			createdAt: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			},
+			lastUsedAt: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			},
+			permission: {
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
+			},
+		}
 	}
 };
 
