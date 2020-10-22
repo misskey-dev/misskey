@@ -2,6 +2,11 @@ import define from '../../../define';
 import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '../../../../../queue';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'キューの状態を返します。',
+		'en-US': 'Returns the status of the queue.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
