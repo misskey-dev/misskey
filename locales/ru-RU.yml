@@ -814,10 +814,19 @@ _pages:
         arg2: "Б"
       _if:
         arg1: "Если"
+      _rannum:
+        arg2: "Максимальное значение"
+      randomPick: "Случайный выбор из списка"
       _randomPick:
         arg1: "Списки"
+      _dailyRandom:
+        arg1: "Вероятность"
+      _dailyRannum:
+        arg2: "Максимальное значение"
       _dailyRandomPick:
         arg1: "Списки"
+      _seedRannum:
+        arg3: "Максимальное значение"
       _seedRandomPick:
         arg2: "Списки"
       pick: "Выберите из списка"
@@ -841,6 +850,7 @@ _pages:
       array: "Списки"
 _notification:
   youWereFollowed: "Новый подписчик"
+  youReceivedFollowRequest: "Запрос на подписку"
   youWereInvitedToGroup: "Приглашение в группу"
   _types:
     follow: "Подписки"
@@ -848,7 +858,15 @@ _notification:
     renote: "Репост"
     quote: "Цитата"
     reaction: "Реакции"
+    app: "Уведомления из приложений"
 _deck:
+  alwaysShowMainColumn: "Всегда показывать главную колонку"
+  columnAlign: "Выравнивание колонн"
+  addColumn: "Добавить колонку"
+  swapLeft: "Переместить влево"
+  swapRight: "Переместить вправо"
+  swapUp: "Поднять вверх"
+  swapDown: "Переместить Вниз"
   _columns:
     widgets: "Виджеты"
     notifications: "Уведомления"
