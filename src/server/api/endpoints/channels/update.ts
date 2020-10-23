@@ -69,6 +69,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.accessDenied);
 	}
 
+	// tslint:disable-next-line:no-unnecessary-initializer
 	let banner = undefined;
 	if (ps.bannerId != null) {
 		banner = await DriveFiles.findOne({

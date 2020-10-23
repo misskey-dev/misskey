@@ -3,7 +3,6 @@ import { User } from './user';
 import { id } from '../id';
 
 @Entity()
-@Index(['userId', 'reporterId'], { unique: true })
 export class AbuseUserReport {
 	@PrimaryColumn(id())
 	public id: string;
@@ -16,13 +15,13 @@ export class AbuseUserReport {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public targetUserId: User['id'];
 
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE'
 	})
 	@JoinColumn()
-	public user: User | null;
+	public targetUser: User | null;
 
 	@Index()
 	@Column(id())
@@ -34,8 +33,42 @@ export class AbuseUserReport {
 	@JoinColumn()
 	public reporter: User | null;
 
+	@Column({
+		...id(),
+		nullable: true
+	})
+	public assigneeId: User['id'] | null;
+
+	@ManyToOne(type => User, {
+		onDelete: 'SET NULL'
+	})
+	@JoinColumn()
+	public assignee: User | null;
+
+	@Index()
+	@Column('boolean', {
+		default: false
+	})
+	public resolved: boolean;
+
 	@Column('varchar', {
-		length: 512,
+		length: 2048,
 	})
 	public comment: string;
+
+	//#region Denormalized fields
+	@Index()
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public targetUserHost: string | null;
+
+	@Index()
+	@Column('varchar', {
+		length: 128, nullable: true,
+		comment: '[Denormalized]'
+	})
+	public reporterHost: string | null;
+	//#endregion
 }

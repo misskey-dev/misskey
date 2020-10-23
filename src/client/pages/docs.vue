@@ -1,8 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faQuestionCircle"/></portal>
-	<portal to="title">{{ $t('help') }}</portal>
-	<main class="_card">
+	<main class="_section">
 		<div class="_content">
 			<ul>
 				<li v-for="doc in docs" :key="doc.path">
@@ -15,19 +13,19 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
-import { url, lang } from '../config';
+import { url, lang } from '@/config';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('help') as string,
-		};
-	},
-
+export default defineComponent({
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('help'),
+					icon: faQuestionCircle
+				}],
+			},
 			docs: [],
 			faQuestionCircle
 		}

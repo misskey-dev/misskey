@@ -1,8 +1,13 @@
 <template>
-<x-window @closed="() => { $emit('closed'); destroyDom(); }" :no-padding="true" :width="520" :height="500">
+<XModalWindow ref="dialog"
+	:width="520"
+	:height="500"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
+>
 	<template #header>{{ instance.host }}</template>
 	<div class="mk-instance-info">
-		<div class="_table">
+		<div class="_table section">
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('software') }}</div>
@@ -14,47 +19,47 @@
 				</div>
 			</div>
 		</div>
-		<div class="_table data">
+		<div class="_table data section">
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('registeredAt') }}</div>
-					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<mk-time :time="instance.caughtAt"/>)</div>
+					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<MkTime :time="instance.caughtAt"/>)</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('following') }}</div>
-					<button class="_data _textButton" @click="showFollowing()">{{ instance.followingCount | number }}</button>
+					<button class="_data _textButton" @click="showFollowing()">{{ number(instance.followingCount) }}</button>
 				</div>
 				<div class="_cell">
 					<div class="_label">{{ $t('followers') }}</div>
-					<button class="_data _textButton" @click="showFollowers()">{{ instance.followersCount | number }}</button>
+					<button class="_data _textButton" @click="showFollowers()">{{ number(instance.followersCount) }}</button>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('users') }}</div>
-					<button class="_data _textButton" @click="showUsers()">{{ instance.usersCount | number }}</button>
+					<button class="_data _textButton" @click="showUsers()">{{ number(instance.usersCount) }}</button>
 				</div>
 				<div class="_cell">
 					<div class="_label">{{ $t('notes') }}</div>
-					<div class="_data">{{ instance.notesCount | number }}</div>
+					<div class="_data">{{ number(instance.notesCount) }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('files') }}</div>
-					<div class="_data">{{ instance.driveFiles | number }}</div>
+					<div class="_data">{{ number(instance.driveFiles) }}</div>
 				</div>
 				<div class="_cell">
 					<div class="_label">{{ $t('storageUsage') }}</div>
-					<div class="_data">{{ instance.driveUsage | bytes }}</div>
+					<div class="_data">{{ bytes(instance.driveUsage) }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('latestRequestSentAt') }}</div>
-					<div class="_data"><mk-time v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
+					<div class="_data"><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
 				</div>
 				<div class="_cell">
 					<div class="_label">{{ $t('latestStatus') }}</div>
@@ -64,7 +69,7 @@
 			<div class="_row">
 				<div class="_cell">
 					<div class="_label">{{ $t('latestRequestReceivedAt') }}</div>
-					<div class="_data"><mk-time v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
+					<div class="_data"><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
 				</div>
 			</div>
 		</div>
@@ -72,7 +77,7 @@
 			<div class="header">
 				<span class="label">{{ $t('charts') }}</span>
 				<div class="selects">
-					<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
+					<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
 						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
 						<option value="users">{{ $t('_instanceCharts.users') }}</option>
 						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
@@ -84,49 +89,52 @@
 						<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
 						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
 						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
-					</mk-select>
-					<mk-select v-model="chartSpan" style="margin: 0;">
+					</MkSelect>
+					<MkSelect v-model:value="chartSpan" style="margin: 0;">
 						<option value="hour">{{ $t('perHour') }}</option>
 						<option value="day">{{ $t('perDay') }}</option>
-					</mk-select>
+					</MkSelect>
 				</div>
 			</div>
 			<div class="chart">
-				<canvas ref="chart"></canvas>
+				<canvas :ref="setChart"></canvas>
 			</div>
 		</div>
-		<div class="operations">
+		<div class="operations section">
 			<span class="label">{{ $t('operations') }}</span>
-			<mk-switch v-model="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</mk-switch>
-			<mk-switch :value="isBlocked" class="switch" @change="changeBlock">{{ $t('blockThisInstance') }}</mk-switch>
+			<MkSwitch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</MkSwitch>
+			<MkSwitch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $t('blockThisInstance') }}</MkSwitch>
 			<details>
 				<summary>{{ $t('deleteAllFiles') }}</summary>
-				<mk-button @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</mk-button>
+				<MkButton @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
 			</details>
 			<details>
 				<summary>{{ $t('removeAllFollowing') }}</summary>
-				<mk-button @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</mk-button>
-				<mk-info warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</mk-info>
+				<MkButton @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</MkButton>
+				<MkInfo warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</MkInfo>
 			</details>
 		</div>
-		<details class="metadata">
+		<details class="metadata section">
 			<summary class="label">{{ $t('metadata') }}</summary>
 			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
 	</div>
-</x-window>
+</XModalWindow>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '../../components/window.vue';
-import MkUsersDialog from '../../components/users-dialog.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkButton from '../../components/ui/button.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkInfo from '../../components/ui/info.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
+import MkUsersDialog from '@/components/users-dialog.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkSwitch from '@/components/ui/switch.vue';
+import MkInfo from '@/components/ui/info.vue';
+import bytes from '../../filters/bytes';
+import number from '../../filters/number';
+import * as os from '@/os';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -139,9 +147,9 @@ const alpha = hex => {
 	return `rgba(${r}, ${g}, ${b}, 0.1)`;
 };
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
-		XWindow,
+		XModalWindow,
 		MkSelect,
 		MkButton,
 		MkSwitch,
@@ -155,10 +163,13 @@ export default Vue.extend({
 		}
 	},
 
+	emits: ['closed'],
+
 	data() {
 		return {
 			isSuspended: this.instance.isSuspended,
 			now: null,
+			canvas: null,
 			chart: null,
 			chartInstance: null,
 			chartSrc: 'requests',
@@ -199,13 +210,13 @@ export default Vue.extend({
 		},
 
 		isBlocked() {
-			return this.meta && this.meta.blockedHosts.includes(this.instance.host);
+			return this.meta && this.meta.blockedHosts && this.meta.blockedHosts.includes(this.instance.host);
 		}
 	},
 
 	watch: {
 		isSuspended() {
-			this.$root.api('admin/federation/update-instance', {
+			os.api('admin/federation/update-instance', {
 				host: this.instance.host,
 				isSuspended: this.isSuspended
 			});
@@ -220,12 +231,12 @@ export default Vue.extend({
 		}
 	},
 
-	async created() {	
+	async created() {
 		this.now = new Date();
 
 		const [perHour, perDay] = await Promise.all([
-			this.$root.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'hour' }),
-			this.$root.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'day' }),
+			os.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'hour' }),
+			os.api('charts/instance', { host: this.instance.host, limit: chartLimit, span: 'day' }),
 		]);
 
 		const chart = {
@@ -239,8 +250,12 @@ export default Vue.extend({
 	},
 
 	methods: {
+		setChart(el) {
+			this.canvas = el;
+		},
+
 		changeBlock(e) {
-			this.$root.api('admin/update-meta', {
+			os.api('admin/update-meta', {
 				blockedHosts: this.isBlocked ? this.meta.blockedHosts.concat([this.instance.host]) : this.meta.blockedHosts.filter(x => x !== this.instance.host)
 			});
 		},
@@ -250,24 +265,14 @@ export default Vue.extend({
 		},
 
 		removeAllFollowing() {
-			this.$root.api('admin/federation/remove-all-following', {
+			os.apiWithDialog('admin/federation/remove-all-following', {
 				host: this.instance.host
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 
 		deleteAllFiles() {
-			this.$root.api('admin/federation/delete-all-files', {
+			os.apiWithDialog('admin/federation/delete-all-files', {
 				host: this.instance.host
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				});
 			});
 		},
 
@@ -277,7 +282,7 @@ export default Vue.extend({
 			}
 
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-			this.chartInstance = new Chart(this.$refs.chart, {
+			this.chartInstance = new Chart(this.canvas, {
 				type: 'line',
 				data: {
 					labels: new Array(chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
@@ -436,7 +441,7 @@ export default Vue.extend({
 		},
 
 		showFollowing() {
-			this.$root.new(MkUsersDialog, {
+			os.modal(MkUsersDialog, {
 				title: this.$t('instanceFollowing'),
 				pagination: {
 					endpoint: 'federation/following',
@@ -450,7 +455,7 @@ export default Vue.extend({
 		},
 
 		showFollowers() {
-			this.$root.new(MkUsersDialog, {
+			os.modal(MkUsersDialog, {
 				title: this.$t('instanceFollowers'),
 				pagination: {
 					endpoint: 'federation/followers',
@@ -464,7 +469,7 @@ export default Vue.extend({
 		},
 
 		showUsers() {
-			this.$root.new(MkUsersDialog, {
+			os.modal(MkUsersDialog, {
 				title: this.$t('instanceUsers'),
 				pagination: {
 					endpoint: 'federation/users',
@@ -474,7 +479,11 @@ export default Vue.extend({
 					}
 				}
 			});
-		}
+		},
+
+		bytes,
+
+		number
 	}
 });
 </script>
@@ -483,34 +492,21 @@ export default Vue.extend({
 .mk-instance-info {
 	overflow: auto;
 
-	> ._table {
-		padding: 0 32px;
+	> .section {
+		padding: 16px 32px;
 
 		@media (max-width: 500px) {
-			padding: 0 16px;
+			padding: 8px 16px;
 		}
-	}
 
-	> .data {
-		margin-top: 16px;
-		padding-top: 16px;
-		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			margin-top: 8px;
-			padding-top: 8px;
+		&:not(:first-child) {
+			border-top: solid 1px var(--divider);
 		}
 	}
 
 	> .chart {
-		margin-top: 16px;
-		padding-top: 16px;
 		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			margin-top: 8px;
-			padding-top: 8px;
-		}
+		padding: 16px 0 12px 0;
 
 		> .header {
 			padding: 0 32px;
@@ -539,15 +535,6 @@ export default Vue.extend({
 	}
 
 	> .operations {
-		padding: 16px 32px 16px 32px;
-		margin-top: 8px;
-		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			padding: 8px 16px 8px 16px;
-			margin-top: 0;
-		}
-
 		> .label {
 			font-size: 80%;
 			opacity: 0.7;
@@ -559,13 +546,6 @@ export default Vue.extend({
 	}
 
 	> .metadata {
-		padding: 16px 32px 16px 32px;
-		border-top: solid 1px var(--divider);
-
-		@media (max-width: 500px) {
-			padding: 8px 16px 8px 16px;
-		}
-
 		> .label {
 			font-size: 80%;
 			opacity: 0.7;

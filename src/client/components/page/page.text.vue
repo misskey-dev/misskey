@@ -1,16 +1,19 @@
 <template>
 <div class="mrdgzndn">
-	<mfm :text="text" :is-note="false" :i="$store.state.i" :key="text"/>
-	<mk-url-preview v-for="url in urls" :url="url" :key="url" class="url"/>
+	<Mfm :text="text" :is-note="false" :i="$store.state.i" :key="text"/>
+	<MkUrlPreview v-for="url in urls" :url="url" :key="url" class="url"/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
 
-export default Vue.extend({
+export default defineComponent({
+	components: {
+		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
+	},
 	props: {
 		value: {
 			required: true

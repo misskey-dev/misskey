@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
-Vue.filter('notePage', note => {
+export default note => {
 	return `/notes/${note.id}`;
-});
+};

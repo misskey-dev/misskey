@@ -1,20 +1,22 @@
 <template>
-<mk-container :show-header="props.showHeader">
-	<template #header><fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
+<MkContainer :show-header="props.showHeader">
+	<template #header><Fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
 
 	<div class="otgbylcu">
 		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
 		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'memo',
 	props: () => ({
 		showHeader: {
@@ -22,7 +24,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer
 	},
@@ -39,7 +44,7 @@ export default define({
 	created() {
 		this.text = this.$store.state.settings.memo;
 
-		this.$watch('$store.state.settings.memo', text => {
+		this.$watch(() => this.$store.state.settings.memo, text => {
 			this.text = text;
 		});
 	},

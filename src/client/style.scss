@@ -1,6 +1,7 @@
 @charset "utf-8";
 
 :root {
+	--baseContentWidth: 750px;
 	--radius: 8px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
@@ -12,10 +13,10 @@
 	}
 }
 
-* {
-	tap-highlight-color: transparent;
-	-webkit-tap-highlight-color: transparent;
-}
+::selection {
+	color: #fff;
+	background-color: var(--accent);
+} 
 
 html {
 	touch-action: manipulation;
@@ -83,30 +84,6 @@ body {
 	overflow-wrap: break-word;
 }
 
-#ini {
-	position: fixed;
-	z-index: 1;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	cursor: wait;
-
-	> svg {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		margin: auto;
-		width: 64px;
-		height: 64px;
-		animation: ini 0.6s infinite linear;
-		color: var(--accent);
-		fill: currentColor;
-	}
-}
-
 html, body {
 	margin: 0;
 	padding: 0;
@@ -119,10 +96,22 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 	color: inherit;
+	tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
 
 	&:hover {
 		text-decoration: underline;
 	}
+}
+
+textarea, input {
+	tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
+}
+
+optgroup, option {
+	background: var(--panel);
+	color: var(--fg);
 }
 
 hr {
@@ -130,54 +119,6 @@ hr {
 	border: none;
 	height: 1px;
 	background: var(--divider);
-}
-
-#nprogress {
-	pointer-events: none;
-	position: absolute;
-	z-index: 10000;
-
-	.bar {
-		background: var(--accent);
-		position: fixed;
-		z-index: 10001;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 2px;
-	}
-
-	.peg {
-		display: block;
-		position: absolute;
-		right: 0;
-		width: 100px;
-		height: 100%;
-		box-shadow: 0 0 10px var(--accent), 0 0 5px var(--accent);
-		opacity: 1;
-		transform: rotate(3deg) translate(0px, -4px);
-	}
-}
-
-#wait {
-	display: block;
-	position: fixed;
-	z-index: 10000;
-	top: 15px;
-	right: 15px;
-
-	&:before {
-		content: "";
-		display: block;
-		width: 18px;
-		height: 18px;
-		box-sizing: border-box;
-		border: solid 2px transparent;
-		border-top-color: var(--accent);
-		border-left-color: var(--accent);
-		border-radius: 50%;
-		animation: progress-spinner 400ms linear infinite;
-	}
 }
 
 ._noSelect {
@@ -216,6 +157,8 @@ hr {
 	cursor: pointer;
 	color: var(--fg);
 	touch-action: manipulation;
+	tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
 
 	&, * {
@@ -286,44 +229,13 @@ hr {
 }
 
 ._panel {
-	position: relative;
-	z-index: 1;
+	//position: relative;
+	//z-index: 1;
 	background: var(--panel);
 	border-radius: var(--radius);
-	box-shadow: 0 0 0 1px var(--panelBorder);
+	//border: var(--panelBorder);
+	box-shadow: var(--panelShadow);
 	overflow: hidden;
-}
-
-._close_ ._list_ > * {
-	box-shadow: 0 1px 0 0 var(--divider), 0 -1px 0 0 var(--divider);
-	border-radius: 0;
-	margin: 0 !important;
-}
-
-.__panelButton {
-	display: flex;
-	width: 100%;
-	min-height: 48px;
-	align-items: center;
-	justify-content: center;
-}
-
-._panel._button {
-	@extend .__panelButton;
-}
-
-._panel._buttonPrimary {
-	@extend .__panelButton;
-	color: var(--accent);
-	background: var(--panel);
-
-	&:not(:disabled):hover {
-		background: var(--panel);
-	}
-
-	&:not(:disabled):active {
-		background: var(--panel);
-	}
 }
 
 ._card {
@@ -370,6 +282,71 @@ hr {
 	}
 }
 
+._close_ ._list_ > * {
+	border: none;
+	border-bottom: solid 1px var(--divider);
+	border-radius: 0;
+	box-shadow: none;
+	margin: 0 !important;
+}
+
+._loadMore {
+	@extend ._panel;
+	@extend ._button;
+	width: 100%;
+	padding: 12px 0;
+}
+
+._popup {
+	background: var(--panel);
+	border-radius: var(--radius);
+}
+
+._section {
+	padding: var(--section-padding, 32px);
+
+	&:empty {
+		display: none;
+	}
+
+	&:not(:empty) + ._section {
+		border-top: solid 1px var(--divider);
+	}
+
+	@media (max-width: 500px) {
+		padding: var(--section-padding, 10px);
+
+		> ._title {
+			font-size: 1.1em;
+			font-weight: bold;
+		}
+	}
+
+	> ._title,
+	> ._content {
+		box-sizing: border-box;
+		max-width: var(--baseContentWidth);
+		margin: 0 auto;
+	}
+
+	> ._title {
+		margin-bottom: 24px;
+		font-size: 1.25em;
+		font-weight: bold;
+	}
+
+	&._fitBottom {
+		padding-bottom: 0;
+	}
+}
+
+._narrow_ ._section {
+	> ._title {
+		padding: 8px;
+		font-size: 1em;
+	}
+}
+
 ._narrow_ ._card {
 	> ._title {
 		padding: 16px;
@@ -383,6 +360,12 @@ hr {
 	> ._footer {
 		padding: 16px;
 	}
+}
+
+._acrylic {
+	background: var(--acrylicPanel);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 }
 
 ._vMargin {
@@ -464,7 +447,7 @@ hr {
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
-.zoom-enter, .zoom-leave-to {
+.zoom-enter-from, .zoom-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
 }
@@ -476,36 +459,24 @@ hr {
 	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 	transform-origin: center top;
 }
-.zoom-in-top-enter,
+.zoom-in-top-enter-from,
 .zoom-in-top-leave-active {
 	opacity: 0;
 	transform: scaleY(0);
 }
 
-@keyframes progress-spinner {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
+@keyframes blink {
+	0% { opacity: 1; transform: scale(1); }
+	30% { opacity: 1; transform: scale(1); }
+	90% { opacity: 0; transform: scale(0.5); }
 }
 
-@keyframes ini {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes spin {
+@keyframes anime-spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
 }
 
-@keyframes jump {
+@keyframes anime-jump {
 	0% { transform: translateY(0); }
 	25% { transform: translateY(-16px); }
 	50% { transform: translateY(0); }
@@ -513,8 +484,60 @@ hr {
 	100% { transform: translateY(0); }
 }
 
-@keyframes blink {
-	0% { opacity: 1; transform: scale(1); }
-	30% { opacity: 1; transform: scale(1); }
-	90% { opacity: 0; transform: scale(0.5); }
+@keyframes anime-tada {
+	from {
+		transform: scale3d(1, 1, 1);
+	}
+
+	10%,
+	20% {
+		transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+	}
+
+	30%,
+	50%,
+	70%,
+	90% {
+		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+	}
+
+	40%,
+	60%,
+	80% {
+		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+	}
+
+	to {
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+@keyframes anime-rubberBand {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
 }

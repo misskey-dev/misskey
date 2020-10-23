@@ -1,13 +1,13 @@
 <template>
-<div class="thvuemwp" :data-is-me="isMe">
-	<mk-avatar class="avatar" :user="message.user"/>
+<div class="thvuemwp" :class="{ isMe }" v-size="{ max: [400, 500] }">
+	<MkAvatar class="avatar" :user="message.user"/>
 	<div class="content">
-		<div class="balloon" :data-no-text="message.text == null">
+		<div class="balloon" :class="{ noText: message.text == null }" >
 			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
 				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
-				<mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
+				<Mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" rel="noopener" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div></div>
-		<mk-url-preview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
+		<MkUrlPreview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
 		<footer>
 			<template v-if="isGroup">
 				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
@@ -28,20 +28,21 @@
 			<template v-else>
 				<span class="read" v-if="isMe && message.isRead">{{ $t('messageRead') }}</span>
 			</template>
-			<mk-time :time="message.createdAt"/>
-			<template v-if="message.is_edited"><fa icon="pencil-alt"/></template>
+			<MkTime :time="message.createdAt"/>
+			<template v-if="message.is_edited"><Fa icon="pencil-alt"/></template>
 		</footer>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
-import MkUrlPreview from '../../components/url-preview.vue';
+import MkUrlPreview from '@/components/url-preview.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkUrlPreview
 	},
@@ -70,7 +71,7 @@ export default Vue.extend({
 	},
 	methods: {
 		del() {
-			this.$root.api('messaging/messages/delete', {
+			os.api('messaging/messages/delete', {
 				messageId: this.message.id
 			});
 		}
@@ -91,11 +92,6 @@ export default Vue.extend({
 		width: 54px;
 		height: 54px;
 		transition: all 0.1s ease;
-
-		@media (max-width: 400px) {
-			width: 48px;
-			height: 48px;
-		}
 	}
 
 	> .content {
@@ -174,14 +170,6 @@ export default Vue.extend({
 					font-size: 1em;
 					color: rgba(#000, 0.8);
 
-					@media (max-width: 500px) {
-						padding: 8px 16px;
-					}
-
-					@media (max-width: 400px) {
-						font-size: 0.9em;
-					}
-
 					& + .file {
 						> a {
 							border-radius: 0 0 16px 16px;
@@ -240,7 +228,7 @@ export default Vue.extend({
 		}
 	}
 
-	&:not([data-is-me]) {
+	&:not(.isMe) {
 		padding-left: var(--margin);
 
 		> .content {
@@ -251,11 +239,11 @@ export default Vue.extend({
 				$color: var(--messageBg);
 				background: $color;
 
-				&[data-no-text] {
+				&.noText {
 					background: transparent;
 				}
 
-				&:not([data-no-text]):before {
+				&:not(.noText):before {
 					left: -14px;
 					border-top: solid 8px transparent;
 					border-right: solid 8px $color;
@@ -276,7 +264,7 @@ export default Vue.extend({
 		}
 	}
 
-	&[data-is-me] {
+	&.isMe {
 		flex-direction: row-reverse;
 		padding-right: var(--margin);
 
@@ -289,11 +277,11 @@ export default Vue.extend({
 				background: $me-balloon-color;
 				text-align: left;
 
-				&[data-no-text] {
+				&.noText {
 					background: transparent;
 				}
 
-				&:not([data-no-text]):before {
+				&:not(.noText):before {
 					right: -14px;
 					left: auto;
 					border-top: solid 8px transparent;
@@ -309,7 +297,7 @@ export default Vue.extend({
 					}
 
 					> .text {
-						&, ::v-deep * {
+						&, ::v-deep(*) {
 							color: #fff !important;
 						}
 					}
@@ -326,9 +314,32 @@ export default Vue.extend({
 		}
 	}
 
-	&[data-is-deleted] {
-		> .balloon {
-			opacity: 0.5;
+	&.max-width_400px {
+		> .avatar {
+			width: 48px;
+			height: 48px;
+		}
+
+		> .content {
+			> .balloon {
+				> .content {
+					> .text {
+						font-size: 0.9em;
+					}
+				}
+			}
+		}
+	}
+
+	&.max-width_500px {
+		> .content {
+			> .balloon {
+				> .content {
+					> .text {
+						padding: 8px 16px;
+					}
+				}
+			}
 		}
 	}
 }

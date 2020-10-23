@@ -1,14 +1,17 @@
 <template>
-<div class="fgmtyycl _panel _shadow" :style="{ top: top + 'px', left: left + 'px' }">
-	<mk-url-preview :url="url"/>
+<div class="fgmtyycl" :style="{ top: top + 'px', left: left + 'px' }">
+	<transition name="zoom" @after-leave="$emit('closed')">
+		<MkUrlPreview class="_popup _shadow" :url="url" v-if="showing"/>
+	</transition>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MkUrlPreview from './url-preview.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkUrlPreview
 	},
@@ -20,7 +23,11 @@ export default Vue.extend({
 		},
 		source: {
 			required: true
-		}
+		},
+		showing: {
+			type: Boolean,
+			required: true
+		},
 	},
 
 	data() {
@@ -48,7 +55,6 @@ export default Vue.extend({
 	z-index: 11000;
 	width: 500px;
 	max-width: calc(90vw - 12px);
-	overflow: hidden;
 	pointer-events: none;
 }
 </style>

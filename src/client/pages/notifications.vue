@@ -1,31 +1,31 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faBell"/></portal>
-	<portal to="title">{{ $t('notifications') }}</portal>
-	<x-notifications @before="before" @after="after" page/>
+	<div class="_section">
+		<XNotifications class="_content" @before="before" @after="after" page/>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../scripts/loading';
-import XNotifications from '../components/notifications.vue';
+import Progress from '@/scripts/loading';
+import XNotifications from '@/components/notifications.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('notifications') as string
-		};
-	},
-
+export default defineComponent({
 	components: {
 		XNotifications
 	},
 
 	data() {
 		return {
-			faBell
+			INFO: {
+				header: [{
+					title: this.$t('notifications'),
+					icon: faBell
+				}]
+			},
 		};
 	},
 
