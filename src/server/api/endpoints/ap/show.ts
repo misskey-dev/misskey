@@ -41,7 +41,18 @@ export const meta = {
 
 	res: {
 		type: 'object' as const,
-		optional: false as const, nullable: false as const
+		optional: false as const, nullable: false as const,
+		properties: {
+			type: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				enum: ['User', 'Note']
+			},
+			object: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const
+			}
+		}
 	}
 };
 

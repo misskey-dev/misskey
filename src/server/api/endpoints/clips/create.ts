@@ -15,6 +15,12 @@ export const meta = {
 			validator: $.str.range(1, 100)
 		}
 	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Clip'
+	}
 };
 
 export default define(meta, async (ps, user) => {

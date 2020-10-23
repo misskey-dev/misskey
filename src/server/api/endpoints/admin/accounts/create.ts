@@ -10,8 +10,6 @@ export const meta = {
 
 	tags: ['admin'],
 
-	// TODO: requireCredentialやrequireModeratorが必要だと思われる by YuzuRyo61
-
 	params: {
 		username: {
 			validator: Users.validateLocalUsername,
