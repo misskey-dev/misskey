@@ -88,7 +88,7 @@ enterEmoji: "Введите эмодзи"
 renote: "Репост"
 unrenote: "Отмена репоста"
 quote: "Цитата"
-pinnedNote: "Закреплённый пост"
+pinnedNote: "Закреплённая заметка"
 you: "Вы"
 clickToShow: "Нажмите для просмотра"
 sensitive: "NSFW"
@@ -891,8 +891,9 @@ _pages:
     types:
       array: "Списки"
 _notification:
-  youWereFollowed: "Новый подписчик"
-  youReceivedFollowRequest: "Запрос на подписку"
+  youWereFollowed: "У вас новый подписчик"
+  youReceivedFollowRequest: "У вас новый запрос на подписку"
+  yourFollowRequestAccepted: "Ваш запрос на подписку одобрен"
   youWereInvitedToGroup: "Приглашение в группу"
   _types:
     follow: "Подписки"
@@ -900,6 +901,8 @@ _notification:
     renote: "Репост"
     quote: "Цитата"
     reaction: "Реакции"
+    receiveFollowRequest: "Получен запрос на подписку"
+    followRequestAccepted: "Запрос на подписку одобрен"
     app: "Уведомления из приложений"
 _deck:
   alwaysShowMainColumn: "Всегда показывать главную колонку"
