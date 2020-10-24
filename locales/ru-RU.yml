@@ -757,9 +757,10 @@ _visibility:
   public: "Общедоступно"
   publicDescription: "Открыто для всех"
   home: "Главная"
-  followers: "Подписчики"
-  followersDescription: "Разослать только подписчикам"
-  specifiedDescription: "Отправлять сообщения только указанным пользователям"
+  followers: "Для подписчиков"
+  followersDescription: "Увидят только ваши подписчики"
+  specified: "Только адресаты"
+  specifiedDescription: "Получат только указанные пользователи"
   localOnly: "Только локально"
   localOnlyDescription: "Не видно удаленным пользователям"
 _postForm:
@@ -959,3 +960,4 @@ _deck:
     antenna: "Антенны"
     list: "Списки"
     mentions: "Упоминания"
+    direct: "Только адресаты"
