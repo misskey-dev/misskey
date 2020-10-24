@@ -20,8 +20,9 @@
 				<div class="random" v-if="game.map == null"><fa icon="dice"/></div>
 				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
 					<div v-for="(x, i) in game.map.join('')"
-							:data-none="x == ' '"
-							@click="onPixelClick(i, x)">
+						:data-none="x == ' '"
+						@click="onPixelClick(i, x)"
+					>
 						<fa v-if="x == 'b'" :icon="fasCircle"/>
 						<fa v-if="x == 'w'" :icon="farCircle"/>
 					</div>
@@ -35,9 +36,9 @@
 			</header>
 
 			<div>
-				<form-radio v-model="game.bw" value="random" @change="updateSettings('bw')">{{ $t('random') }}</form-radio>
-				<form-radio v-model="game.bw" :value="1" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user1"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
-				<form-radio v-model="game.bw" :value="2" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user2"/></b>{{ this.$t('black-is').split('{}')[1] }}</form-radio>
+				<MkRadio v-model="game.bw" value="random" @change="updateSettings('bw')">{{ $t('random') }}</MkRadio>
+				<MkRadio v-model="game.bw" :value="1" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user1"/></b>{{ this.$t('black-is').split('{}')[1] }}</MkRadio>
+				<MkRadio v-model="game.bw" :value="2" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user2"/></b>{{ this.$t('black-is').split('{}')[1] }}</MkRadio>
 			</div>
 		</div>
 
@@ -68,7 +69,7 @@
 						</header>
 
 						<div>
-							<form-radio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm(item)">{{ r.label }}</form-radio>
+							<MkRadio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm(item)">{{ r.label }}</MkRadio>
 						</div>
 					</div>
 
@@ -120,11 +121,13 @@ import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as maps from '../../../games/reversi/maps';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
+import MkRadio from '@/components/ui/radio.vue';
 
 export default defineComponent({
 	components: {
 		MkButton,
 		MkSwitch,
+		MkRadio,
 	},
 
 	props: {
@@ -200,7 +203,6 @@ export default defineComponent({
 		onChangeAccepts(accepts) {
 			this.game.user1Accepted = accepts.user1;
 			this.game.user2Accepted = accepts.user2;
-			this.$forceUpdate();
 		},
 
 		updateSettings(key: string) {
@@ -243,7 +245,6 @@ export default defineComponent({
 			} else {
 				this.game.map = Object.values(maps).find(x => x.name == this.mapName).data;
 			}
-			this.$forceUpdate();
 			this.updateSettings('map');
 		},
 
@@ -257,8 +258,7 @@ export default defineComponent({
 				' ';
 			const line = this.game.map[y].split('');
 			line[x] = newPixel;
-			this.$set(this.game.map, y, line.join(''));
-			this.$forceUpdate();
+			this.game.map[y] = line.join('');
 			this.updateSettings('map');
 		}
 	}
