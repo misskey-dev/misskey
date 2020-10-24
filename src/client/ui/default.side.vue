@@ -1,7 +1,7 @@
 <template>
 <div class="qvzfzxam" v-if="component">
 	<div class="container">
-		<header class="header">
+		<header class="header" @contextmenu.prevent.stop="onContextmenu">
 			<button class="_button" @click="back()"><Fa :icon="faChevronLeft"/></button>
 			<XHeader class="title" :info="pageInfo" :with-back="false"/>
 			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
@@ -13,8 +13,10 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faTimes, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faChevronLeft, faArrowRight, faWindowMaximize, faExternalLinkAlt, faLink } from '@fortawesome/free-solid-svg-icons';
 import XHeader from './_common_/header.vue';
+import * as os from '@/os';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 
 export default defineComponent({
 	components: {
@@ -58,6 +60,40 @@ export default defineComponent({
 			this.component = null;
 			this.props = {};
 		},
+
+		onContextmenu(e) {
+			os.contextMenu([{
+				type: 'label',
+				text: this.url,
+			}, {
+				icon: faArrowRight,
+				text: this.$t('showInPage'),
+				action: () => {
+					this.$router.push(this.url);
+					this.close();
+				}
+			}, {
+				icon: faWindowMaximize,
+				text: this.$t('openInWindow'),
+				action: () => {
+					os.pageWindow(this.url, this.component, this.props);
+					this.close();
+				}
+			}, null, {
+				icon: faExternalLinkAlt,
+				text: this.$t('openInNewTab'),
+				action: () => {
+					window.open(this.url, '_blank');
+					this.close();
+				}
+			}, {
+				icon: faLink,
+				text: this.$t('copyLink'),
+				action: () => {
+					copyToClipboard(this.url);
+				}
+			}], e);
+		}
 	}
 });
 </script>
@@ -75,6 +111,7 @@ export default defineComponent({
 		height: 100vh;
 		overflow: auto;
 		padding-top: $header-height;
+		box-sizing: border-box;
 
 		> .header {
 			display: flex;

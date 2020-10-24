@@ -1,5 +1,11 @@
 <template>
-<XWindow ref="window" :initial-width="400" :initial-height="500" :can-resize="true" @closed="$emit('closed')">
+<XWindow ref="window"
+	:initial-width="400"
+	:initial-height="500"
+	:can-resize="true"
+	:contextmenu="contextmenu"
+	@closed="$emit('closed')"
+>
 	<template #header>
 		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>
@@ -15,15 +21,26 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faExternalLinkAlt, faExpandAlt } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faExpandAlt, faLink } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
 import XHeader from '@/ui/_common_/header.vue';
 import { popout } from '@/scripts/popout';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 
 export default defineComponent({
 	components: {
 		XWindow,
 		XHeader,
+	},
+
+	provide() {
+		return {
+			navHook: (url, component, props) => {
+				this.url = url;
+				this.component = markRaw(component);
+				this.props = props;
+			}
+		};
 	},
 
 	props: {
@@ -38,7 +55,7 @@ export default defineComponent({
 		initialProps: {
 			type: Object,
 			required: false,
-			default: {},
+			default: () => {},
 		},
 	},
 
@@ -50,17 +67,32 @@ export default defineComponent({
 			url: this.initialUrl,
 			component: this.initialComponent,
 			props: this.initialProps,
+			contextmenu: [{
+				type: 'label',
+				text: this.url,
+			}, {
+				icon: faExpandAlt,
+				text: this.$t('showInPage'),
+				action: this.expand
+			}, {
+				icon: faExternalLinkAlt,
+				text: this.$t('popout'),
+				action: this.popout
+			}, null, {
+				icon: faExternalLinkAlt,
+				text: this.$t('openInNewTab'),
+				action: () => {
+					window.open(this.url, '_blank');
+					this.$refs.window.close();
+				}
+			}, {
+				icon: faLink,
+				text: this.$t('copyLink'),
+				action: () => {
+					copyToClipboard(this.url);
+				}
+			}],
 			faExternalLinkAlt, faExpandAlt,
-		};
-	},
-
-	provide() {
-		return {
-			navHook: (url, component, props) => {
-				this.url = url;
-				this.component = markRaw(component);
-				this.props = props;
-			}
 		};
 	},
 

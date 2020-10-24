@@ -2,7 +2,7 @@
 <transition :name="$store.state.device.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div class="ebkgocck" v-if="showing">
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
-			<div class="header">
+			<div class="header" @contextmenu.prevent.stop="onContextmenu">
 				<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
@@ -85,6 +85,10 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
+		contextmenu: {
+			type: Array,
+			required: false,
+		}
 	},
 
 	emits: ['closed'],
@@ -126,6 +130,12 @@ export default defineComponent({
 				e.preventDefault();
 				e.stopPropagation();
 				this.close();
+			}
+		},
+
+		onContextmenu(e) {
+			if (this.contextmenu) {
+				os.contextMenu(this.contextmenu, e);
 			}
 		},
 
