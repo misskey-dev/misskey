@@ -1,28 +1,25 @@
 <template>
 <div class="">
-	<portal to="icon"><fa :icon="faTerminal"/></portal>
-	<portal to="title">{{ $t('scratchpad') }}</portal>
-
 	<div class="_panel">
-		<prism-editor class="_code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
-		<mk-button style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><fa :icon="faPlay"/></mk-button>
+		<prism-editor class="_code" v-model:value="code" :highlight="highlighter" :line-numbers="false"/>
+		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
-	<mk-container :body-togglable="true">
-		<template #header><fa fixed-width/>{{ $t('output') }}</template>
+	<MkContainer :body-togglable="true">
+		<template #header><Fa fixed-width/>{{ $t('output') }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
-	</mk-container>
+	</MkContainer>
 
-	<section class="_card" style="margin-top: var(--margin);">
+	<section class="_section" style="margin-top: var(--margin);">
 		<div class="_content">{{ $t('scratchpadDescription') }}</div>
 	</section>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTerminal, faPlay } from '@fortawesome/free-solid-svg-icons';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
@@ -32,17 +29,12 @@ import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
-import MkContainer from '../components/ui/container.vue';
-import MkButton from '../components/ui/button.vue';
-import { createAiScriptEnv } from '../scripts/aiscript/api';
+import MkContainer from '@/components/ui/container.vue';
+import MkButton from '@/components/ui/button.vue';
+import { createAiScriptEnv } from '@/scripts/aiscript/api';
+import * as os from '@/os';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('scratchpad') as string
-		};
-	},
-
+export default defineComponent({
 	components: {
 		MkContainer,
 		MkButton,
@@ -51,6 +43,12 @@ export default Vue.extend({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('scratchpad'),
+					icon: faTerminal,
+				}],
+			},
 			code: '',
 			logs: [],
 			faTerminal, faPlay
@@ -73,12 +71,12 @@ export default Vue.extend({
 	methods: {
 		async run() {
 			this.logs = [];
-			const aiscript = new AiScript(createAiScriptEnv(this, {
+			const aiscript = new AiScript(createAiScriptEnv({
 				storageKey: 'scratchpad'
 			}), {
 				in: (q) => {
 					return new Promise(ok => {
-						this.$root.dialog({
+						os.dialog({
 							title: q,
 							input: {}
 						}).then(({ canceled, result: a }) => {
@@ -109,7 +107,7 @@ export default Vue.extend({
 			try {
 				ast = parse(this.code);
 			} catch (e) {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: 'Syntax error :('
 				});
@@ -118,7 +116,7 @@ export default Vue.extend({
 			try {
 				await aiscript.exec(ast);
 			} catch (e) {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e
 				});

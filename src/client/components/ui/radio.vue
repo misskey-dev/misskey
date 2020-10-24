@@ -17,14 +17,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({
-	model: {
-		prop: 'model',
-		event: 'change'
-	},
+import { defineComponent } from 'vue';
+import * as os from '@/os';
+
+export default defineComponent({
 	props: {
-		model: {
+		modelValue: {
 			required: false
 		},
 		value: {
@@ -37,13 +35,13 @@ export default Vue.extend({
 	},
 	computed: {
 		checked(): boolean {
-			return this.model === this.value;
+			return this.modelValue === this.value;
 		}
 	},
 	methods: {
 		toggle() {
 			if (this.disabled) return;
-			this.$emit('change', this.value);
+			this.$emit('update:modelValue', this.value);
 		}
 	}
 });
@@ -51,6 +49,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .novjtctn {
+	position: relative;
 	display: inline-block;
 	margin: 0 32px 0 0;
 	cursor: pointer;

@@ -5,10 +5,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import ApexCharts from 'apexcharts';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		user: {
 			type: Object,
@@ -28,7 +29,7 @@ export default Vue.extend({
 		};
 	},
 	mounted() {
-		this.$root.api('charts/user/notes', {
+		os.api('charts/user/notes', {
 			userId: this.user.id,
 			span: 'day',
 			limit: this.limit

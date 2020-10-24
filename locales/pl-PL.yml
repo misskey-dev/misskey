@@ -1,2 +1,21 @@
 ---
 _lang_: "język polski"
+search: "Szukaj"
+notifications: "Powiadomienia"
+username: "Nazwa użytkownika"
+password: "Hasło"
+ok: "OK"
+gotIt: "Rozumiem!"
+cancel: "Anuluj"
+enterUsername: "Wprowadź nazwę użytkownika"
+smtpUser: "Nazwa użytkownika"
+smtpPass: "Hasło"
+_sfx:
+  notification: "Powiadomienia"
+_widgets:
+  notifications: "Powiadomienia"
+_profile:
+  username: "Nazwa użytkownika"
+_deck:
+  _columns:
+    notifications: "Powiadomienia"

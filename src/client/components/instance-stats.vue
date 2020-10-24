@@ -1,93 +1,93 @@
 <template>
-<div class="zbcjwnqg" v-size="{ max: [550, 1200] }">
+<div class="zbcjwnqg" v-size="{ max: [550, 1000] }">
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
-				<b><fa :icon="faUser"/>{{ $t('users') }}</b>
+				<b><Fa :icon="faUser"/>{{ $t('users') }}</b>
 				<small>{{ $t('local') }}</small>
 			</div>
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ info.originalUsersCount | number }}</dd>
+					<dd>{{ number(info.originalUsersCount) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersLocalDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ usersLocalDoD | number }}</dd>
+					<dd>{{ number(usersLocalDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersLocalWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ usersLocalWoW | number }}</dd>
+					<dd>{{ number(usersLocalWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
 		<div class="_panel">
 			<div>
-				<b><fa :icon="faUser"/>{{ $t('users') }}</b>
+				<b><Fa :icon="faUser"/>{{ $t('users') }}</b>
 				<small>{{ $t('remote') }}</small>
 			</div>
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ (info.usersCount - info.originalUsersCount) | number }}</dd>
+					<dd>{{ number((info.usersCount - info.originalUsersCount)) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersRemoteDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ usersRemoteDoD | number }}</dd>
+					<dd>{{ number(usersRemoteDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: usersRemoteWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ usersRemoteWoW | number }}</dd>
+					<dd>{{ number(usersRemoteWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
 		<div class="_panel">
 			<div>
-				<b><fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
+				<b><Fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
 				<small>{{ $t('local') }}</small>
 			</div>
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ info.originalNotesCount | number }}</dd>
+					<dd>{{ number(info.originalNotesCount) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesLocalDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ notesLocalDoD | number }}</dd>
+					<dd>{{ number(notesLocalDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesLocalWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ notesLocalWoW | number }}</dd>
+					<dd>{{ number(notesLocalWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
 		<div class="_panel">
 			<div>
-				<b><fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
+				<b><Fa :icon="faPencilAlt"/>{{ $t('notes') }}</b>
 				<small>{{ $t('remote') }}</small>
 			</div>
 			<div>
 				<dl class="total">
 					<dt>{{ $t('total') }}</dt>
-					<dd>{{ (info.notesCount - info.originalNotesCount) | number }}</dd>
+					<dd>{{ number((info.notesCount - info.originalNotesCount)) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesRemoteDoD > 0 }">
 					<dt>{{ $t('dayOverDayChanges') }}</dt>
-					<dd>{{ notesRemoteDoD | number }}</dd>
+					<dd>{{ number(notesRemoteDoD) }}</dd>
 				</dl>
 				<dl class="diff" :class="{ inc: notesRemoteWoW > 0 }">
 					<dt>{{ $t('weekOverWeekChanges') }}</dt>
-					<dd>{{ notesRemoteWoW | number }}</dd>
+					<dd>{{ number(notesRemoteWoW) }}</dd>
 				</dl>
 			</div>
 		</div>
 	</div>
 
 	<section class="_card">
-		<div class="_title" style="position: relative;"><fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><fa :icon="faSync"/></button></div>
+		<div class="_title" style="position: relative;"><Fa :icon="faChartBar"/> {{ $t('statistics') }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><Fa :icon="faSync"/></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
-				<mk-select v-model="chartSrc" style="margin: 0; flex: 1;">
+				<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
 					<optgroup :label="$t('federation')">
 						<option value="federation-instances">{{ $t('_charts.federationInstancesIncDec') }}</option>
 						<option value="federation-instances-total">{{ $t('_charts.federationInstancesTotal') }}</option>
@@ -109,11 +109,11 @@
 						<option value="drive">{{ $t('_charts.storageUsageIncDec') }}</option>
 						<option value="drive-total">{{ $t('_charts.storageUsageTotal') }}</option>
 					</optgroup>
-				</mk-select>
-				<mk-select v-model="chartSpan" style="margin: 0;">
+				</MkSelect>
+				<MkSelect v-model:value="chartSpan" style="margin: 0;">
 					<option value="hour">{{ $t('perHour') }}</option>
 					<option value="day">{{ $t('perDay') }}</option>
-				</mk-select>
+				</MkSelect>
 			</div>
 			<canvas ref="chart"></canvas>
 		</div>
@@ -122,10 +122,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
+import number from '@/filters/number';
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -136,8 +137,9 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkSelect
 	},
@@ -216,7 +218,7 @@ export default Vue.extend({
 	},
 
 	async created() {
-		this.info = await this.$root.api('stats');
+		this.info = await os.api('stats');
 
 		this.now = new Date();
 
@@ -226,17 +228,17 @@ export default Vue.extend({
 	methods: {
 		async fetchChart() {
 			const [perHour, perDay] = await Promise.all([Promise.all([
-				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
-				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/federation', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/users', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/active-users', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/notes', { limit: this.chartLimit, span: 'hour' }),
+				os.api('charts/drive', { limit: this.chartLimit, span: 'hour' }),
 			]), Promise.all([
-				this.$root.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/users', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
-				this.$root.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/federation', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/users', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/active-users', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/notes', { limit: this.chartLimit, span: 'day' }),
+				os.api('charts/drive', { limit: this.chartLimit, span: 'day' }),
 			])]);
 
 			const chart = {
@@ -279,7 +281,7 @@ export default Vue.extend({
 			const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-			this.chartInstance = new Chart(this.$refs.chart, {
+			this.chartInstance = markRaw(new Chart(this.$refs.chart, {
 				type: 'line',
 				data: {
 					labels: new Array(this.chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
@@ -344,7 +346,7 @@ export default Vue.extend({
 						mode: 'index',
 					}
 				}
-			});
+			}));
 		},
 
 		getDate(ago: number) {
@@ -622,13 +624,15 @@ export default Vue.extend({
 				}]
 			};
 		},
+
+		number
 	}
 });
 </script>
 
 <style lang="scss" scoped>
 .zbcjwnqg {
-	&.max-width_1200px {
+	&.max-width_1000px {
 		> .stats {
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr 1fr;

@@ -3,10 +3,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as THREE from 'three';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	data() {
 		return {
 			selected: null,

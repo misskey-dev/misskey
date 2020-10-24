@@ -16,6 +16,6 @@ export function genId(date?: Date): string {
 		case 'meidg': return genMeidg(date);
 		case 'ulid': return ulid(date.getTime());
 		case 'objectid': return genObjectId(date);
-		default: throw new Error('unknown id generation method');
+		default: throw new Error('unrecognized id generation method');
 	}
 }

@@ -1,10 +1,10 @@
-export default {
-	inserted(src, binding, vn) {
-		const query = binding.value;
+import { Directive } from 'vue';
 
-		// TODO: 要素をもらうというよりはカスタム幅算出関数をもらうようにしてcalcで都度呼び出して計算するようにした方が柔軟そう
-		// その場合はunbindの方も改修することを忘れずに
-		const el = query.el ? query.el() : src;
+//const observers = new Map<Element, ResizeObserver>();
+
+export default {
+	mounted(src, binding, vn) {
+		const query = binding.value;
 
 		const addClass = (el: Element, cls: string) => {
 			el.classList.add(cls);
@@ -15,7 +15,10 @@ export default {
 		};
 
 		const calc = () => {
-			const width = el.clientWidth;
+			const width = src.clientWidth;
+
+			// 要素が(一時的に)DOMに存在しないときは計算スキップ
+			if (width === 0) return;
 
 			if (query.max) {
 				for (const v of query.max) {
@@ -39,22 +42,27 @@ export default {
 
 		calc();
 
-		vn.context.$on('hook:activated', calc);
+		window.addEventListener('resize', calc);
 
-		const ro = new ResizeObserver((entries, observer) => {
-			calc();
-		});
+		// Vue3では使えなくなった
+		// 無くても大丈夫か...？
+		// TODO: ↑大丈夫じゃなかったので解決策を探す
+		//vn.context.$on('hook:activated', calc);
 
-		ro.observe(el);
+		//const ro = new ResizeObserver((entries, observer) => {
+		//	calc();
+		//});
 
-		el._ro_ = ro;
+		//ro.observe(el);
+
+		// TODO: 新たにプロパティを作るのをやめMapを使う
+		// ただメモリ的には↓の方が省メモリかもしれないので検討中
+		//el._ro_ = ro;
+		src._calc_ = calc;
 	},
 
-	unbind(src, binding, vn) {
-		const query = binding.value;
-
-		const el = query.el ? query.el() : src;
-
-		el._ro_.unobserve(el);
+	unmounted(src, binding, vn) {
+		//el._ro_.unobserve(el);
+		window.removeEventListener('resize', src._calc_);
 	}
-};
+} as Directive;

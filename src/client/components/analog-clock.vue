@@ -34,10 +34,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import * as tinycolor from 'tinycolor2';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	data() {
 		return {
 			now: new Date(),
@@ -127,7 +128,7 @@ export default Vue.extend({
 		});
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.enabled = false;
 	},
 

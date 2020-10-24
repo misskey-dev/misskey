@@ -19,8 +19,10 @@ export default async (actor: IRemoteUser, activity: IFlag): Promise<string> => {
 	await AbuseUserReports.insert({
 		id: genId(),
 		createdAt: new Date(),
-		userId: users[0].id,
+		targetUserId: users[0].id,
+		targetUserHost: users[0].host,
 		reporterId: actor.id,
+		reporterHost: actor.host,
 		comment: `${activity.content}\n${JSON.stringify(uris, null, 2)}`
 	});
 

@@ -1,17 +1,19 @@
-import Vue from 'vue';
+import { App, defineAsyncComponent } from 'vue';
 
-Vue.component('mkw-welcome', () => import('./welcome.vue').then(m => m.default));
-Vue.component('mkw-memo', () => import('./memo.vue').then(m => m.default));
-Vue.component('mkw-notifications', () => import('./notifications.vue').then(m => m.default));
-Vue.component('mkw-timeline', () => import('./timeline.vue').then(m => m.default));
-Vue.component('mkw-calendar', () => import('./calendar.vue').then(m => m.default));
-Vue.component('mkw-rss', () => import('./rss.vue').then(m => m.default));
-Vue.component('mkw-trends', () => import('./trends.vue').then(m => m.default));
-Vue.component('mkw-clock', () => import('./clock.vue').then(m => m.default));
-Vue.component('mkw-activity', () => import('./activity.vue').then(m => m.default));
-Vue.component('mkw-photos', () => import('./photos.vue').then(m => m.default));
-Vue.component('mkw-digitalClock', () => import('./digital-clock.vue').then(m => m.default));
-Vue.component('mkw-federation', () => import('./federation.vue').then(m => m.default));
+export default function(app: App) {
+	app.component('MkwMemo', defineAsyncComponent(() => import('./memo.vue')));
+	app.component('MkwNotifications', defineAsyncComponent(() => import('./notifications.vue')));
+	app.component('MkwTimeline', defineAsyncComponent(() => import('./timeline.vue')));
+	app.component('MkwCalendar', defineAsyncComponent(() => import('./calendar.vue')));
+	app.component('MkwRss', defineAsyncComponent(() => import('./rss.vue')));
+	app.component('MkwTrends', defineAsyncComponent(() => import('./trends.vue')));
+	app.component('MkwClock', defineAsyncComponent(() => import('./clock.vue')));
+	app.component('MkwActivity', defineAsyncComponent(() => import('./activity.vue')));
+	app.component('MkwPhotos', defineAsyncComponent(() => import('./photos.vue')));
+	app.component('MkwDigitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
+	app.component('MkwFederation', defineAsyncComponent(() => import('./federation.vue')));
+	app.component('MkwPostForm', defineAsyncComponent(() => import('./post-form.vue')));
+}
 
 export const widgets = [
 	'memo',
@@ -25,4 +27,5 @@ export const widgets = [
 	'photos',
 	'digitalClock',
 	'federation',
+	'postForm',
 ];

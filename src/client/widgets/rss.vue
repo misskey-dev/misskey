@@ -1,23 +1,25 @@
 <template>
-<mk-container :show-header="props.showHeader">
-	<template #header><fa :icon="faRssSquare"/>RSS</template>
-	<template #func><button class="_button" @click="setting"><fa :icon="faCog"/></button></template>
+<MkContainer :show-header="props.showHeader">
+	<template #header><Fa :icon="faRssSquare"/>RSS</template>
+	<template #func><button class="_button" @click="setting"><Fa :icon="faCog"/></button></template>
 
 	<div class="ekmkgxbj">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<div class="feed" v-else>
 			<a v-for="item in items" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faRssSquare, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'rss',
 	props: () => ({
 		showHeader: {
@@ -29,7 +31,10 @@ export default define({
 			default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer
 	},
@@ -44,9 +49,9 @@ export default define({
 	mounted() {
 		this.fetch();
 		this.clock = setInterval(this.fetch, 60000);
-		this.$watch('props.url', this.fetch);
+		this.$watch(() => this.props.url, this.fetch);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {

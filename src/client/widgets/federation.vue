@@ -1,9 +1,9 @@
 <template>
-<mk-container :show-header="props.showHeader" :body-togglable="bodyTogglable" :scrollable="scrollable">
-	<template #header><fa :icon="faGlobe"/>{{ $t('_widgets.federation') }}</template>
+<MkContainer :show-header="props.showHeader" :body-togglable="bodyTogglable" :scrollable="scrollable">
+	<template #header><Fa :icon="faGlobe"/>{{ $t('_widgets.federation') }}</template>
 
 	<div class="wbrkwalb">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<transition-group tag="div" name="chart" class="instances" v-else>
 			<div v-for="(instance, i) in instances" :key="instance.id" class="instance">
 				<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
@@ -11,20 +11,22 @@
 					<a class="a" :href="'https://' + instance.host" target="_blank" :title="instance.host">{{ instance.host }}</a>
 					<p>{{ instance.softwareName || '?' }} {{ instance.softwareVersion }}</p>
 				</div>
-				<mk-mini-chart class="chart" :src="charts[i].requests.received"/>
+				<MkMiniChart class="chart" :src="charts[i].requests.received"/>
 			</div>
 		</transition-group>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
-import MkMiniChart from '../components/mini-chart.vue';
+import MkMiniChart from '@/components/mini-chart.vue';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'federation',
 	props: () => ({
 		showHeader: {
@@ -32,7 +34,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer, MkMiniChart
 	},
@@ -60,16 +65,16 @@ export default define({
 		this.fetch();
 		this.clock = setInterval(this.fetch, 1000 * 60);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {
 		async fetch() {
-			const instances = await this.$root.api('federation/instances', {
+			const instances = await os.api('federation/instances', {
 				sort: '+lastCommunicatedAt',
 				limit: 5
 			});
-			const charts = await Promise.all(instances.map(i => this.$root.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
+			const charts = await Promise.all(instances.map(i => os.api('charts/instance', { host: i.host, limit: 16, span: 'hour' })));
 			this.instances = instances;
 			this.charts = charts;
 			this.fetching = false;

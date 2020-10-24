@@ -1,12 +1,12 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380], el: resizeBaseEl }">
+<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
 			<slot name="func"></slot>
 			<button class="_button" v-if="bodyTogglable" @click="() => showBody = !showBody">
-				<template v-if="showBody"><fa :icon="faAngleUp"/></template>
-				<template v-else><fa :icon="faAngleDown"/></template>
+				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
+				<template v-else><Fa :icon="faAngleDown"/></template>
 			</button>
 		</div>
 	</header>
@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		showHeader: {
 			type: Boolean,
@@ -54,9 +54,6 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
-		resizeBaseEl: {
-			required: false,
-		},
 	},
 	data() {
 		return {
@@ -66,11 +63,12 @@ export default Vue.extend({
 	},
 	mounted() {
 		this.$watch('showBody', showBody => {
-			this.$el.style.minHeight = `${this.$refs.header.offsetHeight}px`;
+			const headerHeight = this.showHeader ? this.$refs.header.offsetHeight : 0;
+			this.$el.style.minHeight = `${headerHeight}px`;
 			if (showBody) {
 				this.$el.style.flexBasis = `auto`;
 			} else {
-				this.$el.style.flexBasis = `${this.$refs.header.offsetHeight}px`;
+				this.$el.style.flexBasis = `${headerHeight}px`;
 			}
 		}, {
 			immediate: true
@@ -109,7 +107,7 @@ export default Vue.extend({
 	overflow-y: hidden;
 	transition: opacity 0.5s, height 0.5s !important;
 }
-.container-toggle-enter {
+.container-toggle-enter-from {
 	opacity: 0;
 }
 .container-toggle-leave-to {
@@ -138,15 +136,13 @@ export default Vue.extend({
 		position: relative;
 		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 		z-index: 2;
-		background: var(--panelHeaderBg);
-		color: var(--panelHeaderFg);
 		line-height: 1.4em;
 
 		> .title {
 			margin: 0;
 			padding: 12px 16px;
 
-			> [data-icon] {
+			> ::v-deep([data-icon]) {
 				margin-right: 6px;
 			}
 
@@ -162,7 +158,7 @@ export default Vue.extend({
 			right: 0;
 			height: 100%;
 
-			> button {
+			> ::v-deep(button) {
 				width: 42px;
 				height: 100%;
 			}
@@ -170,7 +166,7 @@ export default Vue.extend({
 	}
 
 	> div {
-		> ::v-deep ._content {
+		> ::v-deep(._content) {
 			padding: 24px;
 
 			& + ._content {
@@ -187,7 +183,7 @@ export default Vue.extend({
 		}
 
 		> div {
-			> ::v-deep ._content {
+			> ::v-deep(._content) {
 				padding: 16px;
 			}
 		}

@@ -26,7 +26,7 @@ export const meta = {
 		},
 
 		comment: {
-			validator: $.str.range(1, 3000),
+			validator: $.str.range(1, 2048),
 			desc: {
 				'ja-JP': '迷惑行為の詳細'
 			}
@@ -72,9 +72,11 @@ export default define(meta, async (ps, me) => {
 	const report = await AbuseUserReports.save({
 		id: genId(),
 		createdAt: new Date(),
-		userId: user.id,
+		targetUserId: user.id,
+		targetUserHost: user.host,
 		reporterId: me.id,
-		comment: ps.comment
+		reporterHost: null,
+		comment: ps.comment,
 	});
 
 	// Publish event to moderators
@@ -90,7 +92,7 @@ export default define(meta, async (ps, me) => {
 		for (const moderator of moderators) {
 			publishAdminStream(moderator.id, 'newAbuseUserReport', {
 				id: report.id,
-				userId: report.userId,
+				targetUserId: report.targetUserId,
 				reporterId: report.reporterId,
 				comment: report.comment
 			});

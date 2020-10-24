@@ -1,16 +1,16 @@
 <template>
 <div class="mk-toast">
-	<transition name="notification-slide" appear @after-leave="() => { destroyDom(); }">
-		<x-notification :notification="notification" class="notification" v-if="show"/>
+	<transition name="notification-slide" appear @after-leave="$emit('closed')">
+		<XNotification :notification="notification" class="notification _acrylic" v-if="showing"/>
 	</transition>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XNotification from './notification.vue';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XNotification
 	},
@@ -20,14 +20,15 @@ export default Vue.extend({
 			required: true
 		}
 	},
+	emits: ['closed'],
 	data() {
 		return {
-			show: true
+			showing: true
 		};
 	},
 	mounted() {
 		setTimeout(() => {
-			this.show = false;
+			this.showing = false;
 		}, 6000);
 	}
 });
@@ -37,7 +38,7 @@ export default Vue.extend({
 .notification-slide-enter-active, .notification-slide-leave-active {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.notification-slide-enter, .notification-slide-leave-to {
+.notification-slide-enter-from, .notification-slide-leave-to {
 	opacity: 0;
 	transform: translateX(-250px);
 }
@@ -64,12 +65,8 @@ export default Vue.extend({
 
 	> .notification {
 		height: 100%;
-		-webkit-backdrop-filter: blur(12px);
-		backdrop-filter: blur(12px);
-		background-color: var(--toastBg);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		border-radius: 8px;
-		color: var(--toastFg);
 		overflow: hidden;
 	}
 }

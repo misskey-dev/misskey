@@ -1,37 +1,49 @@
 <template>
-<x-window ref="window" :width="800" :height="500" @closed="() => { $emit('closed'); destroyDom(); }" :with-ok-button="true" :ok-button-disabled="(type === 'file') && (selected.length === 0)" @ok="ok()">
+<XModalWindow ref="dialog"
+	:width="800"
+	:height="500"
+	:with-ok-button="true"
+	:ok-button-disabled="(type === 'file') && (selected.length === 0)"
+	@click="cancel()"
+	@close="cancel()"
+	@ok="ok()"
+	@closed="$emit('closed')"
+>
 	<template #header>
 		{{ multiple ? ((type === 'file') ? $t('selectFiles') : $t('selectFolders')) : ((type === 'file') ? $t('selectFile') : $t('selectFolder')) }}
-		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ selected.length | number }})</span>
+		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
 	<div>
-		<x-drive :multiple="multiple" @change-selection="onChangeSelection" :select="type"/>
+		<XDrive :multiple="multiple" @changeSelection="onChangeSelection" @selected="ok()" :select="type"/>
 	</div>
-</x-window>
+</XModalWindow>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import XDrive from './drive.vue';
-import XWindow from './window.vue';
+import XModalWindow from '@/components/ui/modal-window.vue';
+import number from '@/filters/number';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		XDrive,
-		XWindow,
+		XModalWindow,
 	},
 
 	props: {
 		type: {
 			type: String,
 			required: false,
-			default: 'file' 
+			default: 'file'
 		},
 		multiple: {
 			type: Boolean,
 			default: false
 		}
 	},
+
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
@@ -41,13 +53,20 @@ export default Vue.extend({
 
 	methods: {
 		ok() {
-			this.$emit('selected', this.selected);
-			this.$refs.window.close();
+			this.$emit('done', this.selected);
+			this.$refs.dialog.close();
+		},
+
+		cancel() {
+			this.$emit('done');
+			this.$refs.dialog.close();
 		},
 
 		onChangeSelection(xs) {
 			this.selected = xs;
-		}
+		},
+
+		number
 	}
 });
 </script>

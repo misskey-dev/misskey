@@ -1,7 +1,7 @@
 <template>
 <component class="bghgjjyj _button"
 	:is="link ? 'a' : 'button'"
-	:class="{ inline, primary }"
+	:class="{ inline, primary, danger, full }"
 	:type="type"
 	@click="$emit('click', $event)"
 	@mousedown="onMousedown"
@@ -14,8 +14,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({
+import { defineComponent } from 'vue';
+
+export default defineComponent({
 	props: {
 		type: {
 			type: String,
@@ -46,7 +47,18 @@ export default Vue.extend({
 			required: false,
 			default: false
 		},
+		danger: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		full: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
+	emits: ['click'],
 	mounted() {
 		if (this.autofocus) {
 			this.$nextTick(() => {
@@ -100,6 +112,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .bghgjjyj {
 	position: relative;
+	z-index: 1; // 他コンポーネントのbox-shadowに隠されないようにするため
 	display: block;
 	min-width: 100px;
 	padding: 8px 14px;
@@ -121,6 +134,10 @@ export default Vue.extend({
 		background: var(--buttonHoverBg);
 	}
 
+	&.full {
+		width: 100%;
+	}
+
 	&.primary {
 		color: #fff;
 		background: var(--accent);
@@ -131,6 +148,23 @@ export default Vue.extend({
 
 		&:not(:disabled):active {
 			background: var(--X8);
+		}
+	}
+
+	&.danger {
+		color: #ff2a2a;
+
+		&.primary {
+			color: #fff;
+			background: #ff2a2a;
+
+			&:not(:disabled):hover {
+				background: #ff4242;
+			}
+
+			&:not(:disabled):active {
+				background: #d42e2e;
+			}
 		}
 	}
 
@@ -180,7 +214,7 @@ export default Vue.extend({
 		border-radius: 6px;
 		overflow: hidden;
 
-		::v-deep div {
+		::v-deep(div) {
 			position: absolute;
 			width: 2px;
 			height: 2px;
@@ -192,7 +226,7 @@ export default Vue.extend({
 		}
 	}
 
-	&.primary > .ripples ::v-deep div {
+	&.primary > .ripples ::v-deep(div) {
 		background: rgba(0, 0, 0, 0.15);
 	}
 

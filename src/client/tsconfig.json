@@ -1,35 +1,40 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "noEmitOnError": false,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "noUnusedParameters": false,
-    "noUnusedLocals": true,
-    "noFallthroughCasesInSwitch": true,
-    "declaration": false,
-    "sourceMap": false,
-    "target": "es2017",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "removeComments": false,
-    "noLib": false,
-    "strict": true,
-    "strictNullChecks": false,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "src/@types"
-    ],
-    "lib": [
-      "esnext",
-      "dom",
-      "webworker"
-    ]
-  },
-  "compileOnSave": false,
-  "include": [
-    "./**/*.ts"
-  ]
+	"compilerOptions": {
+		"allowJs": true,
+		"noEmitOnError": false,
+		"noImplicitAny": false,
+		"noImplicitReturns": true,
+		"noUnusedParameters": false,
+		"noUnusedLocals": true,
+		"noFallthroughCasesInSwitch": true,
+		"declaration": false,
+		"sourceMap": false,
+		"target": "es2017",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"removeComments": false,
+		"noLib": false,
+		"strict": true,
+		"strictNullChecks": false,
+		"experimentalDecorators": true,
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"]
+		},
+		"typeRoots": [
+			"node_modules/@types",
+			"src/@types",
+			"src/client/@types"
+		],
+		"lib": [
+			"esnext",
+			"dom",
+			"webworker"
+		]
+	},
+	"compileOnSave": false,
+	"include": [
+		"./**/*.ts"
+	]
 }

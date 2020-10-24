@@ -3,15 +3,19 @@
 	<component :is="'h' + h">{{ value.title }}</component>
 
 	<div class="children">
-		<x-block v-for="child in value.children" :value="child" :page="page" :hpml="hpml" :key="child.id" :h="h + 1"/>
+		<XBlock v-for="child in value.children" :value="child" :page="page" :hpml="hpml" :key="child.id" :h="h + 1"/>
 	</div>
 </section>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
+	components: {
+		XBlock: defineAsyncComponent(() => import('./page.block.vue'))
+	},
 	props: {
 		value: {
 			required: true
@@ -25,9 +29,6 @@ export default Vue.extend({
 		h: {
 			required: true
 		}
-	},
-	beforeCreate() {
-		this.$options.components.XBlock = require('./page.block.vue').default;
 	},
 });
 </script>
