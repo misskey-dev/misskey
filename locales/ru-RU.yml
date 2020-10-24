@@ -779,12 +779,15 @@ _profile:
   name: "Имя"
   username: "Имя пользователя"
   description: "О себе"
-  metadataContent: "Содержание"
+  youCanIncludeHashtags: "Можете использовать здесь хэштеги"
+  metadata: "Всякое"
+  metadataLabel: "Метка"
+  metadataContent: "Содержимое"
 _exportOrImport:
   allNotes: "Все записи\n"
   followingList: "Подписки"
-  muteList: "Скрыть"
-  blockingList: "Заблокировать"
+  muteList: "Скрытые"
+  blockingList: "Заблокированные"
   userLists: "Списки"
 _timelines:
   home: "Главная"
@@ -812,7 +815,7 @@ _pages:
       variable: "Переменная"
     post: "Форма отправки"
     _post:
-      text: "Содержание"
+      text: "Содержимое"
     textInput: "Ввод текста"
     _textInput:
       name: "Имя переменной"
@@ -838,7 +841,7 @@ _pages:
       text: "Заголовок."
       _action:
         _dialog:
-          content: "Содержание"
+          content: "Содержимое"
         _pushEvent:
           no-variable: "Не найдено"
         callAiScript: "Справка AiScript"
