@@ -2,7 +2,7 @@
 <span class="eiwwqkts" :class="{ cat }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
 	<img class="inner" :src="url"/>
 </span>
-<MkA class="eiwwqkts" :class="{ cat }" :to="userPage(user)" :props="{ acct: acct(user) }" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
+<MkA class="eiwwqkts" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
 	<img class="inner" :src="url"/>
 </MkA>
 </template>

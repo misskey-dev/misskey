@@ -67,15 +67,15 @@
 				</dl>
 			</div>
 			<div class="status">
-				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" :props="{ acct: getAcct(user), page: 'index' }">
+				<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
 					<b>{{ number(user.notesCount) }}</b>
 					<span>{{ $t('notes') }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }" :props="{ acct: getAcct(user), page: 'following' }">
+				<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
 					<b>{{ number(user.followingCount) }}</b>
 					<span>{{ $t('following') }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }" :props="{ acct: getAcct(user), page: 'followers' }">
+				<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
 					<b>{{ number(user.followersCount) }}</b>
 					<span>{{ $t('followers') }}</span>
 				</MkA>
@@ -207,7 +207,7 @@ export default defineComponent({
 
 	methods: {
 		getAcct,
-		
+
 		fetch() {
 			if (this.acct == null) return;
 			Progress.start();

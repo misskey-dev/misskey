@@ -8,7 +8,8 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { faArrowRight, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
-import copyToClipboard from '../../scripts/copy-to-clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { router } from '@/router';
 
 export default defineComponent({
 	inject: {
@@ -25,20 +26,16 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-
-		// TODO: 将来的にはURLをルーティング定義と照らし合わせてpropsをURLから自動抽出するようにしたい
-		props: {
-			type: Object,
-			required: false,
-			default: {},
-		},
 	},
 
 	methods: {
-		getComponent() {
-			// TODO: 将来的にはルーティング定義から算出するようにしたい
-			if (this.to.startsWith('/@')) return import('@/pages/user/index.vue');
-			if (this.to.startsWith('/notes/')) return import('@/pages/note.vue');
+		resolve() {
+			const resolved = router.resolve(this.to);
+			const route = resolved.matched[0];
+			return {
+				component: route.components.default,
+				props: route.props?.default ? route.props.default(resolved) : resolved.params
+			};
 		},
 		onContextmenu(e) {
 			if (window.getSelection().toString() !== '') return;
@@ -52,13 +49,15 @@ export default defineComponent({
 				icon: faWindowMaximize,
 				text: this.$t('openInWindow'),
 				action: () => {
-					os.pageWindow(this.to, defineAsyncComponent(() => this.getComponent()), this.props);
+					const { component, props } = this.resolve();
+					os.pageWindow(this.to, component, props);
 				}
 			}, this.sideViewHook ? {
 				icon: faColumns,
 				text: this.$t('openInSide'),
 				action: () => {
-					this.sideViewHook(this.to, defineAsyncComponent(() => this.getComponent()), this.props);
+					const { component, props } = this.resolve();
+					this.sideViewHook(this.to, component, props);
 				}
 			} : undefined, null, {
 				icon: faExternalLinkAlt,
@@ -77,7 +76,8 @@ export default defineComponent({
 
 		nav() {
 			if (this.navHook) {
-				this.navHook(this.to, defineAsyncComponent(() => this.getComponent()), this.props);
+				const { component, props } = this.resolve();
+				this.navHook(this.to, component, props);
 			} else {
 				this.$router.push(this.to);
 			}
