@@ -756,10 +756,10 @@ _poll:
 _visibility:
   public: "Общедоступно"
   publicDescription: "Открыто для всех"
-  home: "Главная"
+  home: "Домашняя"
   followers: "Для подписчиков"
   followersDescription: "Увидят только ваши подписчики"
-  specified: "Только адресаты"
+  specified: "Личное"
   specifiedDescription: "Получат только указанные пользователи"
   localOnly: "Локально"
   localOnlyDescription: "Увидят только пользователи этого сайта"
@@ -960,4 +960,4 @@ _deck:
     antenna: "Антенны"
     list: "Списки"
     mentions: "Упоминания"
-    direct: "Только адресаты"
+    direct: "Личное"
