@@ -57,7 +57,7 @@ export default defineComponent({
 				}
 			}, !this.navHook && this.sideViewHook ? {
 				icon: faColumns,
-				text: this.$t('openInSide'),
+				text: this.$t('openInSideView'),
 				action: () => {
 					this.sideViewHook(this.to);
 				}

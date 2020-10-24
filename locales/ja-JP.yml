@@ -594,7 +594,7 @@ abuseReported: "内容が送信されました。ご報告ありがとうござ�
 send: "送信"
 abuseMarkAsResolved: "対応済みにする"
 openInNewTab: "新しいタブで開く"
-openInSide: "サイドで開く"
+openInSideView: "サイドビューで開く"
 defaultNavigationBehaviour: "デフォルトのナビゲーション"
 
 _serverDisconnectedBehavior:
