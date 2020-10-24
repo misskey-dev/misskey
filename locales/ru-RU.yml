@@ -798,8 +798,8 @@ _widgets:
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
-  chars: "{count} символов"
-  files: "{count} файлов"
+  chars: "символов: {count}"
+  files: "файлов: {count}"
 _poll:
   noOnlyOneChoice: "Нужно хотя бы два варианта."
   choiceN: "Выбор {n}"
@@ -866,9 +866,24 @@ _charts:
   activeUsers: "Активные пользователи"
   notesIncDec: "Изменение числа заметок"
   localNotesIncDec: "Изменения числа локальных заметок"
+  remoteNotesIncDec: "Изменения числа заметок с других сайтов"
+  notesTotal: "Общее количество заметок"
+  filesIncDec: "Изменения числа файлов"
+  filesTotal: "Количество файлов"
+  storageUsageIncDec: "Изменения заполнения хранилища"
+  storageUsageTotal: "Использование хранилища"
 _instanceCharts:
+  requests: "Запросы"
   users: "Изменение числа пользователей"
+  usersTotal: "Количество пользователей"
   notes: "Изменение числа заметок"
+  notesTotal: "Общее количество заметок"
+  ff: "Изменения числа подписчиков"
+  ffTotal: "Общее количество подписчиков"
+  cacheSize: "Изменения размера кэша"
+  cacheSizeTotal: "Суммарный размер кэша"
+  files: "Изменения числа файлов"
+  filesTotal: "Суммарное количество файлов"
 _timelines:
   home: "Главная"
 _rooms:
