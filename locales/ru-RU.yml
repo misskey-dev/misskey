@@ -886,10 +886,18 @@ _instanceCharts:
   files: "Изменения числа файлов"
   filesTotal: "Суммарное количество файлов"
 _timelines:
-  home: "Главная"
-  local: "Здешнее"
+  home: "Персональное"
+  local: "Местное"
+  social: "Социальное"
+  global: "Глобальное"
 _rooms:
   roomOf: "Комната {user}"
+  addFurniture: "Добавить обстановку"
+  translate: "Передвинуть"
+  rotate: "Повернуть"
+  exit: "Выход"
+  remove: "Выбросить"
+  clear: "Очистить"
   _roomType:
     default: "По умолчанию"
   _furnitures:
