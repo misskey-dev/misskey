@@ -151,12 +151,12 @@ store.dispatch('instance/fetch').then(() => {
 
 stream.init(store.state.i);
 
-const app = createApp(
-	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
-	!store.getters.isSignedIn ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
-	deckmode ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-	defineAsyncComponent(() => import('@/ui/default.vue'))
-);
+const app = createApp(await (
+	window.location.search === '?zen' ? import('@/ui/zen.vue') :
+	!store.getters.isSignedIn         ? import('@/ui/visitor.vue') :
+	deckmode                          ? import('@/ui/deck.vue') :
+	import('@/ui/default.vue')
+).then(x => x.default));
 
 if (_DEV_) {
 	app.config.performance = true;

@@ -119,12 +119,11 @@ export default defineComponent({
 		width: 370px;
 		height: 100vh;
 		overflow: auto;
-		padding-top: $header-height;
 		box-sizing: border-box;
 
 		> .header {
 			display: flex;
-			position: fixed;
+			position: sticky;
 			z-index: 1000;
 			top: 0;
 			height: $header-height;

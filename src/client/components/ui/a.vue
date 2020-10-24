@@ -86,6 +86,11 @@ export default defineComponent({
 			if (this.navHook) {
 				this.navHook(this.to);
 			} else {
+				if (this.$store.state.device.defaultSideView && this.sideViewHook && this.to !== '/') {
+					this.sideViewHook(this.to);
+					return;
+				}
+
 				this.$router.push(this.to);
 			}
 		}
