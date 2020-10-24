@@ -1,5 +1,5 @@
 <template>
-<div class="qvzfzxam" v-if="component">
+<div class="qvzfzxam _narrow_" v-if="component">
 	<div class="container">
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
 			<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
