@@ -56,6 +56,10 @@
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
 		<div class="_content">
+			<div>{{ $t('defaultNavigationBehaviour') }}</div>
+			<MkSwitch v-model:value="deckNavWindow">{{ $t('openInWindow') }}</MkSwitch>
+		</div>
+		<div class="_content">
 			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
 				{{ $t('_deck.alwaysShowMainColumn') }}
 			</MkSwitch>
@@ -153,6 +157,11 @@ export default defineComponent({
 		defaultSideView: {
 			get() { return this.$store.state.device.defaultSideView; },
 			set(value) { this.$store.commit('device/set', { key: 'defaultSideView', value }); }
+		},
+
+		deckNavWindow: {
+			get() { return this.$store.state.device.deckNavWindow; },
+			set(value) { this.$store.commit('device/set', { key: 'deckNavWindow', value }); }
 		},
 
 		chatOpenBehavior: {

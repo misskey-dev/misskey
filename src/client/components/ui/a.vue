@@ -10,6 +10,7 @@ import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } f
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
+import { deckmode } from '@/config';
 
 export default defineComponent({
 	inject: {
@@ -88,6 +89,10 @@ export default defineComponent({
 			} else {
 				if (this.$store.state.device.defaultSideView && this.sideViewHook && this.to !== '/') {
 					this.sideViewHook(this.to);
+					return;
+				}
+				if (this.$store.state.device.deckNavWindow && deckmode && this.to !== '/') {
+					os.pageWindow(this.to);
 					return;
 				}
 
