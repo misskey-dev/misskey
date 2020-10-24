@@ -11,7 +11,7 @@ export class refineAbuseUserReport1603094348345 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD "assigneeId" character varying(32)`);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD "resolved" boolean NOT NULL DEFAULT false`);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" DROP COLUMN "comment"`);
-        await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD "comment" character varying(2048) NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD "comment" character varying(2048) NOT NULL DEFAULT '{}'::varchar[]`);
         await queryRunner.query(`CREATE INDEX "IDX_2b15aaf4a0dc5be3499af7ab6a" ON "abuse_user_report" ("resolved") `);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD CONSTRAINT "FK_08b883dd5fdd6f9c4c1572b36de" FOREIGN KEY ("assigneeId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE NO ACTION`);
     }
@@ -20,7 +20,7 @@ export class refineAbuseUserReport1603094348345 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "abuse_user_report" DROP CONSTRAINT "FK_08b883dd5fdd6f9c4c1572b36de"`);
         await queryRunner.query(`DROP INDEX "IDX_2b15aaf4a0dc5be3499af7ab6a"`);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" DROP COLUMN "comment"`);
-        await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD "comment" character varying(512) NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "abuse_user_report" ADD "comment" character varying(512) NOT NULL DEFAULT '{}'::varchar[]`);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" DROP COLUMN "resolved"`);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" DROP COLUMN "assigneeId"`);
         await queryRunner.query(`ALTER TABLE "abuse_user_report" RENAME COLUMN "targetUserId" TO "userId"`);
