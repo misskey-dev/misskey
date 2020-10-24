@@ -2,7 +2,8 @@
 <div class="qvzfzxam" v-if="component">
 	<div class="container">
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
-			<button class="_button" @click="back()"><Fa :icon="faChevronLeft"/></button>
+			<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 			<XHeader class="title" :info="pageInfo" :with-back="false"/>
 			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 		</header>
@@ -12,11 +13,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from 'vue';
+import { defineComponent } from 'vue';
 import { faTimes, faChevronLeft, faArrowRight, faWindowMaximize, faExternalLinkAlt, faLink } from '@fortawesome/free-solid-svg-icons';
 import XHeader from './_common_/header.vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { resolve } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -25,8 +27,8 @@ export default defineComponent({
 
 	provide() {
 		return {
-			navHook: (url, component, props) => {
-				this.go(url, component, props);
+			navHook: (url) => {
+				this.navigate(url);
 			}
 		};
 	},
@@ -37,6 +39,7 @@ export default defineComponent({
 			component: null,
 			props: {},
 			pageInfo: null,
+			history: [],
 			faTimes, faChevronLeft,
 		};
 	},
@@ -49,10 +52,16 @@ export default defineComponent({
 			}
 		},
 
-		go(url, component, props) {
+		navigate(url, record = true) {
+			if (record && this.url) this.history.push(this.url);
 			this.url = url;
-			this.component = markRaw(component);
+			const { component, props } = resolve(url);
+			this.component = component;
 			this.props = props;
+		},
+
+		back() {
+			this.navigate(this.history.pop(), false);
 		},
 
 		close() {
@@ -76,7 +85,7 @@ export default defineComponent({
 				icon: faWindowMaximize,
 				text: this.$t('openInWindow'),
 				action: () => {
-					os.pageWindow(this.url, this.component, this.props);
+					os.pageWindow(this.url);
 					this.close();
 				}
 			}, null, {

@@ -1,4 +1,4 @@
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, markRaw } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -101,3 +101,13 @@ router.afterEach((to, from) => {
 		indexScrollPos = window.scrollY;
 	}
 });
+
+export function resolve(path: string) {
+	const resolved = router.resolve(path);
+	const route = resolved.matched[0];
+	return {
+		component: markRaw(route.components.default),
+		// TODO: route.propsには関数以外も入る可能性があるのでよしなにハンドリングする
+		props: route.props?.default ? route.props.default(resolved) : resolved.params
+	};
+}

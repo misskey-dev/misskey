@@ -5,11 +5,10 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { faArrowRight, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { router } from '@/router';
 
 export default defineComponent({
 	inject: {
@@ -29,14 +28,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		resolve() {
-			const resolved = router.resolve(this.to);
-			const route = resolved.matched[0];
-			return {
-				component: route.components.default,
-				props: route.props?.default ? route.props.default(resolved) : resolved.params
-			};
-		},
 		onContextmenu(e) {
 			if (window.getSelection().toString() !== '') return;
 			os.contextMenu([{
@@ -52,15 +43,13 @@ export default defineComponent({
 				icon: faWindowMaximize,
 				text: this.$t('openInWindow'),
 				action: () => {
-					const { component, props } = this.resolve();
-					os.pageWindow(this.to, component, props);
+					os.pageWindow(this.to);
 				}
 			}, this.sideViewHook ? {
 				icon: faColumns,
 				text: this.$t('openInSide'),
 				action: () => {
-					const { component, props } = this.resolve();
-					this.sideViewHook(this.to, component, props);
+					this.sideViewHook(this.to);
 				}
 			} : undefined, null, {
 				icon: faExternalLinkAlt,
@@ -79,8 +68,7 @@ export default defineComponent({
 
 		nav() {
 			if (this.navHook) {
-				const { component, props } = this.resolve();
-				this.navHook(this.to, component, props);
+				this.navHook(this.to);
 			} else {
 				this.$router.push(this.to);
 			}

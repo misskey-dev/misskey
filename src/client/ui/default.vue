@@ -80,8 +80,8 @@ export default defineComponent({
 
 	provide() {
 		return {
-			sideViewHook: (url, component, props) => {
-				this.$refs.side.go(url, component, props);
+			sideViewHook: (url) => {
+				this.$refs.side.navigate(url);
 			}
 		};
 	},

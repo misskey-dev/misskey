@@ -3,6 +3,7 @@
 	:initial-width="400"
 	:initial-height="500"
 	:can-resize="true"
+	:close-right="true"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >
@@ -10,8 +11,8 @@
 		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>
 	<template #buttons>
-		<button class="_button" @click="expand" v-tooltip="$t('showInPage')"><Fa :icon="faExpandAlt"/></button>
-		<button class="_button" @click="popout" v-tooltip="$t('popout')"><Fa :icon="faExternalLinkAlt"/></button>
+		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 	</template>
 	<div class="yrolvcoq" style="min-height: 100%; background: var(--bg);">
 		<component :is="component" v-bind="props" :ref="changePage"/>
@@ -20,12 +21,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw } from 'vue';
-import { faExternalLinkAlt, faExpandAlt, faLink } from '@fortawesome/free-solid-svg-icons';
+import { defineComponent } from 'vue';
+import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
 import XHeader from '@/ui/_common_/header.vue';
 import { popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { resolve } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -35,10 +37,8 @@ export default defineComponent({
 
 	provide() {
 		return {
-			navHook: (url, component, props) => {
-				this.url = url;
-				this.component = markRaw(component);
-				this.props = props;
+			navHook: (url) => {
+				this.navigate(url);
 			}
 		};
 	},
@@ -67,7 +67,14 @@ export default defineComponent({
 			url: this.initialUrl,
 			component: this.initialComponent,
 			props: this.initialProps,
-			contextmenu: [{
+			history: [],
+			faChevronLeft,
+		};
+	},
+
+	computed: {
+		contextmenu() {
+			return [{
 				type: 'label',
 				text: this.url,
 			}, {
@@ -91,9 +98,8 @@ export default defineComponent({
 				action: () => {
 					copyToClipboard(this.url);
 				}
-			}],
-			faExternalLinkAlt, faExpandAlt,
-		};
+			}];
+		},
 	},
 
 	methods: {
@@ -102,6 +108,18 @@ export default defineComponent({
 			if (page.INFO) {
 				this.pageInfo = page.INFO;
 			}
+		},
+
+		navigate(url, record = true) {
+			if (record) this.history.push(this.url);
+			this.url = url;
+			const { component, props } = resolve(url);
+			this.component = component;
+			this.props = props;
+		},
+
+		back() {
+			this.navigate(this.history.pop(), false);
 		},
 
 		expand() {
