@@ -109,7 +109,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .qvzfzxam {
-	$header-height: 60px;
+	$header-height: 58px; // TODO: どこかに集約したい
 
 	--section-padding: 16px;
 	--margin: var(--marginHalf);
@@ -127,7 +127,7 @@ export default defineComponent({
 			z-index: 1000;
 			top: 0;
 			height: $header-height;
-			width: 370px;
+			width: 100%;
 			line-height: $header-height;
 			text-align: center;
 			font-weight: bold;

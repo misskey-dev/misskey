@@ -259,7 +259,7 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 60px;
+	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
