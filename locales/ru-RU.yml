@@ -757,18 +757,19 @@ _visibility:
   public: "Общедоступно"
   publicDescription: "Открыто для всех"
   home: "Домашняя"
+  homeDescription: "Не появится в общих лентах (локальной и глобальной)"
   followers: "Для подписчиков"
   followersDescription: "Увидят только ваши подписчики"
   specified: "Личное"
-  specifiedDescription: "Получат только указанные пользователи"
+  specifiedDescription: "Только для тех, кого укажете"
   localOnly: "Локально"
   localOnlyDescription: "Увидят только пользователи этого сайта"
 _postForm:
-  replyPlaceholder: "Ответьте на эту запись..."
-  quotePlaceholder: "Процитируйте эту запись..."
+  replyPlaceholder: "Ответ на заметку..."
+  quotePlaceholder: "Пояснение к цитате..."
   channelPlaceholder: "Отправить в канал"
   _placeholders:
-    a: "Что происходит?"
+    a: "Чем занимаетесь?"
 _profile:
   name: "Имя"
   username: "Имя пользователя"
