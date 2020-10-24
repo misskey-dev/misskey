@@ -89,6 +89,8 @@ export const router = createRouter({
 		{ path: '/instance/abuses', component: page('instance/abuses') },
 		{ path: '/notes/:note', name: 'note', component: page('note') },
 		{ path: '/tags/:tag', component: page('tag') },
+		{ path: '/games/reversi', name: 'reversi', component: page('reversi/index') },
+		{ path: '/games/reversi/:gameId', name: 'reversi', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },

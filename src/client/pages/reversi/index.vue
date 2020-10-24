@@ -1,9 +1,9 @@
 <template>
-<div class="phgnkghfpyvkrvwiajkiuoxyrdaqpzcx">
+<div class="phgnkghfpyvkrvwiajkiuoxyrdaqpzcx" v-if="!matching">
 	<h1>{{ $t('title') }}</h1>
 	<p>{{ $t('sub-title') }}</p>
 	<div class="play">
-		<form-button primary round @click="match">{{ $t('invite') }}</form-button>
+		<MkButton primary round @click="match">{{ $t('invite') }}</MkButton>
 		<details>
 			<summary>{{ $t('rule') }}</summary>
 			<div>
@@ -45,10 +45,16 @@
 		</a>
 	</section>
 </div>
+<div class="matching" v-else>
+	<h1>{{ this.$t('matching.waiting-for').split('{}')[0] }}<b><mk-user-name :user="matching"/></b>{{ this.$t('matching.waiting-for').split('{}')[1] }}<mk-ellipsis/></h1>
+	<div class="cancel">
+		<MkButton round @click="cancel">{{ $t('matching.cancel') }}</MkButton>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -62,15 +68,26 @@ export default defineComponent({
 			myGames: [],
 			matching: null,
 			invitations: [],
-			connection: null
+			connection: null,
+			pingClock: null,
 		};
 	},
 
 	mounted() {
 		if (this.$store.getters.isSignedIn) {
-			this.connection = this.$root.stream.useSharedConnection('gamesReversi');
+			this.connection = os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);
+
+			this.connection.on('matched', this.onMatched);
+
+			this.pingClock = setInterval(() => {
+				if (this.matching) {
+					this.connection.send('ping', {
+						id: this.matching.id
+					});
+				}
+			}, 3000);
 
 			os.api('games/reversi/games', {
 				my: true
@@ -92,12 +109,20 @@ export default defineComponent({
 	beforeDestroy() {
 		if (this.connection) {
 			this.connection.dispose();
+			clearInterval(this.pingClock);
 		}
 	},
 
 	methods: {
 		go(game) {
-			this.$emit('go', game);
+			const url = '/games/reversi/' + game.id;
+			if (this.navHook) {
+				this.navHook(url, defineAsyncComponent(() => import('@/pages/reversi/game.vue')), {
+					gameId: game.id
+				});
+			} else {
+				this.$router.push(url);
+			}
 		},
 
 		async match() {
@@ -107,11 +132,16 @@ export default defineComponent({
 				userId: user.id
 			}).then(res => {
 				if (res == null) {
-					this.$emit('matching', user);
+					this.matching = user;
 				} else {
-					this.$emit('go', res);
+					this.go(res);
 				}
 			});
+		},
+
+		cancel() {
+			this.matching = null;
+			os.api('games/reversi/match/cancel');
 		},
 
 		accept(invitation) {
@@ -119,9 +149,13 @@ export default defineComponent({
 				userId: invitation.parent.id
 			}).then(game => {
 				if (game) {
-					this.$emit('go', game);
+					this.go(game);
 				}
 			});
+		},
+
+		onMatched(game) {
+			this.go(game);
 		},
 
 		onInvited(invite) {
