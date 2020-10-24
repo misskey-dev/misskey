@@ -789,6 +789,16 @@ _exportOrImport:
   muteList: "Скрытые"
   blockingList: "Заблокированные"
   userLists: "Списки"
+_charts:
+  federationInstancesIncDec: "Изменение внешних связей"
+  federationInstancesTotal: "Количество внешних связей"
+  usersIncDec: "Изменение числа пользователей"
+  usersTotal: "Количество пользователей"
+  activeUsers: "Активные пользователи"
+  notesIncDec: "Изменение числа заметок"
+_instanceCharts:
+  users: "Изменение числа пользователей"
+  notes: "Изменение числа заметок"
 _timelines:
   home: "Главная"
 _rooms:
