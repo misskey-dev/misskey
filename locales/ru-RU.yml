@@ -628,8 +628,11 @@ _sfx:
   notification: "Уведомления"
   chat: "Сообщения"
 _ago:
-  secondsAgo: "{} секунд назад"
-  minutesAgo: "{} минут назад"
+  unknown: "Когда-то"
+  future: "Из будущего"
+  justNow: "Только что"
+  secondsAgo: "{n} с назад"
+  minutesAgo: "{n} мин назад"
   hoursAgo: "{} часов назад"
   daysAgo: "{} дней назад"
   weeksAgo: "{} недель назад"
