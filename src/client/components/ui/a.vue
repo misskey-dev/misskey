@@ -61,13 +61,13 @@ export default defineComponent({
 				action: () => {
 					this.sideViewHook(this.to);
 				}
-			} : undefined, this.navHook ? {
+			} : undefined, {
 				icon: faExpandAlt,
 				text: this.$t('showInPage'),
 				action: () => {
 					this.$router.push(this.to);
 				}
-			} : undefined, null, {
+			}, null, {
 				icon: faExternalLinkAlt,
 				text: this.$t('openInNewTab'),
 				action: () => {

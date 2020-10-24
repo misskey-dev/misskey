@@ -595,6 +595,7 @@ send: "送信"
 abuseMarkAsResolved: "対応済みにする"
 openInNewTab: "新しいタブで開く"
 openInSide: "サイドで開く"
+defaultNavigationBehaviour: "デフォルトのナビゲーション"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"

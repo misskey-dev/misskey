@@ -51,7 +51,7 @@ export default defineComponent({
 .novjtctn {
 	position: relative;
 	display: inline-block;
-	margin: 0 32px 0 0;
+	margin: 16px 32px 0 0;
 	cursor: pointer;
 	transition: all 0.3s;
 
