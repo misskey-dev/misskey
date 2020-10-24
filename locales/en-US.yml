@@ -593,6 +593,10 @@ fillAbuseReportDescription: "Please fill in the report details. If it is about a
 abuseReported: "Your report has been sent. Thank you very much."
 send: "Send"
 abuseMarkAsResolved: "Mark report as resolved"
+openInNewTab: "Open in new tab"
+openInSideView: "Open in side view"
+defaultNavigationBehaviour: "Default navigation behavior"
+editTheseSettingsMayBreakAccount: "Editing these settings may damage your account."
 _serverDisconnectedBehavior:
   reload: "Automatically reload"
   dialog: "Show warning dialog"
