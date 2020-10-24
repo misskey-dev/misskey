@@ -2,8 +2,6 @@
 <div class="mk-app" v-hotkey.global="keymap">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<XSide v-if="isDesktop" class="side" ref="side"/>
-
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
 			<XHeader :info="pageInfo"/>
@@ -21,6 +19,8 @@
 			<div class="spacer"></div>
 		</main>
 	</div>
+
+	<XSide v-if="isDesktop" class="side" ref="side"/>
 
 	<div v-if="isDesktop" class="widgets">
 		<div ref="widgetsSpacer"></div>
@@ -318,7 +318,7 @@ export default defineComponent({
 	> .side {
 		min-width: 370px;
 		max-width: 370px;
-		border-right: solid 1px var(--divider);
+		border-left: solid 1px var(--divider);
 	}
 
 	> .widgets {

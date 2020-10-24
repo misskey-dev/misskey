@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faChevronLeft, faArrowRight, faWindowMaximize, faExternalLinkAlt, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faChevronLeft, faExpandAlt, faWindowMaximize, faExternalLinkAlt, faLink } from '@fortawesome/free-solid-svg-icons';
 import XHeader from './_common_/header.vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
@@ -75,7 +75,7 @@ export default defineComponent({
 				type: 'label',
 				text: this.url,
 			}, {
-				icon: faArrowRight,
+				icon: faExpandAlt,
 				text: this.$t('showInPage'),
 				action: () => {
 					this.$router.push(this.url);

@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faArrowRight, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
+import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
@@ -62,7 +62,7 @@ export default defineComponent({
 					this.sideViewHook(this.to);
 				}
 			} : undefined, this.navHook ? {
-				icon: faArrowRight,
+				icon: faExpandAlt,
 				text: this.$t('showInPage'),
 				action: () => {
 					this.$router.push(this.to);
