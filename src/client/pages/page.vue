@@ -20,9 +20,9 @@
 	</div>
 	<div class="_section links">
 		<div class="_content">
-			<router-link :to="`./${page.name}/view-source`" class="link">{{ $t('_pages.viewSource') }}</router-link>
+			<MkA :to="`./${page.name}/view-source`" class="link">{{ $t('_pages.viewSource') }}</MkA>
 			<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
-				<router-link :to="`/my/pages/edit/${page.id}`" class="link">{{ $t('_pages.editThisPage') }}</router-link>
+				<MkA :to="`/my/pages/edit/${page.id}`" class="link">{{ $t('_pages.editThisPage') }}</MkA>
 				<button v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)" class="link _textButton">{{ $t('unpin') }}</button>
 				<button v-else @click="pin(true)" class="link _textButton">{{ $t('pin') }}</button>
 			</template>

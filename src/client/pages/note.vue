@@ -42,6 +42,12 @@ export default defineComponent({
 		MkRemoteCaution,
 		MkButton,
 	},
+	props: {
+		noteId: {
+			type: String,
+			required: true
+		}
+	},
 	data() {
 		return {
 			INFO: computed(() => this.note ? {
@@ -77,7 +83,7 @@ export default defineComponent({
 		};
 	},
 	watch: {
-		$route: 'fetch'
+		noteId: 'fetch'
 	},
 	created() {
 		this.fetch();
@@ -86,7 +92,7 @@ export default defineComponent({
 		fetch() {
 			Progress.start();
 			os.api('notes/show', {
-				noteId: this.$route.params.note
+				noteId: this.noteId
 			}).then(note => {
 				Promise.all([
 					os.api('users/notes', {

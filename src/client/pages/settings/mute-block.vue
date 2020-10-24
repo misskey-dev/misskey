@@ -6,9 +6,9 @@
 			<template #empty><MkInfo>{{ $t('noUsers') }}</MkInfo></template>
 			<template #default="{items}">
 				<div class="user" v-for="mute in items" :key="mute.id">
-					<router-link class="name" :to="userPage(mute.mutee)">
+					<MkA class="name" :to="userPage(mute.mutee)">
 						<MkAcct :user="mute.mutee"/>
-					</router-link>
+					</MkA>
 				</div>
 			</template>
 		</MkPagination>
@@ -18,9 +18,9 @@
 			<template #empty><MkInfo>{{ $t('noUsers') }}</MkInfo></template>
 			<template #default="{items}">
 				<div class="user" v-for="block in items" :key="block.id">
-					<router-link class="name" :to="userPage(block.blockee)">
+					<MkA class="name" :to="userPage(block.blockee)">
 						<MkAcct :user="block.blockee"/>
-					</router-link>
+					</MkA>
 				</div>
 			</template>
 		</MkPagination>

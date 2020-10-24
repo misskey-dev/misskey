@@ -5,6 +5,7 @@ import { store } from '@/store';
 import { apiUrl } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
+import { resolve } from '@/router';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -162,7 +163,8 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	};
 }
 
-export function pageWindow(url: string, component: Component | typeof import('*.vue'), props: Record<string, any>) {
+export function pageWindow(url: string) {
+	const { component, props } = resolve(url);
 	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialUrl: url,
 		initialComponent: markRaw(component),

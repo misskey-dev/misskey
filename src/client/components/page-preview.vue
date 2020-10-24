@@ -1,5 +1,5 @@
 <template>
-<router-link :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
 	<div class="thumbnail" v-if="page.eyeCatchingImage" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
 	<article>
 		<header>
@@ -11,7 +11,7 @@
 			<p>{{ userName(page.user) }}</p>
 		</footer>
 	</article>
-</router-link>
+</MkA>
 </template>
 
 <script lang="ts">

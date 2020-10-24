@@ -593,6 +593,10 @@ fillAbuseReportDescription: "通報理由の詳細を記入してください。
 abuseReported: "内容が送信されました。ご報告ありがとうございました。"
 send: "送信"
 abuseMarkAsResolved: "対応済みにする"
+openInNewTab: "新しいタブで開く"
+openInSideView: "サイドビューで開く"
+defaultNavigationBehaviour: "デフォルトのナビゲーション"
+editTheseSettingsMayBreakAccount: "これらの設定を編集するとアカウントが破損する可能性があります。"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"

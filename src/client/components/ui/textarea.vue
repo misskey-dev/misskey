@@ -2,12 +2,13 @@
 <div class="adhpbeos" :class="{ focused, filled, tall, pre }">
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
-		<textarea ref="input"
+		<textarea ref="input" :class="{ code }"
 			:value="value"
 			:required="required"
 			:readonly="readonly"
 			:pattern="pattern"
 			:autocomplete="autocomplete"
+			:spellcheck="!code"
 			@input="onInput"
 			@focus="focused = true"
 			@blur="focused = false"
@@ -20,7 +21,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -41,6 +41,10 @@ export default defineComponent({
 		},
 		autocomplete: {
 			type: String,
+			required: false
+		},
+		code: {
+			type: Boolean,
 			required: false
 		},
 		tall: {
@@ -159,6 +163,11 @@ export default defineComponent({
 			outline: none;
 			box-shadow: none;
 			color: var(--fg);
+
+			&.code {
+				tab-size: 2;
+				font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+			}
 		}
 	}
 

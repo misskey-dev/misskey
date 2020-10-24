@@ -12,7 +12,7 @@
 			</header>
 
 			<section>
-				<router-link class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</router-link>
+				<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</MkA>
 
 				<MkInput v-model:value="title">
 					<span>{{ $t('_pages.title') }}</span>
