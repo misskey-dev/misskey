@@ -593,6 +593,10 @@ fillAbuseReportDescription: "Bitte gib Details für diese Meldung an. Falls es s
 abuseReported: "Die Meldung wurde versendet. Vielen Dank."
 send: "Senden"
 abuseMarkAsResolved: "Meldung als gelöst markieren"
+openInNewTab: "In neuem Tab öffnen"
+openInSideView: "In Seitenansicht öffnen"
+defaultNavigationBehaviour: "Standardnavigationsverhalten"
+editTheseSettingsMayBreakAccount: "Bei Bearbeitung dieser Einstellungen besteht die Gefahr, dein Benutzerkonto zu beschädigen."
 _serverDisconnectedBehavior:
   reload: "Automatisch aktualisieren"
   dialog: "Warnungsfenster zeigen"
