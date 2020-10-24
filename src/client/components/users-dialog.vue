@@ -6,13 +6,13 @@
 	</div>
 
 	<div class="users">
-		<router-link v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
+		<MkA v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
 			<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
 			<div class="body">
 				<MkUserName :user="extract ? extract(item) : item" class="name"/>
 				<MkAcct :user="extract ? extract(item) : item" class="acct"/>
 			</div>
-		</router-link>
+		</MkA>
 	</div>
 	<button class="more _button" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>

@@ -1,6 +1,6 @@
 import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
 import { store } from '@/store';
 import { deckmode } from '@/config';
 import { search } from '@/scripts/search';
@@ -23,7 +23,7 @@ export const sidebarDef = {
 		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadMessagingMessage),
 		action: () => {
 			switch (store.state.device.chatOpenBehavior) {
-				case 'window': { os.pageWindow('/my/messaging', defineAsyncComponent(() => import('@/pages/messaging/index.vue'))); break; }
+				case 'window': { os.pageWindow('/my/messaging'); break; }
 				case 'popout': { popout('/my/messaging'); break; }
 				default: { router.push('/my/messaging'); break; }
 			}

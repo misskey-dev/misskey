@@ -7,7 +7,6 @@ import getAcct from '../../misc/acct/render';
 import * as os from '@/os';
 import { store, userActions } from '@/store';
 import { router } from '@/router';
-import { defineAsyncComponent } from 'vue';
 import { popout } from './popout';
 
 export function getUserMenu(user) {
@@ -137,7 +136,7 @@ export function getUserMenu(user) {
 		action: () => {
 			const acct = getAcct(user);
 			switch (store.state.device.chatOpenBehavior) {
-				case 'window': { os.pageWindow('/my/messaging/' + acct, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), { userAcct: acct }); break; }
+				case 'window': { os.pageWindow('/my/messaging/' + acct); break; }
 				case 'popout': { popout('/my/messaging'); break; }
 				default: { router.push('/my/messaging'); break; }
 			}
