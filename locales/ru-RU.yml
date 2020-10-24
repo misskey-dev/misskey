@@ -761,11 +761,11 @@ _visibility:
   followersDescription: "Увидят только ваши подписчики"
   specified: "Только адресаты"
   specifiedDescription: "Получат только указанные пользователи"
-  localOnly: "Только локально"
-  localOnlyDescription: "Не видно удаленным пользователям"
+  localOnly: "Локально"
+  localOnlyDescription: "Увидят только пользователи этого сайта"
 _postForm:
   replyPlaceholder: "Ответьте на эту запись..."
-  quotePlaceholder: "Процитировать эту запись..."
+  quotePlaceholder: "Процитируйте эту запись..."
   channelPlaceholder: "Отправить в канал"
   _placeholders:
     a: "Что происходит?"
