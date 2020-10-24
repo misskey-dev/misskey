@@ -898,9 +898,17 @@ _rooms:
   exit: "Выход"
   remove: "Выбросить"
   clear: "Очистить"
+  clearConfirm: "Уверены что стоит убрать всю обстановку из вашей комнаты?"
+  leaveConfirm: "Измнения не сохранены, правда покинуть комнату?"
+  chooseImage: "Выберите изображение"
+  roomType: "Стиль комнаты"
+  carpetColor: "Цвет ковра"
   _roomType:
     default: "По умолчанию"
+    washitsu: "Японская"
   _furnitures:
+    milk: "Пакет молока"
+    bed: "Кровать"
     pencil: "Карандаш"
     book: "Книга"
     server: "Сервер"
