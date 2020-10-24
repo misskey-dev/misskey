@@ -202,6 +202,15 @@ export const store = createStore({
 			state: defaultDeviceSettings,
 
 			mutations: {
+				overwrite(state, x) {
+					for (const k of Object.keys(state)) {
+						if (x[k] === undefined) delete state[k];
+					}
+					for (const k of Object.keys(x)) {
+						state[k] = x[k];
+					}
+				},
+
 				set(state, x: { key: string; value: any }) {
 					state[x.key] = x.value;
 				},
@@ -218,6 +227,15 @@ export const store = createStore({
 			state: defaultDeviceUserSettings,
 
 			mutations: {
+				overwrite(state, x) {
+					for (const k of Object.keys(state)) {
+						if (x[k] === undefined) delete state[k];
+					}
+					for (const k of Object.keys(x)) {
+						state[k] = x[k];
+					}
+				},
+
 				init(state, x) {
 					for (const [key, value] of Object.entries(defaultDeviceUserSettings)) {
 						if (x[key]) {
