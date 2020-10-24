@@ -56,9 +56,14 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import * as os from '@/os';
+import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
 	inject: ['navHook'],
+
+	components: {
+		MkButton
+	},
 
 	data() {
 		return {

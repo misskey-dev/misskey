@@ -1,6 +1,6 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
-	<button class="go-index" v-if="selfNav" @click="goIndex"><fa icon="arrow-left"/></button>
+	<button class="go-index" @click="goIndex"><fa icon="arrow-left"/></button>
 	<header><b><router-link :to="blackUser | userPage"><mk-user-name :user="blackUser"/></router-link></b>({{ $t('@.reversi.black') }}) vs <b><router-link :to="whiteUser | userPage"><mk-user-name :user="whiteUser"/></router-link></b>({{ $t('@.reversi.white') }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
@@ -32,9 +32,10 @@
 			</div>
 			<div class="cells" :style="cellsStyle">
 				<div v-for="(stone, i) in o.board"
-						:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
-						@click="set(i)"
-						:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`">
+					:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
+					@click="set(i)"
+					:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`"
+				>
 					<template v-if="$store.state.settings.gamesReversiUseAvatarStones">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
@@ -57,7 +58,7 @@
 	<p class="status"><b>{{ $t('@.reversi.this-turn', { count: logPos }) }}</b> {{ $t('@.reversi.black') }}:{{ o.blackCount }} {{ $t('@.reversi.white') }}:{{ o.whiteCount }} {{ $t('@.reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<form-button @click="surrender">{{ $t('surrender') }}</form-button>
+		<MkButton @click="surrender">{{ $t('surrender') }}</MkButton>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
@@ -86,8 +87,13 @@ import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../games/reversi/core';
 import { url } from '@/config';
+import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
+	components: {
+		MkButton
+	},
+
 	props: {
 		initGame: {
 			type: Object,
@@ -97,10 +103,6 @@ export default defineComponent({
 			type: Object,
 			require: true
 		},
-		selfNav: {
-			type: Boolean,
-			require: true
-		}
 	},
 
 	data() {
@@ -175,7 +177,6 @@ export default defineComponent({
 			for (const log of this.logs.slice(0, v)) {
 				this.o.put(log.color, log.pos);
 			}
-			this.$forceUpdate();
 		}
 	},
 
@@ -242,8 +243,6 @@ export default defineComponent({
 			});
 
 			this.checkEnd();
-
-			this.$forceUpdate();
 		},
 
 		onSet(x) {
@@ -251,7 +250,6 @@ export default defineComponent({
 			this.logPos++;
 			this.o.put(x.color, x.pos);
 			this.checkEnd();
-			this.$forceUpdate();
 
 			// サウンドを再生する
 			if (this.$store.state.device.enableSounds && x.color != this.myColor) {
@@ -299,173 +297,172 @@ export default defineComponent({
 			this.logPos = this.logs.length;
 
 			this.checkEnd();
-			this.$forceUpdate();
 		},
 
 		surrender() {
-			this.$root.api('games/reversi/games/surrender', {
+			os.api('games/reversi/games/surrender', {
 				gameId: this.game.id
 			});
 		},
-
-		goIndex() {
-			this.$emit('go-index');
-		}
 	}
 });
 </script>
 
-<style lang="stylus" scoped>
-.xqnhankfuuilcwvhgsopeqncafzsquya
-	text-align center
+<style lang="scss" scoped>
+.xqnhankfuuilcwvhgsopeqncafzsquya {
+	text-align: center;
 
-	> .go-index
-		position absolute
-		top 0
-		left 0
-		z-index 1
-		width 42px
-		height 42px
+	> .go-index {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		width: 42px;
+		height :42px;
+	}
 
-	> header
-		padding 8px
-		border-bottom dashed 1px var(--reversiGameHeaderLine)
+	> header {
+		padding: 8px;
+		border-bottom: dashed 1px var(--divider);
+	}
 
-		a
-			color inherit
+	> .board {
+		width: calc(100% - 16px);
+		max-width: 500px;
+		margin: 0 auto;
 
-	> .board
-		width calc(100% - 16px)
-		max-width 500px
-		margin 0 auto
+		$label-size: 16px;
+		$gap: 4px;
 
-		$label-size = 16px
-		$gap = 4px
+		> .labels-x {
+			height: $label-size;
+			padding: 0 $label-size;
+			display: flex;
 
-		> .labels-x
-			height $label-size
-			padding 0 $label-size
-			display flex
+			> * {
+				flex: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 0.8em;
 
-			> *
-				flex 1
-				display flex
-				align-items center
-				justify-content center
-				font-size 12px
+				&:first-child {
+					margin-left: -($gap / 2);
+				}
 
-				&:first-child
-					margin-left -($gap / 2)
+				&:last-child {
+					margin-right: -($gap / 2);
+				}
+			}
+		}
 
-				&:last-child
-					margin-right -($gap / 2)
+		> .flex {
+			display: flex;
 
-		> .flex
-			display flex
+			> .labels-y {
+				width: $label-size;
+				display: flex;
+				flex-direction: column;
 
-			> .labels-y
-				width $label-size
-				display flex
-				flex-direction column
+				> * {
+					flex: 1;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 12px;
 
-				> *
-					flex 1
-					display flex
-					align-items center
-					justify-content center
-					font-size 12px
+					&:first-child {
+						margin-top: -($gap / 2);
+					}
 
-					&:first-child
-						margin-top -($gap / 2)
+					&:last-child {
+						margin-bottom: -($gap / 2);
+					}
+				}
+			}
 
-					&:last-child
-						margin-bottom -($gap / 2)
+			> .cells {
+				flex: 1;
+				display: grid;
+				grid-gap: $gap;
 
-			> .cells
-				flex 1
-				display grid
-				grid-gap $gap
+				> div {
+					background: transparent;
+					border-radius: 6px;
+					overflow: hidden;
 
-				> div
-					background transparent
-					border-radius 6px
-					overflow hidden
+					* {
+						pointer-events: none;
+						user-select: none;
+					}
 
-					*
-						pointer-events none
-						user-select none
+					&.empty {
+						border: solid 2px var(--reversiGameEmptyCell);
+					}
 
-					&.empty
-						border solid 2px var(--reversiGameEmptyCell)
+					&.empty.can {
+						background: var(--reversiGameEmptyCell);
+					}
 
-					&.empty.can
-						background var(--reversiGameEmptyCell)
+					&.empty.myTurn {
+						border-color: var(--reversiGameEmptyCellMyTurn);
 
-					&.empty.myTurn
-						border-color var(--reversiGameEmptyCellMyTurn)
+						&.can {
+							background: var(--reversiGameEmptyCellCanPut);
+							cursor: pointer;
 
-						&.can
-							background var(--reversiGameEmptyCellCanPut)
-							cursor pointer
+							&:hover {
+								border-color: var(--primaryDarken10);
+								background: var(--primary);
+							}
 
-							&:hover
-								border-color var(--primaryDarken10)
-								background var(--primary)
+							&:active {
+								background: var(--primaryDarken10);
+							}
+						}
+					}
 
-							&:active
-								background var(--primaryDarken10)
+					&.prev {
+						box-shadow: 0 0 0 4px var(--primaryAlpha07);
+					}
 
-					&.prev
-						box-shadow 0 0 0 4px var(--primaryAlpha07)
+					&.isEnded {
+						border-color: var(--reversiGameEmptyCellMyTurn);
+					}
 
-					&.isEnded
-						border-color var(--reversiGameEmptyCellMyTurn)
+					&.none {
+						border-color: transparent !important;
+					}
 
-					&.none
-						border-color transparent !important
+					> svg, > img {
+						display: block;
+						width: 100%;
+						height: 100%;
+					}
+				}
+			}
+		}
+	}
 
-					> svg
-						display block
-						width 100%
-						height 100%
+	> .status {
+		margin: 0;
+		padding: 16px 0;
+	}
 
-					> img
-						display block
-						width 100%
-						height 100%
+	> .actions {
+		padding-bottom: 16px;
+	}
 
-	> .graph
-		display grid
-		grid-template-columns repeat(61, 1fr)
-		width 300px
-		height 38px
-		margin 0 auto 16px auto
+	> .player {
+		padding: 0 16px 32px 16px;
+		margin: 0 auto;
+		max-width: 500px;
 
-		> div
-			&:not(:empty)
-				background #ccc
-
-			> div:first-child
-				background #333
-
-			> div:last-child
-				background #ccc
-
-	> .status
-		margin 0
-		padding 16px 0
-
-	> .actions
-		padding-bottom 16px
-
-	> .player
-		padding 0 16px 32px 16px
-		margin 0 auto
-		max-width 500px
-
-		> span
-			display inline-block
-			margin 0 8px
-			min-width 70px
-
+		> span {
+			display: inline-block;
+			margin: 0 8px;
+			min-width: 70px;
+		}
+	}
+}
 </style>
