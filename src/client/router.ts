@@ -69,7 +69,7 @@ export const router = createRouter({
 		{ path: '/instance/announcements', component: page('instance/announcements') },
 		{ path: '/instance/abuses', component: page('instance/abuses') },
 		{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
-		{ path: '/tags/:tag', component: page('tag') },
+		{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
