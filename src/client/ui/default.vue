@@ -20,6 +20,8 @@
 		</main>
 	</div>
 
+	<XSide v-if="isDesktop" class="side" ref="side"/>
+
 	<div v-if="isDesktop" class="widgets">
 		<div ref="widgetsSpacer"></div>
 		<XWidgets @mounted="attachSticky"/>
@@ -47,19 +49,21 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<StreamIndicator/>
+	<XCommon/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from '@/components/sidebar.vue';
+import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
+import XSide from './default.side.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 
@@ -67,9 +71,19 @@ const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
+		XCommon,
 		XSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
+		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
+	},
+
+	provide() {
+		return {
+			sideViewHook: (url) => {
+				this.$refs.side.navigate(url);
+			}
+		};
 	},
 
 	data() {
@@ -245,7 +259,7 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 60px;
+	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
@@ -299,6 +313,12 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+
+	> .side {
+		min-width: 370px;
+		max-width: 370px;
+		border-left: solid 1px var(--divider);
 	}
 
 	> .widgets {

@@ -7,7 +7,7 @@
 		<transition-group tag="div" name="chart" class="tags" v-else>
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
-					<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
 					<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 				</div>
 				<MkMiniChart class="chart" :src="stat.chart"/>

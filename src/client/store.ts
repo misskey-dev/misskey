@@ -70,6 +70,8 @@ export const defaultDeviceSettings = {
 	animatedMfm: true,
 	imageNewTab: false,
 	chatOpenBehavior: 'page',
+	defaultSideView: false,
+	deckNavWindow: true,
 	showFixedPostForm: false,
 	disablePagesScript: false,
 	enableInfiniteScroll: true,
