@@ -2,11 +2,11 @@
 <div class="ujigsodd">
 	<MkLoading v-if="fetching"/>
 	<div class="stream" v-if="!fetching && images.length > 0">
-		<router-link v-for="(image, i) in images" :key="i"
+		<MkA v-for="image in images"
 			class="img"
 			:style="`background-image: url(${thumbnail(image.file)})`"
 			:to="notePage(image.note)"
-		></router-link>
+		></MkA>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
 </div>

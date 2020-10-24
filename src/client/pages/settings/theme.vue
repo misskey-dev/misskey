@@ -43,7 +43,7 @@
 					<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 				</optgroup>
 			</MkSelect>
-			<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>・<router-link to="/theme-editor" class="_link">{{ $t('_theme.make') }}</router-link>
+			<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>・<MkA to="/theme-editor" class="_link">{{ $t('_theme.make') }}</MkA>
 		</div>
 		<div class="_content">
 			<MkButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</MkButton>

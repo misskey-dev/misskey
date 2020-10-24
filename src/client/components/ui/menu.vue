@@ -12,12 +12,12 @@
 		<span v-else-if="item.type === 'pending'" :tabindex="i" class="pending item">
 			<span><MkEllipsis/></span>
 		</span>
-		<router-link v-else-if="item.type === 'link'" :to="item.to" @click.passive="close()" :tabindex="i" class="_button item">
+		<MkA v-else-if="item.type === 'link'" :to="item.to" @click.passive="close()" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
-		</router-link>
+		</MkA>
 		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<span>{{ item.text }}</span>

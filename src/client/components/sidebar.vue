@@ -17,9 +17,9 @@
 				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
 					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 				</button>
-				<router-link class="item index" active-class="active" to="/" exact v-else>
+				<MkA class="item index" active-class="active" to="/" exact v-else>
 					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</router-link>
+				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
 					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
