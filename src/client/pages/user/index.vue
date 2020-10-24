@@ -67,24 +67,23 @@
 				</dl>
 			</div>
 			<div class="status">
-				<router-link :to="userPage(user)" :class="{ active: $route.name === 'user' }">
+				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" :props="{ acct: getAcct(user), page: 'index' }">
 					<b>{{ number(user.notesCount) }}</b>
 					<span>{{ $t('notes') }}</span>
-				</router-link>
-				<router-link :to="userPage(user, 'following')" :class="{ active: $route.name === 'userFollowing' }">
+				</MkA>
+				<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }" :props="{ acct: getAcct(user), page: 'following' }">
 					<b>{{ number(user.followingCount) }}</b>
 					<span>{{ $t('following') }}</span>
-				</router-link>
-				<router-link :to="userPage(user, 'followers')" :class="{ active: $route.name === 'userFollowers' }">
+				</MkA>
+				<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }" :props="{ acct: getAcct(user), page: 'followers' }">
 					<b>{{ number(user.followersCount) }}</b>
 					<span>{{ $t('followers') }}</span>
-				</router-link>
+				</MkA>
 			</div>
 		</div>
 	</div>
 
-	<router-view :user="user"></router-view>
-	<template v-if="$route.name == 'user'">
+	<template v-if="page === 'index'">
 		<div class="_section">
 			<div class="_content _vMargin" v-if="user.pinnedNotes.length > 0">
 				<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
@@ -106,6 +105,8 @@
 			<XUserTimeline :user="user" class="_content"/>
 		</div>
 	</template>
+	<XFollowList v-else-if="page === 'following'" type="following" :user="user"/>
+	<XFollowList v-else-if="page === 'followers'" type="followers" :user="user"/>
 </div>
 <div v-else-if="error">
 	<MkError @retry="fetch()"/>
@@ -128,7 +129,7 @@ import parseAcct from '../../../misc/acct/parse';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '../../filters/number';
-import { userPage, acct } from '../../filters/user';
+import { userPage, acct as getAcct } from '../../filters/user';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -139,8 +140,21 @@ export default defineComponent({
 		MkContainer,
 		MkRemoteCaution,
 		MkFolder,
+		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
 		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
+	},
+
+	props: {
+		acct: {
+			type: String,
+			required: true
+		},
+		page: {
+			type: String,
+			required: false,
+			default: 'index'
+		}
 	},
 
 	data() {
@@ -176,7 +190,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route: 'fetch'
+		acct: 'fetch'
 	},
 
 	created() {
@@ -192,10 +206,12 @@ export default defineComponent({
 	},
 
 	methods: {
+		getAcct,
+		
 		fetch() {
-			if (this.$route.params.user == null) return;
+			if (this.acct == null) return;
 			Progress.start();
-			os.api('users/show', parseAcct(this.$route.params.user)).then(user => {
+			os.api('users/show', parseAcct(this.acct)).then(user => {
 				this.user = user;
 			}).catch(e => {
 				this.error = e;

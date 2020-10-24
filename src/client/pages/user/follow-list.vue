@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import parseAcct from '../../../misc/acct/parse';
 import MkUserInfo from '@/components/user-info.vue';
 import MkPagination from '@/components/ui/pagination.vue';
 import { userPage, acct } from '../../filters/user';
@@ -22,10 +21,14 @@ export default defineComponent({
 	},
 
 	props: {
+		user: {
+			type: Object,
+			required: true
+		},
 		type: {
 			type: String,
 			required: true
-		}
+		},
 	},
 
 	data() {
@@ -34,7 +37,7 @@ export default defineComponent({
 				endpoint: () => this.type === 'following' ? 'users/following' : 'users/followers',
 				limit: 20,
 				params: {
-					...parseAcct(this.$route.params.user),
+					userId: this.user.id,
 				}
 			},
 		};
@@ -45,7 +48,7 @@ export default defineComponent({
 			this.$refs.list.reload();
 		},
 
-		'$route'() {
+		user() {
 			this.$refs.list.reload();
 		}
 	},

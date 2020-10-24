@@ -144,7 +144,7 @@ export default defineComponent({
 	inject: {
 		inChannel: {
 			default: null
-		}
+		},
 	},
 
 	props: {
@@ -581,11 +581,6 @@ export default defineComponent({
 				});
 
 				menu = [{
-					type: 'link',
-					icon: faInfoCircle,
-					text: this.$t('details'),
-					to: '/notes/' + this.appearNote.id
-				}, null, {
 					icon: faCopy,
 					text: this.$t('copyContent'),
 					action: this.copyContent

@@ -18,10 +18,7 @@ export const router = createRouter({
 	routes: [
 		// NOTE: MkTimelineをdynamic importするとAsyncComponentWrapperが間に入るせいでkeep-aliveのコンポーネント指定が効かなくなる
 		{ path: '/', name: 'index', component: store.getters.isSignedIn ? MkTimeline : page('welcome') },
-		{ path: '/@:user', name: 'user', component: page('user/index'), children: [
-			{ path: 'following', name: 'userFollowing', component: page('user/follow-list'), props: { type: 'following' } },
-			{ path: 'followers', name: 'userFollowers', component: page('user/follow-list'), props: { type: 'followers' } },
-		]},
+		{ path: '/@:acct/:page?', name: 'user', component: page('user/index'), props: route => ({ acct: route.params.acct, page: route.params.page || 'index' }) },
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/@:acct/room', props: true, component: page('room/room') },
@@ -87,7 +84,7 @@ export const router = createRouter({
 		{ path: '/instance/relays', component: page('instance/relays') },
 		{ path: '/instance/announcements', component: page('instance/announcements') },
 		{ path: '/instance/abuses', component: page('instance/abuses') },
-		{ path: '/notes/:note', name: 'note', component: page('note') },
+		{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
 		{ path: '/tags/:tag', component: page('tag') },
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/miauth/:session', component: page('miauth') },

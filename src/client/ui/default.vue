@@ -2,6 +2,8 @@
 <div class="mk-app" v-hotkey.global="keymap">
 	<XSidebar ref="nav" class="sidebar"/>
 
+	<XSide v-if="isDesktop" class="side" ref="side"/>
+
 	<div class="contents" ref="contents" :class="{ wallpaper }">
 		<header class="header" ref="header">
 			<XHeader :info="pageInfo"/>
@@ -52,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
@@ -60,6 +62,7 @@ import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from '@/components/sidebar.vue';
 import XHeader from './_common_/header.vue';
+import XSide from './default.side.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 
@@ -70,6 +73,15 @@ export default defineComponent({
 		XSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
+		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
+	},
+
+	provide() {
+		return {
+			sideViewHook: (url, component, props) => {
+				this.$refs.side.go(url, component, props);
+			}
+		};
 	},
 
 	data() {
@@ -299,6 +311,12 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+
+	> .side {
+		min-width: 350px;
+		max-width: 350px;
+		border-right: solid 1px var(--divider);
 	}
 
 	> .widgets {

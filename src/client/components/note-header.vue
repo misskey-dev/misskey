@@ -1,17 +1,17 @@
 <template>
 <header class="kkwtjztg">
-	<router-link class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
+	<MkA class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
 		<MkUserName :user="note.user"/>
-	</router-link>
+	</MkA>
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="username"><MkAcct :user="note.user"/></span>
 	<span class="admin" v-if="note.user.isAdmin"><Fa :icon="faBookmark"/></span>
 	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><Fa :icon="farBookmark"/></span>
 	<div class="info">
 		<span class="mobile" v-if="note.viaMobile"><Fa :icon="faMobileAlt"/></span>
-		<router-link class="created-at" :to="notePage(note)">
+		<MkA class="created-at" :to="notePage(note)" :props="{ noteId: note.id }">
 			<MkTime :time="note.createdAt"/>
-		</router-link>
+		</MkA>
 		<span class="visibility" v-if="note.visibility !== 'public'">
 			<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
 			<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
