@@ -774,9 +774,11 @@ _postForm:
     c: "Что грызёт тебя, дружище?"
     d: "Есть что сказать?.."
     e: "Напишите что-нибудь…"
+    f: "В ожидании, когда вы напишете…"
 _profile:
   name: "Имя"
   username: "Имя пользователя"
+  description: "О себе"
   metadataContent: "Содержание"
 _exportOrImport:
   allNotes: "Все записи\n"
