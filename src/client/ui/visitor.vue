@@ -28,7 +28,7 @@
 		</div>
 	</div>
 
-	<StreamIndicator v-if="$store.getters.isSignedIn"/>
+	<XCommon/>
 </div>
 </template>
 
@@ -39,12 +39,14 @@ import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import XHeader from './_common_/header.vue';
+import XCommon from './_common_/common.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
-		XHeader
+		XCommon,
+		XHeader,
 	},
 
 	data() {

@@ -40,6 +40,9 @@ export default defineComponent({
 		onContextmenu(e) {
 			if (window.getSelection().toString() !== '') return;
 			os.contextMenu([{
+				type: 'label',
+				text: this.to,
+			}, {
 				icon: faArrowRight,
 				text: this.$t('showInPage'),
 				action: () => {

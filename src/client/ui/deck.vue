@@ -29,7 +29,7 @@
 	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
 	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
 
-	<StreamIndicator v-if="$store.getters.isSignedIn"/>
+	<XCommon/>
 </div>
 </template>
 
@@ -47,9 +47,11 @@ import XHeader from './_common_/header.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
+import XCommon from './_common_/common.vue';
 
 export default defineComponent({
 	components: {
+		XCommon,
 		XSidebar,
 		XHeader,
 		DeckColumn,

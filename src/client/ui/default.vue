@@ -49,7 +49,7 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<StreamIndicator/>
+	<XCommon/>
 </div>
 </template>
 
@@ -61,6 +61,7 @@ import { host } from '@/config';
 import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from '@/components/sidebar.vue';
+import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
 import * as os from '@/os';
@@ -70,6 +71,7 @@ const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
+		XCommon,
 		XSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
@@ -314,8 +316,8 @@ export default defineComponent({
 	}
 
 	> .side {
-		min-width: 350px;
-		max-width: 350px;
+		min-width: 370px;
+		max-width: 370px;
 		border-right: solid 1px var(--divider);
 	}
 

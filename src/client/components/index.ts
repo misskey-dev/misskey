@@ -11,7 +11,6 @@ import time from './time.vue';
 import url from './url.vue';
 import loading from './loading.vue';
 import error from './error.vue';
-import streamIndicator from './stream-indicator.vue';
 
 export default function(app: App) {
 	app.component('Mfm', mfm);
@@ -25,5 +24,4 @@ export default function(app: App) {
 	app.component('MkUrl', url);
 	app.component('MkLoading', loading);
 	app.component('MkError', error);
-	app.component('StreamIndicator', streamIndicator);
 }

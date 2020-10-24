@@ -1,5 +1,5 @@
 <template>
-<div class="nvlagfpb">
+<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
 	<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
 </div>
 </template>
