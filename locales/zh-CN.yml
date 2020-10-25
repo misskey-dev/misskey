@@ -594,6 +594,8 @@ abuseReported: "内容已发送。感谢您的报告。"
 send: "发送"
 abuseMarkAsResolved: "处理完毕"
 openInNewTab: "在新标签页中打开"
+openInSideView: "在侧边栏中打开"
+defaultNavigationBehaviour: "默认导航"
 editTheseSettingsMayBreakAccount: "编辑这些设置可以会损坏您的账号"
 _serverDisconnectedBehavior:
   reload: "自动重载"
