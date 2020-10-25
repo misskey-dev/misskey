@@ -1162,14 +1162,14 @@ _pages:
       randomPick: "Случайный выбор из списка"
       _randomPick:
         arg1: "Списки"
-      dailyRandom: "Случайность (на день)"
+      dailyRandom: "Случайность (на день для пользователя)"
       _dailyRandom:
         arg1: "Вероятность"
-      dailyRannum: "Случайное число (на день)"
+      dailyRannum: "Случайное число (на день для пользователя)"
       _dailyRannum:
         arg1: "Минимум"
         arg2: "Максимум"
-      dailyRandomPick: "Случайный выбор из списка (на день)"
+      dailyRandomPick: "Случайный выбор из списка (на день для пользователя)"
       _dailyRandomPick:
         arg1: "Списки"
       seedRandom: "Псевдослучайность (заданная зерном)"
@@ -1185,23 +1185,29 @@ _pages:
       _seedRandomPick:
         arg1: "Зерно"
         arg2: "Списки"
-      DRPWPM: "Случайный выбор из взвешенного списка (на день)"
+      DRPWPM: "Случайный выбор из взвешенного списка (на день для пользователя)"
       _DRPWPM:
         arg1: "Список строк текста"
-      pick: "Выберите из списка"
+      pick: "Выбор из списка"
       _pick:
         arg1: "Списки"
-        arg2: "Расположение"
+        arg2: "Индекс"
+      listLen: "Количество элементов в списке"
       _listLen:
         arg1: "Списки"
-      number: "Номер"
+      number: "Число"
+      stringToNumber: "Число из текста"
       _stringToNumber:
         arg1: "Текст"
+      numberToString: "Число в текст"
       _numberToString:
-        arg1: "Номер"
+        arg1: "Число"
+      splitStrByLine: "Разделение текста на строки"
+      _splitStrByLine:
+        arg1: "Текст"
       ref: "Переменная"
       aiScriptVar: "Переменная AiScript"
-      fn: "функции"
+      fn: "Функции"
       _fn:
         slots: "Слоты"
       _for:
