@@ -1091,44 +1091,59 @@ _pages:
         arg2: "Разделитель"
       add: "Добавить"
       _add:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      subtract: "Вычитание"
       _subtract:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      multiply: "Умножение"
       _multiply:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      divide: "Деление"
       _divide:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      mod: "Остаток от деления"
       _mod:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      round: "Округление до целого"
+      _round:
+        arg1: "Число"
+      eq: "A равно B"
       _eq:
         arg1: "А"
-        arg2: "Б"
+        arg2: "B"
+      notEq: "A не равно B"
       _notEq:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      and: "A и B"
       _and:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      or: "A или B"
       _or:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      lt: "A < B (меньше)"
       _lt:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      gt: "A больше B"
       _gt:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      ltEq: "A меньше или равно B"
       _ltEq:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
+      gtEq: "A больше или равно B"
       _gtEq:
-        arg1: "А"
-        arg2: "Б"
+        arg1: "A"
+        arg2: "B"
       _if:
         arg1: "Условный"
       random: "Случайные"
@@ -1168,6 +1183,7 @@ _pages:
       _for:
         arg1: "Количество повторений"
     types:
+      number: "Число"
       array: "Списки"
       stringArray: "Список строк текста"
 _notification:
