@@ -50,8 +50,6 @@ export default defineComponent({
 		MkButton
 	},
 
-	inject: ['navHook'],
-
 	data() {
 		return {
 			INFO: {

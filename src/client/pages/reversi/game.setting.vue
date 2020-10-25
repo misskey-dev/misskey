@@ -3,15 +3,15 @@
 	<header><b><mk-user-name :user="game.user1"/></b> vs <b><mk-user-name :user="game.user2"/></b></header>
 
 	<div>
-		<p>{{ $t('settings-of-the-game') }}</p>
+		<p>{{ $t('_reversi.gameSettings') }}</p>
 
 		<div class="card map">
 			<header>
-				<select v-model="mapName" :placeholder="$t('choose-map')" @change="onMapChange">
+				<select v-model="mapName" :placeholder="$t('_reversi.chooseBoard')" @change="onMapChange">
 					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
 					<option :label="$t('random')" :value="null"/>
 					<optgroup v-for="c in mapCategories" :key="c" :label="c">
-						<option v-for="m in maps" v-if="m.category == c" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
+						<option v-for="m in Object.values(maps).filter(m => m.category == c)" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
 					</optgroup>
 				</select>
 			</header>
@@ -19,10 +19,7 @@
 			<div>
 				<div class="random" v-if="game.map == null"><fa icon="dice"/></div>
 				<div class="board" v-else :style="{ 'grid-template-rows': `repeat(${ game.map.length }, 1fr)`, 'grid-template-columns': `repeat(${ game.map[0].length }, 1fr)` }">
-					<div v-for="(x, i) in game.map.join('')"
-						:data-none="x == ' '"
-						@click="onPixelClick(i, x)"
-					>
+					<div v-for="(x, i) in game.map.join('')" :class="{ none: x == ' ' }" @click="onPixelClick(i, x)">
 						<fa v-if="x == 'b'" :icon="fasCircle"/>
 						<fa v-if="x == 'w'" :icon="farCircle"/>
 					</div>
@@ -32,19 +29,31 @@
 
 		<div class="card">
 			<header>
-				<span>{{ $t('black-or-white') }}</span>
+				<span>{{ $t('_reversi.blackOrWhite') }}</span>
 			</header>
 
 			<div>
 				<MkRadio v-model="game.bw" value="random" @change="updateSettings('bw')">{{ $t('random') }}</MkRadio>
-				<MkRadio v-model="game.bw" :value="1" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user1"/></b>{{ this.$t('black-is').split('{}')[1] }}</MkRadio>
-				<MkRadio v-model="game.bw" :value="2" @change="updateSettings('bw')">{{ this.$t('black-is').split('{}')[0] }}<b><mk-user-name :user="game.user2"/></b>{{ this.$t('black-is').split('{}')[1] }}</MkRadio>
+				<MkRadio v-model="game.bw" :value="1" @change="updateSettings('bw')">
+					<i18n-t keypath="_reversi.blackIs" tag="span">
+						<template #name>
+							<b><mk-user-name :user="game.user1"/></b>
+						</template>
+					</i18n-t>
+				</MkRadio>
+				<MkRadio v-model="game.bw" :value="2" @change="updateSettings('bw')">
+					<i18n-t keypath="_reversi.blackIs" tag="span">
+						<template #name>
+							<b><mk-user-name :user="game.user2"/></b>
+						</template>
+					</i18n-t>
+				</MkRadio>
 			</div>
 		</div>
 
 		<div class="card">
 			<header>
-				<span>{{ $t('rules') }}</span>
+				<span>{{ $t('_reversi.rules') }}</span>
 			</header>
 
 			<div>
@@ -56,7 +65,7 @@
 
 		<div class="card form" v-if="form">
 			<header>
-				<span>{{ $t('settings-of-the-bot') }}</span>
+				<span>{{ $t('_reversi.botSettings') }}</span>
 			</header>
 
 			<div>
@@ -97,18 +106,18 @@
 		</div>
 	</div>
 
-	<footer>
+	<footer class="_acrylic">
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">{{ $t('this-game-is-started-soon') }}<mk-ellipsis/></template>
-			<template v-if="isAccepted && !isOpAccepted">{{ $t('waiting-for-other') }}<mk-ellipsis/></template>
-			<template v-if="!isAccepted && isOpAccepted">{{ $t('waiting-for-me') }}</template>
-			<template v-if="!isAccepted && !isOpAccepted">{{ $t('waiting-for-both') }}<mk-ellipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">{{ $t('_reversi.thisGameIsStartedSoon') }}<mk-ellipsis/></template>
+			<template v-if="isAccepted && !isOpAccepted">{{ $t('_reversi.waitingForOther') }}<mk-ellipsis/></template>
+			<template v-if="!isAccepted && isOpAccepted">{{ $t('_reversi.waitingForMe') }}</template>
+			<template v-if="!isAccepted && !isOpAccepted">{{ $t('_reversi.waitingBoth') }}<mk-ellipsis/></template>
 		</p>
 
 		<div class="actions">
-			<MkButton @click="exit">{{ $t('cancel') }}</MkButton>
-			<MkButton primary @click="accept" v-if="!isAccepted">{{ $t('ready') }}</MkButton>
-			<MkButton primary @click="cancel" v-if="isAccepted">{{ $t('cancel-ready') }}</MkButton>
+			<MkButton inline @click="exit">{{ $t('cancel') }}</MkButton>
+			<MkButton inline primary @click="accept" v-if="!isAccepted">{{ $t('_reversi.ready') }}</MkButton>
+			<MkButton inline primary @click="cancel" v-if="isAccepted">{{ $t('_reversi.cancelReady') }}</MkButton>
 		</div>
 	</footer>
 </div>
@@ -143,6 +152,7 @@ export default defineComponent({
 
 	data() {
 		return {
+			game: this.initGame,
 			o: null,
 			isLlotheo: false,
 			mapName: maps.eighteight.name,
@@ -265,105 +275,123 @@ export default defineComponent({
 });
 </script>
 
-<style lang="stylus" scoped>
-.urbixznjwwuukfsckrwzwsqzsxornqij
-	text-align center
-	background var(--bg)
+<style lang="scss" scoped>
+.urbixznjwwuukfsckrwzwsqzsxornqij {
+	text-align: center;
+	background: var(--bg);
 
-	> header
-		padding 8px
-		border-bottom dashed 1px #c4cdd4
+	> header {
+		padding: 8px;
+		border-bottom: dashed 1px #c4cdd4;
+	}
 
-	> div
-		padding 0 16px
+	> div {
+		padding: 0 16px;
 
-		> .card
-			margin 0 auto 16px auto
+		> .card {
+			margin: 0 auto 16px auto;
 
-			&.map
-				> header
-					> select
-						width 100%
-						padding 12px 14px
-						background var(--face)
-						border 1px solid var(--reversiMapSelectBorder)
-						border-radius 4px
-						color var(--text)
-						cursor pointer
-						transition border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1)
-						-webkit-appearance none
-						-moz-appearance none
-						appearance none
+			&.map {
+				> header {
+					> select {
+						width: 100%;
+						padding: 12px 14px;
+						background: var(--face);
+						border: 1px solid var(--inputBorder);
+						border-radius: 4px;
+						color: var(--fg);
+						cursor: pointer;
+						transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+						-webkit-appearance: none;
+						-moz-appearance: none;
+						appearance: none;
 
-						&:hover
-							border-color var(--reversiMapSelectHoverBorder)
+						&:focus,
+						&:active {
+							border-color: var(--primary);
+						}
+					}
+				}
 
-						&:focus
-						&:active
-							border-color var(--primary)
+				> div {
+					> .random {
+						padding: 32px 0;
+						font-size: 64px;
+						color: var(--fg);
+						opacity: 0.7;
+					}
 
-				> div
-					> .random
-						padding 32px 0
-						font-size 64px
-						color var(--text)
-						opacity 0.7
+					> .board {
+						display: grid;
+						grid-gap: 4px;
+						width: 300px;
+						height: 300px;
+						margin: 0 auto;
+						color: var(--fg);
 
-					> .board
-						display grid
-						grid-gap 4px
-						width 300px
-						height 300px
-						margin 0 auto
-						color var(--text)
+						> div {
+							background: transparent;
+							border: solid 2px var(--divider);
+							border-radius: 6px;
+							overflow: hidden;
+							cursor: pointer;
 
-						> div
-							background transparent
-							border solid 2px var(--faceDivider)
-							border-radius 6px
-							overflow hidden
-							cursor pointer
+							* {
+								pointer-events: none;
+								user-select: none;
+								width: 100%;
+								height: 100%;
+							}
 
-							*
-								pointer-events none
-								user-select none
-								width 100%
-								height 100%
+							&.none {
+								border-color: transparent;
+							}
+						}
+					}
+				}
+			}
 
-							&[data-none]
-								border-color transparent
+			&.form {
+				> div {
+					> .card + .card {
+						margin-top: 16px;
+					}
 
-			&.form
-				> div
-					> .card + .card
-						margin-top 16px
+					input[type='range'] {
+						width: 100%;
+					}
+				}
+			}
+		}
 
-					input[type='range']
-						width 100%
+		.card {
+			max-width: 400px;
+			border-radius: 4px;
+			background: var(--panel);
+			color: var(--fg);
+			box-shadow: 0 2px 12px 0 var(--reversiRoomFormShadow);
 
-		.card
-			max-width 400px
-			border-radius 4px
-			background var(--face)
-			color var(--text)
-			box-shadow 0 2px 12px 0 var(--reversiRoomFormShadow)
+			> header {
+				padding: 18px 20px;
+				border-bottom: 1px solid var(--divider);
+			}
 
-			> header
-				padding 18px 20px
-				border-bottom 1px solid var(--faceDivider)
+			> div {
+				padding: 20px;
+				color: var(--fg);
+			}
+		}
+	}
 
-			> div
-				padding 20px
-				color var(--text)
+	> footer {
+		position: sticky;
+		bottom: 0;
+		padding: 16px;
+		border-top: solid 1px var(--divider);
 
-	> footer
-		position sticky
-		bottom 0
-		padding 16px
-		background var(--reversiRoomFooterBg)
-		border-top solid 1px var(--faceDivider)
-
-		> .status
-			margin 0 0 16px 0
-
+		> .status {
+			margin: 0 0 16px 0;
+		}
+	}
+}
 </style>

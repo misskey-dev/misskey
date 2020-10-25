@@ -1,69 +1,65 @@
 <template>
-<div class="phgnkghfpyvkrvwiajkiuoxyrdaqpzcx" v-if="!matching">
-	<h1>{{ $t('title') }}</h1>
-	<p>{{ $t('sub-title') }}</p>
+<div class="bgvwxkhb" v-if="!matching">
+	<h1>Misskey Reversi</h1>
 	<div class="play">
 		<MkButton primary round @click="match">{{ $t('invite') }}</MkButton>
-		<details>
-			<summary>{{ $t('rule') }}</summary>
-			<div>
-				<p>{{ $t('rule-desc') }}</p>
-				<dl>
-					<dt><b>{{ $t('mode-invite') }}</b></dt>
-					<dd>{{ $t('mode-invite-desc') }}</dd>
-				</dl>
-			</div>
-		</details>
 	</div>
 	<section v-if="invitations.length > 0">
 		<h2>{{ $t('invitations') }}</h2>
-		<div class="invitation" v-for="i in invitations" tabindex="-1" @click="accept(i)">
-			<mk-avatar class="avatar" :user="i.parent"/>
-			<span class="name"><b><mk-user-name :user="i.parent"/></b></span>
-			<span class="username">@{{ i.parent.username }}</span>
-			<mk-time :time="i.createdAt"/>
-		</div>
+		<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
+			<mk-avatar class="avatar" :user="invitation.parent"/>
+			<span class="name"><b><mk-user-name :user="invitation.parent"/></b></span>
+			<span class="username">@{{ invitation.parent.username }}</span>
+			<mk-time :time="invitation.createdAt"/>
+		</button>
 	</section>
 	<section v-if="myGames.length > 0">
 		<h2>{{ $t('my-games') }}</h2>
-		<a class="game" v-for="g in myGames" tabindex="-1" @click.prevent="go(g)" :href="`/games/reversi/${g.id}`">
+		<MkA class="game _panel" v-for="g in myGames" tabindex="-1" :href="`/games/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
 			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
-		</a>
+		</MkA>
 	</section>
 	<section v-if="games.length > 0">
 		<h2>{{ $t('all-games') }}</h2>
-		<a class="game" v-for="g in games" tabindex="-1" @click.prevent="go(g)" :href="`/games/reversi/${g.id}`">
+		<MkA class="game _panel" v-for="g in games" tabindex="-1" :href="`/games/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
 			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
 			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
-		</a>
+		</MkA>
 	</section>
 </div>
-<div class="matching" v-else>
-	<h1>{{ this.$t('matching.waiting-for').split('{}')[0] }}<b><mk-user-name :user="matching"/></b>{{ this.$t('matching.waiting-for').split('{}')[1] }}<mk-ellipsis/></h1>
+<div class="sazhgisb" v-else>
+	<h1>
+		<i18n-t keypath="waitingFor" tag="span">
+			<template #x>
+				<b><mk-user-name :user="matching"/></b>
+			</template>
+		</i18n-t>
+		<mk-ellipsis/>
+	</h1>
 	<div class="cancel">
-		<MkButton round @click="cancel">{{ $t('matching.cancel') }}</MkButton>
+		<MkButton inline round @click="cancel">{{ $t('cancel') }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import * as os from '@/os';
 import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
-	inject: ['navHook'],
-
 	components: {
 		MkButton
 	},
+
+	inject: ['navHook'],
 
 	data() {
 		return {
@@ -122,16 +118,14 @@ export default defineComponent({
 		go(game) {
 			const url = '/games/reversi/' + game.id;
 			if (this.navHook) {
-				this.navHook(url, defineAsyncComponent(() => import('@/pages/reversi/game.vue')), {
-					gameId: game.id
-				});
+				this.navHook(url);
 			} else {
 				this.$router.push(url);
 			}
 		},
 
 		async match() {
-			const { result: user } = await os.selectUser({ local: true });
+			const user = await os.selectUser({ local: true });
 			if (user == null) return;
 			os.api('games/reversi/match', {
 				userId: user.id
@@ -171,7 +165,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.phgnkghfpyvkrvwiajkiuoxyrdaqpzcx {
+.bgvwxkhb {
 
+}
+
+.sazhgisb {
+	text-align: center;
 }
 </style>

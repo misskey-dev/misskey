@@ -1,6 +1,6 @@
 <template>
 <div v-if="game == null"><MkLoading/></div>
-<GameSetting v-else-if="!game.isStarted" :game="game" :connection="connection"/>
+<GameSetting v-else-if="!game.isStarted" :init-game="game" :connection="connection"/>
 <GameBoard v-else :init-game="game" :connection="connection"/>
 </template>
 

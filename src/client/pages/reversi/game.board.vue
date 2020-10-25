@@ -107,7 +107,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			game: null,
+			game: this.initGame,
 			o: null as Reversi,
 			logs: [],
 			logPos: 0,
@@ -181,8 +181,6 @@ export default defineComponent({
 	},
 
 	created() {
-		this.game = this.initGame;
-
 		this.o = new Reversi(this.game.map, {
 			isLlotheo: this.game.isLlotheo,
 			canPutEverywhere: this.game.canPutEverywhere,
