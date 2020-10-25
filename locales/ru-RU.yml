@@ -1132,20 +1132,21 @@ _pages:
       _lt:
         arg1: "A"
         arg2: "B"
-      gt: "A больше B"
+      gt: "A > B (больше)"
       _gt:
         arg1: "A"
         arg2: "B"
-      ltEq: "A меньше или равно B"
+      ltEq: "A ⩽ B (меньше или равно)"
       _ltEq:
         arg1: "A"
         arg2: "B"
-      gtEq: "A больше или равно B"
+      gtEq: "A ⩾ B (больше или равно)"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Условный"
       _if:
-        arg1: "Условный"
+        arg1: "Если"
       random: "Случайные"
       _rannum:
         arg2: "Максимальное значение"
