@@ -12,8 +12,8 @@
 			<Fa :icon="faQuestionCircle" v-if="type === 'question'"/>
 			<Fa :icon="faSpinner" pulse v-if="type === 'waiting'"/>
 		</div>
-		<header v-if="title" v-html="title"></header>
-		<div class="body" v-if="text" v-html="text"></div>
+		<header v-if="title"><Mfm :text="title"/></header>
+		<div class="body" v-if="text"><Mfm :text="text"/></div>
 		<MkInput v-if="input" v-model:value="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></MkInput>
 		<MkSelect v-if="select" v-model:value="selectedValue" autofocus>
 			<template v-if="select.items">
