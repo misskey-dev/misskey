@@ -986,7 +986,6 @@ _pages:
   inputBlocks: "Для ввода"
   specialBlocks: "Особые"
   blocks:
-    text: "Текст"
     textarea: "Текст в рамке"
     section: "Заголовок"
     image: "Изображения"
@@ -1064,13 +1063,15 @@ _pages:
       fn: "Функции"
       text: "Текстовые"
       convert: "Преобразование"
-      list: "Списки"
+      list: "Список"
     blocks:
-      text: "Текст"
-      strLen: "Длина текста"
+      text: "Строка"
+      multiLineText: "Многострочный текст"
+      textList: "Список строк"
+      _textList:
+        info: "Пишите каждый пункт с новой строки"
+      strLen: "Длина строки"
       _strLen:
-        arg1: "Текст"
-      _strPick:
         arg1: "Текст"
       _strReplace:
         arg1: "Текст"
@@ -1136,6 +1137,8 @@ _pages:
         arg3: "Максимальное значение"
       _seedRandomPick:
         arg2: "Списки"
+      _DRPWPM:
+        arg1: "Список строк"
       pick: "Выберите из списка"
       _pick:
         arg1: "Списки"
@@ -1147,8 +1150,6 @@ _pages:
         arg1: "Текст"
       _numberToString:
         arg1: "Номер"
-      _splitStrByLine:
-        arg1: "Текст"
       ref: "Переменная"
       aiScriptVar: "Переменная AiScript"
       fn: "функции"
@@ -1157,8 +1158,8 @@ _pages:
       _for:
         arg1: "Количество повторений"
     types:
-      string: "Текст"
       array: "Списки"
+      stringArray: "Список строк"
 _notification:
   youWereFollowed: "У вас новый подписчик"
   youReceivedFollowRequest: "У вас новый запрос на подписку"
