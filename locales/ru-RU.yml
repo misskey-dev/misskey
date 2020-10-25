@@ -1065,20 +1065,30 @@ _pages:
       convert: "Преобразование"
       list: "Список"
     blocks:
-      text: "Строка"
+      text: "Строка текста"
       multiLineText: "Многострочный текст"
-      textList: "Список строк"
+      textList: "Список строк текста"
       _textList:
         info: "Пишите каждый пункт с новой строки"
-      strLen: "Длина строки"
+      strLen: "Длина текста"
       _strLen:
         arg1: "Текст"
-      _strReplace:
+      strPick: "Взять знак из текста"
+      _strPick:
         arg1: "Текст"
+        arg2: "Позиция знака"
+      strReplace: "Замена текста"
+      _strReplace:
+        arg1: "Текст, в котором заменять"
+        arg2: "Заменяемый текст"
+        arg3: "Менять на"
+      strReverse: "В обратном порядке"
       _strReverse:
         arg1: "Текст"
+      join: "Объединение"
       _join:
         arg1: "Списки"
+        arg2: "Разделитель"
       add: "Добавить"
       _add:
         arg1: "А"
@@ -1138,7 +1148,7 @@ _pages:
       _seedRandomPick:
         arg2: "Списки"
       _DRPWPM:
-        arg1: "Список строк"
+        arg1: "Список строк текста"
       pick: "Выберите из списка"
       _pick:
         arg1: "Списки"
@@ -1159,7 +1169,7 @@ _pages:
         arg1: "Количество повторений"
     types:
       array: "Списки"
-      stringArray: "Список строк"
+      stringArray: "Список строк текста"
 _notification:
   youWereFollowed: "У вас новый подписчик"
   youReceivedFollowRequest: "У вас новый запрос на подписку"
