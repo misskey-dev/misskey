@@ -1047,12 +1047,23 @@ _pages:
         callAiScript: "Вызвать AiScript"
         _callAiScript:
           functionName: "Имя функции"
+    radioButton: "Кнопка-переключатель"
     _radioButton:
       name: "Имя переменной"
       title: "Заголовок"
-      default: "Исходное содержимое"
+      values: "Значения"
+      default: "Исходное значение"
   script:
     categories:
+      flow: "Управление исполнением"
+      logical: "Логические"
+      operation: "Арифметические"
+      comparison: "Сравнение"
+      random: "Случайные"
+      value: "Значения"
+      fn: "Функции"
+      text: "Текстовые"
+      convert: "Преобразование"
       list: "Списки"
     blocks:
       text: "Текст"
@@ -1109,6 +1120,7 @@ _pages:
         arg2: "Б"
       _if:
         arg1: "Условный"
+      random: "Случайные"
       _rannum:
         arg2: "Максимальное значение"
       randomPick: "Случайный выбор из списка"
