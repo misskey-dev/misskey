@@ -1,28 +1,28 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<x-draggable class="files" :list="files" animation="150" delay="100" delayOnTouchOnly="true">
+	<XDraggable class="files" :list="files" animation="150" delay="100" delay-on-touch-only="true">
 		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
-			<x-file-thumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
+			<MkDriveFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
 			<div class="sensitive" v-if="file.isSensitive">
-				<fa class="icon" :icon="faExclamationTriangle"/>
+				<Fa class="icon" :icon="faExclamationTriangle"/>
 			</div>
 		</div>
-	</x-draggable>
+	</XDraggable>
 	<p class="remain">{{ 4 - files.length }}/4</p>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import * as XDraggable from 'vuedraggable';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
-import XFileThumbnail from './drive-file-thumbnail.vue'
+import MkDriveFileThumbnail from './drive-file-thumbnail.vue'
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
-		XDraggable,
-		XFileThumbnail
+		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		MkDriveFileThumbnail
 	},
 
 	props: {
@@ -36,6 +36,8 @@ export default Vue.extend({
 		}
 	},
 
+	emits: ['updated', 'detach'],
+
 	data() {
 		return {
 			menu: null as Promise<null> | null,
@@ -48,21 +50,21 @@ export default Vue.extend({
 		detachMedia(id) {
 			if (this.detachMediaFn) {
 				this.detachMediaFn(id);
-			} else if (this.$parent.detachMedia) {
-				this.$parent.detachMedia(id);
+			} else {
+				this.$emit('detach', id);
 			}
 		},
 		toggleSensitive(file) {
-			this.$root.api('drive/files/update', {
+			os.api('drive/files/update', {
 				fileId: file.id,
 				isSensitive: !file.isSensitive
 			}).then(() => {
 				file.isSensitive = !file.isSensitive;
-				this.$parent.updateMedia(file);
+				this.$emit('updated', file);
 			});
 		},
 		async rename(file) {
-			const { canceled, result } = await this.$root.dialog({
+			const { canceled, result } = await os.dialog({
 				title: this.$t('enterFileName'),
 				input: {
 					default: file.name
@@ -70,32 +72,29 @@ export default Vue.extend({
 				allowEmpty: false
 			});
 			if (canceled) return;
-			this.$root.api('drive/files/update', {
+			os.api('drive/files/update', {
 				fileId: file.id,
 				name: result
 			}).then(() => {
 				file.name = result;
-				this.$parent.updateMedia(file);
+				this.$emit('updated', file);
 			});
 		},
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
-			this.menu = this.$root.menu({
-				items: [{
-					text: this.$t('renameFile'),
-					icon: faICursor,
-					action: () => { this.rename(file) }
-				}, {
-					text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
-					icon: file.isSensitive ? faEyeSlash : faEye,
-					action: () => { this.toggleSensitive(file) }
-				}, {
-					text: this.$t('attachCancel'),
-					icon: faTimesCircle,
-					action: () => { this.detachMedia(file.id) }
-				}],
-				source: ev.currentTarget || ev.target
-			}).then(() => this.menu = null);
+			this.menu = os.modalMenu([{
+				text: this.$t('renameFile'),
+				icon: faICursor,
+				action: () => { this.rename(file) }
+			}, {
+				text: file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
+				icon: file.isSensitive ? faEyeSlash : faEye,
+				action: () => { this.toggleSensitive(file) }
+			}, {
+				text: this.$t('attachCancel'),
+				icon: faTimesCircle,
+				action: () => { this.detachMedia(file.id) }
+			}], ev.currentTarget || ev.target).then(() => this.menu = null);
 		}
 	}
 });
@@ -103,7 +102,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .skeikyzd {
-	padding: 4px;
+	padding: 8px 16px;
 	position: relative;
 
 	> .files {
@@ -114,7 +113,9 @@ export default Vue.extend({
 			position: relative;
 			width: 64px;
 			height: 64px;
-			margin: 4px;
+			margin-right: 4px;
+			border-radius: 4px;
+			overflow: hidden;
 			cursor: move;
 
 			&:hover > .remove {

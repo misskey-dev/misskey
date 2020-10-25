@@ -1,26 +1,24 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faFileAlt"/></portal>
-	<portal to="title">{{ title }}</portal>
-	<main class="_card">
-		<div class="_title"><fa :icon="faFileAlt"/> {{ title }}</div>
+	<main class="_section">
+		<div class="_title"><Fa :icon="faFileAlt"/> {{ title }}</div>
 		<div class="_content">
 			<div v-html="body" class="qyqbqfal"></div>
 		</div>
 		<div class="_footer">
-			<mk-link :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $t('docSource') }}</mk-link>
+			<MkLink :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $t('docSource') }}</MkLink>
 		</div>
 	</main>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
-import { url, lang } from '../config';
-import MkLink from '../components/link.vue';
+import { url, lang } from '@/config';
+import MkLink from '@/components/link.vue';
 
 const markdown = MarkdownIt({
 	html: true
@@ -30,13 +28,7 @@ markdown.use(MarkdownItAnchor, {
 	slugify: (s) => encodeURIComponent(String(s).trim().replace(/\s+/g, '-'))
 });
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.title,
-		};
-	},
-
+export default defineComponent({
 	components: {
 		MkLink
 	},
@@ -48,21 +40,27 @@ export default Vue.extend({
 		}
 	},
 
+	data() {
+		return {
+			INFO: {
+				header: [{
+					title: this.title,
+					icon: faFileAlt
+				}],
+			},
+			faFileAlt,
+			title: '',
+			body: '',
+			markdown: '',
+		}
+	},
+
 	watch: {
 		doc: {
 			handler() {
 				this.fetchDoc();
 			},
 			immediate: true,
-		}
-	},
-
-	data() {
-		return {
-			faFileAlt,
-			title: '',
-			body: '',
-			markdown: '',
 		}
 	},
 
@@ -120,11 +118,11 @@ export default Vue.extend({
 		margin-bottom: 0;
 	}
 
-	::v-deep a {
+	::v-deep(a) {
 		color: var(--link);
 	}
 
-	::v-deep blockquote {
+	::v-deep(blockquote) {
 		display: block;
 		margin: 8px;
 		padding: 6px 0 6px 12px;
@@ -137,19 +135,19 @@ export default Vue.extend({
 		}
 	}
 
-	::v-deep h2 {
+	::v-deep(h2) {
 		font-size: 1.25em;
 		padding: 0 0 0.5em 0;
 		border-bottom: solid 1px var(--divider);
 	}
 
-	::v-deep table {
+	::v-deep(table) {
 		width: 100%;
 		max-width: 100%;
 		overflow: auto;
 	}
 
-	::v-deep kbd.group {
+	::v-deep(kbd.group) {
 		display: inline-block;
 		padding: 2px;
 		border: 1px solid var(--divider);
@@ -157,7 +155,7 @@ export default Vue.extend({
 		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 	}
 
-	::v-deep kbd.key {
+	::v-deep(kbd.key) {
 		display: inline-block;
 		padding: 6px 8px;
 		border: solid 1px var(--divider);

@@ -1,21 +1,31 @@
 <template>
 <div class="t9makv94">
-	<portal to="icon"><fa :icon="faPalette"/></portal>
-	<portal to="title">{{ $t('themeEditor') }}</portal>
-
-	<section class="_card">
+	<section class="_section">
 		<div class="_content">
-			<mk-input v-model="name" required><span>{{ $t('name') }}</span></mk-input>
-			<mk-input v-model="author" required><span>{{ $t('author') }}</span></mk-input>
-			<mk-textarea v-model="description"><span>{{ $t('description') }}</span></mk-textarea>
-			<div class="_inputs">
-				<div v-text="$t('_theme.base')" />
-				<mk-radio v-model="baseTheme" value="light">{{ $t('light') }}</mk-radio>
-				<mk-radio v-model="baseTheme" value="dark">{{ $t('dark') }}</mk-radio>
+			<details>
+				<summary>{{ $t('import') }}</summary>
+				<MkTextarea v-model:value="themeToImport">
+					{{ $t('_theme.importInfo') }}
+				</MkTextarea>
+				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</MkButton>
+			</details>
+		</div>
+	</section>
+	<section class="_section">
+		<div class="_content _card _vMargin">
+			<div class="_content">
+				<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
+				<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
+				<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
+				<div class="_inputs">
+					<div v-text="$t('_theme.base')" />
+					<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
+					<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
+				</div>
 			</div>
 		</div>
-		<div class="_content">
-			<div class="list-view">
+		<div class="_content _card _vMargin">
+			<div class="list-view _content">
 				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
 					<div class="_inputs">
 						<div>
@@ -24,88 +34,98 @@
 						</div>
 						<div>
 							<div class="type" @click="chooseType($event, i)">
-								{{ getTypeOf(v) }} <fa :icon="faChevronDown"/>
+								{{ getTypeOf(v) }} <Fa :icon="faChevronDown"/>
 							</div>
 							<!-- default -->
 							<div v-if="v === null" v-text="baseProps[k]" class="default-value" />
 							<!-- color -->
 							<div v-else-if="typeof v === 'string'" class="color">
 								<input type="color" :value="v" @input="colorChanged($event.target.value, i)"/>
-								<mk-input class="select" :value="v" @input="colorChanged($event, i)"/>
+								<MkInput class="select" :value="v" @update:value="colorChanged($event, i)"/>
 							</div>
 							<!-- ref const -->
-							<mk-input v-else-if="v.type === 'refConst'" v-model="v.key">
+							<MkInput v-else-if="v.type === 'refConst'" v-model:value="v.key">
 								<template #prefix>$</template>
 								<span>{{ $t('name') }}</span>
-							</mk-input>
+							</MkInput>
 							<!-- ref props -->
-							<mk-select class="select" v-else-if="v.type === 'refProp'" v-model="v.key">
+							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model:value="v.key">
 								<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
-							</mk-select>
+							</MkSelect>
 							<!-- func -->
 							<template v-else-if="v.type === 'func'">
-								<mk-select class="select" v-model="v.name">
+								<MkSelect class="select" v-model:value="v.name">
 									<template #label>{{ $t('_theme.funcKind') }}</template>
 									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
-								</mk-select>
-								<mk-input type="number" v-model="v.arg"><span>{{ $t('_theme.argument') }}</span></mk-input>
-								<mk-select class="select" v-model="v.value">
+								</MkSelect>
+								<MkInput type="number" v-model:value="v.arg"><span>{{ $t('_theme.argument') }}</span></MkInput>
+								<MkSelect class="select" v-model:value="v.value">
 									<template #label>{{ $t('_theme.basedProp') }}</template>
 									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
-								</mk-select>
+								</MkSelect>
 							</template>
+							<!-- CSS -->
+							<MkInput v-else-if="v.type === 'css'" v-model:value="v.value">
+								<span>CSS</span>
+							</MkInput>
 						</div>
 					</div>
 				</div>
-				<mk-button primary @click="addConst">{{ $t('_theme.addConstant') }}</mk-button>
+				<MkButton primary @click="addConst">{{ $t('_theme.addConstant') }}</MkButton>
 			</div>
 		</div>
+	</section>
+	<section class="_section">
+		<details class="_content">
+			<summary>{{ $t('sample') }}</summary>
+			<MkSample/>
+		</details>
+	</section>
+	<section class="_section">
 		<div class="_content">
-				<mk-textarea v-model="themeToImport">
-					{{ $t('_theme.importInfo') }}
-				</mk-textarea>
-				<mk-button :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</mk-button>
-		</div>
-		<div class="_footer">
-			<mk-button inline @click="preview">{{ $t('preview') }}</mk-button>
-			<mk-button inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</mk-button>
+			<MkButton inline @click="preview">{{ $t('preview') }}</MkButton>
+			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</MkButton>
 		</div>
 	</section>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
-
-import MkRadio from '../components/ui/radio.vue';
-import MkButton from '../components/ui/button.vue';
-import MkInput from '../components/ui/input.vue';
-import MkTextarea from '../components/ui/textarea.vue';
-import MkSelect from '../components/ui/select.vue';
-
-import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '../scripts/theme-editor';
-import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '../scripts/theme';
 import { toUnicode } from 'punycode';
-import { host } from '../config';
 
-export default Vue.extend({
+import MkRadio from '@/components/ui/radio.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkSample from '@/components/sample.vue';
+
+import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '@/scripts/theme-editor';
+import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
+import { host } from '@/config';
+import * as os from '@/os';
+
+export default defineComponent({
 	components: {
 		MkRadio,
 		MkButton,
 		MkInput,
 		MkTextarea,
-		MkSelect
-	},
-	metaInfo() {
-		return {
-			title: this.$t('themeEditor') + (this.changed ? '*' : '')
-		};
+		MkSelect,
+		MkSample,
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('themeEditor'),
+					icon: faPalette,
+				}],
+			},
 			theme: [] as ThemeViewModel,
 			name: '',
 			description: '',
@@ -113,8 +133,8 @@ export default Vue.extend({
 			author: `@${this.$store.state.i.username}@${toUnicode(host)}`,
 			themeToImport: '',
 			changed: false,
-			faPalette, faChevronDown, faKeyboard,
 			lightTheme, darkTheme, themeProps,
+			faPalette, faChevronDown, faKeyboard,
 		}
 	},
 
@@ -124,7 +144,7 @@ export default Vue.extend({
 		},
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.beforeunload);
 	},
 
@@ -156,7 +176,7 @@ export default Vue.extend({
 		},
 
 		async confirm(): Promise<boolean> {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('leaveConfirm'),
 				showCancelButton: true
@@ -173,7 +193,7 @@ export default Vue.extend({
 		},
 	
 		async del(i: number) {
-			const { canceled } = await this.$root.dialog({ 
+			const { canceled } = await os.dialog({ 
 				type: 'warning',
 				showCancelButton: true,
 				text: this.$t('_theme.deleteConstantConfirm', { const: this.theme[i][0] }),
@@ -183,7 +203,7 @@ export default Vue.extend({
 		},
 	
 		async addConst() {
-			const { canceled, result } = await this.$root.dialog({
+			const { canceled, result } = await os.dialog({
 				title: this.$t('_theme.inputConstantName'),
 				input: true
 			});
@@ -197,7 +217,7 @@ export default Vue.extend({
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
-			this.$root.dialog({
+			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
 			});
@@ -209,7 +229,7 @@ export default Vue.extend({
 			try {
 				applyTheme(theme, false);
 			} catch (e) {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -230,7 +250,7 @@ export default Vue.extend({
 				this.theme = convertToViewModel(theme);
 				this.themeToImport = '';
 			} catch (e) {
-				this.$root.dialog({
+				os.dialog({
 					type: 'error',
 					text: e.message
 				});
@@ -238,9 +258,9 @@ export default Vue.extend({
 		},
 	
 		colorChanged(color: string, i: number) {
-			Vue.set(this.theme, i, [this.theme[i][0], color]);
+			this.theme[i] = [this.theme[i][0], color];
 		},
-	
+
 		getTypeOf(v: ThemeValue) {
 			return v === null
 				? this.$t('_theme.defaultValue')
@@ -251,36 +271,38 @@ export default Vue.extend({
 	
 		async chooseType(e: MouseEvent, i: number) {
 			const newValue = await this.showTypeMenu(e);
-			Vue.set(this.theme, i, [ this.theme[i][0], newValue ]);
+			this.theme[i] = [ this.theme[i][0], newValue ];
 		},
 	
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
-				this.$root.menu({
-					items: [{
-						text: this.$t('_theme.defaultValue'),
-						action: () => resolve(null),
-					}, {
-						text: this.$t('_theme.color'),
-						action: () => resolve('#000000'),
-					}, {
-						text: this.$t('_theme.func'),
-						action: () => resolve({
-							type: 'func', name: 'alpha', arg: 1, value: 'accent'
-						}),
-					}, {
-						text: this.$t('_theme.refProp'),
-						action: () => resolve({
-							type: 'refProp', key: 'accent',
-						}),
-					}, {
-						text: this.$t('_theme.refConst'),
-						action: () => resolve({
-							type: 'refConst', key: '',
-						}),
-					},],
-					source: e.currentTarget || e.target,
-				});
+				os.modalMenu([{
+					text: this.$t('_theme.defaultValue'),
+					action: () => resolve(null),
+				}, {
+					text: this.$t('_theme.color'),
+					action: () => resolve('#000000'),
+				}, {
+					text: this.$t('_theme.func'),
+					action: () => resolve({
+						type: 'func', name: 'alpha', arg: 1, value: 'accent'
+					}),
+				}, {
+					text: this.$t('_theme.refProp'),
+					action: () => resolve({
+						type: 'refProp', key: 'accent',
+					}),
+				}, {
+					text: this.$t('_theme.refConst'),
+					action: () => resolve({
+						type: 'refConst', key: '',
+					}),
+				}, {
+					text: 'CSS',
+					action: () => resolve({
+						type: 'css', value: '',
+					}),
+				}], e.currentTarget || e.target);
 			});
 		}
 	}
@@ -289,20 +311,15 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .t9makv94 {
-	> ._card {
+	> ._section {
 		> ._content {
 			> .list-view {
-				height: 480px;
-				overflow: auto;
-				border: 1px solid var(--divider);
-
 				> .item {
 					min-height: 48px;
-					padding: 0 16px;
 					word-break: break-all;
 
 					&:not(:last-child) {
-						padding-bottom: 8px;
+						margin-bottom: 8px;
 					}
 
 					.select {
@@ -331,10 +348,6 @@ export default Vue.extend({
 							display: inline-block;
 						}
 					}
-				}
-
-				> ._button {
-					margin: 16px;
 				}
 			}
 		}

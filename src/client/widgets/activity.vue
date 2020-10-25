@@ -1,26 +1,28 @@
 <template>
-<mk-container :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
-	<template #func><button @click="toggleView()" class="_button"><fa :icon="faSort"/></button></template>
+<MkContainer :show-header="props.showHeader" :naked="props.transparent">
+	<template #header><Fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
+	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
 
 	<div>
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<template v-else>
-			<x-calendar v-show="props.view === 0" :data="[].concat(activity)"/>
-			<x-chart v-show="props.view === 1" :data="[].concat(activity)"/>
+			<XCalendar v-show="props.view === 0" :data="[].concat(activity)"/>
+			<XChart v-show="props.view === 1" :data="[].concat(activity)"/>
 		</template>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faChartBar, faSort } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'activity',
 	props: () => ({
 		showHeader: {
@@ -37,7 +39,10 @@ export default define({
 			hidden: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer,
 		XCalendar,
@@ -51,7 +56,7 @@ export default define({
 		};
 	},
 	mounted() {
-		this.$root.api('charts/user/notes', {
+		os.api('charts/user/notes', {
 			userId: this.$store.state.i.id,
 			span: 'day',
 			limit: 7 * 21

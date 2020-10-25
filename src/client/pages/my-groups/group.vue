@@ -1,37 +1,32 @@
 <template>
 <div class="mk-group-page">
-	<portal to="icon"><fa :icon="faUsers"/></portal>
-	<portal to="title">{{ group.name }}</portal>
-
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_card _vMargin">
+		<div v-if="group" class="_section">
 			<div class="_content">
-				<mk-button inline @click="renameGroup()">{{ $t('rename') }}</mk-button>
-				<mk-button inline @click="transfer()">{{ $t('transfer') }}</mk-button>
-				<mk-button inline @click="deleteGroup()">{{ $t('delete') }}</mk-button>
+				<MkButton inline @click="invite()">{{ $t('invite') }}</MkButton>
+				<MkButton inline @click="renameGroup()">{{ $t('rename') }}</MkButton>
+				<MkButton inline @click="transfer()">{{ $t('transfer') }}</MkButton>
+				<MkButton inline @click="deleteGroup()">{{ $t('delete') }}</MkButton>
 			</div>
 		</div>
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_card members _vMargin">
+		<div v-if="group" class="_section members _vMargin">
 			<div class="_title">{{ $t('members') }}</div>
 			<div class="_content">
 				<div class="users">
-					<div class="user" v-for="user in users" :key="user.id">
-						<mk-avatar :user="user" class="avatar"/>
+					<div class="user _panel" v-for="user in users" :key="user.id">
+						<MkAvatar :user="user" class="avatar"/>
 						<div class="body">
-							<mk-user-name :user="user" class="name"/>
-							<mk-acct :user="user" class="acct"/>
+							<MkUserName :user="user" class="name"/>
+							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="_footer">
-				<mk-button inline @click="invite()">{{ $t('invite') }}</mk-button>
 			</div>
 		</div>
 	</transition>
@@ -39,25 +34,25 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../../scripts/loading';
-import MkButton from '../../components/ui/button.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import Progress from '@/scripts/loading';
+import MkButton from '@/components/ui/button.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.group ? `${this.group.name} | ${this.$t('manageGroups')}` : this.$t('manageGroups')
-		};
-	},
-
+export default defineComponent({
 	components: {
 		MkButton
 	},
 
 	data() {
 		return {
+			INFO: computed(() => this.group ? {
+				header: [{
+					title: this.group.name,
+					icon: faUsers,
+				}],
+			} : null),
 			group: null,
 			users: [],
 			faTimes, faUsers
@@ -75,11 +70,11 @@ export default Vue.extend({
 	methods: {
 		fetch() {
 			Progress.start();
-			this.$root.api('users/groups/show', {
+			os.api('users/groups/show', {
 				groupId: this.$route.params.group
 			}).then(group => {
 				this.group = group;
-				this.$root.api('users/show', {
+				os.api('users/show', {
 					userIds: this.group.userIds
 				}).then(users => {
 					this.users = users;
@@ -89,26 +84,16 @@ export default Vue.extend({
 		},
 
 		invite() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('users/groups/invite', {
+			os.selectUser().then(user => {
+				os.apiWithDialog('users/groups/invite', {
 					groupId: this.group.id,
 					userId: user.id
-				}).then(() => {
-					this.$root.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				}).catch(e => {
-					this.$root.dialog({
-						type: 'error',
-						text: e
-					});
 				});
 			});
 		},
 
 		removeUser(user) {
-			this.$root.api('users/groups/pull', {
+			os.api('users/groups/pull', {
 				groupId: this.group.id,
 				userId: user.id
 			}).then(() => {
@@ -117,7 +102,7 @@ export default Vue.extend({
 		},
 
 		async renameGroup() {
-			const { canceled, result: name } = await this.$root.dialog({
+			const { canceled, result: name } = await os.dialog({
 				title: this.$t('groupName'),
 				input: {
 					default: this.group.name
@@ -125,7 +110,7 @@ export default Vue.extend({
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/groups/update', {
+			await os.api('users/groups/update', {
 				groupId: this.group.id,
 				name: name
 			});
@@ -134,38 +119,24 @@ export default Vue.extend({
 		},
 
 		transfer() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
-				this.$root.api('users/groups/transfer', {
+			os.selectUser().then(user => {
+				os.apiWithDialog('users/groups/transfer', {
 					groupId: this.group.id,
 					userId: user.id
-				}).then(() => {
-					this.$root.dialog({
-						type: 'success',
-						iconOnly: true, autoClose: true
-					});
-				}).catch(e => {
-					this.$root.dialog({
-						type: 'error',
-						text: e
-					});
 				});
 			});
 		},
 
 		async deleteGroup() {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.group.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			await this.$root.api('users/groups/delete', {
+			await os.apiWithDialog('users/groups/delete', {
 				groupId: this.group.id
-			});
-			this.$root.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
 			});
 			this.$router.push('/my/groups');
 		}
@@ -177,13 +148,11 @@ export default Vue.extend({
 .mk-group-page {
 	> .members {
 		> ._content {
-			max-height: 400px;
-			overflow: auto;
-
 			> .users {
 				> .user {
 					display: flex;
 					align-items: center;
+					padding: 16px;
 
 					> .avatar {
 						width: 50px;

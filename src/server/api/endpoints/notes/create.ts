@@ -150,7 +150,7 @@ export const meta = {
 		},
 
 		poll: {
-			validator: $.optional.obj({
+			validator: $.optional.nullable.obj({
 				choices: $.arr($.str)
 					.unique()
 					.range(2, 10)

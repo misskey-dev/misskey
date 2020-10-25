@@ -1,5 +1,5 @@
 import parseAcct from '../../misc/acct/parse';
-import { host as localHost } from '../config';
+import { host as localHost } from '@/config';
 
 export async function genSearchQuery(v: any, q: string) {
 	let host: string;
@@ -13,7 +13,7 @@ export async function genSearchQuery(v: any, q: string) {
 					host = at;
 				}
 			} else {
-				const user = await v.$root.api('users/show', parseAcct(at)).catch(x => null);
+				const user = await v.os.api('users/show', parseAcct(at)).catch(x => null);
 				if (user) {
 					userId = user.id;
 				} else {

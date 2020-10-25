@@ -6,7 +6,7 @@ export type Theme = {
 	author: string;
 	desc?: string;
 	base?: 'dark' | 'light';
-	props: { [key: string]: string };
+	props: Record<string, string>;
 };
 
 export const lightTheme: Theme = require('../themes/_light.json5');
@@ -15,18 +15,19 @@ export const darkTheme: Theme = require('../themes/_dark.json5');
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
 export const builtinThemes = [
-	require('../themes/white.json5'),
-	require('../themes/black.json5'),
-	require('../themes/lilac.json5'),
-	require('../themes/halloween.json5'),
-	require('../themes/city.json5'),
-	require('../themes/rainy.json5'),
-	require('../themes/urban.json5'),
-	require('../themes/cafe.json5'),
-	require('../themes/chocolate.json5'),
-	require('../themes/danboard.json5'),
-	require('../themes/olive.json5'),
-	require('../themes/ocean.json5'),
+	require('../themes/l-white.json5'),
+	require('../themes/l-red.json5'),
+	require('../themes/l-green.json5'),
+	require('../themes/l-blue.json5'),
+	require('../themes/l-apricot.json5'),
+
+	require('../themes/d-black.json5'),
+	require('../themes/d-red.json5'),
+	require('../themes/d-green.json5'),
+	require('../themes/d-blue.json5'),
+	require('../themes/d-persimmon.json5'),
+
+	require('../themes/d-battery-saver.json5'),
 ] as Theme[];
 
 let timeout = null;
@@ -101,7 +102,7 @@ function compile(theme: Theme): Record<string, string> {
 	for (const [k, v] of Object.entries(theme.props)) {
 		if (k.startsWith('$')) continue; // ignore const
 
-		props[k] = genValue(getColor(v));
+		props[k] = v.startsWith('"') ? v.replace(/^"\s*/, '') : genValue(getColor(v));
 	}
 
 	return props;

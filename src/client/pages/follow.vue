@@ -4,64 +4,48 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
+import * as os from '@/os';
+import parseAcct from '../../misc/acct/parse';
 
-export default Vue.extend({
+export default defineComponent({
 	created() {
 		const acct = new URL(location.href).searchParams.get('acct');
 		if (acct == null) return;
 
-		const dialog = this.$root.dialog({
-			type: 'waiting',
-			text: this.$t('fetchingAsApObject') + '...',
-			showOkButton: false,
-			showCancelButton: false,
-			cancelableByBgClick: false
-		});
+		let promise;
 
 		if (acct.startsWith('https://')) {
-			this.$root.api('ap/show', {
+			promise = os.api('ap/show', {
 				uri: acct
-			}).then(res => {
+			});
+			promise.then(res => {
 				if (res.type == 'User') {
 					this.follow(res.object);
+				} else if (res.type === 'Note') {
+					this.$router.push(`/notes/${res.object.id}`);
 				} else {
-					this.$root.dialog({
+					os.dialog({
 						type: 'error',
 						text: 'Not a user'
 					}).then(() => {
 						window.close();
 					});
 				}
-			}).catch(e => {
-				this.$root.dialog({
-					type: 'error',
-					text: e
-				}).then(() => {
-					window.close();
-				});
-			}).finally(() => {
-				dialog.close();
 			});
 		} else {
-			this.$root.api('users/show', parseAcct(acct)).then(user => {
+			promise = os.api('users/show', parseAcct(acct));
+			promise.then(user => {
 				this.follow(user);
-			}).catch(e => {
-				this.$root.dialog({
-					type: 'error',
-					text: e
-				}).then(() => {
-					window.close();
-				});
-			}).finally(() => {
-				dialog.close();
 			});
 		}
+
+		os.promiseDialog(promise, null, null, this.$t('fetchingAsApObject'));
 	},
 
 	methods: {
 		async follow(user) {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await os.dialog({
 				type: 'question',
 				text: this.$t('followConfirm', { name: user.name || user.username }),
 				showCancelButton: true
@@ -72,22 +56,8 @@ export default Vue.extend({
 				return;
 			}
 			
-			this.$root.api('following/create', {
+			os.apiWithDialog('following/create', {
 				userId: user.id
-			}).then(() => {
-				this.$root.dialog({
-					type: 'success',
-					iconOnly: true, autoClose: true
-				}).then(() => {
-					window.close();
-				});
-			}).catch(e => {
-				this.$root.dialog({
-					type: 'error',
-					text: e
-				}).then(() => {
-					window.close();
-				});
 			});
 		}
 	}

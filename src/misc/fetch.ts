@@ -5,6 +5,7 @@ import fetch, { HeadersInit } from 'node-fetch';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import config from '../config';
+import { URL } from 'url';
 
 export async function getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: HeadersInit) {
 	const res = await fetch(url, {
@@ -69,14 +70,14 @@ const _https = new https.Agent({
  * Get http proxy or non-proxy agent
  */
 export const httpAgent = config.proxy
-	? new HttpProxyAgent(config.proxy)
+	? new HttpProxyAgent(config.proxy) as unknown as http.Agent
 	: _http;
 
 /**
  * Get https proxy or non-proxy agent
  */
 export const httpsAgent = config.proxy
-	? new HttpsProxyAgent(config.proxy)
+	? new HttpsProxyAgent(config.proxy) as unknown as https.Agent
 	: _https;
 
 /**

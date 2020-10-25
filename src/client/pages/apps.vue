@@ -1,9 +1,6 @@
 <template>
 <div>
-	<portal to="icon"><fa :icon="faPlug"/></portal>
-	<portal to="title">{{ $t('installedApps') }}</portal>
-
-	<mk-pagination :pagination="pagination" class="bfomjevm" ref="list">
+	<MkPagination :pagination="pagination" class="bfomjevm" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -18,14 +15,14 @@
 					<div class="description">{{ token.description }}</div>
 					<div class="_keyValue">
 						<div>{{ $t('installedDate') }}:</div>
-						<div><mk-time :time="token.createdAt"/></div>
+						<div><MkTime :time="token.createdAt"/></div>
 					</div>
 					<div class="_keyValue">
 						<div>{{ $t('lastUsedDate') }}:</div>
-						<div><mk-time :time="token.lastUsedAt"/></div>
+						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="revoke(token)"><fa :icon="faTrashAlt"/></button>
+						<button class="_button" @click="revoke(token)"><Fa :icon="faTrashAlt"/></button>
 					</div>
 					<details>
 						<summary>{{ $t('details') }}</summary>
@@ -36,28 +33,29 @@
 				</div>
 			</div>
 		</template>
-	</mk-pagination>
+	</MkPagination>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faTrashAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '../components/ui/pagination.vue';
+import MkPagination from '@/components/ui/pagination.vue';
+import * as os from '@/os';
 
-export default Vue.extend({
-	metaInfo() {
-		return {
-			title: this.$t('installedApps') as string
-		};
-	},
-
+export default defineComponent({
 	components: {
 		MkPagination
 	},
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('installedApps'),
+					icon: faPlug,
+				}],
+			},
 			pagination: {
 				endpoint: 'i/apps',
 				limit: 100,
@@ -71,7 +69,7 @@ export default Vue.extend({
 
 	methods: {
 		revoke(token) {
-			this.$root.api('i/revoke-token', { tokenId: token.id }).then(() => {
+			os.api('i/revoke-token', { tokenId: token.id }).then(() => {
 				this.$refs.list.reload();
 			});
 		}

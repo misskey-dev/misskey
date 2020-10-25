@@ -1,6 +1,6 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><fa icon="times"/></button>
+	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><Fa icon="times"/></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
 <div v-else-if="tweetId && tweetExpanded" class="twitter" ref="twitter">
@@ -8,9 +8,9 @@
 </div>
 <div v-else class="mk-url-preview" v-size="{ max: [400, 350] }">
 	<transition name="zoom" mode="out-in">
-		<component :is="self ? 'router-link' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
+		<component :is="self ? 'MkA' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enablePlayer')"><fa :icon="faPlayCircle"/></button>
+				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enablePlayer')"><Fa :icon="faPlayCircle"/></button>
 			</div>
 			<article>
 				<header>
@@ -26,19 +26,20 @@
 	</transition>
 	<div class="expandTweet" v-if="tweetId">
 		<a @click="tweetExpanded = true">
-			<fa :icon="faTwitter"/> {{ $t('expandTweet') }}
+			<Fa :icon="faTwitter"/> {{ $t('expandTweet') }}
 		</a>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
-import { url as local, lang } from '../config';
+import { url as local, lang } from '@/config';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		url: {
 			type: String,
@@ -135,7 +136,7 @@ export default Vue.extend({
  		},
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		(window as any).removeEventListener('message', this.adjustTweetHeight);
 	},
 });

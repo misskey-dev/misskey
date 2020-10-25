@@ -171,7 +171,7 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 
 		search(token) {
 			const a = doc.createElement('a');
-			a.href = `https://www.google.com/?#q=${token.node.props.query}`;
+			a.href = `https://www.google.com/search?q=${token.node.props.query}`;
 			a.textContent = token.node.props.content;
 			return a;
 		}

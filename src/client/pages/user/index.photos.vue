@@ -1,22 +1,24 @@
 <template>
 <div class="ujigsodd">
-	<mk-loading v-if="fetching"/>
+	<MkLoading v-if="fetching"/>
 	<div class="stream" v-if="!fetching && images.length > 0">
-		<router-link v-for="(image, i) in images" :key="i"
+		<MkA v-for="image in images"
 			class="img"
 			:style="`background-image: url(${thumbnail(image.file)})`"
-			:to="image.note | notePage"
-		></router-link>
+			:to="notePage(image.note)"
+		></MkA>
 	</div>
 	<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { getStaticImageUrl } from '../../scripts/get-static-image-url';
+import { defineComponent } from 'vue';
+import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import notePage from '../../filters/note';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	props: ['user'],
 	data() {
 		return {
@@ -32,7 +34,7 @@ export default Vue.extend({
 			'image/apng',
 			'image/vnd.mozilla.apng',
 		];
-		this.$root.api('users/notes', {
+		os.api('users/notes', {
 			userId: this.user.id,
 			fileType: image,
 			excludeNsfw: !this.$store.state.device.alwaysShowNsfw,
@@ -57,18 +59,17 @@ export default Vue.extend({
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;
 		},
+		notePage
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .ujigsodd {
-
 	> .stream {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
-		padding: 8px;
 
 		> .img {
 			flex: 1 1 33%;
@@ -79,7 +80,7 @@ export default Vue.extend({
 			background-size: cover;
 			background-clip: content-box;
 			border: solid 2px transparent;
-			border-radius: 4px;
+			border-radius: 6px;
 		}
 	}
 

@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../define';
-import { Users } from '../../../../models';
+import { UserProfiles, Users } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 
 export const meta = {
@@ -65,7 +65,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, me) => {
-	const isUsername = ps.localOnly ? Users.validateLocalUsername.ok(ps.query.replace('@', '')) : Users.validateRemoteUsername.ok(ps.query.replace('@', ''));
+	const isUsername = ps.query.startsWith('@');
 
 	let users: User[] = [];
 
@@ -85,6 +85,37 @@ export default define(meta, async (ps, me) => {
 				.where('user.host IS NOT NULL')
 				.andWhere('user.isSuspended = FALSE')
 				.andWhere('user.usernameLower like :username', { username: ps.query.replace('@', '').toLowerCase() + '%' })
+				.andWhere('user.updatedAt IS NOT NULL')
+				.orderBy('user.updatedAt', 'DESC')
+				.take(ps.limit! - users.length)
+				.getMany();
+
+			users = users.concat(otherUsers);
+		}
+	} else {
+		const profQuery = UserProfiles.createQueryBuilder('prof')
+			.select('prof.userId')
+			.where('prof.userHost IS NULL')
+			.andWhere('prof.description ilike :query', { query: '%' + ps.query + '%' });
+
+		users = await Users.createQueryBuilder('user')
+			.where(`user.id IN (${ profQuery.getQuery() })`)
+			.setParameters(profQuery.getParameters())
+			.andWhere('user.updatedAt IS NOT NULL')
+			.orderBy('user.updatedAt', 'DESC')
+			.take(ps.limit!)
+			.skip(ps.offset)
+			.getMany();
+
+		if (users.length < ps.limit! && !ps.localOnly) {
+			const profQuery2 = UserProfiles.createQueryBuilder('prof')
+				.select('prof.userId')
+				.where('prof.userHost IS NOT NULL')
+				.andWhere('prof.description ilike :query', { query: '%' + ps.query + '%' });
+
+			const otherUsers = await Users.createQueryBuilder('user')
+				.where(`user.id IN (${ profQuery2.getQuery() })`)
+				.setParameters(profQuery2.getParameters())
 				.andWhere('user.updatedAt IS NOT NULL')
 				.orderBy('user.updatedAt', 'DESC')
 				.take(ps.limit! - users.length)

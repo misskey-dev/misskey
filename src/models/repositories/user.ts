@@ -248,7 +248,7 @@ export class UserRepository extends Repository<User> {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
-				includingNotificationTypes: profile?.includingNotificationTypes,
+				mutingNotificationTypes: profile?.mutingNotificationTypes,
 			} : {}),
 
 			...(opts.includeSecrets ? {

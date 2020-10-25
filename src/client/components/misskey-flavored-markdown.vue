@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import MfmCore from './mfm';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MfmCore
 	}
@@ -24,7 +24,7 @@ export default Vue.extend({
 		text-overflow: ellipsis;
 	}
 
-	::v-deep .quote {
+	::v-deep(.quote) {
 		display: block;
 		margin: 8px;
 		padding: 6px 0 6px 12px;
@@ -33,15 +33,17 @@ export default Vue.extend({
 		opacity: 0.7;
 	}
 
-	::v-deep pre {
+	::v-deep(pre) {
 		font-size: 0.8em;
 	}
 
-	::v-deep > code {
+	> ::v-deep(code) {
+		font-size: 0.8em;
 		word-break: break-all;
+		padding: 4px 6px;
 	}
 
-	::v-deep .title {
+	::v-deep(.title) {
 		text-align: center;
 		border-bottom: solid 1px var(--divider);
 	}

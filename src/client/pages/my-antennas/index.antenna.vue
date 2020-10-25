@@ -2,61 +2,61 @@
 <div class="shaynizk _card">
 	<div class="_title" v-if="antenna.name">{{ antenna.name }}</div>
 	<div class="_content body">
-		<mk-input v-model="name">
+		<MkInput v-model:value="name">
 			<span>{{ $t('name') }}</span>
-		</mk-input>
-		<mk-select v-model="src">
+		</MkInput>
+		<MkSelect v-model:value="src">
 			<template #label>{{ $t('antennaSource') }}</template>
 			<option value="all">{{ $t('_antennaSources.all') }}</option>
 			<option value="home">{{ $t('_antennaSources.homeTimeline') }}</option>
 			<option value="users">{{ $t('_antennaSources.users') }}</option>
 			<option value="list">{{ $t('_antennaSources.userList') }}</option>
 			<option value="group">{{ $t('_antennaSources.userGroup') }}</option>
-		</mk-select>
-		<mk-select v-model="userListId" v-if="src === 'list'">
+		</MkSelect>
+		<MkSelect v-model:value="userListId" v-if="src === 'list'">
 			<template #label>{{ $t('userList') }}</template>
 			<option v-for="list in userLists" :value="list.id" :key="list.id">{{ list.name }}</option>
-		</mk-select>
-		<mk-select v-model="userGroupId" v-else-if="src === 'group'">
+		</MkSelect>
+		<MkSelect v-model:value="userGroupId" v-else-if="src === 'group'">
 			<template #label>{{ $t('userGroup') }}</template>
 			<option v-for="group in userGroups" :value="group.id" :key="group.id">{{ group.name }}</option>
-		</mk-select>
-		<mk-textarea v-model="users" v-else-if="src === 'users'">
+		</MkSelect>
+		<MkTextarea v-model:value="users" v-else-if="src === 'users'">
 			<span>{{ $t('users') }}</span>
 			<template #desc>{{ $t('antennaUsersDescription') }} <button class="_textButton" @click="addUser">{{ $t('addUser') }}</button></template>
-		</mk-textarea>
-		<mk-switch v-model="withReplies">{{ $t('withReplies') }}</mk-switch>
-		<mk-textarea v-model="keywords">
+		</MkTextarea>
+		<MkSwitch v-model:value="withReplies">{{ $t('withReplies') }}</MkSwitch>
+		<MkTextarea v-model:value="keywords">
 			<span>{{ $t('antennaKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
-		</mk-textarea>
-		<mk-textarea v-model="excludeKeywords">
+		</MkTextarea>
+		<MkTextarea v-model:value="excludeKeywords">
 			<span>{{ $t('antennaExcludeKeywords') }}</span>
 			<template #desc>{{ $t('antennaKeywordsDescription') }}</template>
-		</mk-textarea>
-		<mk-switch v-model="caseSensitive">{{ $t('caseSensitive') }}</mk-switch>
-		<mk-switch v-model="withFile">{{ $t('withFileAntenna') }}</mk-switch>
-		<mk-switch v-model="notify">{{ $t('notifyAntenna') }}</mk-switch>
+		</MkTextarea>
+		<MkSwitch v-model:value="caseSensitive">{{ $t('caseSensitive') }}</MkSwitch>
+		<MkSwitch v-model:value="withFile">{{ $t('withFileAntenna') }}</MkSwitch>
+		<MkSwitch v-model:value="notify">{{ $t('notifyAntenna') }}</MkSwitch>
 	</div>
 	<div class="_footer">
-		<mk-button inline @click="saveAntenna()" primary><fa :icon="faSave"/> {{ $t('save') }}</mk-button>
-		<mk-button inline @click="deleteAntenna()" v-if="antenna.id != null"><fa :icon="faTrash"/> {{ $t('delete') }}</mk-button>
+		<MkButton inline @click="saveAntenna()" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><Fa :icon="faTrash"/> {{ $t('delete') }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '../../components/ui/button.vue';
-import MkInput from '../../components/ui/input.vue';
-import MkTextarea from '../../components/ui/textarea.vue';
-import MkSelect from '../../components/ui/select.vue';
-import MkSwitch from '../../components/ui/switch.vue';
-import MkUserSelect from '../../components/user-select.vue';
+import MkButton from '@/components/ui/button.vue';
+import MkInput from '@/components/ui/input.vue';
+import MkTextarea from '@/components/ui/textarea.vue';
+import MkSelect from '@/components/ui/select.vue';
+import MkSwitch from '@/components/ui/switch.vue';
 import getAcct from '../../../misc/acct/render';
+import * as os from '@/os';
 
-export default Vue.extend({
+export default defineComponent({
 	components: {
 		MkButton, MkInput, MkTextarea, MkSelect, MkSwitch
 	},
@@ -90,12 +90,12 @@ export default Vue.extend({
 	watch: {
 		async src() {
 			if (this.src === 'list' && this.userLists === null) {
-				this.userLists = await this.$root.api('users/lists/list');
+				this.userLists = await os.api('users/lists/list');
 			}
 
 			if (this.src === 'group' && this.userGroups === null) {
-				const groups1 = await this.$root.api('users/groups/owned');
-				const groups2 = await this.$root.api('users/groups/joined');
+				const groups1 = await os.api('users/groups/owned');
+				const groups2 = await os.api('users/groups/joined');
 
 				this.userGroups = [...groups1, ...groups2];
 			}
@@ -119,7 +119,7 @@ export default Vue.extend({
 	methods: {
 		async saveAntenna() {
 			if (this.antenna.id == null) {
-				await this.$root.api('antennas/create', {
+				await os.api('antennas/create', {
 					name: this.name,
 					src: this.src,
 					userListId: this.userListId,
@@ -134,7 +134,7 @@ export default Vue.extend({
 				});
 				this.$emit('created');
 			} else {
-				await this.$root.api('antennas/update', {
+				await os.api('antennas/update', {
 					antennaId: this.antenna.id,
 					name: this.name,
 					src: this.src,
@@ -150,33 +150,27 @@ export default Vue.extend({
 				});
 			}
 
-			this.$root.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 		},
 
 		async deleteAntenna() {
-			const { canceled } = await this.$root.dialog({
+			const { canceled } = await os.dialog({
 				type: 'warning',
 				text: this.$t('removeAreYouSure', { x: this.antenna.name }),
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			await this.$root.api('antennas/delete', {
+			await os.api('antennas/delete', {
 				antennaId: this.antenna.id,
 			});
 
-			this.$root.dialog({
-				type: 'success',
-				iconOnly: true, autoClose: true
-			});
+			os.success();
 			this.$emit('deleted');
 		},
 
 		addUser() {
-			this.$root.new(MkUserSelect, {}).$once('selected', user => {
+			os.selectUser().then(user => {
 				this.users = this.users.trim();
 				this.users += '\n@' + getAcct(user);
 				this.users = this.users.trim();

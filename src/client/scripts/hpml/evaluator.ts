@@ -1,11 +1,13 @@
 import autobind from 'autobind-decorator';
 import * as seedrandom from 'seedrandom';
 import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
-import { version } from '../../config';
+import { version } from '@/config';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
 import { initLib } from './lib';
+import * as os from '@/os';
+import { markRaw, ref, Ref } from 'vue';
 
 type Fn = {
 	slots: string[];
@@ -22,7 +24,7 @@ export class Hpml {
 	public aiscript?: AiScript;
 	private pageVarUpdatedCallback;
 	public canvases: Record<string, HTMLCanvasElement> = {};
-	public vars: Record<string, any>;
+	public vars: Ref<Record<string, any>> = ref({});
 	public page: Record<string, any>;
 
 	private opts: {
@@ -30,19 +32,19 @@ export class Hpml {
 		enableAiScript: boolean;
 	};
 
-	constructor(vm: any, page: Hpml['page'], opts: Hpml['opts']) {
+	constructor(page: Hpml['page'], opts: Hpml['opts']) {
 		this.page = page;
 		this.variables = this.page.variables;
 		this.pageVars = collectPageVars(this.page.content);
 		this.opts = opts;
 
 		if (this.opts.enableAiScript) {
-			this.aiscript = new AiScript({ ...createAiScriptEnv(vm, {
+			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
 				storageKey: 'pages:' + this.page.id
 			}), ...initLib(this)}, {
 				in: (q) => {
 					return new Promise(ok => {
-						vm.$root.dialog({
+						os.dialog({
 							title: q,
 							input: {}
 						}).then(({ canceled, result: a }) => {
@@ -55,7 +57,7 @@ export class Hpml {
 				},
 				log: (type, params) => {
 				},
-			});
+			}));
 
 			this.aiscript.scope.opts.onUpdated = (name, value) => {
 				this.eval();
@@ -88,7 +90,7 @@ export class Hpml {
 	@autobind
 	public eval() {
 		try {
-			this.vars = this.evaluateVars();
+			this.vars.value = this.evaluateVars();
 		} catch (e) {
 			//this.onError(e);
 		}
@@ -98,7 +100,7 @@ export class Hpml {
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/{(.+?)}/g, match => {
-			const v = this.vars ? this.vars[match.slice(1, -1).trim()] : null;
+			const v = this.vars[match.slice(1, -1).trim()];
 			return v == null ? 'NULL' : v.toString();
 		});
 	}

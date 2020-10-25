@@ -1,29 +1,43 @@
 <template>
-<router-link :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
+<MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
 	<div class="banner" v-if="channel.bannerUrl" :style="`background-image: url('${channel.bannerUrl}')`">
 		<div class="fade"></div>
-		<div class="name"><fa :icon="faSatelliteDish"/> {{ channel.name }}</div>
+		<div class="name"><Fa :icon="faSatelliteDish"/> {{ channel.name }}</div>
 		<div class="status">
-			<div><fa :icon="faUsers" fixed-width/><i18n path="_channel.usersCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.usersCount }}</b></i18n></div>
-			<div><fa :icon="faPencilAlt" fixed-width/><i18n path="_channel.notesCount" tag="span" style="margin-left: 4px;"><b place="n">{{ channel.notesCount }}</b></i18n></div>
+			<div>
+				<Fa :icon="faUsers" fixed-width/>
+				<i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;">
+					<template #n>
+						<b>{{ channel.usersCount }}</b>
+					</template>
+				</i18n-t>
+			</div>
+			<div>
+				<Fa :icon="faPencilAlt" fixed-width/>
+				<i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;">
+					<template #n>
+						<b>{{ channel.notesCount }}</b>
+					</template>
+				</i18n-t>
+			</div>
 		</div>
 	</div>
 	<article v-if="channel.description">
 		<p :title="channel.description">{{ channel.description.length > 85 ? channel.description.slice(0, 85) + '…' : channel.description }}</p>
 	</article>
 	<footer>
-		<span>
-			{{ $t('updatedAt') }}: <mk-time :time="channel.lastNotedAt"/>
+		<span v-if="channel.lastNotedAt">
+			{{ $t('updatedAt') }}: <MkTime :time="channel.lastNotedAt"/>
 		</span>
 	</footer>
-</router-link>
+</MkA>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from 'vue';
 import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
-export default Vue.extend({
+export default defineComponent({
 	props: {
 		channel: {
 			type: Object,
@@ -44,7 +58,6 @@ export default Vue.extend({
 	display: block;
 	overflow: hidden;
 	width: 100%;
-	border: 1px solid var(--divider);
 
 	&:hover {
 		text-decoration: none;

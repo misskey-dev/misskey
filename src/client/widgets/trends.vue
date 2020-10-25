@@ -1,29 +1,31 @@
 <template>
-<mk-container :show-header="props.showHeader">
-	<template #header><fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
+<MkContainer :show-header="props.showHeader">
+	<template #header><Fa :icon="faHashtag"/>{{ $t('_widgets.trends') }}</template>
 
 	<div class="wbrkwala">
-		<mk-loading v-if="fetching"/>
+		<MkLoading v-if="fetching"/>
 		<transition-group tag="div" name="chart" class="tags" v-else>
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
-					<router-link class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</router-link>
+					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
 					<p>{{ $t('nUsersMentioned', { n: stat.usersCount }) }}</p>
 				</div>
-				<mk-mini-chart class="chart" :src="stat.chart"/>
+				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>
 		</transition-group>
 	</div>
-</mk-container>
+</MkContainer>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { faHashtag } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '../components/ui/container.vue';
+import MkContainer from '@/components/ui/container.vue';
 import define from './define';
-import MkMiniChart from '../components/mini-chart.vue';
+import MkMiniChart from '@/components/mini-chart.vue';
+import * as os from '@/os';
 
-export default define({
+const widget = define({
 	name: 'hashtags',
 	props: () => ({
 		showHeader: {
@@ -31,7 +33,10 @@ export default define({
 			default: true,
 		},
 	})
-}).extend({
+});
+
+export default defineComponent({
+	extends: widget,
 	components: {
 		MkContainer, MkMiniChart
 	},
@@ -46,12 +51,12 @@ export default define({
 		this.fetch();
 		this.clock = setInterval(this.fetch, 1000 * 60);
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearInterval(this.clock);
 	},
 	methods: {
 		fetch() {
-			this.$root.api('hashtags/trend').then(stats => {
+			os.api('hashtags/trend').then(stats => {
 				this.stats = stats;
 				this.fetching = false;
 			});

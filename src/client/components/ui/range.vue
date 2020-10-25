@@ -13,14 +13,15 @@
 		:autofocus="autofocus"
 		@focus="focused = true"
 		@blur="focused = false"
-		@input="$emit('input', $event.target.value)"
+		@input="$emit('update:value', $event.target.value)"
 	/>
 </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from 'vue';import * as os from '@/os';
+
+export default defineComponent({
 	props: {
 		value: {
 			type: Number,

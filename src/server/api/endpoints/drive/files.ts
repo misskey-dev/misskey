@@ -36,7 +36,7 @@ export const meta = {
 		},
 
 		type: {
-			validator: $.optional.str.match(/^[a-zA-Z\/\-*]+$/)
+			validator: $.optional.nullable.str.match(/^[a-zA-Z\/\-*]+$/)
 		}
 	},
 

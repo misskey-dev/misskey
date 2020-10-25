@@ -1,0 +1,29 @@
+{
+	id: 'c503d768-7c70-4db2-a4e6-08264304bc8d',
+
+	name: 'Ai Persimmon',
+	author: 'syuilo',
+
+	base: 'dark',
+
+	props: {
+		accent: 'rgb(206, 102, 65)',
+		bg: 'rgb(41, 43, 41)',
+		fg: '#cdd8c7',
+		fgHighlighted: '#fff',
+		divider: 'rgba(255, 255, 255, 0.14)',
+		panel: '@bg',
+		panelShadow: '" 0 0 0 1px var(--divider)',
+		panelHeaderBg: '@panel',
+		panelHeaderDivider: '@divider',
+		infoFg: '@accent',
+		infoBg: 'rgb(0, 0, 0)',
+		header: ':alpha<0.7<@bg',
+		navBg: '#1f211f',
+		renote: '@accent',
+		mention: '@accent',
+		mentionMe: '#de6161',
+		hashtag: '#68bad0',
+		link: '#a1c758',
+	},
+}

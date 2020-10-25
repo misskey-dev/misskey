@@ -16,7 +16,7 @@ export async function createNotification(
 
 	const profile = await UserProfiles.findOne({ userId: notifieeId });
 
-	const isMuted = !(profile?.includingNotificationTypes == null || profile?.includingNotificationTypes.includes(type));
+	const isMuted = profile?.mutingNotificationTypes.includes(type);
 
 	// Create notification
 	const notification = await Notifications.save({
