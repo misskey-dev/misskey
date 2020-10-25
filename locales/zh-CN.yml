@@ -593,6 +593,8 @@ fillAbuseReportDescription: "请填写举报的详细原因。如果有对方发
 abuseReported: "内容已发送。感谢您的报告。"
 send: "发送"
 abuseMarkAsResolved: "处理完毕"
+openInNewTab: "在新标签页中打开"
+editTheseSettingsMayBreakAccount: "编辑这些设置可以会损坏您的账号"
 _serverDisconnectedBehavior:
   reload: "自动重载"
   dialog: "对话框警告"
