@@ -981,14 +981,20 @@ _pages:
   chooseBlock: "Добавить блок"
   selectType: "Выберите вид"
   enterVariableName: "Ведите имя переменной"
+  variableNameIsAlreadyUsed: "Это имя уже есть у другой переменной"
+  contentBlocks: "Содержательные"
+  inputBlocks: "Для ввода"
+  specialBlocks: "Особые"
   blocks:
-    section: "Раздел"
+    text: "Текст"
+    textarea: "Текст в рамке"
+    section: "Заголовок"
     image: "Изображения"
     button: "Кнопка"
-    if: "Если"
+    if: "Условный"
     _if:
       variable: "Переменная"
-    post: "Форма отправки"
+    post: "Создание заметки"
     _post:
       text: "Содержимое"
     textInput: "Ввод текста"
@@ -1030,8 +1036,11 @@ _pages:
     categories:
       list: "Списки"
     blocks:
+      text: "Текст"
       strLen: "Длина текста"
       _strLen:
+        arg1: "Текст"
+      _strPick:
         arg1: "Текст"
       _strReplace:
         arg1: "Текст"
@@ -1080,7 +1089,7 @@ _pages:
         arg1: "А"
         arg2: "Б"
       _if:
-        arg1: "Если"
+        arg1: "Условный"
       _rannum:
         arg2: "Максимальное значение"
       randomPick: "Случайный выбор из списка"
@@ -1107,6 +1116,8 @@ _pages:
         arg1: "Текст"
       _numberToString:
         arg1: "Номер"
+      _splitStrByLine:
+        arg1: "Текст"
       ref: "Переменная"
       aiScriptVar: "Переменная AiScript"
       fn: "функции"
@@ -1115,6 +1126,7 @@ _pages:
       _for:
         arg1: "Количество повторений"
     types:
+      string: "Текст"
       array: "Списки"
 _notification:
   youWereFollowed: "У вас новый подписчик"
