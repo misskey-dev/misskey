@@ -33,15 +33,15 @@
 			</header>
 
 			<div>
-				<MkRadio v-model="game.bw" value="random" @change="updateSettings('bw')">{{ $t('random') }}</MkRadio>
-				<MkRadio v-model="game.bw" :value="1" @change="updateSettings('bw')">
+				<MkRadio v-model="game.bw" value="random" @update:modelValue="updateSettings('bw')">{{ $t('random') }}</MkRadio>
+				<MkRadio v-model="game.bw" :value="'1'" @update:modelValue="updateSettings('bw')">
 					<i18n-t keypath="_reversi.blackIs" tag="span">
 						<template #name>
 							<b><MkUserName :user="game.user1"/></b>
 						</template>
 					</i18n-t>
 				</MkRadio>
-				<MkRadio v-model="game.bw" :value="2" @change="updateSettings('bw')">
+				<MkRadio v-model="game.bw" :value="'2'" @update:modelValue="updateSettings('bw')">
 					<i18n-t keypath="_reversi.blackIs" tag="span">
 						<template #name>
 							<b><MkUserName :user="game.user2"/></b>
@@ -57,9 +57,9 @@
 			</header>
 
 			<div>
-				<MkSwitch v-model="game.isLlotheo" @change="updateSettings('isLlotheo')">{{ $t('is-llotheo') }}</MkSwitch>
-				<MkSwitch v-model="game.loopedBoard" @change="updateSettings('loopedBoard')">{{ $t('looped-map') }}</MkSwitch>
-				<MkSwitch v-model="game.canPutEverywhere" @change="updateSettings('canPutEverywhere')">{{ $t('can-put-everywhere') }}</MkSwitch>
+				<MkSwitch v-model:value="game.isLlotheo" @update:value="updateSettings('isLlotheo')">{{ $t('is-llotheo') }}</MkSwitch>
+				<MkSwitch v-model:value="game.loopedBoard" @update:value="updateSettings('loopedBoard')">{{ $t('looped-map') }}</MkSwitch>
+				<MkSwitch v-model:value="game.canPutEverywhere" @update:value="updateSettings('canPutEverywhere')">{{ $t('can-put-everywhere') }}</MkSwitch>
 			</div>
 		</div>
 
@@ -70,7 +70,7 @@
 
 			<div>
 				<template v-for="item in form">
-					<MkSwitch v-if="item.type == 'switch'" v-model="item.value" :key="item.id" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</MkSwitch>
+					<MkSwitch v-if="item.type == 'switch'" v-model:value="item.value" :key="item.id" @change="onChangeForm(item)">{{ item.label || item.desc || '' }}</MkSwitch>
 
 					<div class="card" v-if="item.type == 'radio'" :key="item.id">
 						<header>
@@ -78,7 +78,7 @@
 						</header>
 
 						<div>
-							<MkRadio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @change="onChangeForm(item)">{{ r.label }}</MkRadio>
+							<MkRadio v-for="(r, i) in item.items" :key="item.id + ':' + i" v-model="item.value" :value="r.value" @update:modelValue="onChangeForm(item)">{{ r.label }}</MkRadio>
 						</div>
 					</div>
 
@@ -308,7 +308,7 @@ export default defineComponent({
 
 						&:focus,
 						&:active {
-							border-color: var(--primary);
+							border-color: var(--accent);
 						}
 					}
 				}
