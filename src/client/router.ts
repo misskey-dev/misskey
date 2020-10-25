@@ -1,4 +1,4 @@
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, markRaw } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -18,30 +18,11 @@ export const router = createRouter({
 	routes: [
 		// NOTE: MkTimelineをdynamic importするとAsyncComponentWrapperが間に入るせいでkeep-aliveのコンポーネント指定が効かなくなる
 		{ path: '/', name: 'index', component: store.getters.isSignedIn ? MkTimeline : page('welcome') },
-		{ path: '/@:user', name: 'user', component: page('user/index'), children: [
-			{ path: 'following', name: 'userFollowing', component: page('user/follow-list'), props: { type: 'following' } },
-			{ path: 'followers', name: 'userFollowers', component: page('user/follow-list'), props: { type: 'followers' } },
-		]},
+		{ path: '/@:acct/:page?', name: 'user', component: page('user/index'), props: route => ({ acct: route.params.acct, page: route.params.page || 'index' }) },
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/@:acct/room', props: true, component: page('room/room') },
-		{ path: '/settings', name: 'settings', component: page('settings/index'), children: [
-			{ path: 'profile', component: page('settings/profile') },
-			{ path: 'privacy', component: page('settings/privacy') },
-			{ path: 'reaction', component: page('settings/reaction') },
-			{ path: 'notifications', component: page('settings/notifications') },
-			{ path: 'mute-block', component: page('settings/mute-block') },
-			{ path: 'word-mute', component: page('settings/word-mute') },
-			{ path: 'integration', component: page('settings/integration') },
-			{ path: 'security', component: page('settings/security') },
-			{ path: 'api', component: page('settings/api') },
-			{ path: 'other', component: page('settings/other') },
-			{ path: 'general', component: page('settings/general') },
-			{ path: 'theme', component: page('settings/theme') },
-			{ path: 'sidebar', component: page('settings/sidebar') },
-			{ path: 'sounds', component: page('settings/sounds') },
-			{ path: 'plugins', component: page('settings/plugins') },
-		]},
+		{ path: '/settings/:page?', name: 'settings', component: page('settings/index'), props: route => ({ page: route.params.page || null }) },
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
 		{ path: '/about-misskey', component: page('about-misskey') },
@@ -87,8 +68,8 @@ export const router = createRouter({
 		{ path: '/instance/relays', component: page('instance/relays') },
 		{ path: '/instance/announcements', component: page('instance/announcements') },
 		{ path: '/instance/abuses', component: page('instance/abuses') },
-		{ path: '/notes/:note', name: 'note', component: page('note') },
-		{ path: '/tags/:tag', component: page('tag') },
+		{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
+		{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
 		{ path: '/games/reversi', name: 'reversi', component: page('reversi/index') },
 		{ path: '/games/reversi/:gameId', name: 'reversi', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
 		{ path: '/auth/:token', component: page('auth') },
@@ -122,3 +103,13 @@ router.afterEach((to, from) => {
 		indexScrollPos = window.scrollY;
 	}
 });
+
+export function resolve(path: string) {
+	const resolved = router.resolve(path);
+	const route = resolved.matched[0];
+	return {
+		component: markRaw(route.components.default),
+		// TODO: route.propsには関数以外も入る可能性があるのでよしなにハンドリングする
+		props: route.props?.default ? route.props.default(resolved) : resolved.params
+	};
+}

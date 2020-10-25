@@ -1,11 +1,16 @@
 <template>
-<div class="_section">
-	<div class="_card">
-		<div class="_content">
-			<MkSwitch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
-				{{ $t('showFeaturedNotesInTimeline') }}
-			</MkSwitch>
+<div>
+	<div class="_section">
+		<div class="_card">
+			<div class="_content">
+				<MkSwitch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
+					{{ $t('showFeaturedNotesInTimeline') }}
+				</MkSwitch>
+			</div>
 		</div>
+	</div>
+	<div class="_section">
+		<MkA to="/settings/regedit">RegEdit</MkA>
 	</div>
 </div>
 </template>

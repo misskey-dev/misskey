@@ -1,11 +1,11 @@
 <template>
-<router-link class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
+<MkA class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
 	<span class="me" v-if="isMe">{{ $t('you') }}</span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host" v-if="(host != localHost) || $store.state.settings.showFullAcct">@{{ toUnicode(host) }}</span>
 	</span>
-</router-link>
+</MkA>
 <a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
 	<span class="main">
 		<span class="username">@{{ username }}</span>

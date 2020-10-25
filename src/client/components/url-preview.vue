@@ -8,7 +8,7 @@
 </div>
 <div v-else class="mk-url-preview" v-size="{ max: [400, 350] }">
 	<transition name="zoom" mode="out-in">
-		<component :is="self ? 'router-link' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
+		<component :is="self ? 'MkA' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
 				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enablePlayer')"><Fa :icon="faPlayCircle"/></button>
 			</div>

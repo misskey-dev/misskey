@@ -1,18 +1,18 @@
 <template>
 <XColumn :menu="menu" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<Fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
+		<Fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<XTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => $emit('loaded')"/>
+	<XTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
 </XColumn>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSatellite, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faListUl, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
-import XTimeline from '../timeline.vue';
+import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -34,7 +34,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			faSatellite
+			faListUl
 		};
 	},
 
@@ -47,33 +47,33 @@ export default defineComponent({
 	created() {
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('selectAntenna'),
-			action: this.setAntenna
+			text: this.$t('selectList'),
+			action: this.setList
 		}];
 	},
 
 	mounted() {
-		if (this.column.antennaId == null) {
-			this.setAntenna();
+		if (this.column.listId == null) {
+			this.setList();
 		}
 	},
 
 	methods: {
-		async setAntenna() {
-			const antennas = await os.api('antennas/list');
-			const { canceled, result: antenna } = await os.dialog({
-				title: this.$t('selectAntenna'),
+		async setList() {
+			const lists = await os.api('users/lists/list');
+			const { canceled, result: list } = await os.dialog({
+				title: this.$t('selectList'),
 				type: null,
 				select: {
-					items: antennas.map(x => ({
+					items: lists.map(x => ({
 						value: x, text: x.name
 					})),
-				default: this.column.antennaId
+					default: this.column.listId
 				},
 				showCancelButton: true
 			});
 			if (canceled) return;
-			this.column.antennaId = antenna.id;
+			this.column.listId = list.id;
 			this.$store.commit('deviceUser/updateDeckColumn', this.column);
 		},
 

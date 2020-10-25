@@ -3,7 +3,7 @@
 	<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
 	<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
 	<div class="title">
-		<router-link class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></router-link>
+		<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
 	<div class="description">

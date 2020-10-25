@@ -1,10 +1,10 @@
 <template>
 <div class="mk-app">
 	<header>
-		<router-link class="link" to="/">{{ $t('home') }}</router-link>
-		<router-link class="link" to="/announcements">{{ $t('announcements') }}</router-link>
-		<router-link class="link" to="/channels">{{ $t('channel') }}</router-link>
-		<router-link class="link" to="/about">{{ $t('aboutX', { x: instanceName || host }) }}</router-link>
+		<MkA class="link" to="/">{{ $t('home') }}</MkA>
+		<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
+		<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
+		<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName || host }) }}</MkA>
 	</header>
 
 	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
@@ -23,12 +23,12 @@
 			</router-view>
 		</main>
 		<div class="powered-by">
-			<b><router-link to="/">{{ host }}</router-link></b>
+			<b><MkA to="/">{{ host }}</MkA></b>
 			<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
 		</div>
 	</div>
 
-	<StreamIndicator v-if="$store.getters.isSignedIn"/>
+	<XCommon/>
 </div>
 </template>
 
@@ -39,12 +39,14 @@ import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import XHeader from './_common_/header.vue';
+import XCommon from './_common_/common.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
-		XHeader
+		XCommon,
+		XHeader,
 	},
 
 	data() {
@@ -130,7 +132,7 @@ export default defineComponent({
 			line-height: 60px;
 			padding: 0 0.7em;
 
-			&.router-link-active {
+			&.MkA-active {
 				box-shadow: 0 -2px 0 0 var(--accent) inset;
 			}
 		}

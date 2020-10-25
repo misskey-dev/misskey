@@ -1,5 +1,5 @@
 <template>
-<div class="nvlagfpb">
+<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
 	<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
 </div>
 </template>
@@ -35,8 +35,30 @@ export default defineComponent({
 		},
 	},
 	mounted() {
-		this.$el.style.top = this.ev.pageY + 'px';
-		this.$el.style.left = this.ev.pageX + 'px';
+		let left = this.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
+		let top = this.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
+
+		const width = this.$el.offsetWidth;
+		const height = this.$el.offsetHeight;
+
+		if (left + width - window.pageXOffset > window.innerWidth) {
+			left = window.innerWidth - width + window.pageXOffset;
+		}
+
+		if (top + height - window.pageYOffset > window.innerHeight) {
+			top = window.innerHeight - height + window.pageYOffset;
+		}
+
+		if (top < 0) {
+			top = 0;
+		}
+
+		if (left < 0) {
+			left = 0;
+		}
+
+		this.$el.style.top = top + 'px';
+		this.$el.style.left = left + 'px';
 
 		for (const el of Array.from(document.querySelectorAll('body *'))) {
 			el.addEventListener('mousedown', this.onMousedown);

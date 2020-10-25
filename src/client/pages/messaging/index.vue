@@ -4,13 +4,12 @@
 		<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $t('startMessaging') }}</MkButton>
 
 		<div class="history" v-if="messages.length > 0">
-			<router-link v-for="(message, i) in messages"
+			<MkA v-for="(message, i) in messages"
 				class="message _panel"
 				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
 				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-index="i"
 				:key="message.id"
-				@click.prevent="go(message)"
 			>
 				<div>
 					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
@@ -27,7 +26,7 @@
 						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
 					</div>
 				</div>
-			</router-link>
+			</MkA>
 		</div>
 		<div class="_fullinfo" v-if="!fetching && messages.length == 0">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -90,18 +89,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		go(message) {
-			const url = message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(this.isMe(message) ? message.recipient : message.user)}`;
-			if (this.navHook) {
-				this.navHook(url, defineAsyncComponent(() => import('@/pages/messaging/messaging-room.vue')), {
-					userAcct: message.groupId ? null : getAcct(this.isMe(message) ? message.recipient : message.user),
-					groupId: message.groupId
-				});
-			} else {
-				this.$router.push(url);
-			}
-		},
-
 		getAcct,
 
 		isMe(message) {

@@ -18,9 +18,9 @@
 		<Fa :icon="faRetweet"/>
 		<i18n-t keypath="renotedBy" tag="span">
 			<template #user>
-				<router-link class="name" :to="userPage(note.user)" v-user-preview="note.userId">
+				<MkA class="name" :to="userPage(note.user)" v-user-preview="note.userId">
 					<MkUserName :user="note.user"/>
-				</router-link>
+				</MkA>
 			</template>
 		</i18n-t>
 		<div class="info">
@@ -48,7 +48,7 @@
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
-						<router-link class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><Fa :icon="faReply"/></router-link>
+						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><Fa :icon="faReply"/></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
@@ -59,7 +59,7 @@
 					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="detail" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><XNotePreview :note="appearNote.renote"/></div>
 				</div>
-				<router-link v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><Fa :icon="faSatelliteDish"/> {{ appearNote.channel.name }}</router-link>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><Fa :icon="faSatelliteDish"/> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
@@ -91,9 +91,9 @@
 <div v-else class="_panel muted" @click="muted = false">
 	<i18n-t keypath="userSaysSomething" tag="small">
 		<template #name>
-			<router-link class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
+			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
 				<MkUserName :user="appearNote.user"/>
-			</router-link>
+			</MkA>
 		</template>
 	</i18n-t>
 </div>
@@ -144,7 +144,7 @@ export default defineComponent({
 	inject: {
 		inChannel: {
 			default: null
-		}
+		},
 	},
 
 	props: {
@@ -581,11 +581,6 @@ export default defineComponent({
 				});
 
 				menu = [{
-					type: 'link',
-					icon: faInfoCircle,
-					text: this.$t('details'),
-					to: '/notes/' + this.appearNote.id
-				}, null, {
 					icon: faCopy,
 					text: this.$t('copyContent'),
 					action: this.copyContent
