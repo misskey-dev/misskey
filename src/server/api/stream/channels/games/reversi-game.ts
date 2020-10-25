@@ -243,20 +243,23 @@ export default class extends Channel {
 		if (game.isEnded) return;
 		if ((game.user1Id !== this.user.id) && (game.user2Id !== this.user.id)) return;
 
+		const myColor =
+			((game.user1Id === this.user.id) && game.black == 1) || ((game.user2Id === this.user.id) && game.black == 2)
+				? true
+				: false;
+
 		const o = new Reversi(game.map, {
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard
 		});
 
+		// 盤面の状態を再生
 		for (const log of game.logs) {
 			o.put(log.color, log.pos);
 		}
 
-		const myColor =
-			((game.user1Id === this.user.id) && game.black == 1) || ((game.user2Id === this.user.id) && game.black == 2)
-				? true
-				: false;
+		if (o.turn !== myColor) return;
 
 		if (!o.canPut(myColor, pos)) return;
 		o.put(myColor, pos);

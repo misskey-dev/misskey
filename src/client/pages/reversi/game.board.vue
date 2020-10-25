@@ -1,24 +1,24 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
 	<button class="go-index" @click="goIndex"><fa icon="arrow-left"/></button>
-	<header><b><router-link :to="blackUser | userPage"><MkUserName :user="blackUser"/></router-link></b>({{ $t('@.reversi.black') }}) vs <b><router-link :to="whiteUser | userPage"><MkUserName :user="whiteUser"/></router-link></b>({{ $t('@.reversi.white') }})</header>
+	<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ $t('_reversi.black') }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ $t('_reversi.white') }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">
-			<mfm :key="'turn:' + $options.filters.userName(turnUser)" :text="$t('@.reversi.turn-of', { name: $options.filters.userName(turnUser) })" :plain="true" :custom-emojis="turnUser.emojis"/>
+			<mfm :key="'turn:' + $options.filters.userName(turnUser())" :text="$t('_reversi.turnOf', { name: $options.filters.userName(turnUser()) })" :plain="true" :custom-emojis="turnUser().emojis"/>
 			<mk-ellipsis/>
 		</p>
 		<p class="turn" v-if="logPos != logs.length">
-			<mfm :key="'past-turn-of:' + $options.filters.userName(turnUser)" :text="$t('@.reversi.past-turn-of', { name: $options.filters.userName(turnUser) })" :plain="true" :custom-emojis="turnUser.emojis"/>
+			<mfm :key="'past-turn-of:' + $options.filters.userName(turnUser())" :text="$t('_reversi.pastTurnOf', { name: $options.filters.userName(turnUser()) })" :plain="true" :custom-emojis="turnUser().emojis"/>
 		</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn">{{ $t('@.reversi.opponent-turn') }}<mk-ellipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn" v-animate-css="{ classes: 'tada', iteration: 'infinite' }">{{ $t('@.reversi.my-turn') }}</p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $t('_reversi.opponentTurn') }}<mk-ellipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: anime-tada 1s linear infinite both;">{{ $t('_reversi.myTurn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
-				<mfm :key="'won'" :text="$t('@.reversi.won', { name: $options.filters.userName(game.winner) })" :plain="true" :custom-emojis="game.winner.emojis"/>
+				<mfm :key="'won'" :text="$t('_reversi.won', { name: $options.filters.userName(game.winner) })" :plain="true" :custom-emojis="game.winner.emojis"/>
 				<span v-if="game.surrendered != null"> ({{ $t('surrendered') }})</span>
 			</template>
-			<template v-else>{{ $t('@.reversi.drawn') }}</template>
+			<template v-else>{{ $t('_reversi.drawn') }}</template>
 		</p>
 	</div>
 
@@ -32,11 +32,11 @@
 			</div>
 			<div class="cells" :style="cellsStyle">
 				<div v-for="(stone, i) in o.board"
-					:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn, can: turnUser ? o.canPut(turnUser.id == blackUser.id, i) : null, prev: o.prevPos == i }"
+					:class="{ empty: stone == null, none: o.map[i] == 'null', isEnded: game.isEnded, myTurn: !game.isEnded && isMyTurn(), can: turnUser() ? o.canPut(turnUser().id == blackUser.id, i) : null, prev: o.prevPos == i }"
 					@click="set(i)"
 					:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`"
 				>
-					<template v-if="$store.state.settings.gamesReversiUseAvatarStones">
+					<template v-if="$store.state.settings.gamesReversiUseAvatarStones || true">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
@@ -55,10 +55,10 @@
 		</div>
 	</div>
 
-	<p class="status"><b>{{ $t('@.reversi.this-turn', { count: logPos }) }}</b> {{ $t('@.reversi.black') }}:{{ o.blackCount }} {{ $t('@.reversi.white') }}:{{ o.whiteCount }} {{ $t('@.reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
+	<p class="status"><b>{{ $t('_reversi.turnCount', { count: logPos }) }}</b> {{ $t('_reversi.black') }}:{{ o.blackCount }} {{ $t('_reversi.white') }}:{{ o.whiteCount }} {{ $t('_reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<MkButton @click="surrender">{{ $t('surrender') }}</MkButton>
+		<MkButton @click="surrender">{{ $t('_reversi.surrender') }}</MkButton>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
@@ -88,6 +88,7 @@ import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../games/reversi/core';
 import { url } from '@/config';
 import MkButton from '@/components/ui/button.vue';
+import { userPage } from '@/filters/user';
 
 export default defineComponent({
 	components: {
@@ -107,7 +108,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			game: this.initGame,
+			game: JSON.parse(JSON.stringify(this.initGame)),
 			o: null as Reversi,
 			logs: [],
 			logPos: 0,
@@ -142,22 +143,6 @@ export default defineComponent({
 			return this.game.black == 1 ? this.game.user2 : this.game.user1;
 		},
 
-		turnUser(): any {
-			if (this.o.turn === true) {
-				return this.game.black == 1 ? this.game.user1 : this.game.user2;
-			} else if (this.o.turn === false) {
-				return this.game.black == 1 ? this.game.user2 : this.game.user1;
-			} else {
-				return null;
-			}
-		},
-
-		isMyTurn(): boolean {
-			if (!this.iAmPlayer) return false;
-			if (this.turnUser == null) return false;
-			return this.turnUser.id == this.$store.state.i.id;
-		},
-
 		cellsStyle(): any {
 			return {
 				'grid-template-rows': `repeat(${this.game.map.length}, 1fr)`,
@@ -177,6 +162,7 @@ export default defineComponent({
 			for (const log of this.logs.slice(0, v)) {
 				this.o.put(log.color, log.pos);
 			}
+			this.$forceUpdate();
 		}
 	},
 
@@ -221,6 +207,24 @@ export default defineComponent({
 	},
 
 	methods: {
+		userPage,
+
+		turnUser(): any {
+			if (this.o.turn === true) {
+				return this.game.black == 1 ? this.game.user1 : this.game.user2;
+			} else if (this.o.turn === false) {
+				return this.game.black == 1 ? this.game.user2 : this.game.user1;
+			} else {
+				return null;
+			}
+		},
+
+		isMyTurn(): boolean {
+			if (!this.iAmPlayer) return false;
+			if (this.turnUser() == null) return false;
+			return this.turnUser().id == this.$store.state.i.id;
+		},
+
 		set(pos) {
 			if (this.game.isEnded) return;
 			if (!this.iAmPlayer) return;
@@ -241,6 +245,8 @@ export default defineComponent({
 			});
 
 			this.checkEnd();
+
+			this.$forceUpdate();
 		},
 
 		onSet(x) {
@@ -248,6 +254,7 @@ export default defineComponent({
 			this.logPos++;
 			this.o.put(x.color, x.pos);
 			this.checkEnd();
+			this.$forceUpdate();
 
 			// サウンドを再生する
 			if (this.$store.state.device.enableSounds && x.color != this.myColor) {
@@ -258,7 +265,7 @@ export default defineComponent({
 		},
 
 		onEnded(x) {
-			this.game = x.game;
+			this.game = JSON.parse(JSON.stringify(x.game));
 		},
 
 		checkEnd() {
@@ -279,7 +286,7 @@ export default defineComponent({
 
 		// 正しいゲーム情報が送られてきたとき
 		onRescue(game) {
-			this.game = game;
+			this.game = JSON.parse(JSON.stringify(game));
 
 			this.o = new Reversi(this.game.map, {
 				isLlotheo: this.game.isLlotheo,
@@ -295,6 +302,7 @@ export default defineComponent({
 			this.logPos = this.logs.length;
 
 			this.checkEnd();
+			this.$forceUpdate();
 		},
 
 		surrender() {
@@ -395,33 +403,28 @@ export default defineComponent({
 					}
 
 					&.empty {
-						border: solid 2px var(--reversiGameEmptyCell);
+						border: solid 2px var(--divider);
 					}
 
 					&.empty.can {
-						background: var(--reversiGameEmptyCell);
+						border-color: var(--accent);
 					}
 
 					&.empty.myTurn {
-						border-color: var(--reversiGameEmptyCellMyTurn);
+						border-color: var(--divider);
 
 						&.can {
-							background: var(--reversiGameEmptyCellCanPut);
+							border-color: var(--accent);
 							cursor: pointer;
 
 							&:hover {
-								border-color: var(--primaryDarken10);
-								background: var(--primary);
-							}
-
-							&:active {
-								background: var(--primaryDarken10);
+								background: var(--accent);
 							}
 						}
 					}
 
 					&.prev {
-						box-shadow: 0 0 0 4px var(--primaryAlpha07);
+						box-shadow: 0 0 0 4px var(--accent);
 					}
 
 					&.isEnded {

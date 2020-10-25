@@ -613,6 +613,18 @@ _reversi:
   waitingBoth: "準備してください"
   ready: "準備完了"
   cancelReady: "準備を再開"
+  opponentTurn: "相手のターンです"
+  myTurn: "あなたのターンです"
+  turnOf: "{name}のターンです"
+  pastTurnOf: "{name}のターン"
+  surrender: "投了"
+  surrendered: "投了により"
+  drawn: "引き分け"
+  won: "{name}の勝ち"
+  black: "黒"
+  white: "白"
+  total: "合計"
+  turnCount: "{count}ターン目"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"
