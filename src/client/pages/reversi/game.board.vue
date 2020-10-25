@@ -209,6 +209,7 @@ export default defineComponent({
 	methods: {
 		userPage,
 
+		// this.o がリアクティブになった折にはcomputedにできる
 		turnUser(): any {
 			if (this.o.turn === true) {
 				return this.game.black == 1 ? this.game.user1 : this.game.user2;
@@ -219,6 +220,7 @@ export default defineComponent({
 			}
 		},
 
+		// this.o がリアクティブになった折にはcomputedにできる
 		isMyTurn(): boolean {
 			if (!this.iAmPlayer) return false;
 			if (this.turnUser() == null) return false;
