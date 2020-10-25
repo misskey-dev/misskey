@@ -11,7 +11,7 @@ import { defineComponent } from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
-import XNotifications from '../notifications.vue';
+import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
 
 export default defineComponent({
