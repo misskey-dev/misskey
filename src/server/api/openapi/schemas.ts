@@ -18,6 +18,8 @@ import { packedNoteFavoriteSchema } from '../../../models/repositories/note-favo
 import { packedChannelSchema } from '../../../models/repositories/channel';
 import { packedAntennaSchema } from '../../../models/repositories/antenna';
 import { packedClipSchema } from '../../../models/repositories/clip';
+import { packedFederationInstanceSchema } from '../../../models/repositories/federation-instance';
+import { packedQueueCountSchema } from '../../../models/repositories/queue';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -40,38 +42,6 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 
 	return res;
 }
-
-// TODO: 適切な置き場所がなかったので適当にココにつけてます。適宜適切な位置に移動をお願いします by YuzuRyo61
-const queueSchema = {
-	type: 'object' as const,
-	optional: false as const, nullable: false as const,
-	properties: {
-		waiting: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const
-		},
-		active: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const
-		},
-		completed: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const
-		},
-		failed: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const
-		},
-		delayed: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const
-		},
-		paused: {
-			type: 'number' as const,
-			optional: false as const, nullable: false as const
-		}
-	}
-};
 
 export const schemas = {
 	Error: {
@@ -118,7 +88,8 @@ export const schemas = {
 	Hashtag: convertSchemaToOpenApiSchema(packedHashtagSchema),
 	Page: convertSchemaToOpenApiSchema(packedPageSchema),
 	Channel: convertSchemaToOpenApiSchema(packedChannelSchema),
-	QueueCount: convertSchemaToOpenApiSchema(queueSchema),
+	QueueCount: convertSchemaToOpenApiSchema(packedQueueCountSchema),
 	Antenna: convertSchemaToOpenApiSchema(packedAntennaSchema),
 	Clip: convertSchemaToOpenApiSchema(packedClipSchema),
+	FederationInstance: convertSchemaToOpenApiSchema(packedFederationInstanceSchema),
 };
