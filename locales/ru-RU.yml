@@ -468,6 +468,7 @@ objectStorageBucketDesc: "Укажите название контейнера (
 objectStoragePrefix: "Префикс"
 objectStoragePrefixDesc: "Файлы будут храниться в директории, соответствующей указанному здесь префиксу пути"
 objectStorageEndpoint: "Конечная точка"
+objectStorageEndpointDesc: "Если используете AWS S3, оставьте пустым. В остальных случаях укажите конечную точку (endpoint) в форме «<host>» или «<host>:<port>», так, как это описано в руководстве той службы, которую собираетесь использовать."
 objectStorageRegion: "Регион"
 objectStorageUseSSL: "Использовать SSL"
 objectStorageUseProxy: "Использовать прокси"
