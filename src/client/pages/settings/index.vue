@@ -120,9 +120,6 @@ export default defineComponent({
 }
 
 .vvcocwet {
-	max-width: 1000px;
-	margin: 0 auto;
-
 	> .nav {
 		> .menu {
 			margin: 16px 0;
@@ -172,7 +169,7 @@ export default defineComponent({
 
 		> .nav {
 			width: 30%;
-			max-width: 260px;
+			max-width: 300px;
 		}
 
 		> .main {
