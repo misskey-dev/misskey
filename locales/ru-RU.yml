@@ -974,6 +974,13 @@ _pages:
   url: "URL страницы"
   hideTitleWhenPinned: "Скрыть заголовок страницы при привязке к профилю"
   font: "Шрифт"
+  fontSerif: "Антиква (с засечками)"
+  fontSansSerif: "Гротеск (без засечек)"
+  eyeCatchingImageSet: "Добавить картинку для привлечения внимания"
+  eyeCatchingImageRemove: "Убрать картинку для привлечения внимания"
+  chooseBlock: "Добавить блок"
+  selectType: "Выберите вид"
+  enterVariableName: "Ведите имя переменной"
   blocks:
     section: "Раздел"
     image: "Изображения"
