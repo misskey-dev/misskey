@@ -3,7 +3,7 @@
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
-		<header class="header" ref="header">
+		<header class="header" ref="header" @contextmenu.prevent.stop="onContextmenu">
 			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
@@ -213,6 +213,26 @@ export default defineComponent({
 
 		onTransition() {
 			if (window._scroll) window._scroll();
+		},
+
+		onContextmenu(e) {
+			const url = this.$route.path;
+			os.contextMenu([{
+				type: 'label',
+				text: url,
+			}, {
+				icon: faColumns,
+				text: this.$t('openInSideView'),
+				action: () => {
+					this.$refs.side.navigate(url);
+				}
+			}, {
+				icon: faWindowMaximize,
+				text: this.$t('openInWindow'),
+				action: () => {
+					os.pageWindow(url);
+				}
+			}], e);
 		},
 
 		async onNotification(notification) {
