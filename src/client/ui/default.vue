@@ -80,9 +80,9 @@ export default defineComponent({
 
 	provide() {
 		return {
-			sideViewHook: (url) => {
+			sideViewHook: this.isDesktop ? (url) => {
 				this.$refs.side.navigate(url);
-			}
+			} : null
 		};
 	},
 
