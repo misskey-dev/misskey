@@ -966,7 +966,11 @@ _pages:
   viewSource: "Просмотр исходника"
   viewPage: "Смотреть страницы"
   like: "Нравится"
-  title: "Заголовок."
+  unlike: "Отменить «нравится»"
+  my: "Свои страницы"
+  liked: "Понравившиеся страницы"
+  variables: "Переменные"
+  title: "Заголовок"
   url: "URL страницы"
   hideTitleWhenPinned: "Скрыть заголовок страницы при привязке к профилю"
   font: "Шрифт"
@@ -988,21 +992,21 @@ _pages:
     textareaInput: "Многострочный ввод текста"
     _textareaInput:
       name: "Имя переменной"
-      text: "Заголовок."
+      text: "Заголовок"
       default: "Значение по умолчанию"
     _numberInput:
       name: "Имя переменной"
-      text: "Заголовок."
+      text: "Заголовок"
       default: "Значение по умолчанию"
     _switch:
       name: "Имя переменной"
-      text: "Заголовок."
+      text: "Заголовок"
       default: "Значение по умолчанию"
     _counter:
       name: "Имя переменной"
-      text: "Заголовок."
+      text: "Заголовок"
     _button:
-      text: "Заголовок."
+      text: "Заголовок"
       _action:
         _dialog:
           content: "Содержимое"
@@ -1013,7 +1017,7 @@ _pages:
           functionName: "Имя функции"
     _radioButton:
       name: "Имя переменной"
-      title: "Заголовок."
+      title: "Заголовок"
       default: "Значение по умолчанию"
   script:
     categories:
