@@ -52,6 +52,7 @@ export default defineComponent({
 	position: relative;
 	display: inline-block;
 	margin: 16px 32px 0 0;
+	text-align: left;
 	cursor: pointer;
 	transition: all 0.3s;
 

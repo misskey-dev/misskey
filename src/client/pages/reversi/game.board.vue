@@ -1,7 +1,7 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
 	<button class="go-index" @click="goIndex"><fa icon="arrow-left"/></button>
-	<header><b><router-link :to="blackUser | userPage"><mk-user-name :user="blackUser"/></router-link></b>({{ $t('@.reversi.black') }}) vs <b><router-link :to="whiteUser | userPage"><mk-user-name :user="whiteUser"/></router-link></b>({{ $t('@.reversi.white') }})</header>
+	<header><b><router-link :to="blackUser | userPage"><MkUserName :user="blackUser"/></router-link></b>({{ $t('@.reversi.black') }}) vs <b><router-link :to="whiteUser | userPage"><MkUserName :user="whiteUser"/></router-link></b>({{ $t('@.reversi.white') }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">

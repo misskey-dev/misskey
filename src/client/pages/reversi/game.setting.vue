@@ -1,11 +1,11 @@
 <template>
 <div class="urbixznjwwuukfsckrwzwsqzsxornqij">
-	<header><b><mk-user-name :user="game.user1"/></b> vs <b><mk-user-name :user="game.user2"/></b></header>
+	<header><b><MkUserName :user="game.user1"/></b> vs <b><MkUserName :user="game.user2"/></b></header>
 
 	<div>
 		<p>{{ $t('_reversi.gameSettings') }}</p>
 
-		<div class="card map">
+		<div class="card map _panel">
 			<header>
 				<select v-model="mapName" :placeholder="$t('_reversi.chooseBoard')" @change="onMapChange">
 					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
@@ -27,7 +27,7 @@
 			</div>
 		</div>
 
-		<div class="card">
+		<div class="card _panel">
 			<header>
 				<span>{{ $t('_reversi.blackOrWhite') }}</span>
 			</header>
@@ -37,21 +37,21 @@
 				<MkRadio v-model="game.bw" :value="1" @change="updateSettings('bw')">
 					<i18n-t keypath="_reversi.blackIs" tag="span">
 						<template #name>
-							<b><mk-user-name :user="game.user1"/></b>
+							<b><MkUserName :user="game.user1"/></b>
 						</template>
 					</i18n-t>
 				</MkRadio>
 				<MkRadio v-model="game.bw" :value="2" @change="updateSettings('bw')">
 					<i18n-t keypath="_reversi.blackIs" tag="span">
 						<template #name>
-							<b><mk-user-name :user="game.user2"/></b>
+							<b><MkUserName :user="game.user2"/></b>
 						</template>
 					</i18n-t>
 				</MkRadio>
 			</div>
 		</div>
 
-		<div class="card">
+		<div class="card _panel">
 			<header>
 				<span>{{ $t('_reversi.rules') }}</span>
 			</header>
@@ -63,7 +63,7 @@
 			</div>
 		</div>
 
-		<div class="card form" v-if="form">
+		<div class="card form _panel" v-if="form">
 			<header>
 				<span>{{ $t('_reversi.botSettings') }}</span>
 			</header>
@@ -366,10 +366,6 @@ export default defineComponent({
 
 		.card {
 			max-width: 400px;
-			border-radius: 4px;
-			background: var(--panel);
-			color: var(--fg);
-			box-shadow: 0 2px 12px 0 var(--reversiRoomFormShadow);
 
 			> header {
 				padding: 18px 20px;

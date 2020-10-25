@@ -8,7 +8,7 @@
 		<h2>{{ $t('invitations') }}</h2>
 		<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
 			<mk-avatar class="avatar" :user="invitation.parent"/>
-			<span class="name"><b><mk-user-name :user="invitation.parent"/></b></span>
+			<span class="name"><b><MkUserName :user="invitation.parent"/></b></span>
 			<span class="username">@{{ invitation.parent.username }}</span>
 			<mk-time :time="invitation.createdAt"/>
 		</button>
@@ -18,7 +18,7 @@
 		<MkA class="game _panel" v-for="g in myGames" tabindex="-1" :href="`/games/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
-			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
+			<span><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b></span>
 			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</MkA>
@@ -28,7 +28,7 @@
 		<MkA class="game _panel" v-for="g in games" tabindex="-1" :href="`/games/reversi/${g.id}`">
 			<mk-avatar class="avatar" :user="g.user1"/>
 			<mk-avatar class="avatar" :user="g.user2"/>
-			<span><b><mk-user-name :user="g.user1"/></b> vs <b><mk-user-name :user="g.user2"/></b></span>
+			<span><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b></span>
 			<span class="state">{{ g.isEnded ? $t('game-state.ended') : $t('game-state.playing') }}</span>
 			<mk-time :time="g.createdAt" />
 		</MkA>
@@ -38,7 +38,7 @@
 	<h1>
 		<i18n-t keypath="waitingFor" tag="span">
 			<template #x>
-				<b><mk-user-name :user="matching"/></b>
+				<b><MkUserName :user="matching"/></b>
 			</template>
 		</i18n-t>
 		<mk-ellipsis/>
