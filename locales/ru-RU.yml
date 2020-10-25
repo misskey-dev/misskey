@@ -618,7 +618,7 @@ _theme:
   base: "Основа"
   addConstant: "Добавить константу"
   constant: "Константа"
-  defaultValue: "Значение по умолчанию"
+  defaultValue: "Исходное содержимое"
   color: "Цвет"
   refProp: "Ссылка на свойство"
   refConst: "Ссылка на константу"
@@ -996,28 +996,38 @@ _pages:
       variable: "Переменная"
     post: "Создание заметки"
     _post:
-      text: "Содержимое"
-    textInput: "Ввод текста"
+      text: "Текст"
+      attachCanvasImage: "Прикрепить изображение с холста"
+      canvasId: "Метка холста"
+    textInput: "Поле ввода текста"
     _textInput:
       name: "Имя переменной"
-      text: "Заголовок."
-      default: "Значение по умолчанию"
-    textareaInput: "Многострочный ввод текста"
+      text: "Подпись"
+      default: "Исходное содержимое"
+    textareaInput: "Многострочное поле ввода текста"
     _textareaInput:
       name: "Имя переменной"
-      text: "Заголовок"
-      default: "Значение по умолчанию"
+      text: "Подпись"
+      default: "Исходное содержимое"
+    numberInput: "Поле для ввода числа"
     _numberInput:
       name: "Имя переменной"
       text: "Заголовок"
-      default: "Значение по умолчанию"
+      default: "Исходное значение"
+    canvas: "Холст"
+    _canvas:
+      id: "Метка холста"
+      width: "Ширина"
+      height: "Высота"
+    switch: "Выключатель"
     _switch:
       name: "Имя переменной"
-      text: "Заголовок"
-      default: "Значение по умолчанию"
+      text: "Подпись"
+      default: "Исходное содержимое"
+    counter: "Кнопка со счётчиком"
     _counter:
       name: "Имя переменной"
-      text: "Заголовок"
+      text: "Надпись"
     _button:
       text: "Заголовок"
       _action:
@@ -1031,7 +1041,7 @@ _pages:
     _radioButton:
       name: "Имя переменной"
       title: "Заголовок"
-      default: "Значение по умолчанию"
+      default: "Исходное содержимое"
   script:
     categories:
       list: "Списки"
