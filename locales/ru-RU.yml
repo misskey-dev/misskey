@@ -1010,7 +1010,7 @@ _pages:
   blocks:
     text: "Текст"
     textarea: "Текст в рамке"
-    section: "Заголовок"
+    section: "Раздел"
     image: "Изображения"
     button: "Кнопка"
     if: "Условный"
