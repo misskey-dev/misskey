@@ -1012,7 +1012,7 @@ _pages:
     numberInput: "Поле для ввода числа"
     _numberInput:
       name: "Имя переменной"
-      text: "Заголовок"
+      text: "Подпись"
       default: "Исходное значение"
     canvas: "Холст"
     _canvas:
@@ -1028,14 +1028,23 @@ _pages:
     _counter:
       name: "Имя переменной"
       text: "Надпись"
+      inc: "Увеличивать на"
     _button:
-      text: "Заголовок"
+      text: "Надпись"
+      colored: "Цветная"
+      action: "Действие по нажатию"
       _action:
+        dialog: "Показать всплывающий текст"
         _dialog:
-          content: "Содержимое"
+          content: "Всплывающий текст"
+        resetRandom: "Сброс генератора случайности"
+        pushEvent: "Вызвать событие"
         _pushEvent:
-          no-variable: "Не найдено"
-        callAiScript: "Справка AiScript"
+          event: "Имя события"
+          message: "Сообщение при нажатии"
+          variable: "Передать переменную с событием"
+          no-variable: "нет"
+        callAiScript: "Вызвать AiScript"
         _callAiScript:
           functionName: "Имя функции"
     _radioButton:
