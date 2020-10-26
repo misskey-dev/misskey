@@ -891,12 +891,20 @@ _notification:
   yourFollowRequestAccepted: "您的追隨請求已通過"
   youWereInvitedToGroup: "您有新的群組邀請"
   _types:
+    all: "全部 "
     follow: "追隨中"
     mention: "提及"
+    reply: "回覆"
     renote: "轉發貼文"
     quote: "引用"
     reaction: "反應"
 _deck:
+  swapLeft: "向左移動"
+  swapRight: "向右移動"
+  swapUp: "往上移動"
+  swapDown: "往下移動"
+  stackLeft: "向左折疊"
+  popRight: "向右彈出"
   _columns:
     notifications: "通知"
     tl: "時間軸"
