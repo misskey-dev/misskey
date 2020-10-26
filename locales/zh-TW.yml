@@ -4,10 +4,10 @@ introMisskey: "歡迎！ Misskey是一個開源的去中心化的社群網站。
 monthAndDay: "{month}月 {day}日"
 search: "搜尋"
 notifications: "通知"
-username: "使用名稱"
+username: "使用者名稱"
 password: "密碼"
 fetchingAsApObject: "從 Fediverse 查詢中..."
-ok: "確定"
+ok: "OK"
 gotIt: "知道了"
 cancel: "取消"
 enterUsername: "輸入使用者名稱"
@@ -519,7 +519,7 @@ email: "電郵地址"
 smtpConfig: "SMTP服務器設定"
 smtpHost: "主機"
 smtpPort: "端口"
-smtpUser: "使用名稱"
+smtpUser: "使用者名稱"
 smtpPass: "密碼"
 display: "檢視"
 copy: "複製"
@@ -669,7 +669,7 @@ _postForm:
   channelPlaceholder: "發佈到頻道"
 _profile:
   name: "名稱"
-  username: "使用名稱"
+  username: "使用者名稱"
   metadataLabel: "標籤"
   metadataContent: "内容"
 _exportOrImport:
@@ -679,9 +679,12 @@ _exportOrImport:
   blockingList: "封鎖"
   userLists: "清單"
 _charts:
+  usersIncDec: "使用者増減"
+  usersTotal: "使用者合共"
   remoteNotesIncDec: "非本地貼文的數目增减"
 _instanceCharts:
   requests: "請求"
+  users: "使用者増減"
   cacheSize: "增加或減少快取用量"
   cacheSizeTotal: "快取大小總計"
 _timelines:
