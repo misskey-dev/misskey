@@ -704,10 +704,14 @@ _charts:
   usersTotal: "使用者合共"
   activeUsers: "活躍使用者"
   remoteNotesIncDec: "非本地貼文的數目增减"
+  filesIncDec: "檔案増減"
+  filesTotal: "累計檔案"
 _instanceCharts:
   requests: "請求"
   users: "使用者増減"
   usersTotal: "總計使用者"
+  notes: "貼文増減"
+  notesTotal: "累計貼文"
   cacheSize: "增加或減少快取用量"
   cacheSizeTotal: "快取大小總計"
 _timelines:
