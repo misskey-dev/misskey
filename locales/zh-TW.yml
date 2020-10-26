@@ -722,11 +722,17 @@ _rooms:
   _roomType:
     default: "預設"
   _furnitures:
+    milk: "牛奶盒"
+    eraser: "橡皮擦"
+    pencil: "鉛筆"
+    book: "讀物"
     monitor: "監視器"
     keyboard: "鍵盤"
 _pages:
   deleted: "頁面已被刪除"
+  editThisPage: "編輯此頁面"
   viewSource: "檢視原始碼"
+  viewPage: "顯示頁面"
   like: "喜歡"
   unlike: "收回喜歡"
   my: "我的頁面"
@@ -753,6 +759,7 @@ _pages:
     _canvas:
       width: "寬度"
     _switch:
+      name: "變數名稱"
       text: "標題"
     counter: "計數器"
     _counter:
