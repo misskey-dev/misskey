@@ -529,6 +529,7 @@ smtpPort: "端口"
 smtpUser: "使用者名稱"
 smtpPass: "密碼"
 emptyToDisableSmtpAuth: "留空使用者名稱和密碼以禁用SMTP驗證。"
+testEmail: "郵件測試發送"
 display: "檢視"
 copy: "複製"
 metrics: "指標"
@@ -540,6 +541,7 @@ channel: "頻道"
 create: "新增"
 notificationSetting: "管理通知"
 other: "其他"
+sample: "範例 "
 abuseReports: "檢舉"
 reportAbuse: "檢舉"
 reportAbuseOf: "檢舉{name}"
@@ -569,6 +571,7 @@ _theme:
   func: "函数"
   keys:
     bg: "背景"
+    fg: "文本"
     mention: "提及"
     renote: "轉發貼文"
     divider: "分割線"
@@ -710,6 +713,7 @@ _instanceCharts:
 _timelines:
   home: "首頁"
 _rooms:
+  translate: "移動 "
   _roomType:
     default: "預設"
   _furnitures:
