@@ -721,6 +721,7 @@ _rooms:
   translate: "移動 "
   _roomType:
     default: "預設"
+    washitsu: "和室"
   _furnitures:
     milk: "牛奶盒"
     bed: "床"
@@ -740,6 +741,7 @@ _rooms:
     keyboard: "鍵盤"
     bin: "垃圾箱"
     cup-noodle: "杯面"
+    holo-display: "投影機"
     energy-drink: "能量飲料"
     doll-ai: "小藍的人偶公仔"
     banknote: "大疊鈔票"
@@ -760,8 +762,10 @@ _pages:
   variables: "變數"
   title: "標題"
   url: "頁面網址"
+  inputBlocks: "輸入"
   blocks:
     image: "圖片"
+    if: "如果"
     _if:
       variable: "變數"
     _post:
