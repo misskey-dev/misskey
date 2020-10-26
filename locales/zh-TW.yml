@@ -533,6 +533,8 @@ notificationSetting: "管理通知"
 abuseReports: "檢舉"
 reportAbuse: "檢舉"
 reportAbuseOf: "檢舉{name}"
+send: "發送"
+openInNewTab: "在新分頁中開啟"
 _serverDisconnectedBehavior:
   reload: "自動重載"
   dialog: "以對話框警告"
@@ -679,6 +681,7 @@ _exportOrImport:
 _charts:
   remoteNotesIncDec: "非本地貼文的數目增减"
 _instanceCharts:
+  requests: "請求"
   cacheSize: "增加或減少快取用量"
   cacheSizeTotal: "快取大小總計"
 _timelines:
