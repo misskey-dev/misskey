@@ -446,7 +446,10 @@ remote: "遠端"
 total: "合計"
 appearance: "外觀"
 accountSettings: "帳戶設置"
+objectStorageBaseUrl: "Base URL"
 objectStoragePrefix: "前綴"
+objectStorageEndpoint: "Endpoint"
+objectStorageRegion: "Region"
 objectStorageUseSSL: "使用SSL"
 objectStorageUseProxy: "使用網路代理"
 serverLogs: "伺服器日誌"
@@ -631,6 +634,7 @@ _antennaSources:
   homeTimeline: "來自已追隨使用者的貼文"
   users: "來自特定使用者的貼文"
   userList: "來自特定清單中的貼文"
+  userGroup: "來自特定群組的貼文"
 _weekday:
   sunday: "週日"
   monday: "週一"
@@ -672,6 +676,7 @@ _visibility:
   home: "首頁"
   followers: "追隨者"
   localOnly: "僅限本地"
+  localOnlyDescription: "對遠端使用者隱藏"
 _postForm:
   channelPlaceholder: "發佈到頻道"
 _profile:
@@ -688,10 +693,12 @@ _exportOrImport:
 _charts:
   usersIncDec: "使用者増減"
   usersTotal: "使用者合共"
+  activeUsers: "活躍使用者"
   remoteNotesIncDec: "非本地貼文的數目增减"
 _instanceCharts:
   requests: "請求"
   users: "使用者増減"
+  usersTotal: "總計使用者"
   cacheSize: "增加或減少快取用量"
   cacheSizeTotal: "快取大小總計"
 _timelines:
