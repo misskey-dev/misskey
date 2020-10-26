@@ -726,23 +726,41 @@ _rooms:
     keyboard: "鍵盤"
 _pages:
   deleted: "頁面已被刪除"
+  viewSource: "檢視原始碼"
   like: "喜歡"
   unlike: "收回喜歡"
+  my: "我的頁面"
+  liked: "已喜歡的頁面"
+  inspector: "面板檢查"
+  variables: "變數"
+  title: "標題"
+  url: "頁面網址"
   blocks:
     image: "圖片"
+    _if:
+      variable: "變數"
     _post:
       text: "内容"
+    _textInput:
+      text: "標題"
     _textareaInput:
       name: "變數名稱"
+      text: "標題"
     numberInput: "輸入數值"
     _numberInput:
       name: "變數名稱"
+      text: "標題"
     _canvas:
       width: "寬度"
+    _switch:
+      text: "標題"
+    counter: "計數器"
     _counter:
+      name: "變數名稱"
       text: "標題"
     _button:
       text: "標題"
+      colored: "彩色"
       _action:
         _dialog:
           content: "内容"
