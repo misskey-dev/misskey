@@ -746,6 +746,13 @@ _pages:
       _action:
         _dialog:
           content: "内容"
+        resetRandom: "重設亂數"
+        pushEvent: "發送事件"
+        _pushEvent:
+          event: "事件名稱"
+    _radioButton:
+      name: "變數名稱"
+      title: "標題"
   script:
     categories:
       value: "數值 "
