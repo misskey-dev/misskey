@@ -723,9 +723,14 @@ _rooms:
     default: "預設"
   _furnitures:
     milk: "牛奶盒"
+    desk: "書桌"
+    chair: "椅子"
+    chair2: "椅子2"
+    pc: "電腦"
     eraser: "橡皮擦"
     pencil: "鉛筆"
     book: "讀物"
+    book2: "讀物2"
     monitor: "監視器"
     keyboard: "鍵盤"
 _pages:
