@@ -620,6 +620,7 @@ _reversi:
   turnOf: "{name}的回合"
   pastTurnOf: "{name}的回合"
   surrender: "认输 "
+  surrendered: "对手认输"
   drawn: "平局"
   won: "{name}获胜"
   black: "黑"
@@ -630,6 +631,13 @@ _reversi:
   allGames: "所有对局"
   ended: "结束"
   playing: "对局中"
+  isLlotheo: "棋子较少一方获胜(LLoTheO规则)"
+  loopedMap: "循环棋盘"
+  canPutEverywhere: "可以下在任意位置"
+_instanceTicker:
+  none: "不显示"
+  remote: "显示给远程用户"
+  always: "始终显示"
 _serverDisconnectedBehavior:
   reload: "自动重载"
   dialog: "对话框警告"
