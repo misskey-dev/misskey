@@ -29,9 +29,10 @@ export default defineComponent({
 
 	computed: {
 		bg(): any {
-			return this.info.themeColor ? {
-				background: `linear-gradient(90deg, ${this.info.themeColor}, ${this.info.themeColor + '00'})`
-			} : null;
+			const themeColor = this.info.themeColor || '#777777';
+			return {
+				background: `linear-gradient(90deg, ${themeColor}, ${themeColor + '00'})`
+			};
 		}
 	}
 });
