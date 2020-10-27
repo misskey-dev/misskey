@@ -10,7 +10,7 @@ import { resolve } from '@/router';
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
-export const stream = new Stream();
+export const stream = markRaw(new Stream());
 
 export const pendingApiRequestsCount = ref(0);
 

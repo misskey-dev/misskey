@@ -9,6 +9,7 @@ import { defineComponent } from 'vue';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
 import * as os from '@/os';
+import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	components: {
@@ -25,6 +26,12 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: {
+				header: [{
+					title: this.$t('_reversi.reversi'),
+					icon: faGamepad
+				}]
+			},
 			game: null,
 			connection: null,
 		};
@@ -40,7 +47,7 @@ export default defineComponent({
 		this.fetch();
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		if (this.connection) {
 			this.connection.dispose();
 		}

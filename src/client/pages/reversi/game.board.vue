@@ -1,22 +1,21 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
-	<button class="go-index" @click="goIndex"><fa icon="arrow-left"/></button>
 	<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ $t('_reversi.black') }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ $t('_reversi.white') }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">
-			<mfm :key="'turn:' + $options.filters.userName(turnUser())" :text="$t('_reversi.turnOf', { name: $options.filters.userName(turnUser()) })" :plain="true" :custom-emojis="turnUser().emojis"/>
-			<mk-ellipsis/>
+			<Mfm :key="'turn:' + turnUser().name" :text="$t('_reversi.turnOf', { name: turnUser().name })" :plain="true" :custom-emojis="turnUser().emojis"/>
+			<MkEllipsis/>
 		</p>
 		<p class="turn" v-if="logPos != logs.length">
-			<mfm :key="'past-turn-of:' + $options.filters.userName(turnUser())" :text="$t('_reversi.pastTurnOf', { name: $options.filters.userName(turnUser()) })" :plain="true" :custom-emojis="turnUser().emojis"/>
+			<Mfm :key="'past-turn-of:' + turnUser().name" :text="$t('_reversi.pastTurnOf', { name: turnUser().name })" :plain="true" :custom-emojis="turnUser().emojis"/>
 		</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $t('_reversi.opponentTurn') }}<mk-ellipsis/></p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $t('_reversi.opponentTurn') }}<MkEllipsis/></p>
 		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: anime-tada 1s linear infinite both;">{{ $t('_reversi.myTurn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
-				<mfm :key="'won'" :text="$t('_reversi.won', { name: $options.filters.userName(game.winner) })" :plain="true" :custom-emojis="game.winner.emojis"/>
-				<span v-if="game.surrendered != null"> ({{ $t('surrendered') }})</span>
+				<Mfm :key="'won'" :text="$t('_reversi.won', { name: game.winner.name })" :plain="true" :custom-emojis="game.winner.emojis"/>
+				<span v-if="game.surrendered != null"> ({{ $t('_reversi.surrendered') }})</span>
 			</template>
 			<template v-else>{{ $t('_reversi.drawn') }}</template>
 		</p>
@@ -46,11 +45,11 @@
 					</template>
 				</div>
 			</div>
-			<div class="labels-y" v-if="this.$store.state.settings.gamesReversiShowBoardLabels">
+			<div class="labels-y" v-if="$store.state.settings.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 		</div>
-		<div class="labels-x" v-if="this.$store.state.settings.gamesReversiShowBoardLabels">
+		<div class="labels-x" v-if="$store.state.settings.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>
@@ -63,18 +62,18 @@
 
 	<div class="player" v-if="game.isEnded">
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<ui-horizon-group>
-			<ui-button @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></ui-button>
-			<ui-button @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></ui-button>
-			<ui-button @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></ui-button>
-			<ui-button @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></ui-button>
-		</ui-horizon-group>
+		<!-- TODO <ui-horizon-group> -->
+			<MkButton @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></MkButton>
+			<MkButton @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></MkButton>
+			<MkButton @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></MkButton>
+			<MkButton @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></MkButton>
+		<!-- TODO </ui-horizon-group> -->
 	</div>
 
 	<div class="info">
-		<p v-if="game.isLlotheo">{{ $t('is-llotheo') }}</p>
-		<p v-if="game.loopedBoard">{{ $t('looped-map') }}</p>
-		<p v-if="game.canPutEverywhere">{{ $t('can-put-everywhere') }}</p>
+		<p v-if="game.isLlotheo">{{ $t('_reversi.isLlotheo') }}</p>
+		<p v-if="game.loopedBoard">{{ $t('_reversi.loopedMap') }}</p>
+		<p v-if="game.canPutEverywhere">{{ $t('_reversi.canPutEverywhere') }}</p>
 	</div>
 </div>
 </template>
@@ -89,6 +88,7 @@ import Reversi, { Color } from '../../../games/reversi/core';
 import { url } from '@/config';
 import MkButton from '@/components/ui/button.vue';
 import { userPage } from '@/filters/user';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -154,15 +154,16 @@ export default defineComponent({
 	watch: {
 		logPos(v) {
 			if (!this.game.isEnded) return;
-			this.o = new Reversi(this.game.map, {
+			const o = new Reversi(this.game.map, {
 				isLlotheo: this.game.isLlotheo,
 				canPutEverywhere: this.game.canPutEverywhere,
 				loopedBoard: this.game.loopedBoard
 			});
 			for (const log of this.logs.slice(0, v)) {
-				this.o.put(log.color, log.pos);
+				o.put(log.color, log.pos);
 			}
-			this.$forceUpdate();
+			this.o = o;
+			//this.$forceUpdate();
 		}
 	},
 
@@ -198,7 +199,7 @@ export default defineComponent({
 		this.connection.on('ended', this.onEnded);
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.off('set', this.onSet);
 		this.connection.off('rescue', this.onRescue);
 		this.connection.off('ended', this.onEnded);
@@ -430,7 +431,7 @@ export default defineComponent({
 					}
 
 					&.isEnded {
-						border-color: var(--reversiGameEmptyCellMyTurn);
+						border-color: var(--divider);
 					}
 
 					&.none {

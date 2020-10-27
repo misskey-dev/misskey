@@ -57,9 +57,9 @@
 			</header>
 
 			<div>
-				<MkSwitch v-model:value="game.isLlotheo" @update:value="updateSettings('isLlotheo')">{{ $t('is-llotheo') }}</MkSwitch>
-				<MkSwitch v-model:value="game.loopedBoard" @update:value="updateSettings('loopedBoard')">{{ $t('looped-map') }}</MkSwitch>
-				<MkSwitch v-model:value="game.canPutEverywhere" @update:value="updateSettings('canPutEverywhere')">{{ $t('can-put-everywhere') }}</MkSwitch>
+				<MkSwitch v-model:value="game.isLlotheo" @update:value="updateSettings('isLlotheo')">{{ $t('_reversi.isLlotheo') }}</MkSwitch>
+				<MkSwitch v-model:value="game.loopedBoard" @update:value="updateSettings('loopedBoard')">{{ $t('_reversi.loopedMap') }}</MkSwitch>
+				<MkSwitch v-model:value="game.canPutEverywhere" @update:value="updateSettings('canPutEverywhere')">{{ $t('_reversi.canPutEverywhere') }}</MkSwitch>
 			</div>
 		</div>
 
@@ -108,10 +108,10 @@
 
 	<footer class="_acrylic">
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">{{ $t('_reversi.thisGameIsStartedSoon') }}<mk-ellipsis/></template>
-			<template v-if="isAccepted && !isOpAccepted">{{ $t('_reversi.waitingForOther') }}<mk-ellipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">{{ $t('_reversi.thisGameIsStartedSoon') }}<MkEllipsis/></template>
+			<template v-if="isAccepted && !isOpAccepted">{{ $t('_reversi.waitingForOther') }}<MkEllipsis/></template>
 			<template v-if="!isAccepted && isOpAccepted">{{ $t('_reversi.waitingForMe') }}</template>
-			<template v-if="!isAccepted && !isOpAccepted">{{ $t('_reversi.waitingBoth') }}<mk-ellipsis/></template>
+			<template v-if="!isAccepted && !isOpAccepted">{{ $t('_reversi.waitingBoth') }}<MkEllipsis/></template>
 		</p>
 
 		<div class="actions">
@@ -190,7 +190,7 @@ export default defineComponent({
 		if (this.game.user2Id != this.$store.state.i.id && this.game.form2) this.form = this.game.form2;
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.connection.off('changeAccepts', this.onChangeAccepts);
 		this.connection.off('updateSettings', this.onUpdateSettings);
 		this.connection.off('initForm', this.onInitForm);
