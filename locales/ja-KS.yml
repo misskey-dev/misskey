@@ -350,6 +350,7 @@ notFoundDescription: "指定されたURLに該当するページはあらへん�
 close: "さいなら"
 joinedGroups: "参加しとるグループ"
 invites: "来てや"
+invitations: "来てや"
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
