@@ -606,6 +606,7 @@ _theme:
     bg: "背景"
     fg: "文本"
     shadow: "陰影"
+    link: "鏈接"
     mention: "提及"
     renote: "轉發貼文"
     divider: "分割線"
