@@ -599,7 +599,9 @@ defaultNavigationBehaviour: "Default navigation behavior"
 editTheseSettingsMayBreakAccount: "Editing these settings may damage your account."
 instanceTicker: "Instance information of the Note"
 _instanceTicker:
-  none: "Don't show"
+  none: "Never show"
+  remote: "Show for remote users"
+  always: "Always show"
 _serverDisconnectedBehavior:
   reload: "Automatically reload"
   dialog: "Show warning dialog"
