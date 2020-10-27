@@ -1,4 +1,4 @@
-import { JSDOM } from 'jsdom';
+import { DOMWindow, JSDOM } from 'jsdom';
 import fetch from 'node-fetch';
 import { getJson, getHtml, getAgentByUrl } from '../misc/fetch';
 import { Instance } from '../models/entities/instance';
@@ -22,9 +22,18 @@ export async function fetchInstanceMetadata(instance: Instance): Promise<void> {
 	logger.info(`Fetching metadata of ${instance.host} ...`);
 
 	try {
-		const [info, icon] = await Promise.all([
+		const [info, dom, manifest] = await Promise.all([
 			fetchNodeinfo(instance).catch(() => null),
-			fetchIconUrl(instance).catch(() => null),
+			fetchDom(instance).catch(() => null),
+			fetchManifest(instance).catch(() => null),
+		]);
+
+		const [favicon, icon, themeColor, name, description] = await Promise.all([
+			fetchFaviconUrl(instance).catch(() => null),
+			fetchIconUrl(instance, dom, manifest).catch(() => null),
+			getThemeColor(dom, manifest).catch(() => null),
+			getSiteName(info, dom, manifest).catch(() => null),
+			getDescription(info, dom, manifest).catch(() => null),
 		]);
 
 		logger.succ(`Successfuly fetched metadata of ${instance.host}`);
@@ -34,18 +43,18 @@ export async function fetchInstanceMetadata(instance: Instance): Promise<void> {
 		} as Record<string, any>;
 
 		if (info) {
-			updates.softwareName = info.software.name.toLowerCase();
-			updates.softwareVersion = info.software.version;
+			updates.softwareName = info.software?.name.toLowerCase();
+			updates.softwareVersion = info.software?.version;
 			updates.openRegistrations = info.openRegistrations;
-			updates.name = info.metadata ? (info.metadata.nodeName || info.metadata.name || null) : null;
-			updates.description = info.metadata ? (info.metadata.nodeDescription || info.metadata.description || null) : null;
 			updates.maintainerName = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.name || null) : null : null;
 			updates.maintainerEmail = info.metadata ? info.metadata.maintainer ? (info.metadata.maintainer.email || null) : null : null;
 		}
 
-		if (icon) {
-			updates.iconUrl = icon;
-		}
+		if (name) updates.name = name;
+		if (description) updates.description = description;
+		if (icon || favicon) updates.iconUrl = icon || favicon;
+		if (favicon) updates.faviconUrl = favicon;
+		if (themeColor) updates.themeColor = themeColor;
 
 		await Instances.update(instance.id, updates);
 
@@ -57,7 +66,25 @@ export async function fetchInstanceMetadata(instance: Instance): Promise<void> {
 	}
 }
 
-async function fetchNodeinfo(instance: Instance): Promise<Record<string, any>> {
+type NodeInfo = {
+	openRegistrations?: any;
+	software?: {
+		name?: any;
+		version?: any;
+	};
+	metadata?: {
+		name?: any;
+		nodeName?: any;
+		nodeDescription?: any;
+		description?: any;
+		maintainer?: {
+			name?: any;
+			email?: any;
+		};
+	};
+};
+
+async function fetchNodeinfo(instance: Instance): Promise<NodeInfo> {
 	logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 
 	try {
@@ -100,8 +127,8 @@ async function fetchNodeinfo(instance: Instance): Promise<Record<string, any>> {
 	}
 }
 
-async function fetchIconUrl(instance: Instance): Promise<string | null> {
-	logger.info(`Fetching icon URL of ${instance.host} ...`);
+async function fetchDom(instance: Instance): Promise<DOMWindow['document']> {
+	logger.info(`Fetching HTML of ${instance.host} ...`);
 
 	const url = 'https://' + instance.host;
 
@@ -110,16 +137,23 @@ async function fetchIconUrl(instance: Instance): Promise<string | null> {
 	const { window } = new JSDOM(html);
 	const doc = window.document;
 
-	const hrefAppleTouchIconPrecomposed = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')?.getAttribute('href');
-	const hrefAppleTouchIcon = doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href');
-	const hrefIcon = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
+	return doc;
+}
 
-	const href = hrefAppleTouchIconPrecomposed || hrefAppleTouchIcon || hrefIcon;
+async function fetchManifest(instance: Instance): Promise<Record<string, any> | null> {
+	const url = 'https://' + instance.host;
 
-	if (href) {
-		return (new URL(href, url)).href;
-	}
+	const manifestUrl = url + '/manifest.json';
 
+	const manifest = await getJson(manifestUrl);
+
+	return manifest;
+}
+
+async function fetchFaviconUrl(instance: Instance): Promise<string | null> {
+	logger.info(`Fetching favicon URL of ${instance.host} ...`);
+
+	const url = 'https://' + instance.host;
 	const faviconUrl = url + '/favicon.ico';
 
 	const favicon = await fetch(faviconUrl, {
@@ -129,6 +163,93 @@ async function fetchIconUrl(instance: Instance): Promise<string | null> {
 
 	if (favicon.ok) {
 		return faviconUrl;
+	}
+
+	return null;
+}
+
+async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	if (doc) {
+		const url = 'https://' + instance.host;
+
+		const hrefAppleTouchIconPrecomposed = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')?.getAttribute('href');
+		const hrefAppleTouchIcon = doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href');
+		const hrefIcon = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
+
+		const href = hrefAppleTouchIconPrecomposed || hrefAppleTouchIcon || hrefIcon;
+
+		if (href) {
+			return (new URL(href, url)).href;
+		}
+	}
+
+	if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
+		const url = 'https://' + instance.host;
+		return (new URL(manifest.icons[0].src, url)).href;
+	}
+
+	return null;
+}
+
+async function getThemeColor(doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	if (doc) {
+		const themeColor = doc.querySelector('meta[name="theme-color"]')?.getAttribute('content');
+
+		if (themeColor) {
+			return themeColor;
+		}
+	}
+
+	if (manifest) {
+		return manifest.theme_color;
+	}
+
+	return null;
+}
+
+async function getSiteName(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	if (info && info.metadata) {
+		if (info.metadata.nodeName || info.metadata.name) {
+			return info.metadata.nodeName || info.metadata.name;
+		}
+	}
+
+	if (doc) {
+		const og = doc.querySelector('meta[property="og:title"]')?.getAttribute('content');
+
+		if (og) {
+			return og;
+		}
+	}
+
+	if (manifest) {
+		return manifest?.name || manifest?.short_name;
+	}
+
+	return null;
+}
+
+async function getDescription(info: NodeInfo | null, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	if (info && info.metadata) {
+		if (info.metadata.nodeDescription || info.metadata.description) {
+			return info.metadata.nodeDescription || info.metadata.description;
+		}
+	}
+
+	if (doc) {
+		const meta = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+		if (meta) {
+			return meta;
+		}
+
+		const og = doc.querySelector('meta[property="og:description"]')?.getAttribute('content');
+		if (og) {
+			return og;
+		}
+	}
+
+	if (manifest) {
+		return manifest?.name || manifest?.short_name;
 	}
 
 	return null;

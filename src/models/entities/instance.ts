@@ -163,6 +163,16 @@ export class Instance {
 	})
 	public iconUrl: string | null;
 
+	@Column('varchar', {
+		length: 256, nullable: true, default: null,
+	})
+	public faviconUrl: string | null;
+
+	@Column('varchar', {
+		length: 64, nullable: true, default: null,
+	})
+	public themeColor: string | null;
+
 	@Column('timestamp with time zone', {
 		nullable: true,
 	})

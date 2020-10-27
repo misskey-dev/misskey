@@ -597,6 +597,12 @@ openInNewTab: "新しいタブで開く"
 openInSideView: "サイドビューで開く"
 defaultNavigationBehaviour: "デフォルトのナビゲーション"
 editTheseSettingsMayBreakAccount: "これらの設定を編集するとアカウントが破損する可能性があります。"
+instanceTicker: "ノートのインスタンス情報"
+
+_instanceTicker:
+  none: "表示しない"
+  remote: "リモートユーザーに表示"
+  always: "常に表示"
 
 _serverDisconnectedBehavior:
   reload: "自動でリロード"
