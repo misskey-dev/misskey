@@ -561,6 +561,11 @@ random: "隨機"
 _reversi:
   rules: "規則"
   botSettings: "機器人設定"
+  opponentTurn: "對手回合"
+  myTurn: "你的回合"
+  turnOf: "{name}的回合"
+  pastTurnOf: "{name}的回合"
+  surrender: "認輸"
   black: "黑"
   white: "白"
   total: "合計"
@@ -600,6 +605,7 @@ _theme:
   keys:
     bg: "背景"
     fg: "文本"
+    shadow: "陰影"
     mention: "提及"
     renote: "轉發貼文"
     divider: "分割線"
@@ -651,6 +657,8 @@ _tutorial:
   step6_3: "在他人的貼文按下「+」的圖示即可選擇想要的表情符號來進行「反應」。"
   step7_1: "以上為Misskey的基本操作說明，教學在此告一段落。辛苦了。"
   step7_2: "歡迎到{help}來瞭解更多Misskey相關介紹。"
+_2fa:
+  registerDevice: "註冊裝置"
 _permissions:
   "read:blocks": "已封鎖用戶名單"
   "write:blocks": "編輯已封鎖用戶名單"
@@ -677,6 +685,8 @@ _permissions:
   "write:user-groups": "編輯使用者群組"
   "read:channels": "已查看的頻道"
   "write:channels": "編輯頻道"
+_auth:
+  shareAccess: "要授權「“{name}”」存取您的帳戶嗎？"
 _antennaSources:
   all: "全部貼文"
   homeTimeline: "來自已追隨使用者的貼文"
