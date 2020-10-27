@@ -631,6 +631,9 @@ _reversi:
   allGames: "All games"
   ended: "Ended"
   playing: "Currently playing"
+  isLlotheo: "The one with fewer stones wins (Llotheo)"
+  loopedMap: "Looped map"
+  canPutEverywhere: "Tiles are placeable everywhere"
 _instanceTicker:
   none: "Never show"
   remote: "Show for remote users"
