@@ -600,6 +600,7 @@ defaultNavigationBehaviour: "Поведение навигации по умол
 editTheseSettingsMayBreakAccount: "От изменений в этих настройках ваша учётная запись может поломаться."
 random: "Случайные"
 _reversi:
+  rules: "Правила"
   total: "Всего"
 _serverDisconnectedBehavior:
   reload: "Автоматическая перезагрузка"
