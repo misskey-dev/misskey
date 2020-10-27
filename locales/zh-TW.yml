@@ -691,14 +691,26 @@ _visibility:
   home: "首頁"
   followers: "追隨者"
   specified: "指定使用者"
+  specifiedDescription: "僅發送至指定使用者"
   localOnly: "僅限本地"
   localOnlyDescription: "對遠端使用者隱藏"
 _postForm:
+  replyPlaceholder: "回覆此貼文..."
+  quotePlaceholder: "引用此貼文..."
   channelPlaceholder: "發佈到頻道"
+  _placeholders:
+    a: "今天過得如何?"
+    b: "有什麼新鮮事嗎?"
+    c: "有什麼新鮮想法嗎？"
+    d: "想要發布些什麼嗎？"
+    e: "寫些什麼吧..."
+    f: "期待你發佈的內容..."
 _profile:
   name: "名稱"
   username: "使用者名稱"
   description: "關於我"
+  youCanIncludeHashtags: "你也可以在「關於我」中加上 #tag"
+  metadata: "更多資訊"
   metadataLabel: "標籤"
   metadataContent: "内容"
 _exportOrImport:
@@ -712,8 +724,10 @@ _charts:
   usersTotal: "使用者合共"
   activeUsers: "活躍使用者"
   remoteNotesIncDec: "非本地貼文的數目增减"
+  notesTotal: "貼文合共"
   filesIncDec: "檔案増減"
   filesTotal: "累計檔案"
+  storageUsageIncDec: "儲存空間的増減"
 _instanceCharts:
   requests: "請求"
   users: "使用者増減"
