@@ -610,6 +610,8 @@ _reversi:
   myTurn: "Ваш ход"
   turnOf: "Ход {name}"
   pastTurnOf: "Ход {name}"
+  surrender: "Сдаться"
+  drawn: "Ничья"
   won: "{name} победил(а)"
   black: "Чёрные"
   white: "Белые"
@@ -617,6 +619,7 @@ _reversi:
   turnCount: "Ход {count}"
   myGames: "Мои игры"
   allGames: "Все игры"
+  ended: "Завершено"
 _serverDisconnectedBehavior:
   reload: "Автоматическая перезагрузка"
   dialog: "Предупреждение"
