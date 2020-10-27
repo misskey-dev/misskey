@@ -3,7 +3,7 @@
 	<div class="bqxuuuey">
 		<div class="info">
 			<div>{{ reaction.replace('@.', '') }}</div>
-			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon"/>
+			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
 		</div>
 		<template v-if="users.length <= 10">
 			<b v-for="u in users" :key="u.id" style="margin-right: 12px;">
@@ -66,7 +66,6 @@ export default defineComponent({
 		> .icon {
 			display: block;
 			width: 60px;
-			height: 60px;
 			margin: 0 auto;
 		}
 	}
