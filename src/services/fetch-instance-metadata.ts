@@ -9,14 +9,16 @@ import { URL } from 'url';
 
 const logger = new Logger('metadata', 'cyan');
 
-export async function fetchInstanceMetadata(instance: Instance): Promise<void> {
+export async function fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 	const unlock = await getFetchInstanceMetadataLock(instance.host);
 
-	const _instance = await Instances.findOne({ host: instance.host });
-	const now = Date.now();
-	if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
-		unlock();
-		return;
+	if (!force) {
+		const _instance = await Instances.findOne({ host: instance.host });
+		const now = Date.now();
+		if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
+			unlock();
+			return;
+		}
 	}
 
 	logger.info(`Fetching metadata of ${instance.host} ...`);
@@ -29,7 +31,7 @@ export async function fetchInstanceMetadata(instance: Instance): Promise<void> {
 		]);
 
 		const [favicon, icon, themeColor, name, description] = await Promise.all([
-			fetchFaviconUrl(instance).catch(() => null),
+			fetchFaviconUrl(instance, dom).catch(() => null),
 			fetchIconUrl(instance, dom, manifest).catch(() => null),
 			getThemeColor(dom, manifest).catch(() => null),
 			getSiteName(info, dom, manifest).catch(() => null),
@@ -150,10 +152,17 @@ async function fetchManifest(instance: Instance): Promise<Record<string, any> | 
 	return manifest;
 }
 
-async function fetchFaviconUrl(instance: Instance): Promise<string | null> {
-	logger.info(`Fetching favicon URL of ${instance.host} ...`);
-
+async function fetchFaviconUrl(instance: Instance, doc: DOMWindow['document'] | null): Promise<string | null> {
 	const url = 'https://' + instance.host;
+
+	if (doc) {
+		const href = doc.querySelector('link[rel="icon"]')?.getAttribute('href');
+
+		if (href) {
+			return (new URL(href, url)).href;
+		}
+	}
+
 	const faviconUrl = url + '/favicon.ico';
 
 	const favicon = await fetch(faviconUrl, {
@@ -169,6 +178,11 @@ async function fetchFaviconUrl(instance: Instance): Promise<string | null> {
 }
 
 async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | null, manifest: Record<string, any> | null): Promise<string | null> {
+	if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
+		const url = 'https://' + instance.host;
+		return (new URL(manifest.icons[0].src, url)).href;
+	}
+
 	if (doc) {
 		const url = 'https://' + instance.host;
 
@@ -181,11 +195,6 @@ async function fetchIconUrl(instance: Instance, doc: DOMWindow['document'] | nul
 		if (href) {
 			return (new URL(href, url)).href;
 		}
-	}
-
-	if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
-		const url = 'https://' + instance.host;
-		return (new URL(manifest.icons[0].src, url)).href;
 	}
 
 	return null;
