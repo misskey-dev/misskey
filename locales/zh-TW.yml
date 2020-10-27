@@ -582,6 +582,8 @@ _theme:
     divider: "分割線"
     infoBg: "資訊背景"
     infoFg: "資訊內容"
+    infoWarnBg: "警告背景"
+    infoWarnFg: "警告字元"
 _sfx:
   note: "貼文"
   noteMy: "我的貼文"
@@ -769,14 +771,19 @@ _rooms:
     desk: "書桌"
     chair: "椅子"
     chair2: "椅子2"
+    fan: "通風機"
     pc: "電腦"
     plant: "觀葉植物"
     plant2: "觀葉植物2"
     eraser: "橡皮擦"
     pencil: "鉛筆"
     pudding: "布丁"
+    cardboard-box: "紙板箱"
+    cardboard-box2: "紙板箱2"
+    cardboard-box3: "紙板箱3"
     book: "讀物"
     book2: "讀物2"
+    piano: "鋼琴"
     monitor: "監視器"
     keyboard: "鍵盤"
     bin: "垃圾箱"
@@ -805,12 +812,14 @@ _pages:
   inputBlocks: "輸入"
   blocks:
     image: "圖片"
+    button: "按鈕"
     if: "如果"
     _if:
       variable: "變數"
     _post:
       text: "内容"
     _textInput:
+      name: "變數名稱"
       text: "標題"
     _textareaInput:
       name: "變數名稱"
@@ -821,13 +830,17 @@ _pages:
       text: "標題"
     _canvas:
       width: "寬度"
+      height: "高度"
+    switch: "開關"
     _switch:
       name: "變數名稱"
       text: "標題"
+      default: "預設值"
     counter: "計數器"
     _counter:
       name: "變數名稱"
       text: "標題"
+      inc: "増加値"
     _button:
       text: "標題"
       colored: "彩色"
@@ -838,11 +851,18 @@ _pages:
         pushEvent: "發送事件"
         _pushEvent:
           event: "事件名稱"
+          no-variable: "沒有"
+        callAiScript: "調用AiScript"
+        _callAiScript:
+          functionName: "函數名稱"
+    radioButton: "選項"
     _radioButton:
       name: "變數名稱"
       title: "標題"
   script:
     categories:
+      comparison: "對比"
+      random: "隨機"
       value: "數值 "
       fn: "函数"
       text: "文本操作"
@@ -918,6 +938,7 @@ _pages:
       not: "否"
       _not:
         arg1: "否"
+      random: "隨機"
       _random:
         arg1: "機率"
       rannum: "亂數"
