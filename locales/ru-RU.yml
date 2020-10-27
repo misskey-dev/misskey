@@ -620,6 +620,7 @@ _reversi:
   myGames: "Мои игры"
   allGames: "Все игры"
   ended: "Завершено"
+  playing: "Идёт игра"
 _serverDisconnectedBehavior:
   reload: "Автоматическая перезагрузка"
   dialog: "Предупреждение"
