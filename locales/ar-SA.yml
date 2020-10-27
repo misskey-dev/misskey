@@ -309,6 +309,7 @@ noteOf: "ملاحظات {user}"
 inviteToGroup: "دعوة إلى فريق"
 noMessagesYet: "ليس هناك رسائل بعد"
 newMessageExists: "لقد تلقيت رسالة جديدة"
+invitations: "دعوة"
 invitationCode: "رمز الدعوة"
 checking: "التحقق جارٍ"
 available: "متوفر"
@@ -379,6 +380,8 @@ smtpHost: "المضيف"
 smtpUser: "اسم المستخدم"
 smtpPass: "الكلمة السرية"
 display: "المظهر"
+_reversi:
+  total: "المجموع"
 _channel:
   featured: "المتداوَلة"
 _sidebar:
