@@ -1,7 +1,9 @@
 <template>
-<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
-	<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
-</div>
+<transition :name="$store.state.device.animation ? 'fade' : ''" appear>
+	<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
+		<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
+	</div>
+</transition>
 </template>
 
 <script lang="ts">
@@ -81,5 +83,15 @@ export default defineComponent({
 .nvlagfpb {
 	position: absolute;
 	z-index: 65535;
+}
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	transform-origin: left top;
+}
+
+.fade-enter-from, .fade-leave-to {
+	opacity: 0;
+	transform: scale(0.9);
 }
 </style>

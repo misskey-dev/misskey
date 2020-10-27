@@ -31,6 +31,10 @@ export default defineComponent({
 			type: String,
 			required: false,
 		},
+		behavior: {
+			type: String,
+			required: false,
+		},
 	},
 
 	computed: {
@@ -84,6 +88,13 @@ export default defineComponent({
 		},
 
 		nav() {
+			if (this.behavior) {
+				if (this.behavior === 'window') {
+					os.pageWindow(this.to);
+					return;
+				}
+			}
+
 			if (this.navHook) {
 				this.navHook(this.to);
 			} else {

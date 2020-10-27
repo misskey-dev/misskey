@@ -77,6 +77,7 @@ export const defaultDeviceSettings = {
 	enableInfiniteScroll: true,
 	useBlurEffectForModal: true,
 	sidebarDisplay: 'full', // full, icon, hide
+	instanceTicker: 'remote', // none, remote, always
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 	deckColumnAlign: 'left',

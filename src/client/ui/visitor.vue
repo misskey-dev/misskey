@@ -4,11 +4,11 @@
 		<MkA class="link" to="/">{{ $t('home') }}</MkA>
 		<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
 		<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
-		<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName || host }) }}</MkA>
+		<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
 	</header>
 
 	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-		<h1>{{ instanceName || host }}</h1>
+		<h1>{{ instanceName }}</h1>
 	</div>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
