@@ -452,6 +452,7 @@ appearance: "外觀"
 clientSettings: "用戶端設定"
 accountSettings: "帳號設定"
 promotion: "推廣貼文"
+promote: "推廣"
 numberOfDays: "有效天數"
 hideThisNote: "隱藏此貼文"
 objectStorageBaseUrl: "Base URL"
@@ -556,6 +557,8 @@ openInNewTab: "在新分頁中開啟"
 random: "隨機"
 _reversi:
   total: "合計"
+_instanceTicker:
+  always: "總是顯示"
 _serverDisconnectedBehavior:
   reload: "自動重載"
   dialog: "以對話框警告"
