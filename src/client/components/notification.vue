@@ -20,7 +20,7 @@
 		<header>
 			<MkA v-if="notification.user" class="name" :to="userPage(notification.user)" v-user-preview="notification.user.id"><MkUserName :user="notification.user"/></MkA>
 			<span v-else>{{ notification.header }}</span>
-			<MkTime :time="notification.createdAt" v-if="withTime"/>
+			<MkTime :time="notification.createdAt" v-if="withTime" class="time"/>
 		</header>
 		<MkA v-if="notification.type === 'reaction'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<Fa :icon="faQuoteLeft"/>
@@ -260,7 +260,7 @@ export default defineComponent({
 				overflow: hidden;
 			}
 
-			> .mk-time {
+			> .time {
 				margin-left: auto;
 				font-size: 0.9em;
 			}

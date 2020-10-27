@@ -115,7 +115,7 @@ export const sidebarDef = {
 	games: {
 		title: 'games',
 		icon: faGamepad,
-		to: '/games',
+		to: '/games/reversi',
 	},
 	scratchpad: {
 		title: 'scratchpad',

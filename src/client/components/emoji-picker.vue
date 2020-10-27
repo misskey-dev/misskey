@@ -185,7 +185,7 @@ export default defineComponent({
 			transition: color 0.2s ease;
 
 			&:hover {
-				color: var(--textHighlighted);
+				color: var(--fgHighlighted);
 				transition: color 0s;
 			}
 
