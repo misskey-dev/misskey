@@ -559,7 +559,12 @@ send: "發送"
 openInNewTab: "在新分頁中開啟"
 random: "隨機"
 _reversi:
+  rules: "規則"
+  botSettings: "機器人設定"
+  black: "黑色"
+  white: "白色"
   total: "合計"
+  ended: "已結束"
 _instanceTicker:
   always: "總是顯示"
 _serverDisconnectedBehavior:
@@ -1047,6 +1052,7 @@ _pages:
       array: "清單"
       stringArray: "文本列表"
     enviromentVariables: "環境變數"
+    pageVariables: "頁面元素"
 _relayStatus:
   requesting: "等待核准"
   accepted: "已通過核准"
@@ -1065,7 +1071,13 @@ _notification:
     renote: "轉發貼文"
     quote: "引用"
     reaction: "反應"
+    receiveFollowRequest: "已收到追隨請求"
+    followRequestAccepted: "追隨請求已接受"
+    app: "應用程式通知"
 _deck:
+  alwaysShowMainColumn: "總是顯示主欄"
+  columnAlign: "對齊欄位"
+  addColumn: "新增欄位"
   swapLeft: "向左移動"
   swapRight: "向右移動"
   swapUp: "往上移動"
