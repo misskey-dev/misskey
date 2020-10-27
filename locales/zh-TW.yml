@@ -725,6 +725,8 @@ _charts:
   usersIncDec: "使用者増減"
   usersTotal: "使用者合共"
   activeUsers: "活躍使用者"
+  notesIncDec: "貼文増減"
+  localNotesIncDec: "本地貼文増減"
   remoteNotesIncDec: "非本地貼文的數目增减"
   notesTotal: "貼文合共"
   filesIncDec: "檔案増減"
@@ -784,8 +786,12 @@ _rooms:
     book: "讀物"
     book2: "讀物2"
     piano: "鋼琴"
+    moon: "月亮"
+    corkboard: "木栓板"
+    mousepad: "滑鼠墊"
     monitor: "監視器"
     keyboard: "鍵盤"
+    carpet-stripe: "條紋地毯"
     bin: "垃圾箱"
     cup-noodle: "杯面"
     holo-display: "投影機"
@@ -809,8 +815,11 @@ _pages:
   variables: "變數"
   title: "標題"
   url: "頁面網址"
+  fontSerif: "襯線體"
+  fontSansSerif: "無襯線體"
   inputBlocks: "輸入"
   blocks:
+    section: "區段"
     image: "圖片"
     button: "按鈕"
     if: "如果"
@@ -861,6 +870,8 @@ _pages:
       title: "標題"
   script:
     categories:
+      logical: "邏輯運算"
+      operation: "計算"
       comparison: "對比"
       random: "隨機"
       value: "數值 "
@@ -885,18 +896,22 @@ _pages:
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "减去"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "乘"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "除"
       _divide:
         arg1: "A"
         arg2: "B"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "四舍五入"
       _round:
         arg1: "數值"
       eq: "A和B相等"
@@ -1022,6 +1037,7 @@ _deck:
   stackLeft: "向左折疊"
   popRight: "向右彈出"
   _columns:
+    widgets: "小工具"
     notifications: "通知"
     tl: "時間軸"
     antenna: "天線"
