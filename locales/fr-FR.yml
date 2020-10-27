@@ -411,6 +411,7 @@ noMessagesYet: "Pas encore discuté"
 newMessageExists: "Vous avez un nouveau message"
 onlyOneFileCanBeAttached: "Vous ne pouvez joindre qu’un seul fichier au message"
 signinRequired: "Veuillez vous connecter"
+invitations: "Inviter"
 invitationCode: "Code d’invitation"
 checking: "Vérification"
 available: "Disponible"
@@ -580,6 +581,9 @@ regenerateLoginToken: "Régénérer le jeton de connexion"
 setMultipleBySeparatingWithSpace: "Vous pouvez définir plus d’un, séparés par des espaces."
 fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
+random: "Aléatoire"
+_reversi:
+  total: "Total"
 _serverDisconnectedBehavior:
   reload: "Rechargement automatique"
 _channel:

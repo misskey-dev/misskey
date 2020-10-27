@@ -132,7 +132,7 @@ export default defineComponent({
 	&.max-width_500px {
 		> header {
 			> .title {
-				padding: 8px 10px;
+				padding: 8px 10px 8px 0;
 			}
 		}
 	}

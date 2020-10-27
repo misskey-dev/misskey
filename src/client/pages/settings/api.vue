@@ -1,9 +1,14 @@
 <template>
-<section class="_section">
-	<div class="_content">
-		<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
+<div>
+	<div class="_section">
+		<div class="_content">
+			<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
+		</div>
 	</div>
-</section>
+	<div class="_section">
+		<MkA to="/api-console" :behavior="isDesktop ? 'window' : null">API console</MkA>
+	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -28,6 +33,7 @@ export default defineComponent({
 					icon: faKey
 				}]
 			},
+			isDesktop: window.innerWidth >= 1100,
 		};
 	},
 

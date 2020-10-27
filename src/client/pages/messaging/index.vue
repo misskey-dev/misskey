@@ -15,12 +15,12 @@
 					<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
 					<header v-if="message.groupId">
 						<span class="name">{{ message.group.name }}</span>
-						<MkTime :time="message.createdAt"/>
+						<MkTime :time="message.createdAt" class="time"/>
 					</header>
 					<header v-else>
 						<span class="name"><MkUserName :user="isMe(message) ? message.recipient : message.user"/></span>
 						<span class="username">@{{ acct(isMe(message) ? message.recipient : message.user) }}</span>
-						<MkTime :time="message.createdAt"/>
+						<MkTime :time="message.createdAt" class="time"/>
 					</header>
 					<div class="body">
 						<p class="text"><span class="me" v-if="isMe(message)">{{ $t('you') }}:</span>{{ message.text }}</p>
@@ -49,8 +49,6 @@ export default defineComponent({
 	components: {
 		MkButton
 	},
-
-	inject: ['navHook'],
 
 	data() {
 		return {
@@ -245,7 +243,7 @@ export default defineComponent({
 						margin: 0 8px;
 					}
 
-					> .mk-time {
+					> .time {
 						margin: 0 0 0 auto;
 					}
 				}

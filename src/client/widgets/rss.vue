@@ -77,7 +77,7 @@ export default defineComponent({
 		> a {
 			display: block;
 			padding: 8px 16px;
-			color: var(--text);
+			color: var(--fg);
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;

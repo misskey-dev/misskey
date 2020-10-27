@@ -96,7 +96,7 @@ export default defineComponent({
 			margin: 0;
 			line-height: 16px;
 			font-size: 0.8em;
-			color: var(--text);
+			color: var(--fg);
 			opacity: 0.7;
 		}
 	}
@@ -125,7 +125,7 @@ export default defineComponent({
 			> p {
 				margin: 0;
 				font-size: 0.7em;
-				color: var(--text);
+				color: var(--fg);
 			}
 
 			> span {
