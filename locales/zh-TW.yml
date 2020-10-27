@@ -572,6 +572,7 @@ _sidebar:
 _wordMute:
   muteWords: "加入靜音文字"
 _theme:
+  constant: "常數"
   color: "顏色"
   func: "函数"
   keys:
