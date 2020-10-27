@@ -550,6 +550,7 @@ channel: "頻道"
 create: "新增"
 notificationSetting: "通知設定"
 other: "其他"
+regenerateLoginTokenDescription: "再生用於登入的內部權杖。一般情況下是不需要這樣做的。一旦再生，所有裝置將會被登出。"
 sample: "範例 "
 abuseReports: "檢舉"
 reportAbuse: "檢舉"
@@ -583,6 +584,7 @@ _wordMute:
   mutedNotes: "已靜音的貼文"
 _theme:
   constant: "常數"
+  defaultValue: "預設值"
   color: "顏色"
   func: "函数"
   keys:
@@ -652,13 +654,16 @@ _permissions:
   "write:mutes": "編輯已靜音列表"
   "write:notes": "撰寫或刪除貼文"
   "read:notifications": "查看通知"
+  "write:notifications": "編輯通知"
   "read:reactions": "查看反應"
   "write:reactions": "編輯反應"
   "write:votes": "投票"
+  "write:pages": "編輯頁面"
+  "write:page-likes": "編輯頁面上喜歡"
   "read:user-groups": "顯示使用者群組"
   "write:user-groups": "編輯使用者群組"
   "read:channels": "已查看的頻道"
-  "write:channels": "操作頻道"
+  "write:channels": "編輯頻道"
 _antennaSources:
   all: "全部貼文"
   homeTimeline: "來自已追隨使用者的貼文"
@@ -829,10 +834,13 @@ _pages:
   variables: "變數"
   title: "標題"
   url: "頁面網址"
+  font: "字型"
   fontSerif: "襯線體"
   fontSansSerif: "無襯線體"
   inputBlocks: "輸入"
   blocks:
+    text: "文本"
+    textarea: "文字區域"
     section: "區段"
     image: "圖片"
     button: "按鈕"
@@ -841,17 +849,25 @@ _pages:
       variable: "變數"
     _post:
       text: "内容"
+      canvasId: "畫布ID"
+    textInput: "插入文字"
     _textInput:
       name: "變數名稱"
       text: "標題"
+      default: "預設值"
+    textareaInput: "多行文字输入"
     _textareaInput:
       name: "變數名稱"
       text: "標題"
+      default: "預設值"
     numberInput: "輸入數值"
     _numberInput:
       name: "變數名稱"
       text: "標題"
+      default: "預設值"
+    canvas: "畫布"
     _canvas:
+      id: "畫布ID"
       width: "寬度"
       height: "高度"
     switch: "開關"
@@ -867,6 +883,7 @@ _pages:
     _button:
       text: "標題"
       colored: "彩色"
+      action: "按下按鈕後發生的行為"
       _action:
         _dialog:
           content: "内容"
@@ -882,6 +899,7 @@ _pages:
     _radioButton:
       name: "變數名稱"
       title: "標題"
+      default: "預設值"
   script:
     categories:
       logical: "邏輯運算"
@@ -897,6 +915,8 @@ _pages:
       text: "文本"
       multiLineText: "文本 (多行)"
       textList: "文本列表"
+      _strLen:
+        arg1: "文本"
       _strPick:
         arg1: "文本"
         arg2: "字元位置"
@@ -1010,6 +1030,8 @@ _pages:
         arg1: "文字"
       _numberToString:
         arg1: "數值"
+      _splitStrByLine:
+        arg1: "文本"
       ref: "變數"
       aiScriptVar: "AiScript的變數"
       fn: "函数"
