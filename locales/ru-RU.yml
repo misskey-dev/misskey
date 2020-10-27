@@ -601,6 +601,9 @@ editTheseSettingsMayBreakAccount: "От изменений в этих наст�
 random: "Случайные"
 _reversi:
   rules: "Правила"
+  myTurn: "Ваш ход"
+  turnOf: "Ход {name}"
+  pastTurnOf: "Ход {name}"
   total: "Всего"
 _serverDisconnectedBehavior:
   reload: "Автоматическая перезагрузка"
