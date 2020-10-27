@@ -6,7 +6,7 @@
 		</div>
 	</div>
 	<div class="_section">
-		<MkA to="/api-console">API console</MkA>
+		<MkA to="/api-console" :behavior="isDesktop ? 'window' : null">API console</MkA>
 	</div>
 </div>
 </template>
@@ -33,6 +33,7 @@ export default defineComponent({
 					icon: faKey
 				}]
 			},
+			isDesktop: window.innerWidth >= 1100,
 		};
 	},
 
