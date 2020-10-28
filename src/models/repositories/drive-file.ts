@@ -124,8 +124,8 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
 				detail: true
 			}) : null,
-			userId: opts.withUser ? file.userId! : null,
-			user: opts.withUser ? Users.pack(file.userId!) : null
+			userId: opts.withUser ? file.userId : null,
+			user: (opts.withUser && file.userId) ? Users.pack(file.userId) : null
 		});
 	}
 
