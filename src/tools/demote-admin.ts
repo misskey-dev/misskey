@@ -13,7 +13,7 @@ async function main(username: string) {
 		usernameLower: username.toLowerCase(),
 		host: null
 	}, {
-		isAdmin: false 
+		isAdmin: false
 	});
 
 	if (res.affected !== 1) {
