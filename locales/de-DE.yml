@@ -598,7 +598,7 @@ openInNewTab: "In neuem Tab öffnen"
 openInSideView: "In Seitenansicht öffnen"
 defaultNavigationBehaviour: "Standardnavigationsverhalten"
 editTheseSettingsMayBreakAccount: "Bei Bearbeitung dieser Einstellungen besteht die Gefahr, dein Benutzerkonto zu beschädigen."
-instanceTicker: "Instanz-Informationen der Notiz"
+instanceTicker: "Instanz-Informationen von Notizen"
 waitingFor: "Warte auf {x}"
 random: "Zufällig"
 _reversi:
