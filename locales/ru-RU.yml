@@ -608,6 +608,8 @@ _reversi:
   blackIs: "{name} Чёрные"
   rules: "Правила"
   botSettings: "Настройки бота"
+  thisGameIsStartedSoon: "Игра скоро начнётся"
+  waitingForOther: "Ожидание оппонента..."
   myTurn: "Ваш ход"
   turnOf: "Ход {name}"
   pastTurnOf: "Ход {name}"
