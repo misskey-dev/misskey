@@ -601,6 +601,7 @@ editTheseSettingsMayBreakAccount: "编辑这些设置可以会损坏您的账号
 instanceTicker: "帖子的实例信息"
 waitingFor: "等待{x}"
 random: "随机"
+system: "系统"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "对局设置"
