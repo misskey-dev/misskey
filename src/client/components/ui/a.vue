@@ -60,7 +60,7 @@ export default defineComponent({
 				action: () => {
 					os.pageWindow(this.to);
 				}
-			}, !this.navHook && this.sideViewHook ? {
+			}, this.sideViewHook ? {
 				icon: faColumns,
 				text: this.$t('openInSideView'),
 				action: () => {
