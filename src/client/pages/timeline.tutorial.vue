@@ -9,7 +9,7 @@
 	<div class="_content" v-else-if="tutorial === 1">
 		<div>{{ $t('_tutorial.step2_1') }}</div>
 		<div>{{ $t('_tutorial.step2_2') }}</div>
-		<router-link class="_link" to="/settings/profile">{{ $t('editProfile') }}</router-link>
+		<MkA class="_link" to="/settings/profile">{{ $t('editProfile') }}</MkA>
 	</div>
 	<div class="_content" v-else-if="tutorial === 2">
 		<div>{{ $t('_tutorial.step3_1') }}</div>
@@ -25,10 +25,10 @@
 		<div>{{ $t('_tutorial.step5_1') }}</div>
 		<i18n-t keypath="_tutorial.step5_2" tag="div">
 			<template #featured>
-				<router-link class="_link" to="/featured">{{ $t('featured') }}</router-link>
+				<MkA class="_link" to="/featured">{{ $t('featured') }}</MkA>
 			</template>
 			<template #explore>
-				<router-link class="_link" to="/explore">{{ $t('explore') }}</router-link>
+				<MkA class="_link" to="/explore">{{ $t('explore') }}</MkA>
 			</template>
 		</i18n-t>
 		<div>{{ $t('_tutorial.step5_3') }}</div>
@@ -43,7 +43,7 @@
 		<div>{{ $t('_tutorial.step7_1') }}</div>
 		<i18n-t keypath="_tutorial.step7_2" tag="div">
 			<template #help>
-				<router-link class="_link" to="/docs">{{ $t('help') }}</router-link>
+				<MkA class="_link" to="/docs">{{ $t('help') }}</MkA>
 			</template>
 		</i18n-t>
 		<div>{{ $t('_tutorial.step7_3') }}</div>

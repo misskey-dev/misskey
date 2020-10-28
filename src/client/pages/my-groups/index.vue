@@ -10,7 +10,7 @@
 
 			<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
 				<div class="_card" v-for="group in items" :key="group.id">
-					<div class="_title"><router-link :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</router-link></div>
+					<div class="_title"><MkA :to="`/my/groups/${ group.id }`" class="_link">{{ group.name }}</MkA></div>
 					<div class="_content"><MkAvatars :user-ids="group.userIds"/></div>
 				</div>
 			</MkPagination>

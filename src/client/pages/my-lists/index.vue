@@ -4,7 +4,7 @@
 
 	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
 		<div class="list _panel" v-for="(list, i) in items" :key="list.id">
-			<router-link :to="`/my/lists/${ list.id }`">{{ list.name }}</router-link>
+			<MkA :to="`/my/lists/${ list.id }`">{{ list.name }}</MkA>
 		</div>
 	</MkPagination>
 </div>

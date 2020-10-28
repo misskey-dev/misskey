@@ -317,7 +317,7 @@ const Component = defineComponent({
 				text: this.$t('openInWindow'),
 				icon: faWindowMaximize,
 				action: () => {
-					os.pageWindow(url, Component, this.$props);
+					os.pageWindow(url);
 					this.$router.back();
 				},
 			}, this.inWindow ? undefined : {

@@ -1,5 +1,5 @@
 <template>
-<section class="_section" v-if="enableTwitterIntegration || enableDiscordIntegration || enableGithubIntegration">
+<section class="_section">
 	<div class="_content" v-if="enableTwitterIntegration">
 		<header><Fa :icon="faTwitter"/> Twitter</header>
 		<p v-if="integrations.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>

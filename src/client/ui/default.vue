@@ -3,7 +3,7 @@
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
-		<header class="header" ref="header">
+		<header class="header" ref="header" @contextmenu.prevent.stop="onContextmenu">
 			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
@@ -19,6 +19,8 @@
 			<div class="spacer"></div>
 		</main>
 	</div>
+
+	<XSide v-if="isDesktop" class="side" ref="side"/>
 
 	<div v-if="isDesktop" class="widgets">
 		<div ref="widgetsSpacer"></div>
@@ -47,19 +49,21 @@
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</transition>
 
-	<StreamIndicator/>
+	<XCommon/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from '@/components/sidebar.vue';
+import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
+import XSide from './default.side.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 
@@ -67,9 +71,19 @@ const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
+		XCommon,
 		XSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
+		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
+	},
+
+	provide() {
+		return {
+			sideViewHook: this.isDesktop ? (url) => {
+				this.$refs.side.navigate(url);
+			} : null
+		};
 	},
 
 	data() {
@@ -201,6 +215,26 @@ export default defineComponent({
 			if (window._scroll) window._scroll();
 		},
 
+		onContextmenu(e) {
+			const url = this.$route.path;
+			os.contextMenu([{
+				type: 'label',
+				text: url,
+			}, {
+				icon: faColumns,
+				text: this.$t('openInSideView'),
+				action: () => {
+					this.$refs.side.navigate(url);
+				}
+			}, {
+				icon: faWindowMaximize,
+				text: this.$t('openInWindow'),
+				action: () => {
+					os.pageWindow(url);
+				}
+			}], e);
+		},
+
 		async onNotification(notification) {
 			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
 				return;
@@ -245,7 +279,7 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 60px;
+	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$widgets-hide-threshold: 1090px;
 
@@ -299,6 +333,12 @@ export default defineComponent({
 				}
 			}
 		}
+	}
+
+	> .side {
+		min-width: 370px;
+		max-width: 370px;
+		border-left: solid 1px var(--divider);
 	}
 
 	> .widgets {

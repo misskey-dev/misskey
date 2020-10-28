@@ -1,5 +1,5 @@
 <template>
-<time class="mk-time" :title="absolute">
+<time :title="absolute">
 	<template v-if="mode == 'relative'">{{ relative }}</template>
 	<template v-else-if="mode == 'absolute'">{{ absolute }}</template>
 	<template v-else-if="mode == 'detail'">{{ absolute }} ({{ relative }})</template>

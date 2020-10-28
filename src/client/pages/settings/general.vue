@@ -3,6 +3,10 @@
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
+			<div>{{ $t('defaultNavigationBehaviour') }}</div>
+			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
+		</div>
+		<div class="_content">
 			<div>{{ $t('whenServerDisconnected') }}</div>
 			<MkRadio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
 			<MkRadio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
@@ -47,10 +51,20 @@
 			<MkRadio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
 			<MkRadio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
 		</div>
+		<div class="_content">
+			<div>{{ $t('instanceTicker') }}</div>
+			<MkRadio v-model="instanceTicker" value="none">{{ $t('_instanceTicker.none') }}</MkRadio>
+			<MkRadio v-model="instanceTicker" value="remote">{{ $t('_instanceTicker.remote') }}</MkRadio>
+			<MkRadio v-model="instanceTicker" value="always">{{ $t('_instanceTicker.always') }}</MkRadio>
+		</div>
 	</section>
 
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
+		<div class="_content">
+			<div>{{ $t('defaultNavigationBehaviour') }}</div>
+			<MkSwitch v-model:value="deckNavWindow">{{ $t('openInWindow') }}</MkSwitch>
+		</div>
 		<div class="_content">
 			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
 				{{ $t('_deck.alwaysShowMainColumn') }}
@@ -146,9 +160,24 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
 		},
 
+		defaultSideView: {
+			get() { return this.$store.state.device.defaultSideView; },
+			set(value) { this.$store.commit('device/set', { key: 'defaultSideView', value }); }
+		},
+
+		deckNavWindow: {
+			get() { return this.$store.state.device.deckNavWindow; },
+			set(value) { this.$store.commit('device/set', { key: 'deckNavWindow', value }); }
+		},
+
 		chatOpenBehavior: {
 			get() { return this.$store.state.device.chatOpenBehavior; },
 			set(value) { this.$store.commit('device/set', { key: 'chatOpenBehavior', value }); }
+		},
+
+		instanceTicker: {
+			get() { return this.$store.state.device.instanceTicker; },
+			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
 		},
 
 		enableInfiniteScroll: {
