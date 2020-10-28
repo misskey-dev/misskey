@@ -601,6 +601,7 @@ editTheseSettingsMayBreakAccount: "Bei Bearbeitung dieser Einstellungen besteht 
 instanceTicker: "Instanz-Informationen von Notizen"
 waitingFor: "Warte auf {x}"
 random: "Zufällig"
+system: "System"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Spieleinstellungen"
