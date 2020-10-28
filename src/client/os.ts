@@ -75,7 +75,7 @@ export function apiWithDialog(
 	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
 		dialog({
 			type: 'error',
-			text: e.message + '<br>' + (e as any).id,
+			text: e.message + '\n' + (e as any).id,
 		});
 	});
 

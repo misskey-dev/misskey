@@ -564,7 +564,7 @@ export default defineComponent({
 				this.posting = false;
 				os.dialog({
 					type: 'error',
-					text: err.message + '<br>' + (err as any).id,
+					text: err.message + '\n' + (err as any).id,
 				});
 			});
 		},
