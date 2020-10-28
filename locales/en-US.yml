@@ -601,6 +601,7 @@ editTheseSettingsMayBreakAccount: "Editing these settings may damage your accoun
 instanceTicker: "Instance information of notes"
 waitingFor: "Waiting for {x}"
 random: "Random"
+system: "System"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
