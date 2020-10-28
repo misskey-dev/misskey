@@ -3,7 +3,7 @@ import * as nestedProperty from 'nested-property';
 import { api } from '@/os';
 import { erase } from '../prelude/array';
 import { VuexPersistDB } from './scripts/vuex-idb';
-import { vuexPersistAndShare } from './scripts/vuex-persist-and-share';
+import { vuexPersistAndSharePlugin } from './scripts/vuex-persist-and-share';
 
 export const defaultSettings = {
 	tutorial: 0,
@@ -107,6 +107,10 @@ export const notePostInterruptors = [];
 
 export const store = createStore({
 	strict: _DEV_,
+
+	plugins: [
+		vuexPersistAndSharePlugin()
+	],
 
 	state: {
 		i: null,
@@ -481,5 +485,3 @@ export const store = createStore({
 		}
 	}
 });
-
-await vuexPersistAndShare(['i'], ['device', 'deviceUser', 'settings', 'instance'], []);
