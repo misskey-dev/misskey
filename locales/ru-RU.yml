@@ -607,6 +607,7 @@ _reversi:
   blackOrWhite: "Черные/Белые"
   blackIs: "{name} Чёрные"
   rules: "Правила"
+  botSettings: "Настройки бота"
   myTurn: "Ваш ход"
   turnOf: "Ход {name}"
   pastTurnOf: "Ход {name}"
