@@ -139,7 +139,13 @@ export default defineComponent({
 	}
 
 	> .body {
-		overflow: auto;
+	  overflow: auto;
+
+		::v-deep ._panelButton {
+			display: flex;
+			justify-content: center;
+			padding: .5rem 0;
+		}		
 	}
 }
 </style>
