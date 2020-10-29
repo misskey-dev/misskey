@@ -634,6 +634,11 @@ _reversi:
   playing: "Идёт игра"
   isLlotheo: "Выигрывает меньшее число камней (LLoTheO)"
   loopedMap: "Замкнутая в кольцо доска"
+  canPutEverywhere: "Камни можно ставить везде"
+_instanceTicker:
+  none: "Не показывать"
+  remote: "Только у пользователей с других сайтов"
+  always: "Показывать всегда"
 _serverDisconnectedBehavior:
   reload: "Автоматическая перезагрузка"
   dialog: "Предупреждение"
