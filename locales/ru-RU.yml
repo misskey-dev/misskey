@@ -632,6 +632,8 @@ _reversi:
   allGames: "Все игры"
   ended: "Завершено"
   playing: "Идёт игра"
+  isLlotheo: "Выигрывает меньшее число камней (LLoTheO)"
+  loopedMap: "Замкнутая в кольцо доска"
 _serverDisconnectedBehavior:
   reload: "Автоматическая перезагрузка"
   dialog: "Предупреждение"
