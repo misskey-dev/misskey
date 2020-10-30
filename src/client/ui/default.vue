@@ -110,7 +110,7 @@ export default defineComponent({
 				},
 				'p': os.post,
 				'n': os.post,
-				's': search,
+				's': () => search(),
 				'h|/': this.help
 			};
 		},
