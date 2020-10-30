@@ -1,6 +1,6 @@
 <template>
 <MkA :to="`/channels/${channel.id}`" class="eftoefju _panel" tabindex="-1">
-	<div class="banner" v-if="channel.bannerUrl" :style="`background-image: url('${channel.bannerUrl}')`">
+	<div class="banner" :style="bannerStyle">
 		<div class="fade"></div>
 		<div class="name"><Fa :icon="faSatelliteDish"/> {{ channel.name }}</div>
 		<div class="status">
@@ -43,6 +43,16 @@ export default defineComponent({
 			type: Object,
 			required: true
 		},
+	},
+
+	computed: {
+		bannerStyle() {
+			if (this.channel.bannerUrl) {
+				return { backgroundImage: `url(${this.channel.bannerUrl})` };
+			} else {
+				return { backgroundColor: '#4c5e6d' };
+			}
+		}
 	},
 
 	data() {
