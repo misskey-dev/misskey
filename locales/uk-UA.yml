@@ -30,6 +30,7 @@ addUser: "Додати користувача"
 sendMessage: "Надіслати повідомлення"
 copyUsername: "Скопіювати ім’я користувача"
 searchUser: "Пошук користувачів"
+reply: "Відповісти"
 instances: "Інстанс"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
@@ -38,6 +39,8 @@ _sfx:
 _widgets:
   notifications: "Сповіщення"
   timeline: "Стрічка"
+_postForm:
+  replyPlaceholder: "Відповідь на допис..."
 _profile:
   username: "Ім'я користувача"
 _deck:
