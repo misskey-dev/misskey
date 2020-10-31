@@ -14,6 +14,12 @@ noNotes: "Немає дописів"
 noNotifications: "Немає сповіщень"
 instance: "Інстанс"
 settings: "Налаштування"
+basicSettings: "Основні налаштування"
+otherSettings: "Інші налаштування"
+openInWindow: "Відкрити у вікні"
+profile: "Профіль"
+timeline: "Стрічка"
+users: "Користувачі"
 instances: "Інстанс"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
@@ -21,8 +27,10 @@ _sfx:
   notification: "Сповіщення"
 _widgets:
   notifications: "Сповіщення"
+  timeline: "Стрічка"
 _profile:
   username: "Ім'я користувача"
 _deck:
   _columns:
     notifications: "Сповіщення"
+    tl: "Стрічка"
