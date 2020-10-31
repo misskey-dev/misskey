@@ -3,10 +3,20 @@ _lang_: "Українська"
 monthAndDay: "{month}/{day}"
 search: "Пошук"
 notifications: "Сповіщення"
+username: "Ім'я користувача"
+password: "Пароль"
+ok: "OK"
+gotIt: "Зрозуміло!"
+cancel: "Скасувати"
+enterUsername: "Введіть ім'я користувача"
+smtpUser: "Ім'я користувача"
+smtpPass: "Пароль"
 _sfx:
   notification: "Сповіщення"
 _widgets:
   notifications: "Сповіщення"
+_profile:
+  username: "Ім'я користувача"
 _deck:
   _columns:
     notifications: "Сповіщення"
