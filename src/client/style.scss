@@ -297,6 +297,21 @@ hr {
 	padding: 12px 0;
 }
 
+._borderButton {
+	@extend ._button;
+	display: block;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	text-align: center;
+	border: solid 1px var(--divider);
+	border-radius: var(--radius);
+
+	&:active {
+		border-color: var(--accent);
+	}
+}
+
 ._popup {
 	background: var(--panel);
 	border-radius: var(--radius);
