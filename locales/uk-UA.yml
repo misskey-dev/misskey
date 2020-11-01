@@ -41,10 +41,15 @@ copyUsername: "Скопіювати ім’я користувача"
 searchUser: "Пошук користувачів"
 reply: "Відповісти"
 loadMore: "Показати більше"
+mention: "Згадка"
+mentions: "Згадки"
 instances: "Інстанс"
 remove: "Видалити"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
+_theme:
+  keys:
+    mention: "Згадка"
 _sfx:
   notification: "Сповіщення"
 _widgets:
@@ -56,7 +61,11 @@ _postForm:
   replyPlaceholder: "Відповідь на допис..."
 _profile:
   username: "Ім'я користувача"
+_notification:
+  _types:
+    mention: "Згадка"
 _deck:
   _columns:
     notifications: "Сповіщення"
     tl: "Стрічка"
+    mentions: "Згадки"
