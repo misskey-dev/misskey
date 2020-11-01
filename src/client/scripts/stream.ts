@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
-import { wsUrl } from '@/config';
+import { debug, wsUrl } from '@/config';
 import { query as urlQuery } from '../../prelude/url';
 
 /**
@@ -28,7 +28,7 @@ export default class Stream extends EventEmitter {
 	}
 
 	@autobind
-	public useSharedConnection(channel: string): SharedConnection {
+	public useSharedConnection(channel: string, name?: string): SharedConnection {
 		let pool = this.sharedConnectionPools.find(p => p.channel === channel);
 
 		if (pool == null) {
@@ -36,7 +36,7 @@ export default class Stream extends EventEmitter {
 			this.sharedConnectionPools.push(pool);
 		}
 
-		const connection = new SharedConnection(this, channel, pool);
+		const connection = new SharedConnection(this, channel, pool, name);
 		this.sharedConnections.push(connection);
 		return connection;
 	}
@@ -113,6 +113,7 @@ export default class Stream extends EventEmitter {
 
 			for (const c of connections.filter(c => c != null)) {
 				c.emit(body.type, Object.freeze(body.body));
+				if (debug) c.inCount++;
 			}
 		} else {
 			this.emit(type, Object.freeze(body));
@@ -142,6 +143,8 @@ export default class Stream extends EventEmitter {
 	}
 }
 
+let idCounter = 0;
+
 class Pool {
 	public channel: string;
 	public id: string;
@@ -154,7 +157,7 @@ class Pool {
 		this.channel = channel;
 		this.stream = stream;
 
-		this.id = Math.random().toString().substr(2, 8);
+		this.id = (++idCounter).toString();
 
 		this.stream.on('_disconnected_', this.onStreamDisconnected);
 	}
@@ -216,11 +219,16 @@ abstract class Connection extends EventEmitter {
 	protected stream: Stream;
 	public abstract id: string;
 
-	constructor(stream: Stream, channel: string) {
+	public name?: string; // for debug
+	public inCount: number = 0; // for debug
+	public outCount: number = 0; // for debug
+
+	constructor(stream: Stream, channel: string, name?: string) {
 		super();
 
 		this.stream = stream;
 		this.channel = channel;
+		this.name = name;
 	}
 
 	@autobind
@@ -233,6 +241,8 @@ abstract class Connection extends EventEmitter {
 			type: type,
 			body: body
 		});
+
+		if (debug) this.outCount++;
 	}
 
 	public abstract dispose(): void;
@@ -245,8 +255,8 @@ class SharedConnection extends Connection {
 		return this.pool.id;
 	}
 
-	constructor(stream: Stream, channel: string, pool: Pool) {
-		super(stream, channel);
+	constructor(stream: Stream, channel: string, pool: Pool, name?: string) {
+		super(stream, channel, name);
 
 		this.pool = pool;
 		this.pool.inc();
@@ -273,7 +283,7 @@ class NonSharedConnection extends Connection {
 		super(stream, channel);
 
 		this.params = params;
-		this.id = Math.random().toString().substr(2, 8);
+		this.id = (++idCounter).toString();
 
 		this.connect();
 	}

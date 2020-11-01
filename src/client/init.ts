@@ -252,7 +252,7 @@ if (store.getters.isSignedIn) {
 		}
 	}
 
-	const main = stream.useSharedConnection('main');
+	const main = stream.useSharedConnection('main', 'system');
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {
