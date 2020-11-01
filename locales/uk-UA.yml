@@ -50,6 +50,16 @@ files: "Файли"
 download: "Завантажити"
 lists: "Списки"
 noLists: "Немає списків"
+following: "Підписки"
+followers: "Підписники"
+followsYou: "Підписаний(-а) на вас"
+error: "Помилка"
+somethingHappened: "Щось пішло не так"
+retry: "Спробувати знову"
+pageLoadError: "Помилка при завантаженні сторінки"
+privacy: "Приватність"
+follow: "Підписки"
+unfollow: "Відписатися"
 instances: "Інстанс"
 remove: "Видалити"
 userList: "Списки"
@@ -65,11 +75,14 @@ _widgets:
   timeline: "Стрічка"
 _cw:
   show: "Показати більше"
+_visibility:
+  followers: "Підписники"
 _postForm:
   replyPlaceholder: "Відповідь на допис..."
 _profile:
   username: "Ім'я користувача"
 _exportOrImport:
+  followingList: "Підписки"
   userLists: "Списки"
 _pages:
   script:
@@ -92,6 +105,7 @@ _pages:
       array: "Списки"
 _notification:
   _types:
+    follow: "Підписки"
     mention: "Згадка"
 _deck:
   _columns:
