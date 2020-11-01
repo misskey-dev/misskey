@@ -2,7 +2,7 @@ import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vu
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
-import { apiUrl } from '@/config';
+import { apiUrl, debug } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { resolve } from '@/router';
@@ -13,27 +13,25 @@ export const isMobile = /mobile|iphone|ipad|android/.test(ua);
 export const stream = markRaw(new Stream());
 
 export const pendingApiRequestsCount = ref(0);
+export const apiRequests = ref([]); // for debug
 
 export const windows = new Map();
 
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
 	pendingApiRequestsCount.value++;
 
-	if (_DEV_) {
-		performance.mark(_PERF_PREFIX_ + 'api:begin');
-	}
-
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
-
-		if (_DEV_) {
-			performance.mark(_PERF_PREFIX_ + 'api:end');
-
-			performance.measure(_PERF_PREFIX_ + 'api',
-				_PERF_PREFIX_ + 'api:begin',
-				_PERF_PREFIX_ + 'api:end');
-		}
 	};
+
+	const log = debug ? reactive({
+		id: apiRequests.value.length,
+		endpoint,
+		state: 'pending'
+	}) : null;
+	if (debug) {
+		apiRequests.value.push(log);
+	}
 
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
@@ -51,10 +49,19 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 
 			if (res.status === 200) {
 				resolve(body);
+				if (debug) {
+					log.state = 'success';
+				}
 			} else if (res.status === 204) {
 				resolve();
+				if (debug) {
+					log.state = 'success';
+				}
 			} else {
 				reject(body.error);
+				if (debug) {
+					log.state = 'failed';
+				}
 			}
 		}).catch(reject);
 	});

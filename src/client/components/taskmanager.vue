@@ -7,7 +7,7 @@
 		<MkTab v-model:value="tab" :items="[{ label: 'Windows', value: 'windows', }, { label: 'Stream', value: 'stream', }, { label: 'Stream (Pool)', value: 'streamPool', }, { label: 'API', value: 'api', }]" style="border-bottom: solid 1px var(--divider);"/>
 
 		<div class="content">
-			<div v-if="tab === 'windows'" class="windows">
+			<div v-if="tab === 'windows'" class="windows" v-follow>
 				<div class="header">
 					<div>#ID</div>
 					<div>Component</div>
@@ -19,7 +19,7 @@
 					<div><button class="_textButton" @click="killPopup(p)">Kill</button></div>
 				</div>
 			</div>
-			<div v-if="tab === 'stream'" class="stream">
+			<div v-if="tab === 'stream'" class="stream" v-follow>
 				<div class="header">
 					<div>#ID</div>
 					<div>Ch</div>
@@ -36,7 +36,7 @@
 					<div>{{ c.out }}</div>
 				</div>
 			</div>
-			<div v-if="tab === 'streamPool'" class="streamPool">
+			<div v-if="tab === 'streamPool'" class="streamPool" v-follow>
 				<div class="header">
 					<div>#ID</div>
 					<div>Ch</div>
@@ -46,6 +46,18 @@
 					<div>#{{ p.id }}</div>
 					<div>{{ p.channel }}</div>
 					<div>{{ p.users }}</div>
+				</div>
+			</div>
+			<div v-if="tab === 'api'" class="api" v-follow>
+				<div class="header">
+					<div>#ID</div>
+					<div>Endpoint</div>
+					<div>State</div>
+				</div>
+				<div v-for="req in apiRequests">
+					<div>#{{ req.id }}</div>
+					<div>{{ req.endpoint }}</div>
+					<div class="state" :class="req.state">{{ req.state }}</div>
 				</div>
 			</div>
 		</div>
@@ -65,6 +77,7 @@ import { faTerminal } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
 import MkTab from '@/components/tab.vue';
 import MkButton from '@/components/ui/button.vue';
+import follow from '@/directives/follow-append';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -72,6 +85,10 @@ export default defineComponent({
 		XWindow,
 		MkTab,
 		MkButton,
+	},
+
+	directives: {
+		follow
 	},
 
 	props: {
@@ -105,6 +122,7 @@ export default defineComponent({
 		return {
 			tab: ref('stream'),
 			popups: os.popups,
+			apiRequests: os.apiRequests,
 			connections,
 			pools,
 			killPopup,
@@ -125,9 +143,7 @@ export default defineComponent({
 		flex: 1;
 		overflow: auto;
 
-		> .windows,
-		> .stream,
-		> .streamPool {
+		> div {
 			display: table;
 			width: 100%;
 			padding: 16px;
@@ -140,8 +156,31 @@ export default defineComponent({
 					opacity: 0.7;
 				}
 
-				> * {
+				> div {
 					display: table-cell;
+					white-space: nowrap;
+
+					&:not(:last-child) {
+						padding-right: 8px;
+					}
+				}
+			}
+
+			&.api {
+				> div {
+					> .state {
+						&.pending {
+							color: var(--warn);
+						}
+
+						&.success {
+							color: var(--success);
+						}
+
+						&.failed {
+							color: var(--error);
+						}
+					}
 				}
 			}
 		}
