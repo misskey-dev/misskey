@@ -60,8 +60,14 @@ pageLoadError: "Помилка при завантаженні сторінки"
 privacy: "Приватність"
 follow: "Підписки"
 unfollow: "Відписатися"
+quote: "Цитата"
+you: "Ви"
+clickToShow: "Натисніть для перегляду"
+sensitive: "NSFW"
+add: "Додати"
 instances: "Інстанс"
 remove: "Видалити"
+nsfw: "NSFW"
 userList: "Списки"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
@@ -107,6 +113,7 @@ _notification:
   _types:
     follow: "Підписки"
     mention: "Згадка"
+    quote: "Цитата"
 _deck:
   _columns:
     notifications: "Сповіщення"
