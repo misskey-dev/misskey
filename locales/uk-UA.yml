@@ -65,6 +65,12 @@ you: "Ви"
 clickToShow: "Натисніть для перегляду"
 sensitive: "NSFW"
 add: "Додати"
+reaction: "Реакції"
+markAsSensitive: "Відмітити як NSFW"
+enterFileName: "Введіть ім'я файлу"
+mute: "Ігнорувати"
+unmute: "Показувати"
+unblock: "Розблокувати"
 instances: "Інстанс"
 remove: "Видалити"
 nsfw: "NSFW"
@@ -89,6 +95,7 @@ _profile:
   username: "Ім'я користувача"
 _exportOrImport:
   followingList: "Підписки"
+  muteList: "Ігнорувати"
   userLists: "Списки"
 _pages:
   script:
@@ -114,6 +121,7 @@ _notification:
     follow: "Підписки"
     mention: "Згадка"
     quote: "Цитата"
+    reaction: "Реакції"
 _deck:
   _columns:
     notifications: "Сповіщення"
