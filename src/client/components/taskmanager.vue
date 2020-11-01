@@ -6,47 +6,55 @@
 	<div class="qljqmnzj">
 		<MkTab v-model:value="tab" :items="[{ label: 'Windows', value: 'windows', }, { label: 'Stream', value: 'stream', }, { label: 'Stream (Pool)', value: 'streamPool', }, { label: 'API', value: 'api', }]" style="border-bottom: solid 1px var(--divider);"/>
 
-		<div v-if="tab === 'windows'" class="windows">
-			<div class="header">
-				<div>#ID</div>
-				<div>Component</div>
-				<div>Action</div>
+		<div class="content">
+			<div v-if="tab === 'windows'" class="windows">
+				<div class="header">
+					<div>#ID</div>
+					<div>Component</div>
+					<div>Action</div>
+				</div>
+				<div v-for="p in popups">
+					<div>#{{ p.id }}</div>
+					<div>{{ p.component.name ? p.component.name : '<anonymous>' }}</div>
+					<div><button class="_textButton" @click="killPopup(p)">Kill</button></div>
+				</div>
 			</div>
-			<div v-for="p in popups">
-				<div>#{{ p.id }}</div>
-				<div>{{ p.component.name ? p.component.name : '<anonymous>' }}</div>
-				<div><button class="_textButton" @click="killPopup(p)">Kill</button></div>
+			<div v-if="tab === 'stream'" class="stream">
+				<div class="header">
+					<div>#ID</div>
+					<div>Ch</div>
+					<div>Handle</div>
+					<div>In</div>
+					<div>Out</div>
+				</div>
+				<div v-for="c in connections">
+					<div>#{{ c.id }}</div>
+					<div>{{ c.channel }}</div>
+					<div v-if="c.users !== null">(shared)<span v-if="c.name">{{ ' ' + c.name }}</span></div>
+					<div v-else>{{ c.name ? c.name : '<anonymous>' }}</div>
+					<div>{{ c.in }}</div>
+					<div>{{ c.out }}</div>
+				</div>
+			</div>
+			<div v-if="tab === 'streamPool'" class="streamPool">
+				<div class="header">
+					<div>#ID</div>
+					<div>Ch</div>
+					<div>Users</div>
+				</div>
+				<div v-for="p in pools">
+					<div>#{{ p.id }}</div>
+					<div>{{ p.channel }}</div>
+					<div>{{ p.users }}</div>
+				</div>
 			</div>
 		</div>
-		<div v-if="tab === 'stream'" class="stream">
-			<div class="header">
-				<div>#ID</div>
-				<div>Ch</div>
-				<div>Handle</div>
-				<div>In</div>
-				<div>Out</div>
-			</div>
-			<div v-for="c in connections">
-				<div>#{{ c.id }}</div>
-				<div>{{ c.channel }}</div>
-				<div v-if="c.users !== null">(shared)<span v-if="c.name">{{ ' ' + c.name }}</span></div>
-				<div v-else>{{ c.name ? c.name : '<anonymous>' }}</div>
-				<div>{{ c.in }}</div>
-				<div>{{ c.out }}</div>
-			</div>
-		</div>
-		<div v-if="tab === 'streamPool'" class="streamPool">
-			<div class="header">
-				<div>#ID</div>
-				<div>Ch</div>
-				<div>Users</div>
-			</div>
-			<div v-for="p in pools">
-				<div>#{{ p.id }}</div>
-				<div>{{ p.channel }}</div>
-				<div>{{ p.users }}</div>
-			</div>
-		</div>
+
+		<footer>
+			<div><span class="label">Windows</span>{{ popups.length }}</div>
+			<div><span class="label">Stream</span>{{ connections.length }}</div>
+			<div><span class="label">Stream (Pool)</span>{{ pools.length }}</div>
+		</footer>
 	</div>
 </XWindow>
 </template>
@@ -108,24 +116,55 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .qljqmnzj {
-	> .windows,
-	> .stream,
-	> .streamPool {
-		display: table;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+
+	> .content {
+		flex: 1;
+		overflow: auto;
+
+		> .windows,
+		> .stream,
+		> .streamPool {
+			display: table;
+			width: 100%;
+			padding: 16px;
+			box-sizing: border-box;
+
+			> div {
+				display: table-row;
+
+				&.header {
+					opacity: 0.7;
+				}
+
+				> * {
+					display: table-cell;
+				}
+			}
+		}
+	}
+
+	> footer {
+		display: flex;
 		width: 100%;
-		padding: 16px;
+		padding: 8px 16px;
 		box-sizing: border-box;
+		border-top: solid 1px var(--divider);
+		font-size: 0.9em;
 
 		> div {
-			display: table-row;
-			font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+			flex: 1;
 
-			&.header {
+			> .label {
 				opacity: 0.7;
-			}
+				margin-right: 0.5em;
 
-			> * {
-				display: table-cell;
+				&:after {
+					content: ":";
+				}
 			}
 		}
 	}

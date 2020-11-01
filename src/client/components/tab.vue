@@ -1,6 +1,6 @@
 <template>
 <div class="pxhvhrfw" v-size="{ max: [500] }">
-	<button v-for="item in items" class="_button" @click="$emit('update:value', item.value)" :class="{ active: value === item.value }" :key="item.value"><Fa v-if="item.icon" :icon="item.icon" class="icon"/>{{ item.label }}</button>
+	<button v-for="item in items" class="_button" @click="$emit('update:value', item.value)" :class="{ active: value === item.value }" :disabled="value === item.value" :key="item.value"><Fa v-if="item.icon" :icon="item.icon" class="icon"/>{{ item.label }}</button>
 </div>
 </template>
 
@@ -29,9 +29,18 @@ export default defineComponent({
 		padding: 15px 12px 12px 12px;
 		border-bottom: solid 3px transparent;
 
+		&:disabled {
+			opacity: 1 !important;
+			cursor: default;
+		}
+
 		&.active {
 			color: var(--accent);
 			border-bottom-color: var(--accent);
+		}
+
+		&:not(.active):hover {
+			color: var(--fgHighlighted);
 		}
 
 		> .icon {
