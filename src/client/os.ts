@@ -13,6 +13,7 @@ export const isMobile = /mobile|iphone|ipad|android/.test(ua);
 export const stream = markRaw(new Stream());
 
 export const pendingApiRequestsCount = ref(0);
+let apiRequestsCount = 0; // for debug
 export const apiRequests = ref([]); // for debug
 
 export const windows = new Map();
@@ -25,12 +26,15 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	};
 
 	const log = debug ? reactive({
-		id: apiRequests.value.length,
+		id: ++apiRequestsCount,
 		endpoint,
-		state: 'pending'
+		req: markRaw(data),
+		res: null,
+		state: 'pending',
 	}) : null;
 	if (debug) {
 		apiRequests.value.push(log);
+		if (apiRequests.value.length > 128) apiRequests.value.shift();
 	}
 
 	const promise = new Promise((resolve, reject) => {
@@ -50,6 +54,7 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 			if (res.status === 200) {
 				resolve(body);
 				if (debug) {
+					log.res = markRaw(body);
 					log.state = 'success';
 				}
 			} else if (res.status === 204) {
@@ -60,6 +65,7 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 			} else {
 				reject(body.error);
 				if (debug) {
+					log.res = markRaw(body.error);
 					log.state = 'failed';
 				}
 			}

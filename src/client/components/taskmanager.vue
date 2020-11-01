@@ -54,7 +54,7 @@
 					<div>Endpoint</div>
 					<div>State</div>
 				</div>
-				<div v-for="req in apiRequests">
+				<div v-for="req in apiRequests" @click="showReq(req)">
 					<div>#{{ req.id }}</div>
 					<div>{{ req.endpoint }}</div>
 					<div class="state" :class="req.state">{{ req.state }}</div>
@@ -119,6 +119,13 @@ export default defineComponent({
 			os.popups.value = os.popups.value.filter(x => x !== p);
 		};
 
+		const showReq = async req => {
+			os.popup(await import('./taskmanager.api-window.vue'), {
+				req: req
+			}, {
+			}, 'closed');
+		};
+
 		return {
 			tab: ref('stream'),
 			popups: os.popups,
@@ -126,6 +133,7 @@ export default defineComponent({
 			connections,
 			pools,
 			killPopup,
+			showReq,
 			faTerminal,
 		};
 	},
@@ -151,6 +159,10 @@ export default defineComponent({
 
 			> div {
 				display: table-row;
+
+				&:nth-child(even) {
+					//background: rgba(0, 0, 0, 0.1);
+				}
 
 				&.header {
 					opacity: 0.7;
