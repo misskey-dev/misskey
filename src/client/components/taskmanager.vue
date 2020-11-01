@@ -180,6 +180,14 @@ export default defineComponent({
 
 			&.api {
 				> div {
+					&:not(.header) {
+						cursor: pointer;
+
+						&:hover {
+							color: var(--accent);
+						}
+					}
+
 					> .state {
 						&.pending {
 							color: var(--warn);
