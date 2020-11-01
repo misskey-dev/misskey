@@ -127,6 +127,7 @@ function isModule(x: any): x is typeof import('*.vue') {
 	return x.default != null;
 }
 
+let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
 	id: any;
 	component: any;
@@ -137,7 +138,7 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	if (isModule(component)) component = component.default;
 	markRaw(component);
 
-	const id = Math.random().toString(); // TODO: uuidとか使う
+	const id = ++popupIdCount;
 	const dispose = () => {
 		if (_DEV_) console.log('os:popup close', id, component, props, events);
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？

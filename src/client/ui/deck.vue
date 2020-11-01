@@ -109,7 +109,7 @@ export default defineComponent({
 		window.addEventListener('wheel', this.onWheel);
 
 		if (this.$store.getters.isSignedIn) {
-			this.connection = os.stream.useSharedConnection('main');
+			this.connection = os.stream.useSharedConnection('main', 'UI');
 			this.connection.on('notification', this.onNotification);
 		}
 	},

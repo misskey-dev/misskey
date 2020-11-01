@@ -141,7 +141,7 @@ export default defineComponent({
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
 
-		this.connection = os.stream.useSharedConnection('main');
+		this.connection = os.stream.useSharedConnection('main', 'UI');
 		this.connection.on('notification', this.onNotification);
 
 		if (this.$store.state.deviceUser.widgets.length === 0) {
