@@ -42,7 +42,8 @@
 							<small style="opacity: 0.7;">{{ file.name }}</small>
 						</div>
 						<div>
-							<MkAcct :user="file.user"/>
+							<MkAcct v-if="file.user" :user="file.user"/>
+							<div v-else>{{ $t('system') }}</div>
 						</div>
 						<div>
 							<span style="margin-right: 1em;">{{ file.type }}</span>

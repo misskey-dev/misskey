@@ -3,7 +3,7 @@
 	<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
 	<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
 	<div class="title">
-		<router-link class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></router-link>
+		<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
 	<div class="description">
@@ -96,7 +96,7 @@ export default defineComponent({
 			margin: 0;
 			line-height: 16px;
 			font-size: 0.8em;
-			color: var(--text);
+			color: var(--fg);
 			opacity: 0.7;
 		}
 	}
@@ -125,7 +125,7 @@ export default defineComponent({
 			> p {
 				margin: 0;
 				font-size: 0.7em;
-				color: var(--text);
+				color: var(--fg);
 			}
 
 			> span {

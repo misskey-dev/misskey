@@ -17,7 +17,7 @@
 		</main>
 	</div>
 
-	<StreamIndicator/>
+	<XCommon/>
 </div>
 </template>
 
@@ -28,10 +28,12 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
 import XHeader from './_common_/header.vue';
+import XCommon from './_common_/common.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
+		XCommon,
 		XHeader,
 	},
 
@@ -69,7 +71,7 @@ export default defineComponent({
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
 
-		this.connection = os.stream.useSharedConnection('main');
+		this.connection = os.stream.useSharedConnection('main', 'UI');
 		this.connection.on('notification', this.onNotification);
 	},
 

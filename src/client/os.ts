@@ -5,11 +5,12 @@ import { store } from '@/store';
 import { apiUrl } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
+import { resolve } from '@/router';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
 
-export const stream = new Stream();
+export const stream = markRaw(new Stream());
 
 export const pendingApiRequestsCount = ref(0);
 
@@ -74,7 +75,7 @@ export function apiWithDialog(
 	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
 		dialog({
 			type: 'error',
-			text: e.message + '<br>' + (e as any).id,
+			text: e.message + '\n' + (e as any).id,
 		});
 	});
 
@@ -126,6 +127,7 @@ function isModule(x: any): x is typeof import('*.vue') {
 	return x.default != null;
 }
 
+let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
 	id: any;
 	component: any;
@@ -136,7 +138,7 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	if (isModule(component)) component = component.default;
 	markRaw(component);
 
-	const id = Math.random().toString(); // TODO: uuidとか使う
+	const id = ++popupIdCount;
 	const dispose = () => {
 		if (_DEV_) console.log('os:popup close', id, component, props, events);
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
@@ -162,7 +164,8 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	};
 }
 
-export function pageWindow(url: string, component: Component | typeof import('*.vue'), props: Record<string, any>) {
+export function pageWindow(url: string) {
+	const { component, props } = resolve(url);
 	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
 		initialUrl: url,
 		initialComponent: markRaw(component),

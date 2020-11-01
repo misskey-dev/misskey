@@ -4,14 +4,13 @@
 
 import '@/style.scss';
 
-import { createApp } from 'vue';
+import { createApp, defineAsyncComponent } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import Root from './root.vue';
 import widgets from './widgets';
 import directives from './directives';
 import components from '@/components';
-import { version, apiUrl } from '@/config';
+import { version, apiUrl, deckmode } from '@/config';
 import { store } from './store';
 import { router } from './router';
 import { applyTheme } from '@/scripts/theme';
@@ -152,7 +151,12 @@ store.dispatch('instance/fetch').then(() => {
 
 stream.init(store.state.i);
 
-const app = createApp(Root);
+const app = createApp(await (
+	window.location.search === '?zen' ? import('@/ui/zen.vue') :
+	!store.getters.isSignedIn         ? import('@/ui/visitor.vue') :
+	deckmode                          ? import('@/ui/deck.vue') :
+	import('@/ui/default.vue')
+).then(x => x.default));
 
 if (_DEV_) {
 	app.config.performance = true;
@@ -248,7 +252,7 @@ if (store.getters.isSignedIn) {
 		}
 	}
 
-	const main = stream.useSharedConnection('main');
+	const main = stream.useSharedConnection('main', 'System');
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {

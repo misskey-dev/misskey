@@ -7,9 +7,7 @@
 >
 	<template #header>{{ $t('login') }}</template>
 
-	<div class="_section">
-		<MkSignin :auto-set="autoSet" @login="onLogin"/>
-	</div>
+	<MkSignin :auto-set="autoSet" @login="onLogin"/>
 </XModalWindow>
 </template>
 

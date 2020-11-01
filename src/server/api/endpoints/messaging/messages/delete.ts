@@ -1,10 +1,10 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
 import define from '../../../define';
-import { publishMessagingStream, publishGroupMessagingStream } from '../../../../../services/stream';
 import * as ms from 'ms';
 import { ApiError } from '../../../error';
 import { MessagingMessages } from '../../../../../models';
+import { deleteMessage } from '../../../../../services/messages/delete';
 
 export const meta = {
 	desc: {
@@ -53,12 +53,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchMessage);
 	}
 
-	await MessagingMessages.delete(message.id);
-
-	if (message.recipientId) {
-		publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
-		publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
-	} else if (message.groupId) {
-		publishGroupMessagingStream(message.groupId, 'deleted', message.id);
-	}
+	await deleteMessage(message);
 });

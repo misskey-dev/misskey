@@ -17,12 +17,12 @@
 				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
 					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
 				</button>
-				<router-link class="item index" active-class="active" to="/" exact v-else>
+				<MkA class="item index" active-class="active" to="/" exact v-else>
 					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</router-link>
+				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
-					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'router-link' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
+					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
 						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
 						<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
 					</component>
@@ -35,9 +35,9 @@
 					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
 					<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 				</button>
-				<router-link class="item" active-class="active" to="/settings">
+				<MkA class="item" active-class="active" to="/settings">
 					<Fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
-				</router-link>
+				</MkA>
 			</div>
 		</nav>
 	</transition>
@@ -246,7 +246,7 @@ export default defineComponent({
 				icon: faQuestionCircle,
 			}, {
 				type: 'link',
-				text: this.$t('aboutX', { x: instanceName || host }),
+				text: this.$t('aboutX', { x: instanceName }),
 				to: '/about',
 				icon: faInfoCircle,
 			}, {
@@ -422,9 +422,9 @@ export default defineComponent({
 			> .item {
 				position: relative;
 				display: block;
-				padding-left: 32px;
+				padding-left: 24px;
 				font-size: $ui-font-size;
-				line-height: 3.2rem;
+				line-height: 3rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;

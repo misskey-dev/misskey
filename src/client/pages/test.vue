@@ -229,7 +229,7 @@ export default defineComponent({
 		},
 
 		messagingWindowOpen() {
-			os.pageWindow('/my/messaging', defineAsyncComponent(() => import('@/pages/messaging/index.vue')));
+			os.pageWindow('/my/messaging');
 		},
 
 		openWaitingDialog(text?) {

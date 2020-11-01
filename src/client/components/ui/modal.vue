@@ -175,7 +175,7 @@ export default defineComponent({
 }
 
 .modal-popup-content-enter-active, .modal-popup-content-leave-active {
-	transition: opacity 0.3s, transform 0.3s !important;
+	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 .modal-popup-content-enter-from, .modal-popup-content-leave-to {
 	pointer-events: none;

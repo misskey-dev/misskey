@@ -562,6 +562,10 @@ export default defineComponent({
 				});
 			}).catch(err => {
 				this.posting = false;
+				os.dialog({
+					type: 'error',
+					text: err.message + '\n' + (err as any).id,
+				});
 			});
 		},
 

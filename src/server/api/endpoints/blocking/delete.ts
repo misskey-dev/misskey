@@ -152,5 +152,7 @@ export default define(meta, async (ps, user) => {
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	return await Users.pack(blockee.id, user);
+	return await Users.pack(blockee.id, user, {
+		detail: true
+	});
 });

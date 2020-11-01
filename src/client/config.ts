@@ -12,5 +12,6 @@ export const lang = localStorage.getItem('lang');
 export const langs = _LANGS_;
 export const getLocale = async () => Object.fromEntries((await entries(clientDb.i18n)) as [string, string][]);
 export const version = _VERSION_;
-export const instanceName = siteName === 'Misskey' ? null : siteName;
+export const instanceName = siteName === 'Misskey' ? host : siteName;
 export const deckmode = localStorage.getItem('deckmode') === 'true';
+export const debug = localStorage.getItem('debug') === 'true';

@@ -157,5 +157,7 @@ export default define(meta, async (ps, user) => {
 		noteUserId: blockee.id
 	});
 
-	return await Users.pack(blockee.id, user);
+	return await Users.pack(blockee.id, user, {
+		detail: true
+	});
 });
