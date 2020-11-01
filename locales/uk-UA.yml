@@ -43,8 +43,16 @@ reply: "Відповісти"
 loadMore: "Показати більше"
 mention: "Згадка"
 mentions: "Згадки"
+importAndExport: "Імпорт та експорт"
+import: "Імпорт"
+export: "Експорт"
+files: "Файли"
+download: "Завантажити"
+lists: "Списки"
+noLists: "Немає списків"
 instances: "Інстанс"
 remove: "Видалити"
+userList: "Списки"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
 _theme:
@@ -61,6 +69,27 @@ _postForm:
   replyPlaceholder: "Відповідь на допис..."
 _profile:
   username: "Ім'я користувача"
+_exportOrImport:
+  userLists: "Списки"
+_pages:
+  script:
+    categories:
+      list: "Списки"
+    blocks:
+      _join:
+        arg1: "Списки"
+      _randomPick:
+        arg1: "Списки"
+      _dailyRandomPick:
+        arg1: "Списки"
+      _seedRandomPick:
+        arg2: "Списки"
+      _pick:
+        arg1: "Списки"
+      _listLen:
+        arg1: "Списки"
+    types:
+      array: "Списки"
 _notification:
   _types:
     mention: "Згадка"
@@ -68,4 +97,5 @@ _deck:
   _columns:
     notifications: "Сповіщення"
     tl: "Стрічка"
+    list: "Списки"
     mentions: "Згадки"
