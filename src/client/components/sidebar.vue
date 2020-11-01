@@ -424,7 +424,7 @@ export default defineComponent({
 				display: block;
 				padding-left: 32px;
 				font-size: $ui-font-size;
-				line-height: 3.2rem;
+				line-height: 3rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
