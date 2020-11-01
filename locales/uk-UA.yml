@@ -70,6 +70,7 @@ markAsSensitive: "Відмітити як NSFW"
 enterFileName: "Введіть ім'я файлу"
 mute: "Ігнорувати"
 unmute: "Показувати"
+block: "Заблокувати"
 unblock: "Розблокувати"
 instances: "Інстанс"
 remove: "Видалити"
@@ -96,6 +97,7 @@ _profile:
 _exportOrImport:
   followingList: "Підписки"
   muteList: "Ігнорувати"
+  blockingList: "Заблокувати"
   userLists: "Списки"
 _pages:
   script:
