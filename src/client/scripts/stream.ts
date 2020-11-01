@@ -1,6 +1,7 @@
 import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
+import { markRaw } from 'vue';
 import { debug, wsUrl } from '@/config';
 import { query as urlQuery } from '../../prelude/url';
 
@@ -36,7 +37,7 @@ export default class Stream extends EventEmitter {
 			this.sharedConnectionPools.push(pool);
 		}
 
-		const connection = new SharedConnection(this, channel, pool, name);
+		const connection = markRaw(new SharedConnection(this, channel, pool, name));
 		this.sharedConnections.push(connection);
 		return connection;
 	}
@@ -53,7 +54,7 @@ export default class Stream extends EventEmitter {
 
 	@autobind
 	public connectToChannel(channel: string, params?: any): NonSharedConnection {
-		const connection = new NonSharedConnection(this, channel, params);
+		const connection = markRaw(new NonSharedConnection(this, channel, params));
 		this.nonSharedConnections.push(connection);
 		return connection;
 	}
