@@ -4,7 +4,7 @@
 		<Fa :icon="faTerminal" style="margin-right: 0.5em;"/>Task Manager
 	</template>
 	<div class="qljqmnzj">
-		<MkTab v-model:value="tab" :items="[{ label: 'Stream', value: 'stream', }, { label: 'API', value: 'api', }]"/>
+		<MkTab v-model:value="tab" :items="[{ label: 'Stream', value: 'stream', }, { label: 'API', value: 'api', }]" style="border-bottom: solid 1px var(--divider);"/>
 		<div v-if="tab === 'stream'" class="stream">
 			<div class="header">
 				<div>#ID</div>
@@ -76,7 +76,7 @@ export default defineComponent({
 	> .stream {
 		display: table;
 		width: 100%;
-		padding: 8px;
+		padding: 16px;
 		box-sizing: border-box;
 
 		> div {

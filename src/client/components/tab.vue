@@ -23,8 +23,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .pxhvhrfw {
 	display: flex;
-	max-width: var(--baseContentWidth);
-	margin: 0 auto;
 
 	> button {
 		flex: 1;
