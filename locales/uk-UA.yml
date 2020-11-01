@@ -32,11 +32,15 @@ favorites: "Обране"
 unfavorite: "Видалити з обраного"
 pin: "Закріпити"
 unpin: "Відкріпити"
+copyLink: "Скопіювати посилання"
+delete: "Видалити"
 sendMessage: "Надіслати повідомлення"
 copyUsername: "Скопіювати ім’я користувача"
 searchUser: "Пошук користувачів"
 reply: "Відповісти"
+loadMore: "Показати більше"
 instances: "Інстанс"
+remove: "Видалити"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
 _sfx:
@@ -44,6 +48,8 @@ _sfx:
 _widgets:
   notifications: "Сповіщення"
   timeline: "Стрічка"
+_cw:
+  show: "Показати більше"
 _postForm:
   replyPlaceholder: "Відповідь на допис..."
 _profile:
