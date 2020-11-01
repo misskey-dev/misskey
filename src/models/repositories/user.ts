@@ -615,6 +615,34 @@ export const packedUserSchema = {
 		mutingNotificationTypes: {
 			type: 'array' as const,
 			nullable: false as const, optional: true as const
+		},
+		isFollowing: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
+		},
+		hasPendingFollowRequestFromYou: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
+		},
+		hasPendingFollowRequestToYou: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
+		},
+		isFollowed: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
+		},
+		isBlocking: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
+		},
+		isBlocked: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
+		},
+		isMuted: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
 		}
 	},
 };
