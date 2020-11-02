@@ -120,6 +120,7 @@ _pages:
     types:
       array: "Списки"
 _notification:
+  youRenoted: "{name} поширив(ла) ваш допис"
   _types:
     follow: "Підписки"
     mention: "Згадка"
