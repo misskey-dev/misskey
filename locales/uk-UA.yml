@@ -55,6 +55,8 @@ files: "Файли"
 download: "Завантажити"
 lists: "Списки"
 noLists: "Немає списків"
+note: "Дописи"
+notes: "Дописи"
 following: "Підписки"
 followers: "Підписники"
 followsYou: "Підписаний(-а) на вас"
@@ -87,6 +89,7 @@ _theme:
   keys:
     mention: "Згадка"
 _sfx:
+  note: "Дописи"
   notification: "Сповіщення"
 _widgets:
   notifications: "Сповіщення"
