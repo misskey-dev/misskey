@@ -131,6 +131,12 @@ export default defineComponent({
 					}, genEl(token.children));
 				}
 
+				case 'shake': {
+					return h('span', {
+						style: this.$store.state.device.animatedMfm ? 'display: inline-block; animation: anime-shake 0.5s ease infinite;' : 'display: inline-block;'
+					}, genEl(token.children));
+				}
+
 				case 'url': {
 					return [h(MkUrl, {
 						key: Math.random(),

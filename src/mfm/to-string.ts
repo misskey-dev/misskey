@@ -52,6 +52,10 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 			return `<twitch>${appendChildren(token.children, opts)}</twitch>`;
 		},
 
+		shake(token, opts) {
+			return `<shake>${appendChildren(token.children, opts)}</shake>`;
+		},
+
 		flip(token, opts) {
 			return `<flip>${appendChildren(token.children, opts)}</flip>`;
 		},
