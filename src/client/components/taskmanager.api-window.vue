@@ -61,6 +61,7 @@ export default defineComponent({
 		flex: 1;
 		padding: 8px;
 		overflow: auto;
+		font-size: 0.9em;
 		tab-size: 2;
 		white-space: pre;
 		font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
