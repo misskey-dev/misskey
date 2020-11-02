@@ -231,7 +231,7 @@ export default defineComponent({
 		set(pos) {
 			if (this.game.isEnded) return;
 			if (!this.iAmPlayer) return;
-			if (!this.isMyTurn) return;
+			if (!this.isMyTurn()) return;
 			if (!this.o.canPut(this.myColor, pos)) return;
 
 			this.o.put(this.myColor, pos);

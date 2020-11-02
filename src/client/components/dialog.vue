@@ -169,15 +169,15 @@ export default defineComponent({
 		font-size: 32px;
 
 		&.success {
-			color: var(--accent);
+			color: var(--success);
 		}
 
 		&.error {
-			color: #ec4137;
+			color: var(--error);
 		}
 
 		&.warning {
-			color: #ecb637;
+			color: var(--warn);
 		}
 
 		> * {

@@ -2,7 +2,7 @@ import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vu
 import { EventEmitter } from 'eventemitter3';
 import Stream from '@/scripts/stream';
 import { store } from '@/store';
-import { apiUrl } from '@/config';
+import { apiUrl, debug } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { resolve } from '@/router';
@@ -13,27 +13,29 @@ export const isMobile = /mobile|iphone|ipad|android/.test(ua);
 export const stream = markRaw(new Stream());
 
 export const pendingApiRequestsCount = ref(0);
+let apiRequestsCount = 0; // for debug
+export const apiRequests = ref([]); // for debug
 
 export const windows = new Map();
 
 export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
 	pendingApiRequestsCount.value++;
 
-	if (_DEV_) {
-		performance.mark(_PERF_PREFIX_ + 'api:begin');
-	}
-
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
-
-		if (_DEV_) {
-			performance.mark(_PERF_PREFIX_ + 'api:end');
-
-			performance.measure(_PERF_PREFIX_ + 'api',
-				_PERF_PREFIX_ + 'api:begin',
-				_PERF_PREFIX_ + 'api:end');
-		}
 	};
+
+	const log = debug ? reactive({
+		id: ++apiRequestsCount,
+		endpoint,
+		req: markRaw(data),
+		res: null,
+		state: 'pending',
+	}) : null;
+	if (debug) {
+		apiRequests.value.push(log);
+		if (apiRequests.value.length > 128) apiRequests.value.shift();
+	}
 
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
@@ -51,10 +53,21 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 
 			if (res.status === 200) {
 				resolve(body);
+				if (debug) {
+					log.res = markRaw(body);
+					log.state = 'success';
+				}
 			} else if (res.status === 204) {
 				resolve();
+				if (debug) {
+					log.state = 'success';
+				}
 			} else {
 				reject(body.error);
+				if (debug) {
+					log.res = markRaw(body.error);
+					log.state = 'failed';
+				}
 			}
 		}).catch(reject);
 	});
@@ -75,7 +88,7 @@ export function apiWithDialog(
 	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
 		dialog({
 			type: 'error',
-			text: e.message + '<br>' + (e as any).id,
+			text: e.message + '\n' + (e as any).id,
 		});
 	});
 
@@ -127,6 +140,7 @@ function isModule(x: any): x is typeof import('*.vue') {
 	return x.default != null;
 }
 
+let popupIdCount = 0;
 export const popups = ref([]) as Ref<{
 	id: any;
 	component: any;
@@ -137,7 +151,7 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	if (isModule(component)) component = component.default;
 	markRaw(component);
 
-	const id = Math.random().toString(); // TODO: uuidとか使う
+	const id = ++popupIdCount;
 	const dispose = () => {
 		if (_DEV_) console.log('os:popup close', id, component, props, events);
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？

@@ -422,9 +422,9 @@ export default defineComponent({
 			> .item {
 				position: relative;
 				display: block;
-				padding-left: 32px;
+				padding-left: 24px;
 				font-size: $ui-font-size;
-				line-height: 3.2rem;
+				line-height: 3rem;
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;

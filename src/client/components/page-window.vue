@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
 import XHeader from '@/ui/_common_/header.vue';
 import { popout } from '@/scripts/popout';
@@ -33,6 +33,12 @@ export default defineComponent({
 	components: {
 		XWindow,
 		XHeader,
+	},
+
+	inject: {
+		sideViewHook: {
+			default: null
+		}
 	},
 
 	provide() {
@@ -81,7 +87,14 @@ export default defineComponent({
 				icon: faExpandAlt,
 				text: this.$t('showInPage'),
 				action: this.expand
-			}, {
+			}, this.sideViewHook ? {
+				icon: faColumns,
+				text: this.$t('openInSideView'),
+				action: () => {
+					this.sideViewHook(this.url);
+					this.$refs.window.close();
+				}
+			} : undefined, {
 				icon: faExternalLinkAlt,
 				text: this.$t('popout'),
 				action: this.popout

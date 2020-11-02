@@ -119,6 +119,9 @@ export default defineComponent({
 			z: Number(document.defaultView.getComputedStyle(this.$el, null).zIndex)
 		});
 
+		// 他のウィンドウ内のボタンなどを押してこのウィンドウが開かれた場合、親が最前面になろうとするのでそれに隠されないようにする
+		this.top();
+
 		window.addEventListener('resize', this.onBrowserResize);
 	},
 
