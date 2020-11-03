@@ -69,9 +69,10 @@ pageLoadError: "Помилка при завантаженні сторінки"
 enterListName: "Введіть назву списку"
 privacy: "Приватність"
 makeFollowManuallyApprove: "Підтверджувати підписників уручну"
-defaultNoteVisibility: "Видимість за замовчуванням"
+defaultNoteVisibility: "Видимість допису за замовчуванням"
 follow: "Підписка"
 unfollow: "Відписатися"
+renote: "Поширити"
 quote: "Цитата"
 you: "Ви"
 clickToShow: "Натисніть для перегляду"
@@ -105,6 +106,7 @@ smtpPass: "Пароль"
 _theme:
   keys:
     mention: "Згадка"
+    renote: "Поширити"
 _sfx:
   note: "Дописи"
   notification: "Сповіщення"
@@ -148,6 +150,7 @@ _notification:
   _types:
     follow: "Підписки"
     mention: "Згадка"
+    renote: "Поширити"
     quote: "Цитата"
     reaction: "Реакції"
 _deck:
