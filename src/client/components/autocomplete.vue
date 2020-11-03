@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
@@ -124,7 +124,6 @@ export default defineComponent({
 			emojis: [],
 			items: [],
 			select: -1,
-			emojilist,
 			emojiDb: [] as EmojiDef[]
 		}
 	},
@@ -178,7 +177,7 @@ export default defineComponent({
 
 		emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
 
-		this.emojiDb = emojiDefinitions.concat(emjdb);
+		this.emojiDb = markRaw(emojiDefinitions.concat(emjdb));
 		//#endregion
 
 		this.textarea.addEventListener('keydown', this.onKeydown);
