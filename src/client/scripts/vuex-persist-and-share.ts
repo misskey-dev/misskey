@@ -1,17 +1,23 @@
 import { MutationPayload, Store } from 'vuex';
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
-import { VuexPersistDB, VuexPersistStore } from './vuex-idb';
-
-const states = ['i'];
-const modules =  ['device', 'deviceUser', 'settings', 'instance'];
+import { VuexPersistDB } from './vuex-idb';
 
 /**
  * Vuexのstate永続化を行い、moduleのcommitをタブ間で共有します
+ * @param states 永続化するルートのstate
+ * @param modules 永続化するmodule
+ * @param dbVersion データベースのバージョン・modulesを変更するたびにインクリメントしてください！
  * @param ignoreMutations 共有しないcommit (mutation type)
  */
-export function vuexPersistAndSharePlugin(ignoreMutations: string[] = []) {
+export function vuexPersistAndSharePlugin(
+	states: string[],
+	modules: string[],
+	dbVersion: number,
+	ignoreMutations: string[] = []
+) {
 	const persistDB = new VuexPersistDB();
+	persistDB.update(modules, dbVersion);
 	const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
 		webWorkerSupport: false
 	});
@@ -71,11 +77,11 @@ export function vuexPersistAndSharePlugin(ignoreMutations: string[] = []) {
 				persistDB.bulkSet(states.map(s => [s, state[s]]), 'store');
 
 				modules.map(m => {
-					persistDB.bulkSet(Object.entries(state[m]), m as VuexPersistStore);
+					persistDB.bulkSet(Object.entries(state[m]), m);
 				});
 			} else if (modules.includes(module)) {
 				// mutationがモジュールの場合
-				persistDB.bulkSet(Object.entries(state[module]), module as VuexPersistStore);
+				persistDB.bulkSet(Object.entries(state[module]), module);
 			}
 
 			// ほかのタブにmutationを伝達

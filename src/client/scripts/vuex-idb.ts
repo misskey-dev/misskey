@@ -7,53 +7,69 @@
 
 import * as deepcopy from 'deepcopy';
 
-// 現在使用しているストアを列挙。
-// storeストアは通常のstateの保存に使用し、残りはmodule
-const persistStores = ['store', 'device', 'deviceUser', 'settings', 'instance'] as const;
-
-/*
-	バージョンを指定する
-	データベースの構造が変化したらバージョンをひとつ上げ、
-	onupgradeneededにアップデート処理を追加する
-*/
-const version = 1;
-
-export type VuexPersistStore = typeof persistStores[number];
-
-export class VuexPersistDB {
-	readonly stores = persistStores;
-
-	readonly _dbp: Promise<IDBDatabase>;
+export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
+	dbName: string;
+	stores: S; // もしくは最初のupdateが行われていないなら []
+	_dbp: Promise<IDBDatabase>;
 
 	constructor(dbName = 'vuex') {
+		this.dbName = dbName;
+
 		this._dbp = new Promise((resolve, reject) => {
-			const openreq = indexedDB.open(dbName, version);
+			const openreq = indexedDB.open(dbName);
+			openreq.onerror = () => reject(openreq.error);
+			openreq.onsuccess = () => {
+				this.stores = Array.from(openreq.result.objectStoreNames) as S;
+				resolve(openreq.result);
+			};
+		});
+	}
+
+	/**
+	 * データベースを初期化・アップデートします
+	 * @param moduleStore 永続化したいvuexモジュールを列挙
+	 * @param version indexedDBのバージョン。moduleStoreを変更するたびにインクリメントしてください！
+	 */
+	update(moduleStores: M[], version: number): Promise<unknown> {
+		return this._dbp = new Promise((resolve, reject) => {
+			const openreq = indexedDB.open(this.dbName, version);
 			openreq.onerror = () => reject(openreq.error);
 			openreq.onsuccess = () => resolve(openreq.result);
 
 			// First time setup: create an empty object store
 			openreq.onupgradeneeded = ev => {
-			/*// v3
-				// openreq.result...
-				// if (ev.oldVersion >= 2) return; */
+				// ストアが空の場合
+				if (this.stores.length === 0) {
+					['store', ...moduleStores].map(name => openreq.result.createObjectStore(name));
+					return;
+				}
 
-			/*// v2
-				// openreq.result...
-				// if (ev.oldVersion >= 1) return; */
+				// ストアがすでにある場合、アップデートする
 
-				// v1
-				[
-					'store',
-					'device',
-					'deviceUser',
-					'settings',
-					'instance'
-				].map(name => openreq.result.createObjectStore(name));
+				// 既存のモジュールストア
+				const currentModuleStores = Array.from(openreq.result.objectStoreNames).filter(v => v !== 'store');
+
+				// 古いストアを削除
+				currentModuleStores
+					.filter(v => !(moduleStores as string[]).includes(v))
+					.map(name => {
+						return new Promise((resolve, reject) => {
+							const transaction = openreq.result.transaction(name, 'readwrite');
+							transaction.oncomplete = () => resolve();
+							transaction.onabort = transaction.onerror = () => reject(transaction.error);
+							transaction.objectStore(name).clear();
+						});
+					});
+
+				// 存在しないストアを作成
+				moduleStores
+					.filter(v => !currentModuleStores.includes(v))
+					.map(name => openreq.result.createObjectStore(name));
 			};
 		});
 	}
 
-	_withIDBStore(type: IDBTransactionMode, store: VuexPersistStore, callback: ((store: IDBObjectStore) => void)): Promise<void> {
+	_withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {
 		return this._dbp.then(db => new Promise<void>((resolve, reject) => {
 			const transaction = db.transaction(store, type);
 			transaction.oncomplete = () => resolve();
@@ -66,20 +82,20 @@ export class VuexPersistDB {
 		return this._dbp.then(db => db.transaction(storename, mode));
 	}
 
-	get<Type>(key: IDBValidKey, storename: VuexPersistStore): Promise<Type> {
+	get<Type>(key: IDBValidKey, storename: 'store' | M): Promise<Type> {
 		let req: IDBRequest;
 		return this._withIDBStore('readonly', storename, store => {
 			req = store.get(key);
 		}).then(() => req.result);
 	}
 
-	set(key: IDBValidKey, value: any, storename: VuexPersistStore): Promise<void> {
+	set(key: IDBValidKey, value: any, storename: 'store' | M): Promise<void> {
 		return this._withIDBStore('readwrite', storename, store => {
 			store.put(value, key);
 		});
 	}
 
-	entries(storename: VuexPersistStore): Promise<[IDBValidKey, unknown][]> {
+	entries(storename: 'store' | M): Promise<[IDBValidKey, unknown][]> {
 		const entries: [IDBValidKey, unknown][] = [];
 
 		return this._withIDBStore('readonly', storename, store => {
@@ -91,7 +107,7 @@ export class VuexPersistDB {
 		}).then(() => entries);
 	}
 
-	async bulkSet(map: [IDBValidKey, any][], storename: VuexPersistStore): Promise<void> {
+	async bulkSet(map: [IDBValidKey, any][], storename: 'store' | M): Promise<void> {
 		const tx = await this.openTransaction(storename, 'readwrite');
 		const st = tx.objectStore(storename);
 		for (const [key, value] of map) {

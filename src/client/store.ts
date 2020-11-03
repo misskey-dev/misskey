@@ -109,7 +109,8 @@ export const store = createStore({
 	strict: _DEV_,
 
 	plugins: [
-		vuexPersistAndSharePlugin()
+		// Increment dbVersion after changing modules
+		vuexPersistAndSharePlugin(['i'], ['device', 'deviceUser', 'settings', 'instance'], 2)
 	],
 
 	state: {
