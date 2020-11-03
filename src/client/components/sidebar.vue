@@ -11,14 +11,11 @@
 	<transition name="nav">
 		<nav class="nav" :class="{ iconOnly, hidden }" v-show="showing">
 			<div>
-				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
+				<button class="item _button account" @click="openAccountMenu">
 					<MkAvatar :user="$store.state.i" class="avatar"/><MkAcct class="text" :user="$store.state.i"/>
 				</button>
-				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
-					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</button>
 				<MkA class="item index" active-class="active" to="/" exact v-else>
-					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
+					<Fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
@@ -28,7 +25,7 @@
 					</component>
 				</template>
 				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
+				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu">
 					<Fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
 				</button>
 				<button class="item _button" @click="more">
@@ -74,7 +71,6 @@ export default defineComponent({
 		},
 
 		otherNavItemIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
 			for (const def in this.menuDef) {
 				if (this.menu.includes(def)) continue;
 				if (this.menuDef[def].indicated) return true;
@@ -118,10 +114,6 @@ export default defineComponent({
 
 		show() {
 			this.showing = true;
-		},
-
-		top() {
-			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
 		search() {
