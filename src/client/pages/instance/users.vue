@@ -101,10 +101,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('users'),
-					icon: faUsers
-				}],
+				title: this.$t('users'),
+				icon: faUsers,
 				action: {
 					icon: faSearch,
 					handler: this.searchUser
@@ -206,8 +204,8 @@ export default defineComponent({
 			});
 		},
 
-		async show(user) {
-			os.popup(await import('./user-dialog.vue'), {
+		show(user) {
+			os.popup(import('./user-dialog.vue'), {
 				userId: user.id
 			}, {}, 'closed');
 		},

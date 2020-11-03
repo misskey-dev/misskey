@@ -146,13 +146,11 @@ export class Autocomplete {
 
 			this.opening = false;
 		} else {
-			const MkAutocomplete = await import('@/components/autocomplete.vue');
-
 			const _x = ref(x);
 			const _y = ref(y);
 			const _q = ref(q);
 
-			const { dispose } = popup(MkAutocomplete, {
+			const { dispose } = await popup(import('@/components/autocomplete.vue'), {
 				textarea: this.textarea,
 				close: this.close,
 				type: type,

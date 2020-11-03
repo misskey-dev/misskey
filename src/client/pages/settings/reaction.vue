@@ -37,10 +37,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('reaction'),
-					icon: faLaugh
-				}]
+				title: this.$t('reaction'),
+				icon: faLaugh
 			},
 			reactions: this.$store.state.settings.reactions.join(''),
 			changed: false,
@@ -73,8 +71,8 @@ export default defineComponent({
 			this.changed = false;
 		},
 
-		async preview(ev) {
-			os.popup(await import('@/components/reaction-picker.vue'), {
+		preview(ev) {
+			os.popup(import('@/components/reaction-picker.vue'), {
 				reactions: this.splited,
 				showFocus: false,
 				src: ev.currentTarget || ev.target,
@@ -85,7 +83,7 @@ export default defineComponent({
 			this.reactions = defaultSettings.reactions.join('');
 		},
 
-		async chooseEmoji(ev) {
+		chooseEmoji(ev) {
 			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
 				this.reactions += emoji;
 			});

@@ -22,10 +22,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('error'),
-					icon: faExclamationTriangle
-				}]
+				title: this.$t('error'),
+				icon: faExclamationTriangle
 			},
 			faExclamationTriangle
 		};

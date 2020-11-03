@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -86,7 +86,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			emojilist,
+			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
 			customEmojis: {},
 			faGlobe, faHistory,
@@ -137,7 +137,7 @@ export default defineComponent({
 	created() {
 		let local = this.$store.state.instance.meta.emojis;
 		local = groupByX(local, (x: any) => x.category || '');
-		this.customEmojis = local;
+		this.customEmojis = markRaw(local);
 	},
 
 	methods: {

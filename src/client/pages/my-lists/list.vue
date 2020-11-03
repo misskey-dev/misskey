@@ -47,10 +47,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.list ? {
-				header: [{
-					title: this.list.name,
-					icon: faListUl,
-				}],
+				title: this.list.name,
+				icon: faListUl,
 			} : null),
 			list: null,
 			users: [],

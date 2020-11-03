@@ -57,17 +57,18 @@
 	<p class="status"><b>{{ $t('_reversi.turnCount', { count: logPos }) }}</b> {{ $t('_reversi.black') }}:{{ o.blackCount }} {{ $t('_reversi.white') }}:{{ o.whiteCount }} {{ $t('_reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<MkButton @click="surrender">{{ $t('_reversi.surrender') }}</MkButton>
+		<MkButton @click="surrender" inline>{{ $t('_reversi.surrender') }}</MkButton>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<!-- TODO <ui-horizon-group> -->
-			<MkButton @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></MkButton>
-			<MkButton @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></MkButton>
-			<MkButton @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></MkButton>
-			<MkButton @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></MkButton>
-		<!-- TODO </ui-horizon-group> -->
+		<div class="buttons" v-if="!autoplaying">
+			<MkButton inline @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></MkButton>
+			<MkButton inline @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></MkButton>
+			<MkButton inline @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></MkButton>
+			<MkButton inline @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></MkButton>
+		</div>
+		<MkButton @click="autoplay()" :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;"><fa :icon="faPlay"/></MkButton>
 	</div>
 
 	<div class="info">
@@ -75,12 +76,16 @@
 		<p v-if="game.loopedBoard">{{ $t('_reversi.loopedMap') }}</p>
 		<p v-if="game.canPutEverywhere">{{ $t('_reversi.canPutEverywhere') }}</p>
 	</div>
+
+	<div class="watchers">
+		<MkAvatar v-for="user in watchers" :key="user.id" :user="user" class="avatar"/>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as CRC32 from 'crc-32';
@@ -112,8 +117,9 @@ export default defineComponent({
 			o: null as Reversi,
 			logs: [],
 			logPos: 0,
+			watchers: [],
 			pollingClock: null,
-			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle
+			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle, faPlay
 		};
 	},
 
@@ -197,12 +203,14 @@ export default defineComponent({
 		this.connection.on('set', this.onSet);
 		this.connection.on('rescue', this.onRescue);
 		this.connection.on('ended', this.onEnded);
+		this.connection.on('watchers', this.onWatchers);
 	},
 
 	beforeUnmount() {
 		this.connection.off('set', this.onSet);
 		this.connection.off('rescue', this.onRescue);
 		this.connection.off('ended', this.onEnded);
+		this.connection.off('watchers', this.onWatchers);
 
 		clearInterval(this.pollingClock);
 	},
@@ -308,11 +316,44 @@ export default defineComponent({
 			this.$forceUpdate();
 		},
 
+		onWatchers(users) {
+			this.watchers = users;
+		},
+
 		surrender() {
 			os.api('games/reversi/games/surrender', {
 				gameId: this.game.id
 			});
 		},
+
+		autoplay() {
+			this.autoplaying = true;
+			this.logPos = 0;
+
+			setTimeout(() => {
+				this.logPos = 1;
+
+				let i = 1;
+				let previousLog = this.game.logs[0];
+				const tick = () => {
+					const log = this.game.logs[i];
+					const time = new Date(log.at).getTime() - new Date(previousLog.at).getTime()
+					setTimeout(() => {
+						i++;
+						this.logPos++;
+						previousLog = log;
+
+						if (i < this.game.logs.length) {
+							tick();
+						} else {
+							this.autoplaying = false;
+						}
+					}, time);
+				};
+
+				tick();
+			}, 1000);
+		}
 	}
 });
 </script>
@@ -466,6 +507,27 @@ export default defineComponent({
 			display: inline-block;
 			margin: 0 8px;
 			min-width: 70px;
+		}
+
+		> .buttons {
+			display: flex;
+
+			> * {
+				flex: 1;
+			}
+		}
+	}
+
+	> .watchers {
+		padding: 0 0 16px 0;
+
+		&:empty {
+			display: none;
+		}
+
+		> .avatar {
+			width: 32px;
+			height: 32px;
 		}
 	}
 }

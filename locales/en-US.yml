@@ -602,6 +602,8 @@ instanceTicker: "Instance information of notes"
 waitingFor: "Waiting for {x}"
 random: "Random"
 system: "System"
+switchUi: "Switch UI"
+desktop: "Desktop"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"

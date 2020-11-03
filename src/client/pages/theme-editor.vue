@@ -121,10 +121,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('themeEditor'),
-					icon: faPalette,
-				}],
+				title: this.$t('themeEditor'),
+				icon: faPalette,
 			},
 			theme: [] as ThemeViewModel,
 			name: '',

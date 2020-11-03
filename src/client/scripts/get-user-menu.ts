@@ -101,8 +101,8 @@ export function getUserMenu(user) {
 		});
 	}
 
-	async function reportAbuse() {
-		os.popup(await import('@/components/abuse-report-window.vue'), {
+	function reportAbuse() {
+		os.popup(import('@/components/abuse-report-window.vue'), {
 			user: user,
 		}, {}, 'closed');
 	}
@@ -131,16 +131,10 @@ export function getUserMenu(user) {
 			os.post({ specified: user });
 		}
 	}, store.state.i.id != user.id ? {
+		type: 'link',
 		icon: faComments,
 		text: i18n.global.t('startMessaging'),
-		action: () => {
-			const acct = getAcct(user);
-			switch (store.state.device.chatOpenBehavior) {
-				case 'window': { os.pageWindow('/my/messaging/' + acct); break; }
-				case 'popout': { popout('/my/messaging'); break; }
-				default: { router.push('/my/messaging'); break; }
-			}
-		}
+		to: '/my/messaging/' + getAcct(user),
 	} : undefined, null, {
 		icon: faListUl,
 		text: i18n.global.t('addToList'),

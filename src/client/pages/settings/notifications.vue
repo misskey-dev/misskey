@@ -40,10 +40,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('notifications'),
-					icon: faBell
-				}]
+				title: this.$t('notifications'),
+				icon: faBell
 			},
 			faCog
 		}
@@ -72,9 +70,9 @@ export default defineComponent({
 			os.api('notifications/mark-all-as-read');
 		},
 
-		async configure() {
+		configure() {
 			const includingTypes = notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
-			os.popup(await import('@/components/notification-setting-window.vue'), {
+			os.popup(import('@/components/notification-setting-window.vue'), {
 				includingTypes,
 				showGlobalToggle: false,
 			}, {

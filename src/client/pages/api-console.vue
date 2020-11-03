@@ -41,10 +41,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: 'API console',
-					icon: faTerminal
-				}]
+				title: 'API console',
+				icon: faTerminal
 			},
 
 			endpoint: '',

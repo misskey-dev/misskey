@@ -13,5 +13,5 @@ export const langs = _LANGS_;
 export const getLocale = async () => Object.fromEntries((await entries(clientDb.i18n)) as [string, string][]);
 export const version = _VERSION_;
 export const instanceName = siteName === 'Misskey' ? host : siteName;
-export const deckmode = localStorage.getItem('deckmode') === 'true';
+export const ui = localStorage.getItem('ui');
 export const debug = localStorage.getItem('debug') === 'true';

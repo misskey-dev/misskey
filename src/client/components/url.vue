@@ -71,7 +71,7 @@ export default defineComponent({
 			if (!document.body.contains(this.$el)) return;
 			if (this.close) return;
 
-			const { dispose } = os.popup(await import('@/components/url-preview-popup.vue'), {
+			const { dispose } = await os.popup(import('@/components/url-preview-popup.vue'), {
 				url: this.url,
 				source: this.$el
 			});

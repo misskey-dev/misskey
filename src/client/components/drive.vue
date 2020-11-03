@@ -64,7 +64,7 @@ export default defineComponent({
 	},
 
 	props: {
-		initFolder: {
+		initialFolder: {
 			type: Object,
 			required: false
 		},
@@ -151,8 +151,8 @@ export default defineComponent({
 		this.connection.on('folderUpdated', this.onStreamDriveFolderUpdated);
 		this.connection.on('folderDeleted', this.onStreamDriveFolderDeleted);
 
-		if (this.initFolder) {
-			this.move(this.initFolder);
+		if (this.initialFolder) {
+			this.move(this.initialFolder);
 		} else {
 			this.fetch();
 		}
@@ -639,6 +639,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .yfudmmck {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
 	> nav {
 		display: block;
 		z-index: 2;
@@ -698,6 +702,7 @@ export default defineComponent({
 	}
 
 	> .main {
+		flex: 1;
 		overflow: auto;
 
 		&, * {

@@ -42,10 +42,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('other'),
-					icon: faEllipsisH
-				}]
+				title: this.$t('other'),
+				icon: faEllipsisH
 			},
 			debug
 		}
@@ -69,7 +67,7 @@ export default defineComponent({
 		},
 
 		taskmanager() {
-			os.popup(defineAsyncComponent(() => import('@/components/taskmanager.vue')), {
+			os.popup(import('@/components/taskmanager.vue'), {
 			}, {}, 'closed');
 		}
 	}

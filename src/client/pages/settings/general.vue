@@ -107,10 +107,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('general'),
-					icon: faCogs
-				}]
+				title: this.$t('general'),
+				icon: faCogs
 			},
 			langs,
 			lang: localStorage.getItem('lang'),

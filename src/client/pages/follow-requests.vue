@@ -44,10 +44,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('followRequests'),
-					icon: faUserClock,
-				}],
+				title: this.$t('followRequests'),
+				icon: faUserClock,
 			},
 			pagination: {
 				endpoint: 'following/requests/list',

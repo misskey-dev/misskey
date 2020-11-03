@@ -19,10 +19,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('favorites'),
-					icon: faStar
-				}]
+				title: this.$t('favorites'),
+				icon: faStar
 			},
 			pagination: {
 				endpoint: 'i/favorites',

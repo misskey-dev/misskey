@@ -84,10 +84,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('abuseReports'),
-					icon: faExclamationCircle
-				}],
+				title: this.$t('abuseReports'),
+				icon: faExclamationCircle
 			},
 			searchUsername: '',
 			searchHost: '',
