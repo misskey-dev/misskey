@@ -2,8 +2,8 @@ import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-ic
 import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
 import { store } from '@/store';
-import { deckmode } from '@/config';
 import { search } from '@/scripts/search';
+import * as os from '@/os';
 
 export const sidebarDef = {
 	notifications: {
@@ -119,12 +119,29 @@ export const sidebarDef = {
 		show: computed(() => store.getters.isSignedIn),
 		to: computed(() => `/@${store.state.i.username}/room`),
 	},
-	deck: {
-		title: deckmode ? 'undeck' : 'deck',
+	ui: {
+		title: 'switchUi',
 		icon: faColumns,
-		action: () => {
-			localStorage.setItem('deckmode', (!deckmode).toString());
-			location.reload();
+		action: (ev) => {
+			os.modalMenu([{
+				text: 'Default',
+				action: () => {
+					localStorage.setItem('ui', 'default');
+					location.reload();
+				}
+			}, {
+				text: 'Deck',
+				action: () => {
+					localStorage.setItem('ui', 'deck');
+					location.reload();
+				}
+			}, {
+				text: 'Desktop',
+				action: () => {
+					localStorage.setItem('ui', 'desktop');
+					location.reload();
+				}
+			}], ev.currentTarget || ev.target);
 		},
 	},
 };

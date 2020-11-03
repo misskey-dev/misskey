@@ -10,7 +10,7 @@ import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } f
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
-import { deckmode, url } from '@/config';
+import { ui, url } from '@/config';
 import { popout } from '@/scripts/popout';
 
 export default defineComponent({
@@ -114,7 +114,10 @@ export default defineComponent({
 				if (this.$store.state.device.defaultSideView && this.sideViewHook && this.to !== '/') {
 					return this.sideViewHook(this.to);
 				}
-				if (this.$store.state.device.deckNavWindow && deckmode && this.to !== '/') {
+				if (this.$store.state.device.deckNavWindow && (ui === 'deck') && this.to !== '/') {
+					return this.window();
+				}
+				if (ui === 'desktop') {
 					return this.window();
 				}
 
