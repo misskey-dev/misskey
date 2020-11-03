@@ -177,10 +177,10 @@ export function popup(component: Component | typeof import('*.vue'), props: Reco
 	};
 }
 
-export function pageWindow(url: string) {
-	const { component, props } = resolve(url);
+export function pageWindow(path: string) {
+	const { component, props } = resolve(path);
 	popup(defineAsyncComponent(() => import('@/components/page-window.vue')), {
-		initialUrl: url,
+		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
 	}, {}, 'closed');

@@ -216,21 +216,21 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
-			const url = this.$route.path;
+			const path = this.$route.path;
 			os.contextMenu([{
 				type: 'label',
-				text: url,
+				text: path,
 			}, {
 				icon: faColumns,
 				text: this.$t('openInSideView'),
 				action: () => {
-					this.$refs.side.navigate(url);
+					this.$refs.side.navigate(path);
 				}
 			}, {
 				icon: faWindowMaximize,
 				text: this.$t('openInWindow'),
 				action: () => {
-					os.pageWindow(url);
+					os.pageWindow(path);
 				}
 			}], e);
 		},

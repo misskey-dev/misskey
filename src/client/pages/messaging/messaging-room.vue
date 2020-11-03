@@ -311,20 +311,20 @@ const Component = defineComponent({
 		},
 
 		menu(ev) {
-			const url = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
+			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
 
 			os.modalMenu([this.inWindow ? undefined : {
 				text: this.$t('openInWindow'),
 				icon: faWindowMaximize,
 				action: () => {
-					os.pageWindow(url);
+					os.pageWindow(path);
 					this.$router.back();
 				},
 			}, this.inWindow ? undefined : {
 				text: this.$t('popout'),
 				icon: faExternalLinkAlt,
 				action: () => {
-					popout(url);
+					popout(path);
 					this.$router.back();
 				},
 			}], ev.currentTarget || ev.target);

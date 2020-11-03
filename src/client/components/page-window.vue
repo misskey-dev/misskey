@@ -28,6 +28,7 @@ import XHeader from '@/ui/_common_/header.vue';
 import { popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { resolve } from '@/router';
+import { url } from '@/config';
 
 export default defineComponent({
 	components: {
@@ -43,14 +44,14 @@ export default defineComponent({
 
 	provide() {
 		return {
-			navHook: (url) => {
-				this.navigate(url);
+			navHook: (path) => {
+				this.navigate(path);
 			}
 		};
 	},
 
 	props: {
-		initialUrl: {
+		initialPath: {
 			type: String,
 			required: true,
 		},
@@ -70,7 +71,7 @@ export default defineComponent({
 	data() {
 		return {
 			pageInfo: null,
-			url: this.initialUrl,
+			path: this.initialPath,
 			component: this.initialComponent,
 			props: this.initialProps,
 			history: [],
@@ -79,10 +80,14 @@ export default defineComponent({
 	},
 
 	computed: {
+		url(): string {
+			return url + this.path;
+		},
+
 		contextmenu() {
 			return [{
 				type: 'label',
-				text: this.url,
+				text: this.path,
 			}, {
 				icon: faExpandAlt,
 				text: this.$t('showInPage'),
@@ -91,7 +96,7 @@ export default defineComponent({
 				icon: faColumns,
 				text: this.$t('openInSideView'),
 				action: () => {
-					this.sideViewHook(this.url);
+					this.sideViewHook(this.path);
 					this.$refs.window.close();
 				}
 			} : undefined, {
@@ -123,10 +128,10 @@ export default defineComponent({
 			}
 		},
 
-		navigate(url, record = true) {
-			if (record) this.history.push(this.url);
-			this.url = url;
-			const { component, props } = resolve(url);
+		navigate(path, record = true) {
+			if (record) this.history.push(this.path);
+			this.path = path;
+			const { component, props } = resolve(path);
 			this.component = component;
 			this.props = props;
 		},
@@ -136,12 +141,12 @@ export default defineComponent({
 		},
 
 		expand() {
-			this.$router.push(this.url);
+			this.$router.push(this.path);
 			this.$refs.window.close();
 		},
 
 		popout() {
-			popout(this.url, this.$el);
+			popout(this.path, this.$el);
 			this.$refs.window.close();
 		},
 	},
