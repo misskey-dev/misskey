@@ -5,12 +5,20 @@
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">
-			<div class="title" v-for="header in info.header" :key="header.id" :class="{ _button: header.onClick, selected: header.selected }" @click="header.onClick" v-tooltip="header.tooltip">
-				<Fa v-if="header.icon" :icon="header.icon" :key="header.icon" class="icon"/>
-				<MkAvatar v-else-if="header.avatar" class="avatar" :user="header.avatar" :disable-preview="true"/>
-				<span v-if="header.title" class="text">{{ header.title }}</span>
-				<MkUserName v-else-if="header.userName" :user="header.userName" :nowrap="false" class="text"/>
-			</div>
+			<template v-if="info.tabs">
+				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click="tab.onClick" v-tooltip="tab.tooltip">
+					<Fa v-if="tab.icon" :icon="tab.icon" :key="tab.icon" class="icon"/>
+					<span v-if="tab.title" class="text">{{ tab.title }}</span>
+				</div>
+			</template>
+			<template v-else>
+				<div class="title">
+					<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
+					<span v-if="info.title" class="text">{{ info.title }}</span>
+					<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
+				</div>
+			</template>
 		</div>
 		<button class="_button action" v-if="info.action" @click="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 	</template>
@@ -42,8 +50,11 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route(to, from) {
-			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
+		$route: {
+			handler(to, from) {
+				this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
+			},
+			immediate: true
 		},
 	},
 

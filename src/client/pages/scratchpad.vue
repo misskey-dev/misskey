@@ -44,10 +44,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('scratchpad'),
-					icon: faTerminal,
-				}],
+				title: this.$t('scratchpad'),
+				icon: faTerminal,
 			},
 			code: '',
 			logs: [],

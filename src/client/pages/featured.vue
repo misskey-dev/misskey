@@ -18,10 +18,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('featured'),
-					icon: faFireAlt
-				}],
+				title: this.$t('featured'),
+				icon: faFireAlt
 			},
 			pagination: {
 				endpoint: 'notes/featured',

@@ -43,10 +43,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('channel'),
-					icon: faSatelliteDish
-				}]
+				title: this.$t('channel'),
+				icon: faSatelliteDish
 			},
 			tab: 'featured',
 			featuredPagination: {

@@ -16,10 +16,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('notFound'),
-					icon: faExclamationTriangle
-				}]
+				title: this.$t('notFound'),
+				icon: faExclamationTriangle
 			},
 		}
 	},

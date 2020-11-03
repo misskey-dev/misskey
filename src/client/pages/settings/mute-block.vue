@@ -49,10 +49,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('muteAndBlock'),
-					icon: faBan
-				}]
+				title: this.$t('muteAndBlock'),
+				icon: faBan
 			},
 			tab: 'mute',
 			mutingPagination: {

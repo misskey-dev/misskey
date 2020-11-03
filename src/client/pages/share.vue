@@ -27,10 +27,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('share'),
-					icon: faShareAlt
-				}],
+				title: this.$t('share'),
+				icon: faShareAlt
 			},
 			title: null,
 			text: null,

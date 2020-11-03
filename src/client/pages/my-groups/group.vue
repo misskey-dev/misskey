@@ -48,10 +48,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.group ? {
-				header: [{
-					title: this.group.name,
-					icon: faUsers,
-				}],
+				title: this.group.name,
+				icon: faUsers,
 			} : null),
 			group: null,
 			users: [],

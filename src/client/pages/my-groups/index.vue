@@ -63,10 +63,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('groups'),
-					icon: faUsers
-				}],
+				title: this.$t('groups'),
+				icon: faUsers
 			},
 			tab: 'owned',
 			ownedPagination: {

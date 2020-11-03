@@ -86,7 +86,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
+				tabs: [{
 					id: 'index',
 					title: null,
 					tooltip: this.$t('instance'),

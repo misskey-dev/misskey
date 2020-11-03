@@ -35,10 +35,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('pages'),
-					icon: faStickyNote
-				}],
+				title: this.$t('pages'),
+				icon: faStickyNote,
 				action: {
 					icon: faPlus,
 					handler: this.create

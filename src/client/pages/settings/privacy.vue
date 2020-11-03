@@ -38,10 +38,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('privacy'),
-					icon: faLockOpen
-				}]
+				title: this.$t('privacy'),
+				icon: faLockOpen
 			},
 			isLocked: false,
 			autoAcceptFollowed: false,

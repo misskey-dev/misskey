@@ -42,10 +42,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('other'),
-					icon: faEllipsisH
-				}]
+				title: this.$t('other'),
+				icon: faEllipsisH
 			},
 			debug
 		}
