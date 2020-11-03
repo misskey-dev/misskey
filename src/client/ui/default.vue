@@ -91,7 +91,6 @@ export default defineComponent({
 			host: host,
 			pageKey: 0,
 			pageInfo: null,
-			connection: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: sidebarDef,
 			navHidden: false,
@@ -110,7 +109,7 @@ export default defineComponent({
 				},
 				'p': os.post,
 				'n': os.post,
-				's': search,
+				's': () => search(),
 				'h|/': this.help
 			};
 		},
@@ -140,9 +139,6 @@ export default defineComponent({
 
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
-
-		this.connection = os.stream.useSharedConnection('main');
-		this.connection.on('notification', this.onNotification);
 
 		if (this.$store.state.deviceUser.widgets.length === 0) {
 			this.$store.commit('deviceUser/setWidgets', [{
@@ -216,40 +212,23 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
-			const url = this.$route.path;
+			const path = this.$route.path;
 			os.contextMenu([{
 				type: 'label',
-				text: url,
+				text: path,
 			}, {
 				icon: faColumns,
 				text: this.$t('openInSideView'),
 				action: () => {
-					this.$refs.side.navigate(url);
+					this.$refs.side.navigate(path);
 				}
 			}, {
 				icon: faWindowMaximize,
 				text: this.$t('openInWindow'),
 				action: () => {
-					os.pageWindow(url);
+					os.pageWindow(path);
 				}
 			}], e);
-		},
-
-		async onNotification(notification) {
-			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
-				return;
-			}
-			if (document.visibilityState === 'visible') {
-				os.stream.send('readNotification', {
-					id: notification.id
-				});
-
-				os.popup(await import('@/components/toast.vue'), {
-					notification
-				}, {}, 'closed');
-			}
-
-			os.sound('notification');
 		},
 	}
 });

@@ -1,6 +1,6 @@
 <template>
 <XWindow ref="window"
-	:initial-width="400"
+	:initial-width="700"
 	:initial-height="500"
 	:can-resize="true"
 	:close-right="true"
@@ -22,12 +22,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@/components/ui/window.vue';
 import XHeader from '@/ui/_common_/header.vue';
 import { popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { resolve } from '@/router';
+import { url } from '@/config';
 
 export default defineComponent({
 	components: {
@@ -35,16 +36,22 @@ export default defineComponent({
 		XHeader,
 	},
 
+	inject: {
+		sideViewHook: {
+			default: null
+		}
+	},
+
 	provide() {
 		return {
-			navHook: (url) => {
-				this.navigate(url);
+			navHook: (path) => {
+				this.navigate(path);
 			}
 		};
 	},
 
 	props: {
-		initialUrl: {
+		initialPath: {
 			type: String,
 			required: true,
 		},
@@ -64,7 +71,7 @@ export default defineComponent({
 	data() {
 		return {
 			pageInfo: null,
-			url: this.initialUrl,
+			path: this.initialPath,
 			component: this.initialComponent,
 			props: this.initialProps,
 			history: [],
@@ -73,15 +80,26 @@ export default defineComponent({
 	},
 
 	computed: {
+		url(): string {
+			return url + this.path;
+		},
+
 		contextmenu() {
 			return [{
 				type: 'label',
-				text: this.url,
+				text: this.path,
 			}, {
 				icon: faExpandAlt,
 				text: this.$t('showInPage'),
 				action: this.expand
-			}, {
+			}, this.sideViewHook ? {
+				icon: faColumns,
+				text: this.$t('openInSideView'),
+				action: () => {
+					this.sideViewHook(this.path);
+					this.$refs.window.close();
+				}
+			} : undefined, {
 				icon: faExternalLinkAlt,
 				text: this.$t('popout'),
 				action: this.popout
@@ -110,10 +128,10 @@ export default defineComponent({
 			}
 		},
 
-		navigate(url, record = true) {
-			if (record) this.history.push(this.url);
-			this.url = url;
-			const { component, props } = resolve(url);
+		navigate(path, record = true) {
+			if (record) this.history.push(this.path);
+			this.path = path;
+			const { component, props } = resolve(path);
 			this.component = component;
 			this.props = props;
 		},
@@ -123,12 +141,12 @@ export default defineComponent({
 		},
 
 		expand() {
-			this.$router.push(this.url);
+			this.$router.push(this.path);
 			this.$refs.window.close();
 		},
 
 		popout() {
-			popout(this.url, this.$el);
+			popout(this.path, this.$el);
 			this.$refs.window.close();
 		},
 	},

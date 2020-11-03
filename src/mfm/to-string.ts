@@ -48,6 +48,14 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 			return `<jump>${appendChildren(token.children, opts)}</jump>`;
 		},
 
+		twitch(token, opts) {
+			return `<twitch>${appendChildren(token.children, opts)}</twitch>`;
+		},
+
+		shake(token, opts) {
+			return `<shake>${appendChildren(token.children, opts)}</shake>`;
+		},
+
 		flip(token, opts) {
 			return `<flip>${appendChildren(token.children, opts)}</flip>`;
 		},

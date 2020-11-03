@@ -2,11 +2,9 @@ import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-ic
 import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
 import { store } from '@/store';
-import { deckmode } from '@/config';
 import { search } from '@/scripts/search';
-import { popout } from '@/scripts/popout';
-import { router } from '@/router';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 export const sidebarDef = {
 	notifications: {
@@ -21,13 +19,7 @@ export const sidebarDef = {
 		icon: faComments,
 		show: computed(() => store.getters.isSignedIn),
 		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadMessagingMessage),
-		action: () => {
-			switch (store.state.device.chatOpenBehavior) {
-				case 'window': { os.pageWindow('/my/messaging'); break; }
-				case 'popout': { popout('/my/messaging'); break; }
-				default: { router.push('/my/messaging'); break; }
-			}
-		}
+		to: '/my/messaging',
 	},
 	drive: {
 		title: 'drive',
@@ -128,12 +120,29 @@ export const sidebarDef = {
 		show: computed(() => store.getters.isSignedIn),
 		to: computed(() => `/@${store.state.i.username}/room`),
 	},
-	deck: {
-		title: deckmode ? 'undeck' : 'deck',
+	ui: {
+		title: 'switchUi',
 		icon: faColumns,
-		action: () => {
-			localStorage.setItem('deckmode', (!deckmode).toString());
-			location.reload();
+		action: (ev) => {
+			os.modalMenu([{
+				text: i18n.global.t('default'),
+				action: () => {
+					localStorage.setItem('ui', 'default');
+					location.reload();
+				}
+			}, {
+				text: i18n.global.t('deck'),
+				action: () => {
+					localStorage.setItem('ui', 'deck');
+					location.reload();
+				}
+			}, {
+				text: i18n.global.t('desktop') + ' (β)',
+				action: () => {
+					localStorage.setItem('ui', 'desktop');
+					location.reload();
+				}
+			}], ev.currentTarget || ev.target);
 		},
 	},
 };

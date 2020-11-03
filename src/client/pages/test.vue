@@ -10,6 +10,10 @@
 				<MkInput v-model:value="dialogBody">
 					<span>Body</span>
 				</MkInput>
+				<MkRadio v-model="dialogType" value="info">Info</MkRadio>
+				<MkRadio v-model="dialogType" value="success">Success</MkRadio>
+				<MkRadio v-model="dialogType" value="warning">Warn</MkRadio>
+				<MkRadio v-model="dialogType" value="error">Error</MkRadio>
 				<MkSwitch v-model:value="dialogCancel">
 					<span>With cancel button</span>
 				</MkSwitch>
@@ -133,6 +137,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
+import MkRadio from '@/components/ui/radio.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -141,6 +146,7 @@ export default defineComponent({
 		MkInput,
 		MkSwitch,
 		MkTextarea,
+		MkRadio,
 	},
 
 	data() {
@@ -153,6 +159,7 @@ export default defineComponent({
 			},
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',
+			dialogType: 'info',
 			dialogCancel: false,
 			dialogCancelByBgClick: true,
 			dialogInput: false,
@@ -192,6 +199,7 @@ export default defineComponent({
 		async showDialog() {
 			this.dialogResult = null;
 			this.dialogResult = await os.dialog({
+				type: this.dialogType,
 				title: this.dialogTitle,
 				text: this.dialogBody,
 				showCancelButton: this.dialogCancel,

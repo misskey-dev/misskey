@@ -63,7 +63,6 @@ export default defineComponent({
 			host: host,
 			pageInfo: null,
 			pageKey: 0,
-			connection: null,
 			menuDef: sidebarDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
@@ -107,11 +106,6 @@ export default defineComponent({
 		document.documentElement.style.overflowY = 'hidden';
 		document.documentElement.style.scrollBehavior = 'auto';
 		window.addEventListener('wheel', this.onWheel);
-
-		if (this.$store.getters.isSignedIn) {
-			this.connection = os.stream.useSharedConnection('main');
-			this.connection.on('notification', this.onNotification);
-		}
 	},
 
 	mounted() {
@@ -141,23 +135,6 @@ export default defineComponent({
 
 		post() {
 			os.post();
-		},
-
-		async onNotification(notification) {
-			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
-				return;
-			}
-
-			if (document.visibilityState === 'visible') {
-				os.stream.send('readNotification', {
-					id: notification.id
-				});
-
-				os.popup(await import('@/components/toast.vue'), {
-					notification
-				}, {}, 'closed');
-			}
-			os.sound('notification');
 		},
 
 		async addColumn(ev) {

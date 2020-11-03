@@ -84,8 +84,8 @@ export default defineComponent({
 			Progress.done();
 		},
 
-		async showUser() {
-			os.popup(await import('./user-dialog.vue'), {
+		showUser() {
+			os.popup(import('./user-dialog.vue'), {
 				userId: this.file.userId
 			}, {}, 'closed');
 		},

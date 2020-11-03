@@ -378,13 +378,13 @@ export default defineComponent({
 			this.saveDraft();
 		},
 
-		async setVisibility() {
+		setVisibility() {
 			if (this.channel) {
 				// TODO: information dialog
 				return;
 			}
 
-			os.popup(await import('./visibility-picker.vue'), {
+			os.popup(import('./visibility-picker.vue'), {
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly,
 				src: this.$refs.visibilityButton
@@ -564,7 +564,7 @@ export default defineComponent({
 				this.posting = false;
 				os.dialog({
 					type: 'error',
-					text: err.message + '<br>' + (err as any).id,
+					text: err.message + '\n' + (err as any).id,
 				});
 			});
 		},

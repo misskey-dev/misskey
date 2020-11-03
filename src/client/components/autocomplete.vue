@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
@@ -122,17 +122,13 @@ export default defineComponent({
 			users: [],
 			hashtags: [],
 			emojis: [],
+			items: [],
 			select: -1,
-			emojilist,
 			emojiDb: [] as EmojiDef[]
 		}
 	},
 
 	computed: {
-		items(): HTMLCollection {
-			return (this.$refs.suggests as Element).children;
-		},
-
 		useOsNativeEmojis(): boolean {
 			return this.$store.state.device.useOsNativeEmojis;
 		}
@@ -148,6 +144,7 @@ export default defineComponent({
 
 	updated() {
 		this.setPosition();
+		this.items = (this.$refs.suggests as Element | undefined)?.children || [];
 	},
 
 	mounted() {
@@ -180,7 +177,7 @@ export default defineComponent({
 
 		emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
 
-		this.emojiDb = emojiDefinitions.concat(emjdb);
+		this.emojiDb = markRaw(emojiDefinitions.concat(emjdb));
 		//#endregion
 
 		this.textarea.addEventListener('keydown', this.onKeydown);
@@ -371,6 +368,7 @@ export default defineComponent({
 
 		selectNext() {
 			if (++this.select >= this.items.length) this.select = 0;
+			if (this.items.length === 0) this.select = -1;
 			this.applySelect();
 		},
 
@@ -384,8 +382,10 @@ export default defineComponent({
 				el.removeAttribute('data-selected');
 			}
 
-			this.items[this.select].setAttribute('data-selected', 'true');
-			(this.items[this.select] as any).focus();
+			if (this.select !== -1) {
+				this.items[this.select].setAttribute('data-selected', 'true');
+				(this.items[this.select] as any).focus();
+			}
 		},
 
 		chooseUser() {

@@ -41,7 +41,7 @@
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
-			<div class="body" ref="noteBody">
+			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$store.state.i" :custom-emojis="appearNote.emojis"/>
 					<XCwButton v-model:value="showContent" :note="appearNote"/>
@@ -54,7 +54,7 @@
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
 					<div class="files" v-if="appearNote.files.length > 0">
-						<XMediaList :media-list="appearNote.files" :parent-element="noteBody"/>
+						<XMediaList :media-list="appearNote.files"/>
 					</div>
 					<XPoll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="detail" class="url-preview"/>
@@ -176,7 +176,6 @@ export default defineComponent({
 			showContent: false,
 			isDeleted: false,
 			muted: false,
-			noteBody: this.$refs.noteBody,
 			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish
 		};
 	},
@@ -309,8 +308,6 @@ export default defineComponent({
 		if (this.$store.getters.isSignedIn) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
-
-		this.noteBody = this.$refs.noteBody;
 	},
 
 	beforeUnmount() {
@@ -501,7 +498,7 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.popup(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
+			os.popup(import('@/components/reaction-picker.vue'), {
 				showFocus: viaKeyboard,
 				src: this.$refs.reactButton,
 			}, {
@@ -647,7 +644,7 @@ export default defineComponent({
 						text: this.$t('reportAbuse'),
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
-							os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
+							os.popup(import('@/components/abuse-report-window.vue'), {
 								user: this.appearNote.user,
 								initialComment: `Note: ${u}\n-----\n`
 							}, {}, 'closed');

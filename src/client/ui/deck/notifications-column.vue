@@ -42,8 +42,8 @@ export default defineComponent({
 		this.menu = [{
 			icon: faCog,
 			text: this.$t('notificationSetting'),
-			action: async () => {
-				os.popup(await import('@/components/notification-setting-window.vue'), {
+			action: () => {
+				os.popup(import('@/components/notification-setting-window.vue'), {
 					includingTypes: this.column.includingTypes,
 				}, {
 					done: async (res) => {

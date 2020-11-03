@@ -51,8 +51,8 @@ export default defineComponent({
 	},
 
 	methods: {
-		async configure() {
-			os.popup(await import('@/components/notification-setting-window.vue'), {
+		configure() {
+			os.popup(import('@/components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
 			}, {
 				done: async (res) => {

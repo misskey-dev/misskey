@@ -1,0 +1,133 @@
+---
+_lang_: "Українська"
+monthAndDay: "{month}/{day}"
+search: "Пошук"
+notifications: "Сповіщення"
+username: "Ім'я користувача"
+password: "Пароль"
+ok: "OK"
+gotIt: "Зрозуміло!"
+cancel: "Скасувати"
+enterUsername: "Введіть ім'я користувача"
+renotedBy: "Поширено {user}"
+noNotes: "Немає дописів"
+noNotifications: "Немає сповіщень"
+instance: "Інстанс"
+settings: "Налаштування"
+basicSettings: "Основні налаштування"
+otherSettings: "Інші налаштування"
+openInWindow: "Відкрити у вікні"
+profile: "Профіль"
+timeline: "Стрічка"
+noAccountDescription: "Цей користувач ще нічого не написав про себе"
+login: "Увійти"
+loggingIn: "Здійснюємо вхід..."
+logout: "Вийти"
+signup: "Реєстрація"
+uploading: "Завантаження..."
+save: "Зберегти"
+users: "Користувачі"
+addUser: "Додати користувача"
+favorite: "Обране"
+favorites: "Обране"
+unfavorite: "Видалити з обраного"
+pin: "Закріпити"
+unpin: "Відкріпити"
+copyContent: "Скопіювати контент"
+copyLink: "Скопіювати посилання"
+delete: "Видалити"
+addToList: "Додати до списку"
+sendMessage: "Надіслати повідомлення"
+copyUsername: "Скопіювати ім’я користувача"
+searchUser: "Пошук користувачів"
+reply: "Відповісти"
+loadMore: "Показати більше"
+mention: "Згадка"
+mentions: "Згадки"
+importAndExport: "Імпорт та експорт"
+import: "Імпорт"
+export: "Експорт"
+files: "Файли"
+download: "Завантажити"
+lists: "Списки"
+noLists: "Немає списків"
+following: "Підписки"
+followers: "Підписники"
+followsYou: "Підписаний(-а) на вас"
+error: "Помилка"
+somethingHappened: "Щось пішло не так"
+retry: "Спробувати знову"
+pageLoadError: "Помилка при завантаженні сторінки"
+privacy: "Приватність"
+follow: "Підписки"
+unfollow: "Відписатися"
+quote: "Цитата"
+you: "Ви"
+clickToShow: "Натисніть для перегляду"
+sensitive: "NSFW"
+add: "Додати"
+reaction: "Реакції"
+markAsSensitive: "Відмітити як NSFW"
+enterFileName: "Введіть ім'я файлу"
+mute: "Ігнорувати"
+unmute: "Показувати"
+block: "Заблокувати"
+unblock: "Розблокувати"
+instances: "Інстанс"
+remove: "Видалити"
+nsfw: "NSFW"
+userList: "Списки"
+smtpUser: "Ім'я користувача"
+smtpPass: "Пароль"
+_theme:
+  keys:
+    mention: "Згадка"
+_sfx:
+  notification: "Сповіщення"
+_widgets:
+  notifications: "Сповіщення"
+  timeline: "Стрічка"
+_cw:
+  show: "Показати більше"
+_visibility:
+  followers: "Підписники"
+_postForm:
+  replyPlaceholder: "Відповідь на допис..."
+_profile:
+  username: "Ім'я користувача"
+_exportOrImport:
+  followingList: "Підписки"
+  muteList: "Ігнорувати"
+  blockingList: "Заблокувати"
+  userLists: "Списки"
+_pages:
+  script:
+    categories:
+      list: "Списки"
+    blocks:
+      _join:
+        arg1: "Списки"
+      _randomPick:
+        arg1: "Списки"
+      _dailyRandomPick:
+        arg1: "Списки"
+      _seedRandomPick:
+        arg2: "Списки"
+      _pick:
+        arg1: "Списки"
+      _listLen:
+        arg1: "Списки"
+    types:
+      array: "Списки"
+_notification:
+  _types:
+    follow: "Підписки"
+    mention: "Згадка"
+    quote: "Цитата"
+    reaction: "Реакції"
+_deck:
+  _columns:
+    notifications: "Сповіщення"
+    tl: "Стрічка"
+    list: "Списки"
+    mentions: "Згадки"
