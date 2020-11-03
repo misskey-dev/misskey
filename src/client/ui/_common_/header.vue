@@ -42,8 +42,11 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route(to, from) {
-			this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
+		$route: {
+			handler(to, from) {
+				this.canBack = (window.history.length > 0 && !['index'].includes(to.name));
+			},
+			immediate: true
 		},
 	},
 
