@@ -137,7 +137,7 @@ export const sidebarDef = {
 					location.reload();
 				}
 			}, {
-				text: i18n.global.t('desktop'),
+				text: i18n.global.t('desktop') + ' (β)',
 				action: () => {
 					localStorage.setItem('ui', 'desktop');
 					location.reload();
