@@ -144,7 +144,7 @@ if (store.state.i != null) {
 }
 //#endregion
 
-await store.dispatch('instance/fetch')
+await store.dispatch('instance/fetch');
 
 // Init service worker
 //if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
