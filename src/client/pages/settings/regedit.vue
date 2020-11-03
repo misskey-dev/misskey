@@ -46,10 +46,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: 'RegEdit',
-					icon: faCode
-				}]
+				title: 'RegEdit',
+				icon: faCode
 			},
 
 			settings: JSON5.stringify(this.$store.state.settings, null, '\t'),

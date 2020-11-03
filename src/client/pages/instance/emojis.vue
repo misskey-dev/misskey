@@ -68,10 +68,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('customEmojis'),
-					icon: faLaugh
-				}],
+				title: this.$t('customEmojis'),
+				icon: faLaugh,
 				action: {
 					icon: faPlus,
 					handler: this.add

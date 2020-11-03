@@ -152,10 +152,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: 'TEST',
-					icon: faExclamationTriangle
-				}]
+				title: 'TEST',
+				icon: faExclamationTriangle
 			},
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',

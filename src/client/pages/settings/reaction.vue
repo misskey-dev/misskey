@@ -37,10 +37,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('reaction'),
-					icon: faLaugh
-				}]
+				title: this.$t('reaction'),
+				icon: faLaugh
 			},
 			reactions: this.$store.state.settings.reactions.join(''),
 			changed: false,

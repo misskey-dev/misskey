@@ -48,10 +48,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('wordMute'),
-					icon: faCommentSlash
-				}]
+				title: this.$t('wordMute'),
+				icon: faCommentSlash
 			},
 			tab: 'soft',
 			softMutedWords: '',

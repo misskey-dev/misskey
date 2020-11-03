@@ -40,10 +40,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('notifications'),
-					icon: faBell
-				}]
+				title: this.$t('notifications'),
+				icon: faBell
 			},
 			faCog
 		}

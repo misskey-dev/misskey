@@ -31,10 +31,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('security'),
-					icon: faLock
-				}]
+				title: this.$t('security'),
+				icon: faLock
 			},
 			faLock, faSyncAlt
 		}

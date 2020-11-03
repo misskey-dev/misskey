@@ -53,10 +53,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('messaging'),
-					icon: faComments
-				}]
+				title: this.$t('messaging'),
+				icon: faComments
 			},
 			fetching: true,
 			moreFetching: false,

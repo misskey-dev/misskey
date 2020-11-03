@@ -49,10 +49,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('serverLogs'),
-					icon: faStream
-				}]
+				title: this.$t('serverLogs'),
+				icon: faStream
 			},
 			logs: [],
 			logLevel: 'all',
