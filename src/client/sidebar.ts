@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { store } from '@/store';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 export const sidebarDef = {
 	notifications: {
@@ -124,19 +125,19 @@ export const sidebarDef = {
 		icon: faColumns,
 		action: (ev) => {
 			os.modalMenu([{
-				text: 'Default',
+				text: i18n.global.t('default'),
 				action: () => {
 					localStorage.setItem('ui', 'default');
 					location.reload();
 				}
 			}, {
-				text: 'Deck',
+				text: i18n.global.t('deck'),
 				action: () => {
 					localStorage.setItem('ui', 'deck');
 					location.reload();
 				}
 			}, {
-				text: 'Desktop',
+				text: i18n.global.t('desktop'),
 				action: () => {
 					localStorage.setItem('ui', 'desktop');
 					location.reload();

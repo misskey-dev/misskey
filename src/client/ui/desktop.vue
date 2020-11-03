@@ -59,6 +59,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-app {
+	height: 100vh;
+	width: 100vw;
 }
 </style>
 
