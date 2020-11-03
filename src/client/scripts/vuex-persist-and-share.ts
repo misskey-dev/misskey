@@ -8,7 +8,7 @@ import { VuexPersistDB } from './vuex-idb';
  * Vuexのstate永続化を行い、moduleのcommitをタブ間で共有します
  * @param states 永続化するルートのstate
  * @param modules 永続化するmodule
- * @param dbVersion データベースのバージョン・modulesを変更するたびにインクリメントしてください！
+ * @param dbVersion データベースのバージョン。modulesを変更するたびにインクリメントしてください！
  * @param ignoreMutations 共有しないcommit (mutation type)
  */
 export function vuexPersistAndSharePlugin(
