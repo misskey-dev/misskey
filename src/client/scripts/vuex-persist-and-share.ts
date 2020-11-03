@@ -57,17 +57,6 @@ export function vuexPersistAndSharePlugin(
 
 		//#endregion
 
-		//#region 3秒経ったらinstance/fetchしてindexedDBに保存してみる
-		setTimeout(async () => {
-			await store.dispatch('instance/fetch');
-
-			persistDB.bulkSet(states.map(s => [s, store.state[s]]), 'store');
-			modules.map(m => {
-				persistDB.bulkSet(Object.entries(store.state[m]), m);
-			});
-		}, 3000);
-		//#endregion
-
 		//#region commit共有とmutationの購読
 		// 別タブから来たmutation/actionのpayloadのオブジェクトを覚えておく
 		const passedPayloads: any[] = [];
