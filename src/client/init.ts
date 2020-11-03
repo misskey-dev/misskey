@@ -144,10 +144,10 @@ if (store.state.i != null) {
 }
 //#endregion
 
-store.dispatch('instance/fetch').then(() => {
-	// Init service worker
-	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
-});
+await store.dispatch('instance/fetch')
+
+// Init service worker
+//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
 
 stream.init(store.state.i);
 
@@ -179,9 +179,14 @@ await router.isReady();
 
 app.mount('body');
 
-// 他のタブとlocalStorageを同期
+// 他のタブと永続化されたstateを同期
 window.addEventListener('storage', e => {
-	if (e.key === 'i') {
+	if (e.key === 'vuex') {
+		store.replaceState({
+			...store.state,
+			...JSON.parse(e.newValue)
+		});
+	} else if (e.key === 'i') {
 		location.reload();
 	}
 }, false);
@@ -358,3 +363,4 @@ if (store.getters.isSignedIn) {
 		signout();
 	});
 }
+

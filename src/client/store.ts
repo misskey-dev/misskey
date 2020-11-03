@@ -138,7 +138,7 @@ export const store = createStore({
 			ctx.commit('deviceUser/init', ctx.state.device.userData[i.id] || {});
 			// TODO: ローカルストレージを消してページリロードしたときは i が無いのでその場合のハンドリングをよしなにやる
 			const db = new VuexPersistDB();
-			await ctx.dispatch('addAcount', { id: i.id, i: await db.get('i', 'store') });
+			ctx.dispatch('addAcount', { id: i.id, i: await db.get('i', 'store') });
 		},
 
 		addAcount(ctx, info) {
