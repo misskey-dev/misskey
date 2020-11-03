@@ -20,10 +20,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('searchWith', { q: this.$route.query.q }),
-					icon: faSearch
-				}],
+				title: this.$t('searchWith', { q: this.$route.query.q }),
+				icon: faSearch
 			},
 			pagination: {
 				endpoint: 'notes/search',

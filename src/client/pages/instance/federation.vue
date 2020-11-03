@@ -79,10 +79,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('federation'),
-					icon: faGlobe
-				}],
+				title: this.$t('federation'),
+				icon: faGlobe
 			},
 			host: '',
 			state: 'federating',

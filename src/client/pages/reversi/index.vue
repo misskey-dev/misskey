@@ -76,10 +76,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('_reversi.reversi'),
-					icon: faGamepad
-				}]
+				title: this.$t('_reversi.reversi'),
+				icon: faGamepad
 			},
 			games: [],
 			gamesFetching: true,

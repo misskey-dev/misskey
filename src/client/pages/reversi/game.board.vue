@@ -57,7 +57,7 @@
 	<p class="status"><b>{{ $t('_reversi.turnCount', { count: logPos }) }}</b> {{ $t('_reversi.black') }}:{{ o.blackCount }} {{ $t('_reversi.white') }}:{{ o.whiteCount }} {{ $t('_reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<MkButton @click="surrender">{{ $t('_reversi.surrender') }}</MkButton>
+		<MkButton @click="surrender" inline>{{ $t('_reversi.surrender') }}</MkButton>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
@@ -75,6 +75,10 @@
 		<p v-if="game.isLlotheo">{{ $t('_reversi.isLlotheo') }}</p>
 		<p v-if="game.loopedBoard">{{ $t('_reversi.loopedMap') }}</p>
 		<p v-if="game.canPutEverywhere">{{ $t('_reversi.canPutEverywhere') }}</p>
+	</div>
+
+	<div class="watchers">
+		<MkAvatar v-for="user in watchers" :key="user.id" :user="user" class="avatar"/>
 	</div>
 </div>
 </template>
@@ -113,6 +117,7 @@ export default defineComponent({
 			o: null as Reversi,
 			logs: [],
 			logPos: 0,
+			watchers: [],
 			pollingClock: null,
 			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle, faPlay
 		};
@@ -198,12 +203,14 @@ export default defineComponent({
 		this.connection.on('set', this.onSet);
 		this.connection.on('rescue', this.onRescue);
 		this.connection.on('ended', this.onEnded);
+		this.connection.on('watchers', this.onWatchers);
 	},
 
 	beforeUnmount() {
 		this.connection.off('set', this.onSet);
 		this.connection.off('rescue', this.onRescue);
 		this.connection.off('ended', this.onEnded);
+		this.connection.off('watchers', this.onWatchers);
 
 		clearInterval(this.pollingClock);
 	},
@@ -307,6 +314,10 @@ export default defineComponent({
 
 			this.checkEnd();
 			this.$forceUpdate();
+		},
+
+		onWatchers(users) {
+			this.watchers = users;
 		},
 
 		surrender() {
@@ -504,6 +515,19 @@ export default defineComponent({
 			> * {
 				flex: 1;
 			}
+		}
+	}
+
+	> .watchers {
+		padding: 0 0 16px 0;
+
+		&:empty {
+			display: none;
+		}
+
+		> .avatar {
+			width: 32px;
+			height: 32px;
 		}
 	}
 }

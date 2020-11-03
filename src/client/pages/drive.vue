@@ -18,10 +18,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: computed(() => this.folder ? this.folder.name : this.$t('drive')),
-					icon: faCloud,
-				}],
+				title: computed(() => this.folder ? this.folder.name : this.$t('drive')),
+				icon: faCloud,
 				action: {
 					icon: faEllipsisH,
 					handler: this.menu

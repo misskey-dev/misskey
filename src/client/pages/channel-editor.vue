@@ -46,15 +46,11 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.channelId ? {
-				header: [{
-					title: this.$t('_channel.edit'),
-					icon: faSatelliteDish,
-				}],
+				title: this.$t('_channel.edit'),
+				icon: faSatelliteDish,
 			} : {
-				header: [{
-					title: this.$t('_channel.create'),
-					icon: faSatelliteDish,
-				}],
+				title: this.$t('_channel.create'),
+				icon: faSatelliteDish,
 			}),
 			channel: null,
 			name: null,

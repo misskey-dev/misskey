@@ -43,10 +43,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('sidebar'),
-					icon: faListUl
-				}]
+				title: this.$t('sidebar'),
+				icon: faListUl
 			},
 			menuDef: sidebarDef,
 			items: '',

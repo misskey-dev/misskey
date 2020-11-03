@@ -62,19 +62,15 @@ const Component = defineComponent({
 	data() {
 		return {
 			INFO: computed(() => !this.fetching ? this.user ? {
-				header: [{
-					userName: this.user,
-					avatar: this.user,
-				}],
+				userName: this.user,
+				avatar: this.user,
 				action: {
 					icon: faEllipsisH,
 					handler: this.menu,
 				},
 			} : {
-				header: [{
-					title: this.group.name,
-					icon: faUsers
-				}],
+				title: this.group.name,
+				icon: faUsers,
 				action: {
 					icon: faEllipsisH,
 					handler: this.menu,

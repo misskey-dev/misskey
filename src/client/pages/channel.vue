@@ -54,10 +54,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.channel ? {
-				header: [{
-					title: this.channel.name,
-					icon: faSatelliteDish,
-				}],
+				title: this.channel.name,
+				icon: faSatelliteDish,
 			} : null),
 			channel: null,
 			showBanner: true,

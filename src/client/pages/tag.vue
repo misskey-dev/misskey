@@ -25,10 +25,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.tag,
-					icon: faHashtag
-				}],
+				title: this.tag,
+				icon: faHashtag
 			},
 			pagination: {
 				endpoint: 'notes/search-by-tag',

@@ -45,10 +45,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('announcements'),
-					icon: faBroadcastTower
-				}]
+				title: this.$t('announcements'),
+				icon: faBroadcastTower
 			},
 			announcements: [],
 			faBroadcastTower, faSave, faTrashAlt, faPlus

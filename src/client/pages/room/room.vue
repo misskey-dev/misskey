@@ -82,10 +82,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.user ? {
-				header: [{
-					title: this.$t('room'),
-					avatar: this.user,
-				}],
+				title: this.$t('room'),
+				avatar: this.user,
 			} : null),
 			user: null,
 			objectSelected: false,

@@ -38,10 +38,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('relays'),
-					icon: faProjectDiagram,
-				}],
+				title: this.$t('relays'),
+				icon: faProjectDiagram,
 			},
 			relays: [],
 			inbox: '',

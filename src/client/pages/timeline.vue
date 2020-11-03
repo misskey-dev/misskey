@@ -50,7 +50,7 @@ export default defineComponent({
 			queue: 0,
 			width: 0,
 			INFO: computed(() => {
-				const header = [{
+				const tabs = [{
 					id: 'home',
 					title: null,
 					tooltip: this.$t('_timelines.home'),
@@ -60,7 +60,7 @@ export default defineComponent({
 				}];
 
 				if (!this.$store.state.instance.meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
-					header.push({
+					tabs.push({
 						id: 'local',
 						title: null,
 						tooltip: this.$t('_timelines.local'),
@@ -69,7 +69,7 @@ export default defineComponent({
 						selected: computed(() => this.src === 'local')
 					});
 
-					header.push({
+					tabs.push({
 						id: 'social',
 						title: null,
 						tooltip: this.$t('_timelines.social'),
@@ -80,7 +80,7 @@ export default defineComponent({
 				}
 
 				if (!this.$store.state.instance.meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
-					header.push({
+					tabs.push({
 						id: 'global',
 						title: null,
 						tooltip: this.$t('_timelines.global'),
@@ -90,7 +90,7 @@ export default defineComponent({
 					});
 				}
 
-				header.push({
+				tabs.push({
 					id: 'other',
 					title: null,
 					icon: faEllipsisH,
@@ -99,7 +99,7 @@ export default defineComponent({
 				});
 
 				return {
-					header,
+					tabs,
 					action: {
 						icon: faPencilAlt,
 						handler: () => os.post()

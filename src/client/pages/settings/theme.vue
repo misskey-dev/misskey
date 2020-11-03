@@ -105,10 +105,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('theme'),
-					icon: faPalette
-				}]
+				title: this.$t('theme'),
+				icon: faPalette
 			},
 			builtinThemes,
 			installThemeCode: null,

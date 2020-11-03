@@ -84,10 +84,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('files'),
-					icon: faCloud
-				}],
+				title: this.$t('files'),
+				icon: faCloud
 			},
 			q: null,
 			origin: 'local',
