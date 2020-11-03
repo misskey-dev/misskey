@@ -245,7 +245,7 @@ export async function selectUser() {
 
 export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'file',
 			multiple
 		}, {
@@ -260,7 +260,7 @@ export async function selectDriveFile(multiple: boolean) {
 
 export async function selectDriveFolder(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/drive-window.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/drive-select-dialog.vue')), {
 			type: 'folder',
 			multiple
 		}, {

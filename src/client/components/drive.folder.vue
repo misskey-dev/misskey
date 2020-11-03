@@ -2,6 +2,7 @@
 <div class="rghtznwe"
 	:class="{ draghover }"
 	@click="onClick"
+	@contextmenu.stop="onContextmenu"
 	@mouseover="onMouseover"
 	@mouseout="onMouseout"
 	@dragover.prevent.stop="onDragover"
@@ -27,8 +28,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faFolder, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import { faFolder, faFolderOpen, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
+import { faICursor } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -240,6 +242,28 @@ export default defineComponent({
 				key: 'uploadFolder',
 				value: this.folder.id
 			});
+		},
+
+		onContextmenu(e) {
+			os.contextMenu([{
+				text: this.$t('openInWindow'),
+				icon: faWindowRestore,
+				action: async () => {
+					os.popup(await import('./drive-window.vue'), {
+						initialFolder: this.folder
+					}, {
+					}, 'closed');
+				}
+			}, null, {
+				text: this.$t('rename'),
+				icon: faICursor,
+				action: this.rename
+			}, null, {
+				text: this.$t('delete'),
+				icon: faTrashAlt,
+				danger: true,
+				action: this.deleteFolder
+			}], e);
 		},
 	}
 });

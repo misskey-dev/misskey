@@ -1,72 +1,44 @@
 <template>
-<XModalWindow ref="dialog"
-	:width="800"
-	:height="500"
-	:with-ok-button="true"
-	:ok-button-disabled="(type === 'file') && (selected.length === 0)"
-	@click="cancel()"
-	@close="cancel()"
-	@ok="ok()"
+<XWindow ref="window"
+	:initial-width="800"
+	:initial-height="500"
+	:can-resize="true"
 	@closed="$emit('closed')"
 >
 	<template #header>
-		{{ multiple ? ((type === 'file') ? $t('selectFiles') : $t('selectFolders')) : ((type === 'file') ? $t('selectFile') : $t('selectFolder')) }}
-		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
+		{{ $t('drive') }}
 	</template>
-	<div>
-		<XDrive :multiple="multiple" @changeSelection="onChangeSelection" @selected="ok()" :select="type"/>
-	</div>
-</XModalWindow>
+	<XDrive :initial-folder="initialFolder"/>
+</XWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XDrive from './drive.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import number from '@/filters/number';
+import XWindow from '@/components/ui/window.vue';
 
 export default defineComponent({
 	components: {
 		XDrive,
-		XModalWindow,
+		XWindow,
 	},
 
 	props: {
-		type: {
-			type: String,
-			required: false,
-			default: 'file'
+		initialFolder: {
+			type: Object,
+			required: false
 		},
-		multiple: {
-			type: Boolean,
-			default: false
-		}
 	},
 
-	emits: ['done', 'closed'],
+	emits: ['closed'],
 
 	data() {
 		return {
-			selected: []
 		};
 	},
 
 	methods: {
-		ok() {
-			this.$emit('done', this.selected);
-			this.$refs.dialog.close();
-		},
 
-		cancel() {
-			this.$emit('done');
-			this.$refs.dialog.close();
-		},
-
-		onChangeSelection(xs) {
-			this.selected = xs;
-		},
-
-		number
 	}
 });
 </script>
