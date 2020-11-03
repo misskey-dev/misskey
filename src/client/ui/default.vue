@@ -91,7 +91,6 @@ export default defineComponent({
 			host: host,
 			pageKey: 0,
 			pageInfo: null,
-			connection: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: sidebarDef,
 			navHidden: false,
@@ -140,9 +139,6 @@ export default defineComponent({
 
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
-
-		this.connection = os.stream.useSharedConnection('main', 'UI');
-		this.connection.on('notification', this.onNotification);
 
 		if (this.$store.state.deviceUser.widgets.length === 0) {
 			this.$store.commit('deviceUser/setWidgets', [{
@@ -233,23 +229,6 @@ export default defineComponent({
 					os.pageWindow(path);
 				}
 			}], e);
-		},
-
-		onNotification(notification) {
-			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
-				return;
-			}
-			if (document.visibilityState === 'visible') {
-				os.stream.send('readNotification', {
-					id: notification.id
-				});
-
-				os.popup(import('@/components/toast.vue'), {
-					notification
-				}, {}, 'closed');
-			}
-
-			os.sound('notification');
 		},
 	}
 });
