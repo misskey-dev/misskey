@@ -62,12 +62,13 @@
 
 	<div class="player" v-if="game.isEnded">
 		<span>{{ logPos }} / {{ logs.length }}</span>
-		<!-- TODO <ui-horizon-group> -->
-			<MkButton @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></MkButton>
-			<MkButton @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></MkButton>
-			<MkButton @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></MkButton>
-			<MkButton @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></MkButton>
-		<!-- TODO </ui-horizon-group> -->
+		<div class="buttons" v-if="!autoplaying">
+			<MkButton inline @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></MkButton>
+			<MkButton inline @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></MkButton>
+			<MkButton inline @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></MkButton>
+			<MkButton inline @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></MkButton>
+		</div>
+		<MkButton @click="autoplay()" :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;"><fa :icon="faPlay"/></MkButton>
 	</div>
 
 	<div class="info">
@@ -80,7 +81,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as CRC32 from 'crc-32';
@@ -113,7 +114,7 @@ export default defineComponent({
 			logs: [],
 			logPos: 0,
 			pollingClock: null,
-			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle
+			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle, faPlay
 		};
 	},
 
@@ -313,6 +314,35 @@ export default defineComponent({
 				gameId: this.game.id
 			});
 		},
+
+		autoplay() {
+			this.autoplaying = true;
+			this.logPos = 0;
+
+			setTimeout(() => {
+				this.logPos = 1;
+
+				let i = 1;
+				let previousLog = this.game.logs[0];
+				const tick = () => {
+					const log = this.game.logs[i];
+					const time = new Date(log.at).getTime() - new Date(previousLog.at).getTime()
+					setTimeout(() => {
+						i++;
+						this.logPos++;
+						previousLog = log;
+
+						if (i < this.game.logs.length) {
+							tick();
+						} else {
+							this.autoplaying = false;
+						}
+					}, time);
+				};
+
+				tick();
+			}, 1000);
+		}
 	}
 });
 </script>
@@ -466,6 +496,14 @@ export default defineComponent({
 			display: inline-block;
 			margin: 0 8px;
 			min-width: 70px;
+		}
+
+		> .buttons {
+			display: flex;
+
+			> * {
+				flex: 1;
+			}
 		}
 	}
 }
