@@ -119,8 +119,8 @@ export default defineComponent({
 			os.popups.value = os.popups.value.filter(x => x !== p);
 		};
 
-		const showReq = async req => {
-			os.popup(await import('./taskmanager.api-window.vue'), {
+		const showReq = req => {
+			os.popup(import('./taskmanager.api-window.vue'), {
 				req: req
 			}, {
 			}, 'closed');

@@ -257,8 +257,8 @@ export default defineComponent({
 			}], ev.currentTarget || ev.target);
 		},
 
-		async addAcount() {
-			os.popup(await import('./signin-dialog.vue'), {}, {
+		addAcount() {
+			os.popup(import('./signin-dialog.vue'), {}, {
 				done: res => {
 					this.$store.dispatch('addAcount', res);
 					os.success();
@@ -266,8 +266,8 @@ export default defineComponent({
 			}, 'closed');
 		},
 
-		async createAccount() {
-			os.popup(await import('./signup-dialog.vue'), {}, {
+		createAccount() {
+			os.popup(import('./signup-dialog.vue'), {}, {
 				done: res => {
 					this.$store.dispatch('addAcount', res);
 					this.switchAccountWithToken(res.i);
@@ -275,7 +275,7 @@ export default defineComponent({
 			}, 'closed');
 		},
 
-		async switchAccount(account: any) {
+		switchAccount(account: any) {
 			const token = this.$store.state.device.accounts.find((x: any) => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},

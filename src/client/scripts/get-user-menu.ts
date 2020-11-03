@@ -101,8 +101,8 @@ export function getUserMenu(user) {
 		});
 	}
 
-	async function reportAbuse() {
-		os.popup(await import('@/components/abuse-report-window.vue'), {
+	function reportAbuse() {
+		os.popup(import('@/components/abuse-report-window.vue'), {
 			user: user,
 		}, {}, 'closed');
 	}

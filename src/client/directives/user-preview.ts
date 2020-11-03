@@ -18,13 +18,13 @@ export class UserPreview {
 	}
 
 	@autobind
-	private async show() {
+	private show() {
 		if (!document.body.contains(this.el)) return;
 		if (this.promise) return;
 
 		const showing = ref(true);
 
-		popup(await import('@/components/user-preview.vue'), {
+		popup(import('@/components/user-preview.vue'), {
 			showing,
 			q: this.user,
 			source: this.el

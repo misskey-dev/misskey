@@ -498,7 +498,7 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.popup(defineAsyncComponent(() => import('@/components/reaction-picker.vue')), {
+			os.popup(import('@/components/reaction-picker.vue'), {
 				showFocus: viaKeyboard,
 				src: this.$refs.reactButton,
 			}, {
@@ -644,7 +644,7 @@ export default defineComponent({
 						text: this.$t('reportAbuse'),
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
-							os.popup(defineAsyncComponent(() => import('@/components/abuse-report-window.vue')), {
+							os.popup(import('@/components/abuse-report-window.vue'), {
 								user: this.appearNote.user,
 								initialComment: `Note: ${u}\n-----\n`
 							}, {}, 'closed');

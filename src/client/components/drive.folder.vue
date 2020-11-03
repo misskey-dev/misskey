@@ -248,8 +248,8 @@ export default defineComponent({
 			os.contextMenu([{
 				text: this.$t('openInWindow'),
 				icon: faWindowRestore,
-				action: async () => {
-					os.popup(await import('./drive-window.vue'), {
+				action: () => {
+					os.popup(import('./drive-window.vue'), {
 						initialFolder: this.folder
 					}, {
 					}, 'closed');

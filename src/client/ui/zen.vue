@@ -95,7 +95,7 @@ export default defineComponent({
 			if (window._scroll) window._scroll();
 		},
 
-		async onNotification(notification) {
+		onNotification(notification) {
 			if (this.$store.state.i.mutingNotificationTypes.includes(notification.type)) {
 				return;
 			}
@@ -104,7 +104,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				os.popup(await import('@/components/toast.vue'), {
+				os.popup(import('@/components/toast.vue'), {
 					notification
 				}, {}, 'closed');
 			}

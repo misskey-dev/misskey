@@ -131,8 +131,8 @@ export default defineComponent({
 			});
 		},
 
-		async show(file, ev) {
-			os.popup(await import('./file-dialog.vue'), {
+		show(file, ev) {
+			os.popup(import('./file-dialog.vue'), {
 				fileId: file.id
 			}, {}, 'closed');
 		},

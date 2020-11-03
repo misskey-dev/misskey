@@ -69,7 +69,7 @@ export default defineComponent({
 		},
 
 		taskmanager() {
-			os.popup(defineAsyncComponent(() => import('@/components/taskmanager.vue')), {
+			os.popup(import('@/components/taskmanager.vue'), {
 			}, {}, 'closed');
 		}
 	}

@@ -113,8 +113,8 @@ export default defineComponent({
 			os.promiseDialog(promise);
 		},
 
-		async edit(emoji) {
-			os.popup(await import('./emoji-edit-dialog.vue'), {
+		edit(emoji) {
+			os.popup(import('./emoji-edit-dialog.vue'), {
 				emoji: emoji
 			}, {
 				done: result => {
