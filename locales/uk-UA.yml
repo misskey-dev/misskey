@@ -112,7 +112,21 @@ selectUser: "Виберіть користувача"
 recipient: "Кому"
 annotation: "Коментар"
 instances: "Інстанс"
-storageUsage: "Використано"
+charts: "Графіки"
+perHour: "Щогодини"
+perDay: "Щоденно"
+software: "Програмне забезпечення"
+version: "Версія"
+metadata: "Метадані"
+monitor: "Монітор"
+jobQueue: "Черга завдань"
+network: "Мережа"
+disk: "Диск"
+statistics: "Статистика"
+clearQueue: "Очистити чергу"
+clearCachedFiles: "Очистити кеш"
+blockedUsers: "Заблоковані користувачі"
+editProfile: "Редагувати профіль"
 remove: "Видалити"
 nsfw: "NSFW"
 userList: "Списки"
@@ -142,6 +156,9 @@ _exportOrImport:
   muteList: "Ігнорувати"
   blockingList: "Заблокувати"
   userLists: "Списки"
+_rooms:
+  _furnitures:
+    monitor: "Монітор"
 _pages:
   script:
     categories:
