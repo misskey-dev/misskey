@@ -30,27 +30,25 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 	 * @param moduleStore 永続化したいvuexモジュールを列挙
 	 * @param version indexedDBのバージョン。moduleStoreを変更するたびにインクリメントしてください！
 	 */
-	async update(moduleStores: M[], version: number): Promise<unknown> {
-		let upgradeneeds = false;
+	async update(moduleStores: M[], version: number): Promise<'noUpdate' | 'updated' | 'initialized'> {
+		let updateState: 'noUpdate' | 'updated' | 'initialized' = 'noUpdate';
 
 		this._dbp = new Promise((resolve, reject) => {
-
 			const openreq = indexedDB.open(this.dbName, version);
 
 			openreq.onerror = () => reject(openreq.error);
-			openreq.onsuccess = () => upgradeneeds === false && resolve(openreq.result);
 
 			// First time setup: create an empty object store
 			openreq.onupgradeneeded = async ev => {
-				upgradeneeds = true;
-
 				// ストアが空の場合
 				if (this.stores.length === 0) {
+					updateState = 'initialized';
 					['store', ...moduleStores].map(name => openreq.result.createObjectStore(name));
-					return;
+					return resolve(openreq.result);
 				}
 
 				// ストアがすでにある場合、アップデートする
+				updateState = 'updated';
 
 				// 既存のモジュールストア
 				const currentModuleStores = Array.from(openreq.result.objectStoreNames).filter(v => v !== 'store');
@@ -73,12 +71,16 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 					.filter(v => !currentModuleStores.includes(v))
 					.map(name => openreq.result.createObjectStore(name));
 
-				resolve();
+				return resolve(openreq.result);
 			};
+
+			openreq.onsuccess = () => updateState === 'noUpdate' && resolve(openreq.result);
 		});
 
 		await this._dbp;
-		return upgradeneeds;
+
+		this.stores = ['store', ...moduleStores] as S;
+		return updateState;
 	}
 
 	_withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {

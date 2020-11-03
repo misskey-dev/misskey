@@ -1,4 +1,5 @@
 import { MutationPayload, Store } from 'vuex';
+import * as deepcopy from 'deepcopy';
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
 import { VuexPersistDB } from './vuex-idb';
@@ -18,10 +19,12 @@ export function vuexPersistAndSharePlugin(
 ) {
 	return async (store: Store<any>) => {
 		const persistDB = new VuexPersistDB();
-		const reloadneeds = await persistDB.update(modules, dbVersion);
+		const updateState = await persistDB.update(modules, dbVersion);
 		const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
 			webWorkerSupport: false
 		});
+
+		//#region ストレージから読み出し
 
 		// 互換性のためlocalStorageを検索
 		const old = localStorage.getItem('vuex');
@@ -32,10 +35,11 @@ export function vuexPersistAndSharePlugin(
 				...JSON.parse(old)
 			});
 			localStorage.removeItem('vuex');
-		} else {
+		} else if (updateState !== 'initialized') {
 			await Promise.all(persistDB.stores.map(n => persistDB.entries(n)))
 				.then(vals => vals.map(entries => Object.fromEntries(entries)))
 				.then(vals => {
+
 					let savedState = {};
 
 					persistDB.stores.map((n, i) => {
@@ -47,9 +51,24 @@ export function vuexPersistAndSharePlugin(
 						...store.state,
 						...savedState
 					});
+
 				});
 		}
 
+		//#endregion
+
+		//#region 3秒経ったらinstance/fetchしてindexedDBに保存してみる
+		setTimeout(async () => {
+			await store.dispatch('instance/fetch');
+
+			persistDB.bulkSet(states.map(s => [s, store.state[s]]), 'store');
+			modules.map(m => {
+				persistDB.bulkSet(Object.entries(store.state[m]), m);
+			});
+		}, 3000);
+		//#endregion
+
+		//#region commit共有とmutationの購読
 		// 別タブから来たmutation/actionのpayloadのオブジェクトを覚えておく
 		const passedPayloads: any[] = [];
 
@@ -75,7 +94,6 @@ export function vuexPersistAndSharePlugin(
 			if (splited.length === 1) {
 				// mutationがルートの場合
 				persistDB.bulkSet(states.map(s => [s, state[s]]), 'store');
-
 				modules.map(m => {
 					persistDB.bulkSet(Object.entries(state[m]), m);
 				});
@@ -85,7 +103,9 @@ export function vuexPersistAndSharePlugin(
 			}
 
 			// ほかのタブにmutationを伝達
-			ch.postMessage(mutation);
+			ch.postMessage(deepcopy(mutation));
 		});
+
+		//#endregion
 	};
 }
