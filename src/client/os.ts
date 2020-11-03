@@ -300,8 +300,8 @@ export function modalMenu(items: any[], src?: HTMLElement, options?: { align?: s
 				resolve();
 				dispose();
 			},
-		}).then(_dispose => {
-			dispose = _dispose;
+		}).then(res => {
+			dispose = res.dispose;
 		});
 	});
 }
@@ -318,8 +318,8 @@ export function contextMenu(items: any[], ev: MouseEvent) {
 				resolve();
 				dispose();
 			},
-		}).then(_dispose => {
-			dispose = _dispose;
+		}).then(res => {
+			dispose = res.dispose;
 		});
 	});
 }
@@ -337,8 +337,8 @@ export function post(props: Record<string, any>) {
 				resolve();
 				dispose();
 			},
-		}).then(_dispose => {
-			dispose = _dispose;
+		}).then(res => {
+			dispose = res.dispose;
 		});
 	});
 }
