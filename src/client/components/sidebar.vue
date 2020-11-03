@@ -14,7 +14,7 @@
 				<button class="item _button account" @click="openAccountMenu">
 					<MkAvatar :user="$store.state.i" class="avatar"/><MkAcct class="text" :user="$store.state.i"/>
 				</button>
-				<MkA class="item index" active-class="active" to="/" exact v-else>
+				<MkA class="item index" active-class="active" to="/" exact>
 					<Fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
 				</MkA>
 				<template v-for="item in menu">
