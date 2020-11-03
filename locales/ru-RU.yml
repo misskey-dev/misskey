@@ -602,6 +602,7 @@ instanceTicker: "Строка с инстансом в заметке"
 waitingFor: "Ждём {x}"
 random: "Случайные"
 system: "Система"
+switchUi: "Выбор вида"
 desktop: "Рабочий стол"
 _reversi:
   reversi: "Реверси"
