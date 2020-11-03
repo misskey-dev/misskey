@@ -87,10 +87,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('aboutMisskey'),
-					icon: null
-				}]
+				title: this.$t('aboutMisskey'),
+				icon: null
 			},
 			version,
 			faInfoCircle

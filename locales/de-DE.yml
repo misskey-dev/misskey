@@ -602,6 +602,8 @@ instanceTicker: "Instanz-Informationen von Notizen"
 waitingFor: "Warte auf {x}"
 random: "Zufällig"
 system: "System"
+switchUi: "UI wechseln"
+desktop: "Desktop"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Spieleinstellungen"

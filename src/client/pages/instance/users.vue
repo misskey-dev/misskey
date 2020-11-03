@@ -101,10 +101,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('users'),
-					icon: faUsers
-				}],
+				title: this.$t('users'),
+				icon: faUsers,
 				action: {
 					icon: faSearch,
 					handler: this.searchUser

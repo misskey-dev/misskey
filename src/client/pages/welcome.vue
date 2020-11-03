@@ -20,10 +20,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: instanceName || 'Misskey',
-					icon: null
-				}]
+				title: instanceName || 'Misskey',
+				icon: null
 			},
 		}
 	},

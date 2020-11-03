@@ -93,10 +93,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('explore'),
-					icon: faHashtag
-				}],
+				title: this.$t('explore'),
+				icon: faHashtag
 			},
 			pinnedUsers: { endpoint: 'pinned-users' },
 			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {

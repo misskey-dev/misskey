@@ -51,10 +51,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.note ? {
-				header: [{
-					title: this.$t('note'),
-					avatar: this.note.user,
-				}],
+				title: this.$t('note'),
+				avatar: this.note.user,
 			} : null),
 			note: null,
 			hasPrev: false,

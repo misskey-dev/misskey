@@ -26,10 +26,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('manageLists'),
-					icon: faListUl
-				}],
+				title: this.$t('manageLists'),
+				icon: faListUl,
 				action: {
 					icon: faPlus,
 					handler: this.create

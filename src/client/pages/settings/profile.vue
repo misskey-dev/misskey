@@ -81,10 +81,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('profile'),
-					icon: faUser
-				}]
+				title: this.$t('profile'),
+				icon: faUser
 			},
 			host,
 			name: null,

@@ -57,10 +57,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.page ? {
-				header: [{
-					title: computed(() => this.page.title || this.page.name),
-					avatar: this.page.user,
-				}],
+				title: computed(() => this.page.title || this.page.name),
+				avatar: this.page.user,
 			} : null),
 			page: null,
 			faHeartS, faHeartR

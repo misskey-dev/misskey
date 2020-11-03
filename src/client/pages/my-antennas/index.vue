@@ -29,10 +29,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('manageAntennas'),
-					icon: faSatellite
-				}],
+				title: this.$t('manageAntennas'),
+				icon: faSatellite,
 				action: {
 					icon: faPlus,
 					handler: this.create

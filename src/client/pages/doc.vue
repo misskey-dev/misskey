@@ -43,10 +43,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.title,
-					icon: faFileAlt
-				}],
+				title: this.title,
+				icon: faFileAlt
 			},
 			faFileAlt,
 			title: '',

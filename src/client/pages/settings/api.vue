@@ -28,10 +28,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: 'API',
-					icon: faKey
-				}]
+				title: 'API',
+				icon: faKey
 			},
 			isDesktop: window.innerWidth >= 1100,
 		};

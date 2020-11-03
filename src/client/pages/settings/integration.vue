@@ -41,10 +41,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('integration'),
-					icon: faShareAlt
-				}]
+				title: this.$t('integration'),
+				icon: faShareAlt
 			},
 			apiUrl,
 			twitterForm: null,
