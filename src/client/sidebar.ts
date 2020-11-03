@@ -4,9 +4,6 @@ import { computed } from 'vue';
 import { store } from '@/store';
 import { deckmode } from '@/config';
 import { search } from '@/scripts/search';
-import { popout } from '@/scripts/popout';
-import { router } from '@/router';
-import * as os from '@/os';
 
 export const sidebarDef = {
 	notifications: {
@@ -21,13 +18,7 @@ export const sidebarDef = {
 		icon: faComments,
 		show: computed(() => store.getters.isSignedIn),
 		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadMessagingMessage),
-		action: () => {
-			switch (store.state.device.chatOpenBehavior) {
-				case 'window': { os.pageWindow('/my/messaging'); break; }
-				case 'popout': { popout('/my/messaging'); break; }
-				default: { router.push('/my/messaging'); break; }
-			}
-		}
+		to: '/my/messaging',
 	},
 	drive: {
 		title: 'drive',

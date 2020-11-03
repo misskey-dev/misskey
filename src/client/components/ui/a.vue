@@ -11,6 +11,7 @@ import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
 import { deckmode, url } from '@/config';
+import { popout } from '@/scripts/popout';
 
 export default defineComponent({
 	inject: {
@@ -87,11 +88,23 @@ export default defineComponent({
 			}], e);
 		},
 
+		window() {
+			os.pageWindow(this.to);
+		},
+
+		popout() {
+			popout(this.to);
+		},
+
 		nav() {
+			if (this.to.startsWith('/my/messaging')) {
+				if (this.$store.state.device.chatOpenBehavior === 'window') return this.window();
+				if (this.$store.state.device.chatOpenBehavior === 'popout') return this.popout();
+			}
+
 			if (this.behavior) {
 				if (this.behavior === 'window') {
-					os.pageWindow(this.to);
-					return;
+					return this.window();
 				}
 			}
 
@@ -99,12 +112,10 @@ export default defineComponent({
 				this.navHook(this.to);
 			} else {
 				if (this.$store.state.device.defaultSideView && this.sideViewHook && this.to !== '/') {
-					this.sideViewHook(this.to);
-					return;
+					return this.sideViewHook(this.to);
 				}
 				if (this.$store.state.device.deckNavWindow && deckmode && this.to !== '/') {
-					os.pageWindow(this.to);
-					return;
+					return this.window();
 				}
 
 				this.$router.push(this.to);
