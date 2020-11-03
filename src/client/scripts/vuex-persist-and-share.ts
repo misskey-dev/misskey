@@ -16,16 +16,16 @@ export function vuexPersistAndSharePlugin(
 	dbVersion: number,
 	ignoreMutations: string[] = []
 ) {
-	const persistDB = new VuexPersistDB();
-	persistDB.update(modules, dbVersion);
-	const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
-		webWorkerSupport: false
-	});
-
-	// 互換性のためlocalStorageを検索
-	const old = localStorage.getItem('vuex');
-
 	return async (store: Store<any>) => {
+		const persistDB = new VuexPersistDB();
+		const reloadneeds = await persistDB.update(modules, dbVersion);
+		const ch = new BroadcastChannel<MutationPayload>('vuexMutationShare', {
+			webWorkerSupport: false
+		});
+
+		// 互換性のためlocalStorageを検索
+		const old = localStorage.getItem('vuex');
+
 		if (old) {
 			store.replaceState({
 				...store.state,
@@ -34,20 +34,20 @@ export function vuexPersistAndSharePlugin(
 			localStorage.removeItem('vuex');
 		} else {
 			await Promise.all(persistDB.stores.map(n => persistDB.entries(n)))
-			.then(vals => vals.map(entries => Object.fromEntries(entries)))
-			.then(vals => {
-				let savedState = {};
+				.then(vals => vals.map(entries => Object.fromEntries(entries)))
+				.then(vals => {
+					let savedState = {};
 
-				persistDB.stores.map((n, i) => {
-					if (n === 'store') savedState = { ...savedState, ...vals[i] };
-					else savedState[n] = { ...store.state[n], ...vals[i] };
-				});
+					persistDB.stores.map((n, i) => {
+						if (n === 'store') savedState = { ...savedState, ...vals[i] };
+						else savedState[n] = { ...store.state[n], ...vals[i] };
+					});
 
-				store.replaceState({
-					...store.state,
-					...savedState
+					store.replaceState({
+						...store.state,
+						...savedState
+					});
 				});
-			});
 		}
 
 		// 別タブから来たmutation/actionのpayloadのオブジェクトを覚えておく

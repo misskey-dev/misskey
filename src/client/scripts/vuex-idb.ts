@@ -9,7 +9,7 @@ import * as deepcopy from 'deepcopy';
 
 export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 	dbName: string;
-	stores: S; // もしくは最初のupdateが行われていないなら []
+	stores: S; // もしくは [] （真面目に型定義すると面倒臭いことになる）
 	_dbp: Promise<IDBDatabase>;
 
 	constructor(dbName = 'vuex') {
@@ -30,14 +30,20 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 	 * @param moduleStore 永続化したいvuexモジュールを列挙
 	 * @param version indexedDBのバージョン。moduleStoreを変更するたびにインクリメントしてください！
 	 */
-	update(moduleStores: M[], version: number): Promise<unknown> {
-		return this._dbp = new Promise((resolve, reject) => {
+	async update(moduleStores: M[], version: number): Promise<unknown> {
+		let upgradeneeds = false;
+
+		this._dbp = new Promise((resolve, reject) => {
+
 			const openreq = indexedDB.open(this.dbName, version);
+
 			openreq.onerror = () => reject(openreq.error);
-			openreq.onsuccess = () => resolve(openreq.result);
+			openreq.onsuccess = () => upgradeneeds === false && resolve(openreq.result);
 
 			// First time setup: create an empty object store
-			openreq.onupgradeneeded = ev => {
+			openreq.onupgradeneeded = async ev => {
+				upgradeneeds = true;
+
 				// ストアが空の場合
 				if (this.stores.length === 0) {
 					['store', ...moduleStores].map(name => openreq.result.createObjectStore(name));
@@ -50,7 +56,7 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 				const currentModuleStores = Array.from(openreq.result.objectStoreNames).filter(v => v !== 'store');
 
 				// 古いストアを削除
-				currentModuleStores
+				await Promise.all(currentModuleStores
 					.filter(v => !(moduleStores as string[]).includes(v))
 					.map(name => {
 						return new Promise((resolve, reject) => {
@@ -59,14 +65,20 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 							transaction.onabort = transaction.onerror = () => reject(transaction.error);
 							transaction.objectStore(name).clear();
 						});
-					});
+					})
+				);
 
 				// 存在しないストアを作成
 				moduleStores
 					.filter(v => !currentModuleStores.includes(v))
 					.map(name => openreq.result.createObjectStore(name));
+
+				resolve();
 			};
 		});
+
+		await this._dbp;
+		return upgradeneeds;
 	}
 
 	_withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {
