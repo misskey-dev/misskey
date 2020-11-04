@@ -879,7 +879,7 @@ _poll:
   totalVotes: "Голосов всего: {n}"
   vote: "Проголосовать"
   showResult: "Смотреть результаты"
-  voted: "Проголосовали"
+  voted: "Голос отдан"
   closed: "Завершено"
   remainingDays: "Осталось {d} сут {h} ч"
   remainingHours: "Осталось {h} ч {m} мин"
