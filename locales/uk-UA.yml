@@ -149,6 +149,8 @@ announcements: "Оголошення"
 imageUrl: "URL зображення"
 remove: "Видалити"
 removed: "Видалено"
+saved: "Збережено"
+messaging: "Чати"
 nsfw: "NSFW"
 userList: "Списки"
 smtpHost: "Хост"
@@ -161,6 +163,7 @@ _theme:
 _sfx:
   note: "Дописи"
   notification: "Сповіщення"
+  chat: "Чати"
 _widgets:
   notifications: "Сповіщення"
   timeline: "Стрічка"
