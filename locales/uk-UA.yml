@@ -135,6 +135,14 @@ editProfile: "Редагувати профіль"
 noteDeleteConfirm: "Ви дійсно хочете видалити цей допис?"
 done: "Готово"
 processing: "Обробка"
+default: "За умовчанням"
+noCustomEmojis: "Немає кастомних емоджі"
+changePassword: "Змінити пароль"
+security: "Безпека"
+currentPassword: "Поточний пароль"
+newPassword: "Новий пароль"
+newPasswordRetype: "Новий пароль (повторно)"
+attachFile: "Прикріпити файл"
 remove: "Видалити"
 nsfw: "NSFW"
 userList: "Списки"
@@ -165,6 +173,8 @@ _exportOrImport:
   blockingList: "Заблокувати"
   userLists: "Списки"
 _rooms:
+  _roomType:
+    default: "За умовчанням"
   _furnitures:
     monitor: "Монітор"
 _pages:
