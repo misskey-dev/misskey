@@ -9,7 +9,7 @@
 				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click="tab.onClick" v-tooltip="tab.tooltip">
 					<Fa v-if="tab.icon" :icon="tab.icon" :key="tab.icon" class="icon"/>
 					<span v-if="tab.title" class="text">{{ tab.title }}</span>
-					<i><fa v-if="tab.indicate" :icon="faCircle"/></i>
+					<Fa class="indicator" v-if="tab.indicate" :icon="faCircle"/>
 				</div>
 			</template>
 			<template v-else>
@@ -134,7 +134,7 @@ export default defineComponent({
 			padding: 0 16px;
 			position: relative;
 
-			> i {
+			> .indicator {
 				position: absolute;
 				top: initial;
 				right: 8px;
