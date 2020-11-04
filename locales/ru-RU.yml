@@ -861,7 +861,7 @@ _widgets:
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
-  chars: "символов: {count}"
+  chars: "знаков: {count}"
   files: "файлов: {count}"
 _poll:
   noOnlyOneChoice: "Нужно хотя бы два варианта."
@@ -948,10 +948,10 @@ _instanceCharts:
   files: "Изменения числа файлов"
   filesTotal: "Суммарное количество файлов"
 _timelines:
-  home: "Персональное"
-  local: "Местное"
-  social: "Социальное"
-  global: "Глобальное"
+  home: "Персональная"
+  local: "Местная"
+  social: "Социальная"
+  global: "Всеобщая"
 _rooms:
   roomOf: "Комната {user}"
   addFurniture: "Добавить обстановку"
