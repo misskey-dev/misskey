@@ -179,14 +179,9 @@ await router.isReady();
 
 app.mount('body');
 
-// 他のタブと永続化されたstateを同期
+// localStorageを監視
 window.addEventListener('storage', e => {
-	if (e.key === 'vuex') {
-		store.replaceState({
-			...store.state,
-			...JSON.parse(e.newValue)
-		});
-	} else if (e.key === 'i') {
+	if (e.key === 'i') {
 		location.reload();
 	}
 }, false);
