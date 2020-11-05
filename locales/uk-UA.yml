@@ -156,6 +156,16 @@ upload: "Завантажити"
 fromDrive: "З диска"
 fromUrl: "З URL"
 uploadFromUrl: "Завантажити з URL"
+start: "Розпочати"
+images: "Зображення"
+birthday: "День народження"
+yearsOld: "{age} років"
+location: "Локація"
+theme: "Тема"
+themeForLightMode: "Світла тема"
+themeForDarkMode: "Темна тема"
+light: "Світла"
+dark: "Темна"
 nsfw: "NSFW"
 userList: "Списки"
 smtpHost: "Хост"
@@ -191,6 +201,8 @@ _rooms:
   _furnitures:
     monitor: "Монітор"
 _pages:
+  blocks:
+    image: "Зображення"
   script:
     categories:
       list: "Списки"
