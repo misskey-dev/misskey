@@ -7,7 +7,7 @@
 		<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
 	</header>
 
-	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+	<div class="banner" :style="{ backgroundImage: `url(${ $store?.state?.instance?.meta?.bannerUrl })` }">
 		<h1>{{ instanceName }}</h1>
 	</div>
 

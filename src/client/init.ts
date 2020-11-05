@@ -144,10 +144,10 @@ if (store.state.i != null) {
 }
 //#endregion
 
-await store.dispatch('instance/fetch');
-
-// Init service worker
-//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
+store.dispatch('instance/fetch').then(() => {
+	// Init service worker
+	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);	
+});
 
 stream.init(store.state.i);
 
