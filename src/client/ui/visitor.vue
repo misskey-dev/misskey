@@ -7,7 +7,7 @@
 		<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
 	</header>
 
-	<div class="banner" :style="{ backgroundImage: `url(${ bannerUrl })` }">
+	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
 		<h1>{{ instanceName }}</h1>
 	</div>
 
@@ -56,7 +56,6 @@ export default defineComponent({
 			pageKey: 0,
 			pageInfo: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
-			bannerUrl: this.$store?.state?.instance?.meta?.bannerUrl,
 		};
 	},
 
