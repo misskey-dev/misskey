@@ -850,7 +850,7 @@ _widgets:
   notifications: "Уведомления"
   timeline: "Лента"
   calendar: "Календарь"
-  trends: "Популярное"
+  trends: "Актуальное"
   clock: "Часы"
   rss: "Просмотр RSS"
   activity: "Активность"
