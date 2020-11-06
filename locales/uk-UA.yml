@@ -43,6 +43,7 @@ copyUsername: "Скопіювати ім’я користувача"
 searchUser: "Пошук користувачів"
 reply: "Відповісти"
 loadMore: "Показати більше"
+youGotNewFollower: "У вас новий підписник"
 receiveFollowRequest: "Отримано запит на підписку"
 followRequestAccepted: "Запит на підписку прийнято"
 mention: "Згадка"
@@ -253,6 +254,7 @@ _pages:
       array: "Списки"
 _notification:
   youRenoted: "{name} поширив(ла) ваш допис"
+  youWereFollowed: "У вас новий підписник"
   _types:
     follow: "Підписки"
     mention: "Згадка"
