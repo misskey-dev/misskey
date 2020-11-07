@@ -195,6 +195,7 @@ uploadFromUrl: "Завантажити з URL"
 explore: "Огляд"
 games: "Ігри Misskey"
 start: "Розпочати"
+activity: "Активність"
 images: "Зображення"
 birthday: "День народження"
 yearsOld: "{age} років"
@@ -250,6 +251,7 @@ _sfx:
 _widgets:
   notifications: "Сповіщення"
   timeline: "Стрічка"
+  activity: "Активність"
   federation: "Федіверс"
 _cw:
   show: "Показати більше"
