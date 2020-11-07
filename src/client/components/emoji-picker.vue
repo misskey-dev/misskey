@@ -190,36 +190,58 @@ export default defineComponent({
 				const exactMatch = emojis.find(e => e.name === q);
 				if (exactMatch) matches.add(exactMatch);
 
-				for (const emoji of emojis) {
-					if (emoji.name.startsWith(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
-					}
-				}
-				if (matches.size >= max) return matches;
+				if (q.includes(' ')) { // AND検索
+					const keywords = q.split(' ');
 
-				for (const emoji of emojis) {
-					if (emoji.aliases.some(alias => alias.startsWith(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前にキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.name.includes(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前またはエイリアスにキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+				} else {
+					for (const emoji of emojis) {
+						if (emoji.name.startsWith(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.aliases.some(alias => alias.includes(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					for (const emoji of emojis) {
+						if (emoji.aliases.some(alias => alias.startsWith(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.name.includes(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.aliases.some(alias => alias.includes(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
 				}
+
 				return matches;
 			};
 
@@ -231,36 +253,58 @@ export default defineComponent({
 				const exactMatch = emojis.find(e => e.name === q);
 				if (exactMatch) matches.add(exactMatch);
 
-				for (const emoji of emojis) {
-					if (emoji.name.startsWith(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
-					}
-				}
-				if (matches.size >= max) return matches;
+				if (q.includes(' ')) { // AND検索
+					const keywords = q.split(' ');
 
-				for (const emoji of emojis) {
-					if (emoji.keywords.some(keyword => keyword.startsWith(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前にキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.name.includes(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前またはエイリアスにキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.keywords.some(alias => alias.includes(keyword)))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+				} else {
+					for (const emoji of emojis) {
+						if (emoji.name.startsWith(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.keywords.some(keyword => keyword.includes(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					for (const emoji of emojis) {
+						if (emoji.keywords.some(keyword => keyword.startsWith(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.name.includes(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.keywords.some(keyword => keyword.includes(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
 				}
+
 				return matches;
 			};
 
