@@ -1,12 +1,12 @@
 <template>
 <div class="fdidabkb">
 	<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-		<button class="_button back" v-if="withBack && canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">
 			<template v-if="info.tabs">
-				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click="tab.onClick" v-tooltip="tab.tooltip">
+				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click.stop="tab.onClick" v-tooltip="tab.tooltip">
 					<Fa v-if="tab.icon" :icon="tab.icon" :key="tab.icon" class="icon"/>
 					<span v-if="tab.title" class="text">{{ tab.title }}</span>
 				</div>
@@ -20,7 +20,7 @@
 				</div>
 			</template>
 		</div>
-		<button class="_button action" v-if="info.action" @click="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
+		<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 	</template>
 </div>
 </template>

@@ -121,7 +121,11 @@ export default defineComponent({
 					return this.window();
 				}
 
-				this.$router.push(this.to);
+				if (this.$router.currentRoute.value.path === this.to) {
+					window.scroll({ top: 0, behavior: 'smooth' });
+				} else {
+					this.$router.push(this.to);
+				}
 			}
 		}
 	}
