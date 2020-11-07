@@ -361,6 +361,14 @@ export default defineComponent({
 				this.chosen(exactMatchUnicode);
 				return true;
 			}
+			if (this.searchResultCustom.length > 0) {
+				this.chosen(this.searchResultCustom[0]);
+				return true;
+			}
+			if (this.searchResultUnicode.length > 0) {
+				this.chosen(this.searchResultUnicode[0]);
+				return true;
+			}
 		},
 	}
 });
