@@ -542,6 +542,7 @@ pluginInstallWarn: "Пожалуста, не устанавливайте рас
 deck: "Пульт"
 undeck: "Покинуть пульт"
 useBlurEffectForModal: "Размывка под формой поверх всего"
+useFullReactionPicker: "Полнофункциональный выбор реакций"
 generateAccessToken: "Создать токен доступа"
 permission: "Разрешения"
 enableAll: "Включить все"
