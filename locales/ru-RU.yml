@@ -908,7 +908,7 @@ _postForm:
     e: "Напишите что-нибудь…"
     f: "В ожидании, когда вы напишете…"
 _profile:
-  name: "Название"
+  name: "Имя"
   username: "Имя пользователя"
   description: "О себе"
   youCanIncludeHashtags: "Можете использовать здесь хэштеги"
