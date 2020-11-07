@@ -310,7 +310,7 @@ export default defineComponent({
 				this.chosen(exactMatchCustom);
 				return true;
 			}
-			const exactMatchUnicode = this.emojilist.find(e => e.name === q);
+			const exactMatchUnicode = this.emojilist.find(e => e.char === q || e.name === q);
 			if (exactMatchUnicode) {
 				this.chosen(exactMatchUnicode);
 				return true;
