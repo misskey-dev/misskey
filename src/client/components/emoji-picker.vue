@@ -270,7 +270,9 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$refs.search.focus();
+		this.$refs.search.focus({
+			preventScroll: true
+		});
 	},
 
 	methods: {
