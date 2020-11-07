@@ -1,14 +1,15 @@
 <template>
 <div class="fdidabkb">
 	<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
-		<button class="_button back" v-if="withBack && canBack" @click="back()"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">
 			<template v-if="info.tabs">
-				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click="tab.onClick" v-tooltip="tab.tooltip">
+				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click.stop="tab.onClick" v-tooltip="tab.tooltip">
 					<Fa v-if="tab.icon" :icon="tab.icon" :key="tab.icon" class="icon"/>
 					<span v-if="tab.title" class="text">{{ tab.title }}</span>
+					<Fa class="indicator" v-if="tab.indicate" :icon="faCircle"/>
 				</div>
 			</template>
 			<template v-else>
@@ -20,14 +21,14 @@
 				</div>
 			</template>
 		</div>
-		<button class="_button action" v-if="info.action" @click="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
+		<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 	</template>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -45,7 +46,7 @@ export default defineComponent({
 		return {
 			canBack: false,
 			height: 0,
-			faChevronLeft
+			faChevronLeft, faCircle
 		};
 	},
 
@@ -131,6 +132,17 @@ export default defineComponent({
 			overflow: hidden;
 			text-overflow: ellipsis;
 			padding: 0 16px;
+			position: relative;
+
+			> .indicator {
+				position: absolute;
+				top: initial;
+				right: 8px;
+				top: 8px;
+				color: var(--indicator);
+				font-size: 12px;
+				animation: blink 1s infinite;
+			}
 
 			> .icon + .text {
 				margin-left: 8px;
