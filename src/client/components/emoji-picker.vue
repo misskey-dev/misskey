@@ -32,7 +32,7 @@
 			<div class="index">
 				<section>
 					<div>
-						<button v-for="emoji in reactions || $store.state.settings.reactions"
+						<button v-for="emoji in pinned"
 							class="_button"
 							@click="chosen(emoji, $event)"
 							tabindex="0"
@@ -109,7 +109,7 @@ export default defineComponent({
 		src: {
 			required: false
 		},
-		reactions: {
+		overridePinned: {
 			required: false
 		},
 	},
@@ -120,6 +120,7 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
+			pinned: this.overridePinned || this.$store.state.settings.reactions,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
 			customEmojis: this.$store.state.instance.meta.emojis,
 			visibleCategories: {},
@@ -334,10 +335,12 @@ export default defineComponent({
 			this.$refs.modal.close();
 
 			// 最近使った絵文字更新
-			let recents = this.$store.state.device.recentlyUsedEmojis;
-			recents = recents.filter((e: any) => e !== key);
-			recents.unshift(key);
-			this.$store.commit('device/set', { key: 'recentlyUsedEmojis', value: recents.splice(0, 16) });
+			if (!this.pinned.includes(key)) {
+				let recents = this.$store.state.device.recentlyUsedEmojis;
+				recents = recents.filter((e: any) => e !== key);
+				recents.unshift(key);
+				this.$store.commit('device/set', { key: 'recentlyUsedEmojis', value: recents.splice(0, 16) });
+			}
 		},
 
 		paste(event) {
