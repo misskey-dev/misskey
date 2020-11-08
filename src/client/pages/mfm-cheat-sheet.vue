@@ -76,6 +76,16 @@
 		</div>
 	</div>
 	<div class="_section">
+		<div class="_title">{{ $t('_mfm.quote') }}</div>
+		<div class="_content">
+			<p>{{ $t('_mfm.quoteDescription') }}</p>
+			<div class="preview _panel">
+				<Mfm :text="preview_quote"/>
+				<MkTextarea v-model:value="preview_quote"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="_section">
 		<div class="_title">{{ $t('_mfm.center') }}</div>
 		<div class="_content">
 			<p>{{ $t('_mfm.centerDescription') }}</p>
@@ -106,12 +116,12 @@
 		</div>
 	</div>
 	<div class="_section">
-		<div class="_title">{{ $t('_mfm.quote') }}</div>
+		<div class="_title">{{ $t('_mfm.inlineMath') }}</div>
 		<div class="_content">
-			<p>{{ $t('_mfm.quoteDescription') }}</p>
+			<p>{{ $t('_mfm.inlineMathDescription') }}</p>
 			<div class="preview _panel">
-				<Mfm :text="preview_quote"/>
-				<MkTextarea v-model:value="preview_quote"><span>MFM</span></MkTextarea>
+				<Mfm :text="preview_inlineMath"/>
+				<MkTextarea v-model:value="preview_inlineMath"><span>MFM</span></MkTextarea>
 			</div>
 		</div>
 	</div>
@@ -224,6 +234,7 @@ export default defineComponent({
 			preview_center: `<center>${this.$t('_mfm.dummy')}</center>`,
 			preview_inlineCode: '`<: "Hello, world!"`',
 			preview_blockCode: '```\n~ (#i, 100) {\n\t<: ? ((i % 15) = 0) "FizzBuzz"\n\t\t.? ((i % 3) = 0) "Fizz"\n\t\t.? ((i % 5) = 0) "Buzz"\n\t\t. i\n}\n```',
+			preview_inlineMath: '\\(x= \\frac{-b\' \\pm \\sqrt{(b\')^2-ac}}{a}\\)',
 			preview_quote: `> ${this.$t('_mfm.dummy')}`,
 			preview_search: `${this.$t('_mfm.dummy')} 検索`,
 			preview_jelly: `[jelly 🍮]`,
