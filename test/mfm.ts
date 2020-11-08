@@ -945,49 +945,6 @@ describe('MFM', () => {
 			]);
 		});
 
-		describe('title', () => {
-			it('simple', () => {
-				const tokens = parse('【foo】');
-				assert.deepStrictEqual(tokens, [
-					tree('title', [
-						text('foo')
-					], {})
-				]);
-			});
-
-			it('require line break', () => {
-				const tokens = parse('a【foo】');
-				assert.deepStrictEqual(tokens, [
-					text('a【foo】')
-				]);
-			});
-
-			it('with before and after texts', () => {
-				const tokens = parse('before\n【foo】\nafter');
-				assert.deepStrictEqual(tokens, [
-					text('before\n'),
-					tree('title', [
-						text('foo')
-					], {}),
-					text('after')
-				]);
-			});
-
-			it('ignore multiple title blocks', () => {
-				const tokens = parse('【foo】bar【baz】');
-				assert.deepStrictEqual(tokens, [
-					text('【foo】bar【baz】')
-				]);
-			});
-
-			it('disallow linebreak in title', () => {
-				const tokens = parse('【foo\nbar】');
-				assert.deepStrictEqual(tokens, [
-					text('【foo\nbar】')
-				]);
-			});
-		});
-
 		describe('center', () => {
 			it('simple', () => {
 				const tokens = parse('<center>foo</center>');
