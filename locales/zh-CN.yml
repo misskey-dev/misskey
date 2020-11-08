@@ -604,6 +604,8 @@ system: "系统"
 switchUi: "切换界面"
 desktop: "桌面"
 _mfm:
+  cheatSheet: "MFM代码速查表"
+  intro: "MFM是一种在Misskey中的各个位置使用的专用标记语言。在这里您可以看到MFM中可用的语法列表。"
   mention: "提及"
   hashtag: "话题标签"
   link: "链接"
