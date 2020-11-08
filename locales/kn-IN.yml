@@ -56,6 +56,8 @@ instances: "ನಿದರ್ಶನ"
 remove: "ಅಳಿಸು"
 smtpUser: "ಬಳಕೆಹೆಸರು"
 smtpPass: "ಗುಪ್ತಪದ"
+_mfm:
+  search: "ಹುಡುಕು"
 _sfx:
   notification: "ಅಧಿಸೂಚನೆಗಳು"
 _widgets:

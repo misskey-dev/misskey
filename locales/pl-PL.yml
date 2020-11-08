@@ -10,6 +10,8 @@ cancel: "Anuluj"
 enterUsername: "Wprowadź nazwę użytkownika"
 smtpUser: "Nazwa użytkownika"
 smtpPass: "Hasło"
+_mfm:
+  search: "Szukaj"
 _sfx:
   notification: "Powiadomienia"
 _widgets:
