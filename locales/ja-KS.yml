@@ -417,6 +417,11 @@ checking: "確認しとるで"
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
+_mfm:
+  mention: "メンション"
+  quote: "引用"
+  emoji: "カスタム絵文字"
+  search: "探す"
 _sidebar:
   icon: "アイコン"
 _theme:
