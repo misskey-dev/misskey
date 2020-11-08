@@ -380,6 +380,11 @@ smtpHost: "المضيف"
 smtpUser: "اسم المستخدم"
 smtpPass: "الكلمة السرية"
 display: "المظهر"
+_mfm:
+  mention: "أشر الى"
+  quote: "اقتبس"
+  emoji: "إيموجي مخصص"
+  search: "البحث"
 _reversi:
   total: "المجموع"
 _channel:
