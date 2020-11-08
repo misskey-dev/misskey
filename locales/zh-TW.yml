@@ -559,6 +559,13 @@ send: "發送"
 openInNewTab: "在新分頁中開啟"
 random: "隨機"
 system: "系統"
+_mfm:
+  mention: "提及"
+  hashtag: "#tag"
+  link: "鏈接"
+  quote: "引用"
+  emoji: "自訂表情符號"
+  search: "搜尋"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "對弈設定"
