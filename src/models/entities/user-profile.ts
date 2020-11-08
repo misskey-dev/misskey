@@ -109,11 +109,6 @@ export class UserProfile {
 	@Column('boolean', {
 		default: false,
 	})
-	public autoWatch: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
 	public autoAcceptFollowed: boolean;
 
 	@Column('boolean', {

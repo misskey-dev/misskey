@@ -5,7 +5,6 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import watch from './watch';
 import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
@@ -340,17 +339,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 		await createMentionedEvents(mentionedUsers, note, nm);
 
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
-
 		// If has in reply to note
 		if (data.reply) {
 			// Fetch watchers
 			nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
-
-			// この投稿をWatchする
-			if (Users.isLocalUser(user) && profile.autoWatch) {
-				watch(user.id, data.reply);
-			}
 
 			// 通知
 			if (data.reply.userHost === null) {
@@ -370,11 +362,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 			// Fetch watchers
 			nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
-
-			// この投稿をWatchする
-			if (Users.isLocalUser(user) && profile.autoWatch) {
-				watch(user.id, data.renote);
-			}
 
 			// Publish event
 			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {

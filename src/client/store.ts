@@ -60,7 +60,8 @@ export const defaultDeviceSettings = {
 	useOsNativeEmojis: false,
 	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
-	recentEmojis: [],
+	recentlyUsedEmojis: [],
+	recentlyUsedUsers: [],
 	themes: [],
 	darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
 	lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
@@ -77,6 +78,7 @@ export const defaultDeviceSettings = {
 	disablePagesScript: false,
 	enableInfiniteScroll: true,
 	useBlurEffectForModal: true,
+	useFullReactionPicker: false,
 	sidebarDisplay: 'full', // full, icon, hide
 	instanceTicker: 'remote', // none, remote, always
 	roomGraphicsQuality: 'medium',
@@ -183,6 +185,16 @@ export const store = createStore({
 
 			state: {
 				meta: null
+			},
+
+			getters: {
+				emojiCategories: state => {
+					const categories = new Set();
+					for (const emoji of state.meta.emojis) {
+						categories.add(emoji.category);
+					}
+					return Array.from(categories);
+				},
 			},
 
 			mutations: {

@@ -1,5 +1,5 @@
 <template>
-<div class="cxiknjgy" :class="{ autoMargin }">
+<div class="cxiknjgy">
 	<slot :items="items"></slot>
 	<div class="empty" v-if="empty" key="_empty_">
 		<slot name="empty"></slot>
@@ -31,24 +31,12 @@ export default defineComponent({
 		pagination: {
 			required: true
 		},
-		autoMargin: {
-			required: false,
-			default: true
-		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .cxiknjgy {
-	&.autoMargin > *:not(:last-child) {
-		margin-bottom: 16px;
-
-		@media (max-width: 500px) {
-			margin-bottom: 8px;
-		}
-	}
-
 	> .more > .button {
 		margin-left: auto;
 		margin-right: auto;

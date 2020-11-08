@@ -1,6 +1,5 @@
 import $ from 'cafy';
 import { ID } from '../../../../../misc/cafy-id';
-import watch from '../../../../../services/note/watch';
 import { publishNoteStream } from '../../../../../services/stream';
 import { createNotification } from '../../../../../services/create-notification';
 import define from '../../../define';
@@ -10,7 +9,7 @@ import { deliver } from '../../../../../queue';
 import { renderActivity } from '../../../../../remote/activitypub/renderer';
 import renderVote from '../../../../../remote/activitypub/renderer/vote';
 import { deliverQuestionUpdate } from '../../../../../services/note/polls/update';
-import { PollVotes, NoteWatchings, Users, Polls, UserProfiles } from '../../../../../models';
+import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
 import { genId } from '../../../../../misc/gen-id';
@@ -151,13 +150,6 @@ export default define(meta, async (ps, user) => {
 			});
 		}
 	});
-
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
-
-	// この投稿をWatchする
-	if (profile.autoWatch !== false) {
-		watch(user.id, note);
-	}
 
 	// リモート投票の場合リプライ送信
 	if (note.userHost != null) {

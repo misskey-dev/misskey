@@ -80,7 +80,13 @@ export default define(meta, async (ps, me) => {
 			isSuspended: false
 		});
 
-		return await Promise.all(users.map(u => Users.pack(u, me, {
+		// リクエストされた通りに並べ替え
+		const _users = [];
+		for (const id of ps.userIds) {
+			_users.push(users.find(x => x.id === id));
+		}
+
+		return await Promise.all(_users.map(u => Users.pack(u, me, {
 			detail: true
 		})));
 	} else {

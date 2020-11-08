@@ -23,11 +23,11 @@
 			<span>{{ item.text }}</span>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</a>
-		<button v-else-if="item.type === 'user'" @click="clicked(item.action)" :tabindex="i" class="_button item">
+		<button v-else-if="item.type === 'user'" @click="clicked(item.action, $event)" :tabindex="i" class="_button item">
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
 			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
 		</button>
-		<button v-else @click="clicked(item.action)" :tabindex="i" class="_button item" :class="{ danger: item.danger }">
+		<button v-else @click="clicked(item.action, $event)" :tabindex="i" class="_button item" :class="{ danger: item.danger }">
 			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
@@ -115,8 +115,8 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		clicked(fn) {
-			fn();
+		clicked(fn, ev) {
+			fn(ev);
 			this.close();
 		},
 		close() {

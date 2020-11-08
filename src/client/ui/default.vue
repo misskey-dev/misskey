@@ -3,7 +3,7 @@
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
-		<header class="header" ref="header" @contextmenu.prevent.stop="onContextmenu">
+		<header class="header" ref="header" @contextmenu.prevent.stop="onContextmenu" @click="onHeaderClick">
 			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
@@ -211,6 +211,10 @@ export default defineComponent({
 			if (window._scroll) window._scroll();
 		},
 
+		onHeaderClick() {
+			window.scroll({ top: 0, behavior: 'smooth' });
+		},
+
 		onContextmenu(e) {
 			const path = this.$route.path;
 			os.contextMenu([{
@@ -292,6 +296,7 @@ export default defineComponent({
 			backdrop-filter: blur(32px);
 			background-color: var(--header);
 			border-bottom: solid 1px var(--divider);
+			user-select: none;
 		}
 
 		> main {
