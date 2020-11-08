@@ -201,6 +201,7 @@ uploadFromUrl: "Завантажити з URL"
 explore: "Огляд"
 games: "Ігри Misskey"
 start: "Розпочати"
+home: "Домівка"
 activity: "Активність"
 images: "Зображення"
 birthday: "День народження"
@@ -253,6 +254,7 @@ smtpHost: "Хост"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
 _mfm:
+  cheatSheet: " Довідка MFM"
   mention: "Згадка"
   quote: "Цитата"
   emoji: "Кастомні емоджі"
@@ -277,7 +279,7 @@ _widgets:
 _cw:
   show: "Показати більше"
 _visibility:
-  home: "Головна"
+  home: "Домівка"
   followers: "Підписники"
 _postForm:
   replyPlaceholder: "Відповідь на допис..."
@@ -288,6 +290,8 @@ _exportOrImport:
   muteList: "Ігнорувати"
   blockingList: "Заблокувати"
   userLists: "Списки"
+_timelines:
+  home: "Домівка"
 _rooms:
   _roomType:
     default: "За умовчанням"
