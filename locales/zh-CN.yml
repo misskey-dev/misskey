@@ -625,7 +625,12 @@ _mfm:
   inlineCodeDescription: "将文字中的程序代码语法高亮显示。"
   blockCode: "代码(块)"
   blockCodeDescription: "语法高亮显示整块程序代码。"
+  inlineMath: "数学公式(内嵌)"
+  inlineMathDescription: "显示内嵌的KaTex公式。"
+  blockMath: "数学公式(块)"
+  blockMathDescription: "显示整块的多行KaTex数学公式。"
   quote: "引用"
+  quoteDescription: "可以用来表示引用的内容。"
   emoji: "自定义Emoji"
   search: "搜索"
 _reversi:
