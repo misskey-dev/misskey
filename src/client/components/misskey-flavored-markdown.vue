@@ -37,6 +37,14 @@ export default defineComponent({
 	100% { transform: translateY(0); }
 }
 
+@keyframes mfm-bounce {
+	0% { transform: translateY(0) scale(1, 1); }
+	25% { transform: translateY(-16px) scale(1, 1); }
+	50% { transform: translateY(0) scale(1, 1); }
+	75% { transform: translateY(0) scale(1.5, 0.75); }
+	100% { transform: translateY(0) scale(1, 1); }
+}
+
 // const val = () => `translate(${Math.floor(Math.random() * 20) - 10}px, ${Math.floor(Math.random() * 20) - 10}px)`;
 // let css = '';
 // for (let i = 0; i <= 100; i += 5) { css += `${i}% { transform: ${val()} }\n`; }

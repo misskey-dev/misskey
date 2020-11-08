@@ -176,6 +176,16 @@
 		</div>
 	</div>
 	<div class="_section">
+		<div class="_title">{{ $t('_mfm.bounce') }}</div>
+		<div class="_content">
+			<p>{{ $t('_mfm.bounceDescription') }}</p>
+			<div class="preview _panel">
+				<Mfm :text="preview_bounce"/>
+				<MkTextarea v-model:value="preview_bounce"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="_section">
 		<div class="_title">{{ $t('_mfm.spin') }}</div>
 		<div class="_content">
 			<p>{{ $t('_mfm.spinDescription') }}</p>
@@ -240,6 +250,7 @@ export default defineComponent({
 			preview_jelly: `[jelly 🍮]`,
 			preview_tada: `[tada 🍮]`,
 			preview_jump: `[jump 🍮]`,
+			preview_bounce: `[bounce 🍮]`,
 			preview_shake: `[shake 🍮]`,
 			preview_twitch: `[twitch 🍮]`,
 			preview_spin: `[spin 🍮] [spin.left 🍮] [spin.alternate 🍮]\n[spin.x 🍮] [spin.x,left 🍮] [spin.x,alternate 🍮]\n[spin.y 🍮] [spin.y,left 🍮] [spin.y,alternate 🍮]`,

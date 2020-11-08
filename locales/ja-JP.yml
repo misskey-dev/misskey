@@ -644,6 +644,8 @@ _mfm:
   tadaDescription: "ジャーン！という感じのアニメーションを与えます。"
   jump: "アニメーション(ジャンプ)"
   jumpDescription: "飛び跳ねるようなアニメーションを与えます。"
+  bounce: "アニメーション(バウンド)"
+  bounceDescription: "ぽよんぽよん弾むようなアニメーションを与えます。"
   shake: "アニメーション(ぶるぶる)"
   shakeDescription: "ぶるぶるするアニメーションを与えます。"
   twitch: "アニメーション(ブレ)"

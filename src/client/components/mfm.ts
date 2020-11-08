@@ -117,6 +117,10 @@ export default defineComponent({
 							style = this.$store.state.device.animatedMfm ? 'animation: mfm-jump 0.75s linear infinite;' : '';
 							break;
 						}
+						case 'bounce': {
+							style = this.$store.state.device.animatedMfm ? 'animation: mfm-bounce 0.75s linear infinite; transform-origin: center bottom;' : '';
+							break;
+						}
 						case 'flip': {
 							const transform =
 								(token.node.props.args.h && token.node.props.args.v) ? 'scale(-1, -1)' :
