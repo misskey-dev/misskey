@@ -582,6 +582,14 @@ setMultipleBySeparatingWithSpace: "Vous pouvez définir plus d’un, séparés p
 fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
 random: "Aléatoire"
+_mfm:
+  mention: "Mentionner"
+  hashtag: "Hashtags"
+  link: "Lien"
+  center: "Centrée"
+  quote: "Citer"
+  emoji: "Émojis personnalisés"
+  search: "Rechercher"
 _reversi:
   total: "Total"
 _serverDisconnectedBehavior:
