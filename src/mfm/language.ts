@@ -58,6 +58,7 @@ export const mfmLanguage = P.createLanguage({
 		return P.makeSuccess(i + match[0].length, createLeaf('blockCode', { code: match[2], lang: match[1] ? match[1].trim() : null }));
 	})),
 	inline: r => P.alt(
+		r.big,
 		r.bold,
 		r.small,
 		r.italic,
@@ -72,6 +73,11 @@ export const mfmLanguage = P.createLanguage({
 		r.fn,
 		r.text
 	),
+	// TODO: そのうち消す
+	big: r => P.regexp(/^\*\*\*([\s\S]+?)\*\*\*/, 1).map(x => createTree('fn', r.inline.atLeast(1).tryParse(x), {
+		name: 'tada',
+		args: {}
+	})),
 	bold: r => {
 		const asterisk = P.regexp(/\*\*([\s\S]+?)\*\*/, 1);
 		const underscore = P.regexp(/__([a-zA-Z0-9\s]+?)__/, 1);
