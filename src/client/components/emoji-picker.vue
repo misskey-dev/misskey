@@ -34,12 +34,10 @@
 					<div>
 						<button v-for="emoji in reactions || $store.state.settings.reactions"
 							class="_button"
-							:title="emoji.name"
 							@click="chosen(emoji, $event)"
-							:key="emoji"
 							tabindex="0"
 						>
-							<MkEmoji :emoji="emoji.startsWith(':') ? null : emoji" :name="emoji.startsWith(':') ? emoji.substr(1, emoji.length - 2) : null" :normal="true"/>
+							<MkEmoji :emoji="emoji" :normal="true"/>
 						</button>
 					</div>
 				</section>
@@ -47,14 +45,12 @@
 				<section>
 					<header class="_acrylic"><Fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
 					<div>
-						<button v-for="emoji in ($store.state.device.recentEmojis || [])"
+						<button v-for="emoji in $store.state.device.recentlyUsedEmojis"
 							class="_button"
-							:title="emoji.name"
 							@click="chosen(emoji, $event)"
 							:key="emoji"
 						>
-							<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-							<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+							<MkEmoji :emoji="emoji" :normal="true"/>
 						</button>
 					</div>
 				</section>
@@ -320,6 +316,10 @@ export default defineComponent({
 	},
 
 	methods: {
+		getKey(emoji: any) {
+			return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
+		},
+
 		chosen(emoji: any, ev) {
 			if (ev) {
 				const el = ev.currentTarget || ev.target;
@@ -329,15 +329,15 @@ export default defineComponent({
 				os.popup(Particle, { x, y }, {}, 'end');
 			}
 
-			const getKey = (emoji: any) => typeof emoji === 'string' ? emoji : emoji.char || `:${emoji.name}:`;
-			this.$emit('done', getKey(emoji));
+			const key = this.getKey(emoji);
+			this.$emit('done', key);
 			this.$refs.modal.close();
 
 			// 最近使った絵文字更新
-			let recents = this.$store.state.device.recentEmojis || [];
-			recents = recents.filter((e: any) => getKey(e) !== getKey(emoji));
-			recents.unshift(emoji)
-			this.$store.commit('device/set', { key: 'recentEmojis', value: recents.splice(0, 16) });
+			let recents = this.$store.state.device.recentlyUsedEmojis;
+			recents = recents.filter((e: any) => e !== key);
+			recents.unshift(key);
+			this.$store.commit('device/set', { key: 'recentlyUsedEmojis', value: recents.splice(0, 16) });
 		},
 
 		paste(event) {

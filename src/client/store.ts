@@ -59,7 +59,7 @@ export const defaultDeviceSettings = {
 	useOsNativeEmojis: false,
 	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
-	recentEmojis: [],
+	recentlyUsedEmojis: [],
 	themes: [],
 	darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
 	lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',

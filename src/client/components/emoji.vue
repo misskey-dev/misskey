@@ -2,7 +2,7 @@
 <img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt"/>
 <img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt"/>
 <span v-else-if="char && useOsNativeEmojis">{{ char }}</span>
-<span v-else>:{{ name }}:</span>
+<span v-else>{{ emoji }}</span>
 </template>
 
 <script lang="ts">
@@ -12,13 +12,9 @@ import { twemojiSvgBase } from '../../misc/twemoji-base';
 
 export default defineComponent({
 	props: {
-		name: {
-			type: String,
-			required: false
-		},
 		emoji: {
 			type: String,
-			required: false
+			required: true
 		},
 		normal: {
 			type: Boolean,
@@ -49,6 +45,10 @@ export default defineComponent({
 	},
 
 	computed: {
+		isCustom(): boolean {
+			return this.emoji.startsWith(':');
+		},
+
 		alt(): string {
 			return this.customEmoji ? `:${this.customEmoji.name}:` : this.char;
 		},
@@ -68,8 +68,8 @@ export default defineComponent({
 	watch: {
 		ce: {
 			handler() {
-				if (this.name) {
-					const customEmoji = this.ce.find(x => x.name == this.name);
+				if (this.isCustom) {
+					const customEmoji = this.ce.find(x => x.name === this.emoji.substr(1, this.emoji.length - 2));
 					if (customEmoji) {
 						this.customEmoji = customEmoji;
 						this.url = this.$store.state.device.disableShowingAnimatedImages
@@ -83,7 +83,7 @@ export default defineComponent({
 	},
 
 	created() {
-		if (!this.name) {
+		if (!this.isCustom) {
 			this.char = this.emoji;
 		}
 

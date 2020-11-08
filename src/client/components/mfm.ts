@@ -207,8 +207,7 @@ export default defineComponent({
 				case 'emoji': {
 					return [h(MkEmoji, {
 						key: Math.random(),
-						emoji: token.node.props.emoji,
-						name: token.node.props.name,
+						emoji: token.node.props.name ? `:${token.node.props.name}:` : token.node.props.emoji,
 						customEmojis: this.customEmojis,
 						normal: this.plain
 					})];
