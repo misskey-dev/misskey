@@ -247,6 +247,11 @@ showInPage: "Показати на сторінці"
 smtpHost: "Хост"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
+_mfm:
+  mention: "Згадка"
+  quote: "Цитата"
+  emoji: "Кастомні емоджі"
+  search: "Пошук"
 _sidebar:
   icon: "Аватар"
 _theme:
