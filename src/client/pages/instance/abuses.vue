@@ -33,7 +33,7 @@
 			</div>
 			-->
 
-			<MkPagination :pagination="pagination" #default="{items}" ref="reports" :auto-margin="false" style="margin-top: var(--margin);">
+			<MkPagination :pagination="pagination" #default="{items}" ref="reports" style="margin-top: var(--margin);">
 				<div class="bcekxzvu _card _vMargin" v-for="report in items" :key="report.id">
 					<div class="_content target">
 						<MkAvatar class="avatar" :user="report.targetUser"/>
