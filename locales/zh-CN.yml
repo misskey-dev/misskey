@@ -637,6 +637,8 @@ _mfm:
   searchDescription: "显示含有搜索内容示例的搜索框。"
   flip: "翻转"
   flipDescription: "将内容上下或左右翻转。"
+  jelly: "动画(果冻)"
+  jellyDescription: "显示果冻一样的动画效果。"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "对局设置"
