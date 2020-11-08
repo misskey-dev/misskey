@@ -650,6 +650,7 @@ _mfm:
   twitch: "Animation (Twitch)"
   twitchDescription: "Infuses a strongly twitching animation."
   spin: "Animation (Spin)"
+  spinDescription: "Infuses a spinning animation."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
