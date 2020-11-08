@@ -636,6 +636,12 @@ _mfm:
   searchDescription: "Eine vorgefertige Suchanfragebox anzeigen lassen."
   flip: "Spiegelung"
   flipDescription: "Inhalt horizontal oder vertikal gespiegelt anzeigen lassen."
+  jelly: "Animation (Dehnen)"
+  jellyDescription: "Verleiht eine sich dehnende Animation."
+  tada: "Animation (Tada)"
+  tadaDescription: "Verleiht eine Animation mit \"Tada!\"-Gefühl"
+  jump: "Animation (Sprung)"
+  jumpDescription: "Verleiht eine springende Animation."
   bounce: "Animation (Federn)"
   bounceDescription: "Erzeugt eine federnde Animation."
 _reversi:
