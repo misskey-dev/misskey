@@ -550,6 +550,14 @@ logs: "로그"
 database: "데이터베이스"
 channel: "채널"
 random: "랜덤"
+_mfm:
+  mention: "멘션"
+  hashtag: "해시태그"
+  link: "링크"
+  center: "가운데 정렬"
+  quote: "인용"
+  emoji: "커스텀 이모지"
+  search: "검색"
 _reversi:
   total: "합계"
 _channel:
