@@ -73,6 +73,7 @@ export const router = createRouter({
 		{ path: '/games/reversi', component: page('reversi/index') },
 		{ path: '/games/reversi/:gameId', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
 		{ path: '/mfm-cheat-sheet', component: page('mfm-cheat-sheet') },
+		{ path: '/api-console', component: page('api-console') },
 		{ path: '/test', component: page('test') },
 		{ path: '/auth/:token', component: page('auth') },
 		{ path: '/miauth/:session', component: page('miauth') },
