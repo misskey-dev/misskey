@@ -271,6 +271,12 @@ enableHcaptcha: "Увімкнути hCaptcha"
 hcaptchaSiteKey: "Ключ сайту"
 hcaptchaSecretKey: "Секретний ключ"
 recaptcha: "reCAPTCHA"
+enableRecaptcha: "Увімкнути reCAPTCHA"
+recaptchaSiteKey: "Ключ сайту"
+recaptchaSecretKey: "Секретний ключ"
+antennas: "Антени"
+manageAntennas: "Налаштування антен"
+name: "Ім'я"
 exploreUsersCount: "{count} користувачів"
 userList: "Списки"
 invitations: "Запрошення"
@@ -310,6 +316,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "Відповідь на допис..."
 _profile:
+  name: "Ім'я"
   username: "Ім'я користувача"
 _exportOrImport:
   followingList: "Підписки"
@@ -357,5 +364,6 @@ _deck:
   _columns:
     notifications: "Сповіщення"
     tl: "Стрічка"
+    antenna: "Антени"
     list: "Списки"
     mentions: "Згадки"
