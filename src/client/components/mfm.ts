@@ -130,9 +130,13 @@ export default defineComponent({
 							break;
 						}
 					}
-					return h('span', {
-						style: 'display: inline-block;' + style,
-					}, genEl(token.children));
+					if (style == null) {
+						return h('span', {}, ['[', token.node.props.name, ...genEl(token.children), ']']);
+					} else {
+						return h('span', {
+							style: 'display: inline-block;' + style,
+						}, genEl(token.children));
+					}
 				}
 
 				case 'small': {
