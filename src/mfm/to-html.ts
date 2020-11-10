@@ -52,7 +52,7 @@ export function toHtml(tokens: MfmForest | null, mentionedRemoteUsers: IMentione
 		blockCode(token) {
 			const pre = doc.createElement('pre');
 			const inner = doc.createElement('code');
-			inner.innerHTML = token.node.props.code;
+			inner.textContent = token.node.props.code;
 			pre.appendChild(inner);
 			return pre;
 		},
