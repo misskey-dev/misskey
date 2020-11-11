@@ -11,7 +11,7 @@
 			<Mfm :key="'past-turn-of:' + turnUser().name" :text="$t('_reversi.pastTurnOf', { name: turnUser().name })" :plain="true" :custom-emojis="turnUser().emojis"/>
 		</p>
 		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $t('_reversi.opponentTurn') }}<MkEllipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: anime-tada 1s linear infinite both;">{{ $t('_reversi.myTurn') }}</p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: tada 1s linear infinite both;">{{ $t('_reversi.myTurn') }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
 				<Mfm :key="'won'" :text="$t('_reversi.won', { name: game.winner.name })" :plain="true" :custom-emojis="game.winner.emojis"/>

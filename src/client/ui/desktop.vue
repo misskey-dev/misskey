@@ -48,6 +48,12 @@ export default defineComponent({
 		},
 	},
 
+	created() {
+		if (window.innerWidth < 1024) {
+			localStorage.setItem('ui', 'default');
+			location.reload();
+		}
+	},
 
 	methods: {
 		help() {

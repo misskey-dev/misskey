@@ -35,6 +35,9 @@ userList: "Tibdarin"
 uiLanguage: "Tutlayt n wegrudem"
 smtpUser: "Isem n umseqdac"
 smtpPass: "Awal uffir"
+_mfm:
+  mention: "Bder"
+  search: "Nadi"
 _theme:
   keys:
     mention: "Bder"

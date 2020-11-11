@@ -18,10 +18,6 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 			return `**${appendChildren(token.children, opts)}**`;
 		},
 
-		big(token, opts) {
-			return `***${appendChildren(token.children, opts)}***`;
-		},
-
 		small(token, opts) {
 			return `<small>${appendChildren(token.children, opts)}</small>`;
 		},
@@ -34,30 +30,11 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 			return `<i>${appendChildren(token.children, opts)}</i>`;
 		},
 
-		motion(token, opts) {
-			return `<motion>${appendChildren(token.children, opts)}</motion>`;
-		},
-
-		spin(token, opts) {
-			const attr = token.node.props?.attr;
-			const post = attr ? ` ${attr}` : '';
-			return `<spin${post}>${appendChildren(token.children, opts)}</spin>`;
-		},
-
-		jump(token, opts) {
-			return `<jump>${appendChildren(token.children, opts)}</jump>`;
-		},
-
-		twitch(token, opts) {
-			return `<twitch>${appendChildren(token.children, opts)}</twitch>`;
-		},
-
-		shake(token, opts) {
-			return `<shake>${appendChildren(token.children, opts)}</shake>`;
-		},
-
-		flip(token, opts) {
-			return `<flip>${appendChildren(token.children, opts)}</flip>`;
+		fn(token, opts) {
+			const name = token.node.props?.name;
+			const args = token.node.props?.args || {};
+			const argsStr = Object.entries(args).map(([k, v]) => v === true ? k : `${k}=${v}`).join(',');
+			return `[${name}${argsStr !== '' ? '.' + argsStr : ''} ${appendChildren(token.children, opts)}]`;
 		},
 
 		blockCode(token) {
@@ -102,10 +79,6 @@ export function toString(tokens: MfmForest | null, opts?: RestoreOptions): strin
 
 		quote(token) {
 			return `${appendChildren(token.children, {doNyaize: false}).replace(/^/gm,'>').trim()}\n`;
-		},
-
-		title(token, opts) {
-			return `[${appendChildren(token.children, opts)}]\n`;
 		},
 
 		text(token, opts) {

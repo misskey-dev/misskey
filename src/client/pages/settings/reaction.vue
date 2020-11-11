@@ -82,7 +82,7 @@ export default defineComponent({
 		preview(ev) {
 			if (this.$store.state.device.useFullReactionPicker) {
 				os.popup(import('@/components/emoji-picker.vue'), {
-					reactions: this.splited,
+					overridePinned: this.splited,
 					src: ev.currentTarget || ev.target,
 				}, {}, 'closed');
 			} else {

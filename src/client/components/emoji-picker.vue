@@ -32,14 +32,12 @@
 			<div class="index">
 				<section>
 					<div>
-						<button v-for="emoji in reactions || $store.state.settings.reactions"
+						<button v-for="emoji in pinned"
 							class="_button"
-							:title="emoji.name"
 							@click="chosen(emoji, $event)"
-							:key="emoji"
 							tabindex="0"
 						>
-							<MkEmoji :emoji="emoji.startsWith(':') ? null : emoji" :name="emoji.startsWith(':') ? emoji.substr(1, emoji.length - 2) : null" :normal="true"/>
+							<MkEmoji :emoji="emoji" :normal="true"/>
 						</button>
 					</div>
 				</section>
@@ -47,14 +45,12 @@
 				<section>
 					<header class="_acrylic"><Fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
 					<div>
-						<button v-for="emoji in ($store.state.device.recentEmojis || [])"
+						<button v-for="emoji in $store.state.device.recentlyUsedEmojis"
 							class="_button"
-							:title="emoji.name"
 							@click="chosen(emoji, $event)"
 							:key="emoji"
 						>
-							<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-							<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+							<MkEmoji :emoji="emoji" :normal="true"/>
 						</button>
 					</div>
 				</section>
@@ -113,7 +109,7 @@ export default defineComponent({
 		src: {
 			required: false
 		},
-		reactions: {
+		overridePinned: {
 			required: false
 		},
 	},
@@ -124,6 +120,7 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
+			pinned: this.overridePinned || this.$store.state.settings.reactions,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
 			customEmojis: this.$store.state.instance.meta.emojis,
 			visibleCategories: {},
@@ -190,36 +187,58 @@ export default defineComponent({
 				const exactMatch = emojis.find(e => e.name === q);
 				if (exactMatch) matches.add(exactMatch);
 
-				for (const emoji of emojis) {
-					if (emoji.name.startsWith(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
-					}
-				}
-				if (matches.size >= max) return matches;
+				if (q.includes(' ')) { // AND検索
+					const keywords = q.split(' ');
 
-				for (const emoji of emojis) {
-					if (emoji.aliases.some(alias => alias.startsWith(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前にキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.name.includes(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前またはエイリアスにキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+				} else {
+					for (const emoji of emojis) {
+						if (emoji.name.startsWith(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.aliases.some(alias => alias.includes(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					for (const emoji of emojis) {
+						if (emoji.aliases.some(alias => alias.startsWith(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.name.includes(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.aliases.some(alias => alias.includes(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
 				}
+
 				return matches;
 			};
 
@@ -231,36 +250,58 @@ export default defineComponent({
 				const exactMatch = emojis.find(e => e.name === q);
 				if (exactMatch) matches.add(exactMatch);
 
-				for (const emoji of emojis) {
-					if (emoji.name.startsWith(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
-					}
-				}
-				if (matches.size >= max) return matches;
+				if (q.includes(' ')) { // AND検索
+					const keywords = q.split(' ');
 
-				for (const emoji of emojis) {
-					if (emoji.keywords.some(keyword => keyword.startsWith(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前にキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.name.includes(q)) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					// 名前またはエイリアスにキーワードが含まれている
+					for (const emoji of emojis) {
+						if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.keywords.some(alias => alias.includes(keyword)))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
-				}
-				if (matches.size >= max) return matches;
+				} else {
+					for (const emoji of emojis) {
+						if (emoji.name.startsWith(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
 
-				for (const emoji of emojis) {
-					if (emoji.keywords.some(keyword => keyword.includes(q))) {
-						matches.add(emoji);
-						if (matches.size >= max) break;
+					for (const emoji of emojis) {
+						if (emoji.keywords.some(keyword => keyword.startsWith(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.name.includes(q)) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
+					}
+					if (matches.size >= max) return matches;
+
+					for (const emoji of emojis) {
+						if (emoji.keywords.some(keyword => keyword.includes(q))) {
+							matches.add(emoji);
+							if (matches.size >= max) break;
+						}
 					}
 				}
+
 				return matches;
 			};
 
@@ -276,6 +317,10 @@ export default defineComponent({
 	},
 
 	methods: {
+		getKey(emoji: any) {
+			return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
+		},
+
 		chosen(emoji: any, ev) {
 			if (ev) {
 				const el = ev.currentTarget || ev.target;
@@ -285,15 +330,17 @@ export default defineComponent({
 				os.popup(Particle, { x, y }, {}, 'end');
 			}
 
-			const getKey = (emoji: any) => typeof emoji === 'string' ? emoji : emoji.char || `:${emoji.name}:`;
-			this.$emit('done', getKey(emoji));
+			const key = this.getKey(emoji);
+			this.$emit('done', key);
 			this.$refs.modal.close();
 
 			// 最近使った絵文字更新
-			let recents = this.$store.state.device.recentEmojis || [];
-			recents = recents.filter((e: any) => getKey(e) !== getKey(emoji));
-			recents.unshift(emoji)
-			this.$store.commit('device/set', { key: 'recentEmojis', value: recents.splice(0, 16) });
+			if (!this.pinned.includes(key)) {
+				let recents = this.$store.state.device.recentlyUsedEmojis;
+				recents = recents.filter((e: any) => e !== key);
+				recents.unshift(key);
+				this.$store.commit('device/set', { key: 'recentlyUsedEmojis', value: recents.splice(0, 16) });
+			}
 		},
 
 		paste(event) {
@@ -315,6 +362,14 @@ export default defineComponent({
 			const exactMatchUnicode = this.emojilist.find(e => e.char === q || e.name === q);
 			if (exactMatchUnicode) {
 				this.chosen(exactMatchUnicode);
+				return true;
+			}
+			if (this.searchResultCustom.length > 0) {
+				this.chosen(this.searchResultCustom[0]);
+				return true;
+			}
+			if (this.searchResultUnicode.length > 0) {
+				this.chosen(this.searchResultUnicode[0]);
 				return true;
 			}
 		},

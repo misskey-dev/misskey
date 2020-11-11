@@ -14,10 +14,10 @@
 			<MkInput v-model:value="host" class="input" @update:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></MkInput>
 		</div>
 	</div>
-	<div class="tbhwbxda _section" :style="users.length > 0 ? 'padding: 0;' : ''">
+	<div class="tbhwbxda _section result" v-if="username != '' || host != ''" :class="{ hit: users.length > 0 }">
 		<div class="users" v-if="users.length > 0">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
-				<MkAvatar :user="user" class="avatar" :disable-link="true"/>
+				<MkAvatar :user="user" class="avatar"/>
 				<div class="body">
 					<MkUserName :user="user" class="name"/>
 					<MkAcct :user="user" class="acct"/>
@@ -26,6 +26,17 @@
 		</div>
 		<div v-else class="empty">
 			<span>{{ $t('noUsers') }}</span>
+		</div>
+	</div>
+	<div class="tbhwbxda _section recent" v-if="username == '' && host == ''">
+		<div class="users">
+			<div class="user" v-for="user in recentUsers" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
+				<MkAvatar :user="user" class="avatar"/>
+				<div class="body">
+					<MkUserName :user="user" class="name"/>
+					<MkAcct :user="user" class="acct"/>
+				</div>
+			</div>
 		</div>
 	</div>
 </XModalWindow>
@@ -53,17 +64,22 @@ export default defineComponent({
 		return {
 			username: '',
 			host: '',
+			recentUsers: [],
 			users: [],
 			selected: null,
 			faTimes, faCheck
 		};
 	},
 
-	mounted() {
+	async mounted() {
 		this.focus();
 
 		this.$nextTick(() => {
 			this.focus();
+		});
+
+		this.recentUsers = await os.api('users/show', {
+			userIds: this.$store.state.device.recentlyUsedUsers
 		});
 	},
 
@@ -90,6 +106,12 @@ export default defineComponent({
 		ok() {
 			this.$emit('ok', this.selected);
 			this.$refs.dialog.close();
+
+			// 最近使ったユーザー更新
+			let recents = this.$store.state.device.recentlyUsedUsers;
+			recents = recents.filter(x => x !== this.selected.id);
+			recents.unshift(this.selected.id);
+			this.$store.commit('device/set', { key: 'recentlyUsedUsers', value: recents.splice(0, 16) });
 		},
 
 		cancel() {
@@ -106,6 +128,14 @@ export default defineComponent({
 	flex-direction: column;
 	overflow: auto;
 	height: 100%;
+
+	&.result.hit {
+		padding: 0;
+	}
+
+	&.recent {
+		padding: 0;
+	}
 
 	> .inputs {
 		> .input {
