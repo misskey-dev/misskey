@@ -354,11 +354,16 @@ category: "Категорія"
 tags: "Теги"
 createAccount: "Створити акаунт"
 existingAcount: "Існуючий акаунт"
-regenerate: "Відновити"
+regenerate: "Оновити"
+fontSize: "Розмір шрифту"
+dashboard: "Панель приладів"
+local: "Локальні"
+remote: "Віддалений"
 showInPage: "Показати на сторінці"
 smtpHost: "Хост"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
+regenerateLoginToken: "Оновити Login Token"
 _mfm:
   cheatSheet: " Довідка MFM"
   mention: "Згадка"
@@ -387,6 +392,7 @@ _cw:
 _visibility:
   home: "Домівка"
   followers: "Підписники"
+  localOnly: "Лише локально"
 _postForm:
   replyPlaceholder: "Відповідь на допис..."
 _profile:
