@@ -359,6 +359,7 @@ fontSize: "Розмір шрифту"
 dashboard: "Панель приладів"
 local: "Локальні"
 remote: "Віддалений"
+total: "Всього"
 showInPage: "Показати на сторінці"
 smtpHost: "Хост"
 smtpUser: "Ім'я користувача"
@@ -370,6 +371,8 @@ _mfm:
   quote: "Цитата"
   emoji: "Кастомні емоджі"
   search: "Пошук"
+_reversi:
+  total: "Всього"
 _sidebar:
   icon: "Аватар"
 _theme:
