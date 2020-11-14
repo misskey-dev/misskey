@@ -2,8 +2,6 @@ FROM node:14.15.0-alpine AS base
 
 ENV NODE_ENV=production
 
-RUN npm i -g npm@latest
-
 WORKDIR /misskey
 
 FROM base AS builder
