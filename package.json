@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.55.0",
+	"version": "12.56.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -246,10 +246,10 @@
 		"vue-json-pretty": "1.7.1",
 		"vue-loader": "16.0.0-beta.8",
 		"vue-prism-editor": "1.2.2",
-		"vue-router": "4.0.0-beta.13",
+		"vue-router": "4.0.0-rc.2",
 		"vue-style-loader": "4.1.2",
 		"vue-template-compiler": "2.6.12",
-		"vuex": "4.0.0-beta.4",
+		"vuex": "4.0.0-rc.1",
 		"vuex-persistedstate": "3.1.0",
 		"web-push": "3.4.4",
 		"webpack": "5.4.0",
