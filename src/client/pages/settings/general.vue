@@ -1,35 +1,41 @@
 <template>
-<div class="_section">
+<div class="">
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
-			<div>{{ $t('defaultNavigationBehaviour') }}</div>
-			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('whenServerDisconnected') }}</div>
-			<MkRadio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
-			<MkRadio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
-			<MkRadio v-model="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</MkRadio>
-		</div>
-		<div class="_content">
+			<MkRadios v-model="serverDisconnectedBehavior" :defs="[
+					{ label: $t('_serverDisconnectedBehavior.reload'), value: 'reload' },
+					{ label: $t('_serverDisconnectedBehavior.dialog'), value: 'dialog' },
+					{ label: $t('_serverDisconnectedBehavior.quiet'), value: 'quiet' },
+				]"
+			>
+				{{ $t('whenServerDisconnected') }}
+			</MkRadios>
 			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
 			<MkSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</MkSwitch>
 			<MkSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</MkSwitch>
 			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('chatOpenBehavior') }}</div>
-			<MkRadio v-model="chatOpenBehavior" value="page">{{ $t('showInPage') }}</MkRadio>
-			<MkRadio v-model="chatOpenBehavior" value="window">{{ $t('openInWindow') }}</MkRadio>
-			<MkRadio v-model="chatOpenBehavior" value="popout">{{ $t('popout') }}</MkRadio>
-		</div>
-		<div class="_content">
 			<MkSelect v-model:value="lang">
 				<template #label>{{ $t('uiLanguage') }}</template>
-
 				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 			</MkSelect>
+		</div>
+	</section>
+
+	<section class="_card _vMargin">
+		<div class="_title"><Fa :icon="faCog"/> {{ $t('defaultNavigationBehaviour') }}</div>
+		<div class="_content">
+			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
+		</div>
+		<div class="_content">
+			<MkRadios v-model="chatOpenBehavior" :defs="[
+					{ label: $t('showInPage'), value: 'page' },
+					{ label: $t('openInWindow'), value: 'window' },
+					{ label: $t('popout'), value: 'popout' },
+				]"
+			>
+				{{ $t('chatOpenBehavior') }}
+			</MkRadios>
 		</div>
 	</section>
 
@@ -88,6 +94,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkRadio from '@/components/ui/radio.vue';
+import MkRadios from '@/components/ui/radios.vue';
 import MkRange from '@/components/ui/range.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
@@ -99,6 +106,7 @@ export default defineComponent({
 		MkSwitch,
 		MkSelect,
 		MkRadio,
+		MkRadios,
 		MkRange,
 	},
 

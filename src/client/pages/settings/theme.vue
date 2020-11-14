@@ -1,5 +1,5 @@
 <template>
-<div class="_section">
+<div class="">
 	<div class="rfqxtzch _card _vMargin">
 		<div class="_content">
 			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
@@ -22,8 +22,12 @@
 					</label>
 				</div>
 			</div>
+		</div>
+		<div class="_content">
 			<MkSwitch v-model:value="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</MkSwitch>
 		</div>
+	</div>
+	<div class="_card _vMargin">
 		<div class="_content">
 			<MkSelect v-model:value="lightTheme">
 				<template #label>{{ $t('themeForLightMode') }}</template>

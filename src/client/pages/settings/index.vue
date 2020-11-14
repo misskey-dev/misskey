@@ -31,9 +31,7 @@
 		</div>
 	</div>
 	<div class="main">
-		<transition :name="($store.state.device.animation && !narrow) ? 'view-slide' : ''" appear mode="out-in">
-			<component :is="component" @info="onInfo"/>
-		</transition>
+		<component :is="component" @info="onInfo"/>
 	</div>
 </div>
 </template>
@@ -109,14 +107,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.view-slide-enter-active, .view-slide-leave-active {
-	transition: opacity 0.3s, transform 0.3s !important;
-}
-.view-slide-enter-from, .view-slide-leave-to {
-	opacity: 0;
-	transform: translateX(32px);
-}
-
 .vvcocwet {
 	> .nav {
 		> .menu {
@@ -133,7 +123,7 @@ export default defineComponent({
 				width: 100%;
 				box-sizing: border-box;
 				padding: 0 32px;
-				line-height: 48px;
+				line-height: 40px;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
@@ -168,10 +158,22 @@ export default defineComponent({
 		> .nav {
 			width: 30%;
 			max-width: 300px;
+			font-size: 0.95em;
+			border-right: solid 1px var(--divider);
 		}
 
 		> .main {
 			flex: 1;
+			padding: 32px;
+			--baseContentWidth: 100%;
+
+			::v-deep(._section) {
+				padding: 0 0 32px 0;
+
+				& + ._section {
+					padding-top: 32px;
+				}
+			}
 		}
 	}
 }
