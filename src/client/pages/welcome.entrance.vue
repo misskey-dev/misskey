@@ -1,18 +1,19 @@
 <template>
-<div class="rsqzvsbo">
-	<div class="_section">
-		<div class="_content _panel about" v-if="meta">
-			<div class="body">
-				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-				<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
-				<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
-			</div>
+<div class="rsqzvsbo _section">
+	<div class="_panel block about" v-if="meta">
+		<div class="body">
+			<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
+			<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
+			<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
 		</div>
 	</div>
-	<div class="_section">
-		<div class="_content">
-			<XNotes :pagination="featuredPagination"/>
-		</div>
+	<XBlock class="block" initial-path="/announcements"/>
+	<XBlock class="block" initial-path="/featured"/>
+	<XBlock class="block" initial-path="/channels"/>
+	<XBlock class="block" initial-path="/explore"/>
+	<XBlock class="block" initial-path="/about-misskey"/>
+	<div class="_panel block">
+		test
 	</div>
 </div>
 </template>
@@ -24,6 +25,7 @@ import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import XNotes from '@/components/notes.vue';
+import XBlock from './welcome.entrance.block.vue';
 import { host } from '@/config';
 import * as os from '@/os';
 
@@ -31,15 +33,11 @@ export default defineComponent({
 	components: {
 		MkButton,
 		XNotes,
+		XBlock,
 	},
 
 	data() {
 		return {
-			featuredPagination: {
-				endpoint: 'notes/featured',
-				limit: 10,
-				noPaging: true,
-			},
 			host: toUnicode(host),
 		};
 	},
@@ -74,16 +72,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rsqzvsbo {
-	> ._section {
-		> .about {
-			> .body {
-				padding: 32px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+	grid-gap: var(--margin);
 
-				@media (max-width: 500px) {
-					padding: 16px;
-				}
-			}
-		}
+	> .block {
+		height: 500px;
 	}
 }
 </style>

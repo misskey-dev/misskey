@@ -116,9 +116,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .mk-app {
 	min-height: 100vh;
-	max-width: 1300px;
-	margin: 0 auto;
-	box-shadow: 1px 0 var(--divider), -1px 0 var(--divider);
 
 	> header {
 		background: var(--panel);
