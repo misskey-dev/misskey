@@ -3,15 +3,20 @@
 	<div class="_card">
 		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 		<div class="_content">
-			<MkInput v-model:value="reactions" style="font-family: 'Segoe UI Emoji', 'Noto Color Emoji', Roboto, HelveticaNeue, Arial, sans-serif">
-				{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></template>
-			</MkInput>
-			<MkButton inline @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</MkButton>
+			<XDraggable class="zoaiodol" :list="reactions" animation="150" delay="100" delay-on-touch-only="true">
+				<button class="_button item" v-for="reaction in reactions" :key="reaction" @click="remove(reaction, $event)">
+					<MkEmoji :emoji="reaction" :normal="true"/>
+				</button>
+				<template #footer>
+					<button>a</button>
+				</template>
+			</XDraggable>
+			<div class="_caption" style="padding: 8px;">{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
 			<MkSwitch v-model:value="useFullReactionPicker">{{ $t('useFullReactionPicker') }}</MkSwitch>
 		</div>
 		<div class="_footer">
-			<MkButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
 			<MkButton inline @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
+			<MkButton inline @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</MkButton>
 		</div>
 	</div>
 </div>
@@ -21,6 +26,7 @@
 import { defineComponent } from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
+import { VueDraggableNext } from 'vue-draggable-next';
 import MkInput from '@/components/ui/input.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
@@ -33,6 +39,7 @@ export default defineComponent({
 		MkInput,
 		MkButton,
 		MkSwitch,
+		XDraggable: VueDraggableNext,
 	},
 
 	emits: ['info'],
@@ -43,17 +50,12 @@ export default defineComponent({
 				title: this.$t('reaction'),
 				icon: faLaugh
 			},
-			reactions: this.$store.state.settings.reactions.join(''),
-			changed: false,
+			reactions: JSON.parse(JSON.stringify(this.$store.state.settings.reactions)),
 			faLaugh, faSave, faEye, faUndo
 		}
 	},
 
 	computed: {
-		splited(): any {
-			return this.reactions.match(emojiRegexWithCustom);
-		},
-
 		useFullReactionPicker: {
 			get() { return this.$store.state.device.useFullReactionPicker; },
 			set(value) { this.$store.commit('device/set', { key: 'useFullReactionPicker', value: value }); }
@@ -63,7 +65,7 @@ export default defineComponent({
 	watch: {
 		reactions: {
 			handler() {
-				this.changed = true;
+				this.save();
 			},
 			deep: true
 		}
@@ -75,27 +77,59 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			this.$store.dispatch('settings/set', { key: 'reactions', value: this.splited });
-			this.changed = false;
+			this.$store.dispatch('settings/set', { key: 'reactions', value: this.reactions });
+		},
+
+		remove(reaction, ev) {
+			os.modalMenu([{
+				text: this.$t('remove'),
+				action: () => {
+					this.reactions = this.reactions.filter(x => x !== reaction)
+				}
+			}], ev.currentTarget || ev.target);
 		},
 
 		preview(ev) {
 			os.popup(import('@/components/emoji-picker.vue'), {
-				overridePinned: this.splited,
 				compact: !this.$store.state.device.useFullReactionPicker,
 				src: ev.currentTarget || ev.target,
 			}, {}, 'closed');
 		},
 
-		setDefault() {
-			this.reactions = defaultSettings.reactions.join('');
+		async setDefault() {
+			const { canceled } = await os.dialog({
+				type: 'warning',
+				text: this.$t('resetAreYouSure'),
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			this.reactions = JSON.parse(JSON.stringify(defaultSettings.reactions));
 		},
 
 		chooseEmoji(ev) {
-			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
-				this.reactions += emoji;
+			os.pickEmoji(ev.currentTarget || ev.target, {
+				showPinned: false
+			}).then(emoji => {
+				if (!this.reactions.includes(emoji)) {
+					this.reactions.push(emoji);
+				}
 			});
 		}
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.zoaiodol {
+	border: solid 1px var(--divider);
+	border-radius: var(--radius);
+	padding: 16px;
+
+	> .item {
+		display: inline-block;
+		padding: 8px;
+		cursor: move;
+	}
+}
+</style>

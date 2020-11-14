@@ -30,7 +30,7 @@
 			</section>
 
 			<div class="index">
-				<section>
+				<section v-if="showPinned">
 					<div>
 						<button v-for="emoji in pinned"
 							class="_button"
@@ -109,8 +109,9 @@ export default defineComponent({
 		src: {
 			required: false
 		},
-		overridePinned: {
-			required: false
+		showPinned: {
+			required: false,
+			default: true
 		},
 		compact: {
 			required: false
@@ -123,7 +124,7 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.overridePinned || this.$store.state.settings.reactions,
+			pinned: this.$store.state.settings.reactions,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
 			customEmojis: this.$store.state.instance.meta.emojis,
 			visibleCategories: {},
