@@ -1,14 +1,5 @@
-<template>
-<div
-	class="novjtcto"
->
-	<div><slot></slot></div>
-	<MkRadio v-for="def in defs" v-model="value" :value="def.value" :key="def.value">{{ def.label }}</MkRadio>
-</div>
-</template>
-
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, h } from 'vue';
 import MkRadio from '@/components/ui/radio.vue';
 
 export default defineComponent({
@@ -32,6 +23,22 @@ export default defineComponent({
 		value() {
 			this.$emit('update:modelValue', this.value);
 		}
+	},
+	render() {
+		const label = this.$slots.desc();
+		const options = this.$slots.default();
+
+		return h('div', {
+			class: 'novjtcto'
+		}, [
+			h('div', label),
+			...options.map(option => h(MkRadio, {
+				key: option.props.value,
+				value: option.props.value,
+				modelValue: this.value,
+				'onUpdate:modelValue': value => this.value = value,
+			}, option.children))
+		]);
 	}
 });
 </script>
