@@ -80,18 +80,11 @@ export default defineComponent({
 		},
 
 		preview(ev) {
-			if (this.$store.state.device.useFullReactionPicker) {
-				os.popup(import('@/components/emoji-picker.vue'), {
-					overridePinned: this.splited,
-					src: ev.currentTarget || ev.target,
-				}, {}, 'closed');
-			} else {
-				os.popup(import('@/components/reaction-picker.vue'), {
-					reactions: this.splited,
-					showFocus: false,
-					src: ev.currentTarget || ev.target,
-				}, {}, 'closed');
-			}
+			os.popup(import('@/components/emoji-picker.vue'), {
+				overridePinned: this.splited,
+				compact: !this.$store.state.device.useFullReactionPicker,
+				src: ev.currentTarget || ev.target,
+			}, {}, 'closed');
 		},
 
 		setDefault() {

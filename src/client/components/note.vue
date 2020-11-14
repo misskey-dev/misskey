@@ -498,36 +498,20 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			if (this.$store.state.device.useFullReactionPicker) {
-				os.popup(import('@/components/emoji-picker.vue'), {
-					src: this.$refs.reactButton,
-				}, {
-					done: reaction => {
-						if (reaction) {
-							os.api('notes/reactions/create', {
-								noteId: this.appearNote.id,
-								reaction: reaction
-							});
-						}
-						this.focus();
-					},
-				}, 'closed');
-			} else {
-				os.popup(import('@/components/reaction-picker.vue'), {
-					showFocus: viaKeyboard,
-					src: this.$refs.reactButton,
-				}, {
-					done: reaction => {
-						if (reaction) {
-							os.api('notes/reactions/create', {
-								noteId: this.appearNote.id,
-								reaction: reaction
-							});
-						}
-						this.focus();
-					},
-				}, 'closed');
-			}
+			os.popup(import('@/components/emoji-picker.vue'), {
+				src: this.$refs.reactButton,
+				compact: !this.$store.state.device.useFullReactionPicker
+			}, {
+				done: reaction => {
+					if (reaction) {
+						os.api('notes/reactions/create', {
+							noteId: this.appearNote.id,
+							reaction: reaction
+						});
+					}
+					this.focus();
+				},
+			}, 'closed');
 		},
 
 		reactDirectly(reaction) {
