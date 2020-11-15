@@ -1081,6 +1081,7 @@ _pages:
   my: "My pages"
   liked: "Liked pages"
   inspector: "Inspector"
+  contents: "Content"
   content: "Page block"
   variables: "Variables"
   title: "Title"
