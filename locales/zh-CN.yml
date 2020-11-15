@@ -605,6 +605,8 @@ random: "随机"
 system: "系统"
 switchUi: "切换界面"
 desktop: "桌面"
+createNew: "新建"
+optional: "可选"
 public: "公开"
 _mfm:
   cheatSheet: "MFM代码速查表"
@@ -1071,6 +1073,7 @@ _pages:
   created: "页面已创建"
   updated: "页面已更新"
   deleted: "该页面已被删除"
+  pageSetting: "页面设置"
   nameAlreadyExists: "该页面URL已存在"
   invalidNameTitle: "无效的页面URL"
   invalidNameText: "请确认该项不为空"
@@ -1136,6 +1139,10 @@ _pages:
       id: "画布ID"
       width: "宽度"
       height: "高度"
+    _note:
+      id: "帖子ID"
+      idDescription: "您也可以通过粘贴帖子的URL来进行设置。"
+      detailed: "显示详细信息"
     switch: "开关"
     _switch:
       name: "变量名"
