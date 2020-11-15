@@ -605,6 +605,9 @@ random: "ランダム"
 system: "システム"
 switchUi: "UI切り替え"
 desktop: "デスクトップ"
+clip: "クリップ"
+createNew: "新規作成"
+optional: "任意"
 
 _mfm:
   cheatSheet: "MFMチートシート"

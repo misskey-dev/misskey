@@ -1,5 +1,5 @@
 import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faPaperclip, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
 import { store } from '@/store';
 import { search } from '@/scripts/search';
@@ -98,6 +98,12 @@ export const sidebarDef = {
 		icon: faFileAlt,
 		show: computed(() => store.getters.isSignedIn),
 		to: '/my/pages',
+	},
+	clips: {
+		title: 'clip',
+		icon: faPaperclip,
+		show: computed(() => store.getters.isSignedIn),
+		to: '/my/clips',
 	},
 	channels: {
 		title: 'channel',

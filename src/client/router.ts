@@ -55,6 +55,7 @@ export const router = createRouter({
 		{ path: '/my/groups', component: page('my-groups/index') },
 		{ path: '/my/groups/:group', component: page('my-groups/group') },
 		{ path: '/my/antennas', component: page('my-antennas/index') },
+		{ path: '/my/clips', component: page('my-clips/index') },
 		{ path: '/my/apps', component: page('apps') },
 		{ path: '/scratchpad', component: page('scratchpad') },
 		{ path: '/instance', component: page('instance/index') },

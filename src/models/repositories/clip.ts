@@ -16,6 +16,7 @@ export class ClipRepository extends Repository<Clip> {
 			id: clip.id,
 			createdAt: clip.createdAt.toISOString(),
 			name: clip.name,
+			description: clip.description,
 		};
 	}
 }
@@ -41,6 +42,11 @@ export const packedClipSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			description: 'The name of the Clip.'
+		},
+		description: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			description: 'The description of the Clip.'
 		},
 	},
 };

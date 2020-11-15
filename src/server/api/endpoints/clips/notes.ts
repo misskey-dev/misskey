@@ -1,10 +1,11 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
-import { Clips, Notes } from '../../../../models';
+import { ClipNotes, Clips, Notes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
+import { ApiError } from '../../error';
 
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
@@ -14,6 +15,10 @@ export const meta = {
 	kind: 'read:account',
 
 	params: {
+		clipId: {
+			validator: $.type(ID),
+		},
+
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10
@@ -30,7 +35,7 @@ export const meta = {
 
 	errors: {
 		noSuchClip: {
-			message: 'No such list.',
+			message: 'No such clip.',
 			code: 'NO_SUCH_CLIP',
 			id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00'
 		}
