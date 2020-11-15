@@ -1075,6 +1075,7 @@ _pages:
   created: "Successfully created a page!"
   updated: "Successfully updated the page!"
   deleted: "The page has been deleted"
+  pageSetting: "Page settings"
   nameAlreadyExists: "The specified page URL already exists"
   invalidNameTitle: "The specified page URL is invalid"
   invalidNameText: "Check whether that is not a blank"
@@ -1140,6 +1141,10 @@ _pages:
       id: "Canvas ID"
       width: "Width"
       height: "Height"
+    note: "Embedded note"
+    _note:
+      id: "Note ID"
+      idDescription: "You can also paste the Note's URL to set it instead."
     switch: "Switch"
     _switch:
       name: "Variable name"
