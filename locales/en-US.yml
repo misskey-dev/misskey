@@ -609,6 +609,7 @@ desktop: "Desktop"
 clip: "Clip"
 createNew: "Create new"
 optional: "Optional"
+createNewClip: "Create new clip"
 public: "Public"
 _mfm:
   cheatSheet: "MFM Cheatsheet"
@@ -1145,6 +1146,7 @@ _pages:
     _note:
       id: "Note ID"
       idDescription: "You can also paste the Note's URL to set it instead."
+      detailed: "Detailed view"
     switch: "Switch"
     _switch:
       name: "Variable name"
