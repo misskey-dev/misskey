@@ -786,7 +786,8 @@ export default defineComponent({
 						},
 						isPublic: {
 							type: 'boolean',
-							label: this.$t('public')
+							label: this.$t('public'),
+							default: false
 						}
 					});
 					if (canceled) return;
