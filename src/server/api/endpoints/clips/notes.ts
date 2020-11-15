@@ -45,10 +45,13 @@ export const meta = {
 export default define(meta, async (ps, user) => {
 	const clip = await Clips.findOne({
 		id: ps.clipId,
-		userId: user.id
 	});
 
 	if (clip == null) {
+		throw new ApiError(meta.errors.noSuchClip);
+	}
+
+	if (!clip.isPublic && (clip.userId !== user.id)) {
 		throw new ApiError(meta.errors.noSuchClip);
 	}
 
