@@ -604,6 +604,7 @@ random: "Aleatorio"
 system: "Sistema"
 switchUi: "Cambiar interfaz de usuario"
 desktop: "Escritorio"
+public: "Público"
 _mfm:
   cheatSheet: "Hoja de referencia de MFM"
   intro: "MFM es un lenguaje de marcado dedicado que se puede usar en varios lugares dentro de Misskey. Aquí puede ver una lista de sintaxis disponibles en MFM."
