@@ -609,6 +609,8 @@ desktop: "デスクトップ"
 clip: "クリップ"
 createNew: "新規作成"
 optional: "任意"
+createNewClip: "新しいクリップを作成"
+public: "パブリック"
 
 _mfm:
   cheatSheet: "MFMチートシート"
