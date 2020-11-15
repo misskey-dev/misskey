@@ -1081,6 +1081,7 @@ _pages:
   my: "Meine Seiten"
   liked: "Seiten, die mir gefallen"
   inspector: "Inspektor"
+  contents: "Inhalt"
   content: "Inhalt"
   variables: "Variablen"
   title: "Titel"
