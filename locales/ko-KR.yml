@@ -889,6 +889,7 @@ _pages:
   my: "내 페이지"
   liked: "좋아요한 페이지"
   inspector: "인스펙터"
+  contents: "콘텐츠"
   content: "페이지 블록"
   variables: "변수"
   title: "제목"
