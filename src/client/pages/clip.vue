@@ -4,6 +4,9 @@
 		<div class="description" v-if="clip.description">
 			<Mfm :text="clip.description" :is-note="false" :i="$store.state.i"/>
 		</div>
+		<div class="user">
+			<MkAvatar :user="clip.user" class="avatar"/> <MkUserName :user="clip.user" :nowrap="false"/>
+		</div>
 	</div>
 
 	<XNotes class="_content _vMargin" :pagination="pagination" :detail="true"/>
@@ -134,6 +137,18 @@ export default defineComponent({
 
 	> .description {
 		padding: 16px;
+	}
+
+	> .user {
+		$height: 32px;
+		padding: 16px;
+		border-top: solid 1px var(--divider);
+		line-height: $height;
+
+		> .avatar {
+			width: $height;
+			height: $height;
+		}
 	}
 }
 </style>
