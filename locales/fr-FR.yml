@@ -940,6 +940,7 @@ _pages:
   my: "Mes pages"
   liked: "Pages favorites"
   inspector: "Inspecteur"
+  contents: "Contenu"
   content: "Bloc de page"
   variables: "Variables"
   title: "Titre"
