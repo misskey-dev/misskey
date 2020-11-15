@@ -581,6 +581,7 @@ setMultipleBySeparatingWithSpace: "Vous pouvez définir plus d’un, séparés p
 fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
 random: "Aléatoire"
+public: "Public"
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"
