@@ -10,7 +10,7 @@ import { ApiError } from '../../error';
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
-	requireCredential: true as const,
+	requireCredential: false as const,
 
 	kind: 'read:account',
 
@@ -51,7 +51,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchClip);
 	}
 
-	if (!clip.isPublic && (clip.userId !== user.id)) {
+	if (!clip.isPublic && (user == null || (clip.userId !== user.id))) {
 		throw new ApiError(meta.errors.noSuchClip);
 	}
 
@@ -64,8 +64,10 @@ export default define(meta, async (ps, user) => {
 		.leftJoinAndSelect('note.user', 'user')
 		.setParameters(clipQuery.getParameters());
 
-	generateVisibilityQuery(query, user);
-	generateMutedUserQuery(query, user);
+	if (user) {
+		generateVisibilityQuery(query, user);
+		generateMutedUserQuery(query, user);
+	}
 
 	const notes = await query
 		.take(ps.limit!)

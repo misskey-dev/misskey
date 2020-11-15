@@ -7,7 +7,7 @@ import { Clips } from '../../../../models';
 export const meta = {
 	tags: ['clips', 'account'],
 
-	requireCredential: true as const,
+	requireCredential: false as const,
 
 	kind: 'read:account',
 
@@ -36,7 +36,7 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchClip);
 	}
 
-	if (!clip.isPublic && (clip.userId !== me.id)) {
+	if (!clip.isPublic && (me == null || (clip.userId !== me.id))) {
 		throw new ApiError(meta.errors.noSuchClip);
 	}
 
