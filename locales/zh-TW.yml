@@ -558,6 +558,7 @@ send: "發送"
 openInNewTab: "在新分頁中開啟"
 random: "隨機"
 system: "系統"
+public: "公開"
 _mfm:
   mention: "提及"
   hashtag: "#tag"
