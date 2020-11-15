@@ -17,7 +17,7 @@ import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles, Pages, Channels } from '../../models';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import getNoteSummary from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
@@ -291,6 +291,28 @@ router.get('/@:user/pages/:page', async ctx => {
 		} else {
 			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		}
+
+		return;
+	}
+
+	ctx.status = 404;
+});
+
+// Clip
+router.get('/clips/:clip', async ctx => {
+	const clip = await Clips.findOne({
+		id: ctx.params.clip,
+	});
+
+	if (clip) {
+		const _clip = await Clips.pack(clip);
+		const meta = await fetchMeta();
+		await ctx.render('clip', {
+			clip: _clip,
+			instanceName: meta.name || 'Misskey'
+		});
+
+		ctx.set('Cache-Control', 'public, max-age=180');
 
 		return;
 	}

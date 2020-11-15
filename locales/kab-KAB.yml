@@ -57,6 +57,7 @@ _exportOrImport:
   blockingList: "Seḥbes"
   userLists: "Tibdarin"
 _pages:
+  contents: "Agbur"
   font: "Tasefsit"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"

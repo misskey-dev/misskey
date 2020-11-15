@@ -15,15 +15,15 @@
 	<div class="xkpnjxcv _section">
 		<label v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
 			<MkInput v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
-				<span v-text="form[item].label || item"></span>
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</MkInput>
-			<MkInput v-else-if="form[item].type === 'string' && !item.multiline" v-model:value="values[item]" type="text">
-				<span v-text="form[item].label || item"></span>
+			<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model:value="values[item]" type="text">
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</MkInput>
-			<MkTextarea v-else-if="form[item].type === 'string' && item.multiline" v-model:value="values[item]">
-				<span v-text="form[item].label || item"></span>
+			<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model:value="values[item]">
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</MkTextarea>
 			<MkSwitch v-else-if="form[item].type === 'boolean'" v-model:value="values[item]">
