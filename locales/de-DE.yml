@@ -606,6 +606,7 @@ random: "Zufällig"
 system: "System"
 switchUi: "UI wechseln"
 desktop: "Desktop"
+clip: "Clip"
 public: "Öffentlich"
 _mfm:
   cheatSheet: "MFM Spickzettel"
