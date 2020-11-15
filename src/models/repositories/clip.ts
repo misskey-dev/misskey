@@ -2,6 +2,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Clip } from '../entities/clip';
 import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
+import { Users } from '..';
+import { awaitAll } from '../../prelude/await-all';
 
 export type PackedClip = SchemaType<typeof packedClipSchema>;
 
@@ -12,11 +14,15 @@ export class ClipRepository extends Repository<Clip> {
 	): Promise<PackedClip> {
 		const clip = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
 
-		return {
+		return await awaitAll({
 			id: clip.id,
 			createdAt: clip.createdAt.toISOString(),
+			userId: clip.userId,
+			user: Users.pack(clip.user || clip.userId),
 			name: clip.name,
-		};
+			description: clip.description,
+			isPublic: clip.isPublic,
+		});
 	}
 }
 
@@ -37,10 +43,30 @@ export const packedClipSchema = {
 			format: 'date-time',
 			description: 'The date that the Clip was created.'
 		},
+		userId: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+			format: 'id',
+		},
+		user: {
+			type: 'object' as const,
+			ref: 'User',
+			optional: false as const, nullable: false as const,
+		},
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			description: 'The name of the Clip.'
+		},
+		description: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			description: 'The description of the Clip.'
+		},
+		isPublic: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const,
+			description: 'Whether this Clip is public.',
 		},
 	},
 };

@@ -3,6 +3,7 @@
 	<div class="_card">
 		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
 		<div class="_content">
+			<div class="_caption" style="padding: 0 8px 8px 8px;">{{ $t('reactionSettingDescription') }}</div>
 			<XDraggable class="zoaiodol" :list="reactions" animation="150" delay="100" delay-on-touch-only="true">
 				<button class="_button item" v-for="reaction in reactions" :key="reaction" @click="remove(reaction, $event)">
 					<MkEmoji :emoji="reaction" :normal="true"/>
@@ -11,7 +12,7 @@
 					<button>a</button>
 				</template>
 			</XDraggable>
-			<div class="_caption" style="padding: 8px;">{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
+			<div class="_caption" style="padding: 8px;">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
 			<MkSwitch v-model:value="useFullReactionPicker">{{ $t('useFullReactionPicker') }}</MkSwitch>
 		</div>
 		<div class="_footer">

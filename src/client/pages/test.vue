@@ -162,7 +162,7 @@ export default defineComponent({
 			dialogCancelByBgClick: true,
 			dialogInput: false,
 			dialogResult: null,
-			formTitle: null,
+			formTitle: 'Test form',
 			formForm: JSON.stringify({
 				foo: {
 					type: 'boolean',
@@ -178,6 +178,12 @@ export default defineComponent({
 					type: 'string',
 					default: 'Misskey makes you happy.',
 					label: 'This is a string property'
+				},
+				qux: {
+					type: 'string',
+					multiline: true,
+					default: 'Misskey makes\nyou happy.',
+					label: 'Multiline string'
 				},
 			}, null, '\t'),
 			formResult: null,

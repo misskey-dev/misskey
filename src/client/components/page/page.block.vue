@@ -18,10 +18,11 @@ import XPost from './page.post.vue';
 import XCounter from './page.counter.vue';
 import XRadioButton from './page.radio-button.vue';
 import XCanvas from './page.canvas.vue';
+import XNote from './page.note.vue';
 
 export default defineComponent({
 	components: {
-		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton, XCanvas
+		XText, XSection, XImage, XButton, XNumberInput, XTextInput, XTextareaInput, XTextarea, XPost, XSwitch, XIf, XCounter, XRadioButton, XCanvas, XNote
 	},
 	props: {
 		value: {

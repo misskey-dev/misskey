@@ -6,7 +6,7 @@
 		<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
 		<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
+			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @deleted="onAntennaDeleted"/>
 		</MkPagination>
 	</div>
 </div>
