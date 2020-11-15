@@ -1,57 +1,54 @@
 <template>
 <div class="_section">
 	<div class="_content">
-		<div class="gwbmwxkm _panel _vMargin">
-			<header>
-				<div class="title"><Fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
-				<div class="buttons">
-					<button class="_button" @click="del()" v-if="!readonly"><Fa :icon="faTrashAlt"/></button>
-					<button class="_button" @click="() => showOptions = !showOptions"><Fa :icon="faCog"/></button>
-					<button class="_button" @click="save()" v-if="!readonly"><Fa :icon="faSave"/></button>
-				</div>
-			</header>
+		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</MkA>
 
-			<section>
-				<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</MkA>
+		<MkButton @click="save" primary class="save" style="margin: 16px auto 16px auto;"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
 
+		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
+			<template #header><Fa :icon="faCog"/> {{ $t('_pages.pageSetting') }}</template>
+			<div class="_section">
 				<MkInput v-model:value="title">
 					<span>{{ $t('_pages.title') }}</span>
 				</MkInput>
 
-				<template v-if="showOptions">
-					<MkInput v-model:value="summary">
-						<span>{{ $t('_pages.summary') }}</span>
-					</MkInput>
+				<MkInput v-model:value="summary">
+					<span>{{ $t('_pages.summary') }}</span>
+				</MkInput>
 
-					<MkInput v-model:value="name">
-						<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-						<span>{{ $t('_pages.url') }}</span>
-					</MkInput>
+				<MkInput v-model:value="name">
+					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
+					<span>{{ $t('_pages.url') }}</span>
+				</MkInput>
 
-					<MkSwitch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</MkSwitch>
+				<MkSwitch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</MkSwitch>
 
-					<MkSelect v-model:value="font">
-						<template #label>{{ $t('_pages.font') }}</template>
-						<option value="serif">{{ $t('_pages.fontSerif') }}</option>
-						<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
-					</MkSelect>
+				<MkSelect v-model:value="font">
+					<template #label>{{ $t('_pages.font') }}</template>
+					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
+					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
+				</MkSelect>
 
-					<MkSwitch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</MkSwitch>
+				<MkSwitch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</MkSwitch>
 
-					<div class="eyeCatch">
-						<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><Fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</MkButton>
-						<div v-else-if="eyeCatchingImage">
-							<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-							<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</MkButton>
-						</div>
+				<div class="eyeCatch">
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><Fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</MkButton>
+					<div v-else-if="eyeCatchingImage">
+						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
+						<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</MkButton>
 					</div>
-				</template>
+				</div>
+			</div>
+		</MkContainer>
 
+		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
+			<template #header><Fa :icon="faStickyNote"/> {{ $t('_pages.contents') }}</template>
+			<div class="_section">
 				<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
 
 				<MkButton @click="add()" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
-			</section>
-		</div>
+			</div>
+		</MkContainer>
 
 		<MkContainer :body-togglable="true" class="_vMargin">
 			<template #header><Fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
@@ -85,14 +82,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, computed } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
@@ -108,6 +105,7 @@ import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
 import { url } from '@/config';
 import { collectPageVars } from '@/scripts/collect-page-vars';
 import * as os from '@/os';
+import { selectFile } from '@/scripts/select-file';
 
 export default defineComponent({
 	components: {
@@ -132,6 +130,13 @@ export default defineComponent({
 
 	data() {
 		return {
+			INFO: computed(() => this.initPageId ? {
+				title: this.$t('_pages.editPage'),
+				icon: faPencilAlt,
+			} : {
+				title: this.$t('_pages.newPage'),
+				icon: faPencilAlt,
+			}),
 			author: this.$store.state.i,
 			readonly: false,
 			page: null,
@@ -149,7 +154,6 @@ export default defineComponent({
 			variables: [],
 			hpml: null,
 			script: '',
-			showOptions: false,
 			url,
 			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode
 		};
@@ -353,6 +357,7 @@ export default defineComponent({
 					{ value: 'text', text: this.$t('_pages.blocks.text') },
 					{ value: 'image', text: this.$t('_pages.blocks.image') },
 					{ value: 'textarea', text: this.$t('_pages.blocks.textarea') },
+					{ value: 'note', text: this.$t('_pages.blocks.note') },
 					{ value: 'canvas', text: this.$t('_pages.blocks.canvas') },
 				]
 			}, {
@@ -413,8 +418,8 @@ export default defineComponent({
 			return list;
 		},
 
-		setEyeCatchingImage() {
-			os.selectDriveFile(false).then(file => {
+		setEyeCatchingImage(e) {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},

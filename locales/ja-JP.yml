@@ -1104,6 +1104,7 @@ _pages:
   created: "ページを作成しました"
   updated: "ページを更新しました"
   deleted: "ページを削除しました"
+  pageSetting: "ページ設定"
   nameAlreadyExists: "指定されたページURLは既に存在しています"
   invalidNameTitle: "不正なページURLです"
   invalidNameText: "空白でないか確認してください"
@@ -1115,6 +1116,7 @@ _pages:
   my: "自分のページ"
   liked: "いいねしたページ"
   inspector: "インスペクター"
+  contents: "コンテンツ"
   content: "ページブロック"
   variables: "変数"
   title: "タイトル"
@@ -1174,6 +1176,11 @@ _pages:
       id: "キャンバスID"
       width: "幅"
       height: "高さ"
+
+    note: "ノート埋め込み"
+    _note:
+      id: "ノートID"
+      idDescription: "ノートURLをペーストして設定することもできます。"
 
     switch: "スイッチ"
     _switch:
