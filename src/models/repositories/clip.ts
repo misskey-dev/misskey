@@ -15,8 +15,10 @@ export class ClipRepository extends Repository<Clip> {
 		return {
 			id: clip.id,
 			createdAt: clip.createdAt.toISOString(),
+			userId: clip.userId,
 			name: clip.name,
 			description: clip.description,
+			isPublic: clip.isPublic,
 		};
 	}
 }
@@ -38,6 +40,11 @@ export const packedClipSchema = {
 			format: 'date-time',
 			description: 'The date that the Clip was created.'
 		},
+		userId: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+			format: 'id',
+		},
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
@@ -47,6 +54,11 @@ export const packedClipSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
 			description: 'The description of the Clip.'
+		},
+		isPublic: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: false as const,
+			description: 'Whether this Clip is public.',
 		},
 	},
 };
