@@ -607,6 +607,8 @@ system: "System"
 switchUi: "UI wechseln"
 desktop: "Desktop"
 clip: "Clip"
+createNew: "Neu erstellen"
+optional: "Optional"
 public: "Öffentlich"
 _mfm:
   cheatSheet: "MFM Spickzettel"
