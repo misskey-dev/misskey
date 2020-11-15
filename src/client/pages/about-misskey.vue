@@ -40,7 +40,7 @@
 	<section class="_section">
 		<div class="_content">
 			<div class="_card">
-				<div class="_title"><Mfm text="<motion>❤</motion>"/> {{ $t('patrons') }}</div>
+				<div class="_title"><Mfm text="[jelly ❤]"/> {{ $t('patrons') }}</div>
 				<div class="_content">
 					<ul style="margin: 0;">
 						<li>Gargron</li>
