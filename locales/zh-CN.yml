@@ -1081,6 +1081,7 @@ _pages:
   my: "我的页面"
   liked: "喜欢的页面"
   inspector: "检查器"
+  contents: "内容"
   content: "页面内容"
   variables: "变量"
   title: "标题"
