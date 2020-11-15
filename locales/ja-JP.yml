@@ -1181,6 +1181,7 @@ _pages:
     _note:
       id: "ノートID"
       idDescription: "ノートURLをペーストして設定することもできます。"
+      detailed: "詳細な表示"
 
     switch: "スイッチ"
     _switch:

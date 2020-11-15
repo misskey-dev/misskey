@@ -1,6 +1,6 @@
 <template>
 <div class="voxdxuby">
-	<XNote v-if="note" v-model:note="note" :key="note.id"/>
+	<XNote v-if="note" v-model:note="note" :key="note.id" :detail="value.detailed"/>
 </div>
 </template>
 
