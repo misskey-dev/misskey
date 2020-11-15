@@ -549,6 +549,7 @@ logs: "로그"
 database: "데이터베이스"
 channel: "채널"
 random: "랜덤"
+public: "공개"
 _mfm:
   mention: "멘션"
   hashtag: "해시태그"
