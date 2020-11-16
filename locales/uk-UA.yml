@@ -446,6 +446,8 @@ smtpPort: "Порт"
 smtpUser: "Ім'я користувача"
 smtpPass: "Пароль"
 testEmail: "Тестовий email"
+copy: "Скопіювати"
+metrics: "Показники"
 regenerateLoginToken: "Оновити Login Token"
 _mfm:
   cheatSheet: " Довідка MFM"
