@@ -405,9 +405,14 @@ install: "Встановити"
 uninstall: "Видалити"
 installedApps: "Встановлені аплікації"
 nothing: "Тут нічого немає"
+installedDate: "Дата встановлення"
+lastUsedDate: "Дата використання"
+state: "Стан"
 sort: "Сортування"
 ascendingOrder: "За зростанням"
 descendingOrder: "За спаданням"
+scratchpad: "Чернетка"
+output: "Вихід"
 script: "Скрипт"
 deleteAllFiles: "Видалити всі файли"
 deleteAllFilesConfirm: "Ви дійсно хочете видалити всі файли?"
@@ -486,6 +491,8 @@ _pages:
         arg1: "Списки"
       _listLen:
         arg1: "Списки"
+      _fn:
+        arg1: "Вихід"
     types:
       array: "Списки"
 _notification:
