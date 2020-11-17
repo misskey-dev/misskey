@@ -8,9 +8,9 @@
 import * as deepcopy from 'deepcopy';
 
 export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
-	dbName: string;
-	stores: S; // もしくは [] （真面目に型定義すると面倒臭いことになる）
-	_dbp: Promise<IDBDatabase>;
+	public dbName: string;
+	public stores: S; // もしくは [] （真面目に型定義すると面倒臭いことになる）
+	public _dbp: Promise<IDBDatabase>;
 
 	constructor(dbName = 'vuex') {
 		this.dbName = dbName;
@@ -30,7 +30,7 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 	 * @param moduleStore 永続化したいvuexモジュールを列挙
 	 * @param version indexedDBのバージョン。moduleStoreを変更するたびにインクリメントしてください！
 	 */
-	async update(moduleStores: M[], version: number): Promise<'noUpdate' | 'updated' | 'initialized'> {
+	public async update(moduleStores: M[], version: number): Promise<'noUpdate' | 'updated' | 'initialized'> {
 		let updateState: 'noUpdate' | 'updated' | 'initialized' = 'noUpdate';
 
 		this._dbp = new Promise((resolve, reject) => {
@@ -83,7 +83,7 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 		return updateState;
 	}
 
-	_withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {
+	public _withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {
 		return this._dbp.then(db => new Promise<void>((resolve, reject) => {
 			const transaction = db.transaction(store, type);
 			transaction.oncomplete = () => resolve();
@@ -92,24 +92,24 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 		}));
 	}
 
-	openTransaction(storename, mode: IDBTransactionMode): Promise<IDBTransaction>{
+	public openTransaction(storename, mode: IDBTransactionMode): Promise<IDBTransaction>{
 		return this._dbp.then(db => db.transaction(storename, mode));
 	}
 
-	get<Type>(key: IDBValidKey, storename: 'store' | M): Promise<Type> {
+	public get<Type>(key: IDBValidKey, storename: 'store' | M): Promise<Type> {
 		let req: IDBRequest;
 		return this._withIDBStore('readonly', storename, store => {
 			req = store.get(key);
 		}).then(() => req.result);
 	}
 
-	set(key: IDBValidKey, value: any, storename: 'store' | M): Promise<void> {
+	public set(key: IDBValidKey, value: any, storename: 'store' | M): Promise<void> {
 		return this._withIDBStore('readwrite', storename, store => {
 			store.put(value, key);
 		});
 	}
 
-	entries(storename: 'store' | M): Promise<[IDBValidKey, unknown][]> {
+	public entries(storename: 'store' | M): Promise<[IDBValidKey, unknown][]> {
 		const entries: [IDBValidKey, unknown][] = [];
 
 		return this._withIDBStore('readonly', storename, store => {
@@ -121,7 +121,7 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 		}).then(() => entries);
 	}
 
-	async bulkSet(map: [IDBValidKey, any][], storename: 'store' | M): Promise<void> {
+	public async bulkSet(map: [IDBValidKey, any][], storename: 'store' | M): Promise<void> {
 		const tx = await this.openTransaction(storename, 'readwrite');
 		const st = tx.objectStore(storename);
 		for (const [key, value] of map) {
