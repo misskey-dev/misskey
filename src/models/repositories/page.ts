@@ -85,8 +85,9 @@ export class PageRepository extends Repository<Page> {
 
 	public packMany(
 		pages: Page[],
+		me?: User['id'] | User | null | undefined,
 	) {
-		return Promise.all(pages.map(x => this.pack(x)));
+		return Promise.all(pages.map(x => this.pack(x, me)));
 	}
 }
 

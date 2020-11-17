@@ -9,7 +9,10 @@
 	<template #header>Req Viewer</template>
 
 	<div class="rlkneywz">
-		<MkTab v-model:value="tab" :items="[{ label: 'Request', value: 'req', }, { label: 'Response', value: 'res', }]" style="border-bottom: solid 1px var(--divider);"/>
+		<MkTab v-model:value="tab" style="border-bottom: solid 1px var(--divider);">
+			<option value="req">Request</option>
+			<option value="res">Response</option>
+		</MkTab>
 
 		<code v-if="tab === 'req'">{{ reqStr }}</code>
 		<code v-if="tab === 'res'">{{ resStr }}</code>
