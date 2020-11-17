@@ -4,7 +4,12 @@
 		<Fa :icon="faTerminal" style="margin-right: 0.5em;"/>Task Manager
 	</template>
 	<div class="qljqmnzj">
-		<MkTab v-model:value="tab" :items="[{ label: 'Windows', value: 'windows', }, { label: 'Stream', value: 'stream', }, { label: 'Stream (Pool)', value: 'streamPool', }, { label: 'API', value: 'api', }]" style="border-bottom: solid 1px var(--divider);"/>
+		<MkTab v-model:value="tab" style="border-bottom: solid 1px var(--divider);">
+			<option value="windows">Windows</option>
+			<option value="stream">Stream</option>
+			<option value="streamPool">Stream (Pool)</option>
+			<option value="api">API</option>
+		</MkTab>
 
 		<div class="content">
 			<div v-if="tab === 'windows'" class="windows" v-follow>

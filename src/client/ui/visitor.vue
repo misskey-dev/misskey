@@ -7,12 +7,12 @@
 		<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
 	</header>
 
-	<div class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-		<h1>{{ instanceName }}</h1>
+	<div class="banner" :class="{ asBg: $route.path === '/' }" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+		<h1 v-if="$route.path !== '/'">{{ instanceName }}</h1>
 	</div>
 
 	<div class="contents" ref="contents" :class="{ wallpaper }">
-		<header class="header" ref="header">
+		<header class="header" ref="header" v-show="$route.path !== '/'">
 			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
@@ -116,11 +116,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .mk-app {
 	min-height: 100vh;
-	max-width: 1300px;
-	margin: 0 auto;
-	box-shadow: 1px 0 var(--divider), -1px 0 var(--divider);
 
 	> header {
+		position: relative;
+		z-index: 1;
 		background: var(--panel);
 		padding: 0 16px;
 		text-align: center;
@@ -145,6 +144,12 @@ export default defineComponent({
 		background-size: cover;
 		background-position: center;
 
+		&.asBg {
+			position: absolute;
+			left: 0;
+			height: 320px;
+		}
+
 		&:after {
 			content: "";
 			display: block;
@@ -166,6 +171,9 @@ export default defineComponent({
 	}
 
 	> .contents {
+		position: relative;
+		z-index: 1;
+
 		> .header {
 			position: sticky;
 			top: 0;

@@ -1,7 +1,11 @@
 <template>
 <div class="">
 	<div class="_section" style="padding: 0;">
-		<MkTab v-model:value="tab" :items="[{ label: $t('ownedGroups'), value: 'owned' }, { label: $t('joinedGroups'), value: 'joined' }, { label: $t('invites'), icon: faEnvelopeOpenText, value: 'invites' }]"/>
+		<MkTab v-model:value="tab">
+			<option value="owned">{{ $t('ownedGroups') }}</option>
+			<option value="joined">{{ $t('joinedGroups') }}</option>
+			<option value="invites"><Fa :icon="faEnvelopeOpenText"/> {{ $t('invites') }}</option>
+		</MkTab>
 	</div>
 
 	<div class="_section">
