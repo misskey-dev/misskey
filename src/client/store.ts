@@ -256,7 +256,7 @@ export const store = createStore({
 
 				init(state, x) {
 					for (const [key, value] of Object.entries(defaultDeviceUserSettings)) {
-						if (x[key]) {
+						if (Object.prototype.hasOwnProperty.call(x, key)) {
 							state[key] = x[key];
 						} else {
 							state[key] = value;
@@ -474,7 +474,7 @@ export const store = createStore({
 
 				init(state, x) {
 					for (const [key, value] of Object.entries(defaultSettings)) {
-						if (x[key]) {
+						if (Object.prototype.hasOwnProperty.call(x, key)) {
 							state[key] = x[key];
 						} else {
 							state[key] = value;

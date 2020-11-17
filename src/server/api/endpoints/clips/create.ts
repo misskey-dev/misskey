@@ -13,6 +13,14 @@ export const meta = {
 	params: {
 		name: {
 			validator: $.str.range(1, 100)
+		},
+
+		isPublic: {
+			validator: $.optional.bool
+		},
+
+		description: {
+			validator: $.optional.nullable.str.range(1, 2048)
 		}
 	},
 };
@@ -23,6 +31,8 @@ export default define(meta, async (ps, user) => {
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
+		isPublic: ps.isPublic,
+		description: ps.description,
 	});
 
 	return await Clips.pack(clip);

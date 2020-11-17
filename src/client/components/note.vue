@@ -102,7 +102,7 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { parse } from '../../mfm/parse';
 import { sum, unique } from '../../prelude/array';
@@ -498,36 +498,20 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			if (this.$store.state.device.useFullReactionPicker) {
-				os.popup(import('@/components/emoji-picker.vue'), {
-					src: this.$refs.reactButton,
-				}, {
-					done: reaction => {
-						if (reaction) {
-							os.api('notes/reactions/create', {
-								noteId: this.appearNote.id,
-								reaction: reaction
-							});
-						}
-						this.focus();
-					},
-				}, 'closed');
-			} else {
-				os.popup(import('@/components/reaction-picker.vue'), {
-					showFocus: viaKeyboard,
-					src: this.$refs.reactButton,
-				}, {
-					done: reaction => {
-						if (reaction) {
-							os.api('notes/reactions/create', {
-								noteId: this.appearNote.id,
-								reaction: reaction
-							});
-						}
-						this.focus();
-					},
-				}, 'closed');
-			}
+			os.popup(import('@/components/emoji-picker.vue'), {
+				src: this.$refs.reactButton,
+				compact: !this.$store.state.device.useFullReactionPicker
+			}, {
+				done: reaction => {
+					if (reaction) {
+						os.api('notes/reactions/create', {
+							noteId: this.appearNote.id,
+							reaction: reaction
+						});
+					}
+					this.focus();
+				},
+			}, 'closed');
 		},
 
 		reactDirectly(reaction) {
@@ -626,6 +610,11 @@ export default defineComponent({
 					text: this.$t('favorite'),
 					action: () => this.toggleFavorite(true)
 				}),
+				{
+					icon: faPaperclip,
+					text: this.$t('clip'),
+					action: () => this.clip()
+				},
 				(this.appearNote.userId != this.$store.state.i.id) ? statePromise.then(state => state.isWatching ? {
 					icon: faEyeSlash,
 					text: this.$t('unwatch'),
@@ -776,6 +765,44 @@ export default defineComponent({
 					});
 				}
 			});
+		},
+
+		async clip() {
+			const clips = await os.api('clips/list');
+			os.modalMenu([{
+				icon: faPlus,
+				text: this.$t('createNew'),
+				action: async () => {
+					const { canceled, result } = await os.form(this.$t('createNewClip'), {
+						name: {
+							type: 'string',
+							label: this.$t('name')
+						},
+						description: {
+							type: 'string',
+							required: false,
+							multiline: true,
+							label: this.$t('description')
+						},
+						isPublic: {
+							type: 'boolean',
+							label: this.$t('public'),
+							default: false
+						}
+					});
+					if (canceled) return;
+
+					const clip = await os.apiWithDialog('clips/create', result);
+
+					os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: this.appearNote.id });
+				}
+			}, null, ...clips.map(clip => ({
+				text: clip.name,
+				action: () => {
+					os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: this.appearNote.id });
+				}
+			}))], this.$refs.menuButton, {
+			}).then(this.focus);
 		},
 
 		async promote() {
