@@ -1,21 +1,21 @@
 <template>
 <div class="fcuexfpr">
 	<div v-if="note" class="note">
-		<div class="_section">
-			<XNotes v-if="showNext" class="_content" :pagination="next"/>
-			<MkButton v-else-if="hasNext" class="load _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
+		<div class="_section" v-if="showNext">
+			<XNotes class="_content" :pagination="next"/>
 		</div>
 
 		<div class="_section">
+			<MkButton v-if="!showNext && hasNext" class="load next _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
 			<div class="_content">
 				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_vMargin"/>
 				<XNote v-model:note="note" :key="note.id" :detail="true" class="_vMargin"/>
 			</div>
+			<MkButton v-if="!showPrev && hasPrev" class="load prev _content" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
 		</div>
 
-		<div class="_section">
-			<XNotes v-if="showPrev" class="_content" :pagination="prev"/>
-			<MkButton v-else-if="hasPrev" class="load _content" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
+		<div class="_section" v-if="showPrev">
+			<XNotes class="_content" :pagination="prev"/>
 		</div>
 	</div>
 
@@ -125,6 +125,14 @@ export default defineComponent({
 			> .load {
 				min-width: 0;
 				border-radius: 999px;
+
+				&.next {
+					margin-bottom: var(--margin);
+				}
+
+				&.prev {
+					margin-top: var(--margin);
+				}
 			}
 		}
 	}
