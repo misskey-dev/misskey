@@ -134,7 +134,7 @@ if (store.state.i != null) {
 			document.body.innerHTML = '<div>Please wait...</div>';
 			const me = await fetchme(i);
 			await store.dispatch('login', me);
-			location.reload();
+			document.body.insertAdjacentHTML('beforeend', '<button onclick="location.reload();">reload</button>');
 		} catch (e) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)
