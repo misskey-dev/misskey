@@ -261,7 +261,7 @@ monthX: "{month}"
 yearX: "{year}"
 pages: "Сторінки"
 integration: "Інтеграція"
-connectSerice: "Під’єднатися"
+connectSerice: "Під’єднати"
 disconnectSerice: "Відключитися"
 enableLocalTimeline: "Увімкнути локальну стрічку"
 enableGlobalTimeline: "Увімкнути глобальну стрічку"
@@ -528,7 +528,7 @@ _relayStatus:
   rejected: "Відхилено"
 _notification:
   youRenoted: "{name} поширив(ла) ваш допис"
-  youWereFollowed: "У вас новий підписник"
+  youWereFollowed: "Новий підписник"
   _types:
     follow: "Підписки"
     mention: "Згадка"
