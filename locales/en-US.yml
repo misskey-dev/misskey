@@ -1089,6 +1089,7 @@ _pages:
   unlike: "Undo like"
   my: "My pages"
   liked: "Liked pages"
+  featured: "Featured"
   inspector: "Inspector"
   contents: "Content"
   content: "Page block"
