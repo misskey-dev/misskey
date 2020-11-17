@@ -77,6 +77,11 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
+		length: 512, array: true, default: '{"/announcements", "/featured", "/channels", "/explore", "/games/reversi", "/about-misskey"}'
+	})
+	public pinnedPages: string[];
+
+	@Column('varchar', {
 		length: 512,
 		nullable: true,
 		default: '/assets/ai.png'

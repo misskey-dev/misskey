@@ -96,8 +96,7 @@ export const sidebarDef = {
 	pages: {
 		title: 'pages',
 		icon: faFileAlt,
-		show: computed(() => store.getters.isSignedIn),
-		to: '/my/pages',
+		to: '/pages',
 	},
 	clips: {
 		title: 'clip',
