@@ -10393,10 +10393,10 @@ vue-prism-editor@1.2.2:
   resolved "https://registry.yarnpkg.com/vue-prism-editor/-/vue-prism-editor-1.2.2.tgz#023cfd4329848f191aac851f2f5e6c7a8c2e059f"
   integrity sha512-Lq2VgVygTx3Whn/tC8gD4m1ajA4lzSyCTqPLZA1Dq/ErbBaZA93FWRblwCoDR7AD2nXhGWuiTzb5ih3guzB7DA==
 
-vue-router@4.0.0-beta.13:
-  version "4.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.0-beta.13.tgz#4611d09a9e44f231cc401ecc294a7f2dcb30e6a6"
-  integrity sha512-dYv9qpHPaojQlfujViiTkPkf1Bf5RCFzkCkdVFc1cENzWJYAGJanpIHiyjyKoM4u7IDFBZMItci+U4ieaEWA8A==
+vue-router@4.0.0-rc.2:
+  version "4.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.0-rc.2.tgz#8545cab76a05ca4f6dffbe6c6a671a4dbf585ab2"
+  integrity sha512-51mBp39rzBFpk1nyU9SkhPcwR67gBzWIH8p3pyeDmtNYgWzGF3q8MneD/xbMwsfTQkw2H1qBk6uwRaVy3M8Nxw==
 
 vue-style-loader@4.1.2:
   version "4.1.2"
@@ -10423,10 +10423,10 @@ vue@3.0.2:
     "@vue/runtime-dom" "3.0.2"
     "@vue/shared" "3.0.2"
 
-vuex@4.0.0-beta.4:
-  version "4.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0-beta.4.tgz#7b319ead2ef30432b7eaa4e37258ea3c5e44f698"
-  integrity sha512-/+4E1dokq5cwbl4mohOqOj8h0vOLOWmLSqlqTf++bfmN9/JKWtwYfsBrzlK0sYrNfuYcpQeX0BVxQHoHXDfYZQ==
+vuex@4.0.0-rc.1:
+  version "4.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0-rc.1.tgz#160cd5957972a61c7c01ab585995b78e092a298d"
+  integrity sha512-zgXVCQygF1Sm7ezyudEEMynoV2PBxZdcjE12D0BY1xIKZMrA7GFP6xqADTEAzwfVemXboExJ+/KThfxJFtM/5w==
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"

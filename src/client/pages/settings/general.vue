@@ -1,35 +1,37 @@
 <template>
-<div class="_section">
+<div class="">
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
 		<div class="_content">
-			<div>{{ $t('defaultNavigationBehaviour') }}</div>
-			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('whenServerDisconnected') }}</div>
-			<MkRadio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
-			<MkRadio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
-			<MkRadio v-model="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</MkRadio>
-		</div>
-		<div class="_content">
+			<MkRadios v-model="serverDisconnectedBehavior">
+				<template #desc>{{ $t('whenServerDisconnected') }}</template>
+				<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
+				<option value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</option>
+				<option value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</option>
+			</MkRadios>
 			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
 			<MkSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</MkSwitch>
 			<MkSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</MkSwitch>
 			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('chatOpenBehavior') }}</div>
-			<MkRadio v-model="chatOpenBehavior" value="page">{{ $t('showInPage') }}</MkRadio>
-			<MkRadio v-model="chatOpenBehavior" value="window">{{ $t('openInWindow') }}</MkRadio>
-			<MkRadio v-model="chatOpenBehavior" value="popout">{{ $t('popout') }}</MkRadio>
-		</div>
-		<div class="_content">
 			<MkSelect v-model:value="lang">
 				<template #label>{{ $t('uiLanguage') }}</template>
-
 				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 			</MkSelect>
+		</div>
+	</section>
+
+	<section class="_card _vMargin">
+		<div class="_title"><Fa :icon="faCog"/> {{ $t('defaultNavigationBehaviour') }}</div>
+		<div class="_content">
+			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
+		</div>
+		<div class="_content">
+			<MkRadios v-model="chatOpenBehavior">
+				<template #desc>{{ $t('chatOpenBehavior') }}</template>
+				<option value="page">{{ $t('showInPage') }}</option>
+				<option value="window">{{ $t('openInWindow') }}</option>
+				<option value="popout">{{ $t('popout') }}</option>
+			</MkRadios>
 		</div>
 	</section>
 
@@ -43,19 +45,19 @@
 				{{ $t('useOsNativeEmojis') }}
 				<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
 			</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('fontSize') }}</div>
-			<MkRadio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
-			<MkRadio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
-			<MkRadio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
-			<MkRadio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
-		</div>
-		<div class="_content">
-			<div>{{ $t('instanceTicker') }}</div>
-			<MkRadio v-model="instanceTicker" value="none">{{ $t('_instanceTicker.none') }}</MkRadio>
-			<MkRadio v-model="instanceTicker" value="remote">{{ $t('_instanceTicker.remote') }}</MkRadio>
-			<MkRadio v-model="instanceTicker" value="always">{{ $t('_instanceTicker.always') }}</MkRadio>
+			<MkRadios v-model="fontSize">
+				<template #desc>{{ $t('fontSize') }}</template>
+				<option value="small"><span style="font-size: 14px;">Aa</span></option>
+				<option :value="null"><span style="font-size: 16px;">Aa</span></option>
+				<option value="large"><span style="font-size: 18px;">Aa</span></option>
+				<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
+			</MkRadios>
+			<MkRadios v-model="instanceTicker">
+				<template #desc>{{ $t('instanceTicker') }}</template>
+				<option value="none">{{ $t('_instanceTicker.none') }}</option>
+				<option value="remote">{{ $t('_instanceTicker.remote') }}</option>
+				<option value="always">{{ $t('_instanceTicker.always') }}</option>
+			</MkRadios>
 		</div>
 	</section>
 
@@ -88,6 +90,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkRadio from '@/components/ui/radio.vue';
+import MkRadios from '@/components/ui/radios.vue';
 import MkRange from '@/components/ui/range.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
@@ -99,6 +102,7 @@ export default defineComponent({
 		MkSwitch,
 		MkSelect,
 		MkRadio,
+		MkRadios,
 		MkRange,
 	},
 

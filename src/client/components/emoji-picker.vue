@@ -1,7 +1,7 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<div class="omfetrab _popup">
-		<input ref="search" class="search" v-model.trim="q" :placeholder="$t('search')" @paste.stop="paste" @keyup.enter="done()" autofocus>
+	<div class="omfetrab _popup" :class="{ compact }">
+		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$t('search')" @paste.stop="paste" @keyup.enter="done()">
 		<div class="emojis">
 			<section class="result">
 				<div v-if="searchResultCustom.length > 0">
@@ -30,7 +30,7 @@
 			</section>
 
 			<div class="index">
-				<section>
+				<section v-if="showPinned">
 					<div>
 						<button v-for="emoji in pinned"
 							class="_button"
@@ -43,7 +43,7 @@
 				</section>
 
 				<section>
-					<header class="_acrylic"><Fa :icon="faHistory" fixed-width/> {{ $t('recentUsed') }}</header>
+					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $t('recentUsed') }}</header>
 					<div>
 						<button v-for="emoji in $store.state.device.recentlyUsedEmojis"
 							class="_button"
@@ -94,7 +94,7 @@
 import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faHistory, faUser, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faClock, faUser, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkModal from '@/components/ui/modal.vue';
 import Particle from '@/components/particle.vue';
@@ -109,7 +109,11 @@ export default defineComponent({
 		src: {
 			required: false
 		},
-		overridePinned: {
+		showPinned: {
+			required: false,
+			default: true
+		},
+		compact: {
 			required: false
 		},
 	},
@@ -120,14 +124,14 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.overridePinned || this.$store.state.settings.reactions,
+			pinned: this.$store.state.settings.reactions,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
 			customEmojis: this.$store.state.instance.meta.emojis,
 			visibleCategories: {},
 			q: null,
 			searchResultCustom: [],
 			searchResultUnicode: [],
-			faGlobe, faHistory, faChevronDown,
+			faGlobe, faClock, faChevronDown,
 			categories: [{
 				name: 'face',
 				icon: faLaugh,
@@ -311,9 +315,12 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$refs.search.focus({
-			preventScroll: true
-		});
+		const isIos = navigator.userAgent.includes('WebKit') && !navigator.userAgent.includes('Chrome');
+		if (!isIos) {
+			this.$refs.search.focus({
+				preventScroll: true
+			});
+		}
 	},
 
 	methods: {
@@ -379,8 +386,19 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .omfetrab {
-	width: 350px;
+	$eachSize: 40px;
+	$pad: 8px;
+
+	display: flex;
+	flex-direction: column;
+	width: ($eachSize * 7) + ($pad * 2);
 	contain: content;
+	--height: 300px;
+
+	&.compact {
+		width: ($eachSize * 5) + ($pad * 2);
+		--height: 210px;
+	}
 
 	> .search {
 		width: 100%;
@@ -391,17 +409,27 @@ export default defineComponent({
 		border: none;
 		background: transparent;
 		color: var(--fg);
+
+		&:not(.filled) {
+			order: 1;
+			z-index: 2;
+			box-shadow: 0px -1px 0 0px var(--divider);
+		}
 	}
 
 	> .emojis {
-		$height: 300px;
-
-		height: $height;
+		height: var(--height);
 		overflow-y: auto;
 		overflow-x: hidden;
 
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
 		> .index {
-			min-height: $height;
+			min-height: var(--height);
 			position: relative;
 			border-bottom: solid 1px var(--divider);
 				
@@ -428,45 +456,33 @@ export default defineComponent({
 			}
 
 			> div {
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-				gap: 4px;
-				padding: 8px;
+				padding: $pad;
 
 				> button {
 					position: relative;
 					padding: 0;
-					width: 100%;
+					width: $eachSize;
+					height: $eachSize;
+					border-radius: 4px;
 
 					&:focus {
 						outline: solid 2px var(--focus);
 						z-index: 1;
 					}
 
-					&:before {
-						content: '';
-						display: block;
-						width: 1px;
-						height: 0;
-						padding-bottom: 100%;
+					&:hover {
+						background: rgba(0, 0, 0, 0.05);
 					}
 
-					&:hover {
-						> * {
-							transform: scale(1.2);
-							transition: transform 0s;
-						}
+					&:active {
+						background: var(--accent);
+						box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 					}
 
 					> * {
-						position: absolute;
-						top: 0;
-						left: 0;
-						width: 100%;
-						height: 100%;
-						object-fit: contain;
-						font-size: 28px;
-						transition: transform 0.2s ease;
+						font-size: 24px;
+						height: 1.25em;
+						vertical-align: -.25em;
 						pointer-events: none;
 					}
 				}
@@ -474,6 +490,10 @@ export default defineComponent({
 
 			&.result {
 				border-bottom: solid 1px var(--divider);
+
+				&:empty {
+					display: none;
+				}
 			}
 
 			&.unicode {
