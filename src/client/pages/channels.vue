@@ -1,26 +1,26 @@
 <template>
 <div>
-	<div class="_section" style="padding: 0;">
+	<div class="_section" style="padding: 0;" v-if="this.$store.getters.isSignedIn">
 		<MkTab class="_content" v-model:value="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
 	</div>
 
 	<div class="_section">
 		<div class="_content grwlizim featured" v-if="tab === 'featured'">
 			<MkPagination :pagination="featuredPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 
 		<div class="_content grwlizim following" v-if="tab === 'following'">
 			<MkPagination :pagination="followingPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 
 		<div class="_content grwlizim owned" v-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
 			<MkPagination :pagination="ownedPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="uveselbe" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 	</div>
@@ -44,7 +44,11 @@ export default defineComponent({
 		return {
 			INFO: {
 				title: this.$t('channel'),
-				icon: faSatelliteDish
+				icon: faSatelliteDish,
+				action: {
+					icon: faPlus,
+					handler: this.create
+				}
 			},
 			tab: 'featured',
 			featuredPagination: {
@@ -69,23 +73,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.grwlizim {
-	padding: 16px 0;
-
-	&.my .uveselbe:first-child {
-		margin-top: 16px;
-	}
-
-	.uveselbe:not(:last-child) {
-		margin-bottom: 8px;
-	}
-
-	@media (min-width: 500px) {
-		.uveselbe:not(:last-child) {
-			margin-bottom: 16px;
-		}
-	}
-}
-</style>

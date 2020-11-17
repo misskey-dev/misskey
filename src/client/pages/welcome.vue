@@ -10,6 +10,7 @@ import { defineComponent } from 'vue';
 import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.vue';
 import { instanceName } from '@/config';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -23,13 +24,14 @@ export default defineComponent({
 				title: instanceName,
 				icon: null
 			},
+			meta: null
 		}
 	},
 
-	computed: {
-		meta() {
-			return this.$store.state.instance.meta;
-		},
-	},
+	created() {
+		os.api('meta', { detail: true }).then(meta => {
+			this.meta = meta;
+		});
+	}
 });
 </script>

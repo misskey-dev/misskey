@@ -1,20 +1,13 @@
 <template>
-<div class="rsqzvsbo _section">
-	<div class="about" v-if="meta">
+<div class="rsqzvsbo _section" v-if="meta">
+	<div class="about">
 		<h1>{{ instanceName }}</h1>
 		<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
 		<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
 		<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
 	</div>
 	<div class="blocks">
-		<XBlock class="block" initial-path="/announcements"/>
-		<XBlock class="block" initial-path="/featured"/>
-		<XBlock class="block" initial-path="/channels"/>
-		<XBlock class="block" initial-path="/explore"/>
-		<XBlock class="block" initial-path="/about-misskey"/>
-		<div class="_panel block">
-			test
-		</div>
+		<XBlock class="block" v-for="path in meta.pinnedPages" :initial-path="path" :key="path"/>
 	</div>
 </div>
 </template>
@@ -41,16 +34,15 @@ export default defineComponent({
 		return {
 			host: toUnicode(host),
 			instanceName,
+			meta: null,
 		};
 	},
 
-	computed: {
-		meta() {
-			return this.$store.state.instance.meta;
-		},
-	},
-
 	created() {
+		os.api('meta', { detail: true }).then(meta => {
+			this.meta = meta;
+		});
+
 		os.api('stats').then(stats => {
 			this.stats = stats;
 		});

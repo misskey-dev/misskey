@@ -1,11 +1,8 @@
 <template>
 <div class="xyeqzsjl _panel">
 	<header>
-		<XHeader :info="pageInfo" :with-back="false"/>
-		<div class="buttons">
-			<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
-			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
-		</div>
+		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+		<XHeader class="title" :info="pageInfo" :with-back="false"/>
 	</header>
 	<div>
 		<component :is="component" v-bind="props" :ref="changePage"/>
@@ -108,11 +105,32 @@ export default defineComponent({
 	contain: content;
 
 	> header {
+		$height: 50px;
+		display: flex;
 		position: relative;
 		z-index: 1;
-		height: 50px;
-		line-height: 50px;
+		height: $height;
+		line-height: $height;
 		box-shadow: 0px 1px var(--divider);
+
+		> button {
+			height: $height;
+			width: $height;
+
+			&:hover {
+				color: var(--fgHighlighted);
+			}
+		}
+
+		> .title {
+			flex: 1;
+			position: relative;
+			line-height: $height;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			text-align: center;
+		}
 	}
 
 	> div {

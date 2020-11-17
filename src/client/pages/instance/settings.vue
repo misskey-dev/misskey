@@ -1,6 +1,6 @@
 <template>
-<div v-if="meta">
-	<section class="_section info">
+<div v-if="meta" class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('basicInfo') }}</div>
 		<div class="_content">
 			<MkInput v-model:value="name">{{ $t('instanceName') }}</MkInput>
@@ -16,7 +16,7 @@
 		</div>
 	</section>
 
-	<section class="_section info">
+	<section class="_card _vMargin">
 		<div class="_content">
 			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</MkInput>
 		</div>
@@ -30,7 +30,7 @@
 		</div>
 	</section>
 
-	<section class="_section info">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faUser"/> {{ $t('registration') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRegistration" @update:value="save()">{{ $t('enableRegistration') }}</MkSwitch>
@@ -38,7 +38,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $t('hcaptcha') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableHcaptcha">{{ $t('enableHcaptcha') }}</MkSwitch>
@@ -56,7 +56,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $t('recaptcha') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRecaptcha" ref="enableRecaptcha">{{ $t('enableRecaptcha') }}</MkSwitch>
@@ -74,7 +74,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faEnvelope" /> {{ $t('emailConfig') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableEmail" @update:value="save()">{{ $t('enableEmail') }}<template #desc>{{ $t('emailConfigInfo') }}</template></MkSwitch>
@@ -97,7 +97,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faBolt"/> {{ $t('serviceworker') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableServiceWorker">{{ $t('enableServiceworker') }}<template #desc>{{ $t('serviceworkerInfo') }}</template></MkSwitch>
@@ -113,7 +113,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faThumbtack"/> {{ $t('pinnedUsers') }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="pinnedUsers">
@@ -125,7 +125,19 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
+		<div class="_title"><Fa :icon="faThumbtack"/> {{ $t('pinnedPages') }}</div>
+		<div class="_content">
+			<MkTextarea v-model:value="pinnedPages">
+				<template #desc>{{ $t('pinnedPagesDescription') }}</template>
+			</MkTextarea>
+		</div>
+		<div class="_footer">
+			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+		</div>
+	</section>
+
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCloud"/> {{ $t('files') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="cacheRemoteFiles">{{ $t('cacheRemoteFiles') }}<template #desc>{{ $t('cacheRemoteFilesDescription') }}</template></MkSwitch>
@@ -138,7 +150,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCloud"/> {{ $t('objectStorage') }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="useObjectStorage">{{ $t('useObjectStorage') }}</MkSwitch>
@@ -166,7 +178,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faGhost"/> {{ $t('proxyAccount') }}</div>
 		<div class="_content">
 			<MkInput :value="proxyAccount ? proxyAccount.username : null" disabled><template #prefix>@</template>{{ $t('proxyAccount') }}<template #desc>{{ $t('proxyAccountDescription') }}</template></MkInput>
@@ -174,7 +186,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faBan"/> {{ $t('blockedInstances') }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="blockedHosts">
@@ -186,7 +198,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faShareAlt"/> {{ $t('integration') }}</div>
 		<div class="_content">
 			<header><Fa :icon="faTwitter"/> Twitter</header>
@@ -220,7 +232,7 @@
 		</div>
 	</section>
 
-	<section class="_section">
+	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faArchway" /> Summaly Proxy</div>
 		<div class="_content">
 			<MkInput v-model:value="summalyProxy">URL</MkInput>
@@ -260,6 +272,7 @@ export default defineComponent({
 				title: this.$t('instance'),
 				icon: faCog,
 			},
+			meta: null,
 			url,
 			proxyAccount: null,
 			proxyAccountId: null,
@@ -269,6 +282,7 @@ export default defineComponent({
 			remoteDriveCapacityMb: 0,
 			blockedHosts: '',
 			pinnedUsers: '',
+			pinnedPages: '',
 			maintainerName: null,
 			maintainerEmail: null,
 			name: null,
@@ -323,13 +337,9 @@ export default defineComponent({
 		}
 	},
 
-	computed: {
-		meta() {
-			return this.$store.state.instance.meta;
-		},
-	},
+	async created() {
+		this.meta = await os.api('meta', { detail: true });
 
-	created() {
 		this.name = this.meta.name;
 		this.description = this.meta.description;
 		this.tosUrl = this.meta.tosUrl;
@@ -356,6 +366,7 @@ export default defineComponent({
 		this.remoteDriveCapacityMb = this.meta.driveCapacityPerRemoteUserMb;
 		this.blockedHosts = this.meta.blockedHosts.join('\n');
 		this.pinnedUsers = this.meta.pinnedUsers.join('\n');
+		this.pinnedPages = this.meta.pinnedPages.join('\n');
 		this.enableServiceWorker = this.meta.enableServiceWorker;
 		this.swPublicKey = this.meta.swPublickey;
 		this.swPrivateKey = this.meta.swPrivateKey;
@@ -506,6 +517,7 @@ export default defineComponent({
 				remoteDriveCapacityMb: parseInt(this.remoteDriveCapacityMb, 10),
 				blockedHosts: this.blockedHosts.split('\n') || [],
 				pinnedUsers: this.pinnedUsers ? this.pinnedUsers.split('\n') : [],
+				pinnedPages: this.pinnedPages ? this.pinnedPages.split('\n') : [],
 				enableServiceWorker: this.enableServiceWorker,
 				swPublicKey: this.swPublicKey,
 				swPrivateKey: this.swPrivateKey,
