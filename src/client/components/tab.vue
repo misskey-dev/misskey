@@ -1,26 +1,32 @@
-<template>
-<div class="pxhvhrfw" v-size="{ max: [500] }">
-	<button v-for="item in items" class="_button" @click="$emit('update:value', item.value)" :class="{ active: value === item.value }" :disabled="value === item.value" :key="item.value"><Fa v-if="item.icon" :icon="item.icon" class="icon"/>{{ item.label }}</button>
-</div>
-</template>
-
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, h, resolveDirective, withDirectives } from 'vue';
 
 export default defineComponent({
 	props: {
-		items: {
-			type: Array,
-			required: true,
-		},
 		value: {
 			required: true,
 		},
 	},
+	render() {
+		const options = this.$slots.default();
+
+		return withDirectives(h('div', {
+			class: 'pxhvhrfw',
+		}, options.map(option => h('button', {
+			class: ['_button', { active: this.value === option.props.value }],
+			key: option.props.value,
+			disabled: this.value === option.props.value,
+			onClick: () => {
+				this.$emit('update:value', option.props.value);
+			}
+		}, option.children))), [
+			[resolveDirective('size'), { max: [500] }]
+		]);
+	}
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .pxhvhrfw {
 	display: flex;
 

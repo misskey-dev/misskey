@@ -1,7 +1,11 @@
 <template>
 <div>
 	<div class="_section" style="padding: 0;" v-if="this.$store.getters.isSignedIn">
-		<MkTab class="_content" v-model:value="tab" :items="[{ label: $t('_channel.featured'), value: 'featured', icon: faFireAlt }, { label: $t('_channel.following'), value: 'following', icon: faHeart }, { label: $t('_channel.owned'), value: 'owned', icon: faEdit }]"/>
+		<MkTab class="_content" v-model:value="tab">
+			<option value="featured"><Fa :icon="faFireAlt"/> {{ $t('_channel.featured') }}</option>
+			<option value="following"><Fa :icon="faHeart"/> {{ $t('_channel.following') }}</option>
+			<option value="owned"><Fa :icon="faEdit"/> {{ $t('_channel.owned') }}</option>
+		</MkTab>
 	</div>
 
 	<div class="_section">

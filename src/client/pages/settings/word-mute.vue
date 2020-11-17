@@ -1,7 +1,10 @@
 <template>
 <div class="_section">
 	<div class="_card">
-		<MkTab v-model:value="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]"/>
+		<MkTab v-model:value="tab">
+			<option value="soft">{{ $t('_wordMute.soft') }}</option>
+			<option value="hard">{{ $t('_wordMute.hard') }}</option>
+		</MkTab>
 		<div class="_content">
 			<div v-show="tab === 'soft'">
 				<MkInfo>{{ $t('_wordMute.softDescription') }}</MkInfo>

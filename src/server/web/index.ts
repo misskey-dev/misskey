@@ -299,6 +299,7 @@ router.get('/@:user/pages/:page', async ctx => {
 });
 
 // Clip
+// TODO: 非publicなclipのハンドリング
 router.get('/clips/:clip', async ctx => {
 	const clip = await Clips.findOne({
 		id: ctx.params.clip,
