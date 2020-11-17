@@ -83,7 +83,7 @@ export class VuexPersistDB<S extends ['store', ...M[]], M extends string> {
 		return updateState;
 	}
 
-	public _withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {
+	private _withIDBStore(type: IDBTransactionMode, store: 'store' | M, callback: ((store: IDBObjectStore) => void)): Promise<void> {
 		return this._dbp.then(db => new Promise<void>((resolve, reject) => {
 			const transaction = db.transaction(store, type);
 			transaction.oncomplete = () => resolve();
