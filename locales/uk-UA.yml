@@ -450,6 +450,8 @@ testEmail: "Тестовий email"
 wordMute: "Ігнор слів"
 copy: "Скопіювати"
 metrics: "Показники"
+database: "База даних"
+channel: "Канал"
 regenerateLoginToken: "Оновити Login Token"
 _mfm:
   cheatSheet: " Довідка MFM"
