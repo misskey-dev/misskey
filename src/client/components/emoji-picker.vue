@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<div class="omfetrab _popup" :class="{ compact }">
+	<div class="omfetrab _popup" :class="['w' + width, 'h' + height, { big }]">
 		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$t('search')" @paste.stop="paste" @keyup.enter="done()">
 		<div class="emojis">
 			<section class="result">
@@ -99,6 +99,7 @@ import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkModal from '@/components/ui/modal.vue';
 import Particle from '@/components/particle.vue';
 import * as os from '@/os';
+import { isDeviceTouch } from '../scripts/is-device-touch';
 
 export default defineComponent({
 	components: {
@@ -113,7 +114,7 @@ export default defineComponent({
 			required: false,
 			default: true
 		},
-		compact: {
+		asReactionPicker: {
 			required: false
 		},
 	},
@@ -125,6 +126,9 @@ export default defineComponent({
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
 			pinned: this.$store.state.settings.reactions,
+			width: this.asReactionPicker ? this.$store.state.device.reactionPickerWidth : 3,
+			height: this.asReactionPicker ? this.$store.state.device.reactionPickerHeight : 2,
+			big: this.asReactionPicker ? isDeviceTouch : false,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
 			customEmojis: this.$store.state.instance.meta.emojis,
 			visibleCategories: {},
@@ -315,8 +319,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		const isIos = navigator.userAgent.includes('WebKit') && !navigator.userAgent.includes('Chrome');
-		if (!isIos) {
+		if (!os.isMobile) {
 			this.$refs.search.focus({
 				preventScroll: true
 			});
@@ -386,18 +389,39 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .omfetrab {
-	$eachSize: 40px;
 	$pad: 8px;
+	--eachSize: 40px;
 
 	display: flex;
 	flex-direction: column;
-	width: ($eachSize * 7) + ($pad * 2);
 	contain: content;
-	--height: 300px;
 
-	&.compact {
-		width: ($eachSize * 5) + ($pad * 2);
-		--height: 210px;
+	&.big {
+		--eachSize: 44px;
+	}
+
+	&.w1 {
+		width: calc((var(--eachSize) * 5) + (#{$pad} * 2));
+	}
+
+	&.w2 {
+		width: calc((var(--eachSize) * 6) + (#{$pad} * 2));
+	}
+
+	&.w3 {
+		width: calc((var(--eachSize) * 7) + (#{$pad} * 2));
+	}
+
+	&.h1 {
+		--height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
+	}
+
+	&.h2 {
+		--height: calc((var(--eachSize) * 6) + (#{$pad} * 2));
+	}
+
+	&.h3 {
+		--height: calc((var(--eachSize) * 8) + (#{$pad} * 2));
 	}
 
 	> .search {
@@ -461,8 +485,8 @@ export default defineComponent({
 				> button {
 					position: relative;
 					padding: 0;
-					width: $eachSize;
-					height: $eachSize;
+					width: var(--eachSize);
+					height: var(--eachSize);
 					border-radius: 4px;
 
 					&:focus {
