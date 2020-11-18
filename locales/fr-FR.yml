@@ -538,6 +538,8 @@ pluginInstallWarn: "N’installez que des extensions provenant de sources de con
 deck: "Deck"
 undeck: "Quitter le deck"
 useBlurEffectForModal: "Utiliser un effet de flou pour les modals"
+width: "Largeur"
+height: "Hauteur"
 generateAccessToken: "Générer un jeton d'accès"
 permission: "Autorisations "
 enableAll: "Tout activer"
@@ -581,6 +583,7 @@ setMultipleBySeparatingWithSpace: "Vous pouvez définir plus d’un, séparés p
 fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
 random: "Aléatoire"
+public: "Public"
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"

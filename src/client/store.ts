@@ -79,6 +79,8 @@ export const defaultDeviceSettings = {
 	enableInfiniteScroll: true,
 	useBlurEffectForModal: true,
 	useFullReactionPicker: false,
+	reactionPickerWidth: 1,
+	reactionPickerHeight: 1,
 	sidebarDisplay: 'full', // full, icon, hide
 	instanceTicker: 'remote', // none, remote, always
 	roomGraphicsQuality: 'medium',

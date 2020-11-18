@@ -45,7 +45,7 @@
 import { defineComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram, faStream, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
-import { host, instanceName } from '@/config';
+import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
@@ -223,30 +223,8 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			const items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
-				type: def.to ? 'link' : 'button',
-				text: this.$t(def.title),
-				icon: def.icon,
-				to: def.to,
-				action: def.action,
-				indicate: def.indicated,
-			}));
-			os.modalMenu([...items, null, {
-				type: 'link',
-				text: this.$t('help'),
-				to: '/docs',
-				icon: faQuestionCircle,
-			}, {
-				type: 'link',
-				text: this.$t('aboutX', { x: instanceName }),
-				to: '/about',
-				icon: faInfoCircle,
-			}, {
-				type: 'link',
-				text: this.$t('aboutMisskey'),
-				to: '/about-misskey',
-				icon: faInfoCircle,
-			}], ev.currentTarget || ev.target);
+			os.popup(import('./launch-pad.vue'), {}, {
+			}, 'closed');
 		},
 
 		addAcount() {

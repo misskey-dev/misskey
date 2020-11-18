@@ -500,7 +500,7 @@ export default defineComponent({
 			this.blur();
 			os.popup(import('@/components/emoji-picker.vue'), {
 				src: this.$refs.reactButton,
-				compact: !this.$store.state.device.useFullReactionPicker
+				asReactionPicker: true
 			}, {
 				done: reaction => {
 					if (reaction) {
