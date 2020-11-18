@@ -13,7 +13,18 @@
 				</template>
 			</XDraggable>
 			<div class="_caption" style="padding: 8px;">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
-			<MkSwitch v-model:value="useFullReactionPicker">{{ $t('useFullReactionPicker') }}</MkSwitch>
+			<MkRadios v-model="reactionPickerWidth">
+				<template #desc>{{ $t('width') }}</template>
+				<option :value="1">{{ $t('small') }}</option>
+				<option :value="2">{{ $t('medium') }}</option>
+				<option :value="3">{{ $t('large') }}</option>
+			</MkRadios>
+			<MkRadios v-model="reactionPickerHeight">
+				<template #desc>{{ $t('height') }}</template>
+				<option :value="1">{{ $t('small') }}</option>
+				<option :value="2">{{ $t('medium') }}</option>
+				<option :value="3">{{ $t('large') }}</option>
+			</MkRadios>
 		</div>
 		<div class="_footer">
 			<MkButton inline @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
@@ -31,6 +42,7 @@ import { VueDraggableNext } from 'vue-draggable-next';
 import MkInput from '@/components/ui/input.vue';
 import MkButton from '@/components/ui/button.vue';
 import MkSwitch from '@/components/ui/switch.vue';
+import MkRadios from '@/components/ui/radios.vue';
 import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
 import { defaultSettings } from '@/store';
 import * as os from '@/os';
@@ -40,6 +52,7 @@ export default defineComponent({
 		MkInput,
 		MkButton,
 		MkSwitch,
+		MkRadios,
 		XDraggable: VueDraggableNext,
 	},
 
@@ -60,6 +73,14 @@ export default defineComponent({
 		useFullReactionPicker: {
 			get() { return this.$store.state.device.useFullReactionPicker; },
 			set(value) { this.$store.commit('device/set', { key: 'useFullReactionPicker', value: value }); }
+		},
+		reactionPickerWidth: {
+			get() { return this.$store.state.device.reactionPickerWidth; },
+			set(value) { this.$store.commit('device/set', { key: 'reactionPickerWidth', value: value }); }
+		},
+		reactionPickerHeight: {
+			get() { return this.$store.state.device.reactionPickerHeight; },
+			set(value) { this.$store.commit('device/set', { key: 'reactionPickerHeight', value: value }); }
 		},
 	},
 
@@ -92,7 +113,7 @@ export default defineComponent({
 
 		preview(ev) {
 			os.popup(import('@/components/emoji-picker.vue'), {
-				compact: !this.$store.state.device.useFullReactionPicker,
+				asReactionPicker: true,
 				src: ev.currentTarget || ev.target,
 			}, {}, 'closed');
 		},
