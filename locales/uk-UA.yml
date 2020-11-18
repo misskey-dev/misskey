@@ -470,6 +470,7 @@ reportAbuseOf: "Поскаржитись на {name}"
 random: "Випадковий"
 system: "Система"
 switchUi: "Інтерфейс"
+public: "Публічний"
 _mfm:
   cheatSheet: " Довідка MFM"
   mention: "Згадка"
