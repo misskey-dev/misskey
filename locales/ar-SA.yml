@@ -380,6 +380,7 @@ smtpHost: "المضيف"
 smtpUser: "اسم المستخدم"
 smtpPass: "الكلمة السرية"
 display: "المظهر"
+public: "للعامة"
 _mfm:
   mention: "أشر الى"
   quote: "اقتبس"
