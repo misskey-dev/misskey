@@ -315,8 +315,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		const isIos = navigator.userAgent.includes('WebKit') && !navigator.userAgent.includes('Chrome');
-		if (!isIos) {
+		if (!os.isMobile) {
 			this.$refs.search.focus({
 				preventScroll: true
 			});
