@@ -494,6 +494,8 @@ _mfm:
   inlineCodeDescription: "Показує фрагмент тексту у рядку як програмний код"
   blockCode: "Код (блок)"
   blockCodeDescription: "Показує кілька рядків тексту як блок програмного кода"
+  inlineMath: "Формула (у рядку)"
+  blockMath: "Формули (блок)"
   quote: "Цитата"
   emoji: "Кастомні емоджі"
   search: "Пошук"
