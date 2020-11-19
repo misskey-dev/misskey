@@ -500,6 +500,8 @@ _mfm:
   emoji: "Кастомні емоджі"
   search: "Пошук"
 _reversi:
+  reversi: "Реверсі"
+  rules: "Правила"
   total: "Всього"
 _channel:
   featured: "Тренди"
