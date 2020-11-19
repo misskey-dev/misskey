@@ -493,6 +493,7 @@ _mfm:
   inlineCode: "Код (у рядку)"
   inlineCodeDescription: "Показує фрагмент тексту у рядку як програмний код"
   blockCode: "Код (блок)"
+  blockCodeDescription: "Показує кілька рядків тексту як блок програмного кода"
   quote: "Цитата"
   emoji: "Кастомні емоджі"
   search: "Пошук"
