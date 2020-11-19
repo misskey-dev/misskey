@@ -7,9 +7,6 @@ export default defineComponent({
 		MkRadio
 	},
 	props: {
-		defs: {
-			required: true
-		},
 		modelValue: {
 			required: false
 		},
