@@ -529,6 +529,7 @@ _rooms:
   _furnitures:
     monitor: "Монітор"
 _pages:
+  featured: "Популярні"
   blocks:
     image: "Зображення"
   script:
