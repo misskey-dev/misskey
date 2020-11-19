@@ -1,57 +1,53 @@
 <template>
 <div class="_section">
-	<div class="llvierxe _card">
-		<div class="_title"><Fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
-		<div class="_content">
-			<div class="header" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
-				<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
-			</div>
-		
-			<MkInput v-model:value="name" :max="30">
-				<span>{{ $t('_profile.name') }}</span>
-			</MkInput>
-
-			<MkTextarea v-model:value="description" :max="500">
-				<span>{{ $t('_profile.description') }}</span>
-				<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
-			</MkTextarea>
-
-			<MkInput v-model:value="location">
-				<span>{{ $t('location') }}</span>
-				<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
-			</MkInput>
-
-			<MkInput v-model:value="birthday" type="date">
-				<template #title>{{ $t('birthday') }}</template>
-				<template #prefix><Fa :icon="faBirthdayCake"/></template>
-			</MkInput>
-
-			<details class="fields">
-				<summary>{{ $t('_profile.metadata') }}</summary>
-				<div class="row">
-					<MkInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-				<div class="row">
-					<MkInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-				<div class="row">
-					<MkInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-				<div class="row">
-					<MkInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-			</details>
-
-			<MkSwitch v-model:value="isBot">{{ $t('flagAsBot') }}</MkSwitch>
-			<MkSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</MkSwitch>
+	<div class="llvierxe">
+		<div class="header _form_item" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
+			<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
 		</div>
-		<div class="_footer">
-			<MkButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+	
+		<FormInput v-model:value="name" :max="30">
+			<span>{{ $t('_profile.name') }}</span>
+		</FormInput>
+
+		<FormTextarea v-model:value="description" :max="500">
+			<span>{{ $t('_profile.description') }}</span>
+			<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
+		</FormTextarea>
+
+		<FormInput v-model:value="location">
+			<span>{{ $t('location') }}</span>
+			<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
+		</FormInput>
+
+		<FormInput v-model:value="birthday" type="date">
+			<span>{{ $t('birthday') }}</span>
+			<template #prefix><Fa :icon="faBirthdayCake"/></template>
+		</FormInput>
+
+		<div class="_form_item">
+			<FormGroup>
+				<FormInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</FormInput>
+				<FormInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</FormInput>
+			</FormGroup>
+			<FormGroup>
+				<FormInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</FormInput>
+				<FormInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</FormInput>
+			</FormGroup>
+			<FormGroup>
+				<FormInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</FormInput>
+				<FormInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</FormInput>
+			</FormGroup>
+			<FormGroup>
+				<FormInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</FormInput>
+				<FormInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</FormInput>
+			</FormGroup>
 		</div>
+
+		<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</FormSwitch>
+
+		<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
+
+		<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
 	</div>
 </div>
 </template>
@@ -60,20 +56,22 @@
 import { defineComponent } from 'vue';
 import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSwitch from '@/components/ui/switch.vue';
+import FormButton from '@/components/form/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormGroup from '@/components/form/group.vue';
 import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkButton,
-		MkInput,
-		MkTextarea,
-		MkSwitch,
+		FormButton,
+		FormInput,
+		FormTextarea,
+		FormSwitch,
+		FormGroup,
 	},
 	
 	emits: ['info'],
@@ -189,41 +187,29 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .llvierxe {
-	> ._content {
-		> .header {
-			position: relative;
-			height: 150px;
-			overflow: hidden;
-			background-size: cover;
-			background-position: center;
-			border-radius: 5px;
-			border: solid 1px var(--divider);
-			box-sizing: border-box;
+	> .header {
+		position: relative;
+		height: 150px;
+		overflow: hidden;
+		background-size: cover;
+		background-position: center;
+		border-radius: 5px;
+		border: solid 1px var(--divider);
+		box-sizing: border-box;
+		cursor: pointer;
+
+		> .avatar {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			display: block;
+			width: 72px;
+			height: 72px;
+			margin: auto;
 			cursor: pointer;
-
-			> .avatar {
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				display: block;
-				width: 72px;
-				height: 72px;
-				margin: auto;
-				cursor: pointer;
-				box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
-			}
-		}
-
-		> .fields {
-			> .row {
-				> * {
-					display: inline-block;
-					width: 50%;
-					margin-bottom: 0;
-				}
-			}
+			box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
 		}
 	}
 }

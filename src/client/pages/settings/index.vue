@@ -158,7 +158,6 @@ export default defineComponent({
 		> .nav {
 			width: 30%;
 			max-width: 300px;
-			font-size: 0.95em;
 			border-right: solid 1px var(--divider);
 		}
 

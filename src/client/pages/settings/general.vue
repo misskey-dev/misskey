@@ -1,24 +1,21 @@
 <template>
 <div class="">
-	<section class="_card _vMargin">
-		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
-		<div class="_content">
-			<MkRadios v-model="serverDisconnectedBehavior">
-				<template #desc>{{ $t('whenServerDisconnected') }}</template>
-				<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
-				<option value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</option>
-				<option value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</option>
-			</MkRadios>
-			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
-			<MkSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</MkSwitch>
-			<MkSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</MkSwitch>
-			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
-			<MkSelect v-model:value="lang">
-				<template #label>{{ $t('uiLanguage') }}</template>
-				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-			</MkSelect>
-		</div>
-	</section>
+	<FormRadios class="_vMargin" v-model="serverDisconnectedBehavior">
+		<template #desc>{{ $t('whenServerDisconnected') }}</template>
+		<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
+		<option value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</option>
+		<option value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</option>
+	</FormRadios>
+
+	<FormSwitch class="_vMargin" v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</FormSwitch>
+	<FormSwitch class="_vMargin" v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</FormSwitch>
+	<FormSwitch class="_vMargin" v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</FormSwitch>
+	<FormSwitch class="_vMargin" v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</FormSwitch>
+
+	<FormSelect class="_vMargin" v-model:value="lang">
+		<template #label>{{ $t('uiLanguage') }}</template>
+		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+	</FormSelect>
 
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('defaultNavigationBehaviour') }}</div>
@@ -92,6 +89,9 @@ import MkSelect from '@/components/ui/select.vue';
 import MkRadio from '@/components/ui/radio.vue';
 import MkRadios from '@/components/ui/radios.vue';
 import MkRange from '@/components/ui/range.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormRadios from '@/components/form/radios.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
@@ -104,6 +104,9 @@ export default defineComponent({
 		MkRadio,
 		MkRadios,
 		MkRange,
+		FormSwitch,
+		FormSelect,
+		FormRadios,
 	},
 
 	emits: ['info'],
