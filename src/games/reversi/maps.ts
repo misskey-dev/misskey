@@ -878,3 +878,19 @@ export const test7: Map = {
 		'--wwww--',
 	]
 };
+
+// 検証用: この盤面で藍(lv5)が黒で始めると何故か(?)A1に打ってしまう
+export const test8: Map = {
+	name: 'Test8',
+	category: 'Test',
+	data: [
+		'--------',
+		'-----w--',
+		'w--www--',
+		'wwwwww--',
+		'bbbbwww-',
+		'wwwwww--',
+		'--www---',
+		'--ww----',
+	]
+};
