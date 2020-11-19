@@ -474,6 +474,7 @@ waitingFor: "Чекаємо на {x}"
 random: "Випадковий"
 system: "Система"
 switchUi: "Інтерфейс"
+desktop: "Десктоп"
 public: "Публічний"
 _mfm:
   cheatSheet: " Довідка MFM"
