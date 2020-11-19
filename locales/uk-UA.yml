@@ -186,7 +186,7 @@ newPassword: "Новий пароль"
 newPasswordRetype: "Новий пароль (повторно)"
 attachFile: "Вкласти файл"
 more: "Бiльше!"
-featured: "Виділені"
+featured: "Популярні"
 noSuchUser: "Користувача не знайдено"
 lookup: "Пошук"
 announcements: "Оголошення"
@@ -382,7 +382,7 @@ promotion: "Просування"
 promote: "Просунути"
 numberOfDays: "Кількість днів"
 hideThisNote: "Сховати цей допис"
-showFeaturedNotesInTimeline: "Показувати рекомендовані дописи у стрічці"
+showFeaturedNotesInTimeline: "Показувати популярні дописи у стрічці"
 objectStorageBaseUrl: "Base URL"
 objectStorageBucket: "Bucket"
 objectStoragePrefix: "Prefix"
@@ -486,6 +486,8 @@ _mfm:
   search: "Пошук"
 _reversi:
   total: "Всього"
+_channel:
+  featured: "Тренди"
 _sidebar:
   icon: "Аватар"
 _theme:
