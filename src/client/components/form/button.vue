@@ -40,6 +40,10 @@ export default defineComponent({
 		&.primary {
 			color: var(--accent);
 		}
+
+		&.danger {
+			color: #ff2a2a;
+		}
 	}
 }
 </style>

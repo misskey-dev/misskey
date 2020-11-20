@@ -13,7 +13,7 @@
 		fgHighlighted: '#fff',
 		divider: 'rgba(255, 255, 255, 0.14)',
 		panel: 'rgb(41, 43, 41)',
-		panelShadow: '" 0 0 0 1px var(--divider)',
+		panelShadow: '" none',
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
 		infoFg: '@accent',

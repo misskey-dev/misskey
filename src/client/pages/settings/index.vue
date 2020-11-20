@@ -27,7 +27,7 @@
 			<FormLink :active="page === 'other'" replace to="/settings/other"><template #icon><Fa :icon="faEllipsisH"/></template>{{ $t('other') }}</FormLink>
 		</FormGroup>
 		<FormGroup>
-			<button class="_button item" @click="logout">{{ $t('logout') }}</button>
+			<FormButton @click="logout" danger>{{ $t('logout') }}</FormButton>
 		</FormGroup>
 	</FormBase>
 	<div class="main">
@@ -45,12 +45,14 @@ import { i18n } from '@/i18n';
 import FormLink from '@/components/form/link.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormBase from '@/components/form/base.vue';
+import FormButton from '@/components/form/button.vue';
 
 export default defineComponent({
 	components: {
 		FormBase,
 		FormLink,
 		FormGroup,
+		FormButton,
 	},
 
 	props: {
