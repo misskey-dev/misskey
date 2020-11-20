@@ -715,7 +715,7 @@ _channel:
   removeBanner: "Удалить баннер"
   featured: "Актуальные"
   owned: "Собственные"
-  following: "Подписка"
+  following: "Подписки"
   usersCount: "Участников: {n}"
   notesCount: "Заметок: {n}"
 _sidebar:
