@@ -93,6 +93,7 @@ export default defineComponent({
 			min-width: 100%;
 			max-width: 100%;
 			min-height: 130px;
+			margin: 0;
 			padding: 16px;
 			box-sizing: border-box;
 			font: inherit;

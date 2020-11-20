@@ -15,10 +15,10 @@
 			<span></span>
 		</span>
 		<span class="label">
-			<span :aria-hidden="!checked"><slot></slot></span>
+			<span><slot></slot></span>
 		</span>
 	</div>
-	<div :aria-hidden="!checked" class="_form_caption"><slot name="desc"></slot></div>
+	<div class="_form_caption"><slot name="desc"></slot></div>
 </div>
 </template>
 
