@@ -1,55 +1,53 @@
 <template>
-<div class="_section">
-	<FormBase class="llvierxe">
-		<div class="header _form_item" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
-			<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
-		</div>
-	
-		<FormInput v-model:value="name" :max="30">
-			<span>{{ $t('_profile.name') }}</span>
-		</FormInput>
+<FormBase class="llvierxe">
+	<div class="header _form_item" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
+		<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
+	</div>
 
-		<FormTextarea v-model:value="description" :max="500">
-			<span>{{ $t('_profile.description') }}</span>
-			<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
-		</FormTextarea>
+	<FormInput v-model:value="name" :max="30">
+		<span>{{ $t('_profile.name') }}</span>
+	</FormInput>
 
-		<FormInput v-model:value="location">
-			<span>{{ $t('location') }}</span>
-			<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
-		</FormInput>
+	<FormTextarea v-model:value="description" :max="500">
+		<span>{{ $t('_profile.description') }}</span>
+		<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
+	</FormTextarea>
 
-		<FormInput v-model:value="birthday" type="date">
-			<span>{{ $t('birthday') }}</span>
-			<template #prefix><Fa :icon="faBirthdayCake"/></template>
-		</FormInput>
+	<FormInput v-model:value="location">
+		<span>{{ $t('location') }}</span>
+		<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
+	</FormInput>
 
-		<div class="_form_item">
-			<FormTuple>
-				<FormInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</FormInput>
-				<FormInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormTuple>
-			<FormTuple>
-				<FormInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</FormInput>
-				<FormInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormTuple>
-			<FormTuple>
-				<FormInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</FormInput>
-				<FormInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormTuple>
-			<FormTuple>
-				<FormInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</FormInput>
-				<FormInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormTuple>
-		</div>
+	<FormInput v-model:value="birthday" type="date">
+		<span>{{ $t('birthday') }}</span>
+		<template #prefix><Fa :icon="faBirthdayCake"/></template>
+	</FormInput>
 
-		<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</FormSwitch>
+	<div class="_form_item">
+		<FormTuple>
+			<FormInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</FormInput>
+			<FormInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</FormInput>
+		</FormTuple>
+		<FormTuple>
+			<FormInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</FormInput>
+			<FormInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</FormInput>
+		</FormTuple>
+		<FormTuple>
+			<FormInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</FormInput>
+			<FormInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</FormInput>
+		</FormTuple>
+		<FormTuple>
+			<FormInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</FormInput>
+			<FormInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</FormInput>
+		</FormTuple>
+	</div>
 
-		<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
+	<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</FormSwitch>
 
-		<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
-	</FormBase>
-</div>
+	<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
+
+	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
+</FormBase>
 </template>
 
 <script lang="ts">
