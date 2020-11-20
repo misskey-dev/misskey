@@ -547,7 +547,12 @@ _instanceTicker:
 _serverDisconnectedBehavior:
   reload: "Автоматично перезавантажити"
   dialog: "Показати діалогове вікно"
+  quiet: "Показати ненав’язливе попередження"
 _channel:
+  create: "Створити канал"
+  edit: "Редагувати канал"
+  setBanner: "Встановити банер"
+  removeBanner: "Видалити банер"
   featured: "Тренди"
 _sidebar:
   icon: "Аватар"
