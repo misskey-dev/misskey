@@ -521,6 +521,11 @@ _reversi:
   blackIs: "{name} грає чорними"
   rules: "Правила"
   thisGameIsStartedSoon: "Гра розпочнеться через кілька секунд"
+  waitingForOther: "Чекаємо на хід суперника"
+  waitingForMe: "Ваш хід"
+  waitingBoth: "Приготуйтесь"
+  ready: "Готовність"
+  cancelReady: "Скасувати готовність"
   total: "Всього"
 _channel:
   featured: "Тренди"
