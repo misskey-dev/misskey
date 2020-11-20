@@ -506,6 +506,7 @@ _mfm:
   jelly: "Анімація (желе)"
   jellyDescription: "Створює желеподібну анімацію"
   tada: "Анімація (тадам)"
+  tadaDescription: "Створює анімацію з відчуттям \"Тада!\""
 _reversi:
   reversi: "Реверсі"
   rules: "Правила"
