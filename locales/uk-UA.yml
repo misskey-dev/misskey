@@ -532,7 +532,12 @@ _reversi:
   pastTurnOf: "Хід {name}"
   surrender: "Здатися"
   drawn: "Нічия"
+  won: "Перемога {name}"
+  black: "Чорні"
+  white: "Білі"
   total: "Всього"
+  turnCount: "Хід {count}"
+  myGames: "Мої ігри"
 _channel:
   featured: "Тренди"
 _sidebar:
