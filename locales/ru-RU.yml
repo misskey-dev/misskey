@@ -713,9 +713,9 @@ _channel:
   edit: "Редактировать канал"
   setBanner: "Установить баннер"
   removeBanner: "Удалить баннер"
-  featured: "Из подборки"
-  owned: "Владелец"
-  following: "Читаю"
+  featured: "Актуальные"
+  owned: "Собственные"
+  following: "Подписка"
   usersCount: "Участников: {n}"
   notesCount: "Заметок: {n}"
 _sidebar:
