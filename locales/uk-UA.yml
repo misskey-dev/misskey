@@ -515,7 +515,12 @@ _mfm:
   spin: "Анімація (Spin)"
 _reversi:
   reversi: "Реверсі"
+  gameSettings: "Налаштування гри"
+  chooseBoard: "Вибір дошки"
+  blackOrWhite: "Чорні / Білі"
+  blackIs: "{name} грає чорними"
   rules: "Правила"
+  thisGameIsStartedSoon: "Гра розпочнеться через кілька секунд"
   total: "Всього"
 _channel:
   featured: "Тренди"
