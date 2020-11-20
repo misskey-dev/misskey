@@ -539,6 +539,14 @@ _reversi:
   turnCount: "Хід {count}"
   myGames: "Мої ігри"
   allGames: "Усі ігри"
+  ended: "Завершено"
+_instanceTicker:
+  none: "Не відображати"
+  remote: "Відображати для віддалених користувачів"
+  always: "Відображати завжди"
+_serverDisconnectedBehavior:
+  reload: "Автоматично перезавантажити"
+  dialog: "Показати діалогове вікно"
 _channel:
   featured: "Тренди"
 _sidebar:
