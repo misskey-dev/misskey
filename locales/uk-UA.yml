@@ -538,6 +538,7 @@ _reversi:
   total: "Всього"
   turnCount: "Хід {count}"
   myGames: "Мої ігри"
+  allGames: "Усі ігри"
 _channel:
   featured: "Тренди"
 _sidebar:
