@@ -13,6 +13,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rbusrurv {
+	line-height: 1.4em;
 	padding: 32px;
 
 	&.max-width_500px {
