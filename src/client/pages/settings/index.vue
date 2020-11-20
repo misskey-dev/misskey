@@ -95,7 +95,7 @@ export default defineComponent({
 		});
 
 		onMounted(() => {
-			narrow.value = el.value.offsetWidth < 650;
+			narrow.value = el.value.offsetWidth < 1025;
 		});
 
 		return {

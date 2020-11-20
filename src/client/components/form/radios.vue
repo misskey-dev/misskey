@@ -54,7 +54,7 @@ export default defineComponent({
 		text-align: left;
 
 		&:not(:first-of-type) {
-			border-top: none;
+			border-top: none !important;
 			border-top-left-radius: 0;
 			border-top-right-radius: 0;
 		}

@@ -65,7 +65,7 @@ export default defineComponent({
 
 		> .right {
 			margin-left: auto;
-			opacity: 0.75;
+			opacity: 0.7;
 		}
 	}
 }

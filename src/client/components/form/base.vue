@@ -20,6 +20,7 @@ export default defineComponent({
 
 		> ::v-deep(*) {
 			._form_panel {
+				border: solid 1px var(--divider);
 				border-radius: 0;
 				border-left: none;
 				border-right: none;
