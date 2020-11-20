@@ -1,6 +1,9 @@
 <template>
-<div class="wthhikgt _form_item" v-size="{ max: [500] }">
-	<slot></slot>
+<div class="vrtktovg _form_item" v-size="{ max: [500] }">
+	<div class="_form_label"><slot name="label"></slot></div>
+	<div class="main">
+		<slot></slot>
+	</div>
 </div>
 </template>
 
@@ -12,24 +15,26 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.wthhikgt {
-	position: relative;
-	display: flex;
-
-	> ::v-deep(*) {
-		flex: 1;
-		margin: 0;
-
-		&:not(:last-child) {
-			margin-right: 16px;
-		}
-	}
-
-	&.max-width_500px {
-		display: block;
-
+.vrtktovg {
+	> .main {
 		> ::v-deep(*) {
-			margin: inherit;
+			margin: 0;
+
+			&:not(:first-child) {
+				._form_panel {
+					border-top: none;
+					border-top-left-radius: 0;
+					border-top-right-radius: 0;
+				}
+			}
+
+			&:not(:last-child) {
+				._form_panel {
+					border-bottom: solid 1px var(--divider);
+					border-bottom-left-radius: 0;
+					border-bottom-right-radius: 0;
+				}
+			}
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <template>
-<div class="">
+<FormBase>
 	<FormRadios class="_vMargin" v-model="serverDisconnectedBehavior">
 		<template #desc>{{ $t('whenServerDisconnected') }}</template>
 		<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
@@ -17,6 +17,27 @@
 		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 	</FormSelect>
 
+	<FormSwitch class="_vMargin" v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</FormSwitch>
+	<FormSwitch class="_vMargin" v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</FormSwitch>
+	<FormSwitch class="_vMargin" v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</FormSwitch>
+	<FormSwitch class="_vMargin" v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
+		<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
+	</FormSwitch>
+
+	<FormRadios v-model="fontSize">
+		<template #desc>{{ $t('fontSize') }}</template>
+		<option value="small"><span style="font-size: 14px;">Aa</span></option>
+		<option :value="null"><span style="font-size: 16px;">Aa</span></option>
+		<option value="large"><span style="font-size: 18px;">Aa</span></option>
+		<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
+	</FormRadios>
+	<FormRadios v-model="instanceTicker">
+		<template #desc>{{ $t('instanceTicker') }}</template>
+		<option value="none">{{ $t('_instanceTicker.none') }}</option>
+		<option value="remote">{{ $t('_instanceTicker.remote') }}</option>
+		<option value="always">{{ $t('_instanceTicker.always') }}</option>
+	</FormRadios>
+
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faCog"/> {{ $t('defaultNavigationBehaviour') }}</div>
 		<div class="_content">
@@ -28,32 +49,6 @@
 				<option value="page">{{ $t('showInPage') }}</option>
 				<option value="window">{{ $t('openInWindow') }}</option>
 				<option value="popout">{{ $t('popout') }}</option>
-			</MkRadios>
-		</div>
-	</section>
-
-	<section class="_card _vMargin">
-		<div class="_title"><Fa :icon="faCog"/> {{ $t('appearance') }}</div>
-		<div class="_content">
-			<MkSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</MkSwitch>
-			<MkSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</MkSwitch>
-			<MkSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</MkSwitch>
-			<MkSwitch v-model:value="useOsNativeEmojis">
-				{{ $t('useOsNativeEmojis') }}
-				<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
-			</MkSwitch>
-			<MkRadios v-model="fontSize">
-				<template #desc>{{ $t('fontSize') }}</template>
-				<option value="small"><span style="font-size: 14px;">Aa</span></option>
-				<option :value="null"><span style="font-size: 16px;">Aa</span></option>
-				<option value="large"><span style="font-size: 18px;">Aa</span></option>
-				<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
-			</MkRadios>
-			<MkRadios v-model="instanceTicker">
-				<template #desc>{{ $t('instanceTicker') }}</template>
-				<option value="none">{{ $t('_instanceTicker.none') }}</option>
-				<option value="remote">{{ $t('_instanceTicker.remote') }}</option>
-				<option value="always">{{ $t('_instanceTicker.always') }}</option>
 			</MkRadios>
 		</div>
 	</section>
@@ -77,7 +72,7 @@
 	</section>
 
 	<MkButton @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</MkButton>
-</div>
+</FormBase>
 </template>
 
 <script lang="ts">
@@ -92,6 +87,7 @@ import MkRange from '@/components/ui/range.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
+import FormBase from '@/components/form/base.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
@@ -107,6 +103,7 @@ export default defineComponent({
 		FormSwitch,
 		FormSelect,
 		FormRadios,
+		FormBase,
 	},
 
 	emits: ['info'],

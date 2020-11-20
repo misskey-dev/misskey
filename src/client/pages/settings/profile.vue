@@ -1,6 +1,6 @@
 <template>
 <div class="_section">
-	<div class="llvierxe">
+	<FormBase class="llvierxe">
 		<div class="header _form_item" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
 			<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
 		</div>
@@ -25,22 +25,22 @@
 		</FormInput>
 
 		<div class="_form_item">
-			<FormGroup>
+			<FormTuple>
 				<FormInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</FormInput>
 				<FormInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormGroup>
-			<FormGroup>
+			</FormTuple>
+			<FormTuple>
 				<FormInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</FormInput>
 				<FormInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormGroup>
-			<FormGroup>
+			</FormTuple>
+			<FormTuple>
 				<FormInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</FormInput>
 				<FormInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormGroup>
-			<FormGroup>
+			</FormTuple>
+			<FormTuple>
 				<FormInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</FormInput>
 				<FormInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</FormInput>
-			</FormGroup>
+			</FormTuple>
 		</div>
 
 		<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</FormSwitch>
@@ -48,7 +48,7 @@
 		<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
 
 		<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
-	</div>
+	</FormBase>
 </div>
 </template>
 
@@ -60,7 +60,8 @@ import FormButton from '@/components/form/button.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormGroup from '@/components/form/group.vue';
+import FormTuple from '@/components/form/tuple.vue';
+import FormBase from '@/components/form/base.vue';
 import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
@@ -71,7 +72,8 @@ export default defineComponent({
 		FormInput,
 		FormTextarea,
 		FormSwitch,
-		FormGroup,
+		FormTuple,
+		FormBase,
 	},
 	
 	emits: ['info'],

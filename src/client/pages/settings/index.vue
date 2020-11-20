@@ -1,35 +1,35 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
-	<div class="nav" v-if="!narrow || page == null">
-		<div class="menu">
-			<div class="label">{{ $t('basicSettings') }}</div>
-			<MkA class="item" :class="{ active: page === 'profile' }" replace to="/settings/profile"><Fa :icon="faUser" fixed-width class="icon"/>{{ $t('profile') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'privacy' }" replace to="/settings/privacy"><Fa :icon="faLockOpen" fixed-width class="icon"/>{{ $t('privacy') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'reaction' }" replace to="/settings/reaction"><Fa :icon="faLaugh" fixed-width class="icon"/>{{ $t('reaction') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'notifications' }" replace to="/settings/notifications"><Fa :icon="faBell" fixed-width class="icon"/>{{ $t('notifications') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'integration' }" replace to="/settings/integration"><Fa :icon="faShareAlt" fixed-width class="icon"/>{{ $t('integration') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'security' }" replace to="/settings/security"><Fa :icon="faLock" fixed-width class="icon"/>{{ $t('security') }}</MkA>
-		</div>
-		<div class="menu">
-			<div class="label">{{ $t('clientSettings') }}</div>
-			<MkA class="item" :class="{ active: page === 'general' }" replace to="/settings/general"><Fa :icon="faCogs" fixed-width class="icon"/>{{ $t('general') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'theme' }" replace to="/settings/theme"><Fa :icon="faPalette" fixed-width class="icon"/>{{ $t('theme') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'sidebar' }" replace to="/settings/sidebar"><Fa :icon="faListUl" fixed-width class="icon"/>{{ $t('sidebar') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'sounds' }" replace to="/settings/sounds"><Fa :icon="faMusic" fixed-width class="icon"/>{{ $t('sounds') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'plugins' }" replace to="/settings/plugins"><Fa :icon="faPlug" fixed-width class="icon"/>{{ $t('plugins') }}</MkA>
-		</div>
-		<div class="menu">
-			<div class="label">{{ $t('otherSettings') }}</div>
-			<MkA class="item" :class="{ active: page === 'import-export' }" replace to="/settings/import-export"><Fa :icon="faBoxes" fixed-width class="icon"/>{{ $t('importAndExport') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'mute-block' }" replace to="/settings/mute-block"><Fa :icon="faBan" fixed-width class="icon"/>{{ $t('muteAndBlock') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'word-mute' }" replace to="/settings/word-mute"><Fa :icon="faCommentSlash" fixed-width class="icon"/>{{ $t('wordMute') }}</MkA>
-			<MkA class="item" :class="{ active: page === 'api' }" replace to="/settings/api"><Fa :icon="faKey" fixed-width class="icon"/>API</MkA>
-			<MkA class="item" :class="{ active: page === 'other' }" replace to="/settings/other"><Fa :icon="faEllipsisH" fixed-width class="icon"/>{{ $t('other') }}</MkA>
-		</div>
-		<div class="menu">
+	<FormBase class="nav" v-if="!narrow || page == null">
+		<FormGroup>
+			<template #label>{{ $t('basicSettings') }}</template>
+			<FormLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><Fa :icon="faUser"/></template>{{ $t('profile') }}</FormLink>
+			<FormLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><Fa :icon="faLockOpen"/></template>{{ $t('privacy') }}</FormLink>
+			<FormLink :active="page === 'reaction'" replace to="/settings/reaction"><template #icon><Fa :icon="faLaugh"/></template>{{ $t('reaction') }}</FormLink>
+			<FormLink :active="page === 'notifications'" replace to="/settings/notifications"><template #icon><Fa :icon="faBell"/></template>{{ $t('notifications') }}</FormLink>
+			<FormLink :active="page === 'integration'" replace to="/settings/integration"><template #icon><Fa :icon="faShareAlt"/></template>{{ $t('integration') }}</FormLink>
+			<FormLink :active="page === 'security'" replace to="/settings/security"><template #icon><Fa :icon="faLock"/></template>{{ $t('security') }}</FormLink>
+		</FormGroup>
+		<FormGroup>
+			<template #label>{{ $t('clientSettings') }}</template>
+			<FormLink :active="page === 'general'" replace to="/settings/general"><template #icon><Fa :icon="faCogs"/></template>{{ $t('general') }}</FormLink>
+			<FormLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><Fa :icon="faPalette"/></template>{{ $t('theme') }}</FormLink>
+			<FormLink :active="page === 'sidebar'" replace to="/settings/sidebar"><template #icon><Fa :icon="faListUl"/></template>{{ $t('sidebar') }}</FormLink>
+			<FormLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><Fa :icon="faMusic"/></template>{{ $t('sounds') }}</FormLink>
+			<FormLink :active="page === 'plugins'" replace to="/settings/plugins"><template #icon><Fa :icon="faPlug"/></template>{{ $t('plugins') }}</FormLink>
+		</FormGroup>
+		<FormGroup>
+			<template #label>{{ $t('otherSettings') }}</template>
+			<FormLink :active="page === 'import-export'" replace to="/settings/import-export"><template #icon><Fa :icon="faBoxes"/></template>{{ $t('importAndExport') }}</FormLink>
+			<FormLink :active="page === 'mute-block'" replace to="/settings/mute-block"><template #icon><Fa :icon="faBan"/></template>{{ $t('muteAndBlock') }}</FormLink>
+			<FormLink :active="page === 'word-mute'" replace to="/settings/word-mute"><template #icon><Fa :icon="faCommentSlash"/></template>{{ $t('wordMute') }}</FormLink>
+			<FormLink :active="page === 'api'" replace to="/settings/api"><template #icon><Fa :icon="faKey"/></template>API</FormLink>
+			<FormLink :active="page === 'other'" replace to="/settings/other"><template #icon><Fa :icon="faEllipsisH"/></template>{{ $t('other') }}</FormLink>
+		</FormGroup>
+		<FormGroup>
 			<button class="_button item" @click="logout">{{ $t('logout') }}</button>
-		</div>
-	</div>
+		</FormGroup>
+	</FormBase>
 	<div class="main">
 		<component :is="component" @info="onInfo"/>
 	</div>
@@ -42,8 +42,17 @@ import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faM
 import { faLaugh, faBell } from '@fortawesome/free-regular-svg-icons';
 import { store } from '@/store';
 import { i18n } from '@/i18n';
+import FormLink from '@/components/form/link.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormBase from '@/components/form/base.vue';
 
 export default defineComponent({
+	components: {
+		FormBase,
+		FormLink,
+		FormGroup,
+	},
+
 	props: {
 		page: {
 			type: String,
@@ -108,50 +117,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .vvcocwet {
-	> .nav {
-		> .menu {
-			margin: 16px 0;
-
-			> .label {
-				padding: 8px 32px;
-				font-size: 80%;
-				opacity: 0.7;
-			}
-
-			> .item {
-				display: block;
-				width: 100%;
-				box-sizing: border-box;
-				padding: 0 32px;
-				line-height: 40px;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				//background: var(--panel);
-				//border-bottom: solid 1px var(--divider);
-				transition: padding 0.2s ease, color 0.1s ease;
-
-				&:first-of-type {
-					//border-top: solid 1px var(--divider);
-				}
-
-				&.active {
-					color: var(--accent);
-					padding-left: 42px;
-				}
-
-				&:hover {
-					text-decoration: none;
-					padding-left: 42px;
-				}
-
-				> .icon {
-					margin-right: 0.5em;
-				}
-			}
-		}
-	}
-
 	&.wide {
 		display: flex;
 
@@ -163,7 +128,6 @@ export default defineComponent({
 
 		> .main {
 			flex: 1;
-			padding: 32px;
 			--baseContentWidth: 100%;
 
 			::v-deep(._section) {
