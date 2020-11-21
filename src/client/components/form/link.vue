@@ -54,6 +54,10 @@ export default defineComponent({
 			flex-shrink: 0;
 			text-align: center;
 			opacity: 0.8;
+
+			&:empty {
+				display: none;
+			}
 		}
 
 		> .text {
