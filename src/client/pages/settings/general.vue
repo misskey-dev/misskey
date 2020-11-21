@@ -1,28 +1,35 @@
 <template>
 <FormBase>
-	<FormRadios class="_vMargin" v-model="serverDisconnectedBehavior">
+	<FormSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</FormSwitch>
+
+	<FormSelect v-model:value="lang">
+		<template #label>{{ $t('uiLanguage') }}</template>
+		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+	</FormSelect>
+
+	<FormGroup>
+		<template #label>{{ $t('behavior') }}</template>
+		<FormSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</FormSwitch>
+		<FormSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</FormSwitch>
+		<FormSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</FormSwitch>
+	</FormGroup>
+
+	<FormRadios v-model="serverDisconnectedBehavior">
 		<template #desc>{{ $t('whenServerDisconnected') }}</template>
 		<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
 		<option value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</option>
 		<option value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</option>
 	</FormRadios>
 
-	<FormSwitch class="_vMargin" v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</FormSwitch>
-	<FormSwitch class="_vMargin" v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</FormSwitch>
-	<FormSwitch class="_vMargin" v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</FormSwitch>
-	<FormSwitch class="_vMargin" v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</FormSwitch>
-
-	<FormSelect class="_vMargin" v-model:value="lang">
-		<template #label>{{ $t('uiLanguage') }}</template>
-		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-	</FormSelect>
-
-	<FormSwitch class="_vMargin" v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</FormSwitch>
-	<FormSwitch class="_vMargin" v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</FormSwitch>
-	<FormSwitch class="_vMargin" v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</FormSwitch>
-	<FormSwitch class="_vMargin" v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
-		<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
-	</FormSwitch>
+	<FormGroup>
+		<template #label>{{ $t('appearance') }}</template>
+		<FormSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</FormSwitch>
+		<FormSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</FormSwitch>
+		<FormSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</FormSwitch>
+		<FormSwitch v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
+			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
+		</FormSwitch>
+	</FormGroup>
 
 	<FormRadios v-model="fontSize">
 		<template #desc>{{ $t('fontSize') }}</template>
@@ -38,20 +45,17 @@
 		<option value="always">{{ $t('_instanceTicker.always') }}</option>
 	</FormRadios>
 
-	<section class="_card _vMargin">
-		<div class="_title"><Fa :icon="faCog"/> {{ $t('defaultNavigationBehaviour') }}</div>
-		<div class="_content">
-			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<MkRadios v-model="chatOpenBehavior">
-				<template #desc>{{ $t('chatOpenBehavior') }}</template>
-				<option value="page">{{ $t('showInPage') }}</option>
-				<option value="window">{{ $t('openInWindow') }}</option>
-				<option value="popout">{{ $t('popout') }}</option>
-			</MkRadios>
-		</div>
-	</section>
+	<FormGroup>
+		<template #label>{{ $t('defaultNavigationBehaviour') }}</template>
+		<FormSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</FormSwitch>
+	</FormGroup>
+
+	<FormRadios v-model="chatOpenBehavior">
+		<template #desc>{{ $t('chatOpenBehavior') }}</template>
+		<option value="page">{{ $t('showInPage') }}</option>
+		<option value="window">{{ $t('openInWindow') }}</option>
+		<option value="popout">{{ $t('popout') }}</option>
+	</FormRadios>
 
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
@@ -88,6 +92,7 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
@@ -104,6 +109,7 @@ export default defineComponent({
 		FormSelect,
 		FormRadios,
 		FormBase,
+		FormGroup,
 	},
 
 	emits: ['info'],

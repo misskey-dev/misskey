@@ -14,9 +14,7 @@
 			<slot></slot>
 		</select>
 		<div class="suffix">
-			<slot name="suffix">
-				<Fa :icon="faChevronDown"/>
-			</slot>
+			<Fa :icon="faChevronDown"/>
 		</div>
 	</div>
 	<div class="_form_caption"><slot name="text"></slot></div>
@@ -141,7 +139,7 @@ export default defineComponent({
 		}
 
 		> .suffix {
-			padding-left: 4px;
+			padding: 0 16px 0 0;
 		}
 	}
 }
