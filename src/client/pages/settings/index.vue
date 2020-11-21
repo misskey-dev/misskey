@@ -125,8 +125,9 @@ export default defineComponent({
 
 		> .nav {
 			width: 30%;
-			max-width: 300px;
-			border-right: solid 1px var(--divider);
+			max-width: 380px;
+			box-sizing: border-box;
+			border-right: solid 0.5px var(--divider);
 		}
 
 		> .main {

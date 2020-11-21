@@ -1,5 +1,5 @@
 <template>
-<div class="rbusrurv" v-size="{ max: [500] }">
+<div class="rbusrurv" v-size="{ max: [370] }">
 	<slot></slot>
 </div>
 </template>
@@ -16,7 +16,7 @@ export default defineComponent({
 	line-height: 1.4em;
 	padding: 32px;
 
-	&.max-width_500px {
+	&.max-width_370px {
 		padding: 32px 0;
 
 		> ::v-deep(*) {
