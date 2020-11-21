@@ -7,6 +7,8 @@
 			<MkTextarea v-model:value="description">{{ $t('instanceDescription') }}</MkTextarea>
 			<MkInput v-model:value="iconUrl"><template #icon><Fa :icon="faLink"/></template>{{ $t('iconUrl') }}</MkInput>
 			<MkInput v-model:value="bannerUrl"><template #icon><Fa :icon="faLink"/></template>{{ $t('bannerUrl') }}</MkInput>
+			<MkInput v-model:value="backgroundImageUrl"><template #icon><Fa :icon="faLink"/></template>{{ $t('backgroundImageUrl') }}</MkInput>
+			<MkInput v-model:value="logoImageUrl"><template #icon><Fa :icon="faLink"/></template>{{ $t('logoImageUrl') }}</MkInput>
 			<MkInput v-model:value="tosUrl"><template #icon><Fa :icon="faLink"/></template>{{ $t('tosUrl') }}</MkInput>
 			<MkInput v-model:value="maintainerName">{{ $t('maintainerName') }}</MkInput>
 			<MkInput v-model:value="maintainerEmail" type="email"><template #icon><Fa :icon="faEnvelope"/></template>{{ $t('maintainerEmail') }}</MkInput>
@@ -292,6 +294,8 @@ export default defineComponent({
 			email: null,
 			bannerUrl: null,
 			iconUrl: null,
+			logoImageUrl: null,
+			backgroundImageUrl: null,
 			maxNoteTextLength: 0,
 			enableRegistration: false,
 			enableLocalTimeline: false,
@@ -345,6 +349,8 @@ export default defineComponent({
 		this.tosUrl = this.meta.tosUrl;
 		this.bannerUrl = this.meta.bannerUrl;
 		this.iconUrl = this.meta.iconUrl;
+		this.logoImageUrl = this.meta.logoImageUrl;
+		this.backgroundImageUrl = this.meta.backgroundImageUrl;
 		this.enableEmail = this.meta.enableEmail;
 		this.email = this.meta.email;
 		this.maintainerName = this.meta.maintainerName;
@@ -498,6 +504,8 @@ export default defineComponent({
 				tosUrl: this.tosUrl,
 				bannerUrl: this.bannerUrl,
 				iconUrl: this.iconUrl,
+				logoImageUrl: this.logoImageUrl,
+				backgroundImageUrl: this.backgroundImageUrl,
 				maintainerName: this.maintainerName,
 				maintainerEmail: this.maintainerEmail,
 				maxNoteTextLength: this.maxNoteTextLength,

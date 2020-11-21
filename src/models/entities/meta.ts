@@ -96,6 +96,18 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 512,
+		nullable: true
+	})
+	public backgroundImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public logoImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
 		nullable: true,
 		default: 'https://xn--931a.moe/aiart/yubitun.png'
 	})
