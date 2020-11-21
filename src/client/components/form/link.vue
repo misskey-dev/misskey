@@ -39,7 +39,7 @@ export default defineComponent({
 		align-items: center;
 		width: 100%;
 		box-sizing: border-box;
-		padding: 14px;
+		padding: 14px 16px 14px 14px;
 
 		&:hover {
 			text-decoration: none;

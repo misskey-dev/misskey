@@ -140,6 +140,7 @@ export default defineComponent({
 
 		> .suffix {
 			padding: 0 16px 0 0;
+			opacity: 0.7;
 		}
 	}
 }
