@@ -1,11 +1,5 @@
 <template>
 <div class="rsqzvsbo _section" v-if="meta">
-	<div class="about">
-		<h1>{{ instanceName }}</h1>
-		<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-		<MkButton @click="signup()" style="display: inline-block; margin-right: 16px;" primary>{{ $t('signup') }}</MkButton>
-		<MkButton @click="signin()" style="display: inline-block;">{{ $t('login') }}</MkButton>
-	</div>
 	<div class="blocks">
 		<XBlock class="block" v-for="path in meta.pinnedPages" :initial-path="path" :key="path"/>
 	</div>
@@ -67,28 +61,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .rsqzvsbo {
 	text-align: center;
-
-	> .about {
-		display: inline-block;
-		padding: 24px;
-		margin-bottom: var(--margin);
-		-webkit-backdrop-filter: blur(8px);
-		backdrop-filter: blur(8px);
-		background: rgba(0, 0, 0, 0.5);
-		border-radius: var(--radius);
-		text-align: center;
-		box-sizing: border-box;
-		min-width: 300px;
-		max-width: 800px;
-
-		&, * {
-			color: #fff !important;
-		}
-
-		> h1 {
-			margin: 0 0 16px 0;
-		}
-	}
 
 	> .blocks {
 		display: grid;
