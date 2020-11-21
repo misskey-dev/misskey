@@ -59,7 +59,7 @@
 
 	<FormLink to="/settings/deck">{{ $t('deck') }}</FormLink>
 
-	<MkButton @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</MkButton>
+	<FormButton @click="cacheClear()" danger>{{ $t('cacheClear') }}</FormButton>
 </FormBase>
 </template>
 
@@ -78,6 +78,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormLink from '@/components/form/link.vue';
+import FormButton from '@/components/form/button.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
@@ -96,6 +97,7 @@ export default defineComponent({
 		FormBase,
 		FormGroup,
 		FormLink,
+		FormButton,
 	},
 
 	emits: ['info'],
