@@ -568,6 +568,13 @@ _ago:
   secondsAgo: "{n}с тому"
   minutesAgo: "{n}х тому"
   hoursAgo: "{n}г тому"
+  daysAgo: "{n}д тому"
+  weeksAgo: "{n}тиж. тому"
+  monthsAgo: "{n} міс. тому"
+  yearsAgo: "{n} років тому"
+_time:
+  second: "с"
+  minute: "хв"
 _antennaSources:
   homeTimeline: "Дописи тих, на кого ви підписані"
 _widgets:
