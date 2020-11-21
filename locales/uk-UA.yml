@@ -570,11 +570,13 @@ _ago:
   hoursAgo: "{n}г тому"
   daysAgo: "{n}д тому"
   weeksAgo: "{n}тиж. тому"
-  monthsAgo: "{n} міс. тому"
+  monthsAgo: "{n}міс. тому"
   yearsAgo: "{n} років тому"
 _time:
   second: "с"
   minute: "хв"
+  hour: "г"
+  day: "д"
 _antennaSources:
   homeTimeline: "Дописи тих, на кого ви підписані"
 _widgets:
@@ -584,6 +586,8 @@ _widgets:
   federation: "Федіверс"
 _cw:
   show: "Показати більше"
+_poll:
+  deadlineTime: "г"
 _visibility:
   home: "Домівка"
   followers: "Підписники"
