@@ -558,6 +558,14 @@ _sidebar:
   icon: "Аватар"
 _theme:
   keys:
+    accent: "Акцент"
+    bg: "Фон"
+    fg: "Текст"
+    focus: "Фокус"
+    indicator: "Індикатор"
+    panel: "Панель"
+    shadow: "Тінь"
+    header: "Заголовок"
     mention: "Згадка"
     renote: "Поширити"
 _sfx:
