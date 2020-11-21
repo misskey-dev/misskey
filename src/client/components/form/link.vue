@@ -57,6 +57,10 @@ export default defineComponent({
 
 			&:empty {
 				display: none;
+
+				& + .text {
+					padding-left: 4px;
+				}
 			}
 		}
 
