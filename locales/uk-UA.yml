@@ -564,6 +564,8 @@ _sfx:
   note: "Дописи"
   notification: "Сповіщення"
   chat: "Чати"
+_ago:
+  secondsAgo: "{n} сек. тому"
 _antennaSources:
   homeTimeline: "Дописи тих, на кого ви підписані"
 _widgets:
