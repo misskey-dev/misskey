@@ -566,6 +566,8 @@ _theme:
     panel: "Панель"
     shadow: "Тінь"
     header: "Заголовок"
+    navBg: "Фон бокової панелі"
+    navFg: "Текст бокової панелі"
     mention: "Згадка"
     renote: "Поширити"
 _sfx:
