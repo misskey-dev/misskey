@@ -93,7 +93,7 @@ export default defineComponent({
 			display: block;
 			flex: 1;
 			width: 100%;
-			padding: 0 20px;
+			padding: 0 16px;
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;

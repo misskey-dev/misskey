@@ -4,6 +4,7 @@
 		:class="{ disabled, checked }"
 		:aria-checked="checked"
 		:aria-disabled="disabled"
+		@click.prevent="toggle"
 	>
 		<input
 			type="checkbox"
@@ -11,7 +12,7 @@
 			:disabled="disabled"
 			@keydown.enter="toggle"
 		>
-		<span class="button" @click.prevent="toggle">
+		<span class="button">
 			<span></span>
 		</span>
 		<span class="label">
@@ -58,6 +59,7 @@ export default defineComponent({
 		display: flex;
 		padding: 16px;
 		transition: all 0.3s;
+		cursor: pointer;
 
 		> * {
 			user-select: none;

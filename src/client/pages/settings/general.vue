@@ -14,12 +14,12 @@
 		<FormSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</FormSwitch>
 	</FormGroup>
 
-	<FormRadios v-model="serverDisconnectedBehavior">
-		<template #desc>{{ $t('whenServerDisconnected') }}</template>
+	<FormSelect v-model:value="serverDisconnectedBehavior">
+		<template #label>{{ $t('whenServerDisconnected') }}</template>
 		<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
 		<option value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</option>
 		<option value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</option>
-	</FormRadios>
+	</FormSelect>
 
 	<FormGroup>
 		<template #label>{{ $t('appearance') }}</template>
@@ -38,24 +38,25 @@
 		<option value="large"><span style="font-size: 18px;">Aa</span></option>
 		<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
 	</FormRadios>
-	<FormRadios v-model="instanceTicker">
-		<template #desc>{{ $t('instanceTicker') }}</template>
+
+	<FormSelect v-model:value="instanceTicker">
+		<template #label>{{ $t('instanceTicker') }}</template>
 		<option value="none">{{ $t('_instanceTicker.none') }}</option>
 		<option value="remote">{{ $t('_instanceTicker.remote') }}</option>
 		<option value="always">{{ $t('_instanceTicker.always') }}</option>
-	</FormRadios>
+	</FormSelect>
 
 	<FormGroup>
 		<template #label>{{ $t('defaultNavigationBehaviour') }}</template>
 		<FormSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</FormSwitch>
 	</FormGroup>
 
-	<FormRadios v-model="chatOpenBehavior">
-		<template #desc>{{ $t('chatOpenBehavior') }}</template>
+	<FormSelect v-model:value="chatOpenBehavior">
+		<template #label>{{ $t('chatOpenBehavior') }}</template>
 		<option value="page">{{ $t('showInPage') }}</option>
 		<option value="window">{{ $t('openInWindow') }}</option>
 		<option value="popout">{{ $t('popout') }}</option>
-	</FormRadios>
+	</FormSelect>
 
 	<FormLink to="/settings/deck">{{ $t('deck') }}</FormLink>
 

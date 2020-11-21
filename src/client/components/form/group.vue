@@ -30,7 +30,7 @@ export default defineComponent({
 
 			&:not(:last-child) {
 				._form_panel {
-					border-bottom: solid 1px var(--divider);
+					border-bottom: solid 0.5px var(--divider);
 					border-bottom-left-radius: 0;
 					border-bottom-right-radius: 0;
 				}
