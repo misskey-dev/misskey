@@ -565,16 +565,18 @@ _sfx:
   notification: "Сповіщення"
   chat: "Чати"
 _ago:
+  future: "Майбутнє"
+  justNow: "Щойно"
   secondsAgo: "{n}с тому"
   minutesAgo: "{n}х тому"
   hoursAgo: "{n}г тому"
   daysAgo: "{n}д тому"
-  weeksAgo: "{n}тиж. тому"
-  monthsAgo: "{n}міс. тому"
-  yearsAgo: "{n} років тому"
+  weeksAgo: "{n} тиж. тому"
+  monthsAgo: "{n} міс. тому"
+  yearsAgo: "{n} р. тому"
 _time:
   second: "с"
-  minute: "хв"
+  minute: "х"
   hour: "г"
   day: "д"
 _antennaSources:
