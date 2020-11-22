@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app">
-	<div class="side">
+	<div class="side" v-if="!narrow">
 		<div :style="{ backgroundImage: `url(${ $store.state.instance.meta.backgroundImageUrl })` }">
 			<div class="fade"></div>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
@@ -34,8 +34,8 @@
 			<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
 		</header>
 
-		<div v-if="narrow" class="banner" :class="{ asBg: $route.path === '/' }" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-			<h1 v-if="$route.path !== '/'">{{ instanceName }}</h1>
+		<div v-if="narrow" class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
 
 		<div class="contents" ref="contents" :class="{ wallpaper }">
@@ -307,12 +307,6 @@ export default defineComponent({
 			background-size: cover;
 			background-position: center;
 
-			&.asBg {
-				position: absolute;
-				left: 0;
-				height: 320px;
-			}
-
 			&:after {
 				content: "";
 				display: block;
@@ -326,10 +320,15 @@ export default defineComponent({
 
 			> h1 {
 				margin: 0;
+				padding: 32px;
 				text-align: center;
 				color: #fff;
 				text-shadow: 0 0 8px #000;
-				line-height: 200px;
+
+				> .logo {
+					vertical-align: bottom;
+					max-height: 150px;
+				}
 			}
 		}
 

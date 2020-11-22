@@ -2,6 +2,12 @@
 <div class="mk-app">
 	<div class="banner" v-if="$route.path === '/'" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
 		<div>
+			<header>
+				<MkA class="link" to="/">{{ $t('home') }}</MkA>
+				<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
+				<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
+				<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
+			</header>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div class="about" v-if="meta">
 				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
@@ -12,15 +18,23 @@
 			</div>
 		</div>
 	</div>
+	<div class="banner-mini" v-else :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+		<div>
+			<header>
+				<MkA class="link" to="/">{{ $t('home') }}</MkA>
+				<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
+				<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
+				<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
+				<div class="action">
+					<button class="_button primary" @click="signup()">{{ $t('signup') }}</button>
+					<button class="_button" @click="signin()">{{ $t('login') }}</button>
+				</div>
+			</header>
+			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
+		</div>
+	</div>
 
 	<div class="main">
-		<header>
-			<MkA class="link" to="/">{{ $t('home') }}</MkA>
-			<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
-			<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
-			<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
-		</header>
-
 		<div v-if="narrow" class="banner" :class="{ asBg: $route.path === '/' }" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
 			<h1 v-if="$route.path !== '/'">{{ instanceName }}</h1>
 		</div>
@@ -48,6 +62,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { } from '@fortawesome/free-solid-svg-icons';
+import simpleParallax from 'simple-parallax-js';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -118,6 +133,10 @@ export default defineComponent({
 	},
 
 	methods: {
+		setParallax(el) {
+			new simpleParallax(el);
+		},
+
 		changePage(page) {
 			if (page == null) return;
 			if (page.INFO) {
@@ -157,6 +176,7 @@ export default defineComponent({
 	min-height: 100vh;
 
 	> .banner {
+		position: relative;
 		width: 100%;
 		text-align: center;
 		background-position: center;
@@ -208,6 +228,40 @@ export default defineComponent({
 					&:first-child {
 						margin-right: 16px;
 					}
+				}
+			}
+		}
+	}
+
+	> .banner-mini {
+		position: relative;
+		width: 100%;
+		text-align: center;
+		background-position: center;
+		background-size: cover;
+
+		> div {
+			position: relative;
+			z-index: 1;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.3);
+
+			* {
+				color: #fff !important;
+			}
+
+			> header {
+				
+			}
+					
+			> h1 {
+				margin: 0;
+				padding: 32px;
+				text-shadow: 0 0 8px black;
+
+				> .logo {
+					vertical-align: bottom;
+					max-height: 100px;
 				}
 			}
 		}

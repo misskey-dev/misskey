@@ -1,5 +1,5 @@
 <template>
-<DesignA/>
+<DesignB/>
 <XCommon/>
 </template>
 
