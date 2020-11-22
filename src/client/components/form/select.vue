@@ -17,7 +17,7 @@
 			<Fa :icon="faChevronDown"/>
 		</div>
 	</div>
-	<div class="_form_caption"><slot name="text"></slot></div>
+	<div class="_form_caption"><slot name="caption"></slot></div>
 </div>
 </template>
 

@@ -5,6 +5,13 @@
 	<FormSelect v-model:value="lang">
 		<template #label>{{ $t('uiLanguage') }}</template>
 		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+		<template #caption>
+			<i18n-t keypath="i18nInfo" tag="span">
+				<template #link>
+					<MkLink url="https://crowdin.com/project/misskey">Crowdin</MkLink>
+				</template>
+			</i18n-t>
+		</template>
 	</FormSelect>
 
 	<FormGroup>

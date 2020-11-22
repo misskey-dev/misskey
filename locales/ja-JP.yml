@@ -620,6 +620,7 @@ createNew: "新規作成"
 optional: "任意"
 createNewClip: "新しいクリップを作成"
 public: "パブリック"
+i18nInfo: "Misskeyは有志によって様々な言語に翻訳されています。{link}で翻訳に協力できます。"
 
 _mfm:
   cheatSheet: "MFMチートシート"
