@@ -26,6 +26,9 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
+	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	line-height: 1.3em;
+	text-size-adjust: 100%;
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) var(--panel);
@@ -88,8 +91,6 @@ html, body {
 	margin: 0;
 	padding: 0;
 	scroll-behavior: smooth;
-	text-size-adjust: 100%;
-	font-family: Roboto, HelveticaNeue, Arial, sans-serif;
 }
 
 a {
@@ -160,6 +161,8 @@ hr {
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
+	font-family: inherit;
+	line-height: inherit;
 
 	&, * {
 		@extend ._noSelect;
