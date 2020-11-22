@@ -60,6 +60,7 @@ export default defineComponent({
 
 		> .icon {
 			width: 32px;
+			margin-right: 2px;
 			flex-shrink: 0;
 			text-align: center;
 			opacity: 0.8;

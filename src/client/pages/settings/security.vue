@@ -128,6 +128,7 @@ export default defineComponent({
 		align-items: center;
 
 		> .icon {
+			width: 1em;
 			margin-right: 0.75em;
 
 			&.succ {
