@@ -1,7 +1,7 @@
 <template>
 <div class="vrtktovg _form_item" v-size="{ max: [500] }">
 	<div class="_form_label"><slot name="label"></slot></div>
-	<div class="main">
+	<div class="main _form_group">
 		<slot></slot>
 	</div>
 </div>

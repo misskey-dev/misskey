@@ -1,5 +1,24 @@
 <template>
 <FormBase>
+	<FormSelect v-model:value="lightTheme" v-if="!darkMode">
+		<template #label>{{ $t('themeForLightMode') }}</template>
+		<optgroup :label="$t('lightThemes')">
+			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+		<optgroup :label="$t('darkThemes')">
+			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+	</FormSelect>
+	<FormSelect v-model:value="darkTheme" v-else>
+		<template #label>{{ $t('themeForDarkMode') }}</template>
+		<optgroup :label="$t('darkThemes')">
+			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+		<optgroup :label="$t('lightThemes')">
+			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+	</FormSelect>
+
 	<FormGroup>
 		<div class="rfqxtzch _form_item _form_panel">
 			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
@@ -26,72 +45,23 @@
 		<FormSwitch v-model:value="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</FormSwitch>
 	</FormGroup>
 
-	<FormSelect v-model:value="lightTheme">
-		<template #label>{{ $t('themeForLightMode') }}</template>
-		<optgroup :label="$t('lightThemes')">
-			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="$t('darkThemes')">
-			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-	</FormSelect>
-	<FormSelect v-model:value="darkTheme">
-		<template #label>{{ $t('themeForDarkMode') }}</template>
-		<optgroup :label="$t('darkThemes')">
-			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="$t('lightThemes')">
-			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-	</FormSelect>
+	<FormButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</FormButton>
+	<FormButton primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</FormButton>
 
 	<FormGroup>
-		<FormLink to="https://assets.msky.cafe/theme/list">{{ $t('_theme.explore') }}</FormLink>
+		<FormLink to="https://assets.msky.cafe/theme/list" external>{{ $t('_theme.explore') }}</FormLink>
 		<FormLink to="/theme-editor">{{ $t('_theme.make') }}</FormLink>
 	</FormGroup>
 
-	<div class="_card _vMargin">
-		<div class="_content">
-			<MkButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</MkButton>
-			<MkButton primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</MkButton>
-		</div>
-	</div>
-	<div class="_card _vMargin">
-		<div class="_title"><Fa :icon="faDownload"/> {{ $t('_theme.install') }}</div>
-		<div class="_content">
-			<MkTextarea v-model:value="installThemeCode">
-				<span>{{ $t('_theme.code') }}</span>
-			</MkTextarea>
-			<MkButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><Fa :icon="faCheck"/> {{ $t('install') }}</MkButton>
-			<MkButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
-		</div>
-	</div>
-	<div class="_card _vMargin">
-		<div class="_title"><Fa :icon="faFolderOpen"/> {{ $t('_theme.manage') }}</div>
-		<div class="_content">
-			<MkSelect v-model:value="selectedThemeId">
-				<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-			</MkSelect>
-			<template v-if="selectedTheme">
-				<MkTextarea readonly tall :value="selectedThemeCode">
-					<span>{{ $t('_theme.code') }}</span>
-					<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $t('copy') }}</button></template>
-				</MkTextarea>
-				<MkButton @click="uninstall()" v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</MkButton>
-			</template>
-		</div>
-	</div>
+	<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $t('_theme.install') }}</FormLink>
+
+	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $t('_theme.manage') }}</FormLink>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
-import * as JSON5 from 'json5';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
@@ -99,18 +69,13 @@ import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/form/button.vue';
-import { Theme, builtinThemes, applyTheme, validateTheme } from '@/scripts/theme';
+import { Theme, builtinThemes, applyTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkButton,
-		MkSelect,
-		MkSwitch,
-		MkTextarea,
 		FormSwitch,
 		FormSelect,
 		FormRadios,
@@ -129,8 +94,6 @@ export default defineComponent({
 				icon: faPalette
 			},
 			builtinThemes,
-			installThemeCode: null,
-			selectedThemeId: null,
 			wallpaper: localStorage.getItem('wallpaper'),
 			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
 		}
@@ -172,16 +135,6 @@ export default defineComponent({
 			get() { return this.$store.state.device.syncDeviceDarkMode; },
 			set(value) { this.$store.commit('device/set', { key: 'syncDeviceDarkMode', value }); }
 		},
-
-		selectedTheme() {
-			if (this.selectedThemeId == null) return null;
-			return this.themes.find(x => x.id === this.selectedThemeId);
-		},
-
-		selectedThemeCode() {
-			if (this.selectedTheme == null) return null;
-			return JSON5.stringify(this.selectedTheme, null, '\t');
-		},
 	},
 
 	watch: {
@@ -222,68 +175,6 @@ export default defineComponent({
 			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				this.wallpaper = file.url;
 			});
-		},
-
-		copyThemeCode() {
-			copyToClipboard(this.selectedThemeCode);
-			os.success();
-		},
-
-		parseThemeCode(code) {
-			let theme;
-
-			try {
-				theme = JSON5.parse(code);
-			} catch (e) {
-				os.dialog({
-					type: 'error',
-					text: this.$t('_theme.invalid')
-				});
-				return false;
-			}
-			if (!validateTheme(theme)) {
-				os.dialog({
-					type: 'error',
-					text: this.$t('_theme.invalid')
-				});
-				return false;
-			}
-			if (this.$store.state.device.themes.some(t => t.id === theme.id)) {
-				os.dialog({
-					type: 'info',
-					text: this.$t('_theme.alreadyInstalled')
-				});
-				return false;
-			}
-
-			return theme;
-		},
-
-		preview(code) {
-			const theme = this.parseThemeCode(code);
-			if (theme) applyTheme(theme, false);
-		},
-
-		install(code) {
-			const theme = this.parseThemeCode(code);
-			if (!theme) return;
-			const themes = this.$store.state.device.themes.concat(theme);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
-			os.dialog({
-				type: 'success',
-				text: this.$t('_theme.installed', { name: theme.name })
-			});
-		},
-
-		uninstall() {
-			const theme = this.selectedTheme;
-			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
-			os.success();
 		},
 	}
 });

@@ -1,6 +1,6 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
-	<FormBase class="nav" v-if="!narrow || page == null">
+	<FormBase class="nav" v-if="!narrow || page == null" :force-wide="!narrow">
 		<FormGroup>
 			<template #label>{{ $t('basicSettings') }}</template>
 			<FormLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><Fa :icon="faUser"/></template>{{ $t('profile') }}</FormLink>
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, onMounted, ref } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, onMounted, ref, watch } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh, faBell } from '@fortawesome/free-regular-svg-icons';
 import { store } from '@/store';
@@ -46,6 +46,7 @@ import FormLink from '@/components/form/link.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
+import { scroll } from '../../scripts/scroll';
 
 export default defineComponent({
 	components: {
@@ -87,6 +88,8 @@ export default defineComponent({
 				case 'other': return defineAsyncComponent(() => import('./other.vue'));
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
+				case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
+				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
 				case 'sidebar': return defineAsyncComponent(() => import('./sidebar.vue'));
 				case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 				case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
@@ -95,6 +98,10 @@ export default defineComponent({
 				case 'regedit': return defineAsyncComponent(() => import('./regedit.vue'));
 				default: return null;
 			}
+		});
+
+		watch(component, () => {
+			scroll(el.value, 0);
 		});
 
 		onMounted(() => {
@@ -122,10 +129,11 @@ export default defineComponent({
 .vvcocwet {
 	&.wide {
 		display: flex;
+		max-width: 1100px;
+		margin: 0 auto;
 
 		> .nav {
-			width: 30%;
-			max-width: 380px;
+			width: 32%;
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--divider);
 		}

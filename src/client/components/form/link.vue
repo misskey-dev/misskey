@@ -1,6 +1,11 @@
 <template>
 <div class="qmfkfnzi _form_item">
-	<MkA class="main _button _form_panel" :class="{ active }" :to="to">
+	<a class="main _button _form_panel" :href="to" target="_blank" v-if="external">
+		<span class="icon"><slot name="icon"></slot></span>
+		<span class="text"><slot></slot></span>
+		<Fa :icon="faExternalLinkAlt" class="right"/>
+	</a>
+	<MkA class="main _button _form_panel" :class="{ active }" :to="to" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<Fa :icon="faChevronRight" class="right"/>
@@ -10,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import './form.scss';
 
 export default defineComponent({
@@ -23,10 +28,14 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		external: {
+			type: Boolean,
+			required: false
+		},
 	},
 	data() {
 		return {
-			faChevronRight
+			faChevronRight, faExternalLinkAlt
 		};
 	}
 });

@@ -746,6 +746,8 @@ _theme:
   manage: "テーマの管理"
   code: "テーマコード"
   installed: "{name}をインストールしました"
+  installedThemes: "インストールされたテーマ"
+  builtinThemes: "標準のテーマ"
   alreadyInstalled: "そのテーマは既にインストールされています"
   invalid: "テーマの形式が間違っています"
   make: "テーマを作る"
