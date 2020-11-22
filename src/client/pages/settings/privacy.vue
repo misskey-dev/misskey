@@ -1,36 +1,36 @@
 <template>
-<div class="_section">
-	<div class="_card">
-		<div class="_content">
-			<MkSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</MkSwitch>
-			<MkSwitch v-model:value="autoAcceptFollowed" v-if="isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<MkSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</MkSwitch>
-			<MkSelect v-model:value="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
-				<template #label>{{ $t('defaultNoteVisibility') }}</template>
-				<option value="public">{{ $t('_visibility.public') }}</option>
-				<option value="home">{{ $t('_visibility.home') }}</option>
-				<option value="followers">{{ $t('_visibility.followers') }}</option>
-				<option value="specified">{{ $t('_visibility.specified') }}</option>
-			</MkSelect>
-			<MkSwitch v-model:value="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</MkSwitch>
-		</div>
-	</div>
-</div>
+<FormBase>
+	<FormGroup>
+		<FormSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</FormSwitch>
+		<FormSwitch v-model:value="autoAcceptFollowed" :disabled="!isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</FormSwitch>
+	</FormGroup>
+	<FormSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</FormSwitch>
+	<FormSelect v-model:value="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
+		<template #label>{{ $t('defaultNoteVisibility') }}</template>
+		<option value="public">{{ $t('_visibility.public') }}</option>
+		<option value="home">{{ $t('_visibility.home') }}</option>
+		<option value="followers">{{ $t('_visibility.followers') }}</option>
+		<option value="specified">{{ $t('_visibility.specified') }}</option>
+	</FormSelect>
+	<FormSwitch v-model:value="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</FormSwitch>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faLockOpen } from '@fortawesome/free-solid-svg-icons';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkSelect,
-		MkSwitch,
+		FormBase,
+		FormSelect,
+		FormGroup,
+		FormSwitch,
 	},
 
 	emits: ['info'],
