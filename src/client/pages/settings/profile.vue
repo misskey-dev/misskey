@@ -1,6 +1,6 @@
 <template>
 <FormBase class="llvierxe">
-	<div class="header _form_item" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
+	<div class="header _formItem" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
 		<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
 	</div>
 
@@ -23,7 +23,7 @@
 		<template #prefix><Fa :icon="faBirthdayCake"/></template>
 	</FormInput>
 
-	<div class="_form_item">
+	<div class="_formItem">
 		<FormTuple>
 			<FormInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</FormInput>
 			<FormInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</FormInput>

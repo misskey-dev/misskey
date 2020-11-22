@@ -20,7 +20,7 @@
 	</FormSelect>
 
 	<FormGroup>
-		<div class="rfqxtzch _form_item _form_panel">
+		<div class="rfqxtzch _formItem _formPanel">
 			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
 				<div class="toggleWrapper">
 					<input type="checkbox" class="dn" id="dn" v-model="darkMode" :disabled="syncDeviceDarkMode"/>

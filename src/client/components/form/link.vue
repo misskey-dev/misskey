@@ -1,11 +1,11 @@
 <template>
-<div class="qmfkfnzi _form_item">
-	<a class="main _button _form_panel" :href="to" target="_blank" v-if="external">
+<div class="qmfkfnzi _formItem">
+	<a class="main _button _formPanel _formClickable" :href="to" target="_blank" v-if="external">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<Fa :icon="faExternalLinkAlt" class="right"/>
 	</a>
-	<MkA class="main _button _form_panel" :class="{ active }" :to="to" v-else>
+	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<Fa :icon="faChevronRight" class="right"/>

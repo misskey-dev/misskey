@@ -1,8 +1,8 @@
 <template>
 <FormBase>
-	<div class="_form_item">
-		<div class="_form_label">{{ $t('reactionSettingDescription') }}</div>
-		<div class="_form_panel">
+	<div class="_formItem">
+		<div class="_formLabel">{{ $t('reactionSettingDescription') }}</div>
+		<div class="_formPanel">
 			<XDraggable class="zoaiodol" :list="reactions" animation="150" delay="100" delay-on-touch-only="true">
 				<button class="_button item" v-for="reaction in reactions" :key="reaction" @click="remove(reaction, $event)">
 					<MkEmoji :emoji="reaction" :normal="true"/>
@@ -12,7 +12,7 @@
 				</template>
 			</XDraggable>
 		</div>
-		<div class="_form_caption">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
+		<div class="_formCaption">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
 	</div>
 
 	<FormRadios v-model="reactionPickerWidth">

@@ -1,9 +1,9 @@
 <template>
-<div class="yzpgjkxe _form_item">
-	<button class="main _button _form_panel" :class="{ primary, danger }">
+<div class="yzpgjkxe _formItem">
+	<button class="main _button _formPanel _formClickable" :class="{ primary, danger }">
 		<slot></slot>
 	</button>
-	<div class="_form_caption"><slot name="desc"></slot></div>
+	<div class="_formCaption"><slot name="desc"></slot></div>
 </div>
 </template>
 

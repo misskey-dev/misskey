@@ -28,7 +28,7 @@ export default defineComponent({
 		padding: 32px 0;
 
 		> ::v-deep(*) {
-			._form_panel {
+			._formPanel {
 				border: solid 0.5px var(--divider);
 				border-radius: 0;
 				border-left: none;
@@ -38,13 +38,13 @@ export default defineComponent({
 			._form_group {
 				> * {
 					&:not(:first-child) {
-						&._form_panel, ._form_panel {
+						&._formPanel, ._formPanel {
 							border-top: none;
 						}
 					}
 
 					&:not(:last-child) {
-						&._form_panel, ._form_panel {
+						&._formPanel, ._formPanel {
 							border-bottom: solid 0.5px var(--divider);
 						}
 					}

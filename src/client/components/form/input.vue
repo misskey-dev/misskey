@@ -1,8 +1,8 @@
 <template>
-<div class="ztzhwixg _form_item" :class="{ inline, disabled }">
-	<div class="_form_label"><slot></slot></div>
+<div class="ztzhwixg _formItem" :class="{ inline, disabled }">
+	<div class="_formLabel"><slot></slot></div>
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
-	<div class="input _form_panel">
+	<div class="input _formPanel">
 		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
 		<input v-if="debounce" ref="inputEl"
 			v-debounce="500"
@@ -45,7 +45,7 @@
 		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
 	</div>
 	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
-	<div class="_form_caption"><slot name="desc"></slot></div>
+	<div class="_formCaption"><slot name="desc"></slot></div>
 </div>
 </template>
 

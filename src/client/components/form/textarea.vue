@@ -1,8 +1,8 @@
 <template>
-<div class="rivhosbp _form_item" :class="{ tall, pre }">
-	<div class="_form_label"><slot></slot></div>
-	<div class="input _form_panel">
-		<textarea ref="input" :class="{ code }"
+<div class="rivhosbp _formItem" :class="{ tall, pre }">
+	<div class="_formLabel"><slot></slot></div>
+	<div class="input _formPanel">
+		<textarea ref="input" :class="{ code, _monospace: code }"
 			:value="value"
 			:required="required"
 			:readonly="readonly"
@@ -15,7 +15,7 @@
 		></textarea>
 	</div>
 	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
-	<div class="_form_caption"><slot name="desc"></slot></div>
+	<div class="_formCaption"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -108,7 +108,6 @@ export default defineComponent({
 
 			&.code {
 				tab-size: 2;
-				font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 			}
 		}
 	}

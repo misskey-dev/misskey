@@ -27,13 +27,13 @@ export default defineComponent({
 		const options = this.$slots.default();
 
 		return h('div', {
-			class: 'cnklmpwm _form_item'
+			class: 'cnklmpwm _formItem'
 		}, [
 			h('div', {
-				class: '_form_label',
+				class: '_formLabel',
 			}, label),
 			...options.map(option => h('button', {
-				class: '_button _form_panel',
+				class: '_button _formPanel _formClickable',
 				key: option.props.value,
 				onClick: () => this.value = option.props.value,
 			}, [h('span', {

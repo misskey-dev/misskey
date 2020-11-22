@@ -1,6 +1,6 @@
 <template>
-<div class="ijnpvmgr _form_item">
-	<div class="main _form_panel"
+<div class="ijnpvmgr _formItem">
+	<div class="main _formPanel _formClickable"
 		:class="{ disabled, checked }"
 		:aria-checked="checked"
 		:aria-disabled="disabled"
@@ -19,7 +19,7 @@
 			<span><slot></slot></span>
 		</span>
 	</div>
-	<div class="_form_caption"><slot name="desc"></slot></div>
+	<div class="_formCaption"><slot name="desc"></slot></div>
 </div>
 </template>
 
@@ -58,7 +58,6 @@ export default defineComponent({
 		position: relative;
 		display: flex;
 		padding: 16px;
-		transition: all 0.3s;
 		cursor: pointer;
 
 		> * {
@@ -100,7 +99,7 @@ export default defineComponent({
 			background: var(--X6);
 			outline: none;
 			border-radius: 14px;
-			transition: inherit;
+			transition: all 0.3s;
 			cursor: pointer;
 
 			> * {
@@ -117,7 +116,7 @@ export default defineComponent({
 		}
 
 		> .label {
-			margin-left: 8px;
+			margin-left: 12px;
 			display: block;
 			transition: inherit;
 			color: var(--fg);

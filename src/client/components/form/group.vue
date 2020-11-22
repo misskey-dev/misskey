@@ -1,9 +1,10 @@
 <template>
-<div class="vrtktovg _form_item" v-size="{ max: [500] }">
-	<div class="_form_label"><slot name="label"></slot></div>
+<div class="vrtktovg _formItem" v-size="{ max: [500] }">
+	<div class="_formLabel"><slot name="label"></slot></div>
 	<div class="main _form_group">
 		<slot></slot>
 	</div>
+	<div class="_formCaption"><slot name="caption"></slot></div>
 </div>
 </template>
 
@@ -21,7 +22,7 @@ export default defineComponent({
 			margin: 0;
 
 			&:not(:first-child) {
-				&._form_panel, ._form_panel {
+				&._formPanel, ._formPanel {
 					border-top: none;
 					border-top-left-radius: 0;
 					border-top-right-radius: 0;
@@ -29,7 +30,7 @@ export default defineComponent({
 			}
 
 			&:not(:last-child) {
-				&._form_panel, ._form_panel {
+				&._formPanel, ._formPanel {
 					border-bottom: solid 0.5px var(--divider);
 					border-bottom-left-radius: 0;
 					border-bottom-right-radius: 0;

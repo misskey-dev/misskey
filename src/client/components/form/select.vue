@@ -1,8 +1,8 @@
 <template>
-<div class="yrtfrpux _form_item" :class="{ disabled, inline }">
-	<div class="_form_label"><slot name="label"></slot></div>
+<div class="yrtfrpux _formItem" :class="{ disabled, inline }">
+	<div class="_formLabel"><slot name="label"></slot></div>
 	<div class="icon" ref="icon"><slot name="icon"></slot></div>
-	<div class="input _form_panel" @click="focus">
+	<div class="input _formPanel _formClickable" @click="focus">
 		<div class="prefix" ref="prefix"><slot name="prefix"></slot></div>
 		<select ref="input"
 			v-model="v"
@@ -17,7 +17,7 @@
 			<Fa :icon="faChevronDown"/>
 		</div>
 	</div>
-	<div class="_form_caption"><slot name="caption"></slot></div>
+	<div class="_formCaption"><slot name="caption"></slot></div>
 </div>
 </template>
 

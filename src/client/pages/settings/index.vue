@@ -84,6 +84,7 @@ export default defineComponent({
 				case 'word-mute': return defineAsyncComponent(() => import('./word-mute.vue'));
 				case 'integration': return defineAsyncComponent(() => import('./integration.vue'));
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
+				case '2fa': return defineAsyncComponent(() => import('./2fa.vue'));
 				case 'api': return defineAsyncComponent(() => import('./api.vue'));
 				case 'other': return defineAsyncComponent(() => import('./other.vue'));
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));

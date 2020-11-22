@@ -19,6 +19,7 @@
 		divider: 'rgba(255, 255, 255, 0.1)',
 		indicator: '@accent',
 		panel: '#000',
+		panelHighlight: ':lighten<3<@panel',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',

@@ -1,9 +1,15 @@
-._form_panel {
+._formPanel {
 	background: var(--panel);
 	border-radius: var(--radius);
+
+	&._formClickable {
+		&:hover {
+			background: var(--panelHighlight);
+		}
+	}
 }
 
-._form_label {
+._formLabel {
 	font-size: 80%;
 	padding: 0 16px 8px 16px;
 
@@ -12,7 +18,7 @@
 	}
 }
 
-._form_caption {
+._formCaption {
 	font-size: 80%;
 	padding: 8px 16px 0 16px;
 
@@ -21,8 +27,8 @@
 	}
 }
 
-._form_item {
-	& + ._form_item {
+._formItem {
+	& + ._formItem {
 		margin-top: 24px;
 	}
 }
