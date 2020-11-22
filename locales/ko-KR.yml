@@ -629,9 +629,13 @@ _reversi:
   reversi: "리버시"
   gameSettings: "대국 설정"
   chooseBoard: "보드 선택"
+  blackOrWhite: "선공/후공"
+  blackIs: "{name}님이 흑(선공)"
   rules: "규칙"
   botSettings: "Bot 설정"
   thisGameIsStartedSoon: "잠시 후에 대국이 시작됩니다"
+  waitingForOther: "상대의 준비가 완료될 때까지 기다리고 있습니다"
+  waitingForMe: "당신의 준비 완료를 기다리고 있습니다"
   myTurn: "당신의 차례입니다"
   turnOf: "{name}님의 차례입니다"
   pastTurnOf: "{name}님의 차례"
@@ -665,6 +669,7 @@ _sidebar:
   hide: "숨기기"
 _wordMute:
   muteWords: "뮤트할 단어"
+  muteWordsDescription: "공백으로 구분하는 경우 AND, 줄바꿈으로 구분하는 경우 OR로 지정됩니다。"
   mutedNotes: "뮤트된 노트"
 _theme:
   explore: "테마 찾아보기"
