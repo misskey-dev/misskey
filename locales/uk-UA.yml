@@ -581,6 +581,7 @@ _sfx:
   notification: "Сповіщення"
   chat: "Чати"
 _ago:
+  unknown: "Невідомо"
   future: "Майбутнє"
   justNow: "Щойно"
   secondsAgo: "{n}с тому"
@@ -595,6 +596,9 @@ _time:
   minute: "х"
   hour: "г"
   day: "д"
+_tutorial:
+  title: "Як користуватись Misskey"
+  step1_1: "Ласкаво просимо!"
 _antennaSources:
   homeTimeline: "Дописи тих, на кого ви підписані"
 _widgets:
