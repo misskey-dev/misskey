@@ -1,7 +1,7 @@
 <template>
-<div class="">
-	<div class="rfqxtzch _card _vMargin">
-		<div class="_content">
+<FormBase>
+	<FormGroup>
+		<div class="rfqxtzch _form_item _form_panel">
 			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
 				<div class="toggleWrapper">
 					<input type="checkbox" class="dn" id="dn" v-model="darkMode" :disabled="syncDeviceDarkMode"/>
@@ -23,32 +23,34 @@
 				</div>
 			</div>
 		</div>
-		<div class="_content">
-			<MkSwitch v-model:value="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</MkSwitch>
-		</div>
-	</div>
+		<FormSwitch v-model:value="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</FormSwitch>
+	</FormGroup>
+
+	<FormSelect v-model:value="lightTheme">
+		<template #label>{{ $t('themeForLightMode') }}</template>
+		<optgroup :label="$t('lightThemes')">
+			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+		<optgroup :label="$t('darkThemes')">
+			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+	</FormSelect>
+	<FormSelect v-model:value="darkTheme">
+		<template #label>{{ $t('themeForDarkMode') }}</template>
+		<optgroup :label="$t('darkThemes')">
+			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+		<optgroup :label="$t('lightThemes')">
+			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+	</FormSelect>
+
+	<FormGroup>
+		<FormLink to="https://assets.msky.cafe/theme/list">{{ $t('_theme.explore') }}</FormLink>
+		<FormLink to="/theme-editor">{{ $t('_theme.make') }}</FormLink>
+	</FormGroup>
+
 	<div class="_card _vMargin">
-		<div class="_content">
-			<MkSelect v-model:value="lightTheme">
-				<template #label>{{ $t('themeForLightMode') }}</template>
-				<optgroup :label="$t('lightThemes')">
-					<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-				</optgroup>
-				<optgroup :label="$t('darkThemes')">
-					<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-				</optgroup>
-			</MkSelect>
-			<MkSelect v-model:value="darkTheme">
-				<template #label>{{ $t('themeForDarkMode') }}</template>
-				<optgroup :label="$t('darkThemes')">
-					<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-				</optgroup>
-				<optgroup :label="$t('lightThemes')">
-					<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-				</optgroup>
-			</MkSelect>
-			<a href="https://assets.msky.cafe/theme/list" rel="noopener" target="_blank" class="_link">{{ $t('_theme.explore') }}</a>・<MkA to="/theme-editor" class="_link">{{ $t('_theme.make') }}</MkA>
-		</div>
 		<div class="_content">
 			<MkButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</MkButton>
 			<MkButton primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</MkButton>
@@ -79,7 +81,7 @@
 			</template>
 		</div>
 	</div>
-</div>
+</FormBase>
 </template>
 
 <script lang="ts">
@@ -90,6 +92,13 @@ import MkButton from '@/components/ui/button.vue';
 import MkSelect from '@/components/ui/select.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormRadios from '@/components/form/radios.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormLink from '@/components/form/link.vue';
+import FormButton from '@/components/form/button.vue';
 import { Theme, builtinThemes, applyTheme, validateTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
@@ -102,6 +111,13 @@ export default defineComponent({
 		MkSelect,
 		MkSwitch,
 		MkTextarea,
+		FormSwitch,
+		FormSelect,
+		FormRadios,
+		FormBase,
+		FormGroup,
+		FormLink,
+		FormButton,
 	},
 
 	emits: ['info'],
@@ -275,224 +291,224 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rfqxtzch {
-	> ._content {
-		> .darkMode {
-			position: relative;
-			padding: 32px 0;
+	padding: 16px;
 
-			&.disabled {
-				opacity: 0.7;
+	> .darkMode {
+		position: relative;
+		padding: 32px 0;
 
-				&, * {
-					cursor: not-allowed !important;
-				}
+		&.disabled {
+			opacity: 0.7;
+
+			&, * {
+				cursor: not-allowed !important;
 			}
+		}
 
-			.toggleWrapper {
+		.toggleWrapper {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			overflow: hidden;
+			padding: 0 100px;
+			transform: translate3d(-50%, -50%, 0);
+
+			input {
 				position: absolute;
-				top: 50%;
-				left: 50%;
-				overflow: hidden;
-				padding: 0 100px;
-				transform: translate3d(-50%, -50%, 0);
+				left: -99em;
+			}
+		}
 
-				input {
-					position: absolute;
-					left: -99em;
-				}
+		.toggle {
+			cursor: pointer;
+			display: inline-block;
+			position: relative;
+			width: 90px;
+			height: 50px;
+			background-color: #83D8FF;
+			border-radius: 90px - 6;
+			transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+
+			> .before, > .after {
+				position: absolute;
+				top: 15px;
+				font-size: 18px;
+				transition: color 1s ease;
 			}
 
-			.toggle {
-				cursor: pointer;
-				display: inline-block;
-				position: relative;
-				width: 90px;
-				height: 50px;
-				background-color: #83D8FF;
-				border-radius: 90px - 6;
-				transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+			> .before {
+				left: -70px;
+				color: var(--accent);
+			}
 
-				> .before, > .after {
-					position: absolute;
-					top: 15px;
-					font-size: 18px;
-					transition: color 1s ease;
-				}
+			> .after {
+				right: -68px;
+				color: var(--fg);
+			}
+		}
+
+		.toggle__handler {
+			display: inline-block;
+			position: relative;
+			z-index: 1;
+			top: 3px;
+			left: 3px;
+			width: 50px - 6;
+			height: 50px - 6;
+			background-color: #FFCF96;
+			border-radius: 50px;
+			box-shadow: 0 2px 6px rgba(0,0,0,.3);
+			transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+			transform:  rotate(-45deg);
+
+			.crater {
+				position: absolute;
+				background-color: #E8CDA5;
+				opacity: 0;
+				transition: opacity 200ms ease-in-out !important;
+				border-radius: 100%;
+			}
+
+			.crater--1 {
+				top: 18px;
+				left: 10px;
+				width: 4px;
+				height: 4px;
+			}
+
+			.crater--2 {
+				top: 28px;
+				left: 22px;
+				width: 6px;
+				height: 6px;
+			}
+
+			.crater--3 {
+				top: 10px;
+				left: 25px;
+				width: 8px;
+				height: 8px;
+			}
+		}
+
+		.star {
+			position: absolute;
+			background-color: #ffffff;
+			transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+			border-radius: 50%;
+		}
+
+		.star--1 {
+			top: 10px;
+			left: 35px;
+			z-index: 0;
+			width: 30px;
+			height: 3px;
+		}
+
+		.star--2 {
+			top: 18px;
+			left: 28px;
+			z-index: 1;
+			width: 30px;
+			height: 3px;
+		}
+
+		.star--3 {
+			top: 27px;
+			left: 40px;
+			z-index: 0;
+			width: 30px;
+			height: 3px;
+		}
+
+		.star--4,
+		.star--5,
+		.star--6 {
+			opacity: 0;
+			transition: all 300ms 0 cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+		}
+
+		.star--4 {
+			top: 16px;
+			left: 11px;
+			z-index: 0;
+			width: 2px;
+			height: 2px;
+			transform: translate3d(3px,0,0);
+		}
+
+		.star--5 {
+			top: 32px;
+			left: 17px;
+			z-index: 0;
+			width: 3px;
+			height: 3px;
+			transform: translate3d(3px,0,0);
+		}
+
+		.star--6 {
+			top: 36px;
+			left: 28px;
+			z-index: 0;
+			width: 2px;
+			height: 2px;
+			transform: translate3d(3px,0,0);
+		}
+
+		input:checked {
+			+ .toggle {
+				background-color: #749DD6;
 
 				> .before {
-					left: -70px;
-					color: var(--accent);
+					color: var(--fg);
 				}
 
 				> .after {
-					right: -68px;
-					color: var(--fg);
-				}
-			}
-
-			.toggle__handler {
-				display: inline-block;
-				position: relative;
-				z-index: 1;
-				top: 3px;
-				left: 3px;
-				width: 50px - 6;
-				height: 50px - 6;
-				background-color: #FFCF96;
-				border-radius: 50px;
-				box-shadow: 0 2px 6px rgba(0,0,0,.3);
-				transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-				transform:  rotate(-45deg);
-
-				.crater {
-					position: absolute;
-					background-color: #E8CDA5;
-					opacity: 0;
-					transition: opacity 200ms ease-in-out !important;
-					border-radius: 100%;
+					color: var(--accent);
 				}
 
-				.crater--1 {
-					top: 18px;
-					left: 10px;
+				.toggle__handler {
+					background-color: #FFE5B5;
+					transform: translate3d(40px, 0, 0) rotate(0);
+
+					.crater { opacity: 1; }
+				}
+
+				.star--1 {
+					width: 2px;
+					height: 2px;
+				}
+
+				.star--2 {
 					width: 4px;
 					height: 4px;
+					transform: translate3d(-5px, 0, 0);
 				}
 
-				.crater--2 {
-					top: 28px;
-					left: 22px;
-					width: 6px;
-					height: 6px;
+				.star--3 {
+					width: 2px;
+					height: 2px;
+					transform: translate3d(-7px, 0, 0);
 				}
 
-				.crater--3 {
-					top: 10px;
-					left: 25px;
-					width: 8px;
-					height: 8px;
+				.star--4,
+				.star--5,
+				.star--6 {
+					opacity: 1;
+					transform: translate3d(0,0,0);
 				}
-			}
 
-			.star {
-				position: absolute;
-				background-color: #ffffff;
-				transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-				border-radius: 50%;
-			}
+				.star--4 {
+					transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
 
-			.star--1 {
-				top: 10px;
-				left: 35px;
-				z-index: 0;
-				width: 30px;
-				height: 3px;
-			}
+				.star--5 {
+					transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+				}
 
-			.star--2 {
-				top: 18px;
-				left: 28px;
-				z-index: 1;
-				width: 30px;
-				height: 3px;
-			}
-
-			.star--3 {
-				top: 27px;
-				left: 40px;
-				z-index: 0;
-				width: 30px;
-				height: 3px;
-			}
-
-			.star--4,
-			.star--5,
-			.star--6 {
-				opacity: 0;
-				transition: all 300ms 0 cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-			}
-
-			.star--4 {
-				top: 16px;
-				left: 11px;
-				z-index: 0;
-				width: 2px;
-				height: 2px;
-				transform: translate3d(3px,0,0);
-			}
-
-			.star--5 {
-				top: 32px;
-				left: 17px;
-				z-index: 0;
-				width: 3px;
-				height: 3px;
-				transform: translate3d(3px,0,0);
-			}
-
-			.star--6 {
-				top: 36px;
-				left: 28px;
-				z-index: 0;
-				width: 2px;
-				height: 2px;
-				transform: translate3d(3px,0,0);
-			}
-
-			input:checked {
-				+ .toggle {
-					background-color: #749DD6;
-
-					> .before {
-						color: var(--fg);
-					}
-
-					> .after {
-						color: var(--accent);
-					}
-
-					.toggle__handler {
-						background-color: #FFE5B5;
-						transform: translate3d(40px, 0, 0) rotate(0);
-
-						.crater { opacity: 1; }
-					}
-
-					.star--1 {
-						width: 2px;
-						height: 2px;
-					}
-
-					.star--2 {
-						width: 4px;
-						height: 4px;
-						transform: translate3d(-5px, 0, 0);
-					}
-
-					.star--3 {
-						width: 2px;
-						height: 2px;
-						transform: translate3d(-7px, 0, 0);
-					}
-
-					.star--4,
-					.star--5,
-					.star--6 {
-						opacity: 1;
-						transform: translate3d(0,0,0);
-					}
-
-					.star--4 {
-						transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-					}
-
-					.star--5 {
-						transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-					}
-
-					.star--6 {
-						transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
-					}
+				.star--6 {
+					transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
 				}
 			}
 		}

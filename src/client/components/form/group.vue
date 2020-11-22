@@ -21,7 +21,7 @@ export default defineComponent({
 			margin: 0;
 
 			&:not(:first-child) {
-				._form_panel {
+				&._form_panel, ._form_panel {
 					border-top: none;
 					border-top-left-radius: 0;
 					border-top-right-radius: 0;
@@ -29,7 +29,7 @@ export default defineComponent({
 			}
 
 			&:not(:last-child) {
-				._form_panel {
+				&._form_panel, ._form_panel {
 					border-bottom: solid 0.5px var(--divider);
 					border-bottom-left-radius: 0;
 					border-bottom-right-radius: 0;
