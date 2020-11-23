@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<FormButton @click="generateToken">{{ $t('generateAccessToken') }}</FormButton>
+	<FormButton @click="generateToken" primary>{{ $t('generateAccessToken') }}</FormButton>
 	<FormLink to="/settings/apps">{{ $t('manageAccessTokens') }}</FormLink>
 	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 </FormBase>

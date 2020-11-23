@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<X2fa/>
-	<FormLink to="/settings/2fa">{{ $t('twoStepAuthentication') }}</FormLink>
+	<FormLink to="/settings/2fa"><template #icon><Fa :icon="faMobileAlt"/></template>{{ $t('twoStepAuthentication') }}</FormLink>
 	<FormButton primary @click="change()">{{ $t('changePassword') }}</FormButton>
 	<FormPagination :pagination="pagination">
 		<template #label>{{ $t('signinHistory') }}</template>
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCheck, faTimesCircle, faLock, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimesCircle, faLock, faSyncAlt, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
 import FormBase from '@/components/form/base.vue';
 import FormLink from '@/components/form/link.vue';
 import FormGroup from '@/components/form/group.vue';
@@ -54,7 +54,7 @@ export default defineComponent({
 				endpoint: 'i/signin-history',
 				limit: 5,
 			},
-			faLock, faSyncAlt, faCheck, faTimesCircle
+			faLock, faSyncAlt, faCheck, faTimesCircle, faMobileAlt,
 		}
 	},
 
