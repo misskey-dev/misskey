@@ -4,6 +4,8 @@
 		{{ $t('showFeaturedNotesInTimeline') }}
 	</FormSwitch>
 
+	<FormLink to="/settings/account-info">{{ $t('accountInfo') }}</FormLink>
+
 	<FormGroup>
 		<FormSwitch v-model:value="debug" @update:value="changeDebug">
 			DEBUG MODE

@@ -97,6 +97,7 @@ export default defineComponent({
 				case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
 				case 'plugins': return defineAsyncComponent(() => import('./plugins.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
+				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
 				case 'regedit': return defineAsyncComponent(() => import('./regedit.vue'));
 				default: return null;
 			}
