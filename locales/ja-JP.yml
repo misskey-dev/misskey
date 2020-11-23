@@ -1007,7 +1007,9 @@ _profile:
   username: "ユーザー名"
   description: "自己紹介"
   youCanIncludeHashtags: "ハッシュタグを含めることができます。"
-  metadata: "補足情報"
+  metadata: "追加情報"
+  metadataEdit: "追加情報を編集"
+  metadataDescription: "プロフィールに表として4つまでの追加情報を表示することができます。"
   metadataLabel: "ラベル"
   metadataContent: "内容"
 

@@ -23,24 +23,10 @@
 		<template #prefix><Fa :icon="faBirthdayCake"/></template>
 	</FormInput>
 
-	<div class="_formItem">
-		<FormTuple>
-			<FormInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</FormInput>
-			<FormInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</FormInput>
-		</FormTuple>
-		<FormTuple>
-			<FormInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</FormInput>
-			<FormInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</FormInput>
-		</FormTuple>
-		<FormTuple>
-			<FormInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</FormInput>
-			<FormInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</FormInput>
-		</FormTuple>
-		<FormTuple>
-			<FormInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</FormInput>
-			<FormInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</FormInput>
-		</FormTuple>
-	</div>
+	<FormGroup>
+		<FormButton @click="editMetadata" primary>{{ $t('metadataEdit') }}</FormButton>
+		<template #caption>{{ $t('_profile.metadataDescription') }}</template>
+	</FormGroup>
 
 	<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</FormSwitch>
 
@@ -60,6 +46,7 @@ import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormTuple from '@/components/form/tuple.vue';
 import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
 import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
@@ -72,6 +59,7 @@ export default defineComponent({
 		FormSwitch,
 		FormTuple,
 		FormBase,
+		FormGroup,
 	},
 	
 	emits: ['info'],
@@ -145,7 +133,60 @@ export default defineComponent({
 			});
 		},
 
-		save(notify) {
+		async editMetadata() {
+			const { canceled, result } = await os.form(this.$t('_profile.metadata'), {
+				fieldName0: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 1',
+					default: this.fieldName0,
+				},
+				fieldValue0: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 1',
+					default: this.fieldValue0,
+				},
+				fieldName1: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 2',
+					default: this.fieldName1,
+				},
+				fieldValue1: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 2',
+					default: this.fieldValue1,
+				},
+				fieldName2: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 3',
+					default: this.fieldName2,
+				},
+				fieldValue2: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 3',
+					default: this.fieldValue2,
+				},
+				fieldName3: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 4',
+					default: this.fieldName3,
+				},
+				fieldValue3: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 4',
+					default: this.fieldValue3,
+				},
+			});
+			if (canceled) return;
+
+			this.fieldName0 = result.fieldName0;
+			this.fieldValue0 = result.fieldValue0;
+			this.fieldName1 = result.fieldName1;
+			this.fieldValue1 = result.fieldValue1;
+			this.fieldName2 = result.fieldName2;
+			this.fieldValue2 = result.fieldValue2;
+			this.fieldName3 = result.fieldName3;
+			this.fieldValue3 = result.fieldValue3;
+
 			const fields = [
 				{ name: this.fieldName0, value: this.fieldValue0 },
 				{ name: this.fieldName1, value: this.fieldValue1 },
@@ -153,6 +194,19 @@ export default defineComponent({
 				{ name: this.fieldName3, value: this.fieldValue3 },
 			];
 
+			os.api('i/update', {
+				fields,
+			}).then(i => {
+				os.success();
+			}).catch(err => {
+				os.dialog({
+					type: 'error',
+					text: err.id
+				});
+			});
+		},
+
+		save(notify) {
 			this.saving = true;
 
 			os.api('i/update', {
@@ -160,7 +214,6 @@ export default defineComponent({
 				description: this.description || null,
 				location: this.location || null,
 				birthday: this.birthday || null,
-				fields,
 				isBot: !!this.isBot,
 				isCat: !!this.isCat,
 			}).then(i => {

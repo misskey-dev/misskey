@@ -1,6 +1,6 @@
 <template>
 <XModalWindow ref="dialog"
-	:width="400"
+	:width="450"
 	:can-close="false"
 	:with-ok-button="true"
 	:ok-button-disabled="false"
