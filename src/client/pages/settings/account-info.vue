@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormLink from '@/components/form/link.vue';
@@ -102,7 +102,7 @@ export default defineComponent({
 		return {
 			INFO: {
 				title: this.$t('accountInfo'),
-				icon: faEllipsisH
+				icon: faInfoCircle
 			},
 			stats: null
 		}
