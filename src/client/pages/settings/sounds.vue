@@ -12,19 +12,21 @@
 			<template #suffixIcon><Fa :icon="faChevronDown"/></template>
 		</FormButton>
 	</FormGroup>
+
+	<FormButton @click="reset()" danger><Fa :icon="faRedo"/> {{ $t('default') }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown, faRedo } from '@fortawesome/free-solid-svg-icons';
 import FormRange from '@/components/form/range.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
-import { device } from '@/cold-storage';
+import { device, defaultDeviceSettings } from '@/cold-storage';
 import { playFile } from '@/scripts/sound';
 
 const soundsTypes = [
@@ -71,7 +73,7 @@ export default defineComponent({
 				icon: faMusic
 			},
 			sounds: {},
-			faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown,
+			faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown, faRedo,
 		}
 	},
 
@@ -139,6 +141,14 @@ export default defineComponent({
 			device.set('sound_' + type, v);
 			this.sounds[type] = v;
 		},
+
+		reset() {
+			for (const sound of Object.keys(this.sounds)) {
+				const v = defaultDeviceSettings['sound_' + sound];
+				device.set('sound_' + sound, v);
+				this.sounds[sound] = v;
+			}
+		}
 	}
 });
 </script>
