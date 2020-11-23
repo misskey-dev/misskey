@@ -24,7 +24,7 @@
 	</FormInput>
 
 	<FormGroup>
-		<FormButton @click="editMetadata" primary>{{ $t('metadataEdit') }}</FormButton>
+		<FormButton @click="editMetadata" primary>{{ $t('_profile.metadataEdit') }}</FormButton>
 		<template #caption>{{ $t('_profile.metadataDescription') }}</template>
 	</FormGroup>
 
