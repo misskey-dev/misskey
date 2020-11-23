@@ -1,19 +1,37 @@
 <template>
-<div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<!-- TODO -->
-	<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
-	<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
+<div>
+	<div class="mk-user-page" v-if="user" v-size="{ max: [500] }" :class="{ _section: narrow === false }">
+		<!-- TODO -->
+		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
+		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
 
-	<div class="main">
-		<div class="profile _section">
-			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_content _vMargin"/>
+		<div class="main">
+			<div class="profile _vMargin" :class="{ _section: narrow === true }">
+				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_content _vMargin"/>
 
-			<div class="_content _panel _vMargin" :key="user.id">
-				<div class="banner-container" :style="style">
-					<div class="banner" ref="banner" :style="style"></div>
-					<div class="fade"></div>
+				<div class="_content _panel _vMargin" :key="user.id">
+					<div class="banner-container" :style="style">
+						<div class="banner" ref="banner" :style="style"></div>
+						<div class="fade"></div>
+						<div class="title">
+							<MkUserName class="name" :user="user" :nowrap="true"/>
+							<div class="bottom">
+								<span class="username"><MkAcct :user="user" :detail="true" /></span>
+								<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
+								<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
+								<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
+								<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+							</div>
+						</div>
+						<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
+						<div class="actions" v-if="$store.getters.isSignedIn">
+							<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
+							<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+						</div>
+					</div>
+					<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
 					<div class="title">
-						<MkUserName class="name" :user="user" :nowrap="true"/>
+						<MkUserName :user="user" :nowrap="false" class="name"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true" /></span>
 							<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
@@ -22,101 +40,74 @@
 							<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
 						</div>
 					</div>
-					<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
-					<div class="actions" v-if="$store.getters.isSignedIn">
-						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
-						<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+					<div class="description">
+						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+						<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
 					</div>
-				</div>
-				<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
-				<div class="title">
-					<MkUserName :user="user" :nowrap="false" class="name"/>
-					<div class="bottom">
-						<span class="username"><MkAcct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-						<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
-						<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+					<div class="fields system">
+						<dl class="field" v-if="user.location">
+							<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
+							<dd class="value">{{ user.location }}</dd>
+						</dl>
+						<dl class="field" v-if="user.birthday">
+							<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
+							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+						</dl>
+						<dl class="field">
+							<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
+							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+						</dl>
 					</div>
-				</div>
-				<div class="description">
-					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-					<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
-				</div>
-				<div class="fields system">
-					<dl class="field" v-if="user.location">
-						<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
-						<dd class="value">{{ user.location }}</dd>
-					</dl>
-					<dl class="field" v-if="user.birthday">
-						<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
-						<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
-					</dl>
-					<dl class="field">
-						<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
-						<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
-					</dl>
-				</div>
-				<div class="fields" v-if="user.fields.length > 0">
-					<dl class="field" v-for="(field, i) in user.fields" :key="i">
-						<dt class="name">
-							<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
-						</dt>
-						<dd class="value">
-							<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
-						</dd>
-					</dl>
-				</div>
-				<div class="status">
-					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
-						<b>{{ number(user.notesCount) }}</b>
-						<span>{{ $t('notes') }}</span>
-					</MkA>
-					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
-						<b>{{ number(user.followingCount) }}</b>
-						<span>{{ $t('following') }}</span>
-					</MkA>
-					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
-						<b>{{ number(user.followersCount) }}</b>
-						<span>{{ $t('followers') }}</span>
-					</MkA>
+					<div class="fields" v-if="user.fields.length > 0">
+						<dl class="field" v-for="(field, i) in user.fields" :key="i">
+							<dt class="name">
+								<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+							</dt>
+							<dd class="value">
+								<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
+							</dd>
+						</dl>
+					</div>
+					<div class="status">
+						<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
+							<b>{{ number(user.notesCount) }}</b>
+							<span>{{ $t('notes') }}</span>
+						</MkA>
+						<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
+							<b>{{ number(user.followingCount) }}</b>
+							<span>{{ $t('following') }}</span>
+						</MkA>
+						<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
+							<b>{{ number(user.followersCount) }}</b>
+							<span>{{ $t('followers') }}</span>
+						</MkA>
+					</div>
 				</div>
 			</div>
+
+			<template v-if="page === 'index'">
+				<div v-if="user.pinnedNotes.length > 0" :class="{ _section: narrow === true, _vMargin: narrow === false }">
+					<XNote v-for="note in user.pinnedNotes" class="note _content _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+				</div>
+				<div v-if="narrow === true" class="_section">
+					<XPhotos class="_content _vMargin" :user="user" :key="user.id"/>
+					<XActivity class="_content _vMargin" :user="user" :key="user.id"/>
+				</div>
+				<div :class="{ _section: narrow === true, _vMargin: narrow === false }">
+					<XUserTimeline :user="user" class="_content"/>
+				</div>
+			</template>
+			<XFollowList v-else-if="page === 'following'" :class="{ _section: narrow === true, _vMargin: narrow === false }" type="following" :user="user"/>
+			<XFollowList v-else-if="page === 'followers'" :class="{ _section: narrow === true, _vMargin: narrow === false }" type="followers" :user="user"/>
 		</div>
-
-		<template v-if="page === 'index'">
-			<div class="_section">
-				<div class="_content _vMargin" v-if="user.pinnedNotes.length > 0">
-					<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
-				</div>
-				<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-images">
-					<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $t('images') }}</template>
-					<div>
-						<XPhotos :user="user" :key="user.id"/>
-					</div>
-				</MkFolder>
-				<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-activity">
-					<template #header><Fa :icon="faChartBar" style="margin-right: 0.5em;"/>{{ $t('activity') }}</template>
-					<div>
-						<XActivity :user="user" :key="user.id"/>
-					</div>
-				</MkFolder>
-			</div>
-			<div class="_section">
-				<XUserTimeline :user="user" class="_content"/>
-			</div>
-		</template>
-		<XFollowList v-else-if="page === 'following'" type="following" :user="user"/>
-		<XFollowList v-else-if="page === 'followers'" type="followers" :user="user"/>
+		<div class="side" v-if="narrow === false">
+			<XPhotos class="_vMargin" :user="user" :key="user.id"/>
+			<XActivity class="_vMargin" :user="user" :key="user.id"/>
+		</div>
 	</div>
-	<div class="side">
-
-		<XPhotos :user="user" :key="user.id"/>
-		<XActivity :user="user" :key="user.id"/>
+	<div v-else-if="error">
+		<MkError @retry="fetch()"/>
 	</div>
-</div>
-<div v-else-if="error">
-	<MkError @retry="fetch()"/>
 </div>
 </template>
 
@@ -177,6 +168,7 @@ export default defineComponent({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
+			narrow: null,
 			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
 		};
 	},
@@ -204,6 +196,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
+		this.narrow = this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -262,7 +255,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .mk-user-page {
 	display: flex;
-
+	max-width: 1050px;
+	margin: 0 auto;
+	
 	> .main {
 		flex: 1;
 
@@ -480,6 +475,7 @@ export default defineComponent({
 
 	> .side {
 		flex-basis: 300px;
+		margin-left: var(--margin);
 	}
 
 	&.max-width_500px {
