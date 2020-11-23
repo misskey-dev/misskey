@@ -69,7 +69,7 @@ export default defineComponent({
 	position: relative;
 
 	> .main {
-		padding: 22px 16px;
+		padding: 24px 16px;
 
 		> input {
 			display: block;
