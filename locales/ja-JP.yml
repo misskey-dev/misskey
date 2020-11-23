@@ -127,6 +127,7 @@ cacheRemoteFilesDescription: "この設定を無効にすると、リモート�
 flagAsBot: "Botとして設定"
 flagAsBotDescription: "このアカウントがプログラムによって運用される場合は、このフラグをオンにします。オンにすると、反応の連鎖を防ぐためのフラグとして他の開発者に役立ったり、Misskeyのシステム上での扱いがBotに合ったものになります。"
 flagAsCat: "Catとして設定"
+flagAsCatDescription: "このアカウントが猫であることを示す場合は、このフラグをオンにします。"
 autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自動承認"
 addAcount: "アカウント追加"
 loginFailed: "ログインに失敗しました"

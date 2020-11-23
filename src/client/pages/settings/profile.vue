@@ -28,7 +28,7 @@
 		<template #caption>{{ $t('_profile.metadataDescription') }}</template>
 	</FormGroup>
 
-	<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</FormSwitch>
+	<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}<template #desc>{{ $t('flagAsCatDescription') }}</template></FormSwitch>
 
 	<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
 
