@@ -35,10 +35,6 @@
 	</div>
 
 	<div class="main">
-		<div v-if="narrow" class="banner" :class="{ asBg: $route.path === '/' }" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-			<h1 v-if="$route.path !== '/'">{{ instanceName }}</h1>
-		</div>
-
 		<div class="contents" ref="contents" :class="{ wallpaper }">
 			<header class="header" ref="header" v-show="$route.path !== '/'">
 				<XHeader :info="pageInfo"/>
@@ -187,7 +183,7 @@ export default defineComponent({
 			background: rgba(0, 0, 0, 0.3);
 
 			* {
-				color: #fff !important;
+				color: #fff;
 			}
 					
 			> h1 {
@@ -219,6 +215,7 @@ export default defineComponent({
 					text-align: center;
 					border-radius: 999px;
 					background: var(--panel);
+					color: var(--fg);
 
 					&.primary {
 						background: var(--accent);
