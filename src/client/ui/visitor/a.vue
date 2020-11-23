@@ -58,7 +58,6 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { } from '@fortawesome/free-solid-svg-icons';
-import simpleParallax from 'simple-parallax-js';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -130,7 +129,7 @@ export default defineComponent({
 
 	methods: {
 		setParallax(el) {
-			new simpleParallax(el);
+			//new simpleParallax(el);
 		},
 
 		changePage(page) {
