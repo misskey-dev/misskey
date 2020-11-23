@@ -6,6 +6,7 @@
 import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
 import * as os from '@/os';
+import * as sound from '@/scripts/sound';
 
 export default defineComponent({
 	components: {
@@ -65,7 +66,7 @@ export default defineComponent({
 			this.$emit('note');
 
 			if (this.sound) {
-				os.sound(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
+				sound.play(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
 			}
 		};
 

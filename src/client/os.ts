@@ -345,16 +345,6 @@ export function post(props: Record<string, any>) {
 	});
 }
 
-export function sound(type: string) {
-	const masterVolume = device.get('sound_masterVolume');
-	if (masterVolume === 0) return;
-	const sound = device.get('sound_' + type as any);
-	if (sound.type == null) return;
-	const audio = new Audio(`/assets/sounds/${sound.type}.mp3`);
-	audio.volume = masterVolume - ((1 - sound.volume) * masterVolume);
-	audio.play();
-}
-
 export const deckGlobalEvents = new EventEmitter();
 
 export const uploads = ref([]);

@@ -20,7 +20,8 @@ import FormSelect from '@/components/form/select.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
-import { device } from '../../cold-storage';
+import { device } from '@/cold-storage';
+import { playFile } from '@/scripts/sound';
 
 const soundsTypes = [
 	null,
@@ -39,6 +40,8 @@ const soundsTypes = [
 	'syuilo/square-pico',
 	'syuilo/reverved',
 	'syuilo/ryukyu',
+	'syuilo/kick',
+	'syuilo/snare',
 	'aisha/1',
 	'aisha/2',
 	'aisha/3',
@@ -94,14 +97,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		listen(type, volume) {
-			const masterVolume = device.get('sound_masterVolume');
-			if (masterVolume === 0) return;
-			const audio = new Audio(`/assets/sounds/${type}.mp3`);
-			audio.volume = masterVolume - ((1 - volume) * masterVolume);
-			audio.play();
-		},
-
 		async edit(type) {
 			const { canceled, result } = await os.form(this.$t('_sfx.' + type), {
 				type: {
@@ -123,9 +118,9 @@ export default defineComponent({
 				},
 				listen: {
 					type: 'button',
-					content: this.$t('play'),
+					content: this.$t('listen'),
 					action: (_, values) => {
-						this.listen(values.type, values.volume);
+						playFile(values.type, values.volume);
 					}
 				}
 			});

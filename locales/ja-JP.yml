@@ -826,6 +826,8 @@ _sfx:
   chatBg: "チャット(バックグラウンド)"
   antenna: "アンテナ受信"
   channel: "チャンネル通知"
+  reversiPutBlack: "リバーシ: 黒が打ったとき"
+  reversiPutWhite: "リバーシ: 白が打ったとき"
 
 _ago:
   unknown: "謎"
