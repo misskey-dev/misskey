@@ -332,6 +332,7 @@ withFileAntenna: "Тільки нотатки з вкладеними файла
 serviceworker: "ServiceWorker"
 enableServiceworker: "Ввімкнути ServiceWorker"
 caseSensitive: "З урахуванням регістру"
+withReplies: "Включаючи відповіді"
 notesAndReplies: "Нотатки та відповіді"
 popularUsers: "Популярні користувачі"
 recentlyUpdatedUsers: "Нещодавно активні користувачі"
