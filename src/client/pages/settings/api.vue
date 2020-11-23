@@ -1,26 +1,27 @@
 <template>
-<div>
-	<div class="_section">
-		<div class="_content">
-			<MkButton @click="generateToken">{{ $t('generateAccessToken') }}</MkButton>
-		</div>
-	</div>
-	<div class="_section">
-		<MkA to="/api-console" :behavior="isDesktop ? 'window' : null">API console</MkA>
-	</div>
-</div>
+<FormBase>
+	<FormButton @click="generateToken">{{ $t('generateAccessToken') }}</FormButton>
+	<FormLink to="/settings/apps">{{ $t('manageAccessTokens') }}</FormLink>
+	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormLink from '@/components/form/link.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkButton, MkInput
+		FormBase,
+		FormButton,
+		FormLink,
 	},
 
 	emits: ['info'],

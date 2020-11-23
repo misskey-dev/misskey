@@ -1,40 +1,41 @@
 <template>
-<div>
-	<div class="_section">
-		<div class="_card">
-			<div class="_content">
-				<MkSwitch v-model:value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
-					{{ $t('showFeaturedNotesInTimeline') }}
-				</MkSwitch>
-			</div>
-		</div>
-	</div>
-	<div class="_section">
-		<MkSwitch v-model:value="debug" @update:value="changeDebug">
+<FormBase>
+	<FormSwitch :value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
+		{{ $t('showFeaturedNotesInTimeline') }}
+	</FormSwitch>
+
+	<FormGroup>
+		<FormSwitch v-model:value="debug" @update:value="changeDebug">
 			DEBUG MODE
-		</MkSwitch>
-		<div v-if="debug">
-			<MkA to="/settings/regedit">RegEdit</MkA>
-			<MkButton @click="taskmanager">Task Manager</MkButton>
-		</div>
-	</div>
-</div>
+		</FormSwitch>
+		<template v-if="debug">
+			<FormLink to="/settings/regedit">RegEdit</FormLink>
+			<FormButton @click="taskmanager">Task Manager</FormButton>
+		</template>
+	</FormGroup>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkButton from '@/components/ui/button.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormLink from '@/components/form/link.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
 import { debug } from '@/config';
 
 export default defineComponent({
 	components: {
-		MkSelect,
-		MkSwitch,
-		MkButton,
+		FormBase,
+		FormSelect,
+		FormSwitch,
+		FormButton,
+		FormLink,
+		FormGroup,
 	},
 
 	emits: ['info'],

@@ -86,6 +86,7 @@ export default defineComponent({
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
 				case '2fa': return defineAsyncComponent(() => import('./2fa.vue'));
 				case 'api': return defineAsyncComponent(() => import('./api.vue'));
+				case 'apps': return defineAsyncComponent(() => import('./apps.vue'));
 				case 'other': return defineAsyncComponent(() => import('./other.vue'));
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
