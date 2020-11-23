@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, onMounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh, faBell } from '@fortawesome/free-regular-svg-icons';
 import { store } from '@/store';
@@ -102,7 +102,9 @@ export default defineComponent({
 		});
 
 		watch(component, () => {
-			scroll(el.value, 0);
+			nextTick(() => {
+				scroll(el.value, 0);
+			});
 		});
 
 		onMounted(() => {
