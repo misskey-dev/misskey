@@ -1,75 +1,55 @@
 <template>
 <FormBase>
-	<div class="_formItem">
-		<div class="_formPanel hjiwjsqx">
-			<span class="key">ID</span>
-			<span class="value _monospace">{{ $store.state.i.id }}</span>
-		</div>
-	</div>
+	<FormKeyValueView>
+		<template #key>ID</template>
+		<template #value><span class="_monospace">{{ $store.state.i.id }}</span></template>
+	</FormKeyValueView>
 
 	<FormGroup>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">{{ $t('registeredDate') }}</span>
-				<span class="value"><MkTime :time="$store.state.i.createdAt" mode="detail"/></span>
-			</div>
-		</div>
+		<FormKeyValueView>
+			<template #key>{{ $t('registeredDate') }}</template>
+			<template #value><MkTime :time="$store.state.i.createdAt" mode="detail"/></template>
+		</FormKeyValueView>
 	</FormGroup>
 
 	<FormGroup v-if="stats">
 		<template #label>{{ $t('statistics') }}</template>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">{{ $t('notesCount') }}</span>
-				<span class="value">{{ number(stats.notesCount) }}</span>
-			</div>
-		</div>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">{{ $t('followingCount') }}</span>
-				<span class="value">{{ number(stats.followingCount) }}</span>
-			</div>
-		</div>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">{{ $t('followersCount') }}</span>
-				<span class="value">{{ number(stats.followersCount) }}</span>
-			</div>
-		</div>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">{{ $t('sentReactionsCount') }}</span>
-				<span class="value">{{ number(stats.sentReactionsCount) }}</span>
-			</div>
-		</div>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">{{ $t('receivedReactionsCount') }}</span>
-				<span class="value">{{ number(stats.receivedReactionsCount) }}</span>
-			</div>
-		</div>
+		<FormKeyValueView>
+			<template #key>{{ $t('notesCount') }}</template>
+			<template #value>{{ number(stats.notesCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followingCount') }}</template>
+			<template #value>{{ number(stats.followingCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followersCount') }}</template>
+			<template #value>{{ number(stats.followersCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('sentReactionsCount') }}</template>
+			<template #value>{{ number(stats.sentReactionsCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('receivedReactionsCount') }}</template>
+			<template #value>{{ number(stats.receivedReactionsCount) }}</template>
+		</FormKeyValueView>
 	</FormGroup>
 
 	<FormGroup>
 		<template #label>{{ $t('other') }}</template>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">twoFactorEnabled</span>
-				<span class="value">{{ $store.state.i.twoFactorEnabled ? $t('yes') : $t('no') }}</span>
-			</div>
-		</div>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">securityKeys</span>
-				<span class="value">{{ $store.state.i.securityKeys ? $t('yes') : $t('no') }}</span>
-			</div>
-		</div>
-		<div class="_formItem">
-			<div class="_formPanel hjiwjsqx">
-				<span class="key">usePasswordLessLogin</span>
-				<span class="value">{{ $store.state.i.usePasswordLessLogin ? $t('yes') : $t('no') }}</span>
-			</div>
-		</div>
+		<FormKeyValueView>
+			<template #key>twoFactorEnabled</template>
+			<template #value>{{ $store.state.i.twoFactorEnabled ? $t('yes') : $t('no') }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>securityKeys</template>
+			<template #value>{{ $store.state.i.securityKeys ? $t('yes') : $t('no') }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>usePasswordLessLogin</template>
+			<template #value>{{ $store.state.i.usePasswordLessLogin ? $t('yes') : $t('no') }}</template>
+		</FormKeyValueView>
 	</FormGroup>
 </FormBase>
 </template>
@@ -83,6 +63,7 @@ import FormLink from '@/components/form/link.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormButton from '@/components/form/button.vue';
+import FormKeyValueView from '@/components/form/key-value-view.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
 
@@ -94,6 +75,7 @@ export default defineComponent({
 		FormButton,
 		FormLink,
 		FormGroup,
+		FormKeyValueView,
 	},
 
 	emits: ['info'],
@@ -123,16 +105,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.hjiwjsqx {
-	display: flex;
-	align-items: center;
-	padding: 14px 16px;
-
-	> .value {
-		margin-left: auto;
-		opacity: 0.7;
-	}
-}
-</style>
