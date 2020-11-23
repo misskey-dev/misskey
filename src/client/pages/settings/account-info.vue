@@ -34,6 +34,14 @@
 			<template #key>{{ $t('receivedReactionsCount') }}</template>
 			<template #value>{{ number(stats.receivedReactionsCount) }}</template>
 		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('driveFilesCount') }}</template>
+			<template #value>{{ number(stats.driveFilesCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('driveUsage') }}</template>
+			<template #value>{{ bytes(stats.driveUsage) }}</template>
+		</FormKeyValueView>
 	</FormGroup>
 
 	<FormGroup>
@@ -66,6 +74,7 @@ import FormButton from '@/components/form/button.vue';
 import FormKeyValueView from '@/components/form/key-value-view.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
+import bytes from '@/filters/bytes';
 
 export default defineComponent({
 	components: {
@@ -101,7 +110,8 @@ export default defineComponent({
 	},
 
 	methods: {
-		number
+		number,
+		bytes,
 	}
 });
 </script>

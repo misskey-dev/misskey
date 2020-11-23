@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
-import { Followings, NoteReactions, Notes, Users } from '../../../../models';
+import { DriveFiles, Followings, NoteReactions, Notes, Users } from '../../../../models';
 
 export const meta = {
 	tags: ['users'],
@@ -35,7 +35,9 @@ export default define(meta, async (ps, me) => {
 		followingCount,
 		followersCount,
 		sentReactionsCount,
-		receivedReactionsCount
+		receivedReactionsCount,
+		driveFilesCount,
+		driveUsage,
 	] = await Promise.all([
 		Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
@@ -53,6 +55,10 @@ export default define(meta, async (ps, me) => {
 			.innerJoin('reaction.note', 'note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
+		DriveFiles.createQueryBuilder('file')
+			.where('file.userId = :userId', { userId: user.id })
+			.getCount(),
+		DriveFiles.calcDriveUsageOf(user),
 	]);
 
 	return {
@@ -61,5 +67,7 @@ export default define(meta, async (ps, me) => {
 		followersCount,
 		sentReactionsCount,
 		receivedReactionsCount,
+		driveFilesCount,
+		driveUsage,
 	};
 });

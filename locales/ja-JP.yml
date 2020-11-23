@@ -633,6 +633,8 @@ sentReactionsCount: "リアクションした数"
 receivedReactionsCount: "リアクションされた数"
 yes: "はい"
 no: "いいえ"
+driveFilesCount: "ドライブのファイル数"
+driveUsage: "ドライブ使用量"
 
 _mfm:
   cheatSheet: "MFMチートシート"
