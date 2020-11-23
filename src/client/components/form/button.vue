@@ -4,6 +4,7 @@
 	<button class="main _button _formPanel _formClickable" :class="{ center, primary, danger }">
 		<slot></slot>
 		<div class="suffix">
+			<slot name="suffix"></slot>
 			<div class="icon">
 				<slot name="suffixIcon"></slot>
 			</div>
@@ -67,7 +68,13 @@ export default defineComponent({
 		}
 
 		> .suffix {
+			display: inline-flex;
 			margin-left: auto;
+			opacity: 0.7;
+
+			> .icon {
+				margin-left: 1em;
+			}
 		}
 	}
 }

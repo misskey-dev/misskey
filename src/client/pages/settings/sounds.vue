@@ -4,11 +4,14 @@
 		<template #label><Fa :icon="volumeIcon" :key="volumeIcon"/> {{ $t('masterVolume') }}</template>
 	</FormRange>
 
-	<FormButton v-for="type in Object.keys(sounds)" :key="type" :center="false" @click="edit(type)">
-		<template #label>{{ $t('_sfx.' + type) }}</template>
-		{{ sounds[type].type || $t('none') }}
-		<template #suffixIcon><Fa :icon="faChevronDown"/></template>
-	</FormButton>
+	<FormGroup>
+		<template #label>{{ $t('sounds') }}</template>
+		<FormButton v-for="type in Object.keys(sounds)" :key="type" :center="false" @click="edit(type)">
+			{{ $t('_sfx.' + type) }}
+			<template #suffix>{{ sounds[type].type || $t('none') }}</template>
+			<template #suffixIcon><Fa :icon="faChevronDown"/></template>
+		</FormButton>
+	</FormGroup>
 </FormBase>
 </template>
 
@@ -19,6 +22,7 @@ import FormRange from '@/components/form/range.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
+import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
 import { device } from '@/cold-storage';
 import { playFile } from '@/scripts/sound';
@@ -55,6 +59,7 @@ export default defineComponent({
 		FormButton,
 		FormBase,
 		FormRange,
+		FormGroup,
 	},
 
 	emits: ['info'],
