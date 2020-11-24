@@ -32,6 +32,8 @@
 
 	<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
 
+	<FormSwitch v-model:value="alwaysMarkNsfw">{{ $t('alwaysMarkSensitive') }}</FormSwitch>
+
 	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
 </FormBase>
 </template>
@@ -87,6 +89,7 @@ export default defineComponent({
 			bannerId: null,
 			isBot: false,
 			isCat: false,
+			alwaysMarkNsfw: false,
 			saving: false,
 			faSave, faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake
 		}
@@ -101,6 +104,7 @@ export default defineComponent({
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isBot = this.$store.state.i.isBot;
 		this.isCat = this.$store.state.i.isCat;
+		this.alwaysMarkNsfw = this.$store.state.i.alwaysMarkNsfw;
 
 		this.fieldName0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].name : null;
 		this.fieldValue0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].value : null;
@@ -216,6 +220,7 @@ export default defineComponent({
 				birthday: this.birthday || null,
 				isBot: !!this.isBot,
 				isCat: !!this.isCat,
+				alwaysMarkNsfw: !!this.alwaysMarkNsfw,
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;
