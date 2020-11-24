@@ -3,16 +3,23 @@
 	<FormGroup>
 		<FormSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</FormSwitch>
 		<FormSwitch v-model:value="autoAcceptFollowed" :disabled="!isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</FormSwitch>
+		<template #caption>{{ $t('lockedAccountInfo') }}</template>
 	</FormGroup>
+	<FormSwitch v-model:value="noCrawle" @update:value="save()">
+		{{ $t('noCrawle') }}
+		<template #desc>{{ $t('noCrawleDescription') }}</template>
+	</FormSwitch>
 	<FormSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</FormSwitch>
-	<FormSelect v-model:value="defaultNoteVisibility" style="margin-bottom: 8px;" v-if="!rememberNoteVisibility">
+	<FormGroup v-if="!rememberNoteVisibility">
 		<template #label>{{ $t('defaultNoteVisibility') }}</template>
-		<option value="public">{{ $t('_visibility.public') }}</option>
-		<option value="home">{{ $t('_visibility.home') }}</option>
-		<option value="followers">{{ $t('_visibility.followers') }}</option>
-		<option value="specified">{{ $t('_visibility.specified') }}</option>
-	</FormSelect>
-	<FormSwitch v-model:value="defaultNoteLocalOnly" v-if="!rememberNoteVisibility">{{ $t('_visibility.localOnly') }}</FormSwitch>
+		<FormSelect v-model:value="defaultNoteVisibility">
+			<option value="public">{{ $t('_visibility.public') }}</option>
+			<option value="home">{{ $t('_visibility.home') }}</option>
+			<option value="followers">{{ $t('_visibility.followers') }}</option>
+			<option value="specified">{{ $t('_visibility.specified') }}</option>
+		</FormSelect>
+		<FormSwitch v-model:value="defaultNoteLocalOnly">{{ $t('_visibility.localOnly') }}</FormSwitch>
+	</FormGroup>
 </FormBase>
 </template>
 
@@ -43,6 +50,7 @@ export default defineComponent({
 			},
 			isLocked: false,
 			autoAcceptFollowed: false,
+			noCrawle: false,
 		}
 	},
 
@@ -66,6 +74,7 @@ export default defineComponent({
 	created() {
 		this.isLocked = this.$store.state.i.isLocked;
 		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
+		this.noCrawle = this.$store.state.i.noCrawle;
 	},
 
 	mounted() {
@@ -77,6 +86,7 @@ export default defineComponent({
 			os.api('i/update', {
 				isLocked: !!this.isLocked,
 				autoAcceptFollowed: !!this.autoAcceptFollowed,
+				noCrawle: !!this.noCrawle,
 			});
 		}
 	}

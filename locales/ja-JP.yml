@@ -635,6 +635,9 @@ yes: "はい"
 no: "いいえ"
 driveFilesCount: "ドライブのファイル数"
 driveUsage: "ドライブ使用量"
+noCrawle: "クローラーによるインデックスを拒否"
+noCrawleDescription: "検索エンジンにあなたのユーザーページ、ノート、Pagesなどのコンテンツを登録(インデックス)しないよう要請します。"
+lockedAccountInfo: "フォローを承認制にしても、ノートの公開範囲を「フォロワー」にしない限り、誰でもあなたのノートを見ることができます。"
 
 _nsfw:
   respect: "閲覧注意のメディアは隠す"
