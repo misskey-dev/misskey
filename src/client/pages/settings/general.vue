@@ -36,6 +36,8 @@
 		<FormSwitch v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
 			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
+		<FormSwitch v-model:value="loadRawImages">{{ $t('loadRawImages') }}</FormSwitch>
+		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $t('disableShowingAnimatedImages') }}</FormSwitch>
 	</FormGroup>
 
 	<FormRadios v-model="fontSize">
@@ -174,6 +176,16 @@ export default defineComponent({
 		instanceTicker: {
 			get() { return this.$store.state.device.instanceTicker; },
 			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
+		},
+
+		loadRawImages: {
+			get() { return this.$store.state.device.loadRawImages; },
+			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
+		},
+
+		disableShowingAnimatedImages: {
+			get() { return this.$store.state.device.disableShowingAnimatedImages; },
+			set(value) { this.$store.commit('device/set', { key: 'disableShowingAnimatedImages', value }); }
 		},
 
 		nsfw: {

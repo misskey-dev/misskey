@@ -639,6 +639,8 @@ noCrawle: "クローラーによるインデックスを拒否"
 noCrawleDescription: "検索エンジンにあなたのユーザーページ、ノート、Pagesなどのコンテンツを登録(インデックス)しないよう要請します。"
 lockedAccountInfo: "フォローを承認制にしても、ノートの公開範囲を「フォロワー」にしない限り、誰でもあなたのノートを見ることができます。"
 alwaysMarkSensitive: "デフォルトでメディアを閲覧注意にする"
+loadRawImages: "添付画像のサムネイルをオリジナル画質にする"
+disableShowingAnimatedImages: "アニメーション画像を再生しない"
 
 _nsfw:
   respect: "閲覧注意のメディアは隠す"
