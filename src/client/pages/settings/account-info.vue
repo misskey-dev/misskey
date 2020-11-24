@@ -19,12 +19,28 @@
 			<template #value>{{ number(stats.notesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followingCount') }}</template>
-			<template #value>{{ number(stats.followingCount) }}</template>
+			<template #key>{{ $t('repliesCount') }}</template>
+			<template #value>{{ number(stats.repliesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followersCount') }}</template>
-			<template #value>{{ number(stats.followersCount) }}</template>
+			<template #key>{{ $t('renotesCount') }}</template>
+			<template #value>{{ number(stats.renotesCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('repliedCount') }}</template>
+			<template #value>{{ number(stats.repliedCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('renotedCount') }}</template>
+			<template #value>{{ number(stats.renotedCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('pollVotesCount') }}</template>
+			<template #value>{{ number(stats.pollVotesCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('pollVotedCount') }}</template>
+			<template #value>{{ number(stats.pollVotedCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>{{ $t('sentReactionsCount') }}</template>
@@ -33,6 +49,14 @@
 		<FormKeyValueView>
 			<template #key>{{ $t('receivedReactionsCount') }}</template>
 			<template #value>{{ number(stats.receivedReactionsCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followingCount') }}</template>
+			<template #value>{{ number(stats.followingCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followersCount') }}</template>
+			<template #value>{{ number(stats.followersCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>{{ $t('driveFilesCount') }}</template>

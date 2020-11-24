@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
-import { DriveFiles, Followings, NoteReactions, Notes, Users } from '../../../../models';
+import { DriveFiles, Followings, NoteReactions, Notes, PollVotes, Users } from '../../../../models';
 
 export const meta = {
 	tags: ['users'],
@@ -32,6 +32,12 @@ export default define(meta, async (ps, me) => {
 
 	const [
 		notesCount,
+		repliesCount,
+		renotesCount,
+		repliedCount,
+		renotedCount,
+		pollVotesCount,
+		pollVotedCount,
 		followingCount,
 		followersCount,
 		sentReactionsCount,
@@ -40,6 +46,27 @@ export default define(meta, async (ps, me) => {
 		driveUsage,
 	] = await Promise.all([
 		Notes.createQueryBuilder('note')
+			.where('note.userId = :userId', { userId: user.id })
+			.getCount(),
+		Notes.createQueryBuilder('note')
+			.where('note.userId = :userId', { userId: user.id })
+			.andWhere('note.replyId IS NOT NULL')
+			.getCount(),
+		Notes.createQueryBuilder('note')
+			.where('note.userId = :userId', { userId: user.id })
+			.andWhere('note.renoteId IS NOT NULL')
+			.getCount(),
+		Notes.createQueryBuilder('note')
+			.where('note.replyUserId = :userId', { userId: user.id })
+			.getCount(),
+		Notes.createQueryBuilder('note')
+			.where('note.renoteUserId = :userId', { userId: user.id })
+			.getCount(),
+		PollVotes.createQueryBuilder('vote')
+			.where('vote.userId = :userId', { userId: user.id })
+			.getCount(),
+		PollVotes.createQueryBuilder('vote')
+			.innerJoin('vote.note', 'note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
 		Followings.createQueryBuilder('following')
@@ -63,6 +90,12 @@ export default define(meta, async (ps, me) => {
 
 	return {
 		notesCount,
+		repliesCount,
+		renotesCount,
+		repliedCount,
+		renotedCount,
+		pollVotesCount,
+		pollVotedCount,
 		followingCount,
 		followersCount,
 		sentReactionsCount,
