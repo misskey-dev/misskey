@@ -636,6 +636,11 @@ no: "いいえ"
 driveFilesCount: "ドライブのファイル数"
 driveUsage: "ドライブ使用量"
 
+_nsfw:
+  respect: "閲覧注意のメディアは隠す"
+  ignore: "閲覧注意のメディアを隠さない"
+  force: "常にメディアを隠す"
+
 _mfm:
   cheatSheet: "MFMチートシート"
   intro: "MFMは、Misskey内の様々な場所で使用できる専用のマークアップ言語です。ここでは、MFMで使用可能な構文一覧が確認できます。"

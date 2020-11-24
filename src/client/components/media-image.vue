@@ -68,7 +68,7 @@ export default defineComponent({
 	created() {
 		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 		this.$watch('image', () => {
-			this.hide = this.image.isSensitive && !this.$store.state.device.alwaysShowNsfw;
+			this.hide = (this.$store.state.device.nsfw === 'force') ? true : this.image.isSensitive && (this.$store.state.device.nsfw !== 'ignore');
 			if (this.image.blurhash) {
 				this.color = extractAvgColorFromBlurhash(this.image.blurhash);
 			}

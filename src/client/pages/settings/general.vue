@@ -53,6 +53,13 @@
 		<option value="always">{{ $t('_instanceTicker.always') }}</option>
 	</FormSelect>
 
+	<FormSelect v-model:value="nsfw">
+		<template #label>{{ $t('nsfw') }}</template>
+		<option value="respect">{{ $t('_nsfw.respect') }}</option>
+		<option value="ignore">{{ $t('_nsfw.ignore') }}</option>
+		<option value="force">{{ $t('_nsfw.force') }}</option>
+	</FormSelect>
+
 	<FormGroup>
 		<template #label>{{ $t('defaultNavigationBehaviour') }}</template>
 		<FormSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</FormSwitch>
@@ -167,6 +174,11 @@ export default defineComponent({
 		instanceTicker: {
 			get() { return this.$store.state.device.instanceTicker; },
 			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
+		},
+
+		nsfw: {
+			get() { return this.$store.state.device.nsfw; },
+			set(value) { this.$store.commit('device/set', { key: 'nsfw', value }); }
 		},
 
 		enableInfiniteScroll: {

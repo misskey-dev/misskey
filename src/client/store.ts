@@ -55,7 +55,7 @@ export const defaultDeviceUserSettings = {
 export const defaultDeviceSettings = {
 	lang: null,
 	loadRawImages: false,
-	alwaysShowNsfw: false,
+	nsfw: 'respect', // respect, force, ignore
 	useOsNativeEmojis: false,
 	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
