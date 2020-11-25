@@ -1019,6 +1019,7 @@ _profile:
   youCanIncludeHashtags: "You can also include hashtags in your bio."
   metadata: "Additional Information"
   metadataEdit: "Edit additional Information"
+  metadataDescription: "You can display up to four additional information sections in your profile."
   metadataLabel: "Label"
   metadataContent: "Content"
 _exportOrImport:
