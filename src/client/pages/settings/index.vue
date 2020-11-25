@@ -7,6 +7,7 @@
 			<FormLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><Fa :icon="faLockOpen"/></template>{{ $t('privacy') }}</FormLink>
 			<FormLink :active="page === 'reaction'" replace to="/settings/reaction"><template #icon><Fa :icon="faLaugh"/></template>{{ $t('reaction') }}</FormLink>
 			<FormLink :active="page === 'notifications'" replace to="/settings/notifications"><template #icon><Fa :icon="faBell"/></template>{{ $t('notifications') }}</FormLink>
+			<FormLink :active="page === 'email'" replace to="/settings/email"><template #icon><Fa :icon="faEnvelope"/></template>{{ $t('email') }}</FormLink>
 			<FormLink :active="page === 'integration'" replace to="/settings/integration"><template #icon><Fa :icon="faShareAlt"/></template>{{ $t('integration') }}</FormLink>
 			<FormLink :active="page === 'security'" replace to="/settings/security"><template #icon><Fa :icon="faLock"/></template>{{ $t('security') }}</FormLink>
 		</FormGroup>
@@ -39,7 +40,7 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes } from '@fortawesome/free-solid-svg-icons';
-import { faLaugh, faBell } from '@fortawesome/free-regular-svg-icons';
+import { faLaugh, faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { store } from '@/store';
 import { i18n } from '@/i18n';
 import FormLink from '@/components/form/link.vue';
@@ -89,6 +90,8 @@ export default defineComponent({
 				case 'apps': return defineAsyncComponent(() => import('./apps.vue'));
 				case 'other': return defineAsyncComponent(() => import('./other.vue'));
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
+				case 'email': return defineAsyncComponent(() => import('./email.vue'));
+				case 'email/address': return defineAsyncComponent(() => import('./email-address.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 				case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
@@ -124,7 +127,7 @@ export default defineComponent({
 				store.dispatch('logout');
 				location.href = '/';
 			},
-			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes,
+			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faEnvelope,
 		};
 	},
 });

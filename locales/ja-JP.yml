@@ -567,7 +567,8 @@ useStarForReactionFallback: "リアクション絵文字が不明な場合、代
 emailConfig: "メールサーバー設定"
 enableEmail: "メール配信機能を有効化する"
 emailConfigInfo: "メールアドレスの確認やパスワードリセットの際に使います"
-email: "メールアドレス"
+email: "メール"
+emailAddress: "メールアドレス"
 smtpConfig: "SMTP サーバーの設定"
 smtpHost: "ホスト"
 smtpPort: "ポート"
@@ -647,6 +648,9 @@ lockedAccountInfo: "フォローを承認制にしても、ノートの公開範
 alwaysMarkSensitive: "デフォルトでメディアを閲覧注意にする"
 loadRawImages: "添付画像のサムネイルをオリジナル画質にする"
 disableShowingAnimatedImages: "アニメーション画像を再生しない"
+verificationEmailSent: "確認のメールを送信しました。メールに記載されたリンクにアクセスして、設定を完了してください。"
+notSet: "未設定"
+emailVerified: "メールアドレスが確認されました"
 
 _nsfw:
   respect: "閲覧注意のメディアは隠す"
