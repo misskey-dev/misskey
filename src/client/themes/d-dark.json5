@@ -1,25 +1,25 @@
 {
-	id: '60960086-26da-4f3c-bb0c-f6a4f89e0f60',
+	id: '8050783a-7f63-445a-b270-36d0f6ba1677',
 
-	name: 'Mi D Red',
+	name: 'Mi Dark',
 	author: 'syuilo',
+	desc: 'Default light theme',
 
 	base: 'dark',
 
 	props: {
-		accent: 'rgb(196 115 69)',
-		bg: 'rgb(54, 54, 54)',
+		bg: '#232323',
 		fg: 'rgb(199, 209, 216)',
 		fgHighlighted: '#fff',
 		divider: 'rgba(255, 255, 255, 0.14)',
-		panel: '@bg',
-		panelShadow: '" 0 0 0 1px var(--divider)',
+		panel: '#2d2d2d',
+		panelShadow: '" 0 8px 24px rgb(0 0 0 / 25%)',
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
 		infoFg: '@accent',
 		infoBg: 'rgb(0, 0, 0)',
 		header: ':alpha<0.7<@bg',
-		navBg: 'rgb(71, 71, 71)',
+		navBg: '#363636',
 		renote: '@accent',
 		mention: '#da6d35',
 		mentionMe: '#d44c4c',
