@@ -556,7 +556,6 @@ useStarForReactionFallback: "En caso de que los emojis de reacciones no sean cla
 emailConfig: "Configuración del servidor de correos"
 enableEmail: "Activar el envío de correos electrónicos"
 emailConfigInfo: "Usar en caso de validación de correo electrónico y pedido de contraseña"
-email: "Correo electrónico"
 smtpConfig: "Configuración del servidor SMTP"
 smtpHost: "Host"
 smtpPort: "Puerto"
@@ -932,7 +931,6 @@ _profile:
   username: "Nombre de usuario"
   description: "Descripción"
   youCanIncludeHashtags: "Puedes añadir hashtags"
-  metadata: "Información adicional"
   metadataLabel: "Etiqueta"
   metadataContent: "Contenido"
 _exportOrImport:
