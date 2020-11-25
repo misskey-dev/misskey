@@ -32,8 +32,8 @@ export default class DriveChart extends Chart<DriveLog> {
 		const [localCount, remoteCount, localSize, remoteSize] = await Promise.all([
 			DriveFiles.count({ userHost: null }),
 			DriveFiles.count({ userHost: Not(IsNull()) }),
-			DriveFiles.clacDriveUsageOfLocal(),
-			DriveFiles.clacDriveUsageOfRemote()
+			DriveFiles.calcDriveUsageOfLocal(),
+			DriveFiles.calcDriveUsageOfRemote()
 		]);
 
 		return {

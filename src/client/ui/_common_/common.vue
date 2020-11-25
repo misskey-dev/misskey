@@ -15,8 +15,9 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { stream, sound, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
+import { stream, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
 import { store } from '@/store';
+import * as sound from '@/scripts/sound';
 
 export default defineComponent({
 	components: {
@@ -38,7 +39,7 @@ export default defineComponent({
 				}, {}, 'closed');
 			}
 
-			sound('notification');
+			sound.play('notification');
 		};
 
 		if (store.getters.isSignedIn) {

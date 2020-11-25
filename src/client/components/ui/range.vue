@@ -1,7 +1,7 @@
 <template>
 <div class="timctyfi" :class="{ focused, disabled }">
 	<div class="icon"><slot name="icon"></slot></div>
-	<span class="title"><slot name="title"></slot></span>
+	<span class="label"><slot name="label"></slot></span>
 	<input
 		type="range"
 		ref="input"
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';import * as os from '@/os';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {

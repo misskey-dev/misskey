@@ -51,7 +51,7 @@ export default class InstanceChart extends Chart<InstanceLog> {
 			Followings.count({ followerHost: group }),
 			Followings.count({ followeeHost: group }),
 			DriveFiles.count({ userHost: group }),
-			DriveFiles.clacDriveUsageOfHost(group),
+			DriveFiles.calcDriveUsageOfHost(group),
 		]);
 
 		return {
