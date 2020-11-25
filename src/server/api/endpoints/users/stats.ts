@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { ID } from '../../../../misc/cafy-id';
-import { DriveFiles, Followings, NoteReactions, Notes, PollVotes, Users } from '../../../../models';
+import { DriveFiles, Followings, NoteFavorites, NoteReactions, Notes, PageLikes, PollVotes, ReversiGames, Users } from '../../../../models';
 
 export const meta = {
 	tags: ['users'],
@@ -44,8 +44,12 @@ export default define(meta, async (ps, me) => {
 		remoteFollowersCount,
 		sentReactionsCount,
 		receivedReactionsCount,
+		noteFavoritesCount,
+		pageLikesCount,
+		pageLikedCount,
 		driveFilesCount,
 		driveUsage,
+		reversiCount,
 	] = await Promise.all([
 		Notes.createQueryBuilder('note')
 			.where('note.userId = :userId', { userId: user.id })
@@ -94,10 +98,24 @@ export default define(meta, async (ps, me) => {
 			.innerJoin('reaction.note', 'note')
 			.where('note.userId = :userId', { userId: user.id })
 			.getCount(),
+		NoteFavorites.createQueryBuilder('favorite')
+			.where('favorite.userId = :userId', { userId: user.id })
+			.getCount(),
+		PageLikes.createQueryBuilder('like')
+			.where('like.userId = :userId', { userId: user.id })
+			.getCount(),
+		PageLikes.createQueryBuilder('like')
+			.innerJoin('like.page', 'page')
+			.where('page.userId = :userId', { userId: user.id })
+			.getCount(),
 		DriveFiles.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.getCount(),
 		DriveFiles.calcDriveUsageOf(user),
+		ReversiGames.createQueryBuilder('game')
+			.where('game.user1Id = :userId', { userId: user.id })
+			.orWhere('game.user2Id = :userId', { userId: user.id })
+			.getCount(),
 	]);
 
 	return {
@@ -116,7 +134,11 @@ export default define(meta, async (ps, me) => {
 		followersCount: localFollowersCount + remoteFollowersCount,
 		sentReactionsCount,
 		receivedReactionsCount,
+		noteFavoritesCount,
+		pageLikesCount,
+		pageLikedCount,
 		driveFilesCount,
 		driveUsage,
+		reversiCount,
 	};
 });

@@ -651,6 +651,10 @@ disableShowingAnimatedImages: "アニメーション画像を再生しない"
 verificationEmailSent: "確認のメールを送信しました。メールに記載されたリンクにアクセスして、設定を完了してください。"
 notSet: "未設定"
 emailVerified: "メールアドレスが確認されました"
+noteFavoritesCount: "お気に入りノートの数"
+pageLikesCount: "Pageにいいねした数"
+pageLikedCount: "Pageにいいねされた数"
+reversiCount: "リバーシの対局数"
 
 _nsfw:
   respect: "閲覧注意のメディアは隠す"

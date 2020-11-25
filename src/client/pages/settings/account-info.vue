@@ -51,6 +51,10 @@
 			<template #value>{{ number(stats.receivedReactionsCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
+			<template #key>{{ $t('noteFavoritesCount') }}</template>
+			<template #value>{{ number(stats.noteFavoritesCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
 			<template #key>{{ $t('followingCount') }}</template>
 			<template #value>{{ number(stats.followingCount) }}</template>
 		</FormKeyValueView>
@@ -75,12 +79,24 @@
 			<template #value>{{ number(stats.remoteFollowersCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
+			<template #key>{{ $t('pageLikesCount') }}</template>
+			<template #value>{{ number(stats.pageLikesCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('pageLikedCount') }}</template>
+			<template #value>{{ number(stats.pageLikedCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
 			<template #key>{{ $t('driveFilesCount') }}</template>
 			<template #value>{{ number(stats.driveFilesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>{{ $t('driveUsage') }}</template>
 			<template #value>{{ bytes(stats.driveUsage) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('reversiCount') }}</template>
+			<template #value>{{ number(stats.reversiCount) }}</template>
 		</FormKeyValueView>
 	</FormGroup>
 
