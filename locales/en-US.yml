@@ -758,7 +758,7 @@ _channel:
   notesCount: "{n} Notes"
 _sidebar:
   full: "Full"
-  icon: "Avatar"
+  icon: "Icons"
   hide: "Hide"
 _wordMute:
   muteWords: "Word to mute"
