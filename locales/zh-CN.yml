@@ -1019,6 +1019,7 @@ _profile:
   youCanIncludeHashtags: "您可以包含一个哈希标签。"
   metadata: "附加信息"
   metadataEdit: "附加信息编辑"
+  metadataDescription: "最多可以在个人资料中以表格形式显示四条其他信息。"
   metadataLabel: "标签"
   metadataContent: "内容"
 _exportOrImport:
