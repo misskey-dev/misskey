@@ -55,8 +55,24 @@
 			<template #value>{{ number(stats.followingCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
+			<template #key>{{ $t('followingCount') }} ({{ $t('local') }})</template>
+			<template #value>{{ number(stats.localFollowingCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followingCount') }} ({{ $t('remote') }})</template>
+			<template #value>{{ number(stats.remoteFollowingCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
 			<template #key>{{ $t('followersCount') }}</template>
 			<template #value>{{ number(stats.followersCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followersCount') }} ({{ $t('local') }})</template>
+			<template #value>{{ number(stats.localFollowersCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $t('followersCount') }} ({{ $t('remote') }})</template>
+			<template #value>{{ number(stats.remoteFollowersCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>{{ $t('driveFilesCount') }}</template>

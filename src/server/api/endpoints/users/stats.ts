@@ -38,8 +38,10 @@ export default define(meta, async (ps, me) => {
 		renotedCount,
 		pollVotesCount,
 		pollVotedCount,
-		followingCount,
-		followersCount,
+		localFollowingCount,
+		remoteFollowingCount,
+		localFollowersCount,
+		remoteFollowersCount,
 		sentReactionsCount,
 		receivedReactionsCount,
 		driveFilesCount,
@@ -71,9 +73,19 @@ export default define(meta, async (ps, me) => {
 			.getCount(),
 		Followings.createQueryBuilder('following')
 			.where('following.followerId = :userId', { userId: user.id })
+			.andWhere('following.followeeHost IS NULL')
+			.getCount(),
+		Followings.createQueryBuilder('following')
+			.where('following.followerId = :userId', { userId: user.id })
+			.andWhere('following.followeeHost IS NOT NULL')
 			.getCount(),
 		Followings.createQueryBuilder('following')
 			.where('following.followeeId = :userId', { userId: user.id })
+			.andWhere('following.followerHost IS NULL')
+			.getCount(),
+		Followings.createQueryBuilder('following')
+			.where('following.followeeId = :userId', { userId: user.id })
+			.andWhere('following.followerHost IS NOT NULL')
 			.getCount(),
 		NoteReactions.createQueryBuilder('reaction')
 			.where('reaction.userId = :userId', { userId: user.id })
@@ -96,8 +108,12 @@ export default define(meta, async (ps, me) => {
 		renotedCount,
 		pollVotesCount,
 		pollVotedCount,
-		followingCount,
-		followersCount,
+		localFollowingCount,
+		remoteFollowingCount,
+		localFollowersCount,
+		remoteFollowersCount,
+		followingCount: localFollowingCount + remoteFollowingCount,
+		followersCount: localFollowersCount + remoteFollowersCount,
 		sentReactionsCount,
 		receivedReactionsCount,
 		driveFilesCount,
