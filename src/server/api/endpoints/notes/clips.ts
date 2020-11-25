@@ -48,6 +48,7 @@ export default define(meta, async (ps, me) => {
 
 	const clips = await Clips.find({
 		id: In(clipNotes.map(x => x.clipId)),
+		isPublic: true
 	});
 
 	return await Promise.all(clips.map(x => Clips.pack(x)));

@@ -1,115 +1,113 @@
 <template>
-<div class="mk-user-page" v-if="user" v-size="{ max: [500] }">
-	<!-- TODO -->
-	<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
-	<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
+<div>
+	<div class="mk-user-page" v-if="user" v-size="{ max: [500] }" :class="{ _section: narrow === false }">
+		<!-- TODO -->
+		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSuspended') }}</div> -->
+		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $t('userSilenced') }}</div> -->
 
-	<div class="profile _section _fitBottom">
-		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_content _vMargin"/>
+		<div class="main">
+			<div class="profile _vMargin" :class="{ _section: narrow === true }">
+				<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_content _vMargin"/>
 
-		<div class="_content _vMargin" :key="user.id">
-			<div class="banner-container" :style="style">
-				<div class="banner" ref="banner" :style="style"></div>
-				<div class="fade"></div>
-				<div class="title">
-					<MkUserName class="name" :user="user" :nowrap="true"/>
-					<div class="bottom">
-						<span class="username"><MkAcct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-						<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
-						<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+				<div class="_content _panel _vMargin" :key="user.id">
+					<div class="banner-container" :style="style">
+						<div class="banner" ref="banner" :style="style"></div>
+						<div class="fade"></div>
+						<div class="title">
+							<MkUserName class="name" :user="user" :nowrap="true"/>
+							<div class="bottom">
+								<span class="username"><MkAcct :user="user" :detail="true" /></span>
+								<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
+								<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
+								<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
+								<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+							</div>
+						</div>
+						<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
+						<div class="actions" v-if="$store.getters.isSignedIn">
+							<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
+							<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+						</div>
+					</div>
+					<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
+					<div class="title">
+						<MkUserName :user="user" :nowrap="false" class="name"/>
+						<div class="bottom">
+							<span class="username"><MkAcct :user="user" :detail="true" /></span>
+							<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
+							<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
+							<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
+							<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+						</div>
+					</div>
+					<div class="description">
+						<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+						<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
+					</div>
+					<div class="fields system">
+						<dl class="field" v-if="user.location">
+							<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
+							<dd class="value">{{ user.location }}</dd>
+						</dl>
+						<dl class="field" v-if="user.birthday">
+							<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
+							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+						</dl>
+						<dl class="field">
+							<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
+							<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
+						</dl>
+					</div>
+					<div class="fields" v-if="user.fields.length > 0">
+						<dl class="field" v-for="(field, i) in user.fields" :key="i">
+							<dt class="name">
+								<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
+							</dt>
+							<dd class="value">
+								<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
+							</dd>
+						</dl>
+					</div>
+					<div class="status">
+						<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
+							<b>{{ number(user.notesCount) }}</b>
+							<span>{{ $t('notes') }}</span>
+						</MkA>
+						<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
+							<b>{{ number(user.followingCount) }}</b>
+							<span>{{ $t('following') }}</span>
+						</MkA>
+						<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
+							<b>{{ number(user.followersCount) }}</b>
+							<span>{{ $t('followers') }}</span>
+						</MkA>
 					</div>
 				</div>
-				<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
-				<div class="actions" v-if="$store.getters.isSignedIn">
-					<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
-					<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+			</div>
+
+			<template v-if="page === 'index'">
+				<div v-if="user.pinnedNotes.length > 0" :class="{ _section: narrow === true, _vMargin: narrow === false }">
+					<XNote v-for="note in user.pinnedNotes" class="note _content _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
 				</div>
-			</div>
-			<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
-			<div class="title">
-				<MkUserName :user="user" :nowrap="false" class="name"/>
-				<div class="bottom">
-					<span class="username"><MkAcct :user="user" :detail="true" /></span>
-					<span v-if="user.isAdmin" :title="$t('isAdmin')" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-					<span v-if="!user.isAdmin && user.isModerator" :title="$t('isModerator')" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-					<span v-if="user.isLocked" :title="$t('isLocked')"><Fa :icon="faLock"/></span>
-					<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
+				<div v-if="narrow === true" class="_section">
+					<XPhotos class="_content _vMargin" :user="user" :key="user.id"/>
+					<XActivity class="_content _vMargin" :user="user" :key="user.id"/>
 				</div>
-			</div>
-			<div class="description">
-				<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
-				<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
-			</div>
-			<div class="fields system">
-				<dl class="field" v-if="user.location">
-					<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $t('location') }}</dt>
-					<dd class="value">{{ user.location }}</dd>
-				</dl>
-				<dl class="field" v-if="user.birthday">
-					<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $t('birthday') }}</dt>
-					<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
-				</dl>
-				<dl class="field">
-					<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $t('registeredDate') }}</dt>
-					<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
-				</dl>
-			</div>
-			<div class="fields" v-if="user.fields.length > 0">
-				<dl class="field" v-for="(field, i) in user.fields" :key="i">
-					<dt class="name">
-						<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
-					</dt>
-					<dd class="value">
-						<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
-					</dd>
-				</dl>
-			</div>
-			<div class="status">
-				<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
-					<b>{{ number(user.notesCount) }}</b>
-					<span>{{ $t('notes') }}</span>
-				</MkA>
-				<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
-					<b>{{ number(user.followingCount) }}</b>
-					<span>{{ $t('following') }}</span>
-				</MkA>
-				<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
-					<b>{{ number(user.followersCount) }}</b>
-					<span>{{ $t('followers') }}</span>
-				</MkA>
-			</div>
+				<div :class="{ _section: narrow === true, _vMargin: narrow === false }">
+					<XUserTimeline :user="user" class="_content"/>
+				</div>
+			</template>
+			<XFollowList v-else-if="page === 'following'" :class="{ _section: narrow === true, _vMargin: narrow === false }" type="following" :user="user"/>
+			<XFollowList v-else-if="page === 'followers'" :class="{ _section: narrow === true, _vMargin: narrow === false }" type="followers" :user="user"/>
+		</div>
+		<div class="side" v-if="narrow === false">
+			<XPhotos class="_vMargin" :user="user" :key="user.id"/>
+			<XActivity class="_vMargin" :user="user" :key="user.id"/>
 		</div>
 	</div>
-
-	<template v-if="page === 'index'">
-		<div class="_section">
-			<div class="_content _vMargin" v-if="user.pinnedNotes.length > 0">
-				<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
-			</div>
-			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-images">
-				<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $t('images') }}</template>
-				<div>
-					<XPhotos :user="user" :key="user.id"/>
-				</div>
-			</MkFolder>
-			<MkFolder :body-togglable="true" class="_content _vMargin" persist-key="user-activity">
-				<template #header><Fa :icon="faChartBar" style="margin-right: 0.5em;"/>{{ $t('activity') }}</template>
-				<div>
-					<XActivity :user="user" :key="user.id"/>
-				</div>
-			</MkFolder>
-		</div>
-		<div class="_section">
-			<XUserTimeline :user="user" class="_content"/>
-		</div>
-	</template>
-	<XFollowList v-else-if="page === 'following'" type="following" :user="user"/>
-	<XFollowList v-else-if="page === 'followers'" type="followers" :user="user"/>
-</div>
-<div v-else-if="error">
-	<MkError @retry="fetch()"/>
+	<div v-else-if="error">
+		<MkError @retry="fetch()"/>
+	</div>
 </div>
 </template>
 
@@ -170,6 +168,7 @@ export default defineComponent({
 			user: null,
 			error: null,
 			parallaxAnimationId: null,
+			narrow: null,
 			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
 		};
 	},
@@ -197,6 +196,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
+		this.narrow = this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -254,220 +254,234 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-user-page {
-	> .punished {
-		font-size: 0.8em;
-		padding: 16px;
-	}
+	display: flex;
+	max-width: 1050px;
+	margin: 0 auto;
+	
+	> .main {
+		flex: 1;
 
-	> .profile {
-		> ._content {
-			position: relative;
-			overflow: hidden;
+		> .punished {
+			font-size: 0.8em;
+			padding: 16px;
+		}
 
-			> .banner-container {
+		> .profile {
+			> ._content {
 				position: relative;
-				height: 250px;
 				overflow: hidden;
-				background-size: cover;
-				background-position: center;
-				border-radius: 12px;
 
-				> .banner {
-					height: 100%;
-					background-color: #4c5e6d;
+				> .banner-container {
+					position: relative;
+					height: 250px;
+					overflow: hidden;
 					background-size: cover;
 					background-position: center;
-					box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
-					will-change: background-position;
-				}
 
-				> .fade {
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					width: 100%;
-					height: 78px;
-					background: linear-gradient(transparent, rgba(#000, 0.7));
-				}
+					> .banner {
+						height: 100%;
+						background-color: #4c5e6d;
+						background-size: cover;
+						background-position: center;
+						box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
+						will-change: background-position;
+					}
 
-				> .followed {
-					position: absolute;
-					top: 12px;
-					left: 12px;
-					padding: 4px 8px;
-					color: #fff;
-					background: rgba(0, 0, 0, 0.7);
-					font-size: 0.7em;
-					border-radius: 6px;
-				}
+					> .fade {
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						width: 100%;
+						height: 78px;
+						background: linear-gradient(transparent, rgba(#000, 0.7));
+					}
 
-				> .actions {
-					position: absolute;
-					top: 12px;
-					right: 12px;
-					-webkit-backdrop-filter: blur(8px);
-					backdrop-filter: blur(8px);
-					background: rgba(0, 0, 0, 0.2);
-					padding: 8px;
-					border-radius: 24px;
-
-					> .menu {
-						vertical-align: bottom;
-						height: 31px;
-						width: 31px;
+					> .followed {
+						position: absolute;
+						top: 12px;
+						left: 12px;
+						padding: 4px 8px;
 						color: #fff;
-						text-shadow: 0 0 8px #000;
-						font-size: 16px;
+						background: rgba(0, 0, 0, 0.7);
+						font-size: 0.7em;
+						border-radius: 6px;
 					}
 
-					> .koudoku {
-						margin-left: 4px;
-						vertical-align: bottom;
+					> .actions {
+						position: absolute;
+						top: 12px;
+						right: 12px;
+						-webkit-backdrop-filter: blur(8px);
+						backdrop-filter: blur(8px);
+						background: rgba(0, 0, 0, 0.2);
+						padding: 8px;
+						border-radius: 24px;
+
+						> .menu {
+							vertical-align: bottom;
+							height: 31px;
+							width: 31px;
+							color: #fff;
+							text-shadow: 0 0 8px #000;
+							font-size: 16px;
+						}
+
+						> .koudoku {
+							margin-left: 4px;
+							vertical-align: bottom;
+						}
 					}
-				}
 
-				> .title {
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					width: 100%;
-					padding: 0 0 8px 154px;
-					box-sizing: border-box;
-					color: #fff;
+					> .title {
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						width: 100%;
+						padding: 0 0 8px 154px;
+						box-sizing: border-box;
+						color: #fff;
 
-					> .name {
-						display: block;
-						margin: 0;
-						line-height: 32px;
-						font-weight: bold;
-						font-size: 1.8em;
-						text-shadow: 0 0 8px #000;
-					}
+						> .name {
+							display: block;
+							margin: 0;
+							line-height: 32px;
+							font-weight: bold;
+							font-size: 1.8em;
+							text-shadow: 0 0 8px #000;
+						}
 
-					> .bottom {
-						> * {
-							display: inline-block;
-							margin-right: 16px;
-							line-height: 20px;
-							opacity: 0.8;
+						> .bottom {
+							> * {
+								display: inline-block;
+								margin-right: 16px;
+								line-height: 20px;
+								opacity: 0.8;
 
-							&.username {
-								font-weight: bold;
+								&.username {
+									font-weight: bold;
+								}
 							}
 						}
 					}
 				}
-			}
 
-			> .title {
-				display: none;
-				text-align: center;
-				padding: 50px 8px 16px 8px;
-				font-weight: bold;
-				border-bottom: solid 1px var(--divider);
-
-				> .bottom {
-					> * {
-						display: inline-block;
-						margin-right: 8px;
-						opacity: 0.8;
-					}
-				}
-			}
-
-			> .avatar {
-				display: block;
-				position: absolute;
-				top: 170px;
-				left: 16px;
-				z-index: 2;
-				width: 120px;
-				height: 120px;
-				box-shadow: 1px 1px 3px rgba(#000, 0.2);
-			}
-
-			> .description {
-				padding: 24px 24px 24px 154px;
-				font-size: 0.95em;
-
-				> .empty {
-					margin: 0;
-					opacity: 0.5;
-				}
-			}
-
-			> .fields {
-				padding: 24px;
-				font-size: 0.9em;
-				border-top: solid 1px var(--divider);
-
-				> .field {
-					display: flex;
-					padding: 0;
-					margin: 0;
-					align-items: center;
-
-					&:not(:last-child) {
-						margin-bottom: 8px;
-					}
-
-					> .name {
-						width: 30%;
-						overflow: hidden;
-						white-space: nowrap;
-						text-overflow: ellipsis;
-						font-weight: bold;
-						text-align: center;
-					}
-
-					> .value {
-						width: 70%;
-						overflow: hidden;
-						white-space: nowrap;
-						text-overflow: ellipsis;
-					}
-				}
-
-				&.system > .field > .name {
-				}
-			}
-
-			> .status {
-				display: flex;
-				padding: 24px;
-				border-top: solid 1px var(--divider);
-
-				> a {
-					flex: 1;
+				> .title {
+					display: none;
 					text-align: center;
+					padding: 50px 8px 16px 8px;
+					font-weight: bold;
+					border-bottom: solid 1px var(--divider);
 
-					&.active {
-						color: var(--accent);
+					> .bottom {
+						> * {
+							display: inline-block;
+							margin-right: 8px;
+							opacity: 0.8;
+						}
+					}
+				}
+
+				> .avatar {
+					display: block;
+					position: absolute;
+					top: 170px;
+					left: 16px;
+					z-index: 2;
+					width: 120px;
+					height: 120px;
+					box-shadow: 1px 1px 3px rgba(#000, 0.2);
+				}
+
+				> .description {
+					padding: 24px 24px 24px 154px;
+					font-size: 0.95em;
+
+					> .empty {
+						margin: 0;
+						opacity: 0.5;
+					}
+				}
+
+				> .fields {
+					padding: 24px;
+					font-size: 0.9em;
+					border-top: solid 1px var(--divider);
+
+					> .field {
+						display: flex;
+						padding: 0;
+						margin: 0;
+						align-items: center;
+
+						&:not(:last-child) {
+							margin-bottom: 8px;
+						}
+
+						> .name {
+							width: 30%;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+							font-weight: bold;
+							text-align: center;
+						}
+
+						> .value {
+							width: 70%;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+						}
 					}
 
-					&:hover {
-						text-decoration: none;
+					&.system > .field > .name {
 					}
+				}
 
-					> b {
-						display: block;
-						line-height: 16px;
-					}
+				> .status {
+					display: flex;
+					padding: 24px;
+					border-top: solid 1px var(--divider);
 
-					> span {
-						font-size: 70%;
+					> a {
+						flex: 1;
+						text-align: center;
+
+						&.active {
+							color: var(--accent);
+						}
+
+						&:hover {
+							text-decoration: none;
+						}
+
+						> b {
+							display: block;
+							line-height: 16px;
+						}
+
+						> span {
+							font-size: 70%;
+						}
 					}
 				}
 			}
 		}
+
+		> .content {
+			margin-bottom: var(--margin);
+		}
 	}
 
-	> .content {
-		margin-bottom: var(--margin);
+	> .side {
+		flex-basis: 300px;
+		margin-left: var(--margin);
 	}
 
 	&.max-width_500px {
-		> .profile > ._content {
+		display: block;
+
+		> .main > .profile > ._content {
 			> .banner-container {
 				height: 140px;
 

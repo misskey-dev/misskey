@@ -77,7 +77,7 @@ export class Meta {
 	public blockedHosts: string[];
 
 	@Column('varchar', {
-		length: 512, array: true, default: '{"/announcements", "/featured", "/channels", "/explore", "/games/reversi", "/about-misskey"}'
+		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}'
 	})
 	public pinnedPages: string[];
 
@@ -93,6 +93,18 @@ export class Meta {
 		nullable: true
 	})
 	public bannerUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public backgroundImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
+	public logoImageUrl: string | null;
 
 	@Column('varchar', {
 		length: 512,

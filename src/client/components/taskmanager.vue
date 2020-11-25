@@ -3,7 +3,7 @@
 	<template #header>
 		<Fa :icon="faTerminal" style="margin-right: 0.5em;"/>Task Manager
 	</template>
-	<div class="qljqmnzj">
+	<div class="qljqmnzj _monospace">
 		<MkTab v-model:value="tab" style="border-bottom: solid 1px var(--divider);">
 			<option value="windows">Windows</option>
 			<option value="stream">Stream</option>
@@ -150,7 +150,6 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 
 	> .content {
 		flex: 1;

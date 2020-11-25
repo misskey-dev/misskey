@@ -19,6 +19,9 @@ block og
 	meta(property='og:image'       content= user.avatarUrl)
 
 block meta
+	if profile.noCrawle
+		meta(name='robots' content='noindex')
+
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)
 	meta(name='misskey:clip-id' content=clip.id)

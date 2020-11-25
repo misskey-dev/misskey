@@ -55,7 +55,7 @@ export const defaultDeviceUserSettings = {
 export const defaultDeviceSettings = {
 	lang: null,
 	loadRawImages: false,
-	alwaysShowNsfw: false,
+	nsfw: 'respect', // respect, force, ignore
 	useOsNativeEmojis: false,
 	serverDisconnectedBehavior: 'quiet',
 	accounts: [],
@@ -87,14 +87,6 @@ export const defaultDeviceSettings = {
 	deckColumnAlign: 'left',
 	deckAlwaysShowMainColumn: true,
 	deckMainColumnPlace: 'left',
-	sfxVolume: 0.3,
-	sfxNote: 'syuilo/down',
-	sfxNoteMy: 'syuilo/up',
-	sfxNotification: 'syuilo/pope2',
-	sfxChat: 'syuilo/pope1',
-	sfxChatBg: 'syuilo/waon',
-	sfxAntenna: 'syuilo/triple',
-	sfxChannel: 'syuilo/square-pico',
 	userData: {},
 };
 

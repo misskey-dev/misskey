@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.59.0",
+	"version": "12.60.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -252,7 +252,7 @@
 		"vuex": "4.0.0-rc.1",
 		"vuex-persistedstate": "3.1.0",
 		"web-push": "3.4.4",
-		"webpack": "5.5.0",
+		"webpack": "5.6.0",
 		"webpack-cli": "4.2.0",
 		"websocket": "1.0.32",
 		"ws": "7.3.1",

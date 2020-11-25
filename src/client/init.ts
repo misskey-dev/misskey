@@ -16,7 +16,8 @@ import { router } from './router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
-import { stream, sound, isMobile, dialog } from '@/os';
+import { stream, isMobile, dialog } from '@/os';
+import * as sound from './scripts/sound';
 
 console.info(`Misskey v${version}`);
 
@@ -50,7 +51,7 @@ if (_DEV_) {
 document.addEventListener('touchend', () => {}, { passive: true });
 
 if (localStorage.getItem('theme') == null) {
-	applyTheme(require('@/themes/l-white.json5'));
+	applyTheme(require('@/themes/l-light.json5'));
 }
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
@@ -307,7 +308,7 @@ if (store.getters.isSignedIn) {
 			hasUnreadMessagingMessage: true
 		});
 
-		sound('chatBg');
+		sound.play('chatBg');
 	});
 
 	main.on('readAllAntennas', () => {
@@ -321,7 +322,7 @@ if (store.getters.isSignedIn) {
 			hasUnreadAntenna: true
 		});
 
-		sound('antenna');
+		sound.play('antenna');
 	});
 
 	main.on('readAllAnnouncements', () => {
@@ -341,7 +342,7 @@ if (store.getters.isSignedIn) {
 			hasUnreadChannel: true
 		});
 
-		sound('channel');
+		sound.play('channel');
 	});
 
 	main.on('readAllAnnouncements', () => {

@@ -242,9 +242,11 @@ router.get('/notes/:note', async ctx => {
 
 	if (note) {
 		const _note = await Notes.pack(note);
+		const profile = await UserProfiles.findOne(note.userId).then(ensure);
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
+			profile,
 			// TODO: Let locale changeable by instance setting
 			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
@@ -280,9 +282,11 @@ router.get('/@:user/pages/:page', async ctx => {
 
 	if (page) {
 		const _page = await Pages.pack(page);
+		const profile = await UserProfiles.findOne(page.userId).then(ensure);
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
+			profile,
 			instanceName: meta.name || 'Misskey'
 		});
 
@@ -307,9 +311,11 @@ router.get('/clips/:clip', async ctx => {
 
 	if (clip) {
 		const _clip = await Clips.pack(clip);
+		const profile = await UserProfiles.findOne(clip.userId).then(ensure);
 		const meta = await fetchMeta();
 		await ctx.render('clip', {
 			clip: _clip,
+			profile,
 			instanceName: meta.name || 'Misskey'
 		});
 

@@ -94,6 +94,7 @@ import { url } from '@/config';
 import MkButton from '@/components/ui/button.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
+import * as sound from '@/scripts/sound';
 
 export default defineComponent({
 	components: {
@@ -245,11 +246,7 @@ export default defineComponent({
 			this.o.put(this.myColor, pos);
 
 			// サウンドを再生する
-			if (this.$store.state.device.enableSounds) {
-				const sound = new Audio(`${url}/assets/reversi-put-me.mp3`);
-				sound.volume = this.$store.state.device.soundVolume;
-				sound.play();
-			}
+			sound.play(this.myColor ? 'reversiPutBlack' : 'reversiPutWhite');
 
 			this.connection.send('set', {
 				pos: pos
@@ -268,10 +265,8 @@ export default defineComponent({
 			this.$forceUpdate();
 
 			// サウンドを再生する
-			if (this.$store.state.device.enableSounds && x.color != this.myColor) {
-				const sound = new Audio(`${url}/assets/reversi-put-you.mp3`);
-				sound.volume = this.$store.state.device.soundVolume;
-				sound.play();
+			if (x.color !== this.myColor) {
+				sound.play(x.color ? 'reversiPutBlack' : 'reversiPutWhite');
 			}
 		},
 
