@@ -564,7 +564,6 @@ useStarForReactionFallback: "Ставить ★ в качестве реакци
 emailConfig: "Настройки почтового сервера"
 enableEmail: "Включить обмен электронной почтой"
 emailConfigInfo: "Используется для подтверждения адреса электронной почты и сброса пароля."
-email: "Адрес электронной почты"
 smtpConfig: "Конфигурация SMTP-сервера"
 smtpHost: "Хост"
 smtpPort: "Порт"
@@ -975,7 +974,6 @@ _profile:
   username: "Имя пользователя"
   description: "О себе"
   youCanIncludeHashtags: "Можете использовать здесь хэштеги"
-  metadata: "Всякое"
   metadataLabel: "Метка"
   metadataContent: "Содержимое"
 _exportOrImport:
