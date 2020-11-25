@@ -86,6 +86,14 @@
 			<template #key>usePasswordLessLogin</template>
 			<template #value>{{ $store.state.i.usePasswordLessLogin ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>isModerator</template>
+			<template #value>{{ $store.state.i.isModerator ? $t('yes') : $t('no') }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>isAdmin</template>
+			<template #value>{{ $store.state.i.isAdmin ? $t('yes') : $t('no') }}</template>
+		</FormKeyValueView>
 	</FormGroup>
 </FormBase>
 </template>
