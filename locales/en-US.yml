@@ -564,7 +564,6 @@ useStarForReactionFallback: "Use ★ as fallback if the reaction emoji is unknow
 emailConfig: "Email server configuration"
 enableEmail: "Enable email distribution"
 emailConfigInfo: "Used to confirm your email during sign-up and if you forget your password"
-email: "Email Address"
 smtpConfig: "SMTP Server configuration"
 smtpHost: "Host"
 smtpPort: "Port"
@@ -975,7 +974,6 @@ _profile:
   username: "Username"
   description: "Bio"
   youCanIncludeHashtags: "You can also include hashtags in your bio."
-  metadata: "Other information"
   metadataLabel: "Label"
   metadataContent: "Content"
 _exportOrImport:
