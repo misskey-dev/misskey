@@ -552,7 +552,6 @@ useStarForReactionFallback: "Utiliser ★ comme alternative si l’émoji de ré
 emailConfig: "Configuration du serveur email"
 enableEmail: "Activer la distribution de courriel"
 emailConfigInfo: "Utilisé pour confirmer votre adresse de courriel et la réinitialisation de votre mot de passe en cas d’oubli."
-email: "Adresse de courrier électronique"
 smtpConfig: "Paramètres du serveur SMTP"
 smtpHost: "Hôte"
 smtpPort: "Port"
@@ -823,7 +822,6 @@ _profile:
   username: "Nom d’utilisateur·rice"
   description: "À propos de moi"
   youCanIncludeHashtags: "Vous pouvez également inclure des hashtags."
-  metadata: "Informations complémentaires"
   metadataLabel: "Étiquette"
   metadataContent: "Contenu"
 _exportOrImport:
