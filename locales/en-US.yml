@@ -652,6 +652,11 @@ emailVerified: "Email has been verified"
 noteFavoritesCount: "Amount of favorite notes"
 pageLikesCount: "Amount of received Page likes"
 pageLikedCount: "Amount of liked Pages"
+reversiCount: "Number of Reversi matches"
+_nsfw:
+  respect: "Hide NSFW media"
+  ignore: "Don't hide NSFW media"
+  force: "Hide all media"
 _mfm:
   cheatSheet: "MFM Cheatsheet"
   intro: "MFM is a Misskey-exclusive markup language that can be used in many places. Here you can view a list of all available MFM syntax."
@@ -770,6 +775,8 @@ _theme:
   manage: "Themes manager"
   code: "Theme code"
   installed: "{name} has been installed"
+  installedThemes: "Installed themes"
+  builtinThemes: "Built-in themes"
   alreadyInstalled: "The theme is already installed"
   invalid: "Theme format is invalid"
   make: "Make a theme"
@@ -843,6 +850,8 @@ _sfx:
   chatBg: "Messaging (Background)"
   antenna: "Antenna Reception"
   channel: "Channel notifications"
+  reversiPutBlack: "Reversi: Black makes a move"
+  reversiPutWhite: "Reversi: White makes a move"
 _ago:
   unknown: "Unknown"
   future: "Future"
@@ -1008,6 +1017,8 @@ _profile:
   username: "Username"
   description: "Bio"
   youCanIncludeHashtags: "You can also include hashtags in your bio."
+  metadata: "Additional Information"
+  metadataEdit: "Edit additional Information"
   metadataLabel: "Label"
   metadataContent: "Content"
 _exportOrImport:
