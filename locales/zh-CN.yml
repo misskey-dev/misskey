@@ -564,7 +564,6 @@ useStarForReactionFallback: "如果回应的是未知表情符号，则使用★
 emailConfig: "邮件服务器设置"
 enableEmail: "启用发送邮件功能"
 emailConfigInfo: "用于确认电子邮件和密码重置"
-email: "邮件地址"
 smtpConfig: "SMTP服务器设置"
 smtpHost: "主机名"
 smtpPort: "端口"
@@ -975,7 +974,6 @@ _profile:
   username: "用户名"
   description: "个人简介"
   youCanIncludeHashtags: "您可以包含一个哈希标签。"
-  metadata: "额外信息"
   metadataLabel: "标签"
   metadataContent: "内容"
 _exportOrImport:
