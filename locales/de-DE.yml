@@ -564,7 +564,6 @@ useStarForReactionFallback: "Verwende ★ falls das Reaktions-Emoji unbekannt is
 emailConfig: "Email-Server Konfiguration"
 enableEmail: "Email-Versand aktivieren"
 emailConfigInfo: "Zur Email-Bestätigung bei Registrierung und zum Zurücksetzen des Passworts verwendet"
-email: "Email-Adresse"
 smtpConfig: "SMTP-Server Konfiguration"
 smtpHost: "Host"
 smtpPort: "Port"
@@ -975,7 +974,6 @@ _profile:
   username: "Benutzername"
   description: "Über mich"
   youCanIncludeHashtags: "Du kannst auch Hashtags in deiner Beschreibung verwenden."
-  metadata: "Andere Informationen"
   metadataLabel: "Name"
   metadataContent: "Inhalt"
 _exportOrImport:
