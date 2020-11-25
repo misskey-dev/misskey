@@ -71,6 +71,10 @@
 	<FormGroup>
 		<template #label>{{ $t('other') }}</template>
 		<FormKeyValueView>
+			<template #key>emailVerified</template>
+			<template #value>{{ $store.state.i.emailVerified ? $t('yes') : $t('no') }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
 			<template #key>twoFactorEnabled</template>
 			<template #value>{{ $store.state.i.twoFactorEnabled ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
