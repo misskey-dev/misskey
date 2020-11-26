@@ -419,7 +419,10 @@ passwordMatched: "Все вірно"
 passwordNotMatched: "Паролі не співпадають"
 signinWith: "Увійти за допомогою {x}"
 signinFailed: "Не вдалося увійти. Введені ім’я користувача або пароль неправильнi."
+tapSecurityKey: "Торкніться ключа безпеки"
+or: "або"
 uiLanguage: "Мова інтерфейсу"
+groupInvited: "Запрошення до групи"
 aboutX: "Про {x}"
 useOsNativeEmojis: "Використовувати емодзі ОС"
 youHaveNoGroups: "Немає груп"
@@ -726,6 +729,7 @@ _relayStatus:
 _notification:
   youRenoted: "{name} поширив(ла) вашу нотатку"
   youWereFollowed: "Новий підписник"
+  youWereInvitedToGroup: "Запрошення до групи"
   _types:
     follow: "Підписки"
     mention: "Згадка"
