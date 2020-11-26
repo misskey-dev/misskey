@@ -1,23 +1,23 @@
 {
 	id: 'c503d768-7c70-4db2-a4e6-08264304bc8d',
 
-	name: 'Ai Persimmon',
+	name: 'Mi Persimmon',
 	author: 'syuilo',
 
 	base: 'dark',
 
 	props: {
 		accent: 'rgb(206, 102, 65)',
-		bg: 'rgb(41, 43, 41)',
+		bg: 'rgb(31, 33, 31)',
 		fg: '#cdd8c7',
 		fgHighlighted: '#fff',
 		divider: 'rgba(255, 255, 255, 0.14)',
-		panel: '@bg',
-		panelShadow: '" 0 0 0 1px var(--divider)',
+		panel: 'rgb(41, 43, 41)',
+		panelShadow: '" 0 8px 24px rgb(0 0 0 / 25%)',
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
-		infoFg: '@accent',
-		infoBg: 'rgb(0, 0, 0)',
+		infoFg: '@fg',
+		infoBg: '#333c3b',
 		header: ':alpha<0.7<@bg',
 		navBg: '#1f211f',
 		renote: '@accent',

@@ -847,20 +847,50 @@ export const test4: Map = {
 	]
 };
 
-// https://misskey.xyz/games/reversi/5aaabf7fe126e10b5216ea09 64
-export const test5: Map = {
-	name: 'Test5',
+// 検証用: この盤面で藍(lv3)が黒で始めると何故か(?)A1に打ってしまう
+export const test6: Map = {
+	name: 'Test6',
 	category: 'Test',
 	data: [
-		'--wwwwww--',
-		'--wwwbwwww',
-		'-bwwbwbwww',
-		'-bwwwbwbww',
-		'-bwwbwbwbw',
-		'-bwbwbwb-w',
-		'bwbwwbbb-w',
-		'w-wbbbbb--',
-		'--w-b-w---',
-		'----------'
+		'--wwwww-',
+		'wwwwwwww',
+		'wbbbwbwb',
+		'wbbbbwbb',
+		'wbwbbwbb',
+		'wwbwbbbb',
+		'--wbbbbb',
+		'-wwwww--',
+	]
+};
+
+// 検証用: この盤面で藍(lv3)が黒で始めると何故か(?)G7に打ってしまう
+export const test7: Map = {
+	name: 'Test7',
+	category: 'Test',
+	data: [
+		'b--w----',
+		'b-wwww--',
+		'bwbwwwbb',
+		'wbwwwwb-',
+		'wwwwwww-',
+		'-wwbbwwb',
+		'--wwww--',
+		'--wwww--',
+	]
+};
+
+// 検証用: この盤面で藍(lv5)が黒で始めると何故か(?)A1に打ってしまう
+export const test8: Map = {
+	name: 'Test8',
+	category: 'Test',
+	data: [
+		'--------',
+		'-----w--',
+		'w--www--',
+		'wwwwww--',
+		'bbbbwww-',
+		'wwwwww--',
+		'--www---',
+		'--ww----',
 	]
 };

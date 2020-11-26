@@ -94,6 +94,14 @@ export const meta = {
 			}
 		},
 
+		backgroundImageUrl: {
+			validator: $.optional.nullable.str,
+		},
+
+		logoImageUrl: {
+			validator: $.optional.nullable.str,
+		},
+
 		name: {
 			validator: $.optional.nullable.str,
 			desc: {
@@ -471,6 +479,14 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.iconUrl !== undefined) {
 		set.iconUrl = ps.iconUrl;
+	}
+
+	if (ps.backgroundImageUrl !== undefined) {
+		set.backgroundImageUrl = ps.backgroundImageUrl;
+	}
+
+	if (ps.logoImageUrl !== undefined) {
+		set.logoImageUrl = ps.logoImageUrl;
 	}
 
 	if (ps.name !== undefined) {

@@ -38,6 +38,7 @@ import parseAcct from '../../../misc/acct/parse';
 import { isBottom, onScrollBottom, scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { popout } from '@/scripts/popout';
+import * as sound from '@/scripts/sound';
 
 const Component = defineComponent({
 	components: {
@@ -218,7 +219,7 @@ const Component = defineComponent({
 		},
 
 		onMessage(message) {
-			os.sound('chat');
+			sound.play('chat');
 
 			const _isBottom = isBottom(this.$el, 64);
 

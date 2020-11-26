@@ -17,10 +17,8 @@
 		<span></span>
 	</span>
 	<span class="label">
-		<span :aria-hidden="!checked"><slot></slot></span>
-		<p :aria-hidden="!checked">
-			<slot name="desc"></slot>
-		</p>
+		<span><slot></slot></span>
+		<p><slot name="desc"></slot></p>
 	</span>
 </div>
 </template>

@@ -1,79 +1,67 @@
 <template>
-<div class="_section">
-	<div class="llvierxe _card">
-		<div class="_title"><Fa :icon="faUser"/> {{ $t('profile') }}<small style="display: block; font-weight: normal; opacity: 0.6;">@{{ $store.state.i.username }}@{{ host }}</small></div>
-		<div class="_content">
-			<div class="header" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
-				<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
-			</div>
-		
-			<MkInput v-model:value="name" :max="30">
-				<span>{{ $t('_profile.name') }}</span>
-			</MkInput>
-
-			<MkTextarea v-model:value="description" :max="500">
-				<span>{{ $t('_profile.description') }}</span>
-				<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
-			</MkTextarea>
-
-			<MkInput v-model:value="location">
-				<span>{{ $t('location') }}</span>
-				<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
-			</MkInput>
-
-			<MkInput v-model:value="birthday" type="date">
-				<template #title>{{ $t('birthday') }}</template>
-				<template #prefix><Fa :icon="faBirthdayCake"/></template>
-			</MkInput>
-
-			<details class="fields">
-				<summary>{{ $t('_profile.metadata') }}</summary>
-				<div class="row">
-					<MkInput v-model:value="fieldName0">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue0">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-				<div class="row">
-					<MkInput v-model:value="fieldName1">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue1">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-				<div class="row">
-					<MkInput v-model:value="fieldName2">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue2">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-				<div class="row">
-					<MkInput v-model:value="fieldName3">{{ $t('_profile.metadataLabel') }}</MkInput>
-					<MkInput v-model:value="fieldValue3">{{ $t('_profile.metadataContent') }}</MkInput>
-				</div>
-			</details>
-
-			<MkSwitch v-model:value="isBot">{{ $t('flagAsBot') }}</MkSwitch>
-			<MkSwitch v-model:value="isCat">{{ $t('flagAsCat') }}</MkSwitch>
-		</div>
-		<div class="_footer">
-			<MkButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-		</div>
+<FormBase class="llvierxe">
+	<div class="header _formItem" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
+		<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
 	</div>
-</div>
+
+	<FormInput v-model:value="name" :max="30">
+		<span>{{ $t('_profile.name') }}</span>
+	</FormInput>
+
+	<FormTextarea v-model:value="description" :max="500">
+		<span>{{ $t('_profile.description') }}</span>
+		<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
+	</FormTextarea>
+
+	<FormInput v-model:value="location">
+		<span>{{ $t('location') }}</span>
+		<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
+	</FormInput>
+
+	<FormInput v-model:value="birthday" type="date">
+		<span>{{ $t('birthday') }}</span>
+		<template #prefix><Fa :icon="faBirthdayCake"/></template>
+	</FormInput>
+
+	<FormGroup>
+		<FormButton @click="editMetadata" primary>{{ $t('_profile.metadataEdit') }}</FormButton>
+		<template #caption>{{ $t('_profile.metadataDescription') }}</template>
+	</FormGroup>
+
+	<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}<template #desc>{{ $t('flagAsCatDescription') }}</template></FormSwitch>
+
+	<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
+
+	<FormSwitch v-model:value="alwaysMarkNsfw">{{ $t('alwaysMarkSensitive') }}</FormSwitch>
+
+	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSwitch from '@/components/ui/switch.vue';
+import FormButton from '@/components/form/button.vue';
+import FormInput from '@/components/form/input.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormTuple from '@/components/form/tuple.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
 import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkButton,
-		MkInput,
-		MkTextarea,
-		MkSwitch,
+		FormButton,
+		FormInput,
+		FormTextarea,
+		FormSwitch,
+		FormTuple,
+		FormBase,
+		FormGroup,
 	},
 	
 	emits: ['info'],
@@ -101,6 +89,7 @@ export default defineComponent({
 			bannerId: null,
 			isBot: false,
 			isCat: false,
+			alwaysMarkNsfw: false,
 			saving: false,
 			faSave, faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake
 		}
@@ -115,6 +104,7 @@ export default defineComponent({
 		this.bannerId = this.$store.state.i.bannerId;
 		this.isBot = this.$store.state.i.isBot;
 		this.isCat = this.$store.state.i.isCat;
+		this.alwaysMarkNsfw = this.$store.state.i.alwaysMarkNsfw;
 
 		this.fieldName0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].name : null;
 		this.fieldValue0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].value : null;
@@ -147,7 +137,60 @@ export default defineComponent({
 			});
 		},
 
-		save(notify) {
+		async editMetadata() {
+			const { canceled, result } = await os.form(this.$t('_profile.metadata'), {
+				fieldName0: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 1',
+					default: this.fieldName0,
+				},
+				fieldValue0: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 1',
+					default: this.fieldValue0,
+				},
+				fieldName1: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 2',
+					default: this.fieldName1,
+				},
+				fieldValue1: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 2',
+					default: this.fieldValue1,
+				},
+				fieldName2: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 3',
+					default: this.fieldName2,
+				},
+				fieldValue2: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 3',
+					default: this.fieldValue2,
+				},
+				fieldName3: {
+					type: 'string',
+					label: this.$t('_profile.metadataLabel') + ' 4',
+					default: this.fieldName3,
+				},
+				fieldValue3: {
+					type: 'string',
+					label: this.$t('_profile.metadataContent') + ' 4',
+					default: this.fieldValue3,
+				},
+			});
+			if (canceled) return;
+
+			this.fieldName0 = result.fieldName0;
+			this.fieldValue0 = result.fieldValue0;
+			this.fieldName1 = result.fieldName1;
+			this.fieldValue1 = result.fieldValue1;
+			this.fieldName2 = result.fieldName2;
+			this.fieldValue2 = result.fieldValue2;
+			this.fieldName3 = result.fieldName3;
+			this.fieldValue3 = result.fieldValue3;
+
 			const fields = [
 				{ name: this.fieldName0, value: this.fieldValue0 },
 				{ name: this.fieldName1, value: this.fieldValue1 },
@@ -155,6 +198,19 @@ export default defineComponent({
 				{ name: this.fieldName3, value: this.fieldValue3 },
 			];
 
+			os.api('i/update', {
+				fields,
+			}).then(i => {
+				os.success();
+			}).catch(err => {
+				os.dialog({
+					type: 'error',
+					text: err.id
+				});
+			});
+		},
+
+		save(notify) {
 			this.saving = true;
 
 			os.api('i/update', {
@@ -162,9 +218,9 @@ export default defineComponent({
 				description: this.description || null,
 				location: this.location || null,
 				birthday: this.birthday || null,
-				fields,
 				isBot: !!this.isBot,
 				isCat: !!this.isCat,
+				alwaysMarkNsfw: !!this.alwaysMarkNsfw,
 			}).then(i => {
 				this.saving = false;
 				this.$store.state.i.avatarId = i.avatarId;
@@ -189,41 +245,29 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .llvierxe {
-	> ._content {
-		> .header {
-			position: relative;
-			height: 150px;
-			overflow: hidden;
-			background-size: cover;
-			background-position: center;
-			border-radius: 5px;
-			border: solid 1px var(--divider);
-			box-sizing: border-box;
+	> .header {
+		position: relative;
+		height: 150px;
+		overflow: hidden;
+		background-size: cover;
+		background-position: center;
+		border-radius: 5px;
+		border: solid 1px var(--divider);
+		box-sizing: border-box;
+		cursor: pointer;
+
+		> .avatar {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			display: block;
+			width: 72px;
+			height: 72px;
+			margin: auto;
 			cursor: pointer;
-
-			> .avatar {
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				display: block;
-				width: 72px;
-				height: 72px;
-				margin: auto;
-				cursor: pointer;
-				box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
-			}
-		}
-
-		> .fields {
-			> .row {
-				> * {
-					display: inline-block;
-					width: 50%;
-					margin-bottom: 0;
-				}
-			}
+			box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
 		}
 	}
 }

@@ -14,8 +14,8 @@
 			<option value="res">Response</option>
 		</MkTab>
 
-		<code v-if="tab === 'req'">{{ reqStr }}</code>
-		<code v-if="tab === 'res'">{{ resStr }}</code>
+		<code v-if="tab === 'req'" class="_monospace">{{ reqStr }}</code>
+		<code v-if="tab === 'res'" class="_monospace">{{ resStr }}</code>
 	</div>
 </XWindow>
 </template>
@@ -67,7 +67,6 @@ export default defineComponent({
 		font-size: 0.9em;
 		tab-size: 2;
 		white-space: pre;
-		font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 	}
 }
 </style>

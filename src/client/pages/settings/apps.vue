@@ -1,6 +1,6 @@
 <template>
-<div>
-	<MkPagination :pagination="pagination" class="bfomjevm" ref="list">
+<FormBase>
+	<FormPagination :pagination="pagination" ref="list">
 		<template #empty>
 			<div class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -8,8 +8,8 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div class="token _panel" v-for="token in items" :key="token.id">
-				<img class="icon" :src="token.iconUrl" alt=""/>
+			<div class="_formPanel bfomjevm" v-for="token in items" :key="token.id">
+				<img class="icon" :src="token.iconUrl" alt="" v-if="token.iconUrl"/>
 				<div class="body">
 					<div class="name">{{ token.name }}</div>
 					<div class="description">{{ token.description }}</div>
@@ -33,20 +33,28 @@
 				</div>
 			</div>
 		</template>
-	</MkPagination>
-</div>
+	</FormPagination>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTrashAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
+import FormPagination from '@/components/form/pagination.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormLink from '@/components/form/link.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkPagination
+		FormBase,
+		FormPagination,
 	},
+
+	emits: ['info'],
 
 	data() {
 		return {
@@ -65,6 +73,10 @@ export default defineComponent({
 		};
 	},
 
+	mounted() {
+		this.$emit('info', this.INFO);
+	},
+
 	methods: {
 		revoke(token) {
 			os.api('i/revoke-token', { tokenId: token.id }).then(() => {
@@ -77,26 +89,24 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .bfomjevm {
-	> .token {
-		display: flex;
-		padding: 16px;
+	display: flex;
+	padding: 16px;
 
-		> .icon {
-			display: block;
-			flex-shrink: 0;
-			margin: 0 12px 0 0;
-			width: 50px;
-			height: 50px;
-			border-radius: 8px;
-		}
+	> .icon {
+		display: block;
+		flex-shrink: 0;
+		margin: 0 12px 0 0;
+		width: 50px;
+		height: 50px;
+		border-radius: 8px;
+	}
 
-		> .body {
-			width: calc(100% - 62px);
-			position: relative;
+	> .body {
+		width: calc(100% - 62px);
+		position: relative;
 
-			> .name {
-				font-weight: bold;
-			}
+		> .name {
+			font-weight: bold;
 		}
 	}
 }

@@ -1,9 +1,8 @@
 <template>
-<div class="_section">
-	<div class="_card">
-		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
-		<div class="_content">
-			<div class="_caption" style="padding: 0 8px 8px 8px;">{{ $t('reactionSettingDescription') }}</div>
+<FormBase>
+	<div class="_formItem">
+		<div class="_formLabel">{{ $t('reactionSettingDescription') }}</div>
+		<div class="_formPanel">
 			<XDraggable class="zoaiodol" :list="reactions" animation="150" delay="100" delay-on-touch-only="true">
 				<button class="_button item" v-for="reaction in reactions" :key="reaction" @click="remove(reaction, $event)">
 					<MkEmoji :emoji="reaction" :normal="true"/>
@@ -12,26 +11,25 @@
 					<button>a</button>
 				</template>
 			</XDraggable>
-			<div class="_caption" style="padding: 8px;">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
-			<MkRadios v-model="reactionPickerWidth">
-				<template #desc>{{ $t('width') }}</template>
-				<option :value="1">{{ $t('small') }}</option>
-				<option :value="2">{{ $t('medium') }}</option>
-				<option :value="3">{{ $t('large') }}</option>
-			</MkRadios>
-			<MkRadios v-model="reactionPickerHeight">
-				<template #desc>{{ $t('height') }}</template>
-				<option :value="1">{{ $t('small') }}</option>
-				<option :value="2">{{ $t('medium') }}</option>
-				<option :value="3">{{ $t('large') }}</option>
-			</MkRadios>
 		</div>
-		<div class="_footer">
-			<MkButton inline @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
-			<MkButton inline @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</MkButton>
-		</div>
+		<div class="_formCaption">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></div>
 	</div>
-</div>
+
+	<FormRadios v-model="reactionPickerWidth">
+		<template #desc>{{ $t('width') }}</template>
+		<option :value="1">{{ $t('small') }}</option>
+		<option :value="2">{{ $t('medium') }}</option>
+		<option :value="3">{{ $t('large') }}</option>
+	</FormRadios>
+	<FormRadios v-model="reactionPickerHeight">
+		<template #desc>{{ $t('height') }}</template>
+		<option :value="1">{{ $t('small') }}</option>
+		<option :value="2">{{ $t('medium') }}</option>
+		<option :value="3">{{ $t('large') }}</option>
+	</FormRadios>
+	<FormButton @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</FormButton>
+	<FormButton danger @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</FormButton>
+</FormBase>
 </template>
 
 <script lang="ts">
@@ -39,20 +37,19 @@ import { defineComponent } from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { VueDraggableNext } from 'vue-draggable-next';
-import MkInput from '@/components/ui/input.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkRadios from '@/components/ui/radios.vue';
-import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
+import FormInput from '@/components/form/input.vue';
+import FormRadios from '@/components/form/radios.vue';
+import FormBase from '@/components/form/base.vue';
+import FormButton from '@/components/form/button.vue';
 import { defaultSettings } from '@/store';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkInput,
-		MkButton,
-		MkSwitch,
-		MkRadios,
+		FormInput,
+		FormButton,
+		FormBase,
+		FormRadios,
 		XDraggable: VueDraggableNext,
 	},
 
@@ -62,7 +59,11 @@ export default defineComponent({
 		return {
 			INFO: {
 				title: this.$t('reaction'),
-				icon: faLaugh
+				icon: faLaugh,
+				action: {
+					icon: faEye,
+					handler: this.preview
+				}
 			},
 			reactions: JSON.parse(JSON.stringify(this.$store.state.settings.reactions)),
 			faLaugh, faSave, faEye, faUndo
@@ -144,8 +145,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .zoaiodol {
-	border: solid 1px var(--divider);
-	border-radius: var(--radius);
 	padding: 16px;
 
 	> .item {
