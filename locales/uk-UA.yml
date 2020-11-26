@@ -493,6 +493,7 @@ updateRemoteUser: "Оновити інформацію про віддалено
 deleteAllFiles: "Видалити всі файли"
 deleteAllFilesConfirm: "Ви дійсно хочете видалити всі файли?"
 removeAllFollowing: "Скасувати всі підписки"
+removeAllFollowingDescription: "Скасувати підписку на всі акаунти з {host}. Будь ласка, робіть це, якщо інстанс більше не існує."
 sidebar: "Бокова панель"
 addItem: "Додати елемент"
 rooms: "Кімнати"
