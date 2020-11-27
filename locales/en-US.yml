@@ -600,6 +600,7 @@ regenerateLoginTokenDescription: "Regenerate the token used internally during lo
 setMultipleBySeparatingWithSpace: "You can set multiple by separating them with spaces."
 fileIdOrUrl: "File-ID or URL"
 chatOpenBehavior: "Behavior of the chat window when opened"
+behavior: "Behavior"
 sample: "Sample"
 abuseReports: "Reports"
 reportAbuse: "Report"
