@@ -650,6 +650,13 @@ pageLikedCount: "Anzahl erhaltener \"Gefällt mir\" auf Seiten"
 reversiCount: "Anzahl von Reversi-Runden"
 contact: "Kontakt"
 useSystemFont: "Standardschriftart des Systems verwenden"
+_aboutMisskey:
+  about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
+  source: "Quellcode"
+  translation: "Misskey übersetzen"
+  donate: "An Misskey spenden"
+  morePatrons: "Wir schätzen ebenso die Unterstützung vieler anderer hier nicht gelisteter Personen sehr. Danke! 🥰"
+  patrons: "UnterstützerInnen"
 _nsfw:
   respect: "Als NSFW markierte Bilder verdecken"
   ignore: "Als NSFW markierte Bilder nicht verdecken"
