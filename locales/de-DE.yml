@@ -648,6 +648,8 @@ noteFavoritesCount: "Anzahl favorisierter Notizen"
 pageLikesCount: "Anzahl der Seiten, die mir gefallen"
 pageLikedCount: "Anzahl erhaltener \"Gefällt mir\" auf Seiten"
 reversiCount: "Anzahl von Reversi-Runden"
+contact: "Kontakt"
+useSystemFont: "Standardschriftart des Systems verwenden"
 _nsfw:
   respect: "Als NSFW markierte Bilder verdecken"
   ignore: "Als NSFW markierte Bilder nicht verdecken"
