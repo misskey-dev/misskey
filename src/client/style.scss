@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 :root {
-	--baseContentWidth: 750px;
+	--baseContentWidth: 760px;
 	--radius: 8px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
@@ -26,8 +26,8 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
-	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
-	line-height: 1.3em;
+	font-family: "BIZ UDPGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	line-height: 1.35;
 	text-size-adjust: 100%;
 
 	&, * {
@@ -74,6 +74,10 @@ html {
 
 	&.f-veryLarge {
 		font-size: 1.2em;
+	}
+
+	&.useSystemFont {
+		font-family: sans-serif;
 	}
 }
 
