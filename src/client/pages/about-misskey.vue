@@ -1,87 +1,97 @@
 <template>
-<div class="znqjceqz">
-	<section class="_section">
-		<div class="_content" style="text-align: center;">
+<FormBase class="znqjceqz">
+	<section class="_formItem">
+		<div class="_formPanel" style="text-align: center; padding: 16px;">
 			<img src="/assets/icons/512.png" alt="" style="display: block; width: 100px; margin: 0 auto; border-radius: 16px;"/>
 			<div style="margin-top: 0.75em;">Misskey</div>
 			<div style="opacity: 0.5;">v{{ version }}</div>
 		</div>
 	</section>
-	<section class="_section">
-		<div class="_content">
-			<div style="text-align: center;">{{ $t('aboutMisskeyText') }}</div>
-		</div>
+	<section class="_formItem" style="text-align: center;">
+		{{ $t('_aboutMisskey.about') }}
 	</section>
-	<section class="_section">
-		<div class="_content" style="text-align: center;">
-			<div>📦 {{ $t('misskeySource') }}</div>
-			<MkUrl url="https://github.com/syuilo/misskey"/>
-			<div style="margin-top: 1em;">🌏 {{ $t('misskeyTranslation') }}</div>
-			<MkUrl url="https://crowdin.com/project/misskey"/>
-			<div style="margin-top: 1em;">💴 {{ $t('misskeyDonate') }}</div>
-			<MkUrl url="https://www.patreon.com/syuilo"/>
-		</div>
-	</section>
-	<section class="_section">
-		<div class="_content" style="text-align: center;">
-			<div>🛠️ {{ $t('misskeyMembers') }}</div>
-			<ul class="members" style="list-style: none; padding: 0; margin: 1em 0 0 0;">
-				<li><MkLink url="https://github.com/syuilo" class="at">@syuilo</MkLink></li>
-				<li><MkLink url="https://github.com/AyaMorisawa" class="at">@AyaMorisawa</MkLink></li>
-				<li><MkLink url="https://github.com/mei23" class="at">@mei23</MkLink></li>
-				<li><MkLink url="https://github.com/acid-chicken" class="at">@acid-chicken</MkLink></li>
-				<li><MkLink url="https://github.com/tamaina" class="at">@tamaina</MkLink></li>
-				<li><MkLink url="https://github.com/rinsuki" class="at">@rinsuki</MkLink></li>
-				<li><MkLink url="https://github.com/Xeltica" class="at">@Xeltica</MkLink></li>
-				<li><MkLink url="https://github.com/u1-liquid" class="at">@u1-liquid</MkLink></li>
-			</ul>
-		</div>
-	</section>
-	<section class="_section">
-		<div class="_content">
-			<div class="_card">
-				<div class="_title"><Mfm text="[jelly ❤]"/> {{ $t('patrons') }}</div>
-				<div class="_content">
-					<ul style="margin: 0;">
-						<li>Gargron</li>
-						<li>Satsuki Yanagi</li>
-						<li>noellabo</li>
-						<li>naga_rus</li>
-						<li>Melilot</li>
-						<li>AureoleArk</li>
-						<li>Peter G.</li>
-						<li>motcha</li>
-						<li>Atsuko Tominaga</li>
-						<li>dansup</li>
-						<li>Nokotaro Takeda</li>
-						<li>YUKIMOCHI</li>
-						<li>nanami kan</li>
-						<li>Hekovic</li>
-						<li>wara</li>
-						<li>Takashi Shibuya</li>
-						<li>Noizeman</li>
-						<li>mydarkstar</li>
-						<li>nenohi</li>
-						<li>Eduardo Quiros</li>
-					</ul>
-				</div>
-				<div class="_footer">{{ $t('morePatrons') }}</div>
-			</div>
-		</div>
-	</section>
-</div>
+	<FormGroup>
+		<FormLink to="https://github.com/syuilo/misskey" external><template #icon><Fa :icon="faCode"/></template>{{ $t('_aboutMisskey.source') }}</FormLink>
+		<FormLink to="https://crowdin.com/project/misskey" external><template #icon><Fa :icon="faLanguage"/></template>{{ $t('_aboutMisskey.translation') }}</FormLink>
+		<FormLink to="https://www.patreon.com/syuilo" external><template #icon><Fa :icon="faHandHoldingMedical"/></template>{{ $t('_aboutMisskey.donate') }}</FormLink>
+	</FormGroup>
+	<FormGroup>
+		<template #label>{{ $t('_aboutMisskey.contributors') }}</template>
+		<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
+		<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
+		<FormLink to="https://github.com/mei23" external>@mei23</FormLink>
+		<FormLink to="https://github.com/acid-chicken" external>@acid-chicken</FormLink>
+		<FormLink to="https://github.com/tamaina" external>@tamaina</FormLink>
+		<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
+		<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
+		<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
+		<template #caption><MkLink url="https://github.com/syuilo/misskey/graphs/contributors">{{ $t('_aboutMisskey.allContributors') }}</MkLink></template>
+	</FormGroup>
+	<FormGroup>
+		<template #label><Mfm text="[jelly ❤]"/> {{ $t('_aboutMisskey.patrons') }}</template>
+		<FormKeyValueView v-for="patron in patrons" :key="patron"><template #key>{{ patron }}</template></FormKeyValueView>
+		<template #caption>{{ $t('_aboutMisskey.morePatrons') }}</template>
+	</FormGroup>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faCode, faLanguage, faHandHoldingMedical, } from '@fortawesome/free-solid-svg-icons';
 import { version } from '@/config';
+import FormLink from '@/components/form/link.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormKeyValueView from '@/components/form/key-value-view.vue';
 import MkLink from '@/components/link.vue';
 import * as os from '@/os';
 
+const patrons = [
+	'Satsuki Yanagi',
+	'noellabo',
+	'Gargron',
+	'Atsuko Tominaga',
+	'AureoleArk',
+	'naga_rus',
+	'Melilot',
+	'Hekovic',
+	'Nokotaro Takeda',
+	'dansup',
+	'nenohi',
+	'motcha',
+	'nanami kan',
+	'Eduardo Quiros',
+	'Peter G.',
+	'YUKIMOCHI',
+	'Efertone',
+	'makokunsan',
+	'mewl hayabusa',
+	'見当かなみ',
+	'natalie',
+	'takimura',
+	'sikyosyounin',
+	'weepjp',
+	'mydarkstar',
+	'Nesakko',
+	'sheeta.s',
+	'osapon',
+	'YuzuRyo61',
+	'wara',
+	'mkatze',
+	'kiritan',
+	'CG',
+	'Denshi',
+	'Osushimaru',
+	'Liaizon Wakest',
+];
+
 export default defineComponent({
 	components: {
-		MkLink
+		FormBase,
+		FormGroup,
+		FormLink,
+		FormKeyValueView,
+		MkLink,
 	},
 
 	data() {
@@ -91,8 +101,17 @@ export default defineComponent({
 				icon: null
 			},
 			version,
-			faInfoCircle
+			patrons,
+			faInfoCircle, faCode, faLanguage, faHandHoldingMedical,
 		}
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.znqjceqz {
+	max-width: 800px;
+	box-sizing: border-box;
+	margin: 0 auto;
+}
+</style>
