@@ -856,6 +856,8 @@ _sfx:
   chatBg: "聊天背景"
   antenna: "天线接收"
   channel: "频道通知"
+  reversiPutBlack: "黑白棋：黑方下子时"
+  reversiPutWhite: "黑白棋：白方下子时"
 _ago:
   unknown: "未知"
   future: "未来"
