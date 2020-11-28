@@ -74,29 +74,29 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped vars="{ height }">
+<style lang="scss" scoped>
 .fdidabkb {
 	text-align: center;
 
 	> .back {
-		height: var(--height);
-		width: var(--height);
+		height: v-bind(height);
+		width: v-bind(height);
 	}
 
 	> .action {
-		height: var(--height);
-		width: var(--height);
+		height: v-bind(height);
+		width: v-bind(height);
 	}
 
 	> .titleContainer {
-		width: calc(100% - (var(--height) * 2));
+		width: calc(100% - (v-bind(height) * 2));
 
 		> .title {
-			height: var(--height);
+			height: v-bind(height);
 
 			> .avatar {
 				$size: 32px;
-				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
+				margin: calc((v-bind(height) - #{$size}) / 2) 8px calc((v-bind(height) - #{$size}) / 2) 0;
 				pointer-events: none;
 			}
 		}

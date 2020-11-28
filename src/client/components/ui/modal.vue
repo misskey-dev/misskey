@@ -150,10 +150,10 @@ export default defineComponent({
 });
 </script>
 
-<style vars="{ transformOrigin }">
+<style>
 .modal-popup-content-enter-active, .modal-popup-content-leave-active,
 .modal-content-enter-from, .modal-content-leave-to {
-  transform-origin: var(--transformOrigin);
+  transform-origin: v-bind(transformOrigin);
 }
 </style>
 
