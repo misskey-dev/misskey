@@ -1028,6 +1028,8 @@ _profile:
   metadataDescription: "You can display up to four additional information sections in your profile."
   metadataLabel: "Label"
   metadataContent: "Content"
+  changeAvatar: "Change avatar"
+  changeBanner: "Change banner"
 _exportOrImport:
   allNotes: "All notes"
   followingList: "Following"
