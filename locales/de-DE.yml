@@ -1028,6 +1028,8 @@ _profile:
   metadataDescription: "Du kannst auf deinem Profil vier zusätzliche Informationsblöcke anzeigen lassen."
   metadataLabel: "Name"
   metadataContent: "Inhalt"
+  changeAvatar: "Profilbild ändern"
+  changeBanner: "Banner ändern"
 _exportOrImport:
   allNotes: "Alle Notizen"
   followingList: "Gefolgte Benutzer"
