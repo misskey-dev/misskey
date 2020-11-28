@@ -652,6 +652,8 @@ contact: "Kontakt"
 useSystemFont: "Standardschriftart des Systems verwenden"
 _aboutMisskey:
   about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
+  contributors: "Hauptmitwirkende"
+  allContributors: "Alle Mitwirkenden"
   source: "Quellcode"
   translation: "Misskey übersetzen"
   donate: "An Misskey spenden"
