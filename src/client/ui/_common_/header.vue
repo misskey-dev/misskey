@@ -1,5 +1,5 @@
 <template>
-<div class="fdidabkb">
+<div class="fdidabkb" :style="`--height:${height};`">
 	<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
 		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
@@ -79,24 +79,24 @@ export default defineComponent({
 	text-align: center;
 
 	> .back {
-		height: v-bind(height);
-		width: v-bind(height);
+		height: var(--height);
+		width: var(--height);
 	}
 
 	> .action {
-		height: v-bind(height);
-		width: v-bind(height);
+		height: var(--height);
+		width: var(--height);
 	}
 
 	> .titleContainer {
-		width: calc(100% - (v-bind(height) * 2));
+		width: calc(100% - (var(--height) * 2));
 
 		> .title {
-			height: v-bind(height);
+			height: var(--height);
 
 			> .avatar {
 				$size: 32px;
-				margin: calc((v-bind(height) - #{$size}) / 2) 8px calc((v-bind(height) - #{$size}) / 2) 0;
+				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
 				pointer-events: none;
 			}
 		}
