@@ -27,7 +27,7 @@ html {
 	color: var(--fg);
 	overflow: auto;
 	font-family: "BIZ UDPGothic", Roboto, HelveticaNeue, Arial, sans-serif;
-	line-height: 1.3em;
+	line-height: 1.35em;
 	text-size-adjust: 100%;
 
 	&, * {
@@ -74,6 +74,10 @@ html {
 
 	&.f-veryLarge {
 		font-size: 1.2em;
+	}
+
+	&.useSystemFont {
+		font-family: sans-serif;
 	}
 }
 
