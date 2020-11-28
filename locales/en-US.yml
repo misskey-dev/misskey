@@ -648,6 +648,8 @@ noteFavoritesCount: "Amount of favorite notes"
 pageLikesCount: "Amount of received Page likes"
 pageLikedCount: "Amount of liked Pages"
 reversiCount: "Number of Reversi matches"
+contact: "Contact"
+useSystemFont: "Use the system's default font"
 _nsfw:
   respect: "Hide NSFW media"
   ignore: "Don't hide NSFW media"
