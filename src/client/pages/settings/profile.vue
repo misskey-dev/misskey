@@ -1,8 +1,12 @@
 <template>
-<FormBase class="llvierxe">
-	<div class="header _formItem" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }" @click="changeBanner">
-		<MkAvatar class="avatar" :user="$store.state.i" :disable-preview="true" :disable-link="true" @click.stop="changeAvatar"/>
-	</div>
+<FormBase>
+	<FormGroup>
+		<div class="_formItem _formPanel llvierxe" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }">
+			<MkAvatar class="avatar" :user="$store.state.i"/>
+		</div>
+		<FormButton @click="changeAvatar" primary>{{ $t('_profile.changeAvatar') }}</FormButton>
+		<FormButton @click="changeBanner" primary>{{ $t('_profile.changeBanner') }}</FormButton>
+	</FormGroup>
 
 	<FormInput v-model:value="name" :max="30">
 		<span>{{ $t('_profile.name') }}</span>
@@ -245,30 +249,26 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .llvierxe {
-	> .header {
-		position: relative;
-		height: 150px;
-		overflow: hidden;
-		background-size: cover;
-		background-position: center;
-		border-radius: 5px;
-		border: solid 1px var(--divider);
-		box-sizing: border-box;
-		cursor: pointer;
+	position: relative;
+	height: 150px;
+	background-size: cover;
+	background-position: center;
 
-		> .avatar {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			display: block;
-			width: 72px;
-			height: 72px;
-			margin: auto;
-			cursor: pointer;
-			box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
-		}
+	> * {
+		pointer-events: none;
+	}
+
+	> .avatar {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: block;
+		width: 72px;
+		height: 72px;
+		margin: auto;
+		box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.5);
 	}
 }
 </style>

@@ -8,7 +8,7 @@
 				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
 			</div>
 			<div class="action">
-				<button class="_button primary" @click="signup()">{{ $t('signup') }}</button>
+				<button class="_buttonPrimary" @click="signup()">{{ $t('signup') }}</button>
 				<button class="_button" @click="signin()">{{ $t('login') }}</button>
 			</div>
 			<div class="announcements panel">
@@ -27,13 +27,6 @@
 	</div>
 
 	<div class="main">
-		<header>
-			<MkA class="link" to="/">{{ $t('home') }}</MkA>
-			<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
-			<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
-			<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
-		</header>
-
 		<div v-if="narrow" class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
@@ -181,6 +174,7 @@ export default defineComponent({
 			left: 0;
 			width: 500px;
 			height: 100vh;
+			overflow: auto;
 			background-position: center;
 			background-size: cover;
 
@@ -235,11 +229,9 @@ export default defineComponent({
 					box-sizing: border-box;
 					text-align: center;
 					border-radius: 999px;
-					background: var(--panel);
 
-					&.primary {
-						background: var(--accent);
-						color: #fff;
+					&._button {
+						background: var(--panel);
 					}
 
 					&:first-child {

@@ -7,7 +7,7 @@
 			<div style="opacity: 0.5;">v{{ version }}</div>
 		</div>
 	</section>
-	<section class="_formItem" style="text-align: center;">
+	<section class="_formItem" style="text-align: center; padding: 0 16px;">
 		{{ $t('_aboutMisskey.about') }}
 	</section>
 	<FormGroup>

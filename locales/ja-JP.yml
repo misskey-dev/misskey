@@ -1054,6 +1054,8 @@ _profile:
   metadataDescription: "プロフィールに表として4つまでの追加情報を表示することができます。"
   metadataLabel: "ラベル"
   metadataContent: "内容"
+  changeAvatar: "アバター画像を変更"
+  changeBanner: "バナー画像を変更"
 
 _exportOrImport:
   allNotes: "全てのノート"
