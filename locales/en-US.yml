@@ -657,6 +657,8 @@ _aboutMisskey:
   source: "Source code"
   translation: "Translate Misskey"
   donate: "Donate to Misskey"
+  morePatrons: "We really appreciate the support of many other helpers not listed here. Thank you! 🥰"
+  patrons: "Backers"
 _nsfw:
   respect: "Hide NSFW media"
   ignore: "Don't hide NSFW media"
