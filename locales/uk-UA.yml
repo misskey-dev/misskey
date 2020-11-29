@@ -547,6 +547,7 @@ notificationSettingDesc: "Виберіть типи сповіщень для в
 useGlobalSetting: "Застосувати глобальнi параметри"
 other: "Інше"
 regenerateLoginToken: "Оновити Login Token"
+behavior: "Поведінка"
 sample: "Приклад"
 reportAbuse: "Поскаржитись"
 reportAbuseOf: "Поскаржитись на {name}"
