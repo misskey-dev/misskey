@@ -1,61 +1,14 @@
 <template>
 <div class="mk-app">
-	<div class="side" v-if="!narrow">
-		<div :style="{ backgroundImage: `url(${ $store.state.instance.meta.backgroundImageUrl })` }">
-			<div class="fade"></div>
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
-			<div class="about" v-if="meta">
-				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-			</div>
-			<div class="action">
-				<button class="_buttonPrimary" @click="signup()">{{ $t('signup') }}</button>
-				<button class="_button" @click="signin()">{{ $t('login') }}</button>
-			</div>
-			<div class="announcements panel">
-				<header>{{ $t('announcements') }}</header>
-				<MkPagination :pagination="announcements" #default="{items}" class="list">
-					<section class="item" v-for="(announcement, i) in items" :key="announcement.id">
-						<div class="title">{{ announcement.title }}</div>
-						<div class="content">
-							<Mfm :text="announcement.text"/>
-							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-						</div>
-					</section>
-				</MkPagination>
-			</div>
-		</div>
+	<div class="side" v-if="!narrow && $route.path !== '/'">
+		<XKanban class="kanban" full/>
 	</div>
 
 	<div class="main">
-		<div v-if="narrow" class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-			<h1 v-if="meta">
-				<MkA to="/" class="link"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></MkA>
-			</h1>
-			<template v-if="$route.path === '/'">
-				<div class="about" v-if="meta">
-					<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-				</div>
-				<div class="action">
-					<button class="_buttonPrimary" @click="signup()">{{ $t('signup') }}</button>
-					<button class="_button" @click="signin()">{{ $t('login') }}</button>
-				</div>
-				<div class="announcements panel">
-					<header>{{ $t('announcements') }}</header>
-					<MkPagination :pagination="announcements" #default="{items}" class="list">
-						<section class="item" v-for="(announcement, i) in items" :key="announcement.id">
-							<div class="title">{{ announcement.title }}</div>
-							<div class="content">
-								<Mfm :text="announcement.text"/>
-								<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-							</div>
-						</section>
-					</MkPagination>
-				</div>
-			</template>
-		</div>
+		<XKanban class="banner" :full="$route.path === '/'" v-if="narrow || $route.path === '/'"/>
 
-		<div class="contents" :class="{ wallpaper }">
-			<XHeader class="header" :info="pageInfo"/>
+		<div class="contents">
+			<XHeader class="header" :info="pageInfo" v-if="$route.path !== '/'"/>
 			<main>
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
@@ -104,12 +57,14 @@ import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import XHeader from './header.vue';
+import XKanban from './kanban.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
 		XHeader,
+		XKanban,
 		MkPagination,
 		MkButton,
 	},
@@ -231,108 +186,14 @@ export default defineComponent({
 	> .side {
 		width: 500px;
 		height: 100vh;
-		text-align: center;
 
-		> div {
+		> .kanban {
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 500px;
 			height: 100vh;
 			overflow: auto;
-			background-position: center;
-			background-size: cover;
-
-			> .panel {
-				-webkit-backdrop-filter: blur(8px);
-				backdrop-filter: blur(8px);
-				background: rgba(0, 0, 0, 0.5);
-				border-radius: var(--radius);
-
-				&, * {
-					color: #fff !important;
-				}
-			}
-
-			> .fade {
-				position: absolute;
-				z-index: -1;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 300px;
-				background: linear-gradient(rgba(#000, 0.5), transparent);
-			}
-
-			> h1 {
-				display: block;
-				margin: 0;
-				padding: 64px 32px 48px 32px;
-				color: #fff;
-
-				> .logo {
-					vertical-align: bottom;
-					max-height: 150px;
-				}
-			}
-
-			> .about {
-				display: block;
-				margin: 0 64px 16px 64px;
-				padding: 24px;
-				text-align: center;
-				box-sizing: border-box;
-				text-shadow: 0 0 8px black;
-				color: #fff;
-			}
-
-			> .action {
-				padding: 0 64px;
-
-				> button {
-					display: block;
-					width: 100%;
-					padding: 10px;
-					box-sizing: border-box;
-					text-align: center;
-					border-radius: 999px;
-
-					&._button {
-						background: var(--panel);
-					}
-
-					&:first-child {
-						margin-bottom: 16px;
-					}
-				}
-			}
-
-			> .announcements {
-				margin: 64px 64px 16px 64px;
-				text-align: left;
-
-				> header {
-					padding: 12px 16px;
-					border-bottom: solid 1px rgba(255, 255, 255, 0.5);
-				}
-
-				> .list {
-					max-height: 300px;
-					overflow: auto;
-
-					> .item {
-						padding: 12px 16px;
-
-						& + .item {
-							border-top: solid 1px rgba(255, 255, 255, 0.5);
-						}
-
-						> .title {
-							font-weight: bold;
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -340,109 +201,6 @@ export default defineComponent({
 		flex: 1;
 
 		> .banner {
-			position: relative;
-			width: 100%;
-			background-size: cover;
-			background-position: center;
-
-			&:after {
-				content: "";
-				display: block;
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				height: 64px;
-				background: linear-gradient(transparent, var(--bg));
-			}
-
-			> h1 {
-				position: relative;
-				z-index: 2;
-				margin: 0;
-				padding: 32px;
-				text-align: center;
-				color: #fff;
-				text-shadow: 0 0 8px #000;
-
-				> .link {
-					display: block;
-
-					> ::v-deep(.logo) {
-						vertical-align: bottom;
-						max-height: 100px;
-					}
-				}
-			}
-
-			> .panel {
-				-webkit-backdrop-filter: blur(8px);
-				backdrop-filter: blur(8px);
-				background: rgba(0, 0, 0, 0.5);
-				border-radius: var(--radius);
-
-				&, * {
-					color: #fff !important;
-				}
-			}
-
-			> .about {
-				display: block;
-				margin: 0 0 16px 0;
-				padding: 0 16px 24px 16px;
-				text-align: center;
-				box-sizing: border-box;
-				text-shadow: 0 0 8px black;
-				color: #fff;
-			}
-
-			> .action {
-				padding: 0 64px;
-
-				> button {
-					display: block;
-					width: 100%;
-					padding: 10px;
-					box-sizing: border-box;
-					text-align: center;
-					border-radius: 999px;
-
-					&._button {
-						background: var(--panel);
-					}
-
-					&:first-child {
-						margin-bottom: 16px;
-					}
-				}
-			}
-
-			> .announcements {
-				margin: 64px 64px 16px 64px;
-				text-align: left;
-
-				> header {
-					padding: 12px 16px;
-					border-bottom: solid 1px rgba(255, 255, 255, 0.5);
-				}
-
-				> .list {
-					max-height: 300px;
-					overflow: auto;
-
-					> .item {
-						padding: 12px 16px;
-
-						& + .item {
-							border-top: solid 1px rgba(255, 255, 255, 0.5);
-						}
-
-						> .title {
-							font-weight: bold;
-						}
-					}
-				}
-			}
 		}
 
 		> .contents {
