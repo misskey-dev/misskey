@@ -1,7 +1,9 @@
 <template>
 <div>
 	<div class="ftskorzw wide _section" v-if="user && narrow === false">
-		<div class="banner-container" :style="style">
+		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_vMargin"/>
+
+		<div class="banner-container _vMargin" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
 		</div>
 		<div class="contents">

@@ -8,7 +8,7 @@
 
 	props: {
 		divider: '#2d2d2d',
-		panel: '#111111',
+		panel: '#131313',
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
 		panelShadow: '" 0 8px 24px rgb(0 0 0 / 25%)',
