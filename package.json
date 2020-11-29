@@ -259,7 +259,7 @@
 	},
 	"devDependencies": {
 		"@types/chai": "4.2.11",
-		"@types/fluent-ffmpeg": "2.1.14",
+		"@types/fluent-ffmpeg": "2.1.16",
 		"chai": "4.2.0",
 		"cross-env": "7.0.2"
 	}
