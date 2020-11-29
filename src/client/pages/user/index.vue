@@ -492,6 +492,7 @@ export default defineComponent({
 		> .main {
 			flex: 1;
 			margin-left: var(--margin);
+			min-width: 0;
 
 			> .nav {
 				display: flex;
