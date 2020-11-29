@@ -633,6 +633,7 @@ _mfm:
   blockCode: "Код (блок)"
   blockCodeDescription: "Показує кілька рядків тексту як блок програмного кода"
   inlineMath: "Формула (у рядку)"
+  inlineMathDescription: "Відображення математичних формул (KaTeX) у рядку"
   blockMath: "Формули (блок)"
   quote: "Цитата"
   emoji: "Кастомні емоджі"
