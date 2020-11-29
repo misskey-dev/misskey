@@ -1,31 +1,47 @@
 <template>
 <div class="sqxihjet">
-	<div class="content">
-		<MkA to="/" class="link" active-class="active">{{ $t('home') }}</MkA>
-		<MkA to="/explore" class="link" active-class="active">{{ $t('explore') }}</MkA>
-		<MkA to="/featured" class="link" active-class="active">{{ $t('featured') }}</MkA>
-		<MkA to="/channels" class="link" active-class="active">{{ $t('channel') }}</MkA>
-		<div class="page link" v-if="info">
-			<div class="title">
-				<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
-				<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
-				<span v-if="info.title" class="text">{{ info.title }}</span>
-				<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
+	<div class="wide" v-if="narrow === false">
+		<div class="content">
+			<MkA to="/" class="link" active-class="active"><Fa :icon="faHome" class="icon"/>{{ $t('home') }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><Fa :icon="faHashtag" class="icon"/>{{ $t('explore') }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><Fa :icon="faFireAlt" class="icon"/>{{ $t('featured') }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><Fa :icon="faSatelliteDish" class="icon"/>{{ $t('channel') }}</MkA>
+			<div class="page active link" v-if="info">
+				<div class="title">
+					<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
+					<span v-if="info.title" class="text">{{ info.title }}</span>
+					<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
+				</div>
+				<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 			</div>
-			<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
+			<div class="right">
+				<button class="_button search" @click="search()"><Fa :icon="faSearch" class="icon"/><span>{{ $t('search') }}</span></button>
+				<button class="_buttonPrimary signup" @click="signup()">{{ $t('signup') }}</button>
+				<button class="_button login" @click="signin()">{{ $t('login') }}</button>
+			</div>
 		</div>
-		<div class="right">
-			<button class="_button search" @click="search()"><Fa :icon="faSearch" class="icon"/><span>{{ $t('search') }}</span></button>
-			<button class="_buttonPrimary signup" @click="signup()">{{ $t('signup') }}</button>
-			<button class="_button login" @click="signin()">{{ $t('login') }}</button>
+	</div>
+	<div class="narrow" v-else-if="narrow === true">
+		<button class="menu _button" @click="$parent.showMenu = true">
+			<Fa :icon="faBars" class="icon"/>
+		</button>
+		<div class="title" v-if="info">
+			<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
+			<span v-if="info.title" class="text">{{ info.title }}</span>
+			<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 		</div>
+		<button class="action _button" v-if="info && info.action" @click.stop="info.action.handler">
+			<Fa :icon="info.action.icon" :key="info.action.icon" class="icon"/>
+		</button>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars } from '@fortawesome/free-solid-svg-icons';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import * as os from '@/os';
@@ -40,8 +56,14 @@ export default defineComponent({
 
 	data() {
 		return {
-			faSearch
+			narrow: null,
+			showMenu: false,
+			faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars,
 		};
+	},
+
+	mounted() {
+		this.narrow = this.$el.clientWidth < 1300;
 	},
 
 	methods: {
@@ -65,105 +87,142 @@ export default defineComponent({
 <style lang="scss" scoped>
 .sqxihjet {
 	$height: 60px;
+	position: sticky;
+	top: 0;
+	left: 0;
+	z-index: 1000;
 	line-height: $height;
-	background: var(--panel);
+	-webkit-backdrop-filter: blur(32px);
+	backdrop-filter: blur(32px);
+	background-color: var(--X16);
 
-	> .content {
-		max-width: 1400px;
-		margin: 0 auto;
-		display: flex;
-		align-items: center;
+	> .wide {
+		> .content {
+			max-width: 1400px;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
 
-		> .link {
-			display: inline-block;
-			padding: 0 16px;
-			line-height: $height - 4px;
-			border-top: solid 2px transparent;
-			border-bottom: solid 2px transparent;
-
-			&.page {
-				border-bottom-color: var(--accent);
-			}
-		}
-
-		> .page {
-			> .title {
+			> .link {
+				$line: 3px;
 				display: inline-block;
-				vertical-align: bottom;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				position: relative;
+				padding: 0 16px;
+				line-height: $height - ($line * 2);
+				border-top: solid $line transparent;
+				border-bottom: solid $line transparent;
 
-				> .indicator {
-					position: absolute;
-					top: initial;
-					right: 8px;
-					top: 8px;
-					color: var(--indicator);
-					font-size: 12px;
-					animation: blink 1s infinite;
+				> .icon {
+					margin-right: 0.5em;
 				}
 
-				> .icon + .text {
-					margin-left: 8px;
+				&.page {
+					border-bottom-color: var(--accent);
 				}
+			}
 
-				> .avatar {
-					$size: 32px;
+			> .page {
+				> .title {
 					display: inline-block;
-					width: $size;
-					height: $size;
-					vertical-align: middle;
-					margin-right: 8px;
-					pointer-events: none;
-				}
+					vertical-align: bottom;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					position: relative;
 
-				&._button {
-					&:hover {
+					> .icon + .text {
+						margin-left: 8px;
+					}
+
+					> .avatar {
+						$size: 32px;
+						display: inline-block;
+						width: $size;
+						height: $size;
+						vertical-align: middle;
+						margin-right: 8px;
+						pointer-events: none;
+					}
+
+					&._button {
+						&:hover {
+							color: var(--fgHighlighted);
+						}
+					}
+
+					&.selected {
+						box-shadow: 0 -2px 0 0 var(--accent) inset;
 						color: var(--fgHighlighted);
 					}
 				}
 
-				&.selected {
-					box-shadow: 0 -2px 0 0 var(--accent) inset;
-					color: var(--fgHighlighted);
+				> .action {
+					padding: 0 0 0 16px;
 				}
 			}
 
-			> .action {
-				padding: 0 0 0 16px;
-			}
-		}
+			> .right {
+				margin-left: auto;
 
-		> .right {
-			margin-left: auto;
+				> .search {
+					background: var(--bg);
+					border-radius: 999px;
+					width: 230px;
+					line-height: $height - 20px;
+					margin-right: 16px;
+					text-align: left;
 
-			> .search {
-				background: var(--bg);
-				border-radius: 999px;
-				width: 230px;
-				line-height: $height - 20px;
-				margin-right: 16px;
-				text-align: left;
+					> * {
+						opacity: 0.7;
+					}
 
-				> * {
-					opacity: 0.7;
+					> .icon {
+						padding: 0 16px;
+					}
 				}
 
-				> .icon {
+				> .signup {
+					border-radius: 999px;
+					padding: 0 24px;
+					line-height: $height - 20px;
+				}
+
+				> .login {
 					padding: 0 16px;
 				}
 			}
+		}
+	}
 
-			> .signup {
-				border-radius: 999px;
-				padding: 0 24px;
-				line-height: $height - 20px;
+	> .narrow {
+		display: flex;
+
+		> .menu,
+		> .action {
+			width: $height;
+			height: $height;
+			font-size: 20px;
+		}
+
+		> .title {
+			flex: 1;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			position: relative;
+			text-align: center;
+
+			> .icon + .text {
+				margin-left: 8px;
 			}
 
-			> .login {
-				padding: 0 16px;
+			> .avatar {
+				$size: 32px;
+				display: inline-block;
+				width: $size;
+				height: $size;
+				vertical-align: middle;
+				margin-right: 8px;
+				pointer-events: none;
 			}
 		}
 	}

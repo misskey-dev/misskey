@@ -650,6 +650,7 @@ pageLikedCount: "Pageにいいねされた数"
 reversiCount: "リバーシの対局数"
 contact: "連絡先"
 useSystemFont: "システムのデフォルトのフォントを使う"
+clips: "クリップ"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

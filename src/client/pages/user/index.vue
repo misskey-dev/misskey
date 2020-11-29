@@ -508,12 +508,17 @@ export default defineComponent({
 }
 
 .ftskorzw.narrow {
+	max-width: 100vw;
+	box-sizing: border-box;
+	overflow: hidden;
+
 	> .punished {
 		font-size: 0.8em;
 		padding: 16px;
 	}
 
 	> .profile {
+
 		> .main {
 			position: relative;
 			overflow: hidden;
@@ -678,6 +683,7 @@ export default defineComponent({
 						overflow: hidden;
 						white-space: nowrap;
 						text-overflow: ellipsis;
+						margin: 0;
 					}
 				}
 

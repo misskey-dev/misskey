@@ -7,9 +7,10 @@ import getAcct from '../../misc/acct/render';
 import * as os from '@/os';
 import { store, userActions } from '@/store';
 import { router } from '@/router';
-import { popout } from './popout';
 
 export function getUserMenu(user) {
+	const meId = store.getters.isSignedIn ? store.state.i.id : null;
+
 	async function pushList() {
 		const t = i18n.global.t('selectList'); // なぜか後で参照すると null になるので最初にメモリに確保しておく
 		const lists = await os.api('users/lists/list');
@@ -130,7 +131,7 @@ export function getUserMenu(user) {
 		action: () => {
 			os.post({ specified: user });
 		}
-	}, store.state.i.id != user.id ? {
+	}, meId != user.id ? {
 		type: 'link',
 		icon: faComments,
 		text: i18n.global.t('startMessaging'),
@@ -139,13 +140,13 @@ export function getUserMenu(user) {
 		icon: faListUl,
 		text: i18n.global.t('addToList'),
 		action: pushList
-	}, store.state.i.id != user.id ? {
+	}, meId != user.id ? {
 		icon: faUsers,
 		text: i18n.global.t('inviteToGroup'),
 		action: inviteGroup
 	} : undefined] as any;
 
-	if (store.getters.isSignedIn && store.state.i.id != user.id) {
+	if (store.getters.isSignedIn && meId != user.id) {
 		menu = menu.concat([null, {
 			icon: user.isMuted ? faEye : faEyeSlash,
 			text: user.isMuted ? i18n.global.t('unmute') : i18n.global.t('mute'),
@@ -175,7 +176,7 @@ export function getUserMenu(user) {
 		}
 	}
 
-	if (store.getters.isSignedIn && store.state.i.id === user.id) {
+	if (store.getters.isSignedIn && meId === user.id) {
 		menu = menu.concat([null, {
 			icon: faPencilAlt,
 			text: i18n.global.t('editProfile'),
