@@ -60,12 +60,15 @@
 			<div class="main">
 				<div class="nav _vMargin">
 					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
+						<Fa :icon="faCommentAlt" class="icon"/>
 						<span>{{ $t('notes') }}</span>
 					</MkA>
 					<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
+						<Fa :icon="faPaperclip" class="icon"/>
 						<span>{{ $t('clips') }}</span>
 					</MkA>
 					<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
+						<Fa :icon="faFileAlt" class="icon"/>
 						<span>{{ $t('pages') }}</span>
 					</MkA>
 					<div class="actions">
@@ -83,6 +86,8 @@
 				</template>
 				<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_vMargin"/>
 				<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_vMargin"/>
+				<XClips v-else-if="page === 'clips'" :user="user" class="_vMargin"/>
+				<XPages v-else-if="page === 'pages'" :user="user" class="_vMargin"/>
 			</div>
 		</div>
 	</div>
@@ -193,8 +198,8 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarAlt, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faPaperclip, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarAlt, faBookmark as farBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
 import XNote from '@/components/note.vue';
@@ -221,6 +226,8 @@ export default defineComponent({
 		MkFolder,
 		MkTab,
 		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
+		XClips: defineAsyncComponent(() => import('./clips.vue')),
+		XPages: defineAsyncComponent(() => import('./pages.vue')),
 		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},
@@ -251,7 +258,7 @@ export default defineComponent({
 			error: null,
 			parallaxAnimationId: null,
 			narrow: null,
-			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt
+			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt, faCommentAlt, faPaperclip, faFileAlt,
 		};
 	},
 
@@ -471,13 +478,18 @@ export default defineComponent({
 				display: flex;
 				align-items: center;
 				margin-top: var(--margin);
-				font-size: 120%;
+				//font-size: 120%;
+				font-weight: bold;
 
 				> .link {
 					display: inline-block;
 					padding: 15px 24px 12px 24px;
 					text-align: center;
 					border-bottom: solid 3px transparent;
+
+					&:hover {
+						text-decoration: none;
+					}
 
 					&.active {
 						color: var(--accent);
