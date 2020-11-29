@@ -1,7 +1,7 @@
 <template>
 <div class="rwqkcmrc" :style="{ backgroundImage: `url(${ $store.state.instance.meta.backgroundImageUrl })` }">
 	<div class="back"></div>
-	<div class="fade"></div>
+	<div class="fade" v-if="full"></div>
 	<div class="contents">
 		<div class="wrapper">
 			<h1 v-if="meta" :class="{ full }">
