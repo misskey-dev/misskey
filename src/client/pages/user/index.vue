@@ -374,9 +374,9 @@ export default defineComponent({
 
 			> .avatar {
 				display: block;
-				width: 190px;
-				height: 190px;
-				margin: -140px auto 0 auto;
+				width: 180px;
+				height: 180px;
+				margin: -130px auto 0 auto;
 			}
 
 			> .name {
@@ -385,7 +385,7 @@ export default defineComponent({
 
 				> .name {
 					display: block;
-					font-size: 2em;
+					font-size: 1.75em;
 					font-weight: bold;
 				}
 			}
