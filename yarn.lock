@@ -781,10 +781,10 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
 
-"@types/ratelimiter@2.1.28":
-  version "2.1.28"
-  resolved "https://registry.yarnpkg.com/@types/ratelimiter/-/ratelimiter-2.1.28.tgz#cf6371e6d9b1d236e3f0b25889a6d52aed2e0e22"
-  integrity sha1-z2Nx5tmx0jbj8LJYiabVKu0uDiI=
+"@types/ratelimiter@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@types/ratelimiter/-/ratelimiter-3.4.0.tgz#e46c906a905f58aeecc92dccc16bb81687c5ec0c"
+  integrity sha512-r6ZXDiy8tDJPSxAnXV8d98jRCWYCNfA/NCIziDkQbzm4Rn0uJ8Nzm7194THpgmO9LX2YHN1n0iJGSpEt2t1BnQ==
   dependencies:
     "@types/redis" "*"
 
