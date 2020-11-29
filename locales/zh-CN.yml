@@ -651,6 +651,8 @@ reversiCount: "黑白棋对战次数"
 contact: "联系人"
 useSystemFont: "使用系统默认字体"
 clips: "片段"
+experimentalFeatures: "实验性功能"
+developer: "开发者"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
