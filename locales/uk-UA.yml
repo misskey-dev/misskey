@@ -592,7 +592,17 @@ disableShowingAnimatedImages: "Не програвати анімовані зо
 notSet: "Не налаштовано"
 emailVerified: "Електронну пошту підтверджено."
 noteFavoritesCount: "Кількість улюблених нотаток"
+pageLikesCount: "Кількість отриманих вподобань сторінки"
+pageLikedCount: "Кількість вподобаних сторінок"
+reversiCount: "Кількість матчів \"Реверсі\""
+contact: "Контакт"
+useSystemFont: "Використовувати стандартний шрифт системи"
 clips: "Добірка"
+experimentalFeatures: "Експериментальні функції"
+developer: "Розробник"
+_aboutMisskey:
+  about: "Misskey - це програмне забезпечення з відкритим кодом, яке розробляє syuilo з 2014 року."
+  contributors: "Головні помічники"
 _mfm:
   cheatSheet: " Довідка MFM"
   intro: "MFM це ексклюзивна мова розмітки тексту в Misskey, яку можна використовувати в багатьох місцях. Тут ви можете переглянути приклади її синтаксису."
