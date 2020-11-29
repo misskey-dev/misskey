@@ -177,6 +177,21 @@
 			</div>
 		</div>
 
+		<div class="nav _vMargin">
+			<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
+				<Fa :icon="faCommentAlt" class="icon"/>
+				<span>{{ $t('notes') }}</span>
+			</MkA>
+			<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
+				<Fa :icon="faPaperclip" class="icon"/>
+				<span>{{ $t('clips') }}</span>
+			</MkA>
+			<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
+				<Fa :icon="faFileAlt" class="icon"/>
+				<span>{{ $t('pages') }}</span>
+			</MkA>
+		</div>
+
 		<template v-if="page === 'index'">
 			<div class="_content _vMargin">
 				<div v-if="user.pinnedNotes.length > 0" class="_vMargin">
@@ -191,6 +206,8 @@
 		</template>
 		<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _vMargin"/>
 		<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _vMargin"/>
+		<XClips v-else-if="page === 'clips'" :user="user" class="_vMargin"/>
+		<XPages v-else-if="page === 'pages'" :user="user" class="_vMargin"/>
 	</div>
 	<div v-else-if="error">
 		<MkError @retry="fetch()"/>
@@ -735,6 +752,39 @@ export default defineComponent({
 		}
 	}
 
+	> .nav {
+		display: flex;
+		align-items: center;
+		margin-top: var(--margin);
+		//font-size: 120%;
+		font-weight: bold;
+
+		> .link {
+			flex: 1;
+			display: inline-block;
+			padding: 16px;
+			text-align: center;
+			border-bottom: solid 3px transparent;
+
+			&:hover {
+				text-decoration: none;
+			}
+
+			&.active {
+				color: var(--accent);
+				border-bottom-color: var(--accent);
+			}
+
+			&:not(.active):hover {
+				color: var(--fgHighlighted);
+			}
+
+			> .icon {
+				margin-right: 6px;
+			}
+		}
+	}
+
 	> .content {
 		margin-bottom: var(--margin);
 	}
@@ -778,6 +828,10 @@ export default defineComponent({
 			> .status {
 				padding: 16px;
 			}
+		}
+
+		> .nav {
+			font-size: 80%;
 		}
 	}
 }
