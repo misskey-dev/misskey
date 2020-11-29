@@ -451,10 +451,10 @@
   resolved "https://registry.yarnpkg.com/@types/fancy-log/-/fancy-log-1.3.0.tgz#a61ab476e5e628cd07a846330df53b85e05c8ce0"
   integrity sha512-mQjDxyOM1Cpocd+vm1kZBP7smwKZ4TNokFeds9LV7OZibmPJFEzY3+xZMrKfUdNT71lv8GoCPD6upKwHxubClw==
 
-"@types/fluent-ffmpeg@2.1.14":
-  version "2.1.14"
-  resolved "https://registry.yarnpkg.com/@types/fluent-ffmpeg/-/fluent-ffmpeg-2.1.14.tgz#b21d60267fe269c2ea81fa3238a36a8349f8f2f3"
-  integrity sha512-nJrAX9ODNI7mUB0b7Y0Stx1a6dOpV3zXsOnWoBuEd9/woQhepBNCMeCyOL6SLJD3jn5sLw5ciDGH0RwJenCoag==
+"@types/fluent-ffmpeg@2.1.16":
+  version "2.1.16"
+  resolved "https://registry.yarnpkg.com/@types/fluent-ffmpeg/-/fluent-ffmpeg-2.1.16.tgz#63949b0cb6bc88c9157a579cdd80858a269f3a3a"
+  integrity sha512-1FTstm6xY/2WsJVt6ARV7CiJjNCQDlR/nfw6xuYk5ITbVjk7sw89Biyqm2DGW4c3aZ3vBx+5irZvsql4eybpoQ==
   dependencies:
     "@types/node" "*"
 
