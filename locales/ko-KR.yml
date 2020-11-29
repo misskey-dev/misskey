@@ -611,6 +611,7 @@ noCrawleDescription: "검색엔진에 사용자 페이지, 노트, 페이지 등
 lockedAccountInfo: "팔로우를 승인으로 승인받더라도 노트의 공개 범위를 '팔로워'로 하지 않는 한 누구나 당신의 노트를 볼 수 있습니다."
 alwaysMarkSensitive: "미디어를 항상 열람 주의로 설정"
 emailVerified: "메일 주소가 확인되었습니다."
+clips: "클립"
 _nsfw:
   ignore: "열람 주의 미디어 항상 표시"
 _mfm:
