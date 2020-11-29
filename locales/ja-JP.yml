@@ -651,6 +651,8 @@ reversiCount: "リバーシの対局数"
 contact: "連絡先"
 useSystemFont: "システムのデフォルトのフォントを使う"
 clips: "クリップ"
+experimentalFeatures: "実験的機能"
+developer: "開発者"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
