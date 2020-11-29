@@ -588,6 +588,7 @@ noCrawleDescription: "Просити пошукові системи не інд
 alwaysMarkSensitive: "Позначати NSFW за замовчуванням"
 loadRawImages: "Відображати вкладені зображення повністю замість ескізів"
 notSet: "Не налаштовано"
+emailVerified: "Електронну пошту підтверджено."
 clips: "Добірка"
 _mfm:
   cheatSheet: " Довідка MFM"
