@@ -239,6 +239,7 @@
 		"url-loader": "4.1.1",
 		"uuid": "8.3.1",
 		"v-debounce": "0.1.2",
+		"vanilla-tilt": "1.7.0",
 		"vue": "3.0.3",
 		"vue-color": "2.7.1",
 		"vue-draggable-next": "1.0.8",
