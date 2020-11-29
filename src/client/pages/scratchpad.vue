@@ -1,7 +1,7 @@
 <template>
 <div class="">
-	<div class="_panel">
-		<prism-editor class="_code" v-model:value="code" :highlight="highlighter" :line-numbers="false"/>
+	<div class="_panel iltifgqe">
+		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
 		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
@@ -129,6 +129,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.iltifgqe {
+	position: relative;
+
+	> .code {
+	}
+}
+
 .bepmlvbi {
 	padding: 16px;
 
