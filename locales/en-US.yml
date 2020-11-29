@@ -650,6 +650,7 @@ pageLikedCount: "Amount of liked Pages"
 reversiCount: "Number of Reversi matches"
 contact: "Contact"
 useSystemFont: "Use the system's default font"
+clips: "Clip"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
