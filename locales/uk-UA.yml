@@ -809,6 +809,7 @@ _notification:
     reaction: "Реакції"
 _deck:
   _columns:
+    widgets: "Віджети"
     notifications: "Сповіщення"
     tl: "Стрічка"
     antenna: "Антени"
