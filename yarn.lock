@@ -309,10 +309,10 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/bull@3.14.0":
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/@types/bull/-/bull-3.14.0.tgz#60741d3f5006bd4e17b02ff036e6ecef7ac47a6e"
-  integrity sha512-9MKWQ4Q+GFIEA3/SdSc128mAccCKni2YVMKPEdQY5qooN+3gl0Po+f7kaKukgn5s6YXj5xbvc/zTaMsHZL9GvA==
+"@types/bull@3.14.4":
+  version "3.14.4"
+  resolved "https://registry.yarnpkg.com/@types/bull/-/bull-3.14.4.tgz#8a787ad4582b1a6cf2bfa6cca5f72428330c455e"
+  integrity sha512-XAYSV6A/r9GX+TgWwjF0WgpKK9/WAiSfVe3q6+2JrRW+3hLDjIU5MQL9HQZet3my98VA3kNWjEYrJCeRmJ5a5w==
   dependencies:
     "@types/ioredis" "*"
 

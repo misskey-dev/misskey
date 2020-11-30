@@ -48,7 +48,7 @@
 		"@sinonjs/fake-timers": "6.0.1",
 		"@syuilo/aiscript": "0.11.1",
 		"@types/bcryptjs": "2.4.2",
-		"@types/bull": "3.14.0",
+		"@types/bull": "3.14.4",
 		"@types/cbor": "5.0.1",
 		"@types/dateformat": "3.0.1",
 		"@types/double-ended-queue": "2.1.1",
