@@ -745,6 +745,7 @@ _permissions:
   "write:account": "Змінити дані акаунту"
   "read:blocks": "Переглянути список заблокованих"
   "write:blocks": "Редагувати список заблокованих"
+  "read:drive": "Переглянути вміст Диска"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _widgets:
