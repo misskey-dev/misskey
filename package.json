@@ -249,7 +249,7 @@
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vue-router": "4.0.0-rc.5",
 		"vue-style-loader": "4.1.2",
-		"vuex": "4.0.0-rc.1",
+		"vuex": "4.0.0-rc.2",
 		"vuex-persistedstate": "3.1.0",
 		"web-push": "3.4.4",
 		"webpack": "5.9.0",
