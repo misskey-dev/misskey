@@ -190,7 +190,7 @@
 		"pg": "8.5.1",
 		"portscanner": "2.2.0",
 		"postcss": "8.1.6",
-		"postcss-loader": "4.0.4",
+		"postcss-loader": "4.1.0",
 		"prismjs": "1.22.0",
 		"probe-image-size": "6.0.0",
 		"promise-limit": "2.7.0",
