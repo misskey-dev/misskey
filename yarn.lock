@@ -739,10 +739,10 @@
   resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
   integrity sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==
 
-"@types/parsimmon@1.10.4":
-  version "1.10.4"
-  resolved "https://registry.yarnpkg.com/@types/parsimmon/-/parsimmon-1.10.4.tgz#7639e16015440d9baf622f83c12dae47787226b7"
-  integrity sha512-M56NfQHfaWuaj6daSgCVs7jh8fXLI3LmxjRoQxmOvYesgIkI+9HPsDLO0vd7wX7cwA0D0ZWFEJdp0VPwLdS+bQ==
+"@types/parsimmon@1.10.5":
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/@types/parsimmon/-/parsimmon-1.10.5.tgz#2a0e4035bebc948a0484f1a8b55800cb1c10b2dd"
+  integrity sha512-tUbXk1Yo74+5Hhn9Lar0XaWI55aCKtm7bV4sjnJ2Dqma/a5JmO0jmGdqAfC8rVqeDSVU5AugSOXdVYfc0HrKDg==
 
 "@types/portscanner@2.1.0":
   version "2.1.0"
