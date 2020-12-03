@@ -118,7 +118,7 @@
 		"cbor": "5.1.0",
 		"chalk": "4.1.0",
 		"chart.js": "2.9.4",
-		"cli-highlight": "2.1.4",
+		"cli-highlight": "2.1.9",
 		"commander": "4.1.1",
 		"content-disposition": "0.5.3",
 		"core-js": "3.7.0",
