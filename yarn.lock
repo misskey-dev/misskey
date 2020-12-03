@@ -803,12 +803,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/rename@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@types/rename/-/rename-1.0.1.tgz#89ef152d73f2400835c5d835c5e22d3eb6b21ba6"
-  integrity sha512-/UCzEibV29OoEkc773GR9lzwrHnMl8wnNrvAir+WIICS4e7NG+Pe85pYH4CGyVvgmNuKiiWH5i0g0flHO/Uw4Q==
-  dependencies:
-    "@types/node" "*"
+"@types/rename@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/rename/-/rename-1.0.2.tgz#82a3b674d07b0936e9d7de00f5268faa45c237d7"
+  integrity sha512-0rTMy5prUJHfmXnjP8xv/Wyfo0c1GoMQx2uX/8+JApIVND64EQ00DgdeeeRLlFm0GwNrGxy23yhc2AD6KOF2Ag==
 
 "@types/request-stats@3.0.0":
   version "3.0.0"
