@@ -3,12 +3,18 @@
 	<a class="main _button _formPanel _formClickable" :href="to" target="_blank" v-if="external">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
-		<Fa :icon="faExternalLinkAlt" class="right"/>
+		<span class="right">
+			<span class="text"><slot name="suffix"></slot></span>
+			<Fa :icon="faExternalLinkAlt" class="icon"/>
+		</span>
 	</a>
 	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
-		<Fa :icon="faChevronRight" class="right"/>
+		<span class="right">
+			<span class="text"><slot name="suffix"></slot></span>
+			<Fa :icon="faChevronRight" class="icon"/>
+		</span>
 	</MkA>
 </div>
 </template>
@@ -84,6 +90,10 @@ export default defineComponent({
 		> .right {
 			margin-left: auto;
 			opacity: 0.7;
+
+			> .text:not(:empty) {
+				margin-right: 0.75em;
+			}
 		}
 	}
 }

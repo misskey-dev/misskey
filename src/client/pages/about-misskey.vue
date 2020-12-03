@@ -11,9 +11,21 @@
 		{{ $t('_aboutMisskey.about') }}
 	</section>
 	<FormGroup>
-		<FormLink to="https://github.com/syuilo/misskey" external><template #icon><Fa :icon="faCode"/></template>{{ $t('_aboutMisskey.source') }}</FormLink>
-		<FormLink to="https://crowdin.com/project/misskey" external><template #icon><Fa :icon="faLanguage"/></template>{{ $t('_aboutMisskey.translation') }}</FormLink>
-		<FormLink to="https://www.patreon.com/syuilo" external><template #icon><Fa :icon="faHandHoldingMedical"/></template>{{ $t('_aboutMisskey.donate') }}</FormLink>
+		<FormLink to="https://github.com/syuilo/misskey" external>
+			<template #icon><Fa :icon="faCode"/></template>
+			{{ $t('_aboutMisskey.source') }}
+			<template #suffix>GitHub</template>
+		</FormLink>
+		<FormLink to="https://crowdin.com/project/misskey" external>
+			<template #icon><Fa :icon="faLanguage"/></template>
+			{{ $t('_aboutMisskey.translation') }}
+			<template #suffix>Crowdin</template>
+		</FormLink>
+		<FormLink to="https://www.patreon.com/syuilo" external>
+			<template #icon><Fa :icon="faHandHoldingMedical"/></template>
+			{{ $t('_aboutMisskey.donate') }}
+			<template #suffix>Patreon</template>
+		</FormLink>
 	</FormGroup>
 	<FormGroup>
 		<template #label>{{ $t('_aboutMisskey.contributors') }}</template>
