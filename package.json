@@ -106,7 +106,7 @@
 		"@typescript-eslint/parser": "4.6.1",
 		"@vue/compiler-sfc": "3.0.3",
 		"abort-controller": "3.0.0",
-		"apexcharts": "3.22.1",
+		"apexcharts": "3.22.2",
 		"autobind-decorator": "2.4.0",
 		"autosize": "4.0.2",
 		"autwh": "0.1.0",
