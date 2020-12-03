@@ -668,6 +668,7 @@ _reversi:
   blackOrWhite: "Чорні / Білі"
   blackIs: "{name} грає чорними"
   rules: "Правила"
+  botSettings: "Параметри бота"
   thisGameIsStartedSoon: "Гра розпочнеться через кілька секунд"
   waitingForOther: "Чекаємо на хід суперника"
   waitingForMe: "Чекаємо на ваш хід"
