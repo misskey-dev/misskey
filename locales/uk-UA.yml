@@ -709,6 +709,10 @@ _sidebar:
   full: "Повна"
   icon: "Аватар"
   hide: "Сховати"
+_wordMute:
+  soft: "М'яко"
+  hard: "Жорстко"
+  mutedNotes: "Заблоковані нотатки"
 _theme:
   keys:
     accent: "Акцент"
