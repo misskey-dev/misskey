@@ -1,48 +1,15 @@
 <template>
 <div class="mk-app">
-	<div class="side" v-if="!narrow">
-		<div :style="{ backgroundImage: `url(${ $store.state.instance.meta.backgroundImageUrl })` }">
-			<div class="fade"></div>
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
-			<div class="about _panel" v-if="meta">
-				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-			</div>
-			<div class="action">
-				<button class="_button primary" @click="signup()">{{ $t('signup') }}</button>
-				<button class="_button" @click="signin()">{{ $t('login') }}</button>
-			</div>
-			<div class="announcements panel">
-				<header>{{ $t('announcements') }}</header>
-				<MkPagination :pagination="announcements" #default="{items}" class="list">
-					<section class="item" v-for="(announcement, i) in items" :key="announcement.id">
-						<div class="title">{{ announcement.title }}</div>
-						<div class="content">
-							<Mfm :text="announcement.text"/>
-							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-						</div>
-					</section>
-				</MkPagination>
-			</div>
-		</div>
+	<div class="side" v-if="!narrow && $route.path !== '/'">
+		<XKanban class="kanban" full/>
 	</div>
 
 	<div class="main">
-		<header>
-			<MkA class="link" to="/">{{ $t('home') }}</MkA>
-			<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
-			<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
-			<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
-		</header>
+		<XKanban class="banner" :full="$route.path === '/'" v-if="narrow || $route.path === '/'"/>
 
-		<div v-if="narrow" class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
-		</div>
-
-		<div class="contents" ref="contents" :class="{ wallpaper }">
-			<header class="header" ref="header" v-show="$route.path !== '/'">
-				<XHeader :info="pageInfo"/>
-			</header>
-			<main ref="main">
+		<div class="contents">
+			<XHeader class="header" :info="pageInfo" v-if="$route.path !== '/'"/>
+			<main>
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<component :is="Component" :ref="changePage"/>
@@ -55,6 +22,27 @@
 			</div>
 		</div>
 	</div>
+
+	<transition name="tray-back">
+		<div class="menu-back _modalBg"
+			v-if="showMenu"
+			@click="showMenu = false"
+			@touchstart.passive="showMenu = false"
+		></div>
+	</transition>
+
+	<transition name="tray">
+		<div v-if="showMenu" class="menu">
+			<MkA to="/" class="link" active-class="active"><Fa :icon="faHome" class="icon"/>{{ $t('home') }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><Fa :icon="faHashtag" class="icon"/>{{ $t('explore') }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><Fa :icon="faFireAlt" class="icon"/>{{ $t('featured') }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><Fa :icon="faSatelliteDish" class="icon"/>{{ $t('channel') }}</MkA>
+			<div class="action">
+				<button class="_buttonPrimary" @click="signup()">{{ $t('signup') }}</button>
+				<button class="_button" @click="signin()">{{ $t('login') }}</button>
+			</div>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -68,13 +56,15 @@ import MkPagination from '@/components/ui/pagination.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
-import XHeader from '../_common_/header.vue';
+import XHeader from './header.vue';
+import XKanban from './kanban.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
 		XHeader,
+		XKanban,
 		MkPagination,
 		MkButton,
 	},
@@ -86,6 +76,7 @@ export default defineComponent({
 			pageKey: 0,
 			pageInfo: null,
 			meta: null,
+			showMenu: false,
 			narrow: window.innerWidth < 1280,
 			announcements: {
 				endpoint: 'announcements',
@@ -166,6 +157,28 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.tray-enter-active,
+.tray-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-enter-from,
+.tray-leave-active {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.tray-back-enter-active,
+.tray-back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-back-enter-from,
+.tray-back-leave-active {
+	opacity: 0;
+}
+
 .mk-app {
 	display: flex;
 	min-height: 100vh;
@@ -173,183 +186,26 @@ export default defineComponent({
 	> .side {
 		width: 500px;
 		height: 100vh;
-		text-align: center;
 
-		> div {
+		> .kanban {
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 500px;
 			height: 100vh;
-			background-position: center;
-			background-size: cover;
-
-			> .panel {
-				-webkit-backdrop-filter: blur(8px);
-				backdrop-filter: blur(8px);
-				background: rgba(0, 0, 0, 0.5);
-				border-radius: var(--radius);
-
-				&, * {
-					color: #fff !important;
-				}
-			}
-
-			> .fade {
-				position: absolute;
-				z-index: -1;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 300px;
-				background: linear-gradient(rgba(#000, 0.5), transparent);
-			}
-
-			> h1 {
-				display: block;
-				margin: 0;
-				padding: 64px 32px 48px 32px;
-				color: #fff;
-
-				> .logo {
-					vertical-align: bottom;
-					max-height: 150px;
-				}
-			}
-
-			> .about {
-				display: block;
-				margin: 0 64px 16px 64px;
-				padding: 24px;
-				text-align: center;
-				box-sizing: border-box;
-			}
-
-			> .action {
-				padding: 0 64px;
-
-				> button {
-					display: block;
-					width: 100%;
-					padding: 10px;
-					box-sizing: border-box;
-					text-align: center;
-					border-radius: 999px;
-					background: var(--panel);
-
-					&.primary {
-						background: var(--accent);
-						color: #fff;
-					}
-
-					&:first-child {
-						margin-bottom: 16px;
-					}
-				}
-			}
-
-			> .announcements {
-				margin: 64px 64px 16px 64px;
-				text-align: left;
-
-				> header {
-					padding: 12px 16px;
-					border-bottom: solid 1px rgba(255, 255, 255, 0.5);
-				}
-
-				> .list {
-					max-height: 300px;
-					overflow: auto;
-
-					> .item {
-						padding: 12px 16px;
-
-						& + .item {
-							border-top: solid 1px rgba(255, 255, 255, 0.5);
-						}
-
-						> .title {
-							font-weight: bold;
-						}
-					}
-				}
-			}
+			overflow: auto;
 		}
 	}
 
 	> .main {
 		flex: 1;
 
-		> header {
-			position: relative;
-			z-index: 1;
-			background: var(--panel);
-			padding: 0 32px;
-			text-align: left;
-			overflow: auto;
-			white-space: nowrap;
-
-			> .link {
-				display: inline-block;
-				line-height: 60px;
-				padding: 0 0.7em;
-
-				&.MkA-active {
-					box-shadow: 0 -2px 0 0 var(--accent) inset;
-				}
-			}
-		}
-
 		> .banner {
-			position: relative;
-			width: 100%;
-			height: 200px;
-			background-size: cover;
-			background-position: center;
-
-			&:after {
-				content: "";
-				display: block;
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				height: 64px;
-				background: linear-gradient(transparent, var(--bg));
-			}
-
-			> h1 {
-				margin: 0;
-				padding: 32px;
-				text-align: center;
-				color: #fff;
-				text-shadow: 0 0 8px #000;
-
-				> .logo {
-					vertical-align: bottom;
-					max-height: 150px;
-				}
-			}
 		}
 
 		> .contents {
 			position: relative;
 			z-index: 1;
-
-			> .header {
-				position: sticky;
-				top: 0;
-				left: 0;
-				z-index: 1000;
-				height: 60px;
-				width: 100%;
-				line-height: 60px;
-				text-align: center;
-				-webkit-backdrop-filter: blur(32px);
-				backdrop-filter: blur(32px);
-				background-color: var(--header);
-				border-bottom: 1px solid var(--divider);
-			}
 
 			> .powered-by {
 				padding: 28px;
@@ -365,8 +221,54 @@ export default defineComponent({
 			}
 		}
 	}
-}
-</style>
 
-<style lang="scss">
+	> .menu-back {
+		position: fixed;
+		z-index: 1001;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	> .menu {
+		position: fixed;
+		z-index: 1001;
+		top: 0;
+		left: 0;
+		width: 240px;
+		height: 100vh;
+		background: var(--panel);
+
+		> .link {
+			display: block;
+			padding: 16px;
+
+			> .icon {
+				margin-right: 1em;
+			}
+		}
+
+		> .action {
+			padding: 16px;
+
+			> button {
+				display: block;
+				width: 100%;
+				padding: 10px;
+				box-sizing: border-box;
+				text-align: center;
+				border-radius: 999px;
+
+				&._button {
+					background: var(--panel);
+				}
+
+				&:first-child {
+					margin-bottom: 16px;
+				}
+			}
+		}
+	}
+}
 </style>

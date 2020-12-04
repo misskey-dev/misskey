@@ -136,6 +136,7 @@ export default defineComponent({
 	> div {
 		flex: 1;
 		overflow: auto;
+		background: var(--bg);
 	}
 }
 </style>

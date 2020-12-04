@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="lznhrdub">
 	<div class="_section">
 		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('searchUser') }}</span></MkInput>
 
@@ -186,6 +186,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.lznhrdub {
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
 .localfedi7 {
 	color: #fff;
 	padding: 16px;

@@ -102,6 +102,7 @@ export default defineComponent({
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
 				case 'regedit': return defineAsyncComponent(() => import('./regedit.vue'));
+				case 'experimental-features': return defineAsyncComponent(() => import('./experimental-features.vue'));
 				default: return null;
 			}
 		});

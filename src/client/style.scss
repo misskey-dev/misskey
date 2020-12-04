@@ -26,7 +26,7 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
-	font-family: "BIZ UDPGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	line-height: 1.35;
 	text-size-adjust: 100%;
 
@@ -236,13 +236,19 @@ hr {
 }
 
 ._panel {
-	//position: relative;
-	//z-index: 1;
 	background: var(--panel);
 	border-radius: var(--radius);
 	//border: var(--panelBorder);
-	box-shadow: var(--panelShadow);
 	overflow: hidden;
+}
+
+// TODO: 普通のpanelとの使い分けが特に決まっていないので廃止してもいいかも？
+._panelElevated {
+	@extend ._panel;
+
+	//position: relative;
+	//z-index: 1;
+	box-shadow: var(--panelShadow);
 }
 
 ._card {
