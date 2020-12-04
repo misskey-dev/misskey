@@ -830,7 +830,8 @@ _relayStatus:
   accepted: "Затверджено"
   rejected: "Відхилено"
 _notification:
-  youRenoted: "{name} поширив(ла) вашу нотатку"
+  youGotQuote: "{name} цитує вас"
+  youRenoted: "{name} поширює"
   youWereFollowed: "Новий підписник"
   youWereInvitedToGroup: "Запрошення до групи"
   _types:
