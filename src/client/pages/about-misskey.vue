@@ -2,7 +2,7 @@
 <FormBase class="znqjceqz">
 	<section class="_formItem">
 		<div class="_formPanel" style="text-align: center; padding: 16px;">
-			<img src="/assets/icons/512.png" alt="" style="display: block; width: 100px; margin: 0 auto; border-radius: 16px;"/>
+			<img src="/assets/icons/512.png" alt="" style="display: block; width: 100px; margin: 0 auto; border-radius: 16px;" ref="icon"/>
 			<div style="margin-top: 0.75em;">Misskey</div>
 			<div style="opacity: 0.5;">v{{ version }}</div>
 		</div>
@@ -11,9 +11,21 @@
 		{{ $t('_aboutMisskey.about') }}
 	</section>
 	<FormGroup>
-		<FormLink to="https://github.com/syuilo/misskey" external><template #icon><Fa :icon="faCode"/></template>{{ $t('_aboutMisskey.source') }}</FormLink>
-		<FormLink to="https://crowdin.com/project/misskey" external><template #icon><Fa :icon="faLanguage"/></template>{{ $t('_aboutMisskey.translation') }}</FormLink>
-		<FormLink to="https://www.patreon.com/syuilo" external><template #icon><Fa :icon="faHandHoldingMedical"/></template>{{ $t('_aboutMisskey.donate') }}</FormLink>
+		<FormLink to="https://github.com/syuilo/misskey" external>
+			<template #icon><Fa :icon="faCode"/></template>
+			{{ $t('_aboutMisskey.source') }}
+			<template #suffix>GitHub</template>
+		</FormLink>
+		<FormLink to="https://crowdin.com/project/misskey" external>
+			<template #icon><Fa :icon="faLanguage"/></template>
+			{{ $t('_aboutMisskey.translation') }}
+			<template #suffix>Crowdin</template>
+		</FormLink>
+		<FormLink to="https://www.patreon.com/syuilo" external>
+			<template #icon><Fa :icon="faHandHoldingMedical"/></template>
+			{{ $t('_aboutMisskey.donate') }}
+			<template #suffix>Patreon</template>
+		</FormLink>
 	</FormGroup>
 	<FormGroup>
 		<template #label>{{ $t('_aboutMisskey.contributors') }}</template>
@@ -38,6 +50,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faInfoCircle, faCode, faLanguage, faHandHoldingMedical, } from '@fortawesome/free-solid-svg-icons';
+import VanillaTilt from 'vanilla-tilt';
 import { version } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormBase from '@/components/form/base.vue';
@@ -104,6 +117,15 @@ export default defineComponent({
 			patrons,
 			faInfoCircle, faCode, faLanguage, faHandHoldingMedical,
 		}
+	},
+
+	mounted() {
+		VanillaTilt.init(this.$refs.icon, {
+			max: 30,
+			perspective: 500,
+			scale: 1.125,
+			speed: 1000,
+		});
 	},
 });
 </script>

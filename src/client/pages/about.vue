@@ -21,6 +21,8 @@
 			<template #value>{{ meta.maintainerEmail }}</template>
 		</FormKeyValueView>
 	</FormGroup>
+
+	<FormLink v-if="meta.tosUrl" :to="meta.tosUrl" external>{{ $t('tos') }}</FormLink>
 </FormBase>
 </template>
 
