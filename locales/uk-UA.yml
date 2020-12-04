@@ -846,6 +846,10 @@ _notification:
     app: "Сповіщення від додатків"
 _deck:
   alwaysShowMainColumn: "Завжди показувати головну колонку"
+  swapLeft: "Посунути ліворуч"
+  swapRight: "Посунути праворуч"
+  swapUp: "Пересунути вище"
+  swapDown: "Пересунути нижче"
   _columns:
     widgets: "Віджети"
     notifications: "Сповіщення"
