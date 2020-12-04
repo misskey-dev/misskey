@@ -846,10 +846,14 @@ _notification:
     app: "Сповіщення від додатків"
 _deck:
   alwaysShowMainColumn: "Завжди показувати головну колонку"
-  swapLeft: "Посунути ліворуч"
-  swapRight: "Посунути праворуч"
-  swapUp: "Пересунути вище"
-  swapDown: "Пересунути нижче"
+  columnAlign: "Вирівняти стовпці"
+  addColumn: "Додати стовпець"
+  swapLeft: "Пересунути ліворуч"
+  swapRight: "Пересунути праворуч"
+  swapUp: "Пересунути вгору"
+  swapDown: "Пересунути вниз"
+  stackLeft: "У стовпчик вліво"
+  popRight: "Витягнути вправо"
   _columns:
     widgets: "Віджети"
     notifications: "Сповіщення"
@@ -857,3 +861,4 @@ _deck:
     antenna: "Антени"
     list: "Списки"
     mentions: "Згадки"
+    direct: "Особисте"
