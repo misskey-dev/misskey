@@ -841,9 +841,11 @@ _notification:
     reaction: "Реакції"
     pollVote: "Опитування"
     receiveFollowRequest: "Запит на підписку"
-    followRequestAccepted: "Підписка прийнята"
+    followRequestAccepted: "Прийнята підписка"
     groupInvited: "Запрошення до груп"
+    app: "Сповіщення від додатків"
 _deck:
+  alwaysShowMainColumn: "Завжди показувати головну колонку"
   _columns:
     widgets: "Віджети"
     notifications: "Сповіщення"
