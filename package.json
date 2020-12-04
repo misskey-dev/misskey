@@ -73,7 +73,7 @@
 		"@types/koa__cors": "3.0.1",
 		"@types/koa__multer": "2.0.2",
 		"@types/koa__router": "8.0.2",
-		"@types/markdown-it": "10.0.1",
+		"@types/markdown-it": "10.0.3",
 		"@types/mocha": "7.0.2",
 		"@types/node": "14.0.22",
 		"@types/node-fetch": "2.5.7",
