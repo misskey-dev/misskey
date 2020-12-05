@@ -819,8 +819,11 @@ _pages:
         arg2: "Списки"
       _pick:
         arg1: "Списки"
+        arg2: "Позиція"
+      listLen: "Отримати довжину списку"
       _listLen:
         arg1: "Списки"
+      number: "Число"
       _fn:
         arg1: "Вихід"
     types:
