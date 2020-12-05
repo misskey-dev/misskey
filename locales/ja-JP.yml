@@ -995,6 +995,7 @@ _widgets:
   digitalClock: "デジタル時計"
   federation: "連合"
   postForm: "投稿フォーム"
+  slideshow: "スライドショー"
 
 _cw:
   hide: "隠す"
