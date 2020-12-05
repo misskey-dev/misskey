@@ -830,11 +830,16 @@ _relayStatus:
   accepted: "Затверджено"
   rejected: "Відхилено"
 _notification:
+  fileUploaded: "Файл успішно завантажено"
+  youGotMention: "{name} згадує вас"
+  youGotReply: "{name} відповідає"
   youGotQuote: "{name} цитує вас"
   youRenoted: "{name} поширює"
+  youGotPoll: "{name} бере участь в опитуванні"
   youGotMessagingMessageFromUser: "Повідомлення від {name}"
   youGotMessagingMessageFromGroup: "Нове повідомлення в групі {name}"
   youWereFollowed: "Новий підписник"
+  youReceivedFollowRequest: "Ви отримали запит на підписку"
   youWereInvitedToGroup: "Запрошення до групи"
   _types:
     follow: "Підписки"
