@@ -2,7 +2,7 @@
 
 :root {
 	--baseContentWidth: 760px;
-	--radius: 8px;
+	--radius: 12px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
 
@@ -320,6 +320,7 @@ hr {
 ._popup {
 	background: var(--panel);
 	border-radius: var(--radius);
+	contain: content;
 }
 
 ._section {

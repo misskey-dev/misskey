@@ -1,8 +1,9 @@
 <template>
 <div class="rsqzvsbo _section" v-if="meta">
-	<div class="blocks">
-		<XBlock class="block" v-for="path in meta.pinnedPages" :initial-path="path" :key="path"/>
-	</div>
+	<h2># {{ $t('pinnedNotes') }}</h2>
+	<MkPagination :pagination="pagination" #default="{items}">
+		<XNote class="kmkqjgkl" v-for="note in items" :note="note" :key="note.id"/>
+	</MkPagination>
 </div>
 </template>
 
@@ -12,16 +13,16 @@ import { toUnicode } from 'punycode';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
-import XNotes from '@/components/notes.vue';
-import XBlock from './welcome.entrance.block.vue';
+import XNote from '@/components/note.vue';
+import MkPagination from '@/components/ui/pagination.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
 		MkButton,
-		XNotes,
-		XBlock,
+		XNote,
+		MkPagination,
 	},
 
 	data() {
@@ -29,6 +30,13 @@ export default defineComponent({
 			host: toUnicode(host),
 			instanceName,
 			meta: null,
+			pagination: {
+				endpoint: 'clips/notes',
+				limit: 10,
+				params: () => ({
+					clipId: this.meta.pinnedClipId,
+				})
+			},
 		};
 	},
 
@@ -62,19 +70,28 @@ export default defineComponent({
 .rsqzvsbo {
 	text-align: center;
 
-	> .blocks {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-		grid-gap: var(--margin);
-		text-align: left;
+	> h2 {
+		display: inline-block;
+		color: #fff;
+		margin: 16px;
+		padding: 8px 12px;
+		background: rgba(0, 0, 0, 0.5);
+	}
+}
 
-		> .block {
-			height: 600px;
-		}
+.kmkqjgkl {
+	display: inline-block;
+	vertical-align: middle;
+	width: 600px;
+	margin: 16px;
+	text-align: left;
+	box-shadow: 0 6px 46px rgb(0 0 0 / 30%);
+	border-radius: 12px;
 
-		@media (max-width: 800px) {
-			grid-template-columns: 1fr;
-		}
+	@media (max-width: 800px) {
+		display: block;
+		width: 100%;
+		margin: 12px 0;
 	}
 }
 </style>

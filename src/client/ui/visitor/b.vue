@@ -1,14 +1,14 @@
 <template>
-<div class="mk-app">
-	<div class="side" v-if="!narrow && $route.path !== '/'">
-		<XKanban class="kanban" full/>
+<div class="mk-app" :style="{ backgroundImage: root ? `url(${ $store.state.instance.meta.backgroundImageUrl })` : 'none' }">
+	<div class="side" v-if="!narrow">
+		<XKanban class="kanban" full :transparent="root" :powered-by="root"/>
 	</div>
 
 	<div class="main">
-		<XKanban class="banner" :full="$route.path === '/'" v-if="narrow || $route.path === '/'"/>
+		<XKanban class="banner" :full="root" :transparent="root" :powered-by="root" v-if="narrow"/>
 
 		<div class="contents">
-			<XHeader class="header" :info="pageInfo" v-if="$route.path !== '/'"/>
+			<XHeader class="header" :info="pageInfo" v-if="!root"/>
 			<main>
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
@@ -16,7 +16,7 @@
 					</transition>
 				</router-view>
 			</main>
-			<div class="powered-by">
+			<div class="powered-by" v-if="!root">
 				<b><MkA to="/">{{ host }}</MkA></b>
 				<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
 			</div>
@@ -96,6 +96,10 @@ export default defineComponent({
 				's': search,
 				'h|/': this.help
 			};
+		},
+
+		root(): boolean {
+			return this.$route.path === '/';
 		},
 	},
 
@@ -182,6 +186,9 @@ export default defineComponent({
 .mk-app {
 	display: flex;
 	min-height: 100vh;
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
 
 	> .side {
 		width: 500px;
@@ -199,6 +206,7 @@ export default defineComponent({
 
 	> .main {
 		flex: 1;
+		min-width: 0;
 
 		> .banner {
 		}
