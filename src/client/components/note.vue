@@ -490,8 +490,13 @@ export default defineComponent({
 		},
 
 		renoteDirectly() {
-			os.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				renoteId: this.appearNote.id
+			}, undefined, (res: any) => {
+				os.dialog({
+					type: 'success',
+					text: this.$t('renoted'),
+				});
 			});
 		},
 
@@ -533,6 +538,16 @@ export default defineComponent({
 			pleaseLogin();
 			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
+			}, undefined, (res: any) => {
+				os.dialog({
+					type: 'success',
+					text: this.$t('favorited'),
+				});
+			}, (e: Error) => {
+				os.dialog({
+					type: 'error',
+					text: this.$t('alreadyFavorited'),
+				});
 			});
 		},
 
