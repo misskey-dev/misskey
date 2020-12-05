@@ -3,7 +3,7 @@
 	<XSidebar ref="nav"/>
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
-	<deck-column class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
+	<DeckColumn class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
 		<template #header>
 			<XHeader :info="pageInfo"/>
 		</template>
@@ -15,13 +15,13 @@
 				</keep-alive>
 			</transition>
 		</router-view>
-	</deck-column>
+	</DeckColumn>
 
 	<template v-for="ids in layout">
 		<div v-if="ids.length > 1" class="folder column">
-			<deck-column-core v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
+			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</div>
-		<deck-column-core v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
+		<DeckColumnCore v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
 	</template>
 
 	<button @click="addColumn" class="_button add"><Fa :icon="faPlus"/></button>

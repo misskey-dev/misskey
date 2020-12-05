@@ -1,12 +1,14 @@
 <template>
 <div class="skeikyzd" v-show="files.length != 0">
-	<XDraggable class="files" :list="files" animation="150" delay="100" delay-on-touch-only="true">
-		<div v-for="file in files" :key="file.id" @click="showFileMenu(file, $event)" @contextmenu.prevent="showFileMenu(file, $event)">
-			<MkDriveFileThumbnail :data-id="file.id" class="thumbnail" :file="file" fit="cover"/>
-			<div class="sensitive" v-if="file.isSensitive">
-				<Fa class="icon" :icon="faExclamationTriangle"/>
+	<XDraggable class="files" v-model="_files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
+		<template #item="{element}">
+			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
+				<div class="sensitive" v-if="element.isSensitive">
+					<Fa class="icon" :icon="faExclamationTriangle"/>
+				</div>
 			</div>
-		</div>
+		</template>
 	</XDraggable>
 	<p class="remain">{{ 4 - files.length }}/4</p>
 </div>
@@ -21,7 +23,7 @@ import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		MkDriveFileThumbnail
 	},
 
@@ -36,7 +38,7 @@ export default defineComponent({
 		}
 	},
 
-	emits: ['updated', 'detach'],
+	emits: ['updated', 'detach', 'changeSensitive', 'changeName'],
 
 	data() {
 		return {
@@ -44,6 +46,17 @@ export default defineComponent({
 
 			faExclamationTriangle
 		};
+	},
+
+	computed: {
+		_files: {
+			get() {
+				return this.files;
+			},
+			set(value) {
+				this.$emit('updated', value);
+			}
+		}
 	},
 
 	methods: {
@@ -59,8 +72,7 @@ export default defineComponent({
 				fileId: file.id,
 				isSensitive: !file.isSensitive
 			}).then(() => {
-				file.isSensitive = !file.isSensitive;
-				this.$emit('updated', file);
+				this.$emit('changeSensitive', file, !file.isSensitive);
 			});
 		},
 		async rename(file) {
@@ -76,8 +88,8 @@ export default defineComponent({
 				fileId: file.id,
 				name: result
 			}).then(() => {
+				this.$emit('changeName', file, result);
 				file.name = result;
-				this.$emit('updated', file);
 			});
 		},
 		showFileMenu(file, ev: MouseEvent) {

@@ -53,18 +53,19 @@
 		<MkContainer :body-togglable="true" class="_vMargin">
 			<template #header><Fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
 			<div class="qmuvgica">
-				<XDraggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
-					<XVariable v-for="variable in variables"
-						:value="variable"
-						:removable="true"
-						@update:value="v => updateVariable(v)"
-						@remove="() => removeVariable(variable)"
-						:key="variable.name"
-						:hpml="hpml"
-						:name="variable.name"
-						:title="variable.name"
-						:draggable="true"
-					/>
+				<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+					<template #item="{element}">
+						<XVariable
+							:value="element"
+							:removable="true"
+							@update:value="v => updateVariable(v)"
+							@remove="() => removeVariable(element)"
+							:hpml="hpml"
+							:name="element.name"
+							:title="element.name"
+							:draggable="true"
+						/>
+					</template>
 				</XDraggable>
 
 				<MkButton @click="addVariable()" class="add" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
@@ -109,7 +110,7 @@ import { selectFile } from '@/scripts/select-file';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput,
 	},
 

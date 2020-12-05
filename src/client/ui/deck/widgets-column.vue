@@ -13,14 +13,16 @@
 				<MkButton inline @click="edit = false">{{ $t('close') }}</MkButton>
 			</header>
 			<XDraggable
-				:list="column.widgets"
+				v-model="_widgets"
+				item-key="id"
 				animation="150"
-				@sort="onWidgetSort"
 			>
-				<div v-for="widget in column.widgets" class="customize-container" :key="widget.id" @click="widgetFunc(widget.id)">
-					<button class="remove _button" @click.prevent.stop="removeWidget(widget)"><Fa :icon="faTimes"/></button>
-					<component :is="`mkw-${widget.name}`" :widget="widget" :setting-callback="setting => settings[widget.id] = setting" :column="column"/>
-				</div>
+				<template #item="{element}">
+					<div class="customize-container" @click="widgetFunc(element.id)">
+						<button class="remove _button" @click.prevent.stop="removeWidget(element)"><Fa :icon="faTimes"/></button>
+						<component :is="`mkw-${element.name}`" :widget="element" :setting-callback="setting => settings[element.id] = setting" :column="column"/>
+					</div>
+				</template>
 			</XDraggable>
 		</template>
 		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :column="column"/>
@@ -40,7 +42,7 @@ import { widgets } from '../../widgets';
 export default defineComponent({
 	components: {
 		XColumn,
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		MkSelect,
 		MkButton,
 	},
@@ -67,6 +69,20 @@ export default defineComponent({
 		};
 	},
 
+	computed: {
+		_widgets: {
+			get() {
+				return this.column.widgets;
+			},
+			set(value) {
+				this.$store.commit('deviceUser/setDeckWidgets', {
+					id: this.column.id,
+					widgets: value
+				});
+			}
+		}
+	},
+
 	created() {
 		this.menu = [{
 			icon: faCog,
@@ -80,10 +96,6 @@ export default defineComponent({
 	methods: {
 		widgetFunc(id) {
 			this.settings[id]();
-		},
-
-		onWidgetSort() {
-			this.saveWidgets();
 		},
 
 		addWidget() {
@@ -107,10 +119,6 @@ export default defineComponent({
 				widget
 			});
 		},
-
-		saveWidgets() {
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
-		}
 	}
 });
 </script>

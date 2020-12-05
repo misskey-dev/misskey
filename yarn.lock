@@ -8826,7 +8826,7 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sortablejs@^1.10.2:
+sortablejs@1.10.2:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.10.2.tgz#6e40364d913f98b85a14f6678f92b5c1221f5290"
   integrity sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==
@@ -10144,13 +10144,6 @@ vue-color@2.7.1:
     material-colors "^1.0.0"
     tinycolor2 "^1.1.2"
 
-vue-draggable-next@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/vue-draggable-next/-/vue-draggable-next-1.0.8.tgz#89a8b347422d20f694f977a125b9af2f67e85b99"
-  integrity sha512-c15YO8HC2Lo2+rWXNoLDwiAFzf4pY5L4ESJsWp526qWeLAf6WjIXYSchmsO6AD0ozFIc+sp6B9zKafpFotxNIQ==
-  dependencies:
-    sortablejs "^1.10.2"
-
 vue-eslint-parser@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-7.1.1.tgz#c43c1c715ff50778b9a7e9a4e16921185f3425d3"
@@ -10210,6 +10203,13 @@ vue@3.0.3:
     "@vue/compiler-dom" "3.0.3"
     "@vue/runtime-dom" "3.0.3"
     "@vue/shared" "3.0.3"
+
+vuedraggable@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-4.0.1.tgz#3bcaab0808b7944030b7d9a29f9a63d59dfa12c5"
+  integrity sha512-7qN5jhB1SLfx5P+HCm3JUW+pvgA1bSLgYLSVOeLWBDH9z+zbaEH0OlyZBVMLOxFR+JUHJjwDD0oy7T4r9TEgDA==
+  dependencies:
+    sortablejs "1.10.2"
 
 vuex-persistedstate@3.1.0:
   version "3.1.0"
