@@ -824,8 +824,21 @@ _pages:
       _listLen:
         arg1: "Списки"
       number: "Число"
+      stringToNumber: "Текст на число"
+      _stringToNumber:
+        arg1: "Текст"
+      numberToString: "Число на текст"
+      _numberToString:
+        arg1: "Число"
+      splitStrByLine: "Розбиття тексту на рядки"
+      _splitStrByLine:
+        arg1: "Текст"
+      ref: "Змінні"
+      aiScriptVar: "Змінна AiScript"
+      fn: "Функції"
       _fn:
-        arg1: "Вихід"
+        arg1: "Вивід"
+      for: "Повторення"
     types:
       string: "Текст"
       number: "Число"
