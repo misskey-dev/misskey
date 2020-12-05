@@ -824,6 +824,9 @@ _pages:
       _fn:
         arg1: "Вихід"
     types:
+      string: "Текст"
+      number: "Число"
+      boolean: "Прапорець"
       array: "Списки"
 _relayStatus:
   requesting: "Очікує затвердження"
