@@ -974,6 +974,7 @@ _widgets:
   digitalClock: "Цифровые часы"
   federation: "Федерация"
   postForm: "Форма отправки"
+  slideshow: "Показ слайдов"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
