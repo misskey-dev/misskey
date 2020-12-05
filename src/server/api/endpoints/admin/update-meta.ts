@@ -220,6 +220,10 @@ export const meta = {
 			validator: $.optional.arr($.str),
 		},
 
+		pinnedClipId: {
+			validator: $.optional.nullable.type(ID),
+		},
+
 		langs: {
 			validator: $.optional.arr($.str),
 			desc: {
@@ -559,6 +563,10 @@ export default define(meta, async (ps, me) => {
 
 	if (Array.isArray(ps.pinnedPages)) {
 		set.pinnedPages = ps.pinnedPages.filter(Boolean);
+	}
+
+	if (ps.pinnedClipId !== undefined) {
+		set.pinnedClipId = ps.pinnedClipId;
 	}
 
 	if (ps.summalyProxy !== undefined) {

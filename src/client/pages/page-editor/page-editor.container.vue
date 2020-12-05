@@ -52,6 +52,7 @@ export default defineComponent({
 			default: null
 		}
 	},
+	emits: ['toggle', 'remove'],
 	data() {
 		return {
 			showBody: this.expanded,

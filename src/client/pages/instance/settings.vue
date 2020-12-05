@@ -18,6 +18,8 @@
 		</div>
 	</section>
 
+	<MkInput v-model:value="pinnedClipId">{{ $t('pinnedClipId') }}</MkInput>
+
 	<section class="_card _vMargin">
 		<div class="_content">
 			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $t('maxNoteTextLength') }}</MkInput>
@@ -285,6 +287,7 @@ export default defineComponent({
 			blockedHosts: '',
 			pinnedUsers: '',
 			pinnedPages: '',
+			pinnedClipId: null,
 			maintainerName: null,
 			maintainerEmail: null,
 			name: null,
@@ -373,6 +376,7 @@ export default defineComponent({
 		this.blockedHosts = this.meta.blockedHosts.join('\n');
 		this.pinnedUsers = this.meta.pinnedUsers.join('\n');
 		this.pinnedPages = this.meta.pinnedPages.join('\n');
+		this.pinnedClipId = this.meta.pinnedClipId;
 		this.enableServiceWorker = this.meta.enableServiceWorker;
 		this.swPublicKey = this.meta.swPublickey;
 		this.swPrivateKey = this.meta.swPrivateKey;
@@ -526,6 +530,7 @@ export default defineComponent({
 				blockedHosts: this.blockedHosts.split('\n') || [],
 				pinnedUsers: this.pinnedUsers ? this.pinnedUsers.split('\n') : [],
 				pinnedPages: this.pinnedPages ? this.pinnedPages.split('\n') : [],
+				pinnedClipId: (this.pinnedClipId && this.pinnedClipId) != '' ? this.pinnedClipId : null,
 				enableServiceWorker: this.enableServiceWorker,
 				swPublicKey: this.swPublicKey,
 				swPrivateKey: this.swPrivateKey,

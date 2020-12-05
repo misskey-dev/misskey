@@ -2,7 +2,7 @@
 
 :root {
 	--baseContentWidth: 760px;
-	--radius: 8px;
+	--radius: 12px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
 
@@ -239,16 +239,8 @@ hr {
 	background: var(--panel);
 	border-radius: var(--radius);
 	//border: var(--panelBorder);
-	overflow: hidden;
-}
-
-// TODO: 普通のpanelとの使い分けが特に決まっていないので廃止してもいいかも？
-._panelElevated {
-	@extend ._panel;
-
-	//position: relative;
-	//z-index: 1;
 	box-shadow: var(--panelShadow);
+	overflow: hidden;
 }
 
 ._card {
@@ -328,6 +320,7 @@ hr {
 ._popup {
 	background: var(--panel);
 	border-radius: var(--radius);
+	contain: content;
 }
 
 ._section {
