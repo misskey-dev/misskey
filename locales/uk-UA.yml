@@ -837,12 +837,32 @@ _pages:
       if: "Умова"
       _if:
         arg1: "Якщо"
-        arg2: "Якщо правда"
+        arg2: "Якщо так"
         arg3: "Якщо ні"
+      not: "НЕ"
+      _not:
+        arg1: "НЕ"
+      random: "Випадково"
+      _random:
+        arg1: "Імовірність"
+      rannum: "Випадкове число"
+      _rannum:
+        arg1: "Мінімальне значення"
+        arg2: "Максимальне значення"
       _randomPick:
         arg1: "Списки"
+      _dailyRandom:
+        arg1: "Імовірність"
+      _dailyRannum:
+        arg1: "Мінімальне значення"
+        arg2: "Максимальне значення"
       _dailyRandomPick:
         arg1: "Списки"
+      _seedRandom:
+        arg2: "Імовірність"
+      _seedRannum:
+        arg2: "Мінімальне значення"
+        arg3: "Максимальне значення"
       _seedRandomPick:
         arg2: "Списки"
       _pick:
