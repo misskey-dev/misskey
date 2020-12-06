@@ -811,6 +811,19 @@ _pages:
     blocks:
       _join:
         arg1: "Списки"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A менше або дорівнює B"
       _randomPick:
         arg1: "Списки"
       _dailyRandomPick:
