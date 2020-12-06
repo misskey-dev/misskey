@@ -814,9 +814,11 @@ _pages:
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A АБО B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A менше, ніж B"
       _lt:
         arg1: "A"
         arg2: "B"
@@ -832,6 +834,11 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Умова"
+      _if:
+        arg1: "Якщо"
+        arg2: "Якщо правда"
+        arg3: "Якщо ні"
       _randomPick:
         arg1: "Списки"
       _dailyRandomPick:
