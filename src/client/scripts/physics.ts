@@ -58,18 +58,21 @@ export function physics(container: HTMLElement) {
 	const objEls = Array.from(container.children);
 	const objs = [];
 	for (const objEl of objEls) {
+		const left = objEl.dataset.physicsX ? parseInt(objEl.dataset.physicsX) : objEl.offsetLeft;
+		const top = objEl.dataset.physicsY ? parseInt(objEl.dataset.physicsY) : objEl.offsetTop;
+
 		let obj;
 		if (objEl.classList.contains('_physics_circle_')) {
 			obj = Matter.Bodies.circle(
-				objEl.offsetLeft + (objEl.offsetWidth / 2),
-				objEl.offsetTop + (objEl.offsetHeight / 2),
+				left + (objEl.offsetWidth / 2),
+				top + (objEl.offsetHeight / 2),
 				Math.max(objEl.offsetWidth, objEl.offsetHeight) / 2,
 			);
 		} else {
 			const style = window.getComputedStyle(objEl);
 			obj = Matter.Bodies.rectangle(
-				objEl.offsetLeft + (objEl.offsetWidth / 2),
-				objEl.offsetTop + (objEl.offsetHeight / 2),
+				left + (objEl.offsetWidth / 2),
+				top + (objEl.offsetHeight / 2),
 				objEl.offsetWidth,
 				objEl.offsetHeight,
 				{
@@ -106,8 +109,6 @@ export function physics(container: HTMLElement) {
 		objEl.style.top = 0;
 		objEl.style.left = 0;
 		objEl.style.margin = 0;
-		objEl.style.userSelect = 'none';
-		objEl.style.willChange = 'transform';
 	}
 
 	window.requestAnimationFrame(update);
@@ -122,7 +123,6 @@ export function physics(container: HTMLElement) {
 			const x = (obj.position.x - objEl.offsetWidth / 2);
 			const y = (obj.position.y - objEl.offsetHeight / 2);
 			const angle = obj.angle;
-
 			objEl.style.transform = `translate(${x}px, ${y}px) rotate(${angle}rad)`;
 		}
 
