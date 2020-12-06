@@ -165,10 +165,6 @@ export default defineComponent({
 			this.easterEggReady = false;
 			this.$refs.icon.vanillaTilt.destroy();
 			this.easterEggEngine = physics(this.$refs.about);
-
-			setTimeout(() => {
-				this.easterEggEngine.stop();
-			}, 1000 * 60 * 3);
 		}
 	}
 });

@@ -1,4 +1,4 @@
-import Matter from 'matter-js';
+import * as Matter from 'matter-js';
 
 export function physics(container: HTMLElement) {
 	const containerWidth = container.offsetWidth;
@@ -12,8 +12,13 @@ export function physics(container: HTMLElement) {
 	container.style.height = `${containerHeight}px`;
 
 	// create engine
-	const engine    = Matter.Engine.create();
-	const world     = engine.world;
+	const engine = Matter.Engine.create({
+		constraintIterations: 4,
+		positionIterations: 8,
+		velocityIterations: 8,
+	});
+
+	const world = engine.world;
 
 	// create renderer
 	const render = Matter.Render.create({
@@ -24,20 +29,6 @@ export function physics(container: HTMLElement) {
 			height: containerHeight,
 			background: 'transparent', // transparent to hide
 			wireframeBackground: 'transparent', // transparent to hide
-			hasBounds: false,
-			enabled: true,
-			wireframes: false,
-			showSleeping: true,
-			showDebug: false,
-			showBroadphase: false,
-			showBounds: false,
-			showVelocity: false,
-			showCollisions: false,
-			showAxes: false,
-			showPositions: false,
-			showAngleIndicator: false,
-			showIds: false,
-			showShadows: false
 		}
 	});
 
@@ -48,20 +39,13 @@ export function physics(container: HTMLElement) {
 	const runner = Matter.Runner.create();
 	Matter.Runner.run(runner, engine);
 
-	// add walls
-	const wallopts = {
-		isStatic:     true,
-		restitution:  0.2,
-		friction:     1
-	};
-	const groundopts = {
+	const groundThickness = 1024;
+	const ground = Matter.Bodies.rectangle(containerCenterX, containerHeight + (groundThickness / 2), containerWidth, groundThickness, {
 		isStatic:     true,
 		restitution:  0.1,
 		friction:     2
-	};
+	});
 
-	const groundThickness = 100;
-	const ground = Matter.Bodies.rectangle(containerCenterX, containerHeight + (groundThickness / 2), containerWidth, groundThickness, groundopts);
 	//const wallRight = Matter.Bodies.rectangle(window.innerWidth+50, window.innerHeight/2, 100, window.innerHeight, wallopts);
 	//const wallLeft = Matter.Bodies.rectangle(-50, window.innerHeight/2, 100, window.innerHeight, wallopts);
 
@@ -80,13 +64,6 @@ export function physics(container: HTMLElement) {
 				objEl.offsetLeft + (objEl.offsetWidth / 2),
 				objEl.offsetTop + (objEl.offsetHeight / 2),
 				Math.max(objEl.offsetWidth, objEl.offsetHeight) / 2,
-				{
-					restitution:      0.1,
-					friction:         4,
-					frictionAir:      0,
-					frictionStatic:   50,
-					density:          100,
-				}
 			);
 		} else {
 			const style = window.getComputedStyle(objEl);
@@ -96,12 +73,7 @@ export function physics(container: HTMLElement) {
 				objEl.offsetWidth,
 				objEl.offsetHeight,
 				{
-					restitution:      0.1,
-					friction:         4,
-					frictionAir:      0,
-					frictionStatic:   50,
-					density:          100,
-					chamfer:          { radius: parseInt(style.borderRadius, 10) },
+					chamfer: { radius: parseInt(style.borderRadius, 10) },
 				}
 			);
 		}
@@ -117,7 +89,7 @@ export function physics(container: HTMLElement) {
 	const mouseConstraint = Matter.MouseConstraint.create(engine, {
 		mouse: mouse,
 		constraint: {
-			stiffness: 1,
+			stiffness: 0.05,
 			render: {
 				visible: false
 			}
@@ -159,10 +131,18 @@ export function physics(container: HTMLElement) {
 		}
 	}
 
+	// 奈落に落ちたオブジェクトは消す
+	const intervalId = setInterval(() => {
+		for (const obj of objs) {
+			if (obj.position.y > (containerHeight + 1024)) Matter.World.remove(world, obj);
+		}
+	}, 1000 * 10);
+
 	return {
 		stop: () => {
 			stop = true;
 			Matter.Runner.stop(runner);
+			clearInterval(intervalId);
 		}
 	};
 }
