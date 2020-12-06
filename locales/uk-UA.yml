@@ -820,10 +820,12 @@ _pages:
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A більше, ніж B"
       _gt:
         arg1: "A"
         arg2: "B"
       ltEq: "<= A менше або дорівнює B"
+      gtEq: ">= A більше або дорівнює B"
       _randomPick:
         arg1: "Списки"
       _dailyRandomPick:
