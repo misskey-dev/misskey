@@ -862,12 +862,18 @@ _pages:
       dailyRandomPick: "Випадково вибрати зі списку (триває добу)"
       _dailyRandomPick:
         arg1: "Списки"
+      seedRandom: "Випадковість (з насінням)"
       _seedRandom:
+        arg1: "Насіння"
         arg2: "Імовірність"
+      seedRannum: "Випадкове число (з насінням)"
       _seedRannum:
+        arg1: "Насіння"
         arg2: "Мінімальне значення"
         arg3: "Максимальне значення"
+      seedRandomPick: "Випадково вибрати зі списку (з насінням)"
       _seedRandomPick:
+        arg1: "Насіння"
         arg2: "Списки"
       _pick:
         arg1: "Списки"
