@@ -661,6 +661,11 @@
     "@types/mdurl" "*"
     highlight.js "^9.7.0"
 
+"@types/matter-js@0.14.7":
+  version "0.14.7"
+  resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.14.7.tgz#b816f1e7b441ee7499027f9566e4fb5baea637b3"
+  integrity sha512-HLUhVTUoKsibpPZ2tCzoCC/f/UYRWPP9WCOUh5F61BlrUESFV5fE7eKq/CmdoEGkNrLW9v407zYlfrTc9hnGIw==
+
 "@types/mdurl@*":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/mdurl/-/mdurl-1.0.2.tgz#e2ce9d83a613bacf284c7be7d491945e39e1f8e9"
@@ -6115,6 +6120,11 @@ material-colors@^1.0.0:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
   integrity sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==
+
+matter-js@0.14.2:
+  version "0.14.2"
+  resolved "https://registry.yarnpkg.com/matter-js/-/matter-js-0.14.2.tgz#8169af9e06fdc356ba9e72b49624eb329839883b"
+  integrity sha512-3ttVT8cJlQnGRjBa8MyVrGyvGmnmOkZ3YsyemIw+KwEEdVi70mo32FH1Eta2b3GfdDJFbMDRqyMQt4heNKBUEA==
 
 mdn-data@2.0.4:
   version "2.0.4"
