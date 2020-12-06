@@ -7,7 +7,7 @@
 				<img src="/assets/icons/512.png" alt="" style="display: block; width: 100px; margin: 0 auto; border-radius: 16px;" ref="icon" @load="iconLoaded" draggable="false"/>
 				<div style="margin: 0.75em auto 0 auto; width: max-content;">Misskey</div>
 				<div style="margin: 0 auto; opacity: 0.5; width: max-content;">v{{ version }}</div>
-				<span v-for="emoji in easterEggEmojis" :key="emoji.emoji" class="_physics_circle_" :style="{ position: 'absolute', top: emoji.top, left: emoji.left, userSelect: 'none' }"><MkEmoji style="pointer-events: none; font-size: 24px; width: 24px;" :emoji="emoji.emoji" :custom-emojis="$store.state.instance.meta.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
+				<span v-for="emoji in easterEggEmojis" :key="emoji.emoji" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }" :style="{ position: 'absolute', top: emoji.top, left: emoji.left, userSelect: 'none' }"><MkEmoji style="pointer-events: none; font-size: 24px; width: 24px;" :emoji="emoji.emoji" :custom-emojis="$store.state.instance.meta.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
 		</section>
 		<section class="_formItem" style="text-align: center; padding: 0 16px;" @click="gravity">
