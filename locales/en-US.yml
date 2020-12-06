@@ -974,6 +974,7 @@ _widgets:
   digitalClock: "Digital clock"
   federation: "Federation"
   postForm: "Compose a note"
+  slideshow: "Slideshow"
 _cw:
   hide: "Hide"
   show: "Load more"
