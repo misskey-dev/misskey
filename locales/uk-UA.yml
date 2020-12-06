@@ -849,8 +849,10 @@ _pages:
       _rannum:
         arg1: "Мінімальне значення"
         arg2: "Максимальне значення"
+      randomPick: "Випадковий вибір зі списку"
       _randomPick:
         arg1: "Списки"
+      dailyRandom: "Випадково (триває добу)"
       _dailyRandom:
         arg1: "Імовірність"
       _dailyRannum:
