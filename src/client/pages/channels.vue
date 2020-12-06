@@ -1,6 +1,6 @@
 <template>
 <div>
-	<div class="_section" style="padding: 0;" v-if="this.$store.getters.isSignedIn">
+	<div class="_section" style="padding: 0;" v-if="$store.getters.isSignedIn">
 		<MkTab class="_content" v-model:value="tab">
 			<option value="featured"><Fa :icon="faFireAlt"/> {{ $t('_channel.featured') }}</option>
 			<option value="following"><Fa :icon="faHeart"/> {{ $t('_channel.following') }}</option>

@@ -1,5 +1,5 @@
 <template>
-<div class="fdidabkb">
+<div class="fdidabkb" :style="`--height:${height};`">
 	<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
 		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
@@ -74,7 +74,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped vars="{ height }">
+<style lang="scss" scoped>
 .fdidabkb {
 	text-align: center;
 

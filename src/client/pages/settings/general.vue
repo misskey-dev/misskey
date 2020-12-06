@@ -33,11 +33,12 @@
 		<FormSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</FormSwitch>
 		<FormSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</FormSwitch>
 		<FormSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</FormSwitch>
+		<FormSwitch v-model:value="loadRawImages">{{ $t('loadRawImages') }}</FormSwitch>
+		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $t('disableShowingAnimatedImages') }}</FormSwitch>
+		<FormSwitch v-model:value="useSystemFont">{{ $t('useSystemFont') }}</FormSwitch>
 		<FormSwitch v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
 			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 		</FormSwitch>
-		<FormSwitch v-model:value="loadRawImages">{{ $t('loadRawImages') }}</FormSwitch>
-		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $t('disableShowingAnimatedImages') }}</FormSwitch>
 	</FormGroup>
 
 	<FormRadios v-model="fontSize">
@@ -118,6 +119,7 @@ export default defineComponent({
 			langs,
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
+			useSystemFont: localStorage.getItem('useSystemFont') != null,
 			faImage, faCog, faColumns
 		}
 	},
@@ -217,6 +219,15 @@ export default defineComponent({
 				localStorage.removeItem('fontSize');
 			} else {
 				localStorage.setItem('fontSize', this.fontSize);
+			}
+			location.reload();
+		},
+
+		useSystemFont() {
+			if (this.useSystemFont) {
+				localStorage.setItem('useSystemFont', 't');
+			} else {
+				localStorage.removeItem('useSystemFont');
 			}
 			location.reload();
 		},

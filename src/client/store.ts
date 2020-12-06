@@ -301,6 +301,7 @@ export const store = createStore({
 				},
 
 				//#region Deck
+				// TODO: deck関連は動的にモジュール読み込みしたい
 				addDeckColumn(state, column) {
 					if (column.name == undefined) column.name = null;
 					state.deck.columns.push(column);
@@ -418,6 +419,12 @@ export const store = createStore({
 					column.widgets = column.widgets.filter(w => w.id != x.widget.id);
 				},
 
+				setDeckWidgets(state, x) {
+					const column = state.deck.columns.find(c => c.id == x.id);
+					if (column == null) return;
+					column.widgets = x.widgets;
+				},
+
 				renameDeckColumn(state, x) {
 					const column = state.deck.columns.find(c => c.id == x.id);
 					if (column == null) return;
@@ -425,9 +432,9 @@ export const store = createStore({
 				},
 
 				updateDeckColumn(state, x) {
-					let column = state.deck.columns.find(c => c.id == x.id);
-					if (column == null) return;
-					column = x;
+					const column = state.deck.columns.findIndex(c => c.id == x.id);
+					if (column > -1) return;
+					state.deck.columns[column] = x;
 				},
 				//#endregion
 

@@ -26,6 +26,8 @@ export default defineComponent({
 .jmgmzlwq {
 	font-size: 0.8em;
 	padding: 16px;
+	background: var(--infoWarnBg);
+	color: var(--infoWarnFg);
 
 	> a {
 		margin-left: 4px;

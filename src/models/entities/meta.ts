@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { id } from '../id';
+import { Clip } from './clip';
 
 @Entity()
 export class Meta {
@@ -80,6 +81,12 @@ export class Meta {
 		length: 512, array: true, default: '{"/featured", "/channels", "/explore", "/pages", "/about-misskey"}'
 	})
 	public pinnedPages: string[];
+
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public pinnedClipId: Clip['id'] | null;
 
 	@Column('varchar', {
 		length: 512,

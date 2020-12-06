@@ -1,5 +1,5 @@
 <template>
-<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none' }">
+<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 	<transition :name="$store.state.device.animation ? 'modal-bg' : ''" appear>
 		<div class="bg _modalBg" v-if="showing" @click="onBgClick"></div>
 	</transition>
@@ -150,7 +150,7 @@ export default defineComponent({
 });
 </script>
 
-<style vars="{ transformOrigin }">
+<style>
 .modal-popup-content-enter-active, .modal-popup-content-leave-active,
 .modal-content-enter-from, .modal-content-leave-to {
   transform-origin: var(--transformOrigin);

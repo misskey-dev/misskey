@@ -36,11 +36,12 @@
 				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $t('passwordNotMatched') }}</p>
 			</template>
 		</MkInput>
-		<MkSwitch v-model:value="ToSAgreement" v-if="meta.tosUrl">
+		<label v-if="meta.tosUrl" class="tou">
+			<input type="checkbox" v-model="ToSAgreement">
 			<i18n-t keypath="agreeTo">
 				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $t('tos') }}</a>
 			</i18n-t>
-		</MkSwitch>
+		</label>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model:value="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
 		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model:value="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton type="submit" :disabled="shouldDisableSubmitting" primary>{{ $t('start') }}</MkButton>
@@ -206,6 +207,12 @@ export default defineComponent({
 .mk-signup {
 	.captcha {
 		margin: 16px 0;
+	}
+
+	> .tou {
+		display: block;
+		margin: 16px 0;
+		cursor: pointer;
 	}
 }
 </style>

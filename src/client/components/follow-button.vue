@@ -1,9 +1,8 @@
 <template>
 <button class="kpoogebi _button"
-	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full }"
+	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
 	@click="onClick"
 	:disabled="wait"
-	v-if="isFollowing != null"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
@@ -40,6 +39,11 @@ export default defineComponent({
 			required: true
 		},
 		full: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		large: {
 			type: Boolean,
 			required: false,
 			default: false,
@@ -147,6 +151,12 @@ export default defineComponent({
 	&.full {
 		padding: 0 8px 0 12px;
 		font-size: 14px;
+	}
+
+	&.large {
+		font-size: 16px;
+		height: 38px;
+		padding: 0 12px 0 16px;
 	}
 
 	&:not(.full) {

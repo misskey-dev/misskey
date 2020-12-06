@@ -1,60 +1,50 @@
 <template>
-<div class="mk-app">
+<div class="mk-app" :style="{ backgroundImage: root ? `url(${ $store.state.instance.meta.backgroundImageUrl })` : 'none' }">
+	<a href="https://github.com/syuilo/misskey" target="_blank" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:var(--panel); color:var(--fg); position: fixed; z-index: 10; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
 	<div class="side" v-if="!narrow">
-		<div :style="{ backgroundImage: `url(${ $store.state.instance.meta.backgroundImageUrl })` }">
-			<div class="fade"></div>
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
-			<div class="about _panel" v-if="meta">
-				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
-			</div>
-			<div class="action">
-				<button class="_button primary" @click="signup()">{{ $t('signup') }}</button>
-				<button class="_button" @click="signin()">{{ $t('login') }}</button>
-			</div>
-			<div class="announcements panel">
-				<header>{{ $t('announcements') }}</header>
-				<MkPagination :pagination="announcements" #default="{items}" class="list">
-					<section class="item" v-for="(announcement, i) in items" :key="announcement.id">
-						<div class="title">{{ announcement.title }}</div>
-						<div class="content">
-							<Mfm :text="announcement.text"/>
-							<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-						</div>
-					</section>
-				</MkPagination>
-			</div>
-		</div>
+		<XKanban class="kanban" full :transparent="root" :powered-by="root"/>
 	</div>
 
 	<div class="main">
-		<header>
-			<MkA class="link" to="/">{{ $t('home') }}</MkA>
-			<MkA class="link" to="/announcements">{{ $t('announcements') }}</MkA>
-			<MkA class="link" to="/channels">{{ $t('channel') }}</MkA>
-			<MkA class="link" to="/about">{{ $t('aboutX', { x: instanceName }) }}</MkA>
-		</header>
+		<XKanban class="banner" :full="root" :transparent="root" :powered-by="root" v-if="narrow"/>
 
-		<div v-if="narrow" class="banner" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
-			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
-		</div>
-
-		<div class="contents" ref="contents" :class="{ wallpaper }">
-			<header class="header" ref="header" v-show="$route.path !== '/'">
-				<XHeader :info="pageInfo"/>
-			</header>
-			<main ref="main">
+		<div class="contents">
+			<XHeader class="header" :info="pageInfo" v-if="!root"/>
+			<main>
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<component :is="Component" :ref="changePage"/>
 					</transition>
 				</router-view>
 			</main>
-			<div class="powered-by">
+			<div class="powered-by" v-if="!root">
 				<b><MkA to="/">{{ host }}</MkA></b>
 				<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
 			</div>
 		</div>
 	</div>
+
+	<transition name="tray-back">
+		<div class="menu-back _modalBg"
+			v-if="showMenu"
+			@click="showMenu = false"
+			@touchstart.passive="showMenu = false"
+		></div>
+	</transition>
+
+	<transition name="tray">
+		<div v-if="showMenu" class="menu">
+			<MkA to="/" class="link" active-class="active"><Fa :icon="faHome" class="icon"/>{{ $t('home') }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><Fa :icon="faHashtag" class="icon"/>{{ $t('explore') }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><Fa :icon="faFireAlt" class="icon"/>{{ $t('featured') }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><Fa :icon="faSatelliteDish" class="icon"/>{{ $t('channel') }}</MkA>
+			<div class="action">
+				<button class="_buttonPrimary" @click="signup()">{{ $t('signup') }}</button>
+				<button class="_button" @click="signin()">{{ $t('login') }}</button>
+			</div>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -68,13 +58,15 @@ import MkPagination from '@/components/ui/pagination.vue';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
-import XHeader from '../_common_/header.vue';
+import XHeader from './header.vue';
+import XKanban from './kanban.vue';
 
 const DESKTOP_THRESHOLD = 1100;
 
 export default defineComponent({
 	components: {
 		XHeader,
+		XKanban,
 		MkPagination,
 		MkButton,
 	},
@@ -86,6 +78,7 @@ export default defineComponent({
 			pageKey: 0,
 			pageInfo: null,
 			meta: null,
+			showMenu: false,
 			narrow: window.innerWidth < 1280,
 			announcements: {
 				endpoint: 'announcements',
@@ -105,6 +98,10 @@ export default defineComponent({
 				's': search,
 				'h|/': this.help
 			};
+		},
+
+		root(): boolean {
+			return this.$route.path === '/';
 		},
 	},
 
@@ -165,191 +162,64 @@ export default defineComponent({
 });
 </script>
 
+<style>
+.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+</style>
+
 <style lang="scss" scoped>
+.tray-enter-active,
+.tray-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-enter-from,
+.tray-leave-active {
+	opacity: 0;
+	transform: translateX(-240px);
+}
+
+.tray-back-enter-active,
+.tray-back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-back-enter-from,
+.tray-back-leave-active {
+	opacity: 0;
+}
+
 .mk-app {
 	display: flex;
 	min-height: 100vh;
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
 
 	> .side {
 		width: 500px;
 		height: 100vh;
-		text-align: center;
 
-		> div {
+		> .kanban {
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 500px;
 			height: 100vh;
-			background-position: center;
-			background-size: cover;
-
-			> .panel {
-				-webkit-backdrop-filter: blur(8px);
-				backdrop-filter: blur(8px);
-				background: rgba(0, 0, 0, 0.5);
-				border-radius: var(--radius);
-
-				&, * {
-					color: #fff !important;
-				}
-			}
-
-			> .fade {
-				position: absolute;
-				z-index: -1;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 300px;
-				background: linear-gradient(rgba(#000, 0.5), transparent);
-			}
-
-			> h1 {
-				display: block;
-				margin: 0;
-				padding: 64px 32px 48px 32px;
-				color: #fff;
-
-				> .logo {
-					vertical-align: bottom;
-					max-height: 150px;
-				}
-			}
-
-			> .about {
-				display: block;
-				margin: 0 64px 16px 64px;
-				padding: 24px;
-				text-align: center;
-				box-sizing: border-box;
-			}
-
-			> .action {
-				padding: 0 64px;
-
-				> button {
-					display: block;
-					width: 100%;
-					padding: 10px;
-					box-sizing: border-box;
-					text-align: center;
-					border-radius: 999px;
-					background: var(--panel);
-
-					&.primary {
-						background: var(--accent);
-						color: #fff;
-					}
-
-					&:first-child {
-						margin-bottom: 16px;
-					}
-				}
-			}
-
-			> .announcements {
-				margin: 64px 64px 16px 64px;
-				text-align: left;
-
-				> header {
-					padding: 12px 16px;
-					border-bottom: solid 1px rgba(255, 255, 255, 0.5);
-				}
-
-				> .list {
-					max-height: 300px;
-					overflow: auto;
-
-					> .item {
-						padding: 12px 16px;
-
-						& + .item {
-							border-top: solid 1px rgba(255, 255, 255, 0.5);
-						}
-
-						> .title {
-							font-weight: bold;
-						}
-					}
-				}
-			}
+			overflow: auto;
 		}
 	}
 
 	> .main {
 		flex: 1;
-
-		> header {
-			position: relative;
-			z-index: 1;
-			background: var(--panel);
-			padding: 0 32px;
-			text-align: left;
-			overflow: auto;
-			white-space: nowrap;
-
-			> .link {
-				display: inline-block;
-				line-height: 60px;
-				padding: 0 0.7em;
-
-				&.MkA-active {
-					box-shadow: 0 -2px 0 0 var(--accent) inset;
-				}
-			}
-		}
+		min-width: 0;
 
 		> .banner {
-			position: relative;
-			width: 100%;
-			height: 200px;
-			background-size: cover;
-			background-position: center;
-
-			&:after {
-				content: "";
-				display: block;
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				height: 64px;
-				background: linear-gradient(transparent, var(--bg));
-			}
-
-			> h1 {
-				margin: 0;
-				padding: 32px;
-				text-align: center;
-				color: #fff;
-				text-shadow: 0 0 8px #000;
-
-				> .logo {
-					vertical-align: bottom;
-					max-height: 150px;
-				}
-			}
 		}
 
 		> .contents {
 			position: relative;
 			z-index: 1;
-
-			> .header {
-				position: sticky;
-				top: 0;
-				left: 0;
-				z-index: 1000;
-				height: 60px;
-				width: 100%;
-				line-height: 60px;
-				text-align: center;
-				-webkit-backdrop-filter: blur(32px);
-				backdrop-filter: blur(32px);
-				background-color: var(--header);
-				border-bottom: 1px solid var(--divider);
-			}
 
 			> .powered-by {
 				padding: 28px;
@@ -365,8 +235,54 @@ export default defineComponent({
 			}
 		}
 	}
-}
-</style>
 
-<style lang="scss">
+	> .menu-back {
+		position: fixed;
+		z-index: 1001;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	> .menu {
+		position: fixed;
+		z-index: 1001;
+		top: 0;
+		left: 0;
+		width: 240px;
+		height: 100vh;
+		background: var(--panel);
+
+		> .link {
+			display: block;
+			padding: 16px;
+
+			> .icon {
+				margin-right: 1em;
+			}
+		}
+
+		> .action {
+			padding: 16px;
+
+			> button {
+				display: block;
+				width: 100%;
+				padding: 10px;
+				box-sizing: border-box;
+				text-align: center;
+				border-radius: 999px;
+
+				&._button {
+					background: var(--panel);
+				}
+
+				&:first-child {
+					margin-bottom: 16px;
+				}
+			}
+		}
+	}
+}
 </style>

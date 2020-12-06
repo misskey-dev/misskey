@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkTab v-model:value="tab" v-if="this.$store.getters.isSignedIn">
+	<MkTab v-model:value="tab" v-if="$store.getters.isSignedIn">
 		<option value="featured"><Fa :icon="faFireAlt"/> {{ $t('_pages.featured') }}</option>
 		<option value="my"><Fa :icon="faEdit"/> {{ $t('_pages.my') }}</option>
 		<option value="liked"><Fa :icon="faHeart"/> {{ $t('_pages.liked') }}</option>

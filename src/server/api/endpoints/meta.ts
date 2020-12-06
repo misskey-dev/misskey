@@ -143,6 +143,7 @@ export default define(meta, async (ps, me) => {
 
 		...(ps.detail ? {
 			pinnedPages: instance.pinnedPages,
+			pinnedClipId: instance.pinnedClipId,
 			cacheRemoteFiles: instance.cacheRemoteFiles,
 			proxyRemoteFiles: instance.proxyRemoteFiles,
 			requireSetup: (await Users.count({

@@ -24,6 +24,12 @@ export class ClipRepository extends Repository<Clip> {
 			isPublic: clip.isPublic,
 		});
 	}
+
+	public packMany(
+		clips: Clip[],
+	) {
+		return Promise.all(clips.map(x => this.pack(x)));
+	}
 }
 
 export const packedClipSchema = {
