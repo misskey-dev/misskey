@@ -228,6 +228,12 @@ export default defineComponent({
 						> .title {
 							font-weight: bold;
 						}
+
+						> .content {
+							> img {
+								max-width: 100%;
+							}
+						}
 					}
 				}
 			}
