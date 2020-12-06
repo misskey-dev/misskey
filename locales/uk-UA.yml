@@ -825,7 +825,13 @@ _pages:
         arg1: "A"
         arg2: "B"
       ltEq: "<= A менше або дорівнює B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
       gtEq: ">= A більше або дорівнює B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       _randomPick:
         arg1: "Списки"
       _dailyRandomPick:
