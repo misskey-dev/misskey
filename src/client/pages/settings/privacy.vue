@@ -20,6 +20,10 @@
 		</FormSelect>
 		<FormSwitch v-model:value="defaultNoteLocalOnly">{{ $t('_visibility.localOnly') }}</FormSwitch>
 	</FormGroup>
+	<FormSwitch v-model:value="isExplorable" @update:value="save()">
+		{{ $t('makeExplorable') }}
+		<template #desc>{{ $t('makeExplorableDescription') }}</template>
+	</FormSwitch>
 </FormBase>
 </template>
 
@@ -51,6 +55,7 @@ export default defineComponent({
 			isLocked: false,
 			autoAcceptFollowed: false,
 			noCrawle: false,
+			isExplorable: false,
 		}
 	},
 
@@ -75,6 +80,7 @@ export default defineComponent({
 		this.isLocked = this.$store.state.i.isLocked;
 		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
 		this.noCrawle = this.$store.state.i.noCrawle;
+		this.isExplorable = this.$store.state.i.isExplorable;
 	},
 
 	mounted() {
@@ -87,6 +93,7 @@ export default defineComponent({
 				isLocked: !!this.isLocked,
 				autoAcceptFollowed: !!this.autoAcceptFollowed,
 				noCrawle: !!this.noCrawle,
+				isExplorable: !!this.isExplorable,
 			});
 		}
 	}

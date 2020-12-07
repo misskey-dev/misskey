@@ -655,6 +655,8 @@ useSystemFont: "システムのデフォルトのフォントを使う"
 clips: "クリップ"
 experimentalFeatures: "実験的機能"
 developer: "開発者"
+makeExplorable: "アカウントを見つけやすくする"
+makeExplorableDescription: "オフにすると、「みつける」や検索結果にアカウントが載らなくなります。"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

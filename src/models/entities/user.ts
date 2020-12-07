@@ -157,6 +157,13 @@ export class User {
 	})
 	public isModerator: boolean;
 
+	@Index()
+	@Column('boolean', {
+		default: true,
+		comment: 'Whether the User is explorable.'
+	})
+	public isExplorable: boolean;
+
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
