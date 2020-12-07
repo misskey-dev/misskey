@@ -814,8 +814,10 @@ _pages:
       value: "Значення"
       fn: "Функції"
       text: "Дії з текстом"
+      convert: "Перетворення"
       list: "Списки"
     blocks:
+      text: "Текст"
       _join:
         arg1: "Списки"
       _and:
