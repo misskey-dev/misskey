@@ -717,6 +717,7 @@ _wordMute:
   hard: "Жорстко"
   mutedNotes: "Заблоковані нотатки"
 _theme:
+  func: "Функції"
   keys:
     accent: "Акцент"
     bg: "Фон"
@@ -807,6 +808,12 @@ _pages:
     image: "Зображення"
   script:
     categories:
+      operation: "Обчислення"
+      comparison: "Порівняння"
+      random: "Випадковість"
+      value: "Значення"
+      fn: "Функції"
+      text: "Дії з текстом"
       list: "Списки"
     blocks:
       _join:
@@ -875,6 +882,8 @@ _pages:
       _seedRandomPick:
         arg1: "Насіння"
         arg2: "Списки"
+      DRPWPM: "Випадково вибрати зі зваженого списку (триває добу)"
+      pick: "Вибір зі списку"
       _pick:
         arg1: "Списки"
         arg2: "Позиція"
