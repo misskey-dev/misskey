@@ -342,12 +342,7 @@ export default defineComponent({
 		},
 
 		removeVariable(v) {
-			const i = this.variables.findIndex(x => x.name === v.name);
-			const newValue = [
-				...this.variables.slice(0, i),
-				...this.variables.slice(i + 1)
-			];
-			this.variables = newValue;
+			this.variables = this.variables.filter(x => x.name !== v.name);
 		},
 
 		getPageBlockList() {
