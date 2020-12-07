@@ -1955,15 +1955,15 @@ builtin-modules@^1.1.1:
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
   integrity sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8=
 
-bull@3.18.1:
-  version "3.18.1"
-  resolved "https://registry.yarnpkg.com/bull/-/bull-3.18.1.tgz#49eb8fd9844a3dc0a12a851b132e508890763a31"
-  integrity sha512-g3gHFZ0qMo0wpecoNmd2W+F1Gj48l6phVCTdsQPKxDk1bB7kzD0nY5FAFnBFiaWxNmh5lb5X9TMB64uNXFKFDg==
+bull@3.20.0:
+  version "3.20.0"
+  resolved "https://registry.yarnpkg.com/bull/-/bull-3.20.0.tgz#ca394d623f13ade6cddb7481f630988bce2d4d09"
+  integrity sha512-xXUfA2gLZLfIkWhxcZkAk6mHt+eG3o4arqz7HwCPVYuVjIp/pYTuhFd2iPXIQLxop7pJY4VIQ59fELdD/Y6f8w==
   dependencies:
     cron-parser "^2.13.0"
     debuglog "^1.0.0"
     get-port "^5.1.1"
-    ioredis "^4.14.1"
+    ioredis "4.18.0"
     lodash "^4.17.19"
     p-timeout "^3.2.0"
     promise.prototype.finally "^3.1.2"
@@ -4909,17 +4909,17 @@ invert-kv@^2.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
 
-ioredis@^4.14.1:
-  version "4.16.3"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.16.3.tgz#6a6b85830206fd98353b7ff8536521f17943be53"
-  integrity sha512-Ejvcs2yW19Vq8AipvbtfcX3Ig8XG9EAyFOvGbhI/Q1QoVOK9ZdgY092kdOyOWIYBnPHjfjMJhU9qhsnp0i0K1w==
+ioredis@4.18.0:
+  version "4.18.0"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.18.0.tgz#40785bb76d30b2a50698dd9bb8d8add2a88fbef7"
+  integrity sha512-wXlB60wD+ayJxbD7t+RFBanXinhHyYpfKUxTEEXNOpd0wb+nC8GLH2r7SaZ6sSBOxr8x6jDfBiuMaiK3bPYABw==
   dependencies:
     cluster-key-slot "^1.1.0"
     debug "^4.1.1"
     denque "^1.1.0"
     lodash.defaults "^4.2.0"
     lodash.flatten "^4.4.0"
-    redis-commands "1.5.0"
+    redis-commands "1.6.0"
     redis-errors "^1.2.0"
     redis-parser "^3.0.0"
     standard-as-callback "^2.0.1"
@@ -8158,7 +8158,12 @@ reconnecting-websocket@4.4.0:
   resolved "https://registry.yarnpkg.com/reconnecting-websocket/-/reconnecting-websocket-4.4.0.tgz#3b0e5b96ef119e78a03135865b8bb0af1b948783"
   integrity sha512-D2E33ceRPga0NvTDhJmphEgJ7FUYF0v4lr1ki0csq06OdlxKfugGzN0dSkxM/NfqCxYELK4KcaTOUOjTV6Dcng==
 
-redis-commands@1.5.0, redis-commands@^1.5.0:
+redis-commands@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/redis-commands/-/redis-commands-1.6.0.tgz#36d4ca42ae9ed29815cdb30ad9f97982eba1ce23"
+  integrity sha512-2jnZ0IkjZxvguITjFTrGiLyzQZcTvaw8DAaCXxZq/dsHXz7KfMQ3OUJy7Tz9vnRtZRVz6VRCPDvruvU8Ts44wQ==
+
+redis-commands@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/redis-commands/-/redis-commands-1.5.0.tgz#80d2e20698fe688f227127ff9e5164a7dd17e785"
   integrity sha512-6KxamqpZ468MeQC3bkWmCB1fp56XL64D4Kf0zJSwDZbVLLm7KFkoIcHrgRvQ+sk8dnhySs7+yBg94yIkAK7aJg==
@@ -10017,7 +10022,7 @@ uuid@7.0.3:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
-uuid@8.3.1:
+uuid@8.3.1, uuid@^8.3.0:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
   integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
@@ -10026,11 +10031,6 @@ uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uuid@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
-  integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
 
 v-debounce@0.1.2:
   version "0.1.2"
