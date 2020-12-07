@@ -70,7 +70,7 @@
 		"@types/koa-mount": "4.0.0",
 		"@types/koa-send": "4.1.2",
 		"@types/koa-views": "2.0.4",
-		"@types/koa__cors": "3.0.1",
+		"@types/koa__cors": "3.0.2",
 		"@types/koa__multer": "2.0.2",
 		"@types/koa__router": "8.0.2",
 		"@types/markdown-it": "10.0.3",
