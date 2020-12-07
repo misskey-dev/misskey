@@ -974,6 +974,7 @@ _widgets:
   digitalClock: "Digitaluhr"
   federation: "Föderation"
   postForm: "Neue Notiz anfertigen"
+  slideshow: "Diashow"
 _cw:
   hide: "Ausblenden"
   show: "Mehr anzeigen"

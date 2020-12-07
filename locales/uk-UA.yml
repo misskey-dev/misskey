@@ -819,32 +819,62 @@ _pages:
         arg2: "Списки"
       _pick:
         arg1: "Списки"
+        arg2: "Позиція"
+      listLen: "Отримати довжину списку"
       _listLen:
         arg1: "Списки"
+      number: "Число"
+      stringToNumber: "Текст на число"
+      _stringToNumber:
+        arg1: "Текст"
+      numberToString: "Число на текст"
+      _numberToString:
+        arg1: "Число"
+      splitStrByLine: "Розбиття тексту на рядки"
+      _splitStrByLine:
+        arg1: "Текст"
+      ref: "Змінні"
+      aiScriptVar: "Змінна AiScript"
+      fn: "Функції"
       _fn:
-        arg1: "Вихід"
+        arg1: "Вивід"
+      for: "Повторення"
+      _for:
+        arg1: "Кількість повторень"
+        arg2: "Дія"
     types:
+      string: "Текст"
+      number: "Число"
+      boolean: "Прапорець"
       array: "Списки"
 _relayStatus:
   requesting: "Очікує затвердження"
   accepted: "Затверджено"
   rejected: "Відхилено"
 _notification:
+  fileUploaded: "Файл успішно завантажено"
+  youGotMention: "{name} згадує вас"
+  youGotReply: "{name} відповідає"
   youGotQuote: "{name} цитує вас"
   youRenoted: "{name} поширює"
+  youGotPoll: "{name} бере участь в опитуванні"
   youGotMessagingMessageFromUser: "Повідомлення від {name}"
   youGotMessagingMessageFromGroup: "Нове повідомлення в групі {name}"
   youWereFollowed: "Новий підписник"
+  youReceivedFollowRequest: "Ви отримали запит на підписку"
+  yourFollowRequestAccepted: "Запит на підписку прийнято"
   youWereInvitedToGroup: "Запрошення до групи"
   _types:
+    all: "Все"
     follow: "Підписки"
     mention: "Згадка"
-    renote: "Поширити"
-    quote: "Цитата"
+    reply: "Відповіді"
+    renote: "Поширення"
+    quote: "Цитування"
     reaction: "Реакції"
     pollVote: "Опитування"
-    receiveFollowRequest: "Запит на підписку"
-    followRequestAccepted: "Прийнята підписка"
+    receiveFollowRequest: "Запити на підписку"
+    followRequestAccepted: "Прийняті підписки"
     groupInvited: "Запрошення до груп"
     app: "Сповіщення від додатків"
 _deck:

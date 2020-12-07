@@ -974,6 +974,7 @@ _widgets:
   digitalClock: "数字时钟"
   federation: "联邦宇宙"
   postForm: "投稿窗口"
+  slideshow: "幻灯片展示"
 _cw:
   hide: "隐藏"
   show: "查看更多"
