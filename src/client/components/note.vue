@@ -544,10 +544,17 @@ export default defineComponent({
 					text: this.$t('favorited'),
 				});
 			}, (e: Error) => {
-				os.dialog({
-					type: 'error',
-					text: this.$t('alreadyFavorited'),
-				});
+				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('alreadyFavorited'),
+					});
+				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('cantFavorite'),
+					});
+				}
 			});
 		},
 
