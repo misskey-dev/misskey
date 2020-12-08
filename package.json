@@ -132,7 +132,7 @@
 		"double-ended-queue": "2.1.0-0",
 		"escape-regexp": "0.0.1",
 		"eslint": "7.15.0",
-		"eslint-plugin-vue": "7.1.0",
+		"eslint-plugin-vue": "7.2.0",
 		"eventemitter3": "4.0.7",
 		"feed": "4.2.1",
 		"fibers": "5.0.0",
