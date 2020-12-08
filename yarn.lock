@@ -460,12 +460,13 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/gulp-rename@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/gulp-rename/-/gulp-rename-0.0.33.tgz#38d146e97786569f74f5391a1b1f9b5198674b6c"
-  integrity sha512-FIZQvbZJj6V1gHPTzO+g/BCWpDur7fJrroae4gwV3LaoHBQ+MrR9sB+2HssK8fHv4WdY6hVNxkcft9bYatuPIA==
+"@types/gulp-rename@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/gulp-rename/-/gulp-rename-2.0.0.tgz#462ab808c6ebb977b7a9770e0f5cb6cea481a7d9"
+  integrity sha512-bgpP2SYp66vH71kRZWv6+0JgBrET8bXNhKMknPsJH0mS3yHyt7wgvISltmV1b8JaaWMjE76oAMquW1h60De5vw==
   dependencies:
     "@types/node" "*"
+    "@types/vinyl" "*"
 
 "@types/gulp-replace@0.0.31":
   version "0.0.31"
