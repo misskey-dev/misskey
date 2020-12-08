@@ -497,6 +497,18 @@ export default defineComponent({
 					type: 'success',
 					text: this.$t('renoted'),
 				});
+			}, (e: Error) => {
+				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('cantRenote'),
+					});
+				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('cantReRenote'),
+					});
+				}
 			});
 		},
 
