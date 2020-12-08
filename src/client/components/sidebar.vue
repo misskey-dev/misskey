@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram, faStream, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram, faStream, faExclamationCircle, faLeaf } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
 import { search } from '@/scripts/search';
@@ -214,6 +214,11 @@ export default defineComponent({
 				text: this.$t('abuseReports'),
 				to: '/instance/abuses',
 				icon: faExclamationCircle,
+			}, {
+				type: 'link',
+				text: 'Mulukhiya HOME',
+				to: '/mulukhiya',
+				icon: faLeaf,
 			}, {
 				type: 'link',
 				text: this.$t('logs'),

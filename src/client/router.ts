@@ -81,7 +81,8 @@ export const router = createRouter({
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
 		{ path: '/test', component: page('test') },
-		{ path: '/:catchAll(.*)', component: page('not-found') }
+		{ path: '/:catchAll(.*)', component: page('not-found') },
+		{ path: '/mulukhiya', beforeEnter() {location.href = '/mulukhiya'} },
 	],
 	// なんかHacky
 	// 通常の使い方をすると scroll メソッドの behavior を設定できないため、自前で window.scroll するようにする
