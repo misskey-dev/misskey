@@ -818,6 +818,11 @@ _pages:
       list: "Списки"
     blocks:
       text: "Текст"
+      multiLineText: "Текст (багаторядковий)"
+      textList: "Текстовий список"
+      strLen: "Довжина тексту"
+      _strLen:
+        arg1: "Текст"
       _join:
         arg1: "Списки"
       _and:
@@ -885,6 +890,8 @@ _pages:
         arg1: "Насіння"
         arg2: "Списки"
       DRPWPM: "Випадково вибрати зі зваженого списку (триває добу)"
+      _DRPWPM:
+        arg1: "Текстовий список"
       pick: "Вибір зі списку"
       _pick:
         arg1: "Списки"
@@ -916,6 +923,7 @@ _pages:
       number: "Число"
       boolean: "Прапорець"
       array: "Списки"
+      stringArray: "Текстовий список"
 _relayStatus:
   requesting: "Очікує затвердження"
   accepted: "Затверджено"
