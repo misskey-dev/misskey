@@ -717,6 +717,7 @@ _wordMute:
   hard: "Жорстко"
   mutedNotes: "Заблоковані нотатки"
 _theme:
+  defaultValue: "Значення за замовчуванням"
   func: "Функції"
   keys:
     accent: "Акцент"
@@ -809,16 +810,33 @@ _pages:
     textInput: "Введення тексту"
     _textInput:
       name: "Ім'я змінної"
+      text: "Назва"
+      default: "Значення за замовчуванням"
+    textareaInput: "Багаторядкове введення тексту"
     _textareaInput:
       name: "Ім'я змінної"
+      text: "Назва"
+      default: "Значення за замовчуванням"
+    numberInput: "Числове введення"
     _numberInput:
       name: "Ім'я змінної"
+      text: "Назва"
+      default: "Значення за замовчуванням"
+    _canvas:
+      width: "Ширина"
+      height: "Висота"
+    note: "Вбудована нотатка"
+    _note:
+      id: "Ідентифікатор нотатки"
+      idDescription: "Також можна вказати посилання на нотатку"
     _switch:
       name: "Ім'я змінної"
+      default: "Значення за замовчуванням"
     _counter:
       name: "Ім'я змінної"
     _radioButton:
       name: "Ім'я змінної"
+      default: "Значення за замовчуванням"
   script:
     categories:
       operation: "Обчислення"
