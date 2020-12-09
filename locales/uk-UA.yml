@@ -823,8 +823,42 @@ _pages:
       strLen: "Довжина тексту"
       _strLen:
         arg1: "Текст"
+      _strPick:
+        arg1: "Текст"
+      strReplace: "Заміна тексту"
+      _strReplace:
+        arg1: "Текст"
+        arg2: "Текст, який потрібно замінити"
+        arg3: "Заміняти на"
+      strReverse: "Перевернути текст"
+      _strReverse:
+        arg1: "Текст"
+      join: "Конкатенація тексту"
       _join:
         arg1: "Списки"
+        arg2: "Розділювач"
+      add: "Додати"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
       _and:
         arg1: "A"
         arg2: "B"
