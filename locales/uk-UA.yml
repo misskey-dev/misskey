@@ -806,6 +806,19 @@ _pages:
   featured: "Популярні"
   blocks:
     image: "Зображення"
+    textInput: "Введення тексту"
+    _textInput:
+      name: "Ім'я змінної"
+    _textareaInput:
+      name: "Ім'я змінної"
+    _numberInput:
+      name: "Ім'я змінної"
+    _switch:
+      name: "Ім'я змінної"
+    _counter:
+      name: "Ім'я змінної"
+    _radioButton:
+      name: "Ім'я змінної"
   script:
     categories:
       operation: "Обчислення"
@@ -845,22 +858,30 @@ _pages:
       _subtract:
         arg1: "A"
         arg2: "B"
-      multiply: "Множення"
+      multiply: "Помножити"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "Поділити"
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "Остача"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "Десяткове округлення"
+      _round:
+        arg1: "Число"
+      eq: "A дорівнює B"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A не дорівнює B"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "А І Б"
       _and:
         arg1: "A"
         arg2: "B"
