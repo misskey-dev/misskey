@@ -841,9 +841,11 @@ _pages:
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "Відняти"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "Множення"
       _multiply:
         arg1: "A"
         arg2: "B"
