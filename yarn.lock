@@ -661,10 +661,10 @@
     "@types/mdurl" "*"
     highlight.js "^9.7.0"
 
-"@types/matter-js@0.14.7":
-  version "0.14.7"
-  resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.14.7.tgz#b816f1e7b441ee7499027f9566e4fb5baea637b3"
-  integrity sha512-HLUhVTUoKsibpPZ2tCzoCC/f/UYRWPP9WCOUh5F61BlrUESFV5fE7eKq/CmdoEGkNrLW9v407zYlfrTc9hnGIw==
+"@types/matter-js@0.14.8":
+  version "0.14.8"
+  resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.14.8.tgz#387ed5f8f30a81b7c9685ad7b685b88ebf8bf275"
+  integrity sha512-7Vjbb7VfkKA062tMwbeAFI5dBzdzvMoYXf2/7ROygjGTmWg7KxGJLPl0Vlck5kpFQOjLzdDqhuN2TWkrX/co+Q==
 
 "@types/mdurl@*":
   version "1.0.2"
