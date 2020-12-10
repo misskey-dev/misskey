@@ -808,6 +808,7 @@ _rooms:
 _pages:
   newPage: "Створити сторінку"
   editPage: "Редагувати сторінку"
+  readPage: "Перегляд вихідного коду"
   featured: "Популярні"
   blocks:
     image: "Зображення"
