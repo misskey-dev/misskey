@@ -813,6 +813,8 @@ _pages:
   updated: "Сторінка успішно оновлена."
   deleted: "Сторінку видалено"
   pageSetting: "Налаштування сторінки"
+  nameAlreadyExists: "Вказана адреса сторінки вже існує."
+  invalidNameTitle: "Вказана адреса сторінки неприпустима."
   featured: "Популярні"
   blocks:
     image: "Зображення"
