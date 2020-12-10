@@ -840,7 +840,13 @@ _pages:
   chooseBlock: "Додати блок"
   selectType: "Виберіть тип"
   enterVariableName: "Введіть назву для змінної"
+  contentBlocks: "Контент"
+  inputBlocks: "Ввід"
+  specialBlocks: "Особливе"
   blocks:
+    text: "Текст"
+    textarea: "Текстова область"
+    section: "Розділ"
     image: "Зображення"
     _if:
       variable: "Змінні"
