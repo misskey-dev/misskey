@@ -800,6 +800,9 @@ _exportOrImport:
 _timelines:
   home: "Домівка"
 _rooms:
+  chooseImage: "Виберіть зображення"
+  roomType: "Тип кімнати"
+  carpetColor: "Колір килима"
   _roomType:
     default: "За умовчанням"
   _furnitures:
@@ -854,6 +857,8 @@ _pages:
     _if:
       variable: "Змінні"
     post: "Створення нотатки"
+    _post:
+      text: "Вміст"
     textInput: "Введення тексту"
     _textInput:
       name: "Ім'я змінної"
