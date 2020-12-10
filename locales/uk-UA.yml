@@ -842,6 +842,14 @@ _pages:
       inc: "Збільшити на"
     _button:
       text: "Напис"
+      _action:
+        _dialog:
+          content: "Вміст"
+        resetRandom: "Скидання генератора випадковості"
+        pushEvent: "Надіслати подію"
+        _pushEvent:
+          event: "Назві події"
+          message: "Повідомлення для відображення при активації"
     _radioButton:
       name: "Ім'я змінної"
       default: "Значення за замовчуванням"
