@@ -778,6 +778,7 @@ _widgets:
   timeline: "Стрічка"
   activity: "Активність"
   federation: "Федіверс"
+  postForm: "Створення нотатки"
 _cw:
   show: "Показати більше"
 _poll:
@@ -848,8 +849,11 @@ _pages:
     textarea: "Текстова область"
     section: "Розділ"
     image: "Зображення"
+    button: "Кнопка"
+    if: "Якщо"
     _if:
       variable: "Змінні"
+    post: "Створення нотатки"
     textInput: "Введення тексту"
     _textInput:
       name: "Ім'я змінної"
