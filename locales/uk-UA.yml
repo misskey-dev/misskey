@@ -840,6 +840,8 @@ _pages:
       name: "Ім'я змінної"
       text: "Назва"
       inc: "Збільшити на"
+    _button:
+      text: "Напис"
     _radioButton:
       name: "Ім'я змінної"
       default: "Значення за замовчуванням"
