@@ -803,7 +803,11 @@ _rooms:
     default: "За умовчанням"
   _furnitures:
     monitor: "Монітор"
+    doll-ai: "Лялька Аі-тян"
+    banknote: "Пачка грошей"
 _pages:
+  newPage: "Створити сторінку"
+  editPage: "Редагувати сторінку"
   featured: "Популярні"
   blocks:
     image: "Зображення"
