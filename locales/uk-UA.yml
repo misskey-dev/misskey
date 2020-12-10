@@ -827,6 +827,9 @@ _pages:
   inspector: "Інспектор"
   contents: "Вміст"
   variables: "Змінні"
+  title: "Заголовок"
+  url: "URL сторінки"
+  summary: "Короткий зміст"
   blocks:
     image: "Зображення"
     _if:
