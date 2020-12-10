@@ -850,11 +850,21 @@ _pages:
         _pushEvent:
           event: "Назві події"
           message: "Повідомлення для відображення при активації"
+          variable: "Змінна для надсилання"
+          no-variable: "Відсутно"
+        callAiScript: "Виклик AiScript"
+        _callAiScript:
+          functionName: "Ім'я функції"
+    radioButton: "Вибір"
     _radioButton:
       name: "Ім'я змінної"
+      title: "Напис"
+      values: "Варіанти, розділені розривами рядків"
       default: "Значення за замовчуванням"
   script:
     categories:
+      flow: "Керування потоком"
+      logical: "Логічні операції"
       operation: "Обчислення"
       comparison: "Порівняння"
       random: "Випадковість"
