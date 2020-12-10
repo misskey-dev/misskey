@@ -836,6 +836,10 @@ _pages:
   fontSerif: "Serif"
   fontSansSerif: "Sans serif"
   eyeCatchingImageSet: "Встановити привабливе зображення"
+  eyeCatchingImageRemove: "Видалити привабливе зображення"
+  chooseBlock: "Додати блок"
+  selectType: "Виберіть тип"
+  enterVariableName: "Введіть назву для змінної"
   blocks:
     image: "Зображення"
     _if:
