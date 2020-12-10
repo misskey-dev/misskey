@@ -830,6 +830,12 @@ _pages:
   title: "Заголовок"
   url: "URL сторінки"
   summary: "Короткий зміст"
+  alignCenter: "Рівняти елементи по центру"
+  hideTitleWhenPinned: "Приховати заголовок сторінки при закріпленні в профілі"
+  font: "Шрифт"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans serif"
+  eyeCatchingImageSet: "Встановити привабливе зображення"
   blocks:
     image: "Зображення"
     _if:
