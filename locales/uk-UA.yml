@@ -826,8 +826,11 @@ _pages:
   featured: "Популярні"
   inspector: "Інспектор"
   contents: "Вміст"
+  variables: "Змінні"
   blocks:
     image: "Зображення"
+    _if:
+      variable: "Змінні"
     textInput: "Введення тексту"
     _textInput:
       name: "Ім'я змінної"
@@ -872,7 +875,7 @@ _pages:
           event: "Назві події"
           message: "Повідомлення для відображення при активації"
           variable: "Змінна для надсилання"
-          no-variable: "Відсутно"
+          no-variable: "Відсутньо"
         callAiScript: "Виклик AiScript"
         _callAiScript:
           functionName: "Ім'я функції"
