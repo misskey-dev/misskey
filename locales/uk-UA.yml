@@ -829,7 +829,11 @@ _rooms:
     server: "Сервер"
     moon: "Місяць"
     corkboard: "Коркова дошка"
+    mousepad: "Килимок для миші"
     monitor: "Монітор"
+    keyboard: "Клавіатура"
+    carpet-stripe: "Смугастий килим"
+    mat: "Мат"
     doll-ai: "Лялька Аі-тян"
     banknote: "Пачка грошей"
 _pages:
