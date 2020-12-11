@@ -33,6 +33,7 @@
 		<FormSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</FormSwitch>
 		<FormSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</FormSwitch>
 		<FormSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</FormSwitch>
+		<FormSwitch v-model:value="showGapBetweenNotesInTimeline">{{ $t('showGapBetweenNotesInTimeline') }}</FormSwitch>
 		<FormSwitch v-model:value="loadRawImages">{{ $t('loadRawImages') }}</FormSwitch>
 		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $t('disableShowingAnimatedImages') }}</FormSwitch>
 		<FormSwitch v-model:value="useSystemFont">{{ $t('useSystemFont') }}</FormSwitch>
@@ -138,6 +139,11 @@ export default defineComponent({
 		useBlurEffectForModal: {
 			get() { return this.$store.state.device.useBlurEffectForModal; },
 			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
+		},
+
+		showGapBetweenNotesInTimeline: {
+			get() { return this.$store.state.device.showGapBetweenNotesInTimeline; },
+			set(value) { this.$store.commit('device/set', { key: 'showGapBetweenNotesInTimeline', value: value }); }
 		},
 
 		disableAnimatedMfm: {

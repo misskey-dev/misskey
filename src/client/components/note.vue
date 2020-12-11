@@ -490,8 +490,25 @@ export default defineComponent({
 		},
 
 		renoteDirectly() {
-			os.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				renoteId: this.appearNote.id
+			}, undefined, (res: any) => {
+				os.dialog({
+					type: 'success',
+					text: this.$t('renoted'),
+				});
+			}, (e: Error) => {
+				if (e.id === 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('cantRenote'),
+					});
+				} else if (e.id === 'fd4cc33e-2a37-48dd-99cc-9b806eb2031a') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('cantReRenote'),
+					});
+				}
 			});
 		},
 
@@ -533,6 +550,23 @@ export default defineComponent({
 			pleaseLogin();
 			os.apiWithDialog('notes/favorites/create', {
 				noteId: this.appearNote.id
+			}, undefined, (res: any) => {
+				os.dialog({
+					type: 'success',
+					text: this.$t('favorited'),
+				});
+			}, (e: Error) => {
+				if (e.id === 'a402c12b-34dd-41d2-97d8-4d2ffd96a1a6') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('alreadyFavorited'),
+					});
+				} else if (e.id === '6dd26674-e060-4816-909a-45ba3f4da458') {
+					os.dialog({
+						type: 'error',
+						text: this.$t('cantFavorite'),
+					});
+				}
 			});
 		},
 

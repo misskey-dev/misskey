@@ -38,6 +38,7 @@ export const attachLdSignature = async (activity: any, user: ILocalUser): Promis
 		toot: 'http://joinmastodon.org/ns#',
 		Emoji: 'toot:Emoji',
 		featured: 'toot:featured',
+		discoverable: 'toot:discoverable',
 		// schema
 		schema: 'http://schema.org#',
 		PropertyValue: 'schema:PropertyValue',

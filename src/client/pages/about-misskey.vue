@@ -2,12 +2,12 @@
 <div style="overflow: hidden;">
 	<FormBase class="znqjceqz">
 		<div id="debug"></div>
-		<section class="_formItem">
-			<div class="_formPanel" style="text-align: center; padding: 16px;" ref="about">
-				<img src="/assets/icons/512.png" alt="" style="display: block; width: 100px; margin: 0 auto; border-radius: 16px;" ref="icon" @load="iconLoaded" draggable="false"/>
-				<div style="margin: 0.75em auto 0 auto; width: max-content;">Misskey</div>
-				<div style="margin: 0 auto; opacity: 0.5; width: max-content;">v{{ version }}</div>
-				<span v-for="emoji in easterEggEmojis" :key="emoji.emoji" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }" :style="{ position: 'absolute', top: emoji.top, left: emoji.left, userSelect: 'none' }"><MkEmoji style="pointer-events: none; font-size: 24px; width: 24px;" :emoji="emoji.emoji" :custom-emojis="$store.state.instance.meta.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
+		<section class="_formItem about">
+			<div class="_formPanel panel" :class="{ playing: easterEggEngine != null }" ref="about">
+				<img src="/assets/icons/512.png" alt="" class="icon" ref="icon" @load="iconLoaded" draggable="false"/>
+				<div class="misskey">Misskey</div>
+				<div class="version">v{{ version }}</div>
+				<span class="emoji" v-for="emoji in easterEggEmojis" :key="emoji.id" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$store.state.instance.meta.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
 		</section>
 		<section class="_formItem" style="text-align: center; padding: 0 16px;" @click="gravity">
@@ -127,17 +127,6 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-		const emojis = this.$store.state.settings.reactions;
-		for (let i = 0; i < 32; i++) {
-			this.easterEggEmojis.push({
-				top: -(32 + (Math.random() * 256)) + 'px',
-				left: (Math.random() * 99) + '%',
-				emoji: emojis[Math.floor(Math.random() * emojis.length)],
-			});
-		}
-	},
-
 	mounted() {
 		VanillaTilt.init(this.$refs.icon, {
 			max: 30,
@@ -155,6 +144,17 @@ export default defineComponent({
 
 	methods: {
 		iconLoaded() {
+			const emojis = this.$store.state.settings.reactions;
+			const containerWidth = this.$refs.about.offsetWidth;
+			for (let i = 0; i < 32; i++) {
+				this.easterEggEmojis.push({
+					id: i.toString(),
+					top: -(128 + (Math.random() * 256)),
+					left: (Math.random() * containerWidth),
+					emoji: emojis[Math.floor(Math.random() * emojis.length)],
+				});
+			}
+
 			this.$nextTick(() => {
 				this.easterEggReady = true;
 			});
@@ -175,5 +175,58 @@ export default defineComponent({
 	max-width: 800px;
 	box-sizing: border-box;
 	margin: 0 auto;
+
+	> .about {
+		> .panel {
+			position: relative;
+			text-align: center;
+			padding: 16px;
+
+			&.playing {
+				&, * {
+					user-select: none;
+				}
+
+				* {
+					will-change: transform;
+				}
+
+				> .emoji {
+					visibility: visible;
+				}
+			}
+
+			> .icon {
+				display: block;
+				width: 100px;
+				margin: 0 auto;
+				border-radius: 16px;
+			}
+
+			> .misskey {
+				margin: 0.75em auto 0 auto;
+				width: max-content;
+			}
+
+			> .version {
+				margin: 0 auto;
+				width: max-content;
+				opacity: 0.5;
+			}
+
+			> .emoji {
+				position: absolute;
+				top: 0;
+				left: 0;
+				visibility: hidden;
+
+				> .emoji {
+					pointer-events: none;
+					font-size: 24px;
+					width: 24px;
+				}
+			}
+		}
+	}
 }
 </style>

@@ -15,7 +15,7 @@
 						<span class="handle"><Fa :icon="faBars"/></span>{{ $t('_widgets.' + element.name) }}<button class="remove _button" @click="removeWidget(element)"><Fa :icon="faTimes"/></button>
 					</header>
 					<div @click="widgetFunc(element.id)">
-						<component class="_close_ _forceContainerFull_" :is="`mkw-${element.name}`" :widget="element" :ref="element.id" :setting-callback="setting => settings[element.id] = setting"/>
+						<component class="_inContainer_ _forceContainerFull_" :is="`mkw-${element.name}`" :widget="element" :ref="element.id" :setting-callback="setting => settings[element.id] = setting"/>
 					</div>
 				</div>
 			</template>
@@ -23,7 +23,7 @@
 		<button @click="editMode = false" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $t('editWidgetsExit') }}</button>
 	</template>
 	<template v-else>
-		<component v-for="widget in widgets" class="_close_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget"/>
+		<component v-for="widget in widgets" class="_inContainer_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget"/>
 		<button @click="editMode = true" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $t('editWidgets') }}</button>
 	</template>
 </div>
