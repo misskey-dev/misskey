@@ -834,6 +834,9 @@ _rooms:
     keyboard: "Клавіатура"
     carpet-stripe: "Смугастий килим"
     mat: "Мат"
+    color-box: "Книжкова полиця"
+    wall-clock: "Настінний годинник"
+    photoframe: "Фоторамка"
     doll-ai: "Лялька Аі-тян"
     banknote: "Пачка грошей"
 _pages:
