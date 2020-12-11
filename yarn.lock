@@ -124,10 +124,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.32"
 
-"@fortawesome/vue-fontawesome@3.0.0-2":
-  version "3.0.0-2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-3.0.0-2.tgz#ebf06aeefd847e398d55cb3da357de2e9aebb574"
-  integrity sha512-SYFV7LXOe7mCKdcoVEhBAPbyyCueqEYn3zA7oOvsu9z9UO+BQpi60uFfA1AWcT8OyVWKbGvfHgvQus2DVA2Tjg==
+"@fortawesome/vue-fontawesome@3.0.0-3":
+  version "3.0.0-3"
+  resolved "https://registry.yarnpkg.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-3.0.0-3.tgz#b658a7c1f35d4eb04ac85749da693be483442b25"
+  integrity sha512-fCM7+R9M7Y/ipKC5n9hukGpJHhe53JOENGqtku/KWtpXsnbGik3AS5zfJYEupV2uXOw/5S0RSSfttQ2hNIrmFA==
 
 "@gulp-sourcemaps/identity-map@1.X":
   version "1.0.2"
