@@ -135,6 +135,7 @@ export interface IPerson extends IObject {
 	name?: string;
 	preferredUsername?: string;
 	manuallyApprovesFollowers?: boolean;
+	discoverable?: boolean;
 	inbox?: string;
 	sharedInbox?: string;	// 後方互換性のため
 	publicKey: {
