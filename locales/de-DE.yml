@@ -663,6 +663,7 @@ experimentalFeatures: "Experimentelle Funktionalitäten"
 developer: "Entwickler"
 makeExplorable: "Benutzerkonto in \"Erkunden\" sichtbar machen"
 makeExplorableDescription: "Wenn diese Option deaktiviert ist, ist dein Benutzerkonto nicht im \"Erkunden\"-Bereich sichtbar."
+showGapBetweenNotesInTimeline: "Abstände zwischen Notizen auf der Chronik anzeigen"
 _aboutMisskey:
   about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
   contributors: "Hauptmitwirkende"
