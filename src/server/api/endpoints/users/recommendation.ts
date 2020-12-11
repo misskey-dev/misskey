@@ -42,7 +42,7 @@ export const meta = {
 export default define(meta, async (ps, me) => {
 	const query = Users.createQueryBuilder('user')
 		.where('user.isLocked = FALSE')
-		.andWhere('user.isExplorable = FALSE')
+		.andWhere('user.isExplorable = TRUE')
 		.andWhere('user.host IS NULL')
 		.andWhere('user.updatedAt >= :date', { date: new Date(Date.now() - ms('7days')) })
 		.andWhere('user.id != :meId', { meId: me.id })
