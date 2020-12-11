@@ -837,6 +837,9 @@ _rooms:
     color-box: "Книжкова полиця"
     wall-clock: "Настінний годинник"
     photoframe: "Фоторамка"
+    cube: "Куб"
+    tv: "Телевізор"
+    pinguin: "Пінгвін"
     doll-ai: "Лялька Аі-тян"
     banknote: "Пачка грошей"
 _pages:
