@@ -41,14 +41,17 @@ const KEY = 'miux_hot';
 /**
  * 頻繁にアクセスされる設定情報を保管するストレージ(非リアクティブ)
  */
-export class HotDeviceStorage<T> {
+export class HotDeviceStorage<T extends Record<string, any>, C extends Record<string, (state: T, arg: unknown) => void>> {
 	public readonly default: T;
 
 	public readonly state: T;
 
-	constructor(defaultState: T) {
+	public readonly commits: C;
+
+	constructor(defaultState: T, commits?: C) {
 		this.default = defaultState;
 		this.state = { ...defaultState };
+		this.commits = commits;
 
 		// TODO: indexedDBにする
 		const data = localStorage.getItem(KEY);
@@ -67,6 +70,15 @@ export class HotDeviceStorage<T> {
 	set(key: keyof T, value: any): any {
 		this.state[key] = value;
 		localStorage.setItem(KEY, JSON.stringify(this.state));
+	}
+
+	commit(name: keyof C, arg: any) {
+		if (_DEV_) {
+			if (this.commits[name] == null) {
+				console.error('UNRECOGNIZED COMMIT: ' + name);
+			}
+		}
+		this.commits[name](this.state, arg);
 	}
 
 	/**
