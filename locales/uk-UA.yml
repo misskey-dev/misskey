@@ -803,6 +803,8 @@ _timelines:
   global: "Глобальна"
 _rooms:
   roomOf: "Кімната {user}"
+  addFurniture: "Розмістити меблі"
+  translate: "Пересунути"
   chooseImage: "Виберіть зображення"
   roomType: "Тип кімнати"
   carpetColor: "Колір килима"
