@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { reactive, Ref, ref } from 'vue';
 
 const PREFIX = 'miux:';
 
@@ -36,25 +36,26 @@ export class ColdDeviceStorage {
 	}
 }
 
-const KEY = 'miux_hot';
-
 /**
  * 頻繁にアクセスされる設定情報を保管するストレージ(非リアクティブ)
  */
 export class HotDeviceStorage<T extends Record<string, any>, C extends Record<string, (state: T, arg: unknown) => void>> {
+	public readonly key: string;
+
 	public readonly default: T;
 
 	public readonly state: T;
 
 	public readonly commits: C;
 
-	constructor(defaultState: T, commits?: C) {
+	constructor(key: string, defaultState: T, commits?: C) {
+		this.key = key;
 		this.default = defaultState;
 		this.state = { ...defaultState };
 		this.commits = commits;
 
 		// TODO: indexedDBにする
-		const data = localStorage.getItem(KEY);
+		const data = localStorage.getItem(this.key);
 		if (data != null) {
 			const x = JSON.parse(data);
 			for (const [key, value] of Object.entries(this.default)) {
@@ -69,7 +70,7 @@ export class HotDeviceStorage<T extends Record<string, any>, C extends Record<st
 
 	set(key: keyof T, value: any): any {
 		this.state[key] = value;
-		localStorage.setItem(KEY, JSON.stringify(this.state));
+		localStorage.setItem(this.key, JSON.stringify(this.state));
 	}
 
 	commit(name: keyof C, arg: any) {
@@ -104,7 +105,54 @@ export class HotDeviceStorage<T extends Record<string, any>, C extends Record<st
 	}
 }
 
-export const hotDeviceStorage = new HotDeviceStorage({
+/**
+ * 頻繁にアクセスされる設定情報を保管するストレージ(リアクティブ)
+ */
+export class ReactiveDeviceStorage<T extends Record<string, any>, C extends Record<string, (state: T, arg: unknown) => void>> {
+	public readonly key: string;
+
+	public readonly default: T;
+
+	public readonly state: ReturnType<typeof reactive>;
+
+	public readonly commits: C;
+
+	constructor(key: string, defaultState: T, commits?: C) {
+		this.key = key;
+		this.default = defaultState;
+		this.state = reactive(defaultState);
+		this.commits = commits;
+
+		// TODO: indexedDBにする
+		const data = localStorage.getItem(this.key);
+		if (data != null) {
+			const x = JSON.parse(data);
+			for (const [key, value] of Object.entries(this.default)) {
+				if (Object.prototype.hasOwnProperty.call(x, key)) {
+					this.state[key] = x[key];
+				} else {
+					this.state[key] = value;
+				}
+			}
+		}
+	}
+
+	set(key: keyof T, value: any): any {
+		this.state[key] = value;
+		localStorage.setItem(this.key, JSON.stringify(this.state));
+	}
+
+	commit(name: keyof C, arg: any) {
+		if (_DEV_) {
+			if (this.commits[name] == null) {
+				console.error('UNRECOGNIZED COMMIT: ' + name);
+			}
+		}
+		this.commits[name](this.state, arg);
+	}
+}
+
+export const hotDeviceStorage = new HotDeviceStorage('miux:base', {
 	animation: true,
 	animatedMfm: true,
 	showGapBetweenNotesInTimeline: true,

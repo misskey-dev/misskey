@@ -1,6 +1,6 @@
-import { HotDeviceStorage } from './storage';
+import { ReactiveDeviceStorage } from './storage';
 
-export const hotDeviceStorage = new HotDeviceStorage({
+export const reactiveDeckStorage = new ReactiveDeviceStorage('miux:deck', {
 	columns: [],
 	layout: [],
 }, {
