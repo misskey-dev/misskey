@@ -67,7 +67,6 @@ export const defaultDeviceSettings = {
 	darkMode: false,
 	deckMode: false,
 	syncDeviceDarkMode: true,
-	animatedMfm: true,
 	imageNewTab: false,
 	chatOpenBehavior: 'page',
 	defaultSideView: false,

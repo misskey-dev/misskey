@@ -140,11 +140,7 @@ export default defineComponent({
 		},
 
 		showGapBetweenNotesInTimeline: hotDeviceStorage.makeGetterSetter('showGapBetweenNotesInTimeline'),
-
-		disableAnimatedMfm: {
-			get() { return !this.$store.state.device.animatedMfm; },
-			set(value) { this.$store.commit('device/set', { key: 'animatedMfm', value: !value }); }
-		},
+		disableAnimatedMfm: hotDeviceStorage.makeGetterSetter('animatedMfm', v => !v, v => !v),
 
 		useOsNativeEmojis: {
 			get() { return this.$store.state.device.useOsNativeEmojis; },
