@@ -804,6 +804,8 @@ _profile:
   youCanIncludeHashtags: "Ви також можете включити хештеги у свій опис."
   metadata: "Додаткова інформація"
   metadataEdit: "Редагувати додаткову інформацію"
+  metadataDescription: "Ви можете вказати до чотирьох пунктів додаткової інформації у своєму профілі."
+  metadataContent: "Вміст"
 _exportOrImport:
   followingList: "Підписки"
   muteList: "Ігнорувати"
