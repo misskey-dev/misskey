@@ -168,6 +168,7 @@ if (_DEV_) {
 app.config.globalProperties = {
 	hotDeviceStorage
 };
+
 app.use(store);
 app.use(router);
 app.use(i18n);
@@ -368,4 +369,3 @@ if (store.getters.isSignedIn) {
 		signout();
 	});
 }
-

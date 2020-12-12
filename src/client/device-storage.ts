@@ -93,3 +93,10 @@ export class HotDeviceStorage {
 }
 
 export const hotDeviceStorage = new HotDeviceStorage();
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		hotDeviceStorage: HotDeviceStorage;
+	}
+}
