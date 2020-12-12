@@ -3,7 +3,7 @@ import { ref } from 'vue';
 const PREFIX = 'miux:';
 
 /**
- * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ
+ * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
 export class ColdDeviceStorage {
 	public static default = {
@@ -39,7 +39,7 @@ export class ColdDeviceStorage {
 const KEY = 'miux_hot';
 
 /**
- * 頻繁にアクセスされる設定情報を保管するストレージ
+ * 頻繁にアクセスされる設定情報を保管するストレージ(非リアクティブ)
  */
 export class HotDeviceStorage<T> {
 	public readonly default: T;
@@ -73,7 +73,7 @@ export class HotDeviceStorage<T> {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	makeGetterSetter(key: keyof T, getter?, setter?) {
+	makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
 		const valueRef = ref(this.state[key]);
 		return {
 			get: () => {
@@ -83,7 +83,7 @@ export class HotDeviceStorage<T> {
 					return valueRef.value;
 				}
 			},
-			set: (value) => {
+			set: (value: unknown) => {
 				const val = setter ? setter(value) : value;
 				this.set(key, val);
 				valueRef.value = val;
