@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
+<transition :name="hotDeviceStorage.state.animation ? 'zoom' : ''" appear>
 	<div class="_section">
 		<div class="mjndxjch _content">
 			<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>

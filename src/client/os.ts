@@ -6,7 +6,6 @@ import { apiUrl, debug } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { resolve } from '@/router';
-import { device } from './cold-storage';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);

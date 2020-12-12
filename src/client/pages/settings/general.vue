@@ -96,6 +96,7 @@ import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
+import { hotDeviceStorage } from '@/device-storage';
 
 export default defineComponent({
 	components: {
@@ -131,10 +132,7 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
 		},
 
-		reduceAnimation: {
-			get() { return !this.$store.state.device.animation; },
-			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
-		},
+		reduceAnimation: hotDeviceStorage.makeGetterSetter('animation'),
 
 		useBlurEffectForModal: {
 			get() { return this.$store.state.device.useBlurEffectForModal; },

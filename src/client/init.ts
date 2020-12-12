@@ -18,6 +18,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
+import { hotDeviceStorage } from './device-storage';
 
 console.info(`Misskey v${version}`);
 
@@ -164,6 +165,9 @@ if (_DEV_) {
 	app.config.performance = true;
 }
 
+app.config.globalProperties = {
+	hotDeviceStorage
+};
 app.use(store);
 app.use(router);
 app.use(i18n);

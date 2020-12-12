@@ -1,6 +1,6 @@
 <template>
 <div class="fdidabkb" :style="`--height:${height};`">
-	<transition :name="$store.state.device.animation ? 'header' : ''" mode="out-in" appear>
+	<transition :name="hotDeviceStorage.state.animation ? 'header' : ''" mode="out-in" appear>
 		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
 	<template v-if="info">

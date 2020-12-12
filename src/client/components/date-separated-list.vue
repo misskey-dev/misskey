@@ -37,12 +37,14 @@ export default defineComponent({
 			});
 		}
 
-		return h(this.$store.state.device.animation ? TransitionGroup : 'div', {
+		return h(this.hotDeviceStorage.state.animation ? TransitionGroup : 'div', this.hotDeviceStorage.state.animation ? {
 			class: 'sqadhkmv _list_',
 			name: 'list',
 			tag: 'div',
 			'data-direction': this.direction,
 			'data-reversed': this.reversed ? 'true' : 'false',
+		} : {
+			class: 'sqadhkmv _list_',
 		}, this.items.map((item, i) => {
 			const el = this.$slots.default({
 				item: item
