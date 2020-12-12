@@ -799,7 +799,10 @@ _exportOrImport:
   userLists: "Списки"
 _timelines:
   home: "Домівка"
+  social: "Соціальна"
+  global: "Глобальна"
 _rooms:
+  roomOf: "Кімната {user}"
   chooseImage: "Виберіть зображення"
   roomType: "Тип кімнати"
   carpetColor: "Колір килима"
