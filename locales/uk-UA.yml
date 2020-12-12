@@ -789,6 +789,8 @@ _visibility:
   localOnly: "Лише локально"
 _postForm:
   replyPlaceholder: "Відповідь на цю нотатку..."
+  quotePlaceholder: "Прокоментуйте цю нотатку..."
+  channelPlaceholder: "Опублікувати в каналі"
 _profile:
   name: "Ім'я"
   username: "Ім'я користувача"
@@ -809,6 +811,7 @@ _rooms:
   exit: "Назад"
   remove: "Видалити"
   clear: "Видалити все"
+  leaveConfirm: "Є незбережені зміни. Ви дійсно хочете вийти?"
   chooseImage: "Виберіть зображення"
   roomType: "Тип кімнати"
   carpetColor: "Колір килима"
@@ -835,6 +838,7 @@ _rooms:
     book: "Книга"
     book2: "Книга 2"
     piano: "Піаніно"
+    facial-tissue: "Серветки"
     server: "Сервер"
     moon: "Місяць"
     corkboard: "Коркова дошка"
