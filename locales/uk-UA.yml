@@ -805,12 +805,18 @@ _profile:
   metadata: "Додаткова інформація"
   metadataEdit: "Редагувати додаткову інформацію"
   metadataDescription: "Ви можете вказати до чотирьох пунктів додаткової інформації у своєму профілі."
+  metadataLabel: "Назва"
   metadataContent: "Вміст"
+  changeAvatar: "Змінити аватар"
+  changeBanner: "Змінити банер"
 _exportOrImport:
+  allNotes: "Всі нотатки"
   followingList: "Підписки"
   muteList: "Ігнорувати"
   blockingList: "Заблокувати"
   userLists: "Списки"
+_charts:
+  activeUsers: "Активні користувачі"
 _timelines:
   home: "Домівка"
   social: "Соціальна"
