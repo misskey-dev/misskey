@@ -140,6 +140,14 @@ export default defineComponent({
 			}
 		}
 
+		> .ip {
+			//flex: 1;
+			min-width: 0;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
 		> .time {
 			margin-left: auto;
 			opacity: 0.7;
