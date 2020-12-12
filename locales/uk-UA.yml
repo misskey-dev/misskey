@@ -791,6 +791,8 @@ _postForm:
   replyPlaceholder: "Відповідь на цю нотатку..."
   quotePlaceholder: "Прокоментуйте цю нотатку..."
   channelPlaceholder: "Опублікувати в каналі"
+  _placeholders:
+    e: "Напишіть тут, будь ласка..."
 _profile:
   name: "Ім'я"
   username: "Ім'я користувача"
