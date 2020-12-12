@@ -79,7 +79,6 @@ export const defaultDeviceSettings = {
 	useFullReactionPicker: false,
 	reactionPickerWidth: 1,
 	reactionPickerHeight: 1,
-	showGapBetweenNotesInTimeline: true,
 	sidebarDisplay: 'full', // full, icon, hide
 	instanceTicker: 'remote', // none, remote, always
 	roomGraphicsQuality: 'medium',

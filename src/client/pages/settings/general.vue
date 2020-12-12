@@ -132,17 +132,14 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
 		},
 
-		reduceAnimation: hotDeviceStorage.makeGetterSetter('animation'),
+		reduceAnimation: hotDeviceStorage.makeGetterSetter('animation', v => !v, v => !v),
 
 		useBlurEffectForModal: {
 			get() { return this.$store.state.device.useBlurEffectForModal; },
 			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
 		},
 
-		showGapBetweenNotesInTimeline: {
-			get() { return this.$store.state.device.showGapBetweenNotesInTimeline; },
-			set(value) { this.$store.commit('device/set', { key: 'showGapBetweenNotesInTimeline', value: value }); }
-		},
+		showGapBetweenNotesInTimeline: hotDeviceStorage.makeGetterSetter('showGapBetweenNotesInTimeline'),
 
 		disableAnimatedMfm: {
 			get() { return !this.$store.state.device.animatedMfm; },

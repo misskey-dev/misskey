@@ -36,44 +36,57 @@ export class ColdDeviceStorage {
 	}
 }
 
+const KEY = 'miux_hot';
+
 /**
  * 頻繁にアクセスされる設定情報を保管するストレージ
  */
-class HotDeviceStorage {
+export class HotDeviceStorage {
 	public static default = {
 		animation: true,
+		showGapBetweenNotesInTimeline: true,
 	};
 
 	public readonly state = { ...HotDeviceStorage.default };
 
 	constructor() {
-		for (const key of Object.keys(HotDeviceStorage.default)) {
-			// TODO: indexedDBにする
-			//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
-			//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
-			const value = localStorage.getItem(PREFIX + key);
-			if (value != null) {
-				this.state[key] = JSON.parse(value);
+		// TODO: indexedDBにする
+		const data = localStorage.getItem(KEY);
+		if (data != null) {
+			const x = JSON.parse(data);
+			for (const [key, value] of Object.entries(HotDeviceStorage.default)) {
+				if (Object.prototype.hasOwnProperty.call(x, key)) {
+					this.state[key] = x[key];
+				} else {
+					this.state[key] = value;
+				}
 			}
 		}
 	}
 
 	set(key: keyof typeof HotDeviceStorage.default, value: any): any {
-		localStorage.setItem(PREFIX + key, JSON.stringify(value));
 		this.state[key] = value;
+		localStorage.setItem(KEY, JSON.stringify(this.state));
 	}
 
 	/**
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	makeGetterSetter(key: keyof typeof HotDeviceStorage.default) {
+	makeGetterSetter(key: keyof typeof HotDeviceStorage.default, getter?, setter?) {
 		const valueRef = ref(this.state[key]);
 		return {
-			get: () => { return valueRef.value; },
+			get: () => {
+				if (getter) {
+					return getter(valueRef.value);
+				} else {
+					return valueRef.value;
+				}
+			},
 			set: (value) => {
-				this.set(key, value);
-				valueRef.value = value;
+				const val = setter ? setter(value) : value;
+				this.set(key, val);
+				valueRef.value = val;
 			}
 		};
 	}

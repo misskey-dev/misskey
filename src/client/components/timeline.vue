@@ -1,5 +1,5 @@
 <template>
-<XNotes :class="{ _noGap_: !$store.state.device.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes :class="{ _noGap_: !hotDeviceStorage.state.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
 </template>
 
 <script lang="ts">
