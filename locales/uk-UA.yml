@@ -801,6 +801,9 @@ _profile:
   name: "Ім'я"
   username: "Ім'я користувача"
   description: "Про себе"
+  youCanIncludeHashtags: "Ви також можете включити хештеги у свій опис."
+  metadata: "Додаткова інформація"
+  metadataEdit: "Редагувати додаткову інформацію"
 _exportOrImport:
   followingList: "Підписки"
   muteList: "Ігнорувати"
