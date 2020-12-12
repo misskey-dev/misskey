@@ -41,20 +41,20 @@ const KEY = 'miux_hot';
 /**
  * 頻繁にアクセスされる設定情報を保管するストレージ
  */
-export class HotDeviceStorage {
-	public static default = {
-		animation: true,
-		showGapBetweenNotesInTimeline: true,
-	};
+export class HotDeviceStorage<T> {
+	public readonly default: T;
 
-	public readonly state = { ...HotDeviceStorage.default };
+	public readonly state: T;
 
-	constructor() {
+	constructor(defaultState: T) {
+		this.default = defaultState;
+		this.state = { ...defaultState };
+
 		// TODO: indexedDBにする
 		const data = localStorage.getItem(KEY);
 		if (data != null) {
 			const x = JSON.parse(data);
-			for (const [key, value] of Object.entries(HotDeviceStorage.default)) {
+			for (const [key, value] of Object.entries(this.default)) {
 				if (Object.prototype.hasOwnProperty.call(x, key)) {
 					this.state[key] = x[key];
 				} else {
@@ -64,7 +64,7 @@ export class HotDeviceStorage {
 		}
 	}
 
-	set(key: keyof typeof HotDeviceStorage.default, value: any): any {
+	set(key: keyof T, value: any): any {
 		this.state[key] = value;
 		localStorage.setItem(KEY, JSON.stringify(this.state));
 	}
@@ -73,7 +73,7 @@ export class HotDeviceStorage {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	makeGetterSetter(key: keyof typeof HotDeviceStorage.default, getter?, setter?) {
+	makeGetterSetter(key: keyof T, getter?, setter?) {
 		const valueRef = ref(this.state[key]);
 		return {
 			get: () => {
@@ -92,11 +92,15 @@ export class HotDeviceStorage {
 	}
 }
 
-export const hotDeviceStorage = new HotDeviceStorage();
+export const hotDeviceStorage = new HotDeviceStorage({
+	animation: true,
+	animatedMfm: true,
+	showGapBetweenNotesInTimeline: true,
+});
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
 declare module '@vue/runtime-core' {
 	interface ComponentCustomProperties {
-		hotDeviceStorage: HotDeviceStorage;
+		hotDeviceStorage: typeof hotDeviceStorage;
 	}
 }

@@ -82,22 +82,22 @@ export default defineComponent({
 					let style;
 					switch (token.node.props.name) {
 						case 'tada': {
-							style = `font-size: 150%;` + (this.$store.state.device.animatedMfm ? 'animation: tada 1s linear infinite both;' : '');
+							style = `font-size: 150%;` + (this.hotDeviceStorage.state.animatedMfm ? 'animation: tada 1s linear infinite both;' : '');
 							break;
 						}
 						case 'jelly': {
 							const speed = token.node.props.args.speed || '1s';
-							style = (this.$store.state.device.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+							style = (this.hotDeviceStorage.state.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'twitch': {
 							const speed = token.node.props.args.speed || '0.5s';
-							style = this.$store.state.device.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+							style = this.hotDeviceStorage.state.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'shake': {
 							const speed = token.node.props.args.speed || '0.5s';
-							style = this.$store.state.device.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
+							style = this.hotDeviceStorage.state.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'spin': {
@@ -110,15 +110,15 @@ export default defineComponent({
 								token.node.props.args.y ? 'mfm-spinY' :
 								'mfm-spin';
 							const speed = token.node.props.args.speed || '1.5s';
-							style = this.$store.state.device.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+							style = this.hotDeviceStorage.state.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
 							break;
 						}
 						case 'jump': {
-							style = this.$store.state.device.animatedMfm ? 'animation: mfm-jump 0.75s linear infinite;' : '';
+							style = this.hotDeviceStorage.state.animatedMfm ? 'animation: mfm-jump 0.75s linear infinite;' : '';
 							break;
 						}
 						case 'bounce': {
-							style = this.$store.state.device.animatedMfm ? 'animation: mfm-bounce 0.75s linear infinite; transform-origin: center bottom;' : '';
+							style = this.hotDeviceStorage.state.animatedMfm ? 'animation: mfm-bounce 0.75s linear infinite; transform-origin: center bottom;' : '';
 							break;
 						}
 						case 'flip': {

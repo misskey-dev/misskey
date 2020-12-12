@@ -26,7 +26,7 @@ import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/device-storage';
+import { ColdDeviceStorage } from '@/storage';
 import { playFile } from '@/scripts/sound';
 
 const soundsTypes = [

@@ -18,7 +18,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
-import { hotDeviceStorage } from './device-storage';
+import { hotDeviceStorage } from './storage';
 
 console.info(`Misskey v${version}`);
 

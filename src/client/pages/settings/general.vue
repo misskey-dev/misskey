@@ -96,7 +96,7 @@ import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
-import { hotDeviceStorage } from '@/device-storage';
+import { hotDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
