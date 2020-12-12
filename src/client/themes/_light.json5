@@ -28,7 +28,7 @@
 		acrylicPanel: ':alpha<0.5<@panel',
 		shadow: 'rgba(0, 0, 0, 0.1)',
 		header: ':alpha<0.7<@bg',
-		navBg: '@bg',
+		navBg: '@panel',
 		navFg: '@fg',
 		navHoverFg: ':darken<17<@fg',
 		navActive: '@accent',
