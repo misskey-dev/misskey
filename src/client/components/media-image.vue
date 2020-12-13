@@ -52,7 +52,7 @@ export default defineComponent({
 	},
 	computed: {
 		url(): any {
-			let url = this.$store.state.device.disableShowingAnimatedImages
+			let url = this.hotDeviceStorage.state.disableShowingAnimatedImages
 				? getStaticImageUrl(this.image.thumbnailUrl)
 				: this.image.thumbnailUrl;
 

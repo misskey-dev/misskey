@@ -52,17 +52,11 @@ export const defaultDeviceSettings = {
 	lang: null,
 	loadRawImages: false,
 	nsfw: 'respect', // respect, force, ignore
-	useOsNativeEmojis: false,
 	serverDisconnectedBehavior: 'quiet',
-	accounts: [],
 	recentlyUsedEmojis: [],
 	recentlyUsedUsers: [],
-	themes: [],
-	darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
-	lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 	darkMode: false,
 	deckMode: false,
-	syncDeviceDarkMode: true,
 	imageNewTab: false,
 	chatOpenBehavior: 'page',
 	defaultSideView: false,
@@ -81,7 +75,6 @@ export const defaultDeviceSettings = {
 	deckColumnAlign: 'left',
 	deckAlwaysShowMainColumn: true,
 	deckMainColumnPlace: 'left',
-	userData: {},
 };
 
 function copy<T>(data: T): T {

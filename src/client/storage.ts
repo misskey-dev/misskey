@@ -11,6 +11,10 @@ const PREFIX = 'miux:';
  */
 export class ColdDeviceStorage {
 	public static default = {
+		themes: [],
+		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
+		lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
+		syncDeviceDarkMode: true,
 		sound_masterVolume: 0.3,
 		sound_note: { type: 'syuilo/down', volume: 1 },
 		sound_noteMy: { type: 'syuilo/up', volume: 1 },
@@ -159,6 +163,8 @@ export class ReactiveDeviceStorage<T extends Record<string, any>, M extends Reco
 export const hotDeviceStorage = new HotDeviceStorage('miux:base', {
 	animation: true,
 	animatedMfm: true,
+	disableShowingAnimatedImages: false,
+	useOsNativeEmojis: false,
 	showGapBetweenNotesInTimeline: true,
 });
 

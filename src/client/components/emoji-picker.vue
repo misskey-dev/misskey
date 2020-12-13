@@ -13,7 +13,7 @@
 						tabindex="0"
 					>
 						<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-						<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img v-else :src="hotDeviceStorage.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 				<div v-if="searchResultUnicode.length > 0">
@@ -67,7 +67,7 @@
 						@click="chosen(emoji, $event)"
 						:key="emoji.name"
 					>
-						<img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img :src="hotDeviceStorage.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 			</section>

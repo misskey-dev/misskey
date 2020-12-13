@@ -141,11 +141,8 @@ export default defineComponent({
 
 		showGapBetweenNotesInTimeline: hotDeviceStorage.makeGetterSetter('showGapBetweenNotesInTimeline'),
 		disableAnimatedMfm: hotDeviceStorage.makeGetterSetter('animatedMfm', v => !v, v => !v),
-
-		useOsNativeEmojis: {
-			get() { return this.$store.state.device.useOsNativeEmojis; },
-			set(value) { this.$store.commit('device/set', { key: 'useOsNativeEmojis', value }); }
-		},
+		useOsNativeEmojis: hotDeviceStorage.makeGetterSetter('useOsNativeEmojis'),
+		disableShowingAnimatedImages: hotDeviceStorage.makeGetterSetter('disableShowingAnimatedImages'),
 
 		imageNewTab: {
 			get() { return this.$store.state.device.imageNewTab; },
@@ -180,11 +177,6 @@ export default defineComponent({
 		loadRawImages: {
 			get() { return this.$store.state.device.loadRawImages; },
 			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
-		},
-
-		disableShowingAnimatedImages: {
-			get() { return this.$store.state.device.disableShowingAnimatedImages; },
-			set(value) { this.$store.commit('device/set', { key: 'disableShowingAnimatedImages', value }); }
 		},
 
 		nsfw: {
