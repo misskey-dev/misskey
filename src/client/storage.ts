@@ -160,12 +160,16 @@ export class ReactiveDeviceStorage<T extends Record<string, any>, M extends Reco
 	}
 }
 
-export const hotDeviceStorage = new HotDeviceStorage('miux:base', {
+export const hotDeviceStorage = new HotDeviceStorage('baseHotStorage', {
 	animation: true,
 	animatedMfm: true,
 	disableShowingAnimatedImages: false,
 	useOsNativeEmojis: false,
 	showGapBetweenNotesInTimeline: true,
+});
+
+export const reactiveDeviceStorage = new ReactiveDeviceStorage('baseReactiveStorage', {
+	darkMode: false,
 });
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない

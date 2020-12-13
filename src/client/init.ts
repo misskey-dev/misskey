@@ -4,7 +4,7 @@
 
 import '@/style.scss';
 
-import { createApp } from 'vue';
+import { createApp, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import widgets from './widgets';
@@ -18,7 +18,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
-import { hotDeviceStorage } from './storage';
+import { ColdDeviceStorage, hotDeviceStorage, reactiveDeviceStorage } from './storage';
 import { $i, isSignedIn, refreshAccount, setAccount } from './account';
 
 console.info(`Misskey v${version}`);
@@ -174,10 +174,10 @@ window.addEventListener('storage', e => {
 	}
 }, false);
 
-store.watch(state => state.device.darkMode, darkMode => {
+watch(() => reactiveDeviceStorage.state.darkMode, (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
-		const themes = builtinThemes.concat(store.state.device.themes);
-		applyTheme(themes.find(x => x.id === (darkMode ? store.state.device.darkTheme : store.state.device.lightTheme)));
+		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
+		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));
 	});
 });
 

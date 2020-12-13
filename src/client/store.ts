@@ -55,7 +55,6 @@ export const defaultDeviceSettings = {
 	serverDisconnectedBehavior: 'quiet',
 	recentlyUsedEmojis: [],
 	recentlyUsedUsers: [],
-	darkMode: false,
 	deckMode: false,
 	imageNewTab: false,
 	chatOpenBehavior: 'page',
