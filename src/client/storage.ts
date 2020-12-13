@@ -1,5 +1,7 @@
 import { reactive, Ref, ref } from 'vue';
 
+// TODO: 他のタブと永続化されたstateを同期
+
 const PREFIX = 'miux:';
 
 /**
@@ -39,20 +41,20 @@ export class ColdDeviceStorage {
 /**
  * 頻繁にアクセスされる設定情報を保管するストレージ(非リアクティブ)
  */
-export class HotDeviceStorage<T extends Record<string, any>, C extends Record<string, (state: T, arg: unknown) => void>> {
+export class HotDeviceStorage<T extends Record<string, any>, M extends Record<string, (state: T, arg: unknown) => void>> {
 	public readonly key: string;
 
 	public readonly default: T;
 
 	public readonly state: T;
 
-	public readonly commits: C;
+	public readonly mutations: M;
 
-	constructor(key: string, defaultState: T, commits?: C) {
+	constructor(key: string, defaultState: T, mutations?: M) {
 		this.key = key;
 		this.default = defaultState;
 		this.state = { ...defaultState };
-		this.commits = commits;
+		this.mutations = mutations;
 
 		// TODO: indexedDBにする
 		const data = localStorage.getItem(this.key);
@@ -73,13 +75,13 @@ export class HotDeviceStorage<T extends Record<string, any>, C extends Record<st
 		localStorage.setItem(this.key, JSON.stringify(this.state));
 	}
 
-	commit(name: keyof C, arg: any) {
+	commit(name: keyof M, arg: any) {
 		if (_DEV_) {
-			if (this.commits[name] == null) {
-				console.error('UNRECOGNIZED COMMIT: ' + name);
+			if (this.mutations[name] == null) {
+				console.error('UNRECOGNIZED MUTATION: ' + name);
 			}
 		}
-		this.commits[name](this.state, arg);
+		this.mutations[name](this.state, arg);
 	}
 
 	/**
@@ -108,20 +110,20 @@ export class HotDeviceStorage<T extends Record<string, any>, C extends Record<st
 /**
  * 頻繁にアクセスされる設定情報を保管するストレージ(リアクティブ)
  */
-export class ReactiveDeviceStorage<T extends Record<string, any>, C extends Record<string, (state: T, arg: unknown) => void>> {
+export class ReactiveDeviceStorage<T extends Record<string, any>, M extends Record<string, (state: T, arg: unknown) => void>> {
 	public readonly key: string;
 
 	public readonly default: T;
 
 	public readonly state: ReturnType<typeof reactive>;
 
-	public readonly commits: C;
+	public readonly mutations: M;
 
-	constructor(key: string, defaultState: T, commits?: C) {
+	constructor(key: string, defaultState: T, mutations?: M) {
 		this.key = key;
 		this.default = defaultState;
 		this.state = reactive(defaultState);
-		this.commits = commits;
+		this.mutations = mutations;
 
 		// TODO: indexedDBにする
 		const data = localStorage.getItem(this.key);
@@ -142,13 +144,13 @@ export class ReactiveDeviceStorage<T extends Record<string, any>, C extends Reco
 		localStorage.setItem(this.key, JSON.stringify(this.state));
 	}
 
-	commit(name: keyof C, arg: any) {
+	commit(name: keyof M, arg: any) {
 		if (_DEV_) {
-			if (this.commits[name] == null) {
-				console.error('UNRECOGNIZED COMMIT: ' + name);
+			if (this.mutations[name] == null) {
+				console.error('UNRECOGNIZED MUTATION: ' + name);
 			}
 		}
-		this.commits[name](this.state, arg);
+		this.mutations[name](this.state, arg);
 	}
 }
 

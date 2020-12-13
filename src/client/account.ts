@@ -1,9 +1,12 @@
 import { reactive, ref } from 'vue';
 import { apiUrl } from './config';
 
+// TODO: 他のタブと永続化されたstateを同期
+
 type Account = {
 	id: string;
 	token: string;
+	clientData: any;
 };
 
 const data = localStorage.getItem('account');
@@ -16,7 +19,16 @@ export function signout() {
 	location.href = '/';
 }
 
-function fetchAccount(token) {
+const accountsData = localStorage.getItem('accounts');
+export const accounts: { id: Account['id'], token: Account['token'] }[] = accountsData ? JSON.parse(accountsData) : [];
+
+function addAccount(id: Account['id'], token: Account['token']) {
+	if (!accounts.some(x => x.id === id)) {
+		localStorage.setItem('accounts', JSON.stringify(accounts.concat([{ id, token }])));
+	}
+}
+
+function fetchAccount(token): Promise<Account> {
 	return new Promise((done, fail) => {
 		// Fetch user
 		fetch(`${apiUrl}/i`, {
@@ -54,6 +66,7 @@ export function refreshAccount() {
 export async function setAccount(token) {
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
+	addAccount(me.id, token);
 }
 
 export const defaultAccountSettings = {

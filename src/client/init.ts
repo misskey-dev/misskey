@@ -132,7 +132,7 @@ stream.init($i);
 
 const app = createApp(await (
 	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!isSignedIn         ? import('@/ui/visitor.vue') :
+	!isSignedIn                       ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
 	import('@/ui/default.vue')
@@ -147,6 +147,10 @@ app.config.globalProperties = {
 	isSignedIn,
 	hotDeviceStorage
 };
+
+if (_DEV_) {
+	(window as any).$i = $i;
+}
 
 app.use(store);
 app.use(router);
@@ -164,14 +168,8 @@ await router.isReady();
 
 app.mount('body');
 
-// 他のタブと永続化されたstateを同期
 window.addEventListener('storage', e => {
-	if (e.key === 'vuex') {
-		store.replaceState({
-			...store.state,
-			...JSON.parse(e.newValue)
-		});
-	} else if (e.key === 'i') {
+	if (e.key === 'i') {
 		location.reload();
 	}
 }, false);
