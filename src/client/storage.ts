@@ -117,7 +117,7 @@ export class ReactiveDeviceStorage<T extends Record<string, any>, M extends Reco
 
 	public readonly default: T;
 
-	public readonly state: ReturnType<typeof reactive>;
+	public readonly state: T;
 
 	public readonly mutations: M;
 
