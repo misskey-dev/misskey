@@ -2,6 +2,8 @@ import { reactive, Ref, ref } from 'vue';
 
 // TODO: 他のタブと永続化されたstateを同期
 
+// MEMO: ユーザーごとの設定を保存するstorageを実装するときは、storageのkeyに$i.icをくっつけるだけで実装できそう
+
 const PREFIX = 'miux:';
 
 /**
