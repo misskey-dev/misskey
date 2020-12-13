@@ -73,6 +73,7 @@ import { Theme, builtinThemes, applyTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -93,6 +94,7 @@ export default defineComponent({
 				title: this.$t('theme'),
 				icon: faPalette
 			},
+			installedThemes: ColdDeviceStorage.ref('themes'),
 			builtinThemes,
 			wallpaper: localStorage.getItem('wallpaper'),
 			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
@@ -102,10 +104,7 @@ export default defineComponent({
 	computed: {
 		// TODO: ColdDeviceStorageは非リアクティブでcomputedが動作しないのでよしなにやる
 		themes(): Theme[] {
-			return builtinThemes.concat(ColdDeviceStorage.get('themes'));
-		},
-		installedThemes(): Theme[] {
-			return ColdDeviceStorage.get('themes');
+			return builtinThemes.concat(this.installedThemes.value);
 		},
 		darkThemes(): Theme[] {
 			return this.themes.filter(t => t.base == 'dark' || t.kind == 'dark');

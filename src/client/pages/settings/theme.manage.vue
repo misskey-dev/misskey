@@ -55,6 +55,7 @@ export default defineComponent({
 				title: this.$t('_theme.manage'),
 				icon: faFolderOpen
 			},
+			installedThemes: ColdDeviceStorage.ref('themes'),
 			builtinThemes,
 			selectedThemeId: null,
 			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
@@ -62,12 +63,8 @@ export default defineComponent({
 	},
 
 	computed: {
-		// TODO: ColdDeviceStorageは非リアクティブでcomputedが動作しないのでよしなにやる
 		themes(): Theme[] {
-			return builtinThemes.concat(ColdDeviceStorage.get('themes'));
-		},
-		installedThemes(): Theme[] {
-			return ColdDeviceStorage.get('themes');
+			return builtinThemes.concat(this.installedThemes.value);
 		},
 	
 		selectedTheme() {

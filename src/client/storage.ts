@@ -1,4 +1,5 @@
 import { reactive, Ref, ref } from 'vue';
+import { Theme } from './scripts/theme';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -11,7 +12,7 @@ const PREFIX = 'miux:';
  */
 export class ColdDeviceStorage {
 	public static default = {
-		themes: [],
+		themes: [] as Theme[],
 		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
 		lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 		syncDeviceDarkMode: true,
@@ -27,6 +28,8 @@ export class ColdDeviceStorage {
 		sound_reversiPutWhite: { type: 'syuilo/snare', volume: 0.3 },
 	};
 
+	public static watchers = [];
+
 	public static get<T extends keyof typeof ColdDeviceStorage.default>(key: T): typeof ColdDeviceStorage.default[T] {
 		// TODO: indexedDBにする
 		//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
@@ -39,8 +42,26 @@ export class ColdDeviceStorage {
 		}
 	}
 
-	public static set(key: keyof typeof ColdDeviceStorage.default, value: any): any {
+	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
 		localStorage.setItem(PREFIX + key, JSON.stringify(value));
+
+		for (const watcher of this.watchers) {
+			if (watcher.key === key) watcher.callback(value);
+		}
+	}
+
+	public static watch(key, callback) {
+		this.watchers.push({ key, callback });
+	}
+
+	public static ref<T extends keyof typeof ColdDeviceStorage.default>(key: T) {
+		const v = ColdDeviceStorage.get(key);
+		const r = ref(v);
+		// TODO: このままではwatcherがリークするので開放する方法を考える
+		this.watch(key, v => {
+			r.value = v;
+		});
+		return r;
 	}
 }
 
