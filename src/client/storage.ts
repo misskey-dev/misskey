@@ -54,6 +54,7 @@ export class ColdDeviceStorage {
 		this.watchers.push({ key, callback });
 	}
 
+	// TODO: VueのcustomRef使うと良い感じになるかも
 	public static ref<T extends keyof typeof ColdDeviceStorage.default>(key: T) {
 		const v = ColdDeviceStorage.get(key);
 		const r = ref(v);
@@ -69,6 +70,7 @@ export class ColdDeviceStorage {
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
 	public static makeGetterSetter<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
+		// TODO: VueのcustomRef使うと良い感じになるかも
 		const valueRef = ColdDeviceStorage.ref(key);
 		return {
 			get: () => {
@@ -134,6 +136,7 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
 	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
+		// TODO: VueのcustomRef使うと良い感じになるかも
 		const valueRef = ref(this.state[key]);
 		return {
 			get: () => {
