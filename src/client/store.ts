@@ -125,17 +125,6 @@ export const store = createStore({
 			localStorage.setItem('i', i.token);
 			await ctx.dispatch('login', i);
 		},
-
-		mergeMe(ctx, me) {
-			// TODO: プロパティ一つ一つに対してコミットが発生するのはアレなので良い感じにする
-			for (const [key, value] of Object.entries(me)) {
-				ctx.commit('updateIKeyValue', { key, value });
-			}
-
-			if (me.clientData) {
-				ctx.commit('settings/init', me.clientData);
-			}
-		},
 	},
 
 	modules: {

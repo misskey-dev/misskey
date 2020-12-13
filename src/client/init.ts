@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import widgets from './widgets';
 import directives from './directives';
 import components from '@/components';
-import { version, apiUrl, ui } from '@/config';
+import { version, ui } from '@/config';
 import { store } from './store';
 import { router } from './router';
 import { applyTheme } from '@/scripts/theme';
@@ -19,7 +19,8 @@ import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { ColdDeviceStorage, hotDeviceStorage, reactiveDeviceStorage } from './storage';
-import { $i, accountSettings, isSignedIn, refreshAccount, setAccount } from './account';
+import { $i, isSignedIn, refreshAccount, setAccount, updateAccount } from './account';
+import { accountSettings } from './account-storage';
 
 console.info(`Misskey v${version}`);
 
@@ -241,97 +242,66 @@ if (isSignedIn) {
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {
-		store.dispatch('mergeMe', i);
+		updateAccount(i);
 	});
 
 	main.on('readAllNotifications', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadNotification: false
-		});
+		updateAccount({ hasUnreadNotification: false });
 	});
 
 	main.on('unreadNotification', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadNotification: true
-		});
+		updateAccount({ hasUnreadNotification: true });
 	});
 
 	main.on('unreadMention', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadMentions: true
-		});
+		updateAccount({ hasUnreadMentions: true });
 	});
 
 	main.on('readAllUnreadMentions', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadMentions: false
-		});
+		updateAccount({ hasUnreadMentions: false });
 	});
 
 	main.on('unreadSpecifiedNote', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadSpecifiedNotes: true
-		});
+		updateAccount({ hasUnreadSpecifiedNotes: true });
 	});
 
 	main.on('readAllUnreadSpecifiedNotes', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadSpecifiedNotes: false
-		});
+		updateAccount({ hasUnreadSpecifiedNotes: false });
 	});
 
 	main.on('readAllMessagingMessages', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadMessagingMessage: false
-		});
+		updateAccount({ hasUnreadMessagingMessage: false });
 	});
 
 	main.on('unreadMessagingMessage', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadMessagingMessage: true
-		});
-
+		updateAccount({ hasUnreadMessagingMessage: true });
 		sound.play('chatBg');
 	});
 
 	main.on('readAllAntennas', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadAntenna: false
-		});
+		updateAccount({ hasUnreadAntenna: false });
 	});
 
 	main.on('unreadAntenna', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadAntenna: true
-		});
-
+		updateAccount({ hasUnreadAntenna: true });
 		sound.play('antenna');
 	});
 
 	main.on('readAllAnnouncements', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadAnnouncement: false
-		});
+		updateAccount({ hasUnreadAnnouncement: false });
 	});
 
 	main.on('readAllChannels', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadChannel: false
-		});
+		updateAccount({ hasUnreadChannel: false });
 	});
 
 	main.on('unreadChannel', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadChannel: true
-		});
-
+		updateAccount({ hasUnreadChannel: true });
 		sound.play('channel');
 	});
 
 	main.on('readAllAnnouncements', () => {
-		store.dispatch('mergeMe', {
-			hasUnreadAnnouncement: false
-		});
+		updateAccount({ hasUnreadAnnouncement: false });
 	});
 
 	main.on('clientSettingUpdated', x => {

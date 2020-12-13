@@ -44,7 +44,7 @@ import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
-import { defaultAccountSettings } from '@/account';
+import { defaultAccountSettings } from '@/account-storage';
 
 export default defineComponent({
 	components: {

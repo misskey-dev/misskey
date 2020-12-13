@@ -1,6 +1,6 @@
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
+import { setAccountSettings } from './account-storage';
 import { apiUrl } from './config';
-import { api } from './os';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -12,6 +12,7 @@ type Account = {
 
 const data = localStorage.getItem('account');
 
+// TODO: 外部からはreadonlyに
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 export const isSignedIn = $i != null;
 
@@ -54,63 +55,22 @@ function fetchAccount(token): Promise<Account> {
 	});
 }
 
-export function refreshAccount() {
-	fetchAccount($i.token).then(data => {
-		for (const [key, value] of Object.entries(data)) {
-			$i[key] = value;
-		}
+export function updateAccount(data) {
+	for (const [key, value] of Object.entries(data)) {
+		$i[key] = value;
+	}
 
+	if (data.clientData) {
 		setAccountSettings(data.clientData);
-	});
+	}
+}
+
+export function refreshAccount() {
+	fetchAccount($i.token).then(updateAccount);
 }
 
 export async function setAccount(token) {
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
 	addAccount(me.id, token);
-}
-
-export const defaultAccountSettings = {
-	tutorial: 0,
-	keepCw: false,
-	showFullAcct: false,
-	rememberNoteVisibility: false,
-	defaultNoteVisibility: 'public',
-	defaultNoteLocalOnly: false,
-	uploadFolder: null,
-	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
-	memo: null,
-	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	mutedWords: [],
-};
-
-const settings = localStorage.getItem('accountSettings');
-
-// TODO: エクスポートするものはreadonlyにする
-export const accountSettings = reactive(settings ? JSON.parse(settings) : defaultAccountSettings);
-
-export function updateAccountSetting(key, value) {
-	if (isSignedIn) {
-		api('i/update-client-setting', {
-			name: key,
-			value: value
-		});
-	}
-}
-
-export function setAccountSettings(data: Record<string, any>) {
-	for (const [key, value] of Object.entries(defaultAccountSettings)) {
-		if (Object.prototype.hasOwnProperty.call(data, key)) {
-			accountSettings[key] = data[key];
-		} else {
-			accountSettings[key] = value;
-		}
-	}
-}
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$accountSettings: typeof accountSettings;
-	}
 }
