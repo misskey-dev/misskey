@@ -820,9 +820,9 @@ _charts:
   federationInstancesTotal: "Загальна кількість федеративних інстансів"
   usersTotal: "Загальна кількість користувачів"
   activeUsers: "Активні користувачі"
-  notesIncDec: "Загальна кількість нотаток"
-_instanceCharts:
-  notes: "Загальна кількість нотаток"
+  notesTotal: "Загальна кількість нотаток"
+  filesIncDec: "Зміни кількості файлів"
+  filesTotal: "Загальна кількість файлів"
 _timelines:
   home: "Домівка"
   social: "Соціальна"
