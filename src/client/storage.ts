@@ -45,7 +45,7 @@ export class ColdDeviceStorage {
 }
 
 /**
- * 頻繁にアクセスされる設定情報を保管するストレージ(非リアクティブ)
+ * 頻繁にアクセスされる設定情報を保管するストレージ
  */
 export class HotDeviceStorage<T extends Record<string, any>, M extends Record<string, (state: T, arg: unknown) => void>> {
 	public readonly key: string;
@@ -56,10 +56,10 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 
 	public readonly mutations: M;
 
-	constructor(key: string, defaultState: T, mutations?: M) {
-		this.key = key;
+	constructor(key: string, makeReactive: boolean, defaultState: T, mutations?: M) {
+		this.key = 'db::' + key;
 		this.default = defaultState;
-		this.state = { ...defaultState };
+		this.state = makeReactive ? reactive(defaultState) : { ...defaultState };
 		this.mutations = mutations;
 
 		// TODO: indexedDBにする
@@ -88,6 +88,7 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 			}
 		}
 		this.mutations[name](this.state, arg);
+		localStorage.setItem(this.key, JSON.stringify(this.state));
 	}
 
 	/**
@@ -113,54 +114,7 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 	}
 }
 
-/**
- * 頻繁にアクセスされる設定情報を保管するストレージ(リアクティブ)
- */
-export class ReactiveDeviceStorage<T extends Record<string, any>, M extends Record<string, (state: T, arg: unknown) => void>> {
-	public readonly key: string;
-
-	public readonly default: T;
-
-	public readonly state: T;
-
-	public readonly mutations: M;
-
-	constructor(key: string, defaultState: T, mutations?: M) {
-		this.key = key;
-		this.default = defaultState;
-		this.state = reactive(defaultState);
-		this.mutations = mutations;
-
-		// TODO: indexedDBにする
-		const data = localStorage.getItem(this.key);
-		if (data != null) {
-			const x = JSON.parse(data);
-			for (const [key, value] of Object.entries(this.default)) {
-				if (Object.prototype.hasOwnProperty.call(x, key)) {
-					this.state[key] = x[key];
-				} else {
-					this.state[key] = value;
-				}
-			}
-		}
-	}
-
-	set(key: keyof T, value: any): any {
-		this.state[key] = value;
-		localStorage.setItem(this.key, JSON.stringify(this.state));
-	}
-
-	commit(name: keyof M, arg: any) {
-		if (_DEV_) {
-			if (this.mutations[name] == null) {
-				console.error('UNRECOGNIZED MUTATION: ' + name);
-			}
-		}
-		this.mutations[name](this.state, arg);
-	}
-}
-
-export const hotDeviceStorage = new HotDeviceStorage('baseHotStorage', {
+export const hotDeviceStorage = new HotDeviceStorage('base', false, {
 	animation: true,
 	animatedMfm: true,
 	disableShowingAnimatedImages: false,
@@ -168,7 +122,7 @@ export const hotDeviceStorage = new HotDeviceStorage('baseHotStorage', {
 	showGapBetweenNotesInTimeline: true,
 });
 
-export const reactiveDeviceStorage = new ReactiveDeviceStorage('baseReactiveStorage', {
+export const reactiveDeviceStorage = new HotDeviceStorage('baseReactive', true, {
 	darkMode: false,
 });
 
