@@ -143,11 +143,9 @@ export default defineComponent({
 		disableAnimatedMfm: hotDeviceStorage.makeGetterSetter('animatedMfm', v => !v, v => !v),
 		useOsNativeEmojis: hotDeviceStorage.makeGetterSetter('useOsNativeEmojis'),
 		disableShowingAnimatedImages: hotDeviceStorage.makeGetterSetter('disableShowingAnimatedImages'),
-
-		imageNewTab: {
-			get() { return this.$store.state.device.imageNewTab; },
-			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
-		},
+		loadRawImages: hotDeviceStorage.makeGetterSetter('loadRawImages'),
+		imageNewTab: hotDeviceStorage.makeGetterSetter('imageNewTab'),
+		nsfw: hotDeviceStorage.makeGetterSetter('nsfw'),
 
 		disablePagesScript: {
 			get() { return this.$store.state.device.disablePagesScript; },
@@ -172,16 +170,6 @@ export default defineComponent({
 		instanceTicker: {
 			get() { return this.$store.state.device.instanceTicker; },
 			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
-		},
-
-		loadRawImages: {
-			get() { return this.$store.state.device.loadRawImages; },
-			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
-		},
-
-		nsfw: {
-			get() { return this.$store.state.device.nsfw; },
-			set(value) { this.$store.commit('device/set', { key: 'nsfw', value }); }
 		},
 
 		enableInfiniteScroll: {

@@ -156,8 +156,11 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 }
 
 export const hotDeviceStorage = new HotDeviceStorage('base', false, {
+	nsfw: 'respect' as 'respect' | 'force' | 'ignore',
 	animation: true,
 	animatedMfm: true,
+	loadRawImages: false,
+	imageNewTab: false,
 	disableShowingAnimatedImages: false,
 	useOsNativeEmojis: false,
 	showGapBetweenNotesInTimeline: true,

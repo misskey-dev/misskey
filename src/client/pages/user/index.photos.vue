@@ -51,7 +51,7 @@ export default defineComponent({
 		os.api('users/notes', {
 			userId: this.user.id,
 			fileType: image,
-			excludeNsfw: this.$store.state.device.nsfw !== 'ignore',
+			excludeNsfw: this.hotDeviceStorage.state.nsfw !== 'ignore',
 			limit: 9,
 		}).then(notes => {
 			for (const note of notes) {

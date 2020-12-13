@@ -50,13 +50,10 @@ export const defaultDeviceUserSettings = {
 
 export const defaultDeviceSettings = {
 	lang: null,
-	loadRawImages: false,
-	nsfw: 'respect', // respect, force, ignore
 	serverDisconnectedBehavior: 'quiet',
 	recentlyUsedEmojis: [],
 	recentlyUsedUsers: [],
 	deckMode: false,
-	imageNewTab: false,
 	chatOpenBehavior: 'page',
 	defaultSideView: false,
 	deckNavWindow: true,
