@@ -43,8 +43,8 @@ import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
-import { defaultSettings } from '@/store';
 import * as os from '@/os';
+import { defaultAccountSettings } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -67,7 +67,7 @@ export default defineComponent({
 					handler: this.preview
 				}
 			},
-			reactions: JSON.parse(JSON.stringify(this.$store.state.settings.reactions)),
+			reactions: JSON.parse(JSON.stringify(this.$accountSettings.reactions)),
 			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
@@ -129,7 +129,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			this.reactions = JSON.parse(JSON.stringify(defaultSettings.reactions));
+			this.reactions = JSON.parse(JSON.stringify(defaultAccountSettings.reactions));
 		},
 
 		chooseEmoji(ev) {

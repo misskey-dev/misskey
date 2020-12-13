@@ -28,9 +28,9 @@ export default defineComponent({
 	},
 
 	async created() {
-		if (this.$store.state.settings.uploadFolder) {
+		if (this.$accountSettings.uploadFolder) {
 			this.uploadFolder = await os.api('drive/folders/show', {
-				folderId: this.$store.state.settings.uploadFolder
+				folderId: this.$accountSettings.uploadFolder
 			});
 		}
 	},
@@ -40,9 +40,9 @@ export default defineComponent({
 			os.selectDriveFolder(false).then(async folder => {
 				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
 				os.success();
-				if (this.$store.state.settings.uploadFolder) {
+				if (this.$accountSettings.uploadFolder) {
 					this.uploadFolder = await os.api('drive/folders/show', {
-						folderId: this.$store.state.settings.uploadFolder
+						folderId: this.$accountSettings.uploadFolder
 					});
 				} else {
 					this.uploadFolder = null;

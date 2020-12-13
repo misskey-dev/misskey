@@ -91,8 +91,8 @@ export default defineComponent({
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
-					const name = this.$store.state.settings.pasteDialog
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$accountSettings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
+					const name = this.$accountSettings.pasteDialog
 						? await os.dialog({
 							title: this.$t('enterFileName'),
 							input: {
@@ -163,7 +163,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+			os.upload(file, this.$accountSettings.uploadFolder, name).then(res => {
 				this.file = res;
 			});
 		},

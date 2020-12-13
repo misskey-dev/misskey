@@ -125,7 +125,7 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.$store.state.settings.reactions,
+			pinned: this.$accountSettings.reactions,
 			width: this.asReactionPicker ? this.$store.state.device.reactionPickerWidth : 3,
 			height: this.asReactionPicker ? this.$store.state.device.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,

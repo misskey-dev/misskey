@@ -50,8 +50,8 @@ export default defineComponent({
 					const data = new FormData();
 					data.append('file', blob);
 					data.append('i', this.$i.token);
-					if (this.$store.state.settings.uploadFolder) {
-						data.append('folderId', this.$store.state.settings.uploadFolder);
+					if (this.$accountSettings.uploadFolder) {
+						data.append('folderId', this.$accountSettings.uploadFolder);
 					}
 
 					fetch(apiUrl + '/drive/files/create', {

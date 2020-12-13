@@ -51,9 +51,9 @@ export default defineComponent({
 			connection2: null,
 			pagination: null,
 			baseQuery: {
-				includeMyRenotes: this.$store.state.settings.showMyRenotes,
-				includeRenotedMyNotes: this.$store.state.settings.showRenotedMyNotes,
-				includeLocalRenotes: this.$store.state.settings.showLocalRenotes
+				includeMyRenotes: this.$accountSettings.showMyRenotes,
+				includeRenotedMyNotes: this.$accountSettings.showRenotedMyNotes,
+				includeLocalRenotes: this.$accountSettings.showLocalRenotes
 			},
 			query: {},
 		};

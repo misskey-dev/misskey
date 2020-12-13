@@ -42,9 +42,9 @@ export default defineComponent({
 	},
 
 	created() {
-		this.text = this.$store.state.settings.memo;
+		this.text = this.$accountSettings.memo;
 
-		this.$watch(() => this.$store.state.settings.memo, text => {
+		this.$watch(() => this.$accountSettings.memo, text => {
 			this.text = text;
 		});
 	},

@@ -19,7 +19,7 @@ import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { ColdDeviceStorage, hotDeviceStorage, reactiveDeviceStorage } from './storage';
-import { $i, isSignedIn, refreshAccount, setAccount } from './account';
+import { $i, accountSettings, isSignedIn, refreshAccount, setAccount } from './account';
 
 console.info(`Misskey v${version}`);
 
@@ -144,6 +144,7 @@ if (_DEV_) {
 
 app.config.globalProperties = {
 	$i,
+	$accountSettings: accountSettings,
 	isSignedIn,
 	hotDeviceStorage
 };

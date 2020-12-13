@@ -182,7 +182,7 @@ export default defineComponent({
 
 	computed: {
 		rs() {
-			return this.$store.state.settings.reactions;
+			return this.$accountSettings.reactions;
 		},
 		keymap(): any {
 			return {
@@ -282,7 +282,7 @@ export default defineComponent({
 			this.$emit('update:note', Object.freeze(result));
 		}
 
-		this.muted = await checkWordMute(this.appearNote, this.$i, this.$store.state.settings.mutedWords);
+		this.muted = await checkWordMute(this.appearNote, this.$i, this.$accountSettings.mutedWords);
 
 		if (this.detail) {
 			os.api('notes/children', {

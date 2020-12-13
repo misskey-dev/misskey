@@ -1,5 +1,6 @@
 import { reactive, ref } from 'vue';
 import { apiUrl } from './config';
+import { api } from './os';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -85,7 +86,17 @@ export const defaultAccountSettings = {
 
 const settings = localStorage.getItem('accountSettings');
 
+// TODO: エクスポートするものはreadonlyにする
 export const accountSettings = reactive(settings ? JSON.parse(settings) : defaultAccountSettings);
+
+export function updateAccountSetting(key, value) {
+	if (isSignedIn) {
+		api('i/update-client-setting', {
+			name: key,
+			value: value
+		});
+	}
+}
 
 export function setAccountSettings(data: Record<string, any>) {
 	for (const [key, value] of Object.entries(defaultAccountSettings)) {
@@ -94,5 +105,12 @@ export function setAccountSettings(data: Record<string, any>) {
 		} else {
 			accountSettings[key] = value;
 		}
+	}
+}
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$accountSettings: typeof accountSettings;
 	}
 }

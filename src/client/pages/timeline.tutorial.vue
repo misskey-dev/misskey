@@ -83,7 +83,7 @@ export default defineComponent({
 
 	computed: {
 		tutorial: {
-			get() { return this.$store.state.settings.tutorial || 0; },
+			get() { return this.$accountSettings.tutorial || 0; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'tutorial', value }); }
 		},
 	},

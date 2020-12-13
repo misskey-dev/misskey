@@ -2,21 +2,6 @@ import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
 import { api } from '@/os';
-import { erase } from '../prelude/array';
-
-export const defaultSettings = {
-	tutorial: 0,
-	keepCw: false,
-	showFullAcct: false,
-	rememberNoteVisibility: false,
-	defaultNoteVisibility: 'public',
-	defaultNoteLocalOnly: false,
-	uploadFolder: null,
-	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
-	memo: null,
-	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
-	mutedWords: [],
-};
 
 export const defaultDeviceUserSettings = {
 	visibility: 'public',
@@ -87,7 +72,7 @@ export const store = createStore({
 	strict: _DEV_,
 
 	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'settings', 'instance']
+		paths: ['i', 'device', 'deviceUser', 'instance']
 	})],
 
 	state: {
@@ -194,15 +179,6 @@ export const store = createStore({
 			state: defaultDeviceSettings,
 
 			mutations: {
-				overwrite(state, x) {
-					for (const k of Object.keys(state)) {
-						if (x[k] === undefined) delete state[k];
-					}
-					for (const k of Object.keys(x)) {
-						state[k] = x[k];
-					}
-				},
-
 				set(state, x: { key: string; value: any }) {
 					state[x.key] = x.value;
 				},
@@ -219,15 +195,6 @@ export const store = createStore({
 			state: defaultDeviceUserSettings,
 
 			mutations: {
-				overwrite(state, x) {
-					for (const k of Object.keys(state)) {
-						if (x[k] === undefined) delete state[k];
-					}
-					for (const k of Object.keys(x)) {
-						state[k] = x[k];
-					}
-				},
-
 				init(state, x) {
 					for (const [key, value] of Object.entries(defaultDeviceUserSettings)) {
 						if (Object.prototype.hasOwnProperty.call(x, key)) {
@@ -304,41 +271,6 @@ export const store = createStore({
 				},
 			}
 		},
-
-		settings: {
-			namespaced: true,
-
-			state: defaultSettings,
-
-			mutations: {
-				set(state, x: { key: string; value: any }) {
-					nestedProperty.set(state, x.key, x.value);
-				},
-
-				init(state, x) {
-					for (const [key, value] of Object.entries(defaultSettings)) {
-						if (Object.prototype.hasOwnProperty.call(x, key)) {
-							state[key] = x[key];
-						} else {
-							state[key] = value;
-						}
-					}
-				},
-			},
-
-			actions: {
-				set(ctx, x) {
-					ctx.commit('set', x);
-
-					if (ctx.rootGetters.isSignedIn) {
-						api('i/update-client-setting', {
-							name: x.key,
-							value: x.value
-						});
-					}
-				},
-			}
-		}
 	}
 });
 
