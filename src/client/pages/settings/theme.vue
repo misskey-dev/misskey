@@ -73,7 +73,7 @@ import { Theme, builtinThemes, applyTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage, reactiveDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -102,7 +102,6 @@ export default defineComponent({
 	},
 
 	computed: {
-		// TODO: ColdDeviceStorageは非リアクティブでcomputedが動作しないのでよしなにやる
 		themes(): Theme[] {
 			return builtinThemes.concat(this.installedThemes.value);
 		},
@@ -112,44 +111,29 @@ export default defineComponent({
 		lightThemes(): Theme[] {
 			return this.themes.filter(t => t.base == 'light' || t.kind == 'light');
 		},
-		
-		darkTheme: {
-			get() { return this.$store.state.device.darkTheme; },
-			set(value) { this.$store.commit('device/set', { key: 'darkTheme', value }); }
-		},
 
-		lightTheme: {
-			get() { return this.$store.state.device.lightTheme; },
-			set(value) { this.$store.commit('device/set', { key: 'lightTheme', value }); }
-		},
-
-		darkMode: {
-			get() { return this.$store.state.device.darkMode; },
-			set(value) { this.$store.commit('device/set', { key: 'darkMode', value }); }
-		},
-
-		syncDeviceDarkMode: {
-			get() { return this.$store.state.device.syncDeviceDarkMode; },
-			set(value) { this.$store.commit('device/set', { key: 'syncDeviceDarkMode', value }); }
-		},
+		darkTheme: ColdDeviceStorage.makeGetterSetter('darkTheme'),
+		lightTheme: ColdDeviceStorage.makeGetterSetter('lightTheme'),
+		darkMode: reactiveDeviceStorage.makeGetterSetter('darkMode'),
+		syncDeviceDarkMode: ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'),
 	},
 
 	watch: {
 		darkTheme() {
-			if (this.$store.state.device.darkMode) {
+			if (reactiveDeviceStorage.state.darkMode) {
 				applyTheme(this.themes.find(x => x.id === this.darkTheme));
 			}
 		},
 
 		lightTheme() {
-			if (!this.$store.state.device.darkMode) {
+			if (!reactiveDeviceStorage.state.darkMode) {
 				applyTheme(this.themes.find(x => x.id === this.lightTheme));
 			}
 		},
 
-		syncDeviceDarkMode() {
-			if (this.$store.state.device.syncDeviceDarkMode) {
-				this.$store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+		syncDeviceDarkMode(syncDeviceDarkMode) {
+			if (syncDeviceDarkMode) {
+				reactiveDeviceStorage.set('darkMode', isDeviceDarkmode());
 			}
 		},
 

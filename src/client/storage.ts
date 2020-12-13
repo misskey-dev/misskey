@@ -63,6 +63,23 @@ export class ColdDeviceStorage {
 		});
 		return r;
 	}
+
+	/**
+	 * 特定のキーの、簡易的なgetter/setterを作ります
+	 * 主にvue場で設定コントロールのmodelとして使う用
+	 */
+	public static makeGetterSetter<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
+		const valueRef = ColdDeviceStorage.ref(key);
+		return {
+			get: () => {
+				return valueRef.value;
+			},
+			set: (value: unknown) => {
+				const val = value;
+				ColdDeviceStorage.set(key, val);
+			}
+		};
+	}
 }
 
 /**
@@ -97,12 +114,12 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 		}
 	}
 
-	set(key: keyof T, value: any): any {
+	public set(key: keyof T, value: any): any {
 		this.state[key] = value;
 		localStorage.setItem(this.key, JSON.stringify(this.state));
 	}
 
-	commit(name: keyof M, arg: any) {
+	public commit(name: keyof M, arg: any) {
 		if (_DEV_) {
 			if (this.mutations[name] == null) {
 				console.error('UNRECOGNIZED MUTATION: ' + name);
@@ -116,7 +133,7 @@ export class HotDeviceStorage<T extends Record<string, any>, M extends Record<st
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
+	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
 		const valueRef = ref(this.state[key]);
 		return {
 			get: () => {
