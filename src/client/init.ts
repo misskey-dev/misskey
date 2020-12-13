@@ -18,9 +18,9 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
-import { ColdDeviceStorage, hotDeviceStorage, reactiveDeviceStorage } from './storage';
+import { ColdDeviceStorage } from './storage';
 import { $i, isSignedIn, refreshAccount, setAccount, updateAccount } from './account';
-import { accountSettings } from './account-storage';
+import { defaultStore } from './pizzax';
 
 console.info(`Misskey v${version}`);
 
@@ -145,9 +145,8 @@ if (_DEV_) {
 
 app.config.globalProperties = {
 	$i,
-	$accountSettings: accountSettings,
+	$pizzax: defaultStore,
 	isSignedIn,
-	hotDeviceStorage
 };
 
 if (_DEV_) {
@@ -176,7 +175,7 @@ window.addEventListener('storage', e => {
 	}
 }, false);
 
-watch(() => reactiveDeviceStorage.state.darkMode, (darkMode) => {
+watch(() => defaultStore.state.darkMode, (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));

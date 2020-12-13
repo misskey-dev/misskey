@@ -1,5 +1,5 @@
 <template>
-<transition :name="hotDeviceStorage.state.animation ? 'zoom' : ''" appear>
+<transition :name="$pizzax.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><Fa :icon="faExclamationTriangle"/> {{ $t('somethingHappened') }}</p>

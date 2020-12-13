@@ -96,7 +96,7 @@ import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
-import { hotDeviceStorage } from '@/storage';
+import { $pizzax } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -132,20 +132,20 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
 		},
 
-		reduceAnimation: hotDeviceStorage.makeGetterSetter('animation', v => !v, v => !v),
+		reduceAnimation: $pizzax.makeGetterSetter('animation', v => !v, v => !v),
 
 		useBlurEffectForModal: {
 			get() { return this.$store.state.device.useBlurEffectForModal; },
 			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
 		},
 
-		showGapBetweenNotesInTimeline: hotDeviceStorage.makeGetterSetter('showGapBetweenNotesInTimeline'),
-		disableAnimatedMfm: hotDeviceStorage.makeGetterSetter('animatedMfm', v => !v, v => !v),
-		useOsNativeEmojis: hotDeviceStorage.makeGetterSetter('useOsNativeEmojis'),
-		disableShowingAnimatedImages: hotDeviceStorage.makeGetterSetter('disableShowingAnimatedImages'),
-		loadRawImages: hotDeviceStorage.makeGetterSetter('loadRawImages'),
-		imageNewTab: hotDeviceStorage.makeGetterSetter('imageNewTab'),
-		nsfw: hotDeviceStorage.makeGetterSetter('nsfw'),
+		showGapBetweenNotesInTimeline: $pizzax.makeGetterSetter('showGapBetweenNotesInTimeline'),
+		disableAnimatedMfm: $pizzax.makeGetterSetter('animatedMfm', v => !v, v => !v),
+		useOsNativeEmojis: $pizzax.makeGetterSetter('useOsNativeEmojis'),
+		disableShowingAnimatedImages: $pizzax.makeGetterSetter('disableShowingAnimatedImages'),
+		loadRawImages: $pizzax.makeGetterSetter('loadRawImages'),
+		imageNewTab: $pizzax.makeGetterSetter('imageNewTab'),
+		nsfw: $pizzax.makeGetterSetter('nsfw'),
 
 		disablePagesScript: {
 			get() { return this.$store.state.device.disablePagesScript; },

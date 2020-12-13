@@ -50,7 +50,7 @@ export default defineComponent({
 				icon: faCode
 			},
 
-			settings: JSON5.stringify(this.$accountSettings, null, '\t'),
+			settings: JSON5.stringify(this.$pizzax, null, '\t'),
 			deviceSettings: JSON5.stringify(this.$store.state.device, null, '\t'),
 			deviceUserSettings: JSON5.stringify(this.$store.state.deviceUser, null, '\t'),
 		};

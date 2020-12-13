@@ -83,7 +83,7 @@ export default defineComponent({
 
 	computed: {
 		tutorial: {
-			get() { return this.$accountSettings.tutorial || 0; },
+			get() { return this.$pizzax.tutorial || 0; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'tutorial', value }); }
 		},
 	},

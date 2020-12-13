@@ -54,7 +54,7 @@ export default defineComponent({
 		},
 
 		useOsNativeEmojis(): boolean {
-			return this.hotDeviceStorage.state.useOsNativeEmojis && !this.isReaction;
+			return this.$pizzax.state.useOsNativeEmojis && !this.isReaction;
 		},
 
 		ce() {
@@ -72,7 +72,7 @@ export default defineComponent({
 					const customEmoji = this.ce.find(x => x.name === this.emoji.substr(1, this.emoji.length - 2));
 					if (customEmoji) {
 						this.customEmoji = customEmoji;
-						this.url = this.hotDeviceStorage.state.disableShowingAnimatedImages
+						this.url = this.$pizzax.state.disableShowingAnimatedImages
 							? getStaticImageUrl(customEmoji.url)
 							: customEmoji.url;
 					}

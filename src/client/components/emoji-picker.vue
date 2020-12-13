@@ -13,7 +13,7 @@
 						tabindex="0"
 					>
 						<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-						<img v-else :src="hotDeviceStorage.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img v-else :src="$pizzax.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 				<div v-if="searchResultUnicode.length > 0">
@@ -67,7 +67,7 @@
 						@click="chosen(emoji, $event)"
 						:key="emoji.name"
 					>
-						<img :src="hotDeviceStorage.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img :src="$pizzax.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 			</section>
@@ -125,7 +125,7 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.$accountSettings.reactions,
+			pinned: this.$pizzax.reactions,
 			width: this.asReactionPicker ? this.$store.state.device.reactionPickerWidth : 3,
 			height: this.asReactionPicker ? this.$store.state.device.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,

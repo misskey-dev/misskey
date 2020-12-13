@@ -37,7 +37,7 @@ export default defineComponent({
 			});
 		}
 
-		return h(this.hotDeviceStorage.state.animation ? TransitionGroup : 'div', this.hotDeviceStorage.state.animation ? {
+		return h(this.$pizzax.state.animation ? TransitionGroup : 'div', this.$pizzax.state.animation ? {
 			class: 'sqadhkmv _list_',
 			name: 'list',
 			tag: 'div',

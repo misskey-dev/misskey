@@ -25,7 +25,7 @@
 			</header>
 			<main ref="main">
 				<router-view v-slot="{ Component }">
-					<transition :name="hotDeviceStorage.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$pizzax.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<component :is="Component" :ref="changePage"/>
 					</transition>
 				</router-view>

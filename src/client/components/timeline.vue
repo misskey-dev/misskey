@@ -1,5 +1,5 @@
 <template>
-<XNotes :class="{ _noGap_: !hotDeviceStorage.state.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes :class="{ _noGap_: !$pizzax.state.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
 </template>
 
 <script lang="ts">
@@ -51,9 +51,9 @@ export default defineComponent({
 			connection2: null,
 			pagination: null,
 			baseQuery: {
-				includeMyRenotes: this.$accountSettings.showMyRenotes,
-				includeRenotedMyNotes: this.$accountSettings.showRenotedMyNotes,
-				includeLocalRenotes: this.$accountSettings.showLocalRenotes
+				includeMyRenotes: this.$pizzax.showMyRenotes,
+				includeRenotedMyNotes: this.$pizzax.showRenotedMyNotes,
+				includeLocalRenotes: this.$pizzax.showLocalRenotes
 			},
 			query: {},
 		};

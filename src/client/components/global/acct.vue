@@ -1,7 +1,7 @@
 <template>
 <span class="mk-acct" v-once>
 	<span class="name">@{{ user.username }}</span>
-	<span class="host" v-if="user.host || detail || $accountSettings.showFullAcct">@{{ user.host || host }}</span>
+	<span class="host" v-if="user.host || detail || $pizzax.showFullAcct">@{{ user.host || host }}</span>
 </span>
 </template>
 

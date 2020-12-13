@@ -1,5 +1,4 @@
 import { reactive } from 'vue';
-import { setAccountSettings } from './account-storage';
 import { apiUrl } from './config';
 
 // TODO: 他のタブと永続化されたstateを同期

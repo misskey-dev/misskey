@@ -74,7 +74,7 @@ export default defineComponent({
 		},
 
 		thumbnail(image: any): string {
-			return this.hotDeviceStorage.state.disableShowingAnimatedImages
+			return this.$pizzax.state.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;
 		},

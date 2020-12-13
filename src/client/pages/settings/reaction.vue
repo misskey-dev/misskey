@@ -67,7 +67,7 @@ export default defineComponent({
 					handler: this.preview
 				}
 			},
-			reactions: JSON.parse(JSON.stringify(this.$accountSettings.reactions)),
+			reactions: JSON.parse(JSON.stringify(this.$pizzax.reactions)),
 			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
