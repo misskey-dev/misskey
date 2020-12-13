@@ -3,7 +3,7 @@ import { dialog } from '@/os';
 import { store } from '@/store';
 
 export function pleaseLogin() {
-	if (store.getters.isSignedIn) return;
+	if (isSignedIn) return;
 
 	dialog({
 		title: i18n.global.t('signinRequired'),

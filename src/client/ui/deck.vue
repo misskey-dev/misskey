@@ -26,8 +26,8 @@
 
 	<button @click="addColumn" class="_button add"><Fa :icon="faPlus"/></button>
 
-	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
-	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
+	<button v-if="isSignedIn" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+	<button v-if="isSignedIn" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
 
 	<XCommon/>
 </div>
@@ -80,7 +80,7 @@ export default defineComponent({
 			return this.deck.layout;
 		},
 		navIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
+			if (!this.isSignedIn) return false;
 			for (const def in this.menuDef) {
 				if (this.menuDef[def].indicated) return true;
 			}

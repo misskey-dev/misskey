@@ -1,26 +1,22 @@
 import { reactive, ref } from 'vue';
-import { setAccountSettings } from './account-settings';
 import { apiUrl } from './config';
+
+type Account = {
+	id: string;
+	token: string;
+};
 
 const data = localStorage.getItem('account');
 
-export const i = ref(data ? JSON.parse(data) : null);
-
-if (i.value && i.value.token) {
-	fetch(i.value.token).then(data => {
-		for (const [key, value] of Object.entries(data)) {
-			i.value[key] = value;
-		}
-
-		setAccountSettings(data.clientData);
-	});
-}
+export const $i = data ? reactive(JSON.parse(data) as Account) : null;
+export const isSignedIn = $i != null;
 
 export function signout() {
-
+	// TODO
+	location.href = '/';
 }
 
-function fetch(token) {
+function fetchAccount(token) {
 	return new Promise((done, fail) => {
 		// Fetch user
 		fetch(`${apiUrl}/i`, {
@@ -43,4 +39,47 @@ function fetch(token) {
 		})
 		.catch(fail);
 	});
+}
+
+export function refreshAccount() {
+	fetchAccount($i.token).then(data => {
+		for (const [key, value] of Object.entries(data)) {
+			$i[key] = value;
+		}
+
+		setAccountSettings(data.clientData);
+	});
+}
+
+export async function setAccount(token) {
+	const me = await fetchAccount(token);
+	localStorage.setItem('account', JSON.stringify(me));
+}
+
+export const defaultAccountSettings = {
+	tutorial: 0,
+	keepCw: false,
+	showFullAcct: false,
+	rememberNoteVisibility: false,
+	defaultNoteVisibility: 'public',
+	defaultNoteLocalOnly: false,
+	uploadFolder: null,
+	pastedFileName: 'yyyy-MM-dd HH-mm-ss [{{number}}]',
+	memo: null,
+	reactions: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	mutedWords: [],
+};
+
+const settings = localStorage.getItem('accountSettings');
+
+export const accountSettings = reactive(settings ? JSON.parse(settings) : defaultAccountSettings);
+
+export function setAccountSettings(data: Record<string, any>) {
+	for (const [key, value] of Object.entries(defaultAccountSettings)) {
+		if (Object.prototype.hasOwnProperty.call(data, key)) {
+			accountSettings[key] = data[key];
+		} else {
+			accountSettings[key] = value;
+		}
+	}
 }

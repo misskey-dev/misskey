@@ -2,7 +2,7 @@
 <div v-if="clip" class="_section">
 	<div class="okzinsic _content _panel _vMargin">
 		<div class="description" v-if="clip.description">
-			<Mfm :text="clip.description" :is-note="false" :i="$store.state.i"/>
+			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 		</div>
 		<div class="user">
 			<MkAvatar :user="clip.user" class="avatar"/> <MkUserName :user="clip.user" :nowrap="false"/>
@@ -58,7 +58,7 @@ export default defineComponent({
 
 	computed: {
 		isOwned(): boolean {
-			return this.$store.getters.isSignedIn && this.clip && (this.$store.state.i.id === this.clip.userId);
+			return this.isSignedIn && this.clip && (this.$i.id === this.clip.userId);
 		}
 	},
 

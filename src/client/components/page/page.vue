@@ -35,7 +35,7 @@ export default defineComponent({
 	created() {
 		this.hpml = new Hpml(this.page, {
 			randomSeed: Math.random(),
-			visitor: this.$store.state.i,
+			visitor: this.$i,
 			url: url,
 			enableAiScript: !this.$store.state.device.disablePagesScript
 		});

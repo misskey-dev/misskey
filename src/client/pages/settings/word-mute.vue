@@ -86,7 +86,7 @@ export default defineComponent({
 
 	async created() {
 		this.softMutedWords = this.$store.state.settings.mutedWords.map(x => x.join(' ')).join('\n');
-		this.hardMutedWords = this.$store.state.i.mutedWords.map(x => x.join(' ')).join('\n');
+		this.hardMutedWords = this.$i.mutedWords.map(x => x.join(' ')).join('\n');
 
 		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
 	},

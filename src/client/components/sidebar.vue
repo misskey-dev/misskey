@@ -12,7 +12,7 @@
 		<nav class="nav" :class="{ iconOnly, hidden }" v-show="showing">
 			<div>
 				<button class="item _button account" @click="openAccountMenu">
-					<MkAvatar :user="$store.state.i" class="avatar"/><MkAcct class="text" :user="$store.state.i"/>
+					<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 				</button>
 				<MkA class="item index" active-class="active" to="/" exact>
 					<Fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
@@ -25,7 +25,7 @@
 					</component>
 				</template>
 				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu">
+				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
 					<Fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
 				</button>
 				<button class="item _button" @click="more">
@@ -133,7 +133,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const accounts = (await os.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
+			const accounts = (await os.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
 
 			const accountItems = accounts.map(account => ({
 				type: 'user',
@@ -144,8 +144,8 @@ export default defineComponent({
 			os.modalMenu([...[{
 				type: 'link',
 				text: this.$t('profile'),
-				to: `/@${ this.$store.state.i.username }`,
-				avatar: this.$store.state.i,
+				to: `/@${ this.$i.username }`,
+				avatar: this.$i,
 			}, null, ...accountItems, {
 				icon: faPlus,
 				text: this.$t('addAcount'),
@@ -169,7 +169,7 @@ export default defineComponent({
 				text: this.$t('dashboard'),
 				to: '/instance',
 				icon: faTachometerAlt,
-			}, null, this.$store.state.i.isAdmin ? {
+			}, null, this.$i.isAdmin ? {
 				type: 'link',
 				text: this.$t('settings'),
 				to: '/instance/settings',

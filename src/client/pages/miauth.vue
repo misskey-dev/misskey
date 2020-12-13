@@ -1,5 +1,5 @@
 <template>
-<div v-if="$store.getters.isSignedIn">
+<div v-if="isSignedIn">
 	<div class="waiting _section" v-if="state == 'waiting'">
 		<div class="_content">
 			<MkLoading/>

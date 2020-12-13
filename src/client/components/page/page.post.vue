@@ -49,7 +49,7 @@ export default defineComponent({
 				canvas.toBlob(blob => {
 					const data = new FormData();
 					data.append('file', blob);
-					data.append('i', this.$store.state.i.token);
+					data.append('i', this.$i.token);
 					if (this.$store.state.settings.uploadFolder) {
 						data.append('folderId', this.$store.state.settings.uploadFolder);
 					}

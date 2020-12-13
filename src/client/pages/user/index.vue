@@ -13,7 +13,7 @@
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<MkAcct :user="user" :detail="true" class="acct"/>
 				</div>
-				<div class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed"><span>{{ $t('followsYou') }}</span></div>
+				<div class="followed" v-if="isSignedIn && $i.id != user.id && user.isFollowed"><span>{{ $t('followsYou') }}</span></div>
 				<div class="status">
 					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
 						<b>{{ number(user.notesCount) }}</b>
@@ -29,7 +29,7 @@
 					</MkA>
 				</div>
 				<div class="description">
-					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
 					<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
 				</div>
 				<div class="fields system">
@@ -52,7 +52,7 @@
 							<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
 						</dt>
 						<dd class="value">
-							<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
+							<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
 						</dd>
 					</dl>
 				</div>
@@ -75,7 +75,7 @@
 					</MkA>
 					<div class="actions">
 						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
-						<MkFollowButton v-if="!$store.getters.isSignedIn || $store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
+						<MkFollowButton v-if="!isSignedIn || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 					</div>
 				</div>
 				<template v-if="page === 'index'">
@@ -115,10 +115,10 @@
 							<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
 						</div>
 					</div>
-					<span class="followed" v-if="$store.getters.isSignedIn && $store.state.i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
-					<div class="actions" v-if="$store.getters.isSignedIn">
+					<span class="followed" v-if="isSignedIn && $i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
+					<div class="actions" v-if="isSignedIn">
 						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
-						<MkFollowButton v-if="$store.state.i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
+						<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 					</div>
 				</div>
 				<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
@@ -133,7 +133,7 @@
 					</div>
 				</div>
 				<div class="description">
-					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+					<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i" :custom-emojis="user.emojis"/>
 					<p v-else class="empty">{{ $t('noAccountDescription') }}</p>
 				</div>
 				<div class="fields system">
@@ -156,7 +156,7 @@
 							<Mfm :text="field.name" :plain="true" :custom-emojis="user.emojis" :colored="false"/>
 						</dt>
 						<dd class="value">
-							<Mfm :text="field.value" :author="user" :i="$store.state.i" :custom-emojis="user.emojis" :colored="false"/>
+							<Mfm :text="field.value" :author="user" :i="$i" :custom-emojis="user.emojis" :colored="false"/>
 						</dd>
 					</dl>
 				</div>

@@ -1,8 +1,8 @@
 <template>
-<div class="" v-if="$store.getters.isSignedIn && fetching">
+<div class="" v-if="isSignedIn && fetching">
 	<MkLoading/>
 </div>
-<div v-else-if="$store.getters.isSignedIn">
+<div v-else-if="isSignedIn">
 	<XForm
 		class="form"
 		ref="form"
@@ -52,7 +52,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		if (!this.$store.getters.isSignedIn) return;
+		if (!this.isSignedIn) return;
 
 		// Fetch session
 		os.api('auth/session/show', {

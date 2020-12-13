@@ -51,7 +51,7 @@ export default defineComponent({
 			text: '',
 			flag: false,
 			radio: 'misskey',
-			mfm: `Hello world! This is an @example mention. BTW you are @${this.$store.state.i.username}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
+			mfm: `Hello world! This is an @example mention. BTW you are @${this.$i.username}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
 		}
 	},
 

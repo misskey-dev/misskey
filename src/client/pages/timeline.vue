@@ -59,7 +59,7 @@ export default defineComponent({
 					selected: computed(() => this.src === 'home')
 				}];
 
-				if (!this.$store.state.instance.meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
+				if (!this.$store.state.instance.meta.disableLocalTimeline || this.$i.isModerator || this.$i.isAdmin) {
 					tabs.push({
 						id: 'local',
 						title: null,
@@ -79,7 +79,7 @@ export default defineComponent({
 					});
 				}
 
-				if (!this.$store.state.instance.meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
+				if (!this.$store.state.instance.meta.disableGlobalTimeline || this.$i.isModerator || this.$i.isAdmin) {
 					tabs.push({
 						id: 'global',
 						title: null,
@@ -95,7 +95,7 @@ export default defineComponent({
 					title: null,
 					icon: faEllipsisH,
 					onClick: this.choose,
-					indicate: computed(() => this.$store.state.i.hasUnreadAntenna || this.$store.state.i.hasUnreadChannel)
+					indicate: computed(() => this.$i.hasUnreadAntenna || this.$i.hasUnreadChannel)
 				});
 
 				return {

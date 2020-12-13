@@ -77,10 +77,10 @@ export default defineComponent({
 	},
 
 	created() {
-		this.isLocked = this.$store.state.i.isLocked;
-		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
-		this.noCrawle = this.$store.state.i.noCrawle;
-		this.isExplorable = this.$store.state.i.isExplorable;
+		this.isLocked = this.$i.isLocked;
+		this.autoAcceptFollowed = this.$i.autoAcceptFollowed;
+		this.noCrawle = this.$i.noCrawle;
+		this.isExplorable = this.$i.isExplorable;
 	},
 
 	mounted() {

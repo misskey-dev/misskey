@@ -223,8 +223,8 @@ export default defineComponent({
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) continue;
-				if (this.$store.state.i.username == x.username && x.host == host) continue;
+				if (this.$i.username == x.username && x.host == null) continue;
+				if (this.$i.username == x.username && x.host == host) continue;
 
 				// 重複は除外
 				if (this.text.indexOf(`${mention} `) != -1) continue;
@@ -243,12 +243,12 @@ export default defineComponent({
 			this.visibility = this.reply.visibility;
 			if (this.reply.visibility === 'specified') {
 				os.api('users/show', {
-					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.reply.userId)
+					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$i.id && uid !== this.reply.userId)
 				}).then(users => {
 					this.visibleUsers.push(...users);
 				});
 
-				if (this.reply.userId !== this.$store.state.i.id) {
+				if (this.reply.userId !== this.$i.id) {
 					os.api('users/show', { userId: this.reply.userId }).then(user => {
 						this.visibleUsers.push(user);
 					});

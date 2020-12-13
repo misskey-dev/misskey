@@ -9,7 +9,7 @@ import { store, userActions } from '@/store';
 import { router } from '@/router';
 
 export function getUserMenu(user) {
-	const meId = store.getters.isSignedIn ? store.state.i.id : null;
+	const meId = isSignedIn ? $i.id : null;
 
 	async function pushList() {
 		const t = i18n.global.t('selectList'); // なぜか後で参照すると null になるので最初にメモリに確保しておく
@@ -146,7 +146,7 @@ export function getUserMenu(user) {
 		action: inviteGroup
 	} : undefined] as any;
 
-	if (store.getters.isSignedIn && meId != user.id) {
+	if (isSignedIn && meId != user.id) {
 		menu = menu.concat([null, {
 			icon: user.isMuted ? faEye : faEyeSlash,
 			text: user.isMuted ? i18n.global.t('unmute') : i18n.global.t('mute'),
@@ -163,7 +163,7 @@ export function getUserMenu(user) {
 			action: reportAbuse
 		}]);
 
-		if (store.getters.isSignedIn && (store.state.i.isAdmin || store.state.i.isModerator)) {
+		if (isSignedIn && ($i.isAdmin || $i.isModerator)) {
 			menu = menu.concat([null, {
 				icon: faMicrophoneSlash,
 				text: user.isSilenced ? i18n.global.t('unsilence') : i18n.global.t('silence'),
@@ -176,7 +176,7 @@ export function getUserMenu(user) {
 		}
 	}
 
-	if (store.getters.isSignedIn && meId === user.id) {
+	if (isSignedIn && meId === user.id) {
 		menu = menu.concat([null, {
 			icon: faPencilAlt,
 			text: i18n.global.t('editProfile'),

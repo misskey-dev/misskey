@@ -50,8 +50,8 @@ export default defineComponent({
 			return this.host === localHost ? `@${this.username}` : `@${this.username}@${toUnicode(this.host)}`;
 		},
 		isMe(): boolean {
-			return this.$store.getters.isSignedIn && (
-				`@${this.username}@${toUnicode(this.host)}` === `@${this.$store.state.i.username}@${toUnicode(localHost)}`.toLowerCase()
+			return this.isSignedIn && (
+				`@${this.username}@${toUnicode(this.host)}` === `@${this.$i.username}@${toUnicode(localHost)}`.toLowerCase()
 			);
 		}
 	},

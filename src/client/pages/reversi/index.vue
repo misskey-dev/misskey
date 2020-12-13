@@ -91,7 +91,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (this.$store.getters.isSignedIn) {
+		if (this.isSignedIn) {
 			this.connection = os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);

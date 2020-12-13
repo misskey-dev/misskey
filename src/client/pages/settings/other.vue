@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<FormSwitch :value="$store.state.i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
+	<FormSwitch :value="$i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
 		{{ $t('showFeaturedNotesInTimeline') }}
 	</FormSwitch>
 

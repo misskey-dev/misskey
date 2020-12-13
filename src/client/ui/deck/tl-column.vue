@@ -71,7 +71,7 @@ export default defineComponent({
 		if (this.column.tl == null) {
 			this.setType();
 		} else {
-			this.disabled = !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin && (
+			this.disabled = !this.$i.isModerator && !this.$i.isAdmin && (
 				this.$store.state.instance.meta.disableLocalTimeline && ['local', 'social'].includes(this.column.tl) ||
 				this.$store.state.instance.meta.disableGlobalTimeline && ['global'].includes(this.column.tl));
 		}

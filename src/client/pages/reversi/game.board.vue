@@ -126,14 +126,14 @@ export default defineComponent({
 
 	computed: {
 		iAmPlayer(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
-			return this.game.user1Id == this.$store.state.i.id || this.game.user2Id == this.$store.state.i.id;
+			if (!this.isSignedIn) return false;
+			return this.game.user1Id == this.$i.id || this.game.user2Id == this.$i.id;
 		},
 
 		myColor(): Color {
 			if (!this.iAmPlayer) return null;
-			if (this.game.user1Id == this.$store.state.i.id && this.game.black == 1) return true;
-			if (this.game.user2Id == this.$store.state.i.id && this.game.black == 2) return true;
+			if (this.game.user1Id == this.$i.id && this.game.black == 1) return true;
+			if (this.game.user2Id == this.$i.id && this.game.black == 2) return true;
 			return false;
 		},
 
@@ -234,7 +234,7 @@ export default defineComponent({
 		isMyTurn(): boolean {
 			if (!this.iAmPlayer) return false;
 			if (this.turnUser() == null) return false;
-			return this.turnUser().id == this.$store.state.i.id;
+			return this.turnUser().id == this.$i.id;
 		},
 
 		set(pos) {

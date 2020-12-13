@@ -19,6 +19,7 @@ import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { hotDeviceStorage } from './storage';
+import { $i, isSignedIn, refreshAccount, setAccount } from './account';
 
 console.info(`Misskey v${version}`);
 
@@ -82,48 +83,17 @@ html.setAttribute('lang', lang);
 //#endregion
 
 //#region Fetch user
-const signout = () => {
-	store.dispatch('logout');
-	location.href = '/';
-};
-
-// ユーザーをフェッチしてコールバックする
-const fetchme = (token) => new Promise((done, fail) => {
-	// Fetch user
-	fetch(`${apiUrl}/i`, {
-		method: 'POST',
-		body: JSON.stringify({
-			i: token
-		})
-	})
-	.then(res => {
-		// When failed to authenticate user
-		if (res.status !== 200 && res.status < 500) {
-			return signout();
-		}
-
-		// Parse response
-		res.json().then(i => {
-			i.token = token;
-			done(i);
-		});
-	})
-	.catch(fail);
-});
-
-// キャッシュがあったとき
-if (store.state.i != null) {
-	// TODO: i.token が null になるケースってどんな時だっけ？
-	if (store.state.i.token == null) {
-		signout();
+if ($i && $i.token) {
+	if (_DEV_) {
+		console.log('account cache found. refreshing...');
 	}
 
-	// 後から新鮮なデータをフェッチ
-	fetchme(store.state.i.token).then(freshData => {
-		store.dispatch('mergeMe', freshData);
-	});
+	refreshAccount();
 } else {
-	// Get token from localStorage
+	if (_DEV_) {
+		console.log('no account cache found.');
+	}
+
 	let i = localStorage.getItem('i');
 
 	// 連携ログインの場合用にCookieを参照する
@@ -132,15 +102,22 @@ if (store.state.i != null) {
 	}
 
 	if (i != null && i !== 'null') {
+		if (_DEV_) {
+			console.log('signing...');
+		}
+
 		try {
 			document.body.innerHTML = '<div>Please wait...</div>';
-			const me = await fetchme(i);
-			await store.dispatch('login', me);
+			await setAccount(i);
 			location.reload();
 		} catch (e) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)
 			document.body.innerHTML = '<div id="err">Oops!</div>';
+		}
+	} else {
+		if (_DEV_) {
+			console.log('not signed in');
 		}
 	}
 }
@@ -151,11 +128,11 @@ store.dispatch('instance/fetch').then(() => {
 	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
 });
 
-stream.init(store.state.i);
+stream.init($i);
 
 const app = createApp(await (
 	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!store.getters.isSignedIn         ? import('@/ui/visitor.vue') :
+	!isSignedIn         ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
 	import('@/ui/default.vue')
@@ -166,6 +143,8 @@ if (_DEV_) {
 }
 
 app.config.globalProperties = {
+	$i,
+	isSignedIn,
 	hotDeviceStorage
 };
 
@@ -251,7 +230,7 @@ for (const plugin of store.state.deviceUser.plugins.filter(p => p.active)) {
 	});
 }
 
-if (store.getters.isSignedIn) {
+if (isSignedIn) {
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {

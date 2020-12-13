@@ -66,7 +66,7 @@ export default defineComponent({
 			this.$emit('note');
 
 			if (this.sound) {
-				sound.play(note.userId === this.$store.state.i.id ? 'noteMy' : 'note');
+				sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
 			}
 		};
 

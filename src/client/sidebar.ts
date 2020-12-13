@@ -1,37 +1,37 @@
 import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faPaperclip, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
-import { store } from '@/store';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { $i, isSignedIn } from './account';
 
 export const sidebarDef = {
 	notifications: {
 		title: 'notifications',
 		icon: faBell,
-		show: computed(() => store.getters.isSignedIn),
-		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadNotification),
+		show: computed(() => isSignedIn),
+		indicated: computed(() => isSignedIn && $i.hasUnreadNotification),
 		to: '/my/notifications',
 	},
 	messaging: {
 		title: 'messaging',
 		icon: faComments,
-		show: computed(() => store.getters.isSignedIn),
-		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadMessagingMessage),
+		show: computed(() => isSignedIn),
+		indicated: computed(() => isSignedIn && $i.hasUnreadMessagingMessage),
 		to: '/my/messaging',
 	},
 	drive: {
 		title: 'drive',
 		icon: faCloud,
-		show: computed(() => store.getters.isSignedIn),
+		show: computed(() => isSignedIn),
 		to: '/my/drive',
 	},
 	followRequests: {
 		title: 'followRequests',
 		icon: faUserClock,
-		show: computed(() => store.getters.isSignedIn && store.state.i.isLocked),
-		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasPendingReceivedFollowRequest),
+		show: computed(() => isSignedIn && $i.isLocked),
+		indicated: computed(() => isSignedIn && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
 	featured: {
@@ -47,7 +47,7 @@ export const sidebarDef = {
 	announcements: {
 		title: 'announcements',
 		icon: faBroadcastTower,
-		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadAnnouncement),
+		indicated: computed(() => isSignedIn && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
 	search: {
@@ -58,39 +58,39 @@ export const sidebarDef = {
 	lists: {
 		title: 'lists',
 		icon: faListUl,
-		show: computed(() => store.getters.isSignedIn),
+		show: computed(() => isSignedIn),
 		to: '/my/lists',
 	},
 	groups: {
 		title: 'groups',
 		icon: faUsers,
-		show: computed(() => store.getters.isSignedIn),
+		show: computed(() => isSignedIn),
 		to: '/my/groups',
 	},
 	antennas: {
 		title: 'antennas',
 		icon: faSatellite,
-		show: computed(() => store.getters.isSignedIn),
+		show: computed(() => isSignedIn),
 		to: '/my/antennas',
 	},
 	mentions: {
 		title: 'mentions',
 		icon: faAt,
-		show: computed(() => store.getters.isSignedIn),
-		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadMentions),
+		show: computed(() => isSignedIn),
+		indicated: computed(() => isSignedIn && $i.hasUnreadMentions),
 		to: '/my/mentions',
 	},
 	messages: {
 		title: 'directNotes',
 		icon: faEnvelope,
-		show: computed(() => store.getters.isSignedIn),
-		indicated: computed(() => store.getters.isSignedIn && store.state.i.hasUnreadSpecifiedNotes),
+		show: computed(() => isSignedIn),
+		indicated: computed(() => isSignedIn && $i.hasUnreadSpecifiedNotes),
 		to: '/my/messages',
 	},
 	favorites: {
 		title: 'favorites',
 		icon: faStar,
-		show: computed(() => store.getters.isSignedIn),
+		show: computed(() => isSignedIn),
 		to: '/my/favorites',
 	},
 	pages: {
@@ -101,7 +101,7 @@ export const sidebarDef = {
 	clips: {
 		title: 'clip',
 		icon: faPaperclip,
-		show: computed(() => store.getters.isSignedIn),
+		show: computed(() => isSignedIn),
 		to: '/my/clips',
 	},
 	channels: {
@@ -122,8 +122,8 @@ export const sidebarDef = {
 	rooms: {
 		title: 'rooms',
 		icon: faDoorClosed,
-		show: computed(() => store.getters.isSignedIn),
-		to: computed(() => `/@${store.state.i.username}/room`),
+		show: computed(() => isSignedIn),
+		to: computed(() => `/@${$i.username}/room`),
 	},
 	ui: {
 		title: 'switchUi',

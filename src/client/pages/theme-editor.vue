@@ -128,7 +128,7 @@ export default defineComponent({
 			name: '',
 			description: '',
 			baseTheme: 'light' as 'dark' | 'light',
-			author: `@${this.$store.state.i.username}@${toUnicode(host)}`,
+			author: `@${this.$i.username}@${toUnicode(host)}`,
 			themeToImport: '',
 			changed: false,
 			lightTheme, darkTheme, themeProps,
