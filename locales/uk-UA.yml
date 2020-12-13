@@ -817,7 +817,12 @@ _exportOrImport:
   blockingList: "Заблокувати"
   userLists: "Списки"
 _charts:
+  federationInstancesTotal: "Загальна кількість федеративних інстансів"
+  usersTotal: "Загальна кількість користувачів"
   activeUsers: "Активні користувачі"
+  notesIncDec: "Загальна кількість нотаток"
+_instanceCharts:
+  notes: "Загальна кількість нотаток"
 _timelines:
   home: "Домівка"
   social: "Соціальна"
