@@ -211,7 +211,7 @@ export default defineComponent({
 	
 		save() {
 			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
-			const themes = this.$store.state.device.themes.concat(theme);
+			const themes = ColdDeviceStorage.get('themes').concat(theme);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});

@@ -100,18 +100,16 @@ export default defineComponent({
 	},
 
 	computed: {
+		// TODO: ColdDeviceStorageは非リアクティブでcomputedが動作しないのでよしなにやる
 		themes(): Theme[] {
-			return builtinThemes.concat(this.$store.state.device.themes);
+			return builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		},
-
 		installedThemes(): Theme[] {
-			return this.$store.state.device.themes;
+			return ColdDeviceStorage.get('themes');
 		},
-	
 		darkThemes(): Theme[] {
 			return this.themes.filter(t => t.base == 'dark' || t.kind == 'dark');
 		},
-
 		lightThemes(): Theme[] {
 			return this.themes.filter(t => t.base == 'light' || t.kind == 'light');
 		},

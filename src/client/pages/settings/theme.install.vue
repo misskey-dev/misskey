@@ -73,7 +73,7 @@ export default defineComponent({
 				});
 				return false;
 			}
-			if (this.$store.state.device.themes.some(t => t.id === theme.id)) {
+			if (ColdDeviceStorage.get('themes').some(t => t.id === theme.id)) {
 				os.dialog({
 					type: 'info',
 					text: this.$t('_theme.alreadyInstalled')
@@ -92,7 +92,7 @@ export default defineComponent({
 		install(code) {
 			const theme = this.parseThemeCode(code);
 			if (!theme) return;
-			const themes = this.$store.state.device.themes.concat(theme);
+			const themes = ColdDeviceStorage.get('themes').concat(theme);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});

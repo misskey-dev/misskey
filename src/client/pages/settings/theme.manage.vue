@@ -34,6 +34,7 @@ import FormButton from '@/components/form/button.vue';
 import { Theme, builtinThemes } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -61,12 +62,12 @@ export default defineComponent({
 	},
 
 	computed: {
+		// TODO: ColdDeviceStorageは非リアクティブでcomputedが動作しないのでよしなにやる
 		themes(): Theme[] {
-			return builtinThemes.concat(this.$store.state.device.themes);
+			return builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		},
-
 		installedThemes(): Theme[] {
-			return this.$store.state.device.themes;
+			return ColdDeviceStorage.get('themes');
 		},
 	
 		selectedTheme() {
@@ -92,7 +93,7 @@ export default defineComponent({
 
 		uninstall() {
 			const theme = this.selectedTheme;
-			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
+			const themes = ColdDeviceStorage.get('themes').filter(t => t.id != theme.id);
 			this.$store.commit('device/set', {
 				key: 'themes', value: themes
 			});
