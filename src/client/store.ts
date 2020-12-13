@@ -53,9 +53,6 @@ export const defaultDeviceSettings = {
 	instanceTicker: 'remote', // none, remote, always
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
-	deckColumnAlign: 'left',
-	deckAlwaysShowMainColumn: true,
-	deckMainColumnPlace: 'left',
 };
 
 function copy<T>(data: T): T {

@@ -3,6 +3,9 @@ import { HotDeviceStorage } from './storage';
 export const reactiveDeckStorage = new HotDeviceStorage('deck', true, {
 	columns: [],
 	layout: [],
+	columnAlign: 'left',
+	alwaysShowMainColumn: true,
+	mainColumnPlace: 'left',
 }, {
 	addColumn: (state, column) => {
 		if (column.name == undefined) column.name = null;
