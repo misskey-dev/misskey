@@ -808,7 +808,12 @@ _poll:
   showResult: "Переглянути результати"
   voted: "Проголосовано"
   closed: "Завершено"
+  remainingDays: "Залишилось {d} днів {h} годин"
+  remainingHours: "Залишилось {h} годин {m} хвилин"
+  remainingMinutes: "Залишилось {m} хвилин {s} секунд"
+  remainingSeconds: "Залишилось {s} секунд"
 _visibility:
+  public: "Публічний"
   home: "Домівка"
   followers: "Підписники"
   localOnly: "Лише локально"
