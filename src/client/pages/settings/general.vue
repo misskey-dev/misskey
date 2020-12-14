@@ -139,11 +139,7 @@ export default defineComponent({
 		nsfw: defaultStore.makeGetterSetter('nsfw'),
 		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
 		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
-
-		defaultSideView: {
-			get() { return this.$store.state.device.defaultSideView; },
-			set(value) { this.$store.commit('device/set', { key: 'defaultSideView', value }); }
-		},
+		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
 
 		chatOpenBehavior: {
 			get() { return this.$store.state.device.chatOpenBehavior; },

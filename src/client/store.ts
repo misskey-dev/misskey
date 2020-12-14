@@ -36,7 +36,6 @@ export const defaultDeviceUserSettings = {
 export const defaultDeviceSettings = {
 	lang: null,
 	chatOpenBehavior: 'page',
-	defaultSideView: false,
 	deckNavWindow: true,
 	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',

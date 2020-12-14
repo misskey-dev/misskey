@@ -260,6 +260,10 @@ export const defaultStore = new Storage('base', {
 		where: 'device',
 		default: [] as string[]
 	},
+	defaultSideView: {
+		where: 'device',
+		default: false
+	},
 });
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
