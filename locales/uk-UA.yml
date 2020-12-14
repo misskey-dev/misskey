@@ -795,6 +795,7 @@ _cw:
   files: "{count} файлів"
 _poll:
   noOnlyOneChoice: "Потрібні принаймні два варіанти."
+  noMore: "Більше варіантів додати не можна"
   deadlineTime: "г"
 _visibility:
   home: "Домівка"
