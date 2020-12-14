@@ -51,9 +51,9 @@ export default defineComponent({
 			connection2: null,
 			pagination: null,
 			baseQuery: {
-				includeMyRenotes: this.$pizzax.showMyRenotes,
-				includeRenotedMyNotes: this.$pizzax.showRenotedMyNotes,
-				includeLocalRenotes: this.$pizzax.showLocalRenotes
+				includeMyRenotes: this.$pizzax.state.showMyRenotes,
+				includeRenotedMyNotes: this.$pizzax.state.showRenotedMyNotes,
+				includeLocalRenotes: this.$pizzax.state.showLocalRenotes
 			},
 			query: {},
 		};

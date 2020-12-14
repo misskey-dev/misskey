@@ -96,7 +96,7 @@ import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
-import { $pizzax } from '@/storage';
+import { defaultStore } from '@/pizzax';
 
 export default defineComponent({
 	components: {
@@ -127,18 +127,18 @@ export default defineComponent({
 	},
 
 	computed: {
-		serverDisconnectedBehavior: $pizzax.makeGetterSetter('serverDisconnectedBehavior'),
-		reduceAnimation: $pizzax.makeGetterSetter('animation', v => !v, v => !v),
-		useBlurEffectForModal: $pizzax.makeGetterSetter('useBlurEffectForModal'),
-		showGapBetweenNotesInTimeline: $pizzax.makeGetterSetter('showGapBetweenNotesInTimeline'),
-		disableAnimatedMfm: $pizzax.makeGetterSetter('animatedMfm', v => !v, v => !v),
-		useOsNativeEmojis: $pizzax.makeGetterSetter('useOsNativeEmojis'),
-		disableShowingAnimatedImages: $pizzax.makeGetterSetter('disableShowingAnimatedImages'),
-		loadRawImages: $pizzax.makeGetterSetter('loadRawImages'),
-		imageNewTab: $pizzax.makeGetterSetter('imageNewTab'),
-		nsfw: $pizzax.makeGetterSetter('nsfw'),
-		disablePagesScript: $pizzax.makeGetterSetter('disablePagesScript'),
-		showFixedPostForm: $pizzax.makeGetterSetter('showFixedPostForm'),
+		serverDisconnectedBehavior: defaultStore.makeGetterSetter('serverDisconnectedBehavior'),
+		reduceAnimation: defaultStore.makeGetterSetter('animation', v => !v, v => !v),
+		useBlurEffectForModal: defaultStore.makeGetterSetter('useBlurEffectForModal'),
+		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
+		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
+		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
+		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
+		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
+		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
+		nsfw: defaultStore.makeGetterSetter('nsfw'),
+		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
+		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
 
 		defaultSideView: {
 			get() { return this.$store.state.device.defaultSideView; },
@@ -150,12 +150,8 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'chatOpenBehavior', value }); }
 		},
 
-		instanceTicker: {
-			get() { return this.$store.state.device.instanceTicker; },
-			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
-		},
-
-		enableInfiniteScroll: $pizzax.makeGetterSetter('enableInfiniteScroll'),
+		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
+		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 	},
 
 	watch: {

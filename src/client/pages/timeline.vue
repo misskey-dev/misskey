@@ -3,7 +3,7 @@
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 
 	<div class="_section">
-		<XTutorial v-if="$pizzax.tutorial != -1" class="tutorial _content _vMargin"/>
+		<XTutorial v-if="$pizzax.state.tutorial != -1" class="tutorial _content _vMargin"/>
 		<XPostForm v-if="$pizzax.state.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
 		<XTimeline ref="tl"
 			class="_content _vMargin"

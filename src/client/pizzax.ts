@@ -1,4 +1,4 @@
-import { customRef, Ref, ref } from 'vue';
+import { customRef, onUnmounted, Ref, ref } from 'vue';
 import { $i, isSignedIn } from './account';
 import { api } from './os';
 
@@ -16,7 +16,6 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 	public readonly def: T;
 
 	public readonly state: { [U in keyof T]: T[U]['default'] };
-	public readonly reactiveState: { [U in keyof T]: Ref<T[U]['default']> };
 
 	public readonly mutations: M;
 
@@ -118,6 +117,10 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 				callback: () => {
 					trigger();
 				}
+			});
+
+			onUnmounted(() => {
+				// TODO
 			});
 
 			return {
@@ -236,6 +239,26 @@ export const defaultStore = new Storage('base', {
 	darkMode: {
 		where: 'device',
 		default: false
+	},
+	instanceTicker: {
+		where: 'device',
+		default: 'remote' as 'none' | 'remote' | 'always'
+	},
+	reactionPickerWidth: {
+		where: 'device',
+		default: 1
+	},
+	reactionPickerHeight: {
+		where: 'device',
+		default: 1
+	},
+	recentlyUsedEmojis: {
+		where: 'device',
+		default: [] as string[]
+	},
+	recentlyUsedUsers: {
+		where: 'device',
+		default: [] as string[]
 	},
 });
 

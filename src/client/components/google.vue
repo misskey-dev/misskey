@@ -23,7 +23,7 @@ export default defineComponent({
 	},
 	methods: {
 		search() {
-			const engine = this.$pizzax.webSearchEngine ||
+			const engine = this.$pizzax.state.webSearchEngine ||
 				'https://www.google.com/search?q={{query}}';
 			const url = engine.replace('{{query}}', this.query)
 			window.open(url, '_blank');

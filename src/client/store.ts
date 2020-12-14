@@ -35,16 +35,10 @@ export const defaultDeviceUserSettings = {
 
 export const defaultDeviceSettings = {
 	lang: null,
-	recentlyUsedEmojis: [],
-	recentlyUsedUsers: [],
 	chatOpenBehavior: 'page',
 	defaultSideView: false,
 	deckNavWindow: true,
-	useFullReactionPicker: false,
-	reactionPickerWidth: 1,
-	reactionPickerHeight: 1,
 	sidebarDisplay: 'full', // full, icon, hide
-	instanceTicker: 'remote', // none, remote, always
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 };

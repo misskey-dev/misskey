@@ -144,7 +144,7 @@ export default defineComponent({
 
 	methods: {
 		iconLoaded() {
-			const emojis = this.$pizzax.reactions;
+			const emojis = this.$pizzax.state.reactions;
 			const containerWidth = this.$refs.about.offsetWidth;
 			for (let i = 0; i < 32; i++) {
 				this.easterEggEmojis.push({

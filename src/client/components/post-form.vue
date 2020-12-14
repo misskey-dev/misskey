@@ -135,8 +135,8 @@ export default defineComponent({
 			poll: null,
 			useCw: false,
 			cw: null,
-			localOnly: this.$pizzax.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$pizzax.defaultNoteLocalOnly,
-			visibility: this.$pizzax.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$pizzax.defaultNoteVisibility,
+			localOnly: this.$pizzax.state.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$pizzax.state.defaultNoteLocalOnly,
+			visibility: this.$pizzax.state.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$pizzax.state.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -376,7 +376,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$pizzax.uploadFolder, name).then(res => {
+			os.upload(file, this.$pizzax.state.uploadFolder, name).then(res => {
 				this.files.push(res);
 			});
 		},
@@ -399,13 +399,13 @@ export default defineComponent({
 			}, {
 				changeVisibility: visibility => {
 					this.visibility = visibility;
-					if (this.$pizzax.rememberNoteVisibility) {
+					if (this.$pizzax.state.rememberNoteVisibility) {
 						this.$store.commit('deviceUser/setVisibility', visibility);
 					}
 				},
 				changeLocalOnly: localOnly => {
 					this.localOnly = localOnly;
-					if (this.$pizzax.rememberNoteVisibility) {
+					if (this.$pizzax.state.rememberNoteVisibility) {
 						this.$store.commit('deviceUser/setLocalOnly', localOnly);
 					}
 				}
@@ -440,7 +440,7 @@ export default defineComponent({
 					const file = item.getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$pizzax.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$pizzax.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 					this.upload(file, formatted);
 				}
 			}

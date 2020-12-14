@@ -182,7 +182,7 @@ export default defineComponent({
 
 	computed: {
 		rs() {
-			return this.$pizzax.reactions;
+			return this.$pizzax.state.reactions;
 		},
 		keymap(): any {
 			return {
@@ -262,8 +262,8 @@ export default defineComponent({
 		},
 
 		showTicker() {
-			if (this.$store.state.device.instanceTicker === 'always') return true;
-			if (this.$store.state.device.instanceTicker === 'remote' && this.appearNote.user.instance) return true;
+			if (this.$pizzax.state.instanceTicker === 'always') return true;
+			if (this.$pizzax.state.instanceTicker === 'remote' && this.appearNote.user.instance) return true;
 			return false;
 		}
 	},
@@ -282,7 +282,7 @@ export default defineComponent({
 			this.$emit('update:note', Object.freeze(result));
 		}
 
-		this.muted = await checkWordMute(this.appearNote, this.$i, this.$pizzax.mutedWords);
+		this.muted = await checkWordMute(this.appearNote, this.$i, this.$pizzax.state.mutedWords);
 
 		if (this.detail) {
 			os.api('notes/children', {

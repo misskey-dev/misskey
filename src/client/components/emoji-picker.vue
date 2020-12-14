@@ -45,7 +45,7 @@
 				<section>
 					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $t('recentUsed') }}</header>
 					<div>
-						<button v-for="emoji in $store.state.device.recentlyUsedEmojis"
+						<button v-for="emoji in $pizzax.state.recentlyUsedEmojis"
 							class="_button"
 							@click="chosen(emoji, $event)"
 							:key="emoji"
@@ -125,9 +125,9 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.$pizzax.reactions,
-			width: this.asReactionPicker ? this.$store.state.device.reactionPickerWidth : 3,
-			height: this.asReactionPicker ? this.$store.state.device.reactionPickerHeight : 2,
+			pinned: this.$pizzax.state.reactions,
+			width: this.asReactionPicker ? this.$pizzax.state.reactionPickerWidth : 3,
+			height: this.asReactionPicker ? this.$pizzax.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
 			customEmojis: this.$store.state.instance.meta.emojis,
@@ -346,10 +346,10 @@ export default defineComponent({
 
 			// 最近使った絵文字更新
 			if (!this.pinned.includes(key)) {
-				let recents = this.$store.state.device.recentlyUsedEmojis;
+				let recents = this.$pizzax.state.recentlyUsedEmojis;
 				recents = recents.filter((e: any) => e !== key);
 				recents.unshift(key);
-				this.$store.commit('device/set', { key: 'recentlyUsedEmojis', value: recents.splice(0, 16) });
+				this.$pizzax.set('recentlyUsedEmojis', recents.splice(0, 16));
 			}
 		},
 

@@ -91,8 +91,8 @@ export default defineComponent({
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$pizzax.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
-					const name = this.$pizzax.pasteDialog
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$pizzax.state.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
+					const name = this.$pizzax.state.pasteDialog
 						? await os.dialog({
 							title: this.$t('enterFileName'),
 							input: {
@@ -163,7 +163,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$pizzax.uploadFolder, name).then(res => {
+			os.upload(file, this.$pizzax.state.uploadFolder, name).then(res => {
 				this.file = res;
 			});
 		},

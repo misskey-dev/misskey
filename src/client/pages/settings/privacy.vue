@@ -61,17 +61,17 @@ export default defineComponent({
 
 	computed: {
 		defaultNoteVisibility: {
-			get() { return this.$pizzax.defaultNoteVisibility; },
+			get() { return this.$pizzax.state.defaultNoteVisibility; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
 		},
 
 		defaultNoteLocalOnly: {
-			get() { return this.$pizzax.defaultNoteLocalOnly; },
+			get() { return this.$pizzax.state.defaultNoteLocalOnly; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteLocalOnly', value }); }
 		},
 
 		rememberNoteVisibility: {
-			get() { return this.$pizzax.rememberNoteVisibility; },
+			get() { return this.$pizzax.state.rememberNoteVisibility; },
 			set(value) { this.$store.dispatch('settings/set', { key: 'rememberNoteVisibility', value }); }
 		},
 	},
