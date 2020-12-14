@@ -238,7 +238,7 @@ export default defineComponent({
 			preview_hashtag: '#test',
 			preview_url: `https://example.com`,
 			preview_link: `[${this.$t('_mfm.dummy')}](https://example.com)`,
-			preview_emoji: `:${this.$store.state.instance.meta.emojis[0].name}:`,
+			preview_emoji: `:${this.$instance.emojis[0].name}:`,
 			preview_bold: `**${this.$t('_mfm.dummy')}**`,
 			preview_small: `<small>${this.$t('_mfm.dummy')}</small>`,
 			preview_center: `<center>${this.$t('_mfm.dummy')}</center>`,

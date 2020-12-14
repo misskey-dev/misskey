@@ -60,7 +60,7 @@ export default defineComponent({
 		ce() {
 			let ce = [];
 			if (this.customEmojis) ce = ce.concat(this.customEmojis);
-			if (this.$store.state.instance.meta && this.$store.state.instance.meta.emojis) ce = ce.concat(this.$store.state.instance.meta.emojis);
+			if (this.$instance && this.$instance.emojis) ce = ce.concat(this.$instance.emojis);
 			return ce;
 		}
 	},

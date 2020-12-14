@@ -21,6 +21,7 @@ import * as sound from './scripts/sound';
 import { ColdDeviceStorage } from './storage';
 import { $i, isSignedIn, refreshAccount, setAccount, updateAccount } from './account';
 import { defaultStore } from './pizzax';
+import { fetchInstance, instance } from './instance';
 
 console.info(`Misskey v${version}`);
 
@@ -124,7 +125,7 @@ if ($i && $i.token) {
 }
 //#endregion
 
-store.dispatch('instance/fetch').then(() => {
+fetchInstance().then(() => {
 	// Init service worker
 	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
 });
@@ -146,6 +147,7 @@ if (_DEV_) {
 app.config.globalProperties = {
 	$i,
 	$pizzax: defaultStore,
+	$instance: instance,
 	isSignedIn,
 };
 

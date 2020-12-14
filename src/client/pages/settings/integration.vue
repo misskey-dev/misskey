@@ -61,7 +61,7 @@ export default defineComponent({
 		},
 		
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 	},
 

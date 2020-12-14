@@ -198,7 +198,7 @@ export default defineComponent({
 		},
 
 		max(): number {
-			return this.$store.state.instance.meta ? this.$store.state.instance.meta.maxNoteTextLength : 1000;
+			return this.$instance ? this.$instance.maxNoteTextLength : 1000;
 		}
 	},
 

@@ -7,7 +7,7 @@
 				<img src="/assets/icons/512.png" alt="" class="icon" ref="icon" @load="iconLoaded" draggable="false"/>
 				<div class="misskey">Misskey</div>
 				<div class="version">v{{ version }}</div>
-				<span class="emoji" v-for="emoji in easterEggEmojis" :key="emoji.id" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$store.state.instance.meta.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
+				<span class="emoji" v-for="emoji in easterEggEmojis" :key="emoji.id" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
 			</div>
 		</section>
 		<section class="_formItem" style="text-align: center; padding: 0 16px;" @click="gravity">

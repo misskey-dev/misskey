@@ -1,7 +1,6 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import * as nestedProperty from 'nested-property';
-import { api } from '@/os';
 
 export const defaultDeviceUserSettings = {
 	visibility: 'public',
@@ -112,40 +111,6 @@ export const store = createStore({
 	},
 
 	modules: {
-		instance: {
-			namespaced: true,
-
-			state: {
-				meta: null
-			},
-
-			getters: {
-				emojiCategories: state => {
-					const categories = new Set();
-					for (const emoji of state.meta.emojis) {
-						categories.add(emoji.category);
-					}
-					return Array.from(categories);
-				},
-			},
-
-			mutations: {
-				set(state, meta) {
-					state.meta = meta;
-				},
-			},
-
-			actions: {
-				async fetch(ctx) {
-					const meta = await api('meta', {
-						detail: false
-					});
-
-					ctx.commit('set', meta);
-				}
-			}
-		},
-
 		device: {
 			namespaced: true,
 

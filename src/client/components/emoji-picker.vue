@@ -130,7 +130,7 @@ export default defineComponent({
 			height: this.asReactionPicker ? this.$pizzax.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
 			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
-			customEmojis: this.$store.state.instance.meta.emojis,
+			customEmojis: this.$instance.emojis,
 			visibleCategories: {},
 			q: null,
 			searchResultCustom: [],

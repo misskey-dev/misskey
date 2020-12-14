@@ -145,7 +145,7 @@ export default defineComponent({
 		this.setPosition();
 
 		//#region Construct Emoji DB
-		const customEmojis = this.$store.state.instance.meta.emojis;
+		const customEmojis = this.$instance.emojis;
 		const emojiDefinitions: EmojiDef[] = [];
 
 		for (const x of customEmojis) {

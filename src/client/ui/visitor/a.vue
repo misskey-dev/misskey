@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app">
-	<div class="banner" v-if="$route.path === '/'" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+	<div class="banner" v-if="$route.path === '/'" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div class="about" v-if="meta">
@@ -12,7 +12,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="banner-mini" v-else :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+	<div class="banner-mini" v-else :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
