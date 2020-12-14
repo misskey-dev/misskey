@@ -92,6 +92,10 @@ export const meta = {
 			}
 		},
 
+		isExplorable: {
+			validator: $.optional.bool,
+		},
+
 		carefulBot: {
 			validator: $.optional.bool,
 			desc: {
@@ -208,6 +212,7 @@ export default define(meta, async (ps, user, token) => {
 	}
 	if (ps.mutingNotificationTypes !== undefined) profileUpdates.mutingNotificationTypes = ps.mutingNotificationTypes as typeof notificationTypes[number][];
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;

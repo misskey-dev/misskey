@@ -70,6 +70,7 @@ export async function renderPerson(user: ILocalUser) {
 		image: banner ? renderImage(banner) : null,
 		tag,
 		manuallyApprovesFollowers: user.isLocked,
+		discoverable: !!user.isExplorable,
 		publicKey: renderKey(user, keypair, `#main-key`),
 		isCat: user.isCat,
 		attachment: attachment.length ? attachment : undefined

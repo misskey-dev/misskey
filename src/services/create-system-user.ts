@@ -34,6 +34,7 @@ export async function createSystemUser(username: string) {
 			token: secret,
 			isAdmin: false,
 			isLocked: true,
+			isExplorable: false,
 			isBot: true,
 		}));
 

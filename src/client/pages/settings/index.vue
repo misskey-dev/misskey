@@ -149,6 +149,7 @@ export default defineComponent({
 
 		> .main {
 			flex: 1;
+			min-width: 0;
 			--baseContentWidth: 100%;
 
 			::v-deep(._section) {

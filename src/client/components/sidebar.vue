@@ -294,7 +294,7 @@ export default defineComponent({
 .mvcprjjd {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
+	$nav-icon-only-width: 86px;
 
 	> .nav-back {
 		z-index: 1001;
@@ -382,7 +382,6 @@ export default defineComponent({
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);
-			border-right: solid 1px var(--divider);
 
 			> .divider {
 				margin: 16px 0;

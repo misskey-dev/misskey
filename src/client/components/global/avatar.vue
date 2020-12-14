@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
-import { acct, userPage } from '../filters/user';
+import { acct, userPage } from '@/filters/user';
 
 export default defineComponent({
 	props: {
