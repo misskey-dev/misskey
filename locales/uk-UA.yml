@@ -797,6 +797,8 @@ _poll:
   noOnlyOneChoice: "Потрібні принаймні два варіанти."
   noMore: "Більше варіантів додати не можна"
   canMultipleVote: "Можна вибрати кілька варіантів"
+  expiration: "Опитування закінчується"
+  infinite: "Ніколи"
   deadlineTime: "г"
 _visibility:
   home: "Домівка"
