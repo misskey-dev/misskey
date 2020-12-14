@@ -175,7 +175,7 @@ window.addEventListener('storage', e => {
 	}
 }, false);
 
-watch(() => defaultStore.state.darkMode, (darkMode) => {
+watch(() => defaultStore.ref('darkMode'), (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));

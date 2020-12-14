@@ -20,6 +20,8 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 
 	public readonly mutations: M;
 
+	private watchers: { key: keyof T, callback: Function }[] = [];
+
 	constructor(key: string, def: T, mutations?: M) {
 		this.key = 'pizzax::' + key;
 		this.def = def;
@@ -47,6 +49,9 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 
 	public set(key: keyof T, value: any): any {
 		this.state[key] = value;
+		for (const watcher of this.watchers) {
+			if (watcher.key === key) watcher.callback(value);
+		}
 
 		switch (this.def[key].where) {
 			case 'device': {
@@ -107,6 +112,14 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 
 	public ref<K extends keyof T>(key: K) {
 		return customRef((track, trigger) => {
+			// TODO: pushしたままだとメモリリークするので何らかの方法で参照が無くなったことを検知し削除する
+			this.watchers.push({
+				key,
+				callback: () => {
+					trigger();
+				}
+			});
+
 			return {
 				get: () => {
 					track();
@@ -117,7 +130,7 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 						console.error(`DO NOT MUTATE ${key} DIRECTLY. USE set METHOD.`);
 					}
 				}
-			}
+			};
 		});
 	}
 }
@@ -225,8 +238,6 @@ export const defaultStore = new Storage('base', {
 		default: false
 	},
 });
-
-defaultStore.state.
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
 declare module '@vue/runtime-core' {

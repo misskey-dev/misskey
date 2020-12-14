@@ -71,8 +71,9 @@ import FormButton from '@/components/form/button.vue';
 import { builtinThemes, applyTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage, reactiveDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/storage';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/pizzax';
 
 export default defineComponent({
 	components: {
@@ -98,25 +99,25 @@ export default defineComponent({
 		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
 		const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 		const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
-		const darkMode = computed(reactiveDeviceStorage.makeGetterSetter('darkMode'));
+		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 		const wallpaper = ref(localStorage.getItem('wallpaper'));
 
 		watch(darkTheme, () => {
-			if (reactiveDeviceStorage.state.darkMode) {
+			if (defaultStore.state.darkMode) {
 				applyTheme(themes.value.find(x => x.id === darkTheme.value));
 			}
 		});
 
 		watch(lightTheme, () => {
-			if (!reactiveDeviceStorage.state.darkMode) {
+			if (!defaultStore.state.darkMode) {
 				applyTheme(themes.value.find(x => x.id === lightTheme.value));
 			}
 		});
 
 		watch(syncDeviceDarkMode, () => {
 			if (syncDeviceDarkMode) {
-				reactiveDeviceStorage.set('darkMode', isDeviceDarkmode());
+				defaultStore.set('darkMode', isDeviceDarkmode());
 			}
 		});
 
