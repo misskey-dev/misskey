@@ -11,7 +11,9 @@ type Instance = {
 
 const data = localStorage.getItem('instance');
 
-export const instance: Instance = reactive(data ? JSON.parse(data) : {});
+export const instance: Instance = reactive(data ? JSON.parse(data) : {
+	// TODO: set default values
+});
 
 export async function fetchInstance() {
 	const meta = await api('meta', {
