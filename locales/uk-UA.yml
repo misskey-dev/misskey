@@ -773,14 +773,26 @@ _permissions:
   "read:drive": "Переглянути вміст Диска"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
+_weekday:
+  saturday: "Субота"
 _widgets:
   notifications: "Сповіщення"
   timeline: "Стрічка"
+  calendar: "Календар"
+  trends: "Тренди"
+  clock: "Годинник"
+  rss: "RSS-читач"
   activity: "Активність"
+  photos: "Фото"
+  digitalClock: "Цифровий годинник"
   federation: "Федіверс"
   postForm: "Створення нотатки"
+  slideshow: "Слайд-шоу"
 _cw:
+  hide: "Сховати"
   show: "Показати більше"
+  chars: "{count} символів"
+  files: "Файлів: {count}"
 _poll:
   deadlineTime: "г"
 _visibility:
@@ -823,8 +835,15 @@ _charts:
   notesTotal: "Загальна кількість нотаток"
   filesIncDec: "Зміни кількості файлів"
   filesTotal: "Загальна кількість файлів"
+_instanceCharts:
+  requests: "Запити"
+  usersTotal: "Сумарна кількість користувачів"
+  notesTotal: "Сумарна кількість нотаток"
+  cacheSizeTotal: "Сумарний розмір кешу"
+  filesTotal: "Сумарна кількість файлів"
 _timelines:
   home: "Домівка"
+  local: "Локальна"
   social: "Соціальна"
   global: "Глобальна"
 _rooms:
