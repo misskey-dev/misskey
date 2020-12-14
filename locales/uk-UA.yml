@@ -796,6 +796,7 @@ _cw:
 _poll:
   noOnlyOneChoice: "Потрібні принаймні два варіанти."
   noMore: "Більше варіантів додати не можна"
+  canMultipleVote: "Можна вибрати кілька варіантів"
   deadlineTime: "г"
 _visibility:
   home: "Домівка"
