@@ -1,6 +1,6 @@
-import { HotDeviceStorage } from './storage';
+import { Storage } from '../../pizzax';
 
-export const reactiveDeckStorage = new HotDeviceStorage('deck', true, {
+export const reactiveDeckStorage = new Storage('deck', {
 	columns: [],
 	layout: [],
 	columnAlign: 'left',
