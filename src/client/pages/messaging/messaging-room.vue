@@ -110,7 +110,7 @@ const Component = defineComponent({
 
 	mounted() {
 		this.fetch();
-		if (this.$store.state.device.enableInfiniteScroll) {
+		if (this.$pizzax.state.enableInfiniteScroll) {
 			this.$nextTick(() => this.ilObserver.observe(this.$refs.loadMore as Element));
 		}
 	},

@@ -4,7 +4,7 @@
 
 	<div class="_section">
 		<XTutorial v-if="$pizzax.tutorial != -1" class="tutorial _content _vMargin"/>
-		<XPostForm v-if="$store.state.device.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
+		<XPostForm v-if="$pizzax.state.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
 		<XTimeline ref="tl"
 			class="_content _vMargin"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"

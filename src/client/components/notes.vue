@@ -19,7 +19,7 @@
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_loadMore" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_loadMore" v-appear="$pizzax.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>

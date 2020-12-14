@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import { customRef, Ref, ref } from 'vue';
 import { $i, isSignedIn } from './account';
 import { api } from './os';
 
@@ -8,7 +8,7 @@ type StateDef = Record<string, {
 }>;
 
 /**
- * リアクティブなストレージ
+ * 非リアクティブなストレージ。リアクティブに扱いたいときはrefメソッドを使用する（暫定）
  */
 export class Storage<T extends StateDef, M extends Record<string, (state: T, arg: unknown) => void>> {
 	public readonly key: string;
@@ -16,6 +16,7 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 	public readonly def: T;
 
 	public readonly state: { [U in keyof T]: T[U]['default'] };
+	public readonly reactiveState: { [U in keyof T]: Ref<T[U]['default']> };
 
 	public readonly mutations: M;
 
@@ -39,7 +40,7 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 				state[k] = v.default;
 			}
 		}
-		this.state = reactive(state) as any;
+		this.state = state as any;
 
 		this.mutations = mutations;
 	}
@@ -103,6 +104,22 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 			}
 		};
 	}
+
+	public ref<K extends keyof T>(key: K) {
+		return customRef((track, trigger) => {
+			return {
+				get: () => {
+					track();
+					return this.state[key];
+				},
+				set: (newValue) => {
+					if (_DEV_) {
+						console.error(`DO NOT MUTATE ${key} DIRECTLY. USE set METHOD.`);
+					}
+				}
+			}
+		});
+	}
 }
 
 export const defaultStore = new Storage('base', {
@@ -151,6 +168,10 @@ export const defaultStore = new Storage('base', {
 		default: []
 	},
 
+	serverDisconnectedBehavior: {
+		where: 'device',
+		default: 'quiet' as 'quiet' | 'reload' | 'dialog'
+	},
 	nsfw: {
 		where: 'device',
 		default: 'respect' as 'respect' | 'force' | 'ignore'
@@ -175,9 +196,25 @@ export const defaultStore = new Storage('base', {
 		where: 'device',
 		default: false
 	},
+	disablePagesScript: {
+		where: 'device',
+		default: false
+	},
 	useOsNativeEmojis: {
 		where: 'device',
 		default: false
+	},
+	useBlurEffectForModal: {
+		where: 'device',
+		default: true
+	},
+	showFixedPostForm: {
+		where: 'device',
+		default: false
+	},
+	enableInfiniteScroll: {
+		where: 'device',
+		default: true
 	},
 	showGapBetweenNotesInTimeline: {
 		where: 'device',

@@ -35,17 +35,11 @@ export const defaultDeviceUserSettings = {
 
 export const defaultDeviceSettings = {
 	lang: null,
-	serverDisconnectedBehavior: 'quiet',
 	recentlyUsedEmojis: [],
 	recentlyUsedUsers: [],
-	deckMode: false,
 	chatOpenBehavior: 'page',
 	defaultSideView: false,
 	deckNavWindow: true,
-	showFixedPostForm: false,
-	disablePagesScript: false,
-	enableInfiniteScroll: true,
-	useBlurEffectForModal: true,
 	useFullReactionPicker: false,
 	reactionPickerWidth: 1,
 	reactionPickerHeight: 1,

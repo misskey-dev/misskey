@@ -183,26 +183,26 @@ watch(() => defaultStore.state.darkMode, (darkMode) => {
 });
 
 //#region Sync dark mode
-if (store.state.device.syncDeviceDarkMode) {
-	store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
+	defaultStore.set('darkMode', isDeviceDarkmode());
 }
 
 window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
-	if (store.state.device.syncDeviceDarkMode) {
-		store.commit('device/set', { key: 'darkMode', value: mql.matches });
+	if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
+		defaultStore.set('darkMode', mql.matches);
 	}
 });
 //#endregion
 
-store.watch(state => state.device.useBlurEffectForModal, v => {
+watch(() => defaultStore.state.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 }, { immediate: true });
 
 let reloadDialogShowing = false;
 stream.on('_disconnected_', async () => {
-	if (store.state.device.serverDisconnectedBehavior === 'reload') {
+	if (defaultStore.state.serverDisconnectedBehavior === 'reload') {
 		location.reload();
-	} else if (store.state.device.serverDisconnectedBehavior === 'dialog') {
+	} else if (defaultStore.state.serverDisconnectedBehavior === 'dialog') {
 		if (reloadDialogShowing) return;
 		reloadDialogShowing = true;
 		const { canceled } = await dialog({

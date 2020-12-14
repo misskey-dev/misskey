@@ -127,18 +127,9 @@ export default defineComponent({
 	},
 
 	computed: {
-		serverDisconnectedBehavior: {
-			get() { return this.$store.state.device.serverDisconnectedBehavior; },
-			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
-		},
-
+		serverDisconnectedBehavior: $pizzax.makeGetterSetter('serverDisconnectedBehavior'),
 		reduceAnimation: $pizzax.makeGetterSetter('animation', v => !v, v => !v),
-
-		useBlurEffectForModal: {
-			get() { return this.$store.state.device.useBlurEffectForModal; },
-			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
-		},
-
+		useBlurEffectForModal: $pizzax.makeGetterSetter('useBlurEffectForModal'),
 		showGapBetweenNotesInTimeline: $pizzax.makeGetterSetter('showGapBetweenNotesInTimeline'),
 		disableAnimatedMfm: $pizzax.makeGetterSetter('animatedMfm', v => !v, v => !v),
 		useOsNativeEmojis: $pizzax.makeGetterSetter('useOsNativeEmojis'),
@@ -146,16 +137,8 @@ export default defineComponent({
 		loadRawImages: $pizzax.makeGetterSetter('loadRawImages'),
 		imageNewTab: $pizzax.makeGetterSetter('imageNewTab'),
 		nsfw: $pizzax.makeGetterSetter('nsfw'),
-
-		disablePagesScript: {
-			get() { return this.$store.state.device.disablePagesScript; },
-			set(value) { this.$store.commit('device/set', { key: 'disablePagesScript', value }); }
-		},
-
-		showFixedPostForm: {
-			get() { return this.$store.state.device.showFixedPostForm; },
-			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
-		},
+		disablePagesScript: $pizzax.makeGetterSetter('disablePagesScript'),
+		showFixedPostForm: $pizzax.makeGetterSetter('showFixedPostForm'),
 
 		defaultSideView: {
 			get() { return this.$store.state.device.defaultSideView; },
@@ -172,10 +155,7 @@ export default defineComponent({
 			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
 		},
 
-		enableInfiniteScroll: {
-			get() { return this.$store.state.device.enableInfiniteScroll; },
-			set(value) { this.$store.commit('device/set', { key: 'enableInfiniteScroll', value }); }
-		},
+		enableInfiniteScroll: $pizzax.makeGetterSetter('enableInfiniteScroll'),
 	},
 
 	watch: {
