@@ -785,6 +785,7 @@ _permissions:
   "read:notifications": "Переглядати сповіщення"
   "read:reactions": "Переглядати реакції"
   "write:reactions": "Змінювати реакції"
+  "write:votes": "Голосувати в опитуваннях"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
