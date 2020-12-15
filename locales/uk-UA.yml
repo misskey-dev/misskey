@@ -782,6 +782,9 @@ _permissions:
   "read:mutes": "Переглядати список ігнорованих"
   "write:mutes": "Змінювати список ігнорованих"
   "write:notes": "Писати і видаляти нотатки"
+  "read:notifications": "Переглядати сповіщення"
+  "read:reactions": "Переглядати реакції"
+  "write:reactions": "Змінювати реакції"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
