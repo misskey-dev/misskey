@@ -792,6 +792,8 @@ _permissions:
   "write:page-likes": "Змінювати вподобання сторінок"
   "read:user-groups": "Переглядати групи користувача"
   "write:user-groups": "Змінювати групи користувача"
+  "read:channels": "Переглядати канали"
+  "write:channels": "Змінювати канали"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
