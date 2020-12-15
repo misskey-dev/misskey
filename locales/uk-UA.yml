@@ -814,8 +814,12 @@ _poll:
   remainingSeconds: "Залишилось {s} секунд"
 _visibility:
   public: "Публічний"
+  publicDescription: "Для всіх користувачів"
   home: "Домівка"
+  homeDescription: "Лише на домашньому інстансі"
   followers: "Підписники"
+  followersDescription: "Тільки для підписників"
+  specified: "Особисто"
   localOnly: "Лише локально"
 _postForm:
   replyPlaceholder: "Відповідь на цю нотатку..."
