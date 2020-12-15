@@ -794,6 +794,8 @@ _permissions:
   "write:user-groups": "Змінювати групи користувача"
   "read:channels": "Переглядати канали"
   "write:channels": "Змінювати канали"
+_auth:
+  shareAccess: "Ви хочете надати \"{name}\" доступ до цього акаунту?"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
