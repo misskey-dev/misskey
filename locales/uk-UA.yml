@@ -779,6 +779,9 @@ _permissions:
   "write:following": "Змінювати підписки"
   "read:messaging": "Переглядати повідомлення"
   "write:messaging": "Створювати та видаляти повідомлення"
+  "read:mutes": "Переглядати список ігнорованих"
+  "write:mutes": "Змінювати список ігнорованих"
+  "write:notes": "Писати і видаляти нотатки"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
