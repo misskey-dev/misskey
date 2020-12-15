@@ -72,3 +72,10 @@ export async function setAccount(token) {
 	localStorage.setItem('account', JSON.stringify(me));
 	addAccount(me.id, token);
 }
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$i: typeof $i;
+	}
+}
