@@ -17,6 +17,8 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 
 	public readonly state: { [U in keyof T]: T[U]['default'] };
 
+	public readonly reactiveState: { [U in keyof T]: Ref<T[U]['default']> };
+
 	public readonly mutations: M;
 
 	private watchers: { key: keyof T, callback: Function }[] = [];
@@ -30,6 +32,7 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 		const deviceAccountState = $i ? JSON.parse(localStorage.getItem(this.key + '::' + $i.id) || '{}') : {};
 
 		const state = {};
+		const reactiveState = {};
 		for (const [k, v] of Object.entries(def)) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
 				state[k] = deviceState[k];
@@ -41,13 +44,18 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 				state[k] = v.default;
 			}
 		}
+		for (const [k, v] of Object.entries(state)) {
+			reactiveState[k] = ref(v);
+		}
 		this.state = state as any;
+		this.reactiveState = reactiveState as any;
 
 		this.mutations = mutations;
 	}
 
 	public set(key: keyof T, value: any): any {
 		this.state[key] = value;
+		this.reactiveState[key].value = value;
 		for (const watcher of this.watchers) {
 			if (watcher.key === key) watcher.callback(value);
 		}
@@ -86,6 +94,8 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 				console.error('UNRECOGNIZED MUTATION: ' + name);
 			}
 		}
+		// TODO: 直接state変更させるのやめたい
+		// watcherも発火しないし
 		this.mutations[name](this.state, arg);
 		localStorage.setItem(this.key, JSON.stringify(this.state));
 	}

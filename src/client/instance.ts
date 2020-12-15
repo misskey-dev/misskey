@@ -11,6 +11,8 @@ type Instance = {
 
 const data = localStorage.getItem('instance');
 
+// TODO: instanceをリアクティブにするかは再考の余地あり
+
 export const instance: Instance = reactive(data ? JSON.parse(data) : {
 	// TODO: set default values
 });
