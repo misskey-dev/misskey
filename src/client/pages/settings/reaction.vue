@@ -92,7 +92,7 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			this.$store.dispatch('settings/set', { key: 'reactions', value: this.reactions });
+			this.$pizzax.set('reactions', this.reactions);
 		},
 
 		remove(reaction, ev) {

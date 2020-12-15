@@ -29,6 +29,7 @@
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	props: {
@@ -45,12 +46,12 @@ export default defineComponent({
 	},
 	mounted() {
 		const audioTag = this.$refs.audio as HTMLAudioElement;
-		if (audioTag) audioTag.volume = this.$store.state.device.mediaVolume;
+		if (audioTag) audioTag.volume = ColdDeviceStorage.get('mediaVolume');
 	},
 	methods: {
 		volumechange() {
 			const audioTag = this.$refs.audio as HTMLAudioElement;
-			this.$store.commit('device/set', { key: 'mediaVolume', value: audioTag.volume });
+			ColdDeviceStorage.set('mediaVolume', audioTag.volume);
 		},
 	},
 })

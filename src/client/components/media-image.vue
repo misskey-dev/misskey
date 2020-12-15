@@ -56,9 +56,7 @@ export default defineComponent({
 				? getStaticImageUrl(this.image.thumbnailUrl)
 				: this.image.thumbnailUrl;
 
-			if (this.$store.state.device.loadRemoteMedia) {
-				url = null;
-			} else if (this.raw || this.$pizzax.state.loadRawImages) {
+			if (this.raw || this.$pizzax.state.loadRawImages) {
 				url = this.image.url;
 			}
 

@@ -9,27 +9,6 @@ export const defaultDeviceUserSettings = {
 	tl: {
 		src: 'home'
 	},
-	menu: [
-		'notifications',
-		'messaging',
-		'drive',
-		'-',
-		'followRequests',
-		'featured',
-		'explore',
-		'announcements',
-		'search',
-		'-',
-		'ui',
-	],
-	plugins: [] as {
-		id: string;
-		name: string;
-		active: boolean;
-		configData: Record<string, any>;
-		token: string;
-		ast: any[];
-	}[],
 };
 
 export const defaultDeviceSettings = {
@@ -154,10 +133,6 @@ export const store = createStore({
 					};
 				},
 
-				setMenu(state, menu) {
-					state.menu = menu;
-				},
-
 				setVisibility(state, visibility) {
 					state.visibility = visibility;
 				},
@@ -183,29 +158,6 @@ export const store = createStore({
 					if (w) {
 						w.data = x.data;
 					}
-				},
-
-				installPlugin(state, { id, meta, ast, token }) {
-					state.plugins.push({
-						...meta,
-						id,
-						active: true,
-						configData: {},
-						token: token,
-						ast: ast
-					});
-				},
-
-				uninstallPlugin(state, id) {
-					state.plugins = state.plugins.filter(x => x.id != id);
-				},
-
-				configPlugin(state, { id, config }) {
-					state.plugins.find(p => p.id === id).configData = config;
-				},
-
-				changePluginActive(state, { id, active }) {
-					state.plugins.find(p => p.id === id).active = active;
 				},
 			}
 		},

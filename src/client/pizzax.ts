@@ -76,6 +76,10 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 		}
 	}
 
+	public reset(key: keyof T) {
+		this.set(key, this.def[key].default);
+	}
+
 	public commit(name: keyof M, arg: any) {
 		if (_DEV_) {
 			if (this.mutations[name] == null) {
@@ -184,6 +188,23 @@ export const defaultStore = new Storage('base', {
 		default: []
 	},
 
+	menu: {
+		where: 'deviceAccount',
+		default: [
+			'notifications',
+			'messaging',
+			'drive',
+			'-',
+			'followRequests',
+			'featured',
+			'explore',
+			'announcements',
+			'search',
+			'-',
+			'ui',
+		]
+	},
+
 	serverDisconnectedBehavior: {
 		where: 'device',
 		default: 'quiet' as 'quiet' | 'reload' | 'dialog'
@@ -263,6 +284,10 @@ export const defaultStore = new Storage('base', {
 	defaultSideView: {
 		where: 'device',
 		default: false
+	},
+	sidebarDisplay: {
+		where: 'device',
+		default: 'full' as 'full' | 'icon'
 	},
 });
 

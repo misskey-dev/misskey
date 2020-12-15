@@ -79,7 +79,7 @@ export default defineComponent({
 			return {
 				'd': () => {
 					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
+					this.$store.commit('device/set', { key: 'darkMode', value: !this.$pizzax.state.darkMode });
 				},
 				's': search,
 				'h|/': this.help

@@ -27,6 +27,7 @@ import {
 	faFilm
 	} from '@fortawesome/free-solid-svg-icons';
 import ImgWithBlurhash from './img-with-blurhash.vue';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -89,12 +90,12 @@ export default defineComponent({
 	},
 	mounted() {
 		const audioTag = this.$refs.volumectrl as HTMLAudioElement;
-		if (audioTag) audioTag.volume = this.$store.state.device.mediaVolume;
+		if (audioTag) audioTag.volume = ColdDeviceStorage.get('mediaVolume');
 	},
 	methods: {
 		volumechange() {
 			const audioTag = this.$refs.volumectrl as HTMLAudioElement;
-			this.$store.commit('device/set', { key: 'mediaVolume', value: audioTag.volume });
+			ColdDeviceStorage.set('mediaVolume', audioTag.volume);
 		}
 	}
 });

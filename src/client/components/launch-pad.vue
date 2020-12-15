@@ -58,7 +58,7 @@ export default defineComponent({
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.deviceUser.menu;
+			return this.$pizzax.state.menu;
 		},
 	},
 

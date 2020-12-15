@@ -63,7 +63,7 @@ export default defineComponent({
 		this.fetchJobs();
 
 		// TODO: var(--panel)の色が暗いか明るいかで判定する
-		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+		const gridColor = this.$pizzax.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 

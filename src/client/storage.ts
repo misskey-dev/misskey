@@ -7,6 +7,15 @@ import { Theme } from './scripts/theme';
 
 const PREFIX = 'miux:';
 
+type Plugin = {
+	id: string;
+	name: string;
+	active: boolean;
+	configData: Record<string, any>;
+	token: string;
+	ast: any[];
+};
+
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
@@ -16,6 +25,8 @@ export class ColdDeviceStorage {
 		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
 		lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 		syncDeviceDarkMode: true,
+		plugins: [] as Plugin[],
+		mediaVolume: 0.5,
 		sound_masterVolume: 0.3,
 		sound_note: { type: 'syuilo/down', volume: 1 },
 		sound_noteMy: { type: 'syuilo/up', volume: 1 },
