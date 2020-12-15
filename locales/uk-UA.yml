@@ -788,6 +788,10 @@ _permissions:
   "write:votes": "Голосувати в опитуваннях"
   "read:pages": "Переглядати сторінки"
   "write:pages": "Змінювати і видаляти сторінки"
+  "read:page-likes": "Переглядати вподобання сторінок"
+  "write:page-likes": "Змінювати вподобання сторінок"
+  "read:user-groups": "Переглядати групи користувача"
+  "write:user-groups": "Змінювати групи користувача"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
