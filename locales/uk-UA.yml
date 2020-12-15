@@ -786,6 +786,8 @@ _permissions:
   "read:reactions": "Переглядати реакції"
   "write:reactions": "Змінювати реакції"
   "write:votes": "Голосувати в опитуваннях"
+  "read:pages": "Переглядати сторінки"
+  "write:pages": "Змінювати і видаляти сторінки"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
