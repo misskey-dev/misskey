@@ -222,11 +222,11 @@ export default defineComponent({
 		},
 
 		isMyNote(): boolean {
-			return this.isSignedIn && (this.$i.id === this.appearNote.userId);
+			return this.$i && (this.$i.id === this.appearNote.userId);
 		},
 
 		isMyRenote(): boolean {
-			return this.isSignedIn && (this.$i.id === this.note.userId);
+			return this.$i && (this.$i.id === this.note.userId);
 		},
 
 		canRenote(): boolean {
@@ -269,7 +269,7 @@ export default defineComponent({
 	},
 
 	async created() {
-		if (this.isSignedIn) {
+		if (this.$i) {
 			this.connection = os.stream;
 		}
 
@@ -305,7 +305,7 @@ export default defineComponent({
 	mounted() {
 		this.capture(true);
 
-		if (this.isSignedIn) {
+		if (this.$i) {
 			this.connection.on('_connected_', this.onStreamConnected);
 		}
 	},
@@ -313,7 +313,7 @@ export default defineComponent({
 	beforeUnmount() {
 		this.decapture(true);
 
-		if (this.isSignedIn) {
+		if (this.$i) {
 			this.connection.off('_connected_', this.onStreamConnected);
 		}
 	},
@@ -340,14 +340,14 @@ export default defineComponent({
 		},
 
 		capture(withHandler = false) {
-			if (this.isSignedIn) {
+			if (this.$i) {
 				this.connection.send(document.body.contains(this.$el) ? 'sn' : 's', { id: this.appearNote.id });
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
 
 		decapture(withHandler = false) {
-			if (this.isSignedIn) {
+			if (this.$i) {
 				this.connection.send('un', {
 					id: this.appearNote.id
 				});
@@ -614,7 +614,7 @@ export default defineComponent({
 
 		getMenu() {
 			let menu;
-			if (this.isSignedIn) {
+			if (this.$i) {
 				const statePromise = os.api('notes/state', {
 					noteId: this.appearNote.id
 				});

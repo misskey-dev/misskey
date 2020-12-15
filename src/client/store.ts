@@ -34,26 +34,8 @@ export const store = createStore({
 	strict: _DEV_,
 
 	plugins: [createPersistedState({
-		paths: ['i', 'device', 'deviceUser', 'instance']
+		paths: ['device', 'deviceUser', 'instance']
 	})],
-
-	state: {
-		i: null,
-	},
-
-	getters: {
-		isSignedIn: state => state.i != null,
-	},
-
-	mutations: {
-		updateI(state, x) {
-			state.i = x;
-		},
-
-		updateIKeyValue(state, { key, value }) {
-			state.i[key] = value;
-		},
-	},
 
 	actions: {
 		async login(ctx, i) {

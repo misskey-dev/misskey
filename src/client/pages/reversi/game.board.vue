@@ -126,7 +126,7 @@ export default defineComponent({
 
 	computed: {
 		iAmPlayer(): boolean {
-			if (!this.isSignedIn) return false;
+			if (!this.$i) return false;
 			return this.game.user1Id == this.$i.id || this.game.user2Id == this.$i.id;
 		},
 

@@ -5,7 +5,7 @@ import { apiUrl, debug } from '@/config';
 import MkPostFormDialog from '@/components/post-form-dialog.vue';
 import MkWaitingDialog from '@/components/waiting-dialog.vue';
 import { resolve } from '@/router';
-import { $i, isSignedIn } from './account';
+import { $i, $i } from './account';
 
 const ua = navigator.userAgent.toLowerCase();
 export const isMobile = /mobile|iphone|ipad|android/.test(ua);
@@ -39,7 +39,7 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
-		if (isSignedIn) (data as any).i = $i.token;
+		if ($i) (data as any).i = $i.token;
 		if (token !== undefined) (data as any).i = token;
 
 		// Send request

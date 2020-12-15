@@ -13,7 +13,7 @@
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<MkAcct :user="user" :detail="true" class="acct"/>
 				</div>
-				<div class="followed" v-if="isSignedIn && $i.id != user.id && user.isFollowed"><span>{{ $t('followsYou') }}</span></div>
+				<div class="followed" v-if="$i && $i.id != user.id && user.isFollowed"><span>{{ $t('followsYou') }}</span></div>
 				<div class="status">
 					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
 						<b>{{ number(user.notesCount) }}</b>
@@ -75,7 +75,7 @@
 					</MkA>
 					<div class="actions">
 						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
-						<MkFollowButton v-if="!isSignedIn || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
+						<MkFollowButton v-if="!$i || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 					</div>
 				</div>
 				<template v-if="page === 'index'">
@@ -115,8 +115,8 @@
 							<span v-if="user.isBot" :title="$t('isBot')"><Fa :icon="faRobot"/></span>
 						</div>
 					</div>
-					<span class="followed" v-if="isSignedIn && $i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
-					<div class="actions" v-if="isSignedIn">
+					<span class="followed" v-if="$i && $i.id != user.id && user.isFollowed">{{ $t('followsYou') }}</span>
+					<div class="actions" v-if="$i">
 						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
 						<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 					</div>

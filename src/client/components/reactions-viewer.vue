@@ -25,7 +25,7 @@ export default defineComponent({
 	},
 	computed: {
 		isMe(): boolean {
-			return this.isSignedIn && this.$i.id === this.note.userId;
+			return this.$i && this.$i.id === this.note.userId;
 		},
 	},
 });

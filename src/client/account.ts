@@ -13,7 +13,6 @@ const data = localStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
-export const isSignedIn = $i != null;
 
 export function signout() {
 	// TODO

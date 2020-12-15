@@ -17,7 +17,7 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { stream, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
 import * as sound from '@/scripts/sound';
-import { isSignedIn, $i } from '@/account';
+import { $i, $i } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -42,7 +42,7 @@ export default defineComponent({
 			sound.play('notification');
 		};
 
-		if (isSignedIn) {
+		if ($i) {
 			const connection = stream.useSharedConnection('main', 'UI');
 			connection.on('notification', onNotification);
 		}

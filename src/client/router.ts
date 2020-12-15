@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 import MkTimeline from '@/pages/timeline.vue';
-import { isSignedIn } from './account';
+import { $i } from './account';
 
 const page = (path: string) => defineAsyncComponent({
 	loader: () => import(`./pages/${path}.vue`),
@@ -17,7 +17,7 @@ export const router = createRouter({
 	history: createWebHistory(),
 	routes: [
 		// NOTE: MkTimelineをdynamic importするとAsyncComponentWrapperが間に入るせいでkeep-aliveのコンポーネント指定が効かなくなる
-		{ path: '/', name: 'index', component: isSignedIn ? MkTimeline : page('welcome') },
+		{ path: '/', name: 'index', component: $i ? MkTimeline : page('welcome') },
 		{ path: '/@:acct/:page?', name: 'user', component: page('user/index'), props: route => ({ acct: route.params.acct, page: route.params.page || 'index' }) },
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },

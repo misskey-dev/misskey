@@ -21,7 +21,7 @@
 	<div class="_section links">
 		<div class="_content">
 			<MkA :to="`./${page.name}/view-source`" class="link">{{ $t('_pages.viewSource') }}</MkA>
-			<template v-if="isSignedIn && $i.id === page.userId">
+			<template v-if="$i && $i.id === page.userId">
 				<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $t('_pages.editThisPage') }}</MkA>
 				<button v-if="$i.pinnedPageId === page.id" @click="pin(false)" class="link _textButton">{{ $t('unpin') }}</button>
 				<button v-else @click="pin(true)" class="link _textButton">{{ $t('pin') }}</button>

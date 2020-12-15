@@ -58,7 +58,7 @@ export default defineComponent({
 
 	computed: {
 		isOwned(): boolean {
-			return this.isSignedIn && this.clip && (this.$i.id === this.clip.userId);
+			return this.$i && this.clip && (this.$i.id === this.clip.userId);
 		}
 	},
 

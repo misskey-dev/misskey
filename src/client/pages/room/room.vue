@@ -107,7 +107,7 @@ export default defineComponent({
 			...parseAcct(this.acct)
 		});
 
-		this.isMyRoom = this.isSignedIn && (this.$i.id === this.user.id);
+		this.isMyRoom = this.$i && (this.$i.id === this.user.id);
 
 		const roomInfo = await os.api('room/show', {
 			userId: this.user.id

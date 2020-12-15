@@ -4,34 +4,34 @@ import { computed } from 'vue';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { $i, isSignedIn } from './account';
+import { $i } from './account';
 
 export const sidebarDef = {
 	notifications: {
 		title: 'notifications',
 		icon: faBell,
-		show: computed(() => isSignedIn),
-		indicated: computed(() => isSignedIn && $i.hasUnreadNotification),
+		show: computed(() => $i != null),
+		indicated: computed(() => $i != null && $i.hasUnreadNotification),
 		to: '/my/notifications',
 	},
 	messaging: {
 		title: 'messaging',
 		icon: faComments,
-		show: computed(() => isSignedIn),
-		indicated: computed(() => isSignedIn && $i.hasUnreadMessagingMessage),
+		show: computed(() => $i != null),
+		indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
 		to: '/my/messaging',
 	},
 	drive: {
 		title: 'drive',
 		icon: faCloud,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: '/my/drive',
 	},
 	followRequests: {
 		title: 'followRequests',
 		icon: faUserClock,
-		show: computed(() => isSignedIn && $i.isLocked),
-		indicated: computed(() => isSignedIn && $i.hasPendingReceivedFollowRequest),
+		show: computed(() => $i != null && $i.isLocked),
+		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
 	featured: {
@@ -47,7 +47,7 @@ export const sidebarDef = {
 	announcements: {
 		title: 'announcements',
 		icon: faBroadcastTower,
-		indicated: computed(() => isSignedIn && $i.hasUnreadAnnouncement),
+		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
 	search: {
@@ -58,39 +58,39 @@ export const sidebarDef = {
 	lists: {
 		title: 'lists',
 		icon: faListUl,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: '/my/lists',
 	},
 	groups: {
 		title: 'groups',
 		icon: faUsers,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: '/my/groups',
 	},
 	antennas: {
 		title: 'antennas',
 		icon: faSatellite,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: '/my/antennas',
 	},
 	mentions: {
 		title: 'mentions',
 		icon: faAt,
-		show: computed(() => isSignedIn),
-		indicated: computed(() => isSignedIn && $i.hasUnreadMentions),
+		show: computed(() => $i != null),
+		indicated: computed(() => $i != null && $i.hasUnreadMentions),
 		to: '/my/mentions',
 	},
 	messages: {
 		title: 'directNotes',
 		icon: faEnvelope,
-		show: computed(() => isSignedIn),
-		indicated: computed(() => isSignedIn && $i.hasUnreadSpecifiedNotes),
+		show: computed(() => $i != null),
+		indicated: computed(() => $i != null && $i.hasUnreadSpecifiedNotes),
 		to: '/my/messages',
 	},
 	favorites: {
 		title: 'favorites',
 		icon: faStar,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: '/my/favorites',
 	},
 	pages: {
@@ -101,7 +101,7 @@ export const sidebarDef = {
 	clips: {
 		title: 'clip',
 		icon: faPaperclip,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: '/my/clips',
 	},
 	channels: {
@@ -122,7 +122,7 @@ export const sidebarDef = {
 	rooms: {
 		title: 'rooms',
 		icon: faDoorClosed,
-		show: computed(() => isSignedIn),
+		show: computed(() => $i != null),
 		to: computed(() => `/@${$i.username}/room`),
 	},
 	ui: {

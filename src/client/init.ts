@@ -19,7 +19,7 @@ import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { ColdDeviceStorage } from './storage';
-import { $i, isSignedIn, refreshAccount, setAccount, updateAccount } from './account';
+import { $i, refreshAccount, setAccount, updateAccount } from './account';
 import { defaultStore } from './pizzax';
 import { fetchInstance, instance } from './instance';
 
@@ -134,7 +134,7 @@ stream.init($i);
 
 const app = createApp(await (
 	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!isSignedIn                       ? import('@/ui/visitor.vue') :
+	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
 	import('@/ui/default.vue')
@@ -148,7 +148,6 @@ app.config.globalProperties = {
 	$i,
 	$pizzax: defaultStore,
 	$instance: instance,
-	isSignedIn,
 };
 
 if (_DEV_) {
@@ -231,7 +230,7 @@ for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 	});
 }
 
-if (isSignedIn) {
+if ($i) {
 	if ('Notification' in window) {
 		// 許可を得ていなかったらリクエスト
 		if (Notification.permission === 'default') {

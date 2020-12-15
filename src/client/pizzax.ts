@@ -1,5 +1,5 @@
 import { customRef, onUnmounted, Ref, ref } from 'vue';
-import { $i, isSignedIn } from './account';
+import { $i, $i } from './account';
 import { api } from './os';
 
 type StateDef = Record<string, {
