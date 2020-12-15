@@ -767,10 +767,18 @@ _tutorial:
 _2fa:
   registerKey: "Зареєструвати новий ключ безпеки"
 _permissions:
-  "write:account": "Змінити дані акаунту"
-  "read:blocks": "Переглянути список заблокованих"
-  "write:blocks": "Редагувати список заблокованих"
-  "read:drive": "Переглянути вміст Диска"
+  "read:account": "Переглядати дані профілю"
+  "write:account": "Змінювати дані профілю"
+  "read:blocks": "Переглядати список заблокованих"
+  "write:blocks": "Змінювати список заблокованих"
+  "read:drive": "Переглядати вміст Диска"
+  "write:drive": "Змінювати вміст Диска"
+  "read:favorites": "Переглядати обране"
+  "write:favorites": "Змінювати обране"
+  "read:following": "Переглядати підписки"
+  "write:following": "Змінювати підписки"
+  "read:messaging": "Переглядати повідомлення"
+  "write:messaging": "Створювати та видаляти повідомлення"
 _antennaSources:
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
