@@ -214,10 +214,7 @@ export default defineComponent({
 				folderId: this.folder.id
 			}).then(() => {
 				if (this.$pizzax.state.uploadFolder === this.folder.id) {
-					this.$store.dispatch('settings/set', {
-						key: 'uploadFolder',
-						value: null
-					});
+					this.$pizzax.set('uploadFolder', null);
 				}
 			}).catch(err => {
 				switch(err.id) {
@@ -238,10 +235,7 @@ export default defineComponent({
 		},
 
 		setAsUploadFolder() {
-			this.$store.dispatch('settings/set', {
-				key: 'uploadFolder',
-				value: this.folder.id
-			});
+			this.$pizzax.set('uploadFolder', this.folder.id);
 		},
 
 		onContextmenu(e) {

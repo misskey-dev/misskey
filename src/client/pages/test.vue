@@ -252,7 +252,7 @@ export default defineComponent({
 		},
 
 		resetTutorial() {
-			this.$store.dispatch('settings/set', { key: 'tutorial', value: 0 });
+			this.$pizzax.set('tutorial', 0);
 		},
 	}
 });

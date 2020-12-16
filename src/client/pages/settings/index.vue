@@ -48,6 +48,7 @@ import FormGroup from '@/components/form/group.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import { scroll } from '../../scripts/scroll';
+import { signout } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -125,8 +126,7 @@ export default defineComponent({
 			onInfo,
 			component,
 			logout: () => {
-				store.dispatch('logout');
-				location.href = '/';
+				signout();
 			},
 			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faEnvelope,
 		};

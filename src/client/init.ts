@@ -18,7 +18,7 @@ import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { ColdDeviceStorage } from './storage';
-import { $i, refreshAccount, login, updateAccount } from './account';
+import { $i, refreshAccount, login, updateAccount, signout } from './account';
 import { defaultStore } from './store';
 import { fetchInstance, instance } from './instance';
 
@@ -299,9 +299,10 @@ if ($i) {
 	});
 
 	main.on('clientSettingUpdated', x => {
-		store.commit('settings/set', {
-			key: x.key,
-			value: x.value
+		updateAccount({
+			clientData: {
+				[x.key]: x.value
+			}
 		});
 	});
 

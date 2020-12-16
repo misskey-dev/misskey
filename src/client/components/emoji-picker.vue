@@ -100,6 +100,7 @@ import MkModal from '@/components/ui/modal.vue';
 import Particle from '@/components/particle.vue';
 import * as os from '@/os';
 import { isDeviceTouch } from '../scripts/is-device-touch';
+import { emojiCategories } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -129,7 +130,7 @@ export default defineComponent({
 			width: this.asReactionPicker ? this.$pizzax.state.reactionPickerWidth : 3,
 			height: this.asReactionPicker ? this.$pizzax.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
-			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
+			customEmojiCategories: emojiCategories,
 			customEmojis: this.$instance.emojis,
 			visibleCategories: {},
 			q: null,

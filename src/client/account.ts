@@ -16,6 +16,7 @@ const data = localStorage.getItem('account');
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 
 export function signout() {
+	localStorage.removeItem('account');
 	document.cookie = `igi=; path=/`;
 	location.href = '/';
 }

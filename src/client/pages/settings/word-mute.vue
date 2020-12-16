@@ -97,7 +97,7 @@ export default defineComponent({
 
 	methods: {
 		async save() {
-			this.$store.dispatch('settings/set', { key: 'mutedWords', value: this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')) });
+			this.$pizzax.set('mutedWords', this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')));
 			await os.api('i/update', {
 				mutedWords: this.hardMutedWords.trim().split('\n').map(x => x.trim().split(' ')),
 			});

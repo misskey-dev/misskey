@@ -38,7 +38,7 @@ export default defineComponent({
 	methods: {
 		chooseUploadFolder() {
 			os.selectDriveFolder(false).then(async folder => {
-				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
+				this.$pizzax.set('uploadFolder', folder ? folder.id : null);
 				os.success();
 				if (this.$pizzax.state.uploadFolder) {
 					this.uploadFolder = await os.api('drive/folders/show', {
