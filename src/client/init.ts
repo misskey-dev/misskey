@@ -11,7 +11,6 @@ import widgets from './widgets';
 import directives from './directives';
 import components from '@/components';
 import { version, ui } from '@/config';
-import { store } from './store';
 import { router } from './router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
@@ -20,7 +19,7 @@ import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { ColdDeviceStorage } from './storage';
 import { $i, refreshAccount, login, updateAccount } from './account';
-import { defaultStore } from './pizzax';
+import { defaultStore } from './store';
 import { fetchInstance, instance } from './instance';
 
 console.info(`Misskey v${version}`);
@@ -150,7 +149,6 @@ if (_DEV_) {
 	(window as any).$i = $i;
 }
 
-app.use(store);
 app.use(router);
 app.use(i18n);
 // eslint-disable-next-line vue/component-definition-name-casing

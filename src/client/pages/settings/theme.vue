@@ -73,7 +73,7 @@ import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { ColdDeviceStorage } from '@/storage';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/pizzax';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {

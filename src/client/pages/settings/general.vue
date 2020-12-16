@@ -96,7 +96,7 @@ import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
-import { defaultStore } from '@/pizzax';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {

@@ -26,10 +26,9 @@ import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormButton from '@/components/form/button.vue';
-import { defaultDeviceUserSettings } from '@/store';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
-import { defaultStore } from '@/pizzax';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
