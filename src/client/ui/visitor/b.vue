@@ -60,6 +60,7 @@ import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
+import { ColdDeviceStorage } from '@/storage';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -92,8 +93,8 @@ export default defineComponent({
 		keymap(): any {
 			return {
 				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$pizzax.state.darkMode });
+					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
+					this.$pizzax.set('darkMode', !this.$pizzax.state.darkMode);
 				},
 				's': search,
 				'h|/': this.help

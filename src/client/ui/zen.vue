@@ -30,6 +30,7 @@ import { search } from '@/scripts/search';
 import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -50,8 +51,8 @@ export default defineComponent({
 		keymap(): any {
 			return {
 				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$pizzax.state.darkMode });
+					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
+					this.$pizzax.set('darkMode', !this.$pizzax.state.darkMode);
 				},
 				'p': os.post,
 				'n': os.post,
