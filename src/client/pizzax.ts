@@ -7,10 +7,12 @@ type StateDef = Record<string, {
 	default: any;
 }>;
 
+type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
+
 /**
  * 非リアクティブなストレージ。リアクティブに扱いたいときはrefメソッドを使用する（暫定）
  */
-export class Storage<T extends StateDef, M extends Record<string, (state: T, arg: unknown) => void>> {
+export class Storage<T extends StateDef> {
 	public readonly key: string;
 
 	public readonly def: T;
@@ -19,11 +21,9 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 
 	public readonly reactiveState: { [U in keyof T]: Ref<T[U]['default']> };
 
-	public readonly mutations: M;
-
 	private watchers: { key: keyof T, callback: Function }[] = [];
 
-	constructor(key: string, def: T, mutations?: M) {
+	constructor(key: string, def: T) {
 		this.key = 'pizzax::' + key;
 		this.def = def;
 
@@ -60,11 +60,9 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 				}
 			}
 		});
-
-		this.mutations = mutations;
 	}
 
-	public set(key: keyof T, value: any): any {
+	public set<K extends keyof T>(key: K, value: T[K]['default']): void {
 		this.state[key] = value;
 		this.reactiveState[key].value = value;
 		for (const watcher of this.watchers) {
@@ -95,20 +93,13 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 		}
 	}
 
-	public reset(key: keyof T) {
-		this.set(key, this.def[key].default);
+	public push<K extends keyof T>(key: K, value: ArrayElement<T[K]['default']>): void {
+		const currentState = this.state[key];
+		this.set(key, [...currentState, value]);
 	}
 
-	public commit(name: keyof M, arg: any) {
-		if (_DEV_) {
-			if (this.mutations[name] == null) {
-				console.error('UNRECOGNIZED MUTATION: ' + name);
-			}
-		}
-		// TODO: 直接state変更させるのやめたい
-		// watcherも発火しないし
-		this.mutations[name](this.state, arg);
-		localStorage.setItem(this.key, JSON.stringify(this.state));
+	public reset(key: keyof T) {
+		this.set(key, this.def[key].default);
 	}
 
 	/**
