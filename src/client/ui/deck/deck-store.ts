@@ -1,9 +1,17 @@
 import { Storage } from '../../pizzax';
 
+type ColumnWidget = {
+	name: string;
+	id: string;
+	data: Record<string, any>;
+};
+
 type Column = {
 	id: string;
+	type: string;
 	name: string | null;
-	widgets?: any[];
+	width: number;
+	widgets?: ColumnWidget[];
 };
 
 function copy<T>(x: T): T {
@@ -143,7 +151,7 @@ export function popRightColumn(id: Column['id']) {
 	deckStorage.set('layout', layout);
 }
 
-export function addColumnWidget(id: Column['id'], widget: any) {
+export function addColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	const columns = copy(deckStorage.state.columns);
 	const columnIndex = deckStorage.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStorage.state.columns[columnIndex]);
@@ -154,7 +162,7 @@ export function addColumnWidget(id: Column['id'], widget: any) {
 	deckStorage.set('columns', columns);
 }
 
-export function removeColumnWidget(id: Column['id'], widget: any) {
+export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	const columns = copy(deckStorage.state.columns);
 	const columnIndex = deckStorage.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStorage.state.columns[columnIndex]);
@@ -164,7 +172,7 @@ export function removeColumnWidget(id: Column['id'], widget: any) {
 	deckStorage.set('columns', columns);
 }
 
-export function setColumnWidgets(id: Column['id'], widgets: any[]) {
+export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	const columns = copy(deckStorage.state.columns);
 	const columnIndex = deckStorage.state.columns.findIndex(c => c.id === id);
 	const column = copy(deckStorage.state.columns[columnIndex]);
@@ -184,9 +192,14 @@ export function renameColumn(id: Column['id'], name: Column['name']) {
 	deckStorage.set('columns', columns);
 }
 
-export function updateColumn(id: Column['id'], column: Column) {
+export function updateColumn(id: Column['id'], column: Partial<Column>) {
 	const columns = copy(deckStorage.state.columns);
 	const columnIndex = deckStorage.state.columns.findIndex(c => c.id === id);
-	columns[columnIndex] = column;
+	const currentColumn = copy(deckStorage.state.columns[columnIndex]);
+	if (currentColumn == null) return;
+	for (const [k, v] of Object.entries(column)) {
+		currentColumn[k] = v;
+	}
+	columns[columnIndex] = currentColumn;
 	deckStorage.set('columns', columns);
 }

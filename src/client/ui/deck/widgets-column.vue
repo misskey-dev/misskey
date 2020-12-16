@@ -38,6 +38,7 @@ import MkSelect from '@/components/ui/select.vue';
 import MkButton from '@/components/ui/button.vue';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
+import { addColumnWidget, removeColumnWidget, setColumnWidgets } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -75,10 +76,7 @@ export default defineComponent({
 				return this.column.widgets;
 			},
 			set(value) {
-				this.$store.commit('deviceUser/setDeckWidgets', {
-					id: this.column.id,
-					widgets: value
-				});
+				setColumnWidgets(this.column.id, value);
 			}
 		}
 	},
@@ -101,23 +99,17 @@ export default defineComponent({
 		addWidget() {
 			if (this.widgetAdderSelected == null) return;
 
-			this.$store.commit('deviceUser/addDeckWidget', {
-				id: this.column.id,
-				widget: {
-					name: this.widgetAdderSelected,
-					id: uuid(),
-					data: {}
-				}
+			addColumnWidget(this.column.id, {
+				name: this.widgetAdderSelected,
+				id: uuid(),
+				data: {}
 			});
 
 			this.widgetAdderSelected = null;
 		},
 
 		removeWidget(widget) {
-			this.$store.commit('deviceUser/removeDeckWidget', {
-				id: this.column.id,
-				widget
-			});
+			removeColumnWidget(this.column.id, widget);
 		},
 	}
 });

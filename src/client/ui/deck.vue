@@ -48,6 +48,7 @@ import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 import XCommon from './_common_/common.vue';
+import { addColumn } from './deck/deck-store';
 
 export default defineComponent({
 	components: {
@@ -160,7 +161,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			this.$store.commit('deviceUser/addDeckColumn', {
+			addColumn({
 				type: column,
 				id: uuid(),
 				name: this.$t('_deck._columns.' + column),
