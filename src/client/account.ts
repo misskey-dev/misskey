@@ -7,7 +7,7 @@ import { waiting } from '@/os';
 type Account = {
 	id: string;
 	token: string;
-	clientData: any;
+	clientData: Record<string, any>;
 };
 
 const data = localStorage.getItem('account');
@@ -16,7 +16,7 @@ const data = localStorage.getItem('account');
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 
 export function signout() {
-	// TODO
+	document.cookie = `igi=; path=/`;
 	location.href = '/';
 }
 
@@ -57,11 +57,6 @@ function fetchAccount(token): Promise<Account> {
 export function updateAccount(data) {
 	for (const [key, value] of Object.entries(data)) {
 		$i[key] = value;
-	}
-
-	if (data.clientData) {
-		// どうやってアカウントデータの変更を各Pizzaxインスタンスに伝えるか？
-		setAccountSettings(data.clientData);
 	}
 }
 

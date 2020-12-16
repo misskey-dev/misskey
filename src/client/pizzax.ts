@@ -1,4 +1,4 @@
-import { customRef, onUnmounted, Ref, ref } from 'vue';
+import { customRef, onUnmounted, Ref, ref, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
 
@@ -49,6 +49,17 @@ export class Storage<T extends StateDef, M extends Record<string, (state: T, arg
 		}
 		this.state = state as any;
 		this.reactiveState = reactiveState as any;
+
+		watch(() => $i, () => {
+			if (_DEV_) console.log('$i updated');
+
+			for (const [k, v] of Object.entries(def)) {
+				if (v.where === 'account') {
+					state[k] = $i.clientData[k];
+					reactiveState[k].value = $i.clientData[k];
+				}
+			}
+		});
 
 		this.mutations = mutations;
 	}
