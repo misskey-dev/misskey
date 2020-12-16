@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
-import { apiUrl } from './config';
+import { apiUrl } from '@/config';
+import { waiting } from '@/os';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -22,7 +23,7 @@ export function signout() {
 const accountsData = localStorage.getItem('accounts');
 export const accounts: { id: Account['id'], token: Account['token'] }[] = accountsData ? JSON.parse(accountsData) : [];
 
-function addAccount(id: Account['id'], token: Account['token']) {
+export function addAccount(id: Account['id'], token: Account['token']) {
 	if (!accounts.some(x => x.id === id)) {
 		localStorage.setItem('accounts', JSON.stringify(accounts.concat([{ id, token }])));
 	}
@@ -59,6 +60,7 @@ export function updateAccount(data) {
 	}
 
 	if (data.clientData) {
+		// どうやってアカウントデータの変更を各Pizzaxインスタンスに伝えるか？
 		setAccountSettings(data.clientData);
 	}
 }
@@ -67,10 +69,12 @@ export function refreshAccount() {
 	fetchAccount($i.token).then(updateAccount);
 }
 
-export async function setAccount(token) {
+export async function login(token: Account['token']) {
+	waiting();
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
 	addAccount(me.id, token);
+	location.reload();
 }
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない

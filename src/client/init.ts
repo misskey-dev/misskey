@@ -19,7 +19,7 @@ import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
 import { ColdDeviceStorage } from './storage';
-import { $i, refreshAccount, setAccount, updateAccount } from './account';
+import { $i, refreshAccount, login, updateAccount } from './account';
 import { defaultStore } from './pizzax';
 import { fetchInstance, instance } from './instance';
 
@@ -96,12 +96,8 @@ if ($i && $i.token) {
 		console.log('no account cache found.');
 	}
 
-	let i = localStorage.getItem('i');
-
 	// 連携ログインの場合用にCookieを参照する
-	if (i == null || i === 'null') {
-		i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
-	}
+	const i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
 
 	if (i != null && i !== 'null') {
 		if (_DEV_) {
@@ -110,7 +106,7 @@ if ($i && $i.token) {
 
 		try {
 			document.body.innerHTML = '<div>Please wait...</div>';
-			await setAccount(i);
+			await login(i);
 			location.reload();
 		} catch (e) {
 			// Render the error screen

@@ -56,6 +56,7 @@ import MkInput from './ui/input.vue';
 import { apiUrl, host } from '@/config';
 import { byteify, hexify } from '@/scripts/2fa';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -114,8 +115,7 @@ export default defineComponent({
 
 		onLogin(res) {
 			if (this.autoSet) {
-				localStorage.setItem('i', res.i);
-				location.reload();
+				login(res.i);
 			}
 		},
 

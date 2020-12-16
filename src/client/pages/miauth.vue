@@ -41,6 +41,7 @@ import { defineComponent } from 'vue';
 import MkSignin from '@/components/signin.vue';
 import MkButton from '@/components/ui/button.vue';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -88,8 +89,7 @@ export default defineComponent({
 			this.state = 'denied';
 		},
 		onLogin(res) {
-			localStorage.setItem('i', res.i);
-			location.reload();
+			login(res.i);
 		}
 	}
 });

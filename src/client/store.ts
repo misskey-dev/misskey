@@ -63,12 +63,6 @@ export const store = createStore({
 			localStorage.removeItem('i');
 			document.cookie = `igi=; path=/`;
 		},
-
-		async switchAccount(ctx, i) {
-			ctx.commit('device/setUserData', { userId: ctx.state.i.id, data: ctx.state.deviceUser });
-			localStorage.setItem('i', i.token);
-			await ctx.dispatch('login', i);
-		},
 	},
 
 	modules: {

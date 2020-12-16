@@ -33,6 +33,7 @@ import { defineComponent } from 'vue';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/signin.vue';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -83,8 +84,7 @@ export default defineComponent({
 				location.href = `${this.session.app.callbackUrl}?token=${this.session.token}`;
 			}
 		}, onLogin(res) {
-			localStorage.setItem('i', res.i);
-			location.reload();
+			login(res.i);
 		}
 	}
 });

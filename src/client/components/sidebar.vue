@@ -49,6 +49,7 @@ import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
+import { accounts as storedAccounts, addAccount, login } from '@/account';
 
 export default defineComponent({
 	data() {
@@ -84,7 +85,7 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		'$store.state.device.sidebarDisplay'() {
+		'$pizzax.reactiveState.sidebarDisplay'() {
 			this.calcViewState();
 		},
 
@@ -108,8 +109,8 @@ export default defineComponent({
 
 	methods: {
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.device.sidebarDisplay === 'icon');
-			this.hidden = (window.innerWidth <= 650) || (this.$store.state.device.sidebarDisplay === 'hide');
+			this.iconOnly = (window.innerWidth <= 1279) || (this.$pizzax.state.sidebarDisplay === 'icon');
+			this.hidden = (window.innerWidth <= 650);
 		},
 
 		show() {
@@ -133,7 +134,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const accounts = (await os.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
+			const accounts = (await os.api('users/show', { userIds: storedAccounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
 
 			const accountItems = accounts.map(account => ({
 				type: 'user',
@@ -230,7 +231,7 @@ export default defineComponent({
 		addAcount() {
 			os.popup(import('./signin-dialog.vue'), {}, {
 				done: res => {
-					this.$store.dispatch('addAcount', res);
+					addAccount(res.id, res.token);
 					os.success();
 				},
 			}, 'closed');
@@ -239,30 +240,19 @@ export default defineComponent({
 		createAccount() {
 			os.popup(import('./signup-dialog.vue'), {}, {
 				done: res => {
-					this.$store.dispatch('addAcount', res);
+					addAccount(res.id, res.token);
 					this.switchAccountWithToken(res.i);
 				},
 			}, 'closed');
 		},
 
 		switchAccount(account: any) {
-			const token = this.$store.state.device.accounts.find((x: any) => x.id === account.id).token;
+			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},
 
 		switchAccountWithToken(token: string) {
-			os.waiting();
-
-			os.api('i', {}, token).then((i: any) => {
-				this.$store.dispatch('switchAccount', {
-					...i,
-					token: token
-				}).then(() => {
-					this.$nextTick(() => {
-						location.reload();
-					});
-				});
-			});
+			login(token);
 		},
 	}
 });
