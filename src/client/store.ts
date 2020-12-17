@@ -2,7 +2,6 @@ import { markRaw } from 'vue';
 import { Storage } from './pizzax';
 
 export const defaultDeviceUserSettings = {
-	widgets: [],
 	tl: {
 		src: 'home'
 	},
@@ -90,6 +89,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	localOnly: {
 		where: 'deviceAccount',
 		default: false
+	},
+	widgets: {
+		where: 'deviceAccount',
+		default: []
 	},
 
 	serverDisconnectedBehavior: {

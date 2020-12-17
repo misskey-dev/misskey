@@ -57,10 +57,7 @@ export default defineComponent({
 		},
 
 		saveMemo() {
-			this.$store.dispatch('settings/set', {
-				key: 'memo',
-				value: this.text
-			});
+			this.$pizzax.set('memo', this.text);
 			this.changed = false;
 		}
 	}

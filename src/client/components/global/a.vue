@@ -115,9 +115,10 @@ export default defineComponent({
 				if (this.$pizzax.state.defaultSideView && this.sideViewHook && this.to !== '/') {
 					return this.sideViewHook(this.to);
 				}
-				if (this.$store.state.device.deckNavWindow && (ui === 'deck') && this.to !== '/') {
-					return this.window();
-				}
+				// TODO: a.vueからdeck-sotreを参照したくないのでなんとかする
+				//if (deckStore.state.device.deckNavWindow && (ui === 'deck') && this.to !== '/') {
+				//	return this.window();
+				//}
 				if (ui === 'desktop') {
 					return this.window();
 				}
