@@ -56,10 +56,10 @@ export default defineComponent({
 	computed: {
 		widgets: {
 			get() {
-				return this.$store.state.deviceUser.widgets;
+				return this.$pizzax.state.widgets;
 			},
 			set(value) {
-				this.$store.commit('deviceUser/setWidgets', value);
+				this.$pizzax.set('widgets', value);
 			}
 		},
 	},
@@ -87,21 +87,17 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			this.$store.commit('deviceUser/addWidget', {
+			this.$pizzax.set('widgets', [...this.$pizzax.state.widgets, {
 				name: widget,
 				id: uuid(),
 				place: null,
 				data: {}
-			});
+			}]);
 		},
 
 		removeWidget(widget) {
-			this.$store.commit('deviceUser/removeWidget', widget);
+			this.$pizzax.set('widgets', this.$pizzax.state.widgets.filter(w => w.id != widget.id));
 		},
-
-		saveHome() {
-			this.$store.commit('deviceUser/setWidgets', this.widgets);
-		}
 	}
 });
 </script>

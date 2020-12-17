@@ -144,13 +144,13 @@ export default defineComponent({
 	},
 
 	created() {
-		this.src = this.$store.state.deviceUser.tl.src;
+		this.src = this.$pizzax.state.tl.src;
 		if (this.src === 'list') {
-			this.list = this.$store.state.deviceUser.tl.arg;
+			this.list = this.$pizzax.state.tl.arg;
 		} else if (this.src === 'antenna') {
-			this.antenna = this.$store.state.deviceUser.tl.arg;
+			this.antenna = this.$pizzax.state.tl.arg;
 		} else if (this.src === 'channel') {
-			this.channel = this.$store.state.deviceUser.tl.arg;
+			this.channel = this.$pizzax.state.tl.arg;
 		}
 	},
 
@@ -218,7 +218,7 @@ export default defineComponent({
 		},
 
 		saveSrc() {
-			this.$store.commit('deviceUser/setTl', {
+			this.$pizzax.set('tl', {
 				src: this.src,
 				arg:
 					this.src === 'list' ? this.list :
