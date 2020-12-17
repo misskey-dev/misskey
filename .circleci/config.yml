@@ -4,7 +4,7 @@ executors:
   docker:
     working_directory: /tmp/workspace
     docker:
-      - image: docker:latest
+      - image: docker:12.10.1
 
 jobs:
   docker:
