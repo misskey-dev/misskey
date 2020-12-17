@@ -5,17 +5,17 @@
 		<div class="_title"><Fa :icon="faColumns"/> </div>
 		<div class="_content">
 			<div>{{ $t('defaultNavigationBehaviour') }}</div>
-			<MkSwitch v-model:value="deckNavWindow">{{ $t('openInWindow') }}</MkSwitch>
+			<MkSwitch v-model:value="navWindow">{{ $t('openInWindow') }}</MkSwitch>
 		</div>
 		<div class="_content">
-			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
+			<MkSwitch v-model:value="alwaysShowMainColumn">
 				{{ $t('_deck.alwaysShowMainColumn') }}
 			</MkSwitch>
 		</div>
 		<div class="_content">
 			<div>{{ $t('_deck.columnAlign') }}</div>
-			<MkRadio v-model="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
-			<MkRadio v-model="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
+			<MkRadio v-model="columnAlign" value="left">{{ $t('left') }}</MkRadio>
+			<MkRadio v-model="columnAlign" value="center">{{ $t('center') }}</MkRadio>
 		</div>
 	</section>
 
@@ -38,6 +38,7 @@ import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
+import { deckStore } from '@/ui/deck/deck-store';
 
 export default defineComponent({
 	components: {
@@ -67,20 +68,9 @@ export default defineComponent({
 	},
 
 	computed: {
-		deckNavWindow: {
-			get() { return this.$store.state.device.deckNavWindow; },
-			set(value) { this.$store.commit('device/set', { key: 'deckNavWindow', value }); }
-		},
-
-		deckAlwaysShowMainColumn: {
-			get() { return this.$store.state.device.deckAlwaysShowMainColumn; },
-			set(value) { this.$store.commit('device/set', { key: 'deckAlwaysShowMainColumn', value }); }
-		},
-
-		deckColumnAlign: {
-			get() { return this.$store.state.device.deckColumnAlign; },
-			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
-		},
+		navWindow: deckStore.makeGetterSetter('navWindow'),
+		alwaysShowMainColumn: deckStore.makeGetterSetter('alwaysShowMainColumn'),
+		columnAlign: deckStore.makeGetterSetter('columnAlign'),
 	},
 
 	mounted() {

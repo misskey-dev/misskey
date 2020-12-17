@@ -1,7 +1,7 @@
+import { markRaw } from 'vue';
 import { Storage } from './pizzax';
 
 export const defaultDeviceUserSettings = {
-	localOnly: false,
 	widgets: [],
 	tl: {
 		src: 'home'
@@ -11,7 +11,6 @@ export const defaultDeviceUserSettings = {
 export const defaultDeviceSettings = {
 	lang: null,
 	chatOpenBehavior: 'page',
-	deckNavWindow: true,
 	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
@@ -23,7 +22,7 @@ export const noteActions = [];
 export const noteViewInterruptors = [];
 export const notePostInterruptors = [];
 
-export const defaultStore = new Storage('base', {
+export const defaultStore = markRaw(new Storage('base', {
 	tutorial: {
 		where: 'account',
 		default: 0
@@ -178,7 +177,7 @@ export const defaultStore = new Storage('base', {
 		where: 'device',
 		default: 'full' as 'full' | 'icon'
 	},
-});
+}));
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
 declare module '@vue/runtime-core' {
@@ -237,14 +236,6 @@ createStore({
 						src: x.src,
 						arg: x.arg
 					};
-				},
-
-				setVisibility(state, visibility) {
-					state.visibility = visibility;
-				},
-
-				setLocalOnly(state, localOnly) {
-					state.localOnly = localOnly;
 				},
 
 				setWidgets(state, widgets) {

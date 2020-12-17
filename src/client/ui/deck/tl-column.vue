@@ -25,6 +25,7 @@ import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
+import { removeColumn, updateColumn } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -96,12 +97,13 @@ export default defineComponent({
 			});
 			if (canceled) {
 				if (this.column.tl == null) {
-					this.$store.commit('deviceUser/removeDeckColumn', this.column.id);
+					removeColumn(this.column.id);
 				}
 				return;
 			}
-			this.column.tl = src;
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
+			updateColumn(this.column.id, {
+				tl: src
+			});
 		},
 
 		queueUpdated(q) {

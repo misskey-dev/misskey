@@ -1,9 +1,9 @@
 <template>
-<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap">
+<div class="mk-deck" :class="`${deckStore.state.columnAlign}`" v-hotkey.global="keymap">
 	<XSidebar ref="nav"/>
 
 	<!-- TODO: deckMainColumnPlace を見て位置変える -->
-	<DeckColumn class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
+	<DeckColumn class="column" v-if="deckStore.state.alwaysShowMainColumn || $route.name !== 'index'">
 		<template #header>
 			<XHeader :info="pageInfo"/>
 		</template>
@@ -48,7 +48,7 @@ import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 import XCommon from './_common_/common.vue';
-import { addColumn } from './deck/deck-store';
+import { deckStore, addColumn } from './deck/deck-store';
 
 export default defineComponent({
 	components: {
@@ -61,6 +61,7 @@ export default defineComponent({
 
 	data() {
 		return {
+			deckStore,
 			host: host,
 			pageInfo: null,
 			pageKey: 0,
@@ -71,14 +72,11 @@ export default defineComponent({
 	},
 
 	computed: {
-		deck() {
-			return this.$store.state.deviceUser.deck;
+		columns() {
+			return deckStore.state.columns;
 		},
-		columns(): any[] {
-			return this.deck.columns;
-		},
-		layout(): any[] {
-			return this.deck.layout;
+		layout() {
+			return deckStore.state.layout;
 		},
 		navIndicated(): boolean {
 			if (!this.$i) return false;
