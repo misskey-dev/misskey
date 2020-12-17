@@ -91,9 +91,7 @@ export default defineComponent({
 		uninstall() {
 			const theme = this.selectedTheme;
 			const themes = ColdDeviceStorage.get('themes').filter(t => t.id != theme.id);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
+			ColdDeviceStorage.set('themes', themes);
 			os.success();
 		},
 	}
