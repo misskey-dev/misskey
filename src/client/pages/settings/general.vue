@@ -97,6 +97,7 @@ import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	components: {
@@ -140,12 +141,7 @@ export default defineComponent({
 		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
 		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
 		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
-
-		chatOpenBehavior: {
-			get() { return this.$store.state.device.chatOpenBehavior; },
-			set(value) { this.$store.commit('device/set', { key: 'chatOpenBehavior', value }); }
-		},
-
+		chatOpenBehavior: ColdDeviceStorage.makeGetterSetter('chatOpenBehavior'),
 		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
 		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 	},

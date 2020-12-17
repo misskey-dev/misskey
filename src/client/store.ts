@@ -10,7 +10,6 @@ export const defaultDeviceUserSettings = {
 
 export const defaultDeviceSettings = {
 	lang: null,
-	chatOpenBehavior: 'page',
 	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
@@ -22,6 +21,7 @@ export const noteActions = [];
 export const noteViewInterruptors = [];
 export const notePostInterruptors = [];
 
+// TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 export const defaultStore = markRaw(new Storage('base', {
 	tutorial: {
 		where: 'account',

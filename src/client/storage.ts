@@ -25,6 +25,7 @@ export class ColdDeviceStorage {
 		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
 		lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
 		syncDeviceDarkMode: true,
+		chatOpenBehavior: 'page' as 'page' | 'window' | 'popout',
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,
 		sound_masterVolume: 0.3,

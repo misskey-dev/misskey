@@ -12,6 +12,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
 import { ui, url } from '@/config';
 import { popout } from '@/scripts/popout';
+import { ColdDeviceStorage } from '@/storage';
 
 export default defineComponent({
 	inject: {
@@ -98,8 +99,8 @@ export default defineComponent({
 
 		nav() {
 			if (this.to.startsWith('/my/messaging')) {
-				if (this.$store.state.device.chatOpenBehavior === 'window') return this.window();
-				if (this.$store.state.device.chatOpenBehavior === 'popout') return this.popout();
+				if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return this.window();
+				if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return this.popout();
 			}
 
 			if (this.behavior) {
