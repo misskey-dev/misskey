@@ -3,7 +3,10 @@
 	<div class="_content">
 		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</MkA>
 
-		<MkButton @click="save" primary class="save" style="margin: 16px auto 16px auto;"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+		<div class="buttons" style="margin: 16px 0;">
+			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
+		</div>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
 			<template #header><Fa :icon="faCog"/> {{ $t('_pages.pageSetting') }}</template>
