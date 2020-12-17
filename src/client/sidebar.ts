@@ -1,5 +1,5 @@
 import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faPaperclip, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faPaperclip, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers, faLeaf } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
 import { store } from '@/store';
 import { search } from '@/scripts/search';
@@ -124,6 +124,11 @@ export const sidebarDef = {
 		icon: faDoorClosed,
 		show: computed(() => store.getters.isSignedIn),
 		to: computed(() => `/@${store.state.i.username}/room`),
+	},
+	mulukhiya: {
+		title: 'mulukhiyaHome',
+		icon: faLeaf,
+		to: '/mulukhiya',
 	},
 	ui: {
 		title: 'switchUi',
