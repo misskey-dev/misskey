@@ -1,7 +1,6 @@
 import { Storage } from './pizzax';
 
 export const defaultDeviceUserSettings = {
-	visibility: 'public',
 	localOnly: false,
 	widgets: [],
 	tl: {
@@ -85,6 +84,14 @@ export const defaultStore = new Storage('base', {
 			'-',
 			'ui',
 		]
+	},
+	visibility: {
+		where: 'deviceAccount',
+		default: 'public' as 'public' | 'home' | 'followers' | 'specified'
+	},
+	localOnly: {
+		where: 'deviceAccount',
+		default: false
 	},
 
 	serverDisconnectedBehavior: {

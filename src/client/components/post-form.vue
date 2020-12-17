@@ -135,8 +135,8 @@ export default defineComponent({
 			poll: null,
 			useCw: false,
 			cw: null,
-			localOnly: this.$pizzax.state.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$pizzax.state.defaultNoteLocalOnly,
-			visibility: this.$pizzax.state.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$pizzax.state.defaultNoteVisibility,
+			localOnly: this.$pizzax.state.rememberNoteVisibility ? this.$pizzax.state.localOnly : this.$pizzax.state.defaultNoteLocalOnly,
+			visibility: this.$pizzax.state.rememberNoteVisibility ? this.$pizzax.state.visibility : this.$pizzax.state.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -400,13 +400,13 @@ export default defineComponent({
 				changeVisibility: visibility => {
 					this.visibility = visibility;
 					if (this.$pizzax.state.rememberNoteVisibility) {
-						this.$store.commit('deviceUser/setVisibility', visibility);
+						this.$pizzax.set('visibility', visibility);
 					}
 				},
 				changeLocalOnly: localOnly => {
 					this.localOnly = localOnly;
 					if (this.$pizzax.state.rememberNoteVisibility) {
-						this.$store.commit('deviceUser/setLocalOnly', localOnly);
+						this.$pizzax.set('localOnly', localOnly);
 					}
 				}
 			}, 'closed');
