@@ -10,7 +10,6 @@ export const defaultDeviceUserSettings = {
 
 export const defaultDeviceSettings = {
 	lang: null,
-	sidebarDisplay: 'full', // full, icon, hide
 	roomGraphicsQuality: 'medium',
 	roomUseOrthographicCamera: true,
 };
