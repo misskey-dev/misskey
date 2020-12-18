@@ -74,7 +74,7 @@ export default defineComponent({
 		},
 
 		thumbnail(image: any): string {
-			return this.$pizzax.state.disableShowingAnimatedImages
+			return this.$store.state.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;
 		},

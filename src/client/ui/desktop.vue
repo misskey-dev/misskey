@@ -35,7 +35,7 @@ export default defineComponent({
 			return {
 				'd': () => {
 					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$pizzax.set('darkMode', !this.$pizzax.state.darkMode);
+					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				'p': os.post,
 				'n': os.post,
@@ -45,7 +45,7 @@ export default defineComponent({
 		},
 
 		menu(): string[] {
-			return this.$pizzax.state.menu;
+			return this.$store.state.menu;
 		},
 	},
 

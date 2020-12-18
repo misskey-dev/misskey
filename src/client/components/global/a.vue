@@ -112,7 +112,7 @@ export default defineComponent({
 			if (this.navHook) {
 				this.navHook(this.to);
 			} else {
-				if (this.$pizzax.state.defaultSideView && this.sideViewHook && this.to !== '/') {
+				if (this.$store.state.defaultSideView && this.sideViewHook && this.to !== '/') {
 					return this.sideViewHook(this.to);
 				}
 				// TODO: a.vueからdeck-sotreを参照したくないのでなんとかする

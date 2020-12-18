@@ -25,7 +25,7 @@
 			</header>
 			<main ref="main">
 				<router-view v-slot="{ Component }">
-					<transition :name="$pizzax.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<component :is="Component" :ref="changePage"/>
 					</transition>
 				</router-view>
@@ -80,7 +80,7 @@ export default defineComponent({
 			return {
 				'd': () => {
 					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$pizzax.set('darkMode', !this.$pizzax.state.darkMode);
+					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				's': search,
 				'h|/': this.help

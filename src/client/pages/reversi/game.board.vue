@@ -22,11 +22,11 @@
 	</div>
 
 	<div class="board">
-		<div class="labels-x" v-if="$pizzax.state.gamesReversiShowBoardLabels">
+		<div class="labels-x" v-if="$store.state.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 		<div class="flex">
-			<div class="labels-y" v-if="$pizzax.state.gamesReversiShowBoardLabels">
+			<div class="labels-y" v-if="$store.state.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 			<div class="cells" :style="cellsStyle">
@@ -35,7 +35,7 @@
 					@click="set(i)"
 					:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`"
 				>
-					<template v-if="$pizzax.state.gamesReversiUseAvatarStones || true">
+					<template v-if="$store.state.gamesReversiUseAvatarStones || true">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
@@ -45,11 +45,11 @@
 					</template>
 				</div>
 			</div>
-			<div class="labels-y" v-if="$pizzax.state.gamesReversiShowBoardLabels">
+			<div class="labels-y" v-if="$store.state.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 		</div>
-		<div class="labels-x" v-if="$pizzax.state.gamesReversiShowBoardLabels">
+		<div class="labels-x" v-if="$store.state.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>

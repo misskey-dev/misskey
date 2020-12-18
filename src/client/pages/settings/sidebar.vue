@@ -61,7 +61,7 @@ export default defineComponent({
 	},
 
 	created() {
-		this.items = this.$pizzax.state.menu.join('\n');
+		this.items = this.$store.state.menu.join('\n');
 	},
 
 	mounted() {
@@ -70,7 +70,7 @@ export default defineComponent({
 
 	methods: {
 		async addItem() {
-			const menu = Object.keys(this.menuDef).filter(k => !this.$pizzax.state.menu.includes(k));
+			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.menu.includes(k));
 			const { canceled, result: item } = await os.dialog({
 				type: null,
 				title: this.$t('addItem'),
@@ -89,12 +89,12 @@ export default defineComponent({
 		},
 
 		save() {
-			this.$pizzax.set('menu', this.splited);
+			this.$store.set('menu', this.splited);
 		},
 
 		reset() {
-			this.$pizzax.reset('menu');
-			this.items = this.$pizzax.state.menu.join('\n');
+			this.$store.reset('menu');
+			this.items = this.$store.state.menu.join('\n');
 		},
 	},
 });

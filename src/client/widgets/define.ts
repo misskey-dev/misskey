@@ -67,7 +67,7 @@ export default function <T extends Form>(data: {
 
 			save() {
 				if (this.widget) {
-					this.$pizzax.set('widgets', this.$pizzax.state.widgets.map(w => w.id === this.id ? {
+					this.$store.set('widgets', this.$store.state.widgets.map(w => w.id === this.id ? {
 						...this.widget,
 						data: this.props
 					} : w));

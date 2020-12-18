@@ -135,8 +135,8 @@ export default defineComponent({
 			poll: null,
 			useCw: false,
 			cw: null,
-			localOnly: this.$pizzax.state.rememberNoteVisibility ? this.$pizzax.state.localOnly : this.$pizzax.state.defaultNoteLocalOnly,
-			visibility: this.$pizzax.state.rememberNoteVisibility ? this.$pizzax.state.visibility : this.$pizzax.state.defaultNoteVisibility,
+			localOnly: this.$store.state.rememberNoteVisibility ? this.$store.state.localOnly : this.$store.state.defaultNoteLocalOnly,
+			visibility: this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -262,7 +262,7 @@ export default defineComponent({
 		}
 
 		// keep cw when reply
-		if (this.$pizzax.keepCw && this.reply && this.reply.cw) {
+		if (this.$store.keepCw && this.reply && this.reply.cw) {
 			this.useCw = true;
 			this.cw = this.reply.cw;
 		}
@@ -376,7 +376,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$pizzax.state.uploadFolder, name).then(res => {
+			os.upload(file, this.$store.state.uploadFolder, name).then(res => {
 				this.files.push(res);
 			});
 		},
@@ -399,14 +399,14 @@ export default defineComponent({
 			}, {
 				changeVisibility: visibility => {
 					this.visibility = visibility;
-					if (this.$pizzax.state.rememberNoteVisibility) {
-						this.$pizzax.set('visibility', visibility);
+					if (this.$store.state.rememberNoteVisibility) {
+						this.$store.set('visibility', visibility);
 					}
 				},
 				changeLocalOnly: localOnly => {
 					this.localOnly = localOnly;
-					if (this.$pizzax.state.rememberNoteVisibility) {
-						this.$pizzax.set('localOnly', localOnly);
+					if (this.$store.state.rememberNoteVisibility) {
+						this.$store.set('localOnly', localOnly);
 					}
 				}
 			}, 'closed');
@@ -440,7 +440,7 @@ export default defineComponent({
 					const file = item.getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$pizzax.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 					this.upload(file, formatted);
 				}
 			}

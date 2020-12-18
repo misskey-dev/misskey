@@ -9,7 +9,7 @@
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
-					<transition :name="$pizzax.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
@@ -106,7 +106,7 @@ export default defineComponent({
 			return {
 				'd': () => {
 					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$pizzax.set('darkMode', !this.$pizzax.state.darkMode);
+					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				'p': os.post,
 				'n': os.post,
@@ -116,11 +116,11 @@ export default defineComponent({
 		},
 
 		widgets(): any {
-			return this.$store.state.deviceUser.widgets;
+			return this.$store.state.widgets;
 		},
 
 		menu(): string[] {
-			return this.$pizzax.state.menu;
+			return this.$store.state.menu;
 		},
 
 		navIndicated(): boolean {
@@ -141,8 +141,8 @@ export default defineComponent({
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
 
-		if (this.$store.state.deviceUser.widgets.length === 0) {
-			this.$store.commit('deviceUser/setWidgets', [{
+		if (this.$store.state.widgets.length === 0) {
+			this.$store.set('widgets', [{
 				name: 'calendar',
 				id: 'a', place: 'right', data: {}
 			}, {

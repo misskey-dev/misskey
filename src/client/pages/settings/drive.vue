@@ -28,9 +28,9 @@ export default defineComponent({
 	},
 
 	async created() {
-		if (this.$pizzax.state.uploadFolder) {
+		if (this.$store.state.uploadFolder) {
 			this.uploadFolder = await os.api('drive/folders/show', {
-				folderId: this.$pizzax.state.uploadFolder
+				folderId: this.$store.state.uploadFolder
 			});
 		}
 	},
@@ -38,11 +38,11 @@ export default defineComponent({
 	methods: {
 		chooseUploadFolder() {
 			os.selectDriveFolder(false).then(async folder => {
-				this.$pizzax.set('uploadFolder', folder ? folder.id : null);
+				this.$store.set('uploadFolder', folder ? folder.id : null);
 				os.success();
-				if (this.$pizzax.state.uploadFolder) {
+				if (this.$store.state.uploadFolder) {
 					this.uploadFolder = await os.api('drive/folders/show', {
-						folderId: this.$pizzax.state.uploadFolder
+						folderId: this.$store.state.uploadFolder
 					});
 				} else {
 					this.uploadFolder = null;

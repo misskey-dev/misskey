@@ -41,7 +41,6 @@
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, ref, watch } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh, faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { store } from '@/store';
 import { i18n } from '@/i18n';
 import FormLink from '@/components/form/link.vue';
 import FormGroup from '@/components/form/group.vue';

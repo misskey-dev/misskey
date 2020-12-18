@@ -278,7 +278,7 @@ export default defineComponent({
 			}
 
 			// TODO: var(--panel)の色が暗いか明るいかで判定する
-			const gridColor = this.$pizzax.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+			const gridColor = this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 			this.chartInstance = markRaw(new Chart(this.$refs.chart, {

@@ -37,7 +37,7 @@ export default defineComponent({
 			randomSeed: Math.random(),
 			visitor: this.$i,
 			url: url,
-			enableAiScript: !this.$pizzax.state.disablePagesScript
+			enableAiScript: !this.$store.state.disablePagesScript
 		});
 	},
 

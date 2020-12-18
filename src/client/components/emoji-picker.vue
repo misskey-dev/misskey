@@ -13,7 +13,7 @@
 						tabindex="0"
 					>
 						<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-						<img v-else :src="$pizzax.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img v-else :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 				<div v-if="searchResultUnicode.length > 0">
@@ -45,7 +45,7 @@
 				<section>
 					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $t('recentUsed') }}</header>
 					<div>
-						<button v-for="emoji in $pizzax.state.recentlyUsedEmojis"
+						<button v-for="emoji in $store.state.recentlyUsedEmojis"
 							class="_button"
 							@click="chosen(emoji, $event)"
 							:key="emoji"
@@ -67,7 +67,7 @@
 						@click="chosen(emoji, $event)"
 						:key="emoji.name"
 					>
-						<img :src="$pizzax.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 			</section>
@@ -126,9 +126,9 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.$pizzax.state.reactions,
-			width: this.asReactionPicker ? this.$pizzax.state.reactionPickerWidth : 3,
-			height: this.asReactionPicker ? this.$pizzax.state.reactionPickerHeight : 2,
+			pinned: this.$store.state.reactions,
+			width: this.asReactionPicker ? this.$store.state.reactionPickerWidth : 3,
+			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
 			customEmojiCategories: emojiCategories,
 			customEmojis: this.$instance.emojis,
@@ -347,10 +347,10 @@ export default defineComponent({
 
 			// 最近使った絵文字更新
 			if (!this.pinned.includes(key)) {
-				let recents = this.$pizzax.state.recentlyUsedEmojis;
+				let recents = this.$store.state.recentlyUsedEmojis;
 				recents = recents.filter((e: any) => e !== key);
 				recents.unshift(key);
-				this.$pizzax.set('recentlyUsedEmojis', recents.splice(0, 16));
+				this.$store.set('recentlyUsedEmojis', recents.splice(0, 16));
 			}
 		},
 

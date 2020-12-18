@@ -19,7 +19,7 @@
 		<template v-if="!hover"><Fa :icon="faFolder" fixed-width/></template>
 		{{ folder.name }}
 	</p>
-	<p class="upload" v-if="$pizzax.state.uploadFolder == folder.id">
+	<p class="upload" v-if="$store.state.uploadFolder == folder.id">
 		{{ $t('uploadFolder') }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
@@ -213,8 +213,8 @@ export default defineComponent({
 			os.api('drive/folders/delete', {
 				folderId: this.folder.id
 			}).then(() => {
-				if (this.$pizzax.state.uploadFolder === this.folder.id) {
-					this.$pizzax.set('uploadFolder', null);
+				if (this.$store.state.uploadFolder === this.folder.id) {
+					this.$store.set('uploadFolder', null);
 				}
 			}).catch(err => {
 				switch(err.id) {
@@ -235,7 +235,7 @@ export default defineComponent({
 		},
 
 		setAsUploadFolder() {
-			this.$pizzax.set('uploadFolder', this.folder.id);
+			this.$store.set('uploadFolder', this.folder.id);
 		},
 
 		onContextmenu(e) {

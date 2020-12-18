@@ -56,10 +56,10 @@ export default defineComponent({
 	computed: {
 		widgets: {
 			get() {
-				return this.$pizzax.state.widgets;
+				return this.$store.state.widgets;
 			},
 			set(value) {
-				this.$pizzax.set('widgets', value);
+				this.$store.set('widgets', value);
 			}
 		},
 	},
@@ -87,7 +87,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			this.$pizzax.set('widgets', [...this.$pizzax.state.widgets, {
+			this.$store.set('widgets', [...this.$store.state.widgets, {
 				name: widget,
 				id: uuid(),
 				place: null,
@@ -96,7 +96,7 @@ export default defineComponent({
 		},
 
 		removeWidget(widget) {
-			this.$pizzax.set('widgets', this.$pizzax.state.widgets.filter(w => w.id != widget.id));
+			this.$store.set('widgets', this.$store.state.widgets.filter(w => w.id != widget.id));
 		},
 	}
 });

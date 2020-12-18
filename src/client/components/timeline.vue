@@ -1,5 +1,5 @@
 <template>
-<XNotes :class="{ _noGap_: !$pizzax.state.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes :class="{ _noGap_: !$store.state.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
 </template>
 
 <script lang="ts">
@@ -51,9 +51,9 @@ export default defineComponent({
 			connection2: null,
 			pagination: null,
 			baseQuery: {
-				includeMyRenotes: this.$pizzax.state.showMyRenotes,
-				includeRenotedMyNotes: this.$pizzax.state.showRenotedMyNotes,
-				includeLocalRenotes: this.$pizzax.state.showLocalRenotes
+				includeMyRenotes: this.$store.state.showMyRenotes,
+				includeRenotedMyNotes: this.$store.state.showRenotedMyNotes,
+				includeLocalRenotes: this.$store.state.showLocalRenotes
 			},
 			query: {},
 		};

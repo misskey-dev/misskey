@@ -67,7 +67,7 @@ export default defineComponent({
 					handler: this.preview
 				}
 			},
-			reactions: JSON.parse(JSON.stringify(this.$pizzax.state.reactions)),
+			reactions: JSON.parse(JSON.stringify(this.$store.state.reactions)),
 			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
@@ -92,7 +92,7 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			this.$pizzax.set('reactions', this.reactions);
+			this.$store.set('reactions', this.reactions);
 		},
 
 		remove(reaction, ev) {
@@ -119,7 +119,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			this.reactions = JSON.parse(JSON.stringify(this.$pizzax.def.reactions.default));
+			this.reactions = JSON.parse(JSON.stringify(this.$store.def.reactions.default));
 		},
 
 		chooseEmoji(ev) {

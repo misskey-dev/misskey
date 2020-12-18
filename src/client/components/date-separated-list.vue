@@ -37,7 +37,7 @@ export default defineComponent({
 			});
 		}
 
-		return h(this.$pizzax.state.animation ? TransitionGroup : 'div', this.$pizzax.state.animation ? {
+		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
 			class: 'sqadhkmv _list_',
 			name: 'list',
 			tag: 'div',

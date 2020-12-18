@@ -160,7 +160,7 @@ export default defineComponent({
 	computed: {
 		gridColor() {
 			// TODO: var(--panel)の色が暗いか明るいかで判定する
-			return this.$pizzax.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+			return this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 		},
 	},
 

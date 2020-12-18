@@ -62,6 +62,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkSelect from '@/components/ui/select.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/storage';
 
 let room: Room;
 
@@ -117,7 +118,7 @@ export default defineComponent({
 		this.carpetColor = roomInfo.carpetColor;
 
 		room = new Room(this.user, this.isMyRoom, roomInfo, this.$el, {
-			graphicsQuality: this.$store.state.device.roomGraphicsQuality,
+			graphicsQuality: ColdDeviceStorage.get('roomGraphicsQuality'),
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
@@ -132,7 +133,7 @@ export default defineComponent({
 					});
 				}
 			},
-			useOrthographicCamera: this.$store.state.device.roomUseOrthographicCamera
+			useOrthographicCamera: ColdDeviceStorage.get('roomUseOrthographicCamera'),
 		});
 	},
 

@@ -1,5 +1,5 @@
 <template>
-<transition :name="$pizzax.state.animation ? 'fade' : ''" appear>
+<transition :name="$store.state.animation ? 'fade' : ''" appear>
 	<div class="nvlagfpb" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" @close="$emit('closed')" class="_popup _shadow" :align="'left'"/>
 	</div>

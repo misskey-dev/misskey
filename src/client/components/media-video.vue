@@ -48,7 +48,7 @@ export default defineComponent({
 		}
 	},
 	created() {
-		this.hide = (this.$pizzax.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$pizzax.state.nsfw !== 'ignore');
+		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
 	},
 });
 </script>

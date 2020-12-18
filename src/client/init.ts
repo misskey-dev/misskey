@@ -141,7 +141,7 @@ if (_DEV_) {
 
 app.config.globalProperties = {
 	$i,
-	$pizzax: defaultStore,
+	$store: defaultStore,
 	$instance: instance,
 };
 

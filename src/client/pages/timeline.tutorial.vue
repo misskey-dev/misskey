@@ -83,8 +83,8 @@ export default defineComponent({
 
 	computed: {
 		tutorial: {
-			get() { return this.$pizzax.state.tutorial || 0; },
-			set(value) { this.$pizzax.set('tutorial', value); }
+			get() { return this.$store.state.tutorial || 0; },
+			set(value) { this.$store.set('tutorial', value); }
 		},
 	},
 });

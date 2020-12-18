@@ -189,6 +189,6 @@ export const defaultStore = markRaw(new Storage('base', {
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
 declare module '@vue/runtime-core' {
 	interface ComponentCustomProperties {
-		$pizzax: typeof defaultStore;
+		$store: typeof defaultStore;
 	}
 }

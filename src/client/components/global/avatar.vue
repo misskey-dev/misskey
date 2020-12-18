@@ -38,7 +38,7 @@ export default defineComponent({
 			return this.user.isCat;
 		},
 		url(): string {
-			return this.$pizzax.state.disableShowingAnimatedImages
+			return this.$store.state.disableShowingAnimatedImages
 				? getStaticImageUrl(this.user.avatarUrl)
 				: this.user.avatarUrl;
 		},

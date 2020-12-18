@@ -5,8 +5,9 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host } from '@/config';
 import getAcct from '../../misc/acct/render';
 import * as os from '@/os';
-import { store, userActions } from '@/store';
+import { userActions } from '@/store';
 import { router } from '@/router';
+import { $i } from '@/account';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;

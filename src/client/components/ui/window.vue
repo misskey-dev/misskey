@@ -1,5 +1,5 @@
 <template>
-<transition :name="$pizzax.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div class="ebkgocck" v-if="showing">
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" @contextmenu.prevent.stop="onContextmenu">

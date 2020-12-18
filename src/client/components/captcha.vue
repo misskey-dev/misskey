@@ -100,7 +100,7 @@ export default defineComponent({
 			if (this.captcha.render && this.$refs.captcha instanceof Element) {
 				this.captcha.render(this.$refs.captcha, {
 					sitekey: this.sitekey,
-					theme: this.$pizzax.state.darkMode ? 'dark' : 'light',
+					theme: this.$store.state.darkMode ? 'dark' : 'light',
 					callback: this.callback,
 					'expired-callback': this.callback,
 					'error-callback': this.callback,

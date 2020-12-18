@@ -68,7 +68,7 @@ export default defineComponent({
 
 	computed: {
 		menu(): string[] {
-			return this.$pizzax.state.menu;
+			return this.$store.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -85,7 +85,7 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		'$pizzax.reactiveState.sidebarDisplay'() {
+		'$store.reactiveState.sidebarDisplay'() {
 			this.calcViewState();
 		},
 
@@ -109,7 +109,7 @@ export default defineComponent({
 
 	methods: {
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1279) || (this.$pizzax.state.sidebarDisplay === 'icon');
+			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.sidebarDisplay === 'icon');
 			this.hidden = (window.innerWidth <= 650);
 		},
 

@@ -1,6 +1,6 @@
 <template>
 <div class="fdidabkb" :style="`--height:${height};`">
-	<transition :name="$pizzax.state.animation ? 'header' : ''" mode="out-in" appear>
+	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
 		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
 	<template v-if="info">

@@ -1,5 +1,5 @@
 <template>
-<div class="nsbbhtug" v-if="hasDisconnected && $pizzax.state.serverDisconnectedBehavior === 'quiet'" @click="resetDisconnected">
+<div class="nsbbhtug" v-if="hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" @click="resetDisconnected">
 	<div>{{ $t('disconnectedFromServer') }}</div>
 	<div class="command">
 		<button class="_textButton" @click="reload">{{ $t('reload') }}</button>

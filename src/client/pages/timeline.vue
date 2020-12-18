@@ -3,8 +3,8 @@
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 
 	<div class="_section">
-		<XTutorial v-if="$pizzax.state.tutorial != -1" class="tutorial _content _vMargin"/>
-		<XPostForm v-if="$pizzax.state.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
+		<XTutorial v-if="$store.state.tutorial != -1" class="tutorial _content _vMargin"/>
+		<XPostForm v-if="$store.state.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
 		<XTimeline ref="tl"
 			class="_content _vMargin"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
@@ -144,13 +144,13 @@ export default defineComponent({
 	},
 
 	created() {
-		this.src = this.$pizzax.state.tl.src;
+		this.src = this.$store.state.tl.src;
 		if (this.src === 'list') {
-			this.list = this.$pizzax.state.tl.arg;
+			this.list = this.$store.state.tl.arg;
 		} else if (this.src === 'antenna') {
-			this.antenna = this.$pizzax.state.tl.arg;
+			this.antenna = this.$store.state.tl.arg;
 		} else if (this.src === 'channel') {
-			this.channel = this.$pizzax.state.tl.arg;
+			this.channel = this.$store.state.tl.arg;
 		}
 	},
 
@@ -218,7 +218,7 @@ export default defineComponent({
 		},
 
 		saveSrc() {
-			this.$pizzax.set('tl', {
+			this.$store.set('tl', {
 				src: this.src,
 				arg:
 					this.src === 'list' ? this.list :

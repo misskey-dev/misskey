@@ -252,7 +252,7 @@ export default defineComponent({
 		},
 
 		resetTutorial() {
-			this.$pizzax.set('tutorial', 0);
+			this.$store.set('tutorial', 0);
 		},
 	}
 });

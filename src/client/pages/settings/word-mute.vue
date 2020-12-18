@@ -85,7 +85,7 @@ export default defineComponent({
 	},
 
 	async created() {
-		this.softMutedWords = this.$pizzax.state.mutedWords.map(x => x.join(' ')).join('\n');
+		this.softMutedWords = this.$store.state.mutedWords.map(x => x.join(' ')).join('\n');
 		this.hardMutedWords = this.$i.mutedWords.map(x => x.join(' ')).join('\n');
 
 		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
@@ -97,7 +97,7 @@ export default defineComponent({
 
 	methods: {
 		async save() {
-			this.$pizzax.set('mutedWords', this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')));
+			this.$store.set('mutedWords', this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')));
 			await os.api('i/update', {
 				mutedWords: this.hardMutedWords.trim().split('\n').map(x => x.trim().split(' ')),
 			});

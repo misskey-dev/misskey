@@ -136,7 +136,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (this.$pizzax.state.enableInfiniteScroll && this.$refs.loadMoreFiles) {
+		if (this.$store.state.enableInfiniteScroll && this.$refs.loadMoreFiles) {
 			this.$nextTick(() => {
 				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
 			});
@@ -159,7 +159,7 @@ export default defineComponent({
 	},
 
 	activated() {
-		if (this.$pizzax.state.enableInfiniteScroll) {
+		if (this.$store.state.enableInfiniteScroll) {
 			this.$nextTick(() => {
 				this.ilFilesObserver.observe((this.$refs.loadMoreFiles as Vue).$el)
 			});

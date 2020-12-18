@@ -3,7 +3,7 @@
 	<span class="me" v-if="isMe">{{ $t('you') }}</span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
-		<span class="host" v-if="(host != localHost) || $pizzax.state.showFullAcct">@{{ toUnicode(host) }}</span>
+		<span class="host" v-if="(host != localHost) || $store.state.showFullAcct">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 <a class="ldlomzub" :href="url" target="_blank" rel="noopener" v-else>
