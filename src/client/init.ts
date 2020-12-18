@@ -164,12 +164,6 @@ await router.isReady();
 
 app.mount('body');
 
-window.addEventListener('storage', e => {
-	if (e.key === 'i') {
-		location.reload();
-	}
-}, false);
-
 watch(() => defaultStore.ref('darkMode'), (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
