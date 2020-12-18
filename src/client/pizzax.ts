@@ -42,6 +42,7 @@ export class Storage<T extends StateDef> {
 				state[k] = deviceAccountState[k];
 			} else {
 				state[k] = v.default;
+				if (_DEV_) console.log('Use default value', k, v.default);
 			}
 		}
 		for (const [k, v] of Object.entries(state)) {
@@ -55,7 +56,7 @@ export class Storage<T extends StateDef> {
 				if (_DEV_) console.log('$i updated');
 
 				for (const [k, v] of Object.entries(def)) {
-					if (v.where === 'account') {
+					if (v.where === 'account' && Object.prototype.hasOwnProperty.call($i.clientData, k)) {
 						state[k] = $i.clientData[k];
 						reactiveState[k].value = $i.clientData[k];
 					}
