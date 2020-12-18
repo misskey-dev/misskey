@@ -50,16 +50,18 @@ export class Storage<T extends StateDef> {
 		this.state = state as any;
 		this.reactiveState = reactiveState as any;
 
-		watch(() => $i, () => {
-			if (_DEV_) console.log('$i updated');
+		if ($i) {
+			watch($i, () => {
+				if (_DEV_) console.log('$i updated');
 
-			for (const [k, v] of Object.entries(def)) {
-				if (v.where === 'account') {
-					state[k] = $i.clientData[k];
-					reactiveState[k].value = $i.clientData[k];
+				for (const [k, v] of Object.entries(def)) {
+					if (v.where === 'account') {
+						state[k] = $i.clientData[k];
+						reactiveState[k].value = $i.clientData[k];
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	public set<K extends keyof T>(key: K, value: T[K]['default']): void {

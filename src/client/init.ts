@@ -26,6 +26,9 @@ console.info(`Misskey v${version}`);
 if (_DEV_) {
 	console.warn('Development mode!!!');
 
+	(window as any).$i = $i;
+	(window as any).$store = defaultStore;
+
 	window.addEventListener('error', event => {
 		console.error(event);
 		/*
@@ -144,10 +147,6 @@ app.config.globalProperties = {
 	$instance: instance,
 };
 
-if (_DEV_) {
-	(window as any).$i = $i;
-}
-
 app.use(router);
 app.use(i18n);
 // eslint-disable-next-line vue/component-definition-name-casing
@@ -163,7 +162,8 @@ await router.isReady();
 
 app.mount('body');
 
-watch(() => defaultStore.ref('darkMode'), (darkMode) => {
+watch(defaultStore.reactiveState.darkMode, (darkMode) => {
+	console.log(darkMode);
 	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));
@@ -182,7 +182,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addListener(mql => {
 });
 //#endregion
 
-watch(() => defaultStore.state.useBlurEffectForModal, v => {
+watch(defaultStore.reactiveState.useBlurEffectForModal, v => {
 	document.documentElement.style.setProperty('--modalBgFilter', v ? 'blur(4px)' : 'none');
 }, { immediate: true });
 

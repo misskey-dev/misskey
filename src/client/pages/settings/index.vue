@@ -46,7 +46,7 @@ import FormLink from '@/components/form/link.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
-import { scroll } from '../../scripts/scroll';
+import { scroll } from '@/scripts/scroll';
 import { signout } from '@/account';
 
 export default defineComponent({
@@ -101,7 +101,6 @@ export default defineComponent({
 				case 'plugins': return defineAsyncComponent(() => import('./plugins.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
-				case 'regedit': return defineAsyncComponent(() => import('./regedit.vue'));
 				case 'experimental-features': return defineAsyncComponent(() => import('./experimental-features.vue'));
 				default: return null;
 			}
