@@ -4,6 +4,27 @@
 
 import '@/style.scss';
 
+// TODO: そのうち消す
+if (localStorage.getItem('vuex') != null) {
+	const vuex = JSON.parse(localStorage.getItem('vuex'));
+
+	localStorage.setItem('accounts', JSON.stringify(vuex.device.accounts));
+	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
+
+	for (const [k, v] of 	Object.entries(vuex.device.userData)) {
+		localStorage.setItem('pizzax::base::' + k, JSON.stringify({
+			widgets: v.widgets
+		}));
+
+		if (v.deck) {
+			localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
+				columns: v.deck.columns,
+				layout: v.deck.layout,
+			}));
+		}
+	}
+}
+
 import { createApp, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
