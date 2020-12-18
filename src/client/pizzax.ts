@@ -1,4 +1,4 @@
-import { customRef, onUnmounted, Ref, ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
 
@@ -20,8 +20,6 @@ export class Storage<T extends StateDef> {
 	public readonly state: { [U in keyof T]: T[U]['default'] };
 
 	public readonly reactiveState: { [U in keyof T]: Ref<T[U]['default']> };
-
-	private watchers: { key: keyof T, callback: Function }[] = [];
 
 	constructor(key: string, def: T) {
 		this.key = 'pizzax::' + key;
@@ -56,9 +54,9 @@ export class Storage<T extends StateDef> {
 				if (_DEV_) console.log('$i updated');
 
 				for (const [k, v] of Object.entries(def)) {
-					if (v.where === 'account' && Object.prototype.hasOwnProperty.call($i.clientData, k)) {
-						state[k] = $i.clientData[k];
-						reactiveState[k].value = $i.clientData[k];
+					if (v.where === 'account' && Object.prototype.hasOwnProperty.call($i!.clientData, k)) {
+						state[k] = $i!.clientData[k];
+						reactiveState[k].value = $i!.clientData[k];
 					}
 				}
 			});
@@ -66,11 +64,10 @@ export class Storage<T extends StateDef> {
 	}
 
 	public set<K extends keyof T>(key: K, value: T[K]['default']): void {
+		if (_DEV_) console.log('set', key, value);
+
 		this.state[key] = value;
 		this.reactiveState[key].value = value;
-		for (const watcher of this.watchers) {
-			if (watcher.key === key) watcher.callback(value);
-		}
 
 		switch (this.def[key].where) {
 			case 'device': {
@@ -126,33 +123,5 @@ export class Storage<T extends StateDef> {
 				valueRef.value = val;
 			}
 		};
-	}
-
-	public ref<K extends keyof T>(key: K) {
-		return customRef((track, trigger) => {
-			// TODO: pushしたままだとメモリリークするので何らかの方法で参照が無くなったことを検知し削除する
-			this.watchers.push({
-				key,
-				callback: () => {
-					trigger();
-				}
-			});
-
-			onUnmounted(() => {
-				// TODO
-			});
-
-			return {
-				get: () => {
-					track();
-					return this.state[key];
-				},
-				set: (newValue) => {
-					if (_DEV_) {
-						console.error(`DO NOT MUTATE ${key} DIRECTLY. USE set METHOD.`);
-					}
-				}
-			};
-		});
 	}
 }

@@ -21,10 +21,14 @@ export function signout() {
 	location.href = '/';
 }
 
-const accountsData = localStorage.getItem('accounts');
-export const accounts: { id: Account['id'], token: Account['token'] }[] = accountsData ? JSON.parse(accountsData) : [];
+export function getAccounts() {
+	const accountsData = localStorage.getItem('accounts');
+	const accounts: { id: Account['id'], token: Account['token'] }[] = accountsData ? JSON.parse(accountsData) : [];
+	return accounts;
+}
 
 export function addAccount(id: Account['id'], token: Account['token']) {
+	const accounts = getAccounts();
 	if (!accounts.some(x => x.id === id)) {
 		localStorage.setItem('accounts', JSON.stringify(accounts.concat([{ id, token }])));
 	}
@@ -67,6 +71,7 @@ export function refreshAccount() {
 
 export async function login(token: Account['token']) {
 	waiting();
+	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
 	addAccount(me.id, token);

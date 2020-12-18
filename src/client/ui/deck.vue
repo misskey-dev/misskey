@@ -73,10 +73,10 @@ export default defineComponent({
 
 	computed: {
 		columns() {
-			return deckStore.state.columns;
+			return deckStore.reactiveState.columns.value;
 		},
 		layout() {
-			return deckStore.state.layout;
+			return deckStore.reactiveState.layout.value;
 		},
 		navIndicated(): boolean {
 			if (!this.$i) return false;

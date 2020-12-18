@@ -49,7 +49,7 @@ import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
-import { accounts as storedAccounts, addAccount, login } from '@/account';
+import { getAccounts, addAccount, login } from '@/account';
 
 export default defineComponent({
 	data() {
@@ -134,6 +134,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
+			const storedAccounts = getAccounts();
 			const accounts = (await os.api('users/show', { userIds: storedAccounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
 
 			const accountItems = accounts.map(account => ({
@@ -231,7 +232,7 @@ export default defineComponent({
 		addAcount() {
 			os.popup(import('./signin-dialog.vue'), {}, {
 				done: res => {
-					addAccount(res.id, res.token);
+					addAccount(res.id, res.i);
 					os.success();
 				},
 			}, 'closed');
@@ -240,13 +241,14 @@ export default defineComponent({
 		createAccount() {
 			os.popup(import('./signup-dialog.vue'), {}, {
 				done: res => {
-					addAccount(res.id, res.token);
+					addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
 				},
 			}, 'closed');
 		},
 
 		switchAccount(account: any) {
+			const storedAccounts = getAccounts();
 			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},

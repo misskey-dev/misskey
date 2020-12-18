@@ -17,6 +17,8 @@ export default function <T extends Form>(data: {
 			}
 		},
 
+		emits: ['updateProps'],
+
 		data() {
 			return {
 				props: this.widget ? JSON.parse(JSON.stringify(this.widget.data)) : {}
@@ -66,12 +68,7 @@ export default function <T extends Form>(data: {
 			},
 
 			save() {
-				if (this.widget) {
-					this.$store.set('widgets', this.$store.state.widgets.map(w => w.id === this.id ? {
-						...this.widget,
-						data: this.props
-					} : w));
-				}
+				this.$emit('updateProps', this.props);
 			}
 		}
 	});

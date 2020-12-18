@@ -163,7 +163,6 @@ await router.isReady();
 app.mount('body');
 
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
-	console.log(darkMode);
 	import('@/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));

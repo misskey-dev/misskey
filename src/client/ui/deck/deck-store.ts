@@ -187,6 +187,19 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	deckStore.set('columns', columns);
 }
 
+export function updateColumnWidget(id: Column['id'], widgetId: string, data: any) {
+	const columns = copy(deckStore.state.columns);
+	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
+	const column = copy(deckStore.state.columns[columnIndex]);
+	if (column == null) return;
+	column.widgets = column.widgets.map(w => w.id === widgetId ? {
+		...w,
+		data: data
+	} : w);
+	columns[columnIndex] = column;
+	deckStore.set('columns', columns);
+}
+
 export function renameColumn(id: Column['id'], name: Column['name']) {
 	const columns = copy(deckStore.state.columns);
 	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
