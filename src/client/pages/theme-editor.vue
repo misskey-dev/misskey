@@ -107,7 +107,7 @@ import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel }
 import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

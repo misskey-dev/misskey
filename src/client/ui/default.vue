@@ -66,7 +66,7 @@ import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 const DESKTOP_THRESHOLD = 1100;
 

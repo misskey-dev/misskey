@@ -55,7 +55,7 @@ import MkSelect from '@/components/ui/select.vue';
 import MkInfo from '@/components/ui/info.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

@@ -97,7 +97,7 @@ import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

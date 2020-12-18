@@ -34,7 +34,7 @@ import FormButton from '@/components/form/button.vue';
 import { Theme, builtinThemes } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

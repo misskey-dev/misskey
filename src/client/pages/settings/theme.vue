@@ -71,7 +71,7 @@ import FormButton from '@/components/form/button.vue';
 import { builtinThemes, applyTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 

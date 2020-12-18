@@ -62,7 +62,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkSelect from '@/components/ui/select.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 let room: Room;
 

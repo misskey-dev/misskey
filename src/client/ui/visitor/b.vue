@@ -60,7 +60,7 @@ import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 const DESKTOP_THRESHOLD = 1100;
 

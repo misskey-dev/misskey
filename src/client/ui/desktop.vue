@@ -14,7 +14,7 @@ import XCommon from './_common_/common.vue';
 import * as os from '@/os';
 import XSidebar from '@/components/sidebar.vue';
 import { sidebarDef } from '@/sidebar';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

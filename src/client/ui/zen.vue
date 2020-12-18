@@ -30,7 +30,7 @@ import { search } from '@/scripts/search';
 import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

@@ -24,7 +24,7 @@ import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/form/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
-import { ColdDeviceStorage } from '@/storage';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {

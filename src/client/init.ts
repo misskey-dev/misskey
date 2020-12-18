@@ -17,7 +17,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, lang } from './i18n';
 import { stream, isMobile, dialog } from '@/os';
 import * as sound from './scripts/sound';
-import { ColdDeviceStorage } from './storage';
+import { ColdDeviceStorage } from './store';
 import { $i, refreshAccount, login, updateAccount, signout } from './account';
 import { defaultStore } from './store';
 import { fetchInstance, instance } from './instance';
