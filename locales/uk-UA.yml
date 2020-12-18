@@ -796,6 +796,7 @@ _permissions:
   "write:channels": "Змінювати канали"
 _auth:
   shareAccess: "Ви хочете надати \"{name}\" доступ до цього акаунту?"
+  shareAccessAsk: "Ви впевнені, що хочете надати цій програмі доступ до вашого акаунту?"
   denied: "У доступі відмовлено"
 _antennaSources:
   all: "Всі нотатки"
