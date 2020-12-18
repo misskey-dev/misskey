@@ -56,7 +56,7 @@ export default defineComponent({
 	computed: {
 		widgets: {
 			get() {
-				return this.$store.state.widgets;
+				return this.$store.reactiveState.widgets.value;
 			},
 			set(value) {
 				this.$store.set('widgets', value);

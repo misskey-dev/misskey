@@ -3,8 +3,8 @@
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
 
 	<div class="_section">
-		<XTutorial v-if="$store.state.tutorial != -1" class="tutorial _content _vMargin"/>
-		<XPostForm v-if="$store.state.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
+		<XTutorial v-if="$store.reactiveState.tutorial != -1" class="tutorial _content _vMargin"/>
+		<XPostForm v-if="$store.reactiveState.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
 		<XTimeline ref="tl"
 			class="_content _vMargin"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"

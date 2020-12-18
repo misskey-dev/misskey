@@ -115,14 +115,6 @@ export default defineComponent({
 			};
 		},
 
-		widgets(): any {
-			return this.$store.state.widgets;
-		},
-
-		menu(): string[] {
-			return this.$store.state.menu;
-		},
-
 		navIndicated(): boolean {
 			for (const def in this.menuDef) {
 				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから

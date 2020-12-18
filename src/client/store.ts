@@ -183,8 +183,6 @@ export const defaultStore = markRaw(new Storage('base', {
 
 // TODO: 他のタブと永続化されたstateを同期
 
-// MEMO: ユーザーごとの設定を保存するstorageを実装するときは、storageのkeyに$i.icをくっつけるだけで実装できそう
-
 const PREFIX = 'miux:';
 
 type Plugin = {
