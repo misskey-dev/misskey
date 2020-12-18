@@ -7,20 +7,19 @@ import '@/style.scss';
 import { createApp, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import widgets from './widgets';
-import directives from './directives';
+import widgets from '@/widgets';
+import directives from '@/directives';
 import components from '@/components';
 import { version, ui } from '@/config';
-import { router } from './router';
+import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { i18n, lang } from './i18n';
+import { i18n, lang } from '@/i18n';
 import { stream, isMobile, dialog } from '@/os';
-import * as sound from './scripts/sound';
-import { ColdDeviceStorage } from './store';
-import { $i, refreshAccount, login, updateAccount, signout } from './account';
-import { defaultStore } from './store';
-import { fetchInstance, instance } from './instance';
+import * as sound from '@/scripts/sound';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
+import { defaultStore, ColdDeviceStorage } from '@/store';
+import { fetchInstance, instance } from '@/instance';
 
 console.info(`Misskey v${version}`);
 
