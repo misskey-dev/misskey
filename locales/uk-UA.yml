@@ -797,14 +797,21 @@ _permissions:
 _auth:
   shareAccess: "Ви хочете надати \"{name}\" доступ до цього акаунту?"
 _antennaSources:
+  all: "Всі нотатки"
   homeTimeline: "Нотатки тих, на кого ви підписані"
 _weekday:
+  sunday: "Неділя"
+  monday: "Понеділок"
+  tuesday: "Вівторок"
+  wednesday: "Середа"
+  thursday: "Четвер"
+  friday: "П'ятниця"
   saturday: "Субота"
 _widgets:
   notifications: "Сповіщення"
   timeline: "Стрічка"
   calendar: "Календар"
-  trends: "Актуальні"
+  trends: "Тенденції"
   clock: "Годинник"
   rss: "RSS-читач"
   activity: "Активність"
