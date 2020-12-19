@@ -664,6 +664,7 @@ developer: "Developer"
 makeExplorable: "Make account visible in \"Explore\""
 makeExplorableDescription: "If you turn this off, your account will not show up in the \"Explore\" section."
 showGapBetweenNotesInTimeline: "Show a gap between posts on the timeline"
+duplicate: "Duplicate"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
