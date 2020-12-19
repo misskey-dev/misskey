@@ -25,7 +25,7 @@
 				</template>
 			</XDraggable>
 		</template>
-		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :column="column" @updateProps="saveWidget(element.id, $event)"/>
+		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :column="column" @updateProps="saveWidget(widget.id, $event)"/>
 	</div>
 </XColumn>
 </template>

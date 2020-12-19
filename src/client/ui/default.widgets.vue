@@ -23,7 +23,7 @@
 		<button @click="editMode = false" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $t('editWidgetsExit') }}</button>
 	</template>
 	<template v-else>
-		<component v-for="widget in widgets" class="_inContainer_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @updateProps="saveWidget(element.id, $event)"/>
+		<component v-for="widget in widgets" class="_inContainer_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @updateProps="saveWidget(widget.id, $event)"/>
 		<button @click="editMode = true" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $t('editWidgets') }}</button>
 	</template>
 </div>
