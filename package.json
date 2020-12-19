@@ -251,8 +251,6 @@
 		"vue-router": "4.0.1",
 		"vue-style-loader": "4.1.2",
 		"vuedraggable": "4.0.1",
-		"vuex": "4.0.0-rc.2",
-		"vuex-persistedstate": "3.1.0",
 		"web-push": "3.4.4",
 		"webpack": "5.10.1",
 		"webpack-cli": "4.2.0",
