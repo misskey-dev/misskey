@@ -3,8 +3,8 @@
 	<FormGroup>
 		<FormInput v-model:value="emailAddress" type="email">
 			{{ $t('emailAddress') }}
-			<template #desc v-if="$store.state.i.email && !$store.state.i.emailVerified">{{ $t('verificationEmailSent') }}</template>
-			<template #desc v-else-if="emailAddress === $store.state.i.email && $store.state.i.emailVerified">{{ $t('emailVerified') }}</template>
+			<template #desc v-if="$i.email && !$i.emailVerified">{{ $t('verificationEmailSent') }}</template>
+			<template #desc v-else-if="emailAddress === $i.email && $i.emailVerified">{{ $t('emailVerified') }}</template>
 		</FormInput>
 	</FormGroup>
 	<FormButton @click="save" primary>{{ $t('save') }}</FormButton>
@@ -44,7 +44,7 @@ export default defineComponent({
 	},
 
 	created() {
-		this.emailAddress = this.$store.state.i.email;
+		this.emailAddress = this.$i.email;
 	},
 
 	mounted() {

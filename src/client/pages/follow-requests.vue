@@ -16,7 +16,7 @@
 						<p class="acct">@{{ acct(req.follower) }}</p>
 					</div>
 					<div class="description" v-if="req.follower.description" :title="req.follower.description">
-						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$store.state.i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
 					</div>
 					<div class="actions">
 						<button class="_button" @click="accept(req.follower)"><Fa :icon="faCheck"/></button>

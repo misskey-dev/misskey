@@ -259,6 +259,7 @@ import MkInfo from '@/components/ui/info.vue';
 import { url } from '@/config';
 import getAcct from '../../../misc/acct/render';
 import * as os from '@/os';
+import { fetchInstance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -565,7 +566,7 @@ export default defineComponent({
 				summalyProxy: this.summalyProxy,
 				useStarForReactionFallback: this.useStarForReactionFallback,
 			}).then(() => {
-				this.$store.dispatch('instance/fetch');
+				fetchInstance();
 				if (withDialog) {
 					os.success();
 				}

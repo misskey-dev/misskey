@@ -20,12 +20,12 @@
 				<template #item="{element}">
 					<div class="customize-container" @click="widgetFunc(element.id)">
 						<button class="remove _button" @click.prevent.stop="removeWidget(element)"><Fa :icon="faTimes"/></button>
-						<component :is="`mkw-${element.name}`" :widget="element" :setting-callback="setting => settings[element.id] = setting" :column="column"/>
+						<component :is="`mkw-${element.name}`" :widget="element" :setting-callback="setting => settings[element.id] = setting" :column="column" @updateProps="saveWidget(element.id, $event)"/>
 					</div>
 				</template>
 			</XDraggable>
 		</template>
-		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :column="column"/>
+		<component v-else class="widget" v-for="widget in column.widgets" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" :column="column" @updateProps="saveWidget(element.id, $event)"/>
 	</div>
 </XColumn>
 </template>
@@ -38,6 +38,7 @@ import MkSelect from '@/components/ui/select.vue';
 import MkButton from '@/components/ui/button.vue';
 import XColumn from './column.vue';
 import { widgets } from '../../widgets';
+import { addColumnWidget, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -75,10 +76,7 @@ export default defineComponent({
 				return this.column.widgets;
 			},
 			set(value) {
-				this.$store.commit('deviceUser/setDeckWidgets', {
-					id: this.column.id,
-					widgets: value
-				});
+				setColumnWidgets(this.column.id, value);
 			}
 		}
 	},
@@ -101,24 +99,22 @@ export default defineComponent({
 		addWidget() {
 			if (this.widgetAdderSelected == null) return;
 
-			this.$store.commit('deviceUser/addDeckWidget', {
-				id: this.column.id,
-				widget: {
-					name: this.widgetAdderSelected,
-					id: uuid(),
-					data: {}
-				}
+			addColumnWidget(this.column.id, {
+				name: this.widgetAdderSelected,
+				id: uuid(),
+				data: {}
 			});
 
 			this.widgetAdderSelected = null;
 		},
 
 		removeWidget(widget) {
-			this.$store.commit('deviceUser/removeDeckWidget', {
-				id: this.column.id,
-				widget
-			});
+			removeColumnWidget(this.column.id, widget);
 		},
+
+		saveWidget(id, data) {
+			updateColumnWidget(this.column.id, id, data);
+		}
 	}
 });
 </script>

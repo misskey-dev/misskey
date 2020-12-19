@@ -59,6 +59,7 @@ import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -99,7 +100,7 @@ export default defineComponent({
 
 	computed: {
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 
 		shouldDisableSubmitting(): boolean {
@@ -184,8 +185,7 @@ export default defineComponent({
 					this.$emit('signup', res);
 
 					if (this.autoSet) {
-						localStorage.setItem('i', res.i);
-						location.reload();
+						login(res.i);
 					}
 				});
 			}).catch(() => {

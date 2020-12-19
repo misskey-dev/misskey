@@ -58,7 +58,7 @@ export default defineComponent({
 		},
 
 		configure() {
-			const includingTypes = notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
+			const includingTypes = notificationTypes.filter(x => !this.$i.mutingNotificationTypes.includes(x));
 			os.popup(import('@/components/notification-setting-window.vue'), {
 				includingTypes,
 				showGlobalToggle: false,
@@ -68,7 +68,7 @@ export default defineComponent({
 					await os.apiWithDialog('i/update', {
 						mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
 					}).then(i => {
-						this.$store.state.i.mutingNotificationTypes = i.mutingNotificationTypes;
+						this.$i.mutingNotificationTypes = i.mutingNotificationTypes;
 					});
 				}
 			}, 'closed');

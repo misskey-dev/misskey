@@ -169,13 +169,13 @@ export default defineComponent({
 			return categories.filter((item, pos) => categories.indexOf(item) == pos);
 		},
 		isAccepted(): boolean {
-			if (this.game.user1Id == this.$store.state.i.id && this.game.user1Accepted) return true;
-			if (this.game.user2Id == this.$store.state.i.id && this.game.user2Accepted) return true;
+			if (this.game.user1Id == this.$i.id && this.game.user1Accepted) return true;
+			if (this.game.user2Id == this.$i.id && this.game.user2Accepted) return true;
 			return false;
 		},
 		isOpAccepted(): boolean {
-			if (this.game.user1Id != this.$store.state.i.id && this.game.user1Accepted) return true;
-			if (this.game.user2Id != this.$store.state.i.id && this.game.user2Accepted) return true;
+			if (this.game.user1Id != this.$i.id && this.game.user1Accepted) return true;
+			if (this.game.user2Id != this.$i.id && this.game.user2Accepted) return true;
 			return false;
 		}
 	},
@@ -186,8 +186,8 @@ export default defineComponent({
 		this.connection.on('initForm', this.onInitForm);
 		this.connection.on('message', this.onMessage);
 
-		if (this.game.user1Id != this.$store.state.i.id && this.game.form1) this.form = this.game.form1;
-		if (this.game.user2Id != this.$store.state.i.id && this.game.form2) this.form = this.game.form2;
+		if (this.game.user1Id != this.$i.id && this.game.form1) this.form = this.game.form1;
+		if (this.game.user2Id != this.$i.id && this.game.form2) this.form = this.game.form2;
 	},
 
 	beforeUnmount() {
@@ -233,12 +233,12 @@ export default defineComponent({
 		},
 
 		onInitForm(x) {
-			if (x.userId == this.$store.state.i.id) return;
+			if (x.userId == this.$i.id) return;
 			this.form = x.form;
 		},
 
 		onMessage(x) {
-			if (x.userId == this.$store.state.i.id) return;
+			if (x.userId == this.$i.id) return;
 			this.messages.unshift(x.message);
 		},
 

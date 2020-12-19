@@ -35,6 +35,7 @@ import { defineComponent } from 'vue';
 import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
+import { renameColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store';
 
 export default defineComponent({
 	props: {
@@ -145,50 +146,50 @@ export default defineComponent({
 						}
 					}).then(({ canceled, result: name }) => {
 						if (canceled) return;
-						this.$store.commit('deviceUser/renameDeckColumn', { id: this.column.id, name });
+						renameColumn(this.column.id, name);
 					});
 				}
 			}, null, {
 				icon: faArrowLeft,
 				text: this.$t('_deck.swapLeft'),
 				action: () => {
-					this.$store.commit('deviceUser/swapLeftDeckColumn', this.column.id);
+					swapLeftColumn(this.column.id);
 				}
 			}, {
 				icon: faArrowRight,
 				text: this.$t('_deck.swapRight'),
 				action: () => {
-					this.$store.commit('deviceUser/swapRightDeckColumn', this.column.id);
+					swapRightColumn(this.column.id);
 				}
 			}, this.isStacked ? {
 				icon: faArrowUp,
 				text: this.$t('_deck.swapUp'),
 				action: () => {
-					this.$store.commit('deviceUser/swapUpDeckColumn', this.column.id);
+					swapUpColumn(this.column.id);
 				}
 			} : undefined, this.isStacked ? {
 				icon: faArrowDown,
 				text: this.$t('_deck.swapDown'),
 				action: () => {
-					this.$store.commit('deviceUser/swapDownDeckColumn', this.column.id);
+					swapDownColumn(this.column.id);
 				}
 			} : undefined, null, {
 				icon: faWindowRestore,
 				text: this.$t('_deck.stackLeft'),
 				action: () => {
-					this.$store.commit('deviceUser/stackLeftDeckColumn', this.column.id);
+					stackLeftColumn(this.column.id);
 				}
 			}, this.isStacked ? {
 				icon: faWindowMaximize,
 				text: this.$t('_deck.popRight'),
 				action: () => {
-					this.$store.commit('deviceUser/popRightDeckColumn', this.column.id);
+					popRightColumn(this.column.id);
 				}
 			} : undefined, null, {
 				icon: faTrashAlt,
 				text: this.$t('remove'),
 				action: () => {
-					this.$store.commit('deviceUser/removeDeckColumn', this.column.id);
+					removeColumn(this.column.id);
 				}
 			}];
 
@@ -264,10 +265,7 @@ export default defineComponent({
 
 			const id = e.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
 			if (id != null && id != '') {
-				this.$store.commit('deviceUser/swapDeckColumn', {
-					a: this.column.id,
-					b: id
-				});
+				swapColumn(this.column.id, id);
 			}
 		}
 	}

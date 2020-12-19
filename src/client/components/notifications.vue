@@ -5,7 +5,7 @@
 		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</XList>
 
-	<button class="_loadMore" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+	<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
 		<template v-if="moreFetching"><MkLoading inline/></template>
 	</button>
@@ -59,7 +59,7 @@ export default defineComponent({
 
 	computed: {
 		allIncludeTypes() {
-			return this.includeTypes ?? notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
+			return this.includeTypes ?? notificationTypes.filter(x => !this.$i.mutingNotificationTypes.includes(x));
 		}
 	},
 
@@ -70,9 +70,9 @@ export default defineComponent({
 			},
 			deep: true
 		},
-		// TODO: vue/vuexのバグか仕様かは不明なものの、プロフィール更新するなどして $store.state.i が更新されると、
+		// TODO: vue/vuexのバグか仕様かは不明なものの、プロフィール更新するなどして $i が更新されると、
 		// mutingNotificationTypes に変化が無くてもこのハンドラーが呼び出され無駄なリロードが発生するのを直す
-		'$store.state.i.mutingNotificationTypes': {
+		'$i.mutingNotificationTypes': {
 			handler() {
 				if (this.includeTypes === null) {
 					this.reload();

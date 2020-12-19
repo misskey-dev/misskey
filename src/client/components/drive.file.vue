@@ -8,11 +8,11 @@
 	@dragend="onDragend"
 	:title="title"
 >
-	<div class="label" v-if="$store.state.i.avatarId == file.id">
+	<div class="label" v-if="$i.avatarId == file.id">
 		<img src="/assets/label.svg"/>
 		<p>{{ $t('avatar') }}</p>
 	</div>
-	<div class="label" v-if="$store.state.i.bannerId == file.id">
+	<div class="label" v-if="$i.bannerId == file.id">
 		<img src="/assets/label.svg"/>
 		<p>{{ $t('banner') }}</p>
 	</div>

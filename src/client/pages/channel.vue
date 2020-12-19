@@ -16,11 +16,11 @@
 			<div class="fade"></div>
 		</div>
 		<div class="description" v-if="channel.description">
-			<Mfm :text="channel.description" :is-note="false" :i="$store.state.i"/>
+			<Mfm :text="channel.description" :is-note="false" :i="$i"/>
 		</div>
 	</div>
 
-	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed v-if="$store.getters.isSignedIn"/>
+	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed v-if="$i"/>
 
 	<XTimeline class="_content _vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
 </div>

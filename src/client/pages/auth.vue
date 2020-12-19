@@ -1,8 +1,8 @@
 <template>
-<div class="" v-if="$store.getters.isSignedIn && fetching">
+<div class="" v-if="$i && fetching">
 	<MkLoading/>
 </div>
-<div v-else-if="$store.getters.isSignedIn">
+<div v-else-if="$i">
 	<XForm
 		class="form"
 		ref="form"
@@ -33,6 +33,7 @@ import { defineComponent } from 'vue';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/signin.vue';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -52,7 +53,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		if (!this.$store.getters.isSignedIn) return;
+		if (!this.$i) return;
 
 		// Fetch session
 		os.api('auth/session/show', {
@@ -83,8 +84,7 @@ export default defineComponent({
 				location.href = `${this.session.app.callbackUrl}?token=${this.session.token}`;
 			}
 		}, onLogin(res) {
-			localStorage.setItem('i', res.i);
-			location.reload();
+			login(res.i);
 		}
 	}
 });

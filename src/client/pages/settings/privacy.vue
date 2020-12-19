@@ -35,6 +35,7 @@ import FormSelect from '@/components/form/select.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -60,27 +61,16 @@ export default defineComponent({
 	},
 
 	computed: {
-		defaultNoteVisibility: {
-			get() { return this.$store.state.settings.defaultNoteVisibility; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteVisibility', value }); }
-		},
-
-		defaultNoteLocalOnly: {
-			get() { return this.$store.state.settings.defaultNoteLocalOnly; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'defaultNoteLocalOnly', value }); }
-		},
-
-		rememberNoteVisibility: {
-			get() { return this.$store.state.settings.rememberNoteVisibility; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'rememberNoteVisibility', value }); }
-		},
+		defaultNoteVisibility: defaultStore.makeGetterSetter('defaultNoteVisibility'),
+		defaultNoteLocalOnly: defaultStore.makeGetterSetter('defaultNoteLocalOnly'),
+		rememberNoteVisibility: defaultStore.makeGetterSetter('rememberNoteVisibility'),
 	},
 
 	created() {
-		this.isLocked = this.$store.state.i.isLocked;
-		this.autoAcceptFollowed = this.$store.state.i.autoAcceptFollowed;
-		this.noCrawle = this.$store.state.i.noCrawle;
-		this.isExplorable = this.$store.state.i.isExplorable;
+		this.isLocked = this.$i.isLocked;
+		this.autoAcceptFollowed = this.$i.autoAcceptFollowed;
+		this.noCrawle = this.$i.noCrawle;
+		this.isExplorable = this.$i.isExplorable;
 	},
 
 	mounted() {

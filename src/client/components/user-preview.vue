@@ -9,7 +9,7 @@
 				<p class="username"><MkAcct :user="user"/></p>
 			</div>
 			<div class="description">
-				<Mfm v-if="user.description" :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+				<Mfm v-if="user.description" :text="user.description" :author="user" :i="$i" :custom-emojis="user.emojis"/>
 			</div>
 			<div class="status">
 				<div>
@@ -22,7 +22,7 @@
 					<p>{{ $t('followers') }}</p><span>{{ user.followersCount }}</span>
 				</div>
 			</div>
-			<MkFollowButton class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+			<MkFollowButton class="koudoku-button" v-if="$i && user.id != $i.id" :user="user" mini/>
 		</div>
 		<div v-else>
 			<MkLoading/>

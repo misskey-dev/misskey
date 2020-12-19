@@ -6,7 +6,7 @@
 		<div class="history" v-if="messages.length > 0">
 			<MkA v-for="(message, i) in messages"
 				class="message _panel"
-				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($store.state.i.id) : message.isRead }"
+				:class="{ isMe: isMe(message), isRead: message.groupId ? message.reads.includes($i.id) : message.isRead }"
 				:to="message.groupId ? `/my/messaging/group/${message.groupId}` : `/my/messaging/${getAcct(isMe(message) ? message.recipient : message.user)}`"
 				:data-index="i"
 				:key="message.id"
@@ -88,7 +88,7 @@ export default defineComponent({
 		getAcct,
 
 		isMe(message) {
-			return message.userId == this.$store.state.i.id;
+			return message.userId == this.$i.id;
 		},
 
 		onMessage(message) {
@@ -111,7 +111,7 @@ export default defineComponent({
 					if (found.recipientId) {
 						found.isRead = true;
 					} else if (found.groupId) {
-						found.reads.push(this.$store.state.i.id);
+						found.reads.push(this.$i.id);
 					}
 				}
 			}

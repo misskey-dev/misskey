@@ -7,7 +7,7 @@
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
@@ -30,6 +30,7 @@ import { search } from '@/scripts/search';
 import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -50,8 +51,8 @@ export default defineComponent({
 		keymap(): any {
 			return {
 				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
+					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
+					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				'p': os.post,
 				'n': os.post,

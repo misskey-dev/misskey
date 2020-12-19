@@ -9,7 +9,7 @@
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
@@ -31,7 +31,7 @@
 		<button class="button nav _button" @click="showNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
 		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><Fa :icon="faHome"/></button>
 		<button v-else class="button home _button" @click="$router.push('/')"><Fa :icon="faHome"/></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
 	</div>
 
@@ -66,6 +66,7 @@ import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
+import { ColdDeviceStorage } from '@/store';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -104,22 +105,14 @@ export default defineComponent({
 		keymap(): any {
 			return {
 				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
+					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
+					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				'p': os.post,
 				'n': os.post,
 				's': () => search(),
 				'h|/': this.help
 			};
-		},
-
-		widgets(): any {
-			return this.$store.state.deviceUser.widgets;
-		},
-
-		menu(): string[] {
-			return this.$store.state.deviceUser.menu;
 		},
 
 		navIndicated(): boolean {
@@ -140,8 +133,8 @@ export default defineComponent({
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
 
-		if (this.$store.state.deviceUser.widgets.length === 0) {
-			this.$store.commit('deviceUser/setWidgets', [{
+		if (this.$store.state.widgets.length === 0) {
+			this.$store.set('widgets', [{
 				name: 'calendar',
 				id: 'a', place: 'right', data: {}
 			}, {

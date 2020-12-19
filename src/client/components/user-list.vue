@@ -8,7 +8,7 @@
 	<div class="users">
 		<MkUserInfo class="user" v-for="user in users" :user="user" :key="user.id"/>
 	</div>
-	<button class="more" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
+	<button class="more" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :class="{ fetching: moreFetching }" v-show="more" :disabled="moreFetching">
 		<template v-if="moreFetching"><Fa icon="spinner" pulse fixed-width/></template>{{ moreFetching ? $t('loading') : $t('loadMore') }}
 	</button>
 </div>

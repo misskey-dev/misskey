@@ -26,9 +26,9 @@ import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormButton from '@/components/form/button.vue';
-import { defaultDeviceUserSettings } from '@/store';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -57,14 +57,11 @@ export default defineComponent({
 			return this.items.trim().split('\n').filter(x => x.trim() !== '');
 		},
 
-		sidebarDisplay: {
-			get() { return this.$store.state.device.sidebarDisplay; },
-			set(value) { this.$store.commit('device/set', { key: 'sidebarDisplay', value }); }
-		},
+		sidebarDisplay: defaultStore.makeGetterSetter('sidebarDisplay')
 	},
 
 	created() {
-		this.items = this.$store.state.deviceUser.menu.join('\n');
+		this.items = this.$store.state.menu.join('\n');
 	},
 
 	mounted() {
@@ -73,7 +70,7 @@ export default defineComponent({
 
 	methods: {
 		async addItem() {
-			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.deviceUser.menu.includes(k));
+			const menu = Object.keys(this.menuDef).filter(k => !this.$store.state.menu.includes(k));
 			const { canceled, result: item } = await os.dialog({
 				type: null,
 				title: this.$t('addItem'),
@@ -92,12 +89,12 @@ export default defineComponent({
 		},
 
 		save() {
-			this.$store.commit('deviceUser/setMenu', this.splited);
+			this.$store.set('menu', this.splited);
 		},
 
 		reset() {
-			this.$store.commit('deviceUser/setMenu', defaultDeviceUserSettings.menu);
-			this.items = this.$store.state.deviceUser.menu.join('\n');
+			this.$store.reset('menu');
+			this.items = this.$store.state.menu.join('\n');
 		},
 	},
 });

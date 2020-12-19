@@ -107,6 +107,7 @@ import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel }
 import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -128,7 +129,7 @@ export default defineComponent({
 			name: '',
 			description: '',
 			baseTheme: 'light' as 'dark' | 'light',
-			author: `@${this.$store.state.i.username}@${toUnicode(host)}`,
+			author: `@${this.$i.username}@${toUnicode(host)}`,
 			themeToImport: '',
 			changed: false,
 			lightTheme, darkTheme, themeProps,
@@ -211,10 +212,8 @@ export default defineComponent({
 	
 		save() {
 			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
-			const themes = this.$store.state.device.themes.concat(theme);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
+			const themes = ColdDeviceStorage.get('themes').concat(theme);
+			ColdDeviceStorage.set('themes', themes);
 			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })

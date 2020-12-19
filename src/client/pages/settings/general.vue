@@ -38,7 +38,7 @@
 		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $t('disableShowingAnimatedImages') }}</FormSwitch>
 		<FormSwitch v-model:value="useSystemFont">{{ $t('useSystemFont') }}</FormSwitch>
 		<FormSwitch v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
-			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
+			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪" :key="useOsNativeEmojis"/></div>
 		</FormSwitch>
 	</FormGroup>
 
@@ -96,6 +96,8 @@ import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
 import { clientDb, set } from '@/db';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -126,85 +128,22 @@ export default defineComponent({
 	},
 
 	computed: {
-		serverDisconnectedBehavior: {
-			get() { return this.$store.state.device.serverDisconnectedBehavior; },
-			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
-		},
-
-		reduceAnimation: {
-			get() { return !this.$store.state.device.animation; },
-			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
-		},
-
-		useBlurEffectForModal: {
-			get() { return this.$store.state.device.useBlurEffectForModal; },
-			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
-		},
-
-		showGapBetweenNotesInTimeline: {
-			get() { return this.$store.state.device.showGapBetweenNotesInTimeline; },
-			set(value) { this.$store.commit('device/set', { key: 'showGapBetweenNotesInTimeline', value: value }); }
-		},
-
-		disableAnimatedMfm: {
-			get() { return !this.$store.state.device.animatedMfm; },
-			set(value) { this.$store.commit('device/set', { key: 'animatedMfm', value: !value }); }
-		},
-
-		useOsNativeEmojis: {
-			get() { return this.$store.state.device.useOsNativeEmojis; },
-			set(value) { this.$store.commit('device/set', { key: 'useOsNativeEmojis', value }); }
-		},
-
-		imageNewTab: {
-			get() { return this.$store.state.device.imageNewTab; },
-			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
-		},
-
-		disablePagesScript: {
-			get() { return this.$store.state.device.disablePagesScript; },
-			set(value) { this.$store.commit('device/set', { key: 'disablePagesScript', value }); }
-		},
-
-		showFixedPostForm: {
-			get() { return this.$store.state.device.showFixedPostForm; },
-			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
-		},
-
-		defaultSideView: {
-			get() { return this.$store.state.device.defaultSideView; },
-			set(value) { this.$store.commit('device/set', { key: 'defaultSideView', value }); }
-		},
-
-		chatOpenBehavior: {
-			get() { return this.$store.state.device.chatOpenBehavior; },
-			set(value) { this.$store.commit('device/set', { key: 'chatOpenBehavior', value }); }
-		},
-
-		instanceTicker: {
-			get() { return this.$store.state.device.instanceTicker; },
-			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
-		},
-
-		loadRawImages: {
-			get() { return this.$store.state.device.loadRawImages; },
-			set(value) { this.$store.commit('device/set', { key: 'loadRawImages', value }); }
-		},
-
-		disableShowingAnimatedImages: {
-			get() { return this.$store.state.device.disableShowingAnimatedImages; },
-			set(value) { this.$store.commit('device/set', { key: 'disableShowingAnimatedImages', value }); }
-		},
-
-		nsfw: {
-			get() { return this.$store.state.device.nsfw; },
-			set(value) { this.$store.commit('device/set', { key: 'nsfw', value }); }
-		},
-
-		enableInfiniteScroll: {
-			get() { return this.$store.state.device.enableInfiniteScroll; },
-			set(value) { this.$store.commit('device/set', { key: 'enableInfiniteScroll', value }); }
-		},
+		serverDisconnectedBehavior: defaultStore.makeGetterSetter('serverDisconnectedBehavior'),
+		reduceAnimation: defaultStore.makeGetterSetter('animation', v => !v, v => !v),
+		useBlurEffectForModal: defaultStore.makeGetterSetter('useBlurEffectForModal'),
+		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
+		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
+		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
+		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
+		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
+		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
+		nsfw: defaultStore.makeGetterSetter('nsfw'),
+		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
+		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
+		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
+		chatOpenBehavior: ColdDeviceStorage.makeGetterSetter('chatOpenBehavior'),
+		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
+		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
 	},
 
 	watch: {

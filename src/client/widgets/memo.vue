@@ -42,9 +42,9 @@ export default defineComponent({
 	},
 
 	created() {
-		this.text = this.$store.state.settings.memo;
+		this.text = this.$store.state.memo;
 
-		this.$watch(() => this.$store.state.settings.memo, text => {
+		this.$watch(() => this.$store.reactiveState.memo, text => {
 			this.text = text;
 		});
 	},
@@ -57,10 +57,7 @@ export default defineComponent({
 		},
 
 		saveMemo() {
-			this.$store.dispatch('settings/set', {
-				key: 'memo',
-				value: this.text
-			});
+			this.$store.set('memo', this.text);
 			this.changed = false;
 		}
 	}

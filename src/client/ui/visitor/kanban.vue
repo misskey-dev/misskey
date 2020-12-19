@@ -1,5 +1,5 @@
 <template>
-<div class="rwqkcmrc" :style="{ backgroundImage: transparent ? 'none' : `url(${ $store.state.instance.meta.backgroundImageUrl })` }">
+<div class="rwqkcmrc" :style="{ backgroundImage: transparent ? 'none' : `url(${ $instance.backgroundImageUrl })` }">
 	<div class="back" :class="{ transparent }"></div>
 	<div class="contents">
 		<div class="wrapper">

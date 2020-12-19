@@ -135,8 +135,8 @@ export default defineComponent({
 			poll: null,
 			useCw: false,
 			cw: null,
-			localOnly: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.localOnly : this.$store.state.settings.defaultNoteLocalOnly,
-			visibility: this.$store.state.settings.rememberNoteVisibility ? this.$store.state.deviceUser.visibility : this.$store.state.settings.defaultNoteVisibility,
+			localOnly: this.$store.state.rememberNoteVisibility ? this.$store.state.localOnly : this.$store.state.defaultNoteLocalOnly,
+			visibility: this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility,
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -198,7 +198,7 @@ export default defineComponent({
 		},
 
 		max(): number {
-			return this.$store.state.instance.meta ? this.$store.state.instance.meta.maxNoteTextLength : 1000;
+			return this.$instance ? this.$instance.maxNoteTextLength : 1000;
 		}
 	},
 
@@ -223,8 +223,8 @@ export default defineComponent({
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
 
 				// 自分は除外
-				if (this.$store.state.i.username == x.username && x.host == null) continue;
-				if (this.$store.state.i.username == x.username && x.host == host) continue;
+				if (this.$i.username == x.username && x.host == null) continue;
+				if (this.$i.username == x.username && x.host == host) continue;
 
 				// 重複は除外
 				if (this.text.indexOf(`${mention} `) != -1) continue;
@@ -243,12 +243,12 @@ export default defineComponent({
 			this.visibility = this.reply.visibility;
 			if (this.reply.visibility === 'specified') {
 				os.api('users/show', {
-					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$store.state.i.id && uid !== this.reply.userId)
+					userIds: this.reply.visibleUserIds.filter(uid => uid !== this.$i.id && uid !== this.reply.userId)
 				}).then(users => {
 					this.visibleUsers.push(...users);
 				});
 
-				if (this.reply.userId !== this.$store.state.i.id) {
+				if (this.reply.userId !== this.$i.id) {
 					os.api('users/show', { userId: this.reply.userId }).then(user => {
 						this.visibleUsers.push(user);
 					});
@@ -262,7 +262,7 @@ export default defineComponent({
 		}
 
 		// keep cw when reply
-		if (this.$store.state.settings.keepCw && this.reply && this.reply.cw) {
+		if (this.$store.keepCw && this.reply && this.reply.cw) {
 			this.useCw = true;
 			this.cw = this.reply.cw;
 		}
@@ -376,7 +376,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+			os.upload(file, this.$store.state.uploadFolder, name).then(res => {
 				this.files.push(res);
 			});
 		},
@@ -399,14 +399,14 @@ export default defineComponent({
 			}, {
 				changeVisibility: visibility => {
 					this.visibility = visibility;
-					if (this.$store.state.settings.rememberNoteVisibility) {
-						this.$store.commit('deviceUser/setVisibility', visibility);
+					if (this.$store.state.rememberNoteVisibility) {
+						this.$store.set('visibility', visibility);
 					}
 				},
 				changeLocalOnly: localOnly => {
 					this.localOnly = localOnly;
-					if (this.$store.state.settings.rememberNoteVisibility) {
-						this.$store.commit('deviceUser/setLocalOnly', localOnly);
+					if (this.$store.state.rememberNoteVisibility) {
+						this.$store.set('localOnly', localOnly);
 					}
 				}
 			}, 'closed');
@@ -440,7 +440,7 @@ export default defineComponent({
 					const file = item.getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
 					this.upload(file, formatted);
 				}
 			}

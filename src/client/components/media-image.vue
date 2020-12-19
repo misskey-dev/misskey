@@ -52,13 +52,11 @@ export default defineComponent({
 	},
 	computed: {
 		url(): any {
-			let url = this.$store.state.device.disableShowingAnimatedImages
+			let url = this.$store.state.disableShowingAnimatedImages
 				? getStaticImageUrl(this.image.thumbnailUrl)
 				: this.image.thumbnailUrl;
 
-			if (this.$store.state.device.loadRemoteMedia) {
-				url = null;
-			} else if (this.raw || this.$store.state.device.loadRawImages) {
+			if (this.raw || this.$store.state.loadRawImages) {
 				url = this.image.url;
 			}
 
@@ -68,7 +66,7 @@ export default defineComponent({
 	created() {
 		// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 		this.$watch('image', () => {
-			this.hide = (this.$store.state.device.nsfw === 'force') ? true : this.image.isSensitive && (this.$store.state.device.nsfw !== 'ignore');
+			this.hide = (this.$store.state.nsfw === 'force') ? true : this.image.isSensitive && (this.$store.state.nsfw !== 'ignore');
 			if (this.image.blurhash) {
 				this.color = extractAvgColorFromBlurhash(this.image.blurhash);
 			}
@@ -79,7 +77,7 @@ export default defineComponent({
 	},
 	methods: {
 		onClick() {
-			if (this.$store.state.device.imageNewTab) {
+			if (this.$store.state.imageNewTab) {
 				window.open(this.image.url, '_blank');
 			} else {
 				os.popup(ImageViewer, {

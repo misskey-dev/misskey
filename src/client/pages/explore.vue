@@ -142,7 +142,7 @@ export default defineComponent({
 
 	computed: {
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 		tagUsers(): any {
 			return {

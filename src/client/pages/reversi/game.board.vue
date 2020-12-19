@@ -22,11 +22,11 @@
 	</div>
 
 	<div class="board">
-		<div class="labels-x" v-if="$store.state.settings.gamesReversiShowBoardLabels">
+		<div class="labels-x" v-if="$store.state.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 		<div class="flex">
-			<div class="labels-y" v-if="$store.state.settings.gamesReversiShowBoardLabels">
+			<div class="labels-y" v-if="$store.state.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 			<div class="cells" :style="cellsStyle">
@@ -35,7 +35,7 @@
 					@click="set(i)"
 					:title="`${String.fromCharCode(65 + o.transformPosToXy(i)[0])}${o.transformPosToXy(i)[1] + 1}`"
 				>
-					<template v-if="$store.state.settings.gamesReversiUseAvatarStones || true">
+					<template v-if="$store.state.gamesReversiUseAvatarStones || true">
 						<img v-if="stone === true" :src="blackUser.avatarUrl" alt="black">
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
@@ -45,11 +45,11 @@
 					</template>
 				</div>
 			</div>
-			<div class="labels-y" v-if="$store.state.settings.gamesReversiShowBoardLabels">
+			<div class="labels-y" v-if="$store.state.gamesReversiShowBoardLabels">
 				<div v-for="i in game.map.length">{{ i }}</div>
 			</div>
 		</div>
-		<div class="labels-x" v-if="$store.state.settings.gamesReversiShowBoardLabels">
+		<div class="labels-x" v-if="$store.state.gamesReversiShowBoardLabels">
 			<span v-for="i in game.map[0].length">{{ String.fromCharCode(64 + i) }}</span>
 		</div>
 	</div>
@@ -126,14 +126,14 @@ export default defineComponent({
 
 	computed: {
 		iAmPlayer(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
-			return this.game.user1Id == this.$store.state.i.id || this.game.user2Id == this.$store.state.i.id;
+			if (!this.$i) return false;
+			return this.game.user1Id == this.$i.id || this.game.user2Id == this.$i.id;
 		},
 
 		myColor(): Color {
 			if (!this.iAmPlayer) return null;
-			if (this.game.user1Id == this.$store.state.i.id && this.game.black == 1) return true;
-			if (this.game.user2Id == this.$store.state.i.id && this.game.black == 2) return true;
+			if (this.game.user1Id == this.$i.id && this.game.black == 1) return true;
+			if (this.game.user2Id == this.$i.id && this.game.black == 2) return true;
 			return false;
 		},
 
@@ -234,7 +234,7 @@ export default defineComponent({
 		isMyTurn(): boolean {
 			if (!this.iAmPlayer) return false;
 			if (this.turnUser() == null) return false;
-			return this.turnUser().id == this.$store.state.i.id;
+			return this.turnUser().id == this.$i.id;
 		},
 
 		set(pos) {

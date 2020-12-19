@@ -83,8 +83,8 @@ export default defineComponent({
 
 	computed: {
 		tutorial: {
-			get() { return this.$store.state.settings.tutorial || 0; },
-			set(value) { this.$store.dispatch('settings/set', { key: 'tutorial', value }); }
+			get() { return this.$store.reactiveState.tutorial.value || 0; },
+			set(value) { this.$store.set('tutorial', value); }
 		},
 	},
 });

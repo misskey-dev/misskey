@@ -2,8 +2,8 @@
 <section class="_card">
 	<div class="_title"><Fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
 	<div class="_content">
-		<MkButton v-if="!data && !$store.state.i.twoFactorEnabled" @click="register">{{ $t('_2fa.registerDevice') }}</MkButton>
-		<template v-if="$store.state.i.twoFactorEnabled">
+		<MkButton v-if="!data && !$i.twoFactorEnabled" @click="register">{{ $t('_2fa.registerDevice') }}</MkButton>
+		<template v-if="$i.twoFactorEnabled">
 			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
 			<MkButton @click="unregister">{{ $t('unregister') }}</MkButton>
 
@@ -13,14 +13,14 @@
 				<h2 class="heading">{{ $t('securityKey') }}</h2>
 				<p>{{ $t('_2fa.securityKeyInfo') }}</p>
 				<div class="key-list">
-					<div class="key" v-for="key in $store.state.i.securityKeysList">
+					<div class="key" v-for="key in $i.securityKeysList">
 						<h3>{{ key.name }}</h3>
 						<div class="last-used">{{ $t('lastUsed') }}<MkTime :time="key.lastUsed"/></div>
 						<MkButton @click="unregisterKey(key)">{{ $t('unregister') }}</MkButton>
 					</div>
 				</div>
 
-				<MkSwitch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</MkSwitch>
+				<MkSwitch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</MkSwitch>
 
 				<MkInfo warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</MkInfo>
 				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</MkButton>
@@ -42,7 +42,7 @@
 				</ol>
 			</template>
 		</template>
-		<div v-if="data && !$store.state.i.twoFactorEnabled">
+		<div v-if="data && !$i.twoFactorEnabled">
 			<ol style="margin: 0; padding: 0 0 0 1em;">
 				<li>
 					<i18n-t keypath="_2fa.step1" tag="span">
@@ -96,7 +96,7 @@ export default defineComponent({
 			},
 			data: null,
 			supportsCredentials: !!navigator.credentials,
-			usePasswordLessLogin: this.$store.state.i.usePasswordLessLogin,
+			usePasswordLessLogin: this.$i.usePasswordLessLogin,
 			registration: null,
 			keyName: '',
 			token: null,
@@ -136,7 +136,7 @@ export default defineComponent({
 					this.updatePasswordLessLogin();
 				}).then(() => {
 					os.success();
-					this.$store.state.i.twoFactorEnabled = false;
+					this.$i.twoFactorEnabled = false;
 				});
 			});
 		},
@@ -146,7 +146,7 @@ export default defineComponent({
 				token: this.token
 			}).then(() => {
 				os.success();
-				this.$store.state.i.twoFactorEnabled = true;
+				this.$i.twoFactorEnabled = true;
 			}).catch(e => {
 				os.dialog({
 					type: 'error',
@@ -213,9 +213,9 @@ export default defineComponent({
 								name: 'Misskey'
 							},
 							user: {
-								id: byteify(this.$store.state.i.id, 'ascii'),
-								name: this.$store.state.i.username,
-								displayName: this.$store.state.i.name,
+								id: byteify(this.$i.id, 'ascii'),
+								name: this.$i.username,
+								displayName: this.$i.name,
 							},
 							pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
 							timeout: 60000,

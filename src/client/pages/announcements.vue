@@ -2,12 +2,12 @@
 <div class="_section">
 	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
 		<section class="_card announcement _vMargin" v-for="(announcement, i) in items" :key="announcement.id">
-			<div class="_title"><span v-if="$store.getters.isSignedIn && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 			</div>
-			<div class="_footer" v-if="$store.getters.isSignedIn && !announcement.isRead">
+			<div class="_footer" v-if="$i && !announcement.isRead">
 				<MkButton @click="read(items, announcement, i)" primary><Fa :icon="faCheck"/> {{ $t('gotIt') }}</MkButton>
 			</div>
 		</section>

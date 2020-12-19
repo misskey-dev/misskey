@@ -2,13 +2,13 @@
 <FormBase>
 	<FormKeyValueView>
 		<template #key>ID</template>
-		<template #value><span class="_monospace">{{ $store.state.i.id }}</span></template>
+		<template #value><span class="_monospace">{{ $i.id }}</span></template>
 	</FormKeyValueView>
 
 	<FormGroup>
 		<FormKeyValueView>
 			<template #key>{{ $t('registeredDate') }}</template>
-			<template #value><MkTime :time="$store.state.i.createdAt" mode="detail"/></template>
+			<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
 		</FormKeyValueView>
 	</FormGroup>
 
@@ -104,27 +104,27 @@
 		<template #label>{{ $t('other') }}</template>
 		<FormKeyValueView>
 			<template #key>emailVerified</template>
-			<template #value>{{ $store.state.i.emailVerified ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.emailVerified ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>twoFactorEnabled</template>
-			<template #value>{{ $store.state.i.twoFactorEnabled ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.twoFactorEnabled ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>securityKeys</template>
-			<template #value>{{ $store.state.i.securityKeys ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.securityKeys ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>usePasswordLessLogin</template>
-			<template #value>{{ $store.state.i.usePasswordLessLogin ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.usePasswordLessLogin ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>isModerator</template>
-			<template #value>{{ $store.state.i.isModerator ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.isModerator ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>isAdmin</template>
-			<template #value>{{ $store.state.i.isAdmin ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.isAdmin ? $t('yes') : $t('no') }}</template>
 		</FormKeyValueView>
 	</FormGroup>
 </FormBase>
@@ -171,7 +171,7 @@ export default defineComponent({
 		this.$emit('info', this.INFO);
 
 		os.api('users/stats', {
-			userId: this.$store.state.i.id
+			userId: this.$i.id
 		}).then(stats => {
 			this.stats = stats;
 		});

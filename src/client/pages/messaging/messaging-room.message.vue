@@ -7,7 +7,7 @@
 				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
-				<Mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$store.state.i"/>
+				<Mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$i"/>
 				<div class="file" v-if="message.file">
 					<a :href="message.file.url" rel="noopener" target="_blank" :title="message.file.name">
 						<img v-if="message.file.type.split('/')[0] == 'image'" :src="message.file.url" :alt="message.file.name"/>
@@ -56,7 +56,7 @@ export default defineComponent({
 	},
 	computed: {
 		isMe(): boolean {
-			return this.message.userId === this.$store.state.i.id;
+			return this.message.userId === this.$i.id;
 		},
 		urls(): string[] {
 			if (this.message.text) {
