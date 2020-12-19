@@ -23,6 +23,8 @@ if (localStorage.getItem('vuex') != null) {
 			}));
 		}
 	}
+
+	localStorage.removeItem('vuex');
 }
 
 import { createApp, watch } from 'vue';
