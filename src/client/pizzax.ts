@@ -9,17 +9,14 @@ type StateDef = Record<string, {
 
 type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
-/**
- * 非リアクティブなストレージ。リアクティブに扱いたいときはrefメソッドを使用する（暫定）
- */
 export class Storage<T extends StateDef> {
 	public readonly key: string;
 
 	public readonly def: T;
 
-	public readonly state: { [U in keyof T]: T[U]['default'] };
-
-	public readonly reactiveState: { [U in keyof T]: Ref<T[U]['default']> };
+	// TODO: これが実装されたらreadonlyにしたい: https://github.com/microsoft/TypeScript/issues/37487
+	public readonly state: { [K in keyof T]: T[K]['default'] };
+	public readonly reactiveState: { [K in keyof T]: Ref<T[K]['default']> };
 
 	constructor(key: string, def: T) {
 		this.key = 'pizzax::' + key;
