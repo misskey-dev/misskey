@@ -4,7 +4,7 @@ executors:
   docker:
     working_directory: /tmp/workspace
     docker:
-      - image: docker:latest
+      - image: docker:12.10.1
 
 jobs:
   docker:
@@ -32,7 +32,7 @@ jobs:
                     apk update && apk add jq
                     docker tag misskey/misskey misskey/misskey:$(cat package.json | jq -r .version)
                     docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-                    docker push misskey/misskey
+                    docker push -a misskey/misskey
                    else
                     echo -e '\033[0;33mAborted deploying to Docker Hub\033[0;39m'
                   fi
