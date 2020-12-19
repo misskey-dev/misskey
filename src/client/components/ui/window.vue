@@ -401,7 +401,6 @@ export default defineComponent({
 			position: relative;
 			z-index: 1;
 			flex-shrink: 0;
-			box-shadow: 0px 1px var(--divider);
 			user-select: none;
 			height: $height;
 
