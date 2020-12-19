@@ -664,6 +664,7 @@ developer: "開発者"
 makeExplorable: "アカウントを見つけやすくする"
 makeExplorableDescription: "オフにすると、「みつける」にアカウントが載らなくなります。"
 showGapBetweenNotesInTimeline: "タイムラインのノートを離して表示"
+duplicate: "複製"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

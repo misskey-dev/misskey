@@ -5,6 +5,7 @@
 
 		<div class="buttons" style="margin: 16px 0;">
 			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
+			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $t('duplicate') }}</MkButton>
 			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
 		</div>
 
@@ -93,7 +94,7 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt, faPencilAlt, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
@@ -159,7 +160,7 @@ export default defineComponent({
 			hpml: null,
 			script: '',
 			url,
-			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode
+			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode, faCopy
 		};
 	},
 
@@ -231,8 +232,8 @@ export default defineComponent({
 	},
 
 	methods: {
-		save() {
-			const options = {
+		getSaveOptions() {
+			return {
 				title: this.title.trim(),
 				name: this.name.trim(),
 				summary: this.summary,
@@ -244,6 +245,10 @@ export default defineComponent({
 				variables: this.variables,
 				eyeCatchingImageId: this.eyeCatchingImageId,
 			};
+		},
+
+		save() {
+			const options = this.getSaveOptions();
 
 			const onError = err => {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
@@ -302,6 +307,20 @@ export default defineComponent({
 					});
 					this.$router.push(`/pages`);
 				});
+			});
+		},
+
+		duplicate() {
+			this.title = this.title + ' - copy';
+			this.name = this.name + '-copy';
+			os.api('pages/create', this.getSaveOptions()).then(page => {
+				this.pageId = page.id;
+				this.currentName = this.name.trim();
+				os.dialog({
+					type: 'success',
+					text: this.$t('_pages.created')
+				});
+				this.$router.push(`/pages/edit/${this.pageId}`);
 			});
 		},
 
