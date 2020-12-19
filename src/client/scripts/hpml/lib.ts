@@ -19,7 +19,7 @@ Chart.pluginService.register({
 export function initLib(hpml: Hpml) {
 	return {
 		'MkPages:updated': values.FN_NATIVE(([callback]) => {
-			hpml.pageVarUpdatedCallback = callback;
+			hpml.pageVarUpdatedCallback = (callback as values.VFn);
 		}),
 		'MkPages:get_canvas': values.FN_NATIVE(([id]) => {
 			utils.assertString(id);

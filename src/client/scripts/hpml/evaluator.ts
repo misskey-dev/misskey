@@ -22,7 +22,7 @@ export class Hpml {
 	private pageVars: PageVar[];
 	private envVars: Record<keyof typeof envVarsDef, any>;
 	public aiscript?: AiScript;
-	private pageVarUpdatedCallback;
+	public pageVarUpdatedCallback?: values.VFn;
 	public canvases: Record<string, HTMLCanvasElement> = {};
 	public vars: Ref<Record<string, any>> = ref({});
 	public page: Record<string, any>;
