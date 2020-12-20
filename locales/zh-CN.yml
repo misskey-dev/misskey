@@ -664,7 +664,7 @@ developer: "开发者"
 makeExplorable: "使账号可见。"
 makeExplorableDescription: "关闭时，账号不会显示在\"发现\"中。"
 showGapBetweenNotesInTimeline: "时间线上的帖子分开显示。"
-duplicate: "创建副本"
+duplicate: "复制"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
