@@ -62,7 +62,6 @@
 						<XVariable
 							:value="element"
 							:removable="true"
-							@update:value="v => updateVariable(v)"
 							@remove="() => removeVariable(element)"
 							:hpml="hpml"
 							:name="element.name"
