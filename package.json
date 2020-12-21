@@ -183,7 +183,7 @@
 		"multer": "1.4.2",
 		"nested-property": "4.0.0",
 		"node-fetch": "2.6.1",
-		"nodemailer": "6.4.16",
+		"nodemailer": "6.4.17",
 		"object-assign-deep": "0.4.0",
 		"os-utils": "0.0.14",
 		"p-cancelable": "2.0.0",
