@@ -664,6 +664,7 @@ developer: "Разработчик"
 makeExplorable: "Опубликовать профиль в «Обзоре»."
 makeExplorableDescription: "Если выключить, ваш профиль не будет показан в разделе «Обзор»."
 showGapBetweenNotesInTimeline: "Показывать разделитель между заметками в ленте"
+duplicate: "Дубликат"
 _aboutMisskey:
   about: "Misskey — программа с открытым исходным кодом, которую разрабатывает syuilo с 2014 года."
   contributors: "Основные соавторы"
