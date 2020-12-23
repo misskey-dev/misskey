@@ -61,7 +61,7 @@ export default async function(user: User) {
 	}
 
 	async function noteToString(note, isTheNote = false){
-		const author = await Users.findOne({id: note.userId});
+		const author = isTheNote ? null : await Users.findOne({id: note.userId});
 		let outstr = author ? `${author.name}(@${author.username}@${author.host ? author.host : config.host}) ${(note.renoteId ? 'renotes' : (note.replyId ? 'replies' : 'says'))}: <br>` : '';
 		const files = note.fileIds.length > 0 ? await DriveFiles.find({
 			id: In(note.fileIds)
@@ -80,7 +80,7 @@ export default async function(user: User) {
 		}
 		outstr += `${note.text || ''}${fileEle}`;
 		if(isTheNote){
-			outstr += ` <span class="${(note.renoteId ? 'renote' : (note.replyId ? 'reply_note' : 'new_note'))} ${(fileEle.indexOf('img src') != -1 ? 'with_img' : 'without_img')}"></span>`;
+			outstr += ` <span class="${(note.renoteId ? 'renote_note' : (note.replyId ? 'reply_note' : 'new_note'))} ${(fileEle.indexOf('img src') != -1 ? 'with_img' : 'without_img')}"></span>`;
 		}
 		return outstr;
 	}
