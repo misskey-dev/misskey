@@ -95,8 +95,8 @@ export default define(meta, async (ps, me) => {
 		case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
 		case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
 		case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
-		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC'); break;
-		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
+		case '+updatedAt': query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST'); break;
+		case '-updatedAt': query.orderBy('user.updatedAt', 'ASC', 'NULLS FIRST'); break;
 		default: query.orderBy('user.id', 'ASC'); break;
 	}
 
