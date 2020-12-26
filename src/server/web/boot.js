@@ -3,8 +3,8 @@
  * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
  * - バージョンやユーザーの言語に基づいて適切なメインスクリプトを読み込む。
  * - キャッシュされたコンパイル済みテーマを適用する。
- * - クライアントの設定値に基づいて対応するHTMLクラスやCSS変数を設定する。
- * テーマやCSS変数をこの段階で設定するのは、メインスクリプトが読み込まれる間もテーマを適用したいためです。
+ * - クライアントの設定値に基づいて対応するHTMLクラス等を設定する。
+ * テーマをこの段階で設定するのは、メインスクリプトが読み込まれる間もテーマを適用したいためです。
  * 注: webpackは介さないため、このファイルではrequireやimportは使えません。
  */
 
@@ -92,11 +92,6 @@ if (fontSize) {
 const useSystemFont = localStorage.getItem('useSystemFont');
 if (useSystemFont) {
 	document.documentElement.classList.add('useSystemFont');
-}
-
-const wallpaper = localStorage.getItem('wallpaper');
-if (wallpaper) {
-	document.documentElement.style.backgroundImage = `url(${wallpaper})`;
 }
 
 function refresh() {
