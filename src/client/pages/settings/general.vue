@@ -145,6 +145,7 @@ export default defineComponent({
 	watch: {
 		lang() {
 			localStorage.setItem('lang', this.lang);
+			localStorage.removeItem('locale');
 			location.reload();
 		},
 
