@@ -77,8 +77,6 @@
 	</FormSelect>
 
 	<FormLink to="/settings/deck">{{ $ts.deck }}</FormLink>
-
-	<FormButton @click="cacheClear()" danger>{{ $ts.cacheClear }}</FormButton>
 </FormBase>
 </template>
 
@@ -94,8 +92,6 @@ import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/form/button.vue';
 import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
-import { clientDb, set } from '@/db';
-import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { ColdDeviceStorage } from '@/store';
 
@@ -149,14 +145,7 @@ export default defineComponent({
 	watch: {
 		lang() {
 			localStorage.setItem('lang', this.lang);
-
-			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18n)
-				.then(() => location.reload())
-				.catch(() => {
-					os.dialog({
-						type: 'error',
-					});
-				});
+			location.reload();
 		},
 
 		fontSize() {
@@ -185,23 +174,5 @@ export default defineComponent({
 	mounted() {
 		this.$emit('info', this.INFO);
 	},
-
-	methods: {
-		cacheClear() {
-			// Clear cache (service worker)
-			try {
-				navigator.serviceWorker.controller.postMessage('clear');
-
-				navigator.serviceWorker.getRegistrations().then(registrations => {
-					for (const registration of registrations) registration.unregister();
-				});
-			} catch (e) {
-				console.error(e);
-			}
-
-			// Force reload
-			location.reload(true);
-		}
-	}
 });
 </script>

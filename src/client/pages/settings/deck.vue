@@ -36,8 +36,6 @@ import FormSelect from '@/components/form/select.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
-import { clientDb, set } from '@/db';
-import * as os from '@/os';
 import { deckStore } from '@/ui/deck/deck-store';
 
 export default defineComponent({
