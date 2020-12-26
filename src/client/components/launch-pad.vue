@@ -65,7 +65,7 @@ export default defineComponent({
 	created() {
 		this.items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 			type: def.to ? 'link' : 'button',
-			text: this.$t(def.title),
+			text: this.$ts[def.title],
 			icon: def.icon,
 			to: def.to,
 			action: def.action,

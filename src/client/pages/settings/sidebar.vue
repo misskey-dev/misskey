@@ -76,7 +76,7 @@ export default defineComponent({
 				title: this.$ts.addItem,
 				select: {
 					items: [...menu.map(k => ({
-						value: k, text: this.$t(this.menuDef[k].title)
+						value: k, text: this.$ts[this.menuDef[k].title]
 					})), ...[{
 						value: '-', text: this.$ts.divider
 					}]]
