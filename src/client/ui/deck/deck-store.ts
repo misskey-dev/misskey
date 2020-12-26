@@ -36,10 +36,6 @@ export const deckStore = markRaw(new Storage('deck', {
 		where: 'deviceAccount',
 		default: true
 	},
-	mainColumnPlace: {
-		where: 'deviceAccount',
-		default: 'left' as 'left' | 'right'
-	},
 	navWindow: {
 		where: 'deviceAccount',
 		default: true
@@ -196,16 +192,6 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, data: any
 		...w,
 		data: data
 	} : w);
-	columns[columnIndex] = column;
-	deckStore.set('columns', columns);
-}
-
-export function renameColumn(id: Column['id'], name: Column['name']) {
-	const columns = copy(deckStore.state.columns);
-	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
-	const column = copy(deckStore.state.columns[columnIndex]);
-	if (column == null) return;
-	column.name = name;
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
 }

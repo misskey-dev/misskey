@@ -1524,6 +1524,7 @@ _deck:
   popRight: "右に出す"
 
   _columns:
+    main: "メイン"
     widgets: "ウィジェット"
     notifications: "通知"
     tl: "タイムライン"

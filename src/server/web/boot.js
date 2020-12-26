@@ -104,6 +104,11 @@
 		document.documentElement.classList.add('useSystemFont');
 	}
 
+	const wallpaper = localStorage.getItem('wallpaper');
+	if (wallpaper) {
+		document.documentElement.style.backgroundImage = `url(${wallpaper})`;
+	}
+
 	// eslint-disable-next-line no-inner-declarations
 	function refresh() {
 		// Random
