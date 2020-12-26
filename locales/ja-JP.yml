@@ -665,6 +665,10 @@ makeExplorable: "アカウントを見つけやすくする"
 makeExplorableDescription: "オフにすると、「みつける」にアカウントが載らなくなります。"
 showGapBetweenNotesInTimeline: "タイムラインのノートを離して表示"
 duplicate: "複製"
+left: "左"
+center: "中央"
+wide: "広い"
+narrow: "狭い"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
@@ -1515,6 +1519,8 @@ _notification:
 _deck:
   alwaysShowMainColumn: "常にメインカラムを表示"
   columnAlign: "カラムの寄せ"
+  columnMargin: "カラム間のマージン"
+  columnHeaderHeight: "カラムのヘッダー幅"
   addColumn: "カラムを追加"
   swapLeft: "左に移動"
   swapRight: "右に移動"

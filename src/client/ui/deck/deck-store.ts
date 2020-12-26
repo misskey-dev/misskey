@@ -40,6 +40,14 @@ export const deckStore = markRaw(new Storage('deck', {
 		where: 'deviceAccount',
 		default: true
 	},
+	columnMargin: {
+		where: 'deviceAccount',
+		default: 16
+	},
+	columnHeaderHeight: {
+		where: 'deviceAccount',
+		default: 42
+	},
 }));
 
 export function addColumn(column: Column) {

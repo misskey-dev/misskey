@@ -1,5 +1,7 @@
 <template>
-<div class="mk-deck" :class="`${deckStore.state.columnAlign}`" v-hotkey.global="keymap" @contextmenu.self.prevent="onContextmenu">
+<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" v-hotkey.global="keymap" @contextmenu.self.prevent="onContextmenu"
+	:style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
+>
 	<XSidebar ref="nav"/>
 
 	<template v-for="ids in layout">
@@ -158,11 +160,7 @@ export default defineComponent({
 .mk-deck {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
-	// TODO: この値を設定で変えられるようにする？
-	$columnMargin: 32px;
-
-	$deckMargin: $columnMargin;
-
+	// TODO: ここではなくて、各カラムで自身の幅に応じて上書きするようにしたい
 	--margin: var(--marginHalf);
 
 	display: flex;
@@ -170,7 +168,7 @@ export default defineComponent({
 	height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 	flex: 1;
-	padding: $deckMargin;
+	padding: var(--deckMargin);
 
 	&.center {
 		> .column:first-of-type {
@@ -184,14 +182,14 @@ export default defineComponent({
 
 	> .column {
 		flex-shrink: 0;
-		margin-right: $columnMargin;
+		margin-right: var(--deckMargin);
 
 		&.folder {
 			display: flex;
 			flex-direction: column;
 
 			> *:not(:last-child) {
-				margin-bottom: $columnMargin;
+				margin-bottom: var(--deckMargin);
 			}
 		}
 	}
