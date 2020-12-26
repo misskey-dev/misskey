@@ -2,7 +2,7 @@
 <XWindow ref="window" :initial-width="400" :initial-height="500" :can-resize="true" @closed="$emit('closed')">
 	<template #header>
 		<Fa :icon="faExclamationCircle" style="margin-right: 0.5em;"/>
-		<I18n src="reportAbuseOf" tag="span">
+		<I18n :src="$ts.reportAbuseOf" tag="span">
 			<template #name>
 				<b><MkAcct :user="user"/></b>
 			</template>
@@ -12,14 +12,14 @@
 		<div class="_section">
 			<div class="_content">
 				<MkTextarea v-model:value="comment">
-					<span>{{ $t('details') }}</span>
-					<template #desc>{{ $t('fillAbuseReportDescription') }}</template>
+					<span>{{ $ts.details }}</span>
+					<template #desc>{{ $ts.fillAbuseReportDescription }}</template>
 				</MkTextarea>
 			</div>
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $t('send') }}</MkButton>
+				<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $ts.send }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -69,7 +69,7 @@ export default defineComponent({
 			}, undefined, res => {
 				os.dialog({
 					type: 'success',
-					text: this.$t('abuseReported')
+					text: this.$ts.abuseReported
 				});
 				this.$refs.window.close();
 			});

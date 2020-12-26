@@ -2,23 +2,23 @@
 <section class="_section">
 	<div class="_content" v-if="enableTwitterIntegration">
 		<header><Fa :icon="faTwitter"/> Twitter</header>
-		<p v-if="integrations.twitter">{{ $t('connectedTo') }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
-		<MkButton v-if="integrations.twitter" @click="disconnectTwitter">{{ $t('disconnectSerice') }}</MkButton>
-		<MkButton v-else @click="connectTwitter">{{ $t('connectSerice') }}</MkButton>
+		<p v-if="integrations.twitter">{{ $ts.connectedTo }}: <a :href="`https://twitter.com/${integrations.twitter.screenName}`" rel="nofollow noopener" target="_blank">@{{ integrations.twitter.screenName }}</a></p>
+		<MkButton v-if="integrations.twitter" @click="disconnectTwitter">{{ $ts.disconnectSerice }}</MkButton>
+		<MkButton v-else @click="connectTwitter">{{ $ts.connectSerice }}</MkButton>
 	</div>
 
 	<div class="_content" v-if="enableDiscordIntegration">
 		<header><Fa :icon="faDiscord"/> Discord</header>
-		<p v-if="integrations.discord">{{ $t('connectedTo') }}: <a :href="`https://discordapp.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
-		<MkButton v-if="integrations.discord" @click="disconnectDiscord">{{ $t('disconnectSerice') }}</MkButton>
-		<MkButton v-else @click="connectDiscord">{{ $t('connectSerice') }}</MkButton>
+		<p v-if="integrations.discord">{{ $ts.connectedTo }}: <a :href="`https://discordapp.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
+		<MkButton v-if="integrations.discord" @click="disconnectDiscord">{{ $ts.disconnectSerice }}</MkButton>
+		<MkButton v-else @click="connectDiscord">{{ $ts.connectSerice }}</MkButton>
 	</div>
 
 	<div class="_content" v-if="enableGithubIntegration">
 		<header><Fa :icon="faGithub"/> GitHub</header>
-		<p v-if="integrations.github">{{ $t('connectedTo') }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
-		<MkButton v-if="integrations.github" @click="disconnectGithub">{{ $t('disconnectSerice') }}</MkButton>
-		<MkButton v-else @click="connectGithub">{{ $t('connectSerice') }}</MkButton>
+		<p v-if="integrations.github">{{ $ts.connectedTo }}: <a :href="`https://github.com/${integrations.github.login}`" rel="nofollow noopener" target="_blank">@{{ integrations.github.login }}</a></p>
+		<MkButton v-if="integrations.github" @click="disconnectGithub">{{ $ts.disconnectSerice }}</MkButton>
+		<MkButton v-else @click="connectGithub">{{ $ts.connectSerice }}</MkButton>
 	</div>
 </section>
 </template>
@@ -41,7 +41,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('integration'),
+				title: this.$ts.integration,
 				icon: faShareAlt
 			},
 			apiUrl,

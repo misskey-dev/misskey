@@ -90,19 +90,19 @@ export default defineComponent({
 				}
 			}));
 			os.modalMenu([{
-				text: this.$t('_timelines.home'),
+				text: this.$ts._timelines.home,
 				icon: faHome,
 				action: () => { this.setSrc('home') }
 			}, {
-				text: this.$t('_timelines.local'),
+				text: this.$ts._timelines.local,
 				icon: faComments,
 				action: () => { this.setSrc('local') }
 			}, {
-				text: this.$t('_timelines.social'),
+				text: this.$ts._timelines.social,
 				icon: faShareAlt,
 				action: () => { this.setSrc('social') }
 			}, {
-				text: this.$t('_timelines.global'),
+				text: this.$ts._timelines.global,
 				icon: faGlobe,
 				action: () => { this.setSrc('global') }
 			}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget || ev.target).then(() => {

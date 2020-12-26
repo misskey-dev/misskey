@@ -2,16 +2,16 @@
 <div class="_section">
 	<div class="_inputs">
 		<MkInput v-model:value="logDomain" :debounce="true">
-			<span>{{ $t('domain') }}</span>
+			<span>{{ $ts.domain }}</span>
 		</MkInput>
 		<MkSelect v-model:value="logLevel">
-			<template #label>{{ $t('level') }}</template>
-			<option value="all">{{ $t('levels.all') }}</option>
-			<option value="info">{{ $t('levels.info') }}</option>
-			<option value="success">{{ $t('levels.success') }}</option>
-			<option value="warning">{{ $t('levels.warning') }}</option>
-			<option value="error">{{ $t('levels.error') }}</option>
-			<option value="debug">{{ $t('levels.debug') }}</option>
+			<template #label>{{ $ts.level }}</template>
+			<option value="all">{{ $ts.levels.all }}</option>
+			<option value="info">{{ $ts.levels.info }}</option>
+			<option value="success">{{ $ts.levels.success }}</option>
+			<option value="warning">{{ $ts.levels.warning }}</option>
+			<option value="error">{{ $ts.levels.error }}</option>
+			<option value="debug">{{ $ts.levels.debug }}</option>
 		</MkSelect>
 	</div>
 
@@ -24,7 +24,7 @@
 		</code>
 	</div>
 
-	<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $t('deleteAll') }}</MkButton>
+	<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $ts.deleteAll }}</MkButton>
 </div>
 </template>
 
@@ -49,7 +49,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('serverLogs'),
+				title: this.$ts.serverLogs,
 				icon: faStream
 			},
 			logs: [],

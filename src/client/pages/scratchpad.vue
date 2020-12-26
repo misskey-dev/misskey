@@ -6,14 +6,14 @@
 	</div>
 
 	<MkContainer :body-togglable="true">
-		<template #header><Fa fixed-width/>{{ $t('output') }}</template>
+		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</MkContainer>
 
 	<section class="_section" style="margin-top: var(--margin);">
-		<div class="_content">{{ $t('scratchpadDescription') }}</div>
+		<div class="_content">{{ $ts.scratchpadDescription }}</div>
 	</section>
 </div>
 </template>
@@ -44,7 +44,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('scratchpad'),
+				title: this.$ts.scratchpad,
 				icon: faTerminal,
 			},
 			code: '',

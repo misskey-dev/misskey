@@ -42,7 +42,7 @@ export default defineComponent({
 	created() {
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('notificationSetting'),
+			text: this.$ts.notificationSetting,
 			action: () => {
 				os.popup(import('@/components/notification-setting-window.vue'), {
 					includingTypes: this.column.includingTypes,

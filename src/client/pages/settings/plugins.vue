@@ -1,41 +1,41 @@
 <template>
 <section class="_section">
-	<div class="_title"><Fa :icon="faPlug"/> {{ $t('plugins') }}</div>
+	<div class="_title"><Fa :icon="faPlug"/> {{ $ts.plugins }}</div>
 	<div class="_content">
 		<details>
-			<summary><Fa :icon="faDownload"/> {{ $t('install') }}</summary>
-			<MkInfo warn>{{ $t('pluginInstallWarn') }}</MkInfo>
+			<summary><Fa :icon="faDownload"/> {{ $ts.install }}</summary>
+			<MkInfo warn>{{ $ts.pluginInstallWarn }}</MkInfo>
 			<MkTextarea v-model:value="script" tall>
-				<span>{{ $t('script') }}</span>
+				<span>{{ $ts.script }}</span>
 			</MkTextarea>
-			<MkButton @click="install()" primary><Fa :icon="faSave"/> {{ $t('install') }}</MkButton>
+			<MkButton @click="install()" primary><Fa :icon="faSave"/> {{ $ts.install }}</MkButton>
 		</details>
 	</div>
 	<div class="_content">
 		<details>
-			<summary><Fa :icon="faFolderOpen"/> {{ $t('manage') }}</summary>
+			<summary><Fa :icon="faFolderOpen"/> {{ $ts.manage }}</summary>
 			<MkSelect v-model:value="selectedPluginId">
 				<option v-for="x in plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</MkSelect>
 			<template v-if="selectedPlugin">
 				<div style="margin: -8px 0 8px 0;">
-					<MkSwitch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</MkSwitch>
+					<MkSwitch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $ts.makeActive }}</MkSwitch>
 				</div>
 				<div class="_keyValue">
-					<div>{{ $t('version') }}:</div>
+					<div>{{ $ts.version }}:</div>
 					<div>{{ selectedPlugin.version }}</div>
 				</div>
 				<div class="_keyValue">
-					<div>{{ $t('author') }}:</div>
+					<div>{{ $ts.author }}:</div>
 					<div>{{ selectedPlugin.author }}</div>
 				</div>
 				<div class="_keyValue">
-					<div>{{ $t('description') }}:</div>
+					<div>{{ $ts.description }}:</div>
 					<div>{{ selectedPlugin.description }}</div>
 				</div>
 				<div style="margin-top: 8px;">
-					<MkButton @click="config()" inline v-if="selectedPlugin.config"><Fa :icon="faCog"/> {{ $t('settings') }}</MkButton>
-					<MkButton @click="uninstall()" inline><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</MkButton>
+					<MkButton @click="config()" inline v-if="selectedPlugin.config"><Fa :icon="faCog"/> {{ $ts.settings }}</MkButton>
+					<MkButton @click="uninstall()" inline><Fa :icon="faTrashAlt"/> {{ $ts.uninstall }}</MkButton>
 				</div>
 			</template>
 		</details>
@@ -132,8 +132,8 @@ export default defineComponent({
 
 			const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
 				os.popup(import('@/components/token-generate-window.vue'), {
-					title: this.$t('tokenRequested'),
-					information: this.$t('pluginTokenRequestedDescription'),
+					title: this.$ts.tokenRequested,
+					information: this.$ts.pluginTokenRequestedDescription,
 					initialName: name,
 					initialPermissions: permissions
 				}, {

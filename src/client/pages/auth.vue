@@ -12,15 +12,15 @@
 		@accepted="accepted"
 	/>
 	<div class="denied" v-if="state == 'denied'">
-		<h1>{{ $t('_auth.denied') }}</h1>
+		<h1>{{ $ts._auth.denied }}</h1>
 	</div>
 	<div class="accepted" v-if="state == 'accepted'">
-		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$t('allowed') }}</h1>
-		<p v-if="session.app.callbackUrl">{{ $t('_auth.callback') }}<MkEllipsis/></p>
-		<p v-if="!session.app.callbackUrl">{{ $t('_auth.pleaseGoBack') }}</p>
+		<h1>{{ session.app.isAuthorized ? this.$t('already-authorized') : this.$ts.allowed }}</h1>
+		<p v-if="session.app.callbackUrl">{{ $ts._auth.callback }}<MkEllipsis/></p>
+		<p v-if="!session.app.callbackUrl">{{ $ts._auth.pleaseGoBack }}</p>
 	</div>
 	<div class="error" v-if="state == 'fetch-session-error'">
-		<p>{{ $t('somethingHappened') }}</p>
+		<p>{{ $ts.somethingHappened }}</p>
 	</div>
 </div>
 <div class="signin" v-else>

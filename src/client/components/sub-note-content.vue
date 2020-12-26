@@ -1,8 +1,8 @@
 <template>
 <div class="wrmlmaau">
 	<div class="body">
-		<span v-if="note.isHidden" style="opacity: 0.5">({{ $t('private') }})</span>
-		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $t('deleted') }})</span>
+		<span v-if="note.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
+		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $ts.deleted }})</span>
 		<MkA class="reply" v-if="note.replyId" :to="`/notes/${note.replyId}`"><Fa :icon="faReply"/></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 		<MkA class="rp" v-if="note.renoteId" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
@@ -12,7 +12,7 @@
 		<XMediaList :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
-		<summary>{{ $t('poll') }}</summary>
+		<summary>{{ $ts.poll }}</summary>
 		<XPoll :note="note"/>
 	</details>
 </div>

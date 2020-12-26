@@ -13,16 +13,16 @@
 
 	<FormGroup>
 		<FormKeyValueView>
-			<template #key>{{ $t('administrator') }}</template>
+			<template #key>{{ $ts.administrator }}</template>
 			<template #value>{{ meta.maintainerName }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('contact') }}</template>
+			<template #key>{{ $ts.contact }}</template>
 			<template #value>{{ meta.maintainerEmail }}</template>
 		</FormKeyValueView>
 	</FormGroup>
 
-	<FormLink v-if="meta.tosUrl" :to="meta.tosUrl" external>{{ $t('tos') }}</FormLink>
+	<FormLink v-if="meta.tosUrl" :to="meta.tosUrl" external>{{ $ts.tos }}</FormLink>
 </FormBase>
 </template>
 
@@ -47,7 +47,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('instanceInfo'),
+				title: this.$ts.instanceInfo,
 				icon: faInfoCircle
 			},
 			version,

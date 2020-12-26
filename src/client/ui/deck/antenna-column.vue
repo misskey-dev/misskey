@@ -48,7 +48,7 @@ export default defineComponent({
 	created() {
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('selectAntenna'),
+			text: this.$ts.selectAntenna,
 			action: this.setAntenna
 		}];
 	},
@@ -63,7 +63,7 @@ export default defineComponent({
 		async setAntenna() {
 			const antennas = await os.api('antennas/list');
 			const { canceled, result: antenna } = await os.dialog({
-				title: this.$t('selectAntenna'),
+				title: this.$ts.selectAntenna,
 				type: null,
 				select: {
 					items: antennas.map(x => ({

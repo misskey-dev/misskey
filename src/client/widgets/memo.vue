@@ -1,10 +1,10 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faStickyNote"/>{{ $t('_widgets.memo') }}</template>
+	<template #header><Fa :icon="faStickyNote"/>{{ $ts._widgets.memo }}</template>
 
 	<div class="otgbylcu">
-		<textarea v-model="text" :placeholder="$t('placeholder')" @input="onChange"></textarea>
-		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $t('save') }}</button>
+		<textarea v-model="text" :placeholder="$ts.placeholder" @input="onChange"></textarea>
+		<button @click="saveMemo" :disabled="!changed" class="_buttonPrimary">{{ $ts.save }}</button>
 	</div>
 </MkContainer>
 </template>

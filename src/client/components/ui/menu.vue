@@ -35,7 +35,7 @@
 		</button>
 	</template>
 	<span v-if="_items.length === 0" class="none item">
-		<span>{{ $t('none') }}</span>
+		<span>{{ $ts.none }}</span>
 	</span>
 </div>
 </template>

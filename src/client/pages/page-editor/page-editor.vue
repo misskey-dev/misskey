@@ -1,52 +1,52 @@
 <template>
 <div class="_section">
 	<div class="_content">
-		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</MkA>
+		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts._pages.viewPage }}</MkA>
 
 		<div class="buttons" style="margin: 16px 0;">
-			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $t('duplicate') }}</MkButton>
-			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
+			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $ts.duplicate }}</MkButton>
+			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
 		</div>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
-			<template #header><Fa :icon="faCog"/> {{ $t('_pages.pageSetting') }}</template>
+			<template #header><Fa :icon="faCog"/> {{ $ts._pages.pageSetting }}</template>
 			<div class="_section">
 				<MkInput v-model:value="title">
-					<span>{{ $t('_pages.title') }}</span>
+					<span>{{ $ts._pages.title }}</span>
 				</MkInput>
 
 				<MkInput v-model:value="summary">
-					<span>{{ $t('_pages.summary') }}</span>
+					<span>{{ $ts._pages.summary }}</span>
 				</MkInput>
 
 				<MkInput v-model:value="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-					<span>{{ $t('_pages.url') }}</span>
+					<span>{{ $ts._pages.url }}</span>
 				</MkInput>
 
-				<MkSwitch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</MkSwitch>
+				<MkSwitch v-model:value="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
 
 				<MkSelect v-model:value="font">
-					<template #label>{{ $t('_pages.font') }}</template>
-					<option value="serif">{{ $t('_pages.fontSerif') }}</option>
-					<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
+					<template #label>{{ $ts._pages.font }}</template>
+					<option value="serif">{{ $ts._pages.fontSerif }}</option>
+					<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
 				</MkSelect>
 
-				<MkSwitch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</MkSwitch>
+				<MkSwitch v-model:value="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
 				<div class="eyeCatch">
-					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><Fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</MkButton>
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><Fa :icon="faPlus"/> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
 						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-						<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</MkButton>
+						<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
 					</div>
 				</div>
 			</div>
 		</MkContainer>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
-			<template #header><Fa :icon="faStickyNote"/> {{ $t('_pages.contents') }}</template>
+			<template #header><Fa :icon="faStickyNote"/> {{ $ts._pages.contents }}</template>
 			<div class="_section">
 				<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
 
@@ -55,7 +55,7 @@
 		</MkContainer>
 
 		<MkContainer :body-togglable="true" class="_vMargin">
-			<template #header><Fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
+			<template #header><Fa :icon="faMagic"/> {{ $ts._pages.variables }}</template>
 			<div class="qmuvgica">
 				<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 					<template #item="{element}">
@@ -76,7 +76,7 @@
 		</MkContainer>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
-			<template #header><Fa :icon="faCode"/> {{ $t('script') }}</template>
+			<template #header><Fa :icon="faCode"/> {{ $ts.script }}</template>
 			<div>
 				<MkTextarea class="_code" v-model:value="script"/>
 			</div>
@@ -135,10 +135,10 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.initPageId ? {
-				title: this.$t('_pages.editPage'),
+				title: this.$ts._pages.editPage,
 				icon: faPencilAlt,
 			} : {
-				title: this.$t('_pages.newPage'),
+				title: this.$ts._pages.newPage,
 				icon: faPencilAlt,
 			}),
 			author: this.$i,
@@ -254,14 +254,14 @@ export default defineComponent({
 					if (err.info.param == 'name') {
 						os.dialog({
 							type: 'error',
-							title: this.$t('_pages.invalidNameTitle'),
-							text: this.$t('_pages.invalidNameText')
+							title: this.$ts._pages.invalidNameTitle,
+							text: this.$ts._pages.invalidNameText
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
 					os.dialog({
 						type: 'error',
-						text: this.$t('_pages.nameAlreadyExists')
+						text: this.$ts._pages.nameAlreadyExists
 					});
 				}
 			};
@@ -273,7 +273,7 @@ export default defineComponent({
 					this.currentName = this.name.trim();
 					os.dialog({
 						type: 'success',
-						text: this.$t('_pages.updated')
+						text: this.$ts._pages.updated
 					});
 				}).catch(onError);
 			} else {
@@ -283,7 +283,7 @@ export default defineComponent({
 					this.currentName = this.name.trim();
 					os.dialog({
 						type: 'success',
-						text: this.$t('_pages.created')
+						text: this.$ts._pages.created
 					});
 					this.$router.push(`/pages/edit/${this.pageId}`);
 				}).catch(onError);
@@ -302,7 +302,7 @@ export default defineComponent({
 				}).then(() => {
 					os.dialog({
 						type: 'success',
-						text: this.$t('_pages.deleted')
+						text: this.$ts._pages.deleted
 					});
 					this.$router.push(`/pages`);
 				});
@@ -317,7 +317,7 @@ export default defineComponent({
 				this.currentName = this.name.trim();
 				os.dialog({
 					type: 'success',
-					text: this.$t('_pages.created')
+					text: this.$ts._pages.created
 				});
 				this.$router.push(`/pages/edit/${this.pageId}`);
 			});
@@ -326,7 +326,7 @@ export default defineComponent({
 		async add() {
 			const { canceled, result: type } = await os.dialog({
 				type: null,
-				title: this.$t('_pages.chooseBlock'),
+				title: this.$ts._pages.chooseBlock,
 				select: {
 					groupedItems: this.getPageBlockList()
 				},
@@ -340,7 +340,7 @@ export default defineComponent({
 
 		async addVariable() {
 			let { canceled, result: name } = await os.dialog({
-				title: this.$t('_pages.enterVariableName'),
+				title: this.$ts._pages.enterVariableName,
 				input: {
 					type: 'text',
 				},
@@ -353,7 +353,7 @@ export default defineComponent({
 			if (this.hpml.isUsedName(name)) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('_pages.variableNameIsAlreadyUsed')
+					text: this.$ts._pages.variableNameIsAlreadyUsed
 				});
 				return;
 			}
@@ -368,31 +368,31 @@ export default defineComponent({
 
 		getPageBlockList() {
 			return [{
-				label: this.$t('_pages.contentBlocks'),
+				label: this.$ts._pages.contentBlocks,
 				items: [
-					{ value: 'section', text: this.$t('_pages.blocks.section') },
-					{ value: 'text', text: this.$t('_pages.blocks.text') },
-					{ value: 'image', text: this.$t('_pages.blocks.image') },
-					{ value: 'textarea', text: this.$t('_pages.blocks.textarea') },
-					{ value: 'note', text: this.$t('_pages.blocks.note') },
-					{ value: 'canvas', text: this.$t('_pages.blocks.canvas') },
+					{ value: 'section', text: this.$ts._pages.blocks.section },
+					{ value: 'text', text: this.$ts._pages.blocks.text },
+					{ value: 'image', text: this.$ts._pages.blocks.image },
+					{ value: 'textarea', text: this.$ts._pages.blocks.textarea },
+					{ value: 'note', text: this.$ts._pages.blocks.note },
+					{ value: 'canvas', text: this.$ts._pages.blocks.canvas },
 				]
 			}, {
-				label: this.$t('_pages.inputBlocks'),
+				label: this.$ts._pages.inputBlocks,
 				items: [
-					{ value: 'button', text: this.$t('_pages.blocks.button') },
-					{ value: 'radioButton', text: this.$t('_pages.blocks.radioButton') },
-					{ value: 'textInput', text: this.$t('_pages.blocks.textInput') },
-					{ value: 'textareaInput', text: this.$t('_pages.blocks.textareaInput') },
-					{ value: 'numberInput', text: this.$t('_pages.blocks.numberInput') },
-					{ value: 'switch', text: this.$t('_pages.blocks.switch') },
-					{ value: 'counter', text: this.$t('_pages.blocks.counter') }
+					{ value: 'button', text: this.$ts._pages.blocks.button },
+					{ value: 'radioButton', text: this.$ts._pages.blocks.radioButton },
+					{ value: 'textInput', text: this.$ts._pages.blocks.textInput },
+					{ value: 'textareaInput', text: this.$ts._pages.blocks.textareaInput },
+					{ value: 'numberInput', text: this.$ts._pages.blocks.numberInput },
+					{ value: 'switch', text: this.$ts._pages.blocks.switch },
+					{ value: 'counter', text: this.$ts._pages.blocks.counter }
 				]
 			}, {
-				label: this.$t('_pages.specialBlocks'),
+				label: this.$ts._pages.specialBlocks,
 				items: [
-					{ value: 'if', text: this.$t('_pages.blocks.if') },
-					{ value: 'post', text: this.$t('_pages.blocks.post') }
+					{ value: 'if', text: this.$ts._pages.blocks.if },
+					{ value: 'post', text: this.$ts._pages.blocks.post }
 				]
 			}];
 		},

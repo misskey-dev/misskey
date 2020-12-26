@@ -4,18 +4,18 @@
 	<section class="_card _vMargin">
 		<div class="_title"><Fa :icon="faColumns"/> </div>
 		<div class="_content">
-			<div>{{ $t('defaultNavigationBehaviour') }}</div>
-			<MkSwitch v-model:value="navWindow">{{ $t('openInWindow') }}</MkSwitch>
+			<div>{{ $ts.defaultNavigationBehaviour }}</div>
+			<MkSwitch v-model:value="navWindow">{{ $ts.openInWindow }}</MkSwitch>
 		</div>
 		<div class="_content">
 			<MkSwitch v-model:value="alwaysShowMainColumn">
-				{{ $t('_deck.alwaysShowMainColumn') }}
+				{{ $ts._deck.alwaysShowMainColumn }}
 			</MkSwitch>
 		</div>
 		<div class="_content">
-			<div>{{ $t('_deck.columnAlign') }}</div>
-			<MkRadio v-model="columnAlign" value="left">{{ $t('left') }}</MkRadio>
-			<MkRadio v-model="columnAlign" value="center">{{ $t('center') }}</MkRadio>
+			<div>{{ $ts._deck.columnAlign }}</div>
+			<MkRadio v-model="columnAlign" value="left">{{ $ts.left }}</MkRadio>
+			<MkRadio v-model="columnAlign" value="center">{{ $ts.center }}</MkRadio>
 		</div>
 	</section>
 
@@ -60,7 +60,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('deck'),
+				title: this.$ts.deck,
 				icon: faColumns
 			},
 			faImage, faCog,

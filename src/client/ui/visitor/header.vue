@@ -2,10 +2,10 @@
 <div class="sqxihjet">
 	<div class="wide" v-if="narrow === false">
 		<div class="content">
-			<MkA to="/" class="link" active-class="active"><Fa :icon="faHome" class="icon"/>{{ $t('home') }}</MkA>
-			<MkA to="/explore" class="link" active-class="active"><Fa :icon="faHashtag" class="icon"/>{{ $t('explore') }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><Fa :icon="faFireAlt" class="icon"/>{{ $t('featured') }}</MkA>
-			<MkA to="/channels" class="link" active-class="active"><Fa :icon="faSatelliteDish" class="icon"/>{{ $t('channel') }}</MkA>
+			<MkA to="/" class="link" active-class="active"><Fa :icon="faHome" class="icon"/>{{ $ts.home }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><Fa :icon="faHashtag" class="icon"/>{{ $ts.explore }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><Fa :icon="faFireAlt" class="icon"/>{{ $ts.featured }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><Fa :icon="faSatelliteDish" class="icon"/>{{ $ts.channel }}</MkA>
 			<div class="page active link" v-if="info">
 				<div class="title">
 					<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
@@ -16,9 +16,9 @@
 				<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 			</div>
 			<div class="right">
-				<button class="_button search" @click="search()"><Fa :icon="faSearch" class="icon"/><span>{{ $t('search') }}</span></button>
-				<button class="_buttonPrimary signup" @click="signup()">{{ $t('signup') }}</button>
-				<button class="_button login" @click="signin()">{{ $t('login') }}</button>
+				<button class="_button search" @click="search()"><Fa :icon="faSearch" class="icon"/><span>{{ $ts.search }}</span></button>
+				<button class="_buttonPrimary signup" @click="signup()">{{ $ts.signup }}</button>
+				<button class="_button login" @click="signin()">{{ $ts.login }}</button>
 			</div>
 		</div>
 	</div>

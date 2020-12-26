@@ -6,10 +6,10 @@
 	<div class="_content mk-messaging-room">
 		<div class="body">
 			<MkLoading v-if="fetching"/>
-			<p class="empty" v-if="!fetching && messages.length == 0"><Fa :icon="faInfoCircle"/>{{ $t('noMessagesYet') }}</p>
-			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><Fa :icon="faFlag"/>{{ $t('noMoreHistory') }}</p>
+			<p class="empty" v-if="!fetching && messages.length == 0"><Fa :icon="faInfoCircle"/>{{ $ts.noMessagesYet }}</p>
+			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><Fa :icon="faFlag"/>{{ $ts.noMoreHistory }}</p>
 			<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-				<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $t('loading') : $t('loadMore') }}
+				<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
 			</button>
 			<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
 				<XMessage :message="message" :is-group="group != null" :key="message.id"/>
@@ -18,7 +18,7 @@
 		<footer>
 			<transition name="fade">
 				<div class="new-message" v-show="showIndicator">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $t('newMessageExists') }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>
@@ -174,7 +174,7 @@ const Component = defineComponent({
 			} else if (e.dataTransfer.files.length > 1) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('onlyOneFileCanBeAttached')
+					text: this.$ts.onlyOneFileCanBeAttached
 				});
 				return;
 			}
@@ -311,14 +311,14 @@ const Component = defineComponent({
 			const path = this.groupId ? `/my/messaging/group/${this.groupId}` : `/my/messaging/${this.userAcct}`;
 
 			os.modalMenu([this.inWindow ? undefined : {
-				text: this.$t('openInWindow'),
+				text: this.$ts.openInWindow,
 				icon: faWindowMaximize,
 				action: () => {
 					os.pageWindow(path);
 					this.$router.back();
 				},
 			}, this.inWindow ? undefined : {
-				text: this.$t('popout'),
+				text: this.$ts.popout,
 				icon: faExternalLinkAlt,
 				action: () => {
 					popout(path);

@@ -21,6 +21,13 @@ export class I18n<T extends Record<string, any>> {
 	public t(key: string, args?: Record<string, any>): string {
 		try {
 			let str = key.split('.').reduce((o, i) => o[i], this.locale) as string;
+
+			if (_DEV_) {
+				if (!str.includes('{')) {
+					console.warn(`i18n: '${key}' has no any arg. so ref prop directly instead of call this method.`);
+				}
+			}
+
 			if (args) {
 				for (const [k, v] of Object.entries(args)) {
 					str = str.replace(`{${k}}`, v);

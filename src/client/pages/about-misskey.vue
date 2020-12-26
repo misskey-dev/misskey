@@ -11,27 +11,27 @@
 			</div>
 		</section>
 		<section class="_formItem" style="text-align: center; padding: 0 16px;" @click="gravity">
-			{{ $t('_aboutMisskey.about') }}
+			{{ $ts._aboutMisskey.about }}
 		</section>
 		<FormGroup>
 			<FormLink to="https://github.com/syuilo/misskey" external>
 				<template #icon><Fa :icon="faCode"/></template>
-				{{ $t('_aboutMisskey.source') }}
+				{{ $ts._aboutMisskey.source }}
 				<template #suffix>GitHub</template>
 			</FormLink>
 			<FormLink to="https://crowdin.com/project/misskey" external>
 				<template #icon><Fa :icon="faLanguage"/></template>
-				{{ $t('_aboutMisskey.translation') }}
+				{{ $ts._aboutMisskey.translation }}
 				<template #suffix>Crowdin</template>
 			</FormLink>
 			<FormLink to="https://www.patreon.com/syuilo" external>
 				<template #icon><Fa :icon="faHandHoldingMedical"/></template>
-				{{ $t('_aboutMisskey.donate') }}
+				{{ $ts._aboutMisskey.donate }}
 				<template #suffix>Patreon</template>
 			</FormLink>
 		</FormGroup>
 		<FormGroup>
-			<template #label>{{ $t('_aboutMisskey.contributors') }}</template>
+			<template #label>{{ $ts._aboutMisskey.contributors }}</template>
 			<FormLink to="https://github.com/syuilo" external>@syuilo</FormLink>
 			<FormLink to="https://github.com/AyaMorisawa" external>@AyaMorisawa</FormLink>
 			<FormLink to="https://github.com/mei23" external>@mei23</FormLink>
@@ -40,12 +40,12 @@
 			<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
 			<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
 			<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
-			<template #caption><MkLink url="https://github.com/syuilo/misskey/graphs/contributors">{{ $t('_aboutMisskey.allContributors') }}</MkLink></template>
+			<template #caption><MkLink url="https://github.com/syuilo/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
 		</FormGroup>
 		<FormGroup>
-			<template #label><Mfm text="[jelly ❤]"/> {{ $t('_aboutMisskey.patrons') }}</template>
+			<template #label><Mfm text="[jelly ❤]"/> {{ $ts._aboutMisskey.patrons }}</template>
 			<FormKeyValueView v-for="patron in patrons" :key="patron"><template #key>{{ patron }}</template></FormKeyValueView>
-			<template #caption>{{ $t('_aboutMisskey.morePatrons') }}</template>
+			<template #caption>{{ $ts._aboutMisskey.morePatrons }}</template>
 		</FormGroup>
 	</FormBase>
 </div>
@@ -115,7 +115,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('aboutMisskey'),
+				title: this.$ts.aboutMisskey,
 				icon: null
 			},
 			version,

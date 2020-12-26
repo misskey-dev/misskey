@@ -6,11 +6,11 @@
 	</XList>
 
 	<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 		<template v-if="moreFetching"><MkLoading inline/></template>
 	</button>
 
-	<p class="empty" v-if="empty">{{ $t('noNotifications') }}</p>
+	<p class="empty" v-if="empty">{{ $ts.noNotifications }}</p>
 
 	<MkError v-if="error" @retry="init()"/>
 </div>

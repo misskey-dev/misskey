@@ -215,13 +215,13 @@ export default defineComponent({
 				text: path,
 			}, {
 				icon: faColumns,
-				text: this.$t('openInSideView'),
+				text: this.$ts.openInSideView,
 				action: () => {
 					this.$refs.side.navigate(path);
 				}
 			}, {
 				icon: faWindowMaximize,
-				text: this.$t('openInWindow'),
+				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);
 				}

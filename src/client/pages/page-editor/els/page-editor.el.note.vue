@@ -1,13 +1,13 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faStickyNote"/> {{ $t('_pages.blocks.note') }}</template>
+	<template #header><Fa :icon="faStickyNote"/> {{ $ts._pages.blocks.note }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
 		<MkInput v-model:value="id">
-			<span>{{ $t('_pages.blocks._note.id') }}</span>
-			<template #desc>{{ $t('_pages.blocks._note.idDescription') }}</template>
+			<span>{{ $ts._pages.blocks._note.id }}</span>
+			<template #desc>{{ $ts._pages.blocks._note.idDescription }}</template>
 		</MkInput>
-		<MkSwitch v-model:value="value.detailed"><span>{{ $t('_pages.blocks._note.detailed') }}</span></MkSwitch>
+		<MkSwitch v-model:value="value.detailed"><span>{{ $ts._pages.blocks._note.detailed }}</span></MkSwitch>
 
 		<XNote v-if="note" v-model:note="note" :key="note.id + ':' + (value.detailed ? 'detailed' : 'normal')" :detail="value.detailed" style="margin-bottom: 16px;"/>
 	</section>

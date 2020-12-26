@@ -1,12 +1,12 @@
 <template>
 <section class="rrfwjxfl _section">
 	<MkTab v-model:value="tab" style="margin-bottom: var(--margin);">
-		<option value="mute">{{ $t('mutedUsers') }}</option>
-		<option value="block">{{ $t('blockedUsers') }}</option>
+		<option value="mute">{{ $ts.mutedUsers }}</option>
+		<option value="block">{{ $ts.blockedUsers }}</option>
 	</MkTab>
 	<div class="_content" v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
-			<template #empty><MkInfo>{{ $t('noUsers') }}</MkInfo></template>
+			<template #empty><MkInfo>{{ $ts.noUsers }}</MkInfo></template>
 			<template #default="{items}">
 				<div class="user" v-for="mute in items" :key="mute.id">
 					<MkA class="name" :to="userPage(mute.mutee)">
@@ -18,7 +18,7 @@
 	</div>
 	<div class="_content" v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
-			<template #empty><MkInfo>{{ $t('noUsers') }}</MkInfo></template>
+			<template #empty><MkInfo>{{ $ts.noUsers }}</MkInfo></template>
 			<template #default="{items}">
 				<div class="user" v-for="block in items" :key="block.id">
 					<MkA class="name" :to="userPage(block.blockee)">
@@ -52,7 +52,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('muteAndBlock'),
+				title: this.$ts.muteAndBlock,
 				icon: faBan
 			},
 			tab: 'mute',

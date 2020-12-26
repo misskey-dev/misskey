@@ -1,9 +1,9 @@
 <template>
 <div>
 	<MkTab v-model:value="tab" v-if="$i">
-		<option value="featured"><Fa :icon="faFireAlt"/> {{ $t('_pages.featured') }}</option>
-		<option value="my"><Fa :icon="faEdit"/> {{ $t('_pages.my') }}</option>
-		<option value="liked"><Fa :icon="faHeart"/> {{ $t('_pages.liked') }}</option>
+		<option value="featured"><Fa :icon="faFireAlt"/> {{ $ts._pages.featured }}</option>
+		<option value="my"><Fa :icon="faEdit"/> {{ $ts._pages.my }}</option>
+		<option value="liked"><Fa :icon="faHeart"/> {{ $ts._pages.liked }}</option>
 	</MkTab>
 
 	<div class="_section">
@@ -45,7 +45,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('pages'),
+				title: this.$ts.pages,
 				icon: faStickyNote,
 				action: {
 					icon: faPlus,

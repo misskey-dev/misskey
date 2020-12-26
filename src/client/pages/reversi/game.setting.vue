@@ -3,13 +3,13 @@
 	<header><b><MkUserName :user="game.user1"/></b> vs <b><MkUserName :user="game.user2"/></b></header>
 
 	<div>
-		<p>{{ $t('_reversi.gameSettings') }}</p>
+		<p>{{ $ts._reversi.gameSettings }}</p>
 
 		<div class="card map _panel">
 			<header>
-				<select v-model="mapName" :placeholder="$t('_reversi.chooseBoard')" @change="onMapChange">
+				<select v-model="mapName" :placeholder="$ts._reversi.chooseBoard" @change="onMapChange">
 					<option label="-Custom-" :value="mapName" v-if="mapName == '-Custom-'"/>
-					<option :label="$t('random')" :value="null"/>
+					<option :label="$ts.random" :value="null"/>
 					<optgroup v-for="c in mapCategories" :key="c" :label="c">
 						<option v-for="m in Object.values(maps).filter(m => m.category == c)" :key="m.name" :label="m.name" :value="m.name">{{ m.name }}</option>
 					</optgroup>
@@ -29,20 +29,20 @@
 
 		<div class="card _panel">
 			<header>
-				<span>{{ $t('_reversi.blackOrWhite') }}</span>
+				<span>{{ $ts._reversi.blackOrWhite }}</span>
 			</header>
 
 			<div>
-				<MkRadio v-model="game.bw" value="random" @update:modelValue="updateSettings('bw')">{{ $t('random') }}</MkRadio>
+				<MkRadio v-model="game.bw" value="random" @update:modelValue="updateSettings('bw')">{{ $ts.random }}</MkRadio>
 				<MkRadio v-model="game.bw" :value="'1'" @update:modelValue="updateSettings('bw')">
-					<I18n src="_reversi.blackIs" tag="span">
+					<I18n :src="$ts._reversi.blackIs" tag="span">
 						<template #name>
 							<b><MkUserName :user="game.user1"/></b>
 						</template>
 					</I18n>
 				</MkRadio>
 				<MkRadio v-model="game.bw" :value="'2'" @update:modelValue="updateSettings('bw')">
-					<I18n src="_reversi.blackIs" tag="span">
+					<I18n :src="$ts._reversi.blackIs" tag="span">
 						<template #name>
 							<b><MkUserName :user="game.user2"/></b>
 						</template>
@@ -53,19 +53,19 @@
 
 		<div class="card _panel">
 			<header>
-				<span>{{ $t('_reversi.rules') }}</span>
+				<span>{{ $ts._reversi.rules }}</span>
 			</header>
 
 			<div>
-				<MkSwitch v-model:value="game.isLlotheo" @update:value="updateSettings('isLlotheo')">{{ $t('_reversi.isLlotheo') }}</MkSwitch>
-				<MkSwitch v-model:value="game.loopedBoard" @update:value="updateSettings('loopedBoard')">{{ $t('_reversi.loopedMap') }}</MkSwitch>
-				<MkSwitch v-model:value="game.canPutEverywhere" @update:value="updateSettings('canPutEverywhere')">{{ $t('_reversi.canPutEverywhere') }}</MkSwitch>
+				<MkSwitch v-model:value="game.isLlotheo" @update:value="updateSettings('isLlotheo')">{{ $ts._reversi.isLlotheo }}</MkSwitch>
+				<MkSwitch v-model:value="game.loopedBoard" @update:value="updateSettings('loopedBoard')">{{ $ts._reversi.loopedMap }}</MkSwitch>
+				<MkSwitch v-model:value="game.canPutEverywhere" @update:value="updateSettings('canPutEverywhere')">{{ $ts._reversi.canPutEverywhere }}</MkSwitch>
 			</div>
 		</div>
 
 		<div class="card form _panel" v-if="form">
 			<header>
-				<span>{{ $t('_reversi.botSettings') }}</span>
+				<span>{{ $ts._reversi.botSettings }}</span>
 			</header>
 
 			<div>
@@ -108,16 +108,16 @@
 
 	<footer class="_acrylic">
 		<p class="status">
-			<template v-if="isAccepted && isOpAccepted">{{ $t('_reversi.thisGameIsStartedSoon') }}<MkEllipsis/></template>
-			<template v-if="isAccepted && !isOpAccepted">{{ $t('_reversi.waitingForOther') }}<MkEllipsis/></template>
-			<template v-if="!isAccepted && isOpAccepted">{{ $t('_reversi.waitingForMe') }}</template>
-			<template v-if="!isAccepted && !isOpAccepted">{{ $t('_reversi.waitingBoth') }}<MkEllipsis/></template>
+			<template v-if="isAccepted && isOpAccepted">{{ $ts._reversi.thisGameIsStartedSoon }}<MkEllipsis/></template>
+			<template v-if="isAccepted && !isOpAccepted">{{ $ts._reversi.waitingForOther }}<MkEllipsis/></template>
+			<template v-if="!isAccepted && isOpAccepted">{{ $ts._reversi.waitingForMe }}</template>
+			<template v-if="!isAccepted && !isOpAccepted">{{ $ts._reversi.waitingBoth }}<MkEllipsis/></template>
 		</p>
 
 		<div class="actions">
-			<MkButton inline @click="exit">{{ $t('cancel') }}</MkButton>
-			<MkButton inline primary @click="accept" v-if="!isAccepted">{{ $t('_reversi.ready') }}</MkButton>
-			<MkButton inline primary @click="cancel" v-if="isAccepted">{{ $t('_reversi.cancelReady') }}</MkButton>
+			<MkButton inline @click="exit">{{ $ts.cancel }}</MkButton>
+			<MkButton inline primary @click="accept" v-if="!isAccepted">{{ $ts._reversi.ready }}</MkButton>
+			<MkButton inline primary @click="cancel" v-if="isAccepted">{{ $ts._reversi.cancelReady }}</MkButton>
 		</div>
 	</footer>
 </div>

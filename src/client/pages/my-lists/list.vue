@@ -3,16 +3,16 @@
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_section">
 			<div class="_content">
-				<MkButton inline @click="addUser()">{{ $t('addUser') }}</MkButton>
-				<MkButton inline @click="renameList()">{{ $t('rename') }}</MkButton>
-				<MkButton inline @click="deleteList()">{{ $t('delete') }}</MkButton>
+				<MkButton inline @click="addUser()">{{ $ts.addUser }}</MkButton>
+				<MkButton inline @click="renameList()">{{ $ts.rename }}</MkButton>
+				<MkButton inline @click="deleteList()">{{ $ts.delete }}</MkButton>
 			</div>
 		</div>
 	</transition>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="list" class="_section members _vMargin">
-			<div class="_title">{{ $t('members') }}</div>
+			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
 					<div class="user _panel" v-for="user in users" :key="user.id">
@@ -102,7 +102,7 @@ export default defineComponent({
 
 		async renameList() {
 			const { canceled, result: name } = await os.dialog({
-				title: this.$t('enterListName'),
+				title: this.$ts.enterListName,
 				input: {
 					default: this.list.name
 				}

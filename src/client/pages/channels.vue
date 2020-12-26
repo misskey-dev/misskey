@@ -2,9 +2,9 @@
 <div>
 	<div class="_section" style="padding: 0;" v-if="$i">
 		<MkTab class="_content" v-model:value="tab">
-			<option value="featured"><Fa :icon="faFireAlt"/> {{ $t('_channel.featured') }}</option>
-			<option value="following"><Fa :icon="faHeart"/> {{ $t('_channel.following') }}</option>
-			<option value="owned"><Fa :icon="faEdit"/> {{ $t('_channel.owned') }}</option>
+			<option value="featured"><Fa :icon="faFireAlt"/> {{ $ts._channel.featured }}</option>
+			<option value="following"><Fa :icon="faHeart"/> {{ $ts._channel.following }}</option>
+			<option value="owned"><Fa :icon="faEdit"/> {{ $ts._channel.owned }}</option>
 		</MkTab>
 	</div>
 
@@ -47,7 +47,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('channel'),
+				title: this.$ts.channel,
 				icon: faSatelliteDish,
 				action: {
 					icon: faPlus,

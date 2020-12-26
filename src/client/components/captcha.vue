@@ -1,6 +1,6 @@
 <template>
 <div>
-	<span v-if="!available">{{ $t('waiting') }}<MkEllipsis/></span>
+	<span v-if="!available">{{ $ts.waiting }}<MkEllipsis/></span>
 	<div ref="captcha"></div>
 </div>
 </template>

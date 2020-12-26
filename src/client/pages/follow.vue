@@ -40,7 +40,7 @@ export default defineComponent({
 			});
 		}
 
-		os.promiseDialog(promise, null, null, this.$t('fetchingAsApObject'));
+		os.promiseDialog(promise, null, null, this.$ts.fetchingAsApObject);
 	},
 
 	methods: {

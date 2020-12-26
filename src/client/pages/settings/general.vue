@@ -1,12 +1,12 @@
 <template>
 <FormBase>
-	<FormSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</FormSwitch>
+	<FormSwitch v-model:value="showFixedPostForm">{{ $ts.showFixedPostForm }}</FormSwitch>
 
 	<FormSelect v-model:value="lang">
-		<template #label>{{ $t('uiLanguage') }}</template>
+		<template #label>{{ $ts.uiLanguage }}</template>
 		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
 		<template #caption>
-			<I18n src="i18nInfo" tag="span">
+			<I18n :src="$ts.i18nInfo" tag="span">
 				<template #link>
 					<MkLink url="https://crowdin.com/project/misskey">Crowdin</MkLink>
 				</template>
@@ -15,35 +15,35 @@
 	</FormSelect>
 
 	<FormGroup>
-		<template #label>{{ $t('behavior') }}</template>
-		<FormSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</FormSwitch>
-		<FormSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</FormSwitch>
-		<FormSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</FormSwitch>
+		<template #label>{{ $ts.behavior }}</template>
+		<FormSwitch v-model:value="imageNewTab">{{ $ts.openImageInNewTab }}</FormSwitch>
+		<FormSwitch v-model:value="enableInfiniteScroll">{{ $ts.enableInfiniteScroll }}</FormSwitch>
+		<FormSwitch v-model:value="disablePagesScript">{{ $ts.disablePagesScript }}</FormSwitch>
 	</FormGroup>
 
 	<FormSelect v-model:value="serverDisconnectedBehavior">
-		<template #label>{{ $t('whenServerDisconnected') }}</template>
-		<option value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</option>
-		<option value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</option>
-		<option value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</option>
+		<template #label>{{ $ts.whenServerDisconnected }}</template>
+		<option value="reload">{{ $ts._serverDisconnectedBehavior.reload }}</option>
+		<option value="dialog">{{ $ts._serverDisconnectedBehavior.dialog }}</option>
+		<option value="quiet">{{ $ts._serverDisconnectedBehavior.quiet }}</option>
 	</FormSelect>
 
 	<FormGroup>
-		<template #label>{{ $t('appearance') }}</template>
-		<FormSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</FormSwitch>
-		<FormSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</FormSwitch>
-		<FormSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</FormSwitch>
-		<FormSwitch v-model:value="showGapBetweenNotesInTimeline">{{ $t('showGapBetweenNotesInTimeline') }}</FormSwitch>
-		<FormSwitch v-model:value="loadRawImages">{{ $t('loadRawImages') }}</FormSwitch>
-		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $t('disableShowingAnimatedImages') }}</FormSwitch>
-		<FormSwitch v-model:value="useSystemFont">{{ $t('useSystemFont') }}</FormSwitch>
-		<FormSwitch v-model:value="useOsNativeEmojis">{{ $t('useOsNativeEmojis') }}
+		<template #label>{{ $ts.appearance }}</template>
+		<FormSwitch v-model:value="disableAnimatedMfm">{{ $ts.disableAnimatedMfm }}</FormSwitch>
+		<FormSwitch v-model:value="reduceAnimation">{{ $ts.reduceUiAnimation }}</FormSwitch>
+		<FormSwitch v-model:value="useBlurEffectForModal">{{ $ts.useBlurEffectForModal }}</FormSwitch>
+		<FormSwitch v-model:value="showGapBetweenNotesInTimeline">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
+		<FormSwitch v-model:value="loadRawImages">{{ $ts.loadRawImages }}</FormSwitch>
+		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $ts.disableShowingAnimatedImages }}</FormSwitch>
+		<FormSwitch v-model:value="useSystemFont">{{ $ts.useSystemFont }}</FormSwitch>
+		<FormSwitch v-model:value="useOsNativeEmojis">{{ $ts.useOsNativeEmojis }}
 			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪" :key="useOsNativeEmojis"/></div>
 		</FormSwitch>
 	</FormGroup>
 
 	<FormRadios v-model="fontSize">
-		<template #desc>{{ $t('fontSize') }}</template>
+		<template #desc>{{ $ts.fontSize }}</template>
 		<option value="small"><span style="font-size: 14px;">Aa</span></option>
 		<option :value="null"><span style="font-size: 16px;">Aa</span></option>
 		<option value="large"><span style="font-size: 18px;">Aa</span></option>
@@ -51,34 +51,34 @@
 	</FormRadios>
 
 	<FormSelect v-model:value="instanceTicker">
-		<template #label>{{ $t('instanceTicker') }}</template>
-		<option value="none">{{ $t('_instanceTicker.none') }}</option>
-		<option value="remote">{{ $t('_instanceTicker.remote') }}</option>
-		<option value="always">{{ $t('_instanceTicker.always') }}</option>
+		<template #label>{{ $ts.instanceTicker }}</template>
+		<option value="none">{{ $ts._instanceTicker.none }}</option>
+		<option value="remote">{{ $ts._instanceTicker.remote }}</option>
+		<option value="always">{{ $ts._instanceTicker.always }}</option>
 	</FormSelect>
 
 	<FormSelect v-model:value="nsfw">
-		<template #label>{{ $t('nsfw') }}</template>
-		<option value="respect">{{ $t('_nsfw.respect') }}</option>
-		<option value="ignore">{{ $t('_nsfw.ignore') }}</option>
-		<option value="force">{{ $t('_nsfw.force') }}</option>
+		<template #label>{{ $ts.nsfw }}</template>
+		<option value="respect">{{ $ts._nsfw.respect }}</option>
+		<option value="ignore">{{ $ts._nsfw.ignore }}</option>
+		<option value="force">{{ $ts._nsfw.force }}</option>
 	</FormSelect>
 
 	<FormGroup>
-		<template #label>{{ $t('defaultNavigationBehaviour') }}</template>
-		<FormSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</FormSwitch>
+		<template #label>{{ $ts.defaultNavigationBehaviour }}</template>
+		<FormSwitch v-model:value="defaultSideView">{{ $ts.openInSideView }}</FormSwitch>
 	</FormGroup>
 
 	<FormSelect v-model:value="chatOpenBehavior">
-		<template #label>{{ $t('chatOpenBehavior') }}</template>
-		<option value="page">{{ $t('showInPage') }}</option>
-		<option value="window">{{ $t('openInWindow') }}</option>
-		<option value="popout">{{ $t('popout') }}</option>
+		<template #label>{{ $ts.chatOpenBehavior }}</template>
+		<option value="page">{{ $ts.showInPage }}</option>
+		<option value="window">{{ $ts.openInWindow }}</option>
+		<option value="popout">{{ $ts.popout }}</option>
 	</FormSelect>
 
-	<FormLink to="/settings/deck">{{ $t('deck') }}</FormLink>
+	<FormLink to="/settings/deck">{{ $ts.deck }}</FormLink>
 
-	<FormButton @click="cacheClear()" danger>{{ $t('cacheClear') }}</FormButton>
+	<FormButton @click="cacheClear()" danger>{{ $ts.cacheClear }}</FormButton>
 </FormBase>
 </template>
 
@@ -116,7 +116,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('general'),
+				title: this.$ts.general,
 				icon: faCogs
 			},
 			langs,

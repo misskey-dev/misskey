@@ -1,6 +1,6 @@
 <template>
 <div class="mk-home" v-hotkey.global="keymap">
-	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
+	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
 	<div class="_section">
 		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _content _vMargin"/>
@@ -53,7 +53,7 @@ export default defineComponent({
 				const tabs = [{
 					id: 'home',
 					title: null,
-					tooltip: this.$t('_timelines.home'),
+					tooltip: this.$ts._timelines.home,
 					icon: faHome,
 					onClick: () => { this.src = 'home'; this.saveSrc(); },
 					selected: computed(() => this.src === 'home')
@@ -63,7 +63,7 @@ export default defineComponent({
 					tabs.push({
 						id: 'local',
 						title: null,
-						tooltip: this.$t('_timelines.local'),
+						tooltip: this.$ts._timelines.local,
 						icon: faComments,
 						onClick: () => { this.src = 'local'; this.saveSrc(); },
 						selected: computed(() => this.src === 'local')
@@ -72,7 +72,7 @@ export default defineComponent({
 					tabs.push({
 						id: 'social',
 						title: null,
-						tooltip: this.$t('_timelines.social'),
+						tooltip: this.$ts._timelines.social,
 						icon: faShareAlt,
 						onClick: () => { this.src = 'social'; this.saveSrc(); },
 						selected: computed(() => this.src === 'social')
@@ -83,7 +83,7 @@ export default defineComponent({
 					tabs.push({
 						id: 'global',
 						title: null,
-						tooltip: this.$t('_timelines.global'),
+						tooltip: this.$ts._timelines.global,
 						icon: faGlobe,
 						onClick: () => { this.src = 'global'; this.saveSrc(); },
 						selected: computed(() => this.src === 'global')

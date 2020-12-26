@@ -1,52 +1,52 @@
 <template>
 <div class="_card tbkwesmv">
-	<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('_tutorial.title') }}</div>
+	<div class="_title"><Fa :icon="faInfoCircle"/> {{ $ts._tutorial.title }}</div>
 	<div class="_content" v-if="tutorial === 0">
-		<div>{{ $t('_tutorial.step1_1') }}</div>
-		<div>{{ $t('_tutorial.step1_2') }}</div>
-		<div>{{ $t('_tutorial.step1_3') }}</div>
+		<div>{{ $ts._tutorial.step1_1 }}</div>
+		<div>{{ $ts._tutorial.step1_2 }}</div>
+		<div>{{ $ts._tutorial.step1_3 }}</div>
 	</div>
 	<div class="_content" v-else-if="tutorial === 1">
-		<div>{{ $t('_tutorial.step2_1') }}</div>
-		<div>{{ $t('_tutorial.step2_2') }}</div>
-		<MkA class="_link" to="/settings/profile">{{ $t('editProfile') }}</MkA>
+		<div>{{ $ts._tutorial.step2_1 }}</div>
+		<div>{{ $ts._tutorial.step2_2 }}</div>
+		<MkA class="_link" to="/settings/profile">{{ $ts.editProfile }}</MkA>
 	</div>
 	<div class="_content" v-else-if="tutorial === 2">
-		<div>{{ $t('_tutorial.step3_1') }}</div>
-		<div>{{ $t('_tutorial.step3_2') }}</div>
-		<div>{{ $t('_tutorial.step3_3') }}</div>
-		<small>{{ $t('_tutorial.step3_4') }}</small>
+		<div>{{ $ts._tutorial.step3_1 }}</div>
+		<div>{{ $ts._tutorial.step3_2 }}</div>
+		<div>{{ $ts._tutorial.step3_3 }}</div>
+		<small>{{ $ts._tutorial.step3_4 }}</small>
 	</div>
 	<div class="_content" v-else-if="tutorial === 3">
-		<div>{{ $t('_tutorial.step4_1') }}</div>
-		<div>{{ $t('_tutorial.step4_2') }}</div>
+		<div>{{ $ts._tutorial.step4_1 }}</div>
+		<div>{{ $ts._tutorial.step4_2 }}</div>
 	</div>
 	<div class="_content" v-else-if="tutorial === 4">
-		<div>{{ $t('_tutorial.step5_1') }}</div>
-		<I18n src="_tutorial.step5_2" tag="div">
+		<div>{{ $ts._tutorial.step5_1 }}</div>
+		<I18n :src="$ts._tutorial.step5_2" tag="div">
 			<template #featured>
-				<MkA class="_link" to="/featured">{{ $t('featured') }}</MkA>
+				<MkA class="_link" to="/featured">{{ $ts.featured }}</MkA>
 			</template>
 			<template #explore>
-				<MkA class="_link" to="/explore">{{ $t('explore') }}</MkA>
+				<MkA class="_link" to="/explore">{{ $ts.explore }}</MkA>
 			</template>
 		</I18n>
-		<div>{{ $t('_tutorial.step5_3') }}</div>
-		<small>{{ $t('_tutorial.step5_4') }}</small>
+		<div>{{ $ts._tutorial.step5_3 }}</div>
+		<small>{{ $ts._tutorial.step5_4 }}</small>
 	</div>
 	<div class="_content" v-else-if="tutorial === 5">
-		<div>{{ $t('_tutorial.step6_1') }}</div>
-		<div>{{ $t('_tutorial.step6_2') }}</div>
-		<div>{{ $t('_tutorial.step6_3') }}</div>
+		<div>{{ $ts._tutorial.step6_1 }}</div>
+		<div>{{ $ts._tutorial.step6_2 }}</div>
+		<div>{{ $ts._tutorial.step6_3 }}</div>
 	</div>
 	<div class="_content" v-else-if="tutorial === 6">
-		<div>{{ $t('_tutorial.step7_1') }}</div>
-		<I18n src="_tutorial.step7_2" tag="div">
+		<div>{{ $ts._tutorial.step7_1 }}</div>
+		<I18n :src="$ts._tutorial.step7_2" tag="div">
 			<template #help>
-				<MkA class="_link" to="/docs">{{ $t('help') }}</MkA>
+				<MkA class="_link" to="/docs">{{ $ts.help }}</MkA>
 			</template>
 		</I18n>
-		<div>{{ $t('_tutorial.step7_3') }}</div>
+		<div>{{ $ts._tutorial.step7_3 }}</div>
 	</div>
 
 	<div class="_footer navigation">
@@ -59,8 +59,8 @@
 				<Fa :icon="faChevronRight"/>
 			</button>
 		</div>
-		<MkButton class="ok" @click="tutorial = -1" primary v-if="tutorial === 6"><Fa :icon="faCheck"/> {{ $t('gotIt') }}</MkButton>
-		<MkButton class="ok" @click="tutorial++" primary v-else><Fa :icon="faCheck"/> {{ $t('next') }}</MkButton>
+		<MkButton class="ok" @click="tutorial = -1" primary v-if="tutorial === 6"><Fa :icon="faCheck"/> {{ $ts.gotIt }}</MkButton>
+		<MkButton class="ok" @click="tutorial++" primary v-else><Fa :icon="faCheck"/> {{ $ts.next }}</MkButton>
 	</div>
 </div>
 </template>

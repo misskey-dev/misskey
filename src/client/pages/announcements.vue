@@ -8,7 +8,7 @@
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 			</div>
 			<div class="_footer" v-if="$i && !announcement.isRead">
-				<MkButton @click="read(items, announcement, i)" primary><Fa :icon="faCheck"/> {{ $t('gotIt') }}</MkButton>
+				<MkButton @click="read(items, announcement, i)" primary><Fa :icon="faCheck"/> {{ $ts.gotIt }}</MkButton>
 			</div>
 		</section>
 	</MkPagination>
@@ -31,7 +31,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('announcements'),
+				title: this.$ts.announcements,
 				icon: faBroadcastTower
 			},
 			pagination: {

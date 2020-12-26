@@ -1,7 +1,7 @@
 <template>
 <FormBase>
-	<FormButton @click="generateToken" primary>{{ $t('generateAccessToken') }}</FormButton>
-	<FormLink to="/settings/apps">{{ $t('manageAccessTokens') }}</FormLink>
+	<FormButton @click="generateToken" primary>{{ $ts.generateAccessToken }}</FormButton>
+	<FormLink to="/settings/apps">{{ $ts.manageAccessTokens }}</FormLink>
 	<FormLink to="/api-console" :behavior="isDesktop ? 'window' : null">API console</FormLink>
 </FormBase>
 </template>
@@ -53,7 +53,7 @@ export default defineComponent({
 
 					os.dialog({
 						type: 'success',
-						title: this.$t('token'),
+						title: this.$ts.token,
 						text: token
 					});
 				},

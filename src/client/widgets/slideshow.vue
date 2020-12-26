@@ -3,7 +3,7 @@
 	<div @click="choose">
 		<p v-if="props.folderId == null">
 			<template v-if="isCustomizeMode">{{ $t('folder-customize-mode') }}</template>
-			<template v-else>{{ $t('folder') }}</template>
+			<template v-else>{{ $ts.folder }}</template>
 		</p>
 		<p v-if="props.folderId != null && images.length === 0 && !fetching">{{ $t('no-image') }}</p>
 		<div ref="slideA" class="slide a"></div>

@@ -1,6 +1,6 @@
 <template>
 <div class="xqnhankfuuilcwvhgsopeqncafzsquya">
-	<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ $t('_reversi.black') }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ $t('_reversi.white') }})</header>
+	<header><b><MkA :to="userPage(blackUser)"><MkUserName :user="blackUser"/></MkA></b>({{ $ts._reversi.black }}) vs <b><MkA :to="userPage(whiteUser)"><MkUserName :user="whiteUser"/></MkA></b>({{ $ts._reversi.white }})</header>
 
 	<div style="overflow: hidden; line-height: 28px;">
 		<p class="turn" v-if="!iAmPlayer && !game.isEnded">
@@ -10,14 +10,14 @@
 		<p class="turn" v-if="logPos != logs.length">
 			<Mfm :key="'past-turn-of:' + turnUser().name" :text="$t('_reversi.pastTurnOf', { name: turnUser().name })" :plain="true" :custom-emojis="turnUser().emojis"/>
 		</p>
-		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $t('_reversi.opponentTurn') }}<MkEllipsis/></p>
-		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: tada 1s linear infinite both;">{{ $t('_reversi.myTurn') }}</p>
+		<p class="turn1" v-if="iAmPlayer && !game.isEnded && !isMyTurn()">{{ $ts._reversi.opponentTurn }}<MkEllipsis/></p>
+		<p class="turn2" v-if="iAmPlayer && !game.isEnded && isMyTurn()" style="animation: tada 1s linear infinite both;">{{ $ts._reversi.myTurn }}</p>
 		<p class="result" v-if="game.isEnded && logPos == logs.length">
 			<template v-if="game.winner">
 				<Mfm :key="'won'" :text="$t('_reversi.won', { name: game.winner.name })" :plain="true" :custom-emojis="game.winner.emojis"/>
-				<span v-if="game.surrendered != null"> ({{ $t('_reversi.surrendered') }})</span>
+				<span v-if="game.surrendered != null"> ({{ $ts._reversi.surrendered }})</span>
 			</template>
-			<template v-else>{{ $t('_reversi.drawn') }}</template>
+			<template v-else>{{ $ts._reversi.drawn }}</template>
 		</p>
 	</div>
 
@@ -54,10 +54,10 @@
 		</div>
 	</div>
 
-	<p class="status"><b>{{ $t('_reversi.turnCount', { count: logPos }) }}</b> {{ $t('_reversi.black') }}:{{ o.blackCount }} {{ $t('_reversi.white') }}:{{ o.whiteCount }} {{ $t('_reversi.total') }}:{{ o.blackCount + o.whiteCount }}</p>
+	<p class="status"><b>{{ $t('_reversi.turnCount', { count: logPos }) }}</b> {{ $ts._reversi.black }}:{{ o.blackCount }} {{ $ts._reversi.white }}:{{ o.whiteCount }} {{ $ts._reversi.total }}:{{ o.blackCount + o.whiteCount }}</p>
 
 	<div class="actions" v-if="!game.isEnded && iAmPlayer">
-		<MkButton @click="surrender" inline>{{ $t('_reversi.surrender') }}</MkButton>
+		<MkButton @click="surrender" inline>{{ $ts._reversi.surrender }}</MkButton>
 	</div>
 
 	<div class="player" v-if="game.isEnded">
@@ -72,9 +72,9 @@
 	</div>
 
 	<div class="info">
-		<p v-if="game.isLlotheo">{{ $t('_reversi.isLlotheo') }}</p>
-		<p v-if="game.loopedBoard">{{ $t('_reversi.loopedMap') }}</p>
-		<p v-if="game.canPutEverywhere">{{ $t('_reversi.canPutEverywhere') }}</p>
+		<p v-if="game.isLlotheo">{{ $ts._reversi.isLlotheo }}</p>
+		<p v-if="game.loopedBoard">{{ $ts._reversi.loopedMap }}</p>
+		<p v-if="game.canPutEverywhere">{{ $ts._reversi.canPutEverywhere }}</p>
 	</div>
 
 	<div class="watchers">

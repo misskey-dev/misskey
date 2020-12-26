@@ -6,11 +6,11 @@
 		<template v-if="edit">
 			<header>
 				<MkSelect v-model:value="widgetAdderSelected" style="margin-bottom: var(--margin)">
-					<template #label>{{ $t('selectWidget') }}</template>
+					<template #label>{{ $ts.selectWidget }}</template>
 					<option v-for="widget in widgets" :value="widget" :key="widget">{{ $t(`_widgets.${widget}`) }}</option>
 				</MkSelect>
-				<MkButton inline @click="addWidget" primary><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
-				<MkButton inline @click="edit = false">{{ $t('close') }}</MkButton>
+				<MkButton inline @click="addWidget" primary><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
+				<MkButton inline @click="edit = false">{{ $ts.close }}</MkButton>
 			</header>
 			<XDraggable
 				v-model="_widgets"
@@ -84,7 +84,7 @@ export default defineComponent({
 	created() {
 		this.menu = [{
 			icon: faCog,
-			text: this.$t('edit'),
+			text: this.$ts.edit,
 			action: () => {
 				this.edit = !this.edit;
 			}

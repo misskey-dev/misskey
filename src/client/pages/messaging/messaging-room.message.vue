@@ -3,7 +3,7 @@
 	<MkAvatar class="avatar" :user="message.user"/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }" >
-			<button class="delete-button" v-if="isMe" :title="$t('delete')" @click="del">
+			<button class="delete-button" v-if="isMe" :title="$ts.delete" @click="del">
 				<img src="/assets/remove.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
@@ -16,17 +16,17 @@
 				</div>
 			</div>
 			<div class="content" v-else>
-				<p class="is-deleted">{{ $t('deleted') }}</p>
+				<p class="is-deleted">{{ $ts.deleted }}</p>
 			</div>
 		</div>
 		<div></div>
 		<MkUrlPreview v-for="url in urls" :url="url" :key="url" style="margin: 8px 0;"/>
 		<footer>
 			<template v-if="isGroup">
-				<span class="read" v-if="message.reads.length > 0">{{ $t('messageRead') }} {{ message.reads.length }}</span>
+				<span class="read" v-if="message.reads.length > 0">{{ $ts.messageRead }} {{ message.reads.length }}</span>
 			</template>
 			<template v-else>
-				<span class="read" v-if="isMe && message.isRead">{{ $t('messageRead') }}</span>
+				<span class="read" v-if="isMe && message.isRead">{{ $ts.messageRead }}</span>
 			</template>
 			<MkTime :time="message.createdAt"/>
 			<template v-if="message.is_edited"><Fa icon="pencil-alt"/></template>

@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><Fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
+	<template #header><Fa :icon="faChartBar"/>{{ $ts._widgets.activity }}</template>
 	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
 
 	<div>
