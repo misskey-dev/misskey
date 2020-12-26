@@ -6,7 +6,7 @@ export function pleaseLogin() {
 	if ($i) return;
 
 	dialog({
-		title: i18n.global.t('signinRequired'),
+		title: i18n.locale.signinRequired,
 		text: null
 	});
 

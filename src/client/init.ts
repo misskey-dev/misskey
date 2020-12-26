@@ -227,8 +227,8 @@ stream.on('_disconnected_', async () => {
 		reloadDialogShowing = true;
 		const { canceled } = await dialog({
 			type: 'warning',
-			title: i18n.global.t('disconnectedFromServer'),
-			text: i18n.global.t('reloadConfirm'),
+			title: i18n.locale.disconnectedFromServer,
+			text: i18n.locale.reloadConfirm,
 			showCancelButton: true
 		});
 		reloadDialogShowing = false;
