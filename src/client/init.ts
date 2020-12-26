@@ -87,7 +87,7 @@ if (_DEV_) {
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
 
-if (localStorage.getItem('theme') == null) {
+if (localStorage.theme == null) {
 	applyTheme(require('@/themes/l-light.json5'));
 }
 
