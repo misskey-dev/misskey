@@ -1475,6 +1475,7 @@ _deck:
   stackLeft: "Stack on the left"
   popRight: "Pop to the right"
   _columns:
+    main: "Main"
     widgets: "Widgets"
     notifications: "Notifications"
     tl: "Timeline"
