@@ -23,14 +23,14 @@
 	</div>
 	<div class="_content" v-else-if="tutorial === 4">
 		<div>{{ $t('_tutorial.step5_1') }}</div>
-		<i18n-t keypath="_tutorial.step5_2" tag="div">
+		<I18n src="_tutorial.step5_2" tag="div">
 			<template #featured>
 				<MkA class="_link" to="/featured">{{ $t('featured') }}</MkA>
 			</template>
 			<template #explore>
 				<MkA class="_link" to="/explore">{{ $t('explore') }}</MkA>
 			</template>
-		</i18n-t>
+		</I18n>
 		<div>{{ $t('_tutorial.step5_3') }}</div>
 		<small>{{ $t('_tutorial.step5_4') }}</small>
 	</div>
@@ -41,11 +41,11 @@
 	</div>
 	<div class="_content" v-else-if="tutorial === 6">
 		<div>{{ $t('_tutorial.step7_1') }}</div>
-		<i18n-t keypath="_tutorial.step7_2" tag="div">
+		<I18n src="_tutorial.step7_2" tag="div">
 			<template #help>
 				<MkA class="_link" to="/docs">{{ $t('help') }}</MkA>
 			</template>
-		</i18n-t>
+		</I18n>
 		<div>{{ $t('_tutorial.step7_3') }}</div>
 	</div>
 

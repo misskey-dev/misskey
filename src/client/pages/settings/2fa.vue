@@ -45,14 +45,14 @@
 		<div v-if="data && !$i.twoFactorEnabled">
 			<ol style="margin: 0; padding: 0 0 0 1em;">
 				<li>
-					<i18n-t keypath="_2fa.step1" tag="span">
+					<I18n src="_2fa.step1" tag="span">
 						<template #a>
 							<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
 						</template>
 						<template #b>
 							<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
 						</template>
-					</i18n-t>
+					</I18n>
 				</li>
 				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
 				<li>{{ $t('_2fa.step3') }}<br>

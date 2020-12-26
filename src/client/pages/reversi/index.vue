@@ -46,11 +46,11 @@
 </div>
 <div class="sazhgisb" v-else>
 	<h1>
-		<i18n-t keypath="waitingFor" tag="span">
+		<I18n src="waitingFor" tag="span">
 			<template #x>
 				<b><MkUserName :user="matching"/></b>
 			</template>
-		</i18n-t>
+		</I18n>
 		<MkEllipsis/>
 	</h1>
 	<div class="cancel">

@@ -1,36 +1,49 @@
-import { createI18n } from 'vue-i18n';
-import { clientDb, get, count } from './db';
-import { setI18nContexts } from '@/scripts/set-i18n-contexts';
-import { version, langs, getLocale } from '@/config';
+import { markRaw } from 'vue';
+import { locale } from '@/config';
 
-let _lang = localStorage.getItem('lang');
+export class I18n<T extends Record<string, any>> {
+	public locale: T;
 
-if (_lang == null) {
-	if (langs.map(x => x[0]).includes(navigator.language)) {
-		_lang = navigator.language;
-	} else {
-		_lang = langs.map(x => x[0]).find(x => x.split('-')[0] == navigator.language);
+	constructor(locale: T) {
+		this.locale = locale;
 
-		if (_lang == null) {
-			// Fallback
-			_lang = 'en-US';
+		if (_DEV_) {
+			console.log('i18n', this.locale);
 		}
+
+		//#region BIND
+		this.t = this.t.bind(this);
+		//#endregion
 	}
 
-	localStorage.setItem('lang', _lang);
+	// string にしているのは、ドット区切りでのパス指定を許可するため
+	// なるべくこのメソッド使うよりもlocale直接参照の方がvueのキャッシュ効いてパフォーマンスが良いかも
+	public t(key: string, args?: Record<string, any>): string {
+		try {
+			let str = key.split('.').reduce((o, i) => o[i], this.locale) as string;
+			if (args) {
+				for (const [k, v] of Object.entries(args)) {
+					str = str.replace(`{${k}}`, v);
+				}
+			}
+			return str;
+		} catch (e) {
+			if (_DEV_) {
+				console.warn(`missing localization '${key}'`);
+				return `⚠'${key}'⚠`;
+			}
+
+			return key;
+		}
+	}
 }
 
-export const lang = _lang;
+export const i18n = markRaw(new I18n(locale));
 
-export const locale = await count(clientDb.i18n).then(async n => {
-	if (n === 0) return await setI18nContexts(_lang, version);
-	if ((await get('_version_', clientDb.i18n) !== version)) return await setI18nContexts(_lang, version, true);
-
-	return await getLocale();
-});
-
-export const i18n = createI18n({
-	sync: false,
-	locale: _lang,
-	messages: { [_lang]: locale }
-});
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$t: typeof i18n['t'];
+		$ts: typeof i18n['locale'];
+	}
+}
