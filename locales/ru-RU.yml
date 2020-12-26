@@ -665,6 +665,8 @@ makeExplorable: "Опубликовать профиль в «Обзоре»."
 makeExplorableDescription: "Если выключить, ваш профиль не будет показан в разделе «Обзор»."
 showGapBetweenNotesInTimeline: "Показывать разделитель между заметками в ленте"
 duplicate: "Дубликат"
+left: "Влево"
+center: "По центру"
 _aboutMisskey:
   about: "Misskey — программа с открытым исходным кодом, которую разрабатывает syuilo с 2014 года."
   contributors: "Основные соавторы"
@@ -1467,6 +1469,8 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Всегда показывать главную колонку"
   columnAlign: "Выравнивание колонок"
+  columnMargin: "Расстояние между колонками"
+  columnHeaderHeight: "Высота заголовка колонки"
   addColumn: "Добавить колонку"
   swapLeft: "Переставить левее"
   swapRight: "Переставить правее"
@@ -1475,6 +1479,7 @@ _deck:
   stackLeft: "В столбик влево"
   popRight: "Из столбика вправо"
   _columns:
+    main: "Основная"
     widgets: "Виджеты"
     notifications: "Уведомления"
     tl: "Лента"
