@@ -1472,7 +1472,7 @@ _deck:
   alwaysShowMainColumn: "总是显示主列"
   columnAlign: "列对齐"
   columnMargin: "列间距"
-  columnHeaderHeight: "列首高度"
+  columnHeaderHeight: "列标题高度"
   addColumn: "添加列"
   swapLeft: "向左移动"
   swapRight: "向右移动"
