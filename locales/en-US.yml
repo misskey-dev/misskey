@@ -990,6 +990,7 @@ _widgets:
   federation: "Federation"
   postForm: "Compose a note"
   slideshow: "Slideshow"
+  button: "Button"
 _cw:
   hide: "Hide"
   show: "Load more"
