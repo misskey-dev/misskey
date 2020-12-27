@@ -669,7 +669,7 @@ left: "左"
 center: "中央"
 wide: "宽"
 narrow: "窄"
-reloadToApplySetting: "重新加载后将会应用设置，现在要重新加载吗？"
+reloadToApplySetting: "页面刷新后设置才会生效。是否现在刷新页面？"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
