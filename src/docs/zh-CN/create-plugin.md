@@ -34,7 +34,7 @@ Misskey Webクライアントのプラグイン機能を使うと、クライア
 #### default
 設定のデフォルト値
 
-## APIリファレンス
+## API 参考
 AiScript標準で組み込まれているAPIは掲載しません。
 
 ### Mk:dialog(title text type)
