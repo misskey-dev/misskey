@@ -917,6 +917,7 @@ _widgets:
   digitalClock: "Reloj digital"
   federation: "Federación"
   postForm: "Formulario"
+  button: "Botón"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
