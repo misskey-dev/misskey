@@ -669,6 +669,7 @@ left: "左"
 center: "中央"
 wide: "広い"
 narrow: "狭い"
+reloadToApplySetting: "設定はページリロード後に反映されます。今すぐリロードしますか？"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

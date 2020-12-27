@@ -37,6 +37,7 @@ import FormInput from '@/components/form/input.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import { deckStore } from '@/ui/deck/deck-store';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -66,6 +67,19 @@ export default defineComponent({
 		columnAlign: deckStore.makeGetterSetter('columnAlign'),
 		columnMargin: deckStore.makeGetterSetter('columnMargin'),
 		columnHeaderHeight: deckStore.makeGetterSetter('columnHeaderHeight'),
+	},
+
+	watch: {
+		async navWindow() {
+			const { canceled } = await os.dialog({
+				type: 'info',
+				text: this.$ts.reloadToApplySetting,
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			location.reload();
+		}
 	},
 
 	mounted() {
