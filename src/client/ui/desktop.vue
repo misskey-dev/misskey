@@ -22,6 +22,14 @@ export default defineComponent({
 		XSidebar
 	},
 
+	provide() {
+		return {
+			navHook: (url) => {
+				os.pageWindow(url);
+			}
+		};
+	},
+
 	data() {
 		return {
 			host: host,

@@ -50,6 +50,14 @@ export default defineComponent({
 		DeckColumnCore,
 	},
 
+	provide() {
+		return deckStore.state.navWindow ? {
+			navHook: (url) => {
+				os.pageWindow(url);
+			}
+		} : {};
+	},
+
 	data() {
 		return {
 			deckStore,

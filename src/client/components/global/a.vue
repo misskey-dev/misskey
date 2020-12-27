@@ -10,7 +10,7 @@ import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } f
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
-import { ui, url } from '@/config';
+import { url } from '@/config';
 import { popout } from '@/scripts/popout';
 import { ColdDeviceStorage } from '@/store';
 
@@ -114,13 +114,6 @@ export default defineComponent({
 			} else {
 				if (this.$store.state.defaultSideView && this.sideViewHook && this.to !== '/') {
 					return this.sideViewHook(this.to);
-				}
-				// TODO: a.vueからdeck-sotreを参照したくないのでなんとかする
-				//if (deckStore.state.device.deckNavWindow && (ui === 'deck') && this.to !== '/') {
-				//	return this.window();
-				//}
-				if (ui === 'desktop') {
-					return this.window();
 				}
 
 				if (this.$router.currentRoute.value.path === this.to) {
