@@ -1,19 +1,15 @@
 <template>
-<div>
-	<main class="_section">
-		<div class="_title"><Fa :icon="faFileAlt"/> {{ title }}</div>
-		<div class="_content">
-			<div v-html="body" class="qyqbqfal"></div>
-		</div>
-		<div class="_footer">
-			<MkLink :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $ts.docSource }}</MkLink>
-		</div>
-	</main>
+<div class="qyqbqfal" v-size="{ max: [500] }">
+	<div class="title">{{ title }}</div>
+	<div class="body" v-html="body"></div>
+	<div class="footer">
+		<MkLink :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $ts.docSource }}</MkLink>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
@@ -42,14 +38,14 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			INFO: computed(() => this.title ? {
 				title: this.title,
-				icon: faFileAlt
-			},
+				icon: faFileAlt,
+			} : null),
 			faFileAlt,
-			title: '',
-			body: '',
-			markdown: '',
+			title: null,
+			body: null,
+			markdown: null,
 		}
 	},
 
@@ -108,57 +104,84 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .qyqbqfal {
-	> *:first-child {
-		margin-top: 0;
+	padding: 32px;
+
+	&.max-width_500px {
+		padding: 16px;
 	}
 
-	> *:last-child {
-		margin-bottom: 0;
-	}
-
-	::v-deep(a) {
-		color: var(--link);
-	}
-
-	::v-deep(blockquote) {
-		display: block;
-		margin: 8px;
-		padding: 6px 0 6px 12px;
-		color: var(--fg);
-		border-left: solid 3px var(--fg);
-		opacity: 0.7;
-
-		p {
-			margin: 0;
-		}
-	}
-
-	::v-deep(h2) {
-		font-size: 1.25em;
-		padding: 0 0 0.5em 0;
+	> .title {
+		font-size: 1.5em;
+		font-weight: bold;
+		padding: 0 0 0.75em 0;
+		margin: 0 0 0.75em 0;
 		border-bottom: solid 1px var(--divider);
 	}
 
-	::v-deep(table) {
-		width: 100%;
-		max-width: 100%;
-		overflow: auto;
+	> .body {
+		> *:first-child {
+			margin-top: 0;
+		}
+
+		> *:last-child {
+			margin-bottom: 0;
+		}
+
+		::v-deep(a) {
+			color: var(--link);
+		}
+
+		::v-deep(blockquote) {
+			display: block;
+			margin: 8px;
+			padding: 6px 0 6px 12px;
+			color: var(--fg);
+			border-left: solid 3px var(--fg);
+			opacity: 0.7;
+
+			p {
+				margin: 0;
+			}
+		}
+
+		::v-deep(h2) {
+			font-size: 1.25em;
+			padding: 0 0 0.5em 0;
+			border-bottom: solid 1px var(--divider);
+		}
+
+		::v-deep(table) {
+			width: 100%;
+			max-width: 100%;
+			overflow: auto;
+		}
+
+		::v-deep(kbd.group) {
+			display: inline-block;
+			padding: 2px;
+			border: 1px solid var(--divider);
+			border-radius: 4px;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+		}
+
+		::v-deep(kbd.key) {
+			display: inline-block;
+			padding: 6px 8px;
+			border: solid 1px var(--divider);
+			border-radius: 4px;
+			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+		}
+
+		::v-deep(code) {
+			font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+			tab-size: 2;
+		}
 	}
 
-	::v-deep(kbd.group) {
-		display: inline-block;
-		padding: 2px;
-		border: 1px solid var(--divider);
-		border-radius: 4px;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-	}
-
-	::v-deep(kbd.key) {
-		display: inline-block;
-		padding: 6px 8px;
-		border: solid 1px var(--divider);
-		border-radius: 4px;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	> .footer {
+		padding: 1.5em 0 0 0;
+		margin: 1.5em 0 0 0;
+		border-top: solid 1px var(--divider);
 	}
 }
 </style>
