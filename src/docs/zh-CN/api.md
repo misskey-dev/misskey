@@ -40,14 +40,14 @@
 * `permission` ... 应用程序要求的权限
     * > 例: `write:notes,write:following,read:drive`
     * 要求的权限需要以`,`分隔
-    * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
+    * 您可以在[API参考](/api-doc)中确认您所拥有的权限。
 
 #### Step 3
-ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
+用户允许发行后，对`{_URL_}/api/miauth/{session}/check`的POST请求所返回的是一个包含访问令牌的JSON格式的响应。
 
-レスポンスに含まれるプロパティ:
-* `token` ... ユーザーのアクセストークン
-* `user` ... ユーザーの情報
+响应中包含的属性：
+* `token` ... 用户的访问令牌
+* `user` ... 用户信息
 
 [转到“API使用方法”](#APIの使い方)
 
