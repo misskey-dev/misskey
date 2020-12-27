@@ -990,6 +990,7 @@ _widgets:
   federation: "Föderation"
   postForm: "Neue Notiz anfertigen"
   slideshow: "Diashow"
+  button: "Knopf"
 _cw:
   hide: "Ausblenden"
   show: "Mehr anzeigen"
