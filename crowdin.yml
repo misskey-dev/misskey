@@ -1,3 +1,5 @@
 files:
   - source: /locales/ja-JP.yml
     translation: /locales/%locale%.yml
+  - source: /src/docs/ja-JP/*.md
+    translation: /src/docs/%locale%/%original_file_name%
