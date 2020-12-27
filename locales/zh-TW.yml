@@ -749,6 +749,7 @@ _widgets:
   photos: "照片"
   digitalClock: "電子時鐘"
   federation: "聯邦宇宙"
+  button: "按鈕"
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
