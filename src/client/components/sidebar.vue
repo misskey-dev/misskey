@@ -88,7 +88,7 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		'$store.reactiveState.sidebarDisplay'() {
+		'$store.reactiveState.sidebarDisplay.value'() {
 			this.calcViewState();
 		},
 
