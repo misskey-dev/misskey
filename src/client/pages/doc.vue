@@ -60,7 +60,7 @@ export default defineComponent({
 
 	methods: {
 		fetchDoc() {
-			fetch(`${url}/assets/docs/${this.doc}.${lang}.md`).then(res => res.text()).then(md => {
+			fetch(`${url}/assets/docs/${lang}/${this.doc}.md`).then(res => res.text()).then(md => {
 				this.parse(md);
 			});
 		},

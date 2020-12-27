@@ -110,7 +110,7 @@ router.get('/docs.json', async ctx => {
 		ctx.body = [];
 		return;
 	}
-	const paths = glob.sync(__dirname + `/../../../src/docs/*.${lang}.md`);
+	const paths = glob.sync(__dirname + `/../../../src/docs/${lang}/*.md`);
 	const docs: { path: string; title: string; }[] = [];
 	for (const path of paths) {
 		const md = fs.readFileSync(path, { encoding: 'utf8' });
