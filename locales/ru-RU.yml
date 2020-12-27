@@ -987,6 +987,7 @@ _widgets:
   federation: "Федерация"
   postForm: "Форма отправки"
   slideshow: "Показ слайдов"
+  button: "Кнопка"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
