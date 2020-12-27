@@ -824,6 +824,7 @@ _widgets:
   federation: "Федіверс"
   postForm: "Створення нотатки"
   slideshow: "Слайд-шоу"
+  button: "Кнопка"
 _cw:
   hide: "Сховати"
   show: "Показати більше"
