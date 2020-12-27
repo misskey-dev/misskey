@@ -1020,7 +1020,7 @@ _poll:
 _visibility:
   public: "Öffentlich"
   publicDescription: "Deine Notiz wird global sichtbar sein"
-  home: "Home"
+  home: "Startseite"
   homeDescription: "Deine Notiz wird nur in der Chronik deiner Instanz angezeigt."
   followers: "Follower"
   followersDescription: "Nur für Follower sichtbar"
@@ -1084,7 +1084,7 @@ _instanceCharts:
   files: "Unterschied in der Anzahl der Dateien"
   filesTotal: "Gesamtanzahl an Dateien"
 _timelines:
-  home: "Home"
+  home: "Startseite"
   local: "Lokal"
   social: "Sozial"
   global: "Global"
