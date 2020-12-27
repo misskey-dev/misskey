@@ -1,5 +1,5 @@
 # 插件开发
-Misskey Webクライアントのプラグイン機能を使うと、クライアントを拡張し、様々な機能を追加できます。 ここではプラグインの作成にあたってのメタデータ定義や、AiScript APIリファレンスを掲載します。
+Misskey Web客户端插件功能使您可以扩展客户端并添加各种功能。 我们在这里给出用于创建插件的元数据定义和AiScript API参考。
 
 ## 元数据
 プラグインは、AiScriptのメタデータ埋め込み機能を使って、デフォルトとしてプラグインのメタデータを定義する必要があります。 メタデータは次のプロパティを含むオブジェクトです。
@@ -23,25 +23,25 @@ Misskey Webクライアントのプラグイン機能を使うと、クライア
 表示插件设置信息的对象。 在键名中包含设置名称，在键值中包含以下属性。
 
 #### type
-代表设置值的类型的字符串。从下列项中选择。 string number boolean
+代表设置值的类型的字符串。从下列项中选择： string number boolean
 
 #### label
 显示给用户的设置名称
 
 #### description
-設定の説明
+设置说明
 
 #### default
-設定のデフォルト値
+设置的默认值
 
 ## API 参考
-AiScript標準で組み込まれているAPIは掲載しません。
+AiScript标准的内置API不会发布。
 
 ### Mk:dialog(title text type)
-ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
+显示一个对话框。type可以设置为以下值： info success warn error question 默认值为info。
 
 ### Mk:confirm(title text type)
-確認ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると question になります。 ユーザーが"OK"を選択した場合は true を、"キャンセル"を選択した場合は false が返ります。
+显示确认对话框。type可以设置为以下值： info success warn error question 默认值为question。 如果用户选择“OK”，则返回true；如果用户选择“取消”，则返回false。
 
 ### Mk:api(endpoint params)
 Misskey APIにリクエストします。第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
