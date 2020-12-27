@@ -669,6 +669,7 @@ left: "Left"
 center: "Center"
 wide: "Wide"
 narrow: "Narrow"
+reloadToApplySetting: "Settings will be applied upon page reload. Reload now?"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
