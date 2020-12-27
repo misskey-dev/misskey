@@ -140,7 +140,6 @@ module.exports = {
 			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
 			__VUE_OPTIONS_API__: true,
 			__VUE_PROD_DEVTOOLS__: false,
-			__VUE_I18N_LEGACY_API__: false,
 		}),
 		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin((stats: any) => {
@@ -150,7 +149,8 @@ module.exports = {
 	output: {
 		path: __dirname + '/built/client/assets',
 		filename: `[name].${meta.version}.js`,
-		publicPath: `/assets/`
+		publicPath: `/assets/`,
+		pathinfo: false,
 	},
 	resolve: {
 		extensions: [
