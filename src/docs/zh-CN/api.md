@@ -29,17 +29,17 @@
 在用户的浏览器中显示`{_URL_}/miauth/{session}`。将`{session}`的部分替换为会话ID。
 > 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
-表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
-* `name` ... アプリケーション名
+显示时，可以在URL中设置一些选项作为查询参数：
+* `name` ... 应用程序名称
     * > 例: `MissDeck`
-* `icon` ... アプリケーションのアイコン画像URL
+* `icon` ... 应用程序图标URL
     * > 例: `https://missdeck.example.com/icon.png`
-* `callback` ... 認証が終わった後にリダイレクトするURL
+* `callback` ... 认证后重定向的URL
     * > 例: `https://missdeck.example.com/callback`
-    * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
-* `permission` ... アプリケーションが要求する権限
+    * 重定向时，会话ID将添加查询参数`session`
+* `permission` ... 应用程序要求的权限
     * > 例: `write:notes,write:following,read:drive`
-    * 要求する権限を`,`で区切って列挙します
+    * 要求的权限需要以`,`分隔
     * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
 
 #### Step 3
