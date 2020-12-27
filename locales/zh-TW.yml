@@ -933,6 +933,9 @@ _pages:
       id: "畫布ID"
       width: "寬度"
       height: "高度"
+    _note:
+      id: "貼文ID"
+      detailed: "顯示詳細內容"
     switch: "開關"
     _switch:
       name: "變數名稱"
