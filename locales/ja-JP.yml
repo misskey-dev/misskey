@@ -1011,6 +1011,7 @@ _widgets:
   federation: "連合"
   postForm: "投稿フォーム"
   slideshow: "スライドショー"
+  button: "ボタン"
 
 _cw:
   hide: "隠す"
