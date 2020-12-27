@@ -1,5 +1,5 @@
 <template>
-<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" v-hotkey.global="keymap" @contextmenu.self.prevent="onContextmenu"
+<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" @contextmenu.self.prevent="onContextmenu"
 	:style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
 >
 	<XSidebar ref="nav"/>
@@ -35,7 +35,6 @@ import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortaweso
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from '@/config';
-import { search } from '@/scripts/search';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
 import XSidebar from '@/components/sidebar.vue';
 import { getScrollContainer } from '@/scripts/scroll';
@@ -74,14 +73,6 @@ export default defineComponent({
 				if (this.menuDef[def].indicated) return true;
 			}
 			return false;
-		},
-		keymap(): any {
-			return {
-				'p': this.post,
-				'n': this.post,
-				's': this.search,
-				'h|/': this.help
-			};
 		},
 	},
 

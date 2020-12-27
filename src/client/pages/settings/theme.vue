@@ -99,7 +99,7 @@ export default defineComponent({
 		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
 		const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 		const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
-		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+		const darkMode = defaultStore.reactiveState.darkMode;
 		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 		const wallpaper = ref(localStorage.getItem('wallpaper'));
 
