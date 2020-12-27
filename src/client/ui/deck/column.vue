@@ -223,7 +223,12 @@ export default defineComponent({
 		onDragstart(e) {
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, this.column.id);
-			this.dragging = true;
+
+			// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
+			// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
+			setTimeout(() => {
+				this.dragging = true;
+			}, 10);
 		},
 
 		onDragend(e) {
