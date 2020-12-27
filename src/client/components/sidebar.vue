@@ -35,6 +35,9 @@
 				<MkA class="item" active-class="active" to="/settings">
 					<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
 				</MkA>
+				<button class="item _button post" @click="post">
+					<Fa :icon="faPencilAlt" fixed-width/><span class="text">{{ $ts.note }}</span>
+				</button>
 			</div>
 		</nav>
 	</transition>
@@ -115,6 +118,10 @@ export default defineComponent({
 
 		show() {
 			this.showing = true;
+		},
+
+		post() {
+			os.post();
 		},
 
 		search() {
@@ -352,7 +359,6 @@ export default defineComponent({
 			z-index: 1001;
 
 			> div {
-				> .index,
 				> .notifications {
 					display: none;
 				}

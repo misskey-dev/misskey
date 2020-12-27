@@ -204,6 +204,10 @@ export default defineComponent({
 		border-radius: 100%;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
+
+		@media (min-width: ($nav-hide-threshold + 1px)) {
+			display: none;
+		}
 	}
 
 	> .post {
@@ -214,10 +218,6 @@ export default defineComponent({
 		left: 32px;
 		background: var(--panel);
 		color: var(--fg);
-
-		@media (min-width: ($nav-hide-threshold + 1px)) {
-			display: none;
-		}
 
 		&:hover {
 			background: var(--X2);
