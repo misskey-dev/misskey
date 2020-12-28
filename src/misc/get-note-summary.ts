@@ -33,7 +33,7 @@ export const getNoteSummary = (note: any, locale: any): string => {
 	// 返信のとき
 	if (note.replyId) {
 		if (note.reply) {
-			summary += `\n\nRE: ${summarize(note.reply, locale)}`;
+			summary += `\n\nRE: ${getNoteSummary(note.reply, locale)}`;
 		} else {
 			summary += '\n\nRE: ...';
 		}
@@ -42,7 +42,7 @@ export const getNoteSummary = (note: any, locale: any): string => {
 	// Renoteのとき
 	if (note.renoteId) {
 		if (note.renote) {
-			summary += `\n\nRN: ${summarize(note.renote, locale)}`;
+			summary += `\n\nRN: ${getNoteSummary(note.renote, locale)}`;
 		} else {
 			summary += '\n\nRN: ...';
 		}
