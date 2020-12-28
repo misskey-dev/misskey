@@ -2,22 +2,22 @@
 <div class="ztgjmzrw">
 	<div class="_section">
 		<div class="_content">
-			<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
+			<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
 			<section class="_card _vMargin announcements" v-for="announcement in announcements">
 				<div class="_content announcement">
 					<MkInput v-model:value="announcement.title">
-						<span>{{ $t('title') }}</span>
+						<span>{{ $ts.title }}</span>
 					</MkInput>
 					<MkTextarea v-model:value="announcement.text">
-						<span>{{ $t('text') }}</span>
+						<span>{{ $ts.text }}</span>
 					</MkTextarea>
 					<MkInput v-model:value="announcement.imageUrl">
-						<span>{{ $t('imageUrl') }}</span>
+						<span>{{ $ts.imageUrl }}</span>
 					</MkInput>
 					<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons">
-						<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-						<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
+						<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+						<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $ts.remove }}</MkButton>
 					</div>
 				</div>
 			</section>
@@ -45,7 +45,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('announcements'),
+				title: this.$ts.announcements,
 				icon: faBroadcastTower
 			},
 			announcements: [],
@@ -86,7 +86,7 @@ export default defineComponent({
 				os.api('admin/announcements/create', announcement).then(() => {
 					os.dialog({
 						type: 'success',
-						text: this.$t('saved')
+						text: this.$ts.saved
 					});
 				}).catch(e => {
 					os.dialog({
@@ -98,7 +98,7 @@ export default defineComponent({
 				os.api('admin/announcements/update', announcement).then(() => {
 					os.dialog({
 						type: 'success',
-						text: this.$t('saved')
+						text: this.$ts.saved
 					});
 				}).catch(e => {
 					os.dialog({

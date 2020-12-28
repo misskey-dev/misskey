@@ -2,129 +2,129 @@
 <FormBase>
 	<FormKeyValueView>
 		<template #key>ID</template>
-		<template #value><span class="_monospace">{{ $store.state.i.id }}</span></template>
+		<template #value><span class="_monospace">{{ $i.id }}</span></template>
 	</FormKeyValueView>
 
 	<FormGroup>
 		<FormKeyValueView>
-			<template #key>{{ $t('registeredDate') }}</template>
-			<template #value><MkTime :time="$store.state.i.createdAt" mode="detail"/></template>
+			<template #key>{{ $ts.registeredDate }}</template>
+			<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
 		</FormKeyValueView>
 	</FormGroup>
 
 	<FormGroup v-if="stats">
-		<template #label>{{ $t('statistics') }}</template>
+		<template #label>{{ $ts.statistics }}</template>
 		<FormKeyValueView>
-			<template #key>{{ $t('notesCount') }}</template>
+			<template #key>{{ $ts.notesCount }}</template>
 			<template #value>{{ number(stats.notesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('repliesCount') }}</template>
+			<template #key>{{ $ts.repliesCount }}</template>
 			<template #value>{{ number(stats.repliesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('renotesCount') }}</template>
+			<template #key>{{ $ts.renotesCount }}</template>
 			<template #value>{{ number(stats.renotesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('repliedCount') }}</template>
+			<template #key>{{ $ts.repliedCount }}</template>
 			<template #value>{{ number(stats.repliedCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('renotedCount') }}</template>
+			<template #key>{{ $ts.renotedCount }}</template>
 			<template #value>{{ number(stats.renotedCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('pollVotesCount') }}</template>
+			<template #key>{{ $ts.pollVotesCount }}</template>
 			<template #value>{{ number(stats.pollVotesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('pollVotedCount') }}</template>
+			<template #key>{{ $ts.pollVotedCount }}</template>
 			<template #value>{{ number(stats.pollVotedCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('sentReactionsCount') }}</template>
+			<template #key>{{ $ts.sentReactionsCount }}</template>
 			<template #value>{{ number(stats.sentReactionsCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('receivedReactionsCount') }}</template>
+			<template #key>{{ $ts.receivedReactionsCount }}</template>
 			<template #value>{{ number(stats.receivedReactionsCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('noteFavoritesCount') }}</template>
+			<template #key>{{ $ts.noteFavoritesCount }}</template>
 			<template #value>{{ number(stats.noteFavoritesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followingCount') }}</template>
+			<template #key>{{ $ts.followingCount }}</template>
 			<template #value>{{ number(stats.followingCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followingCount') }} ({{ $t('local') }})</template>
+			<template #key>{{ $ts.followingCount }} ({{ $ts.local }})</template>
 			<template #value>{{ number(stats.localFollowingCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followingCount') }} ({{ $t('remote') }})</template>
+			<template #key>{{ $ts.followingCount }} ({{ $ts.remote }})</template>
 			<template #value>{{ number(stats.remoteFollowingCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followersCount') }}</template>
+			<template #key>{{ $ts.followersCount }}</template>
 			<template #value>{{ number(stats.followersCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followersCount') }} ({{ $t('local') }})</template>
+			<template #key>{{ $ts.followersCount }} ({{ $ts.local }})</template>
 			<template #value>{{ number(stats.localFollowersCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('followersCount') }} ({{ $t('remote') }})</template>
+			<template #key>{{ $ts.followersCount }} ({{ $ts.remote }})</template>
 			<template #value>{{ number(stats.remoteFollowersCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('pageLikesCount') }}</template>
+			<template #key>{{ $ts.pageLikesCount }}</template>
 			<template #value>{{ number(stats.pageLikesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('pageLikedCount') }}</template>
+			<template #key>{{ $ts.pageLikedCount }}</template>
 			<template #value>{{ number(stats.pageLikedCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('driveFilesCount') }}</template>
+			<template #key>{{ $ts.driveFilesCount }}</template>
 			<template #value>{{ number(stats.driveFilesCount) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('driveUsage') }}</template>
+			<template #key>{{ $ts.driveUsage }}</template>
 			<template #value>{{ bytes(stats.driveUsage) }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
-			<template #key>{{ $t('reversiCount') }}</template>
+			<template #key>{{ $ts.reversiCount }}</template>
 			<template #value>{{ number(stats.reversiCount) }}</template>
 		</FormKeyValueView>
 	</FormGroup>
 
 	<FormGroup>
-		<template #label>{{ $t('other') }}</template>
+		<template #label>{{ $ts.other }}</template>
 		<FormKeyValueView>
 			<template #key>emailVerified</template>
-			<template #value>{{ $store.state.i.emailVerified ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.emailVerified ? $ts.yes : $ts.no }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>twoFactorEnabled</template>
-			<template #value>{{ $store.state.i.twoFactorEnabled ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.twoFactorEnabled ? $ts.yes : $ts.no }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>securityKeys</template>
-			<template #value>{{ $store.state.i.securityKeys ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.securityKeys ? $ts.yes : $ts.no }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>usePasswordLessLogin</template>
-			<template #value>{{ $store.state.i.usePasswordLessLogin ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.usePasswordLessLogin ? $ts.yes : $ts.no }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>isModerator</template>
-			<template #value>{{ $store.state.i.isModerator ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.isModerator ? $ts.yes : $ts.no }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>isAdmin</template>
-			<template #value>{{ $store.state.i.isAdmin ? $t('yes') : $t('no') }}</template>
+			<template #value>{{ $i.isAdmin ? $ts.yes : $ts.no }}</template>
 		</FormKeyValueView>
 	</FormGroup>
 </FormBase>
@@ -160,7 +160,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('accountInfo'),
+				title: this.$ts.accountInfo,
 				icon: faInfoCircle
 			},
 			stats: null
@@ -171,7 +171,7 @@ export default defineComponent({
 		this.$emit('info', this.INFO);
 
 		os.api('users/stats', {
-			userId: this.$store.state.i.id
+			userId: this.$i.id
 		}).then(stats => {
 			this.stats = stats;
 		});

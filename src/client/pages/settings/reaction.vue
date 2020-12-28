@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<div class="_formItem">
-		<div class="_formLabel">{{ $t('reactionSettingDescription') }}</div>
+		<div class="_formLabel">{{ $ts.reactionSettingDescription }}</div>
 		<div class="_formPanel">
 			<XDraggable class="zoaiodol" v-model="reactions" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
 				<template #item="{element}">
@@ -14,23 +14,23 @@
 				</template>
 			</XDraggable>
 		</div>
-		<div class="_formCaption">{{ $t('reactionSettingDescription2') }} <button class="_textButton" @click="preview">{{ $t('preview') }}</button></div>
+		<div class="_formCaption">{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></div>
 	</div>
 
 	<FormRadios v-model="reactionPickerWidth">
-		<template #desc>{{ $t('width') }}</template>
-		<option :value="1">{{ $t('small') }}</option>
-		<option :value="2">{{ $t('medium') }}</option>
-		<option :value="3">{{ $t('large') }}</option>
+		<template #desc>{{ $ts.width }}</template>
+		<option :value="1">{{ $ts.small }}</option>
+		<option :value="2">{{ $ts.medium }}</option>
+		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
 	<FormRadios v-model="reactionPickerHeight">
-		<template #desc>{{ $t('height') }}</template>
-		<option :value="1">{{ $t('small') }}</option>
-		<option :value="2">{{ $t('medium') }}</option>
-		<option :value="3">{{ $t('large') }}</option>
+		<template #desc>{{ $ts.height }}</template>
+		<option :value="1">{{ $ts.small }}</option>
+		<option :value="2">{{ $ts.medium }}</option>
+		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
-	<FormButton @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</FormButton>
-	<FormButton danger @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</FormButton>
+	<FormButton @click="preview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
+	<FormButton danger @click="setDefault"><Fa :icon="faUndo"/> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 
@@ -43,8 +43,8 @@ import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
-import { defaultSettings } from '@/store';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -60,31 +60,21 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('reaction'),
+				title: this.$ts.reaction,
 				icon: faLaugh,
 				action: {
 					icon: faEye,
 					handler: this.preview
 				}
 			},
-			reactions: JSON.parse(JSON.stringify(this.$store.state.settings.reactions)),
+			reactions: JSON.parse(JSON.stringify(this.$store.state.reactions)),
 			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
 
 	computed: {
-		useFullReactionPicker: {
-			get() { return this.$store.state.device.useFullReactionPicker; },
-			set(value) { this.$store.commit('device/set', { key: 'useFullReactionPicker', value: value }); }
-		},
-		reactionPickerWidth: {
-			get() { return this.$store.state.device.reactionPickerWidth; },
-			set(value) { this.$store.commit('device/set', { key: 'reactionPickerWidth', value: value }); }
-		},
-		reactionPickerHeight: {
-			get() { return this.$store.state.device.reactionPickerHeight; },
-			set(value) { this.$store.commit('device/set', { key: 'reactionPickerHeight', value: value }); }
-		},
+		reactionPickerWidth: defaultStore.makeGetterSetter('reactionPickerWidth'),
+		reactionPickerHeight: defaultStore.makeGetterSetter('reactionPickerHeight'),
 	},
 
 	watch: {
@@ -102,12 +92,12 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			this.$store.dispatch('settings/set', { key: 'reactions', value: this.reactions });
+			this.$store.set('reactions', this.reactions);
 		},
 
 		remove(reaction, ev) {
 			os.modalMenu([{
-				text: this.$t('remove'),
+				text: this.$ts.remove,
 				action: () => {
 					this.reactions = this.reactions.filter(x => x !== reaction)
 				}
@@ -124,12 +114,12 @@ export default defineComponent({
 		async setDefault() {
 			const { canceled } = await os.dialog({
 				type: 'warning',
-				text: this.$t('resetAreYouSure'),
+				text: this.$ts.resetAreYouSure,
 				showCancelButton: true
 			});
 			if (canceled) return;
 
-			this.reactions = JSON.parse(JSON.stringify(defaultSettings.reactions));
+			this.reactions = JSON.parse(JSON.stringify(this.$store.def.reactions.default));
 		},
 
 		chooseEmoji(ev) {

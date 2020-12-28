@@ -1,13 +1,13 @@
 import { utils, values } from '@syuilo/aiscript';
-import { store } from '@/store';
 import * as os from '@/os';
+import { $i } from '@/account';
 
 export function createAiScriptEnv(opts) {
 	let apiRequests = 0;
 	return {
-		USER_ID: store.getters.isSignedIn ? values.STR(store.state.i.id) : values.NULL,
-		USER_NAME: store.getters.isSignedIn ? values.STR(store.state.i.name) : values.NULL,
-		USER_USERNAME: store.getters.isSignedIn ? values.STR(store.state.i.username) : values.NULL,
+		USER_ID: $i ? values.STR($i.id) : values.NULL,
+		USER_NAME: $i ? values.STR($i.name) : values.NULL,
+		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await os.dialog({
 				type: type ? type.value : 'info',

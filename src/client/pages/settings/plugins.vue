@@ -1,41 +1,41 @@
 <template>
 <section class="_section">
-	<div class="_title"><Fa :icon="faPlug"/> {{ $t('plugins') }}</div>
+	<div class="_title"><Fa :icon="faPlug"/> {{ $ts.plugins }}</div>
 	<div class="_content">
 		<details>
-			<summary><Fa :icon="faDownload"/> {{ $t('install') }}</summary>
-			<MkInfo warn>{{ $t('pluginInstallWarn') }}</MkInfo>
+			<summary><Fa :icon="faDownload"/> {{ $ts.install }}</summary>
+			<MkInfo warn>{{ $ts.pluginInstallWarn }}</MkInfo>
 			<MkTextarea v-model:value="script" tall>
-				<span>{{ $t('script') }}</span>
+				<span>{{ $ts.script }}</span>
 			</MkTextarea>
-			<MkButton @click="install()" primary><Fa :icon="faSave"/> {{ $t('install') }}</MkButton>
+			<MkButton @click="install()" primary><Fa :icon="faSave"/> {{ $ts.install }}</MkButton>
 		</details>
 	</div>
 	<div class="_content">
 		<details>
-			<summary><Fa :icon="faFolderOpen"/> {{ $t('manage') }}</summary>
+			<summary><Fa :icon="faFolderOpen"/> {{ $ts.manage }}</summary>
 			<MkSelect v-model:value="selectedPluginId">
-				<option v-for="x in $store.state.deviceUser.plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
+				<option v-for="x in plugins" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</MkSelect>
 			<template v-if="selectedPlugin">
 				<div style="margin: -8px 0 8px 0;">
-					<MkSwitch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $t('makeActive') }}</MkSwitch>
+					<MkSwitch :value="selectedPlugin.active" @update:value="changeActive(selectedPlugin, $event)">{{ $ts.makeActive }}</MkSwitch>
 				</div>
 				<div class="_keyValue">
-					<div>{{ $t('version') }}:</div>
+					<div>{{ $ts.version }}:</div>
 					<div>{{ selectedPlugin.version }}</div>
 				</div>
 				<div class="_keyValue">
-					<div>{{ $t('author') }}:</div>
+					<div>{{ $ts.author }}:</div>
 					<div>{{ selectedPlugin.author }}</div>
 				</div>
 				<div class="_keyValue">
-					<div>{{ $t('description') }}:</div>
+					<div>{{ $ts.description }}:</div>
 					<div>{{ selectedPlugin.description }}</div>
 				</div>
 				<div style="margin-top: 8px;">
-					<MkButton @click="config()" inline v-if="selectedPlugin.config"><Fa :icon="faCog"/> {{ $t('settings') }}</MkButton>
-					<MkButton @click="uninstall()" inline><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</MkButton>
+					<MkButton @click="config()" inline v-if="selectedPlugin.config"><Fa :icon="faCog"/> {{ $ts.settings }}</MkButton>
+					<MkButton @click="uninstall()" inline><Fa :icon="faTrashAlt"/> {{ $ts.uninstall }}</MkButton>
 				</div>
 			</template>
 		</details>
@@ -55,6 +55,7 @@ import MkSelect from '@/components/ui/select.vue';
 import MkInfo from '@/components/ui/info.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -68,6 +69,7 @@ export default defineComponent({
 	data() {
 		return {
 			script: '',
+			plugins: ColdDeviceStorage.get('plugins'),
 			selectedPluginId: null,
 			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog
 		}
@@ -76,11 +78,22 @@ export default defineComponent({
 	computed: {
 		selectedPlugin() {
 			if (this.selectedPluginId == null) return null;
-			return this.$store.state.deviceUser.plugins.find(x => x.id === this.selectedPluginId);
+			return this.plugins.find(x => x.id === this.selectedPluginId);
 		},
 	},
 
 	methods: {
+		installPlugin({ id, meta, ast, token }) {
+			ColdDeviceStorage.set('plugins', this.plugins.concat({
+				...meta,
+				id,
+				active: true,
+				configData: {},
+				token: token,
+				ast: ast
+			}));
+		},
+
 		async install() {
 			let ast;
 			try {
@@ -119,8 +132,8 @@ export default defineComponent({
 
 			const token = permissions == null || permissions.length === 0 ? null : await new Promise((res, rej) => {
 				os.popup(import('@/components/token-generate-window.vue'), {
-					title: this.$t('tokenRequested'),
-					information: this.$t('pluginTokenRequestedDescription'),
+					title: this.$ts.tokenRequested,
+					information: this.$ts.pluginTokenRequestedDescription,
 					initialName: name,
 					initialPermissions: permissions
 				}, {
@@ -137,7 +150,7 @@ export default defineComponent({
 				}, 'closed');
 			});
 
-			this.$store.commit('deviceUser/installPlugin', {
+			this.installPlugin({
 				id: uuid(),
 				meta: {
 					name, version, author, description, permissions, config
@@ -154,7 +167,7 @@ export default defineComponent({
 		},
 
 		uninstall() {
-			this.$store.commit('deviceUser/uninstallPlugin', this.selectedPluginId);
+			ColdDeviceStorage.set('plugins', this.plugins.filter(x => x.id !== this.selectedPluginId));
 			os.success();
 			this.$nextTick(() => {
 				location.reload();
@@ -171,10 +184,9 @@ export default defineComponent({
 			const { canceled, result } = await os.form(this.selectedPlugin.name, config);
 			if (canceled) return;
 
-			this.$store.commit('deviceUser/configPlugin', {
-				id: this.selectedPluginId,
-				config: result
-			});
+			const plugins = ColdDeviceStorage.get('plugins');
+			plugins.find(p => p.id === this.selectedPluginId).configData = result;
+			ColdDeviceStorage.set('plugins', plugins);
 
 			this.$nextTick(() => {
 				location.reload();
@@ -182,10 +194,9 @@ export default defineComponent({
 		},
 
 		changeActive(plugin, active) {
-			this.$store.commit('deviceUser/changePluginActive', {
-				id: plugin.id,
-				active: active
-			});
+			const plugins = ColdDeviceStorage.get('plugins');
+			plugins.find(p => p.id === plugin.id).active = active;
+			ColdDeviceStorage.set('plugins', plugins);
 
 			this.$nextTick(() => {
 				location.reload();

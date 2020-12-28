@@ -1,15 +1,15 @@
-import { device } from '@/cold-storage';
+import { ColdDeviceStorage } from '@/store';
 
 const cache = new Map<string, HTMLAudioElement>();
 
 export function play(type: string) {
-	const sound = device.get('sound_' + type as any);
+	const sound = ColdDeviceStorage.get('sound_' + type as any);
 	if (sound.type == null) return;
 	playFile(sound.type, sound.volume);
 }
 
 export function playFile(file: string, volume: number) {
-	const masterVolume = device.get('sound_masterVolume');
+	const masterVolume = ColdDeviceStorage.get('sound_masterVolume');
 	if (masterVolume === 0) return;
 
 	let audio: HTMLAudioElement;

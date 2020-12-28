@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: setList, title: $ts.selectList }" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<Fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -14,6 +14,7 @@ import { faListUl, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
+import { updateColumn } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -44,14 +45,6 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('selectList'),
-			action: this.setList
-		}];
-	},
-
 	mounted() {
 		if (this.column.listId == null) {
 			this.setList();
@@ -62,7 +55,7 @@ export default defineComponent({
 		async setList() {
 			const lists = await os.api('users/lists/list');
 			const { canceled, result: list } = await os.dialog({
-				title: this.$t('selectList'),
+				title: this.$ts.selectList,
 				type: null,
 				select: {
 					items: lists.map(x => ({
@@ -73,8 +66,9 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			this.column.listId = list.id;
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
+			updateColumn(this.column.id, {
+				listId: list.id
+			});
 		},
 
 		focus() {

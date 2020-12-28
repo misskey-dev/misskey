@@ -12,29 +12,32 @@
 		<nav class="nav" :class="{ iconOnly, hidden }" v-show="showing">
 			<div>
 				<button class="item _button account" @click="openAccountMenu">
-					<MkAvatar :user="$store.state.i" class="avatar"/><MkAcct class="text" :user="$store.state.i"/>
+					<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 				</button>
 				<MkA class="item index" active-class="active" to="/" exact>
-					<Fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
+					<Fa :icon="faHome" fixed-width/><span class="text">{{ $ts.timeline }}</span>
 				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
 					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
-						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
+						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $ts[menuDef[item].title] }}</span>
 						<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
 					</component>
 				</template>
 				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.state.i.isAdmin || $store.state.i.isModerator" @click="oepnInstanceMenu">
-					<Fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
+				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
+					<Fa :icon="faServer" fixed-width/><span class="text">{{ $ts.instance }}</span>
 				</button>
 				<button class="item _button" @click="more">
-					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $ts.more }}</span>
 					<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 				</button>
 				<MkA class="item" active-class="active" to="/settings">
-					<Fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
+					<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
 				</MkA>
+				<button class="item _button post" @click="post">
+					<Fa :icon="faPencilAlt" fixed-width/><span class="text">{{ $ts.note }}</span>
+				</button>
 			</div>
 		</nav>
 	</transition>
@@ -49,6 +52,7 @@ import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
+import { getAccounts, addAccount, login } from '@/account';
 
 export default defineComponent({
 	data() {
@@ -67,7 +71,7 @@ export default defineComponent({
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.deviceUser.menu;
+			return this.$store.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -84,7 +88,7 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		'$store.state.device.sidebarDisplay'() {
+		'$store.reactiveState.sidebarDisplay.value'() {
 			this.calcViewState();
 		},
 
@@ -108,19 +112,23 @@ export default defineComponent({
 
 	methods: {
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.device.sidebarDisplay === 'icon');
-			this.hidden = (window.innerWidth <= 650) || (this.$store.state.device.sidebarDisplay === 'hide');
+			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.sidebarDisplay === 'icon');
+			this.hidden = (window.innerWidth <= 650);
 		},
 
 		show() {
 			this.showing = true;
 		},
 
+		post() {
+			os.post();
+		},
+
 		search() {
 			if (this.searching) return;
 
 			os.dialog({
-				title: this.$t('search'),
+				title: this.$ts.search,
 				input: true
 			}).then(async ({ canceled, result: query }) => {
 				if (canceled || query == null || query === '') return;
@@ -133,7 +141,8 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const accounts = (await os.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
+			const storedAccounts = getAccounts();
+			const accounts = (await os.api('users/show', { userIds: storedAccounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
 
 			const accountItems = accounts.map(account => ({
 				type: 'user',
@@ -143,18 +152,18 @@ export default defineComponent({
 
 			os.modalMenu([...[{
 				type: 'link',
-				text: this.$t('profile'),
-				to: `/@${ this.$store.state.i.username }`,
-				avatar: this.$store.state.i,
+				text: this.$ts.profile,
+				to: `/@${ this.$i.username }`,
+				avatar: this.$i,
 			}, null, ...accountItems, {
 				icon: faPlus,
-				text: this.$t('addAcount'),
+				text: this.$ts.addAcount,
 				action: () => {
 					os.modalMenu([{
-						text: this.$t('existingAcount'),
+						text: this.$ts.existingAcount,
 						action: () => { this.addAcount(); },
 					}, {
-						text: this.$t('createAccount'),
+						text: this.$ts.createAccount,
 						action: () => { this.createAccount(); },
 					}], ev.currentTarget || ev.target);
 				},
@@ -166,57 +175,57 @@ export default defineComponent({
 		oepnInstanceMenu(ev) {
 			os.modalMenu([{
 				type: 'link',
-				text: this.$t('dashboard'),
+				text: this.$ts.dashboard,
 				to: '/instance',
 				icon: faTachometerAlt,
-			}, null, this.$store.state.i.isAdmin ? {
+			}, null, this.$i.isAdmin ? {
 				type: 'link',
-				text: this.$t('settings'),
+				text: this.$ts.settings,
 				to: '/instance/settings',
 				icon: faCog,
 			} : undefined, {
 				type: 'link',
-				text: this.$t('customEmojis'),
+				text: this.$ts.customEmojis,
 				to: '/instance/emojis',
 				icon: faLaugh,
 			}, {
 				type: 'link',
-				text: this.$t('users'),
+				text: this.$ts.users,
 				to: '/instance/users',
 				icon: faUsers,
 			}, {
 				type: 'link',
-				text: this.$t('files'),
+				text: this.$ts.files,
 				to: '/instance/files',
 				icon: faCloud,
 			}, {
 				type: 'link',
-				text: this.$t('jobQueue'),
+				text: this.$ts.jobQueue,
 				to: '/instance/queue',
 				icon: faExchangeAlt,
 			}, {
 				type: 'link',
-				text: this.$t('federation'),
+				text: this.$ts.federation,
 				to: '/instance/federation',
 				icon: faGlobe,
 			}, {
 				type: 'link',
-				text: this.$t('relays'),
+				text: this.$ts.relays,
 				to: '/instance/relays',
 				icon: faProjectDiagram,
 			}, {
 				type: 'link',
-				text: this.$t('announcements'),
+				text: this.$ts.announcements,
 				to: '/instance/announcements',
 				icon: faBroadcastTower,
 			}, {
 				type: 'link',
-				text: this.$t('abuseReports'),
+				text: this.$ts.abuseReports,
 				to: '/instance/abuses',
 				icon: faExclamationCircle,
 			}, {
 				type: 'link',
-				text: this.$t('logs'),
+				text: this.$ts.logs,
 				to: '/instance/logs',
 				icon: faStream,
 			}], ev.currentTarget || ev.target);
@@ -230,7 +239,7 @@ export default defineComponent({
 		addAcount() {
 			os.popup(import('./signin-dialog.vue'), {}, {
 				done: res => {
-					this.$store.dispatch('addAcount', res);
+					addAccount(res.id, res.i);
 					os.success();
 				},
 			}, 'closed');
@@ -239,30 +248,20 @@ export default defineComponent({
 		createAccount() {
 			os.popup(import('./signup-dialog.vue'), {}, {
 				done: res => {
-					this.$store.dispatch('addAcount', res);
+					addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
 				},
 			}, 'closed');
 		},
 
 		switchAccount(account: any) {
-			const token = this.$store.state.device.accounts.find((x: any) => x.id === account.id).token;
+			const storedAccounts = getAccounts();
+			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},
 
 		switchAccountWithToken(token: string) {
-			os.waiting();
-
-			os.api('i', {}, token).then((i: any) => {
-				this.$store.dispatch('switchAccount', {
-					...i,
-					token: token
-				}).then(() => {
-					this.$nextTick(() => {
-						location.reload();
-					});
-				});
-			});
+			login(token);
 		},
 	}
 });
@@ -294,7 +293,7 @@ export default defineComponent({
 .mvcprjjd {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
+	$nav-icon-only-width: 86px;
 
 	> .nav-back {
 		z-index: 1001;
@@ -360,7 +359,6 @@ export default defineComponent({
 			z-index: 1001;
 
 			> div {
-				> .index,
 				> .notifications {
 					display: none;
 				}
@@ -382,7 +380,6 @@ export default defineComponent({
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);
-			border-right: solid 1px var(--divider);
 
 			> .divider {
 				margin: 16px 0;

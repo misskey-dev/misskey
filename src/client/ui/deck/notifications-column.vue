@@ -1,5 +1,5 @@
 <template>
-<XColumn :column="column" :is-stacked="isStacked" :menu="menu">
+<XColumn :column="column" :is-stacked="isStacked" :func="{ handler: func, title: $ts.notificationSetting }">
 	<template #header><Fa :icon="faBell" style="margin-right: 8px;"/>{{ column.name }}</template>
 
 	<XNotifications :include-types="column.includingTypes"/>
@@ -13,6 +13,7 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
 import XNotifications from '@/components/notifications.vue';
 import * as os from '@/os';
+import { updateColumn } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -33,29 +34,23 @@ export default defineComponent({
 
 	data() {
 		return {
-			menu: null,
 			faBell
 		}
 	},
 
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('notificationSetting'),
-			action: () => {
-				os.popup(import('@/components/notification-setting-window.vue'), {
-					includingTypes: this.column.includingTypes,
-				}, {
-					done: async (res) => {
-						const { includingTypes } = res;
-						this.$store.commit('deviceUser/updateDeckColumn', {
-							...this.column,
-							includingTypes: includingTypes
-						});
-					},
-				}, 'closed');
-			}
-		}];
-	},
+	methods: {
+		func() {
+			os.popup(import('@/components/notification-setting-window.vue'), {
+				includingTypes: this.column.includingTypes,
+			}, {
+				done: async (res) => {
+					const { includingTypes } = res;
+					updateColumn(this.column.id, {
+						includingTypes: includingTypes
+					});
+				},
+			}, 'closed');
+		}
+	}
 });
 </script>

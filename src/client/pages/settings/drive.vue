@@ -1,9 +1,9 @@
 <template>
 <section class="uawsfosz _section">
-	<div class="_title"><Fa :icon="faCloud"/> {{ $t('drive') }}</div>
+	<div class="_title"><Fa :icon="faCloud"/> {{ $ts.drive }}</div>
 	<div class="_content">
-		<span>{{ $t('uploadFolder') }}: {{ uploadFolder ? uploadFolder.name : '-' }}</span>
-		<MkButton primary @click="chooseUploadFolder()"><Fa :icon="faFolderOpen"/> {{ $t('selectFolder') }}</MkButton>
+		<span>{{ $ts.uploadFolder }}: {{ uploadFolder ? uploadFolder.name : '-' }}</span>
+		<MkButton primary @click="chooseUploadFolder()"><Fa :icon="faFolderOpen"/> {{ $ts.selectFolder }}</MkButton>
 	</div>
 </section>
 </template>
@@ -28,9 +28,9 @@ export default defineComponent({
 	},
 
 	async created() {
-		if (this.$store.state.settings.uploadFolder) {
+		if (this.$store.state.uploadFolder) {
 			this.uploadFolder = await os.api('drive/folders/show', {
-				folderId: this.$store.state.settings.uploadFolder
+				folderId: this.$store.state.uploadFolder
 			});
 		}
 	},
@@ -38,11 +38,11 @@ export default defineComponent({
 	methods: {
 		chooseUploadFolder() {
 			os.selectDriveFolder(false).then(async folder => {
-				await this.$store.dispatch('settings/set', { key: 'uploadFolder', value: folder ? folder.id : null });
+				this.$store.set('uploadFolder', folder ? folder.id : null);
 				os.success();
-				if (this.$store.state.settings.uploadFolder) {
+				if (this.$store.state.uploadFolder) {
 					this.uploadFolder = await os.api('drive/folders/show', {
-						folderId: this.$store.state.settings.uploadFolder
+						folderId: this.$store.state.uploadFolder
 					});
 				} else {
 					this.uploadFolder = null;

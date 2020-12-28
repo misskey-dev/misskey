@@ -1,7 +1,7 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="omfetrab _popup" :class="['w' + width, 'h' + height, { big }]">
-		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$t('search')" @paste.stop="paste" @keyup.enter="done()">
+		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$ts.search" @paste.stop="paste" @keyup.enter="done()">
 		<div class="emojis">
 			<section class="result">
 				<div v-if="searchResultCustom.length > 0">
@@ -13,7 +13,7 @@
 						tabindex="0"
 					>
 						<MkEmoji v-if="emoji.char != null" :emoji="emoji.char"/>
-						<img v-else :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img v-else :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 				<div v-if="searchResultUnicode.length > 0">
@@ -43,9 +43,9 @@
 				</section>
 
 				<section>
-					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $t('recentUsed') }}</header>
+					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $ts.recentUsed }}</header>
 					<div>
-						<button v-for="emoji in $store.state.device.recentlyUsedEmojis"
+						<button v-for="emoji in $store.state.recentlyUsedEmojis"
 							class="_button"
 							@click="chosen(emoji, $event)"
 							:key="emoji"
@@ -59,7 +59,7 @@
 			</div>
 
 			<section v-for="category in customEmojiCategories" :key="'custom:' + category" class="custom">
-				<header class="_acrylic" v-appear="() => visibleCategories[category] = true">{{ category || $t('other') }}</header>
+				<header class="_acrylic" v-appear="() => visibleCategories[category] = true">{{ category || $ts.other }}</header>
 				<div v-if="visibleCategories[category]">
 					<button v-for="emoji in customEmojis.filter(e => e.category === category)"
 						class="_button"
@@ -67,7 +67,7 @@
 						@click="chosen(emoji, $event)"
 						:key="emoji.name"
 					>
-						<img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
+						<img :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
 					</button>
 				</div>
 			</section>
@@ -100,6 +100,7 @@ import MkModal from '@/components/ui/modal.vue';
 import Particle from '@/components/particle.vue';
 import * as os from '@/os';
 import { isDeviceTouch } from '../scripts/is-device-touch';
+import { emojiCategories } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -125,12 +126,12 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.$store.state.settings.reactions,
-			width: this.asReactionPicker ? this.$store.state.device.reactionPickerWidth : 3,
-			height: this.asReactionPicker ? this.$store.state.device.reactionPickerHeight : 2,
+			pinned: this.$store.state.reactions,
+			width: this.asReactionPicker ? this.$store.state.reactionPickerWidth : 3,
+			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
-			customEmojiCategories: this.$store.getters['instance/emojiCategories'],
-			customEmojis: this.$store.state.instance.meta.emojis,
+			customEmojiCategories: emojiCategories,
+			customEmojis: this.$instance.emojis,
 			visibleCategories: {},
 			q: null,
 			searchResultCustom: [],
@@ -346,10 +347,10 @@ export default defineComponent({
 
 			// 最近使った絵文字更新
 			if (!this.pinned.includes(key)) {
-				let recents = this.$store.state.device.recentlyUsedEmojis;
+				let recents = this.$store.state.recentlyUsedEmojis;
 				recents = recents.filter((e: any) => e !== key);
 				recents.unshift(key);
-				this.$store.commit('device/set', { key: 'recentlyUsedEmojis', value: recents.splice(0, 16) });
+				this.$store.set('recentlyUsedEmojis', recents.splice(0, 16));
 			}
 		},
 

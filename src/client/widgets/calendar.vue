@@ -10,19 +10,19 @@
 	</div>
 	<div class="info">
 		<div>
-			<p>{{ $t('today') }}: <b>{{ dayP.toFixed(1) }}%</b></p>
+			<p>{{ $ts.today }}: <b>{{ dayP.toFixed(1) }}%</b></p>
 			<div class="meter">
 				<div class="val" :style="{ width: `${dayP}%` }"></div>
 			</div>
 		</div>
 		<div>
-			<p>{{ $t('thisMonth') }}: <b>{{ monthP.toFixed(1) }}%</b></p>
+			<p>{{ $ts.thisMonth }}: <b>{{ monthP.toFixed(1) }}%</b></p>
 			<div class="meter">
 				<div class="val" :style="{ width: `${monthP}%` }"></div>
 			</div>
 		</div>
 		<div>
-			<p>{{ $t('thisYear') }}: <b>{{ yearP.toFixed(1) }}%</b></p>
+			<p>{{ $ts.thisYear }}: <b>{{ yearP.toFixed(1) }}%</b></p>
 			<div class="meter">
 				<div class="val" :style="{ width: `${yearP}%` }"></div>
 			</div>
@@ -80,13 +80,13 @@ export default defineComponent({
 			this.month = nm + 1;
 			this.day = nd;
 			this.weekDay = [
-				this.$t('_weekday.sunday'),
-				this.$t('_weekday.monday'),
-				this.$t('_weekday.tuesday'),
-				this.$t('_weekday.wednesday'),
-				this.$t('_weekday.thursday'),
-				this.$t('_weekday.friday'),
-				this.$t('_weekday.saturday')
+				this.$ts._weekday.sunday,
+				this.$ts._weekday.monday,
+				this.$ts._weekday.tuesday,
+				this.$ts._weekday.wednesday,
+				this.$ts._weekday.thursday,
+				this.$ts._weekday.friday,
+				this.$ts._weekday.saturday
 			][now.getDay()];
 
 			const dayNumer   = now.getTime() - new Date(ny, nm, nd).getTime();

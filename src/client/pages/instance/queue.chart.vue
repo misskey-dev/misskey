@@ -19,7 +19,7 @@
 				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 			</div>
 		</div>
-		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
+		<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
 	</div>
 </section>
 </template>
@@ -63,7 +63,7 @@ export default defineComponent({
 		this.fetchJobs();
 
 		// TODO: var(--panel)の色が暗いか明るいかで判定する
-		const gridColor = this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+		const gridColor = this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 

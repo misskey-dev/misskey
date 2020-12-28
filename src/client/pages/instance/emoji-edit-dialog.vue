@@ -10,13 +10,13 @@
 
 	<div class="yigymqpb _section">
 		<img :src="emoji.url" class="img"/>
-		<MkInput v-model:value="name"><span>{{ $t('name') }}</span></MkInput>
-		<MkInput v-model:value="category" :datalist="categories"><span>{{ $t('category') }}</span></MkInput>
+		<MkInput v-model:value="name"><span>{{ $ts.name }}</span></MkInput>
+		<MkInput v-model:value="category" :datalist="categories"><span>{{ $ts.category }}</span></MkInput>
 		<MkInput v-model:value="aliases">
-			<span>{{ $t('tags') }}</span>
-			<template #desc>{{ $t('setMultipleBySeparatingWithSpace') }}</template>
+			<span>{{ $ts.tags }}</span>
+			<template #desc>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
 		</MkInput>
-		<MkButton danger @click="del()"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
+		<MkButton danger @click="del()"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
 	</div>
 </XModalWindow>
 </template>

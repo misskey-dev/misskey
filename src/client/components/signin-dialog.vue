@@ -5,7 +5,7 @@
 	@close="$refs.dialog.close()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $t('login') }}</template>
+	<template #header>{{ $ts.login }}</template>
 
 	<MkSignin :auto-set="autoSet" @login="onLogin"/>
 </XModalWindow>

@@ -1,66 +1,66 @@
 <template>
 <section class="_card">
-	<div class="_title"><Fa :icon="faLock"/> {{ $t('twoStepAuthentication') }}</div>
+	<div class="_title"><Fa :icon="faLock"/> {{ $ts.twoStepAuthentication }}</div>
 	<div class="_content">
-		<MkButton v-if="!data && !$store.state.i.twoFactorEnabled" @click="register">{{ $t('_2fa.registerDevice') }}</MkButton>
-		<template v-if="$store.state.i.twoFactorEnabled">
-			<p>{{ $t('_2fa.alreadyRegistered') }}</p>
-			<MkButton @click="unregister">{{ $t('unregister') }}</MkButton>
+		<MkButton v-if="!data && !$i.twoFactorEnabled" @click="register">{{ $ts._2fa.registerDevice }}</MkButton>
+		<template v-if="$i.twoFactorEnabled">
+			<p>{{ $ts._2fa.alreadyRegistered }}</p>
+			<MkButton @click="unregister">{{ $ts.unregister }}</MkButton>
 
 			<template v-if="supportsCredentials">
 				<hr class="totp-method-sep">
 
-				<h2 class="heading">{{ $t('securityKey') }}</h2>
-				<p>{{ $t('_2fa.securityKeyInfo') }}</p>
+				<h2 class="heading">{{ $ts.securityKey }}</h2>
+				<p>{{ $ts._2fa.securityKeyInfo }}</p>
 				<div class="key-list">
-					<div class="key" v-for="key in $store.state.i.securityKeysList">
+					<div class="key" v-for="key in $i.securityKeysList">
 						<h3>{{ key.name }}</h3>
-						<div class="last-used">{{ $t('lastUsed') }}<MkTime :time="key.lastUsed"/></div>
-						<MkButton @click="unregisterKey(key)">{{ $t('unregister') }}</MkButton>
+						<div class="last-used">{{ $ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
+						<MkButton @click="unregisterKey(key)">{{ $ts.unregister }}</MkButton>
 					</div>
 				</div>
 
-				<MkSwitch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$store.state.i.securityKeysList.length > 0">{{ $t('passwordLessLogin') }}</MkSwitch>
+				<MkSwitch v-model:value="usePasswordLessLogin" @update:value="updatePasswordLessLogin" v-if="$i.securityKeysList.length > 0">{{ $ts.passwordLessLogin }}</MkSwitch>
 
-				<MkInfo warn v-if="registration && registration.error">{{ $t('error') }} {{ registration.error }}</MkInfo>
-				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $t('_2fa.registerKey') }}</MkButton>
+				<MkInfo warn v-if="registration && registration.error">{{ $ts.error }} {{ registration.error }}</MkInfo>
+				<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ $ts._2fa.registerKey }}</MkButton>
 
 				<ol v-if="registration && !registration.error">
 					<li v-if="registration.stage >= 0">
-						{{ $t('tapSecurityKey') }}
+						{{ $ts.tapSecurityKey }}
 						<Fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 0" />
 					</li>
 					<li v-if="registration.stage >= 1">
 						<MkForm :disabled="registration.stage != 1 || registration.saving">
 							<MkInput v-model:value="keyName" :max="30">
-								<span>{{ $t('securityKeyName') }}</span>
+								<span>{{ $ts.securityKeyName }}</span>
 							</MkInput>
-							<MkButton @click="registerKey" :disabled="keyName.length == 0">{{ $t('registerSecurityKey') }}</MkButton>
+							<MkButton @click="registerKey" :disabled="keyName.length == 0">{{ $ts.registerSecurityKey }}</MkButton>
 							<Fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
 						</MkForm>
 					</li>
 				</ol>
 			</template>
 		</template>
-		<div v-if="data && !$store.state.i.twoFactorEnabled">
+		<div v-if="data && !$i.twoFactorEnabled">
 			<ol style="margin: 0; padding: 0 0 0 1em;">
 				<li>
-					<i18n-t keypath="_2fa.step1" tag="span">
+					<I18n :src="$ts._2fa.step1" tag="span">
 						<template #a>
 							<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
 						</template>
 						<template #b>
 							<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
 						</template>
-					</i18n-t>
+					</I18n>
 				</li>
-				<li>{{ $t('_2fa.step2') }}<br><img :src="data.qr"></li>
-				<li>{{ $t('_2fa.step3') }}<br>
-					<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $t('token') }}</MkInput>
-					<MkButton primary @click="submit">{{ $t('done') }}</MkButton>
+				<li>{{ $ts._2fa.step2 }}<br><img :src="data.qr"></li>
+				<li>{{ $ts._2fa.step3 }}<br>
+					<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $ts.token }}</MkInput>
+					<MkButton primary @click="submit">{{ $ts.done }}</MkButton>
 				</li>
 			</ol>
-			<MkInfo>{{ $t('_2fa.step4') }}</MkInfo>
+			<MkInfo>{{ $ts._2fa.step4 }}</MkInfo>
 		</div>
 	</div>
 </section>
@@ -91,12 +91,12 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('twoStepAuthentication'),
+				title: this.$ts.twoStepAuthentication,
 				icon: faLock
 			},
 			data: null,
 			supportsCredentials: !!navigator.credentials,
-			usePasswordLessLogin: this.$store.state.i.usePasswordLessLogin,
+			usePasswordLessLogin: this.$i.usePasswordLessLogin,
 			registration: null,
 			keyName: '',
 			token: null,
@@ -107,7 +107,7 @@ export default defineComponent({
 	methods: {
 		register() {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}
@@ -123,7 +123,7 @@ export default defineComponent({
 
 		unregister() {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}
@@ -136,7 +136,7 @@ export default defineComponent({
 					this.updatePasswordLessLogin();
 				}).then(() => {
 					os.success();
-					this.$store.state.i.twoFactorEnabled = false;
+					this.$i.twoFactorEnabled = false;
 				});
 			});
 		},
@@ -146,7 +146,7 @@ export default defineComponent({
 				token: this.token
 			}).then(() => {
 				os.success();
-				this.$store.state.i.twoFactorEnabled = true;
+				this.$i.twoFactorEnabled = true;
 			}).catch(e => {
 				os.dialog({
 					type: 'error',
@@ -173,7 +173,7 @@ export default defineComponent({
 
 		unregisterKey(key) {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}
@@ -193,7 +193,7 @@ export default defineComponent({
 
 		addSecurityKey() {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}
@@ -213,9 +213,9 @@ export default defineComponent({
 								name: 'Misskey'
 							},
 							user: {
-								id: byteify(this.$store.state.i.id, 'ascii'),
-								name: this.$store.state.i.username,
-								displayName: this.$store.state.i.name,
+								id: byteify(this.$i.id, 'ascii'),
+								name: this.$i.username,
+								displayName: this.$i.name,
 							},
 							pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
 							timeout: 60000,

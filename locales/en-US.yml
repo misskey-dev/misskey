@@ -664,6 +664,13 @@ experimentalFeatures: "Experimental features"
 developer: "Developer"
 makeExplorable: "Make account visible in \"Explore\""
 makeExplorableDescription: "If you turn this off, your account will not show up in the \"Explore\" section."
+showGapBetweenNotesInTimeline: "Show a gap between posts on the timeline"
+duplicate: "Duplicate"
+left: "Left"
+center: "Center"
+wide: "Wide"
+narrow: "Narrow"
+reloadToApplySetting: "Settings will be applied upon page reload. Reload now?"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
@@ -984,6 +991,7 @@ _widgets:
   federation: "Federation"
   postForm: "Compose a note"
   slideshow: "Slideshow"
+  button: "Button"
 _cw:
   hide: "Hide"
   show: "Load more"
@@ -1466,6 +1474,8 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Always show main column"
   columnAlign: "Align columns"
+  columnMargin: "Margin between columns"
+  columnHeaderHeight: " Column header height"
   addColumn: "Add column"
   swapLeft: "Swap to left"
   swapRight: "Swap to right"
@@ -1474,6 +1484,7 @@ _deck:
   stackLeft: "Stack on the left"
   popRight: "Pop to the right"
   _columns:
+    main: "Main"
     widgets: "Widgets"
     notifications: "Notifications"
     tl: "Timeline"

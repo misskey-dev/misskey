@@ -9,6 +9,7 @@ import userName from './global/user-name.vue';
 import ellipsis from './global/ellipsis.vue';
 import time from './global/time.vue';
 import url from './global/url.vue';
+import i18n from './global/i18n';
 import loading from './global/loading.vue';
 import error from './global/error.vue';
 
@@ -24,4 +25,5 @@ export default function(app: App) {
 	app.component('MkUrl', url);
 	app.component('MkLoading', loading);
 	app.component('MkError', error);
+	app.component('I18n', i18n);
 }

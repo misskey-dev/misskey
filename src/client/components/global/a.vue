@@ -10,8 +10,9 @@ import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } f
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { router } from '@/router';
-import { ui, url } from '@/config';
+import { url } from '@/config';
 import { popout } from '@/scripts/popout';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	inject: {
@@ -57,31 +58,31 @@ export default defineComponent({
 				text: this.to,
 			}, {
 				icon: faWindowMaximize,
-				text: this.$t('openInWindow'),
+				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(this.to);
 				}
 			}, this.sideViewHook ? {
 				icon: faColumns,
-				text: this.$t('openInSideView'),
+				text: this.$ts.openInSideView,
 				action: () => {
 					this.sideViewHook(this.to);
 				}
 			} : undefined, {
 				icon: faExpandAlt,
-				text: this.$t('showInPage'),
+				text: this.$ts.showInPage,
 				action: () => {
 					this.$router.push(this.to);
 				}
 			}, null, {
 				icon: faExternalLinkAlt,
-				text: this.$t('openInNewTab'),
+				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.to, '_blank');
 				}
 			}, {
 				icon: faLink,
-				text: this.$t('copyLink'),
+				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(`${url}${this.to}`);
 				}
@@ -98,8 +99,8 @@ export default defineComponent({
 
 		nav() {
 			if (this.to.startsWith('/my/messaging')) {
-				if (this.$store.state.device.chatOpenBehavior === 'window') return this.window();
-				if (this.$store.state.device.chatOpenBehavior === 'popout') return this.popout();
+				if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return this.window();
+				if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return this.popout();
 			}
 
 			if (this.behavior) {
@@ -111,14 +112,8 @@ export default defineComponent({
 			if (this.navHook) {
 				this.navHook(this.to);
 			} else {
-				if (this.$store.state.device.defaultSideView && this.sideViewHook && this.to !== '/') {
+				if (this.$store.state.defaultSideView && this.sideViewHook && this.to !== '/') {
 					return this.sideViewHook(this.to);
-				}
-				if (this.$store.state.device.deckNavWindow && (ui === 'deck') && this.to !== '/') {
-					return this.window();
-				}
-				if (ui === 'desktop') {
-					return this.window();
 				}
 
 				if (this.$router.currentRoute.value.path === this.to) {

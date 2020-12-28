@@ -1,19 +1,19 @@
 <template>
 <FormBase>
 	<FormRange v-model:value="masterVolume" :min="0" :max="1" :step="0.05">
-		<template #label><Fa :icon="volumeIcon" :key="volumeIcon"/> {{ $t('masterVolume') }}</template>
+		<template #label><Fa :icon="volumeIcon" :key="volumeIcon"/> {{ $ts.masterVolume }}</template>
 	</FormRange>
 
 	<FormGroup>
-		<template #label>{{ $t('sounds') }}</template>
+		<template #label>{{ $ts.sounds }}</template>
 		<FormButton v-for="type in Object.keys(sounds)" :key="type" :center="false" @click="edit(type)">
 			{{ $t('_sfx.' + type) }}
-			<template #suffix>{{ sounds[type].type || $t('none') }}</template>
+			<template #suffix>{{ sounds[type].type || $ts.none }}</template>
 			<template #suffixIcon><Fa :icon="faChevronDown"/></template>
 		</FormButton>
 	</FormGroup>
 
-	<FormButton @click="reset()" danger><Fa :icon="faRedo"/> {{ $t('default') }}</FormButton>
+	<FormButton @click="reset()" danger><Fa :icon="faRedo"/> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 
@@ -26,7 +26,7 @@ import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import FormGroup from '@/components/form/group.vue';
 import * as os from '@/os';
-import { device, defaultDeviceSettings } from '@/cold-storage';
+import { ColdDeviceStorage } from '@/store';
 import { playFile } from '@/scripts/sound';
 
 const soundsTypes = [
@@ -69,7 +69,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('sounds'),
+				title: this.$ts.sounds,
 				icon: faMusic
 			},
 			sounds: {},
@@ -79,8 +79,8 @@ export default defineComponent({
 
 	computed: {
 		masterVolume: { // TODO: (外部)関数にcomputedを使うのはアレなので直す
-			get() { return device.get('sound_masterVolume'); },
-			set(value) { device.set('sound_masterVolume', value); }
+			get() { return ColdDeviceStorage.get('sound_masterVolume'); },
+			set(value) { ColdDeviceStorage.set('sound_masterVolume', value); }
 		},
 		volumeIcon() {
 			return this.masterVolume === 0 ? faVolumeMute : faVolumeUp;
@@ -88,15 +88,15 @@ export default defineComponent({
 	},
 
 	created() {
-		this.sounds.note = device.get('sound_note');
-		this.sounds.noteMy = device.get('sound_noteMy');
-		this.sounds.notification = device.get('sound_notification');
-		this.sounds.chat = device.get('sound_chat');
-		this.sounds.chatBg = device.get('sound_chatBg');
-		this.sounds.antenna = device.get('sound_antenna');
-		this.sounds.channel = device.get('sound_channel');
-		this.sounds.reversiPutBlack = device.get('sound_reversiPutBlack');
-		this.sounds.reversiPutWhite = device.get('sound_reversiPutWhite');
+		this.sounds.note = ColdDeviceStorage.get('sound_note');
+		this.sounds.noteMy = ColdDeviceStorage.get('sound_noteMy');
+		this.sounds.notification = ColdDeviceStorage.get('sound_notification');
+		this.sounds.chat = ColdDeviceStorage.get('sound_chat');
+		this.sounds.chatBg = ColdDeviceStorage.get('sound_chatBg');
+		this.sounds.antenna = ColdDeviceStorage.get('sound_antenna');
+		this.sounds.channel = ColdDeviceStorage.get('sound_channel');
+		this.sounds.reversiPutBlack = ColdDeviceStorage.get('sound_reversiPutBlack');
+		this.sounds.reversiPutWhite = ColdDeviceStorage.get('sound_reversiPutWhite');
 	},
 
 	mounted() {
@@ -110,9 +110,9 @@ export default defineComponent({
 					type: 'enum',
 					enum: soundsTypes.map(x => ({
 						value: x,
-						label: x == null ? this.$t('none') : x,
+						label: x == null ? this.$ts.none : x,
 					})),
-					label: this.$t('sound'),
+					label: this.$ts.sound,
 					default: this.sounds[type].type,
 				},
 				volume: {
@@ -120,12 +120,12 @@ export default defineComponent({
 					mim: 0,
 					max: 1,
 					step: 0.05,
-					label: this.$t('volume'),
+					label: this.$ts.volume,
 					default: this.sounds[type].volume
 				},
 				listen: {
 					type: 'button',
-					content: this.$t('listen'),
+					content: this.$ts.listen,
 					action: (_, values) => {
 						playFile(values.type, values.volume);
 					}
@@ -138,14 +138,14 @@ export default defineComponent({
 				volume: result.volume,
 			};
 
-			device.set('sound_' + type, v);
+			ColdDeviceStorage.set('sound_' + type, v);
 			this.sounds[type] = v;
 		},
 
 		reset() {
 			for (const sound of Object.keys(this.sounds)) {
-				const v = defaultDeviceSettings['sound_' + sound];
-				device.set('sound_' + sound, v);
+				const v = ColdDeviceStorage.default['sound_' + sound];
+				ColdDeviceStorage.set('sound_' + sound, v);
 				this.sounds[sound] = v;
 			}
 		}

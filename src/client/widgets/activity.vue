@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><Fa :icon="faChartBar"/>{{ $t('_widgets.activity') }}</template>
+	<template #header><Fa :icon="faChartBar"/>{{ $ts._widgets.activity }}</template>
 	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
 
 	<div>
@@ -57,7 +57,7 @@ export default defineComponent({
 	},
 	mounted() {
 		os.api('charts/user/notes', {
-			userId: this.$store.state.i.id,
+			userId: this.$i.id,
 			span: 'day',
 			limit: 7 * 21
 		}).then(activity => {

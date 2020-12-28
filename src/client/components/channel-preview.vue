@@ -6,19 +6,19 @@
 		<div class="status">
 			<div>
 				<Fa :icon="faUsers" fixed-width/>
-				<i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;">
+				<I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.usersCount }}</b>
 					</template>
-				</i18n-t>
+				</I18n>
 			</div>
 			<div>
 				<Fa :icon="faPencilAlt" fixed-width/>
-				<i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;">
+				<I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;">
 					<template #n>
 						<b>{{ channel.notesCount }}</b>
 					</template>
-				</i18n-t>
+				</I18n>
 			</div>
 		</div>
 	</div>
@@ -27,7 +27,7 @@
 	</article>
 	<footer>
 		<span v-if="channel.lastNotedAt">
-			{{ $t('updatedAt') }}: <MkTime :time="channel.lastNotedAt"/>
+			{{ $ts.updatedAt }}: <MkTime :time="channel.lastNotedAt"/>
 		</span>
 	</footer>
 </MkA>

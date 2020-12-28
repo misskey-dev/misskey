@@ -1,10 +1,10 @@
 <template>
 <FormBase>
 	<X2fa/>
-	<FormLink to="/settings/2fa"><template #icon><Fa :icon="faMobileAlt"/></template>{{ $t('twoStepAuthentication') }}</FormLink>
-	<FormButton primary @click="change()">{{ $t('changePassword') }}</FormButton>
+	<FormLink to="/settings/2fa"><template #icon><Fa :icon="faMobileAlt"/></template>{{ $ts.twoStepAuthentication }}</FormLink>
+	<FormButton primary @click="change()">{{ $ts.changePassword }}</FormButton>
 	<FormPagination :pagination="pagination">
-		<template #label>{{ $t('signinHistory') }}</template>
+		<template #label>{{ $ts.signinHistory }}</template>
 		<template #default="{items}">
 			<div class="_formPanel timnmucd" v-for="item in items" :key="item.id">
 				<header>
@@ -17,8 +17,8 @@
 		</template>
 	</FormPagination>
 	<FormGroup>
-		<FormButton danger @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $t('regenerateLoginToken') }}</FormButton>
-		<template #caption>{{ $t('regenerateLoginTokenDescription') }}</template>
+		<FormButton danger @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $ts.regenerateLoginToken }}</FormButton>
+		<template #caption>{{ $ts.regenerateLoginTokenDescription }}</template>
 	</FormGroup>
 </FormBase>
 </template>
@@ -47,7 +47,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('security'),
+				title: this.$ts.security,
 				icon: faLock
 			},
 			pagination: {
@@ -65,7 +65,7 @@ export default defineComponent({
 	methods: {
 		async change() {
 			const { canceled: canceled1, result: currentPassword } = await os.dialog({
-				title: this.$t('currentPassword'),
+				title: this.$ts.currentPassword,
 				input: {
 					type: 'password'
 				}
@@ -73,7 +73,7 @@ export default defineComponent({
 			if (canceled1) return;
 
 			const { canceled: canceled2, result: newPassword } = await os.dialog({
-				title: this.$t('newPassword'),
+				title: this.$ts.newPassword,
 				input: {
 					type: 'password'
 				}
@@ -81,7 +81,7 @@ export default defineComponent({
 			if (canceled2) return;
 
 			const { canceled: canceled3, result: newPassword2 } = await os.dialog({
-				title: this.$t('newPasswordRetype'),
+				title: this.$ts.newPasswordRetype,
 				input: {
 					type: 'password'
 				}
@@ -91,7 +91,7 @@ export default defineComponent({
 			if (newPassword !== newPassword2) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('retypedNotMatch')
+					text: this.$ts.retypedNotMatch
 				});
 				return;
 			}
@@ -104,7 +104,7 @@ export default defineComponent({
 
 		regenerateToken() {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}
@@ -138,6 +138,15 @@ export default defineComponent({
 			&.fail {
 				color: var(--error);
 			}
+		}
+
+		> .ip {
+			flex: 1;
+			min-width: 0;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			margin-right: 12px;
 		}
 
 		> .time {

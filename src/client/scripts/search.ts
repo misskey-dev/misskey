@@ -6,7 +6,7 @@ import { router } from '@/router';
 export async function search(q?: string | null | undefined) {
 	if (q == null) {
 		const { canceled, result: query } = await os.dialog({
-			title: i18n.global.t('search'),
+			title: i18n.locale.search,
 			input: true
 		});
 
@@ -52,7 +52,7 @@ export async function search(q?: string | null | undefined) {
 			uri: q
 		});
 
-		os.promiseDialog(promise, null, null, i18n.global.t('fetchingAsApObject'));
+		os.promiseDialog(promise, null, null, i18n.locale.fetchingAsApObject);
 
 		const res = await promise;
 

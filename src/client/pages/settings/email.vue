@@ -1,11 +1,11 @@
 <template>
 <FormBase>
 	<FormGroup>
-		<template #label>{{ $t('emailAddress') }}</template>
+		<template #label>{{ $ts.emailAddress }}</template>
 		<FormLink to="/settings/email/address">
-			<template v-if="$store.state.i.email && !$store.state.i.emailVerified" #icon><Fa :icon="faExclamationTriangle" style="color: var(--warn);"/></template>
-			<template v-else-if="$store.state.i.email && $store.state.i.emailVerified" #icon><Fa :icon="faCheck" style="color: var(--success);"/></template>
-			{{ $store.state.i.email || $t('notSet') }}
+			<template v-if="$i.email && !$i.emailVerified" #icon><Fa :icon="faExclamationTriangle" style="color: var(--warn);"/></template>
+			<template v-else-if="$i.email && $i.emailVerified" #icon><Fa :icon="faCheck" style="color: var(--success);"/></template>
+			{{ $i.email || $ts.notSet }}
 		</FormLink>
 	</FormGroup>
 </FormBase>
@@ -34,7 +34,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('email'),
+				title: this.$ts.email,
 				icon: faEnvelope
 			},
 			faCog, faExclamationTriangle, faCheck

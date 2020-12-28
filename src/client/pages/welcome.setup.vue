@@ -2,18 +2,18 @@
 <form class="mk-setup" @submit.prevent="submit()">
 	<h1>Welcome to Misskey!</h1>
 	<div>
-		<p>{{ $t('intro') }}</p>
+		<p>{{ $ts.intro }}</p>
 		<MkInput v-model:value="username" pattern="^[a-zA-Z0-9_]{1,20}$" spellcheck="false" required>
-			<span>{{ $t('username') }}</span>
+			<span>{{ $ts.username }}</span>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</MkInput>
 		<MkInput v-model:value="password" type="password">
-			<span>{{ $t('password') }}</span>
+			<span>{{ $ts.password }}</span>
 			<template #prefix><Fa :icon="faLock"/></template>
 		</MkInput>
 		<footer>
-			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $t('processing') : $t('done') }}<MkEllipsis v-if="submitting"/></MkButton>
+			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/></MkButton>
 		</footer>
 	</div>
 </form>
@@ -26,6 +26,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkInput from '@/components/ui/input.vue';
 import { host } from '@/config';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -52,14 +53,13 @@ export default defineComponent({
 				username: this.username,
 				password: this.password,
 			}).then(res => {
-				localStorage.setItem('i', res.token);
-				location.href = '/';
+				login(res.i);
 			}).catch(() => {
 				this.submitting = false;
 
 				os.dialog({
 					type: 'error',
-					text: this.$t('somethingHappened')
+					text: this.$ts.somethingHappened
 				});
 			});
 		}

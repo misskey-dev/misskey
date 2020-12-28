@@ -1,32 +1,32 @@
 <template>
 <FormBase>
 	<FormSelect v-model:value="lightTheme" v-if="!darkMode">
-		<template #label>{{ $t('themeForLightMode') }}</template>
-		<optgroup :label="$t('lightThemes')">
+		<template #label>{{ $ts.themeForLightMode }}</template>
+		<optgroup :label="$ts.lightThemes">
 			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</optgroup>
-		<optgroup :label="$t('darkThemes')">
+		<optgroup :label="$ts.darkThemes">
 			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</optgroup>
 	</FormSelect>
 	<FormSelect v-model:value="darkTheme" v-else>
-		<template #label>{{ $t('themeForDarkMode') }}</template>
-		<optgroup :label="$t('darkThemes')">
+		<template #label>{{ $ts.themeForDarkMode }}</template>
+		<optgroup :label="$ts.darkThemes">
 			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</optgroup>
-		<optgroup :label="$t('lightThemes')">
+		<optgroup :label="$ts.lightThemes">
 			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</optgroup>
 	</FormSelect>
 
 	<FormGroup>
 		<div class="rfqxtzch _formItem _formPanel">
-			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
+			<div class="darkMode">
 				<div class="toggleWrapper">
-					<input type="checkbox" class="dn" id="dn" v-model="darkMode" :disabled="syncDeviceDarkMode"/>
+					<input type="checkbox" class="dn" id="dn" v-model="darkMode"/>
 					<label for="dn" class="toggle">
-						<span class="before">{{ $t('light') }}</span>
-						<span class="after">{{ $t('dark') }}</span>
+						<span class="before">{{ $ts.light }}</span>
+						<span class="after">{{ $ts.dark }}</span>
 						<span class="toggle__handler">
 							<span class="crater crater--1"></span>
 							<span class="crater crater--2"></span>
@@ -42,43 +42,43 @@
 				</div>
 			</div>
 		</div>
-		<FormSwitch v-model:value="syncDeviceDarkMode">{{ $t('syncDeviceDarkMode') }}</FormSwitch>
+		<FormSwitch v-model:value="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
 	</FormGroup>
 
-	<FormButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $t('setWallpaper') }}</FormButton>
-	<FormButton primary v-else @click="wallpaper = null">{{ $t('removeWallpaper') }}</FormButton>
+	<FormButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
+	<FormButton primary v-else @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
 
 	<FormGroup>
-		<FormLink to="https://assets.msky.cafe/theme/list" external>{{ $t('_theme.explore') }}</FormLink>
-		<FormLink to="/theme-editor">{{ $t('_theme.make') }}</FormLink>
+		<FormLink to="https://assets.msky.cafe/theme/list" external>{{ $ts._theme.explore }}</FormLink>
+		<FormLink to="/theme-editor">{{ $ts._theme.make }}</FormLink>
 	</FormGroup>
 
-	<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $t('_theme.install') }}</FormLink>
+	<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._theme.install }}</FormLink>
 
-	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $t('_theme.manage') }}</FormLink>
+	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}</FormLink>
 </FormBase>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/form/button.vue';
-import { Theme, builtinThemes, applyTheme } from '@/scripts/theme';
+import { builtinThemes, applyTheme } from '@/scripts/theme';
 import { selectFile } from '@/scripts/select-file';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
 		FormSwitch,
 		FormSelect,
-		FormRadios,
 		FormBase,
 		FormGroup,
 		FormLink,
@@ -86,96 +86,70 @@ export default defineComponent({
 	},
 
 	emits: ['info'],
-	
-	data() {
-		return {
-			INFO: {
-				title: this.$t('theme'),
-				icon: faPalette
-			},
-			builtinThemes,
-			wallpaper: localStorage.getItem('wallpaper'),
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
-		}
-	},
 
-	computed: {
-		themes(): Theme[] {
-			return builtinThemes.concat(this.$store.state.device.themes);
-		},
+	setup(props, { emit }) {
+		const INFO = {
+			title: i18n.locale.theme,
+			icon: faPalette
+		};
 
-		installedThemes(): Theme[] {
-			return this.$store.state.device.themes;
-		},
-	
-		darkThemes(): Theme[] {
-			return this.themes.filter(t => t.base == 'dark' || t.kind == 'dark');
-		},
+		const installedThemes = ColdDeviceStorage.ref('themes');
+		const themes = computed(() => builtinThemes.concat(installedThemes.value));
+		const darkThemes = computed(() => themes.value.filter(t => t.base == 'dark' || t.kind == 'dark'));
+		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
+		const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
+		const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
+		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
+		const wallpaper = ref(localStorage.getItem('wallpaper'));
 
-		lightThemes(): Theme[] {
-			return this.themes.filter(t => t.base == 'light' || t.kind == 'light');
-		},
-		
-		darkTheme: {
-			get() { return this.$store.state.device.darkTheme; },
-			set(value) { this.$store.commit('device/set', { key: 'darkTheme', value }); }
-		},
-
-		lightTheme: {
-			get() { return this.$store.state.device.lightTheme; },
-			set(value) { this.$store.commit('device/set', { key: 'lightTheme', value }); }
-		},
-
-		darkMode: {
-			get() { return this.$store.state.device.darkMode; },
-			set(value) { this.$store.commit('device/set', { key: 'darkMode', value }); }
-		},
-
-		syncDeviceDarkMode: {
-			get() { return this.$store.state.device.syncDeviceDarkMode; },
-			set(value) { this.$store.commit('device/set', { key: 'syncDeviceDarkMode', value }); }
-		},
-	},
-
-	watch: {
-		darkTheme() {
-			if (this.$store.state.device.darkMode) {
-				applyTheme(this.themes.find(x => x.id === this.darkTheme));
+		watch(darkTheme, () => {
+			if (defaultStore.state.darkMode) {
+				applyTheme(themes.value.find(x => x.id === darkTheme.value));
 			}
-		},
+		});
 
-		lightTheme() {
-			if (!this.$store.state.device.darkMode) {
-				applyTheme(this.themes.find(x => x.id === this.lightTheme));
+		watch(lightTheme, () => {
+			if (!defaultStore.state.darkMode) {
+				applyTheme(themes.value.find(x => x.id === lightTheme.value));
 			}
-		},
+		});
 
-		syncDeviceDarkMode() {
-			if (this.$store.state.device.syncDeviceDarkMode) {
-				this.$store.commit('device/set', { key: 'darkMode', value: isDeviceDarkmode() });
+		watch(syncDeviceDarkMode, () => {
+			if (syncDeviceDarkMode) {
+				defaultStore.set('darkMode', isDeviceDarkmode());
 			}
-		},
+		});
 
-		wallpaper() {
-			if (this.wallpaper == null) {
+		watch(wallpaper, () => {
+			if (wallpaper.value == null) {
 				localStorage.removeItem('wallpaper');
 			} else {
-				localStorage.setItem('wallpaper', this.wallpaper);
+				localStorage.setItem('wallpaper', wallpaper.value);
 			}
 			location.reload();
-		}
-	},
+		});
 
-	mounted() {
-		this.$emit('info', this.INFO);
-	},
+		onMounted(() => {
+			emit('info', INFO);
+		});
 
-	methods: {
-		setWallpaper(e) {
-			selectFile(e.currentTarget || e.target, null, false).then(file => {
-				this.wallpaper = file.url;
-			});
-		},
+		return {
+			INFO,
+			darkThemes,
+			lightThemes,
+			darkTheme,
+			lightTheme,
+			darkMode,
+			syncDeviceDarkMode,
+			wallpaper,
+			setWallpaper(e) {
+				selectFile(e.currentTarget || e.target, null, false).then(file => {
+					wallpaper.value = file.url;
+				});
+			},
+			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
+		};
 	}
 });
 </script>

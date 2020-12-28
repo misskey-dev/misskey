@@ -1,21 +1,21 @@
 <template>
 <FormBase>
 	<FormSelect v-model:value="selectedThemeId">
-		<template #label>{{ $t('installedThemes') }}</template>
+		<template #label>{{ $ts.installedThemes }}</template>
 		<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		<optgroup :label="$t('builtinThemes')">
+		<optgroup :label="$ts.builtinThemes">
 			<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</optgroup>
 	</FormSelect>
 	<template v-if="selectedTheme">
 		<FormInput readonly :value="selectedTheme.author">
-			<span>{{ $t('author') }}</span>
+			<span>{{ $ts.author }}</span>
 		</FormInput>
 		<FormTextarea readonly tall :value="selectedThemeCode">
-			<span>{{ $t('_theme.code') }}</span>
-			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $t('copy') }}</button></template>
+			<span>{{ $ts._theme.code }}</span>
+			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $ts.copy }}</button></template>
 		</FormTextarea>
-		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</FormButton>
+		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $ts.uninstall }}</FormButton>
 	</template>
 </FormBase>
 </template>
@@ -34,6 +34,7 @@ import FormButton from '@/components/form/button.vue';
 import { Theme, builtinThemes } from '@/scripts/theme';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -51,9 +52,10 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('_theme.manage'),
+				title: this.$ts._theme.manage,
 				icon: faFolderOpen
 			},
+			installedThemes: ColdDeviceStorage.ref('themes'),
 			builtinThemes,
 			selectedThemeId: null,
 			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
@@ -62,11 +64,7 @@ export default defineComponent({
 
 	computed: {
 		themes(): Theme[] {
-			return builtinThemes.concat(this.$store.state.device.themes);
-		},
-
-		installedThemes(): Theme[] {
-			return this.$store.state.device.themes;
+			return this.builtinThemes.concat(this.installedThemes);
 		},
 	
 		selectedTheme() {
@@ -92,10 +90,8 @@ export default defineComponent({
 
 		uninstall() {
 			const theme = this.selectedTheme;
-			const themes = this.$store.state.device.themes.filter(t => t.id != theme.id);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
+			const themes = ColdDeviceStorage.get('themes').filter(t => t.id != theme.id);
+			ColdDeviceStorage.set('themes', themes);
 			os.success();
 		},
 	}

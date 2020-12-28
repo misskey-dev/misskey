@@ -1,6 +1,6 @@
 <template>
-<img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt"/>
-<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt"/>
+<img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
+<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <span v-else-if="char && useOsNativeEmojis">{{ char }}</span>
 <span v-else>{{ emoji }}</span>
 </template>
@@ -54,13 +54,13 @@ export default defineComponent({
 		},
 
 		useOsNativeEmojis(): boolean {
-			return this.$store.state.device.useOsNativeEmojis && !this.isReaction;
+			return this.$store.state.useOsNativeEmojis && !this.isReaction;
 		},
 
 		ce() {
 			let ce = [];
 			if (this.customEmojis) ce = ce.concat(this.customEmojis);
-			if (this.$store.state.instance.meta && this.$store.state.instance.meta.emojis) ce = ce.concat(this.$store.state.instance.meta.emojis);
+			if (this.$instance && this.$instance.emojis) ce = ce.concat(this.$instance.emojis);
 			return ce;
 		}
 	},
@@ -72,7 +72,7 @@ export default defineComponent({
 					const customEmoji = this.ce.find(x => x.name === this.emoji.substr(1, this.emoji.length - 2));
 					if (customEmoji) {
 						this.customEmoji = customEmoji;
-						this.url = this.$store.state.device.disableShowingAnimatedImages
+						this.url = this.$store.state.disableShowingAnimatedImages
 							? getStaticImageUrl(customEmoji.url)
 							: customEmoji.url;
 					}

@@ -4,7 +4,7 @@
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
 			<XPostForm v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true" class="_panel"/>
-			<MkButton v-else primary @click="close()">{{ $t('close') }}</MkButton>
+			<MkButton v-else primary @click="close()">{{ $ts.close }}</MkButton>
 		</div>
 		<div class="_footer" v-if="url">{{ url }}</div>
 	</section>
@@ -27,7 +27,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('share'),
+				title: this.$ts.share,
 				icon: faShareAlt
 			},
 			title: null,

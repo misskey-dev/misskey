@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.device.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div class="ebkgocck" v-if="showing">
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" @contextmenu.prevent.stop="onContextmenu">
@@ -401,7 +401,6 @@ export default defineComponent({
 			position: relative;
 			z-index: 1;
 			flex-shrink: 0;
-			box-shadow: 0px 1px var(--divider);
 			user-select: none;
 			height: $height;
 

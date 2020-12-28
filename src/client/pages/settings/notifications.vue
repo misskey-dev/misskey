@@ -1,10 +1,10 @@
 <template>
 <FormBase>
-	<FormLink @click="configure">{{ $t('notificationSetting') }}</FormLink>
+	<FormLink @click="configure">{{ $ts.notificationSetting }}</FormLink>
 	<FormGroup>
-		<FormButton @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</FormButton>
-		<FormButton @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</FormButton>
-		<FormButton @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</FormButton>
+		<FormButton @click="readAllNotifications">{{ $ts.markAsReadAllNotifications }}</FormButton>
+		<FormButton @click="readAllUnreadNotes">{{ $ts.markAsReadAllUnreadNotes }}</FormButton>
+		<FormButton @click="readAllMessagingMessages">{{ $ts.markAsReadAllTalkMessages }}</FormButton>
 	</FormGroup>
 </FormBase>
 </template>
@@ -33,7 +33,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('notifications'),
+				title: this.$ts.notifications,
 				icon: faBell
 			},
 			faCog
@@ -58,7 +58,7 @@ export default defineComponent({
 		},
 
 		configure() {
-			const includingTypes = notificationTypes.filter(x => !this.$store.state.i.mutingNotificationTypes.includes(x));
+			const includingTypes = notificationTypes.filter(x => !this.$i.mutingNotificationTypes.includes(x));
 			os.popup(import('@/components/notification-setting-window.vue'), {
 				includingTypes,
 				showGlobalToggle: false,
@@ -68,7 +68,7 @@ export default defineComponent({
 					await os.apiWithDialog('i/update', {
 						mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
 					}).then(i => {
-						this.$store.state.i.mutingNotificationTypes = i.mutingNotificationTypes;
+						this.$i.mutingNotificationTypes = i.mutingNotificationTypes;
 					});
 				}
 			}, 'closed');

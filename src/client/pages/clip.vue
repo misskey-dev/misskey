@@ -2,7 +2,7 @@
 <div v-if="clip" class="_section">
 	<div class="okzinsic _content _panel _vMargin">
 		<div class="description" v-if="clip.description">
-			<Mfm :text="clip.description" :is-note="false" :i="$store.state.i"/>
+			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 		</div>
 		<div class="user">
 			<MkAvatar :user="clip.user" class="avatar"/> <MkUserName :user="clip.user" :nowrap="false"/>
@@ -58,7 +58,7 @@ export default defineComponent({
 
 	computed: {
 		isOwned(): boolean {
-			return this.$store.getters.isSignedIn && this.clip && (this.$store.state.i.id === this.clip.userId);
+			return this.$i && this.clip && (this.$i.id === this.clip.userId);
 		}
 	},
 
@@ -81,24 +81,24 @@ export default defineComponent({
 		menu(ev) {
 			os.modalMenu([this.isOwned ? {
 				icon: faPencilAlt,
-				text: this.$t('edit'),
+				text: this.$ts.edit,
 				action: async () => {
 					const { canceled, result } = await os.form(this.clip.name, {
 						name: {
 							type: 'string',
-							label: this.$t('name'),
+							label: this.$ts.name,
 							default: this.clip.name
 						},
 						description: {
 							type: 'string',
 							required: false,
 							multiline: true,
-							label: this.$t('description'),
+							label: this.$ts.description,
 							default: this.clip.description
 						},
 						isPublic: {
 							type: 'boolean',
-							label: this.$t('public'),
+							label: this.$ts.public,
 							default: this.clip.isPublic
 						}
 					});
@@ -111,7 +111,7 @@ export default defineComponent({
 				}
 			} : undefined, this.isOwned ? {
 				icon: faTrashAlt,
-				text: this.$t('delete'),
+				text: this.$ts.delete,
 				danger: true,
 				action: async () => {
 					const { canceled } = await os.dialog({

@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<Fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -14,6 +14,7 @@ import { faSatellite, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
+import { updateColumn } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -44,14 +45,6 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('selectAntenna'),
-			action: this.setAntenna
-		}];
-	},
-
 	mounted() {
 		if (this.column.antennaId == null) {
 			this.setAntenna();
@@ -62,7 +55,7 @@ export default defineComponent({
 		async setAntenna() {
 			const antennas = await os.api('antennas/list');
 			const { canceled, result: antenna } = await os.dialog({
-				title: this.$t('selectAntenna'),
+				title: this.$ts.selectAntenna,
 				type: null,
 				select: {
 					items: antennas.map(x => ({
@@ -73,8 +66,9 @@ export default defineComponent({
 				showCancelButton: true
 			});
 			if (canceled) return;
-			this.column.antennaId = antenna.id;
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
+			updateColumn(this.column.id, {
+				antennaId: antenna.id
+			});
 		},
 
 		focus() {

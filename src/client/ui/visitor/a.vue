@@ -1,18 +1,18 @@
 <template>
 <div class="mk-app">
-	<div class="banner" v-if="$route.path === '/'" :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+	<div class="banner" v-if="$route.path === '/'" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div class="about" v-if="meta">
-				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
+				<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 			</div>
 			<div class="action">
-				<button class="_button primary" @click="signup()">{{ $t('signup') }}</button>
-				<button class="_button" @click="signin()">{{ $t('login') }}</button>
+				<button class="_button primary" @click="signup()">{{ $ts.signup }}</button>
+				<button class="_button" @click="signin()">{{ $ts.login }}</button>
 			</div>
 		</div>
 	</div>
-	<div class="banner-mini" v-else :style="{ backgroundImage: `url(${ $store.state.instance.meta.bannerUrl })` }">
+	<div class="banner-mini" v-else :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
@@ -25,7 +25,7 @@
 			</header>
 			<main ref="main">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<component :is="Component" :ref="changePage"/>
 					</transition>
 				</router-view>
@@ -48,6 +48,7 @@ import * as os from '@/os';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkButton from '@/components/ui/button.vue';
 import XHeader from './header.vue';
+import { ColdDeviceStorage } from '@/store';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -78,8 +79,8 @@ export default defineComponent({
 		keymap(): any {
 			return {
 				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
+					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
+					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
 				's': search,
 				'h|/': this.help

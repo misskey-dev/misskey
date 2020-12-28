@@ -834,6 +834,7 @@ _widgets:
   digitalClock: "디지털 시계"
   federation: "연합"
   postForm: "글 입력란"
+  button: "버튼"
 _cw:
   hide: "숨기기"
   show: "더 보기"

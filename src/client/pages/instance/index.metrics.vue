@@ -1,11 +1,11 @@
 <template>
 <div>
 	<MkFolder>
-		<template #header><Fa :icon="faHeartbeat"/> {{ $t('metrics') }}</template>
+		<template #header><Fa :icon="faHeartbeat"/> {{ $ts.metrics }}</template>
 		<div class="_section" style="padding: 0 var(--margin);">
 			<div class="_content">
 				<MkContainer :body-togglable="false" class="_vMargin">
-					<template #header><Fa :icon="faMicrochip"/>{{ $t('cpuAndMemory') }}</template>
+					<template #header><Fa :icon="faMicrochip"/>{{ $ts.cpuAndMemory }}</template>
 					<!--
 					<template #func>
 						<button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button>
@@ -28,7 +28,7 @@
 				</MkContainer>
 
 				<MkContainer :body-togglable="false" class="_vMargin">
-					<template #header><Fa :icon="faHdd"/> {{ $t('disk') }}</template>
+					<template #header><Fa :icon="faHdd"/> {{ $ts.disk }}</template>
 					<!--
 					<template #func>
 						<button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button>
@@ -51,7 +51,7 @@
 				</MkContainer>
 
 				<MkContainer :body-togglable="false" class="_vMargin">
-					<template #header><Fa :icon="faExchangeAlt"/> {{ $t('network') }}</template>
+					<template #header><Fa :icon="faExchangeAlt"/> {{ $ts.network }}</template>
 					<!--
 					<template #func>
 						<button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button>
@@ -75,11 +75,11 @@
 	</MkFolder>
 
 	<MkFolder>
-		<template #header><Fa :icon="faClipboardList"/> {{ $t('jobQueue') }}</template>
+		<template #header><Fa :icon="faClipboardList"/> {{ $ts.jobQueue }}</template>
 
 		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
 			<MkContainer :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
-				<template #header><Fa :icon="faExclamationTriangle"/> {{ $t('delayed') }}</template>
+				<template #header><Fa :icon="faExclamationTriangle"/> {{ $ts.delayed }}</template>
 
 				<div class="_content">
 					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
@@ -160,7 +160,7 @@ export default defineComponent({
 	computed: {
 		gridColor() {
 			// TODO: var(--panel)の色が暗いか明るいかで判定する
-			return this.$store.state.device.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+			return this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 		},
 	},
 

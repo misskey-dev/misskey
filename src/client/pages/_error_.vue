@@ -1,10 +1,10 @@
 <template>
-<transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
+<transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="_section">
 		<div class="mjndxjch _content">
 			<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-			<p><Fa :icon="faExclamationTriangle"/> {{ $t('pageLoadError') }}</p>
-			<p>{{ $t('pageLoadErrorDescription') }}</p>
+			<p><Fa :icon="faExclamationTriangle"/> {{ $ts.pageLoadError }}</p>
+			<p>{{ $ts.pageLoadErrorDescription }}</p>
 		</div>
 	</div>
 </transition>
@@ -22,7 +22,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('error'),
+				title: this.$ts.error,
 				icon: faExclamationTriangle
 			},
 			faExclamationTriangle

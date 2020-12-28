@@ -4,37 +4,37 @@
 		<div class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null }" v-show="withAvatar"></div>
 		<div class="normal-signin" v-if="!totpLogin">
 			<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @update:value="onUsernameChange">
-				<span>{{ $t('username') }}</span>
+				<span>{{ $ts.username }}</span>
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
 			<MkInput v-model:value="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
-				<span>{{ $t('password') }}</span>
+				<span>{{ $ts.password }}</span>
 				<template #prefix><Fa :icon="faLock"/></template>
 			</MkInput>
-			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</MkButton>
+			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 		</div>
 		<div class="2fa-signin" v-if="totpLogin" :class="{ securityKeys: user && user.securityKeys }">
 			<div v-if="user && user.securityKeys" class="twofa-group tap-group">
-				<p>{{ $t('tapSecurityKey') }}</p>
+				<p>{{ $ts.tapSecurityKey }}</p>
 				<MkButton @click="queryKey" v-if="!queryingKey">
-					{{ $t('retry') }}
+					{{ $ts.retry }}
 				</MkButton>
 			</div>
 			<div class="or-hr" v-if="user && user.securityKeys">
-				<p class="or-msg">{{ $t('or') }}</p>
+				<p class="or-msg">{{ $ts.or }}</p>
 			</div>
 			<div class="twofa-group totp-group">
-				<p style="margin-bottom:0;">{{ $t('twoStepAuthentication') }}</p>
+				<p style="margin-bottom:0;">{{ $ts.twoStepAuthentication }}</p>
 				<MkInput v-model:value="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
-					<span>{{ $t('password') }}</span>
+					<span>{{ $ts.password }}</span>
 					<template #prefix><Fa :icon="faLock"/></template>
 				</MkInput>
 				<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
-					<span>{{ $t('token') }}</span>
+					<span>{{ $ts.token }}</span>
 					<template #prefix><Fa :icon="faGavel"/></template>
 				</MkInput>
-				<MkButton type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $t('loggingIn') : $t('login') }}</MkButton>
+				<MkButton type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 			</div>
 		</div>
 	</div>
@@ -56,6 +56,7 @@ import MkInput from './ui/input.vue';
 import { apiUrl, host } from '@/config';
 import { byteify, hexify } from '@/scripts/2fa';
 import * as os from '@/os';
+import { login } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -97,7 +98,7 @@ export default defineComponent({
 
 	computed: {
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 	},
 
@@ -114,8 +115,7 @@ export default defineComponent({
 
 		onLogin(res) {
 			if (this.autoSet) {
-				localStorage.setItem('i', res.i);
-				location.reload();
+				login(res.i);
 			}
 		},
 
@@ -153,7 +153,7 @@ export default defineComponent({
 				if (err === null) return;
 				os.dialog({
 					type: 'error',
-					text: this.$t('signinFailed')
+					text: this.$ts.signinFailed
 				});
 				this.signing = false;
 			});
@@ -174,7 +174,7 @@ export default defineComponent({
 					}).catch(() => {
 						os.dialog({
 							type: 'error',
-							text: this.$t('signinFailed')
+							text: this.$ts.signinFailed
 						});
 						this.challengeData = null;
 						this.totpLogin = false;
@@ -195,7 +195,7 @@ export default defineComponent({
 				}).catch(() => {
 					os.dialog({
 						type: 'error',
-						text: this.$t('loginFailed')
+						text: this.$ts.loginFailed
 					});
 					this.signing = false;
 				});

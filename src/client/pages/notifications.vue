@@ -21,7 +21,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('notifications'),
+				title: this.$ts.notifications,
 				icon: faBell
 			},
 		};

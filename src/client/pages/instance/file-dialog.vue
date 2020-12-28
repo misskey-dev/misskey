@@ -21,8 +21,8 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkButton full @click="showUser"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('user') }}</MkButton>
-				<MkButton full danger @click="del"><Fa :icon="faTrashAlt"/> {{ $t('delete') }}</MkButton>
+				<MkButton full @click="showUser"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts.user }}</MkButton>
+				<MkButton full danger @click="del"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
 			</div>
 		</div>
 		<div class="_section" v-if="info">

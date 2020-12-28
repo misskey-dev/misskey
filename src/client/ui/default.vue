@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app" v-hotkey.global="keymap" :class="{ wallpaper }">
+<div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<div class="contents" ref="contents">
@@ -9,7 +9,7 @@
 		<main ref="main">
 			<div class="content">
 				<router-view v-slot="{ Component }">
-					<transition :name="$store.state.device.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
+					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
 							<component :is="Component" :ref="changePage"/>
 						</keep-alive>
@@ -29,10 +29,9 @@
 
 	<div class="buttons" :class="{ navHidden }">
 		<button class="button nav _button" @click="showNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
-		<button v-if="$route.name === 'index'" class="button home _button" @click="top()"><Fa :icon="faHome"/></button>
-		<button v-else class="button home _button" @click="$router.push('/')"><Fa :icon="faHome"/></button>
-		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$store.state.i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
+		<button class="button post _button" @click="post"><Fa :icon="faPencilAlt"/></button>
 	</div>
 
 	<button class="widgetButton _button" :class="{ navHidden }" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
@@ -55,10 +54,9 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
-import { search } from '@/scripts/search';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from '@/components/sidebar.vue';
 import XCommon from './_common_/common.vue';
@@ -96,32 +94,11 @@ export default defineComponent({
 			navHidden: false,
 			widgetsShowing: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faLayerGroup, faBars, faBell, faHome, faCircle,
+			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt,
 		};
 	},
 
 	computed: {
-		keymap(): any {
-			return {
-				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
-				},
-				'p': os.post,
-				'n': os.post,
-				's': () => search(),
-				'h|/': this.help
-			};
-		},
-
-		widgets(): any {
-			return this.$store.state.deviceUser.widgets;
-		},
-
-		menu(): string[] {
-			return this.$store.state.deviceUser.menu;
-		},
-
 		navIndicated(): boolean {
 			for (const def in this.menuDef) {
 				if (def === 'notifications') continue; // 通知は下にボタンとして表示されてるから
@@ -140,8 +117,8 @@ export default defineComponent({
 	created() {
 		document.documentElement.style.overflowY = 'scroll';
 
-		if (this.$store.state.deviceUser.widgets.length === 0) {
-			this.$store.commit('deviceUser/setWidgets', [{
+		if (this.$store.state.widgets.length === 0) {
+			this.$store.set('widgets', [{
 				name: 'calendar',
 				id: 'a', place: 'right', data: {}
 			}, {
@@ -199,12 +176,12 @@ export default defineComponent({
 			}, { passive: true });
 		},
 
-		top() {
-			window.scroll({ top: 0, behavior: 'smooth' });
+		post() {
+			os.post();
 		},
 
-		help() {
-			this.$router.push('/docs/keyboard-shortcut');
+		top() {
+			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
 		onTransition() {
@@ -222,13 +199,13 @@ export default defineComponent({
 				text: path,
 			}, {
 				icon: faColumns,
-				text: this.$t('openInSideView'),
+				text: this.$ts.openInSideView,
 				action: () => {
 					this.$refs.side.navigate(path);
 				}
 			}, {
 				icon: faWindowMaximize,
-				text: this.$t('openInWindow'),
+				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);
 				}

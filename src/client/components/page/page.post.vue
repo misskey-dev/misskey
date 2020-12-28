@@ -49,9 +49,9 @@ export default defineComponent({
 				canvas.toBlob(blob => {
 					const data = new FormData();
 					data.append('file', blob);
-					data.append('i', this.$store.state.i.token);
-					if (this.$store.state.settings.uploadFolder) {
-						data.append('folderId', this.$store.state.settings.uploadFolder);
+					data.append('i', this.$i.token);
+					if (this.$store.state.uploadFolder) {
+						data.append('folderId', this.$store.state.uploadFolder);
 					}
 
 					fetch(apiUrl + '/drive/files/create', {

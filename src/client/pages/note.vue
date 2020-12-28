@@ -12,7 +12,7 @@
 				<XNote v-model:note="note" :key="note.id" :detail="true" class="_vMargin"/>
 			</div>
 			<div class="_content clips _vMargin" v-if="clips && clips.length > 0">
-				<div class="title">{{ $t('clip') }}</div>
+				<div class="title">{{ $ts.clip }}</div>
 				<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _vMargin">
 					<b>{{ item.name }}</b>
 					<div v-if="item.description" class="description">{{ item.description }}</div>
@@ -60,7 +60,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.note ? {
-				title: this.$t('note'),
+				title: this.$ts.note,
 				avatar: this.note.user,
 			} : null),
 			note: null,

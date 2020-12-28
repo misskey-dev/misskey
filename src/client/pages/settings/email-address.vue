@@ -2,12 +2,12 @@
 <FormBase>
 	<FormGroup>
 		<FormInput v-model:value="emailAddress" type="email">
-			{{ $t('emailAddress') }}
-			<template #desc v-if="$store.state.i.email && !$store.state.i.emailVerified">{{ $t('verificationEmailSent') }}</template>
-			<template #desc v-else-if="emailAddress === $store.state.i.email && $store.state.i.emailVerified">{{ $t('emailVerified') }}</template>
+			{{ $ts.emailAddress }}
+			<template #desc v-if="$i.email && !$i.emailVerified">{{ $ts.verificationEmailSent }}</template>
+			<template #desc v-else-if="emailAddress === $i.email && $i.emailVerified">{{ $ts.emailVerified }}</template>
 		</FormInput>
 	</FormGroup>
-	<FormButton @click="save" primary>{{ $t('save') }}</FormButton>
+	<FormButton @click="save" primary>{{ $ts.save }}</FormButton>
 </FormBase>
 </template>
 
@@ -34,7 +34,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('emailAddress'),
+				title: this.$ts.emailAddress,
 				icon: faEnvelope
 			},
 			emailAddress: null,
@@ -44,7 +44,7 @@ export default defineComponent({
 	},
 
 	created() {
-		this.emailAddress = this.$store.state.i.email;
+		this.emailAddress = this.$i.email;
 	},
 
 	mounted() {
@@ -54,7 +54,7 @@ export default defineComponent({
 	methods: {
 		save() {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}

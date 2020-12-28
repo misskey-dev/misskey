@@ -1,9 +1,9 @@
 <template>
-<transition :name="$store.state.device.animation ? 'zoom' : ''" appear>
+<transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><Fa :icon="faExclamationTriangle"/> {{ $t('somethingHappened') }}</p>
-		<MkButton @click="() => $emit('retry')" class="button">{{ $t('retry') }}</MkButton>
+		<p><Fa :icon="faExclamationTriangle"/> {{ $ts.somethingHappened }}</p>
+		<MkButton @click="() => $emit('retry')" class="button">{{ $ts.retry }}</MkButton>
 	</div>
 </transition>
 </template>

@@ -2,12 +2,12 @@
 <FormBase>
 	<FormGroup>
 		<FormTextarea v-model:value="installThemeCode">
-			<span>{{ $t('_theme.code') }}</span>
+			<span>{{ $ts._theme.code }}</span>
 		</FormTextarea>
-		<FormButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><Fa :icon="faEye"/> {{ $t('preview') }}</FormButton>
+		<FormButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
 	</FormGroup>
 
-	<FormButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><Fa :icon="faCheck"/> {{ $t('install') }}</FormButton>
+	<FormButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><Fa :icon="faCheck"/> {{ $ts.install }}</FormButton>
 </FormBase>
 </template>
 
@@ -24,6 +24,7 @@ import FormLink from '@/components/form/link.vue';
 import FormButton from '@/components/form/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -41,7 +42,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('_theme.install'),
+				title: this.$ts._theme.install,
 				icon: faDownload
 			},
 			installThemeCode: null,
@@ -62,21 +63,21 @@ export default defineComponent({
 			} catch (e) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('_theme.invalid')
+					text: this.$ts._theme.invalid
 				});
 				return false;
 			}
 			if (!validateTheme(theme)) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('_theme.invalid')
+					text: this.$ts._theme.invalid
 				});
 				return false;
 			}
-			if (this.$store.state.device.themes.some(t => t.id === theme.id)) {
+			if (ColdDeviceStorage.get('themes').some(t => t.id === theme.id)) {
 				os.dialog({
 					type: 'info',
-					text: this.$t('_theme.alreadyInstalled')
+					text: this.$ts._theme.alreadyInstalled
 				});
 				return false;
 			}
@@ -92,10 +93,8 @@ export default defineComponent({
 		install(code) {
 			const theme = this.parseThemeCode(code);
 			if (!theme) return;
-			const themes = this.$store.state.device.themes.concat(theme);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
+			const themes = ColdDeviceStorage.get('themes').concat(theme);
+			ColdDeviceStorage.set('themes', themes);
 			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })

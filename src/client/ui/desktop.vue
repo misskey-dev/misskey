@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app" v-hotkey.global="keymap" :class="{ wallpaper }" @contextmenu.prevent="() => {}">
+<div class="mk-app" :class="{ wallpaper }" @contextmenu.prevent="() => {}">
 	<XSidebar ref="nav" class="sidebar"/>
 
 	<XCommon/>
@@ -14,11 +14,20 @@ import XCommon from './_common_/common.vue';
 import * as os from '@/os';
 import XSidebar from '@/components/sidebar.vue';
 import { sidebarDef } from '@/sidebar';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar
+	},
+
+	provide() {
+		return {
+			navHook: (url) => {
+				os.pageWindow(url);
+			}
+		};
 	},
 
 	data() {
@@ -30,21 +39,8 @@ export default defineComponent({
 	},
 
 	computed: {
-		keymap(): any {
-			return {
-				'd': () => {
-					if (this.$store.state.device.syncDeviceDarkMode) return;
-					this.$store.commit('device/set', { key: 'darkMode', value: !this.$store.state.device.darkMode });
-				},
-				'p': os.post,
-				'n': os.post,
-				's': () => search(),
-				'h|/': this.help
-			};
-		},
-
 		menu(): string[] {
-			return this.$store.state.deviceUser.menu;
+			return this.$store.state.menu;
 		},
 	},
 

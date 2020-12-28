@@ -1,33 +1,29 @@
 <template>
-<div class="mk-deck" :class="`${$store.state.device.deckColumnAlign}`" v-hotkey.global="keymap">
+<div class="mk-deck" :class="`${deckStore.reactiveState.columnAlign.value}`" @contextmenu.self.prevent="onContextmenu"
+	:style="{ '--deckMargin': deckStore.reactiveState.columnMargin.value + 'px' }"
+>
 	<XSidebar ref="nav"/>
 
-	<!-- TODO: deckMainColumnPlace を見て位置変える -->
-	<DeckColumn class="column" v-if="$store.state.device.deckAlwaysShowMainColumn || $route.name !== 'index'">
-		<template #header>
-			<XHeader :info="pageInfo"/>
-		</template>
-
-		<router-view v-slot="{ Component }">
-			<transition>
-				<keep-alive :include="['timeline']">
-					<component :is="Component" :ref="changePage"/>
-				</keep-alive>
-			</transition>
-		</router-view>
-	</DeckColumn>
-
 	<template v-for="ids in layout">
-		<div v-if="ids.length > 1" class="folder column">
+		<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
+		<section v-if="ids.length > 1"
+			class="folder column"
+			:style="{ width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+		>
 			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
-		</div>
-		<DeckColumnCore v-else class="column" :ref="ids[0]" :key="ids[0]" :column="columns.find(c => c.id === ids[0])" @parent-focus="moveFocus(ids[0], $event)"/>
+		</section>
+		<DeckColumnCore v-else
+			class="column"
+			:ref="ids[0]"
+			:key="ids[0]"
+			:column="columns.find(c => c.id === ids[0])"
+			@parent-focus="moveFocus(ids[0], $event)"
+			:style="columns.find(c => c.id === ids[0]).flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0]).width + 'px' }"
+		/>
 	</template>
 
-	<button @click="addColumn" class="_button add"><Fa :icon="faPlus"/></button>
-
-	<button v-if="$store.getters.isSignedIn" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
-	<button v-if="$store.getters.isSignedIn" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
+	<button v-if="$i" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+	<button v-if="$i" class="post _buttonPrimary" @click="post()"><Fa :icon="faPencilAlt"/></button>
 
 	<XCommon/>
 </div>
@@ -39,30 +35,33 @@ import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortaweso
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from '@/config';
-import { search } from '@/scripts/search';
 import DeckColumnCore from '@/ui/deck/column-core.vue';
-import DeckColumn from '@/ui/deck/column.vue';
 import XSidebar from '@/components/sidebar.vue';
-import XHeader from './_common_/header.vue';
 import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 import XCommon from './_common_/common.vue';
+import { deckStore, addColumn } from './deck/deck-store';
 
 export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
-		XHeader,
-		DeckColumn,
 		DeckColumnCore,
+	},
+
+	provide() {
+		return deckStore.state.navWindow ? {
+			navHook: (url) => {
+				os.pageWindow(url);
+			}
+		} : {};
 	},
 
 	data() {
 		return {
+			deckStore,
 			host: host,
-			pageInfo: null,
-			pageKey: 0,
 			menuDef: sidebarDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
@@ -70,35 +69,18 @@ export default defineComponent({
 	},
 
 	computed: {
-		deck() {
-			return this.$store.state.deviceUser.deck;
+		columns() {
+			return deckStore.reactiveState.columns.value;
 		},
-		columns(): any[] {
-			return this.deck.columns;
-		},
-		layout(): any[] {
-			return this.deck.layout;
+		layout() {
+			return deckStore.reactiveState.layout.value;
 		},
 		navIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
+			if (!this.$i) return false;
 			for (const def in this.menuDef) {
 				if (this.menuDef[def].indicated) return true;
 			}
 			return false;
-		},
-		keymap(): any {
-			return {
-				'p': this.post,
-				'n': this.post,
-				's': this.search,
-				'h|/': this.help
-			};
-		},
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
 		},
 	},
 
@@ -112,13 +94,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		changePage(page) {
-			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
-			}
-		},
-
 		onWheel(e) {
 			if (getScrollContainer(e.target) == null) {
 				document.documentElement.scrollLeft += e.deltaY > 0 ? 96 : -96;
@@ -129,16 +104,13 @@ export default defineComponent({
 			this.$refs.nav.show();
 		},
 
-		help() {
-			this.$router.push('/docs/keyboard-shortcut');
-		},
-
 		post() {
 			os.post();
 		},
 
 		async addColumn(ev) {
 			const columns = [
+				'main',
 				'widgets',
 				'notifications',
 				'tl',
@@ -149,7 +121,7 @@ export default defineComponent({
 			];
 
 			const { canceled, result: column } = await os.dialog({
-				title: this.$t('_deck.addColumn'),
+				title: this.$ts._deck.addColumn,
 				type: null,
 				select: {
 					items: columns.map(column => ({
@@ -160,12 +132,20 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			this.$store.commit('deviceUser/addDeckColumn', {
+			addColumn({
 				type: column,
 				id: uuid(),
 				name: this.$t('_deck._columns.' + column),
 				width: 330,
 			});
+		},
+
+		onContextmenu(e) {
+			os.contextMenu([{
+				text: this.$ts._deck.addColumn,
+				icon: null,
+				action: this.addColumn
+			}], e);
 		},
 	}
 });
@@ -175,11 +155,7 @@ export default defineComponent({
 .mk-deck {
 	$nav-hide-threshold: 650px; // TODO: どこかに集約したい
 
-	// TODO: この値を設定で変えられるようにする？
-	$columnMargin: 12px;
-
-	$deckMargin: 12px;
-
+	// TODO: ここではなくて、各カラムで自身の幅に応じて上書きするようにしたい
 	--margin: var(--marginHalf);
 
 	display: flex;
@@ -187,28 +163,28 @@ export default defineComponent({
 	height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
 	flex: 1;
-	padding: $deckMargin 0 $deckMargin $deckMargin;
+	padding: var(--deckMargin);
 
 	&.center {
 		> .column:first-of-type {
 			margin-left: auto;
 		}
 
-		> .add {
+		> .column:last-of-type {
 			margin-right: auto;
 		}
 	}
 
 	> .column {
 		flex-shrink: 0;
-		margin-right: $columnMargin;
+		margin-right: var(--deckMargin);
 
 		&.folder {
 			display: flex;
 			flex-direction: column;
 
 			> *:not(:last-child) {
-				margin-bottom: $columnMargin;
+				margin-bottom: var(--deckMargin);
 			}
 		}
 	}
@@ -223,6 +199,10 @@ export default defineComponent({
 		border-radius: 100%;
 		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 		font-size: 22px;
+
+		@media (min-width: ($nav-hide-threshold + 1px)) {
+			display: none;
+		}
 	}
 
 	> .post {
@@ -233,10 +213,6 @@ export default defineComponent({
 		left: 32px;
 		background: var(--panel);
 		color: var(--fg);
-
-		@media (min-width: ($nav-hide-threshold + 1px)) {
-			display: none;
-		}
 
 		&:hover {
 			background: var(--X2);

@@ -13,18 +13,18 @@
 	</div>
 	<div class="_section like">
 		<div class="_content">
-			<button class="_button" @click="unlike()" v-if="page.isLiked" :title="$t('_pages.unlike')"><Fa :icon="faHeartS"/></button>
-			<button class="_button" @click="like()" v-else :title="$t('_pages.like')"><Fa :icon="faHeartR"/></button>
+			<button class="_button" @click="unlike()" v-if="page.isLiked" :title="$ts._pages.unlike"><Fa :icon="faHeartS"/></button>
+			<button class="_button" @click="like()" v-else :title="$ts._pages.like"><Fa :icon="faHeartR"/></button>
 			<span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span>
 		</div>
 	</div>
 	<div class="_section links">
 		<div class="_content">
-			<MkA :to="`./${page.name}/view-source`" class="link">{{ $t('_pages.viewSource') }}</MkA>
-			<template v-if="$store.getters.isSignedIn && $store.state.i.id === page.userId">
-				<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $t('_pages.editThisPage') }}</MkA>
-				<button v-if="$store.state.i.pinnedPageId === page.id" @click="pin(false)" class="link _textButton">{{ $t('unpin') }}</button>
-				<button v-else @click="pin(true)" class="link _textButton">{{ $t('pin') }}</button>
+			<MkA :to="`./${page.name}/view-source`" class="link">{{ $ts._pages.viewSource }}</MkA>
+			<template v-if="$i && $i.id === page.userId">
+				<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $ts._pages.editThisPage }}</MkA>
+				<button v-if="$i.pinnedPageId === page.id" @click="pin(false)" class="link _textButton">{{ $ts.unpin }}</button>
+				<button v-else @click="pin(true)" class="link _textButton">{{ $ts.pin }}</button>
 			</template>
 		</div>
 	</div>

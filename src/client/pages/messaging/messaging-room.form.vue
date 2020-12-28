@@ -8,10 +8,10 @@
 		ref="text"
 		@keypress="onKeypress"
 		@paste="onPaste"
-		:placeholder="$t('inputMessageHere')"
+		:placeholder="$ts.inputMessageHere"
 	></textarea>
 	<div class="file" @click="file = null" v-if="file">{{ file.name }}</div>
-	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$t('send')">
+	<button class="send _button" @click="send" :disabled="!canSend || sending" :title="$ts.send">
 		<template v-if="!sending"><Fa :icon="faPaperPlane"/></template><template v-if="sending"><Fa icon="spinner .spin"/></template>
 	</button>
 	<button class="_button" @click="chooseFile"><Fa :icon="faPhotoVideo"/></button>
@@ -91,10 +91,10 @@ export default defineComponent({
 					const file = items[0].getAsFile();
 					const lio = file.name.lastIndexOf('.');
 					const ext = lio >= 0 ? file.name.slice(lio) : '';
-					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.settings.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
-					const name = this.$store.state.settings.pasteDialog
+					const formatted = `${formatTimeString(new Date(file.lastModified), this.$store.state.pastedFileName).replace(/{{number}}/g, '1')}${ext}`;
+					const name = this.$store.state.pasteDialog
 						? await os.dialog({
-							title: this.$t('enterFileName'),
+							title: this.$ts.enterFileName,
 							input: {
 								default: formatted
 							},
@@ -107,7 +107,7 @@ export default defineComponent({
 				if (items[0].kind == 'file') {
 					os.dialog({
 						type: 'error',
-						text: this.$t('onlyOneFileCanBeAttached')
+						text: this.$ts.onlyOneFileCanBeAttached
 					});
 				}
 			}
@@ -132,7 +132,7 @@ export default defineComponent({
 				e.preventDefault();
 				os.dialog({
 					type: 'error',
-					text: this.$t('onlyOneFileCanBeAttached')
+					text: this.$ts.onlyOneFileCanBeAttached
 				});
 				return;
 			}
@@ -153,7 +153,7 @@ export default defineComponent({
 		},
 
 		chooseFile(e) {
-			selectFile(e.currentTarget || e.target, this.$t('selectFile'), false).then(file => {
+			selectFile(e.currentTarget || e.target, this.$ts.selectFile, false).then(file => {
 				this.file = file;
 			});
 		},
@@ -163,7 +163,7 @@ export default defineComponent({
 		},
 
 		upload(file: File, name?: string) {
-			os.upload(file, this.$store.state.settings.uploadFolder, name).then(res => {
+			os.upload(file, this.$store.state.uploadFolder, name).then(res => {
 				this.file = res;
 			});
 		},

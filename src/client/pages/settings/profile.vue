@@ -1,44 +1,44 @@
 <template>
 <FormBase>
 	<FormGroup>
-		<div class="_formItem _formPanel llvierxe" :style="{ backgroundImage: $store.state.i.bannerUrl ? `url(${ $store.state.i.bannerUrl })` : null }">
-			<MkAvatar class="avatar" :user="$store.state.i"/>
+		<div class="_formItem _formPanel llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+			<MkAvatar class="avatar" :user="$i"/>
 		</div>
-		<FormButton @click="changeAvatar" primary>{{ $t('_profile.changeAvatar') }}</FormButton>
-		<FormButton @click="changeBanner" primary>{{ $t('_profile.changeBanner') }}</FormButton>
+		<FormButton @click="changeAvatar" primary>{{ $ts._profile.changeAvatar }}</FormButton>
+		<FormButton @click="changeBanner" primary>{{ $ts._profile.changeBanner }}</FormButton>
 	</FormGroup>
 
 	<FormInput v-model:value="name" :max="30">
-		<span>{{ $t('_profile.name') }}</span>
+		<span>{{ $ts._profile.name }}</span>
 	</FormInput>
 
 	<FormTextarea v-model:value="description" :max="500">
-		<span>{{ $t('_profile.description') }}</span>
-		<template #desc>{{ $t('_profile.youCanIncludeHashtags') }}</template>
+		<span>{{ $ts._profile.description }}</span>
+		<template #desc>{{ $ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
 	<FormInput v-model:value="location">
-		<span>{{ $t('location') }}</span>
+		<span>{{ $ts.location }}</span>
 		<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
 	</FormInput>
 
 	<FormInput v-model:value="birthday" type="date">
-		<span>{{ $t('birthday') }}</span>
+		<span>{{ $ts.birthday }}</span>
 		<template #prefix><Fa :icon="faBirthdayCake"/></template>
 	</FormInput>
 
 	<FormGroup>
-		<FormButton @click="editMetadata" primary>{{ $t('_profile.metadataEdit') }}</FormButton>
-		<template #caption>{{ $t('_profile.metadataDescription') }}</template>
+		<FormButton @click="editMetadata" primary>{{ $ts._profile.metadataEdit }}</FormButton>
+		<template #caption>{{ $ts._profile.metadataDescription }}</template>
 	</FormGroup>
 
-	<FormSwitch v-model:value="isCat">{{ $t('flagAsCat') }}<template #desc>{{ $t('flagAsCatDescription') }}</template></FormSwitch>
+	<FormSwitch v-model:value="isCat">{{ $ts.flagAsCat }}<template #desc>{{ $ts.flagAsCatDescription }}</template></FormSwitch>
 
-	<FormSwitch v-model:value="isBot">{{ $t('flagAsBot') }}<template #desc>{{ $t('flagAsBotDescription') }}</template></FormSwitch>
+	<FormSwitch v-model:value="isBot">{{ $ts.flagAsBot }}<template #desc>{{ $ts.flagAsBotDescription }}</template></FormSwitch>
 
-	<FormSwitch v-model:value="alwaysMarkNsfw">{{ $t('alwaysMarkSensitive') }}</FormSwitch>
+	<FormSwitch v-model:value="alwaysMarkNsfw">{{ $ts.alwaysMarkSensitive }}</FormSwitch>
 
-	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $t('save') }}</FormButton>
+	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
 </FormBase>
 </template>
 
@@ -73,7 +73,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('profile'),
+				title: this.$ts.profile,
 				icon: faUser
 			},
 			host,
@@ -100,24 +100,24 @@ export default defineComponent({
 	},
 
 	created() {
-		this.name = this.$store.state.i.name;
-		this.description = this.$store.state.i.description;
-		this.location = this.$store.state.i.location;
-		this.birthday = this.$store.state.i.birthday;
-		this.avatarId = this.$store.state.i.avatarId;
-		this.bannerId = this.$store.state.i.bannerId;
-		this.isBot = this.$store.state.i.isBot;
-		this.isCat = this.$store.state.i.isCat;
-		this.alwaysMarkNsfw = this.$store.state.i.alwaysMarkNsfw;
+		this.name = this.$i.name;
+		this.description = this.$i.description;
+		this.location = this.$i.location;
+		this.birthday = this.$i.birthday;
+		this.avatarId = this.$i.avatarId;
+		this.bannerId = this.$i.bannerId;
+		this.isBot = this.$i.isBot;
+		this.isCat = this.$i.isCat;
+		this.alwaysMarkNsfw = this.$i.alwaysMarkNsfw;
 
-		this.fieldName0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].name : null;
-		this.fieldValue0 = this.$store.state.i.fields[0] ? this.$store.state.i.fields[0].value : null;
-		this.fieldName1 = this.$store.state.i.fields[1] ? this.$store.state.i.fields[1].name : null;
-		this.fieldValue1 = this.$store.state.i.fields[1] ? this.$store.state.i.fields[1].value : null;
-		this.fieldName2 = this.$store.state.i.fields[2] ? this.$store.state.i.fields[2].name : null;
-		this.fieldValue2 = this.$store.state.i.fields[2] ? this.$store.state.i.fields[2].value : null;
-		this.fieldName3 = this.$store.state.i.fields[3] ? this.$store.state.i.fields[3].name : null;
-		this.fieldValue3 = this.$store.state.i.fields[3] ? this.$store.state.i.fields[3].value : null;
+		this.fieldName0 = this.$i.fields[0] ? this.$i.fields[0].name : null;
+		this.fieldValue0 = this.$i.fields[0] ? this.$i.fields[0].value : null;
+		this.fieldName1 = this.$i.fields[1] ? this.$i.fields[1].name : null;
+		this.fieldValue1 = this.$i.fields[1] ? this.$i.fields[1].value : null;
+		this.fieldName2 = this.$i.fields[2] ? this.$i.fields[2].name : null;
+		this.fieldValue2 = this.$i.fields[2] ? this.$i.fields[2].value : null;
+		this.fieldName3 = this.$i.fields[3] ? this.$i.fields[3].name : null;
+		this.fieldValue3 = this.$i.fields[3] ? this.$i.fields[3].value : null;
 	},
 
 	mounted() {
@@ -126,7 +126,7 @@ export default defineComponent({
 
 	methods: {
 		changeAvatar(e) {
-			selectFile(e.currentTarget || e.target, this.$t('avatar')).then(file => {
+			selectFile(e.currentTarget || e.target, this.$ts.avatar).then(file => {
 				os.api('i/update', {
 					avatarId: file.id,
 				});
@@ -134,7 +134,7 @@ export default defineComponent({
 		},
 
 		changeBanner(e) {
-			selectFile(e.currentTarget || e.target, this.$t('banner')).then(file => {
+			selectFile(e.currentTarget || e.target, this.$ts.banner).then(file => {
 				os.api('i/update', {
 					bannerId: file.id,
 				});
@@ -142,45 +142,45 @@ export default defineComponent({
 		},
 
 		async editMetadata() {
-			const { canceled, result } = await os.form(this.$t('_profile.metadata'), {
+			const { canceled, result } = await os.form(this.$ts._profile.metadata, {
 				fieldName0: {
 					type: 'string',
-					label: this.$t('_profile.metadataLabel') + ' 1',
+					label: this.$ts._profile.metadataLabel + ' 1',
 					default: this.fieldName0,
 				},
 				fieldValue0: {
 					type: 'string',
-					label: this.$t('_profile.metadataContent') + ' 1',
+					label: this.$ts._profile.metadataContent + ' 1',
 					default: this.fieldValue0,
 				},
 				fieldName1: {
 					type: 'string',
-					label: this.$t('_profile.metadataLabel') + ' 2',
+					label: this.$ts._profile.metadataLabel + ' 2',
 					default: this.fieldName1,
 				},
 				fieldValue1: {
 					type: 'string',
-					label: this.$t('_profile.metadataContent') + ' 2',
+					label: this.$ts._profile.metadataContent + ' 2',
 					default: this.fieldValue1,
 				},
 				fieldName2: {
 					type: 'string',
-					label: this.$t('_profile.metadataLabel') + ' 3',
+					label: this.$ts._profile.metadataLabel + ' 3',
 					default: this.fieldName2,
 				},
 				fieldValue2: {
 					type: 'string',
-					label: this.$t('_profile.metadataContent') + ' 3',
+					label: this.$ts._profile.metadataContent + ' 3',
 					default: this.fieldValue2,
 				},
 				fieldName3: {
 					type: 'string',
-					label: this.$t('_profile.metadataLabel') + ' 4',
+					label: this.$ts._profile.metadataLabel + ' 4',
 					default: this.fieldName3,
 				},
 				fieldValue3: {
 					type: 'string',
-					label: this.$t('_profile.metadataContent') + ' 4',
+					label: this.$ts._profile.metadataContent + ' 4',
 					default: this.fieldValue3,
 				},
 			});
@@ -227,10 +227,10 @@ export default defineComponent({
 				alwaysMarkNsfw: !!this.alwaysMarkNsfw,
 			}).then(i => {
 				this.saving = false;
-				this.$store.state.i.avatarId = i.avatarId;
-				this.$store.state.i.avatarUrl = i.avatarUrl;
-				this.$store.state.i.bannerId = i.bannerId;
-				this.$store.state.i.bannerUrl = i.bannerUrl;
+				this.$i.avatarId = i.avatarId;
+				this.$i.avatarUrl = i.avatarUrl;
+				this.$i.bannerId = i.bannerId;
+				this.$i.bannerUrl = i.bannerUrl;
 
 				if (notify) {
 					os.success();

@@ -19,7 +19,7 @@
 		infoFg: '@fg',
 		infoBg: '#333c3b',
 		header: ':alpha<0.7<@bg',
-		navBg: '#1f211f',
+		navBg: '#141714',
 		renote: '@accent',
 		mention: '@accent',
 		mentionMe: '#de6161',

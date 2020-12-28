@@ -1,10 +1,10 @@
 <template>
 <div class="mk-home" v-hotkey.global="keymap">
-	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $t('newNoteRecived') }}</button></div>
+	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
 	<div class="_section">
-		<XTutorial v-if="$store.state.settings.tutorial != -1" class="tutorial _content _vMargin"/>
-		<XPostForm v-if="$store.state.device.showFixedPostForm" class="post-form _panel _content _vMargin" fixed/>
+		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _content _vMargin"/>
+		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _panel _content _vMargin" fixed/>
 		<XTimeline ref="tl"
 			class="_content _vMargin"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
@@ -53,17 +53,17 @@ export default defineComponent({
 				const tabs = [{
 					id: 'home',
 					title: null,
-					tooltip: this.$t('_timelines.home'),
+					tooltip: this.$ts._timelines.home,
 					icon: faHome,
 					onClick: () => { this.src = 'home'; this.saveSrc(); },
 					selected: computed(() => this.src === 'home')
 				}];
 
-				if (!this.$store.state.instance.meta.disableLocalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
+				if (!this.$instance.disableLocalTimeline || this.$i.isModerator || this.$i.isAdmin) {
 					tabs.push({
 						id: 'local',
 						title: null,
-						tooltip: this.$t('_timelines.local'),
+						tooltip: this.$ts._timelines.local,
 						icon: faComments,
 						onClick: () => { this.src = 'local'; this.saveSrc(); },
 						selected: computed(() => this.src === 'local')
@@ -72,18 +72,18 @@ export default defineComponent({
 					tabs.push({
 						id: 'social',
 						title: null,
-						tooltip: this.$t('_timelines.social'),
+						tooltip: this.$ts._timelines.social,
 						icon: faShareAlt,
 						onClick: () => { this.src = 'social'; this.saveSrc(); },
 						selected: computed(() => this.src === 'social')
 					});
 				}
 
-				if (!this.$store.state.instance.meta.disableGlobalTimeline || this.$store.state.i.isModerator || this.$store.state.i.isAdmin) {
+				if (!this.$instance.disableGlobalTimeline || this.$i.isModerator || this.$i.isAdmin) {
 					tabs.push({
 						id: 'global',
 						title: null,
-						tooltip: this.$t('_timelines.global'),
+						tooltip: this.$ts._timelines.global,
 						icon: faGlobe,
 						onClick: () => { this.src = 'global'; this.saveSrc(); },
 						selected: computed(() => this.src === 'global')
@@ -95,7 +95,7 @@ export default defineComponent({
 					title: null,
 					icon: faEllipsisH,
 					onClick: this.choose,
-					indicate: computed(() => this.$store.state.i.hasUnreadAntenna || this.$store.state.i.hasUnreadChannel)
+					indicate: computed(() => this.$i.hasUnreadAntenna || this.$i.hasUnreadChannel)
 				});
 
 				return {
@@ -118,7 +118,7 @@ export default defineComponent({
 		},
 
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 	},
 
@@ -144,13 +144,13 @@ export default defineComponent({
 	},
 
 	created() {
-		this.src = this.$store.state.deviceUser.tl.src;
+		this.src = this.$store.state.tl.src;
 		if (this.src === 'list') {
-			this.list = this.$store.state.deviceUser.tl.arg;
+			this.list = this.$store.state.tl.arg;
 		} else if (this.src === 'antenna') {
-			this.antenna = this.$store.state.deviceUser.tl.arg;
+			this.antenna = this.$store.state.tl.arg;
 		} else if (this.src === 'channel') {
-			this.channel = this.$store.state.deviceUser.tl.arg;
+			this.channel = this.$store.state.tl.arg;
 		}
 	},
 
@@ -218,7 +218,7 @@ export default defineComponent({
 		},
 
 		saveSrc() {
-			this.$store.commit('deviceUser/setTl', {
+			this.$store.set('tl', {
 				src: this.src,
 				arg:
 					this.src === 'list' ? this.list :

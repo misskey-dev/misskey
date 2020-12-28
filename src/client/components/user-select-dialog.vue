@@ -7,11 +7,11 @@
 	@ok="ok()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $t('selectUser') }}</template>
+	<template #header>{{ $ts.selectUser }}</template>
 	<div class="tbhwbxda _section">
 		<div class="inputs">
-			<MkInput v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $t('username') }}</span><template #prefix>@</template></MkInput>
-			<MkInput v-model:value="host" class="input" @update:value="search"><span>{{ $t('host') }}</span><template #prefix>@</template></MkInput>
+			<MkInput v-model:value="username" class="input" @update:value="search" ref="username"><span>{{ $ts.username }}</span><template #prefix>@</template></MkInput>
+			<MkInput v-model:value="host" class="input" @update:value="search"><span>{{ $ts.host }}</span><template #prefix>@</template></MkInput>
 		</div>
 	</div>
 	<div class="tbhwbxda _section result" v-if="username != '' || host != ''" :class="{ hit: users.length > 0 }">
@@ -25,7 +25,7 @@
 			</div>
 		</div>
 		<div v-else class="empty">
-			<span>{{ $t('noUsers') }}</span>
+			<span>{{ $ts.noUsers }}</span>
 		</div>
 	</div>
 	<div class="tbhwbxda _section recent" v-if="username == '' && host == ''">
@@ -79,7 +79,7 @@ export default defineComponent({
 		});
 
 		this.recentUsers = await os.api('users/show', {
-			userIds: this.$store.state.device.recentlyUsedUsers
+			userIds: this.$store.state.recentlyUsedUsers
 		});
 	},
 
@@ -108,10 +108,10 @@ export default defineComponent({
 			this.$refs.dialog.close();
 
 			// 最近使ったユーザー更新
-			let recents = this.$store.state.device.recentlyUsedUsers;
+			let recents = this.$store.state.recentlyUsedUsers;
 			recents = recents.filter(x => x !== this.selected.id);
 			recents.unshift(this.selected.id);
-			this.$store.commit('device/set', { key: 'recentlyUsedUsers', value: recents.splice(0, 16) });
+			this.$store.set('recentlyUsedUsers', recents.splice(0, 16));
 		},
 
 		cancel() {

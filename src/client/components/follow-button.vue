@@ -6,23 +6,23 @@
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ $t('followRequestPending') }}</span><Fa :icon="faHourglassHalf"/>
+			<span v-if="full">{{ $ts.followRequestPending }}</span><Fa :icon="faHourglassHalf"/>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse/>
+			<span v-if="full">{{ $ts.processing }}</span><Fa :icon="faSpinner" pulse/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ $t('unfollow') }}</span><Fa :icon="faMinus"/>
+			<span v-if="full">{{ $ts.unfollow }}</span><Fa :icon="faMinus"/>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ $t('followRequest') }}</span><Fa :icon="faPlus"/>
+			<span v-if="full">{{ $ts.followRequest }}</span><Fa :icon="faPlus"/>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ $t('follow') }}</span><Fa :icon="faPlus"/>
+			<span v-if="full">{{ $ts.follow }}</span><Fa :icon="faPlus"/>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $t('processing') }}</span><Fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $ts.processing }}</span><Fa :icon="faSpinner" pulse fixed-width/>
 	</template>
 </button>
 </template>
