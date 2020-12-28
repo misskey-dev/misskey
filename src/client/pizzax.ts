@@ -109,6 +109,8 @@ export class Storage<T extends StateDef> {
 		const stop = watch(this.reactiveState[key], val => {
 			valueRef.value = val;
 		});
+
+		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
 		onUnmounted(() => {
 			stop();
 		});

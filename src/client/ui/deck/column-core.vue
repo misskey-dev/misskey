@@ -6,7 +6,6 @@
 <XTlColumn v-else-if="column.type === 'tl'" :column="column" :is-stacked="isStacked" @parent-focus="$emit('parent-focus', $event)"/>
 <XListColumn v-else-if="column.type === 'list'" :column="column" :is-stacked="isStacked" @parent-focus="$emit('parent-focus', $event)"/>
 <XAntennaColumn v-else-if="column.type === 'antenna'" :column="column" :is-stacked="isStacked" @parent-focus="$emit('parent-focus', $event)"/>
-<!-- TODO: <XTlColumn v-else-if="column.type === 'hashtag'" :column="column" :is-stacked="isStacked" @parent-focus="$emit('parent-focus', $event)"/> -->
 <XMentionsColumn v-else-if="column.type === 'mentions'" :column="column" :is-stacked="isStacked" @parent-focus="$emit('parent-focus', $event)"/>
 <XDirectColumn v-else-if="column.type === 'direct'" :column="column" :is-stacked="isStacked" @parent-focus="$emit('parent-focus', $event)"/>
 </template>
