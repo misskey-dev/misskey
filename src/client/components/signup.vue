@@ -39,7 +39,9 @@
 		<label v-if="meta.tosUrl" class="tou">
 			<input type="checkbox" v-model="ToSAgreement">
 			<I18n :src="$ts.agreeTo">
-				<a :href="meta.tosUrl" class="_link" target="_blank">{{ $ts.tos }}</a>
+				<template #0>
+					<a :href="meta.tosUrl" class="_link" target="_blank">{{ $ts.tos }}</a>
+				</template>
 			</I18n>
 		</label>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model:value="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
