@@ -754,12 +754,10 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
 
-"@types/ratelimiter@3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@types/ratelimiter/-/ratelimiter-3.4.0.tgz#e46c906a905f58aeecc92dccc16bb81687c5ec0c"
-  integrity sha512-r6ZXDiy8tDJPSxAnXV8d98jRCWYCNfA/NCIziDkQbzm4Rn0uJ8Nzm7194THpgmO9LX2YHN1n0iJGSpEt2t1BnQ==
-  dependencies:
-    "@types/redis" "*"
+"@types/ratelimiter@3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@types/ratelimiter/-/ratelimiter-3.4.1.tgz#d8fb65c47a5c5625d8d8b04592370932dc6c0d4a"
+  integrity sha512-dFrZRKbL0IxIxobQbxoSyQkHWmy8B80PmVSxJL6tlOdD5Q8LqRRpEQ/t7uRkGfufOJF8kVkzBjyPr6Jp5msBgg==
 
 "@types/readable-stream@^2.3.9":
   version "2.3.9"
@@ -769,7 +767,7 @@
     "@types/node" "*"
     safe-buffer "*"
 
-"@types/redis@*", "@types/redis@2.8.28":
+"@types/redis@2.8.28":
   version "2.8.28"
   resolved "https://registry.yarnpkg.com/@types/redis/-/redis-2.8.28.tgz#5862b2b64aa7f7cbc76dafd7e6f06992b52c55e3"
   integrity sha512-8l2gr2OQ969ypa7hFOeKqtFoY70XkHxISV0pAwmQ2nm6CSPb1brmTmqJCGGrekCo+pAZyWlNXr+Kvo6L/1wijA==
