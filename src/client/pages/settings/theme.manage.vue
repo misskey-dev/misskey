@@ -64,7 +64,7 @@ export default defineComponent({
 
 	computed: {
 		themes(): Theme[] {
-			return this.builtinThemes.concat(this.installedThemes.value);
+			return this.builtinThemes.concat(this.installedThemes);
 		},
 	
 		selectedTheme() {
