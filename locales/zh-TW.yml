@@ -964,9 +964,12 @@ _pages:
   url: "頁面網址"
   summary: "頁面摘要"
   alignCenter: "置中"
+  hideTitleWhenPinned: "被置頂於個人資料時隱藏頁面標題"
   font: "字型"
   fontSerif: "襯線體"
   fontSansSerif: "無襯線體"
+  eyeCatchingImageSet: "設定封面影像"
+  eyeCatchingImageRemove: "刪除封面影像"
   inputBlocks: "輸入"
   blocks:
     text: "文本"
