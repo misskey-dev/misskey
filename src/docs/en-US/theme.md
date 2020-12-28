@@ -48,20 +48,20 @@ Theme codes are saved as a JSON5 object of theme options. Themes are composed of
 #### Syntax for values
 * Hex colors
     * E.g.: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
+* RGB colors with `rgb(r, g, b)` syntax
     * E.g.: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
+* RGBA colors with `rgb(r, g, b)` syntax
     * E.g.: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
+* References to values of other keys
+    * If you write `@{key-name}` the value of the given key will be used.Replace `{key-name}` with the name of the key to reference.
     * E.g.: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
+* Constants (see below)
+    * If you write `${constant-name}` the value of the given constant will be used.Replace `{constant-name}` with the name of the constant to reference.
     * E.g.: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+* Functions (see below)
+    * `:{function-name}<{argument}<{color}`
 
-#### Constant
+#### Constants
 「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
 
 #### Functions
