@@ -1,4 +1,4 @@
-# タイムラインの比較
+# 不同時間軸之間的分別
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
