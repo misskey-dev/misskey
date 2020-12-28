@@ -31,15 +31,15 @@ html {
 	text-size-adjust: 100%;
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) var(--panel);
+		scrollbar-color: var(--scrollbarHandle) inherit;
 		scrollbar-width: thin;
 
 		&:hover {
-			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
+			scrollbar-color: var(--scrollbarHandleHover) inherit;
 		}
 
 		&:active {
-			scrollbar-color: var(--accent) var(--panel);
+			scrollbar-color: var(--accent) inherit;
 		}
 
 		&::-webkit-scrollbar {
@@ -48,7 +48,7 @@ html {
 		}
 
 		&::-webkit-scrollbar-track {
-			background: var(--panel);
+			background: inherit;
 		}
 
 		&::-webkit-scrollbar-thumb {
