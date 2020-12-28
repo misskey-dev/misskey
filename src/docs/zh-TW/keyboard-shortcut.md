@@ -4,7 +4,7 @@
 これらのショートカットは基本的にどこでも使えます。
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>快速鍵</th><th>効果</th><th>由来</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>新規投稿</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
@@ -19,7 +19,7 @@
 
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>快速鍵</th><th>効果</th><th>由来</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>上の投稿にフォーカスを移動</td><td>-</td></tr>
@@ -41,7 +41,7 @@
 
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>快速鍵</th><th>効果</th><th>由来</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
@@ -54,7 +54,7 @@
 デフォルトで「👍」にフォーカスが当たっている状態です。
 <table>
     <thead>
-        <tr><th>ショートカット</th><th>効果</th><th>由来</th></tr>
+        <tr><th>快速鍵</th><th>効果</th><th>由来</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd></td><td>上のリアクションにフォーカスを移動</td><td>-</td></tr>
