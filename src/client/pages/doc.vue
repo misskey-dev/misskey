@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import { url, lang } from '@/config';
@@ -40,9 +40,8 @@ export default defineComponent({
 		return {
 			INFO: computed(() => this.title ? {
 				title: this.title,
-				icon: faFileAlt,
+				icon: faQuestionCircle,
 			} : null),
-			faFileAlt,
 			title: null,
 			body: null,
 			markdown: null,
@@ -105,6 +104,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .qyqbqfal {
 	padding: 32px;
+	max-width: 800px;
+	margin: 0 auto;
 
 	&.max-width_500px {
 		padding: 16px;
@@ -114,8 +115,8 @@ export default defineComponent({
 		font-size: 1.5em;
 		font-weight: bold;
 		padding: 0 0 0.75em 0;
-		margin: 0 0 0.75em 0;
-		border-bottom: solid 1px var(--divider);
+		margin: 0 0 1em 0;
+		border-bottom: solid 2px var(--divider);
 	}
 
 	> .body {
@@ -147,6 +148,7 @@ export default defineComponent({
 		::v-deep(h2) {
 			font-size: 1.25em;
 			padding: 0 0 0.5em 0;
+			margin: 1.5em 0 1em 0;
 			border-bottom: solid 1px var(--divider);
 		}
 
@@ -173,15 +175,31 @@ export default defineComponent({
 		}
 
 		::v-deep(code) {
+			display: inline-block;
 			font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 			tab-size: 2;
+			background: #272822;
+			color: #f8f8f2;
+			border-radius: 6px;
+			padding: 4px 6px;
+		}
+
+		::v-deep(pre) {
+			background: #272822;
+			color: #f8f8f2;
+			border-radius: 6px;
+			padding: 12px 16px;
+
+			> code {
+				padding: 0;
+			}
 		}
 	}
 
 	> .footer {
 		padding: 1.5em 0 0 0;
 		margin: 1.5em 0 0 0;
-		border-top: solid 1px var(--divider);
+		border-top: solid 2px var(--divider);
 	}
 }
 </style>
