@@ -970,7 +970,13 @@ _pages:
   fontSansSerif: "無襯線體"
   eyeCatchingImageSet: "設定封面影像"
   eyeCatchingImageRemove: "刪除封面影像"
+  chooseBlock: "新增方塊"
+  selectType: "選擇類型"
+  enterVariableName: "請輸入變數名稱"
+  variableNameIsAlreadyUsed: "變數名稱已被佔用"
+  contentBlocks: "內容"
   inputBlocks: "輸入"
+  specialBlocks: "特殊"
   blocks:
     text: "文本"
     textarea: "文字區域"
