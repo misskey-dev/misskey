@@ -41,7 +41,7 @@
 		"@fortawesome/free-brands-svg-icons": "5.15.1",
 		"@fortawesome/free-regular-svg-icons": "5.15.1",
 		"@fortawesome/free-solid-svg-icons": "5.15.1",
-		"@fortawesome/vue-fontawesome": "3.0.0-2",
+		"@fortawesome/vue-fontawesome": "3.0.0-3",
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.0.1",
