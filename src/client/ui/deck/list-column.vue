@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: setList, title: $ts.selectList }" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<Fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -43,14 +43,6 @@ export default defineComponent({
 		mediaOnly() {
 			(this.$refs.timeline as any).reload();
 		}
-	},
-
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$ts.selectList,
-			action: this.setList
-		}];
 	},
 
 	mounted() {

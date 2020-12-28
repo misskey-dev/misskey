@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :naked="true" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: func, title: $ts.editWidgets }" :naked="true" :column="column" :is-stacked="isStacked">
 	<template #header><Fa :icon="faWindowMaximize" style="margin-right: 8px;"/>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
@@ -62,7 +62,6 @@ export default defineComponent({
 	data() {
 		return {
 			edit: false,
-			menu: null,
 			widgetAdderSelected: null,
 			widgets,
 			settings: {},
@@ -79,16 +78,6 @@ export default defineComponent({
 				setColumnWidgets(this.column.id, value);
 			}
 		}
-	},
-
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$ts.edit,
-			action: () => {
-				this.edit = !this.edit;
-			}
-		}];
 	},
 
 	methods: {
@@ -114,6 +103,10 @@ export default defineComponent({
 
 		saveWidget(id, data) {
 			updateColumnWidget(this.column.id, id, data);
+		},
+
+		func() {
+			this.edit = !this.edit;
 		}
 	}
 });

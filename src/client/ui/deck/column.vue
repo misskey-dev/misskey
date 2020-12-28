@@ -22,7 +22,7 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="!isMainColumn" class="menu _button" ref="menu" @click.stop="showMenu"><Fa :icon="faCaretDown"/></button>
+		<button v-if="func" class="menu _button" ref="menu" @click.stop="func.handler"><Fa :icon="func.icon || faCog"/></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt, faCog } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@/os';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store';
@@ -50,8 +50,8 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		menu: {
-			type: Array,
+		func: {
+			type: Object,
 			required: false,
 			default: null
 		},
@@ -74,7 +74,7 @@ export default defineComponent({
 			dragging: false,
 			draghover: false,
 			dropready: false,
-			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown,
+			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faCog,
 		};
 	},
 
@@ -196,21 +196,11 @@ export default defineComponent({
 				}
 			}];
 
-			if (this.menu) {
-				for (const i of this.menu.reverse()) {
-					items.unshift(i);
-				}
-			}
-
 			return items;
 		},
 
 		onContextmenu(e) {
 			os.contextMenu(this.getMenu(), e);
-		},
-
-		showMenu() {
-			os.modalMenu(this.getMenu(), this.$refs.menu);
 		},
 
 		goTop() {

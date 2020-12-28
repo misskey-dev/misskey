@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
+<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
 		<Fa v-if="column.tl === 'home'" :icon="faHome"/>
 		<Fa v-else-if="column.tl === 'local'" :icon="faComments"/>
@@ -46,7 +46,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			menu: null,
 			disabled: false,
 			indicated: false,
 			columnActive: true,
@@ -58,14 +57,6 @@ export default defineComponent({
 		mediaOnly() {
 			(this.$refs.timeline as any).reload();
 		}
-	},
-
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$ts.timeline,
-			action: this.setType
-		}];
 	},
 
 	mounted() {

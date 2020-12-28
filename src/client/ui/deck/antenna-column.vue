@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<Fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -43,14 +43,6 @@ export default defineComponent({
 		mediaOnly() {
 			(this.$refs.timeline as any).reload();
 		}
-	},
-
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$ts.selectAntenna,
-			action: this.setAntenna
-		}];
 	},
 
 	mounted() {
