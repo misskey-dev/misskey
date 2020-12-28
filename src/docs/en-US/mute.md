@@ -8,6 +8,6 @@ If you mute a user, the following contents related to that user will not be disp
 
 To mute a user, press the "Mute" button displayed on the user's profile page.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+Users muted by you will not be notified that they have been muted, and will also not know that they have been muted by you.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+You can confirm the list of users you have muted in the settings by going to Settings > Mute / Block
