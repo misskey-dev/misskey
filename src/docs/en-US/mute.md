@@ -1,12 +1,12 @@
 # Mute
 
-ユーザーをミュートすると、そのユーザーに関する次のコンテンツがMisskeyに表示されなくなります:
+If you mute a user, the following contents related to that user will not be displayed by Misskey anymore:
 
-* タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
-* そのユーザーからの通知
-* メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
+* Posts of that user on the timeline or in the search results (including Renotes or replies to related to these posts)
+* Notifications from that user
+* Chat history with that user in the chat history list
 
-ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
+To mute a user, press the "Mute" button displayed on the user's profile page.
 
 ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
 
