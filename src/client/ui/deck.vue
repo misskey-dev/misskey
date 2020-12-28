@@ -104,10 +104,6 @@ export default defineComponent({
 			this.$refs.nav.show();
 		},
 
-		help() {
-			this.$router.push('/docs/keyboard-shortcut');
-		},
-
 		post() {
 			os.post();
 		},

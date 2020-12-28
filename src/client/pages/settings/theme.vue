@@ -21,9 +21,9 @@
 
 	<FormGroup>
 		<div class="rfqxtzch _formItem _formPanel">
-			<div class="darkMode" :class="{ disabled: syncDeviceDarkMode }">
+			<div class="darkMode">
 				<div class="toggleWrapper">
-					<input type="checkbox" class="dn" id="dn" v-model="darkMode" :disabled="syncDeviceDarkMode"/>
+					<input type="checkbox" class="dn" id="dn" v-model="darkMode"/>
 					<label for="dn" class="toggle">
 						<span class="before">{{ $ts.light }}</span>
 						<span class="after">{{ $ts.dark }}</span>
@@ -99,7 +99,7 @@ export default defineComponent({
 		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
 		const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 		const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
-		const darkMode = defaultStore.reactiveState.darkMode;
+		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 		const wallpaper = ref(localStorage.getItem('wallpaper'));
 

@@ -316,8 +316,15 @@ export default defineComponent({
 	}
 
 	&.paged {
-		> div {
-			background: var(--bg);
+		background: var(--bg) !important;
+		
+		> header {
+			background: transparent;
+			box-shadow: none;
+
+			> button {
+				color: var(--fg);
+			}
 		}
 	}
 

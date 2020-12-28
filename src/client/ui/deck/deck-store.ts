@@ -1,3 +1,4 @@
+import { i18n } from '@/i18n';
 import { markRaw } from 'vue';
 import { Storage } from '../../pizzax';
 
@@ -22,11 +23,21 @@ function copy<T>(x: T): T {
 export const deckStore = markRaw(new Storage('deck', {
 	columns: {
 		where: 'deviceAccount',
-		default: [] as Column[]
+		default: [{
+			id: 'a',
+			type: 'main',
+			name: i18n.locale._deck._columns.main,
+			width: 350,
+		}, {
+			id: 'b',
+			type: 'notifications',
+			name: i18n.locale._deck._columns.notifications,
+			width: 330,
+		}] as Column[]
 	},
 	layout: {
 		where: 'deviceAccount',
-		default: [] as Column['id'][][]
+		default: [['a'], ['b']] as Column['id'][][]
 	},
 	columnAlign: {
 		where: 'deviceAccount',
