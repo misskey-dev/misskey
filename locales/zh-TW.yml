@@ -828,7 +828,7 @@ _instanceCharts:
   requests: "請求"
   users: "使用者増減"
   usersTotal: "總計使用者"
-  notes: "貼文増減"
+  notes: "箋文増減"
   notesTotal: "累計貼文"
   ff: "追隨/追隨者的増減"
   ffTotal: "追隨/追隨者累計"
