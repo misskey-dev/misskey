@@ -1,8 +1,8 @@
 # Theme
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+You can change the appearance of the Misskey client by setting a theme.
 
-## テーマの設定
+## Theme settings
 設定 > テーマ
 
 ## テーマを作成する
