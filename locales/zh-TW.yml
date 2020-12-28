@@ -578,10 +578,12 @@ driveFilesCount: "雲端硬碟檔案數量"
 driveUsage: "雲端硬碟使用量"
 noCrawleDescription: "請求網路搜尋引擎不要索引你的個人資料頁、箋文及頁面等。"
 lockedAccountInfo: "即使你通過了追隨者請求，除非你將筆記的公開範圍設定為 「追隨者」，否則任何人都能看見你的箋文。"
+noteFavoritesCount: "收藏箋文的數目"
 contact: "聯絡人"
 clips: "標籤"
 experimentalFeatures: "測試中的功能"
 developer: "開發者"
+showGapBetweenNotesInTimeline: "分開顯示時間線上的箋文。"
 _aboutMisskey:
   about: "Misskey是由syuilo於2014年開發的開源軟件。"
   contributors: "主要貢獻者"
@@ -632,6 +634,7 @@ _sidebar:
   hide: "隱藏"
 _wordMute:
   muteWords: "加入靜音文字"
+  softDescription: "隱藏時間軸中指定條件的箋文。"
   mutedNotes: "已靜音的貼文"
 _theme:
   constant: "常數"
