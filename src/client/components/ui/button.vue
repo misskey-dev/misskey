@@ -123,7 +123,7 @@ export default defineComponent({
 	box-shadow: none;
 	text-decoration: none;
 	background: var(--buttonBg);
-	border-radius: 6px;
+	border-radius: 8px;
 	overflow: hidden;
 
 	&:not(:disabled):hover {
