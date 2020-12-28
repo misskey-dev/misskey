@@ -61,12 +61,12 @@
 import { defineComponent } from 'vue';
 import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import noteSummary from '../../misc/get-note-summary';
+import { getNoteSummary } from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
-import { locale } from '../i18n';
+import { i18n } from '@/i18n';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -91,7 +91,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			getNoteSummary: (text: string) => noteSummary(text, locale),
+			getNoteSummary: (text: string) => getNoteSummary(text, i18n.locale),
 			followRequestDone: false,
 			groupInviteDone: false,
 			connection: null,

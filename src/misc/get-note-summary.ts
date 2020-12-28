@@ -2,7 +2,7 @@
  * 投稿を表す文字列を取得します。
  * @param {*} note (packされた)投稿
  */
-const summarize = (note: any, locale: any): string => {
+export const getNoteSummary = (note: any, locale: any): string => {
 	if (note.deletedAt) {
 		return `(${locale['deletedNote']})`;
 	}
@@ -50,5 +50,3 @@ const summarize = (note: any, locale: any): string => {
 
 	return summary.trim();
 };
-
-export default summarize;

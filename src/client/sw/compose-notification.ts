@@ -1,4 +1,4 @@
-import getNoteSummary from '../../misc/get-note-summary';
+import { getNoteSummary } from '../../misc/get-note-summary';
 import getUserName from '../../misc/get-user-name';
 import { i18n } from '@/sw/i18n';
 

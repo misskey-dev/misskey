@@ -19,7 +19,7 @@ import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips } from '../../models';
 import parseAcct from '../../misc/acct/parse';
-import getNoteSummary from '../../misc/get-note-summary';
+import { getNoteSummary } from '../../misc/get-note-summary';
 import { ensure } from '../../prelude/ensure';
 import { getConnection } from 'typeorm';
 import redis from '../../db/redis';
