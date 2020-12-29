@@ -11,16 +11,16 @@ Plugin name
 Plugin author
 
 ### version
-プラグインバージョン。数値を指定してください。
+Plugin version.Please enter a number.
 
 ### description
 Plugin description
 
 ### permissions
-Permissions required by the plugin.MisskeyAPIにリクエストする際に用いられます。
+Permissions required by the plugin.Used when making requests to the Misskey API.
 
 ### config
-プラグインの設定情報を表すオブジェクト。 キーに設定名、値に以下のプロパティを含めます。
+An object representing the plugin's settings. Set the keys to setting names and the values to one of the below properties.
 
 #### type
 A string representing the setting's value type.Selected from one of the below types. string number boolean
@@ -47,10 +47,10 @@ AiScript標準で組み込まれているAPIは掲載しません。
 Misskey APIにリクエストします。第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
 
 ### Mk:save(key value)
-任意の値に任意の名前を付けて永続化します。永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
+Persistently save any value under a given key.永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
 
 ### Mk:load(key)
-Mk:saveで永続化した指定の名前の値を読み取ります。
+Reads the value of the given key that was previously saved with Mk:save.
 
 ### Plugin:register_post_form_action(title fn)
 投稿フォームにアクションを追加します。第一引数にアクション名、第二引数にアクションが選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に投稿フォームオブジェクトが渡されます。
@@ -68,7 +68,7 @@ UIに表示されるノート情報を書き換えます。 コールバック�
 ノート投稿時にノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
 
 ### Plugin:open_url(url)
-第一引数に渡されたURLをブラウザの新しいタブで開きます。
+Opens the URL given as first argument in a new browser tab.
 
 ### Plugin:config
-プラグインの設定が格納されるオブジェクト。プラグイン定義のconfigで設定したキーで値が入ります。
+An object containing the plugin settings.The values entered in the plugin definition are saved under the setting keys.
