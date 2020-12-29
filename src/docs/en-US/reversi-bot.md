@@ -54,7 +54,7 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ## Map information
-マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
+Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a piece. Based on this data, you can reconstruct the map state:
 * `(Space)` ... No piece
 * `-` ... Piece
 * `b` ... Piece placed first was black
@@ -79,7 +79,7 @@ In this case, the map data look like this:
 ```
 
 ## Creating an interactive bot showing a form to the user
-ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
+To communicate with the user, you can show them a form in the settings screen. For example, to let the user select the strength of the Bot.
 
 To display a form, send the following message to the `reversi-game` stream:
 ```javascript
@@ -100,8 +100,8 @@ From here on, the structure of form control elements will be explained. Form con
 ```
 `id` ... The ID of the control element. `type` ... The type of the control element.Explained later. `label` ... Text displayed alongside the control element. `value` ... Default value of the control element.
 
-### フォームの操作を受け取る
-ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
+### Handling form interactions
+When the user interacts with the form, an `update-form` event is emitted. Included in this event is the control element's ID as well as the value of the setting the user changed. For example, if the user flipped the switch from above to on, the following event would be emitted:
 ```javascript
 {
   id: 'switch1',
@@ -109,7 +109,7 @@ From here on, the structure of form control elements will be explained. Form con
 }
 ```
 
-### Type of form control
+### Types of form control elements
 #### Switch
 type: `switch` Shows a slider.These can be helpful for functions that can be turned either on or off.
 
@@ -144,7 +144,7 @@ type: `slider` Shows a slider.
 type: `textbox` Shows a textbox.These can be used for all general purposes which require user input.
 
 ## Showing a message to a user
-設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
+This is another way to interact with the user from the settings screen, separate from showing them a form.It's possible to display a message to the user. For example, when the user selects a map that the bot does not support, a warning can be displayed. To display a message, send the following message to the stream:
 ```javascript
 {
   type: 'message',
