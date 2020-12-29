@@ -1,12 +1,12 @@
-# Theme
+# Themes
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+You can change the appearance of the Misskey client by setting a theme.
 
-## テーマの設定
-設定 > テーマ
+## Theme settings
+Settings > Themes
 
-## テーマを作成する
-テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
+## Creating a theme
+Theme codes are saved as a JSON5 object of theme options. Themes are composed of the following options.
 ``` js
 {
     id: '17587283-dd92-4a2c-a22c-be0637c9e22a',
@@ -33,36 +33,36 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
-* `desc` ... テーマの説明(オプション)
-* `base` ... 明るいテーマか、暗いテーマか
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
-* `props` ... テーマのスタイル定義。これから説明します。
+* `id` ... A unique theme ID.Using an UUID is recommended.
+* `name` ... The name of the theme
+* `author` ... The creator of the theme
+* `desc` ... A description of the theme (optional)
+* `base` ... Whether the theme is based on a light or dark theme
+    * If you set it to `light` the theme will be listed as a light mode theme, if you set it to `dark` it will be listed as a dark mode theme.
+    * The theme will be inheriting the default values of the theme specified here.
+* `props` ... The style definitions of the theme.These will be explained in the following.
 
-### テーマのスタイル定義
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+### Theme style definitions
+Define the style of the theme within `props`. The keys will become CSS variables, and the value specifies the content. In addition, the default `props` options are inherited from the base theme. If this theme's `base` is `light`, they will be copied from [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5), if it is `dark` they will be copied from [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5). In other words, if there is for example no `panel` key contained in `props`, then the value of `panel` from the base theme will be used.
 
-#### バリューで使える構文
-* 16進数で表された色
-    * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
-    * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
-    * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
-    * 例: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
-    * 例: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+#### Syntax for values
+* Hex colors
+    * E.g.: `#00ff00`
+* RGB colors with `rgb(r, g, b)` syntax
+    * E.g.: `rgb(0, 255, 0)`
+* RGBA colors with `rgb(r, g, b)` syntax
+    * E.g.: `rgba(0, 255, 0, 0.5)`
+* References to values of other keys
+    * If you write `@{key-name}` the value of the given key will be used.Replace `{key-name}` with the name of the key to reference.
+    * E.g.: `@panel`
+* Constants (see below)
+    * If you write `${constant-name}` the value of the given constant will be used.Replace `{constant-name}` with the name of the constant to reference.
+    * E.g.: `$main`
+* Functions (see below)
+    * `:{function-name}<{argument}<{color}`
 
-#### Constant
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+#### Constants
+In cases where you have a value that you don't want to output as a CSS variable, but want to use it as the value of another CSS variable, you can use a constant. If you prefix the name of a key with a `$`, it will be not be used as a CSS variable, but a referenced value.
 
 #### Functions
 wip
