@@ -35,28 +35,28 @@ Description of the setting
 Default value of the setting
 
 ## API Reference
-AiScript標準で組み込まれているAPIは掲載しません。
+API built into AiScript is not listed.
 
 ### Mk:dialog(title text type)
-ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
+Display a dialog.You can select one of the below types. info success warn error question If no type is selected, "info" is chosen by default.
 
 ### Mk:confirm(title text type)
-確認ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると question になります。 ユーザーが"OK"を選択した場合は true を、"キャンセル"を選択した場合は false が返ります。
+Display a confirmation dialog.You can select one of the below types. info success warn error question If no type is selected, "question" is chosen by default. If the user presses "OK" true will be returned, if they press "Cancel" false will be returned.
 
 ### Mk:api(endpoint params)
-Misskey APIにリクエストします。第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
+Sends a request to the Misskey API.Specify the endpoint name as the first parameter and the request parameters as the second argument.
 
 ### Mk:save(key value)
-Persistently save any value under a given key.永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
+Persistently saves any given value under a given key.The saved value will remain even after the AiScript context ends and can be loaded with Mk:load.
 
 ### Mk:load(key)
 Reads the value of the given key that was previously saved with Mk:save.
 
 ### Plugin:register_post_form_action(title fn)
-投稿フォームにアクションを追加します。第一引数にアクション名、第二引数にアクションが選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に投稿フォームオブジェクトが渡されます。
+Add an action to the post form.Enter an action name as the first parameter, and a callback function for when the action is executed as second parameter. A post form object is passed to the callback function as first argument.
 
 ### Plugin:register_note_action(title fn)
-ノートメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
+Add an item to the note menu.第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
 
 ### Plugin:register_user_action(title fn)
 ユーザーメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のユーザーオブジェクトが渡されます。
