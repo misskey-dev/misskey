@@ -8,9 +8,9 @@
 		<div class="tabs _panel _vMargin">
 			<div class="left">
 				<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
-				<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local"><Fa :icon="faComments"/></button>
-				<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social"><Fa :icon="faShareAlt"/></button>
-				<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global"><Fa :icon="faGlobe"/></button>
+				<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>
+				<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social" v-if="isLocalTimelineAvailable"><Fa :icon="faShareAlt"/></button>
+				<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global" v-if="isGlobalTimelineAvailable"><Fa :icon="faGlobe"/></button>
 			</div>
 			<div class="right">
 				<button class="_button tab" @click="chooseChannel" :class="{ active: src === 'channel' }" v-tooltip="$ts.channel"><Fa :icon="faSatelliteDish"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadChannel"/></button>
@@ -84,8 +84,12 @@ export default defineComponent({
 			};
 		},
 
-		meta() {
-			return this.$instance;
+		isLocalTimelineAvailable(): boolean {
+			return !this.$instance.disableLocalTimeline || this.$i.isModerator || this.$i.isAdmin;
+		},
+
+		isGlobalTimelineAvailable(): boolean {
+			return !this.$instance.disableGlobalTimeline || this.$i.isModerator || this.$i.isAdmin;
 		},
 	},
 
