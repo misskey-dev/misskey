@@ -11,18 +11,18 @@ APIを使い始めるには、まずアクセストークンを取得する必�
 * 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
 
 ### 自分自身のアクセストークンを手動発行する
-「設定 > API」で、自分のアクセストークンを発行できます。
+You can create an access token in Settings > API
 
-[Proceed onto using the API.](#APIの使い方)
+[Proceed to using the API.](#APIの使い方)
 
 ### アプリケーション利用者にアクセストークンの発行をリクエストする
 アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
 
 #### Step 1
 
-Generate a UUID.以後これをセッションIDと呼びます。
+Generate a UUID.We will call it the session ID from here on.
 
-> このセッションIDは毎回生成し、使いまわさないようにしてください。
+> The same session ID should not be used for multiple plugins, so please generate a new UUID for each plugin.
 
 #### Step 2
 
@@ -31,14 +31,14 @@ Generate a UUID.以後これをセッションIDと呼びます。
 
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
 * `name` ... アプリケーション名
-    * > 例: `MissDeck`
+    * > E.g.: `MissDeck`
 * `icon` ... アプリケーションのアイコン画像URL
-    * > 例: `https://missdeck.example.com/icon.png`
+    * > E.g.: `https://missdeck.example.com/icon.png`
 * `callback` ... 認証が終わった後にリダイレクトするURL
-    * > 例: `https://missdeck.example.com/callback`
+    * > E.g.: `https://missdeck.example.com/callback`
     * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
 * `permission` ... アプリケーションが要求する権限
-    * > 例: `write:notes,write:following,read:drive`
+    * > E.g.: `write:notes,write:following,read:drive`
     * 要求する権限を`,`で区切って列挙します
     * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
 
@@ -49,7 +49,7 @@ Generate a UUID.以後これをセッションIDと呼びます。
 * `token` ... ユーザーのアクセストークン
 * `user` ... ユーザーの情報
 
-[Proceed onto using the API.](#APIの使い方)
+[Proceed to using the API.](#APIの使い方)
 
 ## Using the API
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
