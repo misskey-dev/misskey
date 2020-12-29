@@ -357,12 +357,6 @@ export default defineComponent({
 			top: 0;
 			left: 0;
 			z-index: 1001;
-
-			> div {
-				> .notifications {
-					display: none;
-				}
-			}
 		}
 
 		&:not(.hidden) {
