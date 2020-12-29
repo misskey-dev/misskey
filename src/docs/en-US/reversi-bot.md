@@ -27,7 +27,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
     * Contains the position as `pos`
 
 ## Calculating positions
-8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
+In the case of an 8x8 map, the squares on the board are arranged like this (squares are marked with their respective index):
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -55,12 +55,12 @@ y = Math.floor(pos / mapWidth)
 
 ## Map information
 マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
-* `(スペース)` ... マス無し
+* `(Space)` ... No piece
 * `-` ... マス
-* `b` ... 初期配置される黒石
-* `w` ... 初期配置される白石
+* `b` ... Piece placed first was black
+* `w` ... Piece placed first was white
 
-例えば、4*4の次のような単純なマップがあるとします:
+For example, suppose a situation with the following 4*4 board:
 ```text
 +---+---+---+---+
 |   |   |   |   |
@@ -73,12 +73,12 @@ y = Math.floor(pos / mapWidth)
 +---+---+---+---+
 ```
 
-この場合、マップデータはこのようになります:
+In this case, the map data look like this:
 ```javascript
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## ユーザーにフォームを提示して対話可能Botを作成する
+## Creating an interactive bot showing a form to the user
 ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
 
 To display a form, send the following message to the `reversi-game` stream:
@@ -89,7 +89,7 @@ To display a form, send the following message to the `reversi-game` stream:
 }
 ```
 
-フォームコントロールの配列については今から説明します。 フォームコントロールは、次のようなオブジェクトです:
+From here on, the structure of form control elements will be explained. Form controls are objects arranged as follows:
 ```javascript
 {
   id: 'switch1',
@@ -98,7 +98,7 @@ To display a form, send the following message to the `reversi-game` stream:
   value: false
 }
 ```
-`id` ... コントロールのID。 `type` ... コントロールの種類。後述します。 `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... The ID of the control element. `type` ... The type of the control element.Explained later. `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
 
 ### フォームの操作を受け取る
 ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
