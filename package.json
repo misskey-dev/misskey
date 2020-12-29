@@ -204,7 +204,7 @@
 		"qrcode": "1.4.4",
 		"random-seed": "0.3.0",
 		"ratelimiter": "3.4.1",
-		"re2": "1.15.8",
+		"re2": "1.15.9",
 		"recaptcha-promise": "1.0.0",
 		"reconnecting-websocket": "4.4.0",
 		"redis": "3.0.2",
