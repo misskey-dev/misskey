@@ -1,5 +1,5 @@
 # Creating plugins
-Misskey Webクライアントのプラグイン機能を使うと、クライアントを拡張し、様々な機能を追加できます。 ここではプラグインの作成にあたってのメタデータ定義や、AiScript APIリファレンスを掲載します。
+If you use the plugin function of the Misskey web client, you can expand the web client with a variety of different functionality. This page will list plugin metadata definitions as well as an AiScript API reference.
 
 ## Metadata
 Plugins must define default plugin metadata via the AiScript metadata format. Metadata is an object containing the following properties:
