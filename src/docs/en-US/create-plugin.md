@@ -1,4 +1,4 @@
-# プラグインの作成
+# Creating plugins
 Misskey Webクライアントのプラグイン機能を使うと、クライアントを拡張し、様々な機能を追加できます。 ここではプラグインの作成にあたってのメタデータ定義や、AiScript APIリファレンスを掲載します。
 
 ## Metadata
@@ -34,7 +34,7 @@ Misskey Webクライアントのプラグイン機能を使うと、クライア
 #### default
 設定のデフォルト値
 
-## APIリファレンス
+## API Reference
 AiScript標準で組み込まれているAPIは掲載しません。
 
 ### Mk:dialog(title text type)
