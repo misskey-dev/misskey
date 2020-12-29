@@ -1,5 +1,5 @@
 # Development of Misskey Reversi Bots
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+This page will explain how to develop an interactive bot for Misskey's Reversi function.
 
 1. Connect to the `games/reversi` stream with the following parameters:
     * `i`: API key of the bot account
@@ -7,7 +7,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
     * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. Send a request to `games/reversi/match` including the `id` of the `parent` as `user_id`
 
 4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
     * `i`: API key of the bot account
@@ -17,14 +17,14 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 
 6. 設定に満足したら、`{ type: 'accept' }`メッセージをストリームに送信する
 
-7. ゲームが開始すると、`started`イベントが流れてくる
-    * イベントの中身にはゲーム情報が含まれている
+7. When the game starts, a `started` event is emitted.
+    * Information about the game's state is included in this event
 
-8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
+8. To place a stone, send `{ type: 'set', pos: <位置> }` to the stream (how to calculate positions will be explained later).
 
-9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
-    * Contains the stone color as `color`
-    * Contains the position as `pos`
+9. When the opponent or you place a stone, the `set` event is emitted.
+    * Contains the color of the placed stone as `color`
+    * Contains the position the stone was placed at as `pos`
 
 ## Calculating positions
 In the case of an 8x8 map, the squares on the board are arranged like this (squares are marked with their respective index):
@@ -56,7 +56,7 @@ y = Math.floor(pos / mapWidth)
 ## Map information
 マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
 * `(Space)` ... No piece
-* `-` ... マス
+* `-` ... Piece
 * `b` ... Piece placed first was black
 * `w` ... Piece placed first was white
 
@@ -98,7 +98,7 @@ From here on, the structure of form control elements will be explained. Form con
   value: false
 }
 ```
-`id` ... The ID of the control element. `type` ... The type of the control element.Explained later. `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... The ID of the control element. `type` ... The type of the control element.Explained later. `label` ... Text displayed alongside the control element. `value` ... Default value of the control element.
 
 ### フォームの操作を受け取る
 ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
@@ -111,16 +111,16 @@ From here on, the structure of form control elements will be explained. Form con
 
 ### Type of form control
 #### Switch
-type: `switch` Shows a slider.何かの機能をオン/オフさせたい場合に有用です。
+type: `switch` Shows a slider.These can be helpful for functions that can be turned either on or off.
 
 ##### Properties
 `label` ... The text written on the switch.
 
 #### Radio button
-type: `radio` Shows a radio button.選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+type: `radio` Shows a radio button.These can be useful for choices.For example to choose the strength of the Bot.
 
 ##### Properties
-`items` ... ラジオボタンの選択肢。例:
+`items` ... The options of the radio button.E.g.:
 ```javascript
 items: [{
   label: 'Weak',
