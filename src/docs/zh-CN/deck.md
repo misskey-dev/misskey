@@ -14,5 +14,5 @@
 ## 列的设置
 选择列菜单的「编辑」时，可编辑当前列的设置。您可以重新命名列，或是改变列的宽度。
 
-## デッキの設定
-デッキに関する設定は、[settings/deck](/settings/deck)で行えます。
+## Deck的设置
+您可以在[settings/deck](/settings/deck)行中配置您Deck相关的设置。
