@@ -109,17 +109,17 @@ y = Math.floor(pos / mapWidth)
 }
 ```
 
-### フォームコントロールの種類
+### Type of form control
 #### Switch
-type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
+type: `switch` Shows a slider.何かの機能をオン/オフさせたい場合に有用です。
 
-##### プロパティ
-`label` ... スイッチに表記するテキスト。
+##### Properties
+`label` ... The text written on the switch.
 
-#### ラジオボタン
-type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+#### Radio button
+type: `radio` Shows a radio button.選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
 
-##### プロパティ
+##### Properties
 `items` ... ラジオボタンの選択肢。例:
 ```javascript
 items: [{
@@ -134,16 +134,16 @@ items: [{
 }]
 ```
 
-#### スライダー
-type: `slider` スライダーを表示します。
+#### Slider
+type: `slider` Shows a slider.
 
-##### プロパティ
-`min` ... スライダーの下限。 `max` ... スライダーの上限。 `step` ... 入力欄で刻むステップ値。
+##### Properties
+`min` ... The minimum value of the slider. `max` ... The maximum value of the slider. `step` ... The step between each value on the slider.
 
-#### テキストボックス
-type: `textbox` テキストボックスを表示します。ユーザーになにか入力させる一般的な用途に利用できます。
+#### Textbox
+type: `textbox` Shows a textbox.ユーザーになにか入力させる一般的な用途に利用できます。
 
-## ユーザーにメッセージを表示する
+## Showing a message to a user
 設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
 ```javascript
 {
@@ -154,7 +154,7 @@ type: `textbox` テキストボックスを表示します。ユーザーにな�
   }
 }
 ```
-メッセージの種類: `success`, `info`, `warning`, `error`。
+Message types: `success`, `info`, `warning`, `error`。
 
-## 投了する
-投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
+## Give up
+To give up, send a request to <a href="./api/endpoints/games/reversi/games/surrender">this endpoint</a>.
