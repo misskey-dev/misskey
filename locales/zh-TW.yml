@@ -639,6 +639,7 @@ _nsfw:
   ignore: "不隱藏NSFW內容"
   force: "隱藏所有內容"
 _mfm:
+  cheatSheet: "MFM代碼小抄"
   mention: "提及"
   hashtag: "#tag"
   url: "URL"
