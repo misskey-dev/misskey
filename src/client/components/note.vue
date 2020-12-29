@@ -36,7 +36,7 @@
 			<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
 		</div>
 	</div>
-	<article class="article" @contextmenu="onContextmenu">
+	<article class="article" @contextmenu.prevent.stop="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
