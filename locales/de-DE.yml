@@ -1481,7 +1481,7 @@ _deck:
   swapRight: "Nach rechts verschieben"
   swapUp: "Nach oben verschieben"
   swapDown: "Nach unten verschieben"
-  stackLeft: "Nach links stapeln"
+  stackLeft: "Auf linke Spalte stapeln"
   popRight: "Nach rechts vom Stapel nehmen"
   _columns:
     main: "Hauptspalte"
