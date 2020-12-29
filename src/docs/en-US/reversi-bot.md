@@ -1,8 +1,8 @@
-# MisskeyリバーシBotの開発
+# Development of Misskey Reversi Bots
 Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+1. Connect to the `games/reversi` stream with the following parameters:
+    * `i`: API key of the bot account
 
 2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
     * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
@@ -10,8 +10,8 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
 
 4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
-    * `game`: `game`の`id`
+    * `i`: API key of the bot account
+    * `game`: The `id` of the `game`
 
 5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
 
@@ -23,10 +23,10 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
 
 9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
-    * `color`として石の色が含まれている
-    * `pos`として位置情報が含まれている
+    * Contains the stone color as `color`
+    * Contains the position as `pos`
 
-## 位置の計算法
+## Calculating positions
 8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
 ```
 +--+--+--+--+--+--+--+--+
@@ -38,22 +38,22 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 ...
 ```
 
-### X,Y座標 から インデックス に変換する
+### Find indices from X, Y coordinates
 ```
 pos = x + (y * mapWidth)
 ```
-`mapWidth`は、ゲーム情報の`map`から、次のようにして計算できます:
+`mapWidth` can be acquired from the `map` information as follows:
 ```
 mapWidth = map[0].length
 ```
 
-### インデックス から X,Y座標 に変換する
+### Find X, Y coordinates from indices
 ```
 x = pos % mapWidth
 y = Math.floor(pos / mapWidth)
 ```
 
-## マップ情報
+## Map information
 マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
 * `(スペース)` ... マス無し
 * `-` ... マス
@@ -81,11 +81,11 @@ y = Math.floor(pos / mapWidth)
 ## ユーザーにフォームを提示して対話可能Botを作成する
 ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
 
-フォームを提示するには、`reversi-game`ストリームに次のメッセージを送信します:
+To display a form, send the following message to the `reversi-game` stream:
 ```javascript
 {
   type: 'init-form',
-  body: [フォームコントロールの配列]
+  body: [Array of form control fields]
 }
 ```
 
@@ -123,13 +123,13 @@ type: `radio` Shows a radio button.選択肢を提示するのに有用です。
 `items` ... ラジオボタンの選択肢。例:
 ```javascript
 items: [{
-  label: '弱',
+  label: 'Weak',
   value: 1
 }, {
-  label: '中',
+  label: 'Moderate',
   value: 2
 }, {
-  label: '強',
+  label: 'Strong',
   value: 3
 }]
 ```
@@ -141,7 +141,7 @@ type: `slider` Shows a slider.
 `min` ... The minimum value of the slider. `max` ... The maximum value of the slider. `step` ... The step between each value on the slider.
 
 #### Textbox
-type: `textbox` Shows a textbox.ユーザーになにか入力させる一般的な用途に利用できます。
+type: `textbox` Shows a textbox.These can be used for all general purposes which require user input.
 
 ## Showing a message to a user
 設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
@@ -149,8 +149,8 @@ type: `textbox` Shows a textbox.ユーザーになにか入力させる一般的
 {
   type: 'message',
   body: {
-    text: 'メッセージ内容',
-    type: 'メッセージの種類'
+    text: 'Message contents',
+    type: 'Message type'
   }
 }
 ```
