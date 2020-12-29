@@ -1481,7 +1481,7 @@ _deck:
   swapRight: "Swap to right"
   swapUp: "Swap with above"
   swapDown: "Swap with below"
-  stackLeft: "Stack on the left"
+  stackLeft: "Stack on left column"
   popRight: "Pop to the right"
   _columns:
     main: "Main"
