@@ -114,7 +114,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wtdtxvec {
-	padding-top: 1px; // ウィジェットのbox-shadowを利用した1px borderを隠さないようにするため
+	._panel {
+		box-shadow: none;
+	}
 
 	> header {
 		padding: 16px;

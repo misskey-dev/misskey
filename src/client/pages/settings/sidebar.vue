@@ -90,12 +90,25 @@ export default defineComponent({
 
 		save() {
 			this.$store.set('menu', this.splited);
+			this.reloadAsk();
 		},
 
 		reset() {
 			this.$store.reset('menu');
 			this.items = this.$store.state.menu.join('\n');
+			this.reloadAsk();
 		},
+
+		async reloadAsk() {
+			const { canceled } = await os.dialog({
+				type: 'info',
+				text: this.$ts.reloadToApplySetting,
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			location.reload();
+		}
 	},
 });
 </script>

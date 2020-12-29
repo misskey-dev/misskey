@@ -2,8 +2,8 @@
 <div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<div class="contents" ref="contents">
-		<header class="header" ref="header" @contextmenu.prevent.stop="onContextmenu" @click="onHeaderClick">
+	<div class="contents" ref="contents" :class="{ withHeader: $store.state.titlebar }" @contextmenu.stop="onContextmenu">
+		<header v-if="$store.state.titlebar" class="header" ref="header" @click="onHeaderClick">
 			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
@@ -29,6 +29,7 @@
 
 	<div class="buttons" :class="{ navHidden }">
 		<button class="button nav _button" @click="showNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><Fa :icon="faHome"/></button>
 		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
 		<button class="button post _button" @click="post"><Fa :icon="faPencilAlt"/></button>
@@ -162,7 +163,7 @@ export default defineComponent({
 			this.navHidden = navWidth === 0;
 			if (this.$refs.contents == null) return;
 			const width = this.$refs.contents.offsetWidth;
-			this.$refs.header.style.width = `${width}px`;
+			if (this.$refs.header) this.$refs.header.style.width = `${width}px`;
 		},
 
 		showNav() {
@@ -193,6 +194,7 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
+			if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
 			const path = this.$route.path;
 			os.contextMenu([{
 				type: 'label',
@@ -256,7 +258,10 @@ export default defineComponent({
 	> .contents {
 		width: 100%;
 		min-width: 0;
-		padding-top: $header-height;
+
+		&.withHeader {
+			padding-top: $header-height;
+		}
 
 		> .header {
 			position: fixed;
@@ -336,15 +341,13 @@ export default defineComponent({
 		position: fixed;
 		z-index: 1000;
 		bottom: 0;
-		padding: 0 32px 32px 32px;
+		padding: 16px;
 		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		background: linear-gradient(0deg, var(--bg), var(--X1));
-
-		@media (max-width: 500px) {
-			padding: 0 16px 16px 16px;
-		}
+		-webkit-backdrop-filter: blur(32px);
+		backdrop-filter: blur(32px);
+		background-color: var(--header);
 
 		&:not(.navHidden) {
 			display: none;
@@ -352,14 +355,25 @@ export default defineComponent({
 
 		> .button {
 			position: relative;
+			flex: 1;
 			padding: 0;
 			margin: auto;
-			width: 64px;
 			height: 64px;
-			border-radius: 100%;
-			box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+			border-radius: 8px;
 			background: var(--panel);
 			color: var(--fg);
+
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
+
+			@media (max-width: 400px) {
+				height: 60px;
+
+				&:not(:last-child) {
+					margin-right: 8px;
+				}
+			}
 
 			&:hover {
 				background: var(--X2);

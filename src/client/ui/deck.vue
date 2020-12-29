@@ -8,7 +8,7 @@
 		<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 		<section v-if="ids.length > 1"
 			class="folder column"
-			:style="{ width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+			:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 		>
 			<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
 		</section>

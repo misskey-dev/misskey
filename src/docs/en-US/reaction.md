@@ -1,11 +1,11 @@
 # Reaction
-他の人のノートに、絵文字を付けて簡単にあなたの反応を伝えられる機能です。 リアクションするには、ノートの + アイコンをクリックしてピッカーを表示し、絵文字を選択します。 リアクションには[カスタム絵文字](./custom-emoji)も使用できます。
+Easily express your feelings about the notes of others by attaching emojis to them. To react to a note, press the "+" icon to display the reaction picker and click on an emoji. You can also use [Custom Emoji](./custom-emoji) as reactions.
 
-## リアクションピッカーのカスタマイズ
-ピッカーに表示される絵文字を自分好みにカスタマイズすることができます。 設定の「リアクション」で設定します。
+## Customizing the reaction picker
+It's possible to customize the emoji picker to display the emojis you want. You can configure it in the "Reactions" settings menu.
 
-## リモート投稿へのリアクションについて
-リアクションはMisskeyオリジナルの機能であるため、リモートインスタンスがMisskeyでない限りは、ほとんどの場合「Like」としてアクティビティが送信されます。一般的にはLikeは「お気に入り」として実装されているようです。 また、相手がMisskeyであったとしても、カスタム絵文字リアクションは伝わらず、自動的に「👍」等にフォールバックされます。
+## About reacting to remote posts
+Because reactions are a Misskey-original feature, unless the remote instance is also a Misskey instance, reactions to posts will be sent as a "Like" activity.Generally speaking, "Like" functionality seems to be implemented as a "Favorite" feature. In addition, even if the interaction partner is a Misskey instance, custom emoji reactions will not be transmitted and instead fall back to a "👍" reaction or similar.
 
-## リモートからのリアクションについて
-リモートから「Like」アクティビティを受信したとき、Misskeyでは「👍」のリアクションとして解釈されます。
+## About reactions from remote servers
+If a "Like" activity is sent from a remote server, it will be interpreted as a "👍" reaction in Misskey.

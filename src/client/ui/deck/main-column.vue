@@ -7,7 +7,7 @@
 	<router-view v-slot="{ Component }">
 		<transition>
 			<keep-alive :include="['timeline']">
-				<component :is="Component" :ref="changePage"/>
+				<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
 			</keep-alive>
 		</transition>
 	</router-view>
@@ -16,10 +16,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XNotes from '@/components/notes.vue';
 import XHeader from '@/ui/_common_/header.vue';
 import { deckStore } from '@/ui/deck/deck-store';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -53,6 +55,21 @@ export default defineComponent({
 			if (page.INFO) {
 				this.pageInfo = page.INFO;
 			}
+		},
+
+		onContextmenu(e) {
+			if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
+			const path = this.$route.path;
+			os.contextMenu([{
+				type: 'label',
+				text: path,
+			}, {
+				icon: faWindowMaximize,
+				text: this.$ts.openInWindow,
+				action: () => {
+					os.pageWindow(path);
+				}
+			}], e);
 		},
 	}
 });
