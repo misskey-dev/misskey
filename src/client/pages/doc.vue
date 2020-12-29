@@ -3,7 +3,7 @@
 	<div class="title">{{ title }}</div>
 	<div class="body" v-html="body"></div>
 	<div class="footer">
-		<MkLink :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${doc}.ja-JP.md`" class="at">{{ $ts.docSource }}</MkLink>
+		<MkLink :url="`https://github.com/syuilo/misskey/blob/master/src/docs/${lang}/${doc}.md`" class="at">{{ $ts.docSource }}</MkLink>
 	</div>
 </div>
 </template>
@@ -45,6 +45,7 @@ export default defineComponent({
 			title: null,
 			body: null,
 			markdown: null,
+			lang,
 		}
 	},
 
