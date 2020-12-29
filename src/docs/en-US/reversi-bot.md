@@ -4,23 +4,23 @@ This page will explain how to develop an interactive bot for Misskey's Reversi f
 1. Connect to the `games/reversi` stream with the following parameters:
     * `i`: API key of the bot account
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+2. When an invitation to a game arrives, an `invited` event is emitted from the stream.
+    * Information about the user who sent the invitation is included in the event as `parent`.
 
 3. Send a request to `games/reversi/match` including the `id` of the `parent` as `user_id`
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
+4. If the request suceeds, information about the game will be returned. Then, send a request to the `games/reversi-game` stream with the following parameters:
     * `i`: API key of the bot account
     * `game`: The `id` of the `game`
 
-5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
+5. In the meanwhile, the opponent can modify the game's settings. Each time this happens, a `update-settings` event is emitted, so implement logic to handle these events if necessary.
 
-6. 設定に満足したら、`{ type: 'accept' }`メッセージをストリームに送信する
+6. Once satisfied with the settings, send a `{ type: 'accept' }` message to the stream.
 
 7. When the game starts, a `started` event is emitted.
     * Information about the game's state is included in this event
 
-8. To place a stone, send `{ type: 'set', pos: <位置> }` to the stream (how to calculate positions will be explained later).
+8. To place a stone, send `{ type: 'set', pos: <Position> }` to the stream (how to calculate positions will be explained later).
 
 9. When the opponent or you place a stone, the `set` event is emitted.
     * Contains the color of the placed stone as `color`
