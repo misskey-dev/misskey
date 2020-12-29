@@ -670,6 +670,7 @@ center: "中央"
 wide: "宽"
 narrow: "窄"
 reloadToApplySetting: "页面刷新后设置才会生效。是否现在刷新页面？"
+showTitlebar: "显示标题栏"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
