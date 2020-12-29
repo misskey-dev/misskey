@@ -1,10 +1,26 @@
 <template>
-<div class="mk-home" v-hotkey.global="keymap">
+<div class="cmuxhskf" v-hotkey.global="keymap">
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
 	<div class="_section">
 		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _content _vMargin"/>
 		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _panel _content _vMargin" fixed/>
+		<div class="tabs _panel _vMargin">
+			<div class="left">
+				<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
+				<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local"><Fa :icon="faComments"/></button>
+				<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social"><Fa :icon="faShareAlt"/></button>
+				<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global"><Fa :icon="faGlobe"/></button>
+			</div>
+			<div class="right">
+				<button class="_button tab" @click="chooseChannel" :class="{ active: src === 'channel' }" v-tooltip="$ts.channel"><Fa :icon="faSatelliteDish"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadChannel"/></button>
+				<button class="_button tab" @click="chooseAntenna" :class="{ active: src === 'antenna' }" v-tooltip="$ts.antennas"><Fa :icon="faSatellite"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadAntenna"/></button>
+				<button class="_button tab" @click="chooseList" :class="{ active: src === 'list' }" v-tooltip="$ts.lists"><Fa :icon="faListUl"/></button>
+				<button class="_button tab" @click="() => { src = 'directs'; saveSrc(); }" :class="{ active: src === 'directs' }" v-tooltip="$ts.directNotes"><Fa :icon="faEnvelope"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadSpecifiedNotes"/></button>
+				<button class="_button tab" @click="() => { src = 'mentions'; saveSrc(); }" :class="{ active: src === 'mentions' }" v-tooltip="$ts.mentions"><Fa :icon="faAt"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadMentions"/></button>
+				<button class="_button tab" @click="chooseTl"><Fa :icon="faEllipsisH"/></button>
+			</div>
+		</div>
 		<XTimeline ref="tl"
 			class="_content _vMargin"
 			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
@@ -23,8 +39,8 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faComments } from '@fortawesome/free-regular-svg-icons';
+import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faPencilAlt, faAt } from '@fortawesome/free-solid-svg-icons';
+import { faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import Progress from '@/scripts/loading';
 import XTimeline from '@/components/timeline.vue';
 import XPostForm from '@/components/post-form.vue';
@@ -49,64 +65,15 @@ export default defineComponent({
 			menuOpened: false,
 			queue: 0,
 			width: 0,
-			INFO: computed(() => {
-				const tabs = [{
-					id: 'home',
-					title: null,
-					tooltip: this.$ts._timelines.home,
-					icon: faHome,
-					onClick: () => { this.src = 'home'; this.saveSrc(); },
-					selected: computed(() => this.src === 'home')
-				}];
-
-				if (!this.$instance.disableLocalTimeline || this.$i.isModerator || this.$i.isAdmin) {
-					tabs.push({
-						id: 'local',
-						title: null,
-						tooltip: this.$ts._timelines.local,
-						icon: faComments,
-						onClick: () => { this.src = 'local'; this.saveSrc(); },
-						selected: computed(() => this.src === 'local')
-					});
-
-					tabs.push({
-						id: 'social',
-						title: null,
-						tooltip: this.$ts._timelines.social,
-						icon: faShareAlt,
-						onClick: () => { this.src = 'social'; this.saveSrc(); },
-						selected: computed(() => this.src === 'social')
-					});
+			INFO: computed(() => ({
+				title: this.$ts.timeline,
+				icon: this.src === 'local' ? faComments : this.src === 'social' ? faShareAlt : this.src === 'global' ? faGlobe : faHome,
+				action: {
+					icon: faPencilAlt,
+					handler: () => os.post()
 				}
-
-				if (!this.$instance.disableGlobalTimeline || this.$i.isModerator || this.$i.isAdmin) {
-					tabs.push({
-						id: 'global',
-						title: null,
-						tooltip: this.$ts._timelines.global,
-						icon: faGlobe,
-						onClick: () => { this.src = 'global'; this.saveSrc(); },
-						selected: computed(() => this.src === 'global')
-					});
-				}
-
-				tabs.push({
-					id: 'other',
-					title: null,
-					icon: faEllipsisH,
-					onClick: this.choose,
-					indicate: computed(() => this.$i.hasUnreadAntenna || this.$i.hasUnreadChannel)
-				});
-
-				return {
-					tabs,
-					action: {
-						icon: faPencilAlt,
-						handler: () => os.post()
-					}
-				};
-			}),
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle
+			})),
+			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faAt, faEnvelope,
 		};
 	},
 
@@ -176,16 +143,23 @@ export default defineComponent({
 			scroll(this.$el, 0);
 		},
 
-		async choose(ev) {
-			if (this.meta == null) return;
-			const [antennas, lists, channels] = await Promise.all([
-				os.api('antennas/list'),
-				os.api('users/lists/list'),
-				os.api('channels/followed'),
-			]);
-			const antennaItems = antennas.map(antenna => ({
+		async chooseList(ev) {
+			const lists = await os.api('users/lists/list');
+			const items = lists.map(list => ({
+				text: list.name,
+				action: () => {
+					this.list = list;
+					this.src = 'list';
+					this.saveSrc();
+				}
+			}));
+			os.modalMenu(items, ev.currentTarget || ev.target);
+		},
+
+		async chooseAntenna(ev) {
+			const antennas = await os.api('antennas/list');
+			const items = antennas.map(antenna => ({
 				text: antenna.name,
-				icon: faSatellite,
 				indicate: antenna.hasUnreadNote,
 				action: () => {
 					this.antenna = antenna;
@@ -193,18 +167,13 @@ export default defineComponent({
 					this.saveSrc();
 				}
 			}));
-			const listItems = lists.map(list => ({
-				text: list.name,
-				icon: faListUl,
-				action: () => {
-					this.list = list;
-					this.src = 'list';
-					this.saveSrc();
-				}
-			}));
-			const channelItems = channels.map(channel => ({
+			os.modalMenu(items, ev.currentTarget || ev.target);
+		},
+
+		async chooseChannel(ev) {
+			const channels = await os.api('channels/followed');
+			const items = channels.map(channel => ({
 				text: channel.name,
-				icon: faSatelliteDish,
 				indicate: channel.hasUnreadNote,
 				action: () => {
 					// NOTE: チャンネルタイムラインをこのコンポーネントで表示するようにすると投稿フォームはどうするかなどの問題が生じるのでとりあえずページ遷移で
@@ -214,7 +183,7 @@ export default defineComponent({
 					this.$router.push(`/channels/${channel.id}`);
 				}
 			}));
-			os.modalMenu([...antennaItems, listItems.length > 0 ? null : undefined, ...listItems, channelItems.length > 0 ? null : undefined, ...channelItems], ev.currentTarget || ev.target);
+			os.modalMenu(items, ev.currentTarget || ev.target);
 		},
 
 		saveSrc() {
@@ -235,7 +204,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mk-home {
+.cmuxhskf {
 	> .new {
 		position: fixed;
 		z-index: 1000;
@@ -249,7 +218,59 @@ export default defineComponent({
 	}
 
 	> ._section {
+		> .tabs {
+			display: flex;
+			box-sizing: border-box;
+			padding: 0 8px;
+			max-width: var(--baseContentWidth);
+			margin-left: auto;
+			margin-right: auto;
+			white-space: nowrap;
+			overflow: auto;
 
+			> .right {
+				margin-left: auto;
+			}
+
+			> .left, > .right {
+				> .tab {
+					position: relative;
+					height: 50px;
+					padding: 0 12px;
+
+					&:hover {
+						color: var(--fgHighlighted);
+					}
+
+					&.active {
+						color: var(--fgHighlighted);
+
+						&:after {
+							content: "";
+							display: block;
+							position: absolute;
+							bottom: 0;
+							left: 0;
+							right: 0;
+							margin: 0 auto;
+							width: calc(100% - 16px);
+							height: 4px;
+							background: var(--accent);
+							border-radius: 8px 8px 0 0;
+						}
+					}
+
+					> .i {
+						position: absolute;
+						top: 16px;
+						right: 8px;
+						color: var(--indicator);
+						font-size: 8px;
+						animation: blink 1s infinite;
+					}
+				}
+			}
+		}
 	}
 }
 </style>
