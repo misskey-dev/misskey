@@ -232,6 +232,9 @@ export default defineComponent({
 			white-space: nowrap;
 			overflow: auto;
 
+			// 影の都合上
+			position: relative;
+
 			> .right {
 				margin-left: auto;
 			}
