@@ -177,6 +177,10 @@ export default defineComponent({
 		showGapBetweenNotesInTimeline() {
 			this.reloadAsk();
 		},
+
+		titlebar() {
+			this.reloadAsk();
+		},
 	},
 
 	mounted() {
