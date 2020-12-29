@@ -1,5 +1,5 @@
 # Creating plugins
-If you use the plugin function of the Misskey web client, you can expand the web client with a variety of different functionality. This page will list plugin metadata definitions as well as an AiScript API reference.
+If you use the plugin function of the Misskey web client, you can expand the web client with a variety of different functionality. This page will list metadata definitions for plugin creation as well as an AiScript API reference for plugins.
 
 ## Metadata
 Plugins must define default plugin metadata via the AiScript metadata format. Metadata is an object containing the following properties:
@@ -35,7 +35,7 @@ Description of the setting
 Default value of the setting
 
 ## API Reference
-API built into AiScript is not listed.
+API built directly into the AiScript standard itself will not be listed.
 
 ### Mk:dialog(title text type)
 Display a dialog.You can select one of the below types. info success warn error question If no type is selected, "info" is chosen by default.
