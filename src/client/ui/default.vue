@@ -2,7 +2,7 @@
 <div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<div class="contents" ref="contents" :class="{ withHeader: $store.state.titlebar }" @contextmenu.prevent.stop="onContextmenu">
+	<div class="contents" ref="contents" :class="{ withHeader: $store.state.titlebar }" @contextmenu.stop="onContextmenu">
 		<header v-if="$store.state.titlebar" class="header" ref="header" @click="onHeaderClick">
 			<XHeader :info="pageInfo"/>
 		</header>
@@ -194,6 +194,7 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
+			if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
 			const path = this.$route.path;
 			os.contextMenu([{
 				type: 'label',
