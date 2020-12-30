@@ -1,6 +1,8 @@
 <template>
 <div class="rsqzvsbo" v-if="meta">
 	<div class="top">
+		<div class="shape"></div>
+		<img src="/assets/misskey.svg" class="misskey"/>
 		<div class="main _panel">
 			<div class="bg" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }">
 				<div class="fade"></div>
@@ -142,11 +144,32 @@ export default defineComponent({
 		box-sizing: border-box;
 		padding: 16px;
 
+		> .shape {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: var(--accent);
+			clip-path: polygon(0% 0%, 50% 0%, 15% 100%, 0% 100%);
+		}
+
+		> .misskey {
+			position: absolute;
+			top: 24px;
+			left: 24px;
+			width: 160px;
+		}
+
 		> .main {
 			position: relative;
 			width: min(490px, 100%);
-			margin: auto;
+			margin: auto auto auto 128px;
 			box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+
+			@media (max-width: 1200px) {
+				margin: auto;
+			}
 
 			> .bg {
 				position: absolute;
