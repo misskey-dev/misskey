@@ -50,7 +50,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Here,
 * `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
 * `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
 * `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
@@ -76,7 +76,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Here,
 * `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
 * `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
 * `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
@@ -98,7 +98,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Here,
 * `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
 * `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
 * `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
@@ -115,7 +115,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Here,
 * `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
 
 ## Making API requests via streams
@@ -136,7 +136,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Here,
 * `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
 * `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
 * `data`には、エンドポイントのパラメータを含めます。
@@ -158,7 +158,7 @@ APIへリクエストすると、レスポンスがストリームから次の�
 }
 ```
 
-ここで、
+Here,
 * `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
 * `body`には、レスポンスが含まれています。
 
@@ -185,7 +185,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Here,
 * `id`にキャプチャしたい投稿の`id`を設定します。
 
 このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
@@ -206,7 +206,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Here,
 * `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
 * `body`内の`type`に、イベントの種類が設定されます。
 * `body`内の`body`に、イベントの詳細が設定されます。
@@ -289,66 +289,66 @@ E.g.:
 }
 ```
 
-ここで、
+Here,
 * `id`にキャプチャを解除したい投稿の`id`を設定します。
 
 このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
 
 # List of channels
 ## `main`
-アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
+Basic information related to the account will be transmitted here.This channel does not have any parameters.
 
 ### List of sent events
 
 #### `renote`
-自分の投稿がRenoteされた時に発生するイベントです。自分自身の投稿をRenoteしたときは発生しません。
+This event will be emitted when one of your posts is renoted.If you renote your own post, it will not be emitted.
 
 #### `mention`
-誰かからメンションされたときに発生するイベントです。
+This event will be emitted when someone mentions you.
 
 #### `readAllNotifications`
-自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
+This event indicates that all your notifications have been set to read.このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
 
 #### `meUpdated`
-自分の情報が更新されたことを表すイベントです。
+This event indicates that your profile information has been updated.
 
 #### `follow`
-自分が誰かをフォローしたときに発生するイベントです。
+This event will be emitted when you follow someone.
 
 #### `unfollow`
-自分が誰かのフォローを解除したときに発生するイベントです。
+This event will be emitted when you unfollow someone.
 
 #### `followed`
-自分が誰かにフォローされたときに発生するイベントです。
+This event will be emitted when someone follows you.
 
 ## `homeTimeline`
-ホームタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Information about posts on the home timeline will be transmitted here.This channel does not have any parameters.
 
 ### List of sent events
 
 #### `note`
-タイムラインに新しい投稿が流れてきたときに発生するイベントです。
+This event will be emitted when a new post arrives in the timeline.
 
 ## `localTimeline`
-ローカルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Information about posts on the local timeline will be transmitted here.This channel does not have any parameters.
 
 ### List of sent events
 
 #### `note`
-ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+This event will be emitted when a new post arrives in the local timeline.
 
 ## `hybridTimeline`
-ソーシャルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Information about posts on the social timeline will be transmitted here.This channel does not have any parameters.
 
 ### List of sent events
 
 #### `note`
-ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+This event will be emitted when a new post arrives in the social timeline.
 
 ## `globalTimeline`
-グローバルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Information about posts on the global timeline will be transmitted here.This channel does not have any parameters.
 
 ### List of sent events
 
 #### `note`
-グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+This event will be emitted when a new post arrives in the global timeline.
