@@ -1,5 +1,6 @@
 ---
 _lang_: "Deutsch"
+headlineMisskey: "Durch Notizen verbundenes Netzwerk"
 introMisskey: "Willkommen! Misskey ist eine dezentralisierte Open-Source Microblogging-Platform.\nVerfasse \"Notizen\" um mitzuteilen, was gerade passiert oder um Ereignisse mit Anderen zu teilen. 📡\nMit \"Reaktionen\" kannst du außerdem schnell deine Gefühle über Notizen anderer Benutzer zum Ausdruck bringen. 👍\nLass uns eine neue Welt erforschen! 🚀"
 monthAndDay: "{day}/{month}"
 search: "Suchen"
@@ -674,6 +675,8 @@ reloadToApplySetting: "Diese Einstellung tritt nach einer Aktualisierung der Sei
 showTitlebar: "Titelleiste anzeigen"
 clearCache: "Cache leeren"
 onlineUsersCount: "{n} Benutzer sind online"
+nUsers: "{n} Benutzer"
+nNotes: "{n} Notizen"
 _aboutMisskey:
   about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
   contributors: "Hauptmitwirkende"
@@ -735,6 +738,14 @@ _mfm:
   twitchDescription: "Verleiht eine sehr stark zuckende Animation."
   spin: "Animation (Rotieren)"
   spinDescription: "Verleiht eine rotierende Animation."
+  x2: "Groß"
+  x2Description: "Lässt Inhalte größer angezeigt werden."
+  x3: "Sehr groß"
+  x3Description: "Lässt Inhalte noch größer angezeigt werden."
+  x4: "Am größten"
+  x4Description: "Lässt Inhalte noch größer als größer als groß angezeigt werden."
+  blur: "Weichzeichner"
+  blurDescription: "Inhalte durch Weihzeichnung verschwimmen lassen. Durch das Bewegen des Mauszeigers auf den Inhalt wird er klar angezeigt."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Spieleinstellungen"
