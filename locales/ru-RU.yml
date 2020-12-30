@@ -668,6 +668,8 @@ showGapBetweenNotesInTimeline: "Показывать разделитель ме
 duplicate: "Дубликат"
 left: "Влево"
 center: "По центру"
+reloadToApplySetting: "Это настройка вступает в силу при загрузке страницы. Перезагрузить сейчас?"
+showTitlebar: "Показать заголовок"
 clearCache: "Очистить кэш"
 onlineUsersCount: "Пользователей сейчас в сети: {n}"
 nUsers: "Пользователей: {n}"
