@@ -1,5 +1,6 @@
 ---
 _lang_: "English"
+headlineMisskey: "Network connected by notes"
 introMisskey: "Welcome! Misskey is an open source, and also a decentralized microblogging service.\nCreate \"notes\" to share what is happening now, or to share it with everyone around you 📡\nWith \"reactions\", you can also quickly express your feelings about everyone's notes 👍\nLet's explore a new world 🚀"
 monthAndDay: "{month}/{day}"
 search: "Search"
@@ -674,6 +675,8 @@ reloadToApplySetting: "This setting will be applied upon page reload. Reload now
 showTitlebar: "Show title bar"
 clearCache: "Clear cache"
 onlineUsersCount: "{n} people are online"
+nUsers: "{n} Users"
+nNotes: "{n} Notes"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
@@ -736,8 +739,11 @@ _mfm:
   spin: "Animation (Spin)"
   spinDescription: "Infuses a spinning animation."
   x2: "Big"
-  x2Description: "Display content bigger."
+  x2Description: "Displays content bigger."
   x3: "Very big"
+  x3Description: "Displays content even bigger."
+  x4: "Extremely big"
+  x4Description: "Displays content even bigger than bigger than big."
   blur: "Blur"
   blurDescription: "Content can be blurred via this effect. It will be clearly displayed by hovering your cursor above it."
 _reversi:
