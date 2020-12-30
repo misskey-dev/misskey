@@ -172,9 +172,9 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
 
-### 投稿をキャプチャする
+### Capturing a post
 
-投稿をキャプチャするには、ストリームに次のようなメッセージを送信します:
+To capture a post, send a message like the following to the stream:
 
 ```json
 {
@@ -186,7 +186,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 ```
 
 Here,
-* `id`にキャプチャしたい投稿の`id`を設定します。
+* the value of `id` must be the `id` of the post to capture.
 
 このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
 
@@ -207,17 +207,17 @@ Here,
 ```
 
 Here,
-* `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
-* `body`内の`type`に、イベントの種類が設定されます。
+* the ID of the note that caused the event is included in the `id` of the `body`.
+* the type of the event is included in the `type` of the `body`.
 * `body`内の`body`に、イベントの詳細が設定されます。
 
 #### Types of events
 
 ##### `reacted`
-その投稿にリアクションがされた時に発生します。
+This event is emitted when a reaction is added to the captured post.
 
-* `reaction`に、リアクションの種類が設定されます。
-* `userId`に、リアクションを行ったユーザーのIDが設定されます。
+* the type of reaction is included as `reaction`.
+* the ID of the user who sent the reaction is included as `userId`.
 
 E.g.:
 ```json
@@ -235,9 +235,9 @@ E.g.:
 ```
 
 ##### `deleted`
-その投稿が削除された時に発生します。
+This event is emitted when the captured post is deleted.
 
-* `deletedAt`に、削除日時が設定されます。
+* The date and time of deletion is included within `deletedAt`.
 
 E.g.:
 ```json
@@ -254,10 +254,10 @@ E.g.:
 ```
 
 ##### `pollVoted`
-その投稿に添付されたアンケートに投票された時に発生します。
+This event is emitted when a vote is submitted to a poll attached to the captured post.
 
-* `choice`に、選択肢IDが設定されます。
-* `userId`に、投票を行ったユーザーのIDが設定されます。
+* the ID of the selected option is included as `choice`.
+* the ID of the user who sent the vote is included as `userId`.
 
 E.g.:
 ```json
@@ -274,7 +274,7 @@ E.g.:
 }
 ```
 
-### Cancel post capturing
+### Canceling post capturing
 
 Once a post is no longer displayed on the screen and events related to it do not need to be received any longer, please cancel post capturing on it.
 
