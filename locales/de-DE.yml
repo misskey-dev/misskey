@@ -673,6 +673,7 @@ narrow: "Schmal"
 reloadToApplySetting: "Diese Einstellung tritt nach einer Aktualisierung der Seite in Kraft. Jetzt aktualisieren?"
 showTitlebar: "Titelleiste anzeigen"
 clearCache: "Cache leeren"
+onlineUsersCount: "{n} Benutzer sind online"
 _aboutMisskey:
   about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
   contributors: "Hauptmitwirkende"
@@ -994,6 +995,7 @@ _widgets:
   postForm: "Neue Notiz anfertigen"
   slideshow: "Diashow"
   button: "Knopf"
+  onlineUsers: "Benutzer die Online sind"
 _cw:
   hide: "Ausblenden"
   show: "Mehr anzeigen"
