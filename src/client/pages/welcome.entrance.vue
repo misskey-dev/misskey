@@ -4,7 +4,7 @@
 		<div class="shape"></div>
 		<img src="/assets/misskey.svg" class="misskey"/>
 		<div class="main _panel">
-			<div class="bg" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }">
+			<div class="bg">
 				<div class="fade"></div>
 			</div>
 			<div class="fg">
