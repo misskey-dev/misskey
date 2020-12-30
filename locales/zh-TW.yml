@@ -594,7 +594,7 @@ send: "發送"
 abuseMarkAsResolved: "處理完畢"
 openInNewTab: "在新分頁中開啟"
 openInSideView: "在側欄中開啟"
-instanceTicker: "箋文的實例資訊"
+instanceTicker: "箋文的實例來源"
 waitingFor: "等待{x}"
 random: "隨機"
 system: "系統"
@@ -682,8 +682,8 @@ _instanceTicker:
   always: "總是顯示"
 _serverDisconnectedBehavior:
   reload: "自動重載"
-  dialog: "以對話框警告"
-  quiet: "適當地警告"
+  dialog: "彈出式警告"
+  quiet: "非侵入式警告"
 _channel:
   create: "建立頻道"
   edit: "編輯頻道"
@@ -855,7 +855,7 @@ _visibility:
   localOnlyDescription: "對遠端使用者隱藏"
 _postForm:
   replyPlaceholder: "回覆此箋文..."
-  quotePlaceholder: "引用此貼文..."
+  quotePlaceholder: "引用此箋文..."
   channelPlaceholder: "發佈到頻道"
   _placeholders:
     a: "今天過得如何?"
@@ -872,7 +872,7 @@ _profile:
   metadataLabel: "標籤"
   metadataContent: "内容"
 _exportOrImport:
-  allNotes: "全部箋文"
+  allNotes: "所有箋文"
   followingList: "追隨中"
   muteList: "靜音"
   blockingList: "封鎖"
