@@ -663,7 +663,10 @@ _mfm:
   quote: "引用"
   emoji: "自訂表情符號"
   search: "搜尋"
+  bounce: "動畫(反彈)"
+  shake: "動畫(搖晃)"
   spin: "動畫(旋轉)"
+  spinDescription: "顯示旋轉的動畫效果。"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "對弈設定"
