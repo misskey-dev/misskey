@@ -176,6 +176,16 @@
 		</div>
 	</div>
 	<div class="_section">
+		<div class="_title">{{ $ts._mfm.blur }}</div>
+		<div class="_content">
+			<p>{{ $ts._mfm.blurDescription }}</p>
+			<div class="preview _panel">
+				<Mfm :text="preview_blur"/>
+				<MkTextarea v-model:value="preview_blur"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="_section">
 		<div class="_title">{{ $ts._mfm.jelly }}</div>
 		<div class="_content">
 			<p>{{ $ts._mfm.jellyDescription }}</p>
@@ -288,6 +298,7 @@ export default defineComponent({
 			preview_x2: `[x2 🍮]`,
 			preview_x3: `[x3 🍮]`,
 			preview_x4: `[x4 🍮]`,
+			preview_blur: `[blur ${this.$ts._mfm.dummy}]`,
 		}
 	},
 });

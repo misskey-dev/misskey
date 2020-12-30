@@ -142,8 +142,9 @@ export default defineComponent({
 							break;
 						}
 						case 'blur': {
-							// TODO
-							break;
+							return h('span', {
+								class: '_mfm_blur_',
+							}, genEl(token.children));
 						}
 					}
 					if (style == null) {
