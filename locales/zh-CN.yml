@@ -673,6 +673,7 @@ narrow: "窄"
 reloadToApplySetting: "页面刷新后设置才会生效。是否现在刷新页面？"
 showTitlebar: "显示标题栏"
 clearCache: "清除缓存"
+onlineUsersCount: "{n}人在线"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
@@ -994,6 +995,7 @@ _widgets:
   postForm: "投稿窗口"
   slideshow: "幻灯片展示"
   button: "按钮"
+  onlineUsers: "在线用户"
 _cw:
   hide: "隐藏"
   show: "查看更多"
