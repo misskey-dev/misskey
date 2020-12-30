@@ -76,7 +76,6 @@ export default defineComponent({
 		return {
 			host,
 			instanceName,
-			pageKey: 0,
 			pageInfo: null,
 			meta: null,
 			showMenu: false,
@@ -103,12 +102,6 @@ export default defineComponent({
 
 		root(): boolean {
 			return this.$route.path === '/';
-		},
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
 		},
 	},
 

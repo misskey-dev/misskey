@@ -45,7 +45,6 @@ export default defineComponent({
 		return {
 			deckStore,
 			pageInfo: null,
-			pageKey: 0,
 		}
 	},
 

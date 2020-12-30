@@ -87,7 +87,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			pageKey: 0,
 			pageInfo: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: sidebarDef,
@@ -106,12 +105,6 @@ export default defineComponent({
 			}
 			return false;
 		}
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
-		},
 	},
 
 	created() {

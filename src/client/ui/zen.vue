@@ -38,16 +38,9 @@ export default defineComponent({
 	data() {
 		return {
 			host: host,
-			pageKey: 0,
 			pageInfo: null,
 			faLayerGroup, faBars, faBell, faHome, faCircle,
 		};
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
-		},
 	},
 
 	created() {
