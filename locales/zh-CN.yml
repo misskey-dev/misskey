@@ -675,7 +675,7 @@ showTitlebar: "显示标题栏"
 clearCache: "清除缓存"
 onlineUsersCount: "{n}人在线"
 nUsers: "{n}用户"
-nNotes: "{n}帖文"
+nNotes: "{n}帖子"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
