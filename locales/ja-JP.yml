@@ -1,5 +1,6 @@
 _lang_: "日本語"
 
+headlineMisskey: "ノートでつながるネットワーク"
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
 monthAndDay: "{month}月 {day}日"
 search: "検索"
@@ -674,6 +675,8 @@ reloadToApplySetting: "設定はページリロード後に反映されます。
 showTitlebar: "タイトルバーを表示する"
 clearCache: "キャッシュをクリア"
 onlineUsersCount: "{n}人がオンライン"
+nUsers: "{n}ユーザー"
+nNotes: "{n}ノート"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

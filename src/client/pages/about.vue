@@ -23,6 +23,18 @@
 	</FormGroup>
 
 	<FormLink v-if="meta.tosUrl" :to="meta.tosUrl" external>{{ $ts.tos }}</FormLink>
+
+	<FormGroup v-if="stats">
+		<template #label>{{ $ts.statistics }}</template>
+		<FormKeyValueView>
+			<template #key>{{ $ts.users }}</template>
+			<template #value>{{ number(stats.originalUsersCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $ts.notes }}</template>
+			<template #value>{{ number(stats.originalNotesCount) }}</template>
+		</FormKeyValueView>
+	</FormGroup>
 </FormBase>
 </template>
 
@@ -35,6 +47,7 @@ import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormKeyValueView from '@/components/form/key-value-view.vue';
 import * as os from '@/os';
+import number from '@/filters/number';
 
 export default defineComponent({
 	components: {
@@ -52,7 +65,7 @@ export default defineComponent({
 			},
 			version,
 			instanceName,
-			serverInfo: null,
+			stats: null,
 			faInfoCircle
 		}
 	},
@@ -62,6 +75,16 @@ export default defineComponent({
 			return this.$instance;
 		},
 	},
+
+	created() {
+		os.api('stats').then(stats => {
+			this.stats = stats;
+		});
+	},
+
+	methods: {
+		number
+	}
 });
 </script>
 
