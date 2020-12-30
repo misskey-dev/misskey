@@ -669,6 +669,9 @@ duplicate: "Дубликат"
 left: "Влево"
 center: "По центру"
 clearCache: "Очистить кэш"
+onlineUsersCount: "Пользователей сейчас в сети: {n}"
+nUsers: "Пользователей: {n}"
+nNotes: "Заметок: {n}"
 _aboutMisskey:
   about: "Misskey — программа с открытым исходным кодом, которую разрабатывает syuilo с 2014 года."
   contributors: "Основные соавторы"
@@ -990,6 +993,7 @@ _widgets:
   postForm: "Форма отправки"
   slideshow: "Показ слайдов"
   button: "Кнопка"
+  onlineUsers: "Пользователи сейчас с сети"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
