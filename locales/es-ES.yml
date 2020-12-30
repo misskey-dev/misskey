@@ -647,6 +647,7 @@ driveUsage: "Uso del drive"
 noCrawle: "Rechazar indexación del crawler"
 noCrawleDescription: "Pedir a los motores de búsqueda que no indexen tu perfil, notas, páginas, etc."
 clips: "Clip"
+clearCache: "Limpiar caché"
 _mfm:
   cheatSheet: "Hoja de referencia de MFM"
   intro: "MFM es un lenguaje de marcado dedicado que se puede usar en varios lugares dentro de Misskey. Aquí puede ver una lista de sintaxis disponibles en MFM."
