@@ -1,20 +1,20 @@
 # Streaming API
 
-ストリーミングAPIを使うと、リアルタイムで様々な情報(例えばタイムラインに新しい投稿が流れてきた、メッセージが届いた、フォローされた、など)を受け取ったり、様々な操作を行ったりすることができます。
+By using the streaming API, you can receive various data (such as new posts arriving on the timeline, receiving direct messages, notifications about being followed, etc) in real-time and perform various different actions based on it.
 
 ## Connecting to streams
 
-ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
+To use the streaming API, you must first connect to the **websocket** of the Misskey server.
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。E.g.:
+Connect to the websocket located at the below URL, including your credentials within the `i` parameter.E.g.:
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+Credentials refer to your own API key or the access token granted to an application by a user.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> To read about acquiring such credentials, please refer to <a href="./api">this document</a>.</p>
 </div>
 
 ---
@@ -139,7 +139,7 @@ Here,
 Here,
 * `id` must be set to an unique ID with which to identify separate request responses.This can be something such as an UUID or a simple random number generator.
 * `endpoint` contains the API endpoint to which the request is sent.
-* `data`には、エンドポイントのパラメータを含めます。
+* `data` contains the endpoint parameters to send.
 
 <div class="ui info">
     <p><i class="fas fa-info-circle"></i> Please check the API reference for possible API endpoints and parameters.</p>
