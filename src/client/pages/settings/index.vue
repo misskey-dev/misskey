@@ -28,6 +28,9 @@
 			<FormLink :active="page === 'other'" replace to="/settings/other"><template #icon><Fa :icon="faEllipsisH"/></template>{{ $ts.other }}</FormLink>
 		</FormGroup>
 		<FormGroup>
+			<FormButton @click="clear">{{ $ts.clearCache }}</FormButton>
+		</FormGroup>
+		<FormGroup>
 			<FormButton @click="logout" danger>{{ $ts.logout }}</FormButton>
 		</FormGroup>
 	</FormBase>
@@ -125,6 +128,11 @@ export default defineComponent({
 			component,
 			logout: () => {
 				signout();
+			},
+			clear: () => {
+				localStorage.removeItem('locale');
+				localStorage.removeItem('theme');
+				location.reload();
 			},
 			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faEnvelope,
 		};
