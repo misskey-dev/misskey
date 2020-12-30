@@ -146,6 +146,36 @@
 		</div>
 	</div>
 	<div class="_section">
+		<div class="_title">{{ $ts._mfm.x2 }}</div>
+		<div class="_content">
+			<p>{{ $ts._mfm.x2Description }}</p>
+			<div class="preview _panel">
+				<Mfm :text="preview_x2"/>
+				<MkTextarea v-model:value="preview_x2"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="_section">
+		<div class="_title">{{ $ts._mfm.x3 }}</div>
+		<div class="_content">
+			<p>{{ $ts._mfm.x3Description }}</p>
+			<div class="preview _panel">
+				<Mfm :text="preview_x3"/>
+				<MkTextarea v-model:value="preview_x3"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="_section">
+		<div class="_title">{{ $ts._mfm.x4 }}</div>
+		<div class="_content">
+			<p>{{ $ts._mfm.x4Description }}</p>
+			<div class="preview _panel">
+				<Mfm :text="preview_x4"/>
+				<MkTextarea v-model:value="preview_x4"><span>MFM</span></MkTextarea>
+			</div>
+		</div>
+	</div>
+	<div class="_section">
 		<div class="_title">{{ $ts._mfm.jelly }}</div>
 		<div class="_content">
 			<p>{{ $ts._mfm.jellyDescription }}</p>
@@ -255,6 +285,9 @@ export default defineComponent({
 			preview_twitch: `[twitch 🍮]`,
 			preview_spin: `[spin 🍮] [spin.left 🍮] [spin.alternate 🍮]\n[spin.x 🍮] [spin.x,left 🍮] [spin.x,alternate 🍮]\n[spin.y 🍮] [spin.y,left 🍮] [spin.y,alternate 🍮]`,
 			preview_flip: `[flip ${this.$ts._mfm.dummy}]\n[flip.v ${this.$ts._mfm.dummy}]\n[flip.h,v ${this.$ts._mfm.dummy}]`,
+			preview_x2: `[x2 🍮]`,
+			preview_x3: `[x3 🍮]`,
+			preview_x4: `[x4 🍮]`,
 		}
 	},
 });

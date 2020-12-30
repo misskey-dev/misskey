@@ -129,6 +129,22 @@ export default defineComponent({
 							style = `transform: ${transform};`;
 							break;
 						}
+						case 'x2': {
+							style = `font-size: 200%;`;
+							break;
+						}
+						case 'x3': {
+							style = `font-size: 400%;`;
+							break;
+						}
+						case 'x4': {
+							style = `font-size: 600%;`;
+							break;
+						}
+						case 'blur': {
+							// TODO
+							break;
+						}
 					}
 					if (style == null) {
 						return h('span', {}, ['[', token.node.props.name, ...genEl(token.children), ']']);

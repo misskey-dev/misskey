@@ -736,11 +736,17 @@ _mfm:
   bounce: "アニメーション(バウンド)"
   bounceDescription: "ぽよんぽよん弾むようなアニメーションを与えます。"
   shake: "アニメーション(ぶるぶる)"
-  shakeDescription: "ぶるぶるするアニメーションを与えます。"
+  shakeDescription: "ぶるぶる震えるアニメーションを与えます。"
   twitch: "アニメーション(ブレ)"
   twitchDescription: "激しくブレるアニメーションを与えます。"
   spin: "アニメーション(回転)"
   spinDescription: "回転するアニメーションを与えます。"
+  x2: "大きく"
+  x2Description: "内容を大きく表示します。"
+  x3: "とても大きく"
+  x3Description: "内容をとても大きく表示します。"
+  x4: "究極に大きく"
+  x4Description: "内容を究極に大きく表示します。"
 
 _reversi:
   reversi: "リバーシ"
