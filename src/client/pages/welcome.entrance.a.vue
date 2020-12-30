@@ -1,8 +1,17 @@
 <template>
 <div class="rsqzvsbo" v-if="meta">
 	<div class="top">
+		<MkFeaturedPhotos class="bg"/>
+		<XTimeline class="tl"/>
 		<div class="shape"></div>
 		<img src="/assets/misskey.svg" class="misskey"/>
+		<div class="emojis">
+			<MkEmoji :normal="true" :no-style="true" emoji="👍"/>
+			<MkEmoji :normal="true" :no-style="true" emoji="❤"/>
+			<MkEmoji :normal="true" :no-style="true" emoji="😆"/>
+			<MkEmoji :normal="true" :no-style="true" emoji="🎉"/>
+			<MkEmoji :normal="true" :no-style="true" emoji="🍮"/>
+		</div>
 		<div class="main _panel">
 			<div class="bg">
 				<div class="fade"></div>
@@ -12,13 +21,21 @@
 					<img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
 				</h1>
 				<div class="about">
-					<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
+					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
 				</div>
 				<div class="action">
 					<MkButton @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
 					<MkButton @click="signin()" inline>{{ $ts.login }}</MkButton>
 				</div>
-				<div class="status" v-if="onlineUsersCount">
+				<div class="status" v-if="onlineUsersCount && stats">
+					<div>
+						<I18n :src="$ts.nUsers" text-tag="span" class="users">
+							<template #n><b>{{ number(stats.originalUsersCount) }}</b></template>
+						</I18n>
+						<I18n :src="$ts.nNotes" text-tag="span" class="notes">
+							<template #n><b>{{ number(stats.originalNotesCount) }}</b></template>
+						</I18n>
+					</div>
 					<I18n :src="$ts.onlineUsersCount" text-tag="span" class="online">
 						<template #n><b>{{ onlineUsersCount }}</b></template>
 					</I18n>
@@ -38,7 +55,8 @@ import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
 import MkButton from '@/components/ui/button.vue';
 import XNote from '@/components/note.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkFeaturedPhotos from '@/components/featured-photos.vue';
+import XTimeline from './welcome.timeline.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import number from '@/filters/number';
@@ -47,7 +65,8 @@ export default defineComponent({
 	components: {
 		MkButton,
 		XNote,
-		MkPagination,
+		MkFeaturedPhotos,
+		XTimeline,
 	},
 
 	data() {
@@ -58,18 +77,6 @@ export default defineComponent({
 			stats: null,
 			tags: [],
 			onlineUsersCount: null,
-			clipPagination: {
-				endpoint: 'clips/notes',
-				limit: 10,
-				params: () => ({
-					clipId: this.meta.pinnedClipId,
-				})
-			},
-			featuredPagination: {
-				endpoint: 'notes/featured',
-				limit: 10,
-				offsetMode: true
-			},
 			faEllipsisH
 		};
 	},
@@ -144,6 +151,31 @@ export default defineComponent({
 		box-sizing: border-box;
 		padding: 16px;
 
+		> .bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		> .tl {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 64px;
+			margin: auto;
+			width: 500px;
+			height: calc(100% - 128px);
+			overflow: hidden;
+			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
+			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
+
+			@media (max-width: 1200px) {
+				display: none;
+			}
+		}
+
 		> .shape {
 			position: absolute;
 			top: 0;
@@ -156,14 +188,32 @@ export default defineComponent({
 
 		> .misskey {
 			position: absolute;
-			top: 24px;
-			left: 24px;
+			top: 42px;
+			left: 42px;
 			width: 160px;
+
+			@media (max-width: 450px) {
+				width: 130px;
+			}
+		}
+
+		> .emojis {
+			position: absolute;
+			bottom: 32px;
+			left: 35px;
+
+			> * {
+				margin-right: 8px;
+			}
+
+			@media (max-width: 1200px) {
+				display: none;
+			}
 		}
 
 		> .main {
 			position: relative;
-			width: min(490px, 100%);
+			width: min(480px, 100%);
 			margin: auto auto auto 128px;
 			box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 
@@ -212,11 +262,24 @@ export default defineComponent({
 
 				> .action {
 					padding: 32px;
+
+					> * {
+						line-height: 28px;
+					}
 				}
 
 				> .status {
 					border-top: solid 1px var(--divider);
 					padding: 32px;
+					font-size: 90%;
+
+					> div {
+						> span:not(:last-child) {
+							padding-right: 1em;
+							margin-right: 1em;
+							border-right: solid 1px var(--divider);
+						}
+					}
 
 					> .online {
 						::v-deep(b) {
