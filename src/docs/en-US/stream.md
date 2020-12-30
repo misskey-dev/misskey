@@ -19,7 +19,7 @@ Credentials refer to your own API key or the access token granted to an applicat
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。E.g.:
+It's possible to omit the credentials and use the Streaming API without logging in, but doing so will limit the data that can be received and the functions that can be used.E.g.:
 
 ```
 %WS_URL%/streaming
@@ -27,15 +27,15 @@ Credentials refer to your own API key or the access token granted to an applicat
 
 ---
 
-ストリームに接続すると、後述するAPI操作や、投稿の購読を行ったりすることができます。 しかしまだこの段階では、例えばタイムラインへの新しい投稿を受信したりすることはできません。 それを行うには、ストリーム上で、後述する**チャンネル**に接続する必要があります。
+To connect to the stream, using the later-mentioned API or subscribing to individual posts is possible. At this stage however it is not possible to receive timeline information about things such as new posts arriving yet. To do this, connecting to later-mentioned **Channels** is required.
 
-**ストリームでのやり取りはすべてJSONです。**
+**All interactions of sending to and receiving from the Stream are done in JSON format.**
 
 ## Channels
-MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+Within the Misskey Streaming API, a concept called Channels exists.これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
 
 ### Connecting to a channel
-チャンネルに接続するには、次のようなデータをJSONでストリームに送信します:
+To connect to a channel, send a message in JSON format like the following to the stream:
 
 ```json
 {
