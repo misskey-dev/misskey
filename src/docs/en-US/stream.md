@@ -162,7 +162,7 @@ Here,
 * `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
 * `body`には、レスポンスが含まれています。
 
-## 投稿のキャプチャ
+## Post capturing
 
 Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
 
@@ -274,11 +274,11 @@ E.g.:
 }
 ```
 
-### 投稿のキャプチャを解除する
+### Cancel post capturing
 
-その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
+Once a post is no longer displayed on the screen and events related to it do not need to be received any longer, please cancel post capturing on it.
 
-次のメッセージを送信します:
+Send the following message:
 
 ```json
 {
@@ -290,9 +290,9 @@ E.g.:
 ```
 
 Here,
-* `id`にキャプチャを解除したい投稿の`id`を設定します。
+* the value of `id` must be the `id` of the post for which to cancel capturing.
 
-このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
+Once you send this message, events related to this post will no longer be transmitted.
 
 # List of channels
 ## `main`
