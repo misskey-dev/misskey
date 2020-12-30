@@ -1,7 +1,7 @@
 <template>
 <div class="ipledcug">
 	<div class="_fullinfo">
-		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
+		<img data-src="/assets/not-found.jpg" loading="lazy" alt="Not Found" class="_ghost"/>
 		<div>{{ $ts.notFoundDescription }}</div>
 	</div>
 </div>
