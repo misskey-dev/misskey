@@ -32,7 +32,7 @@ To connect to the stream, using the later-mentioned API or subscribing to indivi
 **All interactions of sending to and receiving from the Stream are done in JSON format.**
 
 ## Channels
-Within the Misskey Streaming API, a concept called Channels exists.これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+Within the Misskey Streaming API, a concept called Channels exists.These are used for the purpose of separating which data to receive. When first connecting to the Misskey Stream, you can not receive real-time updates yet. By connecting to channels in the stream, both sending and receiving various information related to said channels becomes possible.
 
 ### Connecting to a channel
 To connect to a channel, send a message in JSON format like the following to the stream:
@@ -104,7 +104,7 @@ Here,
 * `body` sets the actual contents of the message.The types of content a channel accepts varies depending on which channel it is being sent to.
 
 ### Disconnecting from a channel
-チャンネルから切断するには、次のようなデータをJSONでストリームに送信します:
+To connect to a channel, send a JSON message like the following to the stream:
 
 ```json
 {
@@ -120,9 +120,9 @@ Here,
 
 ## Making API requests via streams
 
-ストリームを経由してAPIリクエストすると、HTTPリクエストを発生させずにAPIを利用できます。そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
+It is possible to send requests to the API without a HTTP request by using the Stream.Doing so might help with keeping code cleaner and more efficient.
 
-ストリームを経由してAPIリクエストするには、次のようなデータをJSONでストリームに送信します:
+To send an API request through the stream, send a JSON message like the following to the stream:
 ```json
 {
     type: 'api',
@@ -164,13 +164,13 @@ Here,
 
 ## Post capturing
 
-Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
+Misskey provides a structure called Post capturing".This structure makes it possible to receive events about a targeted post from the stream.
 
-例えばタイムラインを取得してユーザーに表示したとします。ここで誰かがそのタイムラインに含まれるどれかの投稿に対してリアクションしたとします。
+For example, to fetch and display a timeline to a user.Imagine that someone reacts to a post on this timeline.
 
-しかし、クライアントからするとある投稿にリアクションが付いたことなどは知る由がないため、リアルタイムでリアクションをタイムライン上の投稿に反映して表示するといったことができません。
+Since the client does not have any way of knowing that a certain post has received a reaction, it is not possible to reflect the reaction on this post in real-time.
 
-この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+To solve this problem, Misskey introduced the feature of Post capturing.投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
 
 ### Capturing a post
 
