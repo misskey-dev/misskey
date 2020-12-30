@@ -7,7 +7,7 @@ APIを使い始めるには、まずアクセストークンを取得する必�
 ## Obtaining an access token
 基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
 
-* 前者の場合: [「自分自身のアクセストークンを手動発行する」](#自分自身のアクセストークンを手動発行する)に進む
+* In case of the former: Move on to "Manually issuing your own access token"
 * 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
 
 ### Manually issuing your own access token
@@ -16,7 +16,7 @@ You can create an access token in Settings > API
 [Proceed to using the API.](#APIの使い方)
 
 ### Requesting the user to generate an access token
-アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
+To obtain the access token of the end user for your app, request permissions for it via the below process.
 
 #### Step 1
 
@@ -26,10 +26,10 @@ Generate a UUID.We will call it the session ID from here on.
 
 #### Step 2
 
-`{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
+Open the URL `{_URL_}/miauth/{session}` in the user's browser.Replace the `{session}` part with your previously generated session ID.
 > E.g.: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
-表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
+When opening this URL, you can set various settings via query prameters:
 * `name` ... Application name
     * > E.g.: `MissDeck`
 * `icon` ... Icon URL of the application
@@ -52,7 +52,7 @@ Properties included in the response:
 [Proceed to using the API.](#APIの使い方)
 
 ## Using the API
-**APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
+**All API requests are POST, and all request and response data is formatted in JSON.There is no REST support.** The access token must be included in the request parameter called `i`.
 
 * [API Reference](/api-doc)
 * [Streaming API](./stream)
