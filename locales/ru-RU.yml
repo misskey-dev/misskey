@@ -668,6 +668,7 @@ showGapBetweenNotesInTimeline: "Показывать разделитель ме
 duplicate: "Дубликат"
 left: "Влево"
 center: "По центру"
+clearCache: "Очистить кэш"
 _aboutMisskey:
   about: "Misskey — программа с открытым исходным кодом, которую разрабатывает syuilo с 2014 года."
   contributors: "Основные соавторы"
