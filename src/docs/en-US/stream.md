@@ -51,7 +51,7 @@ To connect to a channel, send a message in JSON format like the following to the
 ```
 
 Here,
-* `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
+* `channel` specifies the name of the channel to connect to.A list of valid channels will be given later.
 * `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
 * `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
 
