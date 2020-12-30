@@ -735,6 +735,11 @@ _mfm:
   twitchDescription: "Infuses a strongly twitching animation."
   spin: "Animation (Spin)"
   spinDescription: "Infuses a spinning animation."
+  x2: "Big"
+  x2Description: "Display content bigger."
+  x3: "Very big"
+  blur: "Blur"
+  blurDescription: "Content can be blurred via this effect. It will be clearly displayed by hovering your cursor above it."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
