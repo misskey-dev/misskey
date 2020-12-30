@@ -1,21 +1,21 @@
 # Misskey API
 
-MisskeyAPIを使ってMisskeyクライアント、Misskey連携Webサービス、Bot等(以下「アプリケーション」と呼びます)を開発できます。 ストリーミングAPIもあるので、リアルタイム性のあるアプリケーションを作ることも可能です。
+Using the Misskey API you can develop Misskey clients, Webservices integrating with Misskey, Bots (later called "Applications" here) etc. The streaming API also exists, so it is also possible to create real-time applications.
 
-APIを使い始めるには、まずアクセストークンを取得する必要があります。 このドキュメントでは、アクセストークンを取得する手順を説明した後、基本的なAPIの使い方を説明します。
+To starting using the API, you first need to get an access token. This page will explain how to acquire an access token and then give basic API usage instructions.
 
 ## Obtaining an access token
-基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
+Fundamentally, all API requests require an access token. The method of acquiring such an access token will vary depending on whether you yourself are sending API requests or requests are being sent through an application used by an end-user.
 
-* In case of the former: Move on to "Manually issuing your own access token"
-* 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
+* In case of the former:  Move on to [ "Manually issuing your own access token" ](#自分自身のアクセストークンを手動発行する)
+* In case of the latter: Move on to [ "Requesting the application user to generate an access token" ](#アプリケーション利用者にアクセストークンの発行をリクエストする)
 
 ### Manually issuing your own access token
 You can create an access token in Settings > API
 
 [Proceed to using the API.](#APIの使い方)
 
-### Requesting the user to generate an access token
+### Requesting the application user to generate an access token
 To obtain the access token of the end user for your app, request permissions for it via the below process.
 
 #### Step 1
