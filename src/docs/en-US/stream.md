@@ -137,17 +137,17 @@ Here,
 ```
 
 Here,
-* `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
-* `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
+* `id` must be set to an unique ID with which to identify separate request responses.This can be something such as an UUID or a simple random number generator.
+* `endpoint` contains the API endpoint to which the request is sent.
 * `data`には、エンドポイントのパラメータを含めます。
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> APIのエンドポイントやパラメータについてはAPIリファレンスをご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Please check the API reference for possible API endpoints and parameters.</p>
 </div>
 
 ### Receiving responses
 
-APIへリクエストすると、レスポンスがストリームから次のような形式で流れてきます。
+Once you send a request to the API, the stream will send a response message similar to the following:
 
 ```json
 {
@@ -159,8 +159,8 @@ APIへリクエストすると、レスポンスがストリームから次の�
 ```
 
 Here,
-* `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
-* `body`には、レスポンスが含まれています。
+* the `xxxxxxxxxxxxxxxx` part will normally be replaced with that request's previously set `id`.Due to this, it is easy to tell which response corresponds to which request.
+* the actual response data is included as `body`.
 
 ## Post capturing
 
@@ -188,9 +188,9 @@ To capture a post, send a message like the following to the stream:
 Here,
 * the value of `id` must be the `id` of the post to capture.
 
-このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
+Sending this message requests Misskey to capture it and thus events related to this post will start to be emitted.
 
-例えば投稿にリアクションが付いたとすると、次のようなメッセージが流れてきます:
+For example, when a reaction is added to the post, the following message will be emitted:
 
 ```json
 {
@@ -209,7 +209,7 @@ Here,
 Here,
 * the ID of the note that caused the event is included in the `id` of the `body`.
 * the type of the event is included in the `type` of the `body`.
-* `body`内の`body`に、イベントの詳細が設定されます。
+* the details of the event are included in the `body` of the `body`.
 
 #### Types of events
 
