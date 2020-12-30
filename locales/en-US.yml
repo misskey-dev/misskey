@@ -673,6 +673,7 @@ narrow: "Narrow"
 reloadToApplySetting: "This setting will be applied upon page reload. Reload now?"
 showTitlebar: "Show title bar"
 clearCache: "Clear cache"
+onlineUsersCount: "{n} people are online"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
@@ -994,6 +995,7 @@ _widgets:
   postForm: "Compose a note"
   slideshow: "Slideshow"
   button: "Button"
+  onlineUsers: "Online users"
 _cw:
   hide: "Hide"
   show: "Load more"
