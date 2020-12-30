@@ -170,7 +170,7 @@ For example, to fetch and display a timeline to a user.Imagine that someone reac
 
 Since the client does not have any way of knowing that a certain post has received a reaction, it is not possible to reflect the reaction on this post in real-time.
 
-To solve this problem, Misskey introduced the feature of Post capturing.投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+To solve this problem, Misskey introduced the feature of Post capturing.If you capture a post, events related to said post will be transmitted in real-time, allowing you to reflect the reaction to it on the timeline immediately.
 
 ### Capturing a post
 
@@ -307,7 +307,7 @@ This event will be emitted when one of your posts is renoted.If you renote your 
 This event will be emitted when someone mentions you.
 
 #### `readAllNotifications`
-This event indicates that all your notifications have been set to read.このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
+This event indicates that all your notifications have been set to read.It is expected to be used in cases such as turning off the indicator that there are unread notifications.
 
 #### `meUpdated`
 This event indicates that your profile information has been updated.
