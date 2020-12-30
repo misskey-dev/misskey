@@ -455,6 +455,7 @@ remote: "リモート"
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
+clearCache: "キャッシュにさいなら"
 _mfm:
   mention: "メンション"
   quote: "引用"
