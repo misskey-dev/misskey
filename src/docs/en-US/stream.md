@@ -77,14 +77,14 @@ When a channel sends a message, a JSON message like the following will be transm
 ```
 
 Here,
-* `id` refers to the ID that was previously set when connecting to the channel.Using this, it's possible to figure out which channel a message came from.
+* `id` refers to the ID that was previously set when connecting to the channel.Using this, it is possible to figure out which channel a message came from.
 * `type` contains the type of this message.Which types of messages are sent varies depending on the channel the message came from.
-* `body` contains the actual contents of this message.チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
+* `body` contains the actual contents of this message.What kind of data is included varies depending on the channel the message came from.
 
-### チャンネルに向けてメッセージを送信する
-チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
+### Sending messages to channels
+Depending on the channel, it is not only possible to receive messages, but also to send messages to the channel which can then trigger various different actions.
 
-チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
+To send a message to a channel, send a message in JSON format like the following one to the stream:
 ```json
 {
     type: 'channel',
@@ -99,9 +99,9 @@ Here,
 ```
 
 Here,
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
-* `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
-* `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
+* `id` refers to the ID that was previously set when connecting to the channel.Using this, it is possible to tell for which channel a message is intended.
+* `type` sets the type of this message.The types of messages a channel accepts varies depending on the channel the message is being sent to.
+* `body` sets the actual contents of the message.The types of content a channel accepts varies depending on which channel it is being sent to.
 
 ### Disconnecting from a channel
 チャンネルから切断するには、次のようなデータをJSONでストリームに送信します:
@@ -116,7 +116,7 @@ Here,
 ```
 
 Here,
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
+* `id` refers to the ID that was previously set when connecting to the channel.
 
 ## Making API requests via streams
 
