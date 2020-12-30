@@ -52,17 +52,17 @@ To connect to a channel, send a message in JSON format like the following to the
 
 Here,
 * `channel` specifies the name of the channel to connect to.A list of valid channels will be given later.
-* `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
-* `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
+* `id` contains an arbitrary ID for both sending to and receiving from this channel.The stream sends out various different messages, so to differentiate which channel a message came from, such an ID is required.This ID can be something such as an UUID or a simple random number generator output.
+* `params` include the parameters for connecting to the channel.Which parameters are required for connecting varies by channel.For channels which do not require any parameters, this property can be omitted.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
+    <p><i class="fas fa-info-circle"></i> These IDs should be unique for each individual connection to a channel, not for each channel only.This is for cases in which multiple different connections with different parameters are made to the same channel.</p>
 </div>
 
 ### Receiving messages from channels
-例えばタイムラインのチャンネルなら、新しい投稿があった時にメッセージを発します。そのメッセージを受け取ることで、タイムラインに新しい投稿がされたことをリアルタイムで知ることができます。
+For example, when an event is emitted in one of the timeline channels due to a new post being made.By receiving such messages, it's possible to become aware of new posts being made in a timeline in real-time.
 
-チャンネルがメッセージを発すると、次のようなデータがJSONでストリームに流れてきます:
+When a channel sends a message, a JSON message like the following will be transmitted:
 ```json
 {
     type: 'channel',
@@ -77,9 +77,9 @@ Here,
 ```
 
 Here,
-* `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
-* `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
-* `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
+* `id` refers to the ID that was previously set when connecting to the channel.Using this, it's possible to figure out which channel a message came from.
+* `type` contains the type of this message.Which types of messages are sent varies depending on the channel the message came from.
+* `body` contains the actual contents of this message.チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
 
 ### チャンネルに向けてメッセージを送信する
 チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
@@ -137,7 +137,7 @@ Here,
 ```
 
 Here,
-* `id` must be set to an unique ID with which to identify separate request responses.This can be something such as an UUID or a simple random number generator.
+* `id` must be set to an unique ID with which to identify separate request responses.This can be something such as an UUID or a simple random number generator output.
 * `endpoint` contains the API endpoint to which the request is sent.
 * `data` contains the endpoint parameters to send.
 
