@@ -667,9 +667,13 @@ _reversi:
   reversi: "黑白棋"
   gameSettings: "對弈設定"
   chooseBoard: "選擇棋盤"
+  blackOrWhite: "黑棋/白棋"
+  blackIs: "{name}在玩黑棋"
   rules: "規則"
   botSettings: "機器人設定"
+  waitingBoth: "請準備"
   ready: "已就緒"
+  cancelReady: "重新準備"
   opponentTurn: "對手回合"
   myTurn: "你的回合"
   turnOf: "{name}的回合"
@@ -681,6 +685,8 @@ _reversi:
   ended: "已結束"
   playing: "正在對弈"
 _instanceTicker:
+  none: "隱藏"
+  remote: "向遠端使用者顯示"
   always: "總是顯示"
 _serverDisconnectedBehavior:
   reload: "自動重載"
@@ -705,6 +711,9 @@ _wordMute:
   softDescription: "隱藏時間軸中指定條件的箋文。"
   mutedNotes: "已靜音的箋文"
 _theme:
+  explore: "取得佈景主題"
+  install: "安裝佈景主題"
+  manage: "佈景主題管理員"
   constant: "常數"
   defaultValue: "預設值"
   color: "顏色"
