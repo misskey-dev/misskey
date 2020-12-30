@@ -191,6 +191,7 @@ export default defineComponent({
 			} : undefined, null, {
 				icon: faTrashAlt,
 				text: this.$ts.remove,
+				danger: true,
 				action: () => {
 					removeColumn(this.column.id);
 				}
