@@ -578,6 +578,7 @@ fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
 random: "Aléatoire"
 public: "Public"
+clearCache: "Vider le cache"
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"
