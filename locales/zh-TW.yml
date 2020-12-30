@@ -669,6 +669,7 @@ _reversi:
   chooseBoard: "選擇棋盤"
   rules: "規則"
   botSettings: "機器人設定"
+  ready: "已就緒"
   opponentTurn: "對手回合"
   myTurn: "你的回合"
   turnOf: "{name}的回合"
@@ -696,6 +697,7 @@ _channel:
   usersCount: "有{n}人參與"
   notesCount: "有{n}個帖子"
 _sidebar:
+  full: "全部"
   icon: "頭像"
   hide: "隱藏"
 _wordMute:
