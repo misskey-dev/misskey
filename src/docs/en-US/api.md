@@ -27,27 +27,27 @@ Generate a UUID.We will call it the session ID from here on.
 #### Step 2
 
 `{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
-> 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
+> E.g.: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
-* `name` ... アプリケーション名
+* `name` ... Application name
     * > E.g.: `MissDeck`
-* `icon` ... アプリケーションのアイコン画像URL
+* `icon` ... Icon URL of the application
     * > E.g.: `https://missdeck.example.com/icon.png`
-* `callback` ... 認証が終わった後にリダイレクトするURL
+* `callback` ... URL to redirect to after authorization
     * > E.g.: `https://missdeck.example.com/callback`
-    * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
-* `permission` ... アプリケーションが要求する権限
+    * In the redirect a `session` query parameter containing the session ID will be attached.
+* `permission` ... Permissions requested by the application
     * > E.g.: `write:notes,write:following,read:drive`
-    * 要求する権限を`,`で区切って列挙します
-    * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
+    * List the requested permissions separated with a `,` character.
+    * You can check all available permissions at the [API Reference](/api-doc)
 
 #### Step 3
 ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
 
-レスポンスに含まれるプロパティ:
-* `token` ... ユーザーのアクセストークン
-* `user` ... ユーザーの情報
+Properties included in the response:
+* `token` ... Access token of the user
+* `user` ... User data
 
 [Proceed to using the API.](#APIの使い方)
 
