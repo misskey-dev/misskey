@@ -1,6 +1,6 @@
 <template>
 <XWindow ref="window"
-	:initial-width="700"
+	:initial-width="500"
 	:initial-height="500"
 	:can-resize="true"
 	:close-right="true"

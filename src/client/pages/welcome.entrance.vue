@@ -1,32 +1,36 @@
 <template>
-<div class="rsqzvsbo _section" v-if="meta">
-	<div class="overview _monospace" v-if="stats">
-		<div class="stats">
-			<div><span>Users</span><span>{{ number(stats.originalUsersCount) }}</span></div>
-			<div><span>Notes</span><span>{{ number(stats.originalNotesCount) }}</span></div>
-			<div><span>Reactions</span><span>{{ number(stats.reactionsCount) }}</span></div>
-		</div>
-		<div class="tags">
-			<MkA class="tag" v-for="tag in tags" :to="`/tags/${encodeURIComponent(tag.tag)}`">#{{ tag.tag }}</MkA>
+<div class="rsqzvsbo" v-if="meta">
+	<div class="top">
+		<div class="main _panel">
+			<div class="bg" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }">
+				<div class="fade"></div>
+			</div>
+			<div class="fg">
+				<h1>
+					<img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
+				</h1>
+				<div class="about">
+					<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
+				</div>
+				<div class="action">
+					<MkButton @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
+					<MkButton @click="signin()" inline>{{ $ts.login }}</MkButton>
+				</div>
+				<div class="status" v-if="onlineUsersCount">
+					<I18n :src="$ts.onlineUsersCount" text-tag="span" class="online">
+						<template #n><b>{{ onlineUsersCount }}</b></template>
+					</I18n>
+				</div>
+				<button class="_button _acrylic menu" @click="showMenu"><Fa :icon="faEllipsisH"/></button>
+			</div>
 		</div>
 	</div>
-	<template v-if="meta.pinnedClipId">
-		<h2># {{ $ts.pinnedNotes }}</h2>
-		<MkPagination :pagination="clipPagination" #default="{items}">
-			<XNote class="kmkqjgkl" v-for="note in items" :note="note" :key="note.id"/>
-		</MkPagination>
-	</template>
-	<template v-else>
-		<h2># {{ $ts.featured }}</h2>
-		<MkPagination :pagination="featuredPagination" #default="{items}">
-			<XNote class="kmkqjgkl" v-for="note in items" :note="note" :key="note.id"/>
-		</MkPagination>
-	</template>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { faEllipsisH, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode } from 'punycode';
 import XSigninDialog from '@/components/signin-dialog.vue';
 import XSignupDialog from '@/components/signup-dialog.vue';
@@ -51,6 +55,7 @@ export default defineComponent({
 			meta: null,
 			stats: null,
 			tags: [],
+			onlineUsersCount: null,
 			clipPagination: {
 				endpoint: 'clips/notes',
 				limit: 10,
@@ -63,6 +68,7 @@ export default defineComponent({
 				limit: 10,
 				offsetMode: true
 			},
+			faEllipsisH
 		};
 	},
 
@@ -73,6 +79,10 @@ export default defineComponent({
 
 		os.api('stats').then(stats => {
 			this.stats = stats;
+		});
+
+		os.api('get-online-users-count').then(res => {
+			this.onlineUsersCount = res.count;
 		});
 
 		os.api('hashtags/list', {
@@ -96,6 +106,28 @@ export default defineComponent({
 			}, {}, 'closed');
 		},
 
+		showMenu(ev) {
+			os.modalMenu([{
+				text: this.$t('aboutX', { x: instanceName }),
+				icon: faInfoCircle,
+				action: () => {
+					os.pageWindow('/about');
+				}
+			}, {
+				text: this.$ts.aboutMisskey,
+				icon: faInfoCircle,
+				action: () => {
+					os.pageWindow('/about-misskey');
+				}
+			}, null, {
+				text: this.$ts.help,
+				icon: faQuestionCircle,
+				action: () => {
+					os.pageWindow('/docs');
+				}
+			}], ev.currentTarget || ev.target);
+		},
+
 		number
 	}
 });
@@ -103,79 +135,87 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rsqzvsbo {
-	text-align: center;
+	> .top {
+		display: flex;
+		text-align: center;
+		min-height: 100vh;
+		box-sizing: border-box;
+		padding: 16px;
 
-	> h2 {
-		display: inline-block;
-		color: #fff;
-		margin: 16px;
-		padding: 8px 12px;
-		background: rgba(0, 0, 0, 0.5);
-	}
+		> .main {
+			position: relative;
+			width: min(490px, 100%);
+			margin: auto;
+			box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 
-	> .overview {
-		> .stats, > .tags {
-			display: inline-block;
-			vertical-align: top;
-			width: 530px;
-			padding: 32px;
-			margin: 16px;
-			box-sizing: border-box;
-
-			@media (max-width: 800px) {
-				display: block;
+			> .bg {
+				position: absolute;
+				top: 0;
+				left: 0;
 				width: 100%;
-				margin: 12px 0;
-			}
-		}
+				height: 128px;
+				background-position: center;
+				background-size: cover;
+				opacity: 0.75;
 
-		> .stats {
-			background: var(--accent);
-			border-radius: 12px;
-			color: #fff;
-			font-size: 1.5em;
-
-			> div {
-				display: flex;
-
-				> span:first-child {
-					opacity: 0.7;
-					font-weight: bold;
-				}
-
-				> span:last-child {
-					margin-left: auto;
+				> .fade {
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					width: 100%;
+					height: 128px;
+					background: linear-gradient(0deg, var(--panel), var(--X15));
 				}
 			}
-		}
 
-		> .tags {
-			background: var(--panel);
-			border-radius: 12px;
-			color: var(--fg);
-			font-size: 1.5em;
+			> .fg {
+				position: relative;
+				z-index: 1;
 
-			> .tag {
-				margin-right: 1em;
+				> h1 {
+					display: block;
+					margin: 0;
+					padding: 32px 32px 24px 32px;
+
+					> .logo {
+						vertical-align: bottom;
+						max-height: 120px;
+					}
+				}
+
+				> .about {
+					padding: 0 32px;
+				}
+
+				> .action {
+					padding: 32px;
+				}
+
+				> .status {
+					border-top: solid 1px var(--divider);
+					padding: 32px;
+
+					> .online {
+						::v-deep(b) {
+							color: #41b781;
+						}
+
+						::v-deep(span) {
+							opacity: 0.7;
+						}
+					}
+				}
+
+				> .menu {
+					position: absolute;
+					top: 16px;
+					right: 16px;
+					width: 32px;
+					height: 32px;
+					border-radius: 8px;
+				}
 			}
 		}
-	}
-}
-
-.kmkqjgkl {
-	display: inline-block;
-	vertical-align: middle;
-	width: 530px;
-	margin: 16px;
-	box-sizing: border-box;
-	text-align: left;
-	box-shadow: 0 6px 46px rgb(0 0 0 / 25%);
-	border-radius: 12px;
-
-	@media (max-width: 800px) {
-		display: block;
-		width: 100%;
-		margin: 12px 0;
 	}
 }
 </style>

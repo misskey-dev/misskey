@@ -673,6 +673,7 @@ narrow: "狭い"
 reloadToApplySetting: "設定はページリロード後に反映されます。今すぐリロードしますか？"
 showTitlebar: "タイトルバーを表示する"
 clearCache: "キャッシュをクリア"
+onlineUsersCount: "{n}人がオンライン"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"
@@ -1015,6 +1016,7 @@ _widgets:
   postForm: "投稿フォーム"
   slideshow: "スライドショー"
   button: "ボタン"
+  onlineUsers: "オンラインユーザー"
 
 _cw:
   hide: "隠す"
