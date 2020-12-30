@@ -43,7 +43,7 @@ When opening this URL, you can set various settings via query prameters:
     * You can check all available permissions at the [API Reference](/api-doc)
 
 #### Step 3
-ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
+If you send a POST request to `{_URL_}/api/miauth/{session}/check` after the user has authorized the access token, the response will be a JSON object containing said token.
 
 Properties included in the response:
 * `token` ... Access token of the user
