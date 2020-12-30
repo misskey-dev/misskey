@@ -637,6 +637,7 @@ wide: "寬"
 narrow: "窄"
 reloadToApplySetting: "設定將會在頁面重新載入之後生效。要現在就重載頁面嗎？"
 showTitlebar: "顯示標題列"
+clearCache: "清除快取資料"
 _aboutMisskey:
   about: "Misskey是由syuilo於2014年開發的開源軟件。"
   contributors: "主要貢獻者"
