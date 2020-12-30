@@ -278,8 +278,8 @@ export default defineComponent({
 		}
 
 		this.collapsed = this.appearNote.text && (
-			(this.appearNote.text.split('\n').length > 8) ||
-			(this.appearNote.text.length > 300)
+			(this.appearNote.text.split('\n').length > 9) ||
+			(this.appearNote.text.length > 500)
 		);
 		this.muted = await checkWordMute(this.appearNote, this.$i, this.$store.state.mutedWords);
 
