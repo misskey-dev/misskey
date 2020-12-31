@@ -11,31 +11,31 @@ Name des Plugins
 Name des Plugin-Erstellers
 
 ### version
-Version des Plugins.数値を指定してください。
+Version des Plugins.Muss eine Zahl sein.
 
 ### description
-プラグインの説明
+Beschreibung des Plugins
 
 ### permissions
-プラグインが要求する権限。MisskeyAPIにリクエストする際に用いられます。
+Die vom Plugin geforderten Berechtigungen.Werden bei Anfragen der Misskey API verwendet.
 
 ### config
-プラグインの設定情報を表すオブジェクト。 キーに設定名、値に以下のプロパティを含めます。
+Ein Objekt, dass die Einstellungen des Plugins enthält. Schlüssel representieren Namen von Einstellungen, und Werte sind einer der unten genannten Eigenschaften.
 
 #### type
-設定値の種類を表す文字列。以下から選択します。 string number boolean
+Der Typ eines Einstellungswertes.Muss aus einem dieser Typen gewählt sein: string number boolean
 
 #### label
-ユーザーに表示する設定名
+Dem Benutzer angezeigter Einstellungsname
 
 #### description
-設定の説明
+Beschreibung der Einstellung
 
 #### default
-設定のデフォルト値
+Standardwert der Einstellung
 
-## APIリファレンス
-AiScript標準で組み込まれているAPIは掲載しません。
+## API-Referenz
+Direkt in den AiScript-Standard eingebaute API wird nicht aufgelistet.
 
 ### Mk:dialog(title text type)
 ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
