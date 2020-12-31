@@ -277,7 +277,7 @@ export default defineComponent({
 			this.connection = os.stream;
 		}
 
-		this.collapsed = this.appearNote.cw == null && this.appearNote.text && (
+		this.collapsed = !this.detail && this.appearNote.cw == null && this.appearNote.text && (
 			(this.appearNote.text.split('\n').length > 9) ||
 			(this.appearNote.text.length > 500)
 		);
