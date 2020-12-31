@@ -79,17 +79,17 @@ In diesem Fall sehen die Spielbrettdaten wie folgt aus:
 ```
 
 ## Erstellen eines Bots, der mit dem Benutzer durch das Zeigen von Fenstern kommunizieren kann
-ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
+Das Kommunizieren mit dem Spieler kann durch das Anzeigen von Fenstern während der Vorbereitungsphase des Spiels umgesetz werden. Beispielsweise kann so die Schwierigkeit des Bots durch den Benutzer konfiguriert werden.
 
-フォームを提示するには、`reversi-game`ストリームに次のメッセージを送信します:
+Um ein Fenster anzuzeigen, sende folgende Nachricht an den `reversi-game`-Stream:
 ```javascript
 {
   type: 'init-form',
-  body: [フォームコントロールの配列]
+  body: [Array an Fenster-Elementen]
 }
 ```
 
-フォームコントロールの配列については今から説明します。 フォームコントロールは、次のようなオブジェクトです:
+Details bezüglich des Arrays an Fenster-Elementen werden nun erklärt. Ein Element eines Fensters ist wie das folgende Objekt aufgebaut:
 ```javascript
 {
   id: 'switch1',
@@ -98,7 +98,7 @@ In diesem Fall sehen die Spielbrettdaten wie folgt aus:
   value: false
 }
 ```
-`id` ... コントロールのID。 `type` ... コントロールの種類。後述します。 `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... Die ID des Elements. `type` ... Der Typ des Elements.Diese werden später erläutert. `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
 
 ### フォームの操作を受け取る
 ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
