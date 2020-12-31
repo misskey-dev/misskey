@@ -71,4 +71,4 @@ UIに表示されるノート情報を書き換えます。 コールバック�
 第一引数に渡されたURLをブラウザの新しいタブで開きます。
 
 ### Plugin:config
-プラグインの設定が格納されるオブジェクト。プラグイン定義のconfigで設定したキーで値が入ります。
+An object containing the plugin settings.プラグイン定義のconfigで設定したキーで値が入ります。
