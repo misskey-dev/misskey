@@ -749,6 +749,8 @@ _mfm:
   x4Description: "内容を究極に大きく表示します。"
   blur: "ぼかし"
   blurDescription: "内容をぼかすことができます。ポインターを上に乗せるとはっきり見えるようになります。"
+  font: "フォント"
+  fontDescription: "内容のフォントを指定することができます。"
 
 _reversi:
   reversi: "リバーシ"
