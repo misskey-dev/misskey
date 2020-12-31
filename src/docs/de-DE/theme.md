@@ -62,7 +62,7 @@ Die Optionen des Themas werden in `props` definiert. Die Schlüssel werden zu CS
     * `:{Funktionsname}<{Parameter}<{Farbe}`
 
 #### Konstante
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+In Fällen, in denen ein Wert nicht als CSS-Variable angesehen werden soll, sondern als Wert für eine andere CSS-Variable verwendet werden soll, eignet sich die Verwendung einer Konstante. Wird ein Wert mit einem `$`-Präfix versehen, so wird er nicht als CSS-Variable, sondern als Referenz angesehen.
 
 #### Funktionen
 wip
