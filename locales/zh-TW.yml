@@ -678,6 +678,7 @@ _mfm:
   jellyDescription: "顯示果凍一樣的動畫效果。"
   bounce: "動畫(反彈)"
   shake: "動畫(搖晃)"
+  twitch: "動畫(顫抖)"
   spin: "動畫(旋轉)"
   spinDescription: "顯示旋轉的動畫效果。"
   font: "字型"
