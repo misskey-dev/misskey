@@ -98,10 +98,10 @@ Details bezüglich des Arrays an Fenster-Elementen werden nun erklärt. Ein Elem
   value: false
 }
 ```
-`id` ... Die ID des Elements. `type` ... Der Typ des Elements.Diese werden später erläutert. `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... Die ID des Elements. `type` ... Der Typ des Elements.Diese werden später erläutert. `label` ... Text der zusammen mit dem Element angezeigt wird. `value` ... Standardwert des Elements.
 
-### フォームの操作を受け取る
-ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
+### Verarbeitung von Interaktionen mit Elementen
+Interagiert der Benutzer mit einem der Elemente eines Fensters, so wird ein `update-form`-Element vom Stream gesendet. Die Inhalte dieses Events sind die ID des Elements sowie der Wert des Elements, der vom Benutzer eingestellt wurde. Wird beispielsweise der obige Beispielschalter eingeschaltet, wird das folgende Event gesendet:
 ```javascript
 {
   id: 'switch1',
@@ -109,27 +109,27 @@ Details bezüglich des Arrays an Fenster-Elementen werden nun erklärt. Ein Elem
 }
 ```
 
-### フォームコントロールの種類
+### Typen von Form-Elementen
 #### Schalter
-type: `switch` Zeigt einen Schalter an.何かの機能をオン/オフさせたい場合に有用です。
+type: `switch` Zeigt einen Schalter an.Eignet sich für Fälle, in denen etwas entweder ein- oder ausgeschaltet werden kann.
 
 ##### Attribute
 `label` ... Auf dem Schalter anzuzeigender Text.
 
 #### Optionsfeld
-type: `radio` Zeigt ein Optionsfeld an.選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+type: `radio` Zeigt ein Optionsfeld an.Eignet sich für Fälle, in denen verschiedene Optionen angezeigt werden.z.B. zur Einstellung der Stärke des Bots.
 
 ##### Attribute
 `items` ... Die verfügbaren Optionen.z.B.:
 ```javascript
 items: [{
-  label: '弱',
+  label: 'Schwach',
   value: 1
 }, {
-  label: '中',
+  label: 'Mittelmäßíg',
   value: 2
 }, {
-  label: '強',
+  label: 'Stark',
   value: 3
 }]
 ```
@@ -138,13 +138,13 @@ items: [{
 type: `slider` Zeigt einen Schieberegler an.
 
 ##### Attribute
-`min` ... スライダーの下限。 `max` ... スライダーの上限。 `step` ... 入力欄で刻むステップ値。
+`min` ... Der minimale Reglerwert. `max` ... Der maximale Reglerwert. `step` ... Der Abstand zwischen zwei Stufen des Reglers.
 
 #### Textbox
-type: `textbox` Zeigt eine Textbox an.ユーザーになにか入力させる一般的な用途に利用できます。
+type: `textbox` Zeigt eine Textbox an.Für verschiedene Fälle, in denen Texteingabe des Benutzers gefragt sind, verwendbar.
 
 ## Dem Benutzer Nachrichten zeigen
-設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
+Dies ist eine alternative Methode, um mit dem Benutzer zu kommunieren, abgesehen vom Anzeigen eines Fensters während der Vorbereitungsphase des Spiels.Hierdurch kann dem Benutzer eine Nachricht angezeigt werden. Beispielsweise kann eine Warnung angezeigt werden, falls ein Spielmodus oder eine Spielkarte ausgewählt wird, mit der der Bot nicht kompatibel ist. Um eine Nachricht anzuzeigen, muss folgende Nachricht an den Stream gesendet werden:
 ```javascript
 {
   type: 'message',
