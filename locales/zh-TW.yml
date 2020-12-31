@@ -1306,10 +1306,12 @@ _notification:
     reaction: "情感"
     receiveFollowRequest: "已收到追隨請求"
     followRequestAccepted: "追隨請求已接受"
+    groupInvited: "加入社群邀請"
     app: "應用程式通知"
 _deck:
   alwaysShowMainColumn: "總是顯示主欄"
   columnAlign: "對齊欄位"
+  columnMargin: "列之間的邊距"
   addColumn: "新增欄位"
   swapLeft: "向左移動"
   swapRight: "向右移動"
@@ -1318,6 +1320,7 @@ _deck:
   stackLeft: "向左折疊"
   popRight: "向右彈出"
   _columns:
+    main: "主列"
     widgets: "小工具"
     notifications: "通知"
     tl: "時間軸"
