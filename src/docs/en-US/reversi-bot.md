@@ -13,7 +13,7 @@ This page will explain how to develop a bot for Misskey's Reversi function.
     * `i`: API key of the bot account
     * `game`: The `id` of the `game`
 
-5. In the meanwhile, the opponent can modify the game's settings. Each time this happens, a `update-settings` event is emitted, so implement logic to handle these events if necessary.
+5. In the meanwhile, the opponent can modify the game's settings. Each time this happens, a `update-settings` event is emitted, so implementing logic to handle these events may be necessary.
 
 6. Once satisfied with the settings, send a `{ type: 'accept' }` message to the stream.
 
@@ -78,7 +78,7 @@ In this case, the map data look like this:
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## Creating an interactive bot showing a form to the user
+## Creating a bot that can interact with the user through forms
 To communicate with the user, you can show them a form in the settings screen. For example, to let the user select the strength of the Bot.
 
 To display a form, send the following message to the `reversi-game` stream:
