@@ -61,8 +61,8 @@
         <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd></td><td>移动到下一个回应</td><td>-</td></tr>
         <tr><td><kbd class="key">←</kbd>, <kbd class="key">H</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>移动到左边一个回应</td><td>-</td></tr>
         <tr><td><kbd class="key">→</kbd>, <kbd class="key">L</kbd>, <kbd class="key">Tab</kbd></td><td>移动到右边一个回应</td><td>-</td></tr>
-        <tr><td><kbd class="key">Enter</kbd>, <kbd class="key">Space</kbd>, <kbd class="key">+</kbd></td><td>リアクション確定</td><td>-</td></tr>
-        <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションで確定</td><td>-</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>リアクションするのをやめる</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd>, <kbd class="key">Space</kbd>, <kbd class="key">+</kbd></td><td>回应确认</td><td>-</td></tr>
+        <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>根据相应数字发表回应</td><td>-</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>取消回应</td><td>-</td></tr>
     </tbody>
 </table>
