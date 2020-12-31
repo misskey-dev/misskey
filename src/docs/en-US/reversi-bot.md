@@ -1,5 +1,5 @@
 # Development of Misskey Reversi Bots
-This page will explain how to develop an interactive bot for Misskey's Reversi function.
+This page will explain how to develop a bot for Misskey's Reversi function.
 
 1. Connect to the `games/reversi` stream with the following parameters:
     * `i`: API key of the bot account
