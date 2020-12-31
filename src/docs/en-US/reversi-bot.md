@@ -27,7 +27,7 @@ This page will explain how to develop an interactive bot for Misskey's Reversi f
     * Contains the position the stone was placed at as `pos`
 
 ## Calculating positions
-In the case of an 8x8 map, the squares on the board are arranged like this (squares are marked with their respective index):
+In the case of an 8x8 map, the fields of the board are arranged like this (fields are marked with their respective index):
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -54,9 +54,9 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ## Map information
-Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a piece. Based on this data, you can reconstruct the map state:
-* `(Empty)` ... No piece
-* `-` ... Piece
+Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a field. Based on this data, you can reconstruct the map state:
+* `(Empty)` ... No field
+* `-` ... Field
 * `b` ... Piece placed first was black
 * `w` ... Piece placed first was white
 
