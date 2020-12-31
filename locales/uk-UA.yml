@@ -46,6 +46,7 @@ copyUsername: "Скопіювати ім’я користувача"
 searchUser: "Пошук користувачів"
 reply: "Відповісти"
 loadMore: "Показати більше"
+showMore: "Показати більше"
 youGotNewFollower: "Новий підписник"
 receiveFollowRequest: "Отримано запит на підписку"
 followRequestAccepted: "Підписка прийнята"
@@ -611,6 +612,7 @@ useSystemFont: "Використовувати стандартний шрифт
 clips: "Добірка"
 experimentalFeatures: "Експериментальні функції"
 developer: "Розробник"
+clearCache: "Очистити кеш"
 _aboutMisskey:
   about: "Misskey - це програмне забезпечення з відкритим кодом, яке розробляє syuilo з 2014 року."
   contributors: "Головні помічники"
@@ -664,6 +666,7 @@ _mfm:
   shake: "Анімація (Shake)"
   twitch: "Анімація (Twitch)"
   spin: "Анімація (Spin)"
+  font: "Шрифт"
 _reversi:
   reversi: "Реверсі"
   gameSettings: "Налаштування гри"

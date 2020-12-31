@@ -1,4 +1,4 @@
 # AiScript
 
 ## Functions
-デフォルトで値渡しです。
+Behave as pass by value by default.

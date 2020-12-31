@@ -1,33 +1,33 @@
-# MisskeyリバーシBotの開発
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+# Development of Misskey Reversi Bots
+This page will explain how to develop an interactive bot for Misskey's Reversi function.
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+1. Connect to the `games/reversi` stream with the following parameters:
+    * `i`: API key of the bot account
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+2. When an invitation to a game arrives, an `invited` event is emitted from the stream.
+    * Information about the user who sent the invitation is included in the event as `parent`.
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. Send a request to `games/reversi/match` including the `id` of the `parent` as `user_id`
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
-    * `game`: `game`の`id`
+4. If the request suceeds, information about the game will be returned. Then, send a request to the `games/reversi-game` stream with the following parameters:
+    * `i`: API key of the bot account
+    * `game`: The `id` of the `game`
 
-5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
+5. In the meanwhile, the opponent can modify the game's settings. Each time this happens, a `update-settings` event is emitted, so implement logic to handle these events if necessary.
 
-6. 設定に満足したら、`{ type: 'accept' }`メッセージをストリームに送信する
+6. Once satisfied with the settings, send a `{ type: 'accept' }` message to the stream.
 
-7. ゲームが開始すると、`started`イベントが流れてくる
-    * イベントの中身にはゲーム情報が含まれている
+7. When the game starts, a `started` event is emitted.
+    * Information about the game's state is included in this event
 
-8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
+8. To place a stone, send `{ type: 'set', pos: <Position> }` to the stream (how to calculate positions will be explained later).
 
-9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
-    * `color`として石の色が含まれている
-    * `pos`として位置情報が含まれている
+9. When the opponent or you place a stone, the `set` event is emitted.
+    * Contains the color of the placed stone as `color`
+    * Contains the position the stone was placed at as `pos`
 
-## 位置の計算法
-8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
+## Calculating positions
+In the case of an 8x8 map, the squares on the board are arranged like this (squares are marked with their respective index):
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -38,29 +38,29 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 ...
 ```
 
-### X,Y座標 から インデックス に変換する
+### Find indices from X, Y coordinates
 ```
 pos = x + (y * mapWidth)
 ```
-`mapWidth`は、ゲーム情報の`map`から、次のようにして計算できます:
+`mapWidth` can be acquired from the `map` information as follows:
 ```
 mapWidth = map[0].length
 ```
 
-### インデックス から X,Y座標 に変換する
+### Find X, Y coordinates from indices
 ```
 x = pos % mapWidth
 y = Math.floor(pos / mapWidth)
 ```
 
-## マップ情報
-マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
-* `(スペース)` ... マス無し
-* `-` ... マス
-* `b` ... 初期配置される黒石
-* `w` ... 初期配置される白石
+## Map information
+Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a piece. Based on this data, you can reconstruct the map state:
+* `(Space)` ... No piece
+* `-` ... Piece
+* `b` ... Piece placed first was black
+* `w` ... Piece placed first was white
 
-例えば、4*4の次のような単純なマップがあるとします:
+For example, suppose a situation with the following 4*4 board:
 ```text
 +---+---+---+---+
 |   |   |   |   |
@@ -73,23 +73,23 @@ y = Math.floor(pos / mapWidth)
 +---+---+---+---+
 ```
 
-この場合、マップデータはこのようになります:
+In this case, the map data look like this:
 ```javascript
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## ユーザーにフォームを提示して対話可能Botを作成する
-ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
+## Creating an interactive bot showing a form to the user
+To communicate with the user, you can show them a form in the settings screen. For example, to let the user select the strength of the Bot.
 
-フォームを提示するには、`reversi-game`ストリームに次のメッセージを送信します:
+To display a form, send the following message to the `reversi-game` stream:
 ```javascript
 {
   type: 'init-form',
-  body: [フォームコントロールの配列]
+  body: [Array of form control fields]
 }
 ```
 
-フォームコントロールの配列については今から説明します。 フォームコントロールは、次のようなオブジェクトです:
+From here on, the structure of form control elements will be explained. Form controls are objects arranged as follows:
 ```javascript
 {
   id: 'switch1',
@@ -98,10 +98,10 @@ y = Math.floor(pos / mapWidth)
   value: false
 }
 ```
-`id` ... コントロールのID。 `type` ... コントロールの種類。後述します。 `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... The ID of the control element. `type` ... The type of the control element.Explained later. `label` ... Text displayed alongside the control element. `value` ... Default value of the control element.
 
-### フォームの操作を受け取る
-ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
+### Handling form interactions
+When the user interacts with the form, an `update-form` event is emitted. Included in this event is the control element's ID as well as the value of the setting the user changed. For example, if the user flipped the switch from above to on, the following event would be emitted:
 ```javascript
 {
   id: 'switch1',
@@ -109,52 +109,52 @@ y = Math.floor(pos / mapWidth)
 }
 ```
 
-### フォームコントロールの種類
+### Types of form control elements
 #### Switch
-type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
+type: `switch` Shows a slider.These can be helpful for functions that can be turned either on or off.
 
-##### プロパティ
-`label` ... スイッチに表記するテキスト。
+##### Properties
+`label` ... The text written on the switch.
 
-#### ラジオボタン
-type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+#### Radio button
+type: `radio` Shows a radio button.These can be useful for choices.For example to choose the strength of the Bot.
 
-##### プロパティ
-`items` ... ラジオボタンの選択肢。例:
+##### Properties
+`items` ... The options of the radio button.E.g.:
 ```javascript
 items: [{
-  label: '弱',
+  label: 'Weak',
   value: 1
 }, {
-  label: '中',
+  label: 'Moderate',
   value: 2
 }, {
-  label: '強',
+  label: 'Strong',
   value: 3
 }]
 ```
 
-#### スライダー
-type: `slider` スライダーを表示します。
+#### Slider
+type: `slider` Shows a slider.
 
-##### プロパティ
-`min` ... スライダーの下限。 `max` ... スライダーの上限。 `step` ... 入力欄で刻むステップ値。
+##### Properties
+`min` ... The minimum value of the slider. `max` ... The maximum value of the slider. `step` ... The step between each value on the slider.
 
-#### テキストボックス
-type: `textbox` テキストボックスを表示します。ユーザーになにか入力させる一般的な用途に利用できます。
+#### Textbox
+type: `textbox` Shows a textbox.These can be used for all general purposes which require user input.
 
-## ユーザーにメッセージを表示する
-設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
+## Showing a message to a user
+This is another way to interact with the user from the settings screen, separate from showing them a form.It's possible to display a message to the user. For example, when the user selects a map that the bot does not support, a warning can be displayed. To display a message, send the following message to the stream:
 ```javascript
 {
   type: 'message',
   body: {
-    text: 'メッセージ内容',
-    type: 'メッセージの種類'
+    text: 'Message contents',
+    type: 'Message type'
   }
 }
 ```
-メッセージの種類: `success`, `info`, `warning`, `error`。
+Message types: `success`, `info`, `warning`, `error`。
 
-## 投了する
-投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
+## Give up
+To give up, send a request to <a href="./api/endpoints/games/reversi/games/surrender">this endpoint</a>.

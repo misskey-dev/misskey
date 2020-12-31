@@ -1,34 +1,34 @@
 <template>
-<section class="rrfwjxfl _section">
+<FormBase>
 	<MkTab v-model:value="tab" style="margin-bottom: var(--margin);">
 		<option value="mute">{{ $ts.mutedUsers }}</option>
 		<option value="block">{{ $ts.blockedUsers }}</option>
 	</MkTab>
-	<div class="_content" v-if="tab === 'mute'">
+	<div v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
 			<template #empty><MkInfo>{{ $ts.noUsers }}</MkInfo></template>
 			<template #default="{items}">
-				<div class="user" v-for="mute in items" :key="mute.id">
-					<MkA class="name" :to="userPage(mute.mutee)">
+				<FormGroup>
+					<FormLink v-for="mute in items" :key="mute.id" :to="userPage(mute.mutee)">
 						<MkAcct :user="mute.mutee"/>
-					</MkA>
-				</div>
+					</FormLink>
+				</FormGroup>
 			</template>
 		</MkPagination>
 	</div>
-	<div class="_content" v-if="tab === 'block'">
+	<div v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
 			<template #empty><MkInfo>{{ $ts.noUsers }}</MkInfo></template>
 			<template #default="{items}">
-				<div class="user" v-for="block in items" :key="block.id">
-					<MkA class="name" :to="userPage(block.blockee)">
+				<FormGroup>
+					<FormLink v-for="block in items" :key="block.id" :to="userPage(block.blockee)">
 						<MkAcct :user="block.blockee"/>
-					</MkA>
-				</div>
+					</FormLink>
+				</FormGroup>
 			</template>
 		</MkPagination>
 	</div>
-</section>
+</FormBase>
 </template>
 
 <script lang="ts">
@@ -37,6 +37,9 @@ import { faBan } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@/components/ui/pagination.vue';
 import MkTab from '@/components/tab.vue';
 import MkInfo from '@/components/ui/info.vue';
+import FormLink from '@/components/form/link.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
 
@@ -45,6 +48,9 @@ export default defineComponent({
 		MkPagination,
 		MkTab,
 		MkInfo,
+		FormBase,
+		FormGroup,
+		FormLink,
 	},
 
 	emits: ['info'],
@@ -76,19 +82,3 @@ export default defineComponent({
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.rrfwjxfl {
-	> ._content {
-		max-height: 350px;
-		overflow: auto;
-
-		> .muting,
-		> .blocking {
-			> .empty {
-				opacity: 0.5 !important;
-			}
-		}
-	}
-}
-</style>
