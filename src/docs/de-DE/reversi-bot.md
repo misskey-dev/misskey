@@ -2,7 +2,7 @@
 Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
 
 1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+    * `i`: API-Schlüssel des Bot-Kontos
 
 2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
     * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
@@ -10,8 +10,8 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
 
 4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
-    * `game`: `game`の`id`
+    * `i`: API-Schlüssel des Bot-Kontos
+    * `game`: Zum `game` gehörige `id`
 
 5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
 
@@ -23,8 +23,8 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
 
 9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
-    * `color`として石の色が含まれている
-    * `pos`として位置情報が含まれている
+    * Die Farbe der Spielfigur ist als `color` enthalten
+    * Die Position der Spielfigur ist als `pos` enthalten
 
 ## Positionsberechnungen
 Im Falle eines 8x8 Spielbrettes sind die Felder wie folgt aufgestellt (jeweils mit ihrem Index versehen):
@@ -110,14 +110,14 @@ In diesem Fall sehen die Spielbrettdaten wie folgt aus:
 ```
 
 ### フォームコントロールの種類
-#### Fallunterscheidungen
-type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
+#### Schalter
+type: `switch` Zeigt einen Schalter an.何かの機能をオン/オフさせたい場合に有用です。
 
 ##### Attribute
-`label` ... スイッチに表記するテキスト。
+`label` ... Auf dem Schalter anzuzeigender Text.
 
 #### Optionsfeld
-type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+type: `radio` Zeigt ein Optionsfeld an.選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
 
 ##### Attribute
 `items` ... Die verfügbaren Optionen.z.B.:
