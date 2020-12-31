@@ -2,8 +2,8 @@
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
-## Home
-自分のフォローしているユーザーの投稿
+## Startseite
+Alle Posts von Benutzern, denen gefolgt wird
 
 ## Lokal
 全てのローカルユーザーの「ホーム」指定されていない投稿
