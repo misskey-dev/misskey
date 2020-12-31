@@ -149,12 +149,12 @@ Dies ist eine alternative Methode, um mit dem Benutzer zu kommunieren, abgesehen
 {
   type: 'message',
   body: {
-    text: 'メッセージ内容',
-    type: 'メッセージの種類'
+    text: 'Nachrichteninhalt',
+    type: 'Nachrichtentyp'
   }
 }
 ```
-Nachrichtentypen: `success`, `info`, `warning`, `error`。
+Nachrichtentypen: `success`, `info`, `warning`, `error`.
 
 ## Aufgeben
 Um aufzugeben, sende eine Anfrage an <a href="./api/endpoints/games/reversi/games/surrender">diesen Endpunkt</a>.
