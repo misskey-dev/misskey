@@ -917,6 +917,7 @@ _poll:
   voted: "已投票"
   closed: "已結束"
   remainingDays: "{d}天{h}小時後結束"
+  remainingHours: "{h}小時{m}分後結束"
 _visibility:
   public: "公開"
   home: "首頁"
@@ -1285,9 +1286,14 @@ _relayStatus:
   accepted: "已通過核准"
   rejected: "已拒絕"
 _notification:
+  youGotMention: "{name}提及到您"
+  youGotReply: "{name}回覆了您"
+  youGotQuote: "{name}引用了您"
   youRenoted: "{name} 轉發了你的箋文"
   youGotPoll: "{name}已投票"
+  youGotMessagingMessageFromUser: "{name}發送給您的訊息"
   youWereFollowed: "您有新的追隨者"
+  youReceivedFollowRequest: "您有新的追隨請求"
   yourFollowRequestAccepted: "您的追隨請求已通過"
   youWereInvitedToGroup: "您有新的群組邀請"
   _types:
