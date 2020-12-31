@@ -44,23 +44,23 @@
         <tr><th>快捷键</th><th>效果</th><th>来源</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd></td><td>转发</td><td>-</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>打开转发框</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>关闭转发框</td><td>-</td></tr>
     </tbody>
 </table>
 
-## リアクションフォーム
-デフォルトで「👍」にフォーカスが当たっている状態です。
+## 回应框
+默认使用“👍”作为回应。
 <table>
     <thead>
         <tr><th>快捷键</th><th>效果</th><th>来源</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd></td><td>上のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd></td><td>下のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">←</kbd>, <kbd class="key">H</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>左のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">→</kbd>, <kbd class="key">L</kbd>, <kbd class="key">Tab</kbd></td><td>右のリアクションにフォーカスを移動</td><td>-</td></tr>
+        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd></td><td>移动到上一个回应</td><td>-</td></tr>
+        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd></td><td>移动到下一个回应</td><td>-</td></tr>
+        <tr><td><kbd class="key">←</kbd>, <kbd class="key">H</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>移动到左边一个回应</td><td>-</td></tr>
+        <tr><td><kbd class="key">→</kbd>, <kbd class="key">L</kbd>, <kbd class="key">Tab</kbd></td><td>移动到右边一个回应</td><td>-</td></tr>
         <tr><td><kbd class="key">Enter</kbd>, <kbd class="key">Space</kbd>, <kbd class="key">+</kbd></td><td>リアクション確定</td><td>-</td></tr>
         <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションで確定</td><td>-</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>リアクションするのをやめる</td><td>-</td></tr>
