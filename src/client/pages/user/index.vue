@@ -80,7 +80,7 @@
 				</div>
 				<template v-if="page === 'index'">
 					<div v-if="user.pinnedNotes.length > 0" class="_vMargin">
-						<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+						<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
 					<div class="_vMargin">
 						<XUserTimeline :user="user"/>
@@ -195,7 +195,7 @@
 		<template v-if="page === 'index'">
 			<div class="_content _vMargin">
 				<div v-if="user.pinnedNotes.length > 0" class="_vMargin">
-					<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :detail="true" :pinned="true"/>
+					<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 				</div>
 				<XPhotos :user="user" :key="user.id" class="_vMargin"/>
 				<XActivity :user="user" :key="user.id" class="_vMargin"/>
