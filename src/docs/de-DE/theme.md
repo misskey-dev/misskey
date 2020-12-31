@@ -1,11 +1,11 @@
 # Farbthemen
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Durch die Verwendung von Farbthemen kann das Aussehen des Misskey-Clients verändert werden.
 
-## テーマの設定
-設定 > テーマ
+## Themeneinstellungen
+Einstellungen > Farbthemen
 
-## テーマを作成する
+## Erstellung eines Themas
 テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
 ``` js
 {
