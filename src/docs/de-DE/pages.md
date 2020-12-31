@@ -1,9 +1,9 @@
-# Pages
+# Seiten
 
 ## Variablen
-変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。
+Durch die Verwendung von Variablen ist es möglich, dynamische Seiten zu erstellen.Wird in einem Text <b>{ Variablenname }</b> beinhaltet, wird dies mit dem Wert dieser Variable eingesetzt.Ist Beispielsweise der Wert der Variable thing in diesem Fall <b>ai</b>, dann wird der Text <b>Hallo { thing } Welt!</b> zu <b>Hallo ai Welt!</b> ausgewertet.
 
-変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。
+Variablen werden von oben nach unten ausgewertet, d.h. Referenzen zu Variablen, die noch nicht definiert sind, sind nicht möglich.Werden Beispielsweise die Variablen <b>A, B, C</b> in der gegebenen Reihenfolge definiert, so kann sich innerhalb von <b>C</b> auf <b>A</b> oder <b>B</b> bezogen werden, aber innerhalb von <b>A</b> nicht auf <b>B</b> oder <b>C</b>.
 
 ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
 
