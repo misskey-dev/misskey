@@ -37,13 +37,13 @@ Themencodes werden im Format eines JSON5-Objekts gespeichert. Themen werden wie 
 * `name` ... Name des Themas
 * `author` ... Ersteller des Themas
 * `desc` ... Beschreibung des Themas (optional)
-* `base` ... 明るいテーマか、暗いテーマか
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
-* `props` ... テーマのスタイル定義。これから説明します。
+* `base` ... Ob dies ein Thema für den Hell- oder Dunkelmodus ist
+    * Wird `light` angegeben, so wird es als Thema des Hellmodus angezeigt, wird `dark` angegeben, so wird es als Thema des Dunkelmodus angezeigt.
+    * Das Thema erbt die Eigenschaften der hier eingestellten Vorlage.
+* `props` ... Definitionen der Themenoptionen.Diese werden im folgenden erläutert.
 
 ### Definition von Themenoptionen
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+Die Optionen des Themas werden in `props` definiert. Die Schlüssel werden zu CSS-Variablen, die Werte geben den Inhalt an. Zusätzlich werden die `props` des gewählten Basisthemas von diesem Thema geerbt. Ist die `base` dieses Themas auf `light` gesetzt, so werden sie aus [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) kopiert, ist sie auf `dark` gesetzt, so werden sie aus [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5) kopiert. Beispielsweise wird, falls sich in den `props` dieses Themas keine Definition für den Schlüssel `panel` befindet, so wird der Wert von `panel` aus dem Basisthema verwendet.
 
 #### Syntax für Wertangaben
 * Hexadezimalfarben
