@@ -666,6 +666,7 @@ _mfm:
   shake: "Анімація (Shake)"
   twitch: "Анімація (Twitch)"
   spin: "Анімація (Spin)"
+  font: "Шрифт"
 _reversi:
   reversi: "Реверсі"
   gameSettings: "Налаштування гри"
