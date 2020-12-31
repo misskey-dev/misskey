@@ -55,7 +55,7 @@ y = Math.floor(pos / mapWidth)
 
 ## Map information
 Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a piece. Based on this data, you can reconstruct the map state:
-* `(Space)` ... No piece
+* `(Empty)` ... No piece
 * `-` ... Piece
 * `b` ... Piece placed first was black
 * `w` ... Piece placed first was white
