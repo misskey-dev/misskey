@@ -5,7 +5,7 @@ Verleih deinen Gedanken über die Beiträge anderer durch Reaktionen einfach Aus
 Die in der Reaktionsauswahl angezeigten Emojis können angepasst werden. Dies ist in den Einstellungen im Unterpunkt "Reaktionen" möglich.
 
 ## Reaktionen auf Beiträge von anderen Servern
-リアクションはMisskeyオリジナルの機能であるため、リモートインスタンスがMisskeyでない限りは、ほとんどの場合「Like」としてアクティビティが送信されます。一般的にはLikeは「お気に入り」として実装されているようです。 また、相手がMisskeyであったとしても、カスタム絵文字リアクションは伝わらず、自動的に「👍」等にフォールバックされます。
+Da Reaktionen eine Misskey-spezifische Funktionalität sind, werden diese von nicht-Misskey Instanzen meist als "Like"-Aktivität interpretiert.In den meisten Fällen ist die "Like"-Funktionalität als "Favoriten"-Funktion implementiert. Zudem werden Reaktionen mit benutzerdefinierten Emojis nicht übertragen und anstattdessen automatisch auf eine "👍"-Reaktion zurückfallen, auch wenn der Interaktionspartner ein anderer Misskey-Server ist.
 
 ## Reaktionen von Benutzern anderer Server
 Werden von entfernten Servern "Like"-Aktivitäten gesendet, so werden diese von Misskey als "👍"-Reaktion interpretiert.
