@@ -1,17 +1,17 @@
-# プラグインの作成
+# Erstellung von Plugins
 Misskey Webクライアントのプラグイン機能を使うと、クライアントを拡張し、様々な機能を追加できます。 ここではプラグインの作成にあたってのメタデータ定義や、AiScript APIリファレンスを掲載します。
 
 ## Metadaten
 プラグインは、AiScriptのメタデータ埋め込み機能を使って、デフォルトとしてプラグインのメタデータを定義する必要があります。 メタデータは次のプロパティを含むオブジェクトです。
 
 ### name
-プラグイン名
+Name des Plugins
 
 ### author
-プラグイン作者
+Name des Plugin-Erstellers
 
 ### version
-プラグインバージョン。数値を指定してください。
+Version des Plugins.数値を指定してください。
 
 ### description
 プラグインの説明
