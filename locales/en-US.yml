@@ -746,6 +746,7 @@ _mfm:
   x4Description: "Displays content even bigger than bigger than big."
   blur: "Blur"
   blurDescription: "Content can be blurred via this effect. It will be clearly displayed by hovering your cursor above it."
+  font: "Font"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Game settings"
