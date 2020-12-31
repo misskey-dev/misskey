@@ -27,7 +27,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
     * `pos`として位置情報が含まれている
 
 ## Positionsberechnungen
-8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
+Im Falle eines 8x8 Spielbrettes sind die Felder wie folgt aufgestellt (jeweils mit ihrem Index versehen):
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -42,7 +42,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 ```
 pos = x + (y * mapWidth)
 ```
-`mapWidth`は、ゲーム情報の`map`から、次のようにして計算できます:
+Bei `mapWidth` handelt es sich um wie folgt aus `map` entnommene Spielbrettdaten:
 ```
 mapWidth = map[0].length
 ```
@@ -54,11 +54,11 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ## Spielbrettdaten
-マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
-* `(Leer)` ... Keine Spielfigur
-* `-` ... Spielfigur
-* `b` ... 初期配置される黒石
-* `w` ... 初期配置される白石
+Die Spielbrettdaten sind innerhalb vom in den Spieldaten enthaltenen `map`-Attribut gespeichert. Da das Spielbrett als Array von Zeichenketten representiert wird, steht jedes Symbol für ein Spielfeld. Basierend auf diesen Informationen lässt sich der Spielbrettzustand rekonstruieren.
+* `(Leer)` ... Kein Spielfeld
+* `-` ... Spielfeld
+* `b` ... Spielfeld auf dem zuerst platzierte Figur schwarz war
+* `w` ... Spielfeld auf dem zuerst platzierte Figur weiß war
 
 Sei folgendes simple 4*4 Spielbrett als Beispiel gegeben:
 ```text
@@ -120,7 +120,7 @@ type: `switch` スイッチを表示します。何かの機能をオン/オフ�
 type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
 
 ##### Attribute
-`items` ... ラジオボタンの選択肢。例:
+`items` ... Die verfügbaren Optionen.z.B.:
 ```javascript
 items: [{
   label: '弱',
@@ -134,7 +134,7 @@ items: [{
 }]
 ```
 
-#### スライダー
+#### Schieberegler
 type: `slider` Zeigt einen Schieberegler an.
 
 ##### Attribute
