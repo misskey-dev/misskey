@@ -1159,6 +1159,7 @@ _pages:
         arg1: "本文"
       _join:
         arg1: "清單"
+        arg2: "分隔字元"
       add: "加"
       _add:
         arg1: "A"
