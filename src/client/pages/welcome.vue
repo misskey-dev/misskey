@@ -8,7 +8,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XSetup from './welcome.setup.vue';
-import XEntrance from './welcome.entrance.vue';
+import XEntrance from './welcome.entrance.c.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
 

@@ -91,10 +91,6 @@ if (_DEV_) {
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
 
-if (localStorage.theme == null) {
-	applyTheme(require('@/themes/l-light.json5'));
-}
-
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
 const vh = window.innerHeight * 0.01;
@@ -204,7 +200,7 @@ watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));
 	});
-});
+}, { immediate: localStorage.theme == null });
 
 //#region Sync dark mode
 if (ColdDeviceStorage.get('syncDeviceDarkMode')) {

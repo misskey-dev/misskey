@@ -14,6 +14,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+._mfm_blur_ {
+	filter: blur(6px);
+	transition: filter 0.3s;
+
+	&:hover {
+		filter: blur(0px);
+	}
+}
+
 @keyframes mfm-spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }

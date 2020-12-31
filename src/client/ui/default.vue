@@ -54,10 +54,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, markRaw } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { host } from '@/config';
+import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XSidebar from '@/components/sidebar.vue';
 import XCommon from './_common_/common.vue';
@@ -87,8 +87,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			host: host,
-			pageKey: 0,
 			pageInfo: null,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: sidebarDef,
@@ -107,12 +105,6 @@ export default defineComponent({
 			}
 			return false;
 		}
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
-		},
 	},
 
 	created() {
@@ -155,6 +147,7 @@ export default defineComponent({
 			if (page == null) return;
 			if (page.INFO) {
 				this.pageInfo = page.INFO;
+				document.title = `${this.pageInfo.title} | ${instanceName}`;
 			}
 		},
 

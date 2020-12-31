@@ -63,7 +63,6 @@ export default defineComponent({
 		return {
 			host,
 			instanceName,
-			pageKey: 0,
 			pageInfo: null,
 			meta: null,
 			narrow: window.innerWidth < 1280,
@@ -85,12 +84,6 @@ export default defineComponent({
 				's': search,
 				'h|/': this.help
 			};
-		},
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
 		},
 	},
 
