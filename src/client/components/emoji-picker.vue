@@ -2,7 +2,7 @@
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="omfetrab _popup" :class="['w' + width, 'h' + height, { big }]">
 		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$ts.search" @paste.stop="paste" @keyup.enter="done()">
-		<div class="emojis">
+		<div class="emojis" ref="emojis">
 			<section class="result">
 				<div v-if="searchResultCustom.length > 0">
 					<button v-for="emoji in searchResultCustom"
@@ -180,6 +180,8 @@ export default defineComponent({
 
 	watch: {
 		q() {
+			this.$refs.emojis.scrollTop = 0;
+
 			if (this.q == null || this.q === '') {
 				this.searchResultCustom = [];
 				this.searchResultUnicode = [];
