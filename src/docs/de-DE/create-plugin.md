@@ -1,4 +1,4 @@
-# Erstellung von Plugins
+# Erstellen von Plugins
 Durch die Verwendung der Plugin-Funktionalität des Misskey Web-Clients kann dieser mit verschiedenen Funktionen erweitert werden. Diese Seite beinhaltet Definitionen von Metadaten für die Erstellung von Plugins sowie eine AiScript API-Referenz für Plugins.
 
 ## Metadaten
