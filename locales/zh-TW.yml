@@ -1021,6 +1021,10 @@ _rooms:
     monitor: "監視器"
     keyboard: "鍵盤"
     carpet-stripe: "條紋地毯"
+    wall-clock: "壁鐘"
+    photoframe: "相框"
+    cube: "立方體"
+    tv: "電視"
     bin: "垃圾箱"
     cup-noodle: "杯面"
     holo-display: "投影機"
@@ -1176,6 +1180,7 @@ _pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "餘數"
       _mod:
         arg1: "A"
         arg2: "B"
