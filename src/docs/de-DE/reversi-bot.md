@@ -1,4 +1,4 @@
-# MisskeyリバーシBotの開発
+# Entwicklung eines Misskey Reversi-Bots
 Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
 
 1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
@@ -53,10 +53,10 @@ x = pos % mapWidth
 y = Math.floor(pos / mapWidth)
 ```
 
-## マップ情報
+## Spielbrettdaten
 マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
-* `(スペース)` ... マス無し
-* `-` ... マス
+* `(Leer)` ... Keine Spielfigur
+* `-` ... Spielfigur
 * `b` ... 初期配置される黒石
 * `w` ... 初期配置される白石
 
@@ -110,7 +110,7 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ### フォームコントロールの種類
-#### Fallunterscheidung
+#### Fallunterscheidungen
 type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
 
 ##### プロパティ
@@ -119,7 +119,7 @@ type: `switch` スイッチを表示します。何かの機能をオン/オフ�
 #### ラジオボタン
 type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
 
-##### プロパティ
+##### Attribute
 `items` ... ラジオボタンの選択肢。例:
 ```javascript
 items: [{
