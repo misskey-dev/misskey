@@ -587,6 +587,7 @@ _mfm:
   quote: "Citer"
   emoji: "Émojis personnalisés"
   search: "Rechercher"
+  font: "Police de caractères"
 _reversi:
   total: "Total"
 _serverDisconnectedBehavior:
