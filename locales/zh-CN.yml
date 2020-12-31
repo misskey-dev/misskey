@@ -746,6 +746,7 @@ _mfm:
   x4Description: "以最大尺寸显示内容。"
   blur: "模糊"
   blurDescription: "产生模糊效果。将鼠标指针放在上面即可将内容显示出来。"
+  font: "字体"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "对局设置"
