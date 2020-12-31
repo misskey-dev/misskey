@@ -27,17 +27,17 @@
         <tr><td><kbd class="key">R</kbd></td><td>打开回复框</td><td><b>R</b>eply</td></tr>
         <tr><td><kbd class="key">Q</kbd></td><td>打开转发框</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>快速转发（不打开转发框）</td><td>-</td></tr>
-        <tr><td><kbd class="key">E</kbd>, <kbd class="key">A</kbd>, <kbd class="key">+</kbd></td><td>リアクションフォームを開く</td><td><b>E</b>mote, re<b>A</b>ction</td></tr>
-        <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションをする(対応については後述)</td><td>-</td></tr>
-        <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>お気に入りに登録</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
-        <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>投稿を削除</td><td><b>D</b>elete</tr>
-        <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>投稿に対するメニューを開く</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
-        <tr><td><kbd class="key">S</kbd></td><td>CWで隠された部分を表示 or 隠す</td><td><b>S</b>how, <b>S</b>ee</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォーカスを外す</td><td>-</td></tr>
+        <tr><td><kbd class="key">E</kbd>, <kbd class="key">A</kbd>, <kbd class="key">+</kbd></td><td>打开回应框</td><td><b>E</b>mote, re<b>A</b>ction</td></tr>
+        <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>根据相应数字发表回应（详情请参考相关说明）</td><td>-</td></tr>
+        <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>添加到收藏夹</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
+        <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>删除帖子</td><td><b>D</b>elete</tr>
+        <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>打开帖子菜单</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
+        <tr><td><kbd class="key">S</kbd></td><td>显示或隐藏CW隐藏的部分</td><td><b>S</b>how, <b>S</b>ee</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>取消选中</td><td>-</td></tr>
     </tbody>
 </table>
 
-## Renoteフォーム
+## 转发框
 
 <table>
     <thead>
