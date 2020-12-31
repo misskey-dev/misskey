@@ -1,5 +1,6 @@
 ---
 _lang_: "中文(简体)"
+headlineMisskey: "通过帖子连接在一起的网络"
 introMisskey: "欢迎！Misskey是一个开源的、去中心化的“微博客”服务。\n通过编写「帖文」来和大家分享你的以及你周围的事情吧！📡\n通过「回应」功能，可以让你快速地对大家的帖文表达反馈👍\n来探索新的世界吧！🚀"
 monthAndDay: "{month}月 {day}日"
 search: "搜索"
@@ -737,6 +738,12 @@ _mfm:
   twitchDescription: "显示强烈颤抖的动画效果。"
   spin: "动画(回转)"
   spinDescription: "显示回转的动画效果。"
+  x2: "大"
+  x2Description: "以大尺寸显示内容。"
+  x3: "非常大"
+  x3Description: "以更大尺寸显示内容。"
+  x4: "最大"
+  x4Description: "以最大尺寸显示内容。"
   blur: "模糊"
   blurDescription: "产生模糊效果。将鼠标指针放在上面即可将内容显示出来。"
 _reversi:
