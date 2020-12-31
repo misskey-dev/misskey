@@ -26,7 +26,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
     * `color`として石の色が含まれている
     * `pos`として位置情報が含まれている
 
-## 位置の計算法
+## Positionsberechnungen
 8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
 ```
 +--+--+--+--+--+--+--+--+
@@ -38,7 +38,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 ...
 ```
 
-### X,Y座標 から インデックス に変換する
+### Berechnung von Indizes durch X und Y Koordinaten
 ```
 pos = x + (y * mapWidth)
 ```
@@ -47,7 +47,7 @@ pos = x + (y * mapWidth)
 mapWidth = map[0].length
 ```
 
-### インデックス から X,Y座標 に変換する
+### Berechnung der X und Y Koordinaten durch Indizes
 ```
 x = pos % mapWidth
 y = Math.floor(pos / mapWidth)
@@ -60,7 +60,7 @@ y = Math.floor(pos / mapWidth)
 * `b` ... 初期配置される黒石
 * `w` ... 初期配置される白石
 
-例えば、4*4の次のような単純なマップがあるとします:
+Sei folgendes simple 4*4 Spielbrett als Beispiel gegeben:
 ```text
 +---+---+---+---+
 |   |   |   |   |
@@ -73,7 +73,7 @@ y = Math.floor(pos / mapWidth)
 +---+---+---+---+
 ```
 
-この場合、マップデータはこのようになります:
+In diesem Fall sehen die Spielbrettdaten wie folgt aus:
 ```javascript
 ['----', '-wb-', '-bw-', '----']
 ```
@@ -113,10 +113,10 @@ y = Math.floor(pos / mapWidth)
 #### Fallunterscheidungen
 type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
 
-##### プロパティ
+##### Attribute
 `label` ... スイッチに表記するテキスト。
 
-#### ラジオボタン
+#### Optionsfeld
 type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
 
 ##### Attribute
@@ -135,15 +135,15 @@ items: [{
 ```
 
 #### スライダー
-type: `slider` スライダーを表示します。
+type: `slider` Zeigt einen Schieberegler an.
 
-##### プロパティ
+##### Attribute
 `min` ... スライダーの下限。 `max` ... スライダーの上限。 `step` ... 入力欄で刻むステップ値。
 
-#### テキストボックス
-type: `textbox` テキストボックスを表示します。ユーザーになにか入力させる一般的な用途に利用できます。
+#### Textbox
+type: `textbox` Zeigt eine Textbox an.ユーザーになにか入力させる一般的な用途に利用できます。
 
-## ユーザーにメッセージを表示する
+## Dem Benutzer Nachrichten zeigen
 設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
 ```javascript
 {
@@ -154,7 +154,7 @@ type: `textbox` テキストボックスを表示します。ユーザーにな�
   }
 }
 ```
-メッセージの種類: `success`, `info`, `warning`, `error`。
+Nachrichtentypen: `success`, `info`, `warning`, `error`。
 
-## 投了する
-投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
+## Aufgeben
+Um aufzugeben, sende eine Anfrage an <a href="./api/endpoints/games/reversi/games/surrender">diesen Endpunkt</a>.
