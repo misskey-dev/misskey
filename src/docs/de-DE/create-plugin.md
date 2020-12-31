@@ -44,7 +44,7 @@ Zeigt ein Dialogfenster an.type muss aus einem der folgenden Werte gewählt werd
 Zeigt ein Bestätigungsfenster an.type muss aus einem der folgenden Werte gewählt werden. info success warn error question Falls kein Typ angegeben wird, wird dieser zu question gesetzt. Drückt der Benutzer "OK" wird true zurückgegeben, drückt er "Cancel" wird false zurückgegeben.
 
 ### Mk:api(endpoint params)
-Sendet eine Misskey API-Anfrage.第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
+Sendet eine Misskey API-Anfrage.Der erste Parameter gibt den API-Endpunkt an, der zweite die Anfrageparameter als Objekt.
 
 ### Mk:save(key value)
 Speichert einen beliebigen Wert dauerhaft unter einem beliebigen Namen.Der gespeicherte Wert bleibt auch nach Verlassen des AiScript-Kontexts erhalten und kann mit Mk:load ausgelesen werden.
@@ -53,19 +53,19 @@ Speichert einen beliebigen Wert dauerhaft unter einem beliebigen Namen.Der gespe
 Läd den Wert des gegebenen Schlüssels, der zuvor mit Mk:save gespeichert wurde
 
 ### Plugin:register_post_form_action(title fn)
-投稿フォームにアクションを追加します。第一引数にアクション名、第二引数にアクションが選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に投稿フォームオブジェクトが渡されます。
+Fügt dem Beitragsfenster eine Aktion hinzu.Der erste Parameter gibt den Aktionsnamen an, der zweite Parameter eine Callback-Funktion, die bei Auswahl dieser Aktion ausgeführt wird, an. Die Callback-Funktion erhält als ersten Parameter ein Beitragsfenster-Objekt.
 
 ### Plugin:register_note_action(title fn)
-ノートメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
+Fügt dem Notiz-Menü ein Listenelement hinzu.Der erste Parameter gibt den Aktionsnamen an, der zweite Parameter eine Callback-Funktion, die bei Auswahl dieses Elements ausgeführt wird, an. Die Callback-Funktion erhält als ersten Parameter ein Notiz-Objekt.
 
 ### Plugin:register_user_action(title fn)
-ユーザーメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のユーザーオブジェクトが渡されます。
+Fügt dem Benutzer-Menü ein Listenelement hinzu.Der erste Parameter gibt den Aktionsnamen an, der zweite Parameter eine Callback-Funktion, die bei Auswahl dieses Elements ausgeführt wird, an. Die Callback-Funktion erhält als ersten Parameter ein Benutzer-Objekt.
 
 ### Plugin:register_note_view_interruptor(fn)
-UIに表示されるノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
+Verändert die Daten einer im UI angezeigten Notiz. Die Callback-Funktion erhält als ersten Parameter ein Notiz-Objekt. Die angezeigte Notiz wird mit dem Rückgabewert der Callback-Funktion überschrieben.
 
 ### Plugin:register_note_post_interruptor(fn)
-ノート投稿時にノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
+Verändert die Daten einer zu erstellenden Notiz. Die Callback-Funktion erhält als ersten Parameter ein Notiz-Objekt. Die zu erstellende Notiz wird mit dem Rückgabewert der Callback-Funktion überschrieben.
 
 ### Plugin:open_url(url)
 Öffnet die als ersten Parameter gegebene URL in einem neuen Browser-Tab.
