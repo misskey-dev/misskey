@@ -1,26 +1,26 @@
 # Entwicklung eines Misskey Reversi-Bots
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+Auf dieser Seite wird die Entwicklung eines Bots für Misskey Reversi erläutert.
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
+1. Verbinde dich unter Verwendung folgender Parameter mit dem `games/reversi`-Stream:
     * `i`: API-Schlüssel des Bot-Kontos
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+2. Sobald den Bot eine Spieleinladung erreicht, wird das `invited`-Event vom Stream gesendet
+    * Der Inhalt dieses Events ist ein `parent`-Attribut, was Daten über den Benutzer, der die Einladung verschickt hat, beinhaltet
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. Sende eine Anfrage an `games/reversi/match`, wobei der Wert des `user_id`-Parameters das `id`-Attribut der vorher erhaltenen `parent`-Daten ist
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
+4. Gelingt die Anfrage, werden die Spieldaten als Rückgabewert geliefert. Nutze diese dann, um die unten gelisteten Parameter an den `games/reversi-game`-Stream zu senden:
     * `i`: API-Schlüssel des Bot-Kontos
-    * `game`: Zum `game` gehörige `id`
+    * `game`: `id`-Attribut des `game`-Objekts
 
 5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
 
-6. 設定に満足したら、`{ type: 'accept' }`メッセージをストリームに送信する
+6. Sobald du mit den Spieleinstellungen zufrieden bist, sende die Nachricht `{ type: 'accept' }` an den Stream
 
-7. ゲームが開始すると、`started`イベントが流れてくる
-    * イベントの中身にはゲーム情報が含まれている
+7. Sobald das Spiel startet, wird das `started`-Event gesendet
+    * Der Inhalt dieses Events sind die Spieldaten
 
-8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
+8. Um einen Stein zu setzen, sende die folgende Nachricht an den Stream: `{ type: 'set', pos: <Position> }` (Positionsberechnungen werden später erläutert)
 
 9. Setzt der Gegner oder du einen Stein, wird das `set`-Event vom Stream gesendet
     * Die Farbe der Spielfigur ist als `color` enthalten
