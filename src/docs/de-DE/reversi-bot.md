@@ -22,7 +22,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 
 8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
 
-9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
+9. Setzt der Gegner oder du einen Stein, wird das `set`-Event vom Stream gesendet
     * Die Farbe der Spielfigur ist als `color` enthalten
     * Die Position der Spielfigur ist als `pos` enthalten
 
@@ -57,8 +57,8 @@ y = Math.floor(pos / mapWidth)
 Die Spielbrettdaten sind innerhalb vom in den Spieldaten enthaltenen `map`-Attribut gespeichert. Da das Spielbrett als Array von Zeichenketten representiert wird, steht jedes Symbol für ein Spielfeld. Basierend auf diesen Informationen lässt sich der Spielbrettzustand rekonstruieren.
 * `(Leer)` ... Kein Spielfeld
 * `-` ... Spielfeld
-* `b` ... Spielfeld auf dem zuerst platzierte Figur schwarz war
-* `w` ... Spielfeld auf dem zuerst platzierte Figur weiß war
+* `b` ... Spielfeld auf dem zuerst platzierter Stein schwarz war
+* `w` ... Spielfeld auf dem zuerst platzierter Stein weiß war
 
 Sei folgendes simple 4*4 Spielbrett als Beispiel gegeben:
 ```text
