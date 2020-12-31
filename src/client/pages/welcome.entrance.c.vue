@@ -295,9 +295,10 @@ export default defineComponent({
 				margin-top: 20px;
 				color: #fff;
 				text-shadow: 0 0 8px black;
+				font-size: 0.9em;
 
 				> *:not(:last-child) {
-					margin-right: 1em;
+					margin-right: 1.5em;
 				}
 			}
 		}

@@ -15,7 +15,15 @@
 				<MkButton class="signup" @click="signup()" inline primary>{{ $ts.signup }}</MkButton>
 				<MkButton class="signin" @click="signin()" inline>{{ $ts.login }}</MkButton>
 			</div>
-			<div class="status" v-if="onlineUsersCount">
+			<div class="status" v-if="onlineUsersCount && stats">
+				<div>
+					<I18n :src="$ts.nUsers" text-tag="span" class="users">
+						<template #n><b>{{ number(stats.originalUsersCount) }}</b></template>
+					</I18n>
+					<I18n :src="$ts.nNotes" text-tag="span" class="notes">
+						<template #n><b>{{ number(stats.originalNotesCount) }}</b></template>
+					</I18n>
+				</div>
 				<I18n :src="$ts.onlineUsersCount" text-tag="span" class="online">
 					<template #n><b>{{ onlineUsersCount }}</b></template>
 				</I18n>
@@ -167,7 +175,7 @@ export default defineComponent({
 
 		> .main {
 			position: relative;
-			width: min(490px, 100%);
+			width: min(450px, 100%);
 			padding: 64px;
 			color: #fff;
 			font-size: 1.1em;
@@ -178,7 +186,7 @@ export default defineComponent({
 
 			> h1 {
 				display: block;
-				margin: 0 0 16px 0;
+				margin: 0 0 32px 0;
 				padding: 0;
 
 				> .logo {
@@ -194,6 +202,10 @@ export default defineComponent({
 			> .action {
 				margin: 32px 0;
 
+				> * {
+					line-height: 32px;
+				}
+
 				> .signup {
 					background: var(--panel);
 					color: var(--fg);
@@ -207,9 +219,17 @@ export default defineComponent({
 
 			> .status {
 				margin: 32px 0;
+				border-top: solid 1px rgba(255, 255, 255, 0.5);
+				font-size: 90%;
 
-				> .online {
+				> div {
+					padding: 16px 0;
 
+					> span:not(:last-child) {
+						padding-right: 1em;
+						margin-right: 1em;
+						border-right: solid 1px rgba(255, 255, 255, 0.5);
+					}
 				}
 			}
 		}
