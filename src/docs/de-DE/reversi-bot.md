@@ -7,13 +7,13 @@ Auf dieser Seite wird die Entwicklung eines Bots für Misskey Reversi erläutert
 2. Sobald den Bot eine Spieleinladung erreicht, wird das `invited`-Event vom Stream gesendet
     * Der Inhalt dieses Events ist ein `parent`-Attribut, was Daten über den Benutzer, der die Einladung verschickt hat, beinhaltet
 
-3. Sende eine Anfrage an `games/reversi/match`, wobei der Wert des `user_id`-Parameters das `id`-Attribut der vorher erhaltenen `parent`-Daten ist
+3. Sende eine Anfrage an `games/reversi/match`, wobei der Wert des `user_id`-Parameters das `id`-Attribut des vorher erhaltenen `parent`-Objekts ist
 
 4. Gelingt die Anfrage, werden die Spieldaten als Rückgabewert geliefert. Nutze diese dann, um die unten gelisteten Parameter an den `games/reversi-game`-Stream zu senden:
     * `i`: API-Schlüssel des Bot-Kontos
     * `game`: `id`-Attribut des `game`-Objekts
 
-5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
+5. Währenddessen kann der Spielgegner die Spieleinstellungen verändern. Jedes mal, wenn eine Einstellung verändert wird, sendet der Stream ein `update-settings`-Event, weswegen möglicherweise Logik, um solche Events verarbeiten zu können, notwendig ist.
 
 6. Sobald du mit den Spieleinstellungen zufrieden bist, sende die Nachricht `{ type: 'accept' }` an den Stream
 
@@ -78,7 +78,7 @@ In diesem Fall sehen die Spielbrettdaten wie folgt aus:
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## ユーザーにフォームを提示して対話可能Botを作成する
+## Erstellen eines Bots, der mit dem Benutzer durch das Zeigen von Fenstern kommunizieren kann
 ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
 
 フォームを提示するには、`reversi-game`ストリームに次のメッセージを送信します:
