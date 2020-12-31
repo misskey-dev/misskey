@@ -667,6 +667,7 @@ _mfm:
   shake: "動畫(搖晃)"
   spin: "動畫(旋轉)"
   spinDescription: "顯示旋轉的動畫效果。"
+  font: "字型"
 _reversi:
   reversi: "黑白棋"
   gameSettings: "對弈設定"
