@@ -22,8 +22,8 @@ Hier gelistete Tastenkürzel können generell überall verwendet werden.
         <tr><th>Kürzel</th><th>Effekt</th><th>Ursprung</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>上の投稿にフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd>, <kbd class="key">Tab</kbd></td><td>下の投稿にフォーカスを移動</td><td>-</td></tr>
+        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>Fokus zum oberen Beitrag wechseln</td><td>-</td></tr>
+        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd>, <kbd class="key">Tab</kbd></td><td>Fokus zum unteren Beitrag wechseln</td><td>-</td></tr>
         <tr><td><kbd class="key">R</kbd></td><td>返信フォームを開く</td><td><b>R</b>eply</td></tr>
         <tr><td><kbd class="key">Q</kbd></td><td>Renoteフォームを開く</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>即刻Renoteする(フォームを開かずに)</td><td>-</td></tr>
@@ -45,8 +45,8 @@ Hier gelistete Tastenkürzel können generell überall verwendet werden.
     </thead>
     <tbody>
         <tr><td><kbd class="key">Enter</kbd></td><td>Sendet Renote</td><td>-</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>Fenster expandieren</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>Fenster schließen</td><td>-</td></tr>
     </tbody>
 </table>
 
