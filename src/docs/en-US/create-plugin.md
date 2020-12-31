@@ -20,7 +20,7 @@ Plugin description
 Permissions required by the plugin.Used when making requests to the Misskey API.
 
 ### config
-An object representing the plugin's settings. Set the keys to setting names and the values to one of the below properties.
+An object representing the plugin's settings. Keys represent setting names and values are any of the below properties.
 
 #### type
 A string representing the setting's value type.Selected from one of the below types. string number boolean
