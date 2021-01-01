@@ -6,7 +6,7 @@
 
 要使用流式API，您需要使用**websocket**连接到Misskey服务器。
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
+请使用参数`i`连接到以下URL，并在websocket连接中包含认证信息。例如：
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
