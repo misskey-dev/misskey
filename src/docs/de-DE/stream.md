@@ -56,7 +56,7 @@ Hier,
 * steht `params` für die Parameter zum Verbindunsgaufbau.Je nach Kanal können die verfügbaren Parameter abweichen.Bei Kanälen, die keine Parameter akzeptieren, kann dieses Attribut ausgelassen werden.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
+    <p><i class="fas fa-info-circle"></i> Diese IDs sollen für jede Verbindung zu einem Kanal einzigartig sein, nicht nur für jeden Kanal.Der Grund dafür ist, dass mehrere Verbindungen zum selben Kanal mit unterschiedlichen Parametern zur selben Zeit bestehen können.</p>
 </div>
 
 ### Verarbeitung von eintreffenden Nachrichten der Kanäle
@@ -77,9 +77,9 @@ Hier,
 ```
 
 Hier,
-* `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
-* `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
-* `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
+* steht `id` für die zum Verbindungsaufbau gewählte ID, die zuvor erläutert wurde.Hierdurch wird eine Zuordnung, welche Nachricht zu welchen Kanal gehört, ermöglicht.
+* steht `type` für die Art der Nachricht.Je nach Kanal können die Arten der Nachrichten, die von einem Kanal empfangen werden, abweichen.
+* steht `body` für den Inhalt der Nachricht.Je nach Kanal kann der Inhalt der Nachrichten, die von einem Kanal empfangen werden, abweichen.
 
 ### Nachrichten an Kanäle senden
 チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
@@ -99,9 +99,9 @@ Hier,
 ```
 
 Hier,
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
-* `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
-* `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
+* steht `id` für die zum Verbindungsaufbau gewählte ID, die zuvor erläutert wurde.Hierdurch wird festgelegt, an welchen Kanal diese Nachricht gesendet werden soll.
+* steht `type` für die Art der Nachricht.Je nach Kanal können die Arten der Nachrichten, die an einen Kanal gesendet werden können, abweichen.
+* `body`にはメッセージの内容を設定します。Je nach Kanal kann der Inhalt der Nachrichten, der an einen Kanal gesendet werden kann, abweichen.
 
 ### Verbindungen zu Kanälen trennen
 Um die Verbindung zu einem Kanal zu trennen, sende die folgende Nachricht:
