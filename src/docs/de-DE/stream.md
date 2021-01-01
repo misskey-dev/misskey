@@ -147,7 +147,7 @@ Hier,
 
 ### Verarbeitung von Antworten auf Anfragen
 
-APIへリクエストすると、レスポンスがストリームから次のような形式で流れてきます。
+Sobald eine Anfrage an die API gesendet wurde, wird eine Antwort wie die folgende empfangen:
 
 ```json
 {
@@ -174,7 +174,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 ### Einen Beitrag erfassen
 
-投稿をキャプチャするには、ストリームに次のようなメッセージを送信します:
+Um einen Beitrag zu erfassen, sende folgende Nachricht an den Stream:
 
 ```json
 {
@@ -186,11 +186,11 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 ```
 
 Hier,
-* `id`にキャプチャしたい投稿の`id`を設定します。
+* `id` enthält die `id` des Beitrags der erfasst werden soll.
 
-このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
+Sobald diese Nachricht gesendet wurde wird dieser Beitrag von Misskey erfasst und es können von nun an diesen Beitrag betreffende Events empfangen werden.
 
-例えば投稿にリアクションが付いたとすると、次のようなメッセージが流れてきます:
+Beispielsweise wird das folgende Event empfangen, sobald einem erfassten Beitrag eine Reaktion hinzugefügt wurde:
 
 ```json
 {
@@ -276,7 +276,7 @@ z.B.:
 
 ### Beitragserfassung aufheben
 
-その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
+Sobald ein Beitrag nicht mehr auf der Chronik angezeigt wird und somit diesen Beitrag betreffende Events nicht mehr benötigt werden, bitten wir um die Aufhebung der Erfassung dieses Beitrags.
 
 Sende die folgende Nachricht:
 
@@ -296,7 +296,7 @@ Sobald diese Nachricht versendet wurde, werden mit diesem Beitrag verbundene Eve
 
 # List aller Kanäle
 ## `main`
-アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
+Allgemeine den Benutzer betreffende Informationen werden über diesen Kanal empfangen.Dieser Kanal hat keine Parameter.
 
 ### Liste der Events, die augelöst werden können
 
@@ -307,7 +307,7 @@ Wird ausgelöst, sobald ein eigener Beitrag ein Renote erhält.Renotes von eigen
 Wird ausgelöst, sobald der Benutzer von einem anderen Benutzer erwähnt wird.
 
 #### `readAllNotifications`
-自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
+Dieses Event gibt an, dass alle Benachrichtungen auf gelesen gesetzt wurden.Es wird erwartet, dass dieses Event für bsp. Fälle eingesetzt wird, in denen der Indikator für ungelesene Benachrichtigungen deaktiviert werden soll.
 
 #### `meUpdated`
 Wird bei Aktualisierung der eigenen Benutzerdaten augelöst.
@@ -322,7 +322,7 @@ Wird augelöst, sobald einem Benutzer nicht mehr gefolgt wird.
 Wird augelöst, sobald der Benutzer einen neuen Follower erhält.
 
 ## `homeTimeline`
-Sendet Informationen über Beiträge der Startseiten-Chronik.Dieser Kanal hat keine Parameter.
+Informationen über Beiträge der Startseiten-Chronik werden über diesen Kanal empfangen.Dieser Kanal hat keine Parameter.
 
 ### Liste der Events, die augelöst werden können
 
@@ -330,7 +330,7 @@ Sendet Informationen über Beiträge der Startseiten-Chronik.Dieser Kanal hat ke
 Wird augelöst, sobald auf der Chronik ein neuer Beitrag erscheint.
 
 ## `localTimeline`
-Sendet Informationen über Beiträge der lokalen Chronik.Dieser Kanal hat keine Parameter.
+Informationen über Beiträge der lokalen Chronik werden über diesen Kanal empfangen.Dieser Kanal hat keine Parameter.
 
 ### Liste der Events, die augelöst werden können
 
@@ -338,17 +338,17 @@ Sendet Informationen über Beiträge der lokalen Chronik.Dieser Kanal hat keine 
 Wird augelöst, sobald auf der lokalen Chronik ein neuer Beitrag erscheint.
 
 ## `hybridTimeline`
-Sendet Informationen über Beiträge der Sozial-Chronik.Dieser Kanal hat keine Parameter.
+Informationen über Beiträge der Sozial-Chronik werden über diesen Kanal empfangen.Dieser Kanal hat keine Parameter.
 
 ### Liste der Events, die augelöst werden können
 
 #### `note`
-Wird gesendet, sobald auf der Sozial-Chronik ein neuer Beitrag erscheint.
+Wird augelöst, sobald auf der Sozial-Chronik ein neuer Beitrag erscheint.
 
 ## `globalTimeline`
-Sendet Informationen über Beiträge der globalen Chronik.Dieser Kanal hat keine Parameter.
+Informationen über Beiträge der globalen Chronik werden über diesen Kanal empfangen.Dieser Kanal hat keine Parameter.
 
 ### Liste der Events, die augelöst werden können
 
 #### `note`
-Wird gesendet, sobald auf der globalen Chronik ein neuer Beitrag erscheint.
+Wird augelöst, sobald auf der globalen Chronik ein neuer Beitrag erscheint.
