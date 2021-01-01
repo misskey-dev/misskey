@@ -27,12 +27,12 @@ Ein Verbindungsaufbau ohne Anmeldedaten ist ebenso möglich, jedoch wird in dies
 
 ---
 
-ストリームに接続すると、後述するAPI操作や、投稿の購読を行ったりすることができます。 しかしまだこの段階では、例えばタイムラインへの新しい投稿を受信したりすることはできません。 それを行うには、ストリーム上で、後述する**チャンネル**に接続する必要があります。
+Eine Verbindung zum Stream kann durch die später erläuterte API oder durch das Abbonieren individueller Beiträge getätigt werden. Jedoch können zu diesem Zeitpunkt noch keine Informationen über Chroniken wie das Eintreffen neuer Beiträge empfangen werden. Um dies zu ermöglichen, müssen Verbindungen zu später erläuterten **Kanälen** aufgebaut werden.
 
 **Alle Nachrichten an den sowie vom Stream sind in JSON-Format.**
 
 ## Kanäle
-MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+Innerhalb des Misskey Streaming-APIs existiert das Konzept von Kanälen.Diese werden zur Abspaltung der Informationen, die erhalten werden sollen, verwendet. Wird eine Verbindung zum Misskey Stream aufgebaut, so ist es noch nicht möglich, sofort Echtzeit-Aktualisierungen zu empfangen. Durch den Verbindungsaufbau zu Kanälen des Streams wird beidseitige Kommunikation bezüglich Informationen dieses Kanals ermöglicht.
 
 ### Verbindungen zu Kanälen aufbauen
 Um eine Verbindung zu einem Kanal aufzubauen, sende die folgende Nachricht:
@@ -51,9 +51,9 @@ Um eine Verbindung zu einem Kanal aufzubauen, sende die folgende Nachricht:
 ```
 
 Hier,
-* `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
-* `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
-* `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
+* steht `channel` für den Namen des Kanals, zu dem eine Verbindung aufgebaut werden soll.Eine Liste der verfügbaren Kanäle wird später angegeben.
+* steht `id` für eine einzigartige ID zur Kommunikation mit diesem Kanal.Da durch den Stream viele verschiedene Nachrichten erhalten werden können, ist eine Zuordnung, zu welchen Kanal eine Nachricht gehört, notwendig.Diese ID kann eine UUID oder etwas wie der Wert eines Zufallszahlengenerators sein.
+* steht `params` für die Parameter zum Verbindunsgaufbau.Je nach Kanal können die verfügbaren Parameter abweichen.Bei Kanälen, die keine Parameter akzeptieren, kann dieses Attribut ausgelassen werden.
 
 <div class="ui info">
     <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
