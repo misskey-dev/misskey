@@ -4,17 +4,17 @@
 
 ## Eine Verbindung zum Stream aufbauen
 
-ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
+Um das Streaming-API zu benutzen, muss zuerst eine Verbindung zu Misskey's **websocket** Server aufgebaut werden.
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。z.B.:
+Baue bitte mit Hilfe der unten stehenden URL eine websocket-Verbindung auf, wobei die Anmeldedaten als `i`-Parameter enthalten sind.z.B.:
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+Anmeldedaten steht hierfür entweder für den eigenen API-Schlüssel oder bei Verbindungen zum Stream für den durch eine Anwendung generierten Zugangstoken eines Benutzers.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Siehe <a href="./api">dieses Dokument</a> für Informationen, wie solche Anmeldedaten erhalten werden können.</p>
 </div>
 
 ---
