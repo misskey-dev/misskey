@@ -4,18 +4,18 @@ MisskeyAPIを使ってMisskeyクライアント、Misskey連携Webサービス�
 
 APIを使い始めるには、まずアクセストークンを取得する必要があります。 このドキュメントでは、アクセストークンを取得する手順を説明した後、基本的なAPIの使い方を説明します。
 
-## アクセストークンの取得
+## Einen Zugriffstoken erhalten
 基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
 
-* 前者の場合: [「自分自身のアクセストークンを手動発行する」](#自分自身のアクセストークンを手動発行する)に進む
-* 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
+* Im ersten Fall: Fahre mit "Einen Zugriffstoken für das eigene Benutzerkonto generieren" fort.
+* Im zweiten Fall: Fahre mit "Einen Benutzer zur Generierung eines Zugangstokens für eine Anwendung auffordern" fort.
 
-### 自分自身のアクセストークンを手動発行する
+### Einen Zugriffstoken für das eigene Benutzerkonto generieren
 「設定 > API」で、自分のアクセストークンを発行できます。
 
-[「APIの使い方」へ進む](#APIの使い方)
+[Fahre mit "Verwendung der API" fort.](#APIの使い方)
 
-### アプリケーション利用者にアクセストークンの発行をリクエストする
+### Einen Benutzer zur Generierung eines Zugangstokens für eine Anwendung auffordern
 アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
 
 #### Schritt 1
@@ -49,10 +49,10 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 * `token` ... ユーザーのアクセストークン
 * `user` ... ユーザーの情報
 
-[「APIの使い方」へ進む](#APIの使い方)
+[Fahre mit "Verwendung der API" fort.](#APIの使い方)
 
-## APIの使い方
+## Verwendung der API
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
 
-* [APIリファレンス](/api-doc)
-* [ストリーミングAPI](./stream)
+* [API-Referenz](/api-doc)
+* [Streaming-API](./stream)
