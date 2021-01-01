@@ -159,10 +159,10 @@ APIへリクエストすると、レスポンスがストリームから次の�
 ```
 
 Hier,
-* `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
-* `body`には、レスポンスが含まれています。
+* steht an Stelle der `xxxxxxxxxxxxxxxx` die vorher angegebene `id`.Dadurch ist eine Zuordnung von Anfrage zu Antwort möglich.
+* ist der Antwortwert der Anfrage in `body` enthalten.
 
-## 投稿のキャプチャ
+## Beitragserfassung
 
 Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
 
@@ -211,7 +211,7 @@ Hier,
 * `body`内の`type`に、イベントの種類が設定されます。
 * `body`内の`body`に、イベントの詳細が設定されます。
 
-#### イベントの種類
+#### Arten von Events
 
 ##### `reacted`
 その投稿にリアクションがされた時に発生します。
@@ -235,9 +235,9 @@ z.B.:
 ```
 
 ##### `deleted`
-その投稿が削除された時に発生します。
+Wird bei Löschung des Beitrags ausgelöst.
 
-* `deletedAt`に、削除日時が設定されます。
+* `deletedAt` enthält Löschdatum und Zeitpunkt.
 
 z.B.:
 ```json
@@ -274,7 +274,7 @@ z.B.:
 }
 ```
 
-### 投稿のキャプチャを解除する
+### Einen Beitrag nicht mehr erfassen
 
 その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
 
@@ -294,7 +294,7 @@ Hier,
 
 このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
 
-# チャンネル一覧
+# List aller Kanäle
 ## `main`
 アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
 
