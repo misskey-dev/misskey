@@ -11,7 +11,7 @@ Connect to the websocket located at the below URL, including your credentials wi
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-Credentials refer to your own API key or the access token granted to an application by a user.
+Credentials refer to your own API key or in the case of connecting to the Stream the access token granted to an application by a user.
 
 <div class="ui info">
     <p><i class="fas fa-info-circle"></i> To read about acquiring such credentials, please refer to <a href="./api">this document</a>.</p>
