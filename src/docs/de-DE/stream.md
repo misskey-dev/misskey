@@ -207,9 +207,9 @@ Hier,
 ```
 
 Hier,
-* `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
-* `body`内の`type`に、イベントの種類が設定されます。
-* `body`内の`body`に、イベントの詳細が設定されます。
+* das `id`-Attribut in `body` enthält die ID des Beitrags, der das Event ausgelöst hat.
+* das `type`-Attribut in `body` die Art des Events.
+* das `body`-Attribut von `body` enthält weitere Informationen über das Event.
 
 #### Arten von Events
 
@@ -292,63 +292,63 @@ Sende die folgende Nachricht:
 Hier,
 * `id` enthält die `id` des Beitrags, für den Erfassung aufgehoben werden soll.
 
-このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
+Sobald diese Nachricht versendet wurde, werden mit diesem Beitrag verbundene Events nicht mehr empfangen.
 
 # List aller Kanäle
 ## `main`
 アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
 
-### Liste der gesendeten Events
+### Liste der Events, die augelöst werden können
 
 #### `renote`
-自分の投稿がRenoteされた時に発生するイベントです。自分自身の投稿をRenoteしたときは発生しません。
+Wird ausgelöst, sobald ein eigener Beitrag ein Renote erhält.Renotes von eigenen Beiträgen lösen dieses Event nicht aus.
 
 #### `mention`
-誰かからメンションされたときに発生するイベントです。
+Wird ausgelöst, sobald der Benutzer von einem anderen Benutzer erwähnt wird.
 
 #### `readAllNotifications`
 自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
 
 #### `meUpdated`
-Wird bei Aktualisierung der eigenen Benutzerdaten gesendet.
+Wird bei Aktualisierung der eigenen Benutzerdaten augelöst.
 
 #### `follow`
-Wird gesendet, sobald einem neuen Benutzer gefolgt wird.
+Wird augelöst, sobald einem neuen Benutzer gefolgt wird.
 
 #### `unfollow`
-Wird gesendet, sobald einem Benutzer nicht mehr gefolgt wird.
+Wird augelöst, sobald einem Benutzer nicht mehr gefolgt wird.
 
 #### `followed`
-Wird gesendet, sobald der Benutzer einen neuen Follower erhält.
+Wird augelöst, sobald der Benutzer einen neuen Follower erhält.
 
 ## `homeTimeline`
-ホームタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Sendet Informationen über Beiträge der Startseiten-Chronik.Dieser Kanal hat keine Parameter.
 
-### Liste der gesendeten Events
+### Liste der Events, die augelöst werden können
 
 #### `note`
-Wird gesendet, sobald auf der Chronik ein neuer Beitrag erscheint.
+Wird augelöst, sobald auf der Chronik ein neuer Beitrag erscheint.
 
 ## `localTimeline`
-ローカルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Sendet Informationen über Beiträge der lokalen Chronik.Dieser Kanal hat keine Parameter.
 
-### Liste der gesendeten Events
+### Liste der Events, die augelöst werden können
 
 #### `note`
-Wird gesendet, sobald auf der lokalen Chronik ein neuer Beitrag erscheint.
+Wird augelöst, sobald auf der lokalen Chronik ein neuer Beitrag erscheint.
 
 ## `hybridTimeline`
-ソーシャルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Sendet Informationen über Beiträge der Sozial-Chronik.Dieser Kanal hat keine Parameter.
 
-### Liste der gesendeten Events
+### Liste der Events, die augelöst werden können
 
 #### `note`
-ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Wird gesendet, sobald auf der Sozial-Chronik ein neuer Beitrag erscheint.
 
 ## `globalTimeline`
-グローバルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Sendet Informationen über Beiträge der globalen Chronik.Dieser Kanal hat keine Parameter.
 
-### Liste der gesendeten Events
+### Liste der Events, die augelöst werden können
 
 #### `note`
-グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Wird gesendet, sobald auf der globalen Chronik ein neuer Beitrag erscheint.
