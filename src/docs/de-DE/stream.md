@@ -101,7 +101,7 @@ Hier,
 Hier,
 * steht `id` für die zum Verbindungsaufbau gewählte ID, die zuvor erläutert wurde.Hierdurch wird festgelegt, an welchen Kanal diese Nachricht gesendet werden soll.
 * steht `type` für die Art der Nachricht.Je nach Kanal können die Arten der Nachrichten, die an einen Kanal gesendet werden können, abweichen.
-* `body`にはメッセージの内容を設定します。Je nach Kanal kann der Inhalt der Nachrichten, der an einen Kanal gesendet werden kann, abweichen.
+* steht `body` für den Inhalt der Nachricht.Je nach Kanal kann der Inhalt der Nachrichten, der an einen Kanal gesendet werden kann, abweichen.
 
 ### Verbindungen zu Kanälen trennen
 Um die Verbindung zu einem Kanal zu trennen, sende die folgende Nachricht:
@@ -164,13 +164,13 @@ Hier,
 
 ## Beitragserfassung
 
-Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
+Misskey stellt eine sogenannte Beitragserfassung zur Verfügung.Hierdurch können dem angegebenen Beitrag zugehörige Events über den Stream empfangen werden.
 
-例えばタイムラインを取得してユーザーに表示したとします。ここで誰かがそのタイムラインに含まれるどれかの投稿に対してリアクションしたとします。
+Sei beispielsweise eine Situation, in der einem Benutzer eine Chronik angezeigt wird.Nun wird von jemanden auf einen der Beiträge dieser Chronik reagiert.
 
-しかし、クライアントからするとある投稿にリアクションが付いたことなどは知る由がないため、リアルタイムでリアクションをタイムライン上の投稿に反映して表示するといったことができません。
+Da der Client jedoch nicht wissen kann, dass ein spezieller Beitrag eine Reaktion erhalten hat, ist es nicht möglich, diese Reaktion in Echtzeit darzustellen.
 
-この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+Um dieses Problem zu lösen, wurde die Funktionalität der Beitragserfassung implementiert.Wird ein Beitrag erfasst, so werden verschiedene diesem Beitrag zugeordnete Events in Echtzeit übermittelt, um bei einer Veränderung diese sofort auf der Chronik anzeigen zu können.
 
 ### Einen Beitrag erfassen
 
