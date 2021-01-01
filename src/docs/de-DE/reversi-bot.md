@@ -109,7 +109,7 @@ Interagiert der Benutzer mit einem der Elemente eines Fensters, so wird ein `upd
 }
 ```
 
-### Typen von Form-Elementen
+### Arten von Form-Elementen
 #### Schalter
 type: `switch` Zeigt einen Schalter an.Eignet sich für Fälle, in denen etwas entweder ein- oder ausgeschaltet werden kann.
 
@@ -150,11 +150,11 @@ Dies ist eine alternative Methode, um mit dem Benutzer zu kommunieren, abgesehen
   type: 'message',
   body: {
     text: 'Nachrichteninhalt',
-    type: 'Nachrichtentyp'
+    type: 'Nachrichtenart'
   }
 }
 ```
-Nachrichtentypen: `success`, `info`, `warning`, `error`.
+Nachrichtenarten: `success`, `info`, `warning`, `error`.
 
 ## Aufgeben
 Um aufzugeben, sende eine Anfrage an <a href="./api/endpoints/games/reversi/games/surrender">diesen Endpunkt</a>.
