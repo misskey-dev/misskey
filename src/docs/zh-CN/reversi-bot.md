@@ -1,8 +1,8 @@
-# MisskeyリバーシBotの開発
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+# Misskey的黑白棋Bot开发
+本页会说明如何为Misskey的黑白棋功能开发一个Bot机器人。
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+1. 使用以下参数来连接`games/reversi`流式API：
+    * `i`: bot账号的API key
 
 2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
     * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
@@ -10,7 +10,7 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
 
 4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+    * `i`: bot账号的API key
     * `game`: `game`の`id`
 
 5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
