@@ -16,13 +16,13 @@ You can create an access token for your own account in Settings > API.
 [Proceed to using the API.](#APIの使い方)
 
 ### Requesting the application user to generate an access token
-To obtain the access token of the end user for your app, request permissions for it via the below process.
+To obtain an access token of the end user's account for your app, request permissions for it via the below process.
 
 #### Step 1
 
 Generate a UUID.We will call it the session ID from here on.
 
-> The same session ID should not be used for multiple plugins, so please generate a new UUID for each plugin.
+> The same session ID should not be used for multiple plugins, so please generate a new UUID for each access token.
 
 #### Step 2
 
