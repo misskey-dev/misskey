@@ -27,15 +27,15 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 #### Schritt 2
 
 `{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
-> 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
+> z.B.: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
 * `name` ... アプリケーション名
-    * > 例: `MissDeck`
+    * > z.B.: `MissDeck`
 * `icon` ... アプリケーションのアイコン画像URL
-    * > 例: `https://missdeck.example.com/icon.png`
+    * > z.B.: `https://missdeck.example.com/icon.png`
 * `callback` ... 認証が終わった後にリダイレクトするURL
-    * > 例: `https://missdeck.example.com/callback`
+    * > z.B.: `https://missdeck.example.com/callback`
     * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
 * `permission` ... アプリケーションが要求する権限
     * > z.B.: `write:notes,write:following,read:drive`
