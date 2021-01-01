@@ -60,9 +60,9 @@ Hier,
 </div>
 
 ### Verarbeitung von eintreffenden Nachrichten der Kanäle
-例えばタイムラインのチャンネルなら、新しい投稿があった時にメッセージを発します。そのメッセージを受け取ることで、タイムラインに新しい投稿がされたことをリアルタイムで知ることができます。
+Beispielsweise wird bei Erstellung eines neuen Beitrags auf einer Chronik von einem Kanal eine Nachricht ausgelöst.Durch die Verarbeitung solcher Nachrichten ist es möglich, in Echtzeit über die Erstellung eines neuen Beitrags zu erfahren.
 
-チャンネルがメッセージを発すると、次のようなデータがJSONでストリームに流れてきます:
+Sendet ein Kanal eine Nachricht, so wird vom Stream folgendes JSON-Objekt empfangen:
 ```json
 {
     type: 'channel',
@@ -82,9 +82,9 @@ Hier,
 * steht `body` für den Inhalt der Nachricht.Je nach Kanal kann der Inhalt der Nachrichten, die von einem Kanal empfangen werden, abweichen.
 
 ### Nachrichten an Kanäle senden
-チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
+Je nach Kanal kann es möglich sein, nicht nur Nachrichten vom Kanal zu empfangen, sondern auch Nachrichten an diesen zu senden, die dann unterschiedliche Aktionen auslösen können.
 
-チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
+Um eine Nachricht an einen Kanal zu senden, sende folgendes JSON-Objekt an den Stream:
 ```json
 {
     type: 'channel',
@@ -120,9 +120,9 @@ Hier,
 
 ## API-Anfragen durch den Stream senden
 
-ストリームを経由してAPIリクエストすると、HTTPリクエストを発生させずにAPIを利用できます。そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
+Durch den Stream ist es auch möglich, API-Anfragen ohne die Verwendung einer HTTP-Anfrage zu senden.So kann möglicherweise Code übersichtlicher und effizienter gehalten werden.
 
-ストリームを経由してAPIリクエストするには、次のようなデータをJSONでストリームに送信します:
+Um via den Stream eine API-Anfrage zu senden, sende folgendes JSON-Objekt an den Stream:
 ```json
 {
     type: 'api',
