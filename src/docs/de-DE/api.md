@@ -36,23 +36,23 @@ Bei Aufruf dieser URL können verschiedene Einstellungen via Query-Parameter ges
     * > z.B.: `https://missdeck.example.com/icon.png`
 * `callback` ... URL, zu der nach Ende der Authentifizierung weitergeleitet wird
     * > z.B.: `https://missdeck.example.com/callback`
-    * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
-* `permission` ... アプリケーションが要求する権限
+    * In dieser Weiterleitung wird die Sessions-ID als `session` Query-Parameter an die URL angefügt
+* `permission` ... Von der Anwendung geforderte Berechtigungen
     * > z.B.: `write:notes,write:following,read:drive`
-    * 要求する権限を`,`で区切って列挙します
-    * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
+    * Angeforderte Berechtigungen sind durch `,` von einander getrennt
+    * Welche Berechtigungen existieren kann in der [API-Referenz](/api-doc) nachgelesen werden
 
 #### Schritt 3
-ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
+Sobald der Benutzer der Erstellung des Zugriffstokens zugestimmt hat, kann durch eine POST-Anfrage an `{_URL_}/api/miauth/{session}/check` der Zugriffstoken aus dem JSON-Objekt der Antwort ausgelesen werden.
 
-レスポンスに含まれるプロパティ:
-* `token` ... ユーザーのアクセストークン
-* `user` ... ユーザーの情報
+In der Antwort enthaltene Attribute:
+* `token` ... Zugriffstoken des Nutzers
+* `user` ... Benutzerdaten
 
 [Fahre mit "Verwendung der API" fort.](#APIの使い方)
 
 ## Verwendung der API
-**APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
+**Alle API-Anfragen sind POST-Anfragen, und alle Anfragen bzw. Antworten sind JSON-Objekte.REST wird nicht unterstützt.** Der Zugriffstoken muss unter dem `i`-Parameter beinhaltet werden.
 
 * [API-Referenz](/api-doc)
 * [Streaming-API](./stream)
