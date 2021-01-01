@@ -1,21 +1,23 @@
 <template>
 <FormBase>
 	<FormSelect v-model:value="selectedThemeId">
-		<template #label>{{ $t('installedThemes') }}</template>
-		<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		<optgroup :label="$t('builtinThemes')">
+		<template #label>{{ $ts.theme }}</template>
+		<optgroup :label="$ts._theme.installedThemes">
+			<option v-for="x in installedThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+		</optgroup>
+		<optgroup :label="$ts._theme.builtinThemes">
 			<option v-for="x in builtinThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 		</optgroup>
 	</FormSelect>
 	<template v-if="selectedTheme">
 		<FormInput readonly :value="selectedTheme.author">
-			<span>{{ $t('author') }}</span>
+			<span>{{ $ts.author }}</span>
 		</FormInput>
 		<FormTextarea readonly tall :value="selectedThemeCode">
-			<span>{{ $t('_theme.code') }}</span>
-			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $t('copy') }}</button></template>
+			<span>{{ $ts._theme.code }}</span>
+			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $ts.copy }}</button></template>
 		</FormTextarea>
-		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $t('uninstall') }}</FormButton>
+		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $ts.uninstall }}</FormButton>
 	</template>
 </FormBase>
 </template>
@@ -52,7 +54,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('_theme.manage'),
+				title: this.$ts._theme.manage,
 				icon: faFolderOpen
 			},
 			installedThemes: ColdDeviceStorage.ref('themes'),
@@ -64,7 +66,7 @@ export default defineComponent({
 
 	computed: {
 		themes(): Theme[] {
-			return this.builtinThemes.concat(this.installedThemes.value);
+			return this.builtinThemes.concat(this.installedThemes);
 		},
 	
 		selectedTheme() {

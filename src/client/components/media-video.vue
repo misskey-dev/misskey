@@ -1,8 +1,8 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><Fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
-		<span>{{ $t('clickToShow') }}</span>
+		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>

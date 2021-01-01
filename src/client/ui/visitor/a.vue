@@ -4,11 +4,11 @@
 		<div>
 			<h1 v-if="meta"><img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div class="about" v-if="meta">
-				<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
+				<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 			</div>
 			<div class="action">
-				<button class="_button primary" @click="signup()">{{ $t('signup') }}</button>
-				<button class="_button" @click="signin()">{{ $t('login') }}</button>
+				<button class="_button primary" @click="signup()">{{ $ts.signup }}</button>
+				<button class="_button" @click="signin()">{{ $ts.login }}</button>
 			</div>
 		</div>
 	</div>
@@ -63,7 +63,6 @@ export default defineComponent({
 		return {
 			host,
 			instanceName,
-			pageKey: 0,
 			pageInfo: null,
 			meta: null,
 			narrow: window.innerWidth < 1280,
@@ -85,12 +84,6 @@ export default defineComponent({
 				's': search,
 				'h|/': this.help
 			};
-		},
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
 		},
 	},
 

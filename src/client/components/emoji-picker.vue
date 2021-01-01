@@ -1,8 +1,8 @@
 <template>
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="omfetrab _popup" :class="['w' + width, 'h' + height, { big }]">
-		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$t('search')" @paste.stop="paste" @keyup.enter="done()">
-		<div class="emojis">
+		<input ref="search" class="search" :class="{ filled: q != null && q != '' }" v-model.trim="q" :placeholder="$ts.search" @paste.stop="paste" @keyup.enter="done()">
+		<div class="emojis" ref="emojis">
 			<section class="result">
 				<div v-if="searchResultCustom.length > 0">
 					<button v-for="emoji in searchResultCustom"
@@ -43,7 +43,7 @@
 				</section>
 
 				<section>
-					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $t('recentUsed') }}</header>
+					<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $ts.recentUsed }}</header>
 					<div>
 						<button v-for="emoji in $store.state.recentlyUsedEmojis"
 							class="_button"
@@ -59,7 +59,7 @@
 			</div>
 
 			<section v-for="category in customEmojiCategories" :key="'custom:' + category" class="custom">
-				<header class="_acrylic" v-appear="() => visibleCategories[category] = true">{{ category || $t('other') }}</header>
+				<header class="_acrylic" v-appear="() => visibleCategories[category] = true">{{ category || $ts.other }}</header>
 				<div v-if="visibleCategories[category]">
 					<button v-for="emoji in customEmojis.filter(e => e.category === category)"
 						class="_button"
@@ -180,6 +180,8 @@ export default defineComponent({
 
 	watch: {
 		q() {
+			this.$refs.emojis.scrollTop = 0;
+
 			if (this.q == null || this.q === '') {
 				this.searchResultCustom = [];
 				this.searchResultUnicode = [];

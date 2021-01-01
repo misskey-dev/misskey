@@ -3,8 +3,8 @@
 	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.name"/>
 	<div class="text">
 		<div>
-			<b><Fa :icon="faExclamationTriangle"/> {{ $t('sensitive') }}</b>
-			<span>{{ $t('clickToShow') }}</span>
+			<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+			<span>{{ $ts.clickToShow }}</span>
 		</div>
 	</div>
 </div>

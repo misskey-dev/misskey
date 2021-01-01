@@ -32,7 +32,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('experimentalFeatures'),
+				title: this.$ts.experimentalFeatures,
 				icon: faFlask
 			},
 			stats: null

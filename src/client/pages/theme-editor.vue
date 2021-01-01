@@ -3,24 +3,24 @@
 	<section class="_section">
 		<div class="_content">
 			<details>
-				<summary>{{ $t('import') }}</summary>
+				<summary>{{ $ts.import }}</summary>
 				<MkTextarea v-model:value="themeToImport">
-					{{ $t('_theme.importInfo') }}
+					{{ $ts._theme.importInfo }}
 				</MkTextarea>
-				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</MkButton>
+				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $ts.import }}</MkButton>
 			</details>
 		</div>
 	</section>
 	<section class="_section">
 		<div class="_content _card _vMargin">
 			<div class="_content">
-				<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
-				<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
-				<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
+				<MkInput v-model:value="name" required><span>{{ $ts.name }}</span></MkInput>
+				<MkInput v-model:value="author" required><span>{{ $ts.author }}</span></MkInput>
+				<MkTextarea v-model:value="description"><span>{{ $ts.description }}</span></MkTextarea>
 				<div class="_inputs">
-					<div v-text="$t('_theme.base')" />
-					<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
-					<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
+					<div v-text="$ts._theme.base" />
+					<MkRadio v-model="baseTheme" value="light">{{ $ts.light }}</MkRadio>
+					<MkRadio v-model="baseTheme" value="dark">{{ $ts.dark }}</MkRadio>
 				</div>
 			</div>
 		</div>
@@ -29,8 +29,8 @@
 				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
 					<div class="_inputs">
 						<div>
-							{{ k.startsWith('$') ? `${k} (${$t('_theme.constant')})` : $t('_theme.keys.' + k) }}
-							<button v-if="k.startsWith('$')" class="_button _link" @click="del(i)" v-text="$t('delete')" />
+							{{ k.startsWith('$') ? `${k} (${$ts._theme.constant})` : $t('_theme.keys.' + k) }}
+							<button v-if="k.startsWith('$')" class="_button _link" @click="del(i)" v-text="$ts.delete" />
 						</div>
 						<div>
 							<div class="type" @click="chooseType($event, i)">
@@ -46,7 +46,7 @@
 							<!-- ref const -->
 							<MkInput v-else-if="v.type === 'refConst'" v-model:value="v.key">
 								<template #prefix>$</template>
-								<span>{{ $t('name') }}</span>
+								<span>{{ $ts.name }}</span>
 							</MkInput>
 							<!-- ref props -->
 							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model:value="v.key">
@@ -55,12 +55,12 @@
 							<!-- func -->
 							<template v-else-if="v.type === 'func'">
 								<MkSelect class="select" v-model:value="v.name">
-									<template #label>{{ $t('_theme.funcKind') }}</template>
+									<template #label>{{ $ts._theme.funcKind }}</template>
 									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
 								</MkSelect>
-								<MkInput type="number" v-model:value="v.arg"><span>{{ $t('_theme.argument') }}</span></MkInput>
+								<MkInput type="number" v-model:value="v.arg"><span>{{ $ts._theme.argument }}</span></MkInput>
 								<MkSelect class="select" v-model:value="v.value">
-									<template #label>{{ $t('_theme.basedProp') }}</template>
+									<template #label>{{ $ts._theme.basedProp }}</template>
 									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
 								</MkSelect>
 							</template>
@@ -71,20 +71,20 @@
 						</div>
 					</div>
 				</div>
-				<MkButton primary @click="addConst">{{ $t('_theme.addConstant') }}</MkButton>
+				<MkButton primary @click="addConst">{{ $ts._theme.addConstant }}</MkButton>
 			</div>
 		</div>
 	</section>
 	<section class="_section">
 		<details class="_content">
-			<summary>{{ $t('sample') }}</summary>
+			<summary>{{ $ts.sample }}</summary>
 			<MkSample/>
 		</details>
 	</section>
 	<section class="_section">
 		<div class="_content">
-			<MkButton inline @click="preview">{{ $t('preview') }}</MkButton>
-			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</MkButton>
+			<MkButton inline @click="preview">{{ $ts.preview }}</MkButton>
+			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $ts.save }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -122,7 +122,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('themeEditor'),
+				title: this.$ts.themeEditor,
 				icon: faPalette,
 			},
 			theme: [] as ThemeViewModel,
@@ -177,7 +177,7 @@ export default defineComponent({
 		async confirm(): Promise<boolean> {
 			const { canceled } = await os.dialog({
 				type: 'warning',
-				text: this.$t('leaveConfirm'),
+				text: this.$ts.leaveConfirm,
 				showCancelButton: true
 			});
 			return !canceled;
@@ -203,7 +203,7 @@ export default defineComponent({
 	
 		async addConst() {
 			const { canceled, result } = await os.dialog({
-				title: this.$t('_theme.inputConstantName'),
+				title: this.$ts._theme.inputConstantName,
 				input: true
 			});
 			if (canceled) return;
@@ -238,7 +238,7 @@ export default defineComponent({
 
 			try {
 				const theme = JSON5.parse(this.themeToImport) as Theme;
-				if (!validateTheme(theme)) throw new Error(this.$t('_theme.invalid'));
+				if (!validateTheme(theme)) throw new Error(this.$ts._theme.invalid);
 
 				this.name = theme.name;
 				this.description = theme.desc || '';
@@ -260,9 +260,9 @@ export default defineComponent({
 
 		getTypeOf(v: ThemeValue) {
 			return v === null
-				? this.$t('_theme.defaultValue')
+				? this.$ts._theme.defaultValue
 				: typeof v === 'string'
-					? this.$t('_theme.color')
+					? this.$ts._theme.color
 					: this.$t('_theme.' + v.type);
 		},
 	
@@ -274,23 +274,23 @@ export default defineComponent({
 		showTypeMenu(e: MouseEvent) {
 			return new Promise<ThemeValue>((resolve) => {
 				os.modalMenu([{
-					text: this.$t('_theme.defaultValue'),
+					text: this.$ts._theme.defaultValue,
 					action: () => resolve(null),
 				}, {
-					text: this.$t('_theme.color'),
+					text: this.$ts._theme.color,
 					action: () => resolve('#000000'),
 				}, {
-					text: this.$t('_theme.func'),
+					text: this.$ts._theme.func,
 					action: () => resolve({
 						type: 'func', name: 'alpha', arg: 1, value: 'accent'
 					}),
 				}, {
-					text: this.$t('_theme.refProp'),
+					text: this.$ts._theme.refProp,
 					action: () => resolve({
 						type: 'refProp', key: 'accent',
 					}),
 				}, {
-					text: this.$t('_theme.refConst'),
+					text: this.$ts._theme.refConst,
 					action: () => resolve({
 						type: 'refConst', key: '',
 					}),

@@ -19,7 +19,7 @@
 				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
 			</div>
 		</div>
-		<span v-else style="opacity: 0.5;">{{ $t('noJobs') }}</span>
+		<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
 	</div>
 </section>
 </template>

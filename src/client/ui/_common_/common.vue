@@ -17,7 +17,7 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { stream, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
 import * as sound from '@/scripts/sound';
-import { $i, $i } from '@/account';
+import { $i } from '@/account';
 
 export default defineComponent({
 	components: {

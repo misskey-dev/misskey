@@ -115,6 +115,22 @@ export default defineComponent({
 			endpoint = 'notes/global-timeline';
 			this.connection = os.stream.useSharedConnection('globalTimeline');
 			this.connection.on('note', prepend);
+		} else if (this.src == 'mentions') {
+			endpoint = 'notes/mentions';
+			this.connection = os.stream.useSharedConnection('main');
+			this.connection.on('mention', prepend);
+		} else if (this.src == 'directs') {
+			endpoint = 'notes/mentions';
+			this.query = {
+				visibility: 'specified'
+			};
+			const onNote = note => {
+				if (note.visibility == 'specified') {
+					prepend(note);
+				}
+			};
+			this.connection = os.stream.useSharedConnection('main');
+			this.connection.on('mention', onNote);
 		} else if (this.src == 'list') {
 			endpoint = 'notes/user-list-timeline';
 			this.query = {

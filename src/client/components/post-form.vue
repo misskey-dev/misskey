@@ -11,7 +11,7 @@
 		<div>
 			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
 			<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
-			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$t('visibility')" :disabled="channel != null">
+			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
 				<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
 				<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
 				<span v-if="visibility === 'followers'"><Fa :icon="faUnlock"/></span>
@@ -23,9 +23,9 @@
 	<div class="form" :class="{ fixed }">
 		<XNotePreview class="preview" v-if="reply" :note="reply"/>
 		<XNotePreview class="preview" v-if="renote" :note="renote"/>
-		<div class="with-quote" v-if="quoteId"><Fa icon="quote-left"/> {{ $t('quoteAttached') }}<button @click="quoteId = null"><Fa icon="times"/></button></div>
+		<div class="with-quote" v-if="quoteId"><Fa icon="quote-left"/> {{ $ts.quoteAttached }}<button @click="quoteId = null"><Fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
-			<span style="margin-right: 8px;">{{ $t('recipient') }}</span>
+			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers" :key="u.id">
 					<MkAcct :user="u"/>
@@ -34,17 +34,17 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><Fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
-		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$t('annotation')" @keydown="onKeydown">
+		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom" v-tooltip="$t('attachFile')"><Fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$t('poll')"><Fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$t('useCw')"><Fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention" v-tooltip="$t('mention')"><Fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji" v-tooltip="$t('emoji')"><Fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="showActions" v-tooltip="$t('plugin')" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
+			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><Fa :icon="faPhotoVideo"/></button>
+			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><Fa :icon="faPollH"/></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><Fa :icon="faEyeSlash"/></button>
+			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><Fa :icon="faAt"/></button>
+			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><Fa :icon="faLaughSquint"/></button>
+			<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
 		</footer>
 	</div>
 </div>
@@ -164,19 +164,19 @@ export default defineComponent({
 
 		placeholder(): string {
 			if (this.renote) {
-				return this.$t('_postForm.quotePlaceholder');
+				return this.$ts._postForm.quotePlaceholder;
 			} else if (this.reply) {
-				return this.$t('_postForm.replyPlaceholder');
+				return this.$ts._postForm.replyPlaceholder;
 			} else if (this.channel) {
-				return this.$t('_postForm.channelPlaceholder');
+				return this.$ts._postForm.channelPlaceholder;
 			} else {
 				const xs = [
-					this.$t('_postForm._placeholders.a'),
-					this.$t('_postForm._placeholders.b'),
-					this.$t('_postForm._placeholders.c'),
-					this.$t('_postForm._placeholders.d'),
-					this.$t('_postForm._placeholders.e'),
-					this.$t('_postForm._placeholders.f')
+					this.$ts._postForm._placeholders.a,
+					this.$ts._postForm._placeholders.b,
+					this.$ts._postForm._placeholders.c,
+					this.$ts._postForm._placeholders.d,
+					this.$ts._postForm._placeholders.e,
+					this.$ts._postForm._placeholders.f
 				];
 				return xs[Math.floor(Math.random() * xs.length)];
 			}
@@ -184,10 +184,10 @@ export default defineComponent({
 
 		submitText(): string {
 			return this.renote
-				? this.$t('quote')
+				? this.$ts.quote
 				: this.reply
-					? this.$t('reply')
-					: this.$t('note');
+					? this.$ts.reply
+					: this.$ts.note;
 		},
 
 		canPost(): boolean {
@@ -352,7 +352,7 @@ export default defineComponent({
 		},
 
 		chooseFileFrom(ev) {
-			selectFile(ev.currentTarget || ev.target, this.$t('attachFile'), true).then(files => {
+			selectFile(ev.currentTarget || ev.target, this.$ts.attachFile, true).then(files => {
 				for (const file of files) {
 					this.files.push(file);
 				}
@@ -452,7 +452,7 @@ export default defineComponent({
 
 				os.dialog({
 					type: 'info',
-					text: this.$t('quoteQuestion'),
+					text: this.$ts.quoteQuestion,
 					showCancelButton: true
 				}).then(({ canceled }) => {
 					if (canceled) {

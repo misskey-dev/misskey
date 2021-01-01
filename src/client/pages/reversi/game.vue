@@ -27,7 +27,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('_reversi.reversi'),
+				title: this.$ts._reversi.reversi,
 				icon: faGamepad
 			},
 			game: null,

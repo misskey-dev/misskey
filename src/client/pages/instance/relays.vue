@@ -1,21 +1,21 @@
 <template>
 <div class="relaycxt">
 	<section class="_section add">
-		<div class="_title"><Fa :icon="faPlus"/> {{ $t('addRelay') }}</div>
+		<div class="_title"><Fa :icon="faPlus"/> {{ $ts.addRelay }}</div>
 		<div class="_content">
 			<MkInput v-model:value="inbox">
-				<span>{{ $t('inboxUrl') }}</span>
+				<span>{{ $ts.inboxUrl }}</span>
 			</MkInput>
-			<MkButton @click="add(inbox)" primary><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
+			<MkButton @click="add(inbox)" primary><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_section relays">
-		<div class="_title"><Fa :icon="faProjectDiagram"/> {{ $t('addedRelays') }}</div>
+		<div class="_title"><Fa :icon="faProjectDiagram"/> {{ $ts.addedRelays }}</div>
 		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
-			<MkButton class="button" inline @click="remove(relay.inbox)"><Fa :icon="faTrashAlt"/> {{ $t('remove') }}</MkButton>
+			<MkButton class="button" inline @click="remove(relay.inbox)"><Fa :icon="faTrashAlt"/> {{ $ts.remove }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -38,7 +38,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('relays'),
+				title: this.$ts.relays,
 				icon: faProjectDiagram,
 			},
 			relays: [],

@@ -1,5 +1,5 @@
 <template>
-<XColumn :name="name" :column="column" :is-stacked="isStacked" :menu="menu">
+<XColumn :column="column" :is-stacked="isStacked">
 	<template #header><Fa :icon="faEnvelope" style="margin-right: 8px;"/>{{ column.name }}</template>
 
 	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
@@ -33,7 +33,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			menu: null,
 			pagination: {
 				endpoint: 'notes/mentions',
 				limit: 10,

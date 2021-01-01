@@ -1,6 +1,6 @@
 <template>
 <div class="ieepwinx _section">
-	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
+	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
 
 	<div class="_content">
 		<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
@@ -29,7 +29,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('manageAntennas'),
+				title: this.$ts.manageAntennas,
 				icon: faSatellite,
 				action: {
 					icon: faPlus,

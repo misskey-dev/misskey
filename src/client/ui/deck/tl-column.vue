@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
+<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
 		<Fa v-if="column.tl === 'home'" :icon="faHome"/>
 		<Fa v-else-if="column.tl === 'local'" :icon="faComments"/>
@@ -46,7 +46,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			menu: null,
 			disabled: false,
 			indicated: false,
 			columnActive: true,
@@ -58,14 +57,6 @@ export default defineComponent({
 		mediaOnly() {
 			(this.$refs.timeline as any).reload();
 		}
-	},
-
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('timeline'),
-			action: this.setType
-		}];
 	},
 
 	mounted() {
@@ -81,17 +72,17 @@ export default defineComponent({
 	methods: {
 		async setType() {
 			const { canceled, result: src } = await os.dialog({
-				title: this.$t('timeline'),
+				title: this.$ts.timeline,
 				type: null,
 				select: {
 					items: [{
-						value: 'home', text: this.$t('_timelines.home')
+						value: 'home', text: this.$ts._timelines.home
 					}, {
-						value: 'local', text: this.$t('_timelines.local')
+						value: 'local', text: this.$ts._timelines.local
 					}, {
-						value: 'social', text: this.$t('_timelines.social')
+						value: 'social', text: this.$ts._timelines.social
 					}, {
-						value: 'global', text: this.$t('_timelines.global')
+						value: 'global', text: this.$ts._timelines.global
 					}]
 				},
 			});

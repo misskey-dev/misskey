@@ -18,7 +18,7 @@
 		<div class="sub">
 			<MkA to="/docs" @click.passive="close()">
 				<Fa :icon="faQuestionCircle" class="icon"/>
-				<div class="text">{{ $t('help') }}</div>
+				<div class="text">{{ $ts.help }}</div>
 			</MkA>
 			<MkA to="/about" @click.passive="close()">
 				<Fa :icon="faInfoCircle" class="icon"/>
@@ -26,7 +26,7 @@
 			</MkA>
 			<MkA to="/about-misskey" @click.passive="close()">
 				<Fa :icon="faInfoCircle" class="icon"/>
-				<div class="text">{{ $t('aboutMisskey') }}</div>
+				<div class="text">{{ $ts.aboutMisskey }}</div>
 			</MkA>
 		</div>
 	</div>
@@ -65,7 +65,7 @@ export default defineComponent({
 	created() {
 		this.items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
 			type: def.to ? 'link' : 'button',
-			text: this.$t(def.title),
+			text: this.$ts[def.title],
 			icon: def.icon,
 			to: def.to,
 			action: def.action,

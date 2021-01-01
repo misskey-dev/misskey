@@ -67,6 +67,9 @@ export function physics(container: HTMLElement) {
 				left + (objEl.offsetWidth / 2),
 				top + (objEl.offsetHeight / 2),
 				Math.max(objEl.offsetWidth, objEl.offsetHeight) / 2,
+				{
+					restitution: 0.5
+				}
 			);
 		} else {
 			const style = window.getComputedStyle(objEl);
@@ -77,6 +80,7 @@ export function physics(container: HTMLElement) {
 				objEl.offsetHeight,
 				{
 					chamfer: { radius: parseInt(style.borderRadius, 10) },
+					restitution: 0.5
 				}
 			);
 		}
@@ -92,7 +96,7 @@ export function physics(container: HTMLElement) {
 	const mouseConstraint = Matter.MouseConstraint.create(engine, {
 		mouse: mouse,
 		constraint: {
-			stiffness: 0.05,
+			stiffness: 0.1,
 			render: {
 				visible: false
 			}

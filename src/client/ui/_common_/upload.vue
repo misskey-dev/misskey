@@ -6,7 +6,7 @@
 			<div class="top">
 				<p class="name"><Fa :icon="faSpinner" pulse/>{{ ctx.name }}</p>
 				<p class="status">
-					<span class="initing" v-if="ctx.progressValue === undefined">{{ $t('waiting') }}<MkEllipsis/></span>
+					<span class="initing" v-if="ctx.progressValue === undefined">{{ $ts.waiting }}<MkEllipsis/></span>
 					<span class="kb" v-if="ctx.progressValue !== undefined">{{ String(Math.floor(ctx.progressValue / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progressMax / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
 					<span class="percentage" v-if="ctx.progressValue !== undefined">{{ Math.floor((ctx.progressValue / ctx.progressMax) * 100) }}</span>
 				</p>

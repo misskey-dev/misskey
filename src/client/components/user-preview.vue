@@ -13,13 +13,13 @@
 			</div>
 			<div class="status">
 				<div>
-					<p>{{ $t('notes') }}</p><span>{{ user.notesCount }}</span>
+					<p>{{ $ts.notes }}</p><span>{{ user.notesCount }}</span>
 				</div>
 				<div>
-					<p>{{ $t('following') }}</p><span>{{ user.followingCount }}</span>
+					<p>{{ $ts.following }}</p><span>{{ user.followingCount }}</span>
 				</div>
 				<div>
-					<p>{{ $t('followers') }}</p><span>{{ user.followersCount }}</span>
+					<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
 				</div>
 			</div>
 			<MkFollowButton class="koudoku-button" v-if="$i && user.id != $i.id" :user="user" mini/>

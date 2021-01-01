@@ -48,7 +48,7 @@
 		</datalist>
 		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
 	<div class="desc _caption"><slot name="desc"></slot></div>
 </div>
 </template>

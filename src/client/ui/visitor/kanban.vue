@@ -8,14 +8,14 @@
 			</h1>
 			<template v-if="full">
 				<div class="about" v-if="meta">
-					<div class="desc" v-html="meta.description || $t('introMisskey')"></div>
+					<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
 				</div>
 				<div class="action">
-					<button class="_buttonPrimary" @click="signup()">{{ $t('signup') }}</button>
-					<button class="_button" @click="signin()">{{ $t('login') }}</button>
+					<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
+					<button class="_button" @click="signin()">{{ $ts.login }}</button>
 				</div>
 				<div class="announcements panel">
-					<header>{{ $t('announcements') }}</header>
+					<header>{{ $ts.announcements }}</header>
 					<MkPagination :pagination="announcements" #default="{items}" class="list">
 						<section class="item" v-for="(announcement, i) in items" :key="announcement.id">
 							<div class="title">{{ announcement.title }}</div>

@@ -10,7 +10,7 @@
 	@closed="$emit('closed')"
 >
 	<template #header>
-		{{ multiple ? ((type === 'file') ? $t('selectFiles') : $t('selectFolders')) : ((type === 'file') ? $t('selectFile') : $t('selectFolder')) }}
+		{{ multiple ? ((type === 'file') ? $ts.selectFiles : $ts.selectFolders) : ((type === 'file') ? $ts.selectFile : $ts.selectFolder) }}
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
 	<XDrive :multiple="multiple" @changeSelection="onChangeSelection" @selected="ok()" :select="type"/>

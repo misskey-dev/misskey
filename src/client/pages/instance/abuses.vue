@@ -4,31 +4,31 @@
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
 				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('state') }}</template>
-					<option value="all">{{ $t('all') }}</option>
-					<option value="unresolved">{{ $t('unresolved') }}</option>
-					<option value="resolved">{{ $t('resolved') }}</option>
+					<template #label>{{ $ts.state }}</template>
+					<option value="all">{{ $ts.all }}</option>
+					<option value="unresolved">{{ $ts.unresolved }}</option>
+					<option value="resolved">{{ $ts.resolved }}</option>
 				</MkSelect>
 				<MkSelect v-model:value="targetUserOrigin" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('targetUserOrigin') }}</template>
-					<option value="combined">{{ $t('all') }}</option>
-					<option value="local">{{ $t('local') }}</option>
-					<option value="remote">{{ $t('remote') }}</option>
+					<template #label>{{ $ts.targetUserOrigin }}</template>
+					<option value="combined">{{ $ts.all }}</option>
+					<option value="local">{{ $ts.local }}</option>
+					<option value="remote">{{ $ts.remote }}</option>
 				</MkSelect>
 				<MkSelect v-model:value="reporterOrigin" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('reporterOrigin') }}</template>
-					<option value="combined">{{ $t('all') }}</option>
-					<option value="local">{{ $t('local') }}</option>
-					<option value="remote">{{ $t('remote') }}</option>
+					<template #label>{{ $ts.reporterOrigin }}</template>
+					<option value="combined">{{ $ts.all }}</option>
+					<option value="local">{{ $ts.local }}</option>
+					<option value="remote">{{ $ts.remote }}</option>
 				</MkSelect>
 			</div>
 			<!-- TODO
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
 				<MkInput v-model:value="searchUsername" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.reports.reload()">
-					<span>{{ $t('username') }}</span>
+					<span>{{ $ts.username }}</span>
 				</MkInput>
 				<MkInput v-model:value="searchHost" style="margin: 0; flex: 1;" type="text" spellcheck="false" @update:value="$refs.reports.reload()" :disabled="pagination.params().origin === 'local'">
-					<span>{{ $t('host') }}</span>
+					<span>{{ $ts.host }}</span>
 				</MkInput>
 			</div>
 			-->
@@ -52,7 +52,7 @@
 					</div>
 					<div class="_footer">
 						<div v-if="report.assignee">Assignee: <MkAcct :user="report.assignee"/></div>
-						<MkButton @click="resolve(report)" primary v-if="!report.resolved">{{ $t('abuseMarkAsResolved') }}</MkButton>
+						<MkButton @click="resolve(report)" primary v-if="!report.resolved">{{ $ts.abuseMarkAsResolved }}</MkButton>
 					</div>
 				</div>
 			</MkPagination>
@@ -84,7 +84,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('abuseReports'),
+				title: this.$ts.abuseReports,
 				icon: faExclamationCircle
 			},
 			searchUsername: '',

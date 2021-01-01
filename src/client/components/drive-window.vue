@@ -6,7 +6,7 @@
 	@closed="$emit('closed')"
 >
 	<template #header>
-		{{ $t('drive') }}
+		{{ $ts.drive }}
 	</template>
 	<XDrive :initial-folder="initialFolder"/>
 </XWindow>

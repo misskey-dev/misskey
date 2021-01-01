@@ -5,21 +5,12 @@
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">
-			<template v-if="info.tabs">
-				<div class="title" v-for="tab in info.tabs" :key="tab.id" :class="{ _button: tab.onClick, selected: tab.selected }" @click.stop="tab.onClick" v-tooltip="tab.tooltip">
-					<Fa v-if="tab.icon" :icon="tab.icon" :key="tab.icon" class="icon"/>
-					<span v-if="tab.title" class="text">{{ tab.title }}</span>
-					<Fa class="indicator" v-if="tab.indicate" :icon="faCircle"/>
-				</div>
-			</template>
-			<template v-else>
-				<div class="title">
-					<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
-					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
-					<span v-if="info.title" class="text">{{ info.title }}</span>
-					<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
-				</div>
-			</template>
+			<div class="title">
+				<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+				<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
+				<span v-if="info.title" class="text">{{ info.title }}</span>
+				<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
+			</div>
 		</div>
 		<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
 	</template>
@@ -154,17 +145,6 @@ export default defineComponent({
 				width: $size;
 				height: $size;
 				vertical-align: bottom;
-			}
-
-			&._button {
-				&:hover {
-					color: var(--fgHighlighted);
-				}
-			}
-
-			&.selected {
-				box-shadow: 0 -2px 0 0 var(--accent) inset;
-				color: var(--fgHighlighted);
 			}
 		}
 	}

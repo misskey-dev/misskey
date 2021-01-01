@@ -49,7 +49,7 @@ export default defineComponent({
 			const el = this.$slots.default({
 				item: item
 			})[0];
-			el.key = item.id;
+			if (el.key == null && item.id) el.key = item.id;
 
 			if (
 				i != this.items.length - 1 &&

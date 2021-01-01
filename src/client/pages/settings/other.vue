@@ -1,14 +1,14 @@
 <template>
 <FormBase>
 	<FormSwitch :value="$i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
-		{{ $t('showFeaturedNotesInTimeline') }}
+		{{ $ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>
 
-	<FormLink to="/settings/account-info">{{ $t('accountInfo') }}</FormLink>
-	<FormLink to="/settings/experimental-features">{{ $t('experimentalFeatures') }}</FormLink>
+	<FormLink to="/settings/account-info">{{ $ts.accountInfo }}</FormLink>
+	<FormLink to="/settings/experimental-features">{{ $ts.experimentalFeatures }}</FormLink>
 
 	<FormGroup>
-		<template #label>{{ $t('developer') }}</template>
+		<template #label>{{ $ts.developer }}</template>
 		<FormSwitch v-model:value="debug" @update:value="changeDebug">
 			DEBUG MODE
 		</FormSwitch>
@@ -47,7 +47,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('other'),
+				title: this.$ts.other,
 				icon: faEllipsisH
 			},
 			debug

@@ -1,6 +1,6 @@
 <template>
 <MkContainer>
-	<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $t('images') }}</template>
+	<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $ts.images }}</template>
 	<div class="ujigsodd">
 		<MkLoading v-if="fetching"/>
 		<div class="stream" v-if="!fetching && images.length > 0">
@@ -10,7 +10,7 @@
 				:to="notePage(image.note)"
 			></MkA>
 		</div>
-		<p class="empty" v-if="!fetching && images.length == 0">{{ $t('nothing') }}</p>
+		<p class="empty" v-if="!fetching && images.length == 0">{{ $ts.nothing }}</p>
 	</div>
 </MkContainer>
 </template>

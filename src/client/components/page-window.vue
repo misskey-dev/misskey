@@ -1,6 +1,6 @@
 <template>
 <XWindow ref="window"
-	:initial-width="700"
+	:initial-width="500"
 	:initial-height="500"
 	:can-resize="true"
 	:close-right="true"
@@ -90,29 +90,29 @@ export default defineComponent({
 				text: this.path,
 			}, {
 				icon: faExpandAlt,
-				text: this.$t('showInPage'),
+				text: this.$ts.showInPage,
 				action: this.expand
 			}, this.sideViewHook ? {
 				icon: faColumns,
-				text: this.$t('openInSideView'),
+				text: this.$ts.openInSideView,
 				action: () => {
 					this.sideViewHook(this.path);
 					this.$refs.window.close();
 				}
 			} : undefined, {
 				icon: faExternalLinkAlt,
-				text: this.$t('popout'),
+				text: this.$ts.popout,
 				action: this.popout
 			}, null, {
 				icon: faExternalLinkAlt,
-				text: this.$t('openInNewTab'),
+				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.url, '_blank');
 					this.$refs.window.close();
 				}
 			}, {
 				icon: faLink,
-				text: this.$t('copyLink'),
+				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);
 				}

@@ -15,26 +15,29 @@
 					<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 				</button>
 				<MkA class="item index" active-class="active" to="/" exact>
-					<Fa :icon="faHome" fixed-width/><span class="text">{{ $t('timeline') }}</span>
+					<Fa :icon="faHome" fixed-width/><span class="text">{{ $ts.timeline }}</span>
 				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
 					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
-						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
+						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $ts[menuDef[item].title] }}</span>
 						<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
 					</component>
 				</template>
 				<div class="divider"></div>
 				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
-					<Fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
+					<Fa :icon="faServer" fixed-width/><span class="text">{{ $ts.instance }}</span>
 				</button>
 				<button class="item _button" @click="more">
-					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $ts.more }}</span>
 					<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 				</button>
 				<MkA class="item" active-class="active" to="/settings">
-					<Fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
+					<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
 				</MkA>
+				<button class="item _button post" @click="post">
+					<Fa :icon="faPencilAlt" fixed-width/><span class="text">{{ $ts.note }}</span>
+				</button>
 			</div>
 		</nav>
 	</transition>
@@ -85,7 +88,7 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		'$store.reactiveState.sidebarDisplay'() {
+		'$store.reactiveState.sidebarDisplay.value'() {
 			this.calcViewState();
 		},
 
@@ -117,11 +120,15 @@ export default defineComponent({
 			this.showing = true;
 		},
 
+		post() {
+			os.post();
+		},
+
 		search() {
 			if (this.searching) return;
 
 			os.dialog({
-				title: this.$t('search'),
+				title: this.$ts.search,
 				input: true
 			}).then(async ({ canceled, result: query }) => {
 				if (canceled || query == null || query === '') return;
@@ -145,18 +152,18 @@ export default defineComponent({
 
 			os.modalMenu([...[{
 				type: 'link',
-				text: this.$t('profile'),
+				text: this.$ts.profile,
 				to: `/@${ this.$i.username }`,
 				avatar: this.$i,
 			}, null, ...accountItems, {
 				icon: faPlus,
-				text: this.$t('addAcount'),
+				text: this.$ts.addAcount,
 				action: () => {
 					os.modalMenu([{
-						text: this.$t('existingAcount'),
+						text: this.$ts.existingAcount,
 						action: () => { this.addAcount(); },
 					}, {
-						text: this.$t('createAccount'),
+						text: this.$ts.createAccount,
 						action: () => { this.createAccount(); },
 					}], ev.currentTarget || ev.target);
 				},
@@ -168,57 +175,57 @@ export default defineComponent({
 		oepnInstanceMenu(ev) {
 			os.modalMenu([{
 				type: 'link',
-				text: this.$t('dashboard'),
+				text: this.$ts.dashboard,
 				to: '/instance',
 				icon: faTachometerAlt,
 			}, null, this.$i.isAdmin ? {
 				type: 'link',
-				text: this.$t('settings'),
+				text: this.$ts.settings,
 				to: '/instance/settings',
 				icon: faCog,
 			} : undefined, {
 				type: 'link',
-				text: this.$t('customEmojis'),
+				text: this.$ts.customEmojis,
 				to: '/instance/emojis',
 				icon: faLaugh,
 			}, {
 				type: 'link',
-				text: this.$t('users'),
+				text: this.$ts.users,
 				to: '/instance/users',
 				icon: faUsers,
 			}, {
 				type: 'link',
-				text: this.$t('files'),
+				text: this.$ts.files,
 				to: '/instance/files',
 				icon: faCloud,
 			}, {
 				type: 'link',
-				text: this.$t('jobQueue'),
+				text: this.$ts.jobQueue,
 				to: '/instance/queue',
 				icon: faExchangeAlt,
 			}, {
 				type: 'link',
-				text: this.$t('federation'),
+				text: this.$ts.federation,
 				to: '/instance/federation',
 				icon: faGlobe,
 			}, {
 				type: 'link',
-				text: this.$t('relays'),
+				text: this.$ts.relays,
 				to: '/instance/relays',
 				icon: faProjectDiagram,
 			}, {
 				type: 'link',
-				text: this.$t('announcements'),
+				text: this.$ts.announcements,
 				to: '/instance/announcements',
 				icon: faBroadcastTower,
 			}, {
 				type: 'link',
-				text: this.$t('abuseReports'),
+				text: this.$ts.abuseReports,
 				to: '/instance/abuses',
 				icon: faExclamationCircle,
 			}, {
 				type: 'link',
-				text: this.$t('logs'),
+				text: this.$ts.logs,
 				to: '/instance/logs',
 				icon: faStream,
 			}], ev.currentTarget || ev.target);
@@ -350,13 +357,6 @@ export default defineComponent({
 			top: 0;
 			left: 0;
 			z-index: 1001;
-
-			> div {
-				> .index,
-				> .notifications {
-					display: none;
-				}
-			}
 		}
 
 		&:not(.hidden) {

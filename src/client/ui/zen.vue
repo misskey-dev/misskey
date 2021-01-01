@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app" v-hotkey.global="keymap">
+<div class="mk-app">
 	<div class="contents">
 		<header class="header">
 			<XHeader :info="pageInfo"/>
@@ -26,11 +26,8 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@/config';
-import { search } from '@/scripts/search';
 import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -41,31 +38,9 @@ export default defineComponent({
 	data() {
 		return {
 			host: host,
-			pageKey: 0,
 			pageInfo: null,
 			faLayerGroup, faBars, faBell, faHome, faCircle,
 		};
-	},
-
-	computed: {
-		keymap(): any {
-			return {
-				'd': () => {
-					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$store.set('darkMode', !this.$store.state.darkMode);
-				},
-				'p': os.post,
-				'n': os.post,
-				's': search,
-				'h|/': this.help
-			};
-		},
-	},
-
-	watch: {
-		$route(to, from) {
-			this.pageKey++;
-		},
 	},
 
 	created() {

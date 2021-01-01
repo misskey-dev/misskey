@@ -46,6 +46,7 @@ copyUsername: "Copier le nom d’utilisateur·rice"
 searchUser: "Chercher un·e utilisateur·rice"
 reply: "Répondre"
 loadMore: "Afficher plus …"
+showMore: "Afficher plus …"
 youGotNewFollower: "Vous suit"
 receiveFollowRequest: "Demande d’abonnement reçue"
 followRequestAccepted: "La demande d’abonnement a été acceptée"
@@ -577,6 +578,7 @@ fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
 random: "Aléatoire"
 public: "Public"
+clearCache: "Vider le cache"
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"
@@ -585,6 +587,7 @@ _mfm:
   quote: "Citer"
   emoji: "Émojis personnalisés"
   search: "Rechercher"
+  font: "Police de caractères"
 _reversi:
   total: "Total"
 _serverDisconnectedBehavior:
@@ -762,6 +765,7 @@ _widgets:
   digitalClock: "Horloge numérique"
   federation: "Fédération"
   postForm: "Formulaire à publier"
+  button: "Bouton"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"

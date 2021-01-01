@@ -15,11 +15,11 @@
 		</MkA>
 	</div>
 	<button class="more _button" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching">
-		<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 		<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
 	</button>
 
-	<p class="empty" v-if="empty">{{ $t('noUsers') }}</p>
+	<p class="empty" v-if="empty">{{ $ts.noUsers }}</p>
 
 	<MkError v-if="error" @retry="init()"/>
 </div>

@@ -1,28 +1,28 @@
 <template>
 <FormBase>
 	<FormGroup>
-		<FormSwitch v-model:value="isLocked" @update:value="save()">{{ $t('makeFollowManuallyApprove') }}</FormSwitch>
-		<FormSwitch v-model:value="autoAcceptFollowed" :disabled="!isLocked" @update:value="save()">{{ $t('autoAcceptFollowed') }}</FormSwitch>
-		<template #caption>{{ $t('lockedAccountInfo') }}</template>
+		<FormSwitch v-model:value="isLocked" @update:value="save()">{{ $ts.makeFollowManuallyApprove }}</FormSwitch>
+		<FormSwitch v-model:value="autoAcceptFollowed" :disabled="!isLocked" @update:value="save()">{{ $ts.autoAcceptFollowed }}</FormSwitch>
+		<template #caption>{{ $ts.lockedAccountInfo }}</template>
 	</FormGroup>
 	<FormSwitch v-model:value="noCrawle" @update:value="save()">
-		{{ $t('noCrawle') }}
-		<template #desc>{{ $t('noCrawleDescription') }}</template>
+		{{ $ts.noCrawle }}
+		<template #desc>{{ $ts.noCrawleDescription }}</template>
 	</FormSwitch>
 	<FormSwitch v-model:value="isExplorable" @update:value="save()">
-		{{ $t('makeExplorable') }}
-		<template #desc>{{ $t('makeExplorableDescription') }}</template>
+		{{ $ts.makeExplorable }}
+		<template #desc>{{ $ts.makeExplorableDescription }}</template>
 	</FormSwitch>
-	<FormSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $t('rememberNoteVisibility') }}</FormSwitch>
+	<FormSwitch v-model:value="rememberNoteVisibility" @update:value="save()">{{ $ts.rememberNoteVisibility }}</FormSwitch>
 	<FormGroup v-if="!rememberNoteVisibility">
-		<template #label>{{ $t('defaultNoteVisibility') }}</template>
+		<template #label>{{ $ts.defaultNoteVisibility }}</template>
 		<FormSelect v-model:value="defaultNoteVisibility">
-			<option value="public">{{ $t('_visibility.public') }}</option>
-			<option value="home">{{ $t('_visibility.home') }}</option>
-			<option value="followers">{{ $t('_visibility.followers') }}</option>
-			<option value="specified">{{ $t('_visibility.specified') }}</option>
+			<option value="public">{{ $ts._visibility.public }}</option>
+			<option value="home">{{ $ts._visibility.home }}</option>
+			<option value="followers">{{ $ts._visibility.followers }}</option>
+			<option value="specified">{{ $ts._visibility.specified }}</option>
 		</FormSelect>
-		<FormSwitch v-model:value="defaultNoteLocalOnly">{{ $t('_visibility.localOnly') }}</FormSwitch>
+		<FormSwitch v-model:value="defaultNoteLocalOnly">{{ $ts._visibility.localOnly }}</FormSwitch>
 	</FormGroup>
 </FormBase>
 </template>
@@ -50,7 +50,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('privacy'),
+				title: this.$ts.privacy,
 				icon: faLockOpen
 			},
 			isLocked: false,

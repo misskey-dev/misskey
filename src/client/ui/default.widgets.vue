@@ -20,11 +20,11 @@
 				</div>
 			</template>
 		</XDraggable>
-		<button @click="editMode = false" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $t('editWidgetsExit') }}</button>
+		<button @click="editMode = false" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $ts.editWidgetsExit }}</button>
 	</template>
 	<template v-else>
 		<component v-for="widget in widgets" class="_inContainer_ _forceContainerFull_" :is="`mkw-${widget.name}`" :key="widget.id" :widget="widget" @updateProps="saveWidget(widget.id, $event)"/>
-		<button @click="editMode = true" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $t('editWidgets') }}</button>
+		<button @click="editMode = true" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $ts.editWidgets }}</button>
 	</template>
 </div>
 </template>
@@ -76,7 +76,7 @@ export default defineComponent({
 		async addWidget() {
 			const { canceled, result: widget } = await os.dialog({
 				type: null,
-				title: this.$t('chooseWidget'),
+				title: this.$ts.chooseWidget,
 				select: {
 					items: widgets.map(widget => ({
 						value: widget,

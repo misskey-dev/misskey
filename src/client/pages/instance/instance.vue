@@ -10,11 +10,11 @@
 		<div class="_table section">
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('software') }}</div>
+					<div class="_label">{{ $ts.software }}</div>
 					<div class="_data">{{ instance.softwareName || '?' }}</div>
 				</div>
 				<div class="_cell">
-					<div class="_label">{{ $t('version') }}</div>
+					<div class="_label">{{ $ts.version }}</div>
 					<div class="_data">{{ instance.softwareVersion || '?' }}</div>
 				</div>
 			</div>
@@ -22,77 +22,77 @@
 		<div class="_table data section">
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('registeredAt') }}</div>
+					<div class="_label">{{ $ts.registeredAt }}</div>
 					<div class="_data">{{ new Date(instance.caughtAt).toLocaleString() }} (<MkTime :time="instance.caughtAt"/>)</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('following') }}</div>
+					<div class="_label">{{ $ts.following }}</div>
 					<button class="_data _textButton" @click="showFollowing()">{{ number(instance.followingCount) }}</button>
 				</div>
 				<div class="_cell">
-					<div class="_label">{{ $t('followers') }}</div>
+					<div class="_label">{{ $ts.followers }}</div>
 					<button class="_data _textButton" @click="showFollowers()">{{ number(instance.followersCount) }}</button>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('users') }}</div>
+					<div class="_label">{{ $ts.users }}</div>
 					<button class="_data _textButton" @click="showUsers()">{{ number(instance.usersCount) }}</button>
 				</div>
 				<div class="_cell">
-					<div class="_label">{{ $t('notes') }}</div>
+					<div class="_label">{{ $ts.notes }}</div>
 					<div class="_data">{{ number(instance.notesCount) }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('files') }}</div>
+					<div class="_label">{{ $ts.files }}</div>
 					<div class="_data">{{ number(instance.driveFiles) }}</div>
 				</div>
 				<div class="_cell">
-					<div class="_label">{{ $t('storageUsage') }}</div>
+					<div class="_label">{{ $ts.storageUsage }}</div>
 					<div class="_data">{{ bytes(instance.driveUsage) }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('latestRequestSentAt') }}</div>
+					<div class="_label">{{ $ts.latestRequestSentAt }}</div>
 					<div class="_data"><MkTime v-if="instance.latestRequestSentAt" :time="instance.latestRequestSentAt"/><span v-else>N/A</span></div>
 				</div>
 				<div class="_cell">
-					<div class="_label">{{ $t('latestStatus') }}</div>
+					<div class="_label">{{ $ts.latestStatus }}</div>
 					<div class="_data">{{ instance.latestStatus ? instance.latestStatus : 'N/A' }}</div>
 				</div>
 			</div>
 			<div class="_row">
 				<div class="_cell">
-					<div class="_label">{{ $t('latestRequestReceivedAt') }}</div>
+					<div class="_label">{{ $ts.latestRequestReceivedAt }}</div>
 					<div class="_data"><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></div>
 				</div>
 			</div>
 		</div>
 		<div class="chart">
 			<div class="header">
-				<span class="label">{{ $t('charts') }}</span>
+				<span class="label">{{ $ts.charts }}</span>
 				<div class="selects">
 					<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
-						<option value="requests">{{ $t('_instanceCharts.requests') }}</option>
-						<option value="users">{{ $t('_instanceCharts.users') }}</option>
-						<option value="users-total">{{ $t('_instanceCharts.usersTotal') }}</option>
-						<option value="notes">{{ $t('_instanceCharts.notes') }}</option>
-						<option value="notes-total">{{ $t('_instanceCharts.notesTotal') }}</option>
-						<option value="ff">{{ $t('_instanceCharts.ff') }}</option>
-						<option value="ff-total">{{ $t('_instanceCharts.ffTotal') }}</option>
-						<option value="drive-usage">{{ $t('_instanceCharts.cacheSize') }}</option>
-						<option value="drive-usage-total">{{ $t('_instanceCharts.cacheSizeTotal') }}</option>
-						<option value="drive-files">{{ $t('_instanceCharts.files') }}</option>
-						<option value="drive-files-total">{{ $t('_instanceCharts.filesTotal') }}</option>
+						<option value="requests">{{ $ts._instanceCharts.requests }}</option>
+						<option value="users">{{ $ts._instanceCharts.users }}</option>
+						<option value="users-total">{{ $ts._instanceCharts.usersTotal }}</option>
+						<option value="notes">{{ $ts._instanceCharts.notes }}</option>
+						<option value="notes-total">{{ $ts._instanceCharts.notesTotal }}</option>
+						<option value="ff">{{ $ts._instanceCharts.ff }}</option>
+						<option value="ff-total">{{ $ts._instanceCharts.ffTotal }}</option>
+						<option value="drive-usage">{{ $ts._instanceCharts.cacheSize }}</option>
+						<option value="drive-usage-total">{{ $ts._instanceCharts.cacheSizeTotal }}</option>
+						<option value="drive-files">{{ $ts._instanceCharts.files }}</option>
+						<option value="drive-files-total">{{ $ts._instanceCharts.filesTotal }}</option>
 					</MkSelect>
 					<MkSelect v-model:value="chartSpan" style="margin: 0;">
-						<option value="hour">{{ $t('perHour') }}</option>
-						<option value="day">{{ $t('perDay') }}</option>
+						<option value="hour">{{ $ts.perHour }}</option>
+						<option value="day">{{ $ts.perDay }}</option>
 					</MkSelect>
 				</div>
 			</div>
@@ -101,21 +101,21 @@
 			</div>
 		</div>
 		<div class="operations section">
-			<span class="label">{{ $t('operations') }}</span>
-			<MkSwitch v-model:value="isSuspended" class="switch">{{ $t('stopActivityDelivery') }}</MkSwitch>
-			<MkSwitch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $t('blockThisInstance') }}</MkSwitch>
+			<span class="label">{{ $ts.operations }}</span>
+			<MkSwitch v-model:value="isSuspended" class="switch">{{ $ts.stopActivityDelivery }}</MkSwitch>
+			<MkSwitch :value="isBlocked" class="switch" @update:value="changeBlock">{{ $ts.blockThisInstance }}</MkSwitch>
 			<details>
-				<summary>{{ $t('deleteAllFiles') }}</summary>
-				<MkButton @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faTrashAlt"/> {{ $t('deleteAllFiles') }}</MkButton>
+				<summary>{{ $ts.deleteAllFiles }}</summary>
+				<MkButton @click="deleteAllFiles()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faTrashAlt"/> {{ $ts.deleteAllFiles }}</MkButton>
 			</details>
 			<details>
-				<summary>{{ $t('removeAllFollowing') }}</summary>
-				<MkButton @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faMinusCircle"/> {{ $t('removeAllFollowing') }}</MkButton>
+				<summary>{{ $ts.removeAllFollowing }}</summary>
+				<MkButton @click="removeAllFollowing()" style="margin: 0.5em 0 0.5em 0;"><Fa :icon="faMinusCircle"/> {{ $ts.removeAllFollowing }}</MkButton>
 				<MkInfo warn>{{ $t('removeAllFollowingDescription', { host: instance.host }) }}</MkInfo>
 			</details>
 		</div>
 		<details class="metadata section">
-			<summary class="label">{{ $t('metadata') }}</summary>
+			<summary class="label">{{ $ts.metadata }}</summary>
 			<pre><code>{{ JSON.stringify(instance, null, 2) }}</code></pre>
 		</details>
 	</div>
@@ -442,7 +442,7 @@ export default defineComponent({
 
 		showFollowing() {
 			os.modal(MkUsersDialog, {
-				title: this.$t('instanceFollowing'),
+				title: this.$ts.instanceFollowing,
 				pagination: {
 					endpoint: 'federation/following',
 					limit: 10,
@@ -456,7 +456,7 @@ export default defineComponent({
 
 		showFollowers() {
 			os.modal(MkUsersDialog, {
-				title: this.$t('instanceFollowers'),
+				title: this.$ts.instanceFollowers,
 				pagination: {
 					endpoint: 'federation/followers',
 					limit: 10,
@@ -470,7 +470,7 @@ export default defineComponent({
 
 		showUsers() {
 			os.modal(MkUsersDialog, {
-				title: this.$t('instanceUsers'),
+				title: this.$ts.instanceUsers,
 				pagination: {
 					endpoint: 'federation/users',
 					limit: 10,

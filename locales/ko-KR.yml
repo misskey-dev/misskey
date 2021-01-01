@@ -46,6 +46,7 @@ copyUsername: "유저명 복사"
 searchUser: "사용자 검색"
 reply: "답글"
 loadMore: "더 보기"
+showMore: "더 보기"
 youGotNewFollower: "새로운 팔로워가 있습니다"
 receiveFollowRequest: "새로운 팔로우 요청이 있습니다"
 followRequestAccepted: "팔로우가 수락되었습니다"
@@ -612,6 +613,7 @@ lockedAccountInfo: "팔로우를 승인으로 승인받더라도 노트의 공�
 alwaysMarkSensitive: "미디어를 항상 열람 주의로 설정"
 emailVerified: "메일 주소가 확인되었습니다."
 clips: "클립"
+clearCache: "캐시 비우기"
 _nsfw:
   ignore: "열람 주의 미디어 항상 표시"
 _mfm:
@@ -834,6 +836,7 @@ _widgets:
   digitalClock: "디지털 시계"
   federation: "연합"
   postForm: "글 입력란"
+  button: "버튼"
 _cw:
   hide: "숨기기"
   show: "더 보기"

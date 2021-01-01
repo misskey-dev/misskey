@@ -15,15 +15,15 @@
 	<FormBase class="xkpnjxcv">
 		<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 			<FormInput v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
-				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span>
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormInput>
 			<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model:value="values[item]" type="text">
-				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span>
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormInput>
 			<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model:value="values[item]">
-				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span>
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormTextarea>
 			<FormSwitch v-else-if="form[item].type === 'boolean'" v-model:value="values[item]">
@@ -31,11 +31,11 @@
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormSwitch>
 			<FormSelect v-else-if="form[item].type === 'enum'" v-model:value="values[item]">
-				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span></template>
+				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<option v-for="item in form[item].enum" :value="item.value" :key="item.value">{{ item.label }}</option>
 			</FormSelect>
 			<FormRange v-else-if="form[item].type === 'range'" v-model:value="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step">
-				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $t('optional') }})</span></template>
+				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
 			</FormRange>
 			<FormButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)">

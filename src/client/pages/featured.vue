@@ -18,7 +18,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('featured'),
+				title: this.$ts.featured,
 				icon: faFireAlt
 			},
 			pagination: {

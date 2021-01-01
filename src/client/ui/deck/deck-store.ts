@@ -1,3 +1,4 @@
+import { i18n } from '@/i18n';
 import { markRaw } from 'vue';
 import { Storage } from '../../pizzax';
 
@@ -22,11 +23,21 @@ function copy<T>(x: T): T {
 export const deckStore = markRaw(new Storage('deck', {
 	columns: {
 		where: 'deviceAccount',
-		default: [] as Column[]
+		default: [{
+			id: 'a',
+			type: 'main',
+			name: i18n.locale._deck._columns.main,
+			width: 350,
+		}, {
+			id: 'b',
+			type: 'notifications',
+			name: i18n.locale._deck._columns.notifications,
+			width: 330,
+		}] as Column[]
 	},
 	layout: {
 		where: 'deviceAccount',
-		default: [] as Column['id'][][]
+		default: [['a'], ['b']] as Column['id'][][]
 	},
 	columnAlign: {
 		where: 'deviceAccount',
@@ -36,13 +47,17 @@ export const deckStore = markRaw(new Storage('deck', {
 		where: 'deviceAccount',
 		default: true
 	},
-	mainColumnPlace: {
-		where: 'deviceAccount',
-		default: 'left' as 'left' | 'right'
-	},
 	navWindow: {
 		where: 'deviceAccount',
 		default: true
+	},
+	columnMargin: {
+		where: 'deviceAccount',
+		default: 16
+	},
+	columnHeaderHeight: {
+		where: 'deviceAccount',
+		default: 42
 	},
 }));
 
@@ -196,16 +211,6 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, data: any
 		...w,
 		data: data
 	} : w);
-	columns[columnIndex] = column;
-	deckStore.set('columns', columns);
-}
-
-export function renameColumn(id: Column['id'], name: Column['name']) {
-	const columns = copy(deckStore.state.columns);
-	const columnIndex = deckStore.state.columns.findIndex(c => c.id === id);
-	const column = copy(deckStore.state.columns[columnIndex]);
-	if (column == null) return;
-	column.name = name;
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
 }

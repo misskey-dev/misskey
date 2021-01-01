@@ -1,10 +1,10 @@
 <template>
 <FormBase>
-	<FormLink @click="configure">{{ $t('notificationSetting') }}</FormLink>
+	<FormLink @click="configure">{{ $ts.notificationSetting }}</FormLink>
 	<FormGroup>
-		<FormButton @click="readAllNotifications">{{ $t('markAsReadAllNotifications') }}</FormButton>
-		<FormButton @click="readAllUnreadNotes">{{ $t('markAsReadAllUnreadNotes') }}</FormButton>
-		<FormButton @click="readAllMessagingMessages">{{ $t('markAsReadAllTalkMessages') }}</FormButton>
+		<FormButton @click="readAllNotifications">{{ $ts.markAsReadAllNotifications }}</FormButton>
+		<FormButton @click="readAllUnreadNotes">{{ $ts.markAsReadAllUnreadNotes }}</FormButton>
+		<FormButton @click="readAllMessagingMessages">{{ $ts.markAsReadAllTalkMessages }}</FormButton>
 	</FormGroup>
 </FormBase>
 </template>
@@ -33,7 +33,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('notifications'),
+				title: this.$ts.notifications,
 				icon: faBell
 			},
 			faCog

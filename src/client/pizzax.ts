@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue';
+import { onUnmounted, Ref, ref, watch } from 'vue';
 import { $i } from './account';
 import { api } from './os';
 
@@ -104,8 +104,18 @@ export class Storage<T extends StateDef> {
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
 	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
-		// TODO: VueのcustomRef使うと良い感じになるかも
 		const valueRef = ref(this.state[key]);
+
+		const stop = watch(this.reactiveState[key], val => {
+			valueRef.value = val;
+		});
+
+		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
+		onUnmounted(() => {
+			stop();
+		});
+
+		// TODO: VueのcustomRef使うと良い感じになるかも
 		return {
 			get: () => {
 				if (getter) {

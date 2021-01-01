@@ -1,6 +1,6 @@
 <template>
 <MkA class="ldlomzub" :class="{ isMe }" :to="url" v-user-preview="canonical" v-if="url.startsWith('/')">
-	<span class="me" v-if="isMe">{{ $t('you') }}</span>
+	<span class="me" v-if="isMe">{{ $ts.you }}</span>
 	<span class="main">
 		<span class="username">@{{ username }}</span>
 		<span class="host" v-if="(host != localHost) || $store.state.showFullAcct">@{{ toUnicode(host) }}</span>

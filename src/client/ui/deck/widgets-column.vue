@@ -1,16 +1,16 @@
 <template>
-<XColumn :menu="menu" :naked="true" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: func, title: $ts.editWidgets }" :naked="true" :column="column" :is-stacked="isStacked">
 	<template #header><Fa :icon="faWindowMaximize" style="margin-right: 8px;"/>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
 		<template v-if="edit">
 			<header>
 				<MkSelect v-model:value="widgetAdderSelected" style="margin-bottom: var(--margin)">
-					<template #label>{{ $t('selectWidget') }}</template>
+					<template #label>{{ $ts.selectWidget }}</template>
 					<option v-for="widget in widgets" :value="widget" :key="widget">{{ $t(`_widgets.${widget}`) }}</option>
 				</MkSelect>
-				<MkButton inline @click="addWidget" primary><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
-				<MkButton inline @click="edit = false">{{ $t('close') }}</MkButton>
+				<MkButton inline @click="addWidget" primary><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
+				<MkButton inline @click="edit = false">{{ $ts.close }}</MkButton>
 			</header>
 			<XDraggable
 				v-model="_widgets"
@@ -62,7 +62,6 @@ export default defineComponent({
 	data() {
 		return {
 			edit: false,
-			menu: null,
 			widgetAdderSelected: null,
 			widgets,
 			settings: {},
@@ -79,16 +78,6 @@ export default defineComponent({
 				setColumnWidgets(this.column.id, value);
 			}
 		}
-	},
-
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('edit'),
-			action: () => {
-				this.edit = !this.edit;
-			}
-		}];
 	},
 
 	methods: {
@@ -114,6 +103,10 @@ export default defineComponent({
 
 		saveWidget(id, data) {
 			updateColumnWidget(this.column.id, id, data);
+		},
+
+		func() {
+			this.edit = !this.edit;
 		}
 	}
 });
@@ -121,7 +114,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .wtdtxvec {
-	padding-top: 1px; // ウィジェットのbox-shadowを利用した1px borderを隠さないようにするため
+	._panel {
+		box-shadow: none;
+	}
 
 	> header {
 		padding: 16px;

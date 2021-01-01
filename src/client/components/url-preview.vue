@@ -1,6 +1,6 @@
 <template>
 <div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" @click="playerEnabled = false" :title="$t('disablePlayer')"><Fa icon="times"/></button>
+	<button class="disablePlayer" @click="playerEnabled = false" :title="$ts.disablePlayer"><Fa icon="times"/></button>
 	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
 </div>
 <div v-else-if="tweetId && tweetExpanded" class="twitter" ref="twitter">
@@ -10,7 +10,7 @@
 	<transition name="zoom" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$t('enablePlayer')"><Fa :icon="faPlayCircle"/></button>
+				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$ts.enablePlayer"><Fa :icon="faPlayCircle"/></button>
 			</div>
 			<article>
 				<header>
@@ -26,7 +26,7 @@
 	</transition>
 	<div class="expandTweet" v-if="tweetId">
 		<a @click="tweetExpanded = true">
-			<Fa :icon="faTwitter"/> {{ $t('expandTweet') }}
+			<Fa :icon="faTwitter"/> {{ $ts.expandTweet }}
 		</a>
 	</div>
 </div>

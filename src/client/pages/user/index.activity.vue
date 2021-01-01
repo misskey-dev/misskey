@@ -1,6 +1,6 @@
 <template>
 <MkContainer>
-	<template #header><Fa :icon="faChartBar" style="margin-right: 0.5em;"/>{{ $t('activity') }}</template>
+	<template #header><Fa :icon="faChartBar" style="margin-right: 0.5em;"/>{{ $ts.activity }}</template>
 
 	<div style="padding: 8px;">
 		<div ref="chart"></div>

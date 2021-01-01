@@ -2,17 +2,17 @@
 <div class="mk-instance-emojis">
 	<div class="_section" style="padding: 0;">
 		<MkTab v-model:value="tab">
-			<option value="local">{{ $t('local') }}</option>
-			<option value="remote">{{ $t('remote') }}</option>
+			<option value="local">{{ $ts.local }}</option>
+			<option value="remote">{{ $ts.remote }}</option>
 		</MkTab>
 	</div>
 
 	<div class="_section">
 		<div class="local" v-if="tab === 'local'">
-			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $t('addEmoji') }}</MkButton>
-			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('search') }}</span></MkInput>
+			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $ts.addEmoji }}</MkButton>
+			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.search }}</span></MkInput>
 			<MkPagination :pagination="pagination" ref="emojis">
-				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
+				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template #default="{items}">
 					<div class="emojis">
 						<button class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="edit(emoji)">
@@ -28,10 +28,10 @@
 		</div>
 
 		<div class="remote" v-else-if="tab === 'remote'">
-			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('search') }}</span></MkInput>
-			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
+			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.search }}</span></MkInput>
+			<MkInput v-model:value="host" :debounce="true"><span>{{ $ts.host }}</span></MkInput>
 			<MkPagination :pagination="remotePagination" ref="remoteEmojis">
-				<template #empty><span>{{ $t('noCustomEmojis') }}</span></template>
+				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template #default="{items}">
 					<div class="emojis">
 						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji, $event)">
@@ -71,7 +71,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('customEmojis'),
+				title: this.$ts.customEmojis,
 				icon: faLaugh,
 				action: {
 					icon: faPlus,
@@ -142,7 +142,7 @@ export default defineComponent({
 				type: 'label',
 				text: ':' + emoji.name + ':',
 			}, {
-				text: this.$t('import'),
+				text: this.$ts.import,
 				icon: faPlus,
 				action: () => { this.im(emoji) }
 			}], ev.currentTarget || ev.target);

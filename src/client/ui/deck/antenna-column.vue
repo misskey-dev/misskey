@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked">
+<XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked">
 	<template #header>
 		<Fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -45,14 +45,6 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('selectAntenna'),
-			action: this.setAntenna
-		}];
-	},
-
 	mounted() {
 		if (this.column.antennaId == null) {
 			this.setAntenna();
@@ -63,7 +55,7 @@ export default defineComponent({
 		async setAntenna() {
 			const antennas = await os.api('antennas/list');
 			const { canceled, result: antenna } = await os.dialog({
-				title: this.$t('selectAntenna'),
+				title: this.$ts.selectAntenna,
 				type: null,
 				select: {
 					items: antennas.map(x => ({

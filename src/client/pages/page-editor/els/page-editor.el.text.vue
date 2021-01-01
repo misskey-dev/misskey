@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faAlignLeft"/> {{ $t('_pages.blocks.text') }}</template>
+	<template #header><Fa :icon="faAlignLeft"/> {{ $ts._pages.blocks.text }}</template>
 
 	<section class="vckmsadr">
 		<textarea v-model="value.text"></textarea>

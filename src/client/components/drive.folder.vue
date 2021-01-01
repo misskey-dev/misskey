@@ -20,7 +20,7 @@
 		{{ folder.name }}
 	</p>
 	<p class="upload" v-if="$store.state.uploadFolder == folder.id">
-		{{ $t('uploadFolder') }}
+		{{ $ts.uploadFolder }}
 	</p>
 	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
 </div>
@@ -155,14 +155,14 @@ export default defineComponent({
 					switch (err) {
 						case 'detected-circular-definition':
 							os.dialog({
-								title: this.$t('unableToProcess'),
-								text: this.$t('circularReferenceFolder')
+								title: this.$ts.unableToProcess,
+								text: this.$ts.circularReferenceFolder
 							});
 							break;
 						default:
 							os.dialog({
 								type: 'error',
-								text: this.$t('somethingHappened')
+								text: this.$ts.somethingHappened
 							});
 					}
 				});
@@ -195,9 +195,9 @@ export default defineComponent({
 
 		rename() {
 			os.dialog({
-				title: this.$t('renameFolder'),
+				title: this.$ts.renameFolder,
 				input: {
-					placeholder: this.$t('inputNewFolderName'),
+					placeholder: this.$ts.inputNewFolderName,
 					default: this.folder.name
 				}
 			}).then(({ canceled, result: name }) => {
@@ -221,14 +221,14 @@ export default defineComponent({
 					case 'b0fc8a17-963c-405d-bfbc-859a487295e1':
 						os.dialog({
 							type: 'error',
-							title: this.$t('unableToDelete'),
-							text: this.$t('hasChildFilesOrFolders')
+							title: this.$ts.unableToDelete,
+							text: this.$ts.hasChildFilesOrFolders
 						});
 						break;
 					default:
 						os.dialog({
 							type: 'error',
-							text: this.$t('unableToDelete')
+							text: this.$ts.unableToDelete
 						});
 				}
 			});
@@ -240,7 +240,7 @@ export default defineComponent({
 
 		onContextmenu(e) {
 			os.contextMenu([{
-				text: this.$t('openInWindow'),
+				text: this.$ts.openInWindow,
 				icon: faWindowRestore,
 				action: () => {
 					os.popup(import('./drive-window.vue'), {
@@ -249,11 +249,11 @@ export default defineComponent({
 					}, 'closed');
 				}
 			}, null, {
-				text: this.$t('rename'),
+				text: this.$ts.rename,
 				icon: faICursor,
 				action: this.rename
 			}, null, {
-				text: this.$t('delete'),
+				text: this.$ts.delete,
 				icon: faTrashAlt,
 				danger: true,
 				action: this.deleteFolder

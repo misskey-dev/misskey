@@ -46,10 +46,10 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 			<Fa :icon="faQuoteRight"/>
 		</MkA>
-		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $t('youGotNewFollower') }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
-		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $t('followRequestAccepted') }}</span>
-		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $t('receiveFollowRequest') }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $t('reject') }}</button></div></span>
-		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ $t('groupInvited') }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $t('accept') }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ $t('reject') }}</button></div></span>
+		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
+		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $ts.followRequestAccepted }}</span>
+		<span v-if="notification.type === 'receiveFollowRequest'" class="text" style="opacity: 0.6;">{{ $ts.receiveFollowRequest }}<div v-if="full && !followRequestDone"><button class="_textButton" @click="acceptFollowRequest()">{{ $ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ $ts.reject }}</button></div></span>
+		<span v-if="notification.type === 'groupInvited'" class="text" style="opacity: 0.6;">{{ $ts.groupInvited }}: <b>{{ notification.invitation.group.name }}</b><div v-if="full && !groupInviteDone"><button class="_textButton" @click="acceptGroupInvitation()">{{ $ts.accept }}</button> | <button class="_textButton" @click="rejectGroupInvitation()">{{ $ts.reject }}</button></div></span>
 		<span v-if="notification.type === 'app'" class="text">
 			<Mfm :text="notification.body" :nowrap="!full"/>
 		</span>
@@ -61,12 +61,12 @@
 import { defineComponent } from 'vue';
 import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import noteSummary from '../../misc/get-note-summary';
+import { getNoteSummary } from '../../misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
-import { locale } from '../i18n';
+import { i18n } from '@/i18n';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -91,7 +91,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			getNoteSummary: (text: string) => noteSummary(text, locale),
+			getNoteSummary: (text: string) => getNoteSummary(text, i18n.locale),
 			followRequestDone: false,
 			groupInviteDone: false,
 			connection: null,
