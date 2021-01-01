@@ -705,6 +705,8 @@ _reversi:
   black: "黑"
   white: "白"
   total: "合計"
+  myGames: "我的對弈"
+  allGames: "所有對弈"
   ended: "已結束"
   playing: "正在對弈"
 _instanceTicker:
