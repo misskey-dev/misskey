@@ -11,7 +11,7 @@ APIを使い始めるには、まずアクセストークンを取得する必�
 * Im zweiten Fall: Fahre mit "Einen Benutzer zur Generierung eines Zugangstokens für eine Anwendung auffordern" fort.
 
 ### Einen Zugriffstoken für das eigene Benutzerkonto generieren
-「設定 > API」で、自分のアクセストークンを発行できます。
+In Einstellungen > API kann ein Zugriffstoken für das eigene Benutzerkonto generiert werden.
 
 [Fahre mit "Verwendung der API" fort.](#APIの使い方)
 
