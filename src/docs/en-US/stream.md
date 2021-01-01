@@ -166,7 +166,7 @@ Here,
 
 Misskey provides a structure called Post capturing".This structure makes it possible to receive events about a targeted post from the stream.
 
-For example, to fetch and display a timeline to a user.Imagine that someone reacts to a post on this timeline.
+For example, assume a situation in which a timeline is displayed to a user.Imagine that someone reacts to a post on this timeline.
 
 Since the client does not have any way of knowing that a certain post has received a reaction, it is not possible to reflect the reaction on this post in real-time.
 
