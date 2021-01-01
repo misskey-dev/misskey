@@ -172,7 +172,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
 
-### 投稿をキャプチャする
+### Einen Beitrag erfassen
 
 投稿をキャプチャするには、ストリームに次のようなメッセージを送信します:
 
@@ -214,10 +214,10 @@ Hier,
 #### Arten von Events
 
 ##### `reacted`
-その投稿にリアクションがされた時に発生します。
+Wird bei Reaktion auf den Beitrag ausgelöst.
 
-* `reaction`に、リアクションの種類が設定されます。
-* `userId`に、リアクションを行ったユーザーのIDが設定されます。
+* `reaction` enthält die Art der Reaktion.
+* `userId` enthält die ID des Benutzers, der die Reaktion hinzufügte
 
 z.B.:
 ```json
@@ -254,10 +254,10 @@ z.B.:
 ```
 
 ##### `pollVoted`
-その投稿に添付されたアンケートに投票された時に発生します。
+Wird bei Abstimmung in einer dem Beitrag angehörigen Umfrage ausgelöst.
 
-* `choice`に、選択肢IDが設定されます。
-* `userId`に、投票を行ったユーザーのIDが設定されます。
+* `choice` enthält die ID der gewählten Auswahlmöglichkeit.
+* `userId` enthält die ID des Benutzers, der auf die Umfrage antwortete
 
 z.B.:
 ```json
@@ -274,11 +274,11 @@ z.B.:
 }
 ```
 
-### Einen Beitrag nicht mehr erfassen
+### Beitragserfassung aufheben
 
 その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
 
-次のメッセージを送信します:
+Sende die folgende Nachricht:
 
 ```json
 {
@@ -290,7 +290,7 @@ z.B.:
 ```
 
 Hier,
-* `id`にキャプチャを解除したい投稿の`id`を設定します。
+* `id` enthält die `id` des Beitrags, für den Erfassung aufgehoben werden soll.
 
 このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
 
@@ -298,7 +298,7 @@ Hier,
 ## `main`
 アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
 
-### 流れてくるイベント一覧
+### Liste der gesendeten Events
 
 #### `renote`
 自分の投稿がRenoteされた時に発生するイベントです。自分自身の投稿をRenoteしたときは発生しません。
@@ -310,37 +310,37 @@ Hier,
 自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
 
 #### `meUpdated`
-自分の情報が更新されたことを表すイベントです。
+Wird bei Aktualisierung der eigenen Benutzerdaten gesendet.
 
 #### `follow`
-自分が誰かをフォローしたときに発生するイベントです。
+Wird gesendet, sobald einem neuen Benutzer gefolgt wird.
 
 #### `unfollow`
-自分が誰かのフォローを解除したときに発生するイベントです。
+Wird gesendet, sobald einem Benutzer nicht mehr gefolgt wird.
 
 #### `followed`
-自分が誰かにフォローされたときに発生するイベントです。
+Wird gesendet, sobald der Benutzer einen neuen Follower erhält.
 
 ## `homeTimeline`
 ホームタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
 
-### 流れてくるイベント一覧
+### Liste der gesendeten Events
 
 #### `note`
-タイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Wird gesendet, sobald auf der Chronik ein neuer Beitrag erscheint.
 
 ## `localTimeline`
 ローカルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
 
-### 流れてくるイベント一覧
+### Liste der gesendeten Events
 
 #### `note`
-ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Wird gesendet, sobald auf der lokalen Chronik ein neuer Beitrag erscheint.
 
 ## `hybridTimeline`
 ソーシャルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
 
-### 流れてくるイベント一覧
+### Liste der gesendeten Events
 
 #### `note`
 ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
@@ -348,7 +348,7 @@ Hier,
 ## `globalTimeline`
 グローバルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
 
-### 流れてくるイベント一覧
+### Liste der gesendeten Events
 
 #### `note`
 グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
