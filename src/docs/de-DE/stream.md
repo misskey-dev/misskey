@@ -1,6 +1,6 @@
 # Streaming API
 
-ストリーミングAPIを使うと、リアルタイムで様々な情報(例えばタイムラインに新しい投稿が流れてきた、メッセージが届いた、フォローされた、など)を受け取ったり、様々な操作を行ったりすることができます。
+Durch die Verwendung des Streaming-APIs können verschiedene Daten (z.B. darüber, dass neue Beiträge geschrieben wurden, neue Direktnachrichten eingetroffen sind, Benachrichtigungen über einen neuen Follower, usw) in Echtzeit empfangen werden und dann basierend auf diesen verschiedene Aktionen getätigt werden.
 
 ## Eine Verbindung zum Stream aufbauen
 
@@ -19,7 +19,7 @@ Anmeldedaten steht hierfür entweder für den eigenen API-Schlüssel oder bei Ve
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。z.B.:
+Ein Verbindungsaufbau ohne Anmeldedaten ist ebenso möglich, jedoch wird in diesem Fall der Zugriff auf manche Daten sowie die Verwendung mancher Funktionen eingeschränkt.z.B.:
 
 ```
 %WS_URL%/streaming
@@ -35,7 +35,7 @@ Anmeldedaten steht hierfür entweder für den eigenen API-Schlüssel oder bei Ve
 MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
 
 ### Verbindungen zu Kanälen aufbauen
-チャンネルに接続するには、次のようなデータをJSONでストリームに送信します:
+Um eine Verbindung zu einem Kanal aufzubauen, sende die folgende Nachricht:
 
 ```json
 {
