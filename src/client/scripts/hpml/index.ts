@@ -2,6 +2,8 @@
  * Hpml
  */
 
+import autobind from 'autobind-decorator';
+
 import {
 	faMagic,
 	faSquareRootAlt,
@@ -27,6 +29,7 @@ import {
 	faCalculator,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
+import { Hpml } from './evaluator';
 
 export type Block<V = any> = {
 	id: string;
@@ -45,6 +48,11 @@ export type FnBlock = Block<{
 
 export type Variable = Block & {
 	name: string;
+};
+
+export type Fn = {
+	slots: string[];
+	exec: (args: Record<string, any>) => ReturnType<Hpml['evaluate']>;
 };
 
 export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
@@ -136,4 +144,54 @@ export function isLiteralBlock(v: Block) {
 	if (v.type === null) return true;
 	if (literalDefs[v.type]) return true;
 	return false;
+}
+
+export class HpmlScope {
+	private layerdStates: Record<string, any>[];
+	public name: string;
+
+	constructor(layerdStates: HpmlScope['layerdStates'], name?: HpmlScope['name']) {
+		this.layerdStates = layerdStates;
+		this.name = name || 'anonymous';
+	}
+
+	@autobind
+	public createChildScope(states: Record<string, any>, name?: HpmlScope['name']): HpmlScope {
+		const layer = [states, ...this.layerdStates];
+		return new HpmlScope(layer, name);
+	}
+
+	/**
+	 * 指定した名前の変数の値を取得します
+	 * @param name 変数名
+	 */
+	@autobind
+	public getState(name: string): any {
+		for (const later of this.layerdStates) {
+			const state = later[name];
+			if (state !== undefined) {
+				return state;
+			}
+		}
+
+		throw new HpmlError(
+			`No such variable '${name}' in scope '${this.name}'`, {
+				scope: this.layerdStates
+			});
+	}
+}
+
+export class HpmlError extends Error {
+	public info?: any;
+
+	constructor(message: string, info?: any) {
+		super(message);
+
+		this.info = info;
+
+		// Maintains proper stack trace for where our error was thrown (only available on V8)
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, HpmlError);
+		}
+	}
 }

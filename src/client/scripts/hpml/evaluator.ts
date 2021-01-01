@@ -1,18 +1,12 @@
 import autobind from 'autobind-decorator';
-import * as seedrandom from 'seedrandom';
-import { Variable, PageVar, envVarsDef, funcDefs, Block, isFnBlock } from '.';
+import { Variable, PageVar, envVarsDef, Block, isFnBlock, Fn, HpmlScope, HpmlError } from '.';
 import { version } from '@/config';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
-import { initLib } from './lib';
+import { initHpmlLib, initAiLib } from './lib';
 import * as os from '@/os';
 import { markRaw, ref, Ref } from 'vue';
-
-type Fn = {
-	slots: string[];
-	exec: (args: Record<string, any>) => ReturnType<Hpml['evaluate']>;
-};
 
 /**
  * Hpml evaluator
@@ -41,7 +35,7 @@ export class Hpml {
 		if (this.opts.enableAiScript) {
 			this.aiscript = markRaw(new AiScript({ ...createAiScriptEnv({
 				storageKey: 'pages:' + this.page.id
-			}), ...initLib(this)}, {
+			}), ...initAiLib(this)}, {
 				in: (q) => {
 					return new Promise(ok => {
 						os.dialog({
@@ -137,7 +131,7 @@ export class Hpml {
 	}
 
 	@autobind
-	private _interpolate(str: string, scope: Scope) {
+	private _interpolateScope(str: string, scope: HpmlScope) {
 		return str.replace(/{(.+?)}/g, match => {
 			const v = scope.getState(match.slice(1, -1).trim());
 			return v == null ? 'NULL' : v.toString();
@@ -157,14 +151,14 @@ export class Hpml {
 		}
 
 		for (const v of this.variables) {
-			values[v.name] = this.evaluate(v, new Scope([values]));
+			values[v.name] = this.evaluate(v, new HpmlScope([values]));
 		}
 
 		return values;
 	}
 
 	@autobind
-	private evaluate(block: Block, scope: Scope): any {
+	private evaluate(block: Block, scope: HpmlScope): any {
 		if (block.type === null) {
 			return null;
 		}
@@ -174,11 +168,11 @@ export class Hpml {
 		}
 
 		if (block.type === 'text' || block.type === 'multiLineText') {
-			return this._interpolate(block.value || '', scope);
+			return this._interpolateScope(block.value || '', scope);
 		}
 
 		if (block.type === 'textList') {
-			return this._interpolate(block.value || '', scope).trim().split('\n');
+			return this._interpolateScope(block.value || '', scope).trim().split('\n');
 		}
 
 		if (block.type === 'ref') {
@@ -197,7 +191,8 @@ export class Hpml {
 			}
 		}
 
-		if (isFnBlock(block)) { // ユーザー関数定義
+		// Define user function
+		if (isFnBlock(block)) {
 			return {
 				slots: block.value.slots.map(x => x.name),
 				exec: (slotArg: Record<string, any>) => {
@@ -206,7 +201,8 @@ export class Hpml {
 			} as Fn;
 		}
 
-		if (block.type.startsWith('fn:')) { // ユーザー関数呼び出し
+		// Call user function
+		if (block.type.startsWith('fn:')) {
 			const fnName = block.type.split(':')[1];
 			const fn = scope.getState(fnName);
 			const args = {} as Record<string, any>;
@@ -219,77 +215,9 @@ export class Hpml {
 
 		if (block.args === undefined) return null;
 
-		const date = new Date();
-		const day = `${this.opts.visitor ? this.opts.visitor.id : ''} ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+		const funcs = initHpmlLib(block, scope, this.opts.randomSeed, this.opts.visitor);
 
-		const funcs: { [p in keyof typeof funcDefs]: Function } = {
-			not: (a: boolean) => !a,
-			or: (a: boolean, b: boolean) => a || b,
-			and: (a: boolean, b: boolean) => a && b,
-			eq: (a: any, b: any) => a === b,
-			notEq: (a: any, b: any) => a !== b,
-			gt: (a: number, b: number) => a > b,
-			lt: (a: number, b: number) => a < b,
-			gtEq: (a: number, b: number) => a >= b,
-			ltEq: (a: number, b: number) => a <= b,
-			if: (bool: boolean, a: any, b: any) => bool ? a : b,
-			for: (times: number, fn: Fn) => {
-				const result = [];
-				for (let i = 0; i < times; i++) {
-					result.push(fn.exec({
-						[fn.slots[0]]: i + 1
-					}));
-				}
-				return result;
-			},
-			add: (a: number, b: number) => a + b,
-			subtract: (a: number, b: number) => a - b,
-			multiply: (a: number, b: number) => a * b,
-			divide: (a: number, b: number) => a / b,
-			mod: (a: number, b: number) => a % b,
-			round: (a: number) => Math.round(a),
-			strLen: (a: string) => a.length,
-			strPick: (a: string, b: number) => a[b - 1],
-			strReplace: (a: string, b: string, c: string) => a.split(b).join(c),
-			strReverse: (a: string) => a.split('').reverse().join(''),
-			join: (texts: string[], separator: string) => texts.join(separator || ''),
-			stringToNumber: (a: string) => parseInt(a),
-			numberToString: (a: number) => a.toString(),
-			splitStrByLine: (a: string) => a.split('\n'),
-			pick: (list: any[], i: number) => list[i - 1],
-			listLen: (list: any[]) => list.length,
-			random: (probability: number) => Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * 100) < probability,
-			rannum: (min: number, max: number) => min + Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * (max - min + 1)),
-			randomPick: (list: any[]) => list[Math.floor(seedrandom(`${this.opts.randomSeed}:${block.id}`)() * list.length)],
-			dailyRandom: (probability: number) => Math.floor(seedrandom(`${day}:${block.id}`)() * 100) < probability,
-			dailyRannum: (min: number, max: number) => min + Math.floor(seedrandom(`${day}:${block.id}`)() * (max - min + 1)),
-			dailyRandomPick: (list: any[]) => list[Math.floor(seedrandom(`${day}:${block.id}`)() * list.length)],
-			seedRandom: (seed: any, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
-			seedRannum: (seed: any, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
-			seedRandomPick: (seed: any, list: any[]) => list[Math.floor(seedrandom(seed)() * list.length)],
-			DRPWPM: (list: string[]) => {
-				const xs = [];
-				let totalFactor = 0;
-				for (const x of list) {
-					const parts = x.split(' ');
-					const factor = parseInt(parts.pop()!, 10);
-					const text = parts.join(' ');
-					totalFactor += factor;
-					xs.push({ factor, text });
-				}
-				const r = seedrandom(`${day}:${block.id}`)() * totalFactor;
-				let stackedFactor = 0;
-				for (const x of xs) {
-					if (r >= stackedFactor && r <= stackedFactor + x.factor) {
-						return x.text;
-					} else {
-						stackedFactor += x.factor;
-					}
-				}
-				return xs[0].text;
-			},
-		};
-
+		// Call function
 		const fnName = block.type;
 		const fn = (funcs as any)[fnName];
 		if (fn == null) {
@@ -297,55 +225,5 @@ export class Hpml {
 		} else {
 			return fn(...block.args.map(x => this.evaluate(x, scope)));
 		}
-	}
-}
-
-class HpmlError extends Error {
-	public info?: any;
-
-	constructor(message: string, info?: any) {
-		super(message);
-
-		this.info = info;
-
-		// Maintains proper stack trace for where our error was thrown (only available on V8)
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, HpmlError);
-		}
-	}
-}
-
-class Scope {
-	private layerdStates: Record<string, any>[];
-	public name: string;
-
-	constructor(layerdStates: Scope['layerdStates'], name?: Scope['name']) {
-		this.layerdStates = layerdStates;
-		this.name = name || 'anonymous';
-	}
-
-	@autobind
-	public createChildScope(states: Record<string, any>, name?: Scope['name']): Scope {
-		const layer = [states, ...this.layerdStates];
-		return new Scope(layer, name);
-	}
-
-	/**
-	 * 指定した名前の変数の値を取得します
-	 * @param name 変数名
-	 */
-	@autobind
-	public getState(name: string): any {
-		for (const later of this.layerdStates) {
-			const state = later[name];
-			if (state !== undefined) {
-				return state;
-			}
-		}
-
-		throw new HpmlError(
-			`No such variable '${name}' in scope '${this.name}'`, {
-				scope: this.layerdStates
-			});
 	}
 }
