@@ -32,7 +32,7 @@ Hier gelistete Tastenkürzel können generell überall verwendet werden.
         <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>Favoriten hinzufügen</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>Beitrag löschen</td><td><b>D</b>elete</tr>
         <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>Beitrags-Menü öffnen</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
-        <tr><td><kbd class="key">S</kbd></td><td>Durch CW verdeckten Inhalt anzeigen / ausblenden</td><td><b>S</b>how, <b>S</b>ee</td></tr>
+        <tr><td><kbd class="key">S</kbd></td><td>Verdeckten Inhalt anzeigen / ausblenden</td><td><b>S</b>how, <b>S</b>ee</td></tr>
         <tr><td><kbd class="key">Esc</kbd></td><td>Fokus lösen</td><td>-</td></tr>
     </tbody>
 </table>
