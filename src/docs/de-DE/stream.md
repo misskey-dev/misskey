@@ -104,7 +104,7 @@ Hier,
 * `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
 
 ### Verbindungen zu Kanälen trennen
-チャンネルから切断するには、次のようなデータをJSONでストリームに送信します:
+Um die Verbindung zu einem Kanal zu trennen, sende die folgende Nachricht:
 
 ```json
 {
@@ -116,7 +116,7 @@ Hier,
 ```
 
 Hier,
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
+* steht `id` für die zum Verbindungsaufbau gewählte ID.
 
 ## API-Anfragen durch den Stream senden
 
@@ -137,12 +137,12 @@ Hier,
 ```
 
 Hier,
-* `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
-* `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
-* `data`には、エンドポイントのパラメータを含めます。
+* existiert `id` zur Zuordnung von Anfrage und Antwort und muss auf eine einzigartige ID gesetzt werden.Die Verwendung von UUIDs oder auch dem Wert eines simplen Zufallszahlengenerators ist empfohlen.
+* gibt `endpoint` den Endpoint an, an den die Anfrage gesendet werden soll.
+* enthält `data` die Parameter der Anfrage des Endpoints.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> APIのエンドポイントやパラメータについてはAPIリファレンスをご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Siehe die API-Referenz bezüglich einer Auflistung verfügbarer API-Endpoints sowie dessen Parameter.</p>
 </div>
 
 ### Verarbeitung von Antworten auf Anfragen
