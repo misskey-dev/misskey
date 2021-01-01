@@ -16,17 +16,17 @@ In Einstellungen > API kann ein Zugriffstoken für das eigene Benutzerkonto gene
 [Fahre mit "Verwendung der API" fort.](#APIの使い方)
 
 ### Einen Benutzer zur Generierung eines Zugangstokens für eine Anwendung auffordern
-アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
+Um einen in einer Anwendung zu verwendenden Zugriffstoken für ein Benutzerkonto zu erhalten, fordere die Generierung eines solchen durch den unten beschrieben Prozess an.
 
 #### Schritt 1
 
-UUIDを生成する。以後これをセッションIDと呼びます。
+Generiere eine UUID.Diese werden wir ab jetzt die Sitzungs-ID nennen.
 
-> このセッションIDは毎回生成し、使いまわさないようにしてください。
+> Die selbe Sitzungs-ID sollte nie mehrfach wieder verwendet werden, generiere anstattdessen für jeden Zugriffstoken eine neue Sitzungs-ID.
 
 #### Schritt 2
 
-`{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
+Öffne `{_URL_}/miauth/{session}` im Browser des Benutzers.`{session}` soll hierbei durch die vorher generierte Sitzungs-ID ersetzt werden.
 > z.B.: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
