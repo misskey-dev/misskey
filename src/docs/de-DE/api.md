@@ -29,12 +29,12 @@ Generiere eine UUID.Diese werden wir ab jetzt die Sitzungs-ID nennen.
 Öffne `{_URL_}/miauth/{session}` im Browser des Benutzers.`{session}` soll hierbei durch die vorher generierte Sitzungs-ID ersetzt werden.
 > z.B.: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
-表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
-* `name` ... アプリケーション名
+Bei Aufruf dieser URL können verschiedene Einstellungen via Query-Parameter gesetzt werden:
+* `name` ... Anwendungsname
     * > z.B.: `MissDeck`
-* `icon` ... アプリケーションのアイコン画像URL
+* `icon` ... URL zum Anwendungs-Icon
     * > z.B.: `https://missdeck.example.com/icon.png`
-* `callback` ... 認証が終わった後にリダイレクトするURL
+* `callback` ... URL, zu der nach Ende der Authentifizierung weitergeleitet wird
     * > z.B.: `https://missdeck.example.com/callback`
     * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
 * `permission` ... アプリケーションが要求する権限
