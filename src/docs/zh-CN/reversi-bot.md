@@ -157,4 +157,4 @@ type: `textbox` 显示一个文本框。可以在各种需要用户输入的地�
 消息类型：`success`, `info`, `warning`, `error`。
 
 ## 认输
-投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
+要认输，请发送请求到这个终端。
