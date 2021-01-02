@@ -11,7 +11,7 @@
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+认证信息是您的API密钥，从应用程序连接到流时需要引用的用户访问令牌
 
 <div class="ui info">
     <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
