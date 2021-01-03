@@ -644,6 +644,7 @@ _mfm:
   flip: "플립"
   flipDescription: "내용을 상하 또는 좌우로 반전시킵니다."
   jump: "애니메이션(점프)"
+  font: "폰트"
 _reversi:
   reversi: "리버시"
   gameSettings: "대국 설정"
