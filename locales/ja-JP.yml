@@ -1030,6 +1030,7 @@ _widgets:
   slideshow: "スライドショー"
   button: "ボタン"
   onlineUsers: "オンラインユーザー"
+  serverMetric: "サーバーメトリクス"
 
 _cw:
   hide: "隠す"

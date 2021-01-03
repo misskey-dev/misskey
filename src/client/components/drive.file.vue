@@ -36,7 +36,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
-import bytes from '../filters/bytes';
+import bytes from '@/filters/bytes';
 import * as os from '@/os';
 
 export default defineComponent({
