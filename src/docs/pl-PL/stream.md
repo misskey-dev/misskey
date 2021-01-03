@@ -6,7 +6,7 @@
 
 ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
+以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。Przykład:
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
@@ -19,7 +19,7 @@
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。例:
+認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。Przykład:
 
 ```
 %WS_URL%/streaming
@@ -219,7 +219,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 * `reaction`に、リアクションの種類が設定されます。
 * `userId`に、リアクションを行ったユーザーのIDが設定されます。
 
-例:
+Przykład:
 ```json
 {
     type: 'noteUpdated',
@@ -239,7 +239,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 * `deletedAt`に、削除日時が設定されます。
 
-例:
+Przykład:
 ```json
 {
     type: 'noteUpdated',
@@ -259,7 +259,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 * `choice`に、選択肢IDが設定されます。
 * `userId`に、投票を行ったユーザーのIDが設定されます。
 
-例:
+Przykład:
 ```json
 {
     type: 'noteUpdated',
