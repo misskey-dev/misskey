@@ -665,6 +665,7 @@ _mfm:
   search: "Buscar"
   flip: "Echar de un capirotazo"
   flipDescription: "Voltea el contenido hacia arriba / abajo o hacia la izquierda / derecha."
+  font: "Fuente"
 _reversi:
   reversi: "Reversi"
   gameSettings: "Configuración del juego"
