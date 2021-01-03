@@ -735,6 +735,7 @@ _mfm:
   twitchDescription: "Заставляет трястись как одержимого"
   spin: "Вращение"
   spinDescription: "Так можно крутить содержимое в разных направлениях."
+  font: "Шрифт"
 _reversi:
   reversi: "Реверси"
   gameSettings: "Настройки игры"
