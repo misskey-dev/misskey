@@ -220,7 +220,7 @@ document.addEventListener('keydown', makeHotkey({
 		defaultStore.set('darkMode', !defaultStore.state.darkMode);
 	},
 	'p|n': post,
-	's': search,
+	's': () => search(), // search に引数を渡すと文字列を前提として処理され KeyboardEvent を渡すと正しく動作しないので、引数を渡さないようにしている
 	//TODO: 'h|/': help
 }));
 
