@@ -1009,6 +1009,7 @@ _widgets:
   slideshow: "Diashow"
   button: "Knopf"
   onlineUsers: "Benutzer die Online sind"
+  serverMetric: "Servermetriken"
 _cw:
   hide: "Ausblenden"
   show: "Mehr anzeigen"
