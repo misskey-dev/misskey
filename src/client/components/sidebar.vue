@@ -59,7 +59,6 @@ export default defineComponent({
 		return {
 			host: host,
 			showing: false,
-			searching: false,
 			accounts: [],
 			connection: null,
 			menuDef: sidebarDef,
@@ -125,19 +124,7 @@ export default defineComponent({
 		},
 
 		search() {
-			if (this.searching) return;
-
-			os.dialog({
-				title: this.$ts.search,
-				input: true
-			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query === '') return;
-
-				this.searching = true;
-				search(this, query).finally(() => {
-					this.searching = false;
-				});
-			});
+			search();
 		},
 
 		async openAccountMenu(ev) {
