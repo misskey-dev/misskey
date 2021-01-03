@@ -171,6 +171,12 @@ instanceInfo: "Informacje o instancji"
 statistics: "Statystyki"
 clearQueue: "Wyczyść kolejkę"
 clearQueueConfirmTitle: "Czy na pewno chcesz wyczyścić kolejkę?"
+done: "Gotowe"
+processing: "Przetwarzanie"
+federating: "Federowanie"
+all: "Wszystkie"
+subscribing: "Subskrybowanie"
+publishing: "Publikowanie"
 instanceFollowing: "Obserwowani na instancji"
 instanceFollowers: "Obserwujący na instancji"
 instanceUsers: "Użytkownicy tej instancji"
@@ -222,7 +228,18 @@ selectFiles: "Wybierz pliki"
 selectFolder: "Wybierz folder"
 selectFolders: "Wybierz foldery"
 renameFile: "Zmień nazwę pliku"
+banner: "Baner"
 nsfw: "NSFW"
+accept: "Akceptuj"
+reject: "Odrzuć"
+normal: "Normalny"
+thisYear: "Rok"
+thisMonth: "Miesiąc"
+today: "Dziś"
+pages: "Strony"
+integration: "Integracja"
+registration: "Zarejestruj się"
+invite: "Zaproś"
 inMb: "W megabajtach"
 iconUrl: "Adres URL ikony"
 bannerUrl: "Adres URL banera"
@@ -243,16 +260,76 @@ manageAntennas: "Zarządzaj Antenami"
 name: "Nazwa"
 antennaSource: "Źródło Anteny"
 userList: "Listy"
+about: "Informacje"
+administrator: "Admin"
+share: "Udostępnij"
+help: "Pomoc"
+close: "Zamknij"
+invites: "Zaproś"
+transfer: "Transfer"
+retype: "Wprowadź ponownie"
+invitations: "Zaproś"
+tags: "Tagi"
+regenerate: "Wygeneruj ponownie"
+total: "Łącznie"
+weekOverWeekChanges: "Cotygodniowo"
+dayOverDayChanges: "Codziennie"
+numberOfDays: "Liczba dni"
+listen: "Słuchaj"
+none: "Brak"
+volume: "Głośność"
+details: "Szczegóły"
+state: "Stan"
+ascendingOrder: "Rosnąco"
+descendingOrder: "Malejąco"
+output: "Wyjście"
+description: "Opis"
+author: "Autor"
+manage: "Zarządzanie"
+height: "Wysokość"
+permission: "Uprawnienia"
+edit: "Edytuj"
 smtpHost: "Host"
 smtpUser: "Nazwa użytkownika"
 smtpPass: "Hasło"
+display: "Wyświetlanie"
+overview: "Przegląd"
+logs: "Dzienniki"
+delayed: "Opóźnione"
+create: "Utwórz"
+behavior: "Zachowanie"
+abuseReports: "Zgłoszenia"
+reportAbuse: "Zgłoś"
+send: "Wyślij"
+optional: "Nieobowiązkowe"
+yes: "Tak"
+duplicate: "Duplikuj"
+center: "Wyśsrodkuj"
+wide: "Szerokie"
+narrow: "Wąskie"
 _mfm:
   mention: "Wspomnij"
+  bold: "Pogrubienie"
   quote: "Cytuj"
   emoji: "Niestandardowe emoji"
   search: "Szukaj"
+  flip: "Odwróć"
+_reversi:
+  surrender: "Poddaj się"
+  total: "Łącznie"
+  ended: "Zakończono"
+_sidebar:
+  full: "Pełne"
+  hide: "Ukryj"
 _theme:
+  constant: "Stała"
+  key: "Klucz"
+  func: "Funkcje"
+  argument: "Argument"
+  darken: "Ściemnij"
   keys:
+    bg: "Tło"
+    fg: "Tekst"
     mention: "Wspomnij"
     renote: "Udostępnij"
 _sfx:
@@ -261,19 +338,40 @@ _sfx:
   chat: "Wiadomości"
 _ago:
   unknown: "Nieznane"
+  future: "W przyszłości"
+_weekday:
+  sunday: "Niedziela"
+  monday: "Poniedziałek"
+  tuesday: "Wtorek"
+  wednesday: "Środa"
+  thursday: "Czwartek"
+  friday: "Piątek"
+  saturday: "Sobota"
 _widgets:
+  memo: "Przypięte notatki"
   notifications: "Powiadomienia"
   timeline: "Oś czasu"
+  clock: "Zegar"
   activity: "Aktywność"
+  photos: "Zdjęcia"
   federation: "Federacja"
+  button: "Przycisk"
 _cw:
+  hide: "Ukryj"
   show: "Załaduj więcej"
+_poll:
+  expiration: "Ankieta kończy się"
+  infinite: "Nigdy"
+  deadlineDate: "Data zakończenia"
+  duration: "Czas trwania"
 _visibility:
   home: "Strona główna"
   followers: "Obserwujący"
 _profile:
   name: "Nazwa"
   username: "Nazwa użytkownika"
+  metadataLabel: "Etykieta"
+  metadataContent: "Treść"
 _exportOrImport:
   followingList: "Obserwowani"
   muteList: "Wycisz"
@@ -282,28 +380,123 @@ _exportOrImport:
 _timelines:
   home: "Strona główna"
 _rooms:
+  translate: "Przenieś"
+  rotate: "Obróć"
+  exit: "Wróć"
+  _roomType:
+    washitsu: "W japońskim stylu"
   _furnitures:
+    pencil: "Ołówek"
+    book2: "Książka 2"
     monitor: "Monitor"
+    photoframe: "Ramka do zdjęć"
+    banknote: "Banknot"
 _pages:
+  like: "Lubię"
+  featured: "Wyróżnione"
+  variables: "Zmienne"
+  fontSerif: "Szeryfowa"
+  inputBlocks: "Wejście"
+  specialBlocks: "Specjalne"
   blocks:
     image: "Zdjęcia"
+    button: "Przycisk"
+    if: "Jeżeli"
+    _if:
+      variable: "Zmienna"
+    _post:
+      text: "Treść"
+    _textInput:
+      name: "Nazwa zmiennej"
+    _textareaInput:
+      name: "Nazwa zmiennej"
+    _numberInput:
+      name: "Nazwa zmiennej"
+    _canvas:
+      height: "Wysokość"
+    _switch:
+      name: "Nazwa zmiennej"
+    _counter:
+      name: "Nazwa zmiennej"
+      inc: "Zwiększ o"
+    _button:
+      colored: "Kolorowe"
+      _action:
+        _dialog:
+          content: "Treść"
+        _pushEvent:
+          no-variable: "Brak"
+    radioButton: "Wybór"
+    _radioButton:
+      name: "Nazwa zmiennej"
   script:
     categories:
+      flow: "Kontrola przepływu"
+      operation: "Obliczanie"
+      comparison: "Porównanie"
+      fn: "Funkcje"
+      convert: "Transformacja"
       list: "Listy"
     blocks:
       _join:
         arg1: "Listy"
+        arg2: "Odstęp"
+      add: "Dodaj"
+      subtract: "Odejmij"
+      multiply: "Pomnóż"
+      divide: "Podziel"
+      _round:
+        arg1: "Liczba"
+      if: "Warunek"
+      _if:
+        arg1: "Jeżeli"
+        arg2: "Jeżeli prawda"
+      not: "NIE"
+      _not:
+        arg1: "NIE"
+      _random:
+        arg1: "Prawdopodobieństwo"
+      rannum: "Losowa liczba"
+      _rannum:
+        arg1: "Minimalna wartość"
+        arg2: "Maksymalna wartość"
       _randomPick:
         arg1: "Listy"
+      _dailyRandom:
+        arg1: "Prawdopodobieństwo"
+      _dailyRannum:
+        arg1: "Minimalna wartość"
+        arg2: "Maksymalna wartość"
       _dailyRandomPick:
         arg1: "Listy"
+      _seedRandom:
+        arg1: "Ziarno"
+        arg2: "Prawdopodobieństwo"
+      _seedRannum:
+        arg1: "Ziarno"
+        arg2: "Minimalna wartość"
+        arg3: "Maksymalna wartość"
       _seedRandomPick:
+        arg1: "Ziarno"
         arg2: "Listy"
       _pick:
         arg1: "Listy"
+        arg2: "Położenie"
       _listLen:
         arg1: "Listy"
+      number: "Liczba"
+      _numberToString:
+        arg1: "Liczba"
+      ref: "Zmienne"
+      fn: "Funkcje"
+      _fn:
+        arg1: "Wyjście"
+      _for:
+        arg1: "Liczba powtórzeń"
+        arg2: "Działanie"
     types:
+      number: "Liczba"
+      boolean: "Flaguj"
       array: "Listy"
 _notification:
   youWereFollowed: "Zaobserwował(a) Cię"
