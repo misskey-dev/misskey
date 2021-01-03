@@ -57,6 +57,23 @@ mention: "Wspomnij"
 mentions: "Wspomnienia"
 directNotes: "Bezpośrednie wpisy"
 importAndExport: "Import i eksport"
+import: "Importuj"
+export: "Eksportuj"
+files: "Pliki"
+download: "Pobierz"
+lists: "Listy"
+noLists: "Nie masz żadnych list"
+note: "Wpis"
+notes: "Wpisy"
+following: "Obserwowani"
+followers: "Obserwujący"
+followsYou: "Obserwuje Cię"
+createList: "Utwórz listę"
+manageLists: "Zarządzaj listami"
+error: "Błąd"
+somethingHappened: "Coś poszło nie tak"
+retry: "Spróbuj ponownie"
+follow: "Obserwowani"
 unmarkAsSensitive: "Cofnij NSFW"
 enterFileName: "Wprowadź nazwę pliku"
 mute: "Wycisz"
@@ -109,6 +126,7 @@ instanceFollowing: "Obserwowani na instancji"
 instanceFollowers: "Obserwujący na instancji"
 instanceUsers: "Użytkownicy tej instancji"
 remove: "Usuń"
+userList: "Listy"
 smtpHost: "Host"
 smtpUser: "Nazwa użytkownika"
 smtpPass: "Hasło"
@@ -120,6 +138,7 @@ _theme:
   keys:
     mention: "Wspomnij"
 _sfx:
+  note: "Wpisy"
   notification: "Powiadomienia"
 _widgets:
   notifications: "Powiadomienia"
@@ -127,17 +146,42 @@ _widgets:
   federation: "Federacja"
 _cw:
   show: "Załaduj więcej"
+_visibility:
+  followers: "Obserwujący"
 _profile:
   username: "Nazwa użytkownika"
 _exportOrImport:
+  followingList: "Obserwowani"
   muteList: "Wycisz"
   blockingList: "Zablokuj"
+  userLists: "Listy"
+_pages:
+  script:
+    categories:
+      list: "Listy"
+    blocks:
+      _join:
+        arg1: "Listy"
+      _randomPick:
+        arg1: "Listy"
+      _dailyRandomPick:
+        arg1: "Listy"
+      _seedRandomPick:
+        arg2: "Listy"
+      _pick:
+        arg1: "Listy"
+      _listLen:
+        arg1: "Listy"
+    types:
+      array: "Listy"
 _notification:
   youWereFollowed: "Zaobserwował(a) Cię"
   _types:
+    follow: "Obserwowani"
     mention: "Wspomnij"
 _deck:
   _columns:
     notifications: "Powiadomienia"
     tl: "Oś czasu"
+    list: "Listy"
     mentions: "Wspomnienia"
