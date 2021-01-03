@@ -39,6 +39,7 @@ smtpPass: "Awal uffir"
 _mfm:
   mention: "Bder"
   search: "Nadi"
+  font: "Tasefsit"
 _theme:
   keys:
     mention: "Bder"
