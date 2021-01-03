@@ -1009,6 +1009,7 @@ _widgets:
   slideshow: "Slideshow"
   button: "Button"
   onlineUsers: "Online users"
+  serverMetric: "Server metrics"
 _cw:
   hide: "Hide"
   show: "Load more"
