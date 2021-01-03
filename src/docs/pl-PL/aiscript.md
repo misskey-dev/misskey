@@ -1,4 +1,4 @@
 # AiScript
 
-## 関数
+## Funkcje
 デフォルトで値渡しです。
