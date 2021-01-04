@@ -828,6 +828,7 @@ _widgets:
   postForm: "Створення нотатки"
   slideshow: "Слайд-шоу"
   button: "Кнопка"
+  jobQueue: "Черга завдань"
 _cw:
   hide: "Сховати"
   show: "Показати більше"
