@@ -403,6 +403,7 @@ _widgets:
   photos: "Zdjęcia"
   federation: "Federacja"
   button: "Przycisk"
+  jobQueue: "Kolejka zadań"
 _cw:
   hide: "Ukryj"
   show: "Załaduj więcej"
