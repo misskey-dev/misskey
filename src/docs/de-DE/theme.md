@@ -1,12 +1,12 @@
 # Farbthemen
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Durch die Verwendung von Farbthemen kann das Aussehen des Misskey-Clients verändert werden.
 
-## テーマの設定
-設定 > テーマ
+## Themeneinstellungen
+Einstellungen > Farbthemen
 
-## テーマを作成する
-テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
+## Erstellung eines Themas
+Themencodes werden im Format eines JSON5-Objekts gespeichert. Themen werden wie das folgende Objekt dargestellt:
 ``` js
 {
     id: '17587283-dd92-4a2c-a22c-be0637c9e22a',
@@ -33,36 +33,36 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
-* `desc` ... テーマの説明(オプション)
-* `base` ... 明るいテーマか、暗いテーマか
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
-* `props` ... テーマのスタイル定義。これから説明します。
+* `id` ... Die einzigartige Identifikation des Themas.Verwendung von UUIDs ist empfohlen.
+* `name` ... Name des Themas
+* `author` ... Ersteller des Themas
+* `desc` ... Beschreibung des Themas (optional)
+* `base` ... Ob dies ein Thema für den Hell- oder Dunkelmodus ist
+    * Wird `light` angegeben, so wird es als Thema des Hellmodus angezeigt, wird `dark` angegeben, so wird es als Thema des Dunkelmodus angezeigt.
+    * Das Thema erbt die Eigenschaften der hier eingestellten Vorlage.
+* `props` ... Definitionen der Themenoptionen.Diese werden im folgenden erläutert.
 
-### テーマのスタイル定義
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+### Definition von Themenoptionen
+Die Optionen des Themas werden in `props` definiert. Die Schlüssel werden zu CSS-Variablen, die Werte geben den Inhalt an. Zusätzlich werden die `props` des gewählten Basisthemas von diesem Thema geerbt. Ist die `base` dieses Themas auf `light` gesetzt, so werden sie aus [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) kopiert, ist sie auf `dark` gesetzt, so werden sie aus [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5) kopiert. Beispielsweise wird, falls sich in den `props` dieses Themas keine Definition für den Schlüssel `panel` befindet, so wird der Wert von `panel` aus dem Basisthema verwendet.
 
-#### バリューで使える構文
-* 16進数で表された色
-    * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
-    * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
-    * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
-    * 例: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
-    * 例: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+#### Syntax für Wertangaben
+* Hexadezimalfarben
+    * z.B.: `#00ff00`
+* RGB-Farben mit `rgb(r, g, b)`-Syntax
+    * z.B.: `rgb(0, 255, 0)`
+* RGBA-Farben mit `rgb(r, g, b, a)`-Syntax
+    * z.B.: `rgba(0, 255, 0, 0.5)`
+* Werte anderer Schlüssel referenzieren
+    * Durch das angeben von `@{Schlüsselname}` wird dies durch eine Referenz auf den Wert des gegebenen Schlüssels ersetzt.Ersetze `{Schlüsselname}` mit dem Namen des Schlüssels, der referenziert werden soll.
+    * z.B.: `@panel`
+* Konstantenreferenz (später erläutert)
+    * Durch das angeben von `${Konstantenname}` wird dies durch eine Referenz auf den Wert der angegebenen Konstante ersetzt.Ersetze `{Konstantenname}` durch den Namen der Konstanten, die referenziert werden soll.
+    * z.B.: `$main`
+* Funktionen (später erläutert)
+    * `:{Funktionsname}<{Parameter}<{Farbe}`
 
 #### Konstante
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+In Fällen, in denen ein Wert nicht als CSS-Variable angesehen werden soll, sondern als Wert für eine andere CSS-Variable verwendet werden soll, eignet sich die Verwendung einer Konstante. Wird ein Wert mit einem `$`-Präfix versehen, so wird er nicht als CSS-Variable, sondern als Referenz angesehen.
 
 #### Funktionen
 wip

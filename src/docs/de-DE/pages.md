@@ -1,10 +1,10 @@
-# Pages
+# Seiten
 
 ## Variablen
-変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。
+Durch die Verwendung von Variablen ist es möglich, dynamische Seiten zu erstellen.Wird in einem Text <b>{ Variablenname }</b> beinhaltet, wird dies mit dem Wert dieser Variable eingesetzt.Ist Beispielsweise der Wert der Variable thing in diesem Fall <b>ai</b>, dann wird der Text <b>Hallo { thing } Welt!</b> zu <b>Hallo ai Welt!</b> ausgewertet.
 
-変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。
+Variablen werden von oben nach unten ausgewertet, d.h. Referenzen zu Variablen, die noch nicht definiert sind, sind nicht möglich.Werden Beispielsweise die Variablen <b>A, B, C</b> in der gegebenen Reihenfolge definiert, so kann sich innerhalb von <b>C</b> auf <b>A</b> oder <b>B</b> bezogen werden, aber innerhalb von <b>A</b> nicht auf <b>B</b> oder <b>C</b>.
 
-ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
+Um (Text-)Eingabe durch Benutzer empfangen zu können, kann der Seite ein "Benutzereingabe"-Feld hinzugefügt werden, welches dann den Wert, den der Benutzer eingibt, in einer Variable mit gewünschtem Namen speichert.Durch die Verwendung dieser Benutzereingabe können dann die weiteren Aktionen der Seite gesteuert werden.
 
-関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。
+Die Verwendung von Funktionen erlaubt die Definition von wiederverwendbaren Werteberechnungen.Um eine Funktion zu erstellen, wähle "Funktion" als Variablentyp.Funktionen können ebenso Slots (Parameter) verwenden, auf dessen Werte dann innerhalb der Funktion zugegriffen werden kann.Zudem ist es möglich, eine Funktion zu erstellen, dessen Parameter eine weitere Funktion ist ("Funktion höherer Ordnung").Neben der vorherigen Definition von Funktionen können in Funktionen höherer Ordnung Funktionen ebenso direkt in der Parametereingabe definiert werden.

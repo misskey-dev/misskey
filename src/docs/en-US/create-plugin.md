@@ -20,7 +20,7 @@ Plugin description
 Permissions required by the plugin.Used when making requests to the Misskey API.
 
 ### config
-An object representing the plugin's settings. Set the keys to setting names and the values to one of the below properties.
+An object representing the plugin's settings. Keys represent setting names and values are any of the below properties.
 
 #### type
 A string representing the setting's value type.Selected from one of the below types. string number boolean
@@ -65,7 +65,7 @@ Add an item to the user menu.Enter an item name as the first parameter, and a ca
 Modify the data of notes displayed in the UI. A note object is passed to the callback function as first parameter. The note will be modified based on the note object returned by the callback function.
 
 ### Plugin:register_note_post_interruptor(fn)
-Modify the data of notes about to be posted. A note object is passed to the callback function as first parameter. The note will be modified based on the note object returned by the callback function.
+Modify the data of notes about to be posted. A note object is passed to the callback function as first parameter. The note to be posted will be modified based on the note object returned by the callback function.
 
 ### Plugin:open_url(url)
 Opens the URL given as first argument in a new browser tab.

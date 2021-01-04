@@ -1,74 +1,74 @@
-# プラグインの作成
-Misskey Webクライアントのプラグイン機能を使うと、クライアントを拡張し、様々な機能を追加できます。 ここではプラグインの作成にあたってのメタデータ定義や、AiScript APIリファレンスを掲載します。
+# Erstellen von Plugins
+Durch die Verwendung der Plugin-Funktionalität des Misskey Web-Clients kann dieser mit verschiedenen Funktionen erweitert werden. Diese Seite beinhaltet Definitionen von Metadaten für die Erstellung von Plugins sowie eine AiScript API-Referenz für Plugins.
 
 ## Metadaten
-プラグインは、AiScriptのメタデータ埋め込み機能を使って、デフォルトとしてプラグインのメタデータを定義する必要があります。 メタデータは次のプロパティを含むオブジェクトです。
+Plugins müssen benötigte Metadaten im AiScript Metadata-Format angeben. Bei diesen Metadaten handelt es sich um ein Objekt mit folgenden Attributen:
 
 ### name
-プラグイン名
+Name des Plugins
 
 ### author
-プラグイン作者
+Name des Plugin-Erstellers
 
 ### version
-プラグインバージョン。数値を指定してください。
+Version des Plugins.Muss eine Zahl sein.
 
 ### description
-プラグインの説明
+Beschreibung des Plugins
 
 ### permissions
-プラグインが要求する権限。MisskeyAPIにリクエストする際に用いられます。
+Die vom Plugin geforderten Berechtigungen.Werden bei Anfragen der Misskey API verwendet.
 
 ### config
-プラグインの設定情報を表すオブジェクト。 キーに設定名、値に以下のプロパティを含めます。
+Ein Objekt, dass die Einstellungen des Plugins enthält. Schlüssel representieren Namen von Einstellungen, und Werte sind einer der unten genannten Attribute.
 
 #### type
-設定値の種類を表す文字列。以下から選択します。 string number boolean
+Der Typ eines Einstellungswertes.Muss aus einem dieser Typen gewählt sein: string number boolean
 
 #### label
-ユーザーに表示する設定名
+Dem Benutzer angezeigter Einstellungsname
 
 #### description
-設定の説明
+Beschreibung der Einstellung
 
 #### default
-設定のデフォルト値
+Standardwert der Einstellung
 
-## APIリファレンス
-AiScript標準で組み込まれているAPIは掲載しません。
+## API-Referenz
+Direkt in den AiScript-Standard eingebaute API wird nicht aufgelistet.
 
 ### Mk:dialog(title text type)
-ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
+Zeigt ein Dialogfenster an.type muss aus einem der folgenden Werte gewählt werden. info success warn error question Falls kein Typ angegeben wird, wird dieser zu info gesetzt.
 
 ### Mk:confirm(title text type)
-確認ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると question になります。 ユーザーが"OK"を選択した場合は true を、"キャンセル"を選択した場合は false が返ります。
+Zeigt ein Bestätigungsfenster an.type muss aus einem der folgenden Werte gewählt werden. info success warn error question Falls kein Typ angegeben wird, wird dieser zu question gesetzt. Drückt der Benutzer "OK" wird true zurückgegeben, drückt er "Cancel" wird false zurückgegeben.
 
 ### Mk:api(endpoint params)
-Misskey APIにリクエストします。第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
+Sendet eine Misskey API-Anfrage.Der erste Parameter gibt den API-Endpunkt an, der zweite die Anfrageparameter als Objekt.
 
 ### Mk:save(key value)
-任意の値に任意の名前を付けて永続化します。永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
+Speichert einen beliebigen Wert dauerhaft unter einem beliebigen Namen.Der gespeicherte Wert bleibt auch nach Verlassen des AiScript-Kontexts erhalten und kann mit Mk:load ausgelesen werden.
 
 ### Mk:load(key)
-Mk:saveで永続化した指定の名前の値を読み取ります。
+Läd den Wert des gegebenen Schlüssels, der zuvor mit Mk:save gespeichert wurde
 
 ### Plugin:register_post_form_action(title fn)
-投稿フォームにアクションを追加します。第一引数にアクション名、第二引数にアクションが選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に投稿フォームオブジェクトが渡されます。
+Fügt dem Beitragsfenster eine Aktion hinzu.Der erste Parameter gibt den Aktionsnamen an, der zweite Parameter eine Callback-Funktion, die bei Auswahl dieser Aktion ausgeführt wird, an. Die Callback-Funktion erhält als ersten Parameter ein Beitragsfenster-Objekt.
 
 ### Plugin:register_note_action(title fn)
-ノートメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
+Fügt dem Notiz-Menü ein Listenelement hinzu.Der erste Parameter gibt den Aktionsnamen an, der zweite Parameter eine Callback-Funktion, die bei Auswahl dieses Elements ausgeführt wird, an. Die Callback-Funktion erhält als ersten Parameter ein Notiz-Objekt.
 
 ### Plugin:register_user_action(title fn)
-ユーザーメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のユーザーオブジェクトが渡されます。
+Fügt dem Benutzer-Menü ein Listenelement hinzu.Der erste Parameter gibt den Aktionsnamen an, der zweite Parameter eine Callback-Funktion, die bei Auswahl dieses Elements ausgeführt wird, an. Die Callback-Funktion erhält als ersten Parameter ein Benutzer-Objekt.
 
 ### Plugin:register_note_view_interruptor(fn)
-UIに表示されるノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
+Verändert die Daten einer im UI angezeigten Notiz. Die Callback-Funktion erhält als ersten Parameter ein Notiz-Objekt. Die angezeigte Notiz wird mit dem Rückgabewert der Callback-Funktion überschrieben.
 
 ### Plugin:register_note_post_interruptor(fn)
-ノート投稿時にノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
+Verändert die Daten einer zu erstellenden Notiz. Die Callback-Funktion erhält als ersten Parameter ein Notiz-Objekt. Die zu erstellende Notiz wird mit dem Rückgabewert der Callback-Funktion überschrieben.
 
 ### Plugin:open_url(url)
-第一引数に渡されたURLをブラウザの新しいタブで開きます。
+Öffnet die als ersten Parameter gegebene URL in einem neuen Browser-Tab.
 
 ### Plugin:config
-プラグインの設定が格納されるオブジェクト。プラグイン定義のconfigで設定したキーで値が入ります。
+Ein Objekt, dass die Plugin-Einstellungen enthält.Die in den Plugin-Einstellung eingetragenen Werte sind hier unter den Einstellungsnamen gespeichert.
