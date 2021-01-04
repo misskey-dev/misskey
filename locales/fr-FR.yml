@@ -766,6 +766,7 @@ _widgets:
   federation: "Fédération"
   postForm: "Formulaire à publier"
   button: "Bouton"
+  jobQueue: "File d’attente"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"
