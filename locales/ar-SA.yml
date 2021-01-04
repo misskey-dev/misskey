@@ -454,6 +454,7 @@ _widgets:
   activity: "النشاط"
   photos: "الصور"
   federation: "الفديرالية"
+  jobQueue: "قائمة الانتظار"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
