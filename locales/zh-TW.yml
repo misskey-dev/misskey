@@ -680,6 +680,7 @@ _mfm:
   twitch: "動畫(顫抖)"
   spin: "動畫(旋轉)"
   spinDescription: "顯示旋轉的動畫效果。"
+  blur: "模糊"
   font: "字型"
   fontDescription: "可設置顯示內容所使用的字型"
 _reversi:
