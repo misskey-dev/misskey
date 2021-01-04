@@ -253,6 +253,7 @@ export default defineComponent({
 					> .logo {
 						vertical-align: bottom;
 						max-height: 120px;
+						max-width: min(100%, 300px);
 					}
 				}
 

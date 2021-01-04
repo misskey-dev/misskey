@@ -15,7 +15,7 @@
 	</div>
 
 	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<XNote :note="note" @update:note="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
+		<XNote :note="note" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
@@ -53,12 +53,6 @@ export default defineComponent({
 	props: {
 		pagination: {
 			required: true
-		},
-
-		detail: {
-			type: Boolean,
-			required: false,
-			default: false
 		},
 
 		prop: {

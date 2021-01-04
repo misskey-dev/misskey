@@ -134,6 +134,8 @@ export default defineComponent({
 
 	> header {
 		position: relative;
+		color: var(--panelHeaderFg);
+		background: var(--panelHeaderBg);
 		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 		z-index: 2;
 		line-height: 1.4em;
@@ -179,6 +181,7 @@ export default defineComponent({
 		> header {
 			> .title {
 				padding: 8px 10px;
+				font-size: 0.9em;
 			}
 		}
 

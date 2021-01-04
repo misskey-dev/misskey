@@ -8,7 +8,6 @@
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 >
-	<XSub v-for="note in conversation" class="reply-to-more" :key="note.id" :note="note"/>
 	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="info" v-if="pinned"><Fa :icon="faThumbtack"/> {{ $ts.pinnedNote }}</div>
 	<div class="info" v-if="appearNote._prId_"><Fa :icon="faBullhorn"/> {{ $ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ $ts.hideThisNote }} <Fa :icon="faTimes"/></button></div>
@@ -57,7 +56,7 @@
 						<XMediaList :media-list="appearNote.files"/>
 					</div>
 					<XPoll v-if="appearNote.poll" :note="appearNote" ref="pollViewer" class="poll"/>
-					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="detail" class="url-preview"/>
+					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="false" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><XNotePreview :note="appearNote.renote"/></div>
 					<button v-if="collapsed" class="fade _button" @click="collapsed = false">
 						<span>{{ $ts.showMore }}</span>
@@ -90,7 +89,6 @@
 			</footer>
 		</div>
 	</article>
-	<XSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
 </div>
 <div v-else class="_panel muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
@@ -157,11 +155,6 @@ export default defineComponent({
 			type: Object,
 			required: true
 		},
-		detail: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
 		pinned: {
 			type: Boolean,
 			required: false,
@@ -174,7 +167,6 @@ export default defineComponent({
 	data() {
 		return {
 			connection: null,
-			conversation: [],
 			replies: [],
 			showContent: false,
 			collapsed: false,
@@ -277,7 +269,7 @@ export default defineComponent({
 			this.connection = os.stream;
 		}
 
-		this.collapsed = !this.detail && this.appearNote.cw == null && this.appearNote.text && (
+		this.collapsed = this.appearNote.cw == null && this.appearNote.text && (
 			(this.appearNote.text.split('\n').length > 9) ||
 			(this.appearNote.text.length > 500)
 		);
@@ -290,23 +282,6 @@ export default defineComponent({
 				result = await interruptor.handler(JSON.parse(JSON.stringify(result)));
 			}
 			this.$emit('update:note', Object.freeze(result));
-		}
-
-		if (this.detail) {
-			os.api('notes/children', {
-				noteId: this.appearNote.id,
-				limit: 30
-			}).then(replies => {
-				this.replies = replies;
-			});
-
-			if (this.appearNote.replyId) {
-				os.api('notes/conversation', {
-					noteId: this.appearNote.replyId
-				}).then(conversation => {
-					this.conversation = conversation.reverse();
-				});
-			}
 		}
 	},
 
@@ -949,10 +924,6 @@ export default defineComponent({
 	> .reply-to {
 		opacity: 0.7;
 		padding-bottom: 0;
-	}
-
-	> .reply-to-more {
-		opacity: 0.7;
 	}
 
 	> .renote {

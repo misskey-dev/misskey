@@ -1,33 +1,33 @@
-# MisskeyリバーシBotの開発
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+# Entwicklung eines Misskey Reversi-Bots
+Auf dieser Seite wird die Entwicklung eines Bots für Misskey Reversi erläutert.
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+1. Verbinde dich unter Verwendung folgender Parameter mit dem `games/reversi`-Stream:
+    * `i`: API-Schlüssel des Bot-Kontos
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+2. Sobald den Bot eine Spieleinladung erreicht, wird das `invited`-Event vom Stream gesendet
+    * Der Inhalt dieses Events ist ein `parent`-Attribut, was Daten über den Benutzer, der die Einladung verschickt hat, beinhaltet
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. Sende eine Anfrage an `games/reversi/match`, wobei der Wert des `user_id`-Parameters das `id`-Attribut des vorher erhaltenen `parent`-Objekts ist
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
-    * `game`: `game`の`id`
+4. Gelingt die Anfrage, werden die Spieldaten als Rückgabewert geliefert. Nutze diese dann, um die unten gelisteten Parameter an den `games/reversi-game`-Stream zu senden:
+    * `i`: API-Schlüssel des Bot-Kontos
+    * `game`: `id`-Attribut des `game`-Objekts
 
-5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
+5. Währenddessen kann der Spielgegner die Spieleinstellungen verändern. Jedes mal, wenn eine Einstellung verändert wird, sendet der Stream ein `update-settings`-Event, weswegen möglicherweise Logik, um solche Events verarbeiten zu können, notwendig ist.
 
-6. 設定に満足したら、`{ type: 'accept' }`メッセージをストリームに送信する
+6. Sobald du mit den Spieleinstellungen zufrieden bist, sende die Nachricht `{ type: 'accept' }` an den Stream
 
-7. ゲームが開始すると、`started`イベントが流れてくる
-    * イベントの中身にはゲーム情報が含まれている
+7. Sobald das Spiel startet, wird das `started`-Event gesendet
+    * Der Inhalt dieses Events sind die Spieldaten
 
-8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
+8. Um einen Stein zu setzen, sende die folgende Nachricht an den Stream: `{ type: 'set', pos: <Position> }` (Positionsberechnungen werden später erläutert)
 
-9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
-    * `color`として石の色が含まれている
-    * `pos`として位置情報が含まれている
+9. Setzt der Gegner oder du einen Stein, wird das `set`-Event vom Stream gesendet
+    * Die Farbe der Spielfigur ist als `color` enthalten
+    * Die Position der Spielfigur ist als `pos` enthalten
 
-## 位置の計算法
-8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
+## Positionsberechnungen
+Im Falle eines 8x8 Spielbrettes sind die Felder wie folgt aufgestellt (jeweils mit ihrem Index versehen):
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -38,29 +38,29 @@ Misskeyのリバーシ機能に対応したBotの開発方法をここに記し�
 ...
 ```
 
-### X,Y座標 から インデックス に変換する
+### Berechnung von Indizes durch X und Y Koordinaten
 ```
 pos = x + (y * mapWidth)
 ```
-`mapWidth`は、ゲーム情報の`map`から、次のようにして計算できます:
+Bei `mapWidth` handelt es sich um wie folgt aus `map` entnommene Spielbrettdaten:
 ```
 mapWidth = map[0].length
 ```
 
-### インデックス から X,Y座標 に変換する
+### Berechnung der X und Y Koordinaten durch Indizes
 ```
 x = pos % mapWidth
 y = Math.floor(pos / mapWidth)
 ```
 
-## マップ情報
-マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
-* `(スペース)` ... マス無し
-* `-` ... マス
-* `b` ... 初期配置される黒石
-* `w` ... 初期配置される白石
+## Spielbrettdaten
+Die Spielbrettdaten sind innerhalb vom in den Spieldaten enthaltenen `map`-Attribut gespeichert. Da das Spielbrett als Array von Zeichenketten representiert wird, steht jedes Symbol für ein Spielfeld. Basierend auf diesen Informationen lässt sich der Spielbrettzustand rekonstruieren.
+* `(Leer)` ... Kein Spielfeld
+* `-` ... Spielfeld
+* `b` ... Spielfeld auf dem zuerst platzierter Stein schwarz war
+* `w` ... Spielfeld auf dem zuerst platzierter Stein weiß war
 
-例えば、4*4の次のような単純なマップがあるとします:
+Sei folgendes simple 4*4 Spielbrett als Beispiel gegeben:
 ```text
 +---+---+---+---+
 |   |   |   |   |
@@ -73,23 +73,23 @@ y = Math.floor(pos / mapWidth)
 +---+---+---+---+
 ```
 
-この場合、マップデータはこのようになります:
+In diesem Fall sehen die Spielbrettdaten wie folgt aus:
 ```javascript
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## ユーザーにフォームを提示して対話可能Botを作成する
-ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
+## Erstellen eines Bots, der mit dem Benutzer durch das Zeigen von Fenstern kommunizieren kann
+Das Kommunizieren mit dem Spieler kann durch das Anzeigen von Fenstern während der Vorbereitungsphase des Spiels umgesetz werden. Beispielsweise kann so die Schwierigkeit des Bots durch den Benutzer konfiguriert werden.
 
-フォームを提示するには、`reversi-game`ストリームに次のメッセージを送信します:
+Um ein Fenster anzuzeigen, sende folgende Nachricht an den `reversi-game`-Stream:
 ```javascript
 {
   type: 'init-form',
-  body: [フォームコントロールの配列]
+  body: [Array an Fenster-Elementen]
 }
 ```
 
-フォームコントロールの配列については今から説明します。 フォームコントロールは、次のようなオブジェクトです:
+Details bezüglich des Arrays an Fenster-Elementen werden nun erklärt. Ein Element eines Fensters ist wie das folgende Objekt aufgebaut:
 ```javascript
 {
   id: 'switch1',
@@ -98,10 +98,10 @@ y = Math.floor(pos / mapWidth)
   value: false
 }
 ```
-`id` ... コントロールのID。 `type` ... コントロールの種類。後述します。 `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... Die ID des Elements. `type` ... Der Typ des Elements.Diese werden später erläutert. `label` ... Text der zusammen mit dem Element angezeigt wird. `value` ... Standardwert des Elements.
 
-### フォームの操作を受け取る
-ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
+### Verarbeitung von Interaktionen mit Elementen
+Interagiert der Benutzer mit einem der Elemente eines Fensters, so wird ein `update-form`-Element vom Stream gesendet. Die Inhalte dieses Events sind die ID des Elements sowie der Wert des Elements, der vom Benutzer eingestellt wurde. Wird beispielsweise der obige Beispielschalter eingeschaltet, wird das folgende Event gesendet:
 ```javascript
 {
   id: 'switch1',
@@ -109,52 +109,52 @@ y = Math.floor(pos / mapWidth)
 }
 ```
 
-### フォームコントロールの種類
-#### Fallunterscheidung
-type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
+### Arten von Form-Elementen
+#### Schalter
+type: `switch` Zeigt einen Schalter an.Eignet sich für Fälle, in denen etwas entweder ein- oder ausgeschaltet werden kann.
 
-##### プロパティ
-`label` ... スイッチに表記するテキスト。
+##### Attribute
+`label` ... Auf dem Schalter anzuzeigender Text.
 
-#### ラジオボタン
-type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+#### Optionsfeld
+type: `radio` Zeigt ein Optionsfeld an.Eignet sich für Fälle, in denen verschiedene Optionen angezeigt werden.z.B. zur Einstellung der Stärke des Bots.
 
-##### プロパティ
-`items` ... ラジオボタンの選択肢。例:
+##### Attribute
+`items` ... Die verfügbaren Optionen.z.B.:
 ```javascript
 items: [{
-  label: '弱',
+  label: 'Schwach',
   value: 1
 }, {
-  label: '中',
+  label: 'Mittelmäßíg',
   value: 2
 }, {
-  label: '強',
+  label: 'Stark',
   value: 3
 }]
 ```
 
-#### スライダー
-type: `slider` スライダーを表示します。
+#### Schieberegler
+type: `slider` Zeigt einen Schieberegler an.
 
-##### プロパティ
-`min` ... スライダーの下限。 `max` ... スライダーの上限。 `step` ... 入力欄で刻むステップ値。
+##### Attribute
+`min` ... Der minimale Reglerwert. `max` ... Der maximale Reglerwert. `step` ... Der Abstand zwischen zwei Stufen des Reglers.
 
-#### テキストボックス
-type: `textbox` テキストボックスを表示します。ユーザーになにか入力させる一般的な用途に利用できます。
+#### Textbox
+type: `textbox` Zeigt eine Textbox an.Für verschiedene Fälle, in denen Texteingabe des Benutzers gefragt sind, verwendbar.
 
-## ユーザーにメッセージを表示する
-設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
+## Dem Benutzer Nachrichten zeigen
+Dies ist eine alternative Methode, um mit dem Benutzer zu kommunieren, abgesehen vom Anzeigen eines Fensters während der Vorbereitungsphase des Spiels.Hierdurch kann dem Benutzer eine Nachricht angezeigt werden. Beispielsweise kann eine Warnung angezeigt werden, falls ein Spielmodus oder eine Spielkarte ausgewählt wird, mit der der Bot nicht kompatibel ist. Um eine Nachricht anzuzeigen, muss folgende Nachricht an den Stream gesendet werden:
 ```javascript
 {
   type: 'message',
   body: {
-    text: 'メッセージ内容',
-    type: 'メッセージの種類'
+    text: 'Nachrichteninhalt',
+    type: 'Nachrichtenart'
   }
 }
 ```
-メッセージの種類: `success`, `info`, `warning`, `error`。
+Nachrichtenarten: `success`, `info`, `warning`, `error`.
 
-## 投了する
-投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
+## Aufgeben
+Um aufzugeben, sende eine Anfrage an <a href="./api/endpoints/games/reversi/games/surrender">diesen Endpunkt</a>.

@@ -2,14 +2,14 @@
 <div class="fcuexfpr">
 	<div v-if="note" class="note">
 		<div class="_section" v-if="showNext">
-			<XNotes class="_content" :pagination="next"/>
+			<XNotes class="_content _noGap_" :pagination="next"/>
 		</div>
 
 		<div class="_section main">
 			<MkButton v-if="!showNext && hasNext" class="load next _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
 			<div class="_content _vMargin">
 				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_vMargin"/>
-				<XNote v-model:note="note" :key="note.id" :detail="true" class="_vMargin"/>
+				<XNoteDetailed v-model:note="note" :key="note.id" class="_vMargin"/>
 			</div>
 			<div class="_content clips _vMargin" v-if="clips && clips.length > 0">
 				<div class="title">{{ $ts.clip }}</div>
@@ -25,7 +25,7 @@
 		</div>
 
 		<div class="_section" v-if="showPrev">
-			<XNotes class="_content" :pagination="prev"/>
+			<XNotes class="_content _noGap_" :pagination="prev"/>
 		</div>
 	</div>
 
@@ -39,6 +39,7 @@
 import { computed, defineComponent } from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import XNote from '@/components/note.vue';
+import XNoteDetailed from '@/components/note-detailed.vue';
 import XNotes from '@/components/notes.vue';
 import MkRemoteCaution from '@/components/remote-caution.vue';
 import MkButton from '@/components/ui/button.vue';
@@ -47,6 +48,7 @@ import * as os from '@/os';
 export default defineComponent({
 	components: {
 		XNote,
+		XNoteDetailed,
 		XNotes,
 		MkRemoteCaution,
 		MkButton,

@@ -2,6 +2,8 @@ import * as tinycolor from 'tinycolor2';
 import Chart from 'chart.js';
 import { Hpml } from './evaluator';
 import { values, utils } from '@syuilo/aiscript';
+import { Block, Fn, HpmlScope } from '.';
+import * as seedrandom from 'seedrandom';
 
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
 Chart.pluginService.register({
@@ -16,7 +18,7 @@ Chart.pluginService.register({
 	}
 });
 
-export function initLib(hpml: Hpml) {
+export function initAiLib(hpml: Hpml) {
 	return {
 		'MkPages:updated': values.FN_NATIVE(([callback]) => {
 			hpml.pageVarUpdatedCallback = (callback as values.VFn);
@@ -121,4 +123,80 @@ export function initLib(hpml: Hpml) {
 			});
 		})
 	};
+}
+
+export function initHpmlLib(block: Block, scope: HpmlScope, randomSeed: string, visitor?: any) {
+
+	const date = new Date();
+	const day = `${visitor ? visitor.id : ''} ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+
+	const funcs: Record<string, Function> = {
+		not: (a: boolean) => !a,
+		or: (a: boolean, b: boolean) => a || b,
+		and: (a: boolean, b: boolean) => a && b,
+		eq: (a: any, b: any) => a === b,
+		notEq: (a: any, b: any) => a !== b,
+		gt: (a: number, b: number) => a > b,
+		lt: (a: number, b: number) => a < b,
+		gtEq: (a: number, b: number) => a >= b,
+		ltEq: (a: number, b: number) => a <= b,
+		if: (bool: boolean, a: any, b: any) => bool ? a : b,
+		for: (times: number, fn: Fn) => {
+			const result: any[] = [];
+			for (let i = 0; i < times; i++) {
+				result.push(fn.exec({
+					[fn.slots[0]]: i + 1
+				}));
+			}
+			return result;
+		},
+		add: (a: number, b: number) => a + b,
+		subtract: (a: number, b: number) => a - b,
+		multiply: (a: number, b: number) => a * b,
+		divide: (a: number, b: number) => a / b,
+		mod: (a: number, b: number) => a % b,
+		round: (a: number) => Math.round(a),
+		strLen: (a: string) => a.length,
+		strPick: (a: string, b: number) => a[b - 1],
+		strReplace: (a: string, b: string, c: string) => a.split(b).join(c),
+		strReverse: (a: string) => a.split('').reverse().join(''),
+		join: (texts: string[], separator: string) => texts.join(separator || ''),
+		stringToNumber: (a: string) => parseInt(a),
+		numberToString: (a: number) => a.toString(),
+		splitStrByLine: (a: string) => a.split('\n'),
+		pick: (list: any[], i: number) => list[i - 1],
+		listLen: (list: any[]) => list.length,
+		random: (probability: number) => Math.floor(seedrandom(`${randomSeed}:${block.id}`)() * 100) < probability,
+		rannum: (min: number, max: number) => min + Math.floor(seedrandom(`${randomSeed}:${block.id}`)() * (max - min + 1)),
+		randomPick: (list: any[]) => list[Math.floor(seedrandom(`${randomSeed}:${block.id}`)() * list.length)],
+		dailyRandom: (probability: number) => Math.floor(seedrandom(`${day}:${block.id}`)() * 100) < probability,
+		dailyRannum: (min: number, max: number) => min + Math.floor(seedrandom(`${day}:${block.id}`)() * (max - min + 1)),
+		dailyRandomPick: (list: any[]) => list[Math.floor(seedrandom(`${day}:${block.id}`)() * list.length)],
+		seedRandom: (seed: any, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
+		seedRannum: (seed: any, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
+		seedRandomPick: (seed: any, list: any[]) => list[Math.floor(seedrandom(seed)() * list.length)],
+		DRPWPM: (list: string[]) => {
+			const xs: any[] = [];
+			let totalFactor = 0;
+			for (const x of list) {
+				const parts = x.split(' ');
+				const factor = parseInt(parts.pop()!, 10);
+				const text = parts.join(' ');
+				totalFactor += factor;
+				xs.push({ factor, text });
+			}
+			const r = seedrandom(`${day}:${block.id}`)() * totalFactor;
+			let stackedFactor = 0;
+			for (const x of xs) {
+				if (r >= stackedFactor && r <= stackedFactor + x.factor) {
+					return x.text;
+				} else {
+					stackedFactor += x.factor;
+				}
+			}
+			return xs[0].text;
+		},
+	};
+
+	return funcs;
 }

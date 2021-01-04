@@ -1,13 +1,13 @@
-# Stummschalten
+# Stummschaltung
 
-ユーザーをミュートすると、そのユーザーに関する次のコンテンツがMisskeyに表示されなくなります:
+Sobald du einen Benutzer stummschaltest, werden die folgenden Arten von mit diesem Benutzer verbundenen Beiträge von Misskey nicht mehr angezeigt:
 
-* タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
-* そのユーザーからの通知
-* メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
+* Beiträge dieses Nutzers in Chroniken sowie Suchergebnissen (inklusive Renotes und Antworten auf diese)
+* Benachrichtigungen von diesem Benutzer
+* Chatverläufe mit diesem Benutzer in der Liste aller Chatverläufe
 
-ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
+Um einen Benutzer stummzuschalten, navigiere zu dessen Profil und drücke den dort angezeigten "Stummschalten"-Knopf.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+Der stummgeschaltete Benutzer erhält hierüber keine Benachrichtung, und erhält darüber, ob er von einem anderen Benutzer Stummgeschaltet ist, auch keine Informationen.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+Unter Einstellungen > Stummschaltungen / Blockierungen kann eine Liste aller stummgeschalteter Benutzer eingesehen werden.

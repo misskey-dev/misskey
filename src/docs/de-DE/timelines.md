@@ -1,15 +1,15 @@
-# タイムラインの比較
+# Liste der Chroniken
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
-## Home
-自分のフォローしているユーザーの投稿
+## Startseite
+Alle Beiträge von Benutzern, denen gefolgt wird
 
 ## Lokal
-全てのローカルユーザーの「ホーム」指定されていない投稿
+Alle Beiträge von lokalen Benutzern, die nicht auf "Startseite" gesetzt sind
 
 ## Sozial
-自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿
+Alle Beiträge von Benutzern, denen gefolgt wird sowie alle Beiträge von lokalen Benutzern, die nicht auf "Startseite" gesetzt sind
 
 ## Global
-全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿
+Alle Beiträge von lokalen Benutzern, die nicht auf "Startseite" gesetzt sind sowie alle nicht auf "Startseite" gesetzen Beiträge von Benutzern entfernter Server, die den verwendeten Server erreichen.

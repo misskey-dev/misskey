@@ -7,22 +7,22 @@ To starting using the API, you first need to get an access token. This page will
 ## Obtaining an access token
 Fundamentally, all API requests require an access token. The method of acquiring such an access token will vary depending on whether you yourself are sending API requests or requests are being sent through an application used by an end-user.
 
-* In case of the former:  Move on to [ "Manually issuing your own access token" ](#自分自身のアクセストークンを手動発行する)
+* In case of the former:  Move on to [ "Manually issuing an access token for your own account" ](#自分自身のアクセストークンを手動発行する)
 * In case of the latter: Move on to [ "Requesting the application user to generate an access token" ](#アプリケーション利用者にアクセストークンの発行をリクエストする)
 
 ### Manually issuing your own access token
-You can create an access token in Settings > API
+You can create an access token for your own account in Settings > API.
 
 [Proceed to using the API.](#APIの使い方)
 
 ### Requesting the application user to generate an access token
-To obtain the access token of the end user for your app, request permissions for it via the below process.
+To obtain an access token of the end user's account for your app, request permissions for it via the below process.
 
 #### Step 1
 
 Generate a UUID.We will call it the session ID from here on.
 
-> The same session ID should not be used for multiple plugins, so please generate a new UUID for each plugin.
+> The same session ID should not be used for multiple plugins, so please generate a new UUID for each access token.
 
 #### Step 2
 

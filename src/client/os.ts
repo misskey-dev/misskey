@@ -97,8 +97,8 @@ export function apiWithDialog(
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,
-	onSuccess?: (res: any) => void,
-	onFailure?: (e: Error) => void,
+	onSuccess?: ((res: any) => void) | null,
+	onFailure?: ((e: Error) => void) | null,
 	text?: string,
 ): T {
 	const showing = ref(true);

@@ -1,5 +1,5 @@
 # Development of Misskey Reversi Bots
-This page will explain how to develop an interactive bot for Misskey's Reversi function.
+This page will explain how to develop a bot for Misskey's Reversi function.
 
 1. Connect to the `games/reversi` stream with the following parameters:
     * `i`: API key of the bot account
@@ -13,7 +13,7 @@ This page will explain how to develop an interactive bot for Misskey's Reversi f
     * `i`: API key of the bot account
     * `game`: The `id` of the `game`
 
-5. In the meanwhile, the opponent can modify the game's settings. Each time this happens, a `update-settings` event is emitted, so implement logic to handle these events if necessary.
+5. In the meanwhile, the opponent can modify the game's settings. Each time this happens, a `update-settings` event is emitted, so implementing logic to handle these events may be necessary.
 
 6. Once satisfied with the settings, send a `{ type: 'accept' }` message to the stream.
 
@@ -27,7 +27,7 @@ This page will explain how to develop an interactive bot for Misskey's Reversi f
     * Contains the position the stone was placed at as `pos`
 
 ## Calculating positions
-In the case of an 8x8 map, the squares on the board are arranged like this (squares are marked with their respective index):
+In the case of an 8x8 map, the fields of the board are arranged like this (fields are marked with their respective index):
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -54,9 +54,9 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ## Map information
-Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a piece. Based on this data, you can reconstruct the map state:
-* `(Space)` ... No piece
-* `-` ... Piece
+Map data is included within `map` of the game data. As the data is represented as an array of strings, each character represents a field. Based on this data, you can reconstruct the map state:
+* `(Empty)` ... No field
+* `-` ... Field
 * `b` ... Piece placed first was black
 * `w` ... Piece placed first was white
 
@@ -78,7 +78,7 @@ In this case, the map data look like this:
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## Creating an interactive bot showing a form to the user
+## Creating a bot that can interact with the user through forms
 To communicate with the user, you can show them a form in the settings screen. For example, to let the user select the strength of the Bot.
 
 To display a form, send the following message to the `reversi-game` stream:

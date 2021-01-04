@@ -1,4 +1,4 @@
 # AiScript
 
 ## Funktionen
-デフォルトで値渡しです。
+Verwenden für Parameter standardmäßig Pass-by-Value (Wertparameter).
