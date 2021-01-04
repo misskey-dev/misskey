@@ -921,6 +921,7 @@ _widgets:
   federation: "Federación"
   postForm: "Formulario"
   button: "Botón"
+  jobQueue: "Cola de trabajos"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
