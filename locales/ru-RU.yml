@@ -997,6 +997,7 @@ _widgets:
   slideshow: "Показ слайдов"
   button: "Кнопка"
   onlineUsers: "Пользователи сейчас с сети"
+  jobQueue: "Очередь заданий"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"
