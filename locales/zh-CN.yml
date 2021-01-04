@@ -1009,6 +1009,7 @@ _widgets:
   slideshow: "幻灯片展示"
   button: "按钮"
   onlineUsers: "在线用户"
+  jobQueue: "作业队列"
   serverMetric: "服务器指标"
 _cw:
   hide: "隐藏"
