@@ -838,6 +838,7 @@ _widgets:
   federation: "연합"
   postForm: "글 입력란"
   button: "버튼"
+  jobQueue: "작업 대기열"
 _cw:
   hide: "숨기기"
   show: "더 보기"
