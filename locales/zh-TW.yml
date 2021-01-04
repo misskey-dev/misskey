@@ -905,6 +905,7 @@ _widgets:
   slideshow: "幻燈片"
   button: "按鈕"
   onlineUsers: "在線上的用戶"
+  jobQueue: "佇列"
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
