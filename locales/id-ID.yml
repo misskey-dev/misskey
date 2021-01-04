@@ -86,6 +86,16 @@ flagAsCat: "Atur akun ini sebagai kucing"
 autoAcceptFollowed: "Setujui otomatis permintaan mengikuti dari pengguna yang anda ikuti"
 addAcount: "Tambahkan akun"
 loginFailed: "Gagal untuk masuk"
+showOnRemote: "Lihat profil asli"
+general: "Umum"
+wallpaper: "Wallpaper"
+setWallpaper: "Atur wallpaper"
+removeWallpaper: "Hapus wallpaper"
+intro: "Instalasi Misskey telah selesai! Mohon untuk membuat pengguna admin."
+done: "Selesai"
+processing: "Memproses"
+preview: "Pratinjau"
+default: "Bawaan"
 remove: "Hapus"
 nsfw: "Konten sensitif"
 pinnedNotes: "Note yang disematkan"
@@ -105,6 +115,9 @@ _profile:
 _exportOrImport:
   muteList: "Bisukan"
   blockingList: "Blokir"
+_rooms:
+  _roomType:
+    default: "Bawaan"
 _notification:
   _types:
     quote: "Kutip"
