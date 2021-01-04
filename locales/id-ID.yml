@@ -57,6 +57,21 @@ reactionSettingDescription2: "Geser untuk memindah urutkan, klik untuk menghapus
 rememberNoteVisibility: "Ingat pengaturan visibilitas note"
 attachCancel: "Hapus lampiran"
 markAsSensitive: "Tandai sebagai konten sensitif"
+unmarkAsSensitive: "Hapus tanda konten sensitif"
+enterFileName: "Masukkan nama berkas"
+mute: "Bisukan"
+unmute: "Hapus bisukan"
+block: "Blokir"
+unblock: "Buka blokir"
+suspend: "Bekukan"
+unsuspend: "Buka pembekuan"
+blockConfirm: "Apakah anda yakin ingin memblokir akun ini?"
+unblockConfirm: "Apakah anda yakin ingin membuka blokir akun ini?"
+suspendConfirm: "Apakah anda yakin ingin membekukan akun ini?"
+unsuspendConfirm: "Apakah anda yakin ingin membuka pembekuan akun ini?"
+selectList: "Pilih daftar"
+selectAntenna: "Pilih Antena"
+selectWidget: "Pilih gawit"
 remove: "Hapus"
 nsfw: "Konten sensitif"
 pinnedNotes: "Note yang disematkan"
@@ -72,6 +87,9 @@ _widgets:
   timeline: "Linimasa"
 _profile:
   username: "Nama Pengguna"
+_exportOrImport:
+  muteList: "Bisukan"
+  blockingList: "Blokir"
 _notification:
   _types:
     quote: "Kutip"
