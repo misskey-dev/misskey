@@ -1,1 +1,31 @@
 ---
+_lang_: "Bahasa Jepang"
+monthAndDay: "{day} {month}"
+search: "Pencarian"
+notifications: "Notifikasi"
+username: "Nama Pengguna"
+password: "Kata sandi"
+ok: "OK"
+gotIt: "Saya mengerti"
+cancel: "Batalkan"
+enterUsername: "Masukkan nama pengguna"
+renotedBy: "direnote oleh {user}"
+noNotes: "Tidak ada notes"
+noNotifications: "Tidak ada notifikasi"
+settings: "Pengaturan"
+basicSettings: "Pengaturan umum"
+otherSettings: "Pengaturan lainnya"
+openInWindow: "Buka di jendela"
+smtpUser: "Nama Pengguna"
+smtpPass: "Kata sandi"
+_mfm:
+  search: "Pencarian"
+_sfx:
+  notification: "Notifikasi"
+_widgets:
+  notifications: "Notifikasi"
+_profile:
+  username: "Nama Pengguna"
+_deck:
+  _columns:
+    notifications: "Notifikasi"
