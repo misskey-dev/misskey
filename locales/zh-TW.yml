@@ -672,6 +672,7 @@ _mfm:
   quote: "引用"
   emoji: "自訂表情符號"
   search: "搜尋"
+  flip: "翻轉"
   flipDescription: "將內容上下或左右翻轉。"
   jelly: "動畫(果凍)"
   jellyDescription: "顯示果凍一樣的動畫效果。"
