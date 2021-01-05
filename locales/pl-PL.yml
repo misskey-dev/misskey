@@ -715,6 +715,7 @@ _widgets:
   activity: "Aktywność"
   photos: "Zdjęcia"
   federation: "Federacja"
+  postForm: "Utwórz wpis"
   button: "Przycisk"
   jobQueue: "Kolejka zadań"
 _cw:
@@ -741,13 +742,29 @@ _poll:
   voted: "Zagłosowano"
   closed: "Zakończono"
   remainingDays: "Pozostało {d} dni i {h} godzin"
+  remainingHours: "Pozostali {h} godzin i {m} minut"
+  remainingMinutes: "Pozostało {m} minut i {s} sekund"
+  remainingSeconds: "Pozostało {s} sekund"
 _visibility:
+  public: "Publiczny"
+  publicDescription: "Twój wpis pojawi się w publicznych osiach czasu"
   home: "Strona główna"
   followers: "Obserwujący"
+  specified: "Bezpośredni"
+  specifiedDescription: "Napisz tylko określonym użytkownikom"
+_postForm:
+  _placeholders:
+    a: "Co się dzieje?"
+    b: "Co się wydarzyło?"
+    c: "Co Ci chodzi po głowie?"
+    d: "Czy masz coś do powiedzenia?"
+    e: "Zacznij coś pisać…"
+    f: "Czekamy, aż coś napiszesz."
 _profile:
   name: "Nazwa"
   username: "Nazwa użytkownika"
   description: "Biografia"
+  youCanIncludeHashtags: "Możesz umieścić hashtagi w swoim opisie."
   metadataLabel: "Etykieta"
   metadataContent: "Treść"
 _exportOrImport:
@@ -755,6 +772,11 @@ _exportOrImport:
   muteList: "Wycisz"
   blockingList: "Zablokuj"
   userLists: "Listy"
+_charts:
+  usersTotal: "Łącznie # użytkowników"
+  activeUsers: "Aktywni użytkownicy"
+_instanceCharts:
+  requests: "Żądania"
 _timelines:
   home: "Strona główna"
   local: "Lokalne"
@@ -786,36 +808,54 @@ _rooms:
 _pages:
   viewPage: "Wyświetlanie Twoich stron"
   like: "Lubię"
+  unlike: "Cofnij polubienie"
   featured: "Wyróżnione"
+  inspector: "Inspektor"
+  content: "Blokada strony"
   variables: "Zmienne"
   title: "Tytuł"
+  url: "URL strony"
+  summary: "Podsumowanie strony"
   font: "Czcionka"
   fontSerif: "Szeryfowa"
+  fontSansSerif: "Bezszeryfowa"
   inputBlocks: "Wejście"
   specialBlocks: "Specjalne"
   blocks:
     text: "Tekst"
+    textarea: "Pole tekstowe"
+    section: "Sekcja"
     image: "Zdjęcia"
     button: "Przycisk"
     if: "Jeżeli"
     _if:
       variable: "Zmienna"
+    post: "Utwórz wpis"
     _post:
       text: "Treść"
+    textInput: "Pole tekstowe"
     _textInput:
       name: "Nazwa zmiennej"
       text: "Tytuł"
+      default: "Domyślna wartość"
+    textareaInput: "Pole tekstowe na wiele wierszy"
     _textareaInput:
       name: "Nazwa zmiennej"
       text: "Tytuł"
+      default: "Domyślna wartość"
+    numberInput: "Pole na liczbę"
     _numberInput:
       name: "Nazwa zmiennej"
       text: "Tytuł"
+      default: "Domyślna wartość"
     _canvas:
       height: "Wysokość"
+    switch: "Przełącznik"
     _switch:
       name: "Nazwa zmiennej"
       text: "Tytuł"
+      default: "Domyślna wartość"
+    counter: "Licznik"
     _counter:
       name: "Nazwa zmiennej"
       text: "Tytuł"
@@ -823,10 +863,16 @@ _pages:
     _button:
       text: "Tytuł"
       colored: "Kolorowe"
+      action: "Działanie wykonywane przy naciśnięciu przycisku"
       _action:
+        dialog: "Pokazuj okno dialogowe"
         _dialog:
           content: "Treść"
+        pushEvent: "Wyślij zdarzenie"
         _pushEvent:
+          event: "Nazwa zdarzenia"
+          message: "Wiadomość do wyświetlenia po aktywowaniu"
+          variable: "Zmienna do wysłania"
           no-variable: "Brak"
         _callAiScript:
           functionName: "Nazwa funkcji"
@@ -834,22 +880,29 @@ _pages:
     _radioButton:
       name: "Nazwa zmiennej"
       title: "Tytuł"
+      values: "Lista wyborów (oddzielonych znakiem nowego wiersza)"
+      default: "Domyślna wartość"
   script:
     categories:
       flow: "Kontrola przepływu"
+      logical: "Operacje logiczne"
       operation: "Obliczanie"
       comparison: "Porównanie"
+      random: "Losowe"
+      value: "Wartość"
       fn: "Funkcje"
       convert: "Transformacja"
       list: "Listy"
     blocks:
       text: "Tekst"
+      strLen: "Długość tekstu"
       _strLen:
         arg1: "Tekst"
       _strPick:
         arg1: "Tekst"
       _strReplace:
         arg1: "Tekst"
+        arg2: "Tekst do zamiany"
       _strReverse:
         arg1: "Tekst"
       _join:
@@ -868,6 +921,7 @@ _pages:
       not: "NIE"
       _not:
         arg1: "NIE"
+      random: "Losowe"
       _random:
         arg1: "Prawdopodobieństwo"
       rannum: "Losowa liczba"
@@ -934,3 +988,4 @@ _deck:
     antenna: "Anteny"
     list: "Listy"
     mentions: "Wspomnienia"
+    direct: "Bezpośredni"
