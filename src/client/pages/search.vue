@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@/scripts/loading';
 import XNotes from '@/components/notes.vue';
@@ -20,7 +20,7 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				title: this.$t('searchWith', { q: this.$route.query.q }),
+				title: computed(() => this.$t('searchWith', { q: this.$route.query.q })),
 				icon: faSearch
 			},
 			pagination: {
