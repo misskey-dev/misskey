@@ -634,9 +634,17 @@ center: "Wyśsrodkuj"
 wide: "Szerokie"
 narrow: "Wąskie"
 reloadToApplySetting: "To ustawienie zostanie zastosowane po odświeżeniu strony. Chcesz odświeżyć?"
+showTitlebar: "Pokazuj pasek tytułowy"
 clearCache: "Wyczyść pamięć podręczną"
+onlineUsersCount: "{n} osób jest online"
+nUsers: "{n} użytkowników"
+nNotes: "{n} wpisów"
 _aboutMisskey:
+  about: "Misskey jest oprogramowanie open source rozwijanym przez syuilo od 2014."
   patrons: "Wspierający"
+_nsfw:
+  ignore: "Nie ukrywaj mediów NSFW"
+  force: "Ukrywaj wszystkie media"
 _mfm:
   mention: "Wspomnij"
   url: "Adres URL"
