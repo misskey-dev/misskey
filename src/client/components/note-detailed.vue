@@ -38,20 +38,20 @@
 			<MkAvatar class="avatar" :user="appearNote.user"/>
 			<div class="body">
 				<div class="top">
-					<MkA class="name" :to="userPage(note.user)" v-user-preview="note.user.id">
-						<MkUserName :user="note.user"/>
+					<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.user.id">
+						<MkUserName :user="appearNote.user"/>
 					</MkA>
-					<span class="is-bot" v-if="note.user.isBot">bot</span>
-					<span class="admin" v-if="note.user.isAdmin"><Fa :icon="faBookmark"/></span>
-					<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><Fa :icon="farBookmark"/></span>
-					<span class="visibility" v-if="note.visibility !== 'public'">
-						<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
-						<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
-						<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
+					<span class="is-bot" v-if="appearNote.user.isBot">bot</span>
+					<span class="admin" v-if="appearNote.user.isAdmin"><Fa :icon="faBookmark"/></span>
+					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><Fa :icon="farBookmark"/></span>
+					<span class="visibility" v-if="appearNote.visibility !== 'public'">
+						<Fa v-if="appearNote.visibility === 'home'" :icon="faHome"/>
+						<Fa v-if="appearNote.visibility === 'followers'" :icon="faUnlock"/>
+						<Fa v-if="appearNote.visibility === 'specified'" :icon="faEnvelope"/>
 					</span>
-					<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
+					<span class="localOnly" v-if="appearNote.localOnly"><Fa :icon="faBiohazard"/></span>
 				</div>
-				<div class="username"><MkAcct :user="note.user"/></div>
+				<div class="username"><MkAcct :user="appearNote.user"/></div>
 			</div>
 		</header>
 		<div class="main">
