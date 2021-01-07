@@ -669,6 +669,8 @@ _mfm:
   link: "鏈接"
   bold: "粗體"
   center: "置中"
+  inlineMath: "數學公式(內嵌)"
+  blockMath: "數學公式(方塊)"
   quote: "引用"
   emoji: "自訂表情符號"
   search: "搜尋"
