@@ -810,11 +810,22 @@ _theme:
     buttonHoverBg: "Tło przycisku (po najechaniu)"
     inputBorder: "Obramowanie pola wejścia"
     listItemHoverBg: "Tło elementu listy (po najechaniu)"
+    driveFolderBg: "Tło folderu na dysku"
+    wallpaperOverlay: "Nakładka tapety"
     badge: "Odznaka"
+    messageBg: "Tło czatu"
+    accentDarken: "Akcent (ciemniejszy)"
+    accentLighten: "Akcent (jaśniejszy)"
+    fgHighlighted: "Wyróżniony tekst"
 _sfx:
   note: "Wpisy"
+  noteMy: "Mój wpis"
   notification: "Powiadomienia"
   chat: "Wiadomości"
+  chatBg: "Rozmowy (tło)"
+  channel: "Powiadomienia kanału"
+  reversiPutBlack: "Reversi: Czarny wykonuje ruch"
+  reversiPutWhite: "Reversi: Biały wykonuje ruch"
 _ago:
   unknown: "Nieznane"
   future: "W przyszłości"
@@ -827,7 +838,10 @@ _ago:
   monthsAgo: "{n} mies. temu"
   yearsAgo: "{n} lat temu"
 _time:
+  second: "sekunda"
+  minute: "minuta"
   hour: "godz."
+  day: "dzień"
 _tutorial:
   title: "Jak korzystać z Misskey"
   step1_1: "Witaj!"
