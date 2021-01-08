@@ -1,4 +1,4 @@
-import { literalDefs, Type } from ".";
+import { literalDefs, Type } from '.';
 
 export type ExprBase = {
 	id: string;

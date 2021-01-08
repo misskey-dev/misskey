@@ -98,7 +98,7 @@ export type CounterVarBlock = VarBlockBase & {
 	type: 'counter';
 	text: string;
 	inc: number;
-}
+};
 
 export type VarBlock =
 	NumberInputVarBlock | TextInputVarBlock | SwitchVarBlock | RadioButtonVarBlock | CounterVarBlock;
