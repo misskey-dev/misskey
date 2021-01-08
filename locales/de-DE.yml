@@ -678,6 +678,7 @@ onlineUsersCount: "{n} Benutzer sind online"
 nUsers: "{n} Benutzer"
 nNotes: "{n} Notizen"
 sendErrorReports: "Fehlerberichte senden"
+sendErrorReportsDescription: "Ist diese Option aktiviert, so werden beim Auftreten von Fehlern detaillierte Fehlerinformationen an Misskey weitergegeben, was zur Verbesserung der Qualität von Misskey beiträgt."
 _aboutMisskey:
   about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
   contributors: "Hauptmitwirkende"
