@@ -5,25 +5,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import * as os from '@/os';
+import { ImageBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	props: {
-		value: {
+		block: {
+			type: Object as PropType<ImageBlock>,
 			required: true
 		},
 		page: {
+			type: Object as PropType<Record<string, any>>,
 			required: true
-		},
+		}
 	},
-	data() {
+	setup(props, ctx) {
+		const image = props.page.attachedFiles.find(x => x.id === props.block.fileId);
+
 		return {
-			image: null,
+			image
 		};
-	},
-	created() {
-		this.image = this.page.attachedFiles.find(x => x.id === this.value.fileId);
 	}
 });
 </script>

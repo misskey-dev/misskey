@@ -1,33 +1,38 @@
 <template>
 <div class="voxdxuby">
-	<XNote v-if="note" v-model:note="note" :key="note.id" :detail="value.detailed"/>
+	<XNote v-if="note" v-model:note="note" :key="note.id" :detail="block.detailed"/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
 import XNote from '@/components/note.vue';
 import * as os from '@/os';
+import { NoteBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
 		XNote
 	},
 	props: {
-		value: {
-			required: true
-		},
-		hpml: {
+		block: {
+			type: Object as PropType<NoteBlock>,
 			required: true
 		}
 	},
-	data() {
-		return {
-			note: null,
-		};
-	},
-	async mounted() {
-		this.note = await os.api('notes/show', { noteId: this.value.note });
+	setup(props, ctx) {
+			const note: Ref<Record<string, any> | null> = ref(null);
+
+			onMounted(() => {
+				os.api('notes/show', { noteId: props.block.note })
+				.then(result => {
+					note.value = result;
+				});
+			});
+
+			return {
+				note
+			};
 	}
 });
 </script>
