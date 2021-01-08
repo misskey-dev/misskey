@@ -677,6 +677,7 @@ clearCache: "Cache leeren"
 onlineUsersCount: "{n} Benutzer sind online"
 nUsers: "{n} Benutzer"
 nNotes: "{n} Notizen"
+sendErrorReports: "Fehlerberichte senden"
 _aboutMisskey:
   about: "Misskey ist Open-Source-Software die von syuilo seit 2014 entwickelt wird."
   contributors: "Hauptmitwirkende"
