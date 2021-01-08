@@ -36,13 +36,15 @@ if (localStorage.getItem('vuex') != null) {
 	location.reload();
 }
 
+import * as Sentry from '@sentry/browser';
+import { Integrations } from '@sentry/tracing';
 import { createApp, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang } from '@/config';
+import { version, ui, lang, host } from '@/config';
 import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
@@ -86,6 +88,18 @@ if (_DEV_) {
 		});
 		*/
 	});
+}
+
+if (defaultStore.state.reportError && !_DEV_) {
+	Sentry.init({
+		dsn: 'https://fd273254a07a4b61857607a9ea05d629@o501808.ingest.sentry.io/5583438',
+		tracesSampleRate: 1.0,
+	});
+
+	Sentry.setTag('misskey_version', version);
+	Sentry.setTag('ui', ui);
+	Sentry.setTag('lang', lang);
+	Sentry.setTag('host', host);
 }
 
 // タッチデバイスでCSSの:hoverを機能させる
