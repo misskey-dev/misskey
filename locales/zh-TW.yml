@@ -1051,6 +1051,7 @@ _rooms:
     cube: "立方體"
     tv: "電視"
     pinguin: "企鵝蠟像"
+    spiral: "螺旋式樓梯"
     bin: "垃圾箱"
     cup-noodle: "杯面"
     holo-display: "投影機"
@@ -1165,6 +1166,7 @@ _pages:
       default: "預設值"
   script:
     categories:
+      flow: "控制"
       logical: "邏輯運算"
       operation: "計算"
       comparison: "對比"
@@ -1180,6 +1182,7 @@ _pages:
       textList: "文本列表"
       _strLen:
         arg1: "文本"
+      strPick: "提取字元"
       _strPick:
         arg1: "文本"
         arg2: "字元位置"
