@@ -691,6 +691,7 @@ _mfm:
   x3: "較大"
   x3Description: "放大顯示內容。"
   x4: "最大"
+  x4Description: "將顯示內容放至最大。"
   blur: "模糊"
   font: "字型"
   fontDescription: "可設置顯示內容所使用的字型"
@@ -964,6 +965,8 @@ _profile:
   username: "使用者名稱"
   description: "關於我"
   youCanIncludeHashtags: "你也可以在「關於我」中加上 #tag"
+  metadata: "進階資訊"
+  metadataEdit: "編輯進階資訊"
   metadataLabel: "標籤"
   metadataContent: "内容"
 _exportOrImport:
