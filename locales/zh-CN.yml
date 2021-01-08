@@ -677,6 +677,8 @@ clearCache: "清除缓存"
 onlineUsersCount: "{n}人在线"
 nUsers: "{n}用户"
 nNotes: "{n}帖子"
+sendErrorReports: "发送错误报告"
+sendErrorReportsDescription: "启用后，如果出现问题，可以与Misskey共享详细的错误信息，从而帮助提高软件的质量。"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
