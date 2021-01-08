@@ -45,23 +45,23 @@
 * `props` ... 关于主题样式的定义，下面是详细介绍。
 
 ### 主题样式定义
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+在 `props` 下，你可以定义主题的样式。 键是 CSS 变量名，值是指定的内容。 请注意，`props` 对象是从基础主题集继承的。 如果这个主题的 `base` 是 `light`，则基础主题为 [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)；如果 `dark`，则基础主题为 [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)。 换句话说，即使这个主题中的 `props` 中没有定义关键的 `panel`，也会继承在基础主题中所拥有 `panel`。
 
-#### バリューで使える構文
-* 16進数で表された色
+#### 可以在值中使用的语法
+* 以十六进制表示的颜色
     * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
+* 以 `rgb(r, g, b)` 形式表示的颜色
     * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
+* 以 `rgb(r, g, b, a)` 形式表示的包含透明度的颜色
     * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
+* 引用其他键的值
+    * 以 `@{键名}` 对另一个键值的引用。请将 `{键名}` 替换为您要引用键名。
     * 例: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
+* 参照常量（见下文）
+    * 以 `${常量名}` 对一个常量进行引用。请将 `{常量名}` 替换为您要引用常量名。
     * 例: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+* 函数（见下文）
+    * `:{函数名}<{参数}<{颜色}`
 
 #### 常量
 「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
