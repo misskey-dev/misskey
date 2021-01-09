@@ -3,25 +3,36 @@
 	<div class="_formItem colorPicker">
 		<div class="_formLabel">{{ $ts.backgroundColor }}</div>
 		<div class="_formPanel colors">
-			<button v-for="color in bgColors" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor.color === color.color }">
-				<div class="preview" :style="{ background: color.forPreview }"></div>
-			</button>
+			<div class="row">
+				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor.color === color.color }">
+					<div class="preview" :style="{ background: color.forPreview }"></div>
+				</button>
+			</div>
+			<div class="row">
+				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor.color === color.color }">
+					<div class="preview" :style="{ background: color.forPreview }"></div>
+				</button>
+			</div>
 		</div>
 	</div>
 	<div class="_formItem colorPicker">
 		<div class="_formLabel">{{ $ts.accentColor }}</div>
 		<div class="_formPanel colors">
-			<button v-for="color in accentColors" :key="color" @click="accentColor = color" class="color rounded _button" :class="{ active: accentColor === color }">
-				<div class="preview" :style="{ background: color }"></div>
-			</button>
+			<div class="row">
+				<button v-for="color in accentColors" :key="color" @click="accentColor = color" class="color rounded _button" :class="{ active: accentColor === color }">
+					<div class="preview" :style="{ background: color }"></div>
+				</button>
+			</div>
 		</div>
 	</div>
 	<div class="_formItem colorPicker">
 		<div class="_formLabel">{{ $ts.textColor }}</div>
 		<div class="_formPanel colors">
-			<button v-for="color in fgColors" :key="color" @click="fgColor = color" class="color char _button" :class="{ active: fgColor === color }">
-				<div class="preview" :style="{ color: color.forPreview ? color.forPreview : bgColor.kind === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
-			</button>
+			<div class="row">
+				<button v-for="color in fgColors" :key="color" @click="fgColor = color" class="color char _button" :class="{ active: fgColor === color }">
+					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : bgColor.kind === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
+				</button>
+			</div>
 		</div>
 	</div>
 	<div class="_formItem preview">
@@ -68,10 +79,18 @@ export default defineComponent({
 				{ color: '#f0eee9', kind: 'light', forPreview: '#f3e2b9' },
 				{ color: '#e9eff0', kind: 'light', forPreview: '#bfe3e8' },
 				{ color: '#f0e9ee', kind: 'light', forPreview: '#f1d1e8' },
-				{ color: '#2b2b2b', kind: 'dark', forPreview: '#2b2b2b' },
+				{ color: '#dce2e0', kind: 'light', forPreview: '#a4dccc' },
+				{ color: '#e2e0dc', kind: 'light', forPreview: '#d8c7a5' },
+				{ color: '#d5dbe0', kind: 'light', forPreview: '#b0cae0' },
+				{ color: '#dad5d5', kind: 'light', forPreview: '#d6afaf' },
+				{ color: '#2b2b2b', kind: 'dark', forPreview: '#444444' },
 				{ color: '#362e29', kind: 'dark', forPreview: '#735c4d' },
 				{ color: '#303629', kind: 'dark', forPreview: '#506d2f' },
 				{ color: '#293436', kind: 'dark', forPreview: '#258192' },
+				{ color: '#2e2936', kind: 'dark', forPreview: '#504069' },
+				{ color: '#252722', kind: 'dark', forPreview: '#3c462f' },
+				{ color: '#212525', kind: 'dark', forPreview: '#303e3e' },
+				{ color: '#191919', kind: 'dark', forPreview: '#272727' },
 			],
 			bgColor: null,
 			accentColors: ['#e36749', '#f29924', '#98c934', '#34c9a9', '#34a1c9', '#606df7', '#8d34c9', '#e84d83'],
@@ -82,7 +101,7 @@ export default defineComponent({
 				{ color: 'yellow', forLight: '#736955', forDark: '#e0d5c0', forPreview: '#d49923' },
 				{ color: 'green', forLight: '#586d5b', forDark: '#d1e4d4', forPreview: '#4cbd5c' },
 				{ color: 'cyan', forLight: '#5d7475', forDark: '#d1e3e4', forPreview: '#2abdc3' },
-				{ color: 'blue', forLight: '#676880', forDark: '#d1d2e4', forPreview: '#3035b5' },
+				{ color: 'blue', forLight: '#676880', forDark: '#d1d2e4', forPreview: '#7275d8' },
 				{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 			],
 			fgColor: null,
@@ -167,47 +186,49 @@ export default defineComponent({
 			padding: 32px;
 			text-align: center;
 
-			> .color {
-				display: inline-block;
-				position: relative;
-				width: 64px;
-				height: 64px;
-				border-radius: 8px;
+			> .row {
+				> .color {
+					display: inline-block;
+					position: relative;
+					width: 64px;
+					height: 64px;
+					border-radius: 8px;
 
-				&:hover {
 					> .preview {
-						transform: scale(1.1);
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						margin: auto;
+						width: 42px;
+						height: 42px;
+						border-radius: 4px;
+						box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+						transition: transform 0.15s ease;
 					}
-				}
 
-				> .preview {
-					position: absolute;
-					top: 0;
-					left: 0;
-					right: 0;
-					bottom: 0;
-					margin: auto;
-					width: 42px;
-					height: 42px;
-					border-radius: 4px;
-					box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
-					transition: transform 0.15s ease;
-				}
+					&:hover {
+						> .preview {
+							transform: scale(1.1);
+						}
+					}
 
-				&.active {
-					box-shadow: 0 0 0 2px var(--divider) inset;
-				}
+					&.active {
+						box-shadow: 0 0 0 2px var(--divider) inset;
+					}
 
-				&.rounded {
-					border-radius: 999px;
-
-					> .preview {
+					&.rounded {
 						border-radius: 999px;
-					}
-				}
 
-				&.char {
-					line-height: 42px;
+						> .preview {
+							border-radius: 999px;
+						}
+					}
+
+					&.char {
+						line-height: 42px;
+					}
 				}
 			}
 		}
