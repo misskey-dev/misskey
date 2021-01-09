@@ -650,6 +650,8 @@ clearCache: "清除快取資料"
 onlineUsersCount: "{n}人正在線上"
 nUsers: "{n}用戶"
 nNotes: "{n}箋文"
+backgroundColor: "背景"
+textColor: "文本"
 _aboutMisskey:
   about: "Misskey是由syuilo於2014年開發的開源軟件。"
   contributors: "主要貢獻者"
