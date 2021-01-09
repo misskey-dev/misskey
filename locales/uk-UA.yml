@@ -476,6 +476,7 @@ objectStorageBucketDesc: "Будь ласка вкажіть назву відр
 objectStoragePrefix: "Prefix"
 objectStoragePrefixDesc: "Файли будуть зберігатись у розташуванні з цим префіксом."
 objectStorageEndpoint: "Endpoint"
+objectStorageEndpointDesc: "Залиште пустим при використанні AWS S3. Інакше введіть кінцевий пункт як '<host>' або '<host>:<port>' слідуючи інструкціям сервісу, який використовується."
 objectStorageRegion: "Region"
 objectStorageUseSSL: "Використовувати SSL"
 objectStorageUseProxy: "Використовувати Proxy"
