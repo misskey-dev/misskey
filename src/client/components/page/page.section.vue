@@ -3,7 +3,7 @@
 	<component :is="'h' + h">{{ block.title }}</component>
 
 	<div class="children">
-		<XBlock v-for="child in block.children" :block="child" :page="page" :hpml="hpml" :key="child.id" :h="h + 1"/>
+		<XBlock v-for="child in block.children" :block="child" :hpml="hpml" :key="child.id" :h="h + 1"/>
 	</div>
 </section>
 </template>
@@ -25,10 +25,6 @@ export default defineComponent({
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		},
-		page: {
-			type: Object as PropType<Record<string, any>>,
 			required: true
 		},
 		h: {

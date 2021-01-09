@@ -1,6 +1,6 @@
 <template>
 <div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }" v-if="hpml">
-	<XBlock v-for="child in page.content" :block="child" :page="page" :hpml="hpml" :key="child.id" :h="2"/>
+	<XBlock v-for="child in page.content" :block="child" :hpml="hpml" :key="child.id" :h="2"/>
 </div>
 </template>
 

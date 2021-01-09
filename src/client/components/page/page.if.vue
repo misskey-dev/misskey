@@ -1,6 +1,6 @@
 <template>
 <div v-show="hpml.vars.value[block.var]">
-	<XBlock v-for="child in block.children" :block="child" :page="page" :hpml="hpml" :key="child.id" :h="h"/>
+	<XBlock v-for="child in block.children" :block="child" :hpml="hpml" :key="child.id" :h="h"/>
 </div>
 </template>
 
@@ -20,10 +20,6 @@ export default defineComponent({
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		},
-		page: {
-			type: Object as PropType<Record<string, any>>,
 			required: true
 		},
 		h: {

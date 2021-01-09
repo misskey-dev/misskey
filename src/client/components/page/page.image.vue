@@ -8,6 +8,7 @@
 import { defineComponent, PropType } from 'vue';
 import * as os from '@/os';
 import { ImageBlock } from '@/scripts/hpml/block';
+import { Hpml } from '@/scripts/hpml/evaluator';
 
 export default defineComponent({
 	props: {
@@ -15,13 +16,13 @@ export default defineComponent({
 			type: Object as PropType<ImageBlock>,
 			required: true
 		},
-		page: {
-			type: Object as PropType<Record<string, any>>,
+		hpml: {
+			type: Object as PropType<Hpml>,
 			required: true
 		}
 	},
 	setup(props, ctx) {
-		const image = props.page.attachedFiles.find(x => x.id === props.block.fileId);
+		const image = props.hpml.page.attachedFiles.find(x => x.id === props.block.fileId);
 
 		return {
 			image

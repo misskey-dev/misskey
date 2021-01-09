@@ -1,5 +1,5 @@
 <template>
-<component :is="'x-' + block.type" :block="block" :page="page" :hpml="hpml" :key="block.id" :h="h"/>
+<component :is="'x-' + block.type" :block="block" :hpml="hpml" :key="block.id" :h="h"/>
 </template>
 
 <script lang="ts">
@@ -33,10 +33,6 @@ export default defineComponent({
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		},
-		page: {
-			type: Object as PropType<Record<string, any>>,
 			required: true
 		},
 		h: {
