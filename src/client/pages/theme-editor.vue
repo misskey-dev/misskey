@@ -4,12 +4,12 @@
 		<div class="_formLabel">{{ $ts.backgroundColor }}</div>
 		<div class="_formPanel colors">
 			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor.color === color.color }">
+				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor?.color === color.color }">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
 				</button>
 			</div>
 			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor.color === color.color }">
+				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor?.color === color.color }">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
 				</button>
 			</div>
@@ -30,7 +30,7 @@
 		<div class="_formPanel colors">
 			<div class="row">
 				<button v-for="color in fgColors" :key="color" @click="fgColor = color" class="color char _button" :class="{ active: fgColor === color }">
-					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : bgColor.kind === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
+					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : bgColor?.kind === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
 				</button>
 			</div>
 		</div>
@@ -112,18 +112,17 @@ export default defineComponent({
 	created() {
 		const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg');
 		const matchedBgColor = this.bgColors.find(x => tinycolor(x.color).toRgbString() === tinycolor(currentBgColor).toRgbString());
-		this.bgColor = matchedBgColor ? matchedBgColor : this.bgColors[0];
+		if (matchedBgColor) this.bgColor = matchedBgColor;
 		const currentAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent');
 		const matchedAccentColor = this.accentColors.find(x => tinycolor(x).toRgbString() === tinycolor(currentAccentColor).toRgbString());
-		this.accentColor = matchedAccentColor ? matchedAccentColor : this.accentColors[0];
+		if (matchedAccentColor) this.accentColor = matchedAccentColor;
 		const currentFgColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 		const matchedFgColor = this.fgColors.find(x => [tinycolor(x.forLight).toRgbString(), tinycolor(x.forDark).toRgbString()].includes(tinycolor(currentFgColor).toRgbString()));
-		this.fgColor = matchedFgColor ? matchedFgColor : this.fgColors[0];
+		if (matchedFgColor) this.fgColor = matchedFgColor;
 
 		this.$watch('bgColor', this.apply);
 		this.$watch('accentColor', this.apply);
 		this.$watch('fgColor', this.apply);
-		this.apply();
 	},
 
 	methods: {
@@ -141,6 +140,10 @@ export default defineComponent({
 		},
 
 		apply() {
+			if (this.bgColor == null) this.bgColor = this.bgColors[0];
+			if (this.accentColor == null) this.accentColor = this.accentColors[0];
+			if (this.fgColor == null) this.fgColor = this.fgColors[0];
+
 			const theme = this.convert();
 			applyTheme(theme, true);
 
