@@ -679,6 +679,12 @@ nUsers: "{n}ユーザー"
 nNotes: "{n}ノート"
 sendErrorReports: "エラーリポートを送信"
 sendErrorReportsDescription: "オンにすると、問題が発生したときにエラーの詳細情報がMisskeyに共有され、ソフトウェアの品質向上に役立てることができます。"
+myTheme: "マイテーマ"
+backgroundColor: "背景"
+accentColor: "アクセント"
+textColor: "文字"
+saveAs: "名前を付けて保存"
+advanced: "高度"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

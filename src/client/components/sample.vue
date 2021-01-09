@@ -15,7 +15,7 @@
 		<MkButton inline>This is</MkButton>
 		<MkButton inline primary>the button</MkButton>
 	</div>
-	<div class="_content">
+	<div class="_content" style="pointer-events: none;">
 		<Mfm :text="mfm"/>
 	</div>
 	<div class="_content">
@@ -49,7 +49,7 @@ export default defineComponent({
 	data() {
 		return {
 			text: '',
-			flag: false,
+			flag: true,
 			radio: 'misskey',
 			mfm: `Hello world! This is an @example mention. BTW you are @${this.$i.username}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
 		}
