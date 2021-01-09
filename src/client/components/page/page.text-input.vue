@@ -30,7 +30,6 @@ export default defineComponent({
 			return props.hpml.vars.value[props.block.name];
 		});
 
-		// TODO: イベントではなく直接書き換えるようにする
 		function updateValue(newValue) {
 			props.hpml.updatePageVar(props.block.name, newValue);
 			props.hpml.eval();
