@@ -579,6 +579,8 @@ chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouvertu
 random: "Aléatoire"
 public: "Public"
 clearCache: "Vider le cache"
+backgroundColor: "Arrière-plan"
+textColor: "Texte"
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"
