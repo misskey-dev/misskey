@@ -25,14 +25,15 @@ export class Storage<T extends StateDef> {
 		// TODO: indexedDBにする
 		const deviceState = JSON.parse(localStorage.getItem(this.key) || '{}');
 		const deviceAccountState = $i ? JSON.parse(localStorage.getItem(this.key + '::' + $i.id) || '{}') : {};
+		const registryCache = $i ? JSON.parse(localStorage.getItem(this.key + '::cache::' + $i.id) || '{}') : {};
 
 		const state = {};
 		const reactiveState = {};
 		for (const [k, v] of Object.entries(def)) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
 				state[k] = deviceState[k];
-			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call($i.clientData, k)) {
-				state[k] = $i.clientData[k];
+			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
+				state[k] = registryCache[k];
 			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
 				state[k] = deviceAccountState[k];
 			} else {
@@ -47,6 +48,9 @@ export class Storage<T extends StateDef> {
 		this.reactiveState = reactiveState as any;
 
 		if ($i) {
+			// TODO: user sotrageをbulk get(whereがaccountのやつ)
+
+			// TODO: streamingのuser storage updateイベントを監視
 			watch($i, () => {
 				if (_DEV_) console.log('$i updated');
 
@@ -81,8 +85,12 @@ export class Storage<T extends StateDef> {
 				break;
 			}
 			case 'account': {
-				api('i/update-client-setting', {
-					name: key,
+				if ($i == null) break;
+				const cache = JSON.parse(localStorage.getItem(this.key + '::cache::' + $i.id) || '{}');
+				cache[key] = value;
+				localStorage.setItem(this.key + '::cache::' + $i.id, JSON.stringify(cache));
+				api('i/registry/set', {
+					key: key,
 					value: value
 				});
 				break;
