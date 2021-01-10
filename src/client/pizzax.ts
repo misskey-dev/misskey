@@ -52,7 +52,7 @@ export class Storage<T extends StateDef> {
 		if ($i) {
 			// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
 			setTimeout(() => {
-				api('i/registry/get-scope', { scope: ['client', this.key] }).then(kvs => {
+				api('i/registry/get-all', { scope: ['client', this.key] }).then(kvs => {
 					for (const [k, v] of Object.entries(def)) {
 						if (v.where === 'account' && Object.prototype.hasOwnProperty.call(kvs, k)) {
 							state[k] = kvs[k];

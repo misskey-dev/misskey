@@ -685,6 +685,7 @@ accentColor: "アクセント"
 textColor: "文字"
 saveAs: "名前を付けて保存"
 advanced: "高度"
+registry: "レジストリ"
 
 _aboutMisskey:
   about: "Misskeyはsyuiloによって2014年から開発されている、オープンソースのソフトウェアです。"

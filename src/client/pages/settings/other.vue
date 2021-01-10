@@ -15,10 +15,11 @@
 			DEBUG MODE
 		</FormSwitch>
 		<template v-if="debug">
-			<FormLink to="/settings/regedit">RegEdit</FormLink>
 			<FormButton @click="taskmanager">Task Manager</FormButton>
 		</template>
 	</FormGroup>
+
+	<FormLink to="/settings/registry">{{ $ts.registry }}</FormLink>
 </FormBase>
 </template>
 

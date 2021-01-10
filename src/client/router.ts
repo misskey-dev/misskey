@@ -81,7 +81,6 @@ export const router = createRouter({
 		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
-		{ path: '/test', component: page('test') },
 		{ path: '/:catchAll(.*)', component: page('not-found') }
 	],
 	// なんかHacky
