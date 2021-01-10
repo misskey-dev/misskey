@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, isRef, PropType } from 'vue';
+import { defineComponent, PropType, unref } from 'vue';
 import MkButton from '../ui/button.vue';
 import * as os from '@/os';
 import { ButtonBlock } from '@/scripts/hpml/block';
@@ -40,7 +40,7 @@ export default defineComponent({
 					pageId: this.hpml.page.id,
 					event: this.block.event,
 					...(this.block.var ? {
-						var: isRef(this.hpml.vars) ? this.hpml.vars.value[this.block.var] : this.hpml.vars[this.block.var]
+						var: unref(this.hpml.vars)[this.block.var]
 					} : {})
 				});
 

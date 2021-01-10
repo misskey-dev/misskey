@@ -6,7 +6,7 @@ import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
 import { initHpmlLib, initAiLib } from './lib';
 import * as os from '@/os';
-import { isRef, markRaw, ref, Ref } from 'vue';
+import { markRaw, ref, Ref, unref } from 'vue';
 import { Expr, isLiteralValue, Variable } from './expr';
 
 /**
@@ -95,13 +95,8 @@ export class Hpml {
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/{(.+?)}/g, match => {
-			if (isRef(this.vars)) {
-				const v = this.vars.value[match.slice(1, -1).trim()];
-				return v == null ? 'NULL' : v.toString();
-			} else {
-				const v = this.vars[match.slice(1, -1).trim()];
-				return v == null ? 'NULL' : v.toString();
-			}
+			const v = unref(this.vars)[match.slice(1, -1).trim()];
+			return v == null ? 'NULL' : v.toString();
 		});
 	}
 
