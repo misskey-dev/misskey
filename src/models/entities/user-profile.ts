@@ -94,6 +94,7 @@ export class UserProfile {
 	})
 	public password: string | null;
 
+	// TODO: そのうち消す
 	@Column('jsonb', {
 		default: {},
 		comment: 'The client-specific data of the User.'

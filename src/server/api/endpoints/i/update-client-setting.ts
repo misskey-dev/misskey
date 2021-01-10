@@ -1,3 +1,5 @@
+// TODO: そのうち消す
+
 import $ from 'cafy';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';

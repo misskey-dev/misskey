@@ -11,6 +11,7 @@ type ArrayElement<A> = A extends readonly (infer T)[] ? T : never;
 
 export class Storage<T extends StateDef> {
 	public readonly key: string;
+	public readonly keyForLocalStorage: string;
 
 	public readonly def: T;
 
@@ -19,13 +20,14 @@ export class Storage<T extends StateDef> {
 	public readonly reactiveState: { [K in keyof T]: Ref<T[K]['default']> };
 
 	constructor(key: string, def: T) {
-		this.key = 'pizzax::' + key;
+		this.key = key;
+		this.keyForLocalStorage = 'pizzax::' + key;
 		this.def = def;
 
 		// TODO: indexedDBにする
-		const deviceState = JSON.parse(localStorage.getItem(this.key) || '{}');
-		const deviceAccountState = $i ? JSON.parse(localStorage.getItem(this.key + '::' + $i.id) || '{}') : {};
-		const registryCache = $i ? JSON.parse(localStorage.getItem(this.key + '::cache::' + $i.id) || '{}') : {};
+		const deviceState = JSON.parse(localStorage.getItem(this.keyForLocalStorage) || '{}');
+		const deviceAccountState = $i ? JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::' + $i.id) || '{}') : {};
+		const registryCache = $i ? JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}') : {};
 
 		const state = {};
 		const reactiveState = {};
@@ -48,19 +50,19 @@ export class Storage<T extends StateDef> {
 		this.reactiveState = reactiveState as any;
 
 		if ($i) {
-			// TODO: user sotrageをbulk get(whereがaccountのやつ)
-
-			// TODO: streamingのuser storage updateイベントを監視
-			watch($i, () => {
-				if (_DEV_) console.log('$i updated');
-
-				for (const [k, v] of Object.entries(def)) {
-					if (v.where === 'account' && Object.prototype.hasOwnProperty.call($i!.clientData, k)) {
-						state[k] = $i!.clientData[k];
-						reactiveState[k].value = $i!.clientData[k];
+			// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
+			setTimeout(() => {
+				api('i/registry/get-scope', { scope: ['client', this.key] }).then(kvs => {
+					for (const [k, v] of Object.entries(def)) {
+						if (v.where === 'account' && Object.prototype.hasOwnProperty.call(kvs, k)) {
+							state[k] = kvs[k];
+							reactiveState[k].value = kvs[k];
+						}
 					}
-				}
-			});
+				});
+			}, 1);
+
+			// TODO: streamingのuser storage updateイベントを監視して更新
 		}
 	}
 
@@ -72,24 +74,25 @@ export class Storage<T extends StateDef> {
 
 		switch (this.def[key].where) {
 			case 'device': {
-				const deviceState = JSON.parse(localStorage.getItem(this.key) || '{}');
+				const deviceState = JSON.parse(localStorage.getItem(this.keyForLocalStorage) || '{}');
 				deviceState[key] = value;
-				localStorage.setItem(this.key, JSON.stringify(deviceState));
+				localStorage.setItem(this.keyForLocalStorage, JSON.stringify(deviceState));
 				break;
 			}
 			case 'deviceAccount': {
 				if ($i == null) break;
-				const deviceAccountState = JSON.parse(localStorage.getItem(this.key + '::' + $i.id) || '{}');
+				const deviceAccountState = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::' + $i.id) || '{}');
 				deviceAccountState[key] = value;
-				localStorage.setItem(this.key + '::' + $i.id, JSON.stringify(deviceAccountState));
+				localStorage.setItem(this.keyForLocalStorage + '::' + $i.id, JSON.stringify(deviceAccountState));
 				break;
 			}
 			case 'account': {
 				if ($i == null) break;
-				const cache = JSON.parse(localStorage.getItem(this.key + '::cache::' + $i.id) || '{}');
+				const cache = JSON.parse(localStorage.getItem(this.keyForLocalStorage + '::cache::' + $i.id) || '{}');
 				cache[key] = value;
-				localStorage.setItem(this.key + '::cache::' + $i.id, JSON.stringify(cache));
+				localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				api('i/registry/set', {
+					scope: ['client', this.key],
 					key: key,
 					value: value
 				});
