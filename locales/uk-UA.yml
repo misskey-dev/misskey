@@ -486,6 +486,7 @@ objectStorageUseProxyDesc: "Вимкніть коли проксі не вико
 objectStorageSetPublicRead: "Встановіть 'публічне читання' при завантаженні"
 serverLogs: "Журнал сервера"
 deleteAll: "Видалити все"
+showFixedPostForm: "Показати форму запису над стрічкою новин."
 newNoteRecived: "Є нові нотатки"
 sounds: "Звуки"
 listen: "Слухати"
