@@ -21,18 +21,18 @@ export default defineComponent({
 		}
 	},
 	setup(props, ctx) {
-			const note: Ref<Record<string, any> | null> = ref(null);
+		const note: Ref<Record<string, any> | null> = ref(null);
 
-			onMounted(() => {
-				os.api('notes/show', { noteId: props.block.note })
-				.then(result => {
-					note.value = result;
-				});
+		onMounted(() => {
+			os.api('notes/show', { noteId: props.block.note })
+			.then(result => {
+				note.value = result;
 			});
+		});
 
-			return {
-				note
-			};
+		return {
+			note
+		};
 	}
 });
 </script>
