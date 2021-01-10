@@ -38,10 +38,10 @@ export class RegistryItem {
 	public key: string;
 
 	@Column('jsonb', {
-		default: {},
+		default: {}, nullable: true,
 		comment: 'The value of the RegistryItem.'
 	})
-	public value: Record<string, any>;
+	public value: any | null;
 
 	@Index()
 	@Column('varchar', {
