@@ -685,6 +685,10 @@ accentColor: "强调色"
 textColor: "文本"
 saveAs: "另存为"
 advanced: "高级"
+value: "值"
+_registry:
+  key: "主要"
+  keys: "主要"
 _aboutMisskey:
   about: "Misskey是由syuilo于2014年开发的开源软件。"
   contributors: "主要贡献者"
