@@ -1417,12 +1417,18 @@ _pages:
       _for:
         arg1: "Кількість повторень"
         arg2: "Дія"
+    typeError: "Паз {slot} приймає \"{expect}\" тип, але надана змінна має тип \"{actual}\"!"
+    thereIsEmptySlot: "Паз {slot} пустий!"
     types:
       string: "Текст"
       number: "Число"
       boolean: "Прапорець"
       array: "Списки"
       stringArray: "Текстовий список"
+    emptySlot: "Пустий паз"
+    enviromentVariables: "Змінні середовища"
+    pageVariables: "Елемент сторінки"
+    argVariables: "Стрічка вводу"
 _relayStatus:
   requesting: "Очікує затвердження"
   accepted: "Затверджено"
@@ -1456,6 +1462,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Завжди показувати головну колонку"
   columnAlign: "Вирівняти стовпці"
+  columnMargin: "Відступ між стовпцями"
   addColumn: "Додати стовпець"
   swapLeft: "Пересунути ліворуч"
   swapRight: "Пересунути праворуч"
