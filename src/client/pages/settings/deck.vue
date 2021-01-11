@@ -24,6 +24,10 @@
 		<span>{{ $ts._deck.columnMargin }}</span>
 		<template #suffix>px</template>
 	</FormInput>
+
+	<FormInput v-model:value="profile">
+		<span>{{ $ts._deck.profile }}</span>
+	</FormInput>
 </FormBase>
 </template>
 
@@ -67,6 +71,7 @@ export default defineComponent({
 		columnAlign: deckStore.makeGetterSetter('columnAlign'),
 		columnMargin: deckStore.makeGetterSetter('columnMargin'),
 		columnHeaderHeight: deckStore.makeGetterSetter('columnHeaderHeight'),
+		profile: deckStore.makeGetterSetter('profile'),
 	},
 
 	watch: {

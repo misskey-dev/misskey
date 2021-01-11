@@ -1,6 +1,18 @@
 <template>
 <FormBase>
+	<FormGroup>
+		<FormKeyValueView>
+			<template #key>{{ $ts.domain }}</template>
+			<template #value>{{ $ts.system }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $ts.scope }}</template>
+			<template #value>{{ scope.join('/') }}</template>
+		</FormKeyValueView>
+	</FormGroup>
+	
 	<FormGroup v-if="keys">
+		<template #label>{{ $ts.keys }}</template>
 		<FormLink v-for="key in keys" :to="`/settings/registry/value/system/${scope.join('/')}/${key}`">{{ key }}</FormLink>
 	</FormGroup>
 </FormBase>

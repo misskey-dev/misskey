@@ -41,7 +41,7 @@ import { getScrollContainer } from '@/scripts/scroll';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 import XCommon from './_common_/common.vue';
-import { deckStore, addColumn } from './deck/deck-store';
+import { deckStore, addColumn, loadDeck } from './deck/deck-store';
 
 export default defineComponent({
 	components: {
@@ -88,6 +88,7 @@ export default defineComponent({
 		document.documentElement.style.overflowY = 'hidden';
 		document.documentElement.style.scrollBehavior = 'auto';
 		window.addEventListener('wheel', this.onWheel);
+		loadDeck();
 	},
 
 	mounted() {

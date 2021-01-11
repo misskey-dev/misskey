@@ -80,6 +80,7 @@ export default defineComponent({
 		};
 		const pageProps = ref({});
 		const component = computed(() => {
+			if (props.page == null) return null;
 			switch (props.page) {
 				case 'profile': return defineAsyncComponent(() => import('./profile.vue'));
 				case 'privacy': return defineAsyncComponent(() => import('./privacy.vue'));
@@ -118,13 +119,16 @@ export default defineComponent({
 
 		watch(component, () => {
 			pageProps.value = {};
-			if (props.page.startsWith('registry/keys/system/')) {
-				pageProps.value.scope = props.page.replace('registry/keys/system/', '').split('/');
-			}
-			if (props.page.startsWith('registry/value/system/')) {
-				const path = props.page.replace('registry/value/system/', '').split('/');
-				pageProps.value.xKey = path.pop();
-				pageProps.value.scope = path;
+
+			if (props.page) {
+				if (props.page.startsWith('registry/keys/system/')) {
+					pageProps.value.scope = props.page.replace('registry/keys/system/', '').split('/');
+				}
+				if (props.page.startsWith('registry/value/system/')) {
+					const path = props.page.replace('registry/value/system/', '').split('/');
+					pageProps.value.xKey = path.pop();
+					pageProps.value.scope = path;
+				}
 			}
 
 			nextTick(() => {
