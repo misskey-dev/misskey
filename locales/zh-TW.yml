@@ -1308,7 +1308,6 @@ _pages:
       aiScriptVar: "AiScript的變數"
       fn: "函数"
       _fn:
-        slots: "欄位"
         arg1: "輸出"
       _for:
         arg1: "重複次數"
