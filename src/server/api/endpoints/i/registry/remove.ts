@@ -10,7 +10,7 @@ export const meta = {
 
 	params: {
 		key: {
-			validator: $.str.match(/^[a-zA-Z0-9_]+$/)
+			validator: $.str
 		},
 
 		scope: {

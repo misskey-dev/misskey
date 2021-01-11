@@ -1,3 +1,4 @@
+import { throttle } from 'throttle-debounce';
 import { i18n } from '@/i18n';
 import { api } from '@/os';
 import { markRaw, watch } from 'vue';
@@ -93,9 +94,8 @@ export const loadDeck = async () => {
 	deckStore.set('layout', deck.layout);
 };
 
-// TODO: throttleする
 // TODO: deckがloadされていない状態でsaveすると意図せず上書きが発生するので対策する
-export const saveDeck = () => {
+export const saveDeck = throttle(1000, () => {
 	api('i/registry/set', {
 		scope: ['client', 'deck', 'profiles'],
 		key: deckStore.state.profile,
@@ -104,7 +104,7 @@ export const saveDeck = () => {
 			layout: deckStore.reactiveState.layout.value,
 		}
 	});
-};
+});
 
 export function addColumn(column: Column) {
 	if (column.name == undefined) column.name = null;
