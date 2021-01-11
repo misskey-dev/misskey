@@ -643,6 +643,10 @@ nNotes: "{n} wpisów"
 backgroundColor: "Tło"
 accentColor: "Akcent"
 textColor: "Tekst"
+value: "Wartość"
+_registry:
+  key: "Klucz"
+  keys: "Klucz"
 _aboutMisskey:
   about: "Misskey jest oprogramowanie open source rozwijanym przez syuilo od 2014."
   contributors: "Główni twórcy"
