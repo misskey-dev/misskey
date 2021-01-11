@@ -32,7 +32,7 @@ export default define(meta, async (ps, user) => {
 			Array.isArray(item.value) ? 'array' :
 			type === 'number' ? 'number' :
 			type === 'string' ? 'string' :
-			type === 'boolean' ? 'booleam' :
+			type === 'boolean' ? 'boolean' :
 			type === 'object' ? 'object' :
 			null as never;
 	}
