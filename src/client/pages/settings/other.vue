@@ -19,13 +19,13 @@
 		</template>
 	</FormGroup>
 
-	<FormLink to="/settings/registry">{{ $ts.registry }}</FormLink>
+	<FormLink to="/settings/registry"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.registry }}</FormLink>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faCogs } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormLink from '@/components/form/link.vue';
@@ -54,7 +54,8 @@ export default defineComponent({
 				title: this.$ts.other,
 				icon: faEllipsisH
 			},
-			debug
+			debug,
+			faCogs
 		}
 	},
 

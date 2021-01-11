@@ -66,6 +66,12 @@ export const loadDeck = async () => {
 		});
 	} catch (e) {
 		if (e.code === 'NO_SUCH_KEY') {
+			// 後方互換性のため
+			if (deckStore.state.profile === 'default') {
+				saveDeck();
+				return;
+			}
+
 			deckStore.set('columns', [{
 				id: 'a',
 				type: 'main',
