@@ -32,11 +32,6 @@ export default define(meta, async (ps, user) => {
 		.andWhere('item.key = :key', { key: ps.key })
 		.andWhere('item.scope = :scope', { scope: ps.scope });
 
-	//for (let i = 0; i < ps.scope.length; i++) {
-	//	const name = ps.scope[i];
-	//	query.andWhere(`item.scope[${i + 1}] = :name`, { name });
-	//}
-
 	const existingItem = await query.getOne();
 
 	if (existingItem) {

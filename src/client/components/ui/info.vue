@@ -34,7 +34,7 @@ export default defineComponent({
 	font-size: 90%;
 	background: var(--infoBg);
 	color: var(--infoFg);
-	border-radius: 5px;
+	border-radius: var(--radius);
 
 	&.warn {
 		background: var(--infoWarnBg);
