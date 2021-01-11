@@ -54,9 +54,14 @@ export class Storage<T extends StateDef> {
 			setTimeout(() => {
 				api('i/registry/get-all', { scope: ['client', this.key] }).then(kvs => {
 					for (const [k, v] of Object.entries(def)) {
-						if (v.where === 'account' && Object.prototype.hasOwnProperty.call(kvs, k)) {
-							state[k] = kvs[k];
-							reactiveState[k].value = kvs[k];
+						if (v.where === 'account') {
+							if (Object.prototype.hasOwnProperty.call(kvs, k)) {
+								state[k] = kvs[k];
+								reactiveState[k].value = kvs[k];
+							} else {
+								state[k] = v.default;
+								reactiveState[k].value = v.default;
+							}
 						}
 					}
 				});

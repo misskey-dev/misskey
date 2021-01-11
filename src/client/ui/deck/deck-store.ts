@@ -28,21 +28,11 @@ export const deckStore = markRaw(new Storage('deck', {
 	},
 	columns: {
 		where: 'deviceAccount',
-		default: [{
-			id: 'a',
-			type: 'main',
-			name: i18n.locale._deck._columns.main,
-			width: 350,
-		}, {
-			id: 'b',
-			type: 'notifications',
-			name: i18n.locale._deck._columns.notifications,
-			width: 330,
-		}] as Column[]
+		default: [] as Column[]
 	},
 	layout: {
 		where: 'deviceAccount',
-		default: [['a'], ['b']] as Column['id'][][]
+		default: [] as Column['id'][][]
 	},
 	columnAlign: {
 		where: 'deviceAccount',
@@ -67,10 +57,31 @@ export const deckStore = markRaw(new Storage('deck', {
 }));
 
 export const loadDeck = async () => {
-	const deck = await api('i/registry/get', {
-		scope: ['client', 'deck', 'profiles'],
-		key: deckStore.state.profile,
-	});
+	let deck;
+
+	try {
+		deck = await api('i/registry/get', {
+			scope: ['client', 'deck', 'profiles'],
+			key: deckStore.state.profile,
+		});
+	} catch (e) {
+		if (e.code === 'NO_SUCH_KEY') {
+			deckStore.set('columns', [{
+				id: 'a',
+				type: 'main',
+				name: i18n.locale._deck._columns.main,
+				width: 350,
+			}, {
+				id: 'b',
+				type: 'notifications',
+				name: i18n.locale._deck._columns.notifications,
+				width: 330,
+			}]);
+			deckStore.set('layout', [['a'], ['b']]);
+			return;
+		}
+		throw e;
+	}
 
 	deckStore.set('columns', deck.columns);
 	deckStore.set('layout', deck.layout);

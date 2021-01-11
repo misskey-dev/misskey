@@ -5,15 +5,15 @@
 	<template v-if="value">
 		<FormGroup>
 			<FormKeyValueView>
-				<template #key>{{ $ts.domain }}</template>
+				<template #key>{{ $ts._registry.domain }}</template>
 				<template #value>{{ $ts.system }}</template>
 			</FormKeyValueView>
 			<FormKeyValueView>
-				<template #key>{{ $ts.scope }}</template>
+				<template #key>{{ $ts._registry.scope }}</template>
 				<template #value>{{ scope.join('/') }}</template>
 			</FormKeyValueView>
 			<FormKeyValueView>
-				<template #key>{{ $ts.key }}</template>
+				<template #key>{{ $ts._registry.key }}</template>
 				<template #value>{{ xKey }}</template>
 			</FormKeyValueView>
 		</FormGroup>
