@@ -1087,6 +1087,7 @@ _rooms:
   exit: "Назад"
   remove: "Видалити"
   clear: "Видалити все"
+  clearConfirm: "Ви дійсно хочете позбутись усіх речей у вашій кімнаті?"
   leaveConfirm: "Є незбережені зміни. Ви дійсно хочете вийти?"
   chooseImage: "Виберіть зображення"
   roomType: "Тип кімнати"
@@ -1135,6 +1136,7 @@ _rooms:
     sofa: "Диван"
     spiral: "Гвинтові сходи"
     bin: "Смітник"
+    cup-noodle: "Локшина в чашці"
     holo-display: "Голографічний дисплей"
     energy-drink: "Енергетичний напій"
     doll-ai: "Лялька Аі-тян"
@@ -1160,6 +1162,7 @@ _pages:
   featured: "Популярні"
   inspector: "Інспектор"
   contents: "Вміст"
+  content: "Блок сторінки"
   variables: "Змінні"
   title: "Заголовок"
   url: "URL сторінки"
@@ -1174,6 +1177,7 @@ _pages:
   chooseBlock: "Додати блок"
   selectType: "Виберіть тип"
   enterVariableName: "Введіть назву для змінної"
+  variableNameIsAlreadyUsed: "Ця назва вже використовується іншою змінною"
   contentBlocks: "Контент"
   inputBlocks: "Ввід"
   specialBlocks: "Особливе"
@@ -1189,6 +1193,7 @@ _pages:
     post: "Створення нотатки"
     _post:
       text: "Вміст"
+      canvasId: "Ідентифікатор полотна"
     textInput: "Введення тексту"
     _textInput:
       name: "Ім'я змінної"
@@ -1204,6 +1209,7 @@ _pages:
       name: "Ім'я змінної"
       text: "Назва"
       default: "Значення за замовчуванням"
+    canvas: "Полотно"
     _canvas:
       width: "Ширина"
       height: "Висота"
