@@ -653,6 +653,7 @@ nNotes: "{n}箋文"
 backgroundColor: "背景"
 textColor: "文本"
 advanced: "進階"
+value: "數值 "
 _aboutMisskey:
   about: "Misskey是由syuilo於2014年開發的開源軟件。"
   contributors: "主要貢獻者"
