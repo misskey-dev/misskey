@@ -7,7 +7,6 @@ import { waiting } from '@/os';
 type Account = {
 	id: string;
 	token: string;
-	clientData: Record<string, any>;
 };
 
 const data = localStorage.getItem('account');

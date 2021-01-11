@@ -347,14 +347,6 @@ if ($i) {
 		updateAccount({ hasUnreadAnnouncement: false });
 	});
 
-	main.on('clientSettingUpdated', x => {
-		updateAccount({
-			clientData: {
-				[x.key]: x.value
-			}
-		});
-	});
-
 	// トークンが再生成されたとき
 	// このままではMisskeyが利用できないので強制的にサインアウトさせる
 	main.on('myTokenRegenerated', () => {

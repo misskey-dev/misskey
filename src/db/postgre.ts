@@ -63,6 +63,7 @@ import { MutedNote } from '../models/entities/muted-note';
 import { Channel } from '../models/entities/channel';
 import { ChannelFollowing } from '../models/entities/channel-following';
 import { ChannelNotePining } from '../models/entities/channel-note-pining';
+import { RegistryItem } from '../models/entities/registry-item';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
 
@@ -159,6 +160,7 @@ export const entities = [
 	Channel,
 	ChannelFollowing,
 	ChannelNotePining,
+	RegistryItem,
 	...charts as any
 ];
 

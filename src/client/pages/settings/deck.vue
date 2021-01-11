@@ -24,6 +24,8 @@
 		<span>{{ $ts._deck.columnMargin }}</span>
 		<template #suffix>px</template>
 	</FormInput>
+
+	<FormLink @click="setProfile">{{ $ts._deck.profile }}<template #suffix>{{ profile }}</template></FormLink>
 </FormBase>
 </template>
 
@@ -31,7 +33,7 @@
 import { defineComponent } from 'vue';
 import { faImage, faCog, faColumns } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
+import FormLink from '@/components/form/link.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormInput from '@/components/form/input.vue';
 import FormBase from '@/components/form/base.vue';
@@ -42,7 +44,7 @@ import * as os from '@/os';
 export default defineComponent({
 	components: {
 		FormSwitch,
-		FormSelect,
+		FormLink,
 		FormInput,
 		FormRadios,
 		FormBase,
@@ -67,6 +69,7 @@ export default defineComponent({
 		columnAlign: deckStore.makeGetterSetter('columnAlign'),
 		columnMargin: deckStore.makeGetterSetter('columnMargin'),
 		columnHeaderHeight: deckStore.makeGetterSetter('columnHeaderHeight'),
+		profile: deckStore.makeGetterSetter('profile'),
 	},
 
 	watch: {
@@ -85,5 +88,19 @@ export default defineComponent({
 	mounted() {
 		this.$emit('info', this.INFO);
 	},
+
+	methods: {
+		async setProfile() {
+			const { canceled, result: name } = await os.dialog({
+				title: this.$ts._deck.profile,
+				input: {
+					allowEmpty: false
+				}
+			});
+			if (canceled) return;
+			this.profile = name;
+			location.reload();
+		}
+	}
 });
 </script>
