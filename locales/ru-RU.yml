@@ -677,6 +677,10 @@ nNotes: "Заметок: {n}"
 backgroundColor: "Фон"
 accentColor: "Акцент"
 textColor: "Текст"
+value: "Значения"
+_registry:
+  key: "Ключ"
+  keys: "Ключ"
 _aboutMisskey:
   about: "Misskey — программа с открытым исходным кодом, которую разрабатывает syuilo с 2014 года."
   contributors: "Основные соавторы"
