@@ -651,6 +651,10 @@ clearCache: "Limpiar caché"
 backgroundColor: "Fondo"
 accentColor: "Acento"
 textColor: "Texto"
+value: "Valores"
+_registry:
+  key: "Clave"
+  keys: "Clave"
 _mfm:
   cheatSheet: "Hoja de referencia de MFM"
   intro: "MFM es un lenguaje de marcado dedicado que se puede usar en varios lugares dentro de Misskey. Aquí puede ver una lista de sintaxis disponibles en MFM."
