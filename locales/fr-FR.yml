@@ -581,6 +581,10 @@ public: "Public"
 clearCache: "Vider le cache"
 backgroundColor: "Arrière-plan"
 textColor: "Texte"
+value: "Valeur"
+_registry:
+  key: "Clé "
+  keys: "Clé "
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"
