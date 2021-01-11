@@ -614,6 +614,10 @@ alwaysMarkSensitive: "미디어를 항상 열람 주의로 설정"
 emailVerified: "메일 주소가 확인되었습니다."
 clips: "클립"
 clearCache: "캐시 비우기"
+value: "값"
+_registry:
+  key: "키"
+  keys: "키"
 _nsfw:
   ignore: "열람 주의 미디어 항상 표시"
 _mfm:
