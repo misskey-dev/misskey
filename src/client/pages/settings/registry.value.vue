@@ -22,7 +22,7 @@
 			<FormTextarea tall v-model:value="valueForEditor" class="_monospace" style="tab-size: 2;">
 				<span>{{ $ts.value }} (JSON)</span>
 			</FormTextarea>
-			<FormButton @click="save"><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+			<FormButton @click="save" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
 		</FormGroup>
 
 		<FormKeyValueView>
@@ -38,6 +38,7 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { faCogs, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
+import * as JSON5 from 'json5';
 import MkInfo from '@/components/ui/info.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
@@ -101,13 +102,13 @@ export default defineComponent({
 				key: this.xKey
 			}).then(value => {
 				this.value = value;
-				this.valueForEditor = JSON.stringify(this.value.value, null, '\t');
+				this.valueForEditor = JSON5.stringify(this.value.value, null, '\t');
 			});
 		},
 
 		save() {
 			try {
-				JSON.parse(this.valueForEditor);
+				JSON5.parse(this.valueForEditor);
 			} catch (e) {
 				os.dialog({
 					type: 'error',
@@ -125,7 +126,7 @@ export default defineComponent({
 				os.apiWithDialog('i/registry/set', {
 					scope: this.scope,
 					key: this.xKey,
-					value: JSON.parse(this.valueForEditor)
+					value: JSON5.parse(this.valueForEditor)
 				});
 			});
 		},
