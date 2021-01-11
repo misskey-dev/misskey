@@ -56,6 +56,7 @@ import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from './scripts/hotkey';
 import { search } from './scripts/search';
+import { getThemes } from './theme-store';
 
 console.info(`Misskey v${version}`);
 
@@ -211,7 +212,7 @@ app.mount('body');
 
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
-		const themes = builtinThemes.concat(ColdDeviceStorage.get('themes'));
+		const themes = builtinThemes.concat(getThemes());
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));
 	});
 }, { immediate: localStorage.theme == null });

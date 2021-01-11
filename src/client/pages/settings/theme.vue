@@ -77,6 +77,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { ColdDeviceStorage } from '@/store';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { fetchThemes, getThemes } from '@/theme-store';
 
 export default defineComponent({
 	components: {
@@ -96,7 +97,7 @@ export default defineComponent({
 			icon: faPalette
 		};
 
-		const installedThemes = ColdDeviceStorage.ref('themes');
+		const installedThemes = ref(getThemes());
 		const themes = computed(() => builtinThemes.concat(installedThemes.value));
 		const darkThemes = computed(() => themes.value.filter(t => t.base == 'dark' || t.kind == 'dark'));
 		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
@@ -135,6 +136,10 @@ export default defineComponent({
 
 		onMounted(() => {
 			emit('info', INFO);
+		});
+
+		fetchThemes().then(() => {
+			installedThemes.value = getThemes();
 		});
 
 		return {
