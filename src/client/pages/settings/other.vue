@@ -20,6 +20,8 @@
 	</FormGroup>
 
 	<FormLink to="/settings/registry"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.registry }}</FormLink>
+
+	<FormButton @click="closeAccount" danger>{{ $ts.closeAccount }}</FormButton>
 </FormBase>
 </template>
 
@@ -35,6 +37,7 @@ import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
 import { debug } from '@/config';
 import { defaultStore } from '@/store';
+import { signout } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -83,6 +86,22 @@ export default defineComponent({
 		taskmanager() {
 			os.popup(import('@/components/taskmanager.vue'), {
 			}, {}, 'closed');
+		},
+
+		closeAccount() {
+			os.dialog({
+				title: this.$ts.password,
+				input: {
+					type: 'password'
+				}
+			}).then(({ canceled, result: password }) => {
+				if (canceled) return;
+				os.api('i/delete-account', {
+					password: password
+				}).then(() => {
+					signout();
+				});
+			});
 		}
 	}
 });

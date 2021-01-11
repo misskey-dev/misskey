@@ -691,6 +691,7 @@ saveConfirm: "保存しますか？"
 deleteConfirm: "削除しますか？"
 invalidValue: "有効な値ではありません。"
 registry: "レジストリ"
+closeAccount: "アカウントを閉鎖する"
 
 _registry:
   scope: "スコープ"
