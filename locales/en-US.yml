@@ -685,6 +685,10 @@ accentColor: "Accent"
 textColor: "Text"
 saveAs: "Save as..."
 advanced: "Advanced"
+value: "Values"
+_registry:
+  key: "Key"
+  keys: "Key"
 _aboutMisskey:
   about: "Misskey is open-source software being developed by syuilo since 2014."
   contributors: "Main contributors"
