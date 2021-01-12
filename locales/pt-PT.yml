@@ -7,9 +7,13 @@ username: "Nome de usuário"
 password: "Senha"
 ok: "OK"
 cancel: "Cancelar"
+enterUsername: "Digite o nome de usuário"
 renotedBy: "Repostado por {user}"
 settings: "Configurações"
+basicSettings: "Configurações básicas"
+otherSettings: "Outras configurações"
 profile: "Perfil"
+timeline: "Timeline"
 smtpUser: "Nome de usuário"
 smtpPass: "Senha"
 _mfm:
@@ -18,8 +22,10 @@ _sfx:
   notification: "Notificações"
 _widgets:
   notifications: "Notificações"
+  timeline: "Timeline"
 _profile:
   username: "Nome de usuário"
 _deck:
   _columns:
     notifications: "Notificações"
+    tl: "Timeline"
