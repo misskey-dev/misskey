@@ -1,6 +1,8 @@
 ---
 _lang_: "Português"
+monthAndDay: "{day}/{month}"
 search: "Pesquisar"
+notifications: "Notificações"
 username: "Nome de usuário"
 password: "Senha"
 ok: "OK"
@@ -12,5 +14,12 @@ smtpUser: "Nome de usuário"
 smtpPass: "Senha"
 _mfm:
   search: "Pesquisar"
+_sfx:
+  notification: "Notificações"
+_widgets:
+  notifications: "Notificações"
 _profile:
   username: "Nome de usuário"
+_deck:
+  _columns:
+    notifications: "Notificações"
