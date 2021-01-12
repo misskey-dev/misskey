@@ -1,5 +1,16 @@
 ---
 _lang_: "Português"
 search: "Pesquisar"
+username: "Nome de usuário"
+password: "Senha"
+ok: "OK"
+cancel: "Cancelar"
+renotedBy: "Repostado por {user}"
+settings: "Configurações"
+profile: "Perfil"
+smtpUser: "Nome de usuário"
+smtpPass: "Senha"
 _mfm:
   search: "Pesquisar"
+_profile:
+  username: "Nome de usuário"
