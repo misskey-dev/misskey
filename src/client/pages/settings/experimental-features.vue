@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-
+	<FormButton @click="error()">error test</FormButton>
 </FormBase>
 </template>
 
@@ -42,5 +42,11 @@ export default defineComponent({
 	mounted() {
 		this.$emit('info', this.INFO);
 	},
+
+	methods: {
+		error() {
+			throw new Error('Test error');
+		}
+	}
 });
 </script>

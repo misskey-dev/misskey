@@ -25,6 +25,7 @@ import FormButton from '@/components/form/button.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
+import { addTheme, getThemes } from '@/theme-store';
 
 export default defineComponent({
 	components: {
@@ -74,7 +75,7 @@ export default defineComponent({
 				});
 				return false;
 			}
-			if (ColdDeviceStorage.get('themes').some(t => t.id === theme.id)) {
+			if (getThemes().some(t => t.id === theme.id)) {
 				os.dialog({
 					type: 'info',
 					text: this.$ts._theme.alreadyInstalled
@@ -90,11 +91,10 @@ export default defineComponent({
 			if (theme) applyTheme(theme, false);
 		},
 
-		install(code) {
+		async install(code) {
 			const theme = this.parseThemeCode(code);
 			if (!theme) return;
-			const themes = ColdDeviceStorage.get('themes').concat(theme);
-			ColdDeviceStorage.set('themes', themes);
+			await addTheme(theme);
 			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })

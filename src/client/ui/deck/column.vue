@@ -70,7 +70,6 @@ export default defineComponent({
 	data() {
 		return {
 			deckStore,
-			active: true,
 			dragging: false,
 			draghover: false,
 			dropready: false,
@@ -81,6 +80,10 @@ export default defineComponent({
 	computed: {
 		isMainColumn(): boolean {
 			return this.column.type === 'main';
+		},
+
+		active(): boolean {
+			return this.column.active !== false;
 		},
 
 		keymap(): any {
@@ -124,7 +127,9 @@ export default defineComponent({
 
 		toggleActive() {
 			if (!this.isStacked) return;
-			this.active = !this.active;
+			updateColumn(this.column.id, {
+				active: !this.column.active
+			});
 		},
 
 		getMenu() {

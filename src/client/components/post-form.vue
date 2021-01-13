@@ -262,7 +262,7 @@ export default defineComponent({
 		}
 
 		// keep cw when reply
-		if (this.$store.keepCw && this.reply && this.reply.cw) {
+		if (this.$store.state.keepCw && this.reply && this.reply.cw) {
 			this.useCw = true;
 			this.cw = this.reply.cw;
 		}

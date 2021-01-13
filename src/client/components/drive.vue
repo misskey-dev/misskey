@@ -17,7 +17,7 @@
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
-		@contextmenu="onContextmenu"
+		@contextmenu.stop="onContextmenu"
 	>
 		<div class="contents" ref="contents">
 			<div class="folders" ref="foldersContainer" v-show="folders.length > 0">

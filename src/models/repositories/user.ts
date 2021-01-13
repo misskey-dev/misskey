@@ -261,7 +261,6 @@ export class UserRepository extends Repository<User> {
 			} : {}),
 
 			...(opts.includeSecrets ? {
-				clientData: profile!.clientData,
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 				securityKeysList: profile!.twoFactorEnabled
