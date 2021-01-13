@@ -16,6 +16,7 @@ type Column = {
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
+	active?: boolean;
 };
 
 function copy<T>(x: T): T {
