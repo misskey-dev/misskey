@@ -83,7 +83,7 @@
 		"@types/nodemailer": "6.4.0",
 		"@types/nprogress": "0.2.0",
 		"@types/oauth": "0.9.1",
-		"@types/parse5": "5.0.3",
+		"@types/parse5": "6.0.0",
 		"@types/parsimmon": "1.10.6",
 		"@types/portscanner": "2.1.0",
 		"@types/pug": "2.0.4",
