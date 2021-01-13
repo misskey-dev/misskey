@@ -445,7 +445,6 @@ export default defineComponent({
 
 		onCompositionEnd(e: CompositionEvent) {
 			this.imeText = '';
-			console.log(e);
 		},
 
 		async onPaste(e: ClipboardEvent) {
