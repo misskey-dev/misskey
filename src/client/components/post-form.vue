@@ -344,10 +344,6 @@ export default defineComponent({
 			}
 		},
 
-		trimmedLength(text: string) {
-			return length(text.trim());
-		},
-
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
