@@ -1366,6 +1366,7 @@ _deck:
   swapDown: "往下移動"
   stackLeft: "向左折疊"
   popRight: "向右彈出"
+  profile: "個人檔案"
   _columns:
     main: "主列"
     widgets: "小工具"
