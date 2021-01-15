@@ -1,17 +1,20 @@
 <template>
 <div class="voxdxuby">
-	<XNote v-if="note" v-model:note="note" :key="note.id" :detail="value.detailed"/>
+	<XNote v-if="note && !value.detailed" v-model:note="note" :key="note.id + ':normal'"/>
+	<XNoteDetailed v-if="note && value.detailed" v-model:note="note" :key="note.id + ':detail'"/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XNote from '@/components/note.vue';
+import XNoteDetailed from '@/components/note-detailed.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XNote
+		XNote,
+		XNoteDetailed,
 	},
 	props: {
 		value: {
