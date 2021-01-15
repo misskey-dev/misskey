@@ -1,9 +1,9 @@
-# タイムラインの比較
+# مقارنة الجدول الزمني
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
-## الرئيسي
-自分のフォローしているユーザーの投稿
+## الواجهة الرئيسية
+مشاركات المستخدمين الذين تتابعهم
 
 ## المحلي
 全てのローカルユーザーの「ホーム」指定されていない投稿
