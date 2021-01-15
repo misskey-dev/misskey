@@ -499,6 +499,7 @@ _widgets:
   timeline: "タイムライン"
   activity: "アクティビティ"
   federation: "連合"
+  jobQueue: "ジョブキュー"
 _cw:
   show: "もっとあるやろ！"
 _poll:

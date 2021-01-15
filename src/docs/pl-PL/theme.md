@@ -1,12 +1,12 @@
 # Motywy
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Możesz zmienić wygląd klienta Misskey, ustawiając motyw.
 
-## テーマの設定
-設定 > テーマ
+## Ustawienia motywu
+Ustawienia > Motywy
 
-## テーマを作成する
-テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
+## Tworzenie motywu
+Kod motywów jest zapisywany jako obiekt JSON5 z opcjami motywu. Motywy składają się z następujących opcji.
 ``` js
 {
     id: '17587283-dd92-4a2c-a22c-be0637c9e22a',
@@ -33,26 +33,26 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
-* `desc` ... テーマの説明(オプション)
-* `base` ... 明るいテーマか、暗いテーマか
+* `id` ... Unikatowe ID motywu.Zalecane jest użycie UUID.
+* `name` ... Nazwa motywu
+* `author` ... Twórca motywu
+* `desc` ... Opis motywu (nieobowiązkowy)
+* `base` ... Określa, czy motyw jest oparty na jasnym, czy ciemnym motywie
     * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
-* `props` ... テーマのスタイル定義。これから説明します。
+    * Motyw będzie dziedziczył domyślne wartości określonego tu motywu.
+* `props` ... Definicje stylów motywu.これから説明します。
 
-### テーマのスタイル定義
+### Definicje stylów motywu.
 `props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
 
-#### バリューで使える構文
-* 16進数で表された色
-    * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
-    * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
-    * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
+#### Składnia wartości
+* Kolory Hex
+    * Np.: `#00ff00`
+* Kolory RGB w składni `rgb(r, g, b)`
+    * Np.: `rgb(0, 255, 0)`
+* Kolory RGBA w składni `rgb(r, g, b)`
+    * Np.: `rgba(0, 255, 0, 0.5)`
+* Nawiązania do wartości innych kluczy
     * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
     * 例: `@panel`
 * 定数(後述)の参照
