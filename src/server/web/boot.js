@@ -58,6 +58,7 @@
 	// 読み込まれたスクリプトからこのタイマーを解除できるように、
 	// グローバルにタイマーIDを代入しておく
 	window.mkBootTimer = window.setTimeout(async () => {
+		// TODO: サーバーが落ちている場合などのエラーハンドリング
 		const res = await fetch('/api/meta', {
 			method: 'POST',
 			cache: 'no-cache'
