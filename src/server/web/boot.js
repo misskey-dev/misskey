@@ -50,14 +50,9 @@
 	script.setAttribute('src', `/assets/app.${v}.js${salt}`);
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
-	head.appendChild(script);
+	script.addEventListener('error', async () => {
+		document.documentElement.innerHTML = '読み込みに失敗しました。';
 
-	// 3秒経ってもスクリプトがロードされない場合はバージョンが古くて
-	// 404になっているせいかもしれないので、バージョンを確認して古ければ更新する
-	//
-	// 読み込まれたスクリプトからこのタイマーを解除できるように、
-	// グローバルにタイマーIDを代入しておく
-	window.mkBootTimer = window.setTimeout(async () => {
 		// TODO: サーバーが落ちている場合などのエラーハンドリング
 		const res = await fetch('/api/meta', {
 			method: 'POST',
@@ -74,7 +69,8 @@
 				'New version of Misskey available. The page will be reloaded.');
 			refresh();
 		}
-	}, 3000);
+	});
+	head.appendChild(script);
 	//#endregion
 
 	//#region Theme
