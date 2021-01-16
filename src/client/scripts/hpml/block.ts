@@ -103,6 +103,7 @@ export type CounterVarBlock = VarBlockBase & {
 export type VarBlock =
 	NumberInputVarBlock | TextInputVarBlock | SwitchVarBlock | RadioButtonVarBlock | CounterVarBlock;
 
+const varBlock = ['numberInput', 'textInput', 'switch', 'radioButton', 'counter'];
 export function isVarBlock(block: Block): block is VarBlock {
-	return (block as any).name !== undefined;
+	return varBlock.find(v => v == block.type) !== undefined;
 }
