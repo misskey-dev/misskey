@@ -674,6 +674,13 @@ clearCache: "Очистить кэш"
 onlineUsersCount: "Пользователей сейчас в сети: {n}"
 nUsers: "Пользователей: {n}"
 nNotes: "Заметок: {n}"
+backgroundColor: "Фон"
+accentColor: "Акцент"
+textColor: "Текст"
+value: "Значения"
+_registry:
+  key: "Ключ"
+  keys: "Ключ"
 _aboutMisskey:
   about: "Misskey — программа с открытым исходным кодом, которую разрабатывает syuilo с 2014 года."
   contributors: "Основные соавторы"
@@ -997,6 +1004,7 @@ _widgets:
   slideshow: "Показ слайдов"
   button: "Кнопка"
   onlineUsers: "Пользователи сейчас с сети"
+  jobQueue: "Очередь заданий"
 _cw:
   hide: "Спрятать"
   show: "Показать еще"

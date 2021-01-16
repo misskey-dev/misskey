@@ -29,6 +29,7 @@ export const router = createRouter({
 		{ path: '/featured', component: page('featured') },
 		{ path: '/docs', component: page('docs') },
 		{ path: '/theme-editor', component: page('theme-editor') },
+		{ path: '/advanced-theme-editor', component: page('advanced-theme-editor') },
 		{ path: '/docs/:doc', component: page('doc'), props: route => ({ doc: route.params.doc }) },
 		{ path: '/explore', component: page('explore') },
 		{ path: '/explore/tags/:tag', props: true, component: page('explore') },
@@ -80,7 +81,6 @@ export const router = createRouter({
 		{ path: '/miauth/:session', component: page('miauth') },
 		{ path: '/authorize-follow', component: page('follow') },
 		{ path: '/share', component: page('share') },
-		{ path: '/test', component: page('test') },
 		{ path: '/:catchAll(.*)', component: page('not-found') }
 	],
 	// なんかHacky

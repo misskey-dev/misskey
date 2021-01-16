@@ -1,5 +1,7 @@
+import { throttle } from 'throttle-debounce';
 import { i18n } from '@/i18n';
-import { markRaw } from 'vue';
+import { api } from '@/os';
+import { markRaw, watch } from 'vue';
 import { Storage } from '../../pizzax';
 
 type ColumnWidget = {
@@ -14,6 +16,7 @@ type Column = {
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
+	active?: boolean;
 };
 
 function copy<T>(x: T): T {
@@ -21,23 +24,17 @@ function copy<T>(x: T): T {
 }
 
 export const deckStore = markRaw(new Storage('deck', {
+	profile: {
+		where: 'deviceAccount',
+		default: 'default'
+	},
 	columns: {
 		where: 'deviceAccount',
-		default: [{
-			id: 'a',
-			type: 'main',
-			name: i18n.locale._deck._columns.main,
-			width: 350,
-		}, {
-			id: 'b',
-			type: 'notifications',
-			name: i18n.locale._deck._columns.notifications,
-			width: 330,
-		}] as Column[]
+		default: [] as Column[]
 	},
 	layout: {
 		where: 'deviceAccount',
-		default: [['a'], ['b']] as Column['id'][][]
+		default: [] as Column['id'][][]
 	},
 	columnAlign: {
 		where: 'deviceAccount',
@@ -61,10 +58,60 @@ export const deckStore = markRaw(new Storage('deck', {
 	},
 }));
 
+export const loadDeck = async () => {
+	let deck;
+
+	try {
+		deck = await api('i/registry/get', {
+			scope: ['client', 'deck', 'profiles'],
+			key: deckStore.state.profile,
+		});
+	} catch (e) {
+		if (e.code === 'NO_SUCH_KEY') {
+			// 後方互換性のため
+			if (deckStore.state.profile === 'default') {
+				saveDeck();
+				return;
+			}
+
+			deckStore.set('columns', [{
+				id: 'a',
+				type: 'main',
+				name: i18n.locale._deck._columns.main,
+				width: 350,
+			}, {
+				id: 'b',
+				type: 'notifications',
+				name: i18n.locale._deck._columns.notifications,
+				width: 330,
+			}]);
+			deckStore.set('layout', [['a'], ['b']]);
+			return;
+		}
+		throw e;
+	}
+
+	deckStore.set('columns', deck.columns);
+	deckStore.set('layout', deck.layout);
+};
+
+// TODO: deckがloadされていない状態でsaveすると意図せず上書きが発生するので対策する
+export const saveDeck = throttle(1000, () => {
+	api('i/registry/set', {
+		scope: ['client', 'deck', 'profiles'],
+		key: deckStore.state.profile,
+		value: {
+			columns: deckStore.reactiveState.columns.value,
+			layout: deckStore.reactiveState.layout.value,
+		}
+	});
+});
+
 export function addColumn(column: Column) {
 	if (column.name == undefined) column.name = null;
 	deckStore.push('columns', column);
 	deckStore.push('layout', [column.id]);
+	saveDeck();
 }
 
 export function removeColumn(id: Column['id']) {
@@ -72,6 +119,7 @@ export function removeColumn(id: Column['id']) {
 	deckStore.set('layout', deckStore.state.layout
 		.map(ids => ids.filter(_id => _id !== id))
 		.filter(ids => ids.length > 0));
+	saveDeck();
 }
 
 export function swapColumn(a: Column['id'], b: Column['id']) {
@@ -83,6 +131,7 @@ export function swapColumn(a: Column['id'], b: Column['id']) {
 	layout[aX][aY] = b;
 	layout[bX][bY] = a;
 	deckStore.set('layout', layout);
+	saveDeck();
 }
 
 export function swapLeftColumn(id: Column['id']) {
@@ -98,6 +147,7 @@ export function swapLeftColumn(id: Column['id']) {
 			return true;
 		}
 	});
+	saveDeck();
 }
 
 export function swapRightColumn(id: Column['id']) {
@@ -113,6 +163,7 @@ export function swapRightColumn(id: Column['id']) {
 			return true;
 		}
 	});
+	saveDeck();
 }
 
 export function swapUpColumn(id: Column['id']) {
@@ -132,6 +183,7 @@ export function swapUpColumn(id: Column['id']) {
 			return true;
 		}
 	});
+	saveDeck();
 }
 
 export function swapDownColumn(id: Column['id']) {
@@ -151,6 +203,7 @@ export function swapDownColumn(id: Column['id']) {
 			return true;
 		}
 	});
+	saveDeck();
 }
 
 export function stackLeftColumn(id: Column['id']) {
@@ -160,6 +213,7 @@ export function stackLeftColumn(id: Column['id']) {
 	layout[i - 1].push(id);
 	layout = layout.filter(ids => ids.length > 0);
 	deckStore.set('layout', layout);
+	saveDeck();
 }
 
 export function popRightColumn(id: Column['id']) {
@@ -169,6 +223,7 @@ export function popRightColumn(id: Column['id']) {
 	layout.splice(i + 1, 0, [id]);
 	layout = layout.filter(ids => ids.length > 0);
 	deckStore.set('layout', layout);
+	saveDeck();
 }
 
 export function addColumnWidget(id: Column['id'], widget: ColumnWidget) {
@@ -180,6 +235,7 @@ export function addColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	column.widgets.unshift(widget);
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
+	saveDeck();
 }
 
 export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
@@ -190,6 +246,7 @@ export function removeColumnWidget(id: Column['id'], widget: ColumnWidget) {
 	column.widgets = column.widgets.filter(w => w.id != widget.id);
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
+	saveDeck();
 }
 
 export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
@@ -200,6 +257,7 @@ export function setColumnWidgets(id: Column['id'], widgets: ColumnWidget[]) {
 	column.widgets = widgets;
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
+	saveDeck();
 }
 
 export function updateColumnWidget(id: Column['id'], widgetId: string, data: any) {
@@ -213,6 +271,7 @@ export function updateColumnWidget(id: Column['id'], widgetId: string, data: any
 	} : w);
 	columns[columnIndex] = column;
 	deckStore.set('columns', columns);
+	saveDeck();
 }
 
 export function updateColumn(id: Column['id'], column: Partial<Column>) {
@@ -225,4 +284,5 @@ export function updateColumn(id: Column['id'], column: Partial<Column>) {
 	}
 	columns[columnIndex] = currentColumn;
 	deckStore.set('columns', columns);
+	saveDeck();
 }

@@ -58,6 +58,7 @@ export default defineComponent({
 
 		onContextmenu(e) {
 			if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
+			if (window.getSelection().toString() !== '') return;
 			const path = this.$route.path;
 			os.contextMenu([{
 				type: 'label',

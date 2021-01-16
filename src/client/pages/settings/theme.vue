@@ -49,11 +49,14 @@
 	<FormButton primary v-else @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
 
 	<FormGroup>
-		<FormLink to="https://assets.msky.cafe/theme/list" external>{{ $ts._theme.explore }}</FormLink>
-		<FormLink to="/theme-editor">{{ $ts._theme.make }}</FormLink>
+		<FormLink to="https://assets.msky.cafe/theme/list" external><template #icon><Fa :icon="faGlobe"/></template>{{ $ts._theme.explore }}</FormLink>
+		<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._theme.install }}</FormLink>
 	</FormGroup>
 
-	<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._theme.install }}</FormLink>
+	<FormGroup>
+		<FormLink to="/theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }}</FormLink>
+		<FormLink to="/advanced-theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>
+	</FormGroup>
 
 	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}</FormLink>
 </FormBase>
@@ -61,7 +64,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
-import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormBase from '@/components/form/base.vue';
@@ -74,6 +77,7 @@ import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { ColdDeviceStorage } from '@/store';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { fetchThemes, getThemes } from '@/theme-store';
 
 export default defineComponent({
 	components: {
@@ -93,7 +97,7 @@ export default defineComponent({
 			icon: faPalette
 		};
 
-		const installedThemes = ColdDeviceStorage.ref('themes');
+		const installedThemes = ref(getThemes());
 		const themes = computed(() => builtinThemes.concat(installedThemes.value));
 		const darkThemes = computed(() => themes.value.filter(t => t.base == 'dark' || t.kind == 'dark'));
 		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
@@ -134,6 +138,10 @@ export default defineComponent({
 			emit('info', INFO);
 		});
 
+		fetchThemes().then(() => {
+			installedThemes.value = getThemes();
+		});
+
 		return {
 			INFO,
 			darkThemes,
@@ -148,7 +156,7 @@ export default defineComponent({
 					wallpaper.value = file.url;
 				});
 			},
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
+			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller,
 		};
 	}
 });

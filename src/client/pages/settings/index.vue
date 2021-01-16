@@ -35,13 +35,13 @@
 		</FormGroup>
 	</FormBase>
 	<div class="main">
-		<component :is="component" @info="onInfo"/>
+		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh, faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { i18n } from '@/i18n';
@@ -78,7 +78,9 @@ export default defineComponent({
 		const onInfo = (viewInfo) => {
 			INFO.value = viewInfo;
 		};
+		const pageProps = ref({});
 		const component = computed(() => {
+			if (props.page == null) return null;
 			switch (props.page) {
 				case 'profile': return defineAsyncComponent(() => import('./profile.vue'));
 				case 'privacy': return defineAsyncComponent(() => import('./privacy.vue'));
@@ -104,16 +106,35 @@ export default defineComponent({
 				case 'plugins': return defineAsyncComponent(() => import('./plugins.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
+				case 'registry': return defineAsyncComponent(() => import('./registry.vue'));
 				case 'experimental-features': return defineAsyncComponent(() => import('./experimental-features.vue'));
-				default: return null;
+			}
+			if (props.page.startsWith('registry/keys/system/')) {
+				return defineAsyncComponent(() => import('./registry.keys.vue'));
+			}
+			if (props.page.startsWith('registry/value/system/')) {
+				return defineAsyncComponent(() => import('./registry.value.vue'));
 			}
 		});
 
 		watch(component, () => {
+			pageProps.value = {};
+
+			if (props.page) {
+				if (props.page.startsWith('registry/keys/system/')) {
+					pageProps.value.scope = props.page.replace('registry/keys/system/', '').split('/');
+				}
+				if (props.page.startsWith('registry/value/system/')) {
+					const path = props.page.replace('registry/value/system/', '').split('/');
+					pageProps.value.xKey = path.pop();
+					pageProps.value.scope = path;
+				}
+			}
+
 			nextTick(() => {
 				scroll(el.value, 0);
 			});
-		});
+		}, { immediate: true });
 
 		onMounted(() => {
 			narrow.value = el.value.offsetWidth < 1025;
@@ -125,6 +146,7 @@ export default defineComponent({
 			view,
 			el,
 			onInfo,
+			pageProps,
 			component,
 			logout: () => {
 				signout();

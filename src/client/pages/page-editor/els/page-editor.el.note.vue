@@ -9,7 +9,8 @@
 		</MkInput>
 		<MkSwitch v-model:value="value.detailed"><span>{{ $ts._pages.blocks._note.detailed }}</span></MkSwitch>
 
-		<XNote v-if="note" v-model:note="note" :key="note.id + ':' + (value.detailed ? 'detailed' : 'normal')" :detail="value.detailed" style="margin-bottom: 16px;"/>
+		<XNote v-if="note && !value.detailed" v-model:note="note" :key="note.id + ':normal'" style="margin-bottom: 16px;"/>
+		<XNoteDetailed v-if="note && value.detailed" v-model:note="note" :key="note.id + ':detail'" style="margin-bottom: 16px;"/>
 	</section>
 </XContainer>
 </template>
@@ -21,11 +22,12 @@ import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/ui/input.vue';
 import MkSwitch from '@/components/ui/switch.vue';
 import XNote from '@/components/note.vue';
+import XNoteDetailed from '@/components/note-detailed.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XContainer, MkInput, MkSwitch, XNote
+		XContainer, MkInput, MkSwitch, XNote, XNoteDetailed,
 	},
 
 	props: {

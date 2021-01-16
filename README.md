@@ -62,6 +62,8 @@ Organize and store your files! Want to post a picture you have already uploaded?
 
 ...and more! Experience Misskey with your own eyes at [misskey.io](https://misskey.io/) or join one of the [other instances](https://joinmisskey.github.io/) that are available.
 
+To recive updates of this repo, follow [@repo@misskey.io](https://misskey.io/@repo) on fediverse.
+
 Screen shots
 ----------------------------------------------------------------
 ### Profile page

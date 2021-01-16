@@ -1,18 +1,21 @@
 <template>
 <div class="voxdxuby">
-	<XNote v-if="note" v-model:note="note" :key="note.id" :detail="block.detailed"/>
+	<XNote v-if="note && !block.detailed" v-model:note="note" :key="note.id + ':normal'"/>
+	<XNoteDetailed v-if="note && block.detailed" v-model:note="note" :key="note.id + ':detail'"/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
 import XNote from '@/components/note.vue';
+import XNoteDetailed from '@/components/note-detailed.vue';
 import * as os from '@/os';
 import { NoteBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		XNote
+		XNote,
+		XNoteDetailed,
 	},
 	props: {
 		block: {
