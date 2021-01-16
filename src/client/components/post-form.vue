@@ -9,7 +9,7 @@
 	<header>
 		<button v-if="!fixed" class="cancel _button" @click="cancel"><Fa :icon="faTimes"/></button>
 		<div>
-			<span class="text-count" :class="{ over: trimmedLength(text) > max }">{{ max - trimmedLength(text) }}</span>
+			<span class="text-count" :class="{ over: textLength > max }">{{ max - textLength }}</span>
 			<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
 			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
 				<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
@@ -35,7 +35,7 @@
 			</div>
 		</div>
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
-		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste"></textarea>
+		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<footer>
@@ -142,6 +142,7 @@ export default defineComponent({
 			draghover: false,
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
+			imeText: '',
 			postFormActions,
 			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug
 		};
@@ -190,10 +191,14 @@ export default defineComponent({
 					: this.$ts.note;
 		},
 
+		textLength(): number {
+			return length((this.text + this.imeText).trim());
+		},
+
 		canPost(): boolean {
 			return !this.posting &&
-				(1 <= this.text.length || 1 <= this.files.length || this.poll || this.renote) &&
-				(length(this.text.trim()) <= this.max) &&
+				(1 <= this.textLength || 1 <= this.files.length || !!this.poll || !!this.renote) &&
+				(this.textLength <= this.max) &&
 				(!this.poll || this.poll.choices.length >= 2);
 		},
 
@@ -339,10 +344,6 @@ export default defineComponent({
 			}
 		},
 
-		trimmedLength(text: string) {
-			return length(text.trim());
-		},
-
 		addTag(tag: string) {
 			insertTextAtCursor(this.$refs.text, ` #${tag} `);
 		},
@@ -429,9 +430,17 @@ export default defineComponent({
 			this.quoteId = null;
 		},
 
-		onKeydown(e) {
+		onKeydown(e: KeyboardEvent) {
 			if ((e.which === 10 || e.which === 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
 			if (e.which === 27) this.$emit('esc');
+		},
+
+		onCompositionUpdate(e: CompositionEvent) {
+			this.imeText = e.data;
+		},
+
+		onCompositionEnd(e: CompositionEvent) {
+			this.imeText = '';
 		},
 
 		async onPaste(e: ClipboardEvent) {

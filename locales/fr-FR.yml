@@ -579,6 +579,12 @@ chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouvertu
 random: "Aléatoire"
 public: "Public"
 clearCache: "Vider le cache"
+backgroundColor: "Arrière-plan"
+textColor: "Texte"
+value: "Valeur"
+_registry:
+  key: "Clé "
+  keys: "Clé "
 _mfm:
   mention: "Mentionner"
   hashtag: "Hashtags"
@@ -766,6 +772,7 @@ _widgets:
   federation: "Fédération"
   postForm: "Formulaire à publier"
   button: "Bouton"
+  jobQueue: "File d’attente"
 _cw:
   hide: "Masquer"
   show: "Afficher plus …"

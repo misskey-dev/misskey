@@ -53,17 +53,20 @@ export class Storage<T extends StateDef> {
 			// なぜかsetTimeoutしないとapi関数内でエラーになる(おそらく循環参照してることに原因がありそう)
 			setTimeout(() => {
 				api('i/registry/get-all', { scope: ['client', this.key] }).then(kvs => {
+					const cache = {};
 					for (const [k, v] of Object.entries(def)) {
 						if (v.where === 'account') {
 							if (Object.prototype.hasOwnProperty.call(kvs, k)) {
 								state[k] = kvs[k];
 								reactiveState[k].value = kvs[k];
+								cache[k] = kvs[k];
 							} else {
 								state[k] = v.default;
 								reactiveState[k].value = v.default;
 							}
 						}
 					}
+					localStorage.setItem(this.keyForLocalStorage + '::cache::' + $i.id, JSON.stringify(cache));
 				});
 			}, 1);
 
