@@ -585,6 +585,7 @@ waitingFor: "En attente de {x}"
 random: "Aléatoire"
 public: "Public"
 clearCache: "Vider le cache"
+sendErrorReportsDescription: "Lorsqu'il est activé, des informations détaillées sur les erreurs sont partagées avec Misskey lorsqu'un problème survient, ce qui contribue à améliorer la qualité de Misskey."
 backgroundColor: "Arrière-plan"
 textColor: "Texte"
 value: "Valeur"
@@ -605,6 +606,7 @@ _reversi:
   total: "Total"
 _serverDisconnectedBehavior:
   reload: "Rechargement automatique"
+  quiet: "Afficher un avertissement discret"
 _channel:
   create: "Créer un canal"
   edit: "Éditer le canal"
