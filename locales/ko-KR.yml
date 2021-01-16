@@ -693,6 +693,10 @@ _mfm:
   flip: "플립"
   flipDescription: "내용을 상하 또는 좌우로 반전시킵니다."
   jump: "애니메이션(점프)"
+  x2: "크게"
+  x2Description: "내용을 크게 표시합니다."
+  x3: "매우 크게"
+  x3Description: "내용을 매우 크게 표시합니다."
   font: "폰트"
 _reversi:
   reversi: "리버시"
