@@ -108,6 +108,7 @@ import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } f
 import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
+import { addTheme } from '@/theme-store';
 
 export default defineComponent({
 	components: {
@@ -212,8 +213,7 @@ export default defineComponent({
 	
 		save() {
 			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
-			const themes = ColdDeviceStorage.get('themes').concat(theme);
-			ColdDeviceStorage.set('themes', themes);
+			addTheme(theme);
 			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })

@@ -41,7 +41,7 @@
 			<MkSample class="preview"/>
 		</div>
 	</div>
-	<FormButton @click="saveAs">{{ $ts.saveAs }}</FormButton>
+	<FormButton @click="saveAs" primary>{{ $ts.saveAs }}</FormButton>
 </FormBase>
 </template>
 
@@ -60,6 +60,7 @@ import { Theme, applyTheme, validateTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
+import { addTheme } from '@/theme-store';
 
 export default defineComponent({
 	components: {
@@ -105,6 +106,7 @@ export default defineComponent({
 				{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 			],
 			fgColor: null,
+			changed: false,
 			faPalette,
 		}
 	},
@@ -123,12 +125,39 @@ export default defineComponent({
 		this.$watch('bgColor', this.apply);
 		this.$watch('accentColor', this.apply);
 		this.$watch('fgColor', this.apply);
+
+		window.addEventListener('beforeunload', this.beforeunload);
+	},
+
+	beforeUnmount() {
+		window.removeEventListener('beforeunload', this.beforeunload);
+	},
+
+	async beforeRouteLeave(to, from) {
+		if (this.changed && !(await this.leaveConfirm())) {
+			return false;
+		}
 	},
 
 	methods: {
-		convert() {
+		beforeunload(e: BeforeUnloadEvent) {
+			if (this.changed) {
+				e.preventDefault();
+				e.returnValue = '';
+			}
+		},
+
+		async leaveConfirm(): Promise<boolean> {
+			const { canceled } = await os.dialog({
+				type: 'warning',
+				text: this.$ts.leaveConfirm,
+				showCancelButton: true
+			});
+			return !canceled;
+		},
+
+		convert(): Theme {
 			return {
-				id: '#MY_THEME#',
 				name: this.$ts.myTheme,
 				base: this.bgColor.kind,
 				props: {
@@ -145,12 +174,8 @@ export default defineComponent({
 			if (this.fgColor == null) this.fgColor = this.fgColors[0];
 
 			const theme = this.convert();
-			applyTheme(theme, true);
-
-			const themes = ColdDeviceStorage.get('themes').filter(t => t.id != '#MY_THEME#').concat(theme);
-			ColdDeviceStorage.set('themes', themes);
-			ColdDeviceStorage.set('lightTheme', theme.id);
-			ColdDeviceStorage.set('darkTheme', theme.id);
+			applyTheme(theme, false);
+			this.changed = true;
 		},
 
 		async saveAs() {
@@ -166,10 +191,14 @@ export default defineComponent({
 			theme.id = uuid();
 			theme.name = name;
 			theme.author = `@${this.$i.username}@${toUnicode(host)}`;
-			const themes = ColdDeviceStorage.get('themes').concat(theme);
-			ColdDeviceStorage.set('themes', themes);
-			ColdDeviceStorage.set('lightTheme', theme.id);
-			ColdDeviceStorage.set('darkTheme', theme.id);
+			addTheme(theme);
+			applyTheme(theme);
+			if (this.$store.state.darkMode) {
+				ColdDeviceStorage.set('darkTheme', theme.id);
+			} else {
+				ColdDeviceStorage.set('lightTheme', theme.id);
+			}
+			this.changed = false;
 			os.dialog({
 				type: 'success',
 				text: this.$t('_theme.installed', { name: theme.name })
