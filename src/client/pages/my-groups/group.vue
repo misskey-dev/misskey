@@ -45,6 +45,13 @@ export default defineComponent({
 		MkButton
 	},
 
+	props: {
+		groupId: {
+			type: String,
+			required: true,
+		},
+	},
+
 	data() {
 		return {
 			INFO: computed(() => this.group ? {
@@ -58,7 +65,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route: 'fetch'
+		groupId: 'fetch',
 	},
 
 	created() {
@@ -69,7 +76,7 @@ export default defineComponent({
 		fetch() {
 			Progress.start();
 			os.api('users/groups/show', {
-				groupId: this.$route.params.group
+				groupId: this.groupId
 			}).then(group => {
 				this.group = group;
 				os.api('users/show', {
