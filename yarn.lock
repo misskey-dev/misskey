@@ -6395,10 +6395,10 @@ math-expression-evaluator@^1.2.14:
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.3.7.tgz#1b62225db86af06f7ea1fd9576a34af605a5b253"
   integrity sha512-nrbaifCl42w37hYd6oRLvoymFK42tWB+WQTMFtksDGQMi5GvlJwnz/CsS30FFAISFLtX+A0csJ0xLiuuyyec7w==
 
-matter-js@0.14.2:
-  version "0.14.2"
-  resolved "https://registry.yarnpkg.com/matter-js/-/matter-js-0.14.2.tgz#8169af9e06fdc356ba9e72b49624eb329839883b"
-  integrity sha512-3ttVT8cJlQnGRjBa8MyVrGyvGmnmOkZ3YsyemIw+KwEEdVi70mo32FH1Eta2b3GfdDJFbMDRqyMQt4heNKBUEA==
+matter-js@0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/matter-js/-/matter-js-0.16.0.tgz#f153630303ff026e8789a16c50ad9f29a6c5015b"
+  integrity sha512-otfaJ5d3s3pe96muTfxsFxtuqaX9zywBWCihMaEsWLRsumg2XU+oyK9IMhjKNo39M+Da/rr3RMWiah4dMYzIHw==
 
 mdn-data@2.0.4:
   version "2.0.4"
