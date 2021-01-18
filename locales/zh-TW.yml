@@ -654,6 +654,11 @@ backgroundColor: "背景"
 textColor: "文本"
 advanced: "進階"
 value: "數值 "
+updatedAt: "最後更新"
+_registry:
+  scope: "範圍"
+  key: "主要"
+  keys: "主要"
 _aboutMisskey:
   about: "Misskey是由syuilo於2014年開發的開源軟件。"
   contributors: "主要貢獻者"
