@@ -2,7 +2,7 @@
 
 テーマを設定して、Misskeyクライアントの見た目を変更できます。
 
-## テーマの設定
+## 佈景主題設定
 設定 > 佈景主題
 
 ## テーマを作成する
@@ -48,11 +48,11 @@
 `props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
 
 #### バリューで使える構文
-* 16進数で表された色
+* 以十六進位色碼標示
     * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
+* 以`rgb(r, g, b)`形式標示RGB顏色
     * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
+* 以`rgb(r, g, b, a)`形式標示RGBA顏色
     * 例: `rgba(0, 255, 0, 0.5)`
 * 他のキーの値の参照
     * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
