@@ -11,7 +11,7 @@
         <tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>通知を表示/隠す</td><td><b>N</b>otifications</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>搜尋</td><td><b>S</b>earch</td></tr>
-        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>ヘルプを表示</td><td><b>H</b>elp</td></tr>
+        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>取得說明</td><td><b>H</b>elp</td></tr>
     </tbody>
 </table>
 
@@ -37,16 +37,16 @@
     </tbody>
 </table>
 
-## Renoteフォーム
+## 轉發選單
 
 <table>
     <thead>
         <tr><th>快速鍵</th><th>功能</th><th>由來</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd></td><td>轉發箋文</td><td>-</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>展開選單</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>關閉選單</td><td>-</td></tr>
     </tbody>
 </table>
 
