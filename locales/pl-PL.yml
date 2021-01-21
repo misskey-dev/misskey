@@ -1014,6 +1014,8 @@ _rooms:
     book: "Książka"
     book2: "Książka 2"
     piano: "Fortepian"
+    server: "Serwery"
+    moon: "Księżyc"
     monitor: "Monitor"
     photoframe: "Ramka do zdjęć"
     tv: "Telewizor"
