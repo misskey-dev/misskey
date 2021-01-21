@@ -668,6 +668,7 @@ center: "가운데"
 wide: "넓게"
 narrow: "좁게"
 reloadToApplySetting: "이 설정을 적용하려면 페이지를 새로고침해야 합니다. 바로 새로고침하시겠습니까?"
+showTitlebar: "타이틀 바를 표시하기"
 clearCache: "캐시 비우기"
 onlineUsersCount: "{n}명이 접속 중"
 nUsers: "{n} 유저"
@@ -846,6 +847,9 @@ _sfx:
   chat: "대화"
   chatBg: "대화 (백그라운드)"
   antenna: "안테나 수신"
+  channel: "채널 알림"
+  reversiPutBlack: "리버시: 흑돌을 두었을 때"
+  reversiPutWhite: "리버시: 백돌을 두었을 때"
 _ago:
   unknown: "알 수 없음"
   future: "미래"
@@ -921,6 +925,8 @@ _permissions:
   "write:page-likes": "페이지의 좋아요를 추가하거나 삭제합니다"
   "read:user-groups": "유저 그룹을 조회합니다"
   "write:user-groups": "유저 그룹을 만들거나, 초대하거나, 이름을 변경하거나, 양도하거나, 삭제합니다"
+  "read:channels": "채널을 보기"
+  "write:channels": "채널을 변경하기"
 _auth:
   shareAccess: "\"{name}\" 이 계정에 접근하는 것을 허용하시겠습니까?"
   shareAccessAsk: "이 애플리케이션이 계정에 접근하는 것을 허용하시겠습니까?"
@@ -955,8 +961,10 @@ _widgets:
   digitalClock: "디지털 시계"
   federation: "연합"
   postForm: "글 입력란"
+  slideshow: "슬라이드 쇼"
   button: "버튼"
   jobQueue: "작업 대기열"
+  serverMetric: "서버 통계"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -998,6 +1006,7 @@ _visibility:
 _postForm:
   replyPlaceholder: "이 노트에 답글..."
   quotePlaceholder: "이 노트를 인용..."
+  channelPlaceholder: "채널에 게시하기..."
   _placeholders:
     a: "지금 무엇을 하고 있나요?"
     b: "무슨 일이 일어나고 있나요?"
