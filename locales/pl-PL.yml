@@ -666,7 +666,9 @@ _mfm:
   intro: "MFM to język składniowy wyjątkowy dla Misskey, który może być użyty w wielu miejscach. Tu znajdziesz listę wszystkich możliwych elementów składni MFM."
   dummy: "Misskey rozszerza świat Fediwersum"
   mention: "Wspomnij"
+  mentionDescription: "Używając znaku @ i nazwy użytkownika, możesz określić danego użytkownika."
   hashtag: "Hashtag"
+  hashtagDescription: "Używając kratki i tekstu, możesz określić hashtag."
   url: "Adres URL"
   urlDescription: "Adresy URL mogą być wyświetlane"
   link: "Odnośnik"
@@ -853,6 +855,9 @@ _time:
 _tutorial:
   title: "Jak korzystać z Misskey"
   step1_1: "Witaj!"
+  step1_3: "Twoja oś czasu jest jeszcze pusta, ponieważ nie opublikowałeś(-aś) jeszcze żadnych wpisów i nie obserwujesz jeszcze nikogo."
+  step2_1: "Ukończmy konfigurację profilu zanim utworzymy wpis lub zaczniemy kogoś obserwować."
+  step3_1: "Zakończyłeś(-aś) konfigurację profilu?"
 _2fa:
   registerDevice: "Zarejestruj nowe urządzenie"
   step1: "Najpierw, zainstaluj aplikację uwierzytelniającą (taką jak {a} lub {b}) na swoim urządzeniu."
