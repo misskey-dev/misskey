@@ -996,6 +996,10 @@ _rooms:
     bin: "Kosz"
     banknote: "Banknot"
 _pages:
+  updated: "Pomyślnie zaktualizowano stronę!"
+  deleted: "Strona została usunięta"
+  pageSetting: "Ustawienia strony"
+  nameAlreadyExists: "Określony adres URL strony już istnieje"
   viewPage: "Wyświetlanie Twoich stron"
   like: "Lubię"
   unlike: "Cofnij polubienie"
@@ -1102,8 +1106,43 @@ _pages:
       subtract: "Odejmij"
       multiply: "Pomnóż"
       divide: "Podziel"
+      _mod:
+        arg1: "A"
+        arg2: "B"
       _round:
         arg1: "Liczba"
+      eq: "A i B są sobie równe"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A i B różnią się"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A I B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A LUB B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      lt: "< A jest mniejsze niż B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      gt: "> A jest większe od B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      ltEq: "<= A jest mniejsze lub równe B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      gtEq: ">= A jest większe lub równe B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       if: "Warunek"
       _if:
         arg1: "Jeżeli"
@@ -1118,41 +1157,56 @@ _pages:
       _rannum:
         arg1: "Minimalna wartość"
         arg2: "Maksymalna wartość"
+      randomPick: "Wybierz losowo z listy"
       _randomPick:
         arg1: "Listy"
+      dailyRandom: "Losowo (zostaje na dzień)"
       _dailyRandom:
         arg1: "Prawdopodobieństwo"
+      dailyRannum: "Losowa liczba (zostaje na dzień)"
       _dailyRannum:
         arg1: "Minimalna wartość"
         arg2: "Maksymalna wartość"
+      dailyRandomPick: "Wybierz losowo z listy (zostaje na dzień)"
       _dailyRandomPick:
         arg1: "Listy"
+      seedRandom: "Losowo (z ziarnem)"
       _seedRandom:
         arg1: "Ziarno"
         arg2: "Prawdopodobieństwo"
+      seedRannum: "Losowa liczba (z ziarnem)"
       _seedRannum:
         arg1: "Ziarno"
         arg2: "Minimalna wartość"
         arg3: "Maksymalna wartość"
+      seedRandomPick: "Wybierz losowo z listy (z ziarnem)"
       _seedRandomPick:
         arg1: "Ziarno"
         arg2: "Listy"
+      DRPWPM: "Wybierz losowo z ważonej listy (zostaje na dzień)"
+      pick: "Wybierz z listy"
       _pick:
         arg1: "Listy"
         arg2: "Położenie"
+      listLen: "Uzyskaj długość listy"
       _listLen:
         arg1: "Listy"
       number: "Liczba"
+      stringToNumber: "Tekst na liczbę"
       _stringToNumber:
         arg1: "Tekst"
+      numberToString: "Liczba na tekst"
       _numberToString:
         arg1: "Liczba"
+      splitStrByLine: "Rozdziel tekst znakami nowej linii"
       _splitStrByLine:
         arg1: "Tekst"
       ref: "Zmienne"
+      aiScriptVar: "Zmienna AiScript"
       fn: "Funkcje"
       _fn:
         arg1: "Wyjście"
+      for: "Powtórzenie"
       _for:
         arg1: "Liczba powtórzeń"
         arg2: "Działanie"
@@ -1202,8 +1256,11 @@ _deck:
   swapLeft: "Przesuń w lewo"
   swapRight: "Przesuń w prawo"
   swapUp: "Zamień z powyższym"
+  swapDown: "Zamień z poniższym"
+  profile: "Profil"
   _columns:
     main: "Główna"
+    widgets: "Widżety"
     notifications: "Powiadomienia"
     tl: "Oś czasu"
     antenna: "Anteny"
