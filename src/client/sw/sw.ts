@@ -83,7 +83,6 @@ self.addEventListener('message', ev => {
 
 		if (otype === 'object') {
 			if (ev.data.msg === 'initialize') {
-				console.log('initialize')
 				i = ev.data.$i;
 				i18n = new I18n(ev.data.locale);
 			}

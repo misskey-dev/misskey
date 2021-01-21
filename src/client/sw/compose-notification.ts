@@ -3,9 +3,9 @@ import getUserName from '../../misc/get-user-name';
 
 export default async function(type, data, i18n): Promise<[string, NotificationOptions] | null> {
 	if (!i18n) {
-		console.log('no i18n')
-		return null
-	};
+		console.log('no i18n');
+		return null;
+	}
 
 	switch (type) {
 		case 'driveFileCreated': // TODO (Server Side)

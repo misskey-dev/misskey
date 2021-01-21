@@ -211,8 +211,7 @@ fetchInstance().then(() => {
 				if (subscription) subscription.unsubscribe();
 			});
 		});
-
-	};
+	}
 });
 
 stream.init($i);
