@@ -967,23 +967,39 @@ _charts:
   activeUsers: "Aktywni użytkownicy"
 _instanceCharts:
   requests: "Żądania"
+  notesTotal: "Łącznie # wpisów"
+  ff: "Różnica w # obserwujących"
+  ffTotal: "Łączna liczba # obserwujących"
+  cacheSize: "Różnica w rozmiarze pamięci podręcznej"
+  cacheSizeTotal: "Łączny rozmiar pamięci podręcznej"
+  files: "Różnica # plików"
+  filesTotal: "Łącznie # plików"
 _timelines:
   home: "Strona główna"
   local: "Lokalne"
+  global: "Globalna"
 _rooms:
+  roomOf: "Pokój {user}"
+  addFurniture: "Umieść meble"
   translate: "Przenieś"
   rotate: "Obróć"
   exit: "Wróć"
   remove: "Usuń"
   clear: "Usuń wszystkie"
+  clearConfirm: "Czy na pewno chcesz usunąć wszystkie meble ze swojego pokoju?"
+  leaveConfirm: "Masz niezapisane zmiany. Czy na pewno chcesz wyjść?"
+  chooseImage: "Wybierz obraz"
+  roomType: "Typ pokoju"
   carpetColor: "Kolor dywanu"
   _roomType:
     default: "Domyślne"
     washitsu: "W japońskim stylu"
   _furnitures:
+    milk: "Karton mleka"
     bed: "Łóżko"
     desk: "Biurko"
     chair: "Krzesło"
+    chair2: "Krzesło 2"
     fan: "Chłodzenie"
     pencil: "Ołówek"
     pudding: "Budyń"
@@ -1148,6 +1164,7 @@ _pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "Reszta"
       _mod:
         arg1: "A"
         arg2: "B"
