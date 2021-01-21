@@ -1026,6 +1026,8 @@ _pages:
   chooseBlock: "Dodaj blok"
   selectType: "Wybierz typ"
   enterVariableName: "Wprowadź nazwę dla swojej zmiennej"
+  variableNameIsAlreadyUsed: "Ta nazwa jest już używana przez inną zmienną"
+  contentBlocks: "Zawartość"
   inputBlocks: "Wejście"
   specialBlocks: "Specjalne"
   blocks:
@@ -1056,7 +1058,13 @@ _pages:
       text: "Tytuł"
       default: "Domyślna wartość"
     _canvas:
+      width: "Szerokość"
       height: "Wysokość"
+    note: "Osadzony wpis"
+    _note:
+      id: "ID wpisu"
+      idDescription: "Możesz też wkleić adres URL wpisu, aby go ustawić."
+      detailed: "Szczegółowy widok"
     switch: "Przełącznik"
     _switch:
       name: "Nazwa zmiennej"
@@ -1075,12 +1083,14 @@ _pages:
         dialog: "Pokazuj okno dialogowe"
         _dialog:
           content: "Treść"
+        resetRandom: "Resetuj losowe ziarno"
         pushEvent: "Wyślij zdarzenie"
         _pushEvent:
           event: "Nazwa zdarzenia"
           message: "Wiadomość do wyświetlenia po aktywowaniu"
           variable: "Zmienna do wysłania"
           no-variable: "Brak"
+        callAiScript: "Wywołaj AiScript"
         _callAiScript:
           functionName: "Nazwa funkcji"
     radioButton: "Wybór"
@@ -1098,27 +1108,46 @@ _pages:
       random: "Losowe"
       value: "Wartość"
       fn: "Funkcje"
+      text: "Działania na tekście"
       convert: "Transformacja"
       list: "Listy"
     blocks:
       text: "Tekst"
+      multiLineText: "Tekst (w wielu wierszach)"
+      _textList:
+        info: "Oddziel każdy wpis znakiem nowego wiersza"
       strLen: "Długość tekstu"
       _strLen:
         arg1: "Tekst"
       _strPick:
         arg1: "Tekst"
+        arg2: "Położenie znaku"
+      strReplace: "Zamiana tekstu"
       _strReplace:
         arg1: "Tekst"
         arg2: "Tekst do zamiany"
+        arg3: "Zamieniono z"
       _strReverse:
         arg1: "Tekst"
       _join:
         arg1: "Listy"
         arg2: "Odstęp"
       add: "Dodaj"
+      _add:
+        arg1: "A"
+        arg2: "B"
       subtract: "Odejmij"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
       multiply: "Pomnóż"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
       divide: "Podziel"
+      _divide:
+        arg1: "A"
+        arg2: "B"
       _mod:
         arg1: "A"
         arg2: "B"
