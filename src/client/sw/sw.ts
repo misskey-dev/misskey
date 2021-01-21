@@ -4,6 +4,11 @@
 declare var self: ServiceWorkerGlobalScope;
 
 import composeNotification from '@/sw/compose-notification';
+import { I18n } from '@/scripts/i18n';
+
+export let i18n: I18n<any>;
+
+let i: string;
 
 const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
@@ -12,8 +17,6 @@ const apiUrl = `${location.origin}/api/`;
 
 // インストールされたとき
 self.addEventListener('install', ev => {
-	console.info('installed');
-
 	ev.waitUntil(
 		caches.open(cacheName)
 			.then(cache => {
@@ -59,8 +62,31 @@ self.addEventListener('push', ev => {
 		// クライアントがあったらストリームに接続しているということなので通知しない
 		if (clients.length != 0) return;
 
-		const { type, body } = ev.data.json();
+		const { type, body } = ev.data?.json();
 
-		return self.registration.showNotification(...(await composeNotification(type, body)));
+		const n = await composeNotification(type, body, i18n);
+		if (n) return self.registration.showNotification(...n);
 	}));
+});
+
+// クライアントのpostMessageを処理します
+self.addEventListener('message', ev => {
+	switch(ev.data) {
+		case 'clear':
+			return; // TODO
+		default:
+			break;
+	}
+
+	if (typeof ev.data === 'object') {
+		const otype = Object.prototype.toString.call(ev.data).slice(8, -1).toLowerCase();
+
+		if (otype === 'object') {
+			if (ev.data.msg === 'initialize') {
+				console.log('initialize')
+				i = ev.data.$i;
+				i18n = new I18n(ev.data.locale);
+			}
+		}
+	}
 });

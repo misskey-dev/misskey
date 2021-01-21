@@ -1,8 +1,12 @@
 import { getNoteSummary } from '../../misc/get-note-summary';
 import getUserName from '../../misc/get-user-name';
-import { i18n } from '@/sw/i18n';
 
-export default async function(type, data): Promise<[string, NotificationOptions]> {
+export default async function(type, data, i18n): Promise<[string, NotificationOptions] | null> {
+	if (!i18n) {
+		console.log('no i18n')
+		return null
+	};
+
 	switch (type) {
 		case 'driveFileCreated': // TODO (Server Side)
 			return [i18n.t('_notification.fileUploaded'), {
