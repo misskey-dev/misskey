@@ -205,7 +205,7 @@ export class User {
 		length: 512, nullable: true,
 		comment: 'The URI of the user Follower Collection. It will be null if the origin of the user is local.'
 	})
-	public followerUri: string | null;
+	public followersUri: string | null;
 
 	@Index({ unique: true })
 	@Column('char', {
