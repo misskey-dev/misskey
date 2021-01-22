@@ -159,6 +159,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				host,
 				inbox: person.inbox,
 				sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+				followersUri: person.followers ? getApId(person.followers) : undefined,
 				featured: person.featured ? getApId(person.featured) : undefined,
 				uri: person.id,
 				tags,
