@@ -14,7 +14,7 @@ const apiUrl = `${location.origin}/api/`;
 
 let lang: string;
 let i18n: I18n<any>;
-const pushesPool = [] as any[];
+let pushesPool: any[] = [];
 //#endregion
 
 //#region Startup
@@ -120,6 +120,7 @@ async function fetchLocale() {
 		const n = await composeNotification(type, body, i18n);
 		if (n) self.registration.showNotification(...n);
 	}
+	pushesPool = [];
 	//#endregion
 }
 //#endregion
