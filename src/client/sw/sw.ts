@@ -83,9 +83,7 @@ self.addEventListener('push', ev => {
 		if (!i18n) return pushesPool.push({ type, body });
 
 		const n = await composeNotification(type, body, i18n);
-
 		if (n) return self.registration.showNotification(...n);
-		
 	}));
 });
 //#endregion
@@ -105,9 +103,7 @@ self.addEventListener('message', ev => {
 		if (otype === 'object') {
 			if (ev.data.msg === 'initialize') {
 				lang = ev.data.lang;
-
 				set('lang', lang);
-
 				fetchLocale();
 			}
 		}
