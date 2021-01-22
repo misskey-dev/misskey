@@ -201,6 +201,12 @@ export class User {
 	})
 	public uri: string | null;
 
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The URI of the user Follower Collection. It will be null if the origin of the user is local.'
+	})
+	public followerUri: string | null;
+
 	@Index({ unique: true })
 	@Column('char', {
 		length: 16, nullable: true, unique: true,
