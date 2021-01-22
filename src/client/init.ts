@@ -44,7 +44,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, host, locale } from '@/config';
+import { version, ui, lang, host } from '@/config';
 import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
@@ -178,8 +178,7 @@ fetchInstance().then(() => {
 		navigator.serviceWorker.ready.then(registration => {
 			registration.active?.postMessage({
 				msg: 'initialize',
-				locale,
-				i: toRaw($i),
+				lang,
 			});
 			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			registration.pushManager.subscribe({

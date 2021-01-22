@@ -1,10 +1,15 @@
+/**
+ * Notification composer of Service Worker
+ */
+declare var self: ServiceWorkerGlobalScope;
+
 import { getNoteSummary } from '../../misc/get-note-summary';
 import getUserName from '../../misc/get-user-name';
 
-export default async function(type, data, i18n): Promise<[string, NotificationOptions] | null> {
+export default async function(type, data, i18n): Promise<[string, NotificationOptions] | null | undefined> {
 	if (!i18n) {
 		console.log('no i18n');
-		return null;
+		return;
 	}
 
 	switch (type) {

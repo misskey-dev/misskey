@@ -73,7 +73,7 @@
 	//#endregion
 
 	//#region Service Worker
-	navigator.serviceWorker.register(`/sw.${v}.js`);
+	navigator.serviceWorker.register(`/sw.js`);
 	//#endregion
 
 	//#region Theme

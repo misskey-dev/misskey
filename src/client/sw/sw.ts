@@ -3,19 +3,29 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
+import { get, set } from 'idb-keyval';
 import composeNotification from '@/sw/compose-notification';
 import { I18n } from '@/scripts/i18n';
 
-export let i18n: I18n<any>;
-
-let i: string;
-
+//#region Variables
 const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
-
 const apiUrl = `${location.origin}/api/`;
 
-// インストールされたとき
+let lang: string;
+let i18n: I18n<any>;
+const pushesPool = [] as any[];
+//#endregion
+
+//#region Startup
+get('lang').then(async prelang => {
+	if (!prelang) return;
+	lang = prelang;
+	return fetchLocale();
+});
+//#endregion
+
+//#region Lifecycle: Install
 self.addEventListener('install', ev => {
 	ev.waitUntil(
 		caches.open(cacheName)
@@ -27,7 +37,9 @@ self.addEventListener('install', ev => {
 			.then(() => self.skipWaiting())
 	);
 });
+//#endregion
 
+//#region Lifecycle: Activate
 self.addEventListener('activate', ev => {
 	ev.waitUntil(
 		caches.keys()
@@ -39,7 +51,9 @@ self.addEventListener('activate', ev => {
 			.then(() => self.clients.claim())
 	);
 });
+//#endregion
 
+//#region When: Fetching
 self.addEventListener('fetch', ev => {
 	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return;
 	ev.respondWith(
@@ -52,8 +66,9 @@ self.addEventListener('fetch', ev => {
 			})
 	);
 });
+//#endregion
 
-// プッシュ通知を受け取ったとき
+//#region When: Caught Notification
 self.addEventListener('push', ev => {
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
@@ -64,12 +79,18 @@ self.addEventListener('push', ev => {
 
 		const { type, body } = ev.data?.json();
 
+		// localeを読み込めておらずi18nがundefinedだった場合はpushesPoolにためておく
+		if (!i18n) return pushesPool.push({ type, body });
+
 		const n = await composeNotification(type, body, i18n);
+
 		if (n) return self.registration.showNotification(...n);
+		
 	}));
 });
+//#endregion
 
-// クライアントのpostMessageを処理します
+//#region When: Caught a message from the client
 self.addEventListener('message', ev => {
 	switch(ev.data) {
 		case 'clear':
@@ -83,9 +104,26 @@ self.addEventListener('message', ev => {
 
 		if (otype === 'object') {
 			if (ev.data.msg === 'initialize') {
-				i = ev.data.$i;
-				i18n = new I18n(ev.data.locale);
+				lang = ev.data.lang;
+
+				set('lang', lang);
+
+				fetchLocale();
 			}
 		}
 	}
 });
+//#endregion
+
+//#region Function: (Re)Load i18n instance
+async function fetchLocale() {
+	i18n = new I18n(await (await fetch(`/assets/locales/${lang}.${version}.json`)).json());
+
+	//#region i18nをきちんと読み込んだ後にやりたい処理
+	for (const { type, body } of pushesPool) {
+		const n = await composeNotification(type, body, i18n);
+		if (n) self.registration.showNotification(...n);
+	}
+	//#endregion
+}
+//#endregion
