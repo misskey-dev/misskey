@@ -52,10 +52,10 @@
 					<span class="localOnly" v-if="appearNote.localOnly"><Fa :icon="faBiohazard"/></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
+				<MkInstanceTicker class="ticker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div class="main">
-			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
@@ -1005,6 +1005,7 @@ export default defineComponent({
 				flex-direction: column;
 				justify-content: center;
 				padding-left: 16px;
+				font-size: 0.95em;
 
 				> .top {
 					> .name {

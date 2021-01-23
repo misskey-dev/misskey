@@ -16,5 +16,6 @@
 		mention: '@accent',
 		hashtag: '@accent',
 		inputBorder: 'rgba(0, 0, 0, 0.1)',
+		infoBg: 'rgb(226, 235, 241)',
 	},
 }
