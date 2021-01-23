@@ -113,7 +113,21 @@ self.addEventListener('message', ev => {
 
 //#region Function: (Re)Load i18n instance
 async function fetchLocale() {
-	i18n = new I18n(await (await fetch(`/assets/locales/${lang}.${version}.json`)).json());
+	//#region localeファイルの読み込み
+	// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
+	const localeUrl = `/assets/locales/${lang}.${version}.json`;
+	let localeRes = await caches.match(localeUrl);
+
+	if (!localeRes) {
+		localeRes = await fetch(localeUrl);
+		const clone = localeRes?.clone()
+		if (!clone?.clone().ok) return;
+
+		caches.open(cacheName).then(cache => cache.put(localeUrl, clone));
+	}
+
+	i18n = new I18n(await localeRes.json());
+	//#endregion
 
 	//#region i18nをきちんと読み込んだ後にやりたい処理
 	for (const { type, body } of pushesPool) {
