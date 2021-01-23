@@ -97,7 +97,8 @@ export default defineComponent({
 				},
 				tooltip: {
 					shared: true,
-					intersect: false
+					intersect: false,
+					theme: this.$store.state.darkMode ? 'dark' : 'light',
 				},
 				series: [{
 					name: 'Normal',

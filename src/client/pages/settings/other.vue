@@ -1,5 +1,7 @@
 <template>
 <FormBase>
+	<FormLink to="/settings/update">Misskey Update</FormLink>
+
 	<FormSwitch :value="$i.injectFeaturedNote" @update:value="onChangeInjectFeaturedNote">
 		{{ $ts.showFeaturedNotesInTimeline }}
 	</FormSwitch>

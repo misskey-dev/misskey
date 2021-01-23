@@ -41,5 +41,5 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchKey);
 	}
 
-	RegistryItems.remove(item);
+	await RegistryItems.remove(item);
 });

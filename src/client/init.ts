@@ -60,8 +60,6 @@ import { getThemes } from './theme-store';
 
 console.info(`Misskey v${version}`);
 
-window.clearTimeout((window as any).mkBootTimer);
-
 if (_DEV_) {
 	console.warn('Development mode!!!');
 
@@ -170,6 +168,8 @@ if ($i && $i.token) {
 //#endregion
 
 fetchInstance().then(() => {
+	localStorage.setItem('v', instance.version);
+
 	// Init service worker
 	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
 });
