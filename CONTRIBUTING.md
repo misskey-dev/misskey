@@ -41,8 +41,8 @@ Documentation of Vue I18n is available at http://kazupon.github.io/vue-i18n/intr
 * Test codes are located in [`/test`](/test).
 
 ## Continuous integration
-Misskey uses CircleCI for executing automated tests.
-Configuration files are located in [`/.circleci`](/.circleci).
+Misskey uses GitHub Actions for executing automated tests.
+Configuration files are located in [`/.github/workflows`](/.github/workflows).
 
 ## Adding MisskeyRoom items
 * Use English for material, object and texture names.
