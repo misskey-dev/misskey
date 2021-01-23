@@ -86,8 +86,7 @@ function isPublic(id: string) {
 }
 
 function isFollowers(id: string, actor: IRemoteUser) {
-	return [
-		`${actor.uri}/followers`,
-		actor.followersUri,
-	].includes(id);
+	return (
+	  id == (actor.followersUri ? actor.followersUri : `${actor.uri}/followers`
+	);
 }
