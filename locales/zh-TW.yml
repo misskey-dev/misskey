@@ -671,6 +671,7 @@ _registry:
   scope: "範圍"
   key: "主要"
   keys: "主要"
+  domain: "域"
   createKey: "新增機碼"
 _aboutMisskey:
   about: "Misskey是由syuilo於2014年開發的開源軟件。"
@@ -1340,6 +1341,7 @@ _pages:
     types:
       string: "文字"
       number: "数值"
+      boolean: "標記"
       array: "清單"
       stringArray: "文本列表"
     enviromentVariables: "環境變數"
