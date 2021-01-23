@@ -331,7 +331,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
 		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
-		followersUri: person.followers,
+		followersUri: person.followers ? getApId(person.followers) : undefined,
 		featured: person.featured,
 		emojis: emojiNames,
 		name: person.name,
