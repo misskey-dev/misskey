@@ -68,4 +68,12 @@ export class GalleryPost {
 		length: 128, array: true, default: '{}'
 	})
 	public tags: string[];
+
+	constructor(data: Partial<GalleryPost>) {
+		if (data == null) return;
+
+		for (const [k, v] of Object.entries(data)) {
+			(this as any)[k] = v;
+		}
+	}
 }
