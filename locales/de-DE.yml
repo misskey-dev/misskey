@@ -692,6 +692,8 @@ deleteConfirm: "Wirklich löschen?"
 invalidValue: "Ungültiger Wert."
 registry: "Registry"
 closeAccount: "Benutzerkonto schließen"
+capacity: "Kapazität"
+inUse: "Verwendet"
 _registry:
   scope: "Scope"
   key: "Schlüssel"
