@@ -696,6 +696,9 @@ currentVersion: "現在のバージョン"
 latestVersion: "最新のバージョン"
 youAreRunningUpToDateClient: "お使いのクライアントは最新です。"
 newVersionOfClientAvailable: "新しいバージョンのクライアントが利用可能です。"
+usageAmount: "使用量"
+capacity: "容量"
+inUse: "使用中"
 
 _registry:
   scope: "スコープ"
