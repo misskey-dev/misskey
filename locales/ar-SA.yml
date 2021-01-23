@@ -421,6 +421,8 @@ display: "المظهر"
 copy: "نسخ"
 metrics: "المقاييس"
 public: "للعامة"
+currentVersion: "الإصدار الحالي"
+latestVersion: "آخر نسخة مستقرة"
 _mfm:
   mention: "أشر الى"
   quote: "اقتبس"
