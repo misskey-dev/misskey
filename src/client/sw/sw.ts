@@ -120,7 +120,7 @@ async function fetchLocale() {
 
 	if (!localeRes) {
 		localeRes = await fetch(localeUrl);
-		const clone = localeRes?.clone()
+		const clone = localeRes?.clone();
 		if (!clone?.clone().ok) return;
 
 		caches.open(cacheName).then(cache => cache.put(localeUrl, clone));
