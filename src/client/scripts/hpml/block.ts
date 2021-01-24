@@ -105,5 +105,5 @@ export type VarBlock =
 
 const varBlock = ['numberInput', 'textInput', 'switch', 'radioButton', 'counter'];
 export function isVarBlock(block: Block): block is VarBlock {
-	return varBlock.find(v => v == block.type) !== undefined;
+	return varBlock.includes(block.type);
 }
