@@ -173,8 +173,10 @@ fetchInstance().then(() => {
 	// Init service worker
 	if (instance.swPublickey &&
 		('serviceWorker' in navigator) &&
-		('PushManager' in window) && $i && $i.token
-		) {
+		('PushManager' in window) &&
+		$i && $i.token) {
+		navigator.serviceWorker.register(`/sw.js`);
+
 		navigator.serviceWorker.ready.then(registration => {
 			registration.active?.postMessage({
 				msg: 'initialize',

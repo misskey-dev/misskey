@@ -72,10 +72,6 @@
 	head.appendChild(script);
 	//#endregion
 
-	//#region Service Worker
-	navigator.serviceWorker.register(`/sw.js`);
-	//#endregion
-
 	//#region Theme
 	const theme = localStorage.getItem('theme');
 	if (theme) {

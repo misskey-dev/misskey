@@ -98,6 +98,7 @@ self.addEventListener('message', ev => {
 	}
 
 	if (typeof ev.data === 'object') {
+		// E.g. '[object Array]' → 'array'
 		const otype = Object.prototype.toString.call(ev.data).slice(8, -1).toLowerCase();
 
 		if (otype === 'object') {
