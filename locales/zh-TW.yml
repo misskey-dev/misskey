@@ -672,8 +672,8 @@ capacity: "容量"
 inUse: "已使用"
 _registry:
   scope: "範圍"
-  key: "主要"
-  keys: "主要"
+  key: "機碼"
+  keys: "機碼"
   domain: "域"
   createKey: "新增機碼"
 _aboutMisskey:
