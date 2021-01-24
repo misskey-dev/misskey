@@ -1,14 +1,14 @@
-# キーボードショートカット
+# 鍵盤快速鍵
 
 ## 公開
-これらのショートカットは基本的にどこでも使えます。
+這些快捷方式基本上可以在任何地方使用。
 <table>
     <thead>
         <tr><th>快速鍵</th><th>功能</th><th>由來</th></tr>
     </thead>
     <tbody>
         <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>發佈箋文</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
-        <tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
+        <tr><td><kbd class="key">T</kbd></td><td>轉跳至時間軸最新發佈的內容</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>顯示/隱藏通知</td><td><b>N</b>otifications</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>搜尋</td><td><b>S</b>earch</td></tr>
         <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>取得說明</td><td><b>H</b>elp</td></tr>
