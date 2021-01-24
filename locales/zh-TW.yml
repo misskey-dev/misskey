@@ -699,6 +699,8 @@ _mfm:
   bold: "粗體"
   small: "縮小"
   center: "置中"
+  inlineCode: "程式碼(内嵌)"
+  blockCode: "程式碼(區塊)"
   inlineMath: "數學公式(內嵌)"
   inlineMathDescription: "顯示內嵌的KaTex數學公式。"
   blockMath: "數學公式(方塊)"
