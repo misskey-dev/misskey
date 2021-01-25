@@ -487,6 +487,7 @@ objectStorageUseSSLDesc: "Turn off this if you are not going to use HTTPS for AP
 objectStorageUseProxy: "Connect over Proxy"
 objectStorageUseProxyDesc: "Turn off this if you are not going to use Proxy for ObjectStorage connection"
 objectStorageSetPublicRead: "Set \"public-read\" on upload"
+objectStorageForcePathStyle: "Use \"Path Style\" to access Object Storage APIs"
 serverLogs: "Server logs"
 deleteAll: "Delete all"
 showFixedPostForm: "Display the posting form at the top of the timeline"

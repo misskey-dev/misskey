@@ -438,6 +438,10 @@ export const meta = {
 
 		objectStorageSetPublicRead: {
 			validator: $.optional.bool
+		},
+
+		objectStorageForcePathStyle: {
+			validator: $.optional.bool
 		}
 	}
 };
@@ -711,6 +715,10 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.objectStorageSetPublicRead !== undefined) {
 		set.objectStorageSetPublicRead = ps.objectStorageSetPublicRead;
+	}
+
+	if (ps.objectStorageForcePathStyle !== undefined) {
+		set.objectStorageForcePathStyle = ps.objectStorageForcePathStyle;
 	}
 
 	await getConnection().transaction(async transactionalEntityManager => {
