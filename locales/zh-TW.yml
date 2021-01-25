@@ -1135,8 +1135,8 @@ _pages:
   inputBlocks: "輸入"
   specialBlocks: "特殊"
   blocks:
-    text: "文本"
-    textarea: "文字區域"
+    text: "字串"
+    textarea: "字串區域"
     section: "區段"
     image: "圖片"
     button: "按鈕"
@@ -1147,7 +1147,7 @@ _pages:
     _post:
       text: "内容"
       canvasId: "畫布ID"
-    textInput: "插入文字"
+    textInput: "插入字串"
     _textInput:
       name: "變數名稱"
       text: "標題"
@@ -1224,13 +1224,13 @@ _pages:
       _strPick:
         arg1: "文本"
         arg2: "字元位置"
-      strReplace: "替換文字"
+      strReplace: "替換字串"
       _strReplace:
         arg1: "文本"
-      strReverse: "倒轉文字"
+      strReverse: "倒轉字串"
       _strReverse:
         arg1: "本文"
-      join: "合併文字"
+      join: "合併字串"
       _join:
         arg1: "清單"
         arg2: "分隔字元"
@@ -1335,12 +1335,15 @@ _pages:
       _listLen:
         arg1: "清單"
       number: "數值"
+      stringToNumber: "將字串轉換至數値"
       _stringToNumber:
-        arg1: "文字"
+        arg1: "字串"
+      numberToString: "將數値轉換至字串"
       _numberToString:
         arg1: "數值"
+      splitStrByLine: "於換行時分割字串"
       _splitStrByLine:
-        arg1: "文本"
+        arg1: "字串"
       ref: "變數"
       aiScriptVar: "AiScript的變數"
       fn: "函数"
@@ -1350,11 +1353,11 @@ _pages:
         arg1: "重複次數"
         arg2: "處理"
     types:
-      string: "文字"
+      string: "字串"
       number: "数值"
       boolean: "標記"
       array: "清單"
-      stringArray: "文本列表"
+      stringArray: "字串列表"
     enviromentVariables: "環境變數"
     pageVariables: "頁面元素"
 _relayStatus:
