@@ -175,6 +175,7 @@
 				<MkSwitch v-model:value="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $ts.objectStorageUseSSL }}<template #desc>{{ $ts.objectStorageUseSSLDesc }}</template></MkSwitch>
 				<MkSwitch v-model:value="objectStorageUseProxy" :disabled="!useObjectStorage">{{ $ts.objectStorageUseProxy }}<template #desc>{{ $ts.objectStorageUseProxyDesc }}</template></MkSwitch>
 				<MkSwitch v-model:value="objectStorageSetPublicRead" :disabled="!useObjectStorage">{{ $ts.objectStorageSetPublicRead }}</MkSwitch>
+				<MkSwitch v-model:value="objectStorageS3ForcePathStyle" :disabled="!useObjectStorage">s3ForcePathStyle</MkSwitch>
 			</template>
 		</div>
 		<div class="_footer">
@@ -325,6 +326,7 @@ export default defineComponent({
 			objectStorageUseSSL: false,
 			objectStorageUseProxy: false,
 			objectStorageSetPublicRead: false,
+			objectStorageS3ForcePathStyle: true,
 			enableTwitterIntegration: false,
 			twitterConsumerKey: null,
 			twitterConsumerSecret: null,
@@ -393,6 +395,7 @@ export default defineComponent({
 		this.objectStorageUseSSL = this.meta.objectStorageUseSSL;
 		this.objectStorageUseProxy = this.meta.objectStorageUseProxy;
 		this.objectStorageSetPublicRead = this.meta.objectStorageSetPublicRead;
+		this.objectStorageS3ForcePathStyle = this.meta.objectStorageS3ForcePathStyle;
 		this.enableTwitterIntegration = this.meta.enableTwitterIntegration;
 		this.twitterConsumerKey = this.meta.twitterConsumerKey;
 		this.twitterConsumerSecret = this.meta.twitterConsumerSecret;
@@ -547,6 +550,7 @@ export default defineComponent({
 				objectStorageUseSSL: this.objectStorageUseSSL,
 				objectStorageUseProxy: this.objectStorageUseProxy,
 				objectStorageSetPublicRead: this.objectStorageSetPublicRead,
+				objectStorageS3ForcePathStyle: this.objectStorageS3ForcePathStyle,
 				enableTwitterIntegration: this.enableTwitterIntegration,
 				twitterConsumerKey: this.twitterConsumerKey,
 				twitterConsumerSecret: this.twitterConsumerSecret,
