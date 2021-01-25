@@ -33,7 +33,7 @@
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>刪除箋文</td><td><b>D</b>elete</tr>
         <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>顯示箋文選單</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>隱藏或顯示敏感媒體</td><td><b>S</b>how, <b>S</b>ee</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォーカスを外す</td><td>-</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>取消選取</td><td>-</td></tr>
     </tbody>
 </table>
 
