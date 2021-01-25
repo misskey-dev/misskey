@@ -1217,7 +1217,7 @@ _pages:
       text: "文本"
       multiLineText: "文本 (多行)"
       textList: "文本列表"
-      strLen: "文字長度"
+      strLen: "字串長度"
       _strLen:
         arg1: "文本"
       strPick: "提取字元"
@@ -1230,6 +1230,7 @@ _pages:
       strReverse: "倒轉文字"
       _strReverse:
         arg1: "本文"
+      join: "合併文字"
       _join:
         arg1: "清單"
         arg2: "分隔字元"
