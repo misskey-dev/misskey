@@ -1217,14 +1217,17 @@ _pages:
       text: "文本"
       multiLineText: "文本 (多行)"
       textList: "文本列表"
+      strLen: "文字長度"
       _strLen:
         arg1: "文本"
       strPick: "提取字元"
       _strPick:
         arg1: "文本"
         arg2: "字元位置"
+      strReplace: "替換文字"
       _strReplace:
         arg1: "文本"
+      strReverse: "倒轉文字"
       _strReverse:
         arg1: "本文"
       _join:
