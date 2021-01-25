@@ -29,7 +29,7 @@
         <tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>即刻Renoteする(フォームを開かずに)</td><td>-</td></tr>
         <tr><td><kbd class="key">E</kbd>, <kbd class="key">A</kbd>, <kbd class="key">+</kbd></td><td>リアクションフォームを開く</td><td><b>E</b>mote, re<b>A</b>ction</td></tr>
         <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションをする(対応については後述)</td><td>-</td></tr>
-        <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>お気に入りに登録</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
+        <tr><td><kbd class="key">F</kbd>, <kbd class="key">B</kbd></td><td>加入至我的最愛</td><td><b>F</b>avorite, <b>B</b>ookmark</td></tr>
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>刪除箋文</td><td><b>D</b>elete</tr>
         <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>顯示箋文選單</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>隱藏或顯示敏感媒體</td><td><b>S</b>how, <b>S</b>ee</td></tr>
