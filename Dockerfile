@@ -21,7 +21,7 @@ RUN apk add --no-cache \
     python \
     zlib-dev
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc ./
 RUN yarn install
 COPY . ./
 RUN yarn build

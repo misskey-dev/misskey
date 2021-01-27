@@ -209,8 +209,8 @@ type Plugin = {
 export class ColdDeviceStorage {
 	public static default = {
 		themes: [] as Theme[], // TODO: そのうち消す
-		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
-		lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
+		darkTheme: '2503c57e-c034-409a-929a-9a62da5ba6df',
+		lightTheme: 'c9741a58-c8a0-4e83-9ea1-1a52d140726b',
 		syncDeviceDarkMode: true,
 		chatOpenBehavior: 'page' as 'page' | 'window' | 'popout',
 		plugins: [] as Plugin[],

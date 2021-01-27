@@ -705,7 +705,7 @@ export default defineComponent({
 
 						&.diff.inc {
 							> dd {
-								color: #82c11c;
+								color: #1c64c1;
 
 								&:before {
 									content: "+";

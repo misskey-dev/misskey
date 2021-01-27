@@ -3,48 +3,42 @@ version: "3"
 services:
   web:
     build: .
-    restart: always
+    # restart: always 
+    # image: nyaone/misskey:latest 
+    container_name: misskey_web 
     links:
       - db
       - redis
-#      - es
     ports:
       - "127.0.0.1:3000:3000"
     networks:
       - internal_network
       - external_network
     volumes:
-      - ./files:/misskey/files
+      - ./config:/misskey/.config:ro 
+      - ./files:/misskey/files 
 
   redis:
     restart: always
-    image: redis:4.0-alpine
+    image: redis:latest
+    container_name: misskey_redis
     networks:
       - internal_network
     volumes:
-      - ./redis:/data
+      - ./redis:/data 
 
   db:
     restart: always
     image: postgres:12.2-alpine
+    container_name: misskey_db
     networks:
       - internal_network
     env_file:
-      - .config/docker.env
+      - ./config/docker.env 
     volumes:
-      - ./db:/var/lib/postgresql/data
-
-#  es:
-#    restart: always
-#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
-#    environment:
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    networks:
-#      - internal_network
-#    volumes:
-#      - ./elasticsearch:/usr/share/elasticsearch/data
+      - ./db:/var/lib/postgresql/data 
 
 networks:
-  internal_network:
+  internal_network: 
     internal: true
-  external_network:
+  external_network: 

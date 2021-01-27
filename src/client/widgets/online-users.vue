@@ -56,7 +56,7 @@ export default defineComponent({
 
 	> .text {
 		::v-deep(b) {
-			color: #41b781;
+			color: #4181b7;
 		}
 
 		::v-deep(span) {

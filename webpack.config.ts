@@ -143,6 +143,9 @@ module.exports = {
 		}),
 		new VueLoaderPlugin(),
 		new WebpackOnBuildPlugin((stats: any) => {
+			if (!fs.existsSync('./built')) {
+				fs.mkdirSync('./built');
+			}
 			fs.writeFileSync('./built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
 		}),
 	],
