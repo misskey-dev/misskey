@@ -85,7 +85,7 @@ makeFollowManuallyApprove: "ええって言わなフォローできへんよう�
 defaultNoteVisibility: "もとからの公開範囲"
 follow: "フォロー"
 followRequest: "フォローを頼む"
-followRequests: "フォローを頼む"
+followRequests: "フォロー申請"
 unfollow: "フォローやめる"
 followRequestPending: "フォロー許してくれるん待っとる"
 enterEmoji: "絵文字を入れてや"
