@@ -465,6 +465,7 @@ pageLikesCount: "Pageにええやんと思った数"
 pageLikedCount: "Pageにええやんと思ってくれた数"
 reloadToApplySetting: "設定はページリロード後に反映されるで。今リロードしとくか？"
 clearCache: "キャッシュをなおす"
+sendErrorReportsDescription: "オンにしたら、なんか変なことが起きたときにエラーの詳細がMisskeyに共有されて、ソフトウェアの品質向上に役立てられるんや。エラー情報には、OSのバージョン、ブラウザの種類、行動履歴などが含まれるで。"
 youAreRunningUpToDateClient: "今使ってるクライアントが最新やで！"
 newVersionOfClientAvailable: "新しいバージョンのクライアントが使えるで。"
 _mfm:
