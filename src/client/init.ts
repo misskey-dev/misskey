@@ -38,6 +38,11 @@ if (localStorage.getItem('vuex') != null) {
 	location.reload();
 }
 
+if (localStorage.getItem('accounts') != null) {
+	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	localStorage.removeItem('accounts');
+}
+
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { createApp, toRaw, watch } from 'vue';

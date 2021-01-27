@@ -44,9 +44,8 @@ export async function signout() {
 	else location.href = '/';
 }
 
-export async function getAccounts() {
-	const accounts: { id: Account['id'], token: Account['token'] }[] = (await get('accounts')) || [];
-	return accounts;
+export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
+	return (await get('accounts')) || [];
 }
 
 export async function addAccount(id: Account['id'], token: Account['token']) {
