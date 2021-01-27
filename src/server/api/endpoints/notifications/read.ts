@@ -1,6 +1,5 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import { readNotification } from '../../common/read-notification';
 
