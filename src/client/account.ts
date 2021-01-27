@@ -1,3 +1,4 @@
+import { get, set } from 'idb-keyval';
 import { reactive } from 'vue';
 import { apiUrl } from '@/config';
 import { waiting } from '@/os';
@@ -14,22 +15,44 @@ const data = localStorage.getItem('account');
 // TODO: 外部からはreadonlyに
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 
-export function signout() {
+export async function signout() {
 	localStorage.removeItem('account');
+
+	//#region Remove account
+	const accounts = await getAccounts();
+	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1)
+	set('accounts', JSON.stringify(accounts));
+	//#endregion
+
+	//#region Remove push notification registration
+	await navigator.serviceWorker.ready.then(async r => {
+		const push = await r.pushManager.getSubscription()
+		if (!push) return;
+		return fetch(`${apiUrl}/sw/unregister`, {
+			method: 'POST',
+			body: JSON.stringify({
+				i: $i.token,
+				endpoint: push.endpoint,
+			}),
+		});
+	});
+	//#endregion
+
 	document.cookie = `igi=; path=/`;
-	location.href = '/';
+	
+	if (accounts.length > 0) login(accounts[0].token);
+	else location.href = '/';
 }
 
-export function getAccounts() {
-	const accountsData = localStorage.getItem('accounts');
-	const accounts: { id: Account['id'], token: Account['token'] }[] = accountsData ? JSON.parse(accountsData) : [];
+export async function getAccounts() {
+	const accounts: { id: Account['id'], token: Account['token'] }[] = (await get('accounts')) || [];
 	return accounts;
 }
 
-export function addAccount(id: Account['id'], token: Account['token']) {
-	const accounts = getAccounts();
+export async function addAccount(id: Account['id'], token: Account['token']) {
+	const accounts = await getAccounts();
 	if (!accounts.some(x => x.id === id)) {
-		localStorage.setItem('accounts', JSON.stringify(accounts.concat([{ id, token }])));
+		return set('accounts', accounts.concat([{ id, token }]));
 	}
 }
 
@@ -68,13 +91,15 @@ export function refreshAccount() {
 	fetchAccount($i.token).then(updateAccount);
 }
 
-export async function login(token: Account['token']) {
+export async function login(token: Account['token'], showTimeline?: boolean) {
 	waiting();
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
-	addAccount(me.id, token);
-	location.reload();
+	await addAccount(me.id, token);
+
+	if (showTimeline) location.href = '/';
+	else location.reload();
 }
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない

@@ -4,6 +4,8 @@
 
 import '@/style.scss';
 
+import { set } from 'idb-keyval';
+
 // TODO: そのうち消す
 if (localStorage.getItem('vuex') != null) {
 	const vuex = JSON.parse(localStorage.getItem('vuex'));
@@ -12,7 +14,7 @@ if (localStorage.getItem('vuex') != null) {
 		...vuex.i,
 		token: localStorage.getItem('i')
 	}));
-	localStorage.setItem('accounts', JSON.stringify(vuex.device.accounts));
+	set('accounts', JSON.parse(JSON.stringify(vuex.device.accounts)));
 	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
 
 	for (const [k, v] of 	Object.entries(vuex.device.userData)) {
@@ -153,7 +155,6 @@ if ($i && $i.token) {
 		try {
 			document.body.innerHTML = '<div>Please wait...</div>';
 			await login(i);
-			location.reload();
 		} catch (e) {
 			// Render the error screen
 			// TODO: ちゃんとしたコンポーネントをレンダリングする(v10とかのトラブルシューティングゲーム付きのやつみたいな)

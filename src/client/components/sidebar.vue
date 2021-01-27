@@ -128,7 +128,7 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const storedAccounts = getAccounts();
+			const storedAccounts = await getAccounts();
 			const accounts = (await os.api('users/show', { userIds: storedAccounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
 
 			const accountItems = accounts.map(account => ({
@@ -225,7 +225,7 @@ export default defineComponent({
 
 		addAcount() {
 			os.popup(import('./signin-dialog.vue'), {}, {
-				done: res => {
+				done: async res => {
 					addAccount(res.id, res.i);
 					os.success();
 				},
@@ -234,15 +234,15 @@ export default defineComponent({
 
 		createAccount() {
 			os.popup(import('./signup-dialog.vue'), {}, {
-				done: res => {
-					addAccount(res.id, res.i);
+				done: async res => {
+					await addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
 				},
 			}, 'closed');
 		},
 
-		switchAccount(account: any) {
-			const storedAccounts = getAccounts();
+		async switchAccount(account: any) {
+			const storedAccounts = await getAccounts();
 			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},

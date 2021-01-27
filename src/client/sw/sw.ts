@@ -74,17 +74,66 @@ self.addEventListener('push', ev => {
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true
 	}).then(async clients => {
-		// クライアントがあったらストリームに接続しているということなので通知しない
-		if (clients.length != 0) return;
+		// // クライアントがあったらストリームに接続しているということなので通知しない
+		// if (clients.length != 0) return;
 
-		const { type, body } = ev.data?.json();
+		const data = ev.data?.json();
 
 		// localeを読み込めておらずi18nがundefinedだった場合はpushesPoolにためておく
-		if (!i18n) return pushesPool.push({ type, body });
+		if (!i18n) return pushesPool.push(data);
 
-		const n = await composeNotification(type, body, i18n);
+		const n = await composeNotification(data, i18n);
 		if (n) return self.registration.showNotification(...n);
 	}));
+});
+//#endregion
+
+//#region Notification
+self.addEventListener('notificationclick', ev => {
+	const { action, notification } = ev;
+	const { data } = notification;
+	const { origin } = location;
+
+	switch (action) {
+		case 'showUser':
+			switch (data.body.type) {
+				case 'reaction':
+					self.clients.openWindow(`${origin}/users/${data.body.user.id}`);
+					break;
+
+				default:
+					if ('note' in data.body) {
+						self.clients.openWindow(`${origin}/notes/${data.body.note.id}`);
+					}
+			}
+			break;
+		default:
+	}
+
+	notification.close();
+});
+
+self.addEventListener('notificationclose', async ev => {
+	self.registration.showNotification('notificationclose');
+	const { notification } = ev;
+	const { data } = notification
+
+	if (data.isNotification) {
+		const { origin } = location;
+
+		const accounts = await get('accounts');
+		const account = accounts.find(i => i.id === data.userId);
+
+		if (!account) return;
+
+		fetch(`${origin}/api/notifications/read`, {
+			method: 'POST',
+			body: JSON.stringify({
+				i: account.token,
+				notificationIds: [data.data.id]
+			})
+		});
+	}
 });
 //#endregion
 
@@ -131,8 +180,8 @@ async function fetchLocale() {
 	//#endregion
 
 	//#region i18nをきちんと読み込んだ後にやりたい処理
-	for (const { type, body } of pushesPool) {
-		const n = await composeNotification(type, body, i18n);
+	for (const data of pushesPool) {
+		const n = await composeNotification(data, i18n);
 		if (n) self.registration.showNotification(...n);
 	}
 	pushesPool = [];

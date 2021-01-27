@@ -33,7 +33,7 @@ export default async function(userId: string, type: notificationType, body: noti
 		};
 
 		push.sendNotification(pushSubscription, JSON.stringify({
-			type, body
+			type, body, userId
 		}), {
 			proxy: config.proxy
 		}).catch((err: any) => {
