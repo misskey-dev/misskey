@@ -459,6 +459,7 @@ pluginInstallWarn: "信頼できへんプラグインはインストールせん
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
+reloadToApplySetting: "設定はページリロード後に反映されるで。今リロードしとくか？"
 clearCache: "キャッシュをなおす"
 youAreRunningUpToDateClient: "今使ってるクライアントは最新やな。"
 newVersionOfClientAvailable: "新しいバージョンのクライアントが使えるで。"
@@ -493,8 +494,10 @@ _time:
   minute: "分"
   hour: "時間"
   day: "日"
+_tutorial:
+  step3_1: "プロフィール設定はええ感じにできたか？"
 _2fa:
-  alreadyRegistered: "もう設定終わっとるわ"
+  alreadyRegistered: "もう設定終わっとるわ。"
 _auth:
   permissionAsk: "このアプリは次の権限を要求しとるで"
 _antennaSources:
