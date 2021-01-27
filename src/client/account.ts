@@ -50,6 +50,7 @@ export async function getAccounts(): Promise<{ id: Account['id'], token: Account
 
 export async function addAccount(id: Account['id'], token: Account['token']) {
 	const accounts = await getAccounts();
+	console.log(accounts);
 	if (!accounts.some(x => x.id === id)) {
 		return set('accounts', accounts.concat([{ id, token }]));
 	}
