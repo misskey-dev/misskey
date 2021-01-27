@@ -116,7 +116,7 @@ self.addEventListener('notificationclick', ev => {
 self.addEventListener('notificationclose', async ev => {
 	self.registration.showNotification('notificationclose');
 	const { notification } = ev;
-	const { data } = notification
+	const { data } = notification;
 
 	if (data.isNotification) {
 		const { origin } = location;

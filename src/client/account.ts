@@ -20,13 +20,13 @@ export async function signout() {
 
 	//#region Remove account
 	const accounts = await getAccounts();
-	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1)
+	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1);
 	set('accounts', JSON.stringify(accounts));
 	//#endregion
 
 	//#region Remove push notification registration
 	await navigator.serviceWorker.ready.then(async r => {
-		const push = await r.pushManager.getSubscription()
+		const push = await r.pushManager.getSubscription();
 		if (!push) return;
 		return fetch(`${apiUrl}/sw/unregister`, {
 			method: 'POST',
@@ -39,7 +39,7 @@ export async function signout() {
 	//#endregion
 
 	document.cookie = `igi=; path=/`;
-	
+
 	if (accounts.length > 0) login(accounts[0].token);
 	else location.href = '/';
 }
@@ -91,7 +91,7 @@ export function refreshAccount() {
 	fetchAccount($i.token).then(updateAccount);
 }
 
-export async function login(token: Account['token'], showTimeline?: boolean) {
+export async function login(token: Account['token'], showTimeline: boolean = false) {
 	waiting();
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
