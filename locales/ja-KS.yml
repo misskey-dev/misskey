@@ -219,7 +219,7 @@ featured: "ハイライト"
 usernameOrUserId: "ユーザー名かユーザーID"
 noSuchUser: "ユーザーが見つからへんで"
 lookup: "見てきて"
-announcements: "これ知っといてな"
+announcements: "お知らせ"
 imageUrl: "画像URL"
 remove: "ほかす"
 removed: "削除したで！"
@@ -507,7 +507,7 @@ _widgets:
   federation: "連合"
   jobQueue: "ジョブキュー"
 _cw:
-  show: "続き見してや！"
+  show: "続き見して！"
 _poll:
   noMore: "これ以上追加でけへん"
   deadlineTime: "時間"
