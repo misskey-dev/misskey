@@ -461,6 +461,8 @@ smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
 emailVerified: "メールアドレスは確認されたで"
+pageLikesCount: "Pageにええやんと思った数"
+pageLikedCount: "Pageにええやんと思ってくれた数"
 reloadToApplySetting: "設定はページリロード後に反映されるで。今リロードしとくか？"
 clearCache: "キャッシュをなおす"
 youAreRunningUpToDateClient: "今使ってるクライアントが最新やで！"
@@ -502,6 +504,9 @@ _tutorial:
   step3_1: "プロフィール設定はええ感じにできたか？"
 _2fa:
   alreadyRegistered: "もう設定終わっとるわ。"
+_permissions:
+  "read:page-likes": "ページのええやんを見る"
+  "write:page-likes": "ページのええやんを操作する"
 _auth:
   permissionAsk: "このアプリは次の権限を要求しとるで"
 _antennaSources:
@@ -540,6 +545,9 @@ _rooms:
   _furnitures:
     monitor: "モニター"
 _pages:
+  like: "ええやん"
+  unlike: "良くないわ"
+  liked: "ええと思ったページ"
   blocks:
     image: "画像"
   script:
