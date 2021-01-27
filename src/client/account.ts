@@ -21,7 +21,7 @@ export async function signout() {
 	//#region Remove account
 	const accounts = await getAccounts();
 	accounts.splice(accounts.findIndex(x => x.id === $i.id), 1);
-	set('accounts', JSON.stringify(accounts));
+	set('accounts', accounts);
 	//#endregion
 
 	//#region Remove push notification registration
