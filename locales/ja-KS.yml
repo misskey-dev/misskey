@@ -501,7 +501,7 @@ _widgets:
   federation: "連合"
   jobQueue: "ジョブキュー"
 _cw:
-  show: "もっとあるやろ！"
+  show: "まだまだあるで！"
 _poll:
   noMore: "これ以上追加でけへん"
   deadlineTime: "時間"
