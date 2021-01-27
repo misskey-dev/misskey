@@ -7,7 +7,7 @@ notifications: "通知"
 username: "ユーザー名"
 password: "パスワード"
 fetchingAsApObject: "今ちと連合に照会しとるで"
-ok: "おっけー"
+ok: "OKや"
 gotIt: "ほい"
 cancel: "やめとく"
 enterUsername: "ユーザー名を入れてや"
@@ -456,9 +456,11 @@ remote: "リモート"
 scratchpadDescription: "スクラッチパッドではAiScriptを色々試すことができるんや。Misskeyに対して色々できるコードを書いて動かしてみたり、結果を見たりできるで。"
 leaveConfirm: "未保存の変更があるで！ほかしてええか？"
 pluginInstallWarn: "信頼できへんプラグインはインストールせんとってな"
+emailConfigInfo: "メールアドレスの確認とかパスワードリセットの時に使うで"
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
+emailVerified: "メールアドレスは確認されたで"
 reloadToApplySetting: "設定はページリロード後に反映されるで。今リロードしとくか？"
 clearCache: "キャッシュをなおす"
 youAreRunningUpToDateClient: "今使ってるクライアントが最新やで！"
@@ -468,6 +470,8 @@ _mfm:
   quote: "引用"
   emoji: "カスタム絵文字"
   search: "探す"
+_channel:
+  notesCount: "{n}こ投稿があるで"
 _sidebar:
   icon: "アイコン"
 _theme:
@@ -530,6 +534,7 @@ _exportOrImport:
 _timelines:
   home: "ホーム"
 _rooms:
+  leaveConfirm: "未保存の変更があるけど、移動してええか？"
   _roomType:
     default: "デフォルト"
   _furnitures:
