@@ -572,6 +572,8 @@ _pages:
       array: "リスト"
 _notification:
   youWereFollowed: "フォローされたで"
+  youReceivedFollowRequest: "フォロー許可してほしいみたいやな"
+  yourFollowRequestAccepted: "フォローさせてもろたで"
   youWereInvitedToGroup: "グループに招待されとるで"
   _types:
     follow: "フォロー"
