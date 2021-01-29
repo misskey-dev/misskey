@@ -1082,6 +1082,7 @@ _rooms:
     keyboard: "鍵盤"
     carpet-stripe: "條紋地毯"
     mat: "地毯"
+    color-box: "層架"
     wall-clock: "壁鐘"
     photoframe: "相框"
     cube: "立方體"
