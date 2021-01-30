@@ -12,7 +12,7 @@ export async function readNotification(
 	notificationIds: Notification['id'][]
 ) {
 	// Update documents
-	await Notifications.update({
+	const updatedNotificatons = await Notifications.update({
 		id: In(notificationIds),
 		isRead: false
 	}, {
@@ -20,7 +20,13 @@ export async function readNotification(
 	});
 
 	if (!await Users.getHasUnreadNotification(userId)) {
+		// ユーザーのすべての通知が既読だったら、
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllNotifications');
+	} else {
+		// まだすべて既読になっていなければ、
+		// アップデートしたという
+		const updatedNotificationsIds = updatedNotificatons.generatedMaps.map(e => e.id);
+		publishMainStream(userId, 'readNotifications', updatedNotificationsIds);
 	}
 }

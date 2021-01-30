@@ -5,10 +5,14 @@ import { fetchMeta } from '../misc/fetch-meta';
 import { PackedNotification } from '../models/repositories/notification';
 import { PackedMessagingMessage } from '../models/repositories/messaging-message';
 
-type notificationType = 'notification' | 'unreadMessagingMessage';
-type notificationBody = PackedNotification | PackedMessagingMessage;
+type pushNotificationsTypes = {
+	'notification': PackedNotification;
+	'unreadMessagingMessage': PackedMessagingMessage;
+	'readNotifications': { notificationIds: string[] };
+	'readAllNotifications': undefined;
+};
 
-export default async function(userId: string, type: notificationType, body: notificationBody) {
+export default async function<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
 	const meta = await fetchMeta();
 
 	if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
