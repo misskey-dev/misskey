@@ -699,6 +699,7 @@ newVersionOfClientAvailable: "Доступна более свежая верс�
 usageAmount: "Использовано"
 capacity: "Ёмкость"
 _registry:
+  scope: "Область"
   key: "Ключ"
   keys: "Ключ"
   createKey: "Новый ключ"
