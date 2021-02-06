@@ -700,6 +700,7 @@ capacity: "容量"
 inUse: "已使用"
 editCode: "编辑代码"
 apply: "应用"
+receiveAnnouncementFromInstance: "从实例接收通知"
 _plugin:
   install: "安装插件"
   installWarn: "请不要安装不可信的插件。"
@@ -1044,6 +1045,7 @@ _widgets:
   onlineUsers: "在线用户"
   jobQueue: "作业队列"
   serverMetric: "服务器指标"
+  aiscript: "AiScript控制台"
 _cw:
   hide: "隐藏"
   show: "查看更多"
