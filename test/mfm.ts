@@ -1167,6 +1167,10 @@ describe('fromHtml', () => {
 		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/b">c</a> d</p>'), 'a [c](https://example.com/b) d');
 	});
 
+	it('link with different text, but not encoded', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/ä">c</a> d</p>'), 'a [c](<https://example.com/ä>) d');
+	});
+
 	it('link with same text', () => {
 		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/b">https://example.com/b</a> d</p>'), 'a https://example.com/b d');
 	});
@@ -1181,6 +1185,14 @@ describe('fromHtml', () => {
 
 	it('link without href', () => {
 		assert.deepStrictEqual(fromHtml('<p>a <a>c</a> d</p>'), 'a c d');
+	});
+
+	it('link without text', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/b"></a> d</p>'), 'a https://example.com/b d');
+	});
+
+	it('link without both', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a></a> d</p>'), 'a  d');
 	});
 
 	it('mention', () => {

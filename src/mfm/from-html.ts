@@ -1,7 +1,7 @@
 import * as parse5 from 'parse5';
 import treeAdapter = require('parse5/lib/tree-adapters/default');
 import { URL } from 'url';
-import { urlRegexFull } from './prelude';
+import { urlRegex, urlRegexFull } from './prelude';
 
 export function fromHtml(html: string, hashtagNames?: string[]): string {
 	const dom = parse5.parseFragment(html);
@@ -61,11 +61,28 @@ export function fromHtml(html: string, hashtagNames?: string[]): string {
 					}
 				// その他
 				} else {
-					text += !href ? txt
-						: txt === href.value
-							? txt.match(urlRegexFull) ? txt
-							: `<${txt}>`
-						: `[${txt}](${href.value})`;
+					const generateLink = () => {
+						if (!href && !txt) {
+							return '';
+						}
+						if (!href) {
+							return txt;
+						}
+						if (!txt || txt === href.value) {	// #6383: Missing text node
+							if (href.value.match(urlRegexFull)) {
+								return href.value;
+							} else {
+								return `<${href.value}>`;
+							}
+						}
+						if (href.value.match(urlRegex) && !href.value.match(urlRegexFull)) {
+							return `[${txt}](<${href.value}>)`;	// #6846
+						} else {
+							return `[${txt}](${href.value})`;
+						}
+					};
+
+					text += generateLink();
 				}
 				break;
 
