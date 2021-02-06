@@ -699,6 +699,8 @@ newVersionOfClientAvailable: "新版本的客户端可用。"
 usageAmount: "使用量"
 capacity: "容量"
 inUse: "已使用"
+editCode: "编辑代码"
+apply: "应用"
 _registry:
   scope: "范围"
   key: "主要"
