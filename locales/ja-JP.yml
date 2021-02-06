@@ -700,6 +700,7 @@ capacity: "容量"
 inUse: "使用中"
 editCode: "コードを編集"
 apply: "適用"
+receiveAnnouncementFromInstance: "インスタンスからのお知らせを受け取る"
 
 _plugin:
   install: "プラグインのインストール"

@@ -133,6 +133,11 @@ export class UserProfile {
 	})
 	public injectFeaturedNote: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public receiveAnnouncementEmail: boolean;
+
 	@Column({
 		...id(),
 		nullable: true

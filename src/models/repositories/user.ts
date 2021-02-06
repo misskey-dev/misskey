@@ -236,6 +236,7 @@ export class UserRepository extends Repository<User> {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				injectFeaturedNote: profile!.injectFeaturedNote,
+				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
