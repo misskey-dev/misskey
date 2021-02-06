@@ -4,12 +4,12 @@
 		<div class="_formLabel">{{ $ts.backgroundColor }}</div>
 		<div class="_formPanel colors">
 			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor?.color === color.color }">
+				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
 				</button>
 			</div>
 			<div class="row">
-				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="bgColor = color" class="color _button" :class="{ active: bgColor?.color === color.color }">
+				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
 					<div class="preview" :style="{ background: color.forPreview }"></div>
 				</button>
 			</div>
@@ -19,7 +19,7 @@
 		<div class="_formLabel">{{ $ts.accentColor }}</div>
 		<div class="_formPanel colors">
 			<div class="row">
-				<button v-for="color in accentColors" :key="color" @click="accentColor = color" class="color rounded _button" :class="{ active: accentColor === color }">
+				<button v-for="color in accentColors" :key="color" @click="setAccentColor(color)" class="color rounded _button" :class="{ active: theme.props.accent === color }">
 					<div class="preview" :style="{ background: color }"></div>
 				</button>
 			</div>
@@ -29,32 +29,38 @@
 		<div class="_formLabel">{{ $ts.textColor }}</div>
 		<div class="_formPanel colors">
 			<div class="row">
-				<button v-for="color in fgColors" :key="color" @click="fgColor = color" class="color char _button" :class="{ active: fgColor === color }">
-					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : bgColor?.kind === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
+				<button v-for="color in fgColors" :key="color" @click="setFgColor(color)" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }">
+					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
 				</button>
 			</div>
 		</div>
 	</div>
-	<div class="_formItem preview">
-		<div class="_formLabel">{{ $ts.preview }}</div>
-		<div class="_formPanel preview">
-			<MkSample class="preview"/>
-		</div>
-	</div>
-	<FormButton @click="saveAs" primary>{{ $ts.saveAs }}</FormButton>
+	<FormGroup v-if="codeEnabled">
+		<FormTextarea v-model:value="themeCode" tall>
+			<span>{{ $ts._theme.code }}</span>
+		</FormTextarea>
+		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
+	</FormGroup>
+	<FormButton v-else @click="codeEnabled = true"><Fa :icon="faCode"/> {{ $ts.editCode }}</FormButton>
+	<FormGroup>
+		<FormButton @click="showPreview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
+		<FormButton @click="saveAs" primary><Fa :icon="faSave"/> {{ $ts.saveAs }}</FormButton>
+	</FormGroup>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
+import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode } from 'punycode';
 import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
+import * as JSON5 from 'json5';
 
 import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
-import MkSample from '@/components/sample.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormGroup from '@/components/form/group.vue';
 
 import { Theme, applyTheme, validateTheme } from '@/scripts/theme';
 import { host } from '@/config';
@@ -66,7 +72,8 @@ export default defineComponent({
 	components: {
 		FormBase,
 		FormButton,
-		MkSample,
+		FormTextarea,
+		FormGroup,
 	},
 
 	data() {
@@ -75,6 +82,12 @@ export default defineComponent({
 				title: this.$ts.themeEditor,
 				icon: faPalette,
 			},
+			theme: {
+				base: 'light',
+				props: {}
+			} as Theme,
+			codeEnabled: false,
+			themeCode: null,
 			bgColors: [
 				{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
 				{ color: '#f0eee9', kind: 'light', forPreview: '#f3e2b9' },
@@ -93,9 +106,7 @@ export default defineComponent({
 				{ color: '#212525', kind: 'dark', forPreview: '#303e3e' },
 				{ color: '#191919', kind: 'dark', forPreview: '#272727' },
 			],
-			bgColor: null,
 			accentColors: ['#e36749', '#f29924', '#98c934', '#34c9a9', '#34a1c9', '#606df7', '#8d34c9', '#e84d83'],
-			accentColor: null,
 			fgColors: [
 				{ color: 'none', forLight: '#5f5f5f', forDark: '#dadada', forPreview: null },
 				{ color: 'red', forLight: '#7f6666', forDark: '#e4d1d1', forPreview: '#ca4343' },
@@ -105,26 +116,13 @@ export default defineComponent({
 				{ color: 'blue', forLight: '#676880', forDark: '#d1d2e4', forPreview: '#7275d8' },
 				{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 			],
-			fgColor: null,
 			changed: false,
-			faPalette,
+			faPalette, faSave, faEye, faCode,
 		}
 	},
 
 	created() {
-		const currentBgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg');
-		const matchedBgColor = this.bgColors.find(x => tinycolor(x.color).toRgbString() === tinycolor(currentBgColor).toRgbString());
-		if (matchedBgColor) this.bgColor = matchedBgColor;
-		const currentAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-		const matchedAccentColor = this.accentColors.find(x => tinycolor(x).toRgbString() === tinycolor(currentAccentColor).toRgbString());
-		if (matchedAccentColor) this.accentColor = matchedAccentColor;
-		const currentFgColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-		const matchedFgColor = this.fgColors.find(x => [tinycolor(x.forLight).toRgbString(), tinycolor(x.forDark).toRgbString()].includes(tinycolor(currentFgColor).toRgbString()));
-		if (matchedFgColor) this.fgColor = matchedFgColor;
-
-		this.$watch('bgColor', this.apply);
-		this.$watch('accentColor', this.apply);
-		this.$watch('fgColor', this.apply);
+		this.$watch('theme', this.apply, { deep: true });
 
 		window.addEventListener('beforeunload', this.beforeunload);
 	},
@@ -156,26 +154,48 @@ export default defineComponent({
 			return !canceled;
 		},
 
-		convert(): Theme {
-			return {
-				name: this.$ts.myTheme,
-				base: this.bgColor.kind,
-				props: {
-					bg: this.bgColor.color,
-					fg: this.bgColor.kind === 'light' ? this.fgColor.forLight : this.fgColor.forDark,
-					accent: this.accentColor,
-				}
-			};
+		showPreview() {
+			os.pageWindow('preview');
+		},
+
+		setBgColor(color) {
+			this.theme.base = color.kind;
+			this.theme.props.bg = color.color;
+
+			if (this.theme.props.fg) {
+				const matchedFgColor = this.fgColors.find(x => [tinycolor(x.forLight).toRgbString(), tinycolor(x.forDark).toRgbString()].includes(tinycolor(this.theme.props.fg).toRgbString()));
+				if (matchedFgColor) this.setFgColor(matchedFgColor);
+			}
+		},
+
+		setAccentColor(color) {
+			this.theme.props.accent = color;
+		},
+
+		setFgColor(color) {
+			this.theme.props.fg = this.theme.base === 'light' ? color.forLight : color.forDark;
 		},
 
 		apply() {
-			if (this.bgColor == null) this.bgColor = this.bgColors[0];
-			if (this.accentColor == null) this.accentColor = this.accentColors[0];
-			if (this.fgColor == null) this.fgColor = this.fgColors[0];
-
-			const theme = this.convert();
-			applyTheme(theme, false);
+			this.themeCode = JSON5.stringify(this.theme, null, '\t');
+			applyTheme(this.theme, false);
 			this.changed = true;
+		},
+
+		applyThemeCode() {
+			let parsed;
+
+			try {
+				parsed = JSON5.parse(this.themeCode);
+			} catch (e) {
+				os.dialog({
+					type: 'error',
+					text: this.$ts._theme.invalid
+				});
+				return;
+			}
+
+			this.theme = parsed;
 		},
 
 		async saveAs() {
@@ -187,21 +207,20 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			const theme = this.convert();
-			theme.id = uuid();
-			theme.name = name;
-			theme.author = `@${this.$i.username}@${toUnicode(host)}`;
-			addTheme(theme);
-			applyTheme(theme);
+			this.theme.id = uuid();
+			this.theme.name = name;
+			this.theme.author = `@${this.$i.username}@${toUnicode(host)}`;
+			addTheme(this.theme);
+			applyTheme(this.theme);
 			if (this.$store.state.darkMode) {
-				ColdDeviceStorage.set('darkTheme', theme.id);
+				ColdDeviceStorage.set('darkTheme', this.theme.id);
 			} else {
-				ColdDeviceStorage.set('lightTheme', theme.id);
+				ColdDeviceStorage.set('lightTheme', this.theme.id);
 			}
 			this.changed = false;
 			os.dialog({
 				type: 'success',
-				text: this.$t('_theme.installed', { name: theme.name })
+				text: this.$t('_theme.installed', { name: this.theme.name })
 			});
 		}
 	}
@@ -264,11 +283,6 @@ export default defineComponent({
 				}
 			}
 		}
-	}
-
-	> .preview > .preview > .preview {
-		box-shadow: none;
-		background: transparent;
 	}
 }
 </style>

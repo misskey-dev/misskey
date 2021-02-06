@@ -699,6 +699,8 @@ newVersionOfClientAvailable: "新しいバージョンのクライアントが�
 usageAmount: "使用量"
 capacity: "容量"
 inUse: "使用中"
+editCode: "コードを編集"
+apply: "適用"
 
 _registry:
   scope: "スコープ"
