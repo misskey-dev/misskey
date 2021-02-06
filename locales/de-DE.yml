@@ -700,6 +700,7 @@ capacity: "Kapazität"
 inUse: "Verwendet"
 editCode: "Code bearbeiten"
 apply: "Anwenden"
+receiveAnnouncementFromInstance: "Benachrichtigungen von der Instanz empfangen"
 _plugin:
   install: "Plugins installieren"
   installWarn: "Installiere bitte nur vertrauenswürdige Plugins."
