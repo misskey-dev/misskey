@@ -62,7 +62,7 @@ import FormButton from '@/components/form/button.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormGroup from '@/components/form/group.vue';
 
-import { Theme, applyTheme, validateTheme } from '@/scripts/theme';
+import { Theme, applyTheme, validateTheme, darkTheme, lightTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
@@ -84,7 +84,7 @@ export default defineComponent({
 			},
 			theme: {
 				base: 'light',
-				props: {}
+				props: lightTheme.props
 			} as Theme,
 			codeEnabled: false,
 			themeCode: null,
@@ -123,7 +123,6 @@ export default defineComponent({
 
 	created() {
 		this.$watch('theme', this.apply, { deep: true });
-
 		window.addEventListener('beforeunload', this.beforeunload);
 	},
 
@@ -159,6 +158,14 @@ export default defineComponent({
 		},
 
 		setBgColor(color) {
+			if (this.theme.base != color.kind) {
+				const base = color.kind === 'dark' ? darkTheme : lightTheme;
+				for (const prop of Object.keys(base.props)) {
+					if (prop === 'accent') continue;
+					if (prop === 'fg') continue;
+					this.theme.props[prop] = base.props[prop];
+				}
+			}
 			this.theme.base = color.kind;
 			this.theme.props.bg = color.color;
 
