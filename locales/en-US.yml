@@ -1044,6 +1044,7 @@ _widgets:
   onlineUsers: "Online users"
   jobQueue: "Job Queue"
   serverMetric: "Server metrics"
+  aiscript: "AiScript console"
 _cw:
   hide: "Hide"
   show: "Load more"
