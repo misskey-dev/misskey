@@ -45,7 +45,7 @@ export async function initializeSw() {
 				if (subscription) subscription.unsubscribe();
 			});
 		});
-	}	
+	}
 }
 
 /**
