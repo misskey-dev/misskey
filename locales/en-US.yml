@@ -701,9 +701,9 @@ inUse: "Used"
 editCode: "Edit code"
 apply: "Apply"
 _plugin:
-  install: "Plugin installation"
+  install: "Install plugins"
   installWarn: "Please do not install untrustworthy plugins."
-  manage: "Plugin management"
+  manage: "Manage plugins"
 _registry:
   scope: "Scope"
   key: "Key"
