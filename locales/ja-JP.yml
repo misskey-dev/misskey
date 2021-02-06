@@ -1067,6 +1067,7 @@ _widgets:
   onlineUsers: "オンラインユーザー"
   jobQueue: "ジョブキュー"
   serverMetric: "サーバーメトリクス"
+  aiscript: "AiScriptコンソール"
 
 _cw:
   hide: "隠す"
