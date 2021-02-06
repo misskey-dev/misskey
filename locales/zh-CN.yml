@@ -700,6 +700,10 @@ capacity: "容量"
 inUse: "已使用"
 editCode: "编辑代码"
 apply: "应用"
+_plugin:
+  install: "安装插件"
+  installWarn: "请不要安装不可信的插件。"
+  manage: "管理插件..."
 _registry:
   scope: "范围"
   key: "主要"
