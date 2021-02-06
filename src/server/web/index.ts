@@ -73,8 +73,8 @@ router.get('/apple-touch-icon.png', async ctx => {
 });
 
 // ServiceWorker
-router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-	await send(ctx as any, `/assets/sw.${ctx.params[0]}.js`, {
+router.get('/sw.js', async ctx => {
+	await send(ctx as any, `/assets/sw.${config.version}.js`, {
 		root: client
 	});
 });
