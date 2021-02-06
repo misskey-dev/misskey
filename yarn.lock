@@ -3260,10 +3260,10 @@ decompress-response@^6.0.0:
   dependencies:
     mimic-response "^3.1.0"
 
-deep-entries@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/deep-entries/-/deep-entries-3.1.0.tgz#e456aa791d01b045641c75e41e170c0c95a9d472"
-  integrity sha512-pCpcCqx/hclnT2e4mMlM9geG8XIaxWN+yNKJHHwu1FZyYKErKU/fPztYYSk2HwnqRPf55cDEXraV6MLv8I5FrA==
+deep-entries@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/deep-entries/-/deep-entries-4.0.2.tgz#9df7bb2497c81957d6f9b5eb718833d52940e70f"
+  integrity sha512-aPzCHyBRiWjs9J7hzdZ343ZHkSuqVdANqALRJlR1x8GAHqojYai33R2h5ePw/fMe/nWjXrIvuPBDnuqp2De5Yg==
 
 deep-eql@^3.0.1:
   version "3.0.1"
