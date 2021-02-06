@@ -40,7 +40,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 			_note.renote = await Notes.findOne(note.renoteId).then(ensure);
 		}
 
-		if (isMutedUserRelated(_note, mutings.map(x => x.muteeId))) {
+		if (isMutedUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
 			return;
 		}
 

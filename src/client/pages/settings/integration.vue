@@ -9,7 +9,7 @@
 
 	<div class="_content" v-if="enableDiscordIntegration">
 		<header><Fa :icon="faDiscord"/> Discord</header>
-		<p v-if="integrations.discord">{{ $ts.connectedTo }}: <a :href="`https://discordapp.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
+		<p v-if="integrations.discord">{{ $ts.connectedTo }}: <a :href="`https://discord.com/users/${integrations.discord.id}`" rel="nofollow noopener" target="_blank">@{{ integrations.discord.username }}#{{ integrations.discord.discriminator }}</a></p>
 		<MkButton v-if="integrations.discord" @click="disconnectDiscord">{{ $ts.disconnectSerice }}</MkButton>
 		<MkButton v-else @click="connectDiscord">{{ $ts.connectSerice }}</MkButton>
 	</div>
