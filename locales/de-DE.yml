@@ -700,6 +700,10 @@ capacity: "Kapazität"
 inUse: "Verwendet"
 editCode: "Code bearbeiten"
 apply: "Anwenden"
+_plugin:
+  install: "Plugins installieren"
+  installWarn: "Installiere bitte nur vertrauenswürdige Plugins."
+  manage: "Plugins verwalten"
 _registry:
   scope: "Scope"
   key: "Schlüssel"
