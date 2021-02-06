@@ -699,6 +699,8 @@ newVersionOfClientAvailable: "Eine neuere Version deines Clients ist verfügbar.
 usageAmount: "Verwendung"
 capacity: "Kapazität"
 inUse: "Verwendet"
+editCode: "Code bearbeiten"
+apply: "Anwenden"
 _registry:
   scope: "Scope"
   key: "Schlüssel"
