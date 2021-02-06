@@ -548,7 +548,6 @@ author: "作者"
 leaveConfirm: "未保存の変更があります。破棄しますか？"
 manage: "管理"
 plugins: "プラグイン"
-pluginInstallWarn: "信頼できないプラグインはインストールしないでください。"
 deck: "デッキ"
 undeck: "デッキ解除"
 useBlurEffectForModal: "モーダルにぼかし効果を使用"
@@ -701,6 +700,11 @@ capacity: "容量"
 inUse: "使用中"
 editCode: "コードを編集"
 apply: "適用"
+
+_plugin:
+  install: "プラグインのインストール"
+  installWarn: "信頼できないプラグインはインストールしないでください。"
+  manage: "プラグインの管理"
 
 _registry:
   scope: "スコープ"
