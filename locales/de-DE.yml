@@ -1040,6 +1040,7 @@ _widgets:
   onlineUsers: "Benutzer Online"
   jobQueue: "Job-Warteschlange"
   serverMetric: "Servermetriken"
+  aiscript: "AiScript-Konsole"
 _cw:
   hide: "Ausblenden"
   show: "Mehr anzeigen"
