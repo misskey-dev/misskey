@@ -719,6 +719,7 @@ _mfm:
   bounce: "動畫(反彈)"
   shake: "動畫(搖晃)"
   twitch: "動畫(顫抖)"
+  twitchDescription: "顯示強烈顫抖的動畫效果。"
   spin: "動畫(旋轉)"
   spinDescription: "顯示旋轉的動畫效果。"
   x2: "大"
