@@ -101,9 +101,15 @@ theme: "Tema"
 drive: "Drive"
 copyUrl: "Copia URL"
 rename: "Modifica nome"
+avatar: "Foto del profilo"
+banner: "Foto d'intestazione"
 nsfw: "Contenuti sensibili"
 accept: "Accetta"
 reject: "Rifiuta"
+instanceName: "Nome dell'istanza"
+instanceDescription: "Descrizione dell'istanza"
+maintainerName: "Nome dell'Amministratore"
+maintainerEmail: "Indirizzo e-mail dell'Amministratore"
 tosUrl: "Termini di servizio URL"
 thisYear: "Anno"
 thisMonth: "Mese"
@@ -164,6 +170,8 @@ _mfm:
   blur: "Sfocatura"
 _reversi:
   ended: "Esci"
+_sidebar:
+  icon: "Foto del profilo"
 _theme:
   keys:
     mention: "Menzioni"
