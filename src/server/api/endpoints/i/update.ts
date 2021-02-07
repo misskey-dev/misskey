@@ -15,6 +15,7 @@ import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
 import { ensure } from '../../../../prelude/ensure';
 import { notificationTypes } from '../../../../types';
+import { normalizeForSearch } from '../../../../misc/normalize-for-search';
 
 export const meta = {
 	desc: {
@@ -135,6 +136,10 @@ export const meta = {
 			validator: $.optional.bool,
 		},
 
+		receiveAnnouncementEmail: {
+			validator: $.optional.bool,
+		},
+
 		alwaysMarkNsfw: {
 			validator: $.optional.bool,
 			desc: {
@@ -219,6 +224,7 @@ export default define(meta, async (ps, user, token) => {
 	if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
+	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
 
 	if (ps.avatarId) {
@@ -281,7 +287,7 @@ export default define(meta, async (ps, user, token) => {
 	if (newDescription != null) {
 		const tokens = parse(newDescription);
 		emojis = emojis.concat(extractEmojis(tokens!));
-		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase()).splice(0, 32);
+		tags = extractHashtags(tokens!).map(tag => normalizeForSearch(tag)).splice(0, 32);
 	}
 
 	updates.emojis = emojis;

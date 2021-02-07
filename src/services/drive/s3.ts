@@ -13,7 +13,9 @@ export function getS3(meta: Meta) {
 		secretAccessKey: meta.objectStorageSecretKey!,
 		region: meta.objectStorageRegion || undefined,
 		sslEnabled: meta.objectStorageUseSSL,
-		s3ForcePathStyle: !!meta.objectStorageEndpoint,
+		s3ForcePathStyle: !meta.objectStorageEndpoint	// AWS with endPoint omitted
+			? false
+			: meta.objectStorageS3ForcePathStyle,
 		httpOptions: {
 			agent: getAgentByUrl(new URL(u), !meta.objectStorageUseProxy)
 		}

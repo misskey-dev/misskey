@@ -57,7 +57,7 @@ export default defineComponent({
 		src() {
 			const endpoint = ({
 				hcaptcha: 'https://hcaptcha.com/1',
-				grecaptcha: 'https://www.google.com/recaptcha',
+				grecaptcha: 'https://www.recaptcha.net/recaptcha',
 			} as Record<PropertyKey, unknown>)[this.provider];
 
 			return `${typeof endpoint == 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;

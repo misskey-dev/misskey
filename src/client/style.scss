@@ -481,6 +481,12 @@ hr {
 	outline: none;
 }
 
+._zoom {
+	transition-duration: 0.5s, 0.5s;
+	transition-property: opacity, transform;
+	transition-timing-function: cubic-bezier(0,.5,.5,1);
+}
+
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
