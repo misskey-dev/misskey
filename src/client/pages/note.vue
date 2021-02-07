@@ -1,6 +1,6 @@
 <template>
 <div class="fcuexfpr">
-	<div v-if="note" class="note">
+	<div v-if="note" class="note" v-anim>
 		<div class="_section" v-if="showNext">
 			<XNotes class="_content _noGap_" :pagination="next"/>
 		</div>
