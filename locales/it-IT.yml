@@ -4,6 +4,7 @@ search: "Cerca"
 notifications: "Notifiche"
 username: "Nome utente"
 password: "Password"
+ok: "OK"
 instance: "Istanza"
 settings: "Impostazioni"
 basicSettings: "Impostazioni generali"
@@ -15,22 +16,36 @@ save: "Salva"
 users: "Utente"
 delete: "Elimina"
 reply: "Rispondi"
+note: "Note"
+notes: "Notes"
 error: "Errore"
 somethingHappened: "Qualcosa è andato storto."
 retry: "Riprova"
 privacy: "Privacy"
+quote: "Cita Note"
+mute: "Silenzia"
+block: "Blocca"
+suspend: "Sospendi"
 instances: "Istanza"
 remove: "Elimina"
 smtpUser: "Nome utente"
 smtpPass: "Password"
 _mfm:
+  quote: "Cita Note"
   search: "Cerca"
 _sfx:
+  note: "Notes"
   notification: "Notifiche"
 _widgets:
   notifications: "Notifiche"
 _profile:
   username: "Nome utente"
+_exportOrImport:
+  muteList: "Silenzia"
+  blockingList: "Blocca"
+_notification:
+  _types:
+    quote: "Cita Note"
 _deck:
   _columns:
     notifications: "Notifiche"
