@@ -132,8 +132,12 @@ left: "Sinistra"
 center: "Centro"
 _mfm:
   mention: "Menzioni"
+  bold: "Grassetto"
   quote: "Cita Note"
   search: "Cerca"
+  blur: "Sfocatura"
+_reversi:
+  ended: "Esci"
 _theme:
   keys:
     mention: "Menzioni"
