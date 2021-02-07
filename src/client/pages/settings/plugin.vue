@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<FormLink to="/settings/plugin/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._plugin.install }}</FormLink>
-	<FormLink to="/settings/plugin/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._plugin.manage }}</FormLink>
+	<FormLink to="/settings/plugin/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._plugin.manage }}<template #suffix>{{ plugins }}</template></FormLink>
 </FormBase>
 </template>
 
@@ -12,6 +12,7 @@ import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import FormLink from '@/components/form/link.vue';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -27,6 +28,7 @@ export default defineComponent({
 				title: this.$ts.plugins,
 				icon: faPlug
 			},
+			plugins: ColdDeviceStorage.get('plugins').length,
 			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog
 		}
 	},
