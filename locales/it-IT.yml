@@ -26,6 +26,8 @@ error: "Errore"
 somethingHappened: "Qualcosa è andato storto."
 retry: "Riprova"
 privacy: "Privacy"
+renote: "Renote"
+unrenote: "Annulla Renote"
 quote: "Cita Note"
 mute: "Silenzia"
 block: "Blocca"
@@ -46,6 +48,7 @@ _mfm:
 _theme:
   keys:
     mention: "Menzioni"
+    renote: "Renote"
 _sfx:
   note: "Notes"
   notification: "Notifiche"
@@ -60,6 +63,7 @@ _exportOrImport:
 _notification:
   _types:
     mention: "Menzioni"
+    renote: "Renote"
     quote: "Cita Note"
 _deck:
   _columns:
