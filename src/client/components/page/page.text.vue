@@ -6,7 +6,9 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { TextBlock } from '@/scripts/hpml/block';
+import { Hpml } from '@/scripts/hpml/evaluator';
+import { defineAsyncComponent, defineComponent, PropType } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
 
@@ -15,16 +17,18 @@ export default defineComponent({
 		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
 	},
 	props: {
-		value: {
+		block: {
+			type: Object as PropType<TextBlock>,
 			required: true
 		},
 		hpml: {
+			type: Object as PropType<Hpml>,
 			required: true
 		}
 	},
 	data() {
 		return {
-			text: this.hpml.interpolate(this.value.text),
+			text: this.hpml.interpolate(this.block.text),
 		};
 	},
 	computed: {
@@ -43,7 +47,7 @@ export default defineComponent({
 	watch: {
 		'hpml.vars': {
 			handler() {
-				this.text = this.hpml.interpolate(this.value.text);
+				this.text = this.hpml.interpolate(this.block.text);
 			},
 			deep: true
 		}

@@ -74,12 +74,18 @@ export default defineComponent({
 		max-width: 100%;
 		min-width: 100%;
 		padding: 16px;
-		color: var(--inputText);
-		background: var(--face);
+		color: var(--fg);
+		background: transparent;
 		border: none;
-		border-bottom: solid var(--lineWidth) var(--faceDivider);
+		border-bottom: solid 1px var(--divider);
 		border-radius: 0;
 		box-sizing: border-box;
+		font: inherit;
+		font-size: 0.9em;
+
+		&:focus {
+			outline: none;
+		}
 	}
 
 	> button {
