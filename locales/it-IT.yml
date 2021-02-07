@@ -79,14 +79,20 @@ currentPassword: "Password attuale"
 newPassword: "Nuova Password"
 newPasswordRetype: "Conferma nuova password"
 more: "Altri!"
+imageUrl: "URL dell'immagine"
 remove: "Elimina"
 removed: "Il tuo Tweet è stato eliminato"
+removeAreYouSure: "Eliminare \"{x}\"?"
+deleteAreYouSure: "Eliminare \"{x}\"?"
 saved: "Salvato"
 messaging: "Messaggi"
+upload: "Carica"
+games: "Misskey Giochi"
 messageRead: "Visualizzato"
 startMessaging: "Nuovo messaggio"
 tos: "Termini di servizio"
 home: "Home"
+images: "Immagini"
 birthday: "Compleanno"
 yearsOld: "{age}Anni"
 registeredDate: "Iscrizione a.."
@@ -183,6 +189,8 @@ _exportOrImport:
 _timelines:
   home: "Home"
 _pages:
+  blocks:
+    image: "Immagini"
   script:
     categories:
       list: "Liste"
