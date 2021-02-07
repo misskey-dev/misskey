@@ -20,13 +20,19 @@ pin: "Fissa sul profilo"
 unpin: "Non fissare più sul profilo"
 copyLink: "Copia link"
 delete: "Elimina"
+copyUsername: "Copia nome utente"
 reply: "Rispondi"
 mention: "Menzioni"
 import: "Importa"
+lists: "Liste"
+noLists: "Qui non c'è ancora niente"
 note: "Note"
 notes: "Notes"
 following: "Seiguiti"
 followers: "Seguaci"
+followsYou: "Ti segue"
+createList: "Crea una nuova lista"
+manageLists: "Modifica lista"
 error: "Errore"
 somethingHappened: "Qualcosa è andato storto."
 retry: "Riprova"
@@ -73,6 +79,7 @@ registration: "Iscriviti"
 invite: "Invita"
 hcaptcha: "hCaptcha"
 name: "Nome"
+userList: "Liste"
 about: "Informazioni"
 aboutMisskey: "Informazioni di Misskey"
 lastUsed: "Ultima attività"
@@ -81,6 +88,7 @@ resetPassword: "Reimposta password"
 share: "Condividi"
 invites: "Invita"
 invitations: "Invita"
+signinHistory: "Cronologia di accesso all'account"
 smtpUser: "Nome utente"
 smtpPass: "Password"
 _mfm:
@@ -108,8 +116,28 @@ _exportOrImport:
   followingList: "Seiguiti"
   muteList: "Silenzia"
   blockingList: "Blocca"
+  userLists: "Liste"
 _timelines:
   home: "Home"
+_pages:
+  script:
+    categories:
+      list: "Liste"
+    blocks:
+      _join:
+        arg1: "Liste"
+      _randomPick:
+        arg1: "Liste"
+      _dailyRandomPick:
+        arg1: "Liste"
+      _seedRandomPick:
+        arg2: "Liste"
+      _pick:
+        arg1: "Liste"
+      _listLen:
+        arg1: "Liste"
+    types:
+      array: "Liste"
 _notification:
   _types:
     follow: "Seiguiti"
@@ -120,3 +148,4 @@ _deck:
   _columns:
     notifications: "Notifiche"
     tl: "Timeline"
+    list: "Liste"
