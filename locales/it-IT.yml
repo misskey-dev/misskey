@@ -1,1 +1,8 @@
 ---
+_lang_: "Italiano"
+settings: "Impostazioni"
+basicSettings: "Impostazioni generali"
+otherSettings: "Altre impostazioni"
+login: "Login"
+logout: "Logout"
+signup: "Iscriviti"
