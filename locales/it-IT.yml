@@ -9,6 +9,8 @@ instance: "Istanza"
 settings: "Impostazioni"
 basicSettings: "Impostazioni generali"
 otherSettings: "Altre impostazioni"
+profile: "Profilo"
+timeline: "Timeline"
 login: "Login"
 logout: "Logout"
 signup: "Iscriviti"
@@ -16,6 +18,7 @@ save: "Salva"
 users: "Utente"
 delete: "Elimina"
 reply: "Rispondi"
+mention: "Menzioni"
 import: "Importa"
 note: "Note"
 notes: "Notes"
@@ -37,13 +40,18 @@ location: "Posizione"
 smtpUser: "Nome utente"
 smtpPass: "Password"
 _mfm:
+  mention: "Menzioni"
   quote: "Cita Note"
   search: "Cerca"
+_theme:
+  keys:
+    mention: "Menzioni"
 _sfx:
   note: "Notes"
   notification: "Notifiche"
 _widgets:
   notifications: "Notifiche"
+  timeline: "Timeline"
 _profile:
   username: "Nome utente"
 _exportOrImport:
@@ -51,7 +59,9 @@ _exportOrImport:
   blockingList: "Blocca"
 _notification:
   _types:
+    mention: "Menzioni"
     quote: "Cita Note"
 _deck:
   _columns:
     notifications: "Notifiche"
+    tl: "Timeline"
