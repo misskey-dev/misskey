@@ -1,11 +1,32 @@
 ---
 _lang_: "Italiano"
+search: "Cerca"
+notifications: "Notifiche"
+username: "Nome utente"
+password: "Password"
+instance: "Istanza"
 settings: "Impostazioni"
 basicSettings: "Impostazioni generali"
 otherSettings: "Altre impostazioni"
 login: "Login"
 logout: "Logout"
 signup: "Iscriviti"
+save: "Salva"
 users: "Utente"
 delete: "Elimina"
+reply: "Rispondi"
+instances: "Istanza"
 remove: "Elimina"
+smtpUser: "Nome utente"
+smtpPass: "Password"
+_mfm:
+  search: "Cerca"
+_sfx:
+  notification: "Notifiche"
+_widgets:
+  notifications: "Notifiche"
+_profile:
+  username: "Nome utente"
+_deck:
+  _columns:
+    notifications: "Notifiche"
