@@ -33,6 +33,7 @@ import { addNoteToAntenna } from '../add-note-to-antenna';
 import { countSameRenotes } from '../../misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
 import { Channel } from '../../models/entities/channel';
+import { normalizeForSearch } from '../../misc/normalize-for-search';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -460,7 +461,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		text: data.text,
 		hasPoll: data.poll != null,
 		cw: data.cw == null ? null : data.cw,
-		tags: tags.map(tag => tag.toLowerCase()),
+		tags: tags.map(tag => normalizeForSearch(tag)),
 		emojis,
 		userId: user.id,
 		viaMobile: data.viaMobile!,
@@ -547,7 +548,7 @@ function index(note: Note) {
 		index: config.elasticsearch.index || 'misskey_note',
 		id: note.id.toString(),
 		body: {
-			text: note.text.toLowerCase(),
+			text: normalizeForSearch(note.text),
 			userId: note.userId,
 			userHost: note.userHost
 		}
