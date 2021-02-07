@@ -70,7 +70,7 @@ async function getOAuth2() {
 		return new OAuth2(
 			meta.discordClientId!,
 			meta.discordClientSecret!,
-			'https://discordapp.com/',
+			'https://discord.com/',
 			'api/oauth2/authorize',
 			'api/oauth2/token');
 	} else {
@@ -174,7 +174,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
 		});
 
@@ -245,7 +245,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
 		});
 		if (!id || !username || !discriminator) {
