@@ -195,6 +195,13 @@ _sfx:
   note: "Notes"
   notification: "Notifiche"
   chat: "Messaggi"
+_ago:
+  unknown: "Sconosciuto"
+  future: "Futuro"
+  justNow: "Ora"
+  secondsAgo: "{n}s fa"
+  minutesAgo: "{n}min fa"
+  hoursAgo: "{n}h fa"
 _widgets:
   notifications: "Notifiche"
   timeline: "Timeline"
