@@ -993,6 +993,8 @@ _widgets:
   button: "Кнопка"
   onlineUsers: "Користувачі онлайн"
   jobQueue: "Черга завдань"
+  serverMetric: "Показники сервера "
+  aiscript: "Консоль AiScript"
 _cw:
   hide: "Сховати"
   show: "Показати більше"
@@ -1000,10 +1002,13 @@ _cw:
   files: "{count} файлів"
 _poll:
   noOnlyOneChoice: "Потрібні принаймні два варіанти."
+  choiceN: "Варіант {n}"
   noMore: "Більше варіантів додати не можна"
   canMultipleVote: "Можна вибрати кілька варіантів"
   expiration: "Опитування закінчується"
   infinite: "Ніколи"
+  at: "На даті..."
+  after: "Через..."
   deadlineDate: "Дата закінчення"
   deadlineTime: "г"
   duration: "Тривалість"
