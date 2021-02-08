@@ -978,6 +978,7 @@ _weekday:
   friday: "П'ятниця"
   saturday: "Субота"
 _widgets:
+  memo: "Нагадування"
   notifications: "Сповіщення"
   timeline: "Стрічка"
   calendar: "Календар"
