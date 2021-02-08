@@ -991,6 +991,7 @@ _widgets:
   postForm: "Створення нотатки"
   slideshow: "Слайд-шоу"
   button: "Кнопка"
+  onlineUsers: "Користувачі онлайн"
   jobQueue: "Черга завдань"
 _cw:
   hide: "Сховати"
