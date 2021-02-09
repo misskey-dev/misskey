@@ -256,6 +256,7 @@ _weekday:
   friday: "Venerdì"
   saturday: "Sabato"
 _widgets:
+  memo: "Memo"
   notifications: "Notifiche"
   timeline: "Timeline"
   calendar: "Calendario"
@@ -283,6 +284,9 @@ _profile:
   name: "Nome"
   username: "Nome utente"
   description: "Bio"
+  metadata: "Metadati"
+  metadataLabel: "Etichetta"
+  metadataContent: "Contenuto"
 _exportOrImport:
   followingList: "Seiguiti"
   muteList: "Silenzia"
@@ -293,6 +297,12 @@ _timelines:
 _pages:
   blocks:
     image: "Immagini"
+    _post:
+      text: "Contenuto"
+    _button:
+      _action:
+        _dialog:
+          content: "Contenuto"
   script:
     categories:
       list: "Liste"
