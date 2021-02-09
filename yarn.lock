@@ -5006,10 +5006,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb-keyval@5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-5.0.1.tgz#d3913debfb58edee299da5cf2dded6c2670c05ef"
-  integrity sha512-bfi+Znn6oSPPgGcVUj2tYMIOQ5TD6V1qj50SdKQecGZx9lqUATcQ7ArHOt9sPcEhACoYe//yr2igmS6SMc59SA==
+idb-keyval@5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-5.0.2.tgz#243cf2b7db1bee2a8a41b78c14a18a85db0e1646"
+  integrity sha512-1DYjY/nX2U9pkTkwFoAmKcK1ZWmkNgO32Oon9tp/9+HURizxUQ4fZRxMJZs093SldP7q6dotVj03kIkiqOILyA==
 
 ieee754@1.1.13, ieee754@^1.1.13, ieee754@^1.1.4:
   version "1.1.13"
