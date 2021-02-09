@@ -193,7 +193,7 @@
 		"parsimmon": "1.16.0",
 		"pg": "8.5.1",
 		"portscanner": "2.2.0",
-		"postcss": "8.2.4",
+		"postcss": "8.2.5",
 		"postcss-loader": "5.0.0",
 		"prismjs": "1.23.0",
 		"probe-image-size": "6.0.0",
