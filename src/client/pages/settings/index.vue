@@ -18,7 +18,7 @@
 			<FormLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><Fa :icon="faPalette"/></template>{{ $ts.theme }}</FormLink>
 			<FormLink :active="page === 'sidebar'" replace to="/settings/sidebar"><template #icon><Fa :icon="faListUl"/></template>{{ $ts.sidebar }}</FormLink>
 			<FormLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><Fa :icon="faMusic"/></template>{{ $ts.sounds }}</FormLink>
-			<FormLink :active="page === 'plugins'" replace to="/settings/plugins"><template #icon><Fa :icon="faPlug"/></template>{{ $ts.plugins }}</FormLink>
+			<FormLink :active="page === 'plugin'" replace to="/settings/plugin"><template #icon><Fa :icon="faPlug"/></template>{{ $ts.plugins }}</FormLink>
 		</FormGroup>
 		<FormGroup>
 			<template #label>{{ $ts.otherSettings }}</template>
@@ -105,7 +105,9 @@ export default defineComponent({
 				case 'sidebar': return defineAsyncComponent(() => import('./sidebar.vue'));
 				case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 				case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
-				case 'plugins': return defineAsyncComponent(() => import('./plugins.vue'));
+				case 'plugin': return defineAsyncComponent(() => import('./plugin.vue'));
+				case 'plugin/install': return defineAsyncComponent(() => import('./plugin.install.vue'));
+				case 'plugin/manage': return defineAsyncComponent(() => import('./plugin.manage.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
 				case 'update': return defineAsyncComponent(() => import('./update.vue'));

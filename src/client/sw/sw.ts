@@ -68,6 +68,7 @@ self.addEventListener('activate', ev => {
 });
 //#endregion
 
+// TODO: 消せるかも ref. https://github.com/syuilo/misskey/pull/7108#issuecomment-774573666
 //#region When: Fetching
 self.addEventListener('fetch', ev => {
 	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return;

@@ -1,12 +1,13 @@
 import autobind from 'autobind-decorator';
-import { Variable, PageVar, envVarsDef, Block, isFnBlock, Fn, HpmlScope, HpmlError } from '.';
+import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
 import { version } from '@/config';
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '../aiscript/api';
 import { collectPageVars } from '../collect-page-vars';
 import { initHpmlLib, initAiLib } from './lib';
 import * as os from '@/os';
-import { markRaw, ref, Ref } from 'vue';
+import { markRaw, ref, Ref, unref } from 'vue';
+import { Expr, isLiteralValue, Variable } from './expr';
 
 /**
  * Hpml evaluator
@@ -94,7 +95,7 @@ export class Hpml {
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/{(.+?)}/g, match => {
-			const v = this.vars[match.slice(1, -1).trim()];
+			const v = unref(this.vars)[match.slice(1, -1).trim()];
 			return v == null ? 'NULL' : v.toString();
 		});
 	}
@@ -158,72 +159,76 @@ export class Hpml {
 	}
 
 	@autobind
-	private evaluate(block: Block, scope: HpmlScope): any {
-		if (block.type === null) {
-			return null;
-		}
+	private evaluate(expr: Expr, scope: HpmlScope): any {
 
-		if (block.type === 'number') {
-			return parseInt(block.value, 10);
-		}
-
-		if (block.type === 'text' || block.type === 'multiLineText') {
-			return this._interpolateScope(block.value || '', scope);
-		}
-
-		if (block.type === 'textList') {
-			return this._interpolateScope(block.value || '', scope).trim().split('\n');
-		}
-
-		if (block.type === 'ref') {
-			return scope.getState(block.value);
-		}
-
-		if (block.type === 'aiScriptVar') {
-			if (this.aiscript) {
-				try {
-					return utils.valToJs(this.aiscript.scope.get(block.value));
-				} catch (e) {
-					return null;
-				}
-			} else {
+		if (isLiteralValue(expr)) {
+			if (expr.type === null) {
 				return null;
 			}
-		}
 
-		// Define user function
-		if (isFnBlock(block)) {
-			return {
-				slots: block.value.slots.map(x => x.name),
-				exec: (slotArg: Record<string, any>) => {
-					return this.evaluate(block.value.expression, scope.createChildScope(slotArg, block.id));
+			if (expr.type === 'number') {
+				return parseInt((expr.value as any), 10);
+			}
+
+			if (expr.type === 'text' || expr.type === 'multiLineText') {
+				return this._interpolateScope(expr.value || '', scope);
+			}
+
+			if (expr.type === 'textList') {
+				return this._interpolateScope(expr.value || '', scope).trim().split('\n');
+			}
+
+			if (expr.type === 'ref') {
+				return scope.getState(expr.value);
+			}
+
+			if (expr.type === 'aiScriptVar') {
+				if (this.aiscript) {
+					try {
+						return utils.valToJs(this.aiscript.scope.get(expr.value));
+					} catch (e) {
+						return null;
+					}
+				} else {
+					return null;
 				}
-			} as Fn;
+			}
+
+			// Define user function
+			if (expr.type == 'fn') {
+				return {
+					slots: expr.value.slots.map(x => x.name),
+					exec: (slotArg: Record<string, any>) => {
+						return this.evaluate(expr.value.expression, scope.createChildScope(slotArg, expr.id));
+					}
+				} as Fn;
+			}
+			return;
 		}
 
 		// Call user function
-		if (block.type.startsWith('fn:')) {
-			const fnName = block.type.split(':')[1];
+		if (expr.type.startsWith('fn:')) {
+			const fnName = expr.type.split(':')[1];
 			const fn = scope.getState(fnName);
 			const args = {} as Record<string, any>;
 			for (let i = 0; i < fn.slots.length; i++) {
 				const name = fn.slots[i];
-				args[name] = this.evaluate(block.args[i], scope);
+				args[name] = this.evaluate(expr.args[i], scope);
 			}
 			return fn.exec(args);
 		}
 
-		if (block.args === undefined) return null;
+		if (expr.args === undefined) return null;
 
-		const funcs = initHpmlLib(block, scope, this.opts.randomSeed, this.opts.visitor);
+		const funcs = initHpmlLib(expr, scope, this.opts.randomSeed, this.opts.visitor);
 
 		// Call function
-		const fnName = block.type;
+		const fnName = expr.type;
 		const fn = (funcs as any)[fnName];
 		if (fn == null) {
 			throw new HpmlError(`No such function '${fnName}'`);
 		} else {
-			return fn(...block.args.map(x => this.evaluate(x, scope)));
+			return fn(...expr.args.map(x => this.evaluate(x, scope)));
 		}
 	}
 }

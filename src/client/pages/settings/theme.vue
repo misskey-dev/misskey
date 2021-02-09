@@ -58,7 +58,7 @@
 		<FormLink to="/advanced-theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>
 	</FormGroup>
 
-	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}</FormLink>
+	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
 </FormBase>
 </template>
 
@@ -106,6 +106,7 @@ export default defineComponent({
 		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 		const wallpaper = ref(localStorage.getItem('wallpaper'));
+		const themesCount = installedThemes.value.length;
 
 		watch(darkTheme, () => {
 			if (defaultStore.state.darkMode) {
@@ -150,6 +151,7 @@ export default defineComponent({
 			lightTheme,
 			darkMode,
 			syncDeviceDarkMode,
+			themesCount,
 			wallpaper,
 			setWallpaper(e) {
 				selectFile(e.currentTarget || e.target, null, false).then(file => {
