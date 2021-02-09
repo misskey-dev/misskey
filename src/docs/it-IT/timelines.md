@@ -5,7 +5,7 @@ https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOBy
 ## Home
 自分のフォローしているユーザーの投稿
 
-## ローカル
+## Locale
 全てのローカルユーザーの「ホーム」指定されていない投稿
 
 ## ソーシャル
