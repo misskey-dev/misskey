@@ -242,12 +242,15 @@ _mfm:
   search: "Cerca"
   blur: "Sfocatura"
 _reversi:
+  black: "Nero"
+  white: "Bianco"
   ended: "Esci"
 _channel:
   featured: "Tendenze"
 _sidebar:
   icon: "Foto del profilo"
 _theme:
+  color: "Colore"
   keys:
     mention: "Menzioni"
     renote: "Renote"
@@ -313,6 +316,17 @@ _exportOrImport:
 _timelines:
   home: "Home"
   local: "Locale"
+_rooms:
+  _furnitures:
+    moon: "Luna"
+    mousepad: "Tappetino per il mouse"
+    monitor: "Monitor "
+    keyboard: "Tastiera"
+    mat: "Zerbino"
+    color-box: "Libreria"
+    photoframe: "Cornice"
+    bin: "Cestino"
+    cup-noodle: "Noodle istantanei"
 _pages:
   like: "Mi piace"
   unlike: "Togli Mi piace"
@@ -405,8 +419,10 @@ _pages:
 _notification:
   youWereFollowed: "Nuovo seguace"
   _types:
+    all: "Tutto"
     follow: "Seiguiti"
     mention: "Menzioni"
+    reply: "Rispondi"
     renote: "Renote"
     quote: "Cita Note"
     reaction: "Reazione"
