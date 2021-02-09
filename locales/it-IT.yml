@@ -222,6 +222,8 @@ _mfm:
   blur: "Sfocatura"
 _reversi:
   ended: "Esci"
+_channel:
+  featured: "Tendenze"
 _sidebar:
   icon: "Foto del profilo"
 _theme:
@@ -242,9 +244,20 @@ _ago:
 _permissions:
   "write:following": "Seguiti/ Smetti di seguire"
   "read:notifications": "Visualizza notifiche"
+_weekday:
+  sunday: "Domenica"
+  monday: "Lunedì"
+  tuesday: "Martedì"
+  wednesday: "Mercoledì"
+  thursday: "Giovedì"
+  friday: "Venerdì"
+  saturday: "Sabato"
 _widgets:
   notifications: "Notifiche"
   timeline: "Timeline"
+  calendar: "Calendario"
+  trends: "Tendenze"
+  clock: "Orologio"
 _cw:
   show: "Mostra altre"
 _poll:
