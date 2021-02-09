@@ -1,3 +1,3 @@
 export function markNotificationRead(notification: any) {
-    return { ...notification, isRead: true };
+	return { ...notification, isRead: true };
 }
