@@ -179,6 +179,7 @@ groups: "Gruppi"
 createGroup: "Nuovo gruppo"
 invites: "Invita"
 transfer: "Trasferisci"
+title: "Titolo"
 next: "Avanti"
 invitations: "Invita"
 passwordNotMatched: "Le password non corrispondono."
@@ -294,21 +295,83 @@ _exportOrImport:
   userLists: "Liste"
 _timelines:
   home: "Home"
+  local: "Locale"
 _pages:
+  like: "Mi piace"
+  unlike: "Togli Mi piace"
+  variables: "Variabili"
+  title: "Titolo"
   blocks:
     image: "Immagini"
+    _if:
+      variable: "Variabili"
     _post:
       text: "Contenuto"
+    _textInput:
+      text: "Titolo"
+    _textareaInput:
+      text: "Titolo"
+    _numberInput:
+      text: "Titolo"
+    _switch:
+      text: "Titolo"
+    _counter:
+      text: "Titolo"
     _button:
+      text: "Titolo"
       _action:
         _dialog:
           content: "Contenuto"
+    _radioButton:
+      title: "Titolo"
   script:
     categories:
       list: "Liste"
     blocks:
       _join:
         arg1: "Liste"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      notEq: "A non è uguale a B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      and: "A e B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      or: "A o B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       _randomPick:
         arg1: "Liste"
       _dailyRandomPick:
@@ -319,6 +382,7 @@ _pages:
         arg1: "Liste"
       _listLen:
         arg1: "Liste"
+      ref: "Variabili"
     types:
       array: "Liste"
 _notification:
