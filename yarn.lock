@@ -5725,10 +5725,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jsrsasign@8.0.20:
-  version "8.0.20"
-  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-8.0.20.tgz#37d8029c9d8f794d8ac8d8998bce319921491f11"
-  integrity sha512-JTXt9+nqdynIB8wFsS6e8ffHhIjilhywXwdaEVHSj9OVmwldG2H0EoCqkQ+KXkm2tVqREfH/HEmklY4k1/6Rcg==
+jsrsasign@10.1.8:
+  version "10.1.8"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-10.1.8.tgz#880bc0e82982867aa702503006cb585e01fac1dc"
+  integrity sha512-NdMWugkiOXk7dfB8a2PMlnzjf+8mxWgGC9IfWhiYouQa00Qcc4PBrCk4eH+MNB2O/DJ2Cjz1eEzI2usY3BSynQ==
 
 jstransformer@1.0.0:
   version "1.0.0"
