@@ -12,30 +12,45 @@ const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
 const apiUrl = `${location.origin}/api/`;
 
-let lang: string;
+let lang: Promise<string> = get('lang').then(async prelang => {
+	if (!prelang) return 'en-US';
+	return prelang;
+});
 let i18n: I18n<any>;
 let pushesPool: any[] = [];
 //#endregion
 
-//#region Startup
-get('lang').then(async prelang => {
-	if (!prelang) return;
-	lang = prelang;
-	return fetchLocale();
-});
+//#region Function: (Re)Load i18n instance
+async function fetchLocale() {
+	//#region localeファイルの読み込み
+	// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
+	const localeUrl = `/assets/locales/${await lang}.${version}.json`;
+	let localeRes = await caches.match(localeUrl);
+
+	if (!localeRes) {
+		localeRes = await fetch(localeUrl);
+		const clone = localeRes?.clone();
+		if (!clone?.clone().ok) return;
+
+		caches.open(cacheName).then(cache => cache.put(localeUrl, clone));
+	}
+
+	i18n = new I18n(await localeRes.json());
+	//#endregion
+
+	//#region i18nをきちんと読み込んだ後にやりたい処理
+	for (const data of pushesPool) {
+		const n = await composeNotification(data, i18n);
+		if (n) self.registration.showNotification(...n);
+	}
+	pushesPool = [];
+	//#endregion
+}
 //#endregion
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
-	ev.waitUntil(
-		caches.open(cacheName)
-			.then(cache => {
-				return cache.addAll([
-					`/?v=${version}`
-				]);
-			})
-			.then(() => self.skipWaiting())
-	);
+	// Nothing to do
 });
 //#endregion
 
@@ -61,9 +76,7 @@ self.addEventListener('fetch', ev => {
 			.then(response => {
 				return response || fetch(ev.request);
 			})
-			.catch(() => {
-				return caches.match(`/?v=${version}`);
-			})
+			.catch(() => new Response('SW cathces error while fetching. You may not be connected to the Internet, or the server may be down.', { status: 200, statusText: 'OK SW' }))
 	);
 });
 //#endregion
@@ -152,39 +165,11 @@ self.addEventListener('message', ev => {
 
 		if (otype === 'object') {
 			if (ev.data.msg === 'initialize') {
-				lang = ev.data.lang;
-				set('lang', lang);
+				lang = Promise.resolve(ev.data.lang);
+				set('lang', ev.data.lang);
 				fetchLocale();
 			}
 		}
 	}
 });
-//#endregion
-
-//#region Function: (Re)Load i18n instance
-async function fetchLocale() {
-	//#region localeファイルの読み込み
-	// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
-	const localeUrl = `/assets/locales/${lang}.${version}.json`;
-	let localeRes = await caches.match(localeUrl);
-
-	if (!localeRes) {
-		localeRes = await fetch(localeUrl);
-		const clone = localeRes?.clone();
-		if (!clone?.clone().ok) return;
-
-		caches.open(cacheName).then(cache => cache.put(localeUrl, clone));
-	}
-
-	i18n = new I18n(await localeRes.json());
-	//#endregion
-
-	//#region i18nをきちんと読み込んだ後にやりたい処理
-	for (const data of pushesPool) {
-		const n = await composeNotification(data, i18n);
-		if (n) self.registration.showNotification(...n);
-	}
-	pushesPool = [];
-	//#endregion
-}
 //#endregion
