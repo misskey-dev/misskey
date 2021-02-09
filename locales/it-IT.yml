@@ -262,16 +262,24 @@ _widgets:
   activity: "Attività"
   photos: "Foto"
   digitalClock: "Orologio digitale"
+  federation: "Federazione "
 _cw:
   show: "Mostra altre"
 _poll:
   noMore: "Hai aggiunto il numero massimo di opzioni."
+  deadlineDate: "Data di scadenza"
+  deadlineTime: "h"
 _visibility:
   home: "Home"
   followers: "Seguaci"
+  localOnlyDescription: "Solo locale"
+_postForm:
+  replyPlaceholder: "Note la tua risposta.."
+  quotePlaceholder: "Cita Note..."
 _profile:
   name: "Nome"
   username: "Nome utente"
+  description: "Bio"
 _exportOrImport:
   followingList: "Seiguiti"
   muteList: "Silenzia"
