@@ -5,7 +5,7 @@ import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '../../mode
 import { genId } from '../../misc/gen-id';
 import { MessagingMessage } from '../../models/entities/messaging-message';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '../stream';
-import pushNotification from '../push-notification';
+import { pushNotification } from '../push-notification';
 import { Not } from 'typeorm';
 import { Note } from '../../models/entities/note';
 import renderNote from '../../remote/activitypub/renderer/note';

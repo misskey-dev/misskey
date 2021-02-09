@@ -19,6 +19,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import paging from '@/scripts/paging';
+import { markNotificationRead } from '@/scripts/mark-notification-read';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
@@ -85,6 +86,20 @@ export default defineComponent({
 	mounted() {
 		this.connection = os.stream.useSharedConnection('main');
 		this.connection.on('notification', this.onNotification);
+
+		// queueに対してのみ既読処理を行う
+		this.connection.on('readAllNotifications', () => {
+			this.queue = this.queue.map(markNotificationRead);
+		});
+		this.connection.on('readNotifications', notificationIds => {
+			if (this.queue.length === 0) return;
+
+			for (let i = 0; i < this.queue.length; i++) {
+				if (notificationIds.includes(this.queue[i].id)) {
+					this.queue[i] = markNotificationRead(this.queue[i]);
+				}
+			}
+		});
 	},
 
 	beforeUnmount() {

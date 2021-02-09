@@ -12,7 +12,7 @@ type pushNotificationsTypes = {
 	'readAllNotifications': undefined;
 };
 
-export default async function<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
+export async function pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
 	const meta = await fetchMeta();
 
 	if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;

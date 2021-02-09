@@ -68,6 +68,7 @@ import notePage from '../filters/note';
 import { userPage } from '../filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
+import { markNotificationRead } from '@/scripts/mark-notification-read';
 
 export default defineComponent({
 	components: {
@@ -113,7 +114,17 @@ export default defineComponent({
 			this.readObserver.observe(this.$el);
 
 			this.connection = os.stream.useSharedConnection('main');
-			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
+
+			this.connection.on('readAllNotifications', () => {
+				this.readObserver.unobserve(this.$el);
+				this.notification = markNotificationRead(this.notification);
+			});
+			this.connection.on('readNotifications', notificationIds => {
+				if (notificationIds.includes(this.notification.id)) {
+					this.readObserver.unobserve(this.$el);
+					this.notification = markNotificationRead(this.notification);
+				}
+			})
 		}
 	},
 

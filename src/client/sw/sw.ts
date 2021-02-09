@@ -3,49 +3,13 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { get, set } from 'idb-keyval';
-import composeNotification from '@/sw/compose-notification';
-import { I18n } from '@/scripts/i18n';
+import { get } from 'idb-keyval';
+import { swNotification } from '@/sw/notification';
+import { swLang } from '@/sw/lang';
 
 //#region Variables
-const version = _VERSION_;
-const cacheName = `mk-cache-${version}`;
+// const cacheName = `mk-cache-${_VERSION_}`;
 const apiUrl = `${location.origin}/api/`;
-
-let lang: Promise<string> = get('lang').then(async prelang => {
-	if (!prelang) return 'en-US';
-	return prelang;
-});
-let i18n: I18n<any>;
-let pushesPool: any[] = [];
-//#endregion
-
-//#region Function: (Re)Load i18n instance
-async function fetchLocale() {
-	//#region localeファイルの読み込み
-	// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
-	const localeUrl = `/assets/locales/${await lang}.${version}.json`;
-	let localeRes = await caches.match(localeUrl);
-
-	if (!localeRes) {
-		localeRes = await fetch(localeUrl);
-		const clone = localeRes?.clone();
-		if (!clone?.clone().ok) return;
-
-		caches.open(cacheName).then(cache => cache.put(localeUrl, clone));
-	}
-
-	i18n = new I18n(await localeRes.json());
-	//#endregion
-
-	//#region i18nをきちんと読み込んだ後にやりたい処理
-	for (const data of pushesPool) {
-		const n = await composeNotification(data, i18n);
-		if (n) self.registration.showNotification(...n);
-	}
-	pushesPool = [];
-	//#endregion
-}
 //#endregion
 
 //#region Lifecycle: Install
@@ -60,7 +24,7 @@ self.addEventListener('activate', ev => {
 		caches.keys()
 			.then(cacheNames => Promise.all(
 				cacheNames
-					.filter((v) => v !== cacheName)
+					.filter((v) => v !== swLang.cacheName)
 					.map(name => caches.delete(name))
 			))
 			.then(() => self.clients.claim())
@@ -93,11 +57,22 @@ self.addEventListener('push', ev => {
 
 		const data = ev.data?.json();
 
-		// localeを読み込めておらずi18nがundefinedだった場合はpushesPoolにためておく
-		if (!i18n) return pushesPool.push(data);
-
-		const n = await composeNotification(data, i18n);
-		if (n) return self.registration.showNotification(...n);
+		switch (data.type) {
+			case 'notification':
+			case 'driveFileCreated':
+			case 'unreadMessagingMessage':
+				return swNotification.append(data);
+			case 'readAllNotifications':
+				for (const n of await self.registration.getNotifications()) {
+					n.close();
+				}
+				break;
+			case 'readNotifications':
+				for (const n of await self.registration.getNotifications()) {
+					if (data.notificationIds.includes(n.data.body.id)) n.close();
+				}
+				break;
+		}
 	}));
 });
 //#endregion
@@ -108,16 +83,18 @@ self.addEventListener('notificationclick', ev => {
 	const { data } = notification;
 	const { origin } = location;
 
+	const suffix = `?loginId=${data.userId}`;
+
 	switch (action) {
 		case 'showUser':
 			switch (data.body.type) {
 				case 'reaction':
-					self.clients.openWindow(`${origin}/users/${data.body.user.id}`);
+					self.clients.openWindow(`${origin}/users/${data.body.user.id}${suffix}`);
 					break;
 
 				default:
 					if ('note' in data.body) {
-						self.clients.openWindow(`${origin}/notes/${data.body.note.id}`);
+						self.clients.openWindow(`${origin}/users/${data.body.note.user.id}${suffix}`);
 					}
 			}
 			break;
@@ -128,8 +105,10 @@ self.addEventListener('notificationclick', ev => {
 });
 
 self.addEventListener('notificationclose', async ev => {
-	self.registration.showNotification('notificationclose');
 	const { notification } = ev;
+	if (notification.title !== 'notificationclose') {
+		self.registration.showNotification('notificationclose', { body: `${notification.data.id}` });
+	}
 	const { data } = notification;
 
 	if (data.isNotification) {
@@ -140,13 +119,15 @@ self.addEventListener('notificationclose', async ev => {
 
 		if (!account) return;
 
-		fetch(`${origin}/api/notifications/read`, {
-			method: 'POST',
-			body: JSON.stringify({
-				i: account.token,
-				notificationIds: [data.data.id]
-			})
-		});
+		if (data.type === 'notification') {
+			fetch(`${origin}/api/notifications/read`, {
+				method: 'POST',
+				body: JSON.stringify({
+					i: account.token,
+					notificationIds: [data.body.id]
+				})
+			});
+		}
 	}
 });
 //#endregion
@@ -166,9 +147,7 @@ self.addEventListener('message', ev => {
 
 		if (otype === 'object') {
 			if (ev.data.msg === 'initialize') {
-				lang = Promise.resolve(ev.data.lang);
-				set('lang', ev.data.lang);
-				fetchLocale();
+				swLang.setLang(ev.data.lang);
 			}
 		}
 	}

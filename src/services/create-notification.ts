@@ -1,5 +1,5 @@
 import { publishMainStream } from './stream';
-import pushSw from './push-notification';
+import { pushNotification } from './push-notification';
 import { Notifications, Mutings, UserProfiles } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
@@ -50,7 +50,7 @@ export async function createNotification(
 
 			publishMainStream(notifieeId, 'unreadNotification', packed);
 
-			pushSw(notifieeId, 'notification', packed);
+			pushNotification(notifieeId, 'notification', packed);
 		}
 	}, 2000);
 

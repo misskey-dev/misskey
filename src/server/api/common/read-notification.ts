@@ -1,4 +1,5 @@
 import { publishMainStream } from '../../../services/stream';
+import { pushNotification } from '../../../services/push-notification';
 import { User } from '../../../models/entities/user';
 import { Notification } from '../../../models/entities/notification';
 import { Notifications, Users } from '../../../models';
@@ -12,7 +13,7 @@ export async function readNotification(
 	notificationIds: Notification['id'][]
 ) {
 	// Update documents
-	const updatedNotificatons = await Notifications.update({
+	await Notifications.update({
 		id: In(notificationIds),
 		isRead: false
 	}, {
@@ -23,10 +24,10 @@ export async function readNotification(
 		// ユーザーのすべての通知が既読だったら、
 		// 全ての(いままで未読だった)通知を(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllNotifications');
+		pushNotification(userId, 'readAllNotifications', undefined);
 	} else {
-		// まだすべて既読になっていなければ、
-		// アップデートしたという
-		const updatedNotificationsIds = updatedNotificatons.generatedMaps.map(e => e.id);
-		publishMainStream(userId, 'readNotifications', updatedNotificationsIds);
+		// まだすべて既読になっていなければ、各クライアントにnotificationIdsを伝達
+		publishMainStream(userId, 'readNotifications', notificationIds);
+		pushNotification(userId, 'readNotifications', { notificationIds });
 	}
 }
