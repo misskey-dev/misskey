@@ -258,6 +258,10 @@ _widgets:
   calendar: "Calendario"
   trends: "Tendenze"
   clock: "Orologio"
+  rss: "Aggregatore rss"
+  activity: "Attività"
+  photos: "Foto"
+  digitalClock: "Orologio digitale"
 _cw:
   show: "Mostra altre"
 _poll:
