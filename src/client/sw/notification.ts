@@ -58,60 +58,60 @@ class SwNotification {
 								}
 							]
 						}];
-	
+
 					case 'reply':
 						return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 							body: getNoteSummary(data.body.note, i18n.locale),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'renote':
 						return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 							body: getNoteSummary(data.body.note, i18n.locale),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'quote':
 						return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 							body: getNoteSummary(data.body.note, i18n.locale),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'reaction':
 						return [`${data.body.reaction} ${getUserName(data.body.user)}`, {
 							body: getNoteSummary(data.body.note, i18n.locale),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'pollVote':
 						return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
 							body: getNoteSummary(data.body.note, i18n.locale),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'follow':
 						return [t('_notification.youWereFollowed'), {
 							body: getUserName(data.body.user),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'receiveFollowRequest':
 						return [t('_notification.youReceivedFollowRequest'), {
 							body: getUserName(data.body.user),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'followRequestAccepted':
 						return [t('_notification.yourFollowRequestAccepted'), {
 							body: getUserName(data.body.user),
 							icon: data.body.user.avatarUrl
 						}];
-	
+
 					case 'groupInvited':
 						return [t('_notification.youWereInvitedToGroup'), {
 							body: data.body.group.name
 						}];
-	
+
 					default:
 						return null;
 				}
@@ -130,7 +130,7 @@ class SwNotification {
 				return null;
 		}
 	}
-	
+
 }
 
 export const swNotification = new SwNotification();
