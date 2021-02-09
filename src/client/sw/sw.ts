@@ -134,7 +134,7 @@ self.addEventListener('notificationclose', async ev => {
 
 //#region When: Caught a message from the client
 self.addEventListener('message', ev => {
-	switch(ev.data) {
+	switch (ev.data) {
 		case 'clear':
 			return; // TODO
 		default:

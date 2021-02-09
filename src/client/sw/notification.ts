@@ -1,12 +1,11 @@
 /*
  * Notification manager for SW
  */
-
 declare var self: ServiceWorkerGlobalScope;
 
 import { getNoteSummary } from '../../misc/get-note-summary';
 import getUserName from '../../misc/get-user-name';
-import { swLang } from '@/sw/lang'
+import { swLang } from '@/sw/lang';
 
 class SwNotification {
 	private queue: any[] = [];
@@ -22,11 +21,11 @@ class SwNotification {
 			if (this.fetching == false) {
 				this.fetching = true;
 				await swLang.fetchLocale();
-				this.fetching = false;
 				const promises = this.queue.map(this.composeNotification).map(n => {
 					if (!n) return;
 					return self.registration.showNotification(...n);
-				})
+				});
+				this.fetching = false;
 				this.queue = [];
 				return Promise.all(promises);
 			}
