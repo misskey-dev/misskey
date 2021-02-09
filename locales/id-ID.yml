@@ -1,5 +1,6 @@
 ---
 _lang_: "Bahasa Jepang"
+headlineMisskey: "Catatan terhubung jaringan"
 monthAndDay: "{day} {month}"
 search: "Pencarian"
 notifications: "Notifikasi"
@@ -46,10 +47,22 @@ searchUser: "Cari pengguna"
 reply: "Balas"
 loadMore: "Selebihnya"
 showMore: "Selebihnya"
-youGotNewFollower: "Mengikuti Anda"
+youGotNewFollower: "Sedang mengikuti"
+receiveFollowRequest: "Permintaan mengikuti terkirim"
 mention: "Panggilan"
 files: "Berkas"
 download: "Unduh"
+unfollowConfirm: "Berhenti mengikuti {name}?"
+following: "Ikuti"
+followers: "Pengikut"
+followsYou: "Mengikuti Anda"
+error: "Galat"
+somethingHappened: "Terjadi kesalahan"
+retry: "Coba lagi"
+pageLoadError: "Gagal memuat halaman."
+pageLoadErrorDescription: "Umumnya disebabkan jaringan atau tembolok perambah. Tunggu sesaat setelah membersihkan tembolok sebelum mencoba kembali."
+privacy: "Keleluasaan"
+follow: "Ikuti"
 cantReRenote: "Renote tidak dapat direnote"
 quote: "Kutip"
 pinnedNote: "Note yang disematkan"
@@ -212,17 +225,21 @@ _widgets:
   timeline: "Linimasa"
 _cw:
   show: "Selebihnya"
+_visibility:
+  followers: "Pengikut"
 _profile:
   username: "Nama Pengguna"
 _exportOrImport:
+  followingList: "Ikuti"
   muteList: "Bisukan"
   blockingList: "Blokir"
 _rooms:
   _roomType:
     default: "Bawaan"
 _notification:
-  youWereFollowed: "Mengikuti Anda"
+  youWereFollowed: "Sedang mengikuti"
   _types:
+    follow: "Ikuti"
     mention: "Panggilan"
     quote: "Kutip"
     reaction: "Reaksi"
