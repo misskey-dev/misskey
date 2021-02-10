@@ -288,6 +288,7 @@ _channel:
   featured: "Tendenze"
 _sidebar:
   icon: "Foto del profilo"
+  hide: "Nascondere"
 _theme:
   color: "Colore"
   func: "Funzione"
@@ -308,6 +309,9 @@ _ago:
   hoursAgo: "{n}h fa"
 _permissions:
   "read:blocks": "Visualizza gli account che hai bloccato."
+  "write:blocks": "Gestisci gli account che hai bloccato."
+  "read:favorites": "Visualizza Segnalibri"
+  "write:favorites": "Gestisci Segnalibri"
   "write:following": "Seguiti/ Smetti di seguire"
   "read:notifications": "Visualizza notifiche"
 _weekday:
@@ -331,6 +335,7 @@ _widgets:
   digitalClock: "Orologio digitale"
   federation: "Federazione"
 _cw:
+  hide: "Nascondere"
   show: "Mostra altre"
 _poll:
   noMore: "Hai aggiunto il numero massimo di opzioni."
