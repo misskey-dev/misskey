@@ -71,8 +71,8 @@ self.addEventListener('push', ev => {
 			case 'readNotifications':
 				for (const notification of await self.registration.getNotifications()) {
 					if (data.body.notificationIds.includes(notification.data.body.id)) {
-						notification.close()
-					};
+						notification.close();
+					}
 				}
 				break;
 		}

@@ -5,7 +5,7 @@ export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
 export type pushNotificationData = {
-    type: 'notification' | 'unreadMessagingMessage' | 'readNotifications' | 'readAllNotifications',
-    body: any,
-    userId: string
+	type: 'notification' | 'unreadMessagingMessage' | 'readNotifications' | 'readAllNotifications',
+	body: any,
+	userId: string
 };
