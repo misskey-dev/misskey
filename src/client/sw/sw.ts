@@ -3,9 +3,10 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { get } from 'idb-keyval';
-import { swNotification } from '@/sw/notification';
+import { createNotification } from '@/sw/create-notification';
 import { swLang } from '@/sw/lang';
+import { swNotificationRead } from '@/sw/notification-read';
+import { pushNotificationData } from '../../types';
 
 //#region Variables
 // const cacheName = `mk-cache-${_VERSION_}`;
@@ -55,21 +56,23 @@ self.addEventListener('push', ev => {
 		// // クライアントがあったらストリームに接続しているということなので通知しない
 		// if (clients.length != 0) return;
 
-		const data = ev.data?.json();
+		const data: pushNotificationData = ev.data?.json();
 
 		switch (data.type) {
 			case 'notification':
-			case 'driveFileCreated':
+			// case 'driveFileCreated':
 			case 'unreadMessagingMessage':
-				return swNotification.append(data);
+				return createNotification(data);
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
 					n.close();
 				}
 				break;
 			case 'readNotifications':
-				for (const n of await self.registration.getNotifications()) {
-					if (data.notificationIds.includes(n.data.body.id)) n.close();
+				for (const notification of await self.registration.getNotifications()) {
+					if (data.body.notificationIds.includes(notification.data.body.id)) {
+						notification.close()
+					};
 				}
 				break;
 		}
@@ -80,7 +83,7 @@ self.addEventListener('push', ev => {
 //#region Notification
 self.addEventListener('notificationclick', ev => {
 	const { action, notification } = ev;
-	const { data } = notification;
+	const data: pushNotificationData = notification.data;
 	const { origin } = location;
 
 	const suffix = `?loginId=${data.userId}`;
@@ -104,30 +107,17 @@ self.addEventListener('notificationclick', ev => {
 	notification.close();
 });
 
-self.addEventListener('notificationclose', async ev => {
+self.addEventListener('notificationclose', ev => {
 	const { notification } = ev;
+
 	if (notification.title !== 'notificationclose') {
-		self.registration.showNotification('notificationclose', { body: `${notification.data.id}` });
+		self.registration.showNotification('notificationclose', { body: `${notification.data.body.id}` });
 	}
-	const { data } = notification;
+	const data: pushNotificationData = notification.data;
 
-	if (data.isNotification) {
-		const { origin } = location;
-
-		const accounts = await get('accounts');
-		const account = accounts.find(i => i.id === data.userId);
-
-		if (!account) return;
-
-		if (data.type === 'notification') {
-			fetch(`${origin}/api/notifications/read`, {
-				method: 'POST',
-				body: JSON.stringify({
-					i: account.token,
-					notificationIds: [data.body.id]
-				})
-			});
-		}
+	if (data.type === 'notification') {
+		console.log('close', data);
+		swNotificationRead.then(that => that.read(data));
 	}
 });
 //#endregion

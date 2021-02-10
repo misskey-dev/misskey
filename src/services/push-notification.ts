@@ -4,6 +4,7 @@ import { SwSubscriptions } from '../models';
 import { fetchMeta } from '../misc/fetch-meta';
 import { PackedNotification } from '../models/repositories/notification';
 import { PackedMessagingMessage } from '../models/repositories/messaging-message';
+import { pushNotificationData } from '../types';
 
 type pushNotificationsTypes = {
 	'notification': PackedNotification;
@@ -38,7 +39,7 @@ export async function pushNotification<T extends keyof pushNotificationsTypes>(u
 
 		push.sendNotification(pushSubscription, JSON.stringify({
 			type, body, userId
-		}), {
+		} as pushNotificationData), {
 			proxy: config.proxy
 		}).catch((err: any) => {
 			//swLogger.info(err.statusCode);

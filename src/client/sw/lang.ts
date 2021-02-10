@@ -14,10 +14,9 @@ class SwLang {
 		return prelang;
 	});
 
-	public i18n: I18n<any> | null = null;
+	public i18n: Promise<I18n<any>> | null = null;
 
 	public setLang(newLang: string) {
-		this.i18n = null;
 		this.lang = Promise.resolve(newLang);
 		set('lang', newLang);
 		return this.fetchLocale();
@@ -25,18 +24,20 @@ class SwLang {
 
 	public async fetchLocale() {
 		// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
-		const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
-		let localeRes = await caches.match(localeUrl);
+		return this.i18n = new Promise(async (res, rej) => {
+			const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
+			let localeRes = await caches.match(localeUrl);
+	
+			if (!localeRes) {
+				localeRes = await fetch(localeUrl);
+				const clone = localeRes?.clone();
+				if (!clone?.clone().ok) rej('locale fetching error');
 
-		if (!localeRes) {
-			localeRes = await fetch(localeUrl);
-			const clone = localeRes?.clone();
-			if (!clone?.clone().ok) return;
+				caches.open(this.cacheName).then(cache => cache.put(localeUrl, clone));
+			}
 
-			caches.open(this.cacheName).then(cache => cache.put(localeUrl, clone));
-		}
-
-		return this.i18n = new I18n(await localeRes.json());
+			res(new I18n(await localeRes.json()));
+		});
 	}
 }
 
