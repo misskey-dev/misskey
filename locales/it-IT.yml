@@ -275,6 +275,8 @@ _mfm:
   mention: "Menzioni"
   url: "URL"
   bold: "Grassetto"
+  blockCode: "Codice(blocco)"
+  inlineMath: "Espressione matematica(Immersione)"
   quote: "Cita il nota"
   search: "Cerca"
   blur: "Sfocatura"
