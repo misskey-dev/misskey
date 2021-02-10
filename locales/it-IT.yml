@@ -298,12 +298,18 @@ _sidebar:
   icon: "Foto del profilo"
   hide: "Nascondere"
 _theme:
+  constant: "Costante"
+  defaultValue: "Valore predefinito"
   color: "Colore"
   func: "Funzione"
+  darken: "Scuro"
+  lighten: "Chiaro"
   keys:
     bg: "Sfondo"
+    shadow: "Ombra"
     mention: "Menzioni"
     renote: "Rinotta"
+    divider: "Interruzione di linea"
 _sfx:
   note: "Nota"
   notification: "Notifiche"
