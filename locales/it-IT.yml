@@ -292,6 +292,7 @@ _theme:
   color: "Colore"
   func: "Funzione"
   keys:
+    bg: "Sfondo"
     mention: "Menzioni"
     renote: "Rinotta"
 _sfx:
@@ -306,6 +307,7 @@ _ago:
   minutesAgo: "{n}min fa"
   hoursAgo: "{n}h fa"
 _permissions:
+  "read:blocks": "Visualizza gli account che hai bloccato."
   "write:following": "Seguiti/ Smetti di seguire"
   "read:notifications": "Visualizza notifiche"
 _weekday:
