@@ -321,6 +321,18 @@ _ago:
   secondsAgo: "{n}s fa"
   minutesAgo: "{n}min fa"
   hoursAgo: "{n}h fa"
+  daysAgo: "{1} giorni fa"
+  weeksAgo: "{n} settimane fa"
+  monthsAgo: "{n} mesi fa"
+  yearsAgo: "{n} anni fa"
+_time:
+  second: "s"
+  minute: "min"
+  hour: "ore"
+  day: "giorni"
+_tutorial:
+  title: "Come usare Misskey"
+  step1_1: "Benvenuto"
 _permissions:
   "read:blocks": "Visualizza gli account che hai bloccato."
   "write:blocks": "Gestisci gli account che hai bloccato."
