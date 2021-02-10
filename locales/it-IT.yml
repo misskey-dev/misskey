@@ -91,6 +91,7 @@ addAcount: "Aggiungi un account esistente"
 general: "Generali"
 wallpaper: "Sfondo"
 setWallpaper: "Imposta sfondo"
+searchWith: "Cerca: {q}"
 annotation: "Descrizione"
 federation: "Federazione"
 instances: "Istanza"
@@ -281,6 +282,7 @@ _mfm:
   quote: "Cita il nota"
   search: "Cerca"
   blur: "Sfocatura"
+  font: "Tipo di carattere"
 _reversi:
   black: "Nero"
   white: "Bianco"
@@ -368,12 +370,26 @@ _timelines:
   home: "Home"
   local: "Locale"
 _rooms:
+  _roomType:
+    washitsu: "Washitsu"
   _furnitures:
+    milk: "Cartone del latte"
+    bed: "Letto"
+    low-table: "Tavolino Coffee"
+    desk: "Tavolo"
+    chair: "Sedia"
+    chair2: "Sedia 2"
+    fan: "Ventilatore"
+    pc: "PC"
+    plant: "Pianta da appartamento"
+    plant2: "Pianta da appartamento2"
     eraser: "Gomma"
     pencil: "Matita"
+    pudding: "Pudding"
     book: "Libro"
     book2: "Libro2"
     piano: "Pianoforte"
+    server: "Server"
     moon: "Luna"
     corkboard: "Bacheca"
     mousepad: "Tappetino per il mouse"
@@ -393,8 +409,10 @@ _pages:
   unlike: "Togli Mi piace"
   variables: "Variabili"
   title: "Titolo"
+  font: "Tipo di carattere"
   blocks:
     image: "Immagini"
+    if: "Se"
     _if:
       variable: "Variabili"
     _post:
@@ -468,6 +486,8 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      _if:
+        arg1: "Se"
       random: "Aleatorietà"
       _randomPick:
         arg1: "Liste"
