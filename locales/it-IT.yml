@@ -341,6 +341,7 @@ _poll:
   noMore: "Hai aggiunto il numero massimo di opzioni."
   deadlineDate: "Data di scadenza"
   deadlineTime: "h"
+  voted: "Votato"
 _visibility:
   home: "Home"
   followers: "Seguaci"
