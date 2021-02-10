@@ -262,6 +262,7 @@ _sidebar:
   icon: "Foto del profilo"
 _theme:
   color: "Colore"
+  func: "Funzione"
   keys:
     mention: "Menzioni"
     renote: "Renote"
@@ -376,6 +377,7 @@ _pages:
       comparison: "Metodo comparativo"
       random: "Aleatorietà"
       value: "Valore"
+      fn: "Funzione"
       list: "Liste"
     blocks:
       _join:
@@ -434,9 +436,12 @@ _pages:
       _listLen:
         arg1: "Liste"
       ref: "Variabili"
+      fn: "Funzione"
     types:
       array: "Liste"
 _notification:
+  youGotQuote: "{name} ha citato il tuo Note e ha detto"
+  youRenoted: "{name} ha renoted"
   youWereFollowed: "Nuovo seguace"
   _types:
     all: "Tutto"
