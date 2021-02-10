@@ -222,6 +222,7 @@ copy: "Copia"
 logs: "Log"
 database: "Base di dati"
 channel: "Canale"
+notificationSetting: "impostazioni delle notifiche"
 other: "Avanzate"
 abuseReports: "Segnala"
 reportAbuse: "Segnala"
@@ -372,6 +373,9 @@ _pages:
       title: "Titolo"
   script:
     categories:
+      comparison: "Metodo comparativo"
+      random: "Aleatorietà"
+      value: "Valore"
       list: "Liste"
     blocks:
       _join:
@@ -418,6 +422,7 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      random: "Aleatorietà"
       _randomPick:
         arg1: "Liste"
       _dailyRandomPick:
