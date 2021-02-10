@@ -27,7 +27,7 @@ class SwLang {
 		return this.i18n = new Promise(async (res, rej) => {
 			const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
 			let localeRes = await caches.match(localeUrl);
-	
+
 			if (!localeRes) {
 				localeRes = await fetch(localeUrl);
 				const clone = localeRes?.clone();
