@@ -459,6 +459,7 @@ emailConfigInfo: "メールアドレスの確認とかパスワードリセッ�
 smtpHost: "ホスト"
 smtpUser: "ユーザー名"
 smtpPass: "パスワード"
+notificationSettingDesc: "表示する通知の種類えらんでや。"
 emailVerified: "メールアドレスは確認されたで"
 pageLikesCount: "Pageにええやんと思った数"
 pageLikedCount: "Pageにええやんと思ってくれた数"
