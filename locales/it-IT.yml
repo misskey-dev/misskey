@@ -282,9 +282,11 @@ _aboutMisskey:
 _mfm:
   mention: "Menzioni"
   url: "URL"
+  link: "Link"
   bold: "Grassetto"
   blockCode: "Codice(blocco)"
   inlineMath: "Espressione matematica(Immersione)"
+  blockMath: "Espressione matematica(blocco)"
   quote: "Cita il nota"
   search: "Cerca"
   blur: "Sfocatura"
@@ -366,6 +368,7 @@ _cw:
   show: "Mostra altre"
 _poll:
   noMore: "Hai aggiunto il numero massimo di opzioni."
+  infinite: "Permanente"
   deadlineDate: "Data di scadenza"
   deadlineTime: "h"
   voted: "Votato"
@@ -374,6 +377,7 @@ _visibility:
   public: "Pubblico"
   home: "Home"
   followers: "Seguaci"
+  localOnly: "Solo Locale"
   localOnlyDescription: "Solo locale"
 _postForm:
   replyPlaceholder: "Nota la tua risposta.."
