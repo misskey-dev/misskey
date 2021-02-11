@@ -84,6 +84,7 @@ export function updateAccount(data) {
 	for (const [key, value] of Object.entries(data)) {
 		$i[key] = value;
 	}
+	localStorage.setItem('account', JSON.stringify($i));
 }
 
 export function refreshAccount() {
