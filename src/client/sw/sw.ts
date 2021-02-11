@@ -111,7 +111,7 @@ self.addEventListener('notificationclose', ev => {
 	const { notification } = ev;
 
 	if (notification.title !== 'notificationclose') {
-		self.registration.showNotification('notificationclose', { body: `${notification.data.body.id}` });
+		self.registration.showNotification('notificationclose', { body: `${notification?.data?.body?.id}` });
 	}
 	const data: pushNotificationData = notification.data;
 
