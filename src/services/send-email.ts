@@ -26,6 +26,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 	} as any);
 
 	try {
+		// TODO: htmlサニタイズ
 		const info = await transporter.sendMail({
 			from: meta.email!,
 			to: to,
