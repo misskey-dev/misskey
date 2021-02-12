@@ -50,6 +50,7 @@ export default defineComponent({
 			renote: null as any,
 			specified: null as any,
 			visibility: null as string | null,
+			localOnly: null as boolean | null,
 			files: null as any[] | null,
 
 			faShareAlt
@@ -70,8 +71,20 @@ export default defineComponent({
 		if (url) noteText += `${url}`;
 		this.initialText = noteText.trim();
 
-		this.visibility = urlParams.get('visibility');
-		if (!noteVisibilities.includes(this.visibility)) this.visibility = null;
+		const visibility = urlParams.get('visibility');
+		if (noteVisibilities.includes(visibility)) {
+			this.visibility = visibility;
+		} else {
+			// Mastodonと互換性を持たせてみる
+			if (this.visibility === 'unlisted') this.visibility = 'home';
+			else if (this.visibility === 'private') this.visibility = 'followers';
+			else if (this.visibility === 'direct') this.visibility = 'specified';
+			else this.visibility = null;
+		}
+
+		const localOnly = urlParams.get('localOnly');
+		if (localOnly === '0') this.localOnly = false;
+		else if (localOnly === '1') this.localOnly = true;
 
 		await Promise.all([(async () => {
 			const replyId = urlParams.get('replyId');

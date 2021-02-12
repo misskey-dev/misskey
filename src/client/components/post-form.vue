@@ -112,6 +112,10 @@ export default defineComponent({
 			type: Array,
 			required: false
 		},
+		initialLocalOnly: {
+			type: Boolean,
+			required: false
+		},
 		initialNote: {
 			type: Object,
 			required: false
@@ -226,6 +230,10 @@ export default defineComponent({
 
 		if (this.initialFiles) {
 			this.files = this.initialFiles;
+		}
+
+		if (typeof this.initialLocalOnly === 'boolean') {
+			this.localOnly = this.initialLocalOnly;
 		}
 
 		if (this.mention) {
