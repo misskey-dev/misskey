@@ -10,6 +10,7 @@
 				:initial-text="initialText"
 				:initial-visibility="visibility"
 				:initial-files="files"
+				:initial-local-only="localOnly"
 				:reply="reply"
 				:renote="renote"
 				:specified="specified"
@@ -77,9 +78,9 @@ export default defineComponent({
 			this.visibility = visibility;
 		} else {
 			// Mastodonと互換性を持たせてみる
-			if (this.visibility === 'unlisted') this.visibility = 'home';
-			else if (this.visibility === 'private') this.visibility = 'followers';
-			else if (this.visibility === 'direct') this.visibility = 'specified';
+			if (visibility === 'unlisted') this.visibility = 'home';
+			else if (visibility === 'private') this.visibility = 'followers';
+			else if (visibility === 'direct') this.visibility = 'specified';
 			else this.visibility = null;
 		}
 
@@ -103,8 +104,8 @@ export default defineComponent({
 				}
 			}
 		})(),(async () => {
-			const renoteId = urlParams.get('replyId');
-			const renoteUri = urlParams.get('replyUri');
+			const renoteId = urlParams.get('renoteId');
+			const renoteUri = urlParams.get('renoteUri');
 			if (renoteId) {
 				this.renote = await os.api('notes/show', {
 					noteId: renoteId
@@ -130,8 +131,9 @@ export default defineComponent({
 		})(),(async () => {
 			const fileIds = urlParams.get('fileIds');
 			if (fileIds) {
-				const promises = Promise.all(fileIds.split(',').map(fileId => os.api('drive/files/show', { fileId })));
-				promises.then(files => this.files = files).catch(() => console.error('invalid fileIds'));
+				const promises = Promise.all(fileIds.split(',')
+					.map(fileId => os.api('drive/files/show', { fileId }).catch(() => console.error(`invalid fileId: ${fileId}`))));
+				await promises.then(files => this.files = files).catch(() => console.error('invalid fileIds'));
 			}
 		})(),]);
 
