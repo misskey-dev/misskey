@@ -76,12 +76,6 @@ export default defineComponent({
 		const visibility = urlParams.get('visibility');
 		if (noteVisibilities.includes(visibility)) {
 			this.visibility = visibility;
-		} else {
-			// Mastodonと互換性を持たせてみる
-			if (visibility === 'unlisted') this.visibility = 'home';
-			else if (visibility === 'private') this.visibility = 'followers';
-			else if (visibility === 'direct') this.visibility = 'specified';
-			else this.visibility = null;
 		}
 
 		const localOnly = urlParams.get('localOnly');
@@ -132,10 +126,14 @@ export default defineComponent({
 			const fileIds = urlParams.get('fileIds');
 			if (fileIds) {
 				const promises = Promise.all(fileIds.split(',')
-					.map(fileId => os.api('drive/files/show', { fileId }).catch(() => console.error(`invalid fileId: ${fileId}`))));
-				await promises.then(files => this.files = files).catch(() => console.error('invalid fileIds'));
+					.map(fileId => os.api('drive/files/show', { fileId }).catch(() => Error(`invalid fileId: ${fileId}`))));
+				await promises.then(files => this.files = files);
 			}
-		})(),]);
+		})(),]).catch(e => os.dialog({
+			type: 'error',
+			title: e.message,
+			text: e.name
+		}));
 
 		this.state = 'writing';
 	},
