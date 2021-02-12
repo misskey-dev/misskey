@@ -79,6 +79,16 @@ export default defineComponent({
 			this.visibility = visibility;
 		}
 
+		if (this.visibility === 'specified') {
+			const visibleUserIds = urlParams.get('visibleUserIds');
+			const visibleAccts = urlParams.get('visibleAccts');
+			this.visibleUsers = await [
+				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
+				...(visibleAccts ? visibleAccts.split(',').map(parseAcct) : [])
+			].map(q => os.api('users/show', q)
+				.catch(() => Error(`invalid user query: ${JSON.stringify(q)}`)))
+		}
+
 		const localOnly = urlParams.get('localOnly');
 		if (localOnly === '0') this.localOnly = false;
 		else if (localOnly === '1') this.localOnly = true;
@@ -113,20 +123,6 @@ export default defineComponent({
 					this.renote = obj.object;
 				}
 			}
-		})(),(() => {
-			const visibleUserIds = urlParams.get('visibleUserIds');
-			if (!visibleUserIds) return;
-			return Promise.all(visibleUserIds.split(',')
-				.map(userId => os.api('users/show', { userId })
-					.then(user => this.visibleUsers.push(user))
-					.catch(() => Error(`invalid userId: ${userId}`))));
-		})(),(() => {
-			const visibleAccts = urlParams.get('visibleAccts');
-			if (!visibleAccts) return;
-			return Promise.all(visibleAccts.split(',')
-				.map(acct => os.api('users/show', parseAcct(acct))
-					.then(user => this.visibleUsers.push(user))
-					.catch(() => Error(`invalid acct: ${acct}`))));
 		})(),(async () => {
 			const fileIds = urlParams.get('fileIds');
 			if (fileIds) {
