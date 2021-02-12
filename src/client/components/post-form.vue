@@ -104,11 +104,19 @@ export default defineComponent({
 			type: String,
 			required: false
 		},
+		initialVisibility: {
+			type: String,
+			required: false
+		},
+		initialFiles: {
+			type: Array,
+			required: false
+		},
 		initialNote: {
 			type: Object,
 			required: false
 		},
-		instant: {
+		share: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -136,7 +144,7 @@ export default defineComponent({
 			useCw: false,
 			cw: null,
 			localOnly: this.$store.state.rememberNoteVisibility ? this.$store.state.localOnly : this.$store.state.defaultNoteLocalOnly,
-			visibility: this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility,
+			visibility: (this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility) as typeof noteVisibilities[number],
 			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
@@ -210,6 +218,14 @@ export default defineComponent({
 	mounted() {
 		if (this.initialText) {
 			this.text = this.initialText;
+		}
+
+		if (this.initialVisibility) {
+			this.visibility = this.initialVisibility;
+		}
+
+		if (this.initialFiles) {
+			this.files = this.initialFiles;
 		}
 
 		if (this.mention) {
@@ -286,7 +302,7 @@ export default defineComponent({
 
 		this.$nextTick(() => {
 			// 書きかけの投稿を復元
-			if (!this.instant && !this.mention && !this.specified) {
+			if (!this.share && !this.mention && !this.specified) {
 				const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[this.draftKey];
 				if (draft) {
 					this.text = draft.data.text;
@@ -514,8 +530,6 @@ export default defineComponent({
 		},
 
 		saveDraft() {
-			if (this.instant) return;
-
 			const data = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 			data[this.draftKey] = {

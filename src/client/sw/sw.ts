@@ -58,9 +58,11 @@ self.addEventListener('push', ev => {
 
 		const data: pushNotificationData = ev.data?.json();
 
+		console.log('push', data)
+
 		switch (data.type) {
-			case 'notification':
 			// case 'driveFileCreated':
+			case 'notification':
 			case 'unreadMessagingMessage':
 				return createNotification(data);
 			case 'readAllNotifications':
@@ -83,6 +85,7 @@ self.addEventListener('push', ev => {
 //#region Notification
 self.addEventListener('notificationclick', ev => {
 	const { action, notification } = ev;
+	console.log('click', action, notification)
 	const data: pushNotificationData = notification.data;
 	const { origin } = location;
 
@@ -109,6 +112,8 @@ self.addEventListener('notificationclick', ev => {
 
 self.addEventListener('notificationclose', ev => {
 	const { notification } = ev;
+
+	console.log('close', notification)
 
 	if (notification.title !== 'notificationclose') {
 		self.registration.showNotification('notificationclose', { body: `${notification?.data?.body?.id}` });

@@ -3,10 +3,21 @@
 	<section class="_section">
 		<div class="_title" v-if="title">{{ title }}</div>
 		<div class="_content">
-			<XPostForm v-if="!posted" fixed :instant="true" :initial-text="initialText" @posted="posted = true" class="_panel"/>
-			<MkButton v-else primary @click="close()">{{ $ts.close }}</MkButton>
+			<XPostForm
+				v-if="state === 'writing'"
+				fixed
+				:share="true"
+				:initial-text="initialText"
+				:initial-visibility="visibility"
+				:initial-files="files"
+				:reply="reply"
+				:renote="renote"
+				:specified="specified"
+				@posted="state = 'posted'"
+				class="_panel"
+			/>
+			<MkButton v-else-if="state === 'posted'" primary @click="close()">{{ $ts.close }}</MkButton>
 		</div>
-		<div class="_footer" v-if="url">{{ url }}</div>
 	</section>
 </div>
 </template>
@@ -17,6 +28,7 @@ import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
 import XPostForm from '@/components/post-form.vue';
 import * as os from '@/os';
+import { noteVisibilities } from '../../types';
 
 export default defineComponent({
 	components: {
@@ -30,27 +42,88 @@ export default defineComponent({
 				title: this.$ts.share,
 				icon: faShareAlt
 			},
-			title: null,
-			text: null,
-			url: null,
-			initialText: null,
-			posted: false,
+			state: 'fetching' as 'fetching' | 'writing' | 'posted',
+
+			title: null as string | null,
+			initialText: null as string | null,
+			reply: null as any,
+			renote: null as any,
+			specified: null as any,
+			visibility: null as string | null,
+			files: null as any[] | null,
 
 			faShareAlt
 		}
 	},
 
-	created() {
+	async created() {
 		const urlParams = new URLSearchParams(window.location.search);
+
 		this.title = urlParams.get('title');
-		this.text = urlParams.get('text');
-		this.url = urlParams.get('url');
-		
-		let text = '';
-		if (this.title) text += `【${this.title}】\n`;
-		if (this.text) text += `${this.text}\n`;
-		if (this.url) text += `${this.url}`;
-		this.initialText = text.trim();
+		const text = urlParams.get('text');
+		const url = urlParams.get('url');
+
+		let noteText = '';
+		if (this.title) noteText += `【${this.title}】\n`;
+		// titleとtext（またはtext. Googleニュースがこれを吐く）が同一であればtextを省略
+		if (text && this.title !== text && this.title !== `${text}.`) noteText += `${text}\n`;
+		if (url) noteText += `${url}`;
+		this.initialText = noteText.trim();
+
+		this.visibility = urlParams.get('visibility');
+		if (!noteVisibilities.includes(this.visibility)) this.visibility = null;
+
+		await Promise.all([(async () => {
+			const replyId = urlParams.get('replyId');
+			const replyUri = urlParams.get('replyUri');
+			if (replyId) {
+				this.reply = await os.api('notes/show', {
+					noteId: replyId
+				});
+			} else if (replyUri) {
+				const obj = await os.api('ap/show', {
+					uri: replyUri
+				}) as any;
+				if (obj.type === 'Note') {
+					this.reply = obj.object;
+				}
+			}
+		})(),(async () => {
+			const renoteId = urlParams.get('replyId');
+			const renoteUri = urlParams.get('replyUri');
+			if (renoteId) {
+				this.renote = await os.api('notes/show', {
+					noteId: renoteId
+				});
+			} else if (renoteUri) {
+				const obj = await os.api('ap/show', {
+					uri: renoteUri
+				}) as any;
+				if (obj.type === 'Note') {
+					this.renote = obj.object;
+				}
+			}
+		})(),(async () => {
+			const specifiedId = urlParams.get('specifiedId');
+			const specifiedUsername = urlParams.get('specifiedUsername');
+			if (specifiedId) {
+				this.specified = await os.api('users/show', {
+					userId: specifiedId
+				});
+			} else if (specifiedUsername) {
+				this.specified = await os.api('users/show', {
+					username: specifiedUsername
+				});
+			}
+		})(),(async () => {
+			const fileIds = urlParams.get('fileIds');
+			if (fileIds) {
+				const promises = Promise.all(fileIds.split(',').map(fileId => os.api('drive/files/show', { fileId })));
+				promises.then(files => this.files = files).catch(() => console.error('invalid fileIds'));
+			}
+		})(),]);
+
+		this.state = 'writing';
 	},
 
 	methods: {
