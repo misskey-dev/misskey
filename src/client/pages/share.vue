@@ -10,6 +10,7 @@
 				:initial-text="initialText"
 				:initial-visibility="visibility"
 				:initial-files="files"
+				:initial-local-only="localOnly"
 				:reply="reply"
 				:renote="renote"
 				:specified="specified"
