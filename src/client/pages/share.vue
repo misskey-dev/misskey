@@ -131,8 +131,9 @@ export default defineComponent({
 		})(),(async () => {
 			const fileIds = urlParams.get('fileIds');
 			if (fileIds) {
-				const promises = Promise.all(fileIds.split(',').map(fileId => os.api('drive/files/show', { fileId })));
-				promises.then(files => this.files = files).catch(() => console.error('invalid fileIds'));
+				const promises = Promise.all(fileIds.split(',')
+					.map(fileId => os.api('drive/files/show', { fileId }).catch(() => console.error(`invalid fileId: ${fileId}`))));
+				await promises.then(files => this.files = files).catch(() => console.error('invalid fileIds'));
 			}
 		})(),]);
 
