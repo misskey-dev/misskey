@@ -78,9 +78,9 @@ export default defineComponent({
 			this.visibility = visibility;
 		} else {
 			// Mastodonと互換性を持たせてみる
-			if (this.visibility === 'unlisted') this.visibility = 'home';
-			else if (this.visibility === 'private') this.visibility = 'followers';
-			else if (this.visibility === 'direct') this.visibility = 'specified';
+			if (visibility === 'unlisted') this.visibility = 'home';
+			else if (visibility === 'private') this.visibility = 'followers';
+			else if (visibility === 'direct') this.visibility = 'specified';
 			else this.visibility = null;
 		}
 
