@@ -29,6 +29,7 @@ import MkButton from '@/components/ui/button.vue';
 import XPostForm from '@/components/post-form.vue';
 import * as os from '@/os';
 import { noteVisibilities } from '../../types';
+import parseAcct from '../../misc/acct/parse';
 
 export default defineComponent({
 	components: {
@@ -118,15 +119,13 @@ export default defineComponent({
 			}
 		})(),(async () => {
 			const specifiedId = urlParams.get('specifiedId');
-			const specifiedUsername = urlParams.get('specifiedUsername');
+			const specifiedAcct = urlParams.get('specifiedAcct');
 			if (specifiedId) {
 				this.specified = await os.api('users/show', {
 					userId: specifiedId
 				});
-			} else if (specifiedUsername) {
-				this.specified = await os.api('users/show', {
-					username: specifiedUsername
-				});
+			} else if (specifiedAcct) {
+				this.specified = await os.api('users/show', parseAcct(specifiedAcct));
 			}
 		})(),(async () => {
 			const fileIds = urlParams.get('fileIds');
