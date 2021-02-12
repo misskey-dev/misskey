@@ -104,8 +104,8 @@ export default defineComponent({
 				}
 			}
 		})(),(async () => {
-			const renoteId = urlParams.get('replyId');
-			const renoteUri = urlParams.get('replyUri');
+			const renoteId = urlParams.get('renoteId');
+			const renoteUri = urlParams.get('renoteUri');
 			if (renoteId) {
 				this.renote = await os.api('notes/show', {
 					noteId: renoteId
