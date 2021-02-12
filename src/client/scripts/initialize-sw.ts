@@ -17,7 +17,7 @@ export async function initializeSw() {
 			});
 			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			registration.pushManager.subscribe({
-				userVisibleOnly: true,
+				userVisibleOnly: false,
 				applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
 			}).then(subscription => {
 				function encode(buffer: ArrayBuffer | null) {

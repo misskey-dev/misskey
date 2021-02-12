@@ -46,54 +46,63 @@ async function composeNotification(data: pushNotificationData): Promise<[string,
 				case 'reply':
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'renote':
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'quote':
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'reaction':
 					return [`${data.body.reaction} ${getUserName(data.body.user)}`, {
 						body: getNoteSummary(data.body.note, i18n.locale),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'pollVote':
 					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
 						body: getNoteSummary(data.body.note, i18n.locale),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'follow':
 					return [t('_notification.youWereFollowed'), {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'followRequestAccepted':
 					return [t('_notification.yourFollowRequestAccepted'), {
 						body: getUserName(data.body.user),
-						icon: data.body.user.avatarUrl
+						icon: data.body.user.avatarUrl,
+						data,
 					}];
 
 				case 'groupInvited':
 					return [t('_notification.youWereInvitedToGroup'), {
-						body: data.body.group.name
+						body: data.body.group.name,
+						data,
 					}];
 
 				default:
@@ -103,12 +112,14 @@ async function composeNotification(data: pushNotificationData): Promise<[string,
 			if (data.body.groupId === null) {
 				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
 					icon: data.body.user.avatarUrl,
-					tag: `messaging:user:${data.body.user.id}`
+					tag: `messaging:user:${data.body.user.id}`,
+					data,
 				}];
 			}
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
 				icon: data.body.user.avatarUrl,
-				tag: `messaging:group:${data.body.group.id}`
+				tag: `messaging:group:${data.body.group.id}`,
+				data,
 			}];
 		default:
 			return null;
