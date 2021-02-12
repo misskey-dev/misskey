@@ -54,6 +54,7 @@ export default defineComponent({
 			visibility: null as string | null,
 			localOnly: null as boolean | null,
 			files: null as any[] | null,
+			visibleUsers: [] as any[],
 
 			faShareAlt
 		}
@@ -112,16 +113,20 @@ export default defineComponent({
 					this.renote = obj.object;
 				}
 			}
-		})(),(async () => {
-			const specifiedId = urlParams.get('specifiedId');
-			const specifiedAcct = urlParams.get('specifiedAcct');
-			if (specifiedId) {
-				this.specified = await os.api('users/show', {
-					userId: specifiedId
-				});
-			} else if (specifiedAcct) {
-				this.specified = await os.api('users/show', parseAcct(specifiedAcct));
-			}
+		})(),(() => {
+			const visibleUserIds = urlParams.get('visibleUserIds');
+			if (!visibleUserIds) return;
+			return Promise.all(visibleUserIds.split(',')
+				.map(userId => os.api('users/show', { userId })
+					.then(user => this.visibleUsers.push(user))
+					.catch(() => Error(`invalid userId: ${userId}`))));
+		})(),(() => {
+			const visibleAccts = urlParams.get('visibleAccts');
+			if (!visibleAccts) return;
+			return Promise.all(visibleAccts.split(',')
+				.map(acct => os.api('users/show', parseAcct(acct))
+					.then(user => this.visibleUsers.push(user))
+					.catch(() => Error(`invalid acct: ${acct}`))));
 		})(),(async () => {
 			const fileIds = urlParams.get('fileIds');
 			if (fileIds) {

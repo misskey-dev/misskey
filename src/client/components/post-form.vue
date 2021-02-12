@@ -116,6 +116,11 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		visibleUsers: {
+			type: Array,
+			required: false,
+			default: () => []
+		},
 		initialNote: {
 			type: Object,
 			required: false
@@ -149,7 +154,6 @@ export default defineComponent({
 			cw: null,
 			localOnly: this.$store.state.rememberNoteVisibility ? this.$store.state.localOnly : this.$store.state.defaultNoteLocalOnly,
 			visibility: (this.$store.state.rememberNoteVisibility ? this.$store.state.visibility : this.$store.state.defaultNoteVisibility) as typeof noteVisibilities[number],
-			visibleUsers: [],
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
