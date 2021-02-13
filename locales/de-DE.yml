@@ -701,7 +701,7 @@ capacity: "Kapazität"
 inUse: "Verwendet"
 editCode: "Code bearbeiten"
 apply: "Anwenden"
-receiveAnnouncementFromInstance: "Benachrichtigungen von der Instanz empfangen"
+receiveAnnouncementFromInstance: "E-Mail-Benachrichtigungen von dieser Instanz empfangen"
 emailNotification: "E-Mail-Benachrichtigungen"
 _email:
   _follow:
