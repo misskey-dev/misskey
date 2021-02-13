@@ -469,6 +469,9 @@ onlineUsersCount: "{n}人が起きとるで"
 sendErrorReportsDescription: "オンにしたら、なんか変なことが起きたときにエラーの詳細がMisskeyに共有されて、ソフトウェアの品質向上に役立てられるんや。エラー情報には、OSのバージョン、ブラウザの種類、行動履歴などが含まれるで。"
 youAreRunningUpToDateClient: "今使ってるクライアントが最新やで！"
 newVersionOfClientAvailable: "新しいバージョンのクライアントが使えるで。"
+_email:
+  _follow:
+    title: "フォローされたで"
 _mfm:
   mention: "メンション"
   quote: "引用"
