@@ -437,6 +437,7 @@ signinWith: "Sign in with {x}"
 signinFailed: "Unable to sign in. The username or password you entered is incorrect."
 tapSecurityKey: "Tap your security key"
 or: "Or"
+language: "Language"
 uiLanguage: "UI display language"
 groupInvited: "Invited to group"
 aboutX: "About {x}"
@@ -701,9 +702,12 @@ inUse: "Used"
 editCode: "Edit code"
 apply: "Apply"
 receiveAnnouncementFromInstance: "Receive notifications from the instance"
+emailNotification: "Email notifications"
 _email:
   _follow:
-    title: "Followed you"
+    title: "You've got a new follower"
+  _receiveFollowRequest:
+    title: "You've received a follow request"
 _plugin:
   install: "Install plugins"
   installWarn: "Please do not install untrustworthy plugins."
