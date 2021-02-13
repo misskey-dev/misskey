@@ -643,6 +643,9 @@ backgroundColor: "Tło"
 accentColor: "Akcent"
 textColor: "Tekst"
 value: "Wartość"
+_email:
+  _follow:
+    title: "Zaobserwował(a) Cię"
 _registry:
   key: "Klucz"
   keys: "Klucz"
