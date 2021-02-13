@@ -31,7 +31,8 @@ class SwLang {
 		const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
 		let localeRes = await caches.match(localeUrl);
 
-		if (!localeRes) {
+		// _DEV_がtrueの場合は常に最新化
+		if (!localeRes || _DEV_) {
 			localeRes = await fetch(localeUrl);
 			const clone = localeRes?.clone();
 			if (!clone?.clone().ok) Error('locale fetching error');

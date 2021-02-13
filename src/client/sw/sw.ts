@@ -33,17 +33,19 @@ self.addEventListener('activate', ev => {
 });
 //#endregion
 
-// TODO: 消せるかも ref. https://github.com/syuilo/misskey/pull/7108#issuecomment-774573666
 //#region When: Fetching
 self.addEventListener('fetch', ev => {
-	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return;
-	ev.respondWith(
-		caches.match(ev.request)
-			.then(response => {
-				return response || fetch(ev.request);
-			})
-			.catch(() => new Response('SW cathces error while fetching. You may not be connected to the Internet, or the server may be down.', { status: 200, statusText: 'OK SW' }))
-	);
+	/*
+	if (ev.request.url.startsWith(`${location.origin}/assets/locales/`)) {
+		ev.respondWith(
+			caches.match(ev.request)
+				.then(response => {
+					return response || fetch(ev.request);
+				})
+				.catch(() => new Response('SW cathces error while fetching. You may not be connected to the Internet, or the server may be down.', { status: 200, statusText: 'OK SW' }))
+		);
+	}
+	*/
 });
 //#endregion
 
