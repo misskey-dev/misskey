@@ -428,6 +428,9 @@ latestVersion: "آخر نسخة مستقرة"
 usageAmount: "الإستخدام"
 capacity: "السعة"
 inUse: "مستخدم"
+_email:
+  _follow:
+    title: "يتابعك"
 _mfm:
   mention: "أشر الى"
   quote: "اقتبس"
