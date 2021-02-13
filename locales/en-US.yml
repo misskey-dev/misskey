@@ -701,7 +701,7 @@ capacity: "Capacity"
 inUse: "Used"
 editCode: "Edit code"
 apply: "Apply"
-receiveAnnouncementFromInstance: "Receive notifications from the instance"
+receiveAnnouncementFromInstance: "Receive Email notifications from this instance"
 emailNotification: "Email notifications"
 _email:
   _follow:
