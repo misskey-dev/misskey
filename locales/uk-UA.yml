@@ -688,6 +688,9 @@ deleteConfirm: "Ви дійсно бажаєте це видалити?"
 invalidValue: "Некоректне значення."
 registry: "Реєстр"
 closeAccount: "Закрити обліковий запис"
+_email:
+  _follow:
+    title: "Новий підписник"
 _registry:
   key: "Ключ"
   keys: "Ключі"
