@@ -290,6 +290,9 @@ currentVersion: "Versione attuale"
 latestVersion: "Ultima versione"
 editCode: "Modifica codice"
 apply: "Applica"
+_email:
+  _follow:
+    title: "Nuovo seguace"
 _registry:
   key: "Dati"
   keys: "Dati"
