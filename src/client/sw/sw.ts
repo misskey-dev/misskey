@@ -10,7 +10,7 @@ import { pushNotificationData } from '../../types';
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
-	// Nothing to do
+	self.skipWaiting();
 });
 //#endregion
 
