@@ -10,7 +10,6 @@ import { I18n } from '@/scripts/i18n';
 //#region Variables
 const version = _VERSION_;
 const cacheName = `mk-cache-${version}`;
-const apiUrl = `${location.origin}/api/`;
 
 let lang: string;
 let i18n: I18n<any>;
