@@ -2,7 +2,6 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { Emojis, Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
-import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
@@ -92,11 +91,11 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const note = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const note = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const host = note.userHost;
 
 		async function populatePoll() {
-			const poll = await Polls.findOne(note.id).then(ensure);
+			const poll = await Polls.findOneOrFail(note.id);
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],

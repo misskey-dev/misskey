@@ -8,6 +8,15 @@
 			{{ $i.email || $ts.notSet }}
 		</FormLink>
 	</FormGroup>
+
+	<FormLink to="/settings/email/notification">
+		<template #icon><Fa :icon="faBell"/></template>
+		{{ $ts.emailNotification }}
+	</FormLink>
+
+	<FormSwitch :value="$i.receiveAnnouncementEmail" @update:value="onChangeReceiveAnnouncementEmail">
+		{{ $ts.receiveAnnouncementFromInstance }}
+	</FormSwitch>
 </FormBase>
 </template>
 
@@ -19,6 +28,7 @@ import FormButton from '@/components/form/button.vue';
 import FormLink from '@/components/form/link.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
+import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -26,6 +36,7 @@ export default defineComponent({
 		FormBase,
 		FormLink,
 		FormButton,
+		FormSwitch,
 		FormGroup,
 	},
 
@@ -37,7 +48,7 @@ export default defineComponent({
 				title: this.$ts.email,
 				icon: faEnvelope
 			},
-			faCog, faExclamationTriangle, faCheck
+			faCog, faExclamationTriangle, faCheck, faBell
 		}
 	},
 
@@ -46,7 +57,11 @@ export default defineComponent({
 	},
 
 	methods: {
-
+		onChangeReceiveAnnouncementEmail(v) {
+			os.api('i/update', {
+				receiveAnnouncementEmail: v
+			});
+		},
 	}
 });
 </script>

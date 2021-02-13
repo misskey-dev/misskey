@@ -10,7 +10,6 @@ import signin from '../common/signin';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
-import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.Context) {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -41,12 +40,12 @@ router.get('/disconnect/discord', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOne({
+	const user = await Users.findOneOrFail({
 		host: null,
 		token: userToken
-	}).then(ensure);
+	});
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	delete profile.integrations.discord;
 
@@ -70,7 +69,7 @@ async function getOAuth2() {
 		return new OAuth2(
 			meta.discordClientId!,
 			meta.discordClientSecret!,
-			'https://discordapp.com/',
+			'https://discord.com/',
 			'api/oauth2/authorize',
 			'api/oauth2/token');
 	} else {
@@ -174,7 +173,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
 		});
 
@@ -245,7 +244,7 @@ router.get('/dc/cb', async ctx => {
 				}
 			}));
 
-		const { id, username, discriminator } = await getJson('https://discordapp.com/api/users/@me', '*/*', 10 * 1000, {
+		const { id, username, discriminator } = await getJson('https://discord.com/api/users/@me', '*/*', 10 * 1000, {
 			'Authorization': `Bearer ${accessToken}`,
 		});
 		if (!id || !username || !discriminator) {
@@ -253,12 +252,12 @@ router.get('/dc/cb', async ctx => {
 			return;
 		}
 
-		const user = await Users.findOne({
+		const user = await Users.findOneOrFail({
 			host: null,
 			token: userToken
-		}).then(ensure);
+		});
 
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 
 		await UserProfiles.update(user.id, {
 			integrations: {

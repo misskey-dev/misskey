@@ -7,6 +7,7 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { Brackets } from 'typeorm';
 import { safeForSql } from '../../../../misc/safe-for-sql';
+import { normalizeForSearch } from '../../../../misc/normalize-for-search';
 
 export const meta = {
 	desc: {
@@ -101,7 +102,7 @@ export default define(meta, async (ps, me) => {
 
 	if (ps.tag) {
 		if (!safeForSql(ps.tag)) return;
-		query.andWhere(`'{"${ps.tag.toLowerCase()}"}' <@ note.tags`);
+		query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
 	} else {
 		let i = 0;
 		query.andWhere(new Brackets(qb => {
@@ -109,7 +110,7 @@ export default define(meta, async (ps, me) => {
 				qb.orWhere(new Brackets(qb => {
 					for (const tag of tags) {
 						if (!safeForSql(tag)) return;
-						qb.andWhere(`'{"${tag.toLowerCase()}"}' <@ note.tags`);
+						qb.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
 						i++;
 					}
 				}));

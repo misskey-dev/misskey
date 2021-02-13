@@ -1,13 +1,12 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Emoji } from '../entities/emoji';
-import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(Emoji)
 export class EmojiRepository extends Repository<Emoji> {
 	public async pack(
 		src: Emoji['id'] | Emoji,
 	) {
-		const emoji = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const emoji = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: emoji.id,

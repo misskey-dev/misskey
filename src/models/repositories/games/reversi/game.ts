@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '../../..';
 import { ReversiGame } from '../../../entities/games/reversi/game';
-import { ensure } from '../../../../prelude/ensure';
 
 @EntityRepository(ReversiGame)
 export class ReversiGameRepository extends Repository<ReversiGame> {
@@ -16,7 +15,7 @@ export class ReversiGameRepository extends Repository<ReversiGame> {
 			detail: true
 		}, options);
 
-		const game = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const game = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		return {

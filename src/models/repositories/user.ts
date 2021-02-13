@@ -2,7 +2,6 @@ import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
 import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '..';
-import { ensure } from '../../prelude/ensure';
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
@@ -157,7 +156,7 @@ export class UserRepository extends Repository<User> {
 			includeSecrets: false
 		}, options);
 
-		const user = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const user = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
@@ -165,7 +164,7 @@ export class UserRepository extends Repository<User> {
 			where: { userId: user.id },
 			order: { id: 'DESC' }
 		}) : [];
-		const profile = opts.detail ? await UserProfiles.findOne(user.id).then(ensure) : null;
+		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
 
 		const falsy = opts.detail ? false : undefined;
 
@@ -213,6 +212,7 @@ export class UserRepository extends Repository<User> {
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
+				lang: profile!.lang,
 				fields: profile!.fields,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
@@ -236,6 +236,7 @@ export class UserRepository extends Repository<User> {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				injectFeaturedNote: profile!.injectFeaturedNote,
+				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,
 				alwaysMarkNsfw: profile!.alwaysMarkNsfw,
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
@@ -257,7 +258,8 @@ export class UserRepository extends Repository<User> {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
-				mutingNotificationTypes: profile?.mutingNotificationTypes,
+				mutingNotificationTypes: profile!.mutingNotificationTypes,
+				emailNotificationTypes: profile!.emailNotificationTypes,
 			} : {}),
 
 			...(opts.includeSecrets ? {

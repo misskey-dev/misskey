@@ -2,7 +2,6 @@ import $ from 'cafy';
 import * as bcrypt from 'bcryptjs';
 import define from '../../define';
 import { Users, UserProfiles } from '../../../../models';
-import { ensure } from '../../../../prelude/ensure';
 import { doPostSuspend } from '../../../../services/suspend-user';
 
 export const meta = {
@@ -18,7 +17,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password
 	const same = await bcrypt.compare(ps.password, profile.password!);

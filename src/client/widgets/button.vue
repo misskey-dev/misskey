@@ -45,7 +45,8 @@ export default defineComponent({
 	methods: {
 		async run() {
 			const aiscript = new AiScript(createAiScriptEnv({
-				storageKey: 'scratchpad'
+				storageKey: 'widget',
+				token: this.$i?.token,
 			}), {
 				in: (q) => {
 					return new Promise(ok => {
