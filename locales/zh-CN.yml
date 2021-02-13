@@ -701,6 +701,9 @@ inUse: "已使用"
 editCode: "编辑代码"
 apply: "应用"
 receiveAnnouncementFromInstance: "从实例接收通知"
+_email:
+  _follow:
+    title: "你有新的关注者"
 _plugin:
   install: "安装插件"
   installWarn: "请不要安装不可信的插件。"
