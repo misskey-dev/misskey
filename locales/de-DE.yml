@@ -701,6 +701,9 @@ inUse: "Verwendet"
 editCode: "Code bearbeiten"
 apply: "Anwenden"
 receiveAnnouncementFromInstance: "Benachrichtigungen von der Instanz empfangen"
+_email:
+  _follow:
+    title: "Du hast einen neuen Follower"
 _plugin:
   install: "Plugins installieren"
   installWarn: "Installiere bitte nur vertrauenswürdige Plugins."
