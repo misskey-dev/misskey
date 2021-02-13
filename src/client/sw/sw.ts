@@ -27,7 +27,7 @@ get('lang').then(async prelang => {
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
-	// Nothing to do
+	self.skipWaiting()
 });
 //#endregion
 
