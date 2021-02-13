@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import { Blocking } from '../entities/blocking';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 
@@ -13,7 +12,7 @@ export class BlockingRepository extends Repository<Blocking> {
 		src: Blocking['id'] | Blocking,
 		me?: any
 	): Promise<PackedBlocking> {
-		const blocking = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const blocking = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
 			id: blocking.id,

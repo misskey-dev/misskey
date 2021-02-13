@@ -6,7 +6,6 @@ import config from '../../../config';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 import { genId } from '../../../misc/gen-id';
-import { ensure } from '../../../prelude/ensure';
 import { verifyLogin, hash } from '../2fa';
 import { randomBytes } from 'crypto';
 
@@ -47,7 +46,7 @@ export default async (ctx: Koa.Context) => {
 		return;
 	}
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	// Compare password
 	const same = await bcrypt.compare(password, profile.password!);

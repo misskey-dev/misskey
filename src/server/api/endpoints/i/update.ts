@@ -13,7 +13,6 @@ import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
-import { ensure } from '../../../../prelude/ensure';
 import { notificationTypes } from '../../../../types';
 import { normalizeForSearch } from '../../../../misc/normalize-for-search';
 
@@ -206,7 +205,7 @@ export default define(meta, async (ps, user, token) => {
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) profileUpdates.description = ps.description;
