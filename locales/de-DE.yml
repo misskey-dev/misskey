@@ -1515,7 +1515,7 @@ _notification:
   youGotPoll: "{name} hat auf deiner Umfrage abgestimmt"
   youGotMessagingMessageFromUser: "{name} hat dir eine Chatnachricht gesendet"
   youGotMessagingMessageFromGroup: "In die Gruppe {name} wurde eine Chatnachricht gesendet"
-  youWereFollowed: "Du hast einen neuen Follower"
+  youWereFollowed: "ist dir gefolgt"
   youReceivedFollowRequest: "Du hast eine Follow-Anfrage erhalten"
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
   youWereInvitedToGroup: "Du wurdest in eine Gruppe eingeladen"
