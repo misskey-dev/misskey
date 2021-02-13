@@ -651,6 +651,9 @@ backgroundColor: "Fondo"
 accentColor: "Acento"
 textColor: "Texto"
 value: "Valores"
+_email:
+  _follow:
+    title: "te ha seguido"
 _registry:
   key: "Clave"
   keys: "Clave"
