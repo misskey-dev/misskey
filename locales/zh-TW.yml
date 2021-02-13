@@ -676,6 +676,9 @@ newVersionOfClientAvailable: "新版本的用戶端可用。"
 usageAmount: "使用量"
 capacity: "容量"
 inUse: "已使用"
+_email:
+  _follow:
+    title: "您有新的追隨者"
 _registry:
   scope: "範圍"
   key: "機碼"
