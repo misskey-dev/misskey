@@ -35,17 +35,7 @@ self.addEventListener('activate', ev => {
 
 //#region When: Fetching
 self.addEventListener('fetch', ev => {
-	/*
-	if (ev.request.url.startsWith(`${location.origin}/assets/locales/`)) {
-		ev.respondWith(
-			caches.match(ev.request)
-				.then(response => {
-					return response || fetch(ev.request);
-				})
-				.catch(() => new Response('SW cathces error while fetching. You may not be connected to the Internet, or the server may be down.', { status: 200, statusText: 'OK SW' }))
-		);
-	}
-	*/
+	// Nothing to do
 });
 //#endregion
 
