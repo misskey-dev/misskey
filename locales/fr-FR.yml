@@ -648,6 +648,9 @@ closeAccount: "Fermer le compte"
 usageAmount: "Utilisation"
 capacity: "Capacité "
 inUse: "utilisé"
+_email:
+  _follow:
+    title: "Vous suit"
 _registry:
   key: "Clé "
   keys: "Clé "
