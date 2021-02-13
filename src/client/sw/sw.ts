@@ -27,15 +27,7 @@ get('lang').then(async prelang => {
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
-	ev.waitUntil(
-		caches.open(cacheName)
-			.then(cache => {
-				return cache.addAll([
-					`/?v=${version}`
-				]);
-			})
-			.then(() => self.skipWaiting())
-	);
+	// Nothing to do
 });
 //#endregion
 
@@ -53,19 +45,9 @@ self.addEventListener('activate', ev => {
 });
 //#endregion
 
-// TODO: 消せるかも ref. https://github.com/syuilo/misskey/pull/7108#issuecomment-774573666
 //#region When: Fetching
 self.addEventListener('fetch', ev => {
-	if (ev.request.method !== 'GET' || ev.request.url.startsWith(apiUrl)) return;
-	ev.respondWith(
-		caches.match(ev.request)
-			.then(response => {
-				return response || fetch(ev.request);
-			})
-			.catch(() => {
-				return caches.match(`/?v=${version}`);
-			})
-	);
+	// Nothing to do
 });
 //#endregion
 
