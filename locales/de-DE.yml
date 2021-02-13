@@ -437,6 +437,7 @@ signinWith: "Mit {x} anmelden"
 signinFailed: "Anmeldung fehlgeschlagen. Überprüfe Benutzername und Passswort."
 tapSecurityKey: "Tippe deinen Sicherheitsschlüssel an"
 or: "Oder"
+language: "Sprache"
 uiLanguage: "Sprache der Benutzeroberfläche"
 groupInvited: "Du wurdest in eine Gruppe eingeladen"
 aboutX: "Über {x}"
@@ -701,9 +702,12 @@ inUse: "Verwendet"
 editCode: "Code bearbeiten"
 apply: "Anwenden"
 receiveAnnouncementFromInstance: "Benachrichtigungen von der Instanz empfangen"
+emailNotification: "E-Mail-Benachrichtigungen"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
+  _receiveFollowRequest:
+    title: "Du hast eine Follow-Anfrage erhalten"
 _plugin:
   install: "Plugins installieren"
   installWarn: "Installiere bitte nur vertrauenswürdige Plugins."
