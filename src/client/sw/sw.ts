@@ -8,11 +8,6 @@ import { swLang } from '@/sw/lang';
 import { swNotificationRead } from '@/sw/notification-read';
 import { pushNotificationData } from '../../types';
 
-//#region Variables
-// const cacheName = `mk-cache-${_VERSION_}`;
-const apiUrl = `${location.origin}/api/`;
-//#endregion
-
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
 	// Nothing to do
