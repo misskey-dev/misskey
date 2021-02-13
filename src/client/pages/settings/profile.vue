@@ -8,24 +8,29 @@
 		<FormButton @click="changeBanner" primary>{{ $ts._profile.changeBanner }}</FormButton>
 	</FormGroup>
 
-	<FormInput v-model:value="name" :max="30">
+	<FormInput v-model:value="name" :max="30" manual-save>
 		<span>{{ $ts._profile.name }}</span>
 	</FormInput>
 
-	<FormTextarea v-model:value="description" :max="500">
+	<FormTextarea v-model:value="description" :max="500" tall manual-save>
 		<span>{{ $ts._profile.description }}</span>
 		<template #desc>{{ $ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
-	<FormInput v-model:value="location">
+	<FormInput v-model:value="location" manual-save>
 		<span>{{ $ts.location }}</span>
 		<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
 	</FormInput>
 
-	<FormInput v-model:value="birthday" type="date">
+	<FormInput v-model:value="birthday" type="date" manual-save>
 		<span>{{ $ts.birthday }}</span>
 		<template #prefix><Fa :icon="faBirthdayCake"/></template>
 	</FormInput>
+
+	<FormSelect v-model:value="lang">
+		<template #label>{{ $ts.language }}</template>
+		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+	</FormSelect>
 
 	<FormGroup>
 		<FormButton @click="editMetadata" primary>{{ $ts._profile.metadataEdit }}</FormButton>
@@ -37,8 +42,6 @@
 	<FormSwitch v-model:value="isBot">{{ $ts.flagAsBot }}<template #desc>{{ $ts.flagAsBotDescription }}</template></FormSwitch>
 
 	<FormSwitch v-model:value="alwaysMarkNsfw">{{ $ts.alwaysMarkSensitive }}</FormSwitch>
-
-	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
 </FormBase>
 </template>
 
@@ -50,10 +53,10 @@ import FormButton from '@/components/form/button.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormTuple from '@/components/form/tuple.vue';
+import FormSelect from '@/components/form/select.vue';
 import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
-import { host } from '@/config';
+import { host, langs } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 
@@ -63,7 +66,7 @@ export default defineComponent({
 		FormInput,
 		FormTextarea,
 		FormSwitch,
-		FormTuple,
+		FormSelect,
 		FormBase,
 		FormGroup,
 	},
@@ -77,9 +80,11 @@ export default defineComponent({
 				icon: faUser
 			},
 			host,
+			langs,
 			name: null,
 			description: null,
 			birthday: null,
+			lang: null,
 			location: null,
 			fieldName0: null,
 			fieldValue0: null,
@@ -104,6 +109,7 @@ export default defineComponent({
 		this.description = this.$i.description;
 		this.location = this.$i.location;
 		this.birthday = this.$i.birthday;
+		this.lang = this.$i.lang;
 		this.avatarId = this.$i.avatarId;
 		this.bannerId = this.$i.bannerId;
 		this.isBot = this.$i.isBot;
@@ -118,6 +124,15 @@ export default defineComponent({
 		this.fieldValue2 = this.$i.fields[2] ? this.$i.fields[2].value : null;
 		this.fieldName3 = this.$i.fields[3] ? this.$i.fields[3].name : null;
 		this.fieldValue3 = this.$i.fields[3] ? this.$i.fields[3].value : null;
+
+		this.$watch('name', this.save);
+		this.$watch('description', this.save);
+		this.$watch('location', this.save);
+		this.$watch('birthday', this.save);
+		this.$watch('lang', this.save);
+		this.$watch('isBot', this.save);
+		this.$watch('isCat', this.save);
+		this.$watch('alwaysMarkNsfw', this.save);
 	},
 
 	mounted() {
@@ -214,14 +229,15 @@ export default defineComponent({
 			});
 		},
 
-		save(notify) {
+		save() {
 			this.saving = true;
 
-			os.api('i/update', {
+			os.apiWithDialog('i/update', {
 				name: this.name || null,
 				description: this.description || null,
 				location: this.location || null,
 				birthday: this.birthday || null,
+				lang: this.lang || null,
 				isBot: !!this.isBot,
 				isCat: !!this.isCat,
 				alwaysMarkNsfw: !!this.alwaysMarkNsfw,
@@ -231,16 +247,8 @@ export default defineComponent({
 				this.$i.avatarUrl = i.avatarUrl;
 				this.$i.bannerId = i.bannerId;
 				this.$i.bannerUrl = i.bannerUrl;
-
-				if (notify) {
-					os.success();
-				}
 			}).catch(err => {
 				this.saving = false;
-				os.dialog({
-					type: 'error',
-					text: err.id
-				});
 			});
 		},
 	}

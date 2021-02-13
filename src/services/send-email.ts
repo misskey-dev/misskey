@@ -5,7 +5,7 @@ import config from '../config';
 
 export const logger = new Logger('email');
 
-export async function sendEmail(to: string, subject: string, text: string) {
+export async function sendEmail(to: string, subject: string, html: string, text: string) {
 	const meta = await fetchMeta(true);
 
 	const iconUrl = `${config.url}/assets/mi-white.png`;
@@ -44,6 +44,9 @@ export async function sendEmail(to: string, subject: string, text: string) {
 
 						body {
 							padding: 16px;
+							margin: 0;
+							font-family: sans-serif;
+							font-size: 14px;
 						}
 
 						a {
@@ -67,6 +70,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 								main > header > img {
 									max-width: 128px;
 									max-height: 28px;
+									vertical-align: bottom;
 								}
 							main > article {
 								padding: 32px;
@@ -97,7 +101,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 						</header>
 						<article>
 							<h1>${ subject }</h1>
-							<div>${ text }</div>
+							<div>${ html }</div>
 						</article>
 						<footer>
 							<a href="${ emailSettingUrl }">${ 'Email setting' }</a>

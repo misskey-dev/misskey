@@ -5,7 +5,7 @@ declare var self: ServiceWorkerGlobalScope;
 
 import { get, set } from 'idb-keyval';
 import composeNotification from '@/sw/compose-notification';
-import { I18n } from '@/scripts/i18n';
+import { I18n } from '../../misc/i18n';
 
 //#region Variables
 const version = _VERSION_;

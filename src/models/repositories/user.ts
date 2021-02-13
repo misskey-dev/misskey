@@ -213,6 +213,7 @@ export class UserRepository extends Repository<User> {
 				description: profile!.description,
 				location: profile!.location,
 				birthday: profile!.birthday,
+				lang: profile!.lang,
 				fields: profile!.fields,
 				followersCount: user.followersCount,
 				followingCount: user.followingCount,
@@ -258,7 +259,8 @@ export class UserRepository extends Repository<User> {
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				integrations: profile!.integrations,
 				mutedWords: profile!.mutedWords,
-				mutingNotificationTypes: profile?.mutingNotificationTypes,
+				mutingNotificationTypes: profile!.mutingNotificationTypes,
+				emailNotificationTypes: profile!.emailNotificationTypes,
 			} : {}),
 
 			...(opts.includeSecrets ? {
