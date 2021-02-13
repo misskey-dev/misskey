@@ -4,7 +4,6 @@ import { SchemaType } from '../../misc/schema';
 import { Users, DriveFiles, GalleryLikes } from '..';
 import { awaitAll } from '../../prelude/await-all';
 import { User } from '../entities/user';
-import { ensure } from '../../prelude/ensure';
 
 export type PackedGalleryPost = SchemaType<typeof packedGalleryPostSchema>;
 
@@ -15,7 +14,7 @@ export class GalleryPostRepository extends Repository<GalleryPost> {
 		me?: User['id'] | User | null | undefined,
 	): Promise<PackedGalleryPost> {
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const post = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const post = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
 			id: post.id,

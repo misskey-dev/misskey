@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { GalleryLike } from '../entities/gallery-like';
 import { GalleryPosts } from '..';
-import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(GalleryLike)
 export class GalleryLikeRepository extends Repository<GalleryLike> {
@@ -9,7 +8,7 @@ export class GalleryLikeRepository extends Repository<GalleryLike> {
 		src: GalleryLike['id'] | GalleryLike,
 		me?: any
 	) {
-		const like = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const like = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: like.id,
