@@ -701,6 +701,9 @@ inUse: "Занято"
 editCode: "Редактировать исходный текст"
 apply: "Применить"
 receiveAnnouncementFromInstance: "Получать оповещения с инстанса"
+_email:
+  _follow:
+    title: "Новый подписчик"
 _plugin:
   install: "Установка расширений"
   installWarn: "Пожалуйста, не устанавливайте расширения, которым не доверяете."
