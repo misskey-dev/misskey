@@ -212,6 +212,9 @@ invites: "Undang"
 invitations: "Undang"
 smtpUser: "Nama Pengguna"
 smtpPass: "Kata sandi"
+_email:
+  _follow:
+    title: "Sedang mengikuti"
 _mfm:
   mention: "Panggilan"
   quote: "Kutip"
