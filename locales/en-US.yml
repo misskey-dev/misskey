@@ -701,6 +701,9 @@ inUse: "Used"
 editCode: "Edit code"
 apply: "Apply"
 receiveAnnouncementFromInstance: "Receive notifications from the instance"
+_email:
+  _follow:
+    title: "Followed you"
 _plugin:
   install: "Install plugins"
   installWarn: "Please do not install untrustworthy plugins."
