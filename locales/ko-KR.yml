@@ -687,6 +687,9 @@ deleteConfirm: "삭제하시겠습니까?"
 invalidValue: "올바른 값이 아닙니다."
 registry: "레지스트리"
 closeAccount: "계정 폐쇄"
+_email:
+  _follow:
+    title: "새로운 팔로워가 있습니다"
 _registry:
   scope: "범위"
   key: "키"
