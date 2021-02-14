@@ -2,6 +2,7 @@ import { instance } from '@/instance';
 import { $i } from '@/account';
 import { api } from '@/os';
 import { lang } from '@/config';
+import { SwMessage } from '@/sw/types';
 
 export async function initializeSw() {
 	if (instance.swPublickey &&
@@ -15,9 +16,10 @@ export async function initializeSw() {
 				msg: 'initialize',
 				lang,
 			});
+
 			// SEE: https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe#Parameters
 			registration.pushManager.subscribe({
-				userVisibleOnly: false,
+				userVisibleOnly: true,
 				applicationServerKey: urlBase64ToUint8Array(instance.swPublickey)
 			}).then(subscription => {
 				function encode(buffer: ArrayBuffer | null) {
@@ -47,6 +49,13 @@ export async function initializeSw() {
 		});
 	}
 }
+
+navigator.serviceWorker.addEventListener('message', ev => {
+	const data = ev.data as SwMessage;
+	if (data.type !== 'order') return;
+
+	data.order
+});
 
 /**
  * Convert the URL safe base64 string to a Uint8Array

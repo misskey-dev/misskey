@@ -1,3 +1,5 @@
+declare var self: ServiceWorkerGlobalScope;
+
 import { get } from 'idb-keyval';
 import { pushNotificationData } from '../../types';
 
@@ -48,6 +50,8 @@ class SwNotificationRead {
 					i: account.token,
 					notificationIds: account.queue
 				})
+			}).then(res => {
+				self.registration.showNotification('notificationread', { body: `${account.queue}, ${res.ok}` });
 			});
 		}, 100);
 	}

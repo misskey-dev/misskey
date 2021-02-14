@@ -10,7 +10,7 @@ import { pushNotificationData } from '../../types';
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
-	self.skipWaiting();
+	ev.waitUntil(self.skipWaiting());
 });
 //#endregion
 
@@ -38,7 +38,8 @@ self.addEventListener('fetch', ev => {
 self.addEventListener('push', ev => {
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
-		includeUncontrolled: true
+		includeUncontrolled: true,
+		type: 'window'
 	}).then(async clients => {
 		// // クライアントがあったらストリームに接続しているということなので通知しない
 		// if (clients.length != 0) return;
@@ -70,11 +71,21 @@ self.addEventListener('push', ev => {
 //#endregion
 
 //#region Notification
-self.addEventListener('notificationclick', ev => {
+self.addEventListener('notificationclick', async ev => {
 	const { action, notification } = ev;
 	console.log('click', action, notification)
 	const data: pushNotificationData = notification.data;
 	const { origin } = location;
+	const client = self.clients.matchAll({
+		includeUncontrolled: true,
+		type: 'window'
+	}).then(clients => {
+		for (const client of clients) {
+			client.postMessage(notification.data);
+			if ('focus' in client) (client as any).focus()
+			console.log('postMessage', client)
+		}
+	});
 
 	const suffix = `?loginId=${data.userId}`;
 
@@ -82,12 +93,12 @@ self.addEventListener('notificationclick', ev => {
 		case 'showUser':
 			switch (data.body.type) {
 				case 'reaction':
-					self.clients.openWindow(`${origin}/users/${data.body.user.id}${suffix}`);
+					await self.clients.openWindow(`${origin}/users/${data.body.user.id}${suffix}`);
 					break;
 
 				default:
 					if ('note' in data.body) {
-						self.clients.openWindow(`${origin}/users/${data.body.note.user.id}${suffix}`);
+						await self.clients.openWindow(`${origin}/users/${data.body.note.user.id}${suffix}`);
 					}
 			}
 			break;
