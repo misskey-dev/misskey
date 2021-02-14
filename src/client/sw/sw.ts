@@ -7,7 +7,7 @@ import { createNotification } from '@/sw/create-notification';
 import { swLang } from '@/sw/lang';
 import { swNotificationRead } from '@/sw/notification-read';
 import { pushNotificationData } from '../../types';
-import { openUser } from './open-client';
+import * as ope from './operations';
 import renderAcct from '../../misc/acct/render';
 
 //#region Lifecycle: Install
@@ -55,14 +55,30 @@ self.addEventListener('push', ev => {
 				return createNotification(data);
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
-					n.close();
+					if (n.data.type === 'notification') n.close();
+				}
+				break;
+			case 'readAllMessagingMessages':
+				for (const n of await self.registration.getNotifications()) {
+					if (n.data.type === 'unreadMessagingMessage') n.close();
 				}
 				break;
 			case 'readNotifications':
-				for (const notification of await self.registration.getNotifications()) {
-					if (data.body.notificationIds.includes(notification.data.body.id)) {
-						notification.close();
+				for (const n of await self.registration.getNotifications()) {
+					if (data.body.notificationIds?.includes(n.data.body.id)) {
+						n.close();
 					}
+				}
+				break;
+			case 'readAllMessagingMessagesOfARoom':
+				for (const n of await self.registration.getNotifications()) {
+					if (n.data.type === 'unreadMessagingMessage'
+						&& ('userId' in data.body
+							? data.body.userId === n.data.body.userId
+							: data.body.groupId === n.data.body.groupId)
+						) {
+							n.close();
+						}
 				}
 				break;
 		}
@@ -71,35 +87,93 @@ self.addEventListener('push', ev => {
 //#endregion
 
 //#region Notification
-self.addEventListener('notificationclick', async ev => {
-	const { action, notification } = ev;
-	const data: pushNotificationData = notification.data;
+self.addEventListener('notificationclick', ev => {
+	ev.waitUntil((async () => {
 
-	switch (action) {
-		case 'showUser':
-			switch (data.body.type) {
-				case 'reaction':
-					return openUser(renderAcct(data.body.user), data.userId);
-
-				default:
-					if ('note' in data.body) {
-						return openUser(renderAcct(data.body.data.user), data.userId);
-					}
-			}
-			break;
-		default:
+	if (_DEV_) {
+		console.log('notificationclick', ev.action, ev.notification.data);
 	}
 
-	// notification.close();
+	const { action, notification } = ev;
+	const data: pushNotificationData = notification.data;
+	const { type, userId: id, body } = data;
+	let client: WindowClient | null = null;
+	let close = true;
+
+	switch (action) {
+		case 'follow':
+			client = await ope.api('following/create', id, { userId: body.userId });
+			break;
+		case 'showUser':
+			client = await ope.openUser(renderAcct(body.user), id);
+			if (body.type !== 'renote') close = false;
+			break;
+		case 'reply':
+			client = await ope.openPost({ reply: body.note }, id);
+			break;
+		case 'renote':
+			await ope.api('notes/create', id, { renoteId: body.note.id });
+			break;
+		case 'accept':
+			if (body.type === 'receiveFollowRequest') {
+				await ope.api('following/requests/accept', id, { userId: body.userId });
+			} else if (body.type === 'groupInvited') {
+				await ope.api('users/groups/invitations/accept', id, { invitationId: body.invitation.id });
+			}
+			break;
+		case 'reject':
+			if (body.type === 'receiveFollowRequest') {
+				await ope.api('following/requests/reject', id, { userId: body.userId });
+			} else if (body.type === 'groupInvited') {
+				await ope.api('users/groups/invitations/reject', id, { invitationId: body.invitation.id });
+			}
+			break;
+		case 'showFollowRequests':
+			client = await ope.openClient('push', '/my/follow-requests', id);
+			break;
+		default:
+			if (type === 'unreadMessagingMessage') {
+				client = await ope.openChat(body, id);
+				break;
+			}
+
+			switch (body.type) {
+				case 'receiveFollowRequest':
+					client = await ope.openClient('push', '/my/follow-requests', id);
+					break;
+				case 'groupInvited':
+					client = await ope.openClient('push', '/my/groups', id);
+					break;
+				case 'reaction':
+					client = await ope.openNote(body.note.id, id);
+					break;
+				default:
+					if ('note' in body) {
+						client = await ope.openNote(body.note.id, id);
+						break;
+					}
+					if ('user' in body) {
+						client = await ope.openUser(renderAcct(body.data.user), id);
+						break;
+					}
+			}
+	}
+
+	if (client) {
+		client.focus();
+	}
+	if (type === 'notification') {
+		swNotificationRead.then(that => that.read(data));
+	}
+	if (close) {
+		notification.close();
+	}
+
+	})())
 });
 
 self.addEventListener('notificationclose', ev => {
-	const { notification } = ev;
-
-	if (!notification.title.startsWith('notification')) {
-		self.registration.showNotification('notificationclose', { body: `${notification?.data?.body?.id}` });
-	}
-	const data: pushNotificationData = notification.data;
+	const data: pushNotificationData = ev.notification.data;
 
 	if (data.type === 'notification') {
 		swNotificationRead.then(that => that.read(data));
@@ -108,12 +182,15 @@ self.addEventListener('notificationclose', ev => {
 //#endregion
 
 //#region When: Caught a message from the client
-self.addEventListener('message', ev => {
+self.addEventListener('message', async ev => {
 	switch (ev.data) {
 		case 'clear':
+			// Cache Storage全削除
+			await caches.keys()
+				.then(cacheNames => Promise.all(
+					cacheNames.map(name => caches.delete(name))
+				))
 			return; // TODO
-		default:
-			break;
 	}
 
 	if (typeof ev.data === 'object') {

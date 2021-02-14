@@ -2,7 +2,7 @@ import { get, set } from 'idb-keyval';
 import { reactive } from 'vue';
 import { apiUrl } from '@/config';
 import { waiting } from '@/os';
-import { unisonReload } from '@/scripts/unison-reload';
+import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -89,18 +89,23 @@ export function updateAccount(data) {
 }
 
 export function refreshAccount() {
-	fetchAccount($i.token).then(updateAccount);
+	return fetchAccount($i.token).then(updateAccount);
 }
 
-export async function login(token: Account['token'], showTimeline: boolean = false) {
+export async function login(token: Account['token'], href?: string) {
 	waiting();
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
 	await addAccount(me.id, token);
 
-	if (showTimeline) location.href = '/';
-	else unisonReload();
+	if (href) {
+		reloadChannel.postMessage('reload');
+		location.href = href;
+		return;
+	}
+
+	unisonReload();
 }
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない

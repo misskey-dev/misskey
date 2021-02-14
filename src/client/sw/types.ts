@@ -1,4 +1,4 @@
-export type swMessageOrderType = 'post' | 'push-user' | 'push-note' | 'push-messaging-room';
+export type swMessageOrderType = 'post' | 'push';
 
 export type SwMessage = {
 	type: 'order';

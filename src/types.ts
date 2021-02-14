@@ -5,7 +5,18 @@ export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as 
 export const mutedNoteReasons = ['word', 'manual', 'spam', 'other'] as const;
 
 export type pushNotificationData = {
-	type: 'notification' | 'unreadMessagingMessage' | 'readNotifications' | 'readAllNotifications',
-	body: any,
-	userId: string
+	type: 'notification' | 'unreadMessagingMessage' | 'readNotifications' | 'readAllMessagingMessagesOfARoom' | 'readAllNotifications' | 'readAllMessagingMessages';
+	body: {
+		[x: string]: any;
+		id?: string;
+		type?: typeof notificationTypes[number];
+		notificationIds?: string[];
+		user?: any;
+		userId?: string | null;
+		note?: any;
+		choice?: number;
+		reaction?: string;
+		invitation?: any;
+	};
+	userId: string;
 };

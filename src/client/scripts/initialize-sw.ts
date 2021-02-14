@@ -1,8 +1,7 @@
 import { instance } from '@/instance';
 import { $i } from '@/account';
-import { api, post } from '@/os';
+import { api } from '@/os';
 import { lang } from '@/config';
-import { SwMessage } from '@/sw/types';
 
 export async function initializeSw() {
 	if (instance.swPublickey &&
@@ -49,18 +48,6 @@ export async function initializeSw() {
 		});
 	}
 }
-
-navigator.serviceWorker.addEventListener('message', ev => {
-	const data = ev.data as SwMessage;
-	if (data.type !== 'order') return;
-
-	switch (data.order) {
-		case 'post':
-			return post(data.options);
-		default:
-			return;
-	}
-});
 
 /**
  * Convert the URL safe base64 string to a Uint8Array
