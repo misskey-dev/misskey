@@ -2,6 +2,7 @@ import { get, set } from 'idb-keyval';
 import { reactive } from 'vue';
 import { apiUrl } from '@/config';
 import { waiting } from '@/os';
+import { unisonReload } from '@/scripts/unison-reload';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -99,7 +100,7 @@ export async function login(token: Account['token'], showTimeline: boolean = fal
 	await addAccount(me.id, token);
 
 	if (showTimeline) location.href = '/';
-	else location.reload();
+	else unisonReload();
 }
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
