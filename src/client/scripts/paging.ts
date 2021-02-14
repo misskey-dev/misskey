@@ -193,7 +193,7 @@ export default (opts) => ({
 						this.more = true;
 					}
 				} else {
-					
+
 				}
 				this.items.push(item);
 				// TODO
