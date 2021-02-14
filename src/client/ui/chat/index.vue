@@ -10,7 +10,7 @@
 				</button>
 			</div>
 			<div class="right">
-				<MkA class="item" to="/my/notifications"><Fa :icon="faBell"/></MkA>
+				<MkA class="item" to="/my/notifications"><Fa :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></MkA>
 			</div>
 		</header>
 		<div class="body">
@@ -283,7 +283,18 @@ export default defineComponent({
 					padding: 10px;
 					box-sizing: border-box;
 					margin-right: 4px;
-					opacity: 0.6;
+					//opacity: 0.6;
+					position: relative;
+
+					> i {
+						position: absolute;
+						top: 8px;
+						right: 8px;
+						color: var(--indicator);
+						font-size: 8px;
+						line-height: 8px;
+						animation: blink 1s infinite;
+					}
 				}
 			}
 		}
