@@ -308,13 +308,6 @@ hr {
 	box-shadow: none;
 }
 
-._loadMore {
-	@extend ._panel;
-	@extend ._button;
-	width: 100%;
-	padding: 12px 0;
-}
-
 ._borderButton {
 	@extend ._button;
 	display: block;
