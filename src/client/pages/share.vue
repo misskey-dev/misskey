@@ -12,8 +12,6 @@
 </template>
 
 <script lang="ts">
-// SPECIFICATION: https://wiki.misskey.io/ja/advanced-functions/share
-
 import { defineComponent } from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
