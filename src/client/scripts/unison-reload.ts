@@ -1,12 +1,10 @@
 // SafariがBroadcastChannel未実装なのでライブラリを使う
 import { BroadcastChannel } from 'broadcast-channel';
 
-const ch = new BroadcastChannel<boolean | undefined>('reload');
+export const reloadChannel = new BroadcastChannel<'reload'>('reload');
 
 // BroadcastChannelを用いて、クライアントが一斉にreloadするようにします。
-export function unisonReload(forcedReload?: boolean) {
-    ch.postMessage(forcedReload);
-    location.reload(forcedReload as boolean);
+export function unisonReload() {
+    reloadChannel.postMessage('reload');
+    location.reload();
 }
-
-ch.addEventListener('message', forcedReload => location.reload(forcedReload as boolean));
