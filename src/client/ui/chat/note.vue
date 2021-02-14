@@ -108,7 +108,7 @@ import { parse } from '../../../mfm/parse';
 import { sum, unique } from '../../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
-import XNotePreview from '@/components/note-preview.vue';
+import XNotePreview from './note-preview.vue';
 import XReactionsViewer from '@/components/reactions-viewer.vue';
 import XMediaList from '@/components/media-list.vue';
 import XCwButton from '@/components/cw-button.vue';

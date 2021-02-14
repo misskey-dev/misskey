@@ -703,7 +703,7 @@ export default defineComponent({
 		}
 
 		> footer {
-			$height: 48px;
+			$height: 44px;
 			display: flex;
 			padding: 0 8px 8px 8px;
 			line-height: $height;
