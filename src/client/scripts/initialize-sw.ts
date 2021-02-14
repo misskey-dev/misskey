@@ -1,6 +1,6 @@
 import { instance } from '@/instance';
 import { $i } from '@/account';
-import { api } from '@/os';
+import { api, post } from '@/os';
 import { lang } from '@/config';
 import { SwMessage } from '@/sw/types';
 
@@ -54,7 +54,12 @@ navigator.serviceWorker.addEventListener('message', ev => {
 	const data = ev.data as SwMessage;
 	if (data.type !== 'order') return;
 
-	data.order
+	switch (data.order) {
+		case 'post':
+			return post(data.options);
+		default:
+			return;
+	}
 });
 
 /**
