@@ -1,5 +1,5 @@
 <template>
-<div class="">
+<div class="" :ref="mounted">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $ts.noNotes }}</div>
@@ -8,7 +8,7 @@
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_loadMore" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_buttonPrimary" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
@@ -19,7 +19,7 @@
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_buttonPrimary" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
@@ -74,6 +74,11 @@ export default defineComponent({
 	},
 
 	methods: {
+		mounted() {
+			// Vueのバグか知らんけど、onMountedが呼ばれるのが実際のマウントよりめっちゃ遅いので
+			this.$emit('mnt', this.$el);
+		},
+
 		updated(oldValue, newValue) {
 			const i = this.notes.findIndex(n => n === oldValue);
 			if (this.prop) {

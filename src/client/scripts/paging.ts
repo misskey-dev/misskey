@@ -1,6 +1,6 @@
 import { markRaw } from 'vue';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible } from './scroll';
+import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from './scroll';
 
 const SECOND_FETCH_LIMIT = 30;
 
@@ -148,6 +148,20 @@ export default (opts) => ({
 
 		prepend(item) {
 			if (this.pagination.reversed) {
+				const container = getScrollContainer(this.$el);
+				const pos = getScrollPosition(this.$el);
+				const viewHeight = container.clientHeight;
+				const height = container.scrollHeight;
+				const isBottom = (pos + viewHeight > height - 32);
+				if (isBottom) {
+					// オーバーフローしたら古いアイテムは捨てる
+					if (this.items.length >= opts.displayLimit) {
+						this.items = this.items.slice(0, opts.displayLimit);
+						this.more = true;
+					}
+				} else {
+					
+				}
 				this.items.push(item);
 				// TODO
 			} else {

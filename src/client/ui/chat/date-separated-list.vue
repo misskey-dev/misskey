@@ -37,7 +37,7 @@ export default defineComponent({
 			});
 		}
 
-		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
+		return h(!this.reversed ? TransitionGroup : 'div', !this.reversed ? {
 			class: 'hmjzthxl',
 			name: 'list',
 			tag: 'div',

@@ -1,5 +1,5 @@
 <template>
-<XNotes ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes ref="tl" :pagination="pagination" @queue="$emit('queue', $event)" v-follow="pagination.reversed" @mnt="mnt"/>
 </template>
 
 <script lang="ts">
@@ -7,12 +7,18 @@ import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
 import * as os from '@/os';
 import * as sound from '@/scripts/sound';
+import { scrollToBottom } from '@/scripts/scroll';
+import follow from '@/directives/follow-append';
 
 export default defineComponent({
 	components: {
 		XNotes
 	},
 
+	directives: {
+		follow
+	},
+	
 	provide() {
 		return {
 			inChannel: this.src === 'channel'
@@ -166,6 +172,10 @@ export default defineComponent({
 		};
 	},
 
+	mounted() {
+
+	},
+
 	beforeUnmount() {
 		this.connection.dispose();
 		if (this.connection2) this.connection2.dispose();
@@ -174,6 +184,12 @@ export default defineComponent({
 	methods: {
 		focus() {
 			this.$refs.tl.focus();
+		},
+
+		mnt() {
+			if (this.pagination.reversed) {
+				scrollToBottom(this.$el);
+			}
 		}
 	}
 });

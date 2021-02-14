@@ -972,7 +972,7 @@ export default defineComponent({
 
 	> .article {
 		display: flex;
-		padding: 16px;
+		padding: 12px 16px;
 
 		> .avatar {
 			flex-shrink: 0;
@@ -1114,8 +1114,7 @@ export default defineComponent({
 }
 
 .muted {
-	padding: 8px;
-	text-align: center;
+	padding: 8px 16px;
 	opacity: 0.7;
 }
 </style>
