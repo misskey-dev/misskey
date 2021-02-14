@@ -62,12 +62,10 @@ export async function readUserMessagingMessage(
 				isRead: false,
 			},
 			take: 1
-		})
+		});
 
 		if (!count) {
 			pushNotification(userId, 'readAllMessagingMessagesOfARoom', { userId: otherpartyId });
-		} else {
-			console.log('count')
 		}
 	}
 }
@@ -131,12 +129,10 @@ export async function readGroupMessagingMessage(
 			.andWhere('message.userId != :userId', { userId: userId })
 			.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
 			.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない
-			.getOne().then(x => x != null)
+			.getOne().then(x => x != null);
 
 		if (!unreadExist) {
 			pushNotification(userId, 'readAllMessagingMessagesOfARoom', { groupId });
-		} else {
-			console.log('unread exist')
 		}
 	}
 }

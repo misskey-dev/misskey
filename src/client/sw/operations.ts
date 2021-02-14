@@ -10,63 +10,63 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { appendLoginId } from '@/scripts/login-id';
 
 export async function api(endpoint: string, userId: string, options: any = {}) {
-    const account = await getAccountFromId(userId)
-    if (!account) return;
+	const account = await getAccountFromId(userId);
+	if (!account) return;
 
-    return fetch(`${origin}/api/${endpoint}`, {
-        method: 'POST',
-        body: JSON.stringify({
-            i: account.token,
-            ...options
-        }),
-        credentials: 'omit',
-        cache: 'no-cache',
-    }).then(async res => {
-        if (!res.ok) Error(`Error while fetching: ${await res.text()}`);
+	return fetch(`${origin}/api/${endpoint}`, {
+		method: 'POST',
+		body: JSON.stringify({
+			i: account.token,
+			...options
+		}),
+		credentials: 'omit',
+		cache: 'no-cache',
+	}).then(async res => {
+		if (!res.ok) Error(`Error while fetching: ${await res.text()}`);
 
-        if (res.status === 200) return res.json();
-        return;
-    })
+		if (res.status === 200) return res.json();
+		return;
+	});
 }
 
 // rendered acctからユーザーを開く
 export function openUser(acct: string, loginId: string) {
-    return openClient('push', `/@${acct}`, loginId, { acct })
+	return openClient('push', `/@${acct}`, loginId, { acct });
 }
 
 // noteIdからノートを開く
 export function openNote(noteId: string, loginId: string) {
-    return openClient('push', `/notes/${noteId}`, loginId, { noteId })
+	return openClient('push', `/notes/${noteId}`, loginId, { noteId });
 }
 
 export async function openChat(body: any, loginId: string) {
-    if (body.groupId === null) {
-        return openClient('push', `/my/messaging/${renderAcct(body.user)}`, loginId, { body })
-    } else {
-        return openClient('push', `/my/messaging/group/${body.groupId}`, loginId, { body })
-    }
+	if (body.groupId === null) {
+		return openClient('push', `/my/messaging/${renderAcct(body.user)}`, loginId, { body });
+	} else {
+		return openClient('push', `/my/messaging/group/${body.groupId}`, loginId, { body });
+	}
 }
 
 // post-formのオプションから投稿フォームを開く
 export async function openPost(options: any, loginId: string) {
-    // クエリを作成しておく
-    let url = `/share?`;
-    if (options.initialText) url += `text=${options.initialText}&`;
-    if (options.reply) url += `replyId=${options.reply.id}&`;
-    if (options.renote) url += `renoteId=${options.renote.id}&`;
+	// クエリを作成しておく
+	let url = `/share?`;
+	if (options.initialText) url += `text=${options.initialText}&`;
+	if (options.reply) url += `replyId=${options.reply.id}&`;
+	if (options.renote) url += `renoteId=${options.renote.id}&`;
 
-    return openClient('post', url, loginId, { options })
+	return openClient('post', url, loginId, { options });
 }
 
 export async function openClient(order: swMessageOrderType, url: string, loginId: string, query: any = {}) {
-    const client = await self.clients.matchAll({
+	const client = await self.clients.matchAll({
 		type: 'window'
 	}).then(clients => clients.length > 0 ? clients[0] as WindowClient : null);
 
-    if (client) {
-        client.postMessage({ type: 'order', ...query, order, loginId, url } as SwMessage);
-        return client;
-    }
+	if (client) {
+		client.postMessage({ type: 'order', ...query, order, loginId, url } as SwMessage);
+		return client;
+	}
 
-    return self.clients.openWindow(appendLoginId(url, loginId));
+	return self.clients.openWindow(appendLoginId(url, loginId));
 }

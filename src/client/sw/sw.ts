@@ -169,7 +169,7 @@ self.addEventListener('notificationclick', ev => {
 		notification.close();
 	}
 
-	})())
+	})());
 });
 
 self.addEventListener('notificationclose', ev => {
@@ -189,7 +189,7 @@ self.addEventListener('message', async ev => {
 			await caches.keys()
 				.then(cacheNames => Promise.all(
 					cacheNames.map(name => caches.delete(name))
-				))
+				));
 			return; // TODO
 	}
 
