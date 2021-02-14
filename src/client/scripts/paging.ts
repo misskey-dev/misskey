@@ -4,6 +4,8 @@ import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from
 
 const SECOND_FETCH_LIMIT = 30;
 
+// reversed: items 配列の中身を逆順にする(新しい方が最後)
+
 export default (opts) => ({
 	emits: ['queue'],
 
@@ -122,10 +124,8 @@ export default (opts) => ({
 				limit: SECOND_FETCH_LIMIT + 1,
 				...(this.pagination.offsetMode ? {
 					offset: this.offset,
-				} : this.pagination.reversed ? {
-					untilId: this.items[0].id,
 				} : {
-					untilId: this.items[this.items.length - 1].id,
+					untilId: this.pagination.reversed ? this.items[0].id : this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
 				for (const item of items) {
@@ -157,10 +157,8 @@ export default (opts) => ({
 				limit: SECOND_FETCH_LIMIT + 1,
 				...(this.pagination.offsetMode ? {
 					offset: this.offset,
-				} : this.pagination.reversed ? {
-					sinceId: this.items[0].id,
 				} : {
-					sinceId: this.items[this.items.length - 1].id,
+					sinceId: this.pagination.reversed ? this.items[0].id : this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
 				for (const item of items) {
