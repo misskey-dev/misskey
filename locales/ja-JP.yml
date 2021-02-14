@@ -437,6 +437,7 @@ signinWith: "{x}でログイン"
 signinFailed: "ログインできませんでした。ユーザー名とパスワードを確認してください。"
 tapSecurityKey: "セキュリティキーにタッチ"
 or: "もしくは"
+language: "言語"
 uiLanguage: "UIの表示言語"
 groupInvited: "グループに招待されました"
 aboutX: "{x}について"
@@ -701,6 +702,13 @@ inUse: "使用中"
 editCode: "コードを編集"
 apply: "適用"
 receiveAnnouncementFromInstance: "インスタンスからのお知らせを受け取る"
+emailNotification: "メール通知"
+
+_email:
+  _follow:
+    title: "フォローされました"
+  _receiveFollowRequest:
+    title: "フォローリクエストを受け取りました"
 
 _plugin:
   install: "プラグインのインストール"

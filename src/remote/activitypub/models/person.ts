@@ -24,7 +24,6 @@ import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
-import { ensure } from '../../../prelude/ensure';
 import { toArray } from '../../../prelude/array';
 import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
 import { normalizeForSearch } from '../../../misc/normalize-for-search';
@@ -457,7 +456,7 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 }
 
 export async function updateFeatured(userId: User['id']) {
-	const user = await Users.findOne(userId).then(ensure);
+	const user = await Users.findOneOrFail(userId);
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 

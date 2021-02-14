@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Apps } from '..';
 import { AuthSession } from '../entities/auth-session';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(AuthSession)
@@ -10,7 +9,7 @@ export class AuthSessionRepository extends Repository<AuthSession> {
 		src: AuthSession['id'] | AuthSession,
 		me?: any
 	) {
-		const session = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const session = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
 			id: session.id,

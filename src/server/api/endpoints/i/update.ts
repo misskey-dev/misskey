@@ -13,7 +13,6 @@ import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
-import { ensure } from '../../../../prelude/ensure';
 import { notificationTypes } from '../../../../types';
 import { normalizeForSearch } from '../../../../misc/normalize-for-search';
 
@@ -161,6 +160,10 @@ export const meta = {
 		mutingNotificationTypes: {
 			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[]))
 		},
+
+		emailNotificationTypes: {
+			validator: $.optional.arr($.str)
+		},
 	},
 
 	errors: {
@@ -202,11 +205,11 @@ export default define(meta, async (ps, user, token) => {
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) profileUpdates.description = ps.description;
-	//if (ps.lang !== undefined) updates.lang = ps.lang;
+	if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 	if (ps.location !== undefined) profileUpdates.location = ps.location;
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
@@ -226,6 +229,7 @@ export default define(meta, async (ps, user, token) => {
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);

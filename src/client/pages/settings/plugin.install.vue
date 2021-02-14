@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<MkInfo warn>{{ $ts.pluginInstallWarn }}</MkInfo>
+	<MkInfo warn>{{ $ts._plugin.installWarn }}</MkInfo>
 
 	<FormGroup>
 		<FormTextarea v-model:value="code" tall>

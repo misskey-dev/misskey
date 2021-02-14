@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import { Following } from '../entities/following';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 
@@ -57,7 +56,7 @@ export class FollowingRepository extends Repository<Following> {
 			populateFollower?: boolean;
 		}
 	): Promise<PackedFollowing> {
-		const following = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const following = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		if (opts == null) opts = {};
 
