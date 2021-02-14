@@ -1,6 +1,7 @@
 import { reactive } from 'vue';
 import { apiUrl } from '@/config';
 import { waiting } from '@/os';
+import { unisonReload } from '@/scripts/unison-reload';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -75,7 +76,7 @@ export async function login(token: Account['token']) {
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
 	addAccount(me.id, token);
-	location.reload();
+	unisonReload();
 }
 
 // このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
