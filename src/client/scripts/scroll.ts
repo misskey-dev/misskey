@@ -54,6 +54,14 @@ export function scroll(el: Element, top: number) {
 	}
 }
 
+export function scrollToTop(el: Element) {
+	scroll(el, 0);
+}
+
+export function scrollToBottom(el: Element) {
+	scroll(el, 99999); // TODO: ちゃんと計算する
+}
+
 export function isBottom(el: Element, asobi = 0) {
 	const container = getScrollContainer(el);
 	const current = container

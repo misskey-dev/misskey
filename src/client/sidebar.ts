@@ -142,6 +142,12 @@ export const sidebarDef = {
 					location.reload();
 				}
 			}, {
+				text: 'Chat (β)',
+				action: () => {
+					localStorage.setItem('ui', 'chat');
+					location.reload();
+				}
+			}, {
 				text: i18n.locale.desktop + ' (β)',
 				action: () => {
 					localStorage.setItem('ui', 'desktop');
