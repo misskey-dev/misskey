@@ -80,7 +80,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .wrpstxzv {
 	padding: 16px 16px;
-	font-size: 0.9em;
+	font-size: 0.8em;
 
 	&.children {
 		padding: 10px 0 0 16px;
