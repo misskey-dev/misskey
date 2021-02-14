@@ -61,10 +61,14 @@ import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
-import { makeHotkey } from './scripts/hotkey';
-import { search } from './scripts/search';
-import { getThemes } from './theme-store';
-import { initializeSw } from './scripts/initialize-sw';
+import { makeHotkey } from '@/scripts/hotkey';
+import { search } from '@/scripts/search';
+import { getThemes } from '@/theme-store';
+import { initializeSw } from '@/scripts/initialize-sw';
+import { reloadChannel } from '@/scripts/unison-reload';
+import { deleteLoginId } from '@/scripts/login-id';
+import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { SwMessage } from '@/sw/types';
 
 console.info(`Misskey v${version}`);
 
@@ -112,6 +116,9 @@ if (defaultStore.state.reportError && !_DEV_) {
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
 
+// 一斉リロード
+reloadChannel.addEventListener('message', () => location.reload());
+
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
 const vh = window.innerHeight * 0.01;
@@ -136,6 +143,25 @@ if (isMobile || window.innerWidth <= 1024) {
 //#region Set lang attr
 const html = document.documentElement;
 html.setAttribute('lang', lang);
+//#endregion
+
+//#region loginId
+const params = new URLSearchParams(location.href);
+const loginId = params.get('loginId');
+
+if (loginId) {
+	const target = deleteLoginId(location.toString());
+	
+	if (!$i || $i.id !== loginId) {
+		const account = await getAccountFromId(loginId);
+		if (account) {
+			login(account.token, target)
+		}
+	}
+
+	history.replaceState({ misskey: 'loginId' }, '', target)
+}
+
 //#endregion
 
 //#region Fetch user
@@ -184,7 +210,7 @@ fetchInstance().then(() => {
 stream.init($i);
 
 const app = createApp(await (
-	window.location.search === '?zen' ? import('@/ui/zen.vue') :
+	location.search === '?zen'        ? import('@/ui/zen.vue') :
 	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
@@ -212,6 +238,33 @@ directives(app);
 components(app);
 
 await router.isReady();
+
+//#region Listen message from SW
+navigator.serviceWorker.addEventListener('message', ev => {
+	if (_DEV_) {
+		console.log('sw msg', ev.data);
+	}
+
+	const data = ev.data as SwMessage;
+	if (data.type !== 'order') return;
+
+	if (data.loginId !== $i?.id) {
+		return getAccountFromId(data.loginId).then(account => {
+			if (!account) return;
+			return login(account.token, data.url);
+		})
+	}
+
+	switch (data.order) {
+		case 'post':
+			return post(data.options);
+		case 'push':
+			return router.push(data.url);
+		default:
+			return;
+	}
+});
+//#endregion
 
 //document.body.innerHTML = '<div id="app"></div>';
 

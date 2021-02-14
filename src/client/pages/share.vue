@@ -13,7 +13,7 @@
 				:initial-local-only="localOnly"
 				:reply="reply"
 				:renote="renote"
-				:specified="specified"
+				:visible-users="visibleUsers"
 				@posted="state = 'posted'"
 				class="_panel"
 			/>
@@ -24,6 +24,8 @@
 </template>
 
 <script lang="ts">
+// SPECIFICATION: https://wiki.misskey.io/ja/advanced-functions/share
+
 import { defineComponent } from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@/components/ui/button.vue';
@@ -50,7 +52,6 @@ export default defineComponent({
 			initialText: null as string | null,
 			reply: null as any,
 			renote: null as any,
-			specified: null as any,
 			visibility: null as string | null,
 			localOnly: null as boolean | null,
 			files: null as any[] | null,
@@ -86,7 +87,7 @@ export default defineComponent({
 				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
 				...(visibleAccts ? visibleAccts.split(',').map(parseAcct) : [])
 			].map(q => os.api('users/show', q)
-				.catch(() => Error(`invalid user query: ${JSON.stringify(q)}`)))
+				.catch(() => Error(`invalid user query: ${JSON.stringify(q)}`)));
 		}
 
 		const localOnly = urlParams.get('localOnly');

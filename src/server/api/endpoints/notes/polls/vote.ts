@@ -13,7 +13,6 @@ import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
 import { genId } from '../../../../../misc/gen-id';
-import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	desc: {
@@ -87,7 +86,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noPoll);
 	}
 
-	const poll = await Polls.findOne({ noteId: note.id }).then(ensure);
+	const poll = await Polls.findOneOrFail({ noteId: note.id });
 
 	if (poll.expiresAt && poll.expiresAt < createdAt) {
 		throw new ApiError(meta.errors.alreadyExpired);
@@ -153,7 +152,7 @@ export default define(meta, async (ps, user) => {
 
 	// リモート投票の場合リプライ送信
 	if (note.userHost != null) {
-		const pollOwner = await Users.findOne(note.userId).then(ensure) as IRemoteUser;
+		const pollOwner = await Users.findOneOrFail(note.userId) as IRemoteUser;
 
 		deliver(user, renderActivity(await renderVote(user, vote, note, poll, pollOwner)), pollOwner.inbox);
 	}

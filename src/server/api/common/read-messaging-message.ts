@@ -1,6 +1,7 @@
 import { publishMainStream, publishGroupMessagingStream } from '../../../services/stream';
 import { publishMessagingStream } from '../../../services/stream';
 import { publishMessagingIndexStream } from '../../../services/stream';
+import { pushNotification } from '../../../services/push-notification';
 import { User, ILocalUser, IRemoteUser } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';
@@ -12,6 +13,7 @@ import { renderReadActivity } from '../../../remote/activitypub/renderer/read';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 import orderedCollection from '../../../remote/activitypub/renderer/ordered-collection';
+import { use } from 'matter-js';
 
 /**
  * Mark messages as read
@@ -50,6 +52,23 @@ export async function readUserMessagingMessage(
 	if (!await Users.getHasUnreadMessagingMessage(userId)) {
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
+		pushNotification(userId, 'readAllMessagingMessages', undefined);
+	} else {
+		// そのユーザーとのメッセージで未読がなければイベント発行
+		const count = await MessagingMessages.count({
+			where: {
+				userId: otherpartyId,
+				recipientId: userId,
+				isRead: false,
+			},
+			take: 1
+		})
+
+		if (!count) {
+			pushNotification(userId, 'readAllMessagingMessagesOfARoom', { userId: otherpartyId });
+		} else {
+			console.log('count')
+		}
 	}
 }
 
@@ -104,6 +123,21 @@ export async function readGroupMessagingMessage(
 	if (!await Users.getHasUnreadMessagingMessage(userId)) {
 		// 全ての(いままで未読だった)自分宛てのメッセージを(これで)読みましたよというイベントを発行
 		publishMainStream(userId, 'readAllMessagingMessages');
+		pushNotification(userId, 'readAllMessagingMessages', undefined);
+	} else {
+		// そのグループにおいて未読がなければイベント発行
+		const unreadExist = await MessagingMessages.createQueryBuilder('message')
+			.where(`message.groupId = :groupId`, { groupId: groupId })
+			.andWhere('message.userId != :userId', { userId: userId })
+			.andWhere('NOT (:userId = ANY(message.reads))', { userId: userId })
+			.andWhere('message.createdAt > :joinedAt', { joinedAt: joining.createdAt }) // 自分が加入する前の会話については、未読扱いしない
+			.getOne().then(x => x != null)
+
+		if (!unreadExist) {
+			pushNotification(userId, 'readAllMessagingMessagesOfARoom', { groupId });
+		} else {
+			console.log('unread exist')
+		}
 	}
 }
 

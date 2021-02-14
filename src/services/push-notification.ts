@@ -11,6 +11,8 @@ type pushNotificationsTypes = {
 	'unreadMessagingMessage': PackedMessagingMessage;
 	'readNotifications': { notificationIds: string[] };
 	'readAllNotifications': undefined;
+	'readAllMessagingMessages': undefined;
+	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
 };
 
 export async function pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {

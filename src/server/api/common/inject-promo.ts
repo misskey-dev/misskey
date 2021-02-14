@@ -2,7 +2,6 @@ import rndstr from 'rndstr';
 import { Note } from '../../../models/entities/note';
 import { User } from '../../../models/entities/user';
 import { PromoReads, PromoNotes, Notes, Users } from '../../../models';
-import { ensure } from '../../../prelude/ensure';
 
 export async function injectPromo(timeline: Note[], user?: User | null) {
 	if (timeline.length < 5) return;
@@ -23,10 +22,10 @@ export async function injectPromo(timeline: Note[], user?: User | null) {
 	// Pick random promo
 	const promo = promos[Math.floor(Math.random() * promos.length)];
 
-	const note = await Notes.findOne(promo.noteId).then(ensure);
+	const note = await Notes.findOneOrFail(promo.noteId);
 
 	// Join
-	note.user = await Users.findOne(note.userId).then(ensure);
+	note.user = await Users.findOneOrFail(note.userId);
 
 	(note as any)._prId_ = rndstr('a-z0-9', 8);
 

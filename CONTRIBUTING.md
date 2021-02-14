@@ -240,36 +240,6 @@ SQLでは配列のインデックスは**1始まり**。
 MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
 MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
 
-### 簡素な`undefined`チェック
-データベースからレコードを取得するときに、プログラムの流れ的に(ほぼ)絶対`undefined`にはならない場合でも、`undefined`チェックしないとTypeScriptに怒られます。
-でもいちいち複数行を費やして、発生するはずのない`undefined`をチェックするのも面倒なので、`ensure`というユーティリティ関数を用意しています。
-例えば、
-``` ts
-const user = await Users.findOne(userId);
-// この時点で user の型は User | undefined
-if (user == null) {
-	throw 'missing user';
-}
-// この時点で user の型は User
-```
-という処理を`ensure`を使うと
-``` ts
-const user = await Users.findOne(userId).then(ensure);
-// この時点で user の型は User
-```
-という風に書けます。
-もちろん`ensure`内部でエラーを握りつぶすようなことはしておらず、万が一`undefined`だった場合はPromiseがRejectされ後続の処理は実行されません。
-``` ts
-const user = await Users.findOne(userId).then(ensure);
-// 万が一 Users.findOne の結果が undefined だったら、ensure でエラーが発生するので
-// この行に到達することは無い
-// なので、.then(ensure) は
-// if (user == null) {
-//	throw 'missing user';
-// }
-// の糖衣構文のような扱いです
-```
-
 ### Migration作成方法
 ```
 npx ts-node ./node_modules/typeorm/cli.js migration:generate -n 変更の名前

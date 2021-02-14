@@ -1,29 +1,39 @@
 <template>
-<div class="rivhosbp _formItem" :class="{ tall, pre }">
-	<div class="_formLabel"><slot></slot></div>
-	<div class="input _formPanel">
-		<textarea ref="input" :class="{ code, _monospace: code }"
-			:value="value"
-			:required="required"
-			:readonly="readonly"
-			:pattern="pattern"
-			:autocomplete="autocomplete"
-			:spellcheck="!code"
-			@input="onInput"
-			@focus="focused = true"
-			@blur="focused = false"
-		></textarea>
+<FormGroup class="_formItem">
+	<template #label><slot></slot></template>
+	<div class="rivhosbp _formItem" :class="{ tall, pre }">
+		<div class="input _formPanel">
+			<textarea ref="input" :class="{ code, _monospace: code }"
+				v-model="v"
+				:required="required"
+				:readonly="readonly"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
+				:spellcheck="!code"
+				@input="onInput"
+				@focus="focused = true"
+				@blur="focused = false"
+			></textarea>
+		</div>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
-	<div class="_formCaption"><slot name="desc"></slot></div>
-</div>
+	<template #caption><slot name="desc"></slot></template>
+
+	<FormButton v-if="manualSave && changed" @click="updated" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+</FormGroup>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, toRefs, watch } from 'vue';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 import './form.scss';
+import FormButton from './button.vue';
+import FormGroup from './group.vue';
 
 export default defineComponent({
+	components: {
+		FormGroup,
+		FormButton,
+	},
 	props: {
 		value: {
 			required: false
@@ -58,24 +68,46 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		save: {
-			type: Function,
+		manualSave: {
+			type: Boolean,
 			required: false,
+			default: false
 		},
 	},
-	data() {
+	setup(props, context) {
+		const { value } = toRefs(props);
+		const v = ref(value.value);
+		const changed = ref(false);
+		const inputEl = ref(null);
+		const focus = () => inputEl.value.focus();
+		const onInput = (ev) => {
+			changed.value = true;
+			context.emit('change', ev);
+		};
+
+		const updated = () => {
+			changed.value = false;
+			context.emit('update:value', v.value);
+		};
+
+		watch(value, newValue => {
+			v.value = newValue;
+		});
+
+		watch(v, newValue => {
+			if (!props.manualSave) {
+				updated();
+			}
+		});
+		
 		return {
-			changed: false,
-		}
-	},
-	methods: {
-		focus() {
-			this.$refs.input.focus();
-		},
-		onInput(ev) {
-			this.changed = true;
-			this.$emit('update:value', ev.target.value);
-		}
+			v,
+			updated,
+			changed,
+			focus,
+			onInput,
+			faSave,
+		};
 	}
 });
 </script>
@@ -110,11 +142,6 @@ export default defineComponent({
 				tab-size: 2;
 			}
 		}
-	}
-
-	> .save {
-		margin: 6px 0 0 0;
-		font-size: 0.8em;
 	}
 
 	&.tall {
