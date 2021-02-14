@@ -883,6 +883,10 @@ export default defineComponent({
 		display: block;
 	}
 
+	&.renote {
+		background: rgba(128, 255, 0, 0.05);
+	}
+
 	> .info {
 		display: flex;
 		align-items: center;
@@ -914,10 +918,11 @@ export default defineComponent({
 	> .renote {
 		display: flex;
 		align-items: center;
-		padding: 16px 32px 8px 32px;
+		padding: 12px 16px 8px 16px;
 		line-height: 28px;
 		white-space: pre;
 		color: var(--renote);
+		font-size: 0.9em;
 
 		> .avatar {
 			flex-shrink: 0;
@@ -944,8 +949,9 @@ export default defineComponent({
 		}
 
 		> .info {
-			margin-left: auto;
+			margin-left: 8px;
 			font-size: 0.9em;
+			opacity: 0.7;
 
 			> .time {
 				flex-shrink: 0;
