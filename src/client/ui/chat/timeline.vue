@@ -1,5 +1,5 @@
 <template>
-<XNotes ref="tl" :pagination="pagination" @queue="$emit('queue', $event)" v-follow="pagination.reversed" @mnt="mnt"/>
+<XNotes ref="tl" :pagination="pagination" @queue="$emit('queue', $event)" v-follow="pagination.reversed"/>
 </template>
 
 <script lang="ts">
@@ -185,12 +185,6 @@ export default defineComponent({
 		focus() {
 			this.$refs.tl.focus();
 		},
-
-		mnt() {
-			if (this.pagination.reversed) {
-				scrollToBottom(this.$el);
-			}
-		}
 	}
 });
 </script>

@@ -8,7 +8,7 @@
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_buttonPrimary" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_buttonPrimary" @click="fetchMoreFeature" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>

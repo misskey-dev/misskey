@@ -74,11 +74,6 @@ export default defineComponent({
 	},
 
 	methods: {
-		mounted() {
-			// Vueのバグか知らんけど、onMountedが呼ばれるのが実際のマウントよりめっちゃ遅いので
-			this.$emit('mnt', this.$el);
-		},
-
 		updated(oldValue, newValue) {
 			const i = this.notes.findIndex(n => n === oldValue);
 			if (this.prop) {
