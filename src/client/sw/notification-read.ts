@@ -15,14 +15,14 @@ class SwNotificationRead {
 	private accounts: Accounts = {};
 
 	public async construct() {
-		const accounts = await get('accounts') as { i: string, id: string }[];
-		if (accounts) Error('Account is not recorded');
+		const accounts = await get('accounts') as { token: string, id: string }[];
+		if (!accounts) Error('Account is not recorded');
 
 		this.accounts = accounts.reduce((acc, e) => {
 			acc[e.id] = {
 				queue: [],
 				timeout: null,
-				token: e.i,
+				token: e.token,
 			};
 			return acc;
 		}, {} as Accounts);
@@ -38,7 +38,7 @@ class SwNotificationRead {
 
 		account.queue.push(data.body.id);
 
-		// 最後の呼び出しから100ms待ってまとめて処理する
+		// 最後の呼び出しから200ms待ってまとめて処理する
 		if (account.timeout) clearTimeout(account.timeout);
 		account.timeout = setTimeout(() => {
 			account.timeout = null;
@@ -50,10 +50,8 @@ class SwNotificationRead {
 					i: account.token,
 					notificationIds: account.queue
 				})
-			}).then(res => {
-				self.registration.showNotification('notificationread', { body: `${account.queue}, ${res.ok}` });
 			});
-		}, 100);
+		}, 200);
 	}
 }
 

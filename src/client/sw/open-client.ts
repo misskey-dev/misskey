@@ -7,9 +7,9 @@ declare var self: ServiceWorkerGlobalScope;
 
 import { SwMessage, swMessageOrderType } from './types';
 
-// acctからユーザーを開く
+// rendered acctからユーザーを開く
 export async function openUser(acct: string, loginId: string) {
-    open('push-user', { acct }, `${origin}/${acct}?loginId=${loginId}`, loginId)
+    open('push-user', { acct }, `${origin}/@${acct}?loginId=${loginId}`, loginId)
 }
 
 // post-formのオプションから投稿フォームを開く

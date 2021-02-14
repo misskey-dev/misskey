@@ -4,7 +4,7 @@
 declare var self: ServiceWorkerGlobalScope;
 
 import { get, set } from 'idb-keyval';
-import { I18n } from '@/scripts/i18n';
+import { I18n } from '../../misc/i18n';
 
 class SwLang {
 	public cacheName = `mk-cache-${_VERSION_}`;

@@ -7,6 +7,8 @@ import { createNotification } from '@/sw/create-notification';
 import { swLang } from '@/sw/lang';
 import { swNotificationRead } from '@/sw/notification-read';
 import { pushNotificationData } from '../../types';
+import { openUser } from './open-client';
+import renderAcct from '../../misc/acct/render';
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {
@@ -46,8 +48,6 @@ self.addEventListener('push', ev => {
 
 		const data: pushNotificationData = ev.data?.json();
 
-		console.log('push', data)
-
 		switch (data.type) {
 			// case 'driveFileCreated':
 			case 'notification':
@@ -73,53 +73,35 @@ self.addEventListener('push', ev => {
 //#region Notification
 self.addEventListener('notificationclick', async ev => {
 	const { action, notification } = ev;
-	console.log('click', action, notification)
 	const data: pushNotificationData = notification.data;
-	const { origin } = location;
-	const client = self.clients.matchAll({
-		includeUncontrolled: true,
-		type: 'window'
-	}).then(clients => {
-		for (const client of clients) {
-			client.postMessage(notification.data);
-			if ('focus' in client) (client as any).focus()
-			console.log('postMessage', client)
-		}
-	});
-
-	const suffix = `?loginId=${data.userId}`;
 
 	switch (action) {
 		case 'showUser':
 			switch (data.body.type) {
 				case 'reaction':
-					await self.clients.openWindow(`${origin}/users/${data.body.user.id}${suffix}`);
-					break;
+					return openUser(renderAcct(data.body.user), data.userId);
 
 				default:
 					if ('note' in data.body) {
-						await self.clients.openWindow(`${origin}/users/${data.body.note.user.id}${suffix}`);
+						return openUser(renderAcct(data.body.data.user), data.userId);
 					}
 			}
 			break;
 		default:
 	}
 
-	notification.close();
+	// notification.close();
 });
 
 self.addEventListener('notificationclose', ev => {
 	const { notification } = ev;
 
-	console.log('close', notification)
-
-	if (notification.title !== 'notificationclose') {
+	if (!notification.title.startsWith('notification')) {
 		self.registration.showNotification('notificationclose', { body: `${notification?.data?.body?.id}` });
 	}
 	const data: pushNotificationData = notification.data;
 
 	if (data.type === 'notification') {
-		console.log('close', data);
 		swNotificationRead.then(that => that.read(data));
 	}
 });
