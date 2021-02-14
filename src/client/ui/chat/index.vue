@@ -364,7 +364,7 @@ export default defineComponent({
 			box-sizing: border-box;
 			line-height: ($header-height - ($padding * 2));
 			font-weight: bold;
-			background-color: var(--header);
+			background-color: var(--panel);
 			border-bottom: solid 1px var(--divider);
 			user-select: none;
 
