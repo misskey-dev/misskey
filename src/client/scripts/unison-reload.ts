@@ -5,6 +5,6 @@ export const reloadChannel = new BroadcastChannel<'reload'>('reload');
 
 // BroadcastChannelを用いて、クライアントが一斉にreloadするようにします。
 export function unisonReload() {
-    reloadChannel.postMessage('reload');
-    location.reload();
+	reloadChannel.postMessage('reload');
+	location.reload();
 }
