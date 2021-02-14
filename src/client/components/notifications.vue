@@ -5,7 +5,7 @@
 		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</XList>
 
-	<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+	<button class="_buttonPrimary" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 		<template v-if="moreFetching"><MkLoading inline/></template>
 	</button>

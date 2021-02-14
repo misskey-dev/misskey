@@ -1,8 +1,10 @@
 import { markRaw } from 'vue';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible } from './scroll';
+import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from './scroll';
 
 const SECOND_FETCH_LIMIT = 30;
+
+// reversed: items 配列の中身を逆順にする(新しい方が最後)
 
 export default (opts) => ({
 	emits: ['queue'],
@@ -122,10 +124,41 @@ export default (opts) => ({
 				limit: SECOND_FETCH_LIMIT + 1,
 				...(this.pagination.offsetMode ? {
 					offset: this.offset,
-				} : this.pagination.reversed ? {
-					sinceId: this.items[0].id,
 				} : {
-					untilId: this.items[this.items.length - 1].id,
+					untilId: this.pagination.reversed ? this.items[0].id : this.items[this.items.length - 1].id,
+				}),
+			}).then(items => {
+				for (const item of items) {
+					markRaw(item);
+				}
+				if (items.length > SECOND_FETCH_LIMIT) {
+					items.pop();
+					this.items = this.pagination.reversed ? [...items].reverse().concat(this.items) : this.items.concat(items);
+					this.more = true;
+				} else {
+					this.items = this.pagination.reversed ? [...items].reverse().concat(this.items) : this.items.concat(items);
+					this.more = false;
+				}
+				this.offset += items.length;
+				this.moreFetching = false;
+			}, e => {
+				this.moreFetching = false;
+			});
+		},
+
+		async fetchMoreFeature() {
+			if (!this.more || this.fetching || this.moreFetching || this.items.length === 0) return;
+			this.moreFetching = true;
+			let params = typeof this.pagination.params === 'function' ? this.pagination.params(false) : this.pagination.params;
+			if (params && params.then) params = await params;
+			const endpoint = typeof this.pagination.endpoint === 'function' ? this.pagination.endpoint() : this.pagination.endpoint;
+			await os.api(endpoint, {
+				...params,
+				limit: SECOND_FETCH_LIMIT + 1,
+				...(this.pagination.offsetMode ? {
+					offset: this.offset,
+				} : {
+					sinceId: this.pagination.reversed ? this.items[0].id : this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
 				for (const item of items) {
@@ -147,25 +180,44 @@ export default (opts) => ({
 		},
 
 		prepend(item) {
-			const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
-
-			if (isTop) {
-				// Prepend the item
-				this.items.unshift(item);
-
-				// オーバーフローしたら古いアイテムは捨てる
-				if (this.items.length >= opts.displayLimit) {
-					this.items = this.items.slice(0, opts.displayLimit);
-					this.more = true;
-				}
-			} else {
-				this.queue.push(item);
-				onScrollTop(this.$el, () => {
-					for (const item of this.queue) {
-						this.prepend(item);
+			if (this.pagination.reversed) {
+				const container = getScrollContainer(this.$el);
+				const pos = getScrollPosition(this.$el);
+				const viewHeight = container.clientHeight;
+				const height = container.scrollHeight;
+				const isBottom = (pos + viewHeight > height - 32);
+				if (isBottom) {
+					// オーバーフローしたら古いアイテムは捨てる
+					if (this.items.length >= opts.displayLimit) {
+						this.items = this.items.slice(-opts.displayLimit);
+						this.more = true;
 					}
-					this.queue = [];
-				});
+				} else {
+					
+				}
+				this.items.push(item);
+				// TODO
+			} else {
+				const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
+
+				if (isTop) {
+					// Prepend the item
+					this.items.unshift(item);
+
+					// オーバーフローしたら古いアイテムは捨てる
+					if (this.items.length >= opts.displayLimit) {
+						this.items = this.items.slice(0, opts.displayLimit);
+						this.more = true;
+					}
+				} else {
+					this.queue.push(item);
+					onScrollTop(this.$el, () => {
+						for (const item of this.queue) {
+							this.prepend(item);
+						}
+						this.queue = [];
+					});
+				}
 			}
 		},
 

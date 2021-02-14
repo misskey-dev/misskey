@@ -1,8 +1,8 @@
 <template>
-<span class="eiwwqkts" :class="{ cat }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
+<span class="eiwwqkts _noSelect" :class="{ cat }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
 	<img class="inner" :src="url" decoding="async"/>
 </span>
-<MkA class="eiwwqkts" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
+<MkA class="eiwwqkts _noSelect" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
 	<img class="inner" :src="url" decoding="async"/>
 </MkA>
 </template>
