@@ -4,6 +4,7 @@ import { Notifications, Mutings, UserProfiles } from '../models';
 import { genId } from '../misc/gen-id';
 import { User } from '../models/entities/user';
 import { Notification } from '../models/entities/notification';
+import { sendEmailNotification } from './send-email-notification';
 
 export async function createNotification(
 	notifieeId: User['id'],
@@ -38,20 +39,22 @@ export async function createNotification(
 	setTimeout(async () => {
 		const fresh = await Notifications.findOne(notification.id);
 		if (fresh == null) return; // 既に削除されているかもしれない
-		if (!fresh.isRead) {
-			//#region ただしミュートしているユーザーからの通知なら無視
-			const mutings = await Mutings.find({
-				muterId: notifieeId
-			});
-			if (data.notifierId && mutings.map(m => m.muteeId).includes(data.notifierId)) {
-				return;
-			}
-			//#endregion
+		if (fresh.isRead) return;
 
-			publishMainStream(notifieeId, 'unreadNotification', packed);
-
-			pushNotification(notifieeId, 'notification', packed);
+		//#region ただしミュートしているユーザーからの通知なら無視
+		const mutings = await Mutings.find({
+			muterId: notifieeId
+		});
+		if (data.notifierId && mutings.map(m => m.muteeId).includes(data.notifierId)) {
+			return;
 		}
+		//#endregion
+
+		publishMainStream(notifieeId, 'unreadNotification', packed);
+		pushNotification(notifieeId, 'notification', packed);
+
+		if (type === 'follow') sendEmailNotification.follow(notifieeId, data);
+		if (type === 'receiveFollowRequest') sendEmailNotification.receiveFollowRequest(notifieeId, data);
 	}, 2000);
 
 	return notification;

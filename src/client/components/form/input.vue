@@ -1,63 +1,50 @@
 <template>
-<div class="ztzhwixg _formItem" :class="{ inline, disabled }">
-	<div class="_formLabel"><slot></slot></div>
-	<div class="icon" ref="icon"><slot name="icon"></slot></div>
-	<div class="input _formPanel">
-		<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
-		<input v-if="debounce" ref="inputEl"
-			v-debounce="500"
-			:type="type"
-			v-model.lazy="v"
-			:disabled="disabled"
-			:required="required"
-			:readonly="readonly"
-			:placeholder="placeholder"
-			:pattern="pattern"
-			:autocomplete="autocomplete"
-			:spellcheck="spellcheck"
-			:step="step"
-			@focus="focused = true"
-			@blur="focused = false"
-			@keydown="onKeydown($event)"
-			@input="onInput"
-			:list="id"
-		>
-		<input v-else ref="inputEl"
-			:type="type"
-			v-model="v"
-			:disabled="disabled"
-			:required="required"
-			:readonly="readonly"
-			:placeholder="placeholder"
-			:pattern="pattern"
-			:autocomplete="autocomplete"
-			:spellcheck="spellcheck"
-			:step="step"
-			@focus="focused = true"
-			@blur="focused = false"
-			@keydown="onKeydown($event)"
-			@input="onInput"
-			:list="id"
-		>
-		<datalist :id="id" v-if="datalist">
-			<option v-for="data in datalist" :value="data"/>
-		</datalist>
-		<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
+<FormGroup class="_formItem">
+	<template #label><slot></slot></template>
+	<div class="ztzhwixg _formItem" :class="{ inline, disabled }">
+		<div class="icon" ref="icon"><slot name="icon"></slot></div>
+		<div class="input _formPanel">
+			<div class="prefix" ref="prefixEl"><slot name="prefix"></slot></div>
+			<input ref="inputEl"
+				:type="type"
+				v-model="v"
+				:disabled="disabled"
+				:required="required"
+				:readonly="readonly"
+				:placeholder="placeholder"
+				:pattern="pattern"
+				:autocomplete="autocomplete"
+				:spellcheck="spellcheck"
+				:step="step"
+				@focus="focused = true"
+				@blur="focused = false"
+				@keydown="onKeydown($event)"
+				@input="onInput"
+				:list="id"
+			>
+			<datalist :id="id" v-if="datalist">
+				<option v-for="data in datalist" :value="data"/>
+			</datalist>
+			<div class="suffix" ref="suffixEl"><slot name="suffix"></slot></div>
+		</div>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
-	<div class="_formCaption"><slot name="desc"></slot></div>
-</div>
+	<template #caption><slot name="desc"></slot></template>
+
+	<FormButton v-if="manualSave && changed" @click="updated" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+</FormGroup>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import debounce from 'v-debounce';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faSave } from '@fortawesome/free-solid-svg-icons';
 import './form.scss';
+import FormButton from './button.vue';
+import FormGroup from './group.vue';
 
 export default defineComponent({
-	directives: {
-		debounce
+	components: {
+		FormGroup,
+		FormButton,
 	},
 	props: {
 		value: {
@@ -101,9 +88,6 @@ export default defineComponent({
 		step: {
 			required: false
 		},
-		debounce: {
-			required: false
-		},
 		datalist: {
 			type: Array,
 			required: false,
@@ -113,9 +97,10 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		save: {
-			type: Function,
+		manualSave: {
+			type: Boolean,
 			required: false,
+			default: false
 		},
 	},
 	emits: ['change', 'keydown', 'enter'],
@@ -144,15 +129,22 @@ export default defineComponent({
 			}
 		};
 
+		const updated = () => {
+			changed.value = false;
+			if (type?.value === 'number') {
+				context.emit('update:value', parseFloat(v.value));
+			} else {
+				context.emit('update:value', v.value);
+			}
+		};
+
 		watch(value, newValue => {
 			v.value = newValue;
 		});
 
 		watch(v, newValue => {
-			if (type?.value === 'number') {
-				context.emit('update:value', parseFloat(newValue));
-			} else {
-				context.emit('update:value', newValue);
+			if (!props.manualSave) {
+				updated();
 			}
 
 			invalid.value = inputEl.value.validity.badInput;
@@ -198,7 +190,8 @@ export default defineComponent({
 			focus,
 			onInput,
 			onKeydown,
-			faExclamationCircle,
+			updated,
+			faExclamationCircle, faSave,
 		};
 	},
 });
@@ -283,11 +276,6 @@ export default defineComponent({
 			right: 0;
 			padding-left: 8px;
 		}
-	}
-
-	> .save {
-		margin: 6px 0 0 0;
-		font-size: 0.8em;
 	}
 
 	&.inline {

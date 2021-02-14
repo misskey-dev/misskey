@@ -10,7 +10,6 @@ import { DriveFiles, Notes, Users, Emojis, Polls } from '../../../models';
 import { In } from 'typeorm';
 import { Emoji } from '../../../models/entities/emoji';
 import { Poll } from '../../../models/entities/poll';
-import { ensure } from '../../../prelude/ensure';
 
 export default async function renderNote(note: Note, dive = true, isTalk = false): Promise<any> {
 	const getPromisedFiles = async (ids: string[]) => {
@@ -54,7 +53,7 @@ export default async function renderNote(note: Note, dive = true, isTalk = false
 		}
 	}
 
-	const user = await Users.findOne(note.userId).then(ensure);
+	const user = await Users.findOneOrFail(note.userId);
 
 	const attributedTo = `${config.url}/users/${user.id}`;
 

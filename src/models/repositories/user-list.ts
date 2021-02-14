@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserList } from '../entities/user-list';
-import { ensure } from '../../prelude/ensure';
 import { UserListJoinings } from '..';
 import { SchemaType } from '../../misc/schema';
 
@@ -11,7 +10,7 @@ export class UserListRepository extends Repository<UserList> {
 	public async pack(
 		src: UserList['id'] | UserList,
 	): Promise<PackedUserList> {
-		const userList = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const userList = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const users = await UserListJoinings.find({
 			userListId: userList.id

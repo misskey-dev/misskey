@@ -9,7 +9,6 @@ import signin from '../common/signin';
 import { fetchMeta } from '../../../misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
-import { ensure } from '../../../prelude/ensure';
 
 function getUserToken(ctx: Koa.Context) {
 	return ((ctx.headers['cookie'] || '').match(/igi=(\w+)/) || [null, null])[1];
@@ -40,12 +39,12 @@ router.get('/disconnect/twitter', async ctx => {
 		return;
 	}
 
-	const user = await Users.findOne({
+	const user = await Users.findOneOrFail({
 		host: null,
 		token: userToken
-	}).then(ensure);
+	});
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	delete profile.integrations.twitter;
 
@@ -163,12 +162,12 @@ router.get('/tw/cb', async ctx => {
 
 		const result = await twAuth!.done(JSON.parse(twCtx), verifier);
 
-		const user = await Users.findOne({
+		const user = await Users.findOneOrFail({
 			host: null,
 			token: userToken
-		}).then(ensure);
+		});
 
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 
 		await UserProfiles.update(user.id, {
 			integrations: {

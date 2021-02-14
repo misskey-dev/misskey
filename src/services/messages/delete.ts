@@ -1,5 +1,4 @@
 import config from '../../config';
-import { ensure } from '../../prelude/ensure';
 import { MessagingMessages, Users } from '../../models';
 import { MessagingMessage } from '../../models/entities/messaging-message';
 import { publishGroupMessagingStream, publishMessagingStream } from '../stream';
@@ -15,8 +14,8 @@ export async function deleteMessage(message: MessagingMessage) {
 
 async function postDeleteMessage(message: MessagingMessage) {
 	if (message.recipientId) {
-		const user = await Users.findOne(message.userId).then(ensure);
-		const recipient = await Users.findOne(message.recipientId).then(ensure);
+		const user = await Users.findOneOrFail(message.userId);
+		const recipient = await Users.findOneOrFail(message.recipientId);
 
 		if (Users.isLocalUser(user)) publishMessagingStream(message.userId, message.recipientId, 'deleted', message.id);
 		if (Users.isLocalUser(recipient)) publishMessagingStream(message.recipientId, message.userId, 'deleted', message.id);
