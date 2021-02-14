@@ -151,15 +151,15 @@ const loginId = params.get('loginId');
 
 if (loginId) {
 	const target = deleteLoginId(location.toString());
-	
+
 	if (!$i || $i.id !== loginId) {
 		const account = await getAccountFromId(loginId);
 		if (account) {
-			login(account.token, target)
+			login(account.token, target);
 		}
 	}
 
-	history.replaceState({ misskey: 'loginId' }, '', target)
+	history.replaceState({ misskey: 'loginId' }, '', target);
 }
 
 //#endregion
@@ -252,7 +252,7 @@ navigator.serviceWorker.addEventListener('message', ev => {
 		return getAccountFromId(data.loginId).then(account => {
 			if (!account) return;
 			return login(account.token, data.url);
-		})
+		});
 	}
 
 	switch (data.order) {
