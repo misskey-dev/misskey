@@ -147,25 +147,30 @@ export default (opts) => ({
 		},
 
 		prepend(item) {
-			const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
-
-			if (isTop) {
-				// Prepend the item
-				this.items.unshift(item);
-
-				// オーバーフローしたら古いアイテムは捨てる
-				if (this.items.length >= opts.displayLimit) {
-					this.items = this.items.slice(0, opts.displayLimit);
-					this.more = true;
-				}
+			if (this.pagination.reversed) {
+				this.items.push(item);
+				// TODO
 			} else {
-				this.queue.push(item);
-				onScrollTop(this.$el, () => {
-					for (const item of this.queue) {
-						this.prepend(item);
+				const isTop = this.isBackTop || (document.body.contains(this.$el) && isTopVisible(this.$el));
+
+				if (isTop) {
+					// Prepend the item
+					this.items.unshift(item);
+
+					// オーバーフローしたら古いアイテムは捨てる
+					if (this.items.length >= opts.displayLimit) {
+						this.items = this.items.slice(0, opts.displayLimit);
+						this.more = true;
 					}
-					this.queue = [];
-				});
+				} else {
+					this.queue.push(item);
+					onScrollTop(this.$el, () => {
+						for (const item of this.queue) {
+							this.prepend(item);
+						}
+						this.queue = [];
+					});
+				}
 			}
 		},
 
