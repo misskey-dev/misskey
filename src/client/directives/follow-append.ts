@@ -13,12 +13,10 @@ export default {
 			const viewHeight = container.clientHeight;
 			const height = container.scrollHeight;
 			isBottom = (pos + viewHeight > height - 32);
-			console.log(isBottom);
 		}, { passive: true });
 		container.scrollTop = container.scrollHeight;
 
 		const ro = new ResizeObserver((entries, observer) => {
-			console.log(isBottom);
 			if (isBottom) {
 				const height = container.scrollHeight;
 				container.scrollTop = height;

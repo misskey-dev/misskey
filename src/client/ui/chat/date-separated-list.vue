@@ -120,6 +120,20 @@ export default defineComponent({
 .hmjzthxl {
 	> .separator {
 		text-align: center;
+		position: relative;
+
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 0;
+			right: 0;
+			margin: auto;
+			width: calc(100% - 32px);
+			height: 1px;
+			background: var(--divider);
+		}
 
 		> .date {
 			display: inline-block;
@@ -130,6 +144,7 @@ export default defineComponent({
 			text-align: center;
 			font-size: 12px;
 			color: var(--dateLabelFg);
+			background: var(--panel);
 
 			> span {
 				&:first-child {

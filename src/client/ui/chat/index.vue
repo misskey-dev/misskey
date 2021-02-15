@@ -62,21 +62,27 @@
 
 	<main class="main" @contextmenu.stop="onContextmenu">
 		<header class="header" ref="header" @click="onHeaderClick">
-			<div v-if="tl === 'home'">
-				<Fa :icon="faHome" class="icon"/>
-				<div class="title">{{ $ts._timelines.home }}</div>
+			<div class="left">
+				<template v-if="tl === 'home'">
+					<Fa :icon="faHome" class="icon"/>
+					<div class="title">{{ $ts._timelines.home }}</div>
+				</template>
+				<template v-else-if="tl === 'local'">
+					<Fa :icon="faShareAlt" class="icon"/>
+					<div class="title">{{ $ts._timelines.local }}</div>
+				</template>
+				<template v-else-if="tl === 'social'">
+					<Fa :icon="faShareAlt" class="icon"/>
+					<div class="title">{{ $ts._timelines.social }}</div>
+				</template>
+				<template v-else-if="tl === 'global'">
+					<Fa :icon="faShareAlt" class="icon"/>
+					<div class="title">{{ $ts._timelines.global }}</div>
+				</template>
 			</div>
-			<div v-else-if="tl === 'local'">
-				<Fa :icon="faShareAlt" class="icon"/>
-				<div class="title">{{ $ts._timelines.local }}</div>
-			</div>
-			<div v-else-if="tl === 'social'">
-				<Fa :icon="faShareAlt" class="icon"/>
-				<div class="title">{{ $ts._timelines.social }}</div>
-			</div>
-			<div v-else-if="tl === 'global'">
-				<Fa :icon="faShareAlt" class="icon"/>
-				<div class="title">{{ $ts._timelines.global }}</div>
+
+			<div class="right">
+				<XHeaderClock/>
 			</div>
 		</header>
 		<div class="body">
@@ -105,6 +111,7 @@ import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';
 import XTimeline from './timeline.vue';
 import XPostForm from './post-form.vue';
+import XHeaderClock from './header-clock.vue';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
 
@@ -115,6 +122,7 @@ export default defineComponent({
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
 		XTimeline,
 		XPostForm,
+		XHeaderClock,
 	},
 
 	provide() {
@@ -260,6 +268,29 @@ export default defineComponent({
 				border-top: solid 1px var(--divider);
 			}
 
+			> .left, > .right {
+				> .item, > .menu {
+					height: ($header-height - ($padding * 2));
+					width: ($header-height - ($padding * 2));
+					padding: 10px;
+					box-sizing: border-box;
+					margin-right: 4px;
+					//opacity: 0.6;
+					position: relative;
+					line-height: initial;
+
+					> i {
+						position: absolute;
+						top: 8px;
+						right: 8px;
+						color: var(--indicator);
+						font-size: 8px;
+						line-height: 8px;
+						animation: blink 1s infinite;
+					}
+				}
+			}
+
 			> .left {
 				> .account {
 					display: flex;
@@ -276,26 +307,6 @@ export default defineComponent({
 
 			> .right {
 				margin-left: auto;
-
-				> .item {
-					height: ($header-height - ($padding * 2));
-					width: ($header-height - ($padding * 2));
-					padding: 10px;
-					box-sizing: border-box;
-					margin-right: 4px;
-					//opacity: 0.6;
-					position: relative;
-
-					> i {
-						position: absolute;
-						top: 8px;
-						right: 8px;
-						color: var(--indicator);
-						font-size: 8px;
-						line-height: 8px;
-						animation: blink 1s infinite;
-					}
-				}
 			}
 		}
 
@@ -358,18 +369,19 @@ export default defineComponent({
 
 		> .header {
 			$padding: 8px;
+			display: flex;
 			z-index: 1000;
 			height: $header-height;
 			padding: $padding;
 			box-sizing: border-box;
 			line-height: ($header-height - ($padding * 2));
-			font-weight: bold;
 			background-color: var(--panel);
 			border-bottom: solid 1px var(--divider);
 			user-select: none;
 
-			> div {
+			> .left {
 				display: flex;
+				font-weight: bold;
 
 				> .icon {
 					height: ($header-height - ($padding * 2));
@@ -380,10 +392,15 @@ export default defineComponent({
 					opacity: 0.6;
 				}
 			}
+
+			> .right {
+				margin-left: auto;
+				padding: 0 8px;
+			}
 		}
 
 		> .footer {
-			padding: 16px;
+			padding: 0 16px 16px 16px;
 		}
 
 		> .body {

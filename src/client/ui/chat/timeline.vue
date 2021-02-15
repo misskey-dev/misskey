@@ -1,5 +1,5 @@
 <template>
-<XNotes ref="tl" :pagination="pagination" @queue="$emit('queue', $event)" v-follow="pagination.reversed"/>
+<XNotes class="dbiokgaf" ref="tl" :pagination="pagination" @queue="$emit('queue', $event)" v-follow="pagination.reversed"/>
 </template>
 
 <script lang="ts">
@@ -188,3 +188,9 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.dbiokgaf {
+	padding: 16px 0;
+}
+</style>

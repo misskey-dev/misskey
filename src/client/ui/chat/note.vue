@@ -1,10 +1,10 @@
 <template>
 <div
-	class="note"
+	class="vfzoeqcg"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ renote: isRenote }"
+	:class="{ renote: isRenote, operating }"
 	v-hotkey="keymap"
 >
 	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
@@ -171,6 +171,7 @@ export default defineComponent({
 			collapsed: false,
 			isDeleted: false,
 			muted: false,
+			operating: false,
 			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish
 		};
 	},
@@ -439,16 +440,19 @@ export default defineComponent({
 
 		reply(viaKeyboard = false) {
 			pleaseLogin();
+			this.operating = true;
 			os.post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
 			}, () => {
+				this.operating = false;
 				this.focus();
 			});
 		},
 
 		renote(viaKeyboard = false) {
 			pleaseLogin();
+			this.operating = true;
 			this.blur();
 			os.modalMenu([{
 				text: this.$ts.renote,
@@ -468,6 +472,8 @@ export default defineComponent({
 				}
 			}], this.$refs.renoteButton, {
 				viaKeyboard
+			}).then(() => {
+				this.operating = false;
 			});
 		},
 
@@ -494,10 +500,11 @@ export default defineComponent({
 			});
 		},
 
-		react(viaKeyboard = false) {
+		async react(viaKeyboard = false) {
 			pleaseLogin();
+			this.operating = true;
 			this.blur();
-			os.popup(import('@/components/emoji-picker.vue'), {
+			const { dispose } = await os.popup(import('@/components/emoji-picker.vue'), {
 				src: this.$refs.reactButton,
 				asReactionPicker: true
 			}, {
@@ -508,9 +515,13 @@ export default defineComponent({
 							reaction: reaction
 						});
 					}
-					this.focus();
 				},
-			}, 'closed');
+				closed: () => {
+					this.operating = false;
+					this.focus();
+					dispose();
+				}
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -734,9 +745,13 @@ export default defineComponent({
 		},
 
 		menu(viaKeyboard = false) {
+			this.operating = true;
 			os.modalMenu(this.getMenu(), this.$refs.menuButton, {
 				viaKeyboard
-			}).then(this.focus);
+			}).then(() => {
+				this.operating = false;
+				this.focus();
+			});
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
@@ -857,10 +872,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.note {
+.vfzoeqcg {
 	position: relative;
-	transition: box-shadow 0.1s ease;
-	overflow: hidden;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
@@ -879,8 +892,10 @@ export default defineComponent({
 		background: rgba(0, 0, 0, 0.05);
 	}
 
-	&:hover > .article > .main > .footer {
-		display: block;
+	&:hover, &.operating {
+		> .article > .main > .footer {
+			display: block;
+		}
 	}
 
 	&.renote {
@@ -983,8 +998,8 @@ export default defineComponent({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			//position: sticky;
-			//top: 72px;
+			position: sticky;
+			top: 12px;
 			margin: 0 14px 0 0;
 			width: 46px;
 			height: 46px;
@@ -1122,5 +1137,9 @@ export default defineComponent({
 .muted {
 	padding: 8px 16px;
 	opacity: 0.7;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
 }
 </style>
