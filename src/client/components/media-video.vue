@@ -8,11 +8,9 @@
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
 	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
 	<a
-		:href="video.url"
-		rel="nofollow noopener"
-		target="_blank"
+		:id="video.id"
 		:style="imageStyle"
-		:title="video.name"
+		@click="onPlay"
 	>
 		<Fa :icon="faPlayCircle"/>
 	</a>
@@ -24,6 +22,7 @@ import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
+import DPlayer from 'dplayer';
 
 export default defineComponent({
 	props: {
@@ -37,7 +36,8 @@ export default defineComponent({
 			hide: true,
 			faPlayCircle,
 			faExclamationTriangle,
-			faEyeSlash
+			faEyeSlash,
+			dp: null,
 		};
 	},
 	computed: {
@@ -49,6 +49,29 @@ export default defineComponent({
 	},
 	created() {
 		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
+	},
+	methods: {
+		onPlay() {
+			if (this.dp === null) {
+				// Only for creating new
+				this.dp = new DPlayer({
+					// Configure parameters
+					container: document.getElementById(this.video.id),
+					autoplay: true,
+					// theme: '#96baf3',
+					loop: false,
+					lang: 'zh-cn',
+					preload: 'auto',
+					volume: 0.7,
+					video: {
+						url: this.video.url,
+						pic: this.video.thumbnailUrl,
+						thumbnails: this.video.thumbnailUrl,
+						type: 'auto',
+					},
+				});
+			}
+		}
 	},
 });
 </script>
@@ -77,12 +100,16 @@ export default defineComponent({
 		justify-content: center;
 		align-items: center;
 
-		font-size: 3.5em;
 		overflow: hidden;
 		background-position: center;
 		background-size: cover;
 		width: 100%;
 		height: 100%;
+
+		> svg {
+			// Only for Play button
+			font-size: 3.5em;
+		}
 	}
 }
 
