@@ -1,18 +1,15 @@
 <template>
-<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
+<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="onShow">
 	<div>
 		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i><Fa :icon="faEyeSlash" @click="onHide"/></i>
 	<a
-		:href="video.url"
-		rel="nofollow noopener"
-		target="_blank"
 		:style="imageStyle"
-		:title="video.name"
+		@click="onPlay($event)"
 	>
 		<Fa :icon="faPlayCircle"/>
 	</a>
@@ -24,6 +21,7 @@ import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
+import DPlayer from 'dplayer';
 
 export default defineComponent({
 	props: {
@@ -37,7 +35,8 @@ export default defineComponent({
 			hide: true,
 			faPlayCircle,
 			faExclamationTriangle,
-			faEyeSlash
+			faEyeSlash,
+			dp: null,
 		};
 	},
 	computed: {
@@ -49,6 +48,41 @@ export default defineComponent({
 	},
 	created() {
 		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
+	},
+	methods: {
+		onPlay(ev) {
+			if (this.dp === null) {
+				// Only for creating new
+				this.dp = new DPlayer({
+					// Configure parameters
+					container: ev.target,
+					autoplay: true,
+					// theme: '#96baf3',
+					loop: false,
+					lang: 'en',
+					preload: 'auto',
+					volume: 0.7,
+					video: {
+						url: this.video.url,
+						pic: this.video.thumbnailUrl,
+						thumbnails: this.video.thumbnailUrl,
+						type: 'auto',
+					},
+				});
+				this.dp.on('webfullscreen', () => {
+					// Remove attached class (which will break the style) immediately to prevent page change.
+					// Question: How to optimize the performance without changing the original code?
+					document.body.classList.remove('dplayer-web-fullscreen-fix');
+				});
+			}
+		},
+		onShow() {
+			this.hide = false;
+		},
+		onHide() {
+			this.hide = true;
+			this.dp = null;
+		}
 	},
 });
 </script>
@@ -70,6 +104,7 @@ export default defineComponent({
 		cursor: pointer;
 		top: 12px;
 		right: 12px;
+		z-index: 1;
 	}
 
 	> a {
@@ -77,12 +112,17 @@ export default defineComponent({
 		justify-content: center;
 		align-items: center;
 
-		font-size: 3.5em;
 		overflow: hidden;
 		background-position: center;
 		background-size: cover;
 		width: 100%;
 		height: 100%;
+
+		> svg {
+			// Only for Play button
+			font-size: 3.5em;
+			pointer-events: none;
+		}
 	}
 }
 

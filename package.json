@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.69.0",
+	"version": "12.69.0+dp",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -132,6 +132,7 @@
 		"dateformat": "4.5.1",
 		"diskusage": "1.1.3",
 		"double-ended-queue": "2.1.0-0",
+		"dplayer": "1.26.0",
 		"escape-regexp": "0.0.1",
 		"eslint": "7.19.0",
 		"eslint-plugin-vue": "7.5.0",
