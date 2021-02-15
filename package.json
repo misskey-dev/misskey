@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.69.0-dpt2",
+	"version": "12.69.0-dpt3",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -45,6 +45,7 @@
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
 		"@koa/router": "9.0.1",
+		"@nyaone/dplayer-misskey": "1.0.2",
 		"@sentry/browser": "5.29.2",
 		"@sentry/tracing": "5.29.2",
 		"@sinonjs/fake-timers": "6.0.1",
@@ -132,7 +133,6 @@
 		"dateformat": "4.5.1",
 		"diskusage": "1.1.3",
 		"double-ended-queue": "2.1.0-0",
-		"dplayer": "1.26.0",
 		"escape-regexp": "0.0.1",
 		"eslint": "7.19.0",
 		"eslint-plugin-vue": "7.5.0",
