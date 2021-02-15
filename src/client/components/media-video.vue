@@ -1,5 +1,5 @@
 <template>
-<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
+<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="onShow">
 	<div>
 		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
@@ -69,7 +69,15 @@ export default defineComponent({
 						type: 'auto',
 					},
 				});
+				this.dp.on('webfullscreen', () => {
+					// Remove attached class (which will break the style) immediately to prevent page change.
+					// Question: How to optimize the performance without changing the original code?
+					document.body.classList.remove('dplayer-web-fullscreen-fix');
+				});
 			}
+		},
+		onShow() {
+			this.hide = false;
 		},
 		onHide() {
 			this.hide = true;
