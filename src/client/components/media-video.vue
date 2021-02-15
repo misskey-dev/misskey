@@ -6,11 +6,10 @@
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i><Fa :icon="faEyeSlash" @click="onHide"/></i>
 	<a
-		:id="video.id"
 		:style="imageStyle"
-		@click="onPlay"
+		@click="onPlay($event)"
 	>
 		<Fa :icon="faPlayCircle"/>
 	</a>
@@ -51,16 +50,16 @@ export default defineComponent({
 		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
 	},
 	methods: {
-		onPlay() {
+		onPlay(ev) {
 			if (this.dp === null) {
 				// Only for creating new
 				this.dp = new DPlayer({
 					// Configure parameters
-					container: document.getElementById(this.video.id),
+					container: ev.target,
 					autoplay: true,
 					// theme: '#96baf3',
 					loop: false,
-					lang: 'zh-cn',
+					lang: 'en',
 					preload: 'auto',
 					volume: 0.7,
 					video: {
@@ -71,6 +70,10 @@ export default defineComponent({
 					},
 				});
 			}
+		},
+		onHide() {
+			this.hide = true;
+			this.dp = null;
 		}
 	},
 });
@@ -93,6 +96,7 @@ export default defineComponent({
 		cursor: pointer;
 		top: 12px;
 		right: 12px;
+		z-index: 1;
 	}
 
 	> a {
@@ -109,6 +113,7 @@ export default defineComponent({
 		> svg {
 			// Only for Play button
 			font-size: 3.5em;
+			pointer-events: none;
 		}
 	}
 }
