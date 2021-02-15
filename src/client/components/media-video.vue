@@ -65,7 +65,6 @@ export default defineComponent({
 					video: {
 						url: this.video.url,
 						pic: this.video.thumbnailUrl,
-						thumbnails: this.video.thumbnailUrl,
 						type: 'auto',
 					},
 				});
