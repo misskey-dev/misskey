@@ -24,25 +24,25 @@
 				</div>
 			</div>
 			<div class="container" v-if="lists">
-				<div class="header">{{ $ts.lists }}</div>
+				<div class="header">{{ $ts.lists }}<button class="_button add"><Fa :icon="faPlus"/></button></div>
 				<div class="body">
 					<MkA v-for="list in lists" :key="list.id" :to="`/my/list/${ list.id }`" class="item" :class="{ active: tl === `list:${ list.id }` }"><Fa :icon="faListUl" class="icon"/>{{ list.name }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="antennas">
-				<div class="header">{{ $ts.antennas }}</div>
+				<div class="header">{{ $ts.antennas }}<button class="_button add"><Fa :icon="faPlus"/></button></div>
 				<div class="body">
 					<MkA v-for="antenna in antennas" :key="antenna.id" :to="`/my/antenna/${ antenna.id }`" class="item" :class="{ active: tl === `antenna:${ antenna.id }` }"><Fa :icon="faSatellite" class="icon"/>{{ antenna.name }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="followedChannels">
-				<div class="header">{{ $ts.channel }}</div>
+				<div class="header">{{ $ts.channel }}<button class="_button add"><Fa :icon="faPlus"/></button></div>
 				<div class="body">
 					<MkA v-for="channel in followedChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }`, read: !channel.hasUnreadNote }"><Fa :icon="faSatelliteDish" class="icon"/>{{ channel.name }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="featuredChannels">
-				<div class="header">{{ $ts.channel }}</div>
+				<div class="header">{{ $ts.channel }}<button class="_button add"><Fa :icon="faPlus"/></button></div>
 				<div class="body">
 					<MkA v-for="channel in featuredChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }` }"><Fa :icon="faSatelliteDish" class="icon"/>{{ channel.name }}</MkA>
 				</div>
@@ -79,10 +79,18 @@
 					<Fa :icon="faShareAlt" class="icon"/>
 					<div class="title">{{ $ts._timelines.global }}</div>
 				</template>
+				<template v-else-if="tl.startsWith('channel:')">
+					<Fa :icon="faSatelliteDish" class="icon"/>
+					<div class="title" v-if="currentChannel">{{ currentChannel.name }}</div>
+					<div class="description" v-if="currentChannel">{{ currentChannel.description }}</div>
+				</template>
 			</div>
 
 			<div class="right">
 				<XHeaderClock/>
+				<button class="_button search">
+					<Fa :icon="faSearch"/>
+				</button>
 			</div>
 		</header>
 		<div class="body">
@@ -103,7 +111,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@/config';
 import XSidebar from '@/components/sidebar.vue';
@@ -157,8 +165,9 @@ export default defineComponent({
 			antennas: null,
 			followedChannels: null,
 			featuredChannels: null,
+			currentChannel: null,
 			menuDef: sidebarDef,
-			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog,
+			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus,
 		};
 	},
 
@@ -178,6 +187,14 @@ export default defineComponent({
 		os.api('channels/featured').then(channels => {
 			this.featuredChannels = channels;
 		});
+
+		this.$watch('tl', () => {
+			if (this.tl.startsWith('channel:')) {
+				os.api('channels/show', { channelId: this.tl.replace('channel:', '') }).then(channel => {
+					this.currentChannel = channel;
+				});
+			}
+		}, { immediate: true });
 	},
 
 	methods: {
@@ -313,6 +330,7 @@ export default defineComponent({
 		> .body {
 			flex: 1;
 			min-width: 0;
+			padding: 8px 0;
 			overflow: auto;
 
 			> .container {
@@ -321,9 +339,14 @@ export default defineComponent({
 				}
 
 				> .header {
+					display: flex;
 					font-size: 0.9em;
 					padding: 8px 16px;
 					opacity: 0.7;
+
+					> .add {
+						margin-left: auto;
+					}
 				}
 
 				> .body {
@@ -349,7 +372,7 @@ export default defineComponent({
 						}
 
 						> .icon {
-							margin-right: 6px;
+							margin-right: 8px;
 							opacity: 0.6;
 						}
 					}
@@ -381,7 +404,8 @@ export default defineComponent({
 
 			> .left {
 				display: flex;
-				font-weight: bold;
+				flex: 1;
+				min-width: 0;
 
 				> .icon {
 					height: ($header-height - ($padding * 2));
@@ -391,11 +415,46 @@ export default defineComponent({
 					margin-right: 4px;
 					opacity: 0.6;
 				}
+
+				> .title, > .description {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					min-width: 0;
+				}
+
+				> .title {
+					flex-shrink: 0;
+					font-weight: bold;
+				}
+
+				> .description {
+					margin-left: 16px;
+					opacity: 0.7;
+					font-size: 0.9em;
+				}
 			}
 
 			> .right {
+				display: flex;
+				min-width: 0;
 				margin-left: auto;
-				padding: 0 8px;
+				padding-left: 8px;
+
+				> .search {
+					height: ($header-height - ($padding * 2));
+					width: ($header-height - ($padding * 2));
+					padding: 10px;
+					box-sizing: border-box;
+					margin-left: 8px;
+					position: relative;
+					line-height: initial;
+					border-radius: 5px;
+
+					&:hover {
+						background: rgba(0, 0, 0, 0.05);
+					}
+				}
 			}
 		}
 
