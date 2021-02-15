@@ -59,7 +59,7 @@ export default defineComponent({
 					autoplay: true,
 					// theme: '#96baf3',
 					loop: false,
-					lang: 'en',
+					lang: 'zh-cn',
 					preload: 'auto',
 					volume: 0.7,
 					video: {
