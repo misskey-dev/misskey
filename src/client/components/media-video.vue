@@ -21,7 +21,7 @@ import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
-import DPlayer from 'dplayer';
+import DPlayer from '@nyaone/dplayer-misskey';
 
 export default defineComponent({
 	props: {
@@ -67,11 +67,6 @@ export default defineComponent({
 						pic: this.video.thumbnailUrl,
 						type: 'auto',
 					},
-				});
-				this.dp.on('webfullscreen', () => {
-					// Remove attached class (which will break the style) immediately to prevent page change.
-					// Question: How to optimize the performance without changing the original code?
-					document.body.classList.remove('dplayer-web-fullscreen-fix');
 				});
 			}
 		},
