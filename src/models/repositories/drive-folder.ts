@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '..';
 import { DriveFolder } from '../entities/drive-folder';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 
@@ -26,7 +25,7 @@ export class DriveFolderRepository extends Repository<DriveFolder> {
 			detail: false
 		}, options);
 
-		const folder = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const folder = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
 			id: folder.id,

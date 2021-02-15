@@ -24,9 +24,9 @@ import { toPuny } from '../../../misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
-import { ensure } from '../../../prelude/ensure';
 import { toArray } from '../../../prelude/array';
 import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
+import { normalizeForSearch } from '../../../misc/normalize-for-search';
 
 const logger = apLogger;
 
@@ -134,7 +134,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
+	const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
 	const isBot = object.type === 'Service';
 
@@ -159,6 +159,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 				host,
 				inbox: person.inbox,
 				sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+				followersUri: person.followers ? getApId(person.followers) : undefined,
 				featured: person.featured ? getApId(person.featured) : undefined,
 				uri: person.id,
 				tags,
@@ -322,7 +323,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
-	const tags = extractApHashtags(person.tag).map(tag => tag.toLowerCase()).splice(0, 32);
+	const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
 	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -330,6 +331,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
 		sharedInbox: person.sharedInbox || (person.endpoints ? person.endpoints.sharedInbox : undefined),
+		followersUri: person.followers ? getApId(person.followers) : undefined,
 		featured: person.featured,
 		emojis: emojiNames,
 		name: person.name,
@@ -454,7 +456,7 @@ export function analyzeAttachments(attachments: IObject | IObject[] | undefined)
 }
 
 export async function updateFeatured(userId: User['id']) {
-	const user = await Users.findOne(userId).then(ensure);
+	const user = await Users.findOneOrFail(userId);
 	if (!Users.isRemoteUser(user)) return;
 	if (!user.featured) return;
 

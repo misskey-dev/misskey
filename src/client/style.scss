@@ -308,13 +308,6 @@ hr {
 	box-shadow: none;
 }
 
-._loadMore {
-	@extend ._panel;
-	@extend ._button;
-	width: 100%;
-	padding: 12px 0;
-}
-
 ._borderButton {
 	@extend ._button;
 	display: block;
@@ -479,6 +472,12 @@ hr {
 
 .prism-editor__textarea:focus {
 	outline: none;
+}
+
+._zoom {
+	transition-duration: 0.5s, 0.5s;
+	transition-property: opacity, transform;
+	transition-timing-function: cubic-bezier(0,.5,.5,1);
 }
 
 .zoom-enter-active, .zoom-leave-active {

@@ -57,6 +57,7 @@ import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from './scripts/hotkey';
 import { search } from './scripts/search';
 import { getThemes } from './theme-store';
+import { initializeSw } from './scripts/initialize-sw';
 
 console.info(`Misskey v${version}`);
 
@@ -171,7 +172,7 @@ fetchInstance().then(() => {
 	localStorage.setItem('v', instance.version);
 
 	// Init service worker
-	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
+	initializeSw();
 });
 
 stream.init($i);
@@ -181,6 +182,7 @@ const app = createApp(await (
 	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
+	ui === 'chat'                     ? import('@/ui/chat/index.vue') :
 	import('@/ui/default.vue')
 ).then(x => x.default));
 

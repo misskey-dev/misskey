@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _panel"
+	class="tkcbzcuz _panel"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -858,7 +858,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.note {
+.tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	overflow: hidden;

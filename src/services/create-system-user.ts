@@ -25,7 +25,14 @@ export async function createSystemUser(username: string) {
 
 	// Start transaction
 	await getConnection().transaction(async transactionalEntityManager => {
-		account = await transactionalEntityManager.save(new User({
+		const exist = await transactionalEntityManager.findOne(User, {
+			usernameLower: username.toLowerCase(),
+			host: null
+		});
+
+		if (exist) throw new Error('the user is already exists');
+
+		account = await transactionalEntityManager.insert(User, {
 			id: genId(),
 			createdAt: new Date(),
 			username: username,
@@ -36,24 +43,24 @@ export async function createSystemUser(username: string) {
 			isLocked: true,
 			isExplorable: false,
 			isBot: true,
-		}));
+		}).then(x => transactionalEntityManager.findOneOrFail(User, x.identifiers[0]));
 
-		await transactionalEntityManager.save(new UserKeypair({
+		await transactionalEntityManager.insert(UserKeypair, {
 			publicKey: keyPair.publicKey,
 			privateKey: keyPair.privateKey,
 			userId: account.id
-		}));
+		});
 
-		await transactionalEntityManager.save(new UserProfile({
+		await transactionalEntityManager.insert(UserProfile, {
 			userId: account.id,
 			autoAcceptFollowed: false,
 			password: hash,
-		}));
+		});
 
-		await transactionalEntityManager.save(new UsedUsername({
+		await transactionalEntityManager.insert(UsedUsername, {
 			createdAt: new Date(),
 			username: username.toLowerCase(),
-		}));
+		});
 	});
 
 	return account;

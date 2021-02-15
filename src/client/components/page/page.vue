@@ -1,77 +1,72 @@
 <template>
 <div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }" v-if="hpml">
-	<XBlock v-for="child in page.content" :value="child" :page="page" :hpml="hpml" :key="child.id" :h="2"/>
+	<XBlock v-for="child in page.content" :block="child" :hpml="hpml" :key="child.id" :h="2"/>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, nextTick, onUnmounted, PropType } from 'vue';
 import { parse } from '@syuilo/aiscript';
-import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import XBlock from './page.block.vue';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { url } from '@/config';
+import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
 		XBlock
 	},
-
 	props: {
 		page: {
-			type: Object,
+			type: Object as PropType<Record<string, any>>,
 			required: true
 		},
 	},
+	setup(props, ctx) {
 
-	data() {
-		return {
-			hpml: null,
-			faHeartS, faHeart
-		};
-	},
-
-	created() {
-		this.hpml = new Hpml(this.page, {
+		const hpml = new Hpml(props.page, {
 			randomSeed: Math.random(),
-			visitor: this.$i,
+			visitor: $i,
 			url: url,
-			enableAiScript: !this.$store.state.disablePagesScript
+			enableAiScript: !defaultStore.state.disablePagesScript
 		});
-	},
 
-	mounted() {
-		this.$nextTick(() => {
-			if (this.page.script && this.hpml.aiscript) {
-				let ast;
-				try {
-					ast = parse(this.page.script);
-				} catch (e) {
-					console.error(e);
-					/*os.dialog({
-						type: 'error',
-						text: 'Syntax error :('
-					});*/
-					return;
+		onMounted(() => {
+			nextTick(() => {
+				if (props.page.script && hpml.aiscript) {
+					let ast;
+					try {
+						ast = parse(props.page.script);
+					} catch (e) {
+						console.error(e);
+						/*os.dialog({
+							type: 'error',
+							text: 'Syntax error :('
+						});*/
+						return;
+					}
+					hpml.aiscript.exec(ast).then(() => {
+						hpml.eval();
+					}).catch(e => {
+						console.error(e);
+						/*os.dialog({
+							type: 'error',
+							text: e
+						});*/
+					});
+				} else {
+					hpml.eval();
 				}
-				this.hpml.aiscript.exec(ast).then(() => {
-					this.hpml.eval();
-				}).catch(e => {
-					console.error(e);
-					/*os.dialog({
-						type: 'error',
-						text: e
-					});*/
-				});
-			} else {
-				this.hpml.eval();
-			}
+			});
+			onUnmounted(() => {
+				if (hpml.aiscript) hpml.aiscript.abort();
+			});
 		});
-	},
 
-	beforeUnmount() {
-		if (this.hpml.aiscript) this.hpml.aiscript.abort();
+		return {
+			hpml,
+		};
 	},
 });
 </script>

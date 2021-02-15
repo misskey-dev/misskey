@@ -33,7 +33,7 @@ The shortcuts listed here can be used basically everywhere.
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>Delete post</td><td><b>D</b>elete</tr>
         <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>Open post context menu</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>Toggle show or hide of content marked with CW</td><td><b>S</b>how, <b>S</b>ee</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>Unfocus</td><td>-</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>Deselect Note</td><td>-</td></tr>
     </tbody>
 </table>
 

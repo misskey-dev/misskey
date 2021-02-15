@@ -3,7 +3,6 @@ import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
 import { User } from '../entities/user';
 import { toPuny } from '../../misc/convert-host';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 import config from '../../config';
@@ -103,7 +102,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false
 		}, options);
 
-		const file = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const file = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const meta = await fetchMeta();
 

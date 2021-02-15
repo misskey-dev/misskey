@@ -33,9 +33,8 @@
 		}
 
 		const res = await fetch(`/assets/locales/${lang}.${v}.json`);
-		const json = await res.json();
 		localStorage.setItem('lang', lang);
-		localStorage.setItem('locale', JSON.stringify(json));
+		localStorage.setItem('locale', await res.text());
 	}
 	//#endregion
 

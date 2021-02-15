@@ -61,8 +61,10 @@ import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '@/components/ui/textarea.vue';
-import { isLiteralBlock, funcDefs, blockDefs } from '@/scripts/hpml/index';
+import { blockDefs } from '@/scripts/hpml/index';
 import * as os from '@/os';
+import { isLiteralValue } from '@/scripts/hpml/expr';
+import { funcDefs } from '@/scripts/hpml/lib';
 
 export default defineComponent({
 	components: {
@@ -166,7 +168,7 @@ export default defineComponent({
 				return;
 			}
 
-			if (isLiteralBlock(this.value)) return;
+			if (isLiteralValue(this.value)) return;
 
 			const empties = [];
 			for (let i = 0; i < funcDefs[this.value.type].in.length; i++) {

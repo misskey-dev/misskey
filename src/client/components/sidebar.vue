@@ -55,6 +55,14 @@ import { sidebarDef } from '@/sidebar';
 import { getAccounts, addAccount, login } from '@/account';
 
 export default defineComponent({
+	props: {
+		defaultHidden: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
+	},
+
 	data() {
 		return {
 			host: host,
@@ -63,7 +71,7 @@ export default defineComponent({
 			connection: null,
 			menuDef: sidebarDef,
 			iconOnly: false,
-			hidden: false,
+			hidden: this.defaultHidden,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
 	},
@@ -112,7 +120,9 @@ export default defineComponent({
 	methods: {
 		calcViewState() {
 			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.sidebarDisplay === 'icon');
-			this.hidden = (window.innerWidth <= 650);
+			if (!this.defaultHidden) {
+				this.hidden = (window.innerWidth <= 650);
+			}
 		},
 
 		show() {

@@ -5,7 +5,6 @@ import { fetchMeta } from '../../../misc/fetch-meta';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { DriveFiles } from '../../../models';
-import { ensure } from '../../../prelude/ensure';
 
 const logger = apLogger;
 
@@ -40,7 +39,7 @@ export async function createImage(actor: IRemoteUser, value: any): Promise<Drive
 				uri: image.url
 			});
 
-			file = await DriveFiles.findOne(file.id).then(ensure);
+			file = await DriveFiles.findOneOrFail(file.id);
 		}
 	}
 
