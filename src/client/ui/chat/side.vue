@@ -120,12 +120,8 @@ export default defineComponent({
 	--section-padding: 16px;
 	--margin: var(--marginHalf);
 
-	width: 390px;
-
 	> .container {
-		position: fixed;
-		width: 390px;
-		height: 100vh;
+		height: 100%;
 		overflow: auto;
 		box-sizing: border-box;
 

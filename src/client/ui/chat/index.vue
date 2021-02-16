@@ -10,10 +10,10 @@
 				</button>
 			</div>
 			<div class="right">
-				<MkA class="item" to="/my/messaging"><Fa class="icon" :icon="faComments"/><i v-if="$i.hasUnreadMessagingMessage"><Fa :icon="faCircle"/></i></MkA>
-				<MkA class="item" to="/my/messages"><Fa class="icon" :icon="faEnvelope"/><i v-if="$i.hasUnreadSpecifiedNotes"><Fa :icon="faCircle"/></i></MkA>
-				<MkA class="item" to="/my/mentions"><Fa class="icon" :icon="faAt"/><i v-if="$i.hasUnreadMentions"><Fa :icon="faCircle"/></i></MkA>
-				<MkA class="item" to="/my/notifications"><Fa class="icon" :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></MkA>
+				<MkA class="item" to="/my/messaging" v-tooltip="$ts.messaging"><Fa class="icon" :icon="faComments"/><i v-if="$i.hasUnreadMessagingMessage"><Fa :icon="faCircle"/></i></MkA>
+				<MkA class="item" to="/my/messages" v-tooltip="$ts.directNotes"><Fa class="icon" :icon="faEnvelope"/><i v-if="$i.hasUnreadSpecifiedNotes"><Fa :icon="faCircle"/></i></MkA>
+				<MkA class="item" to="/my/mentions" v-tooltip="$ts.mentions"><Fa class="icon" :icon="faAt"/><i v-if="$i.hasUnreadMentions"><Fa :icon="faCircle"/></i></MkA>
+				<MkA class="item" to="/my/notifications" v-tooltip="$ts.notifications"><Fa class="icon" :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></MkA>
 			</div>
 		</header>
 		<div class="body">
@@ -63,10 +63,10 @@
 				</button>
 			</div>
 			<div class="right">
-				<button class="_button item search" @click="search">
+				<button class="_button item search" @click="search" v-tooltip="$ts.search">
 					<Fa :icon="faSearch"/>
 				</button>
-				<MkA class="item" to="/settings"><Fa class="icon" :icon="faCog"/></MkA>
+				<MkA class="item" to="/settings" v-tooltip="$ts.settings"><Fa class="icon" :icon="faCog"/></MkA>
 			</div>
 		</footer>
 	</div>
@@ -97,11 +97,12 @@
 			</div>
 
 			<div class="right">
+				<div class="instance">{{ instanceName }}</div>
 				<XHeaderClock class="clock"/>
-				<button class="_button button search" @click="search">
+				<button class="_button button search" @click="search" v-tooltip="$ts.search">
 					<Fa :icon="faSearch"/>
 				</button>
-				<button class="_button button follow" v-if="tl.startsWith('channel:') && currentChannel" :class="{ followed: currentChannel.isFollowing }" @click="toggleChannelFollow">
+				<button class="_button button follow" v-if="tl.startsWith('channel:') && currentChannel" :class="{ followed: currentChannel.isFollowing }" @click="toggleChannelFollow" v-tooltip="currentChannel.isFollowing ? $ts.unfollow : $ts.follow">
 					<Fa v-if="currentChannel.isFollowing" :icon="faStar"/>
 					<Fa v-else :icon="farStar"/>
 				</button>
@@ -121,6 +122,9 @@
 	</main>
 
 	<XSide class="side" ref="side"/>
+	<div class="side">
+		<XWidgets/>
+	</div>
 
 	<XCommon/>
 </div>
@@ -132,6 +136,7 @@ import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, fa
 import { faBell, faStar as farStar, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
 import { instanceName, url } from '@/config';
 import XSidebar from '@/components/sidebar.vue';
+import XWidgets from './widgets.vue';
 import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';
 import XTimeline from './timeline.vue';
@@ -147,6 +152,7 @@ export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
+		XWidgets,
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
 		XTimeline,
 		XPostForm,
@@ -187,6 +193,7 @@ export default defineComponent({
 			featuredChannels: null,
 			currentChannel: null,
 			menuDef: sidebarDef,
+			instanceName,
 			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar, faAt, faLink, faEllipsisH, faGlobe, faComments, faEnvelope,
 		};
 	},
@@ -310,8 +317,7 @@ export default defineComponent({
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	min-height: calc(var(--vh, 1vh) * 100);
-	box-sizing: border-box;
+	height: calc(var(--vh, 1vh) * 100);
 	display: flex;
 
 	> .nav {
@@ -518,6 +524,10 @@ export default defineComponent({
 				margin-left: auto;
 				padding-left: 8px;
 
+				> .instance {
+					margin-right: 16px;
+				}
+
 				> .clock {
 					margin-right: 16px;
 				}
@@ -552,6 +562,7 @@ export default defineComponent({
 	}
 
 	> .side {
+		width: 350px;
 		border-left: solid 1px var(--divider);
 	}
 }
