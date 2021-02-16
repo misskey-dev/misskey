@@ -1,5 +1,8 @@
 <template>
-<XNotes ref="tl" :pagination="pagination" @queue="$emit('queue', $event)" v-follow="pagination.reversed"/>
+<div class="dbiokgaf">
+	<div class="new" v-if="queue > 0" :style="{ width: width + 'px', [pagination.reversed ? 'bottom' : 'top']: pagination.reversed ? bottom + 'px' : top + 'px' }"><button class="_buttonPrimary" @click="goTop()">{{ $ts.newNoteRecived }}</button></div>
+	<XNotes class="tl" ref="tl" :pagination="pagination" @queue="queueUpdated" v-follow="pagination.reversed"/>
+</div>
 </template>
 
 <script lang="ts">
@@ -7,7 +10,7 @@ import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
 import * as os from '@/os';
 import * as sound from '@/scripts/sound';
-import { scrollToBottom } from '@/scripts/scroll';
+import { scrollToBottom, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import follow from '@/directives/follow-append';
 
 export default defineComponent({
@@ -62,6 +65,10 @@ export default defineComponent({
 				includeLocalRenotes: this.$store.state.showLocalRenotes
 			},
 			query: {},
+			queue: 0,
+			width: 0,
+			top: 0,
+			bottom: 0,
 		};
 	},
 
@@ -185,6 +192,43 @@ export default defineComponent({
 		focus() {
 			this.$refs.tl.focus();
 		},
+
+		goTop() {
+			const container = getScrollContainer(this.$el);
+			container.scrollTop = 0;
+		},
+
+		queueUpdated(q) {
+			if (this.$el.offsetWidth !== 0) {
+				const rect = this.$el.getBoundingClientRect();
+				const scrollTop = getScrollPosition(this.$el);
+				this.width = this.$el.offsetWidth;
+				this.top = rect.top + scrollTop;
+				this.bottom = this.$el.offsetHeight;
+			}
+			this.queue = q;
+		},
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.dbiokgaf {
+	padding: 16px 0;
+
+	// TODO: これはノート追加アニメーションによるスクロール発生を抑えるために必要だが、position stickyが効かなくなるので、両者を両立させる良い方法を考える
+	overflow: hidden;
+
+	> .new {
+		position: fixed;
+		z-index: 1000;
+
+		> button {
+			display: block;
+			margin: 16px auto;
+			padding: 8px 16px;
+			border-radius: 32px;
+		}
+	}
+}
+</style>

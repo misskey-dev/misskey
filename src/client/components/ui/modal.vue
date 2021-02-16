@@ -98,11 +98,11 @@ export default defineComponent({
 					}
 				} else {
 					if (left + width - window.pageXOffset > window.innerWidth) {
-						left = window.innerWidth - width + window.pageXOffset;
+						left = window.innerWidth - width + window.pageXOffset - 1;
 					}
 
 					if (top + height - window.pageYOffset > window.innerHeight) {
-						top = window.innerHeight - height + window.pageYOffset;
+						top = window.innerHeight - height + window.pageYOffset - 1;
 					}
 				}
 

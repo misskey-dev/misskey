@@ -4,6 +4,7 @@ import { popup } from '@/os';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
+const delay = 100;
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {
@@ -47,13 +48,13 @@ export default {
 		el.addEventListener(start, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
-			self.showTimer = setTimeout(show, 300);
+			self.showTimer = setTimeout(show, delay);
 		}, { passive: true });
 
 		el.addEventListener(end, () => {
 			clearTimeout(self.showTimer);
 			clearTimeout(self.hideTimer);
-			self.hideTimer = setTimeout(self.close, 300);
+			self.hideTimer = setTimeout(self.close, delay);
 		}, { passive: true });
 
 		el.addEventListener('click', () => {
