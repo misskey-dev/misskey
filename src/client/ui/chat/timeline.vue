@@ -192,5 +192,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .dbiokgaf {
 	padding: 16px 0;
+
+	// TODO: これはノート追加アニメーションによるスクロール発生を抑えるために必要だが、position stickyが効かなくなるので、両者を両立させる良い方法を考える
+	overflow: hidden;
 }
 </style>

@@ -1074,8 +1074,13 @@ export default defineComponent({
 						}
 					}
 
+					> .files {
+						max-width: 500px;
+					}
+
 					> .url-preview {
 						margin-top: 8px;
+						max-width: 500px;
 					}
 
 					> .poll {

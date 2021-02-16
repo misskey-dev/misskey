@@ -36,7 +36,7 @@
 				</div>
 			</div>
 			<div class="container" v-if="followedChannels">
-				<div class="header">{{ $ts.channel }}<button class="_button add"><Fa :icon="faPlus"/></button></div>
+				<div class="header">{{ $ts.channel }} ({{ $ts.following }})<button class="_button add"><Fa :icon="faPlus"/></button></div>
 				<div class="body">
 					<MkA v-for="channel in followedChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }`, read: !channel.hasUnreadNote }"><Fa :icon="faSatelliteDish" class="icon"/>{{ channel.name }}</MkA>
 				</div>
@@ -81,14 +81,17 @@
 				</template>
 				<template v-else-if="tl.startsWith('channel:')">
 					<Fa :icon="faSatelliteDish" class="icon"/>
-					<div class="title" v-if="currentChannel">{{ currentChannel.name }}</div>
-					<div class="description" v-if="currentChannel">{{ currentChannel.description }}</div>
+					<div class="title" v-if="currentChannel">{{ currentChannel.name }}<div class="description">{{ currentChannel.description }}</div></div>
 				</template>
 			</div>
 
 			<div class="right">
-				<XHeaderClock/>
-				<button class="_button search">
+				<XHeaderClock class="clock"/>
+				<button class="_button button follow" v-if="tl.startsWith('channel:') && currentChannel" :class="{ followed: currentChannel.isFollowing }" @click="toggleChannelFollow">
+					<Fa v-if="currentChannel.isFollowing" :icon="faStar"/>
+					<Fa v-else :icon="farStar"/>
+				</button>
+				<button class="_button button search" @click="search">
 					<Fa :icon="faSearch"/>
 				</button>
 			</div>
@@ -111,8 +114,8 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@/config';
 import XSidebar from '@/components/sidebar.vue';
 import XCommon from '../_common_/common.vue';
@@ -121,7 +124,9 @@ import XTimeline from './timeline.vue';
 import XPostForm from './post-form.vue';
 import XHeaderClock from './header-clock.vue';
 import * as os from '@/os';
+import { router } from '@/router';
 import { sidebarDef } from '@/sidebar';
+import { search } from '@/scripts/search';
 
 export default defineComponent({
 	components: {
@@ -167,11 +172,17 @@ export default defineComponent({
 			featuredChannels: null,
 			currentChannel: null,
 			menuDef: sidebarDef,
-			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus,
+			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar,
 		};
 	},
 
 	created() {
+		router.beforeEach((to, from) => {
+			this.$refs.side.navigate(to.fullPath);
+			// search?q=foo のようなクエリを受け取れるようにするため、return falseはできない
+			//return false;
+		});
+
 		os.api('users/lists/list').then(lists => {
 			this.lists = lists;
 		});
@@ -206,8 +217,26 @@ export default defineComponent({
 			os.post();
 		},
 
+		search() {
+			search();
+		},
+
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
+		},
+
+		async toggleChannelFollow() {
+			if (this.currentChannel.isFollowing) {
+				await os.apiWithDialog('channels/unfollow', {
+					channelId: this.currentChannel.id
+				});
+				this.currentChannel.isFollowing = false;
+			} else {
+				await os.apiWithDialog('channels/follow', {
+					channelId: this.currentChannel.id
+				});
+				this.currentChannel.isFollowing = true;
+			}
 		},
 
 		onTransition() {
@@ -397,13 +426,13 @@ export default defineComponent({
 			height: $header-height;
 			padding: $padding;
 			box-sizing: border-box;
-			line-height: ($header-height - ($padding * 2));
 			background-color: var(--panel);
 			border-bottom: solid 1px var(--divider);
 			user-select: none;
 
 			> .left {
 				display: flex;
+				align-items: center;
 				flex: 1;
 				min-width: 0;
 
@@ -416,43 +445,48 @@ export default defineComponent({
 					opacity: 0.6;
 				}
 
-				> .title, > .description {
+				> .title {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
 					min-width: 0;
-				}
-
-				> .title {
-					flex-shrink: 0;
 					font-weight: bold;
-				}
 
-				> .description {
-					margin-left: 16px;
-					opacity: 0.7;
-					font-size: 0.9em;
+					> .description {
+						opacity: 0.6;
+						font-size: 0.8em;
+						font-weight: noraml;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
 				}
 			}
 
 			> .right {
 				display: flex;
+				align-items: center;
 				min-width: 0;
 				margin-left: auto;
 				padding-left: 8px;
 
-				> .search {
+				> .clock {
+					margin-right: 8px;
+				}
+
+				> .button {
 					height: ($header-height - ($padding * 2));
 					width: ($header-height - ($padding * 2));
-					padding: 10px;
 					box-sizing: border-box;
-					margin-left: 8px;
 					position: relative;
-					line-height: initial;
 					border-radius: 5px;
 
 					&:hover {
 						background: rgba(0, 0, 0, 0.05);
+					}
+
+					&.follow.followed {
+						color: var(--accent);
 					}
 				}
 			}
