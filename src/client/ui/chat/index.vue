@@ -121,8 +121,8 @@
 		</footer>
 	</main>
 
-	<XSide class="side" ref="side"/>
-	<div class="side">
+	<XSide class="side" ref="side" @open="sideViewOpening = true" @close="sideViewOpening = false"/>
+	<div class="side widgets" :class="{ sideViewOpening }">
 		<XWidgets/>
 	</div>
 
@@ -193,6 +193,7 @@ export default defineComponent({
 			featuredChannels: null,
 			currentChannel: null,
 			menuDef: sidebarDef,
+			sideViewOpening: false,
 			instanceName,
 			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar, faAt, faLink, faEllipsisH, faGlobe, faComments, faEnvelope,
 		};
@@ -564,6 +565,12 @@ export default defineComponent({
 	> .side {
 		width: 350px;
 		border-left: solid 1px var(--divider);
+
+		&.widgets.sideViewOpening {
+			@media (max-width: 1400px) {
+				display: none;
+			}
+		}
 	}
 }
 </style>
