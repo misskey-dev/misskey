@@ -56,7 +56,7 @@ import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
-import { api, stream, isMobile, dialog, post } from '@/os';
+import { stream, isMobile, dialog, post } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
@@ -68,7 +68,6 @@ import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
 import { deleteLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { SwMessage } from '@/sw/types';
 
 console.info(`Misskey v${version}`);
 
@@ -240,33 +239,6 @@ components(app);
 
 await router.isReady();
 
-//#region Listen message from SW
-navigator.serviceWorker.addEventListener('message', ev => {
-	if (_DEV_) {
-		console.log('sw msg', ev.data);
-	}
-
-	const data = ev.data as SwMessage;
-	if (data.type !== 'order') return;
-
-	if (data.loginId !== $i?.id) {
-		return getAccountFromId(data.loginId).then(account => {
-			if (!account) return;
-			return login(account.token, data.url);
-		});
-	}
-
-	switch (data.order) {
-		case 'post':
-			return post(data.options);
-		case 'push':
-			return router.push(data.url);
-		default:
-			return;
-	}
-});
-//#endregion
-
 //document.body.innerHTML = '<div id="app"></div>';
 
 app.mount('body');
@@ -414,23 +386,4 @@ if ($i) {
 	main.on('myTokenRegenerated', () => {
 		signout();
 	});
-}
-
-/**
- * Convert the URL safe base64 string to a Uint8Array
- * @param base64String base64 string
- */
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
-	const padding = '='.repeat((4 - base64String.length % 4) % 4);
-	const base64 = (base64String + padding)
-		.replace(/-/g, '+')
-		.replace(/_/g, '/');
-
-	const rawData = window.atob(base64);
-	const outputArray = new Uint8Array(rawData.length);
-
-	for (let i = 0; i < rawData.length; ++i) {
-		outputArray[i] = rawData.charCodeAt(i);
-	}
-	return outputArray;
 }

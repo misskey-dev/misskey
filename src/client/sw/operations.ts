@@ -61,7 +61,12 @@ export async function openPost(options: any, loginId: string) {
 export async function openClient(order: swMessageOrderType, url: string, loginId: string, query: any = {}) {
 	const client = await self.clients.matchAll({
 		type: 'window'
-	}).then(clients => clients.length > 0 ? clients[0] as WindowClient : null);
+	}).then(clients => {
+		for (const c of clients) {
+			if (c.url.indexOf('?zen') < 0) return c;
+		}
+		return null;
+	});
 
 	if (client) {
 		client.postMessage({ type: 'order', ...query, order, loginId, url } as SwMessage);

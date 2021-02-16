@@ -14,10 +14,15 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
-import { stream, popup, popups, uploads, pendingApiRequestsCount } from '@/os';
+import { defineAsyncComponent, defineComponent, inject } from 'vue';
+import { stream, popup, popups, uploads, pendingApiRequestsCount, pageWindow, post } from '@/os';
 import * as sound from '@/scripts/sound';
-import { $i } from '@/account';
+import { $i, login } from '@/account';
+import { SwMessage } from '@/sw/types';
+import { popout } from '@/scripts/popout';
+import { defaultStore, ColdDeviceStorage } from '@/store';
+import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { router } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -45,6 +50,49 @@ export default defineComponent({
 		if ($i) {
 			const connection = stream.useSharedConnection('main', 'UI');
 			connection.on('notification', onNotification);
+
+			const navHook = inject('navHook', null);
+			const sideViewHook = inject('sideViewHook', null);
+
+			//#region Listen message from SW
+			navigator.serviceWorker.addEventListener('message', ev => {
+				if (_DEV_) {
+					console.log('sw msg', ev.data);
+				}
+
+				const data = ev.data as SwMessage;
+				if (data.type !== 'order') return;
+
+				if (data.loginId !== $i?.id) {
+					return getAccountFromId(data.loginId).then(account => {
+						if (!account) return;
+						return login(account.token, data.url);
+					});
+				}
+
+				switch (data.order) {
+					case 'post':
+						return post(data.options);
+					case 'push':
+						if (data.url.startsWith('/my/messaging')) {
+							if (router.currentRoute.value.path === data.url) return;
+							if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return pageWindow(data.url);
+							if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return popout(data.url);
+						}
+						if (router.currentRoute.value.path === data.url) {
+							return window.scroll({ top: 0, behavior: 'smooth' });
+						}
+						if (navHook) {
+							return navHook(data.url);
+						}
+						if (sideViewHook && defaultStore.state.defaultSideView && data.url !== '/') {
+							return sideViewHook(data.url);
+						}
+						return router.push(data.url);
+					default:
+						return;
+				}
+			});
 		}
 
 		return {
@@ -52,7 +100,7 @@ export default defineComponent({
 			popups,
 			pendingApiRequestsCount,
 		};
-	},
+	}
 });
 </script>
 
