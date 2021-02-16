@@ -97,6 +97,7 @@ cantRenote: "この投稿はRenoteできません。"
 cantReRenote: "RenoteをRenoteすることはできません。"
 quote: "引用"
 pinnedNote: "ピン留めされたノート"
+pinned: "ピン留め"
 you: "あなた"
 clickToShow: "クリックして表示"
 sensitive: "閲覧注意"
@@ -1568,6 +1569,8 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
+  readAllNotifications: "通知はすべて既読です"
+  readAllMessagingMessages: "チャットはすべて既読です"
 
   _types:
     all: "すべて"

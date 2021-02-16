@@ -169,14 +169,42 @@ async function composeNotification(data: pushNotificationData): Promise<[string,
 					icon: body.user.avatarUrl,
 					tag: `messaging:user:${body.userId}`,
 					data,
+					renotify: true,
 				}];
 			}
 			return [t('_notification.youGotMessagingMessageFromGroup', { name: body.group.name }), {
 				icon: body.user.avatarUrl,
 				tag: `messaging:group:${body.groupId}`,
 				data,
+				renotify: true,
 			}];
 		default:
 			return null;
 	}
+}
+
+export async function createAllReadNotification(type: 'notifications' | 'messagingMessages') {
+	const n = await composeAllReadNotification(type);
+	if (n) return self.registration.showNotification(...n);
+}
+
+async function composeAllReadNotification(type: string): Promise<[string, NotificationOptions] | null | undefined> {
+	if (!swLang.i18n) swLang.fetchLocale();
+	const i18n = await swLang.i18n as I18n<any>;
+	const { t } = i18n;
+
+	if (type === 'notifications') {
+		return [t('readAllNotifications'), {
+			silent: true,
+			tag: 'user_visible_auto_notification',
+		}];
+	}
+	if (type === 'messagingMessages') {
+		return [t('readAllMessagingMessages'), {
+			silent: true,
+			tag: 'user_visible_auto_notification',
+		}];
+	}
+
+	return;
 }

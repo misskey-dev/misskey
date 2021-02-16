@@ -38,6 +38,14 @@ self.addEventListener('fetch', ev => {
 
 //#region When: Caught Notification
 self.addEventListener('push', ev => {
+	setTimeout(async () => {
+		console.log('to');
+		for (const n of await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })) {
+			console.log(close)
+			n.close();
+		}
+	}, 5000);
+
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true,
