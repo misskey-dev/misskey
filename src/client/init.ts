@@ -59,6 +59,7 @@ import { search } from '@/scripts/search';
 import { isMobile } from '@/scripts/is-mobile';
 import { getThemes } from '@/theme-store';
 import { initializeSw } from '@/scripts/initialize-sw';
+import { reloadChannel } from '@/scripts/unison-reload';
 
 console.info(`Misskey v${version}`);
 
@@ -105,6 +106,9 @@ if (defaultStore.state.reportError && !_DEV_) {
 
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
+
+// 一斉リロード
+reloadChannel.addEventListener('message', () => location.reload());
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい

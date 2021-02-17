@@ -40,6 +40,7 @@ import FormBase from '@/components/form/base.vue';
 import FormGroup from '@/components/form/group.vue';
 import { deckStore } from '@/ui/deck/deck-store';
 import * as os from '@/os';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -81,7 +82,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			location.reload();
+			unisonReload();
 		}
 	},
 
@@ -99,7 +100,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 			this.profile = name;
-			location.reload();
+			unisonReload();
 		}
 	}
 });

@@ -5,6 +5,7 @@ import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from './account';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export const sidebarDef = {
 	notifications: {
@@ -133,13 +134,13 @@ export const sidebarDef = {
 				text: i18n.locale.default,
 				action: () => {
 					localStorage.setItem('ui', 'default');
-					location.reload();
+					unisonReload();
 				}
 			}, {
 				text: i18n.locale.deck,
 				action: () => {
 					localStorage.setItem('ui', 'deck');
-					location.reload();
+					unisonReload();
 				}
 			}, {
 				text: 'Chat (β)',
@@ -151,7 +152,7 @@ export const sidebarDef = {
 				text: i18n.locale.desktop + ' (β)',
 				action: () => {
 					localStorage.setItem('ui', 'desktop');
-					location.reload();
+					unisonReload();
 				}
 			}], ev.currentTarget || ev.target);
 		},
