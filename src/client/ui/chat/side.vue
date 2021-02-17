@@ -1,13 +1,11 @@
 <template>
-<div class="qvzfzxam _narrow_" v-if="component">
-	<div class="container">
-		<header class="header" @contextmenu.prevent.stop="onContextmenu">
-			<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
-			<XHeader class="title" :info="pageInfo" :with-back="false" :center="false"/>
-			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
-		</header>
-		<component :is="component" v-bind="props" :ref="changePage"/>
-	</div>
+<div class="mrajymqm _narrow_" v-if="component">
+	<header class="header" @contextmenu.prevent.stop="onContextmenu">
+		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+		<XHeader class="title" :info="pageInfo" :with-back="false" :center="false"/>
+		<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+	</header>
+	<component :is="component" v-bind="props" :ref="changePage"/>
 </div>
 </template>
 
@@ -64,6 +62,7 @@ export default defineComponent({
 			const { component, props } = resolve(path);
 			this.component = component;
 			this.props = props;
+			this.$emit('open');
 		},
 
 		back() {
@@ -74,6 +73,7 @@ export default defineComponent({
 			this.path = null;
 			this.component = null;
 			this.props = {};
+			this.$emit('close');
 		},
 
 		onContextmenu(e) {
@@ -114,50 +114,44 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.qvzfzxam {
+.mrajymqm {
 	$header-height: 54px; // TODO: どこかに集約したい
 
 	--section-padding: 16px;
 	--margin: var(--marginHalf);
 
-	width: 390px;
+	height: 100%;
+	overflow: auto;
+	box-sizing: border-box;
 
-	> .container {
-		position: fixed;
-		width: 390px;
-		height: 100vh;
-		overflow: auto;
+	> .header {
+		display: flex;
+		position: sticky;
+		z-index: 1000;
+		top: 0;
+		height: $header-height;
+		width: 100%;
+		line-height: $header-height;
+		font-weight: bold;
+		//background-color: var(--panel);
+		-webkit-backdrop-filter: blur(32px);
+		backdrop-filter: blur(32px);
+		background-color: var(--header);
+		border-bottom: solid 1px var(--divider);
 		box-sizing: border-box;
 
-		> .header {
-			display: flex;
-			position: sticky;
-			z-index: 1000;
-			top: 0;
+		> ._button {
 			height: $header-height;
-			width: 100%;
-			line-height: $header-height;
-			font-weight: bold;
-			//background-color: var(--panel);
-			-webkit-backdrop-filter: blur(32px);
-			backdrop-filter: blur(32px);
-			background-color: var(--header);
-			border-bottom: solid 1px var(--divider);
-			box-sizing: border-box;
+			width: $header-height;
 
-			> ._button {
-				height: $header-height;
-				width: $header-height;
-
-				&:hover {
-					color: var(--fgHighlighted);
-				}
+			&:hover {
+				color: var(--fgHighlighted);
 			}
+		}
 
-			> .title {
-				flex: 1;
-				position: relative;
-			}
+		> .title {
+			flex: 1;
+			position: relative;
 		}
 	}
 }

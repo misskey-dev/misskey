@@ -9,11 +9,6 @@ export default defineComponent({
 			type: Array,
 			required: true,
 		},
-		direction: {
-			type: String,
-			required: false,
-			default: 'down'
-		},
 		reversed: {
 			type: Boolean,
 			required: false,
@@ -37,14 +32,10 @@ export default defineComponent({
 			});
 		}
 
-		return h(!this.reversed ? TransitionGroup : 'div', !this.reversed ? {
+		return h(TransitionGroup, {
 			class: 'hmjzthxl',
-			name: 'list',
+			name: this.reversed ? 'list-reversed' : 'list',
 			tag: 'div',
-			'data-direction': this.direction,
-			'data-reversed': this.reversed ? 'true' : 'false',
-		} : {
-			class: 'hmjzthxl',
 		}, this.items.map((item, i) => {
 			const el = this.$slots.default({
 				item: item
@@ -95,23 +86,20 @@ export default defineComponent({
 	> .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
-
 	> .list-enter-active {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
-
-	&[data-direction="up"] {
-		> .list-enter-from {
-			opacity: 0;
-			transform: translateY(64px);
-		}
+	> .list-enter-from {
+		opacity: 0;
+		transform: translateY(-64px);
 	}
 
-	&[data-direction="down"] {
-		> .list-enter-from {
-			opacity: 0;
-			transform: translateY(-64px);
-		}
+	> .list-reversed-enter-active, > .list-reversed-leave-active {
+		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+	}
+	> .list-reversed-enter-from {
+		opacity: 0;
+		transform: translateY(64px);
 	}
 }
 </style>

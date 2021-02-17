@@ -4,7 +4,7 @@
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ renote: isRenote, operating }"
+	:class="{ renote: isRenote, highlighted: appearNote._prId_ || appearNote._featuredId_, operating }"
 	v-hotkey="keymap"
 >
 	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
@@ -902,10 +902,14 @@ export default defineComponent({
 		background: rgba(128, 255, 0, 0.05);
 	}
 
+	&.highlighted {
+		background: rgba(255, 128, 0, 0.05);
+	}
+
 	> .info {
 		display: flex;
 		align-items: center;
-		padding: 16px 32px 8px 32px;
+		padding: 12px 16px 4px 16px;
 		line-height: 24px;
 		font-size: 90%;
 		white-space: pre;
@@ -916,8 +920,9 @@ export default defineComponent({
 		}
 
 		> .hide {
-			margin-left: auto;
+			margin-left: 16px;
 			color: inherit;
+			opacity: 0.7;
 		}
 	}
 
@@ -933,7 +938,7 @@ export default defineComponent({
 	> .renote {
 		display: flex;
 		align-items: center;
-		padding: 12px 16px 8px 16px;
+		padding: 12px 16px 4px 16px;
 		line-height: 28px;
 		white-space: pre;
 		color: var(--renote);
@@ -1069,8 +1074,13 @@ export default defineComponent({
 						}
 					}
 
+					> .files {
+						max-width: 500px;
+					}
+
 					> .url-preview {
 						margin-top: 8px;
+						max-width: 500px;
 					}
 
 					> .poll {
