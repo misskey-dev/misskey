@@ -3,6 +3,7 @@ import { reactive } from 'vue';
 import { apiUrl } from '@/config';
 import { waiting } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
+
 // TODO: 他のタブと永続化されたstateを同期
 
 type Account = {
