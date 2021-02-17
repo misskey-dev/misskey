@@ -1,28 +1,11 @@
 <template>
-<div class="gafaadew" :class="{ modal, _popup: modal }"
-	v-size="{ max: [500] }"
+<div class="pxiwixjf"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<header>
-		<button v-if="!fixed" class="cancel _button" @click="cancel"><Fa :icon="faTimes"/></button>
-		<div>
-			<span class="text-count" :class="{ over: textLength > max }">{{ max - textLength }}</span>
-			<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
-			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
-				<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
-				<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
-				<span v-if="visibility === 'followers'"><Fa :icon="faUnlock"/></span>
-				<span v-if="visibility === 'specified'"><Fa :icon="faEnvelope"/></span>
-			</button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
-		</div>
-	</header>
-	<div class="form" :class="{ fixed }">
-		<XNotePreview class="preview" v-if="reply" :note="reply"/>
-		<XNotePreview class="preview" v-if="renote" :note="renote"/>
+	<div class="form">
 		<div class="with-quote" v-if="quoteId"><Fa icon="quote-left"/> {{ $ts.quoteAttached }}<button @click="quoteId = null"><Fa icon="times"/></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
@@ -39,12 +22,25 @@
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><Fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><Fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><Fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><Fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><Fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
+			<div class="left">
+				<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><Fa :icon="faPhotoVideo"/></button>
+				<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><Fa :icon="faPollH"/></button>
+				<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><Fa :icon="faEyeSlash"/></button>
+				<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><Fa :icon="faAt"/></button>
+				<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><Fa :icon="faLaughSquint"/></button>
+				<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
+			</div>
+			<div class="right">
+				<span class="text-count" :class="{ over: textLength > max }">{{ max - textLength }}</span>
+				<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
+				<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
+					<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
+					<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
+					<span v-if="visibility === 'followers'"><Fa :icon="faUnlock"/></span>
+					<span v-if="visibility === 'specified'"><Fa :icon="faEnvelope"/></span>
+				</button>
+				<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
+			</div>
 		</footer>
 	</div>
 </div>
@@ -57,15 +53,14 @@ import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode';
-import XNotePreview from './note-preview.vue';
-import { parse } from '../../mfm/parse';
+import { parse } from '../../../mfm/parse';
 import { host, url } from '@/config';
-import { erase, unique } from '../../prelude/array';
-import extractMentions from '../../misc/extract-mentions';
-import getAcct from '../../misc/acct/render';
-import { formatTimeString } from '../../misc/format-time-string';
+import { erase, unique } from '../../../prelude/array';
+import extractMentions from '../../../misc/extract-mentions';
+import getAcct from '../../../misc/acct/render';
+import { formatTimeString } from '../../../misc/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
-import { noteVisibilities } from '../../types';
+import { noteVisibilities } from '../../../types';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@/store';
@@ -73,12 +68,9 @@ import { isMobile } from '@/scripts/is-mobile';
 
 export default defineComponent({
 	components: {
-		XNotePreview,
-		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
-		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
+		XPostFormAttaches: defineAsyncComponent(() => import('@/components/post-form-attaches.vue')),
+		XPollEditor: defineAsyncComponent(() => import('@/components/poll-editor.vue'))
 	},
-
-	inject: ['modal'],
 
 	props: {
 		reply: {
@@ -90,7 +82,7 @@ export default defineComponent({
 			required: false
 		},
 		channel: {
-			type: Object,
+			type: String,
 			required: false
 		},
 		mention: {
@@ -114,15 +106,10 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		fixed: {
-			type: Boolean,
-			required: false,
-			default: false
-		},
 		autofocus: {
 			type: Boolean,
 			required: false,
-			default: true
+			default: false
 		},
 	},
 
@@ -151,7 +138,7 @@ export default defineComponent({
 
 	computed: {
 		draftKey(): string {
-			let key = this.channel ? `channel:${this.channel.id}` : '';
+			let key = this.channel ? `channel:${this.channel}` : '';
 
 			if (this.renote) {
 				key += `renote:${this.renote.id}`;
@@ -394,7 +381,7 @@ export default defineComponent({
 				return;
 			}
 
-			os.popup(import('./visibility-picker.vue'), {
+			os.popup(import('@/components/visibility-picker.vue'), {
 				currentVisibility: this.visibility,
 				currentLocalOnly: this.localOnly,
 				src: this.$refs.visibilityButton
@@ -549,7 +536,7 @@ export default defineComponent({
 				fileIds: this.files.length > 0 ? this.files.map(f => f.id) : undefined,
 				replyId: this.reply ? this.reply.id : undefined,
 				renoteId: this.renote ? this.renote.id : this.quoteId ? this.quoteId : undefined,
-				channelId: this.channel ? this.channel.id : undefined,
+				channelId: this.channel ? this.channel : undefined,
 				poll: this.poll,
 				cw: this.useCw ? this.cw || '' : undefined,
 				localOnly: this.localOnly,
@@ -620,68 +607,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.gafaadew {
+.pxiwixjf {
 	position: relative;
-
-	&.modal {
-		width: 100%;
-		max-width: 520px;
-	}
-
-	> header {
-		z-index: 1000;
-		height: 66px;
-
-		> .cancel {
-			padding: 0;
-			font-size: 20px;
-			width: 64px;
-			line-height: 66px;
-		}
-
-		> div {
-			position: absolute;
-			top: 0;
-			right: 0;
-
-			> .text-count {
-				opacity: 0.7;
-				line-height: 66px;
-			}
-
-			> .visibility {
-				height: 34px;
-				width: 34px;
-				margin: 0 8px;
-
-				& + .localOnly {
-					margin-left: 0 !important;
-				}
-			}
-			
-			> .local-only {
-				margin: 0 0 0 12px;
-				opacity: 0.7;
-			}
-
-			> .submit {
-				margin: 16px 16px 16px 0;
-				padding: 0 12px;
-				line-height: 34px;
-				font-weight: bold;
-				vertical-align: bottom;
-				border-radius: 4px;
-
-				&:disabled {
-					opacity: 0.7;
-				}
-
-				> [data-icon] {
-					margin-left: 6px;
-				}
-			}
-		}
-	}
+	border: solid 1px var(--divider);
+	border-radius: 8px;
 
 	> .form {
 		> .preview {
@@ -739,7 +668,7 @@ export default defineComponent({
 		> .text {
 			display: block;
 			box-sizing: border-box;
-			padding: 0 24px;
+			padding: 16px;
 			margin: 0;
 			width: 100%;
 			font-size: 16px;
@@ -767,7 +696,7 @@ export default defineComponent({
 		> .text {
 			max-width: 100%;
 			min-width: 100%;
-			min-height: 90px;
+			min-height: 60px;
 
 			&.withCw {
 				padding-top: 8px;
@@ -775,64 +704,67 @@ export default defineComponent({
 		}
 
 		> footer {
-			padding: 0 16px 16px 16px;
+			$height: 44px;
+			display: flex;
+			padding: 0 8px 8px 8px;
+			line-height: $height;
 
-			> button {
-				display: inline-block;
-				padding: 0;
-				margin: 0;
-				font-size: 16px;
-				width: 48px;
-				height: 48px;
-				border-radius: 6px;
+			> .left {
+				> button {
+					display: inline-block;
+					padding: 0;
+					margin: 0;
+					font-size: 16px;
+					width: $height;
+					height: $height;
+					border-radius: 6px;
 
-				&:hover {
-					background: var(--X5);
-				}
+					&:hover {
+						background: var(--X5);
+					}
 
-				&.active {
-					color: var(--accent);
+					&.active {
+						color: var(--accent);
+					}
 				}
 			}
-		}
-	}
 
-	&.max-width_500px {
-		> header {
-			height: 50px;
+			> .right {
+				margin-left: auto;
 
-			> .cancel {
-				width: 50px;
-				line-height: 50px;
-			}
-
-			> div {
 				> .text-count {
-					line-height: 50px;
+					opacity: 0.7;
+				}
+
+				> .visibility {
+					width: $height;
+					margin: 0 8px;
+
+					& + .localOnly {
+						margin-left: 0 !important;
+					}
+				}
+				
+				> .local-only {
+					margin: 0 0 0 12px;
+					opacity: 0.7;
 				}
 
 				> .submit {
-					margin: 8px;
+					margin: 0;
+					padding: 0 12px;
+					line-height: 34px;
+					font-weight: bold;
+					border-radius: 4px;
+
+					&:disabled {
+						opacity: 0.7;
+					}
+
+					> [data-icon] {
+						margin-left: 6px;
+					}
 				}
-			}
-		}
-
-		> .form {
-			> .to-specified {
-				padding: 6px 16px;
-			}
-
-			> .cw,
-			> .text {
-				padding: 0 16px;
-			}
-
-			> .text {
-				min-height: 80px;
-			}
-
-			> footer {
-				padding: 0 8px 8px 8px;
 			}
 		}
 	}

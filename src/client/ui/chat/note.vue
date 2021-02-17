@@ -1,12 +1,11 @@
 <template>
 <div
-	class="tkcbzcuz _panel"
+	class="vfzoeqcg"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ renote: isRenote }"
+	:class="{ renote: isRenote, highlighted: appearNote._prId_ || appearNote._featuredId_, operating }"
 	v-hotkey="keymap"
-	v-size="{ max: [500, 450, 350, 300] }"
 >
 	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="info" v-if="pinned"><Fa :icon="faThumbtack"/> {{ $ts.pinnedNote }}</div>
@@ -64,23 +63,23 @@
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><Fa :icon="faSatelliteDish"/> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<footer class="footer">
-				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
-				<button @click="reply()" class="button _button">
+			<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
+			<footer class="footer _panel">
+				<button @click="reply()" class="button _button" v-tooltip="$ts.reply">
 					<template v-if="appearNote.reply"><Fa :icon="faReplyAll"/></template>
 					<template v-else><Fa :icon="faReply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton">
+				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton" v-tooltip="$ts.renote">
 					<Fa :icon="faRetweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
 					<Fa :icon="faBan"/>
 				</button>
-				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
+				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton" v-tooltip="$ts.reaction">
 					<Fa :icon="faPlus"/>
 				</button>
-				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton" v-tooltip="$ts.reaction">
 					<Fa :icon="faMinus"/>
 				</button>
 				<button class="button _button" @click="menu()" ref="menuButton">
@@ -90,7 +89,7 @@
 		</div>
 	</article>
 </div>
-<div v-else class="_panel muted" @click="muted = false">
+<div v-else class="muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
@@ -105,15 +104,15 @@
 import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
 import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { parse } from '../../mfm/parse';
-import { sum, unique } from '../../prelude/array';
+import { parse } from '../../../mfm/parse';
+import { sum, unique } from '../../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
-import XReactionsViewer from './reactions-viewer.vue';
-import XMediaList from './media-list.vue';
-import XCwButton from './cw-button.vue';
-import XPoll from './poll.vue';
+import XReactionsViewer from '@/components/reactions-viewer.vue';
+import XMediaList from '@/components/media-list.vue';
+import XCwButton from '@/components/cw-button.vue';
+import XPoll from '@/components/poll.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { url } from '@/config';
@@ -172,6 +171,7 @@ export default defineComponent({
 			collapsed: false,
 			isDeleted: false,
 			muted: false,
+			operating: false,
 			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish
 		};
 	},
@@ -440,16 +440,19 @@ export default defineComponent({
 
 		reply(viaKeyboard = false) {
 			pleaseLogin();
+			this.operating = true;
 			os.post({
 				reply: this.appearNote,
 				animation: !viaKeyboard,
 			}, () => {
+				this.operating = false;
 				this.focus();
 			});
 		},
 
 		renote(viaKeyboard = false) {
 			pleaseLogin();
+			this.operating = true;
 			this.blur();
 			os.modalMenu([{
 				text: this.$ts.renote,
@@ -469,6 +472,8 @@ export default defineComponent({
 				}
 			}], this.$refs.renoteButton, {
 				viaKeyboard
+			}).then(() => {
+				this.operating = false;
 			});
 		},
 
@@ -495,10 +500,11 @@ export default defineComponent({
 			});
 		},
 
-		react(viaKeyboard = false) {
+		async react(viaKeyboard = false) {
 			pleaseLogin();
+			this.operating = true;
 			this.blur();
-			os.popup(import('@/components/emoji-picker.vue'), {
+			const { dispose } = await os.popup(import('@/components/emoji-picker.vue'), {
 				src: this.$refs.reactButton,
 				asReactionPicker: true
 			}, {
@@ -509,9 +515,13 @@ export default defineComponent({
 							reaction: reaction
 						});
 					}
-					this.focus();
 				},
-			}, 'closed');
+				closed: () => {
+					this.operating = false;
+					this.focus();
+					dispose();
+				}
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -735,9 +745,13 @@ export default defineComponent({
 		},
 
 		menu(viaKeyboard = false) {
+			this.operating = true;
 			os.modalMenu(this.getMenu(), this.$refs.menuButton, {
 				viaKeyboard
-			}).then(this.focus);
+			}).then(() => {
+				this.operating = false;
+				this.focus();
+			});
 		},
 
 		showRenoteMenu(viaKeyboard = false) {
@@ -858,10 +872,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.tkcbzcuz {
+.vfzoeqcg {
 	position: relative;
-	transition: box-shadow 0.1s ease;
-	overflow: hidden;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
@@ -874,36 +886,32 @@ export default defineComponent({
 
 	&:focus {
 		outline: none;
+	}
 
-		&:after {
-			content: "";
-			pointer-events: none;
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
+
+	&:hover, &.operating {
+		> .article > .main > .footer {
 			display: block;
-			position: absolute;
-			z-index: 10;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			margin: auto;
-			width: calc(100% - 8px);
-			height: calc(100% - 8px);
-			border: dashed 1px var(--focus);
-			border-radius: var(--radius);
-			box-sizing: border-box;
 		}
 	}
 
-	&:hover > .article > .main > .footer > .button {
-		opacity: 1;
+	&.renote {
+		background: rgba(128, 255, 0, 0.05);
+	}
+
+	&.highlighted {
+		background: rgba(255, 128, 0, 0.05);
 	}
 
 	> .info {
 		display: flex;
 		align-items: center;
-		padding: 16px 32px 8px 32px;
+		padding: 12px 16px 4px 16px;
 		line-height: 24px;
-		font-size: 90%;
+		font-size: 85%;
 		white-space: pre;
 		color: #d28a3f;
 
@@ -912,8 +920,9 @@ export default defineComponent({
 		}
 
 		> .hide {
-			margin-left: auto;
+			margin-left: 16px;
 			color: inherit;
+			opacity: 0.7;
 		}
 	}
 
@@ -929,10 +938,11 @@ export default defineComponent({
 	> .renote {
 		display: flex;
 		align-items: center;
-		padding: 16px 32px 8px 32px;
+		padding: 12px 16px 4px 16px;
 		line-height: 28px;
 		white-space: pre;
 		color: var(--renote);
+		font-size: 0.9em;
 
 		> .avatar {
 			flex-shrink: 0;
@@ -959,8 +969,9 @@ export default defineComponent({
 		}
 
 		> .info {
-			margin-left: auto;
+			margin-left: 8px;
 			font-size: 0.9em;
+			opacity: 0.7;
 
 			> .time {
 				flex-shrink: 0;
@@ -987,16 +998,16 @@ export default defineComponent({
 
 	> .article {
 		display: flex;
-		padding: 28px 32px 18px;
+		padding: 12px 16px;
 
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			//position: sticky;
-			//top: 72px;
-			margin: 0 14px 8px 0;
-			width: 58px;
-			height: 58px;
+			position: sticky;
+			top: 12px;
+			margin: 0 14px 0 0;
+			width: 46px;
+			height: 46px;
 		}
 
 		> .main {
@@ -1063,8 +1074,13 @@ export default defineComponent({
 						}
 					}
 
+					> .files {
+						max-width: 500px;
+					}
+
 					> .url-preview {
 						margin-top: 8px;
+						max-width: 500px;
 					}
 
 					> .poll {
@@ -1089,17 +1105,24 @@ export default defineComponent({
 			}
 
 			> .footer {
+				display: none;
+				position: absolute;
+				top: 8px;
+				right: 8px;
+				padding: 0 6px;
+				opacity: 0.7;
+
+				&:hover {
+					opacity: 1;
+				}
+
 				> .button {
 					margin: 0;
 					padding: 8px;
 					opacity: 0.7;
 
-					&:not(:last-child) {
-						margin-right: 28px;
-					}
-
 					&:hover {
-						color: var(--fgHighlighted);
+						color: var(--accent);
 					}
 
 					> .count {
@@ -1119,70 +1142,14 @@ export default defineComponent({
 	> .reply {
 		border-top: solid 1px var(--divider);
 	}
-
-	&.max-width_500px {
-		font-size: 0.9em;
-	}
-
-	&.max-width_450px {
-		> .renote {
-			padding: 8px 16px 0 16px;
-		}
-
-		> .info {
-			padding: 8px 16px 0 16px;
-		}
-
-		> .article {
-			padding: 14px 16px 9px;
-
-			> .avatar {
-				margin: 0 10px 8px 0;
-				width: 50px;
-				height: 50px;
-			}
-		}
-	}
-
-	&.max-width_350px {
-		> .article {
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 18px;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	&.max-width_300px {
-		font-size: 0.825em;
-
-		> .article {
-			> .avatar {
-				width: 44px;
-				height: 44px;
-			}
-
-			> .main {
-				> .footer {
-					> .button {
-						&:not(:last-child) {
-							margin-right: 12px;
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 .muted {
-	padding: 8px;
-	text-align: center;
+	padding: 8px 16px;
 	opacity: 0.7;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
 }
 </style>

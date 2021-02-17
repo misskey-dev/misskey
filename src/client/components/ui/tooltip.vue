@@ -1,6 +1,6 @@
 <template>
-<transition name="zoom-in-top" appear @after-leave="$emit('closed')">
-	<div class="buebdbiu _acrylic _shadow" v-if="showing">
+<transition name="tooltip" appear @after-leave="$emit('closed')">
+	<div class="buebdbiu _acrylic _shadow" v-show="showing" ref="content">
 		<slot>{{ text }}</slot>
 	</div>
 </transition>
@@ -35,19 +35,43 @@ export default defineComponent({
 
 			const rect = this.source.getBoundingClientRect();
 
-			let x = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
-			let y = rect.top + window.pageYOffset + this.source.offsetHeight;
+			const contentWidth = this.$refs.content.offsetWidth;
+			const contentHeight = this.$refs.content.offsetHeight;
 
-			x -= (this.$el.offsetWidth / 2);
+			let left = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
+			let top = rect.top + window.pageYOffset + this.source.offsetHeight;
 
-			this.$el.style.left = x + 'px';
-			this.$el.style.top = y + 'px';
+			left -= (this.$el.offsetWidth / 2);
+
+			if (left + contentWidth - window.pageXOffset > window.innerWidth) {
+				left = window.innerWidth - contentWidth + window.pageXOffset - 1;
+			}
+
+			if (top + contentHeight - window.pageYOffset > window.innerHeight) {
+				top = rect.top + window.pageYOffset - contentHeight;
+				this.$refs.content.style.transformOrigin = 'center bottom';
+			}
+
+			this.$el.style.left = left + 'px';
+			this.$el.style.top = top + 'px';
 		});
 	},
 })
 </script>
 
 <style lang="scss" scoped>
+.tooltip-enter-active,
+.tooltip-leave-active {
+	opacity: 1;
+	transform: scale(1);
+	transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tooltip-enter-from,
+.tooltip-leave-active {
+	opacity: 0;
+	transform: scale(0.75);
+}
+
 .buebdbiu {
 	position: absolute;
 	z-index: 11000;
@@ -57,6 +81,6 @@ export default defineComponent({
 	text-align: center;
 	border-radius: 4px;
 	pointer-events: none;
-	transform-origin: center -16px;
+	transform-origin: center top;
 }
 </style>
