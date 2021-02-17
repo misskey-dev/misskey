@@ -138,13 +138,19 @@ export default defineComponent({
 		},
 
 		async openAccountMenu(ev) {
-			const storedAccounts = getAccounts();
-			const accounts = (await os.api('users/show', { userIds: storedAccounts.map(x => x.id) })).filter(x => x.id !== this.$i.id);
+			const storedAccounts = getAccounts().filter(x => x.id !== this.$i.id);
+			const accountsPromise = os.api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
-			const accountItems = accounts.map(account => ({
-				type: 'user',
-				user: account,
-				action: () => { this.switchAccount(account); }
+			const accountItemPromises = storedAccounts.map(a => new Promise(res => {
+				accountsPromise.then(accounts => {
+					const account = accounts.find(x => x.id === a.id);
+					if (account == null) return res(null);
+					res({
+						type: 'user',
+						user: account,
+						action: () => { this.switchAccount(account); }
+					});
+				});
 			}));
 
 			os.modalMenu([...[{
@@ -152,7 +158,7 @@ export default defineComponent({
 				text: this.$ts.profile,
 				to: `/@${ this.$i.username }`,
 				avatar: this.$i,
-			}, null, ...accountItems, {
+			}, null, ...accountItemPromises, {
 				icon: faPlus,
 				text: this.$ts.addAcount,
 				action: () => {

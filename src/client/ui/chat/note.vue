@@ -65,21 +65,21 @@
 			</div>
 			<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
 			<footer class="footer _panel">
-				<button @click="reply()" class="button _button">
+				<button @click="reply()" class="button _button" v-tooltip="$ts.reply">
 					<template v-if="appearNote.reply"><Fa :icon="faReplyAll"/></template>
 					<template v-else><Fa :icon="faReply"/></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
-				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton">
+				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton" v-tooltip="$ts.renote">
 					<Fa :icon="faRetweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
 					<Fa :icon="faBan"/>
 				</button>
-				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
+				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton" v-tooltip="$ts.reaction">
 					<Fa :icon="faPlus"/>
 				</button>
-				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
+				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton" v-tooltip="$ts.reaction">
 					<Fa :icon="faMinus"/>
 				</button>
 				<button class="button _button" @click="menu()" ref="menuButton">
@@ -911,7 +911,7 @@ export default defineComponent({
 		align-items: center;
 		padding: 12px 16px 4px 16px;
 		line-height: 24px;
-		font-size: 90%;
+		font-size: 85%;
 		white-space: pre;
 		color: #d28a3f;
 
