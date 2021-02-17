@@ -200,6 +200,11 @@ export default defineComponent({
 	},
 
 	created() {
+		if (window.innerWidth < 1024) {
+			localStorage.setItem('ui', 'default');
+			location.reload();
+		}
+
 		router.beforeEach((to, from) => {
 			this.$refs.side.navigate(to.fullPath);
 			// search?q=foo のようなクエリを受け取れるようにするため、return falseはできない
@@ -414,10 +419,12 @@ export default defineComponent({
 		> .body {
 			flex: 1;
 			min-width: 0;
-			padding: 8px 0;
 			overflow: auto;
 
 			> .container {
+				margin-top: 8px;
+				margin-bottom: 8px;
+
 				& + .container {
 					margin-top: 16px;
 				}
@@ -426,10 +433,21 @@ export default defineComponent({
 					display: flex;
 					font-size: 0.9em;
 					padding: 8px 16px;
-					opacity: 0.7;
+					position: sticky;
+					top: 0;
+					background: var(--X17);
+					-webkit-backdrop-filter: blur(8px);
+					backdrop-filter: blur(8px);
+					z-index: 1;
+					color: var(--fgTransparentWeak);
 
 					> .add {
 						margin-left: auto;
+						color: var(--fgTransparentWeak);
+
+						&:hover {
+							color: var(--fg);
+						}
 					}
 				}
 
@@ -448,11 +466,11 @@ export default defineComponent({
 
 						&.active, &.active:hover {
 							background: var(--accent);
-							color: #fff;
+							color: #fff !important;
 						}
 
 						&.read {
-							opacity: 0.5;
+							color: var(--fgTransparent);
 						}
 
 						> .icon {
@@ -527,6 +545,7 @@ export default defineComponent({
 
 				> .instance {
 					margin-right: 16px;
+					font-size: 0.9em;
 				}
 
 				> .clock {

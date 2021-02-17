@@ -64,6 +64,7 @@ import { noteVisibilities } from '../../../types';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@/store';
+import { isMobile } from '@/scripts/is-mobile';
 
 export default defineComponent({
 	components: {
@@ -541,7 +542,7 @@ export default defineComponent({
 				localOnly: this.localOnly,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
-				viaMobile: os.isMobile
+				viaMobile: isMobile
 			};
 
 			// plugin
