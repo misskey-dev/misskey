@@ -49,15 +49,16 @@ import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
-import { stream, isMobile, dialog, post } from '@/os';
+import { stream, dialog, post } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
-import { makeHotkey } from './scripts/hotkey';
-import { search } from './scripts/search';
-import { getThemes } from './theme-store';
-import { initializeSw } from './scripts/initialize-sw';
+import { makeHotkey } from '@/scripts/hotkey';
+import { search } from '@/scripts/search';
+import { isMobile } from '@/scripts/is-mobile';
+import { getThemes } from '@/theme-store';
+import { initializeSw } from '@/scripts/initialize-sw';
 
 console.info(`Misskey v${version}`);
 
