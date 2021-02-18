@@ -15,7 +15,7 @@ services:
       - internal_network
       - external_network
     volumes:
-      - ./config:/misskey/.config:ro 
+      - ./.config:/misskey/.config:ro 
       - ./files:/misskey/files 
 
   redis:
@@ -34,7 +34,7 @@ services:
     networks:
       - internal_network
     env_file:
-      - ./config/docker.env 
+      - ./.config/docker.env 
     volumes:
       - ./db:/var/lib/postgresql/data 
 
