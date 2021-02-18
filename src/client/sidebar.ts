@@ -146,7 +146,7 @@ export const sidebarDef = {
 				text: 'Chat (β)',
 				action: () => {
 					localStorage.setItem('ui', 'chat');
-					location.reload();
+					unisonReload();
 				}
 			}, {
 				text: i18n.locale.desktop + ' (β)',
