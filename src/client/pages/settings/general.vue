@@ -96,6 +96,7 @@ import { langs } from '@/config';
 import { defaultStore } from '@/store';
 import { ColdDeviceStorage } from '@/store';
 import * as os from '@/os';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -200,7 +201,7 @@ export default defineComponent({
 			});
 			if (canceled) return;
 
-			location.reload();
+			unisonReload();
 		}
 	}
 });

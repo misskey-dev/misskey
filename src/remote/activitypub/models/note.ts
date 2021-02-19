@@ -21,7 +21,6 @@ import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, i
 import { Emoji } from '../../../models/entities/emoji';
 import { genId } from '../../../misc/gen-id';
 import { fetchMeta } from '../../../misc/fetch-meta';
-import { ensure } from '../../../prelude/ensure';
 import { getApLock } from '../../../misc/app-lock';
 import { createMessage } from '../../../services/messages/create';
 import { parseAudience } from '../audience';
@@ -201,7 +200,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	// vote
 	if (reply && reply.hasPoll) {
-		const poll = await Polls.findOne(reply.id).then(ensure);
+		const poll = await Polls.findOneOrFail(reply.id);
 
 		const tryCreateVote = async (name: string, index: number): Promise<null> => {
 			if (poll.expiresAt && Date.now() > new Date(poll.expiresAt).getTime()) {

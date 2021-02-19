@@ -1,6 +1,6 @@
 <template>
 <FormBase>
-	<MkInfo warn>{{ $ts.pluginInstallWarn }}</MkInfo>
+	<MkInfo warn>{{ $ts._plugin.installWarn }}</MkInfo>
 
 	<FormGroup>
 		<FormTextarea v-model:value="code" tall>
@@ -28,6 +28,7 @@ import FormButton from '@/components/form/button.vue';
 import MkInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage } from '@/store';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -138,7 +139,7 @@ export default defineComponent({
 			os.success();
 
 			this.$nextTick(() => {
-				location.reload();
+				unisonReload();
 			});
 		},
 	}

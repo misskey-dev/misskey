@@ -54,7 +54,8 @@ export default defineComponent({
 		async run() {
 			this.logs = [];
 			const aiscript = new AiScript(createAiScriptEnv({
-				storageKey: 'widget'
+				storageKey: 'widget',
+				token: this.$i?.token,
 			}), {
 				in: (q) => {
 					return new Promise(ok => {

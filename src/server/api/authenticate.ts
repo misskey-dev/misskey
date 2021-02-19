@@ -1,7 +1,6 @@
 import isNativeToken from './common/is-native-token';
 import { User } from '../../models/entities/user';
 import { Users, AccessTokens, Apps } from '../../models';
-import { ensure } from '../../prelude/ensure';
 import { AccessToken } from '../../models/entities/access-token';
 
 export default async (token: string): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
@@ -43,7 +42,7 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 
 		if (accessToken.appId) {
 			const app = await Apps
-				.findOne(accessToken.appId).then(ensure);
+				.findOneOrFail(accessToken.appId);
 
 			return [user, {
 				id: accessToken.id,

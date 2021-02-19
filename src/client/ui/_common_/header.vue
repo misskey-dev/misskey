@@ -1,5 +1,5 @@
 <template>
-<div class="fdidabkb" :style="`--height:${height};`">
+<div class="fdidabkb" :class="{ center }" :style="`--height:${height};`">
 	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
 		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
 	</transition>
@@ -27,6 +27,11 @@ export default defineComponent({
 			required: true
 		},
 		withBack: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
+		center: {
 			type: Boolean,
 			required: false,
 			default: true,
@@ -67,7 +72,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .fdidabkb {
-	text-align: center;
+	&.center {
+		text-align: center;
+	}
 
 	> .back {
 		height: var(--height);
@@ -111,8 +118,13 @@ export default defineComponent({
 		right: 0;
 	}
 
+	&.center {
+		> .titleContainer {
+			margin: 0 auto;
+		}
+	}
+
 	> .titleContainer {
-		margin: 0 auto;
 		overflow: auto;
 		white-space: nowrap;
 

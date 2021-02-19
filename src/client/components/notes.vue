@@ -8,7 +8,7 @@
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_loadMore" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_buttonPrimary" @click="fetchMoreFeature" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
@@ -19,7 +19,7 @@
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<button class="_buttonPrimary" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</button>
