@@ -704,6 +704,7 @@ editCode: "Code bearbeiten"
 apply: "Anwenden"
 receiveAnnouncementFromInstance: "E-Mail-Benachrichtigungen von dieser Instanz empfangen"
 emailNotification: "E-Mail-Benachrichtigungen"
+inChannelSearch: "In Kanal suchen"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
