@@ -99,7 +99,8 @@ import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkModal from '@/components/ui/modal.vue';
 import Particle from '@/components/particle.vue';
 import * as os from '@/os';
-import { isDeviceTouch } from '../scripts/is-device-touch';
+import { isDeviceTouch } from '@/scripts/is-device-touch';
+import { isMobile } from '@/scripts/is-mobile';
 import { emojiCategories } from '@/instance';
 
 export default defineComponent({
@@ -322,7 +323,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (!os.isMobile) {
+		if (!isMobile && !isDeviceTouch) {
 			this.$refs.search.focus({
 				preventScroll: true
 			});

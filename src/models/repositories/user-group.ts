@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserGroup } from '../entities/user-group';
-import { ensure } from '../../prelude/ensure';
 import { UserGroupJoinings } from '..';
 import { SchemaType } from '../../misc/schema';
 
@@ -11,7 +10,7 @@ export class UserGroupRepository extends Repository<UserGroup> {
 	public async pack(
 		src: UserGroup['id'] | UserGroup,
 	): Promise<PackedUserGroup> {
-		const userGroup = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const userGroup = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const users = await UserGroupJoinings.find({
 			userGroupId: userGroup.id

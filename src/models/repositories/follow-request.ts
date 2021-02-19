@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { FollowRequest } from '../entities/follow-request';
 import { Users } from '..';
-import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(FollowRequest)
 export class FollowRequestRepository extends Repository<FollowRequest> {
@@ -9,7 +8,7 @@ export class FollowRequestRepository extends Repository<FollowRequest> {
 		src: FollowRequest['id'] | FollowRequest,
 		me?: any
 	) {
-		const request = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const request = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: request.id,

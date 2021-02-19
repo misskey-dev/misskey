@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { NoteFavorite } from '../entities/note-favorite';
 import { Notes } from '..';
-import { ensure } from '../../prelude/ensure';
 
 @EntityRepository(NoteFavorite)
 export class NoteFavoriteRepository extends Repository<NoteFavorite> {
@@ -9,7 +8,7 @@ export class NoteFavoriteRepository extends Repository<NoteFavorite> {
 		src: NoteFavorite['id'] | NoteFavorite,
 		me?: any
 	) {
-		const favorite = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const favorite = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: favorite.id,

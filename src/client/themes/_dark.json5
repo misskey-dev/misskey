@@ -16,6 +16,8 @@
 		bg: '#000',
 		acrylicBg: ':alpha<0.5<@bg',
 		fg: '#dadada',
+		fgTransparentWeak: ':alpha<0.75<@fg',
+		fgTransparent: ':alpha<0.5<@fg',
 		fgHighlighted: ':lighten<3<@fg',
 		divider: 'rgba(255, 255, 255, 0.1)',
 		indicator: '@accent',
@@ -77,5 +79,6 @@
 		X14: ':alpha<0.5<@navBg',
 		X15: ':alpha<0<@panel',
 		X16: ':alpha<0.7<@panel',
+		X17: ':alpha<0.8<@bg',
 	},
 }

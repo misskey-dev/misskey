@@ -1,5 +1,7 @@
 ---
 _lang_: "Bahasa Jepang"
+headlineMisskey: "Catatan terhubung jaringan"
+introMisskey: "Selamat datang! Misskey adalah perangkat mikroblog tercatu bersifat sumber terbuka.\nMulailah menuliskan catatan, bagikan peristiwa terkini, serta ceritakan segala tentangmu.📡\nTunjukkan juga reaksimu pada catatan pengguna lain.👍\nMari jelajahi dunia baru🚀"
 monthAndDay: "{day} {month}"
 search: "Pencarian"
 notifications: "Notifikasi"
@@ -44,9 +46,30 @@ sendMessage: "Kirim pesan"
 copyUsername: "Salin nama pengguna"
 searchUser: "Cari pengguna"
 reply: "Balas"
+loadMore: "Selebihnya"
+showMore: "Selebihnya"
+youGotNewFollower: "Sedang mengikuti"
+receiveFollowRequest: "Permintaan mengikuti terkirim"
+mention: "Panggilan"
+files: "Berkas"
+download: "Unduh"
+driveFileDeleteConfirm: "Hapus {name}? Catatan dengan berkas terkait juga akan terhapus."
+unfollowConfirm: "Berhenti mengikuti {name}?"
+following: "Ikuti"
+followers: "Pengikut"
+followsYou: "Mengikuti Anda"
+error: "Galat"
+somethingHappened: "Terjadi kesalahan"
+retry: "Coba lagi"
+pageLoadError: "Gagal memuat halaman."
+pageLoadErrorDescription: "Umumnya disebabkan jaringan atau tembolok perambah. Cobalah bersihkan tembolok peramban lalu tunggu sesaat sebelum mencoba kembali."
+privacy: "Keleluasaan"
+follow: "Ikuti"
+unfollow: "Berhenti mengikuti"
 cantReRenote: "Renote tidak dapat direnote"
 quote: "Kutip"
 pinnedNote: "Note yang disematkan"
+pinned: "Sematkan ke profil"
 you: "Anda"
 clickToShow: "Klik untuk melihat"
 sensitive: "Konten sensitif"
@@ -190,26 +213,41 @@ invites: "Undang"
 invitations: "Undang"
 smtpUser: "Nama Pengguna"
 smtpPass: "Kata sandi"
+_email:
+  _follow:
+    title: "Sedang mengikuti"
 _mfm:
+  mention: "Panggilan"
   quote: "Kutip"
   emoji: "Emoji kustom"
   search: "Pencarian"
+_theme:
+  keys:
+    mention: "Panggilan"
 _sfx:
   notification: "Notifikasi"
   chat: "Pesan"
 _widgets:
   notifications: "Notifikasi"
   timeline: "Linimasa"
+_cw:
+  show: "Selebihnya"
+_visibility:
+  followers: "Pengikut"
 _profile:
   username: "Nama Pengguna"
 _exportOrImport:
+  followingList: "Ikuti"
   muteList: "Bisukan"
   blockingList: "Blokir"
 _rooms:
   _roomType:
     default: "Bawaan"
 _notification:
+  youWereFollowed: "Sedang mengikuti"
   _types:
+    follow: "Ikuti"
+    mention: "Panggilan"
     quote: "Kutip"
     reaction: "Reaksi"
 _deck:

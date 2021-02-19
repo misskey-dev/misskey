@@ -4,7 +4,6 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { AuthSessions, AccessTokens, Apps } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
-import { ensure } from '../../../../prelude/ensure';
 import { secureRndstr } from '../../../../misc/secure-rndstr';
 
 export const meta = {
@@ -49,7 +48,7 @@ export default define(meta, async (ps, user) => {
 
 	if (exist == null) {
 		// Lookup app
-		const app = await Apps.findOne(session.appId).then(ensure);
+		const app = await Apps.findOneOrFail(session.appId);
 
 		// Generate Hash
 		const sha256 = crypto.createHash('sha256');
