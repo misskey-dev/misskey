@@ -26,13 +26,9 @@ import { defineComponent } from 'vue';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
-// import ImageViewer from './image-viewer.vue';
+import ImageViewer from './image-viewer.vue';
 import ImgWithBlurhash from './img-with-blurhash.vue';
-// import * as os from '@/os';
-import 'viewerjs/dist/viewer.css';
-import Viewer from 'viewerjs';
-import bytes from '@/filters/bytes';
-import number from '@/filters/number';
+import * as os from '@/os';
 
 export default defineComponent({
 	components: {
@@ -84,27 +80,9 @@ export default defineComponent({
 			if (this.$store.state.imageNewTab) {
 				window.open(this.image.url, '_blank');
 			} else {
-				// os.popup(ImageViewer, {
-				// 	image: this.image
-				// }, {}, 'closed');
-				let title=(this.image.properties && this.image.properties.width)?`${this.image.type} | ${bytes(this.image.size)} | ${this.image.name} (${number(this.image.properties.width)}px × ${number(this.image.properties.height)}px)`:`${this.image.type} | ${bytes(this.image.size)} | ${this.image.name}`;
-				let toolbar={
-					zoomIn: 4,
-					zoomOut: 4,
-					oneToOne: 4,
-					reset: 4,
-					prev: 0,
-					play: {
-						show: 4,
-						size: 'large',
-					},
-					next: 0,
-					rotateLeft: 4,
-					rotateRight: 4,
-					flipHorizontal: 4,
-					flipVertical: 4,};
-				this.$viewer = new Viewer(this.$el, {title: [1, ()=>title],navbar:0,toolbar:toolbar,slideOnTouch:false});
-				this.$viewer.show();
+				os.popup(ImageViewer, {
+					image: this.image
+				}, {}, 'closed');
 			}
 		}
 	}
