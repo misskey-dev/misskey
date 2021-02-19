@@ -36,6 +36,9 @@ userList: "Tibdarin"
 uiLanguage: "Tutlayt n wegrudem"
 smtpUser: "Isem n umseqdac"
 smtpPass: "Awal uffir"
+_email:
+  _follow:
+    title: "Yeṭṭafaṛ-ik·em-id"
 _mfm:
   mention: "Bder"
   search: "Nadi"
