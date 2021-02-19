@@ -52,6 +52,7 @@ import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import { scroll } from '@/scripts/scroll';
 import { signout } from '@/account';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -99,6 +100,7 @@ export default defineComponent({
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
 				case 'email': return defineAsyncComponent(() => import('./email.vue'));
 				case 'email/address': return defineAsyncComponent(() => import('./email-address.vue'));
+				case 'email/notification': return defineAsyncComponent(() => import('./email-notification.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 				case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
@@ -159,7 +161,7 @@ export default defineComponent({
 			clear: () => {
 				localStorage.removeItem('locale');
 				localStorage.removeItem('theme');
-				location.reload();
+				unisonReload();
 			},
 			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faEnvelope, faCloud,
 		};

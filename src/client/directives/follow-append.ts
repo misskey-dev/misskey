@@ -3,12 +3,22 @@ import { getScrollContainer, getScrollPosition } from '@/scripts/scroll';
 
 export default {
 	mounted(src, binding, vn) {
-		const ro = new ResizeObserver((entries, observer) => {
-			const pos = getScrollPosition(src);
-			const container = getScrollContainer(src);
+		if (binding.value === false) return;
+
+		let isBottom = true;
+
+		const container = getScrollContainer(src)!;
+		container.addEventListener('scroll', () => {
+			const pos = getScrollPosition(container);
 			const viewHeight = container.clientHeight;
 			const height = container.scrollHeight;
-			if (pos + viewHeight > height - 32) {
+			isBottom = (pos + viewHeight > height - 32);
+		}, { passive: true });
+		container.scrollTop = container.scrollHeight;
+
+		const ro = new ResizeObserver((entries, observer) => {
+			if (isBottom) {
+				const height = container.scrollHeight;
 				container.scrollTop = height;
 			}
 		});
@@ -20,6 +30,6 @@ export default {
 	},
 
 	unmounted(src, binding, vn) {
-		src._ro_.unobserve(src);
+		if (src._ro_) src._ro_.unobserve(src);
 	}
 } as Directive;

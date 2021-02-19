@@ -9,9 +9,6 @@ import { resolve } from '@/router';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
 
-const ua = navigator.userAgent.toLowerCase();
-export const isMobile = /mobile|iphone|ipad|android/.test(ua);
-
 export const stream = markRaw(new Stream());
 
 export const pendingApiRequestsCount = ref(0);

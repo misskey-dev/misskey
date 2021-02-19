@@ -4,7 +4,6 @@ import { User } from '../models/entities/user';
 import { UserListJoinings, UserGroupJoinings } from '../models';
 import parseAcct from './acct/parse';
 import { getFullApAccount } from './convert-host';
-import { ensure } from '../prelude/ensure';
 
 export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: User, followers: User['id'][]): Promise<boolean> {
 	if (note.visibility === 'specified') return false;
@@ -24,7 +23,7 @@ export async function checkHitAntenna(antenna: Antenna, note: Note, noteUser: Us
 
 		if (!listUsers.includes(note.userId)) return false;
 	} else if (antenna.src === 'group') {
-		const joining = await UserGroupJoinings.findOne(antenna.userGroupJoiningId!).then(ensure);
+		const joining = await UserGroupJoinings.findOneOrFail(antenna.userGroupJoiningId!);
 
 		const groupUsers = (await UserGroupJoinings.find({
 			userGroupId: joining.userGroupId

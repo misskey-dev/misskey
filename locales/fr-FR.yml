@@ -96,6 +96,7 @@ renoted: "Republier"
 cantRenote: "Ce message ne peut pas être republié."
 quote: "Citer"
 pinnedNote: "Note épinglée"
+pinned: "Épingler sur le profil"
 you: "Vous"
 clickToShow: "Cliquer pour afficher"
 sensitive: "Contenu sensible"
@@ -648,6 +649,9 @@ closeAccount: "Fermer le compte"
 usageAmount: "Utilisation"
 capacity: "Capacité "
 inUse: "utilisé"
+_email:
+  _follow:
+    title: "Vous suit"
 _registry:
   key: "Clé "
   keys: "Clé "

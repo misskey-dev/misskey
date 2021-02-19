@@ -16,7 +16,6 @@ import { isSelfHost } from '../misc/convert-host';
 import { Notes, Users, Emojis, UserKeypairs, NoteReactions } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
-import { ensure } from '../prelude/ensure';
 import { renderLike } from '../remote/activitypub/renderer/like';
 
 // Init router
@@ -136,7 +135,7 @@ router.get('/users/:user/publickey', async ctx => {
 		return;
 	}
 
-	const keypair = await UserKeypairs.findOne(user.id).then(ensure);
+	const keypair = await UserKeypairs.findOneOrFail(user.id);
 
 	if (Users.isLocalUser(user)) {
 		ctx.body = renderActivity(renderKey(user, keypair));

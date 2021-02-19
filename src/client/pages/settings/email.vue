@@ -9,6 +9,11 @@
 		</FormLink>
 	</FormGroup>
 
+	<FormLink to="/settings/email/notification">
+		<template #icon><Fa :icon="faBell"/></template>
+		{{ $ts.emailNotification }}
+	</FormLink>
+
 	<FormSwitch :value="$i.receiveAnnouncementEmail" @update:value="onChangeReceiveAnnouncementEmail">
 		{{ $ts.receiveAnnouncementFromInstance }}
 	</FormSwitch>
@@ -43,7 +48,7 @@ export default defineComponent({
 				title: this.$ts.email,
 				icon: faEnvelope
 			},
-			faCog, faExclamationTriangle, faCheck
+			faCog, faExclamationTriangle, faCheck, faBell
 		}
 	},
 

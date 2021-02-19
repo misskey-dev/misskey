@@ -76,7 +76,7 @@ export default defineComponent({
 			ColdDeviceStorage.set('plugins', this.plugins.filter(x => x.id !== plugin.id));
 			os.success();
 			this.$nextTick(() => {
-				location.reload();
+				unisonReload();
 			});
 		},
 

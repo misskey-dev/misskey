@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users, Notes, UserGroupInvitations, AccessTokens } from '..';
 import { Notification } from '../entities/notification';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 
@@ -12,8 +11,8 @@ export class NotificationRepository extends Repository<Notification> {
 	public async pack(
 		src: Notification['id'] | Notification,
 	): Promise<PackedNotification> {
-		const notification = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
-		const token = notification.appAccessTokenId ? await AccessTokens.findOne(notification.appAccessTokenId).then(ensure) : null;
+		const notification = typeof src === 'object' ? src : await this.findOneOrFail(src);
+		const token = notification.appAccessTokenId ? await AccessTokens.findOneOrFail(notification.appAccessTokenId) : null;
 
 		return await awaitAll({
 			id: notification.id,
