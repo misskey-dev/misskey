@@ -35,7 +35,11 @@ export default defineComponent({
 	emits: ['closed'],
 	mounted ()
 	{
-		this.createViewer();
+		const ua = navigator.userAgent.toLowerCase();
+		const isiOS =  /ipod|iphone|ipad/.test(ua);
+		if (!isiOS) {
+			this.createViewer();
+		}
 	},
 	destroyed (){
 		this.destroyViewer();
@@ -63,7 +67,7 @@ export default defineComponent({
 				rotateRight: 4,
 				flipHorizontal: 4,
 				flipVertical: 4,};
-			this.$viewer = new Viewer(this.$el, {title: [1, ()=>title],navbar:0,toolbar:toolbar});
+			this.$viewer = new Viewer(this.$el, {title: [1, ()=>title],navbar:0,toolbar:toolbar,slideOnTouch:false});
 			this.$viewer.show();
 			this.$refs.modal.close(); //Fix the bug that one same image show twice
 		}
