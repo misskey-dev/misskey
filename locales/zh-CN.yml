@@ -704,6 +704,7 @@ editCode: "编辑代码"
 apply: "应用"
 receiveAnnouncementFromInstance: "从实例接收通知"
 emailNotification: "邮件通知"
+inChannelSearch: "频道内搜索"
 _email:
   _follow:
     title: "你有新的关注者"
