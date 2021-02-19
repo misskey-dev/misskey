@@ -99,7 +99,10 @@
 			<div class="right">
 				<div class="instance">{{ instanceName }}</div>
 				<XHeaderClock class="clock"/>
-				<button class="_button button search" @click="search" v-tooltip="$ts.search">
+				<button class="_button button search" v-if="tl.startsWith('channel:') && currentChannel" @click="inChannelSearch" v-tooltip="$ts.inChannelSearch">
+					<Fa :icon="faSearch"/>
+				</button>
+				<button class="_button button search" v-else @click="search" v-tooltip="$ts.search">
 					<Fa :icon="faSearch"/>
 				</button>
 				<button class="_button button follow" v-if="tl.startsWith('channel:') && currentChannel" :class="{ followed: currentChannel.isFollowing }" @click="toggleChannelFollow" v-tooltip="currentChannel.isFollowing ? $ts.unfollow : $ts.follow">
@@ -247,6 +250,15 @@ export default defineComponent({
 
 		search() {
 			search();
+		},
+
+		async inChannelSearch() {
+			const { canceled, result: query } = await os.dialog({
+				title: this.$ts.inChannelSearch,
+				input: true
+			});
+			if (canceled || query == null || query === '') return;
+			router.push(`/search?q=${encodeURIComponent(query)}&channel=${this.currentChannel.id}`);
 		},
 
 		top() {

@@ -28,6 +28,7 @@ export default defineComponent({
 				limit: 10,
 				params: () => ({
 					query: this.$route.query.q,
+					channelId: this.$route.query.channel,
 				})
 			},
 		};

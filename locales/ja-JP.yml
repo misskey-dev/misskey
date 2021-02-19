@@ -704,6 +704,7 @@ editCode: "コードを編集"
 apply: "適用"
 receiveAnnouncementFromInstance: "インスタンスからのお知らせを受け取る"
 emailNotification: "メール通知"
+inChannelSearch: "チャンネル内検索"
 
 _email:
   _follow:
