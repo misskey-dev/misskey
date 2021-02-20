@@ -221,9 +221,8 @@ export default defineComponent({
 		queueUpdated(q) {
 			if (this.$refs.body.offsetWidth !== 0) {
 				const rect = this.$refs.body.getBoundingClientRect();
-				const scrollTop = getScrollPosition(this.$refs.body);
 				this.width = this.$refs.body.offsetWidth;
-				this.top = rect.top + scrollTop;
+				this.top = rect.top;
 				this.bottom = this.$refs.body.offsetHeight;
 			}
 			this.queue = q;
@@ -264,6 +263,7 @@ export default defineComponent({
 }
 
 .dbiokgaf.tl {
+	position: relative;
 	padding: 16px 0;
 	flex: 1;
 	min-width: 0;
