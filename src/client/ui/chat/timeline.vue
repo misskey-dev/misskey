@@ -61,11 +61,6 @@ export default defineComponent({
 			type: String,
 			required: false
 		},
-		sound: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
 	},
 
 	emits: ['note', 'queue', 'before', 'after'],
@@ -95,9 +90,7 @@ export default defineComponent({
 
 			this.$emit('note');
 
-			if (this.sound) {
-				sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
-			}
+			sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
 		};
 
 		const onUserAdded = () => {
