@@ -708,6 +708,7 @@ inChannelSearch: "In Kanal suchen"
 useReactionPickerForContextMenu: "Reaktionsauswahl durch Rechtsklick öffnen"
 jumpToSpecifiedDate: "Zu bestimmtem Datum springen"
 showingPastTimeline: "Momentan wird eine alte Chronik angezeigt"
+clear: "Zurückkehren"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
