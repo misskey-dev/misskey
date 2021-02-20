@@ -32,7 +32,7 @@ export default defineComponent({
 			});
 		}
 
-		return h(TransitionGroup, {
+		return h(this.reversed ? 'div' : TransitionGroup, {
 			class: 'hmjzthxl',
 			name: this.reversed ? 'list-reversed' : 'list',
 			tag: 'div',

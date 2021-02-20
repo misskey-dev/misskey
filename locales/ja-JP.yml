@@ -706,6 +706,7 @@ receiveAnnouncementFromInstance: "インスタンスからのお知らせを受�
 emailNotification: "メール通知"
 inChannelSearch: "チャンネル内検索"
 useReactionPickerForContextMenu: "右クリックでリアクションピッカーを開く"
+typingUsers: "{users}が入力中"
 
 _email:
   _follow:

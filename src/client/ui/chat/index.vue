@@ -114,14 +114,9 @@
 				</button>
 			</div>
 		</header>
-		<div class="body">
-			<XTimeline v-if="tl.startsWith('channel:')" src="channel" :key="tl" :channel="tl.replace('channel:', '')"/>
-			<XTimeline v-else :src="tl" :key="tl"/>
-		</div>
-		<footer class="footer">
-			<XPostForm v-if="tl.startsWith('channel:')" :key="tl" :channel="tl.replace('channel:', '')"/>
-			<XPostForm v-else/>
-		</footer>
+
+		<XTimeline class="body" v-if="tl.startsWith('channel:')" src="channel" :key="tl" :channel="tl.replace('channel:', '')"/>
+		<XTimeline class="body" v-else :src="tl" :key="tl"/>
 	</main>
 
 	<XSide class="side" ref="side" @open="sideViewOpening = true" @close="sideViewOpening = false"/>
@@ -143,7 +138,6 @@ import XWidgets from './widgets.vue';
 import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';
 import XTimeline from './timeline.vue';
-import XPostForm from './post-form.vue';
 import XHeaderClock from './header-clock.vue';
 import * as os from '@/os';
 import { router } from '@/router';
@@ -159,7 +153,6 @@ export default defineComponent({
 		XWidgets,
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
 		XTimeline,
-		XPostForm,
 		XHeaderClock,
 	},
 
@@ -583,16 +576,6 @@ export default defineComponent({
 					}
 				}
 			}
-		}
-
-		> .footer {
-			padding: 0 16px 16px 16px;
-		}
-
-		> .body {
-			flex: 1;
-			min-width: 0;
-			overflow: auto;
 		}
 	}
 

@@ -1010,7 +1010,7 @@ export default defineComponent({
 			flex-shrink: 0;
 			display: block;
 			position: sticky;
-			top: 12px;
+			top: 0;
 			margin: 0 14px 0 0;
 			width: 46px;
 			height: 46px;

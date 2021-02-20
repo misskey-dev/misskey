@@ -12,6 +12,7 @@ import { Users, Followings, Mutings, UserProfiles, ChannelFollowings } from '../
 import { ApiError } from '../error';
 import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
+import { publishChannelStream } from '../../../services/stream';
 
 /**
  * Main stream connection
@@ -27,10 +28,10 @@ export default class Connection {
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
-	private followingClock: NodeJS.Timer;
-	private mutingClock: NodeJS.Timer;
-	private followingChannelsClock: NodeJS.Timer;
-	private userProfileClock: NodeJS.Timer;
+	private followingClock: ReturnType<typeof setInterval>;
+	private mutingClock: ReturnType<typeof setInterval>;
+	private followingChannelsClock: ReturnType<typeof setInterval>;
+	private userProfileClock: ReturnType<typeof setInterval>;
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -93,6 +94,7 @@ export default class Connection {
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;
 			case 'ch': this.onChannelMessageRequested(body); break; // alias
+			case 'typingOnChannel': this.typingOnChannel(body.channel); break;
 		}
 	}
 
@@ -255,6 +257,13 @@ export default class Connection {
 		const channel = this.channels.find(c => c.id === data.id);
 		if (channel != null && channel.onMessage != null) {
 			channel.onMessage(data.type, data.body);
+		}
+	}
+
+	@autobind
+	private typingOnChannel(channel: ChannelModel['id']) {
+		if (this.user) {
+			publishChannelStream(channel, 'typing', this.user.id);
 		}
 	}
 
