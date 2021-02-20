@@ -223,11 +223,12 @@ export default defineComponent({
 			this.antennas = antennas;
 		});
 
-		os.api('channels/followed').then(channels => {
+		os.api('channels/followed', { limit: 20 }).then(channels => {
 			this.followedChannels = channels;
 		});
 
-		os.api('channels/featured').then(channels => {
+		// TODO: pagination
+		os.api('channels/featured', { limit: 20 }).then(channels => {
 			this.featuredChannels = channels;
 		});
 
