@@ -99,6 +99,9 @@
 			<div class="right">
 				<div class="instance">{{ instanceName }}</div>
 				<XHeaderClock class="clock"/>
+				<button class="_button button timetravel" @click="timetravel" v-tooltip="$ts.jumpToSpecifiedDate">
+					<Fa :icon="faCalendarAlt"/>
+				</button>
 				<button class="_button button search" v-if="tl.startsWith('channel:') && currentChannel" @click="inChannelSearch" v-tooltip="$ts.inChannelSearch">
 					<Fa :icon="faSearch"/>
 				</button>
@@ -115,8 +118,8 @@
 			</div>
 		</header>
 
-		<XTimeline class="body" v-if="tl.startsWith('channel:')" src="channel" :key="tl" :channel="tl.replace('channel:', '')"/>
-		<XTimeline class="body" v-else :src="tl" :key="tl"/>
+		<XTimeline class="body" ref="tl" v-if="tl.startsWith('channel:')" src="channel" :key="tl" :channel="tl.replace('channel:', '')"/>
+		<XTimeline class="body" ref="tl" v-else :src="tl" :key="tl"/>
 	</main>
 
 	<XSide class="side" ref="side" @open="sideViewOpening = true" @close="sideViewOpening = false"/>
@@ -131,7 +134,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, faAt, faLink, faEllipsisH, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faStar as farStar, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faStar as farStar, faEnvelope, faComments, faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
 import { instanceName, url } from '@/config';
 import XSidebar from '@/components/sidebar.vue';
 import XWidgets from './widgets.vue';
@@ -192,7 +195,7 @@ export default defineComponent({
 			menuDef: sidebarDef,
 			sideViewOpening: false,
 			instanceName,
-			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar, faAt, faLink, faEllipsisH, faGlobe, faComments, faEnvelope,
+			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar, faAt, faLink, faEllipsisH, faGlobe, faComments, faEnvelope, faCalendarAlt,
 		};
 	},
 
@@ -242,6 +245,18 @@ export default defineComponent({
 
 		post() {
 			os.post();
+		},
+
+		async timetravel() {
+			const { canceled, result: date } = await os.dialog({
+				title: this.$ts.date,
+				input: {
+					type: 'date'
+				}
+			});
+			if (canceled) return;
+
+			this.$refs.tl.timetravel(new Date(date));
 		},
 
 		search() {

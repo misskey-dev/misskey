@@ -1,4 +1,7 @@
 <template>
+<div class="dbiokgaf info" v-if="date">
+	<MkInfo>{{ $ts.showingPastTimeline }} <button class="_textButton clear" @click="timetravel()">{{ $ts.clear }}</button></MkInfo>
+</div>
 <div class="dbiokgaf top" v-if="['home', 'local', 'social', 'global'].includes(src)">
 	<XPostForm/>
 </div>
@@ -27,11 +30,13 @@ import * as sound from '@/scripts/sound';
 import { scrollToBottom, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import follow from '@/directives/follow-append';
 import XPostForm from './post-form.vue';
+import MkInfo from '@/components/ui/info.vue';
 
 export default defineComponent({
 	components: {
 		XNotes,
 		XPostForm,
+		MkInfo,
 	},
 
 	directives: {
@@ -81,6 +86,7 @@ export default defineComponent({
 			top: 0,
 			bottom: 0,
 			typers: [],
+			date: null
 		};
 	},
 
@@ -186,7 +192,7 @@ export default defineComponent({
 			reversed,
 			limit: 10,
 			params: init => ({
-				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+				untilDate: this.date?.getTime(),
 				...this.baseQuery, ...this.query
 			})
 		};
@@ -220,11 +226,20 @@ export default defineComponent({
 			}
 			this.queue = q;
 		},
+
+		timetravel(date?: Date) {
+			this.date = date;
+			this.$refs.tl.reload();
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
+.dbiokgaf.info{
+	padding: 16px 16px 0 16px;
+}
+
 .dbiokgaf.top {
 	padding: 16px 16px 0 16px;
 }
