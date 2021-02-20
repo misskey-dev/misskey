@@ -150,6 +150,7 @@ import { router } from '@/router';
 import { sidebarDef } from '@/sidebar';
 import { search } from '@/scripts/search';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { store } from './store';
 
 export default defineComponent({
 	components: {
@@ -189,7 +190,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			tl: 'home',
+			tl: store.state.tl,
 			lists: null,
 			antennas: null,
 			followedChannels: null,
@@ -236,6 +237,7 @@ export default defineComponent({
 					this.currentChannel = channel;
 				});
 			}
+			store.set('tl', this.tl);
 		}, { immediate: true });
 	},
 
