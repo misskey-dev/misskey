@@ -466,6 +466,9 @@ export default defineComponent({
 						display: block;
 						padding: 6px 8px;
 						border-radius: 4px;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
 
 						&:hover {
 							text-decoration: none;
