@@ -705,6 +705,7 @@ apply: "Apply"
 receiveAnnouncementFromInstance: "Receive Email notifications from this instance"
 emailNotification: "Email notifications"
 inChannelSearch: "Search in channel"
+useReactionPickerForContextMenu: "Open reaction picker on right-click"
 _email:
   _follow:
     title: "You've got a new follower"
