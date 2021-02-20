@@ -707,6 +707,9 @@ emailNotification: "邮件通知"
 inChannelSearch: "频道内搜索"
 useReactionPickerForContextMenu: "单击右键打开回应工具栏"
 typingUsers: "{users}正在输入"
+jumpToSpecifiedDate: "跳转到特定日期"
+showingPastTimeline: "显示过去时间线"
+clear: "清除"
 _email:
   _follow:
     title: "你有新的关注者"
