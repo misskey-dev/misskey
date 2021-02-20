@@ -1,5 +1,5 @@
 <template>
-<div class="" :ref="mounted">
+<div class="">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $ts.noNotes }}</div>
