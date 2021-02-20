@@ -706,6 +706,7 @@ receiveAnnouncementFromInstance: "E-Mail-Benachrichtigungen von dieser Instanz e
 emailNotification: "E-Mail-Benachrichtigungen"
 inChannelSearch: "In Kanal suchen"
 useReactionPickerForContextMenu: "Reaktionsauswahl durch Rechtsklick öffnen"
+jumpToSpecifiedDate: "Zu bestimmtem Datum springen"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
