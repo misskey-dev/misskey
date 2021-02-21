@@ -12,7 +12,8 @@ import { Users, Followings, Mutings, UserProfiles, ChannelFollowings } from '../
 import { ApiError } from '../error';
 import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
-import { publishChannelStream } from '../../../services/stream';
+import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '../../../services/stream';
+import { UserGroup } from '../../../models/entities/user-group';
 
 /**
  * Main stream connection
@@ -94,7 +95,12 @@ export default class Connection {
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;
 			case 'ch': this.onChannelMessageRequested(body); break; // alias
+
+			// 個々のチャンネルではなくルートレベルでこれらのメッセージを受け取る理由は、
+			// クライアントの事情を考慮したとき、入力フォームはノートチャンネルやメッセージのメインコンポーネントとは別
+			// なこともあるため、それらのコンポーネントがそれぞれ各チャンネルに接続するようにするのは面倒なため。
 			case 'typingOnChannel': this.typingOnChannel(body.channel); break;
+			case 'typingOnMessaging': this.typingOnMessaging(body); break;
 		}
 	}
 
@@ -264,6 +270,17 @@ export default class Connection {
 	private typingOnChannel(channel: ChannelModel['id']) {
 		if (this.user) {
 			publishChannelStream(channel, 'typing', this.user.id);
+		}
+	}
+
+	@autobind
+	private typingOnMessaging(param: { partner?: User['id']; group?: UserGroup['id']; }) {
+		if (this.user) {
+			if (param.partner) {
+				publishMessagingStream(param.partner, this.user.id, 'typing', this.user.id);
+			} else if (param.group) {
+				publishGroupMessagingStream(param.group, 'typing', this.user.id);
+			}
 		}
 	}
 
