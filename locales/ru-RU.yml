@@ -705,6 +705,7 @@ apply: "Применить"
 receiveAnnouncementFromInstance: "Получать оповещения с инстанса"
 emailNotification: "Уведомления по электронной почте"
 inChannelSearch: "Поиск по каналу"
+useReactionPickerForContextMenu: "Открывать палитру реакций правой кнопкой"
 _email:
   _follow:
     title: "Новый подписчик"
