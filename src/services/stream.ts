@@ -6,6 +6,7 @@ import { ReversiGame } from '../models/entities/games/reversi/game';
 import { UserGroup } from '../models/entities/user-group';
 import config from '../config';
 import { Antenna } from '../models/entities/antenna';
+import { Channel } from '../models/entities/channel';
 
 class Publisher {
 	private publish = (channel: string, type: string | null, value?: any): void => {
@@ -36,6 +37,10 @@ class Publisher {
 			id: noteId,
 			body: value
 		});
+	}
+
+	public publishChannelStream = (channelId: Channel['id'], type: string, value?: any): void => {
+		this.publish(`channelStream:${channelId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	public publishUserListStream = (listId: UserList['id'], type: string, value?: any): void => {
@@ -84,6 +89,7 @@ export const publishMainStream = publisher.publishMainStream;
 export const publishDriveStream = publisher.publishDriveStream;
 export const publishNoteStream = publisher.publishNoteStream;
 export const publishNotesStream = publisher.publishNotesStream;
+export const publishChannelStream = publisher.publishChannelStream;
 export const publishUserListStream = publisher.publishUserListStream;
 export const publishAntennaStream = publisher.publishAntennaStream;
 export const publishMessagingStream = publisher.publishMessagingStream;

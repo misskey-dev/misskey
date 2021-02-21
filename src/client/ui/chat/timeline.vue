@@ -1,7 +1,24 @@
 <template>
-<div class="dbiokgaf">
+<div class="dbiokgaf info" v-if="date">
+	<MkInfo>{{ $ts.showingPastTimeline }} <button class="_textButton clear" @click="timetravel()">{{ $ts.clear }}</button></MkInfo>
+</div>
+<div class="dbiokgaf top" v-if="['home', 'local', 'social', 'global'].includes(src)">
+	<XPostForm/>
+</div>
+<div class="dbiokgaf tl" ref="body">
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px', [pagination.reversed ? 'bottom' : 'top']: pagination.reversed ? bottom + 'px' : top + 'px' }"><button class="_buttonPrimary" @click="goTop()">{{ $ts.newNoteRecived }}</button></div>
 	<XNotes class="tl" ref="tl" :pagination="pagination" @queue="queueUpdated" v-follow="pagination.reversed"/>
+</div>
+<div class="dbiokgaf bottom" v-if="src === 'channel'">
+	<div class="typers" v-if="typers.length > 0">
+		<I18n :src="$ts.typingUsers" text-tag="span" class="users">
+			<template #users>
+				<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
+			</template>
+		</I18n>
+		<MkEllipsis/>
+	</div>
+	<XPostForm :channel="channel"/>
 </div>
 </template>
 
@@ -12,10 +29,14 @@ import * as os from '@/os';
 import * as sound from '@/scripts/sound';
 import { scrollToBottom, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
 import follow from '@/directives/follow-append';
+import XPostForm from './post-form.vue';
+import MkInfo from '@/components/ui/info.vue';
 
 export default defineComponent({
 	components: {
-		XNotes
+		XNotes,
+		XPostForm,
+		MkInfo,
 	},
 
 	directives: {
@@ -45,11 +66,6 @@ export default defineComponent({
 			type: String,
 			required: false
 		},
-		sound: {
-			type: Boolean,
-			required: false,
-			default: false,
-		}
 	},
 
 	emits: ['note', 'queue', 'before', 'after'],
@@ -69,6 +85,8 @@ export default defineComponent({
 			width: 0,
 			top: 0,
 			bottom: 0,
+			typers: [],
+			date: null
 		};
 	},
 
@@ -78,9 +96,7 @@ export default defineComponent({
 
 			this.$emit('note');
 
-			if (this.sound) {
-				sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
-			}
+			sound.play(note.userId === this.$i.id ? 'noteMy' : 'note');
 		};
 
 		const onUserAdded = () => {
@@ -166,6 +182,9 @@ export default defineComponent({
 				channelId: this.channel
 			});
 			this.connection.on('note', prepend);
+			this.connection.on('typers', typers => {
+				this.typers = this.$i ? typers.filter(u => u.id !== this.$i.id) : typers;
+			});
 		}
 
 		this.pagination = {
@@ -173,7 +192,7 @@ export default defineComponent({
 			reversed,
 			limit: 10,
 			params: init => ({
-				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+				untilDate: this.date?.getTime(),
 				...this.baseQuery, ...this.query
 			})
 		};
@@ -190,34 +209,73 @@ export default defineComponent({
 
 	methods: {
 		focus() {
-			this.$refs.tl.focus();
+			this.$refs.body.focus();
 		},
 
 		goTop() {
-			const container = getScrollContainer(this.$el);
+			const container = getScrollContainer(this.$refs.body);
 			container.scrollTop = 0;
 		},
 
 		queueUpdated(q) {
-			if (this.$el.offsetWidth !== 0) {
-				const rect = this.$el.getBoundingClientRect();
-				const scrollTop = getScrollPosition(this.$el);
-				this.width = this.$el.offsetWidth;
-				this.top = rect.top + scrollTop;
-				this.bottom = this.$el.offsetHeight;
+			if (this.$refs.body.offsetWidth !== 0) {
+				const rect = this.$refs.body.getBoundingClientRect();
+				this.width = this.$refs.body.offsetWidth;
+				this.top = rect.top;
+				this.bottom = this.$refs.body.offsetHeight;
 			}
 			this.queue = q;
 		},
+
+		timetravel(date?: Date) {
+			this.date = date;
+			this.$refs.tl.reload();
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.dbiokgaf {
-	padding: 16px 0;
+.dbiokgaf.info{
+	padding: 16px 16px 0 16px;
+}
 
-	// TODO: これはノート追加アニメーションによるスクロール発生を抑えるために必要だが、position stickyが効かなくなるので、両者を両立させる良い方法を考える
-	overflow: hidden;
+.dbiokgaf.top {
+	padding: 16px 16px 0 16px;
+}
+
+.dbiokgaf.bottom {
+	padding: 0 16px 16px 16px;
+	position: relative;
+
+	> .typers {
+		position: absolute;
+		bottom: 100%;
+		padding: 0 8px 0 8px;
+		font-size: 0.9em;
+		background: var(--panel);
+		border-radius: 0 8px 0 0;
+		color: var(--fgTransparentWeak);
+
+		> .users {
+			> .user + .user:before {
+				content: ", ";
+				font-weight: normal;
+			}
+
+			> .user:last-of-type:after {
+				content: " ";
+			}
+		}
+	}
+}
+
+.dbiokgaf.tl {
+	position: relative;
+	padding: 16px 0;
+	flex: 1;
+	min-width: 0;
+	overflow: auto;
 
 	> .new {
 		position: fixed;
