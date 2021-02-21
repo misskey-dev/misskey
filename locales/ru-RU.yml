@@ -704,6 +704,7 @@ editCode: "Редактировать исходный текст"
 apply: "Применить"
 receiveAnnouncementFromInstance: "Получать оповещения с инстанса"
 emailNotification: "Уведомления по электронной почте"
+inChannelSearch: "Поиск по каналу"
 _email:
   _follow:
     title: "Новый подписчик"
