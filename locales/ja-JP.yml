@@ -706,6 +706,11 @@ apply: "適用"
 receiveAnnouncementFromInstance: "インスタンスからのお知らせを受け取る"
 emailNotification: "メール通知"
 inChannelSearch: "チャンネル内検索"
+useReactionPickerForContextMenu: "右クリックでリアクションピッカーを開く"
+typingUsers: "{users}が入力中"
+jumpToSpecifiedDate: "特定の日付にジャンプ"
+showingPastTimeline: "過去のタイムラインを表示しています"
+clear: "クリア"
 
 _email:
   _follow:

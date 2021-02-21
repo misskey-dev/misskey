@@ -60,7 +60,7 @@ export default defineComponent({
 				}
 			}).then(({ canceled, result: password }) => {
 				if (canceled) return;
-				os.api('i/update-email', {
+				os.apiWithDialog('i/update-email', {
 					password: password,
 					email: this.emailAddress,
 				});

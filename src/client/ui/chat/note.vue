@@ -741,7 +741,13 @@ export default defineComponent({
 			};
 			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
-			os.contextMenu(this.getMenu(), e).then(this.focus);
+			
+			if (this.$store.state.useReactionPickerForContextMenu) {
+				e.preventDefault();
+				this.react();
+			} else {
+				os.contextMenu(this.getMenu(), e).then(this.focus);
+			}
 		},
 
 		menu(viaKeyboard = false) {
@@ -1004,7 +1010,7 @@ export default defineComponent({
 			flex-shrink: 0;
 			display: block;
 			position: sticky;
-			top: 12px;
+			top: 0;
 			margin: 0 14px 0 0;
 			width: 46px;
 			height: 46px;
@@ -1085,6 +1091,7 @@ export default defineComponent({
 
 					> .poll {
 						font-size: 80%;
+						max-width: 500px;
 					}
 
 					> .renote {

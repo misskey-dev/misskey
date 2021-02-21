@@ -1,5 +1,5 @@
 <template>
-<div class="" :ref="mounted">
+<div class="">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $ts.noNotes }}</div>
@@ -8,10 +8,10 @@
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_buttonPrimary" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<MkButton style="margin: 0 auto;" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
-		</button>
+		</MkButton>
 	</div>
 
 	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
@@ -19,10 +19,10 @@
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_buttonPrimary" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+		<MkButton style="margin: 0 auto;" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
 			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
-		</button>
+		</MkButton>
 	</div>
 </div>
 </template>
@@ -32,10 +32,11 @@ import { defineComponent } from 'vue';
 import paging from '@/scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
+import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
 	components: {
-		XNote, XList,
+		XNote, XList, MkButton,
 	},
 
 	mixins: [

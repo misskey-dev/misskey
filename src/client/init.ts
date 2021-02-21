@@ -63,6 +63,9 @@ import { reloadChannel } from '@/scripts/unison-reload';
 
 console.info(`Misskey v${version}`);
 
+// boot.jsのやつを解除
+window.onerror = null;
+
 if (_DEV_) {
 	console.warn('Development mode!!!');
 

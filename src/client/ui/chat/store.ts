@@ -10,4 +10,8 @@ export const store = markRaw(new Storage('chatUi', {
 			data: Record<string, any>;
 		}[]
 	},
+	tl: {
+		where: 'deviceAccount',
+		default: 'home'
+	},
 }));
