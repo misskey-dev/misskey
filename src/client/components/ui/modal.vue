@@ -70,6 +70,7 @@ export default defineComponent({
 			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
 				const rect = this.src.getBoundingClientRect();
+				
 				const width = popover.offsetWidth;
 				const height = popover.offsetHeight;
 

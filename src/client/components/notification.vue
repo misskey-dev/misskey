@@ -115,14 +115,14 @@ export default defineComponent({
 
 			this.connection = os.stream.useSharedConnection('main');
 
+			// 既読処理
+			// notification.isReadは更新しないので注意
 			this.connection.on('readAllNotifications', () => {
 				this.readObserver.unobserve(this.$el);
-				this.notification = markNotificationRead(this.notification);
 			});
 			this.connection.on('readNotifications', notificationIds => {
 				if (notificationIds.includes(this.notification.id)) {
 					this.readObserver.unobserve(this.$el);
-					this.notification = markNotificationRead(this.notification);
 				}
 			})
 		}

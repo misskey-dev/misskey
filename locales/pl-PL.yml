@@ -93,6 +93,7 @@ cantRenote: "Ten wpis nie może zostać udostępniony."
 cantReRenote: "Udostępnienie nie może zostać udostępnione."
 quote: "Cytuj"
 pinnedNote: "Przypięty wpis"
+pinned: "Przypnij do profilu"
 you: "Ty"
 clickToShow: "Kliknij, aby wyświetlić"
 sensitive: "NSFW"
@@ -643,6 +644,9 @@ backgroundColor: "Tło"
 accentColor: "Akcent"
 textColor: "Tekst"
 value: "Wartość"
+_email:
+  _follow:
+    title: "Zaobserwował(a) Cię"
 _registry:
   key: "Klucz"
   keys: "Klucz"

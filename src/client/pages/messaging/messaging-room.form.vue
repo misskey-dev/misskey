@@ -7,6 +7,7 @@
 		v-model="text"
 		ref="text"
 		@keypress="onKeypress"
+		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
 		:placeholder="$ts.inputMessageHere"
 	></textarea>
@@ -29,6 +30,7 @@ import { formatTimeString } from '../../../misc/format-time-string';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { Autocomplete } from '@/scripts/autocomplete';
+import { throttle } from 'throttle-debounce';
 
 export default defineComponent({
 	props: {
@@ -46,6 +48,9 @@ export default defineComponent({
 			text: null,
 			file: null,
 			sending: false,
+			typing: throttle(3000, () => {
+				os.stream.send('typingOnMessaging', this.user ? { partner: this.user.id } : { group: this.group.id });
+			}),
 			faPaperPlane, faPhotoVideo, faLaughSquint
 		};
 	},
@@ -147,9 +152,14 @@ export default defineComponent({
 		},
 
 		onKeypress(e) {
+			this.typing();
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
 				this.send();
 			}
+		},
+
+		onCompositionUpdate() {
+			this.typing();
 		},
 
 		chooseFile(e) {

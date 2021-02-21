@@ -96,6 +96,7 @@ cantRenote: "No se puede renotar este post"
 cantReRenote: "No se puede renotar una renota"
 quote: "Citar"
 pinnedNote: "Nota fijada"
+pinned: "Fijar"
 you: "Tú"
 clickToShow: "Click para ver"
 sensitive: "Marcado como sensible"
@@ -651,6 +652,9 @@ backgroundColor: "Fondo"
 accentColor: "Acento"
 textColor: "Texto"
 value: "Valores"
+_email:
+  _follow:
+    title: "te ha seguido"
 _registry:
   key: "Clave"
   keys: "Clave"

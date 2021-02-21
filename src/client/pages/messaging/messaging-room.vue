@@ -16,6 +16,14 @@
 			</XList>
 		</div>
 		<footer>
+			<div class="typers" v-if="typers.length > 0">
+				<I18n :src="$ts.typingUsers" text-tag="span" class="users">
+					<template #users>
+						<b v-for="user in typers" :key="user.id" class="user">{{ user.username }}</b>
+					</template>
+				</I18n>
+				<MkEllipsis/>
+			</div>
 			<transition name="fade">
 				<div class="new-message" v-show="showIndicator">
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $ts.newMessageExists }}</button>
@@ -86,6 +94,7 @@ const Component = defineComponent({
 			connection: null,
 			showIndicator: false,
 			timer: null,
+			typers: [],
 			ilObserver: new IntersectionObserver(
 				(entries) => entries.some((entry) => entry.isIntersecting)
 					&& !this.fetching
@@ -142,6 +151,9 @@ const Component = defineComponent({
 			this.connection.on('message', this.onMessage);
 			this.connection.on('read', this.onRead);
 			this.connection.on('deleted', this.onDeleted);
+			this.connection.on('typers', typers => {
+				this.typers = typers.filter(u => u.id !== this.$i.id);
+			});
 
 			document.addEventListener('visibilitychange', this.onVisibilitychange);
 
@@ -397,6 +409,7 @@ export default Component;
 
 	> footer {
 		width: 100%;
+		position: relative;
 
 		> .new-message {
 			position: absolute;
@@ -419,6 +432,25 @@ export default Component;
 					left: 10px;
 					line-height: 32px;
 					font-size: 16px;
+				}
+			}
+		}
+
+		> .typers {
+			position: absolute;
+			bottom: 100%;
+			padding: 0 8px 0 8px;
+			font-size: 0.9em;
+			color: var(--fgTransparentWeak);
+
+			> .users {
+				> .user + .user:before {
+					content: ", ";
+					font-weight: normal;
+				}
+
+				> .user:last-of-type:after {
+					content: " ";
 				}
 			}
 		}

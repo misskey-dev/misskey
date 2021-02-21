@@ -17,6 +17,7 @@ const data = localStorage.getItem('account');
 export const $i = data ? reactive(JSON.parse(data) as Account) : null;
 
 export async function signout() {
+	waiting();
 	localStorage.removeItem('account');
 
 	//#region Remove account
@@ -42,7 +43,7 @@ export async function signout() {
 	document.cookie = `igi=; path=/`;
 
 	if (accounts.length > 0) login(accounts[0].token);
-	else location.href = '/';
+	else unisonReload(true);
 }
 
 export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
@@ -92,16 +93,16 @@ export function refreshAccount() {
 	return fetchAccount($i.token).then(updateAccount);
 }
 
-export async function login(token: Account['token'], href?: string) {
+export async function login(token: Account['token'], redirect?: string) {
 	waiting();
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
 	localStorage.setItem('account', JSON.stringify(me));
 	await addAccount(me.id, token);
 
-	if (href) {
+	if (redirect) {
 		reloadChannel.postMessage('reload');
-		location.href = href;
+		location.href = redirect;
 		return;
 	}
 

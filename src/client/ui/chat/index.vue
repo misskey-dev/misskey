@@ -99,7 +99,13 @@
 			<div class="right">
 				<div class="instance">{{ instanceName }}</div>
 				<XHeaderClock class="clock"/>
-				<button class="_button button search" @click="search" v-tooltip="$ts.search">
+				<button class="_button button timetravel" @click="timetravel" v-tooltip="$ts.jumpToSpecifiedDate">
+					<Fa :icon="faCalendarAlt"/>
+				</button>
+				<button class="_button button search" v-if="tl.startsWith('channel:') && currentChannel" @click="inChannelSearch" v-tooltip="$ts.inChannelSearch">
+					<Fa :icon="faSearch"/>
+				</button>
+				<button class="_button button search" v-else @click="search" v-tooltip="$ts.search">
 					<Fa :icon="faSearch"/>
 				</button>
 				<button class="_button button follow" v-if="tl.startsWith('channel:') && currentChannel" :class="{ followed: currentChannel.isFollowing }" @click="toggleChannelFollow" v-tooltip="currentChannel.isFollowing ? $ts.unfollow : $ts.follow">
@@ -111,14 +117,9 @@
 				</button>
 			</div>
 		</header>
-		<div class="body">
-			<XTimeline v-if="tl.startsWith('channel:')" src="channel" :key="tl" :channel="tl.replace('channel:', '')"/>
-			<XTimeline v-else :src="tl" :key="tl"/>
-		</div>
-		<footer class="footer">
-			<XPostForm v-if="tl.startsWith('channel:')" :key="tl" :channel="tl.replace('channel:', '')"/>
-			<XPostForm v-else/>
-		</footer>
+
+		<XTimeline class="body" ref="tl" v-if="tl.startsWith('channel:')" src="channel" :key="tl" :channel="tl.replace('channel:', '')"/>
+		<XTimeline class="body" ref="tl" v-else :src="tl" :key="tl"/>
 	</main>
 
 	<XSide class="side" ref="side" @open="sideViewOpening = true" @close="sideViewOpening = false"/>
@@ -133,20 +134,20 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, faAt, faLink, faEllipsisH, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faStar as farStar, faEnvelope, faComments } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faStar as farStar, faEnvelope, faComments, faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
 import { instanceName, url } from '@/config';
 import XSidebar from '@/components/sidebar.vue';
 import XWidgets from './widgets.vue';
 import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';
 import XTimeline from './timeline.vue';
-import XPostForm from './post-form.vue';
 import XHeaderClock from './header-clock.vue';
 import * as os from '@/os';
 import { router } from '@/router';
 import { sidebarDef } from '@/sidebar';
 import { search } from '@/scripts/search';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { store } from './store';
 
 export default defineComponent({
 	components: {
@@ -155,7 +156,6 @@ export default defineComponent({
 		XWidgets,
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
 		XTimeline,
-		XPostForm,
 		XHeaderClock,
 	},
 
@@ -186,7 +186,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			tl: 'home',
+			tl: store.state.tl,
 			lists: null,
 			antennas: null,
 			followedChannels: null,
@@ -195,11 +195,16 @@ export default defineComponent({
 			menuDef: sidebarDef,
 			sideViewOpening: false,
 			instanceName,
-			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar, faAt, faLink, faEllipsisH, faGlobe, faComments, faEnvelope,
+			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, farStar, faAt, faLink, faEllipsisH, faGlobe, faComments, faEnvelope, faCalendarAlt,
 		};
 	},
 
 	created() {
+		if (window.innerWidth < 1024) {
+			localStorage.setItem('ui', 'default');
+			location.reload();
+		}
+
 		router.beforeEach((to, from) => {
 			this.$refs.side.navigate(to.fullPath);
 			// search?q=foo のようなクエリを受け取れるようにするため、return falseはできない
@@ -214,11 +219,12 @@ export default defineComponent({
 			this.antennas = antennas;
 		});
 
-		os.api('channels/followed').then(channels => {
+		os.api('channels/followed', { limit: 20 }).then(channels => {
 			this.followedChannels = channels;
 		});
 
-		os.api('channels/featured').then(channels => {
+		// TODO: pagination
+		os.api('channels/featured', { limit: 20 }).then(channels => {
 			this.featuredChannels = channels;
 		});
 
@@ -228,6 +234,7 @@ export default defineComponent({
 					this.currentChannel = channel;
 				});
 			}
+			store.set('tl', this.tl);
 		}, { immediate: true });
 	},
 
@@ -240,8 +247,29 @@ export default defineComponent({
 			os.post();
 		},
 
+		async timetravel() {
+			const { canceled, result: date } = await os.dialog({
+				title: this.$ts.date,
+				input: {
+					type: 'date'
+				}
+			});
+			if (canceled) return;
+
+			this.$refs.tl.timetravel(new Date(date));
+		},
+
 		search() {
 			search();
+		},
+
+		async inChannelSearch() {
+			const { canceled, result: query } = await os.dialog({
+				title: this.$ts.inChannelSearch,
+				input: true
+			});
+			if (canceled || query == null || query === '') return;
+			router.push(`/search?q=${encodeURIComponent(query)}&channel=${this.currentChannel.id}`);
 		},
 
 		top() {
@@ -414,10 +442,12 @@ export default defineComponent({
 		> .body {
 			flex: 1;
 			min-width: 0;
-			padding: 8px 0;
 			overflow: auto;
 
 			> .container {
+				margin-top: 8px;
+				margin-bottom: 8px;
+
 				& + .container {
 					margin-top: 16px;
 				}
@@ -426,10 +456,21 @@ export default defineComponent({
 					display: flex;
 					font-size: 0.9em;
 					padding: 8px 16px;
-					opacity: 0.7;
+					position: sticky;
+					top: 0;
+					background: var(--X17);
+					-webkit-backdrop-filter: blur(8px);
+					backdrop-filter: blur(8px);
+					z-index: 1;
+					color: var(--fgTransparentWeak);
 
 					> .add {
 						margin-left: auto;
+						color: var(--fgTransparentWeak);
+
+						&:hover {
+							color: var(--fg);
+						}
 					}
 				}
 
@@ -440,6 +481,9 @@ export default defineComponent({
 						display: block;
 						padding: 6px 8px;
 						border-radius: 4px;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
 
 						&:hover {
 							text-decoration: none;
@@ -448,11 +492,11 @@ export default defineComponent({
 
 						&.active, &.active:hover {
 							background: var(--accent);
-							color: #fff;
+							color: #fff !important;
 						}
 
 						&.read {
-							opacity: 0.5;
+							color: var(--fgTransparent);
 						}
 
 						> .icon {
@@ -527,6 +571,7 @@ export default defineComponent({
 
 				> .instance {
 					margin-right: 16px;
+					font-size: 0.9em;
 				}
 
 				> .clock {
@@ -549,16 +594,6 @@ export default defineComponent({
 					}
 				}
 			}
-		}
-
-		> .footer {
-			padding: 0 16px 16px 16px;
-		}
-
-		> .body {
-			flex: 1;
-			min-width: 0;
-			overflow: auto;
 		}
 	}
 

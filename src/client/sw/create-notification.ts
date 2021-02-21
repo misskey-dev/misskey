@@ -205,6 +205,4 @@ async function composeAllReadNotification(type: string): Promise<[string, Notifi
 			tag: 'user_visible_auto_notification',
 		}];
 	}
-
-	return;
 }

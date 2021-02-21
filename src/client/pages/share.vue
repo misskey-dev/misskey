@@ -70,8 +70,9 @@ export default defineComponent({
 
 		let noteText = '';
 		if (this.title) noteText += `【${this.title}】\n`;
-		// titleとtext（またはtext. Googleニュースがこれを吐く）が同一であればtextを省略
-		if (text && this.title !== text && this.title !== `${text}.`) noteText += `${text}\n`;
+		// Googleニュース対策
+		if (text?.startsWith(`${this.title}.\n`)) noteText += text.replace(`${this.title}.\n`, '');
+		else if (text && this.title !== text) noteText += `${text}\n`;
 		if (url) noteText += `${url}`;
 		this.initialText = noteText.trim();
 
