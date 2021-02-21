@@ -756,7 +756,13 @@ export default defineComponent({
 			};
 			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
-			os.contextMenu(this.getMenu(), e).then(this.focus);
+
+			if (this.$store.state.useReactionPickerForContextMenu) {
+				e.preventDefault();
+				this.react();
+			} else {
+				os.contextMenu(this.getMenu(), e).then(this.focus);
+			}
 		},
 
 		menu(viaKeyboard = false) {

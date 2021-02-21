@@ -19,6 +19,7 @@
 		<template #label>{{ $ts.behavior }}</template>
 		<FormSwitch v-model:value="imageNewTab">{{ $ts.openImageInNewTab }}</FormSwitch>
 		<FormSwitch v-model:value="enableInfiniteScroll">{{ $ts.enableInfiniteScroll }}</FormSwitch>
+		<FormSwitch v-model:value="useReactionPickerForContextMenu">{{ $ts.useReactionPickerForContextMenu }}</FormSwitch>
 		<FormSwitch v-model:value="disablePagesScript">{{ $ts.disablePagesScript }}</FormSwitch>
 	</FormGroup>
 
@@ -144,6 +145,7 @@ export default defineComponent({
 		chatOpenBehavior: ColdDeviceStorage.makeGetterSetter('chatOpenBehavior'),
 		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
 		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
+		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
 	},
 
 	watch: {
