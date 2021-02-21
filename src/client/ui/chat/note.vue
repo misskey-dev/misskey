@@ -1091,6 +1091,7 @@ export default defineComponent({
 
 					> .poll {
 						font-size: 80%;
+						max-width: 500px;
 					}
 
 					> .renote {
