@@ -1,29 +1,28 @@
 <template>
-<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
-	<div>
-		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
-		<span>{{ $ts.clickToShow }}</span>
+<div class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
+	<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-show="hide" @click="onShow">
+		<div>
+			<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+			<span>{{ $ts.clickToShow }}</span>
+		</div>
 	</div>
-</div>
-<div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
-	<a
-		:href="video.url"
-		rel="nofollow noopener"
-		target="_blank"
-		:style="imageStyle"
-		:title="video.name"
-	>
-		<Fa :icon="faPlayCircle"/>
-	</a>
+	<div class="video-container" v-show="hide === false">
+		<i><Fa :icon="faEyeSlash" @click="onHide"/></i>
+		<video
+			ref="videoCast"
+			class="video-js vjs-default-skin vjs-big-play-centered vjs-fluid"
+		>
+		</video>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
+import videojs from 'video.js';
+import 'video.js/dist/video-js.css';
 
 export default defineComponent({
 	props: {
@@ -35,20 +34,41 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faPlayCircle,
 			faExclamationTriangle,
-			faEyeSlash
+			faEyeSlash,
+			player: null,
 		};
 	},
 	computed: {
-		imageStyle(): any {
-			return {
-				'background-image': `url(${this.video.thumbnailUrl})`
-			};
-		}
 	},
 	created() {
 		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
+	},
+	mounted() {
+		this.$nextTick(() => {
+			this.player = videojs(this.$refs.videoCast, {
+				autoplay: false,
+				controls: true,
+				preload: "metadata",
+				playbackRates: [0.5, 0.7, 1.0, 1.5, 2.0, 2.5, 3.1],
+				poster: this.video.thumbnailUrl,
+				sources: [{
+					src: this.video.url,
+					type: this.video.type,
+				}]
+			}, () => {
+				// console.log('onPlayerReady', this.video);
+			});
+		});
+	},
+	methods: {
+		onShow() {
+			this.hide = false;
+		},
+		onHide() {
+			this.hide = true;
+			this.player.pause();
+		},
 	},
 });
 </script>
@@ -57,49 +77,50 @@ export default defineComponent({
 .kkjnbbplepmiyuadieoenjgutgcmtsvu {
 	position: relative;
 
-	> i {
-		display: block;
-		position: absolute;
-		border-radius: 6px;
-		background-color: var(--fg);
-		color: var(--accentLighten);
-		font-size: 14px;
-		opacity: .5;
-		padding: 3px 6px;
-		text-align: center;
-		cursor: pointer;
-		top: 12px;
-		right: 12px;
+	> .icozogqfvdetwohsdglrbswgrejoxbdj {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: #111;
+		color: #fff;
+		height: 100%;
+
+		> div {
+			display: table-cell;
+			text-align: center;
+			font-size: 12px;
+
+			> b {
+				display: block;
+			}
+		}
 	}
 
-	> a {
+	> div.video-container {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 
-		font-size: 3.5em;
 		overflow: hidden;
 		background-position: center;
 		background-size: cover;
 		width: 100%;
 		height: 100%;
-	}
-}
-
-.icozogqfvdetwohsdglrbswgrejoxbdj {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background: #111;
-	color: #fff;
-
-	> div {
-		display: table-cell;
-		text-align: center;
-		font-size: 12px;
-
-		> b {
+		
+		> i {
 			display: block;
+			position: absolute;
+			border-radius: 6px;
+			background-color: var(--fg);
+			color: var(--accentLighten);
+			font-size: 14px;
+			opacity: .5;
+			padding: 3px 6px;
+			text-align: center;
+			cursor: pointer;
+			top: 12px;
+			right: 12px;
+			z-index: 1;
 		}
 	}
 }
