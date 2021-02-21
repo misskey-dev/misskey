@@ -49,8 +49,8 @@ export default defineComponent({
 			this.player = videojs(this.$refs.videoCast, {
 				autoplay: false,
 				controls: true,
-				preload: "metadata",
-				playbackRates: [0.5, 0.7, 1.0, 1.5, 2.0, 2.5, 3.1],
+				preload: "none",
+				playbackRates: [0.5, 1.0, 1.5, 2.0, 3.0],
 				poster: this.video.thumbnailUrl,
 				sources: [{
 					src: this.video.url,
