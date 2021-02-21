@@ -11,6 +11,10 @@
 
 'use strict';
 
+window.onerror = (e) => {
+	document.documentElement.innerHTML = '問題が発生しました。';
+};
+
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
 	const v = localStorage.getItem('v') || VERSION;

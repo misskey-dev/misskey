@@ -46,6 +46,11 @@ export const meta = {
 			validator: $.optional.nullable.type(ID),
 			default: null
 		},
+
+		channelId: {
+			validator: $.optional.nullable.type(ID),
+			default: null
+		},
 	},
 
 	res: {
@@ -64,7 +69,15 @@ export const meta = {
 
 export default define(meta, async (ps, me) => {
 	if (es == null) {
-		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+
+		if (ps.userId) {
+			query.andWhere('note.userId = :userId', { userId: ps.userId });
+		} else if (ps.channelId) {
+			query.andWhere('note.channelId = :channelId', { channelId: ps.channelId });
+		}
+
+		query
 			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
 			.leftJoinAndSelect('note.user', 'user');
 

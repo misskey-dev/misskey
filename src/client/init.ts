@@ -72,6 +72,9 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 
 console.info(`Misskey v${version}`);
 
+// boot.jsのやつを解除
+window.onerror = null;
+
 if (_DEV_) {
 	console.warn('Development mode!!!');
 
