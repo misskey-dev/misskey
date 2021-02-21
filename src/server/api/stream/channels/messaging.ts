@@ -98,7 +98,7 @@ export default class extends Channel {
 	@autobind
 	public dispose() {
 		this.subscriber.off(this.subCh, this.onEvent);
-	
+
 		clearInterval(this.emitTypersIntervalId);
 	}
 }
