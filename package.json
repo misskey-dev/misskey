@@ -36,7 +36,7 @@
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.12.15",
-		"@elastic/elasticsearch": "7.10.0",
+		"@elastic/elasticsearch": "7.11.0",
 		"@fortawesome/fontawesome-svg-core": "1.2.34",
 		"@fortawesome/free-brands-svg-icons": "5.15.2",
 		"@fortawesome/free-regular-svg-icons": "5.15.2",
