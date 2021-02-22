@@ -104,7 +104,7 @@ export default class Logger {
 					worker: worker.toString(),
 					domain: [this.domain].concat(subDomains).map(d => d.name),
 					level: level,
-					message: message.substr(0, 1000), // 1024を超えるとログが挿入できずエラーになり無限ループする
+					message: message?.substr(0, 1000), // 1024を超えるとログが挿入できずエラーになり無限ループする
 					data: data,
 				} as Log);
 			}
