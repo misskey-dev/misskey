@@ -119,7 +119,7 @@ export default class Logger {
 		} else if (typeof x === 'object') {
 			this.log('error', `${(x as any).message || (x as any).name || x}`, data, important);
 		} else {
-			this.log('error', x, data, important);
+			this.log('error', `${x}`, data, important);
 		}
 	}
 
