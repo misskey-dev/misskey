@@ -1,6 +1,6 @@
 declare var self: ServiceWorkerGlobalScope;
 
-import { get } from 'idb-keyval';
+import { get } from '@/scripts/idb-proxy';
 import { pushNotificationData } from '../../types';
 import { api } from './operations';
 

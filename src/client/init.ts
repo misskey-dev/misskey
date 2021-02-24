@@ -4,7 +4,7 @@
 
 import '@/style.scss';
 
-import { set } from 'idb-keyval';
+import { set } from '@/scripts/idb-proxy';
 
 // TODO: そのうち消す
 if (localStorage.getItem('vuex') != null) {

@@ -3,7 +3,7 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { get, set } from 'idb-keyval';
+import { get, set } from '@/scripts/idb-proxy';
 import { I18n } from '../../misc/i18n';
 
 class SwLang {
