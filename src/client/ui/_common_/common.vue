@@ -55,44 +55,46 @@ export default defineComponent({
 			const sideViewHook = inject('sideViewHook', null);
 
 			//#region Listen message from SW
-			navigator.serviceWorker.addEventListener('message', ev => {
-				if (_DEV_) {
-					console.log('sw msg', ev.data);
-				}
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.addEventListener('message', ev => {
+					if (_DEV_) {
+						console.log('sw msg', ev.data);
+					}
 
-				const data = ev.data as SwMessage;
-				if (data.type !== 'order') return;
+					const data = ev.data as SwMessage;
+					if (data.type !== 'order') return;
 
-				if (data.loginId !== $i?.id) {
-					return getAccountFromId(data.loginId).then(account => {
-						if (!account) return;
-						return login(account.token, data.url);
-					});
-				}
+					if (data.loginId !== $i?.id) {
+						return getAccountFromId(data.loginId).then(account => {
+							if (!account) return;
+							return login(account.token, data.url);
+						});
+					}
 
-				switch (data.order) {
-					case 'post':
-						return post(data.options);
-					case 'push':
-						if (data.url.startsWith('/my/messaging')) {
-							if (router.currentRoute.value.path === data.url) return;
-							if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return pageWindow(data.url);
-							if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return popout(data.url);
-						}
-						if (router.currentRoute.value.path === data.url) {
-							return window.scroll({ top: 0, behavior: 'smooth' });
-						}
-						if (navHook) {
-							return navHook(data.url);
-						}
-						if (sideViewHook && defaultStore.state.defaultSideView && data.url !== '/') {
-							return sideViewHook(data.url);
-						}
-						return router.push(data.url);
-					default:
-						return;
-				}
-			});
+					switch (data.order) {
+						case 'post':
+							return post(data.options);
+						case 'push':
+							if (data.url.startsWith('/my/messaging')) {
+								if (router.currentRoute.value.path === data.url) return;
+								if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return pageWindow(data.url);
+								if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return popout(data.url);
+							}
+							if (router.currentRoute.value.path === data.url) {
+								return window.scroll({ top: 0, behavior: 'smooth' });
+							}
+							if (navHook) {
+								return navHook(data.url);
+							}
+							if (sideViewHook && defaultStore.state.defaultSideView && data.url !== '/') {
+								return sideViewHook(data.url);
+							}
+							return router.push(data.url);
+						default:
+							return;
+					}
+				});
+			}
 		}
 
 		return {
