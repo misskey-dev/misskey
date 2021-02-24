@@ -66,11 +66,14 @@ import { search } from '@/scripts/search';
 import { isMobile } from '@/scripts/is-mobile';
 import { getThemes } from '@/theme-store';
 import { initializeSw } from '@/scripts/initialize-sw';
-import { reloadChannel } from '@/scripts/unison-reload';
+import { reload, reloadChannel } from '@/scripts/unison-reload';
 import { deleteLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 
 console.info(`Misskey v${version}`);
+
+// boot.jsのやつを解除
+window.onerror = null;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -117,7 +120,7 @@ if (defaultStore.state.reportError && !_DEV_) {
 document.addEventListener('touchend', () => {}, { passive: true });
 
 // 一斉リロード
-reloadChannel.addEventListener('message', () => location.reload());
+reloadChannel.addEventListener('message', reload);
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい

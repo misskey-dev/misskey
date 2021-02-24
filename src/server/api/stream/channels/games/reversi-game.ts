@@ -15,7 +15,7 @@ export default class extends Channel {
 
 	private gameId: ReversiGame['id'] | null = null;
 	private watchers: Record<User['id'], Date> = {};
-	private emitWatchersIntervalId: any;
+	private emitWatchersIntervalId: ReturnType<typeof setInterval>;
 
 	@autobind
 	public async init(params: any) {

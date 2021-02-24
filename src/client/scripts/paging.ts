@@ -192,8 +192,6 @@ export default (opts) => ({
 						this.items = this.items.slice(-opts.displayLimit);
 						this.more = true;
 					}
-				} else {
-
 				}
 				this.items.push(item);
 				// TODO
