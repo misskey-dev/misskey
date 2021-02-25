@@ -54,7 +54,7 @@
 						</template>
 					</I18n>
 				</li>
-				<li>{{ $ts._2fa.step2 }}<br><img :src="data.qr"></li>
+				<li>{{ $ts._2fa.step2 }}<br><img :src="data.qr"><p>{{ $ts._2fa.step2Url }}<br>{{ data.url }}</p></li>
 				<li>{{ $ts._2fa.step3 }}<br>
 					<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false">{{ $ts.token }}</MkInput>
 					<MkButton primary @click="submit">{{ $ts.done }}</MkButton>

@@ -38,15 +38,17 @@ export default define(meta, async (ps, user) => {
 	});
 
 	// Get the data URL of the authenticator URL
-	const dataUrl = await QRCode.toDataURL(speakeasy.otpauthURL({
+	const url = speakeasy.otpauthURL({
 		secret: secret.base32,
 		encoding: 'base32',
 		label: user.username,
 		issuer: config.host
-	}));
+	});
+	const dataUrl = await QRCode.toDataURL(url);
 
 	return {
 		qr: dataUrl,
+		url,
 		secret: secret.base32,
 		label: user.username,
 		issuer: config.host
