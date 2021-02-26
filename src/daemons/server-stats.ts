@@ -28,7 +28,7 @@ export default function() {
 		const stats = {
 			cpu: roundCpu(cpu),
 			mem: {
-				used: round(memStats.used),
+				used: round(memStats.used - memStats.buffers - memStats.cached),
 				active: round(memStats.active),
 			},
 			net: {
