@@ -69,71 +69,78 @@ export default defineComponent({
 	mounted() {
 		this.$watch('src', () => {
 			this.fixed = getFixedContainer(this.src) != null;
+			this.$nextTick(() => {
+				this.align();
+			});
 		}, { immediate: true });
 
 		this.$nextTick(() => {
 			const popover = this.$refs.content as any;
-
-			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
-				if (!this.popup) return;
-
-				const rect = this.src.getBoundingClientRect();
-				
-				const width = popover.offsetWidth;
-				const height = popover.offsetHeight;
-
-				let left;
-				let top;
-
-				if (this.srcCenter) {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
-					left = (x - (width / 2));
-					top = (y - (height / 2));
-				} else {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
-					left = (x - (width / 2));
-					top = y;
-				}
-
-				if (this.fixed) {
-					if (left + width > window.innerWidth) {
-						left = window.innerWidth - width;
-					}
-
-					if (top + height > window.innerHeight) {
-						top = window.innerHeight - height;
-					}
-				} else {
-					if (left + width - window.pageXOffset > window.innerWidth) {
-						left = window.innerWidth - width + window.pageXOffset - 1;
-					}
-
-					if (top + height - window.pageYOffset > window.innerHeight) {
-						top = window.innerHeight - height + window.pageYOffset - 1;
-					}
-				}
-
-				if (top < 0) {
-					top = 0;
-				}
-
-				if (left < 0) {
-					left = 0;
-				}
-
-				if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
-					this.transformOrigin = 'center top';
-				}
-
-				popover.style.left = left + 'px';
-				popover.style.top = top + 'px';
+				this.align();
 			}).observe(popover);
 		});
 	},
 	methods: {
+		align() {
+			if (!this.popup) return;
+
+			const popover = this.$refs.content as any;
+
+			const rect = this.src.getBoundingClientRect();
+			
+			const width = popover.offsetWidth;
+			const height = popover.offsetHeight;
+
+			let left;
+			let top;
+
+			if (this.srcCenter) {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
+				left = (x - (width / 2));
+				top = (y - (height / 2));
+			} else {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
+				left = (x - (width / 2));
+				top = y;
+			}
+
+			if (this.fixed) {
+				if (left + width > window.innerWidth) {
+					left = window.innerWidth - width;
+				}
+
+				if (top + height > window.innerHeight) {
+					top = window.innerHeight - height;
+				}
+			} else {
+				if (left + width - window.pageXOffset > window.innerWidth) {
+					left = window.innerWidth - width + window.pageXOffset - 1;
+				}
+
+				if (top + height - window.pageYOffset > window.innerHeight) {
+					top = window.innerHeight - height + window.pageYOffset - 1;
+				}
+			}
+
+			if (top < 0) {
+				top = 0;
+			}
+
+			if (left < 0) {
+				left = 0;
+			}
+
+			if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
+				this.transformOrigin = 'center top';
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
+		},
+
 		childRendered() {
 			// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 			const content = this.$refs.content.children[0];

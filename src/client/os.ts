@@ -360,16 +360,12 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 let reactionPicker = null;
 export async function pickReaction(src: HTMLElement, chosen, closed) {
 	if (reactionPicker) {
-		if (reactionPicker.opening) return;
-
-		reactionPicker.opening = true;
 		reactionPicker.src.value = src;
 		reactionPicker.manualShowing.value = true;
 		reactionPicker.chosen = chosen;
 		reactionPicker.closed = closed;
 	} else {
 		reactionPicker = {
-			opening: true,
 			src: ref(src),
 			manualShowing: ref(true),
 			chosen, closed
@@ -388,7 +384,6 @@ export async function pickReaction(src: HTMLElement, chosen, closed) {
 			closed: () => {
 				reactionPicker.src.value = null;
 				reactionPicker.closed();
-				reactionPicker.opening = false;
 			}
 		});
 	}
