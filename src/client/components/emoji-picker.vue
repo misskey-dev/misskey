@@ -28,7 +28,7 @@
 			</div>
 		</section>
 
-		<div class="index">
+		<div class="index" v-if="tab === 'index'">
 			<section v-if="showPinned">
 				<div>
 					<button v-for="emoji in pinned"
@@ -53,37 +53,31 @@
 					</button>
 				</div>
 			</section>
-
-			<div class="arrow"><Fa :icon="faChevronDown"/></div>
 		</div>
-
-		<section v-for="category in customEmojiCategories" :key="'custom:' + category" class="custom">
-			<header class="_acrylic" v-appear="() => visibleCategories[category] = true">{{ category || $ts.other }}</header>
-			<div v-if="visibleCategories[category]">
-				<button v-for="emoji in customEmojis.filter(e => e.category === category)"
-					class="_button"
-					:title="emoji.name"
-					@click="chosen(emoji, $event)"
-					:key="emoji.name"
-				>
-					<img :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url"/>
-				</button>
-			</div>
-		</section>
-
-		<section v-for="category in categories" :key="category.name" class="unicode">
-			<header class="_acrylic" v-appear="() => category.isActive = true"><Fa :icon="category.icon" fixed-width/> {{ category.name }}</header>
-			<div v-if="category.isActive">
-				<button v-for="emoji in emojilist.filter(e => e.category === category.name)"
-					class="_button"
-					:title="emoji.name"
-					@click="chosen(emoji, $event)"
-					:key="emoji.name"
-				>
-					<MkEmoji :emoji="emoji.char"/>
-				</button>
-			</div>
-		</section>
+		<div v-appear="() => showingCustomEmojis = true">
+			<header class="_acrylic">{{ $ts.customEmojis }}</header>
+			<template v-if="showingCustomEmojis">
+				<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')">{{ category || $ts.other }}</XSection>
+			</template>
+		</div>
+		<div v-appear="() => showingEmojis = true">
+			<header class="_acrylic">{{ $ts.emoji }}</header>
+			<template v-if="showingEmojis">
+				<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)">{{ category }}</XSection>
+			</template>
+		</div>
+		<div v-appear="() => showingTags = true">
+			<header class="_acrylic">{{ $ts.tags }}</header>
+			<template v-if="showingTags">
+				<XSection v-for="tag in emojiTags" :emojis="customEmojis.filter(e => e.aliases.includes(tag)).map(e => ':' + e.name + ':')">{{ tag }}</XSection>
+			</template>
+		</div>
+	</div>
+	<div class="tabs">
+		<button class="_button tab" :class="{ active: tab === 'index' }" @click="tab = 'index'"><Fa :icon="faAsterisk" fixed-width/></button>
+		<button class="_button tab" :class="{ active: tab === 'custom' }" @click="tab = 'custom'"><Fa :icon="faLaugh" fixed-width/></button>
+		<button class="_button tab" :class="{ active: tab === 'unicode' }" @click="tab = 'unicode'"><Fa :icon="faLeaf" fixed-width/></button>
+		<button class="_button tab" :class="{ active: tab === 'tags' }" @click="tab = 'tags'"><Fa :icon="faHashtag" fixed-width/></button>
 	</div>
 </div>
 </template>
@@ -92,15 +86,20 @@
 import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faClock, faUser, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faClock, faUser, faChevronDown, faShapes, faBicycle, faHashtag } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import Particle from '@/components/particle.vue';
 import * as os from '@/os';
 import { isDeviceTouch } from '@/scripts/is-device-touch';
 import { isMobile } from '@/scripts/is-mobile';
-import { emojiCategories } from '@/instance';
+import { emojiCategories, emojiTags } from '@/instance';
+import XSection from './emoji-picker.section.vue';
 
 export default defineComponent({
+	components: {
+		XSection
+	},
+
 	props: {
 		showPinned: {
 			required: false,
@@ -122,50 +121,17 @@ export default defineComponent({
 			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
 			customEmojiCategories: emojiCategories,
+			emojiTags,
 			customEmojis: this.$instance.emojis,
-			visibleCategories: {},
 			q: null,
 			searchResultCustom: [],
 			searchResultUnicode: [],
-			faGlobe, faClock, faChevronDown,
-			categories: [{
-				name: 'face',
-				icon: faLaugh,
-				isActive: false
-			}, {
-				name: 'people',
-				icon: faUser,
-				isActive: false
-			}, {
-				name: 'animals_and_nature',
-				icon: faLeaf,
-				isActive: false
-			}, {
-				name: 'food_and_drink',
-				icon: faUtensils,
-				isActive: false
-			}, {
-				name: 'activity',
-				icon: faFutbol,
-				isActive: false
-			}, {
-				name: 'travel_and_places',
-				icon: faCity,
-				isActive: false
-			}, {
-				name: 'objects',
-				icon: faDice,
-				isActive: false
-			}, {
-				name: 'symbols',
-				icon: faHeart,
-				isActive: false
-			}, {
-				name: 'flags',
-				icon: faFlag,
-				isActive: false
-			}],
-			faAsterisk
+			tab: 'index',
+			showingCustomEmojis: false,
+			showingEmojis: false,
+			showingTags: false,
+			categories: ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'],
+			faGlobe, faClock, faChevronDown, faAsterisk, faLaugh, faUtensils, faLeaf, faShapes, faBicycle, faHashtag,
 		};
 	},
 
@@ -342,7 +308,7 @@ export default defineComponent({
 				let recents = this.$store.state.recentlyUsedEmojis;
 				recents = recents.filter((e: any) => e !== key);
 				recents.unshift(key);
-				this.$store.set('recentlyUsedEmojis', recents.splice(0, 16));
+				this.$store.set('recentlyUsedEmojis', recents.splice(0, 32));
 			}
 		},
 
@@ -434,6 +400,22 @@ export default defineComponent({
 		}
 	}
 
+	> .tabs {
+		display: flex;
+		display: none;
+
+		> .tab {
+			flex: 1;
+			height: 38px;
+			border-top: solid 1px var(--divider);
+
+			&.active {
+				border-top: solid 1px var(--accent);
+				color: var(--accent);
+			}
+		}
+	}
+
 	> .emojis {
 		height: var(--height);
 		overflow-y: auto;
@@ -445,34 +427,43 @@ export default defineComponent({
 			display: none;
 		}
 
-		> .index {
-			min-height: var(--height);
-			position: relative;
-			border-bottom: solid 1px var(--divider);
-				
-			> .arrow {
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				padding: 16px 0;
-				text-align: center;
-				opacity: 0.5;
-				pointer-events: none;
+		> div {
+			&:not(.index) {
+				padding: 4px 0 8px 0;
+				border-top: solid 1px var(--divider);
+			}
+
+			> header {
+				/*position: sticky;
+				top: 0;
+				left: 0;*/
+				height: 32px;
+				line-height: 32px;
+				z-index: 2;
+				padding: 0 8px;
+				font-size: 12px;
 			}
 		}
 
-		section {
+		::v-deep(section) {
 			> header {
 				position: sticky;
 				top: 0;
 				left: 0;
+				height: 32px;
+				line-height: 32px;
 				z-index: 1;
-				padding: 8px;
+				padding: 0 8px;
 				font-size: 12px;
+				cursor: pointer;
+
+				&:hover {
+					color: var(--accent);
+				}
 			}
 
 			> div {
+				position: relative;
 				padding: $pad;
 
 				> button {
@@ -511,14 +502,6 @@ export default defineComponent({
 				&:empty {
 					display: none;
 				}
-			}
-
-			&.unicode {
-				min-height: 384px;
-			}
-
-			&.custom {
-				min-height: 64px;
 			}
 		}
 	}
