@@ -498,7 +498,7 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.popup(import('@/components/emoji-picker.vue'), {
+			os.popup(import('@/components/emoji-picker-dialog.vue'), {
 				src: this.$refs.reactButton,
 				asReactionPicker: true
 			}, {

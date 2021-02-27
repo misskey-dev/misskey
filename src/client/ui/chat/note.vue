@@ -504,7 +504,7 @@ export default defineComponent({
 			pleaseLogin();
 			this.operating = true;
 			this.blur();
-			const { dispose } = await os.popup(import('@/components/emoji-picker.vue'), {
+			const { dispose } = await os.popup(import('@/components/emoji-picker-dialog.vue'), {
 				src: this.$refs.reactButton,
 				asReactionPicker: true
 			}, {

@@ -1,8 +1,8 @@
 <template>
 <transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
-	<div class="ebkgocck" v-if="showing">
+	<div class="ebkgocck" :class="{ front }" v-if="showing">
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
-			<div class="header" @contextmenu.prevent.stop="onContextmenu">
+			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<slot v-if="closeRight" name="buttons"><button class="_button" style="pointer-events: none;"></button></slot>
 				<button v-else class="_button" @click="close()"><Fa :icon="faTimes"/></button>
 
@@ -88,6 +88,16 @@ export default defineComponent({
 			default: false,
 		},
 		closeRight: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		mini: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		front: {
 			type: Boolean,
 			required: false,
 			default: false,
@@ -387,6 +397,10 @@ export default defineComponent({
 	left: 0;
 	z-index: 5000;
 
+	&.front {
+		z-index: 11000; // front指定の時は、mk-modalのよりも大きくなければならない
+	}
+
 	> .body {
 		overflow: hidden; // overflow: clip; をSafariが対応したら消す
 		overflow: clip;
@@ -397,17 +411,22 @@ export default defineComponent({
     height: 100%;
 
 		> .header {
-			$height: 50px;
+			--height: 50px;
+
+			&.mini {
+				--height: 38px;
+			}
+
 			display: flex;
 			position: relative;
 			z-index: 1;
 			flex-shrink: 0;
 			user-select: none;
-			height: $height;
+			height: var(--height);
 
 			> ::v-deep(button) {
-				height: $height;
-				width: $height;
+				height: var(--height);
+				width: var(--height);
 
 				&:hover {
 					color: var(--fgHighlighted);
@@ -417,7 +436,7 @@ export default defineComponent({
 			> .title {
 				flex: 1;
 				position: relative;
-				line-height: $height;
+				line-height: var(--height);
 				white-space: nowrap;
 				overflow: hidden; // overflow: clip; をSafariが対応したら消す
 				overflow: clip;
