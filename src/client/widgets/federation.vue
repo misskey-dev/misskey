@@ -89,7 +89,8 @@ export default defineComponent({
 	$bodyInfoHieght: 16px;
 
 	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 
 	> .instances {
 		.chart-move {
@@ -113,7 +114,8 @@ export default defineComponent({
 
 			> .body {
 				flex: 1;
-				overflow: hidden;
+				overflow: hidden; // overflow: clip; をSafariが対応したら消す
+				overflow: clip;
 				font-size: 0.9em;
 				color: var(--fg);
 
@@ -121,7 +123,8 @@ export default defineComponent({
 					display: block;
 					width: 100%;
 					white-space: nowrap;
-					overflow: hidden;
+					overflow: hidden; // overflow: clip; をSafariが対応したら消す
+					overflow: clip;
 					text-overflow: ellipsis;
 					line-height: $bodyTitleHieght;
 				}

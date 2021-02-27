@@ -230,7 +230,8 @@ export default defineComponent({
 			$size: 12px;
 			background: rgba(0, 0, 0, 0.1);
 			border-radius: ($size / 2);
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 
 			> div {
 				height: $size;

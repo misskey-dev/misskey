@@ -504,7 +504,7 @@ export default defineComponent({
 			pleaseLogin();
 			this.operating = true;
 			this.blur();
-			const { dispose } = await os.popup(import('@/components/emoji-picker.vue'), {
+			const { dispose } = await os.popup(import('@/components/emoji-picker-dialog.vue'), {
 				src: this.$refs.reactButton,
 				asReactionPicker: true
 			}, {
@@ -964,7 +964,8 @@ export default defineComponent({
 		}
 
 		> span {
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			flex-shrink: 1;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -1037,7 +1038,8 @@ export default defineComponent({
 					&.collapsed {
 						position: relative;
 						max-height: 9em;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 
 						> .fade {
 							display: block;

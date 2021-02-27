@@ -144,7 +144,8 @@ export default defineComponent({
 			flex: 1;
 			min-width: 0;
 			white-space: nowrap;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			text-overflow: ellipsis;
 			margin-right: 12px;
 		}

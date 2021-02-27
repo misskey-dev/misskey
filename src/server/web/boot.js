@@ -20,9 +20,10 @@ window.onerror = (e) => {
 	const v = localStorage.getItem('v') || VERSION;
 
 	//#region Detect language & fetch translations
-	if (localStorage.hasOwnProperty('locale')) {
-		// TODO: 非同期でlocaleの更新処理をする
-	} else {
+	const localeVersion = localStorage.getItem('localeVersion');
+	const localeOutdated = (localeVersion == null || localeVersion !== v);
+
+	if (!localStorage.hasOwnProperty('locale') || localeOutdated) {
 		const supportedLangs = LANGS;
 		let lang = localStorage.getItem('lang');
 		if (lang == null || !supportedLangs.includes(lang)) {
@@ -39,6 +40,7 @@ window.onerror = (e) => {
 		const res = await fetch(`/assets/locales/${lang}.${v}.json`);
 		localStorage.setItem('lang', lang);
 		localStorage.setItem('locale', await res.text());
+		localStorage.setItem('localeVersion', v);
 	}
 	//#endregion
 

@@ -15,16 +15,18 @@ if (localStorage.getItem('vuex') != null) {
 	localStorage.setItem('accounts', JSON.stringify(vuex.device.accounts));
 	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
 
-	for (const [k, v] of 	Object.entries(vuex.device.userData)) {
-		localStorage.setItem('pizzax::base::' + k, JSON.stringify({
-			widgets: v.widgets
-		}));
-
-		if (v.deck) {
-			localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
-				columns: v.deck.columns,
-				layout: v.deck.layout,
+	if (vuex.device.userData) {
+		for (const [k, v] of 	Object.entries(vuex.device.userData)) {
+			localStorage.setItem('pizzax::base::' + k, JSON.stringify({
+				widgets: v.widgets
 			}));
+
+			if (v.deck) {
+				localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
+					columns: v.deck.columns,
+					layout: v.deck.layout,
+				}));
+			}
 		}
 	}
 

@@ -120,7 +120,7 @@ export default defineComponent({
 			if (this.stats.length > 50) this.stats.shift();
 
 			const cpuPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - s.cpu) * this.viewBoxY]);
-			const memPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.mem.used / this.meta.mem.total)) * this.viewBoxY]);
+			const memPolylinePoints = this.stats.map((s, i) => [this.viewBoxX - ((this.stats.length - 1) - i), (1 - (s.mem.active / this.meta.mem.total)) * this.viewBoxY]);
 			this.cpuPolylinePoints = cpuPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 			this.memPolylinePoints = memPolylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
@@ -133,7 +133,7 @@ export default defineComponent({
 			this.memHeadY = memPolylinePoints[memPolylinePoints.length - 1][1];
 
 			this.cpuP = (stats.cpu * 100).toFixed(0);
-			this.memP = (stats.mem.used / this.meta.mem.total * 100).toFixed(0);
+			this.memP = (stats.mem.active / this.meta.mem.total * 100).toFixed(0);
 		},
 		onStatsLog(statsLog) {
 			for (const stats of [...statsLog].reverse()) {
