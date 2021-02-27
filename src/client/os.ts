@@ -357,6 +357,43 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 	});
 }
 
+let reactionPicker = null;
+export async function pickReaction(src: HTMLElement, chosen, closed) {
+	if (reactionPicker) {
+		if (reactionPicker.opening) return;
+
+		reactionPicker.opening = true;
+		reactionPicker.src.value = src;
+		reactionPicker.manualShowing.value = true;
+		reactionPicker.chosen = chosen;
+		reactionPicker.closed = closed;
+	} else {
+		reactionPicker = {
+			opening: true,
+			src: ref(src),
+			manualShowing: ref(true),
+			chosen, closed
+		};
+		popup(import('@/components/emoji-picker-dialog.vue'), {
+			src: reactionPicker.src,
+			asReactionPicker: true,
+			manualShowing: reactionPicker.manualShowing
+		}, {
+			done: reaction => {
+				reactionPicker.chosen(reaction);
+			},
+			close: () => {
+				reactionPicker.manualShowing.value = false;
+			},
+			closed: () => {
+				reactionPicker.src.value = null;
+				reactionPicker.closed();
+				reactionPicker.opening = false;
+			}
+		});
+	}
+}
+
 export function modalMenu(items: any[], src?: HTMLElement, options?: { align?: string; viaKeyboard?: boolean }) {
 	return new Promise((resolve, reject) => {
 		let dispose;

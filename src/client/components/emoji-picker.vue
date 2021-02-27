@@ -54,23 +54,17 @@
 				</div>
 			</section>
 		</div>
-		<div v-appear="() => showingCustomEmojis = true">
+		<div>
 			<header class="_acrylic">{{ $ts.customEmojis }}</header>
-			<template v-if="showingCustomEmojis">
-				<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')">{{ category || $ts.other }}</XSection>
-			</template>
+			<XSection v-for="category in customEmojiCategories" :key="'custom:' + category" :initial-shown="false" :emojis="customEmojis.filter(e => e.category === category).map(e => ':' + e.name + ':')">{{ category || $ts.other }}</XSection>
 		</div>
-		<div v-appear="() => showingEmojis = true">
+		<div>
 			<header class="_acrylic">{{ $ts.emoji }}</header>
-			<template v-if="showingEmojis">
-				<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)">{{ category }}</XSection>
-			</template>
+			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)">{{ category }}</XSection>
 		</div>
-		<div v-appear="() => showingTags = true">
+		<div>
 			<header class="_acrylic">{{ $ts.tags }}</header>
-			<template v-if="showingTags">
-				<XSection v-for="tag in emojiTags" :emojis="customEmojis.filter(e => e.aliases.includes(tag)).map(e => ':' + e.name + ':')">{{ tag }}</XSection>
-			</template>
+			<XSection v-for="tag in emojiTags" :emojis="customEmojis.filter(e => e.aliases.includes(tag)).map(e => ':' + e.name + ':')">{{ tag }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -127,9 +121,6 @@ export default defineComponent({
 			searchResultCustom: [],
 			searchResultUnicode: [],
 			tab: 'index',
-			showingCustomEmojis: false,
-			showingEmojis: false,
-			showingTags: false,
 			categories: ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'],
 			faGlobe, faClock, faChevronDown, faAsterisk, faLaugh, faUtensils, faLeaf, faShapes, faBicycle, faHashtag,
 		};
@@ -279,14 +270,18 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (!isMobile && !isDeviceTouch) {
-			this.$refs.search.focus({
-				preventScroll: true
-			});
-		}
+		this.focus();
 	},
 
 	methods: {
+		focus() {
+			if (!isMobile && !isDeviceTouch) {
+				this.$refs.search.focus({
+					preventScroll: true
+				});
+			}
+		},
+
 		getKey(emoji: any) {
 			return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
 		},

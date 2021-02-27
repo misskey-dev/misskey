@@ -1,6 +1,6 @@
 <template>
-<MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
-	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen"/>
+<MkModal ref="modal" :manual-showing="manualShowing" :src="src" @click="$refs.modal.close()" @opening="$refs.picker.focus()" @close="$emit('close')" @closed="$emit('closed')">
+	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
 </MkModal>
 </template>
 
@@ -16,6 +16,11 @@ export default defineComponent({
 	},
 
 	props: {
+		manualShowing: {
+			type: Boolean,
+			required: false,
+			default: null,
+		},
 		src: {
 			required: false
 		},

@@ -1,11 +1,13 @@
 <template>
-<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 	<transition :name="$store.state.animation ? 'modal-bg' : ''" appear>
-		<div class="bg _modalBg" v-if="showing" @click="onBgClick"></div>
+		<div class="bg _modalBg" v-if="manualShowing != null ? manualShowing : showing" @click="onBgClick"></div>
 	</transition>
 	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
-		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @after-enter="childRendered">
-			<slot v-if="showing"></slot>
+		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @enter="$emit('opening')" @after-enter="childRendered">
+			<div v-show="manualShowing != null ? manualShowing : showing">
+				<slot></slot>
+			</div>
 		</transition>
 	</div>
 </div>
@@ -29,6 +31,11 @@ export default defineComponent({
 		modal: true
 	},
 	props: {
+		manualShowing: {
+			type: Boolean,
+			required: false,
+			default: null,
+		},
 		srcCenter: {
 			type: Boolean,
 			required: false
@@ -40,7 +47,7 @@ export default defineComponent({
 			required: false
 		}
 	},
-	emits: ['click', 'esc', 'closed'],
+	emits: ['opening', 'click', 'esc', 'close', 'closed'],
 	data() {
 		return {
 			showing: true,
@@ -60,15 +67,17 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		this.fixed = getFixedContainer(this.src) != null;
+		this.$watch('src', () => {
+			this.fixed = getFixedContainer(this.src) != null;
+		}, { immediate: true });
 
 		this.$nextTick(() => {
-			if (!this.popup) return;
-
 			const popover = this.$refs.content as any;
 
 			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
+				if (!this.popup) return;
+
 				const rect = this.src.getBoundingClientRect();
 				
 				const width = popover.offsetWidth;
@@ -141,6 +150,7 @@ export default defineComponent({
 
 		close() {
 			this.showing = false;
+			this.$emit('close');
 		},
 
 		onBgClick() {
