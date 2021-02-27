@@ -124,7 +124,8 @@ export default defineComponent({
 	text-decoration: none;
 	background: var(--buttonBg);
 	border-radius: 999px;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 
 	&:not(:disabled):hover {
 		background: var(--buttonHoverBg);
@@ -212,7 +213,8 @@ export default defineComponent({
 		width: 100%;
 		height: 100%;
 		border-radius: 6px;
-		overflow: hidden;
+		overflow: hidden; // overflow: clip; をSafariが対応したら消す
+		overflow: clip;
 
 		::v-deep(div) {
 			position: absolute;

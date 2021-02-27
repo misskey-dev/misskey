@@ -388,7 +388,8 @@ export default defineComponent({
 	z-index: 5000;
 
 	> .body {
-		overflow: hidden;
+		overflow: hidden; // overflow: clip; をSafariが対応したら消す
+		overflow: clip;
 		display: flex;
 		flex-direction: column;
 		contain: content;
@@ -418,7 +419,8 @@ export default defineComponent({
 				position: relative;
 				line-height: $height;
 				white-space: nowrap;
-				overflow: hidden;
+				overflow: hidden; // overflow: clip; をSafariが対応したら消す
+				overflow: clip;
 				text-overflow: ellipsis;
 				text-align: center;
 				cursor: move;

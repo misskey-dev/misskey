@@ -127,7 +127,8 @@ export default defineComponent({
 			height: 64px;
 			margin-right: 4px;
 			border-radius: 4px;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			cursor: move;
 
 			&:hover > .remove {

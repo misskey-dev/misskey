@@ -867,7 +867,8 @@ export default defineComponent({
 .tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
@@ -954,7 +955,8 @@ export default defineComponent({
 		}
 
 		> span {
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			flex-shrink: 1;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -1026,7 +1028,8 @@ export default defineComponent({
 					&.collapsed {
 						position: relative;
 						max-height: 9em;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 
 						> .fade {
 							display: block;

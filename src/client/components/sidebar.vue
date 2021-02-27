@@ -390,7 +390,8 @@ export default defineComponent({
 				font-size: $ui-font-size;
 				line-height: 3rem;
 				text-overflow: ellipsis;
-				overflow: hidden;
+				overflow: hidden; // overflow: clip; をSafariが対応したら消す
+				overflow: clip;
 				white-space: nowrap;
 				width: 100%;
 				text-align: left;

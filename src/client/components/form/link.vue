@@ -83,7 +83,8 @@ export default defineComponent({
 		> .text {
 			white-space: nowrap;
 			text-overflow: ellipsis;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			padding-right: 12px;
 		}
 
