@@ -112,7 +112,8 @@ export default defineComponent({
 			padding: 4px 8px;
 			border: solid 1px var(--divider);
 			border-radius: 4px;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			cursor: pointer;
 
 			&:hover {

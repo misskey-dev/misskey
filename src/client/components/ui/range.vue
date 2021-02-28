@@ -89,7 +89,8 @@ export default defineComponent({
 		pointer-events: none;
 		font-size: 16px;
 		color: var(--inputLabel);
-		overflow: hidden;
+		overflow: hidden; // overflow: clip; をSafariが対応したら消す
+		overflow: clip;
 	}
 
 	> input {

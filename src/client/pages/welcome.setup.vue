@@ -71,7 +71,8 @@ export default defineComponent({
 .mk-setup {
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 
 	> h1 {
 		margin: 0;

@@ -504,23 +504,14 @@ export default defineComponent({
 			pleaseLogin();
 			this.operating = true;
 			this.blur();
-			const { dispose } = await os.popup(import('@/components/emoji-picker.vue'), {
-				src: this.$refs.reactButton,
-				asReactionPicker: true
-			}, {
-				done: reaction => {
-					if (reaction) {
-						os.api('notes/reactions/create', {
-							noteId: this.appearNote.id,
-							reaction: reaction
-						});
-					}
-				},
-				closed: () => {
-					this.operating = false;
-					this.focus();
-					dispose();
-				}
+			os.pickReaction(this.$refs.reactButton, reaction => {
+				os.api('notes/reactions/create', {
+					noteId: this.appearNote.id,
+					reaction: reaction
+				});
+			}, () => {
+				this.operating = false;
+				this.focus();
 			});
 		},
 
@@ -964,7 +955,8 @@ export default defineComponent({
 		}
 
 		> span {
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			flex-shrink: 1;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -1037,7 +1029,8 @@ export default defineComponent({
 					&.collapsed {
 						position: relative;
 						max-height: 9em;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 
 						> .fade {
 							display: block;

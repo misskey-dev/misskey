@@ -62,7 +62,8 @@ export default defineComponent({
 	width: 100%;
 	border-radius: 4px;
 	margin-top: 4px;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 
 	> .download,
 	> .sensitive {
@@ -77,7 +78,8 @@ export default defineComponent({
 		}
 
 		> b {
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			text-overflow: ellipsis;
 		}
 

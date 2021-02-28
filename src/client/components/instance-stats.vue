@@ -692,7 +692,8 @@ export default defineComponent({
 
 						> dd {
 							text-overflow: ellipsis;
-							overflow: hidden;
+							overflow: hidden; // overflow: clip; をSafariが対応したら消す
+							overflow: clip;
 							white-space: nowrap;
 						}
 

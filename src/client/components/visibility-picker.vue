@@ -141,7 +141,8 @@ export default defineComponent({
 		> *:nth-child(2) {
 			flex: 1 1 auto;
 			white-space: nowrap;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 			text-overflow: ellipsis;
 
 			> span:first-child {
