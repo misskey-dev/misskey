@@ -5,9 +5,7 @@
 	</transition>
 	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
 		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @enter="$emit('opening')" @after-enter="childRendered">
-			<div v-show="manualShowing != null ? manualShowing : showing">
-				<slot></slot>
-			</div>
+			<slot v-if="manualShowing != null ? true : showing" v-bind:showing="manualShowing"></slot>
 		</transition>
 	</div>
 </div>
