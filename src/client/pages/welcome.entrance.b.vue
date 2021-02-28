@@ -151,8 +151,7 @@ export default defineComponent({
 			margin: auto;
 			width: 500px;
 			height: calc(100% - 128px);
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 		}

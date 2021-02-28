@@ -1,5 +1,5 @@
 <template>
-<div style="overflow: hidden; overflow: clip;">
+<div style="overflow: hidden;">
 	<FormBase class="znqjceqz">
 		<div id="debug"></div>
 		<section class="_formItem about">

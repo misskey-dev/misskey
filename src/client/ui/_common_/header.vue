@@ -132,8 +132,7 @@ export default defineComponent({
 			display: inline-block;
 			vertical-align: bottom;
 			white-space: nowrap;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			text-overflow: ellipsis;
 			padding: 0 16px;
 			position: relative;

@@ -68,8 +68,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .wbrkwala {
 	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 
 	> .tags {
 		.chart-move {
@@ -84,8 +83,7 @@ export default defineComponent({
 
 			> .tag {
 				flex: 1;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 				font-size: 0.9em;
 				color: var(--fg);
 
@@ -93,8 +91,7 @@ export default defineComponent({
 					display: block;
 					width: 100%;
 					white-space: nowrap;
-					overflow: hidden; // overflow: clip; をSafariが対応したら消す
-					overflow: clip;
+					overflow: hidden;
 					text-overflow: ellipsis;
 					line-height: 18px;
 				}

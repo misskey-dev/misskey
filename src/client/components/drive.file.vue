@@ -342,8 +342,7 @@ export default defineComponent({
 		text-align: center;
 		word-break: break-all;
 		color: var(--fg);
-		overflow: hidden; // overflow: clip; をSafariが対応したら消す
-		overflow: clip;
+		overflow: hidden;
 
 		> .ext {
 			opacity: 0.5;
