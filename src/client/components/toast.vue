@@ -67,8 +67,7 @@ export default defineComponent({
 		height: 100%;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		border-radius: 8px;
-		overflow: hidden; // overflow: clip; をSafariが対応したら消す
-		overflow: clip;
+		overflow: hidden;
 	}
 }
 </style>

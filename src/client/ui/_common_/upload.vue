@@ -89,8 +89,7 @@ export default defineComponent({
   font-size: 0.8em;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+  overflow: hidden;
   flex-shrink: 1;
 }
 .mk-uploader > ol > li > .top > .name > [data-icon] {
@@ -120,8 +119,7 @@ export default defineComponent({
   background: transparent;
   border: none;
   border-radius: 4px;
-  overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+  overflow: hidden;
   grid-column: 2/3;
   grid-row: 2/3;
   z-index: 2;
