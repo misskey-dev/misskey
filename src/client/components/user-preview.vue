@@ -111,7 +111,8 @@ export default defineComponent({
 	position: absolute;
 	z-index: 11000;
 	width: 300px;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 	transform-origin: center top;
 
 	> .info {

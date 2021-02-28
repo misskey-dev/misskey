@@ -178,17 +178,20 @@ export default defineComponent({
 					> .body {
 						padding: 0 0 0 8px;
 						white-space: nowrap;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 
 						> .name {
 							text-overflow: ellipsis;
-							overflow: hidden;
+							overflow: hidden; // overflow: clip; をSafariが対応したら消す
+							overflow: clip;
 						}
 
 						> .info {
 							opacity: 0.5;
 							text-overflow: ellipsis;
-							overflow: hidden;
+							overflow: hidden; // overflow: clip; をSafariが対応したら消す
+							overflow: clip;
 						}
 					}
 				}
@@ -219,17 +222,20 @@ export default defineComponent({
 					> .body {
 						padding: 0 0 0 8px;
 						white-space: nowrap;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 
 						> .name {
 							text-overflow: ellipsis;
-							overflow: hidden;
+							overflow: hidden; // overflow: clip; をSafariが対応したら消す
+							overflow: clip;
 						}
 
 						> .info {
 							opacity: 0.5;
 							text-overflow: ellipsis;
-							overflow: hidden;
+							overflow: hidden; // overflow: clip; をSafariが対応したら消す
+							overflow: clip;
 						}
 					}
 				}

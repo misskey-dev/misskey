@@ -333,7 +333,8 @@ export default defineComponent({
 							background: transparent;
 							border: solid 2px var(--divider);
 							border-radius: 6px;
-							overflow: hidden;
+							overflow: hidden; // overflow: clip; をSafariが対応したら消す
+							overflow: clip;
 							cursor: pointer;
 
 							* {

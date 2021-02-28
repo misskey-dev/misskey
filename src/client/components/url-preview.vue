@@ -244,7 +244,8 @@ export default defineComponent({
 		font-size: 14px;
 		box-shadow: 0 0 0 1px var(--divider);
 		border-radius: 8px;
-		overflow: hidden;
+		overflow: hidden; // overflow: clip; をSafariが対応したら消す
+		overflow: clip;
 
 		&:hover {
 			text-decoration: none;
@@ -326,7 +327,8 @@ export default defineComponent({
 		&.compact {
 			> article {
 				> header h1, p, footer {
-					overflow: hidden;
+					overflow: hidden; // overflow: clip; をSafariが対応したら消す
+					overflow: clip;
 					white-space: nowrap;
 					text-overflow: ellipsis;
 				}

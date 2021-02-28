@@ -369,7 +369,8 @@ export default defineComponent({
 		position: relative;
 		height: 450px;
 		border-radius: 16px;
-		overflow: hidden;
+		overflow: hidden; // overflow: clip; をSafariが対応したら消す
+		overflow: clip;
 		background-size: cover;
 		background-position: center;
 
@@ -472,7 +473,8 @@ export default defineComponent({
 
 					> .name {
 						width: 30%;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						font-weight: bold;
@@ -480,7 +482,8 @@ export default defineComponent({
 
 					> .value {
 						width: 70%;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						margin: 0;
@@ -542,7 +545,8 @@ export default defineComponent({
 .ftskorzw.narrow {
 	max-width: 100vw;
 	box-sizing: border-box;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 
 	> .punished {
 		font-size: 0.8em;
@@ -553,12 +557,14 @@ export default defineComponent({
 
 		> .main {
 			position: relative;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 
 			> .banner-container {
 				position: relative;
 				height: 250px;
-				overflow: hidden;
+				overflow: hidden; // overflow: clip; をSafariが対応したら消す
+				overflow: clip;
 				background-size: cover;
 				background-position: center;
 
@@ -703,7 +709,8 @@ export default defineComponent({
 
 					> .name {
 						width: 30%;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						font-weight: bold;
@@ -712,7 +719,8 @@ export default defineComponent({
 
 					> .value {
 						width: 70%;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						margin: 0;
