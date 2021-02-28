@@ -105,7 +105,8 @@ export default defineComponent({
 			grid-gap: 4px;
 
 			> * {
-				overflow: hidden;
+				overflow: hidden; // overflow: clip; をSafariが対応したら消す
+				overflow: clip;
 				border-radius: 6px;
 			}
 

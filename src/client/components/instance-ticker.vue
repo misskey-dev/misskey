@@ -44,7 +44,8 @@ export default defineComponent({
 
 	height: $height;
 	border-radius: 4px 0 0 4px;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 	color: #fff;
 
 	> .icon {

@@ -427,7 +427,8 @@ export default defineComponent({
 
 					> .text {
 						white-space: nowrap;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						text-overflow: ellipsis;
 						font-size: 0.9em;
 					}
@@ -482,7 +483,8 @@ export default defineComponent({
 						padding: 6px 8px;
 						border-radius: 4px;
 						white-space: nowrap;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						text-overflow: ellipsis;
 
 						&:hover {
@@ -545,7 +547,8 @@ export default defineComponent({
 				}
 
 				> .title {
-					overflow: hidden;
+					overflow: hidden; // overflow: clip; をSafariが対応したら消す
+					overflow: clip;
 					text-overflow: ellipsis;
 					white-space: nowrap;
 					min-width: 0;
@@ -556,7 +559,8 @@ export default defineComponent({
 						font-size: 0.8em;
 						font-weight: normal;
 						white-space: nowrap;
-						overflow: hidden;
+						overflow: hidden; // overflow: clip; をSafariが対応したら消す
+						overflow: clip;
 						text-overflow: ellipsis;
 					}
 				}

@@ -66,7 +66,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .eftoefju {
 	display: block;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 	width: 100%;
 
 	&:hover {
