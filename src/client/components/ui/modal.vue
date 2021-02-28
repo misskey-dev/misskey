@@ -135,6 +135,8 @@ export default defineComponent({
 
 			if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
 				this.transformOrigin = 'center top';
+			} else {
+				this.transformOrigin = 'center';
 			}
 
 			popover.style.left = left + 'px';
