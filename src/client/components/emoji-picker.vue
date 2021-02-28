@@ -282,6 +282,10 @@ export default defineComponent({
 			}
 		},
 
+		reset() {
+			this.$refs.emojis.scrollTop = 0;
+		},
+
 		getKey(emoji: any) {
 			return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
 		},
