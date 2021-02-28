@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :manual-showing="manualShowing" :src="src" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')" v-slot="{ showing }">
-	<MkEmojiPicker v-show="showing" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
+	<MkEmojiPicker v-show="showing !== false" :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
 </MkModal>
 </template>
 
