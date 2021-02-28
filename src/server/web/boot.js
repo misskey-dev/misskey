@@ -12,7 +12,7 @@
 'use strict';
 
 window.onerror = (e) => {
-	document.documentElement.innerHTML = '問題が発生しました。';
+	document.documentElement.innerHTML = '好像不太对...';
 };
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
@@ -56,7 +56,7 @@ window.onerror = (e) => {
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	script.addEventListener('error', async () => {
-		document.documentElement.innerHTML = '読み込みに失敗しました。';
+		document.documentElement.innerHTML = '加载失败惹QAQ';
 
 		// TODO: サーバーが落ちている場合などのエラーハンドリング
 		const res = await fetch('/api/meta', {
@@ -69,7 +69,7 @@ window.onerror = (e) => {
 		if (meta.version != v) {
 			localStorage.setItem('v', meta.version);
 			alert(
-				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
+				'Misskey已经更新啦！会自动重载一下页面哦～' +
 				'\n\n' +
 				'New version of Misskey available. The page will be reloaded.');
 			refresh();
