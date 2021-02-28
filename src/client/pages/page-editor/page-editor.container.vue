@@ -74,7 +74,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .cpjygsrt {
 	position: relative;
-	overflow: hidden;
+	overflow: hidden; // overflow: clip; をSafariが対応したら消す
+	overflow: clip;
 	background: var(--panel);
 	border: solid 2px var(--X12);
 	border-radius: 6px;

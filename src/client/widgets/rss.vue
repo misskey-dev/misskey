@@ -80,7 +80,8 @@ export default defineComponent({
 			color: var(--fg);
 			white-space: nowrap;
 			text-overflow: ellipsis;
-			overflow: hidden;
+			overflow: hidden; // overflow: clip; をSafariが対応したら消す
+			overflow: clip;
 
 			&:nth-child(even) {
 				background: rgba(#000, 0.05);

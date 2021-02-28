@@ -434,7 +434,8 @@ export default defineComponent({
 				> div {
 					background: transparent;
 					border-radius: 6px;
-					overflow: hidden;
+					overflow: hidden; // overflow: clip; をSafariが対応したら消す
+					overflow: clip;
 
 					* {
 						pointer-events: none;

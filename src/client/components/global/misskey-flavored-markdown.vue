@@ -126,7 +126,8 @@ export default defineComponent({
 	&.nowrap {
 		white-space: pre;
 		word-wrap: normal; // https://codeday.me/jp/qa/20190424/690106.html
-		overflow: hidden;
+		overflow: hidden; // overflow: clip; をSafariが対応したら消す
+		overflow: clip;
 		text-overflow: ellipsis;
 	}
 

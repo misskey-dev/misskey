@@ -632,9 +632,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
-				insertTextAtCursor(this.$refs.text, emoji);
-			});
+			os.openEmojiPicker(ev.currentTarget || ev.target, {}, this.$refs.text);
 		},
 
 		showActions(ev) {
