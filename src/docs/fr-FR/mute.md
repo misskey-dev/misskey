@@ -8,6 +8,6 @@ Le contenu afférent à un utilisateur ne vous sera plus présenté dès lors qu
 
 Pour ignorer un utilisateur, utilisez le bouton « ignorer » de sa page de profil.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+L'utilisateur que vous ignorez ne sera pas prévenu. De même, vous ne serez pas prévenu lorsque vous serez ignoré par un autre utilisateur.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+Vous pouvez vérifier la liste des utilisateurs ignorés depuis l'onglet « ignorés » de vos paramètres.
