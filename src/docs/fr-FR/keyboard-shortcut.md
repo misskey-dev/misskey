@@ -51,18 +51,18 @@ Ces raccourcis sont utilisables dans n'importe quel contexte.
 </table>
 
 ## Fenêtre de réactions
-デフォルトで「👍」にフォーカスが当たっている状態です。
+La réaction sélectionnée par défaut est « 👍 ».
 <table>
     <thead>
         <tr><th>Raccourci</th><th>Effet</th><th>Accès universel</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd></td><td>上のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd></td><td>下のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">←</kbd>, <kbd class="key">H</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>左のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">→</kbd>, <kbd class="key">L</kbd>, <kbd class="key">Tab</kbd></td><td>右のリアクションにフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">Enter</kbd>, <kbd class="key">Space</kbd>, <kbd class="key">+</kbd></td><td>リアクション確定</td><td>-</td></tr>
-        <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>数字に対応したリアクションで確定</td><td>-</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>リアクションするのをやめる</td><td>-</td></tr>
+        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd></td><td>Déplacer le focus vers la réaction du dessus</td><td>-</td></tr>
+        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd></td><td>Déplacer le focus vers la réaction du dessous</td><td>-</td></tr>
+        <tr><td><kbd class="key">←</kbd>, <kbd class="key">H</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>Déplacer le focus vers la réaction de gauche</td><td>-</td></tr>
+        <tr><td><kbd class="key">→</kbd>, <kbd class="key">L</kbd>, <kbd class="key">Tab</kbd></td><td>Déplacer le focus vers la réaction de droite</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd>, <kbd class="key">Space</kbd>, <kbd class="key">+</kbd></td><td>Sélectionner la réaction</td><td>-</td></tr>
+        <tr><td><kbd class="key">0</kbd>~<kbd class="key">9</kbd></td><td>Utiliser la réaction correspondant au chiffre</td><td>-</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>Annuler la réaction</td><td>-</td></tr>
     </tbody>
 </table>
