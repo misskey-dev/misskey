@@ -66,7 +66,7 @@ window.onerror = (e) => {
 
 		const meta = await res.json();
 
-		if (meta.version != v) {
+		if (meta.version !== localStorage.getItem('v')) {
 			localStorage.setItem('v', meta.version);
 			alert(
 				'Misskey已经更新啦！会自动重载一下页面哦～' +
