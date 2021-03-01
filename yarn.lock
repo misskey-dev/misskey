@@ -10990,10 +10990,10 @@ vue-prism-editor@2.0.0-alpha.2:
   resolved "https://registry.yarnpkg.com/vue-prism-editor/-/vue-prism-editor-2.0.0-alpha.2.tgz#aa53a88efaaed628027cbb282c2b1d37fc7c5c69"
   integrity sha512-Gu42ba9nosrE+gJpnAEuEkDMqG9zSUysIR8SdXUw8MQKDjBnnNR9lHC18uOr/ICz7yrA/5c7jHJr9lpElODC7w==
 
-vue-router@4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.3.tgz#8b26050c88b2dec7e27a88835f71046b365823ec"
-  integrity sha512-AD1OjtVPyQHTSpoRsEGfPpxRQwhAhxcacOYO3zJ3KNkYP/r09mileSp6kdMQKhZWP2cFsPR3E2M3PZguSN5/ww==
+vue-router@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.4.tgz#ad9b4b7bbdad622407b4ff189b1646f48c1e9053"
+  integrity sha512-uN6PDEaYdU9aRO7mU+Dkr1uaY49hV3fucEDG/Vre/Qj8ct3RoJS16vcPrvKVzn69zDDjBV5b9Xw7fZA9r6b/Iw==
 
 vue-style-loader@4.1.2:
   version "4.1.2"
