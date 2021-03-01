@@ -120,7 +120,7 @@
 		"broadcast-channel": "3.4.1",
 		"bull": "3.20.1",
 		"cafy": "15.2.1",
-		"cbor": "7.0.1",
+		"cbor": "7.0.3",
 		"chalk": "4.1.0",
 		"chart.js": "2.9.4",
 		"cli-highlight": "2.1.10",
