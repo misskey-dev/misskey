@@ -106,7 +106,6 @@ export default defineComponent({
 		justify-content: center;
 		align-items: center;
 
-		font-size: 3.5em;
 		overflow: hidden; // overflow: clip; をSafariが対応したら消す
 		overflow: clip;
 		background-position: center;
