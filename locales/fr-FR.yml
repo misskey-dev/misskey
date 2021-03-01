@@ -808,6 +808,7 @@ _serverDisconnectedBehavior:
 _channel:
   create: "Créer un canal"
   edit: "Éditer le canal"
+  setBanner: "Sélectionner la bannière"
   removeBanner: "Supprimer la bannière"
   featured: "Tendances"
   following: "Abonné·e"
@@ -853,6 +854,9 @@ _theme:
     header: "Entête"
     navBg: "Fond de la barre latérale"
     navFg: "Texte de la barre latérale"
+    navHoverFg: "Texte de la barre latérale (survolé)"
+    navActive: "Texte de la barre latérale (actif)"
+    navIndicator: "Indicateur de barre latérale"
     link: "Lien"
     hashtag: "Hashtags"
     mention: "Mentionner"
