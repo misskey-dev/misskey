@@ -1,9 +1,9 @@
-# タイムラインの比較
+# Comparaison des fils
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
 ## Principal
-自分のフォローしているユーザーの投稿
+Les publications des utilisateurs que vous suivez
 
 ## Local
 全てのローカルユーザーの「ホーム」指定されていない投稿
