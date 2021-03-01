@@ -22,8 +22,8 @@ Ces raccourcis sont utilisables dans n'importe quel contexte.
         <tr><th>Raccourci</th><th>Effet</th><th>Accès universel</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>上の投稿にフォーカスを移動</td><td>-</td></tr>
-        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd>, <kbd class="key">Tab</kbd></td><td>下の投稿にフォーカスを移動</td><td>-</td></tr>
+        <tr><td><kbd class="key">↑</kbd>, <kbd class="key">K</kbd>, <kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">Tab</kbd></kbd></td><td>Déplacer le focus sur la publication du dessus</td><td>-</td></tr>
+        <tr><td><kbd class="key">↓</kbd>, <kbd class="key">J</kbd>, <kbd class="key">Tab</kbd></td><td>Déplacer le focus sur la publication du dessous</td><td>-</td></tr>
         <tr><td><kbd class="key">R</kbd></td><td>Ouvrir la fenêtre de réponse</td><td><b>R</b>eply</td></tr>
         <tr><td><kbd class="key">Q</kbd></td><td>Ouvrir la fenêtre de Renote</td><td><b>Q</b>uote</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">Q</kbd></kbd></td><td>Renote rapide (sans ouvrir de fenêtre)</td><td>-</td></tr>
@@ -33,11 +33,11 @@ Ces raccourcis sont utilisables dans n'importe quel contexte.
         <tr><td><kbd class="key">Del</kbd>, <kbd class="group"><kbd class="key">Ctrl</kbd> + <kbd class="key">D</kbd></kbd></td><td>Supprimer la publication</td><td><b>D</b>elete</tr>
         <tr><td><kbd class="key">M</kbd>, <kbd class="key">O</kbd></td><td>Ouvrir le menu des publications</td><td><b>M</b>ore, <b>O</b>ther</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>Afficher ou cacher le contenu marqué CW</td><td><b>S</b>how, <b>S</b>ee</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォーカスを外す</td><td>-</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>Quitter le focus</td><td>-</td></tr>
     </tbody>
 </table>
 
-## Renoteフォーム
+## Formulaire de Renote
 
 <table>
     <thead>
