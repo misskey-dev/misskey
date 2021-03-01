@@ -124,7 +124,7 @@ selectList: "Sélectionner une liste"
 selectAntenna: "Sélectionner une antenne"
 selectWidget: "Sélectionner un widget"
 editWidgets: "Modifier les widgets"
-editWidgetsExit: "Fait"
+editWidgetsExit: "Valider les modifications"
 customEmojis: "Émojis personnalisés"
 emoji: "Émoji"
 emojiName: "Nom de l’émoji"
@@ -734,6 +734,7 @@ _nsfw:
   ignore: "Afficher les médias sensibles"
   force: "Cacher tous les médias"
 _mfm:
+  cheatSheet: "Antisèche MFM"
   intro: "MFM est un langage Markdown spécifique utilisable ici et là dans Misskey. Vous pouvez vérifier ici les structures utilisables avec MFM."
   dummy: "La Fédiverse s'agrandit avec Misskey"
   mention: "Mentionner"
@@ -827,6 +828,7 @@ _theme:
   code: "Code du thème"
   installed: "{name} a été installé"
   installedThemes: "Thèmes installés"
+  builtinThemes: "Thèmes intégrés"
   alreadyInstalled: "Ce thème est déjà installé"
   invalid: "Le format du thème n'est pas valide"
   make: "Créer un thème"
@@ -1213,6 +1215,8 @@ _pages:
       id: "Toile ID"
       width: "Largeur"
       height: "Hauteur"
+    _note:
+      detailed: "Afficher les détails"
     switch: "Basculer"
     _switch:
       name: "Nom de la variable"
@@ -1453,6 +1457,7 @@ _notification:
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
   columnAlign: "Aligner les colonnes"
+  columnHeaderHeight: "Taille de l'en-tête de colonne"
   addColumn: "Ajouter une colonne"
   swapLeft: "Déplacer à gauche"
   swapRight: "Déplacer à droite"
@@ -1462,6 +1467,7 @@ _deck:
   popRight: "Vers la droite"
   profile: "Profil"
   _columns:
+    main: "Principale"
     widgets: "Widgets"
     notifications: "Notifications"
     tl: "Fil"
