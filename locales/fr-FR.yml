@@ -851,8 +851,6 @@ _theme:
     header: "Entête"
     navBg: "Fond de la barre latérale"
     navFg: "Texte de la barre latérale"
-    navActive: "Texte de la barre latérale (actif)"
-    navIndicator: "Indicateur de barre latérale"
     link: "Lien"
     hashtag: "Hashtags"
     mention: "Mentionner"
