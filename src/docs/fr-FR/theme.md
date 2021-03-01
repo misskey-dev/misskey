@@ -37,9 +37,9 @@ Paramètres > Thèmes
 * `name` ... Nom du thème ;
 * `author` ... Auteur du thème ;
 * `desc` ... Description du thème (facultatif) ;
-* `base` ... Thème clair ou sombre ;
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
+* `base` ... Thème clair ou sombre :
+    * Sélectionnez `light` pour définir le thème comme thème clair et `dark` pour le définir comme sombre,
+    * Le thème héritera des valeurs par défaut du thème spécifié ici ;
 * `props` ... テーマのスタイル定義。これから説明します。
 
 ### テーマのスタイル定義
