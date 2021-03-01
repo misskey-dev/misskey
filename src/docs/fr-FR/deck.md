@@ -6,13 +6,13 @@ Le deck est une des interfaces utilisateurs disponibles.Sa particularité est de
 Vous pouvez ajouter une colonne en cliquant avec le clic-droit sur « ajouter une colonne » dans l'arrière-plan du deck.
 
 ## Déplacer une colonne
-カラムは、ドラッグアンドドロップで他のカラムと位置を入れ替えることが出来るほか、カラムメニュー(カラムのヘッダー右クリック)から位置を移動させることもできます。
+Vous pouvez déplacer une colonne à la place d'une autre en la faisant glisser. Il est en outre possible de réorganiser les colonnes depuis le menu des colonnes — en faisant un clic-droit dans l'en-tête de colonne.
 
-## カラムの水平分割
-カラムは左右だけでなく、上下に並べることもできます。 カラムメニューを開き、「左に重ねる」を選択すると、左のカラムの下に現在のカラムが移動します。 上下分割を解除するには、カラムメニューの「右に出す」を選択します。
+## Division horizontale des colonnes
+Il est possible d'agencer les colonnes horizontalement. Depuis le menu de colonne, cliquez sur « empiler à gauche » pour la déplacer sous la colonne de gauche. Cliquez sur « déplacer à droite » pour annuler.
 
-## カラムの設定
-カラムメニューの「編集」を選択するとカラムの設定を編集できます。カラムの名前を変えたり、幅を変えたりできます。
+## Configuration de la colonne
+Vous pouvez éditer la configuration de la colonne en cliquant sur « édition » dans le menu de colonne. Vous pourrez y changer le nom ou la largeur de la colonne.
 
-## デッキの設定
-デッキに関する設定は、[settings/deck](/settings/deck)で行えます。
+## Configuration du deck
+Vous trouverez les options de configuration du deck à [settings/deck](/settings/deck)
