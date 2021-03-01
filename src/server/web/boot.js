@@ -19,6 +19,27 @@ window.onerror = (e) => {
 (async () => {
 	const v = localStorage.getItem('v') || VERSION;
 
+	if (v !== VERSION) {
+		// There must be sth. wrong.
+
+		const res = await fetch('/api/meta', {
+			method: 'POST',
+			cache: 'no-cache'
+		});
+
+		const meta = await res.json();
+
+		if (meta.version !== localStorage.getItem('v')) {
+			localStorage.setItem('v', meta.version);
+			alert(
+				'Misskey已经更新啦！会自动重载一下页面哦～' +
+				'\n\n' +
+				'New version of Misskey available. The page will be reloaded.'
+			);
+			refresh();
+		}
+	}
+
 	//#region Detect language & fetch translations
 	const localeVersion = localStorage.getItem('localeVersion');
 	const localeOutdated = (localeVersion == null || localeVersion !== v);
@@ -57,21 +78,11 @@ window.onerror = (e) => {
 	script.setAttribute('defer', 'true');
 	script.addEventListener('error', async () => {
 		document.documentElement.innerHTML = '加载失败惹QAQ';
-
-		// TODO: サーバーが落ちている場合などのエラーハンドリング
-		const res = await fetch('/api/meta', {
-			method: 'POST',
-			cache: 'no-cache'
-		});
-
-		const meta = await res.json();
-
-		if (meta.version !== localStorage.getItem('v')) {
-			localStorage.setItem('v', meta.version);
-			alert(
-				'Misskey已经更新啦！会自动重载一下页面哦～' +
-				'\n\n' +
-				'New version of Misskey available. The page will be reloaded.');
+		if (confirm(
+			'加载失败啦，要试着重新刷新一下本地缓存喵？' +
+			'\n\n' +
+			'Error occurred. Reload the page?'
+		) ) {
 			refresh();
 		}
 	});
