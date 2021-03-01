@@ -1,11 +1,11 @@
 # Deck
 
-デッキは利用可能なUIのひとつです。「カラム」と呼ばれるビューを複数並べて表示させることで、カスタマイズ性が高く、情報量の多いUIが構築できることが特徴です。
+Le deck est une des interfaces utilisateurs disponibles.Sa particularité est de former une interface riche en contenus et hautement personnalisable grâce à l'affichage de plusieurs colonnes.
 
-## カラムの追加
-デッキの背景を右クリックし、「カラムを追加」して任意のカラムを追加できます。
+## Ajouter une colonne
+Vous pouvez ajouter une colonne en cliquant avec le clic-droit sur « ajouter une colonne » dans l'arrière-plan du deck.
 
-## カラムの移動
+## Déplacer une colonne
 カラムは、ドラッグアンドドロップで他のカラムと位置を入れ替えることが出来るほか、カラムメニュー(カラムのヘッダー右クリック)から位置を移動させることもできます。
 
 ## カラムの水平分割
