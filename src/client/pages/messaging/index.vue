@@ -226,14 +226,12 @@ export default defineComponent({
 					align-items: center;
 					margin-bottom: 2px;
 					white-space: nowrap;
-					overflow: hidden; // overflow: clip; をSafariが対応したら消す
-					overflow: clip;
+					overflow: hidden;
 
 					> .name {
 						margin: 0;
 						padding: 0;
-						overflow: hidden; // overflow: clip; をSafariが対応したら消す
-						overflow: clip;
+						overflow: hidden;
 						text-overflow: ellipsis;
 						font-size: 1em;
 						font-weight: bold;
@@ -264,8 +262,7 @@ export default defineComponent({
 						display: block;
 						margin: 0 0 0 0;
 						padding: 0;
-						overflow: hidden; // overflow: clip; をSafariが対応したら消す
-						overflow: clip;
+						overflow: hidden;
 						overflow-wrap: break-word;
 						font-size: 1.1em;
 						color: var(--faceText);

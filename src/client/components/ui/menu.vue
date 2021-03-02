@@ -155,8 +155,7 @@ export default defineComponent({
 		font-size: 0.9em;
 		line-height: 20px;
 		text-align: center;
-		overflow: hidden; // overflow: clip; をSafariが対応したら消す
-		overflow: clip;
+		overflow: hidden;
 		text-overflow: ellipsis;
 
 		&.danger {

@@ -268,8 +268,7 @@ export default defineComponent({
 	--section-padding: 10px;
 
 	height: 100%;
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 	contain: content;
 
 	&.draghover {
@@ -359,8 +358,7 @@ export default defineComponent({
 		> .header {
 			display: inline-block;
 			align-items: center;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
