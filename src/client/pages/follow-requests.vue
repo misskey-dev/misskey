@@ -104,8 +104,7 @@ export default defineComponent({
 					display: block;
 					white-space: nowrap;
 					text-overflow: ellipsis;
-					overflow: hidden; // overflow: clip; をSafariが対応したら消す
-					overflow: clip;
+					overflow: hidden;
 					margin: 0;
 				}
 
@@ -125,8 +124,7 @@ export default defineComponent({
 				width: 55%;
 				line-height: 42px;
 				white-space: nowrap;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 				text-overflow: ellipsis;
 				opacity: 0.7;
 				font-size: 14px;

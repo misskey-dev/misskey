@@ -298,8 +298,7 @@ export default defineComponent({
 			transform: scale(.75);
 			white-space: nowrap;
 			width: 133%;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			text-overflow: ellipsis;
 
 			> .warning {
@@ -355,8 +354,7 @@ export default defineComponent({
 				display: inline-block;
 				min-width: 16px;
 				max-width: 150px;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}

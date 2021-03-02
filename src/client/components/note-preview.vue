@@ -50,8 +50,7 @@ export default defineComponent({
 	display: flex;
 	margin: 0;
 	padding: 0;
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 	font-size: 0.95em;
 
 	> .avatar {

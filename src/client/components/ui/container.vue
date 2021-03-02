@@ -116,8 +116,7 @@ export default defineComponent({
 
 .ukygtjoj {
 	position: relative;
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 
 	&.naked {
 		background: transparent !important;
