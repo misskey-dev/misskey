@@ -241,8 +241,7 @@ hr {
 	border-radius: var(--radius);
 	//border: var(--panelBorder);
 	box-shadow: var(--panelShadow);
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 }
 
 ._card {
@@ -456,14 +455,6 @@ hr {
 ._caption {
 	font-size: 0.8em;
 	opacity: 0.7;
-}
-
-// TODO: refactor: 全てのvueファイル中の text-overflow: ellipsis; している箇所をこのクラスを使って置き換える
-._oneline {
-	white-space: nowrap;
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
-	text-overflow: ellipsis;
 }
 
 ._monospace {

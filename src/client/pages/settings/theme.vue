@@ -184,8 +184,7 @@ export default defineComponent({
 			position: absolute;
 			top: 50%;
 			left: 50%;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			padding: 0 100px;
 			transform: translate3d(-50%, -50%, 0);
 

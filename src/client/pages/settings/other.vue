@@ -23,13 +23,16 @@
 
 	<FormLink to="/settings/registry"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.registry }}</FormLink>
 
+	<FormLink to="/bios" behavior="browser"><template #icon><Fa :icon="faDoorOpen"/></template>BIOS</FormLink>
+	<FormLink to="/cli" behavior="browser"><template #icon><Fa :icon="faDoorOpen"/></template>CLI</FormLink>
+
 	<FormButton @click="closeAccount" danger>{{ $ts.closeAccount }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faEllipsisH, faCogs } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faCogs, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@/components/form/switch.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormLink from '@/components/form/link.vue';
@@ -61,7 +64,7 @@ export default defineComponent({
 				icon: faEllipsisH
 			},
 			debug,
-			faCogs
+			faCogs, faDoorOpen,
 		}
 	},
 

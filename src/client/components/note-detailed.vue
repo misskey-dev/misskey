@@ -886,8 +886,7 @@ export default defineComponent({
 .note {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 	contain: content;
 
 	&:focus-visible {
@@ -947,8 +946,7 @@ export default defineComponent({
 		}
 
 		> span {
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			flex-shrink: 1;
 			text-overflow: ellipsis;
 			white-space: nowrap;

@@ -78,8 +78,7 @@ export default defineComponent({
 		align-items: center;
 
 		font-size: 3.5em;
-		overflow: hidden; // overflow: clip; をSafariが対応したら消す
-		overflow: clip;
+		overflow: hidden;
 		background-position: center;
 		background-size: cover;
 		width: 100%;

@@ -62,10 +62,6 @@
 			<header class="_acrylic">{{ $ts.emoji }}</header>
 			<XSection v-for="category in categories" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)">{{ category }}</XSection>
 		</div>
-		<div>
-			<header class="_acrylic">{{ $ts.tags }}</header>
-			<XSection v-for="tag in emojiTags" :emojis="customEmojis.filter(e => e.aliases.includes(tag)).map(e => ':' + e.name + ':')">{{ tag }}</XSection>
-		</div>
 	</div>
 	<div class="tabs">
 		<button class="_button tab" :class="{ active: tab === 'index' }" @click="tab = 'index'"><Fa :icon="faAsterisk" fixed-width/></button>
@@ -86,7 +82,7 @@ import Particle from '@/components/particle.vue';
 import * as os from '@/os';
 import { isDeviceTouch } from '@/scripts/is-device-touch';
 import { isMobile } from '@/scripts/is-mobile';
-import { emojiCategories, emojiTags } from '@/instance';
+import { emojiCategories } from '@/instance';
 import XSection from './emoji-picker.section.vue';
 
 export default defineComponent({
@@ -115,7 +111,6 @@ export default defineComponent({
 			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,
 			customEmojiCategories: emojiCategories,
-			emojiTags,
 			customEmojis: this.$instance.emojis,
 			q: null,
 			searchResultCustom: [],

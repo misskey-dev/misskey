@@ -261,8 +261,7 @@ export default defineComponent({
 				display: inline-block;
 				min-width: 16px;
 				max-width: 150px;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}

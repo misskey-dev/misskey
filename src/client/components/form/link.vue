@@ -8,7 +8,7 @@
 			<Fa :icon="faExternalLinkAlt" class="icon"/>
 		</span>
 	</a>
-	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" v-else>
+	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
@@ -37,6 +37,10 @@ export default defineComponent({
 		external: {
 			type: Boolean,
 			required: false
+		},
+		behavior: {
+			type: String,
+			required: false,
 		},
 	},
 	data() {
@@ -83,8 +87,7 @@ export default defineComponent({
 		> .text {
 			white-space: nowrap;
 			text-overflow: ellipsis;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			padding-right: 12px;
 		}
 
