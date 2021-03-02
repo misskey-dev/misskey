@@ -62,7 +62,7 @@
 		"@types/is-url": "1.2.28",
 		"@types/js-yaml": "4.0.0",
 		"@types/jsdom": "16.2.6",
-		"@types/jsonld": "1.5.3",
+		"@types/jsonld": "1.5.4",
 		"@types/katex": "0.11.0",
 		"@types/koa": "2.13.0",
 		"@types/koa-bodyparser": "4.3.0",
