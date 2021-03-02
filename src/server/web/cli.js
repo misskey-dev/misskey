@@ -30,4 +30,26 @@ window.onload = async () => {
 		
 		return promise;
 	};
+
+	document.getElementById('submit').addEventListener('click', () => {
+		api('notes/create', {
+			text: document.getElementById('text').value
+		}).then(() => {
+			location.reload();
+		});
+	});
+
+	api('notes/timeline').then(notes => {
+		const tl = document.getElementById('tl');
+		for (const note of notes) {
+			const el = document.createElement('div');
+			const name = document.createElement('header');
+			name.textContent = `${note.user.name} @${note.user.username}`;
+			const text = document.createElement('div');
+			text.textContent = `${note.text}`;
+			el.appendChild(name);
+			el.appendChild(text);
+			tl.appendChild(el);
+		}
+	});
 };
