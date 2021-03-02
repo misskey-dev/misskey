@@ -722,10 +722,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==
 
-"@types/jsonld@1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@types/jsonld/-/jsonld-1.5.3.tgz#5bef463655522eef0530db0011bdc119573b759b"
-  integrity sha512-xDjKgwTBOrdevh46a6dota4Lusrn0R6lC1EKEQkBhTrOx4xzGpQKZ/JsXPx7NP2N9qVj7AYo6k5ubWtXAYJkLw==
+"@types/jsonld@1.5.4":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@types/jsonld/-/jsonld-1.5.4.tgz#37e7869fae65bd9b35aa3467cbfc60c52f881a36"
+  integrity sha512-e51UoELQzKJWGsVNqoKI5nnXazupqoOYTBMAGe3Iram0sWxeVTzgk38BKYgmOZmuIXaMFfuAz1ZimK2oyQNnRA==
 
 "@types/katex@0.11.0":
   version "0.11.0"
