@@ -6,7 +6,7 @@ https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOBy
 Les publications des utilisateurs que vous suivez
 
 ## Local
-全てのローカルユーザーの「ホーム」指定されていない投稿
+Les publications des utilisateurs de votre instance
 
 ## Social
 自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿
