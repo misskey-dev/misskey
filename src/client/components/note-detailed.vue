@@ -52,7 +52,7 @@
 					<span class="localOnly" v-if="appearNote.localOnly"><Fa :icon="faBiohazard"/></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
-				<MkInstanceTicker class="ticker" :instance="appearNote.user.instance"/>
+				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div class="main">
@@ -523,20 +523,14 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.popup(import('@/components/emoji-picker.vue'), {
-				src: this.$refs.reactButton,
-				asReactionPicker: true
-			}, {
-				done: reaction => {
-					if (reaction) {
-						os.api('notes/reactions/create', {
-							noteId: this.appearNote.id,
-							reaction: reaction
-						});
-					}
-					this.focus();
-				},
-			}, 'closed');
+			os.pickReaction(this.$refs.reactButton, reaction => {
+				os.api('notes/reactions/create', {
+					noteId: this.appearNote.id,
+					reaction: reaction
+				});
+			}, () => {
+				this.focus();
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -756,7 +750,13 @@ export default defineComponent({
 			};
 			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
-			os.contextMenu(this.getMenu(), e).then(this.focus);
+
+			if (this.$store.state.useReactionPickerForContextMenu) {
+				e.preventDefault();
+				this.react();
+			} else {
+				os.contextMenu(this.getMenu(), e).then(this.focus);
+			}
 		},
 
 		menu(viaKeyboard = false) {

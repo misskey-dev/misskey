@@ -15,16 +15,18 @@ if (localStorage.getItem('vuex') != null) {
 	localStorage.setItem('accounts', JSON.stringify(vuex.device.accounts));
 	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
 
-	for (const [k, v] of 	Object.entries(vuex.device.userData)) {
-		localStorage.setItem('pizzax::base::' + k, JSON.stringify({
-			widgets: v.widgets
-		}));
-
-		if (v.deck) {
-			localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
-				columns: v.deck.columns,
-				layout: v.deck.layout,
+	if (vuex.device.userData) {
+		for (const [k, v] of 	Object.entries(vuex.device.userData)) {
+			localStorage.setItem('pizzax::base::' + k, JSON.stringify({
+				widgets: v.widgets
 			}));
+
+			if (v.deck) {
+				localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
+					columns: v.deck.columns,
+					layout: v.deck.layout,
+				}));
+			}
 		}
 	}
 
@@ -49,16 +51,23 @@ import { router } from '@/router';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n } from '@/i18n';
-import { stream, isMobile, dialog, post } from '@/os';
+import { stream, dialog, post } from '@/os';
 import * as sound from '@/scripts/sound';
 import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
-import { makeHotkey } from './scripts/hotkey';
-import { search } from './scripts/search';
-import { getThemes } from './theme-store';
+import { makeHotkey } from '@/scripts/hotkey';
+import { search } from '@/scripts/search';
+import { isMobile } from '@/scripts/is-mobile';
+import { getThemes } from '@/theme-store';
+import { initializeSw } from '@/scripts/initialize-sw';
+import { reloadChannel } from '@/scripts/unison-reload';
 
 console.info(`Misskey v${version}`);
+
+// boot.jsのやつを解除
+window.onerror = null;
+window.onunhandledrejection = null;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -103,6 +112,9 @@ if (defaultStore.state.reportError && !_DEV_) {
 
 // タッチデバイスでCSSの:hoverを機能させる
 document.addEventListener('touchend', () => {}, { passive: true });
+
+// 一斉リロード
+reloadChannel.addEventListener('message', () => location.reload());
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
@@ -171,7 +183,7 @@ fetchInstance().then(() => {
 	localStorage.setItem('v', instance.version);
 
 	// Init service worker
-	//if (this.store.state.instance.meta.swPublickey) this.registerSw(this.store.state.instance.meta.swPublickey);
+	initializeSw();
 });
 
 stream.init($i);
@@ -181,6 +193,7 @@ const app = createApp(await (
 	!$i                               ? import('@/ui/visitor.vue') :
 	ui === 'deck'                     ? import('@/ui/deck.vue') :
 	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
+	ui === 'chat'                     ? import('@/ui/chat/index.vue') :
 	import('@/ui/default.vue')
 ).then(x => x.default));
 

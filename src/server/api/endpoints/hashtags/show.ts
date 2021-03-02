@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Hashtags } from '../../../../models';
+import { normalizeForSearch } from '../../../../misc/normalize-for-search';
 
 export const meta = {
 	desc: {
@@ -38,7 +39,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const hashtag = await Hashtags.findOne({ name: ps.tag.toLowerCase() });
+	const hashtag = await Hashtags.findOne({ name: normalizeForSearch(ps.tag) });
 	if (hashtag == null) {
 		throw new ApiError(meta.errors.noSuchHashtag);
 	}

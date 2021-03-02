@@ -1,11 +1,11 @@
 <template>
-<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 	<transition :name="$store.state.animation ? 'modal-bg' : ''" appear>
-		<div class="bg _modalBg" v-if="showing" @click="onBgClick"></div>
+		<div class="bg _modalBg" v-if="manualShowing != null ? manualShowing : showing" @click="onBgClick"></div>
 	</transition>
 	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
-		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @after-enter="childRendered">
-			<slot v-if="showing"></slot>
+		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @enter="$emit('opening')" @after-enter="childRendered">
+			<slot v-if="manualShowing != null ? true : showing" v-bind:showing="manualShowing"></slot>
 		</transition>
 	</div>
 </div>
@@ -29,6 +29,11 @@ export default defineComponent({
 		modal: true
 	},
 	props: {
+		manualShowing: {
+			type: Boolean,
+			required: false,
+			default: null,
+		},
 		srcCenter: {
 			type: Boolean,
 			required: false
@@ -40,7 +45,7 @@ export default defineComponent({
 			required: false
 		}
 	},
-	emits: ['click', 'esc', 'closed'],
+	emits: ['opening', 'click', 'esc', 'close', 'closed'],
 	data() {
 		return {
 			showing: true,
@@ -60,70 +65,82 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		this.fixed = getFixedContainer(this.src) != null;
+		this.$watch('src', () => {
+			this.fixed = getFixedContainer(this.src) != null;
+			this.$nextTick(() => {
+				this.align();
+			});
+		}, { immediate: true });
 
 		this.$nextTick(() => {
-			if (!this.popup) return;
-
 			const popover = this.$refs.content as any;
-
-			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
-				const rect = this.src.getBoundingClientRect();
-				const width = popover.offsetWidth;
-				const height = popover.offsetHeight;
-
-				let left;
-				let top;
-
-				if (this.srcCenter) {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
-					left = (x - (width / 2));
-					top = (y - (height / 2));
-				} else {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
-					left = (x - (width / 2));
-					top = y;
-				}
-
-				if (this.fixed) {
-					if (left + width > window.innerWidth) {
-						left = window.innerWidth - width;
-					}
-
-					if (top + height > window.innerHeight) {
-						top = window.innerHeight - height;
-					}
-				} else {
-					if (left + width - window.pageXOffset > window.innerWidth) {
-						left = window.innerWidth - width + window.pageXOffset;
-					}
-
-					if (top + height - window.pageYOffset > window.innerHeight) {
-						top = window.innerHeight - height + window.pageYOffset;
-					}
-				}
-
-				if (top < 0) {
-					top = 0;
-				}
-
-				if (left < 0) {
-					left = 0;
-				}
-
-				if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
-					this.transformOrigin = 'center top';
-				}
-
-				popover.style.left = left + 'px';
-				popover.style.top = top + 'px';
+				this.align();
 			}).observe(popover);
 		});
 	},
 	methods: {
+		align() {
+			if (!this.popup) return;
+
+			const popover = this.$refs.content as any;
+
+			const rect = this.src.getBoundingClientRect();
+			
+			const width = popover.offsetWidth;
+			const height = popover.offsetHeight;
+
+			let left;
+			let top;
+
+			if (this.srcCenter) {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
+				left = (x - (width / 2));
+				top = (y - (height / 2));
+			} else {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
+				left = (x - (width / 2));
+				top = y;
+			}
+
+			if (this.fixed) {
+				if (left + width > window.innerWidth) {
+					left = window.innerWidth - width;
+				}
+
+				if (top + height > window.innerHeight) {
+					top = window.innerHeight - height;
+				}
+			} else {
+				if (left + width - window.pageXOffset > window.innerWidth) {
+					left = window.innerWidth - width + window.pageXOffset - 1;
+				}
+
+				if (top + height - window.pageYOffset > window.innerHeight) {
+					top = window.innerHeight - height + window.pageYOffset - 1;
+				}
+			}
+
+			if (top < 0) {
+				top = 0;
+			}
+
+			if (left < 0) {
+				left = 0;
+			}
+
+			if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
+				this.transformOrigin = 'center top';
+			} else {
+				this.transformOrigin = 'center';
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
+		},
+
 		childRendered() {
 			// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 			const content = this.$refs.content.children[0];
@@ -140,6 +157,7 @@ export default defineComponent({
 
 		close() {
 			this.showing = false;
+			this.$emit('close');
 		},
 
 		onBgClick() {

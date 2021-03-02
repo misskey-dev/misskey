@@ -20,7 +20,6 @@ import config from '../../config';
 import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips } from '../../models';
 import parseAcct from '../../misc/acct/parse';
 import { getNoteSummary } from '../../misc/get-note-summary';
-import { ensure } from '../../prelude/ensure';
 import { getConnection } from 'typeorm';
 import redis from '../../db/redis';
 import locales = require('../../../locales');
@@ -73,8 +72,8 @@ router.get('/apple-touch-icon.png', async ctx => {
 });
 
 // ServiceWorker
-router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-	await send(ctx as any, `/assets/sw.${ctx.params[0]}.js`, {
+router.get('/sw.js', async ctx => {
+	await send(ctx as any, `/assets/sw.${config.version}.js`, {
 		root: client
 	});
 });
@@ -199,7 +198,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	});
 
 	if (user != null) {
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 		const meta = await fetchMeta();
 		const me = profile.fields
 			? profile.fields
@@ -242,7 +241,7 @@ router.get('/notes/:note', async ctx => {
 
 	if (note) {
 		const _note = await Notes.pack(note);
-		const profile = await UserProfiles.findOne(note.userId).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(note.userId);
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
@@ -282,7 +281,7 @@ router.get('/@:user/pages/:page', async ctx => {
 
 	if (page) {
 		const _page = await Pages.pack(page);
-		const profile = await UserProfiles.findOne(page.userId).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(page.userId);
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
@@ -311,7 +310,7 @@ router.get('/clips/:clip', async ctx => {
 
 	if (clip) {
 		const _clip = await Clips.pack(clip);
-		const profile = await UserProfiles.findOne(clip.userId).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(clip.userId);
 		const meta = await fetchMeta();
 		await ctx.render('clip', {
 			clip: _clip,

@@ -18,7 +18,7 @@
 			<FormLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><Fa :icon="faPalette"/></template>{{ $ts.theme }}</FormLink>
 			<FormLink :active="page === 'sidebar'" replace to="/settings/sidebar"><template #icon><Fa :icon="faListUl"/></template>{{ $ts.sidebar }}</FormLink>
 			<FormLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><Fa :icon="faMusic"/></template>{{ $ts.sounds }}</FormLink>
-			<FormLink :active="page === 'plugins'" replace to="/settings/plugins"><template #icon><Fa :icon="faPlug"/></template>{{ $ts.plugins }}</FormLink>
+			<FormLink :active="page === 'plugin'" replace to="/settings/plugin"><template #icon><Fa :icon="faPlug"/></template>{{ $ts.plugins }}</FormLink>
 		</FormGroup>
 		<FormGroup>
 			<template #label>{{ $ts.otherSettings }}</template>
@@ -52,6 +52,7 @@ import FormBase from '@/components/form/base.vue';
 import FormButton from '@/components/form/button.vue';
 import { scroll } from '@/scripts/scroll';
 import { signout } from '@/account';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -99,13 +100,16 @@ export default defineComponent({
 				case 'general': return defineAsyncComponent(() => import('./general.vue'));
 				case 'email': return defineAsyncComponent(() => import('./email.vue'));
 				case 'email/address': return defineAsyncComponent(() => import('./email-address.vue'));
+				case 'email/notification': return defineAsyncComponent(() => import('./email-notification.vue'));
 				case 'theme': return defineAsyncComponent(() => import('./theme.vue'));
 				case 'theme/install': return defineAsyncComponent(() => import('./theme.install.vue'));
 				case 'theme/manage': return defineAsyncComponent(() => import('./theme.manage.vue'));
 				case 'sidebar': return defineAsyncComponent(() => import('./sidebar.vue'));
 				case 'sounds': return defineAsyncComponent(() => import('./sounds.vue'));
 				case 'deck': return defineAsyncComponent(() => import('./deck.vue'));
-				case 'plugins': return defineAsyncComponent(() => import('./plugins.vue'));
+				case 'plugin': return defineAsyncComponent(() => import('./plugin.vue'));
+				case 'plugin/install': return defineAsyncComponent(() => import('./plugin.install.vue'));
+				case 'plugin/manage': return defineAsyncComponent(() => import('./plugin.manage.vue'));
 				case 'import-export': return defineAsyncComponent(() => import('./import-export.vue'));
 				case 'account-info': return defineAsyncComponent(() => import('./account-info.vue'));
 				case 'update': return defineAsyncComponent(() => import('./update.vue'));
@@ -157,7 +161,7 @@ export default defineComponent({
 			clear: () => {
 				localStorage.removeItem('locale');
 				localStorage.removeItem('theme');
-				location.reload();
+				unisonReload();
 			},
 			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faEnvelope, faCloud,
 		};

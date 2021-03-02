@@ -1,5 +1,7 @@
 import autobind from 'autobind-decorator';
-import { Type, Block, funcDefs, envVarsDef, Variable, PageVar, isLiteralBlock } from '.';
+import { Type, envVarsDef, PageVar } from '.';
+import { Expr, isLiteralValue, Variable } from './expr';
+import { funcDefs } from './lib';
 
 type TypeError = {
 	arg: number;
@@ -20,10 +22,10 @@ export class HpmlTypeChecker {
 	}
 
 	@autobind
-	public typeCheck(v: Block): TypeError | null {
-		if (isLiteralBlock(v)) return null;
+	public typeCheck(v: Expr): TypeError | null {
+		if (isLiteralValue(v)) return null;
 
-		const def = funcDefs[v.type];
+		const def = funcDefs[v.type || ''];
 		if (def == null) {
 			throw new Error('Unknown type: ' + v.type);
 		}
@@ -58,8 +60,8 @@ export class HpmlTypeChecker {
 	}
 
 	@autobind
-	public getExpectedType(v: Block, slot: number): Type {
-		const def = funcDefs[v.type];
+	public getExpectedType(v: Expr, slot: number): Type {
+		const def = funcDefs[v.type || ''];
 		if (def == null) {
 			throw new Error('Unknown type: ' + v.type);
 		}
@@ -86,7 +88,7 @@ export class HpmlTypeChecker {
 	}
 
 	@autobind
-	public infer(v: Block): Type {
+	public infer(v: Expr): Type {
 		if (v.type === null) return null;
 		if (v.type === 'text') return 'string';
 		if (v.type === 'multiLineText') return 'string';
@@ -103,7 +105,7 @@ export class HpmlTypeChecker {
 				return pageVar.type;
 			}
 
-			const envVar = envVarsDef[v.value];
+			const envVar = envVarsDef[v.value || ''];
 			if (envVar !== undefined) {
 				return envVar;
 			}

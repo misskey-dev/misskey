@@ -308,13 +308,6 @@ hr {
 	box-shadow: none;
 }
 
-._loadMore {
-	@extend ._panel;
-	@extend ._button;
-	width: 100%;
-	padding: 12px 0;
-}
-
 ._borderButton {
 	@extend ._button;
 	display: block;
@@ -397,8 +390,8 @@ hr {
 
 ._acrylic {
 	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
 }
 
 ._vMargin {
@@ -481,25 +474,18 @@ hr {
 	outline: none;
 }
 
+._zoom {
+	transition-duration: 0.5s, 0.5s;
+	transition-property: opacity, transform;
+	transition-timing-function: cubic-bezier(0,.5,.5,1);
+}
+
 .zoom-enter-active, .zoom-leave-active {
 	transition: opacity 0.5s, transform 0.5s !important;
 }
 .zoom-enter-from, .zoom-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
-}
-
-.zoom-in-top-enter-active,
-.zoom-in-top-leave-active {
-	opacity: 1;
-	transform: scaleY(1);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-	transform-origin: center top;
-}
-.zoom-in-top-enter-from,
-.zoom-in-top-leave-active {
-	opacity: 0;
-	transform: scaleY(0);
 }
 
 @keyframes blink {

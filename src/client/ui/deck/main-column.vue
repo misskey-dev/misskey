@@ -57,6 +57,13 @@ export default defineComponent({
 		},
 
 		onContextmenu(e) {
+			const isLink = (el: HTMLElement) => {
+				if (el.tagName === 'A') return true;
+				if (el.parentElement) {
+					return isLink(el.parentElement);
+				}
+			};
+			if (isLink(e.target)) return;
 			if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
 			if (window.getSelection().toString() !== '') return;
 			const path = this.$route.path;

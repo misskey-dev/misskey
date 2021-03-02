@@ -69,6 +69,8 @@ import { noteVisibilities } from '../../types';
 import * as os from '@/os';
 import { selectFile } from '@/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@/store';
+import { isMobile } from '@/scripts/is-mobile';
+import { throttle } from 'throttle-debounce';
 
 export default defineComponent({
 	components: {
@@ -143,6 +145,11 @@ export default defineComponent({
 			quoteId: null,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
 			imeText: '',
+			typing: throttle(3000, () => {
+				if (this.channel) {
+					os.stream.send('typingOnChannel', { channel: this.channel.id });
+				}
+			}),
 			postFormActions,
 			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug
 		};
@@ -433,10 +440,12 @@ export default defineComponent({
 		onKeydown(e: KeyboardEvent) {
 			if ((e.which === 10 || e.which === 13) && (e.ctrlKey || e.metaKey) && this.canPost) this.post();
 			if (e.which === 27) this.$emit('esc');
+			this.typing();
 		},
 
 		onCompositionUpdate(e: CompositionEvent) {
 			this.imeText = e.data;
+			this.typing();
 		},
 
 		onCompositionEnd(e: CompositionEvent) {
@@ -554,7 +563,7 @@ export default defineComponent({
 				localOnly: this.localOnly,
 				visibility: this.visibility,
 				visibleUserIds: this.visibility == 'specified' ? this.visibleUsers.map(u => u.id) : undefined,
-				viaMobile: os.isMobile
+				viaMobile: isMobile
 			};
 
 			// plugin
@@ -597,9 +606,7 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
-				insertTextAtCursor(this.$refs.text, emoji);
-			});
+			os.openEmojiPicker(ev.currentTarget || ev.target, {}, this.$refs.text);
 		},
 
 		showActions(ev) {
