@@ -1,6 +1,6 @@
 # Raccourcis clavier
 
-## Global
+## Général
 Ces raccourcis sont utilisables dans n'importe quel contexte.
 <table>
     <thead>
