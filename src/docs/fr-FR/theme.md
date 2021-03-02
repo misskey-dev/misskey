@@ -1,11 +1,11 @@
 # Thème
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Vous pouvez modifier l'apparence de votre client Misskey à l'aide de thèmes.
 
-## テーマの設定
-設定 > テーマ
+## Paramètres de thème
+Paramètres > Thèmes
 
-## テーマを作成する
+## Créer un thème
 テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
 ``` js
 {
@@ -33,13 +33,13 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
-* `desc` ... テーマの説明(オプション)
-* `base` ... 明るいテーマか、暗いテーマか
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
+* `id` ... L'identifiant unique du thème. L'utilisation d'un UUID est recommandée ;
+* `name` ... Nom du thème ;
+* `author` ... Auteur du thème ;
+* `desc` ... Description du thème (facultatif) ;
+* `base` ... Thème clair ou sombre :
+    * Sélectionnez `light` pour définir le thème comme thème clair et `dark` pour le définir comme sombre,
+    * Le thème héritera des valeurs par défaut du thème spécifié ici ;
 * `props` ... テーマのスタイル定義。これから説明します。
 
 ### テーマのスタイル定義

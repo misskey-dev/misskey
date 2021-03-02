@@ -11,12 +11,15 @@
 
 'use strict';
 
-window.onerror = (e) => {
-	document.documentElement.innerHTML = '問題が発生しました。';
-};
-
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
+	window.onerror = (e) => {
+		renderError('SOMETHING_HAPPENED', e.toString());
+	};
+	window.onunhandledrejection = (e) => {
+		renderError('SOMETHING_HAPPENED_IN_PROMISE', e.toString());
+	};
+
 	const v = localStorage.getItem('v') || VERSION;
 
 	//#region Detect language & fetch translations
@@ -38,9 +41,17 @@ window.onerror = (e) => {
 		}
 
 		const res = await fetch(`/assets/locales/${lang}.${v}.json`);
-		localStorage.setItem('lang', lang);
-		localStorage.setItem('locale', await res.text());
-		localStorage.setItem('localeVersion', v);
+		if (res.status === 200) {
+			localStorage.setItem('lang', lang);
+			localStorage.setItem('locale', await res.text());
+			localStorage.setItem('localeVersion', v);
+		} else if (localeOutdated) {
+			// nop
+		} else {
+			renderError('LOCALE_FETCH_FAILED');
+			checkUpdate();
+			return;
+		}
 	}
 	//#endregion
 
@@ -56,24 +67,8 @@ window.onerror = (e) => {
 	script.setAttribute('async', 'true');
 	script.setAttribute('defer', 'true');
 	script.addEventListener('error', async () => {
-		document.documentElement.innerHTML = '読み込みに失敗しました。';
-
-		// TODO: サーバーが落ちている場合などのエラーハンドリング
-		const res = await fetch('/api/meta', {
-			method: 'POST',
-			cache: 'no-cache'
-		});
-
-		const meta = await res.json();
-
-		if (meta.version != v) {
-			localStorage.setItem('v', meta.version);
-			alert(
-				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
-				'\n\n' +
-				'New version of Misskey available. The page will be reloaded.');
-			refresh();
-		}
+		renderError('APP_FETCH_FAILED');
+		checkUpdate();
 	});
 	head.appendChild(script);
 	//#endregion
@@ -110,6 +105,44 @@ window.onerror = (e) => {
 	const wallpaper = localStorage.getItem('wallpaper');
 	if (wallpaper) {
 		document.documentElement.style.backgroundImage = `url(${wallpaper})`;
+	}
+
+	// eslint-disable-next-line no-inner-declarations
+	function renderError(code, details) {
+		document.documentElement.innerHTML = `
+			<h1>⚠エラーが発生しました</h1>
+			<p>問題が解決しない場合は管理者までお問い合わせください。以下のオプションを試すこともできます:</p>
+			<ul>
+				<li><a href="/cli">簡易クライアント</a>を起動</li>
+				<li><a href="/bios">BIOS</a>で修復を試みる</li>
+				<li><a href="/flush">キャッシュをクリア</a>する</li>
+			</ul>
+			<hr>
+			<code>ERROR CODE: ${code}</code>
+			<details>
+				${details}
+			</details>
+		`;
+	}
+
+	// eslint-disable-next-line no-inner-declarations
+	async function checkUpdate() {
+		// TODO: サーバーが落ちている場合などのエラーハンドリング
+		const res = await fetch('/api/meta', {
+			method: 'POST',
+			cache: 'no-cache'
+		});
+
+		const meta = await res.json();
+
+		if (meta.version != v) {
+			localStorage.setItem('v', meta.version);
+			alert(
+				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
+				'\n\n' +
+				'New version of Misskey available. The page will be reloaded.');
+			refresh();
+		}
 	}
 
 	// eslint-disable-next-line no-inner-declarations

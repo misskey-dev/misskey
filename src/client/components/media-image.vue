@@ -143,8 +143,7 @@ export default defineComponent({
 	> a {
 		display: block;
 		cursor: zoom-in;
-		overflow: hidden; // overflow: clip; をSafariが対応したら消す
-		overflow: clip;
+		overflow: hidden;
 		width: 100%;
 		height: 100%;
 		background-position: center;

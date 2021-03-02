@@ -1,2 +1,2 @@
 # Abonnements
-ユーザーをフォローすると、タイムラインにそのユーザーの投稿が表示されるようになります。ただし、他のユーザーに対する返信は含まれません。 ユーザーをフォローするには、ユーザーページの「フォロー」ボタンをクリックします。フォローを解除するには、もう一度クリックします。
+Lorsque vous suivez un utilisateur, les publication de celui-ci apparaissent dans votre fil. Cela n'inclut toutefois pas ses réponses aux autres utilisateurs. Cliquez une nouvelle fois pour vous désabonner.
