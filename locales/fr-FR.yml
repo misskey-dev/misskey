@@ -642,7 +642,7 @@ pollVotedCount: "Nombre de votes reçus"
 yes: "Oui"
 no: "Non"
 driveFilesCount: "Nombre de fichiers dans le Drive"
-driveUsage: "Utilisation du disque"
+driveUsage: "Utilisation du Drive"
 noCrawle: "Refuser l'indexation par les robots"
 noCrawleDescription: "Demandez aux moteurs de recherche de ne pas indexer votre page de profil, vos notes, vos pages, etc."
 lockedAccountInfo: "À moins que vous ne définissiez la visibilité de votre note sur \"Abonné-e-s\", vos notes sont visibles par tous, même si vous exigez que les followers soient approuvés manuellement."
@@ -710,7 +710,7 @@ _email:
   _follow:
     title: "Vous suit"
   _receiveFollowRequest:
-    title: "Vous avez reçu une demande de suivie "
+    title: "Vous avez reçu une demande de suivi"
 _plugin:
   install: "Installation de plugin"
   installWarn: "N’installez que des extensions provenant de sources de confiance."
