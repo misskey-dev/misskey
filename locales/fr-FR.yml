@@ -646,7 +646,7 @@ driveUsage: "Utilisation du Drive"
 noCrawle: "Refuser l'indexation par les robots"
 noCrawleDescription: "Demandez aux moteurs de recherche de ne pas indexer votre page de profil, vos notes, vos pages, etc."
 lockedAccountInfo: "À moins que vous ne définissiez la visibilité de votre note sur \"Abonné-e-s\", vos notes sont visibles par tous, même si vous exigez que les followers soient approuvés manuellement."
-alwaysMarkSensitive: "Marquer comme contenu sensible par défaut"
+alwaysMarkSensitive: "Marquer les médias comme contenu sensible par défaut"
 loadRawImages: "Affichage complet des images jointes au lieu des vignettes"
 disableShowingAnimatedImages: "Désactiver l'animation des images"
 verificationEmailSent: "Un e-mail de vérification a été envoyé. Veuillez accéder au lien pour compléter la vérification."
@@ -730,7 +730,7 @@ _aboutMisskey:
   morePatrons: "Nous apprécions vraiment le soutien de nombreuses autres personnes non mentionnées ici. Merci à toutes et à tous ! 🥰"
   patrons: "Contributeurs"
 _nsfw:
-  respect: "Cacher les médias sensibles"
+  respect: "Cacher les médias marqués comme contenu sensible"
   ignore: "Afficher les médias sensibles"
   force: "Cacher tous les médias"
 _mfm:
