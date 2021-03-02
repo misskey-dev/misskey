@@ -1,8 +1,8 @@
 # Réactions
-他の人のノートに、絵文字を付けて簡単にあなたの反応を伝えられる機能です。 リアクションするには、ノートの + アイコンをクリックしてピッカーを表示し、絵文字を選択します。 リアクションには[カスタム絵文字](./custom-emoji)も使用できます。
+Les réactions vous permettent d'interagir facilement avec les notes des autres utilisateurs en y attribuant des émoticônes. Pour réagir, cliquez sur le « + » de la note afin d'afficher le panneau de sélection puis choisissez une émoticône. Il est également possible d'utiliser des [émoticônes personnalisées](./custom-emoji).
 
-## リアクションピッカーのカスタマイズ
-ピッカーに表示される絵文字を自分好みにカスタマイズすることができます。 設定の「リアクション」で設定します。
+## Personnalisation du panneau de réactions
+Il est possible de choisir les émoticônes affichés dans le panneau de réactions dans l'onglet « réactions » des paramètres.
 
 ## リモート投稿へのリアクションについて
 リアクションはMisskeyオリジナルの機能であるため、リモートインスタンスがMisskeyでない限りは、ほとんどの場合「Like」としてアクティビティが送信されます。一般的にはLikeは「お気に入り」として実装されているようです。 また、相手がMisskeyであったとしても、カスタム絵文字リアクションは伝わらず、自動的に「👍」等にフォールバックされます。
