@@ -89,8 +89,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .ebkgoccj {
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	contain: content;
@@ -124,8 +123,7 @@ export default defineComponent({
 			padding-left: 32px;
 			font-weight: bold;
 			white-space: nowrap;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			text-overflow: ellipsis;
 			pointer-events: none;
 

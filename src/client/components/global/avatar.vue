@@ -101,8 +101,7 @@ export default defineComponent({
 		top: 0;
 		border-radius: 100%;
 		z-index: 1;
-		overflow: hidden; // overflow: clip; をSafariが対応したら消す
-		overflow: clip;
+		overflow: hidden;
 		object-fit: cover;
 		width: 100%;
 		height: 100%;

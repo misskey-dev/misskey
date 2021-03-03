@@ -268,8 +268,7 @@ export default defineComponent({
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				min-width: 0;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 			}
 
 			> .time {
@@ -280,8 +279,7 @@ export default defineComponent({
 
 		> .text {
 			white-space: nowrap;
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			text-overflow: ellipsis;
 
 			> [data-icon] {
