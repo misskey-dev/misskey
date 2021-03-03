@@ -305,7 +305,7 @@ export async function pickEmoji(src?: HTMLElement, opts) {
 
 type AwaitType<T> =
 	T extends Promise<infer U> ? U :
-	T extends (...args: Array<any>) => Promise<infer V> ? V :
+	T extends (...args: any[]) => Promise<infer V> ? V :
 	T;
 let openingEmojiPicker: AwaitType<ReturnType<typeof popup>> | null = null;
 let activeTextarea: HTMLTextAreaElement | HTMLInputElement | null = null;

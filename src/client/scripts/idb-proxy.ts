@@ -7,7 +7,7 @@ import {
 
 const fallbackName = (key: string) => `idbfallback::${key}`;
 
-let idbAvailable = !!window.indexedDB;
+let idbAvailable = window ? !!window.indexedDB : true;
 
 if (idbAvailable) {
 	try {

@@ -76,6 +76,7 @@ console.info(`Misskey v${version}`);
 
 // boot.jsのやつを解除
 window.onerror = null;
+window.onunhandledrejection = null;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');

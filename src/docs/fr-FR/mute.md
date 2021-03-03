@@ -1,13 +1,13 @@
-# Mettre en sourdine
+# Ignorer
 
-ユーザーをミュートすると、そのユーザーに関する次のコンテンツがMisskeyに表示されなくなります:
+Le contenu afférent à un utilisateur ne vous sera plus présenté dès lors que vous l'ignorez :
 
-* タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
-* そのユーザーからの通知
-* メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
+* les publications de cet utilisateur dans le fil ou les résultats de recherche, de même que ses réponses et Renotes ;
+* les notifications touchant à cet utilisateur ;
+* l'historique des messages avec cet utilisateur.
 
-ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
+Pour ignorer un utilisateur, utilisez le bouton « ignorer » de sa page de profil.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+L'utilisateur que vous ignorez ne sera pas prévenu. De même, vous ne serez pas prévenu lorsque vous serez ignoré par un autre utilisateur.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+Vous pouvez vérifier la liste des utilisateurs ignorés depuis l'onglet « ignorés » de vos paramètres.
