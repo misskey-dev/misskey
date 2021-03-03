@@ -46,7 +46,10 @@ self.addEventListener('activate', ev => {
 
 //#region When: Fetching
 self.addEventListener('fetch', ev => {
-	// Nothing to do
+	ev.respondWith(
+		fetch(ev.request)
+		.catch(() => new Response(`Offline. Service Worker @${version}`, { status: 200 }))
+	);
 });
 //#endregion
 
