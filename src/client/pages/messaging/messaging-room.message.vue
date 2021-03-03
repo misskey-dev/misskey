@@ -154,8 +154,7 @@ export default defineComponent({
 					display: block;
 					margin: 0;
 					padding: 0;
-					overflow: hidden; // overflow: clip; をSafariが対応したら消す
-					overflow: clip;
+					overflow: hidden;
 					overflow-wrap: break-word;
 					font-size: 1em;
 					color: rgba(#000, 0.5);
@@ -165,8 +164,7 @@ export default defineComponent({
 					display: block;
 					margin: 0;
 					padding: 12px 18px;
-					overflow: hidden; // overflow: clip; をSafariが対応したら消す
-					overflow: clip;
+					overflow: hidden;
 					overflow-wrap: break-word;
 					word-break: break-word;
 					font-size: 1em;
@@ -184,8 +182,7 @@ export default defineComponent({
 						display: block;
 						max-width: 100%;
 						border-radius: 16px;
-						overflow: hidden; // overflow: clip; をSafariが対応したら消す
-						overflow: clip;
+						overflow: hidden;
 						text-decoration: none;
 
 						&:hover {

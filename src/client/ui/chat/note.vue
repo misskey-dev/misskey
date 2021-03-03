@@ -955,8 +955,7 @@ export default defineComponent({
 		}
 
 		> span {
-			overflow: hidden; // overflow: clip; をSafariが対応したら消す
-			overflow: clip;
+			overflow: hidden;
 			flex-shrink: 1;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -1029,8 +1028,7 @@ export default defineComponent({
 					&.collapsed {
 						position: relative;
 						max-height: 9em;
-						overflow: hidden; // overflow: clip; をSafariが対応したら消す
-						overflow: clip;
+						overflow: hidden;
 
 						> .fade {
 							display: block;

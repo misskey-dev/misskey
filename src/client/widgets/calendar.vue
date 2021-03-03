@@ -171,8 +171,7 @@ export default defineComponent({
 
 			> .meter {
 				width: 100%;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 				background: var(--X11);
 				border-radius: 8px;
 

@@ -66,8 +66,7 @@ export default defineComponent({
 	height: 350px;
 	background: var(--panel);
 	border-radius: var(--radius);
-	overflow: hidden; // overflow: clip; をSafariが対応したら消す
-	overflow: clip;
+	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 
@@ -128,8 +127,7 @@ export default defineComponent({
 
 			> .body {
 				padding: 0 8px;
-				overflow: hidden; // overflow: clip; をSafariが対応したら消す
-				overflow: clip;
+				overflow: hidden;
 
 				> .name {
 					display: block;
