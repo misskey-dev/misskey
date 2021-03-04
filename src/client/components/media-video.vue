@@ -106,7 +106,6 @@ export default defineComponent({
 		justify-content: center;
 		align-items: center;
 
-		font-size: 3.5em;
 		overflow: hidden;
 		background-position: center;
 		background-size: cover;
