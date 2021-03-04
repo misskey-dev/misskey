@@ -1,6 +1,6 @@
 # Deck
 
-Le deck est une des interfaces utilisateurs disponibles.Sa particularité est de former une interface riche en contenus et hautement personnalisable grâce à l'affichage de plusieurs colonnes.
+Le deck est l'une des interfaces utilisateur disponibles.Sa particularité est de former une interface riche en contenus et hautement personnalisable grâce à l'affichage de plusieurs colonnes.
 
 ## Ajouter une colonne
 Vous pouvez ajouter une colonne en cliquant avec le clic-droit sur « ajouter une colonne » dans l'arrière-plan du deck.
