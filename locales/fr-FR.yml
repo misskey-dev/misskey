@@ -1113,7 +1113,7 @@ _rooms:
   exit: "Retour"
   remove: "Enlever"
   clear: "Tout enlever"
-  clearConfirm: "Désirez-vous enlever tout les meubles de votre chambre ?"
+  clearConfirm: "Souhaitez-vous enlever tous les meubles de votre chambre ?"
   leaveConfirm: "Vous avez des modifications non-sauvegardées. Voulez-vous vraiment quitter ?"
   chooseImage: "Sélectionnez une image"
   roomType: "Type de chambre"
