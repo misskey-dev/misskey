@@ -4,8 +4,8 @@ Les réactions vous permettent d'interagir facilement avec les notes des autres 
 ## Personnalisation du panneau de réactions
 Il est possible de choisir les émojis affichés dans le panneau de réactions en allant dans l'onglet « réactions » des paramètres.
 
-## Réactions et publications issues de serveurs distants
+## Envoi de réactions à des serveurs distants
 Les réactions étant une fonctionnalité originale de Misskey, la plupart des autres instances du Fediverse recevront votre réaction comme un simple "J'aime" - à moins qu'il s'agisse d'une autre instance Misskey.Généralement dans le Fediverse, les " J'aime " sont appelés " Favoris ". En outre, si vous réagissez avec un émoji personnalisé, même si l'instance destinataire est une instance Misskey, il sera automatiquement transmis comme un " 👍 " ou assimilé.
 
-## リモートからのリアクションについて
-リモートから「Like」アクティビティを受信したとき、Misskeyでは「👍」のリアクションとして解釈されます。
+## Réception de réactions de la part de serveurs distants
+Les " J'aime " que vous recevez de la part d'utilisateur·ice·s d'autres instances apparaissent sur Misskey sous la forme de " 👍 ".
