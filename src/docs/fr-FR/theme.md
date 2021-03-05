@@ -46,10 +46,10 @@ Les codes des thèmes sont écrits sous forme d'objets JSON5. Les thèmes compre
 C'est dans `props` que vous définirez le style de thème. Les propriétés deviendront des variables CSS et les valeurs spécifieront le contenu. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est clair `light` ce sera l'objet [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est sombre `dark` ce sera l'objet [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5). Cela signifie, par exemple, que s'il n'y pas de propriété `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
 
 #### Syntaxe des valeurs
-* 16進数で表された色
-    * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
-    * 例: `rgb(0, 255, 0)`
+* Codes de couleur Hex
+    * Ex. : `#00ff00`
+* Couleurs avec les valeurs RVB : `rgb(r, g, b)`
+    * Ex. : `rgb(0, 255, 0)`
 * `rgb(r, g, b, a)`形式で表された透明度を含む色
     * 例: `rgba(0, 255, 0, 0.5)`
 * 他のキーの値の参照
