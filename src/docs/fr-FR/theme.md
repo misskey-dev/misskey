@@ -40,9 +40,9 @@ Paramètres > Thèmes
 * `base` ... Thème clair ou sombre :
     * Sélectionnez `light` pour définir le thème comme thème clair et `dark` pour le définir comme sombre,
     * Le thème héritera des valeurs par défaut du thème spécifié ici ;
-* `props` ... テーマのスタイル定義。これから説明します。
+* `props` ... Définir un style de thème.Voir les explications ci-après.
 
-### テーマのスタイル定義
+### Définir un style de thème
 `props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
 
 #### バリューで使える構文
