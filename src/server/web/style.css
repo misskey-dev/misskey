@@ -3,17 +3,20 @@ html {
 	color: var(--fg);
 }
 
-#ini {
+#splash {
 	position: fixed;
-	z-index: 1;
+	z-index: 10000;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	cursor: wait;
+	background-color: var(--bg);
+	opacity: 1;
+	transition: opacity 0.5s ease;
 }
 
-#ini > svg {
+#splash > img {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -22,16 +25,5 @@ html {
 	margin: auto;
 	width: 64px;
 	height: 64px;
-	animation: ini 0.6s infinite linear;
-	color: var(--accent);
-	fill: currentColor;
-}
-
-@keyframes ini {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
+	pointer-events: none;
 }

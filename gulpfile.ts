@@ -56,7 +56,9 @@ gulp.task('build:client:script', () => {
 
 gulp.task('build:client:style', () => {
 	return gulp.src(['./src/server/web/style.css', './src/server/web/bios.css', './src/server/web/cli.css'])
-		.pipe(cssnano())
+		.pipe(cssnano({
+			zindex: false
+		}))
 		.pipe(gulp.dest('./built/server/web/'));
 });
 
