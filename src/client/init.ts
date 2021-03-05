@@ -62,6 +62,7 @@ import { isMobile } from '@/scripts/is-mobile';
 import { getThemes } from '@/theme-store';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
+import { reactionPicker } from '@/scripts/reaction-picker';
 
 console.info(`Misskey v${version}`);
 
@@ -222,6 +223,7 @@ await router.isReady();
 //document.body.innerHTML = '<div id="app"></div>';
 
 app.mount('body');
+reactionPicker.init();
 
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {
