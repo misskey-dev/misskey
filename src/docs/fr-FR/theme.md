@@ -62,7 +62,7 @@ C'est dans `props` que vous définirez le style de thème. Les propriétés devi
     * `:{functionname}<{argument}<{color}`
 
 #### Constantes
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+Dans le cas où vous ne souhaiteriez pas qu'une valeur génère une variable CSS mais que vous voudriez l'utiliser comme valeur pour une autre variable CSS, vous avez la possibilité d'utiliser une constante. Il suffit de faire précéder le nom de la propriété de : `$` pour que celle-ci ne génère pas de variable CSS.
 
-#### Fonction
+#### Fonctions
 wip
