@@ -50,9 +50,9 @@ C'est dans `props` que vous définirez le style de thème. Les propriétés devi
     * Ex. : `#00ff00`
 * Couleurs avec les valeurs RVB : `rgb(r, g, b)`
     * Ex. : `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
-    * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
+* Couleurs avec les valeurs RVBA : `rgba(r, g, b, a)`
+    * Ex. : `rgba(0, 255, 0, 0.5)`
+* Faire référence aux valeurs d'autres propriétés
     * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
     * 例: `@panel`
 * 定数(後述)の参照
