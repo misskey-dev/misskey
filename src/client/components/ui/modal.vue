@@ -1,10 +1,10 @@
 <template>
-<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+<div class="mk-modal" v-hotkey.global="keymap" :style="{ display, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 	<transition :name="$store.state.animation ? 'modal-bg' : ''" appear>
 		<div class="bg _modalBg" v-if="manualShowing != null ? manualShowing : showing" @click="onBgClick"></div>
 	</transition>
 	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
-		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @enter="$emit('opening')" @after-enter="childRendered">
+		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
 			<slot v-if="manualShowing != null ? true : showing" v-bind:showing="manualShowing"></slot>
 		</transition>
 	</div>
@@ -52,6 +52,7 @@ export default defineComponent({
 			fixed: false,
 			transformOrigin: 'center',
 			contentClicking: false,
+			display: this.manualShowing == null ? 'block' : 'none',
 		};
 	},
 	computed: {
@@ -62,6 +63,15 @@ export default defineComponent({
 		},
 		popup(): boolean {
 			return this.src != null;
+		}
+	},
+	watch: {
+		manualShowing: {
+			handler(v) {
+				console.log(v);
+				if (v) this.display = 'block';
+			},
+			immediate: true
 		}
 	},
 	mounted() {
@@ -163,6 +173,11 @@ export default defineComponent({
 		onBgClick() {
 			if (this.contentClicking) return;
 			this.$emit('click');
+		},
+
+		onClosed() {
+			this.$emit('closed');
+			this.display = 'none';
 		}
 	}
 });
