@@ -53,11 +53,11 @@ C'est dans `props` que vous définirez le style de thème. Les propriétés devi
 * Couleurs avec les valeurs RVBA : `rgba(r, g, b, a)`
     * Ex. : `rgba(0, 255, 0, 0.5)`
 * Faire référence aux valeurs d'autres propriétés
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
-    * 例: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
-    * 例: `$main`
+    * Entrer `@{keyname}` pour utiliser la valeur de la propriété citée. Remplacer alors `{keyname}` par le nom de la propriété que vous souhaitez citer.
+    * Ex. : `@panel`
+* Constantes (voir ci-dessous)
+    * Entrer `${constantname}` pour utiliser la valeur de la constante citée.Remplacer alors `{constantname}` par la nom de la constante que vous souhaitez citer.
+    * Ex. : `$main`
 * 関数(後述)
     * `:{関数名}<{引数}<{色}`
 
