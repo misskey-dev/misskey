@@ -58,10 +58,10 @@ C'est dans `props` que vous définirez le style de thème. Les propriétés devi
 * Constantes (voir ci-dessous)
     * Entrer `${constantname}` pour utiliser la valeur de la constante citée.Remplacer alors `{constantname}` par la nom de la constante que vous souhaitez citer.
     * Ex. : `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+* Fonctions (voir ci-dessous)
+    * `:{functionname}<{argument}<{color}`
 
-#### Constante
+#### Constantes
 「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
 
 #### Fonction
