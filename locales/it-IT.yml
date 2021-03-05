@@ -1,10 +1,12 @@
 ---
 _lang_: "Italiano"
+headlineMisskey: "Rete connessa tramite note"
 monthAndDay: "{day}/{month}"
 search: "Cerca"
 notifications: "Notifiche"
 username: "Nome utente"
 password: "Password"
+fetchingAsApObject: "Recuperando dal Fediverso..."
 ok: "OK"
 gotIt: "Capito!"
 cancel: "Annulla"
