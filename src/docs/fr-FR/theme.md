@@ -43,9 +43,9 @@ Les codes des thèmes sont écrits sous forme d'objets JSON5. Les thèmes compre
 * `props` ... Définir un style de thème.Voir les explications ci-après.
 
 ### Définir un style de thème
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+C'est dans `props` que vous définirez le style de thème. Les propriétés deviendront des variables CSS et les valeurs spécifieront le contenu. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est clair `light` ce sera l'objet [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est sombre `dark` ce sera l'objet [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5). Cela signifie, par exemple, que s'il n'y pas de propriété `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
 
-#### バリューで使える構文
+#### Syntaxe des valeurs
 * 16進数で表された色
     * 例: `#00ff00`
 * `rgb(r, g, b)`形式で表された色
