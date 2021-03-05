@@ -48,7 +48,10 @@ self.addEventListener('activate', ev => {
 self.addEventListener('fetch', ev => {
 	ev.respondWith(
 		fetch(ev.request)
-		.catch(() => new Response(`Offline. Service Worker @${version}`, { status: 200 }))
+		.catch(e => {
+			console.error(e, ev.request);
+			return new Response(`Offline. Service Worker @${version}\n${e}`, { status: 200, statusText: 'NG SW' })
+		})
 	);
 });
 //#endregion
