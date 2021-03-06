@@ -40,6 +40,12 @@ export const meta = {
 			code: 'FOLLOW_REQUEST_NOT_FOUND',
 			id: '089b125b-d338-482a-9a09-e2622ac9f8d4'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

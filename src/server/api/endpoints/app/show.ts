@@ -25,6 +25,12 @@ export const meta = {
 			code: 'NO_SUCH_APP',
 			id: 'dce83913-2dc6-4093-8a7b-71dbb11718a3'
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'App'
 	}
 };
 

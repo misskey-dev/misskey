@@ -8,6 +8,11 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { ApiError } from '../../error';
 
 export const meta = {
+	desc: {
+		'ja-JP': '指定したアンテナのノート一覧を表示します。',
+		'en-US': 'Displays a list of notes for the specified antenna.'
+	},
+
 	tags: ['antennas', 'account', 'notes'],
 
 	requireCredential: true as const,
@@ -38,6 +43,16 @@ export const meta = {
 			message: 'No such antenna.',
 			code: 'NO_SUCH_ANTENNA',
 			id: '850926e0-fd3b-49b6-b69a-b28a5dbd82fe'
+		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			ref: 'Note'
 		}
 	}
 };

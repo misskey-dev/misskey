@@ -5,6 +5,11 @@ import { ApiError } from '../../error';
 import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'アンテナの情報を更新します。',
+		'en-US': 'Updates the information of the specified antenna.'
+	},
+
 	tags: ['antennas'],
 
 	requireCredential: true as const,
@@ -79,6 +84,12 @@ export const meta = {
 			code: 'NO_SUCH_USER_GROUP',
 			id: '109ed789-b6eb-456e-b8a9-6059d567d385'
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Antenna'
 	}
 };
 
