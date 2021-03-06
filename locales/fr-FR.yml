@@ -817,8 +817,9 @@ _channel:
   setBanner: "Sélectionner la bannière"
   removeBanner: "Supprimer la bannière"
   featured: "Tendances"
+  owned: "Mes canaux"
   following: "Abonné·e"
-  usersCount: "{n} Participants"
+  usersCount: "{n} Participant·e·s"
   notesCount: "{n} Notes"
 _sidebar:
   full: "Complet"
