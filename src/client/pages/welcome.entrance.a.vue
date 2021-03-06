@@ -3,7 +3,8 @@
 	<div class="top">
 		<MkFeaturedPhotos class="bg"/>
 		<XTimeline class="tl"/>
-		<div class="shape"></div>
+		<div class="shape1"></div>
+		<div class="shape2"></div>
 		<img src="/assets/misskey.svg" class="misskey"/>
 		<div class="emojis">
 			<MkEmoji :normal="true" :no-style="true" emoji="👍"/>
@@ -18,7 +19,9 @@
 			</div>
 			<div class="fg">
 				<h1>
-					<img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
+					<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
+					<!-- <img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span> -->
+					<span class="text">{{ instanceName }}</span>
 				</h1>
 				<div class="about">
 					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
@@ -154,8 +157,8 @@ export default defineComponent({
 		> .bg {
 			position: absolute;
 			top: 0;
-			left: 0;
-			width: 100%;
+			right: 0;
+			width: 80%; // 100%からshapeの幅を引いている
 			height: 100%;
 		}
 
@@ -176,14 +179,24 @@ export default defineComponent({
 			}
 		}
 
-		> .shape {
+		> .shape1 {
 			position: absolute;
 			top: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;
 			background: var(--accent);
-			clip-path: polygon(0% 0%, 50% 0%, 15% 100%, 0% 100%);
+			clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
+		}
+		> .shape2 {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: var(--accent);
+			clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
+			opacity: 0.5;
 		}
 
 		> .misskey {
