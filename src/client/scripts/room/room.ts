@@ -340,7 +340,7 @@ export class Room {
 	@autobind
 	private loadRoom() {
 		const type = this.roomInfo.roomType;
-		new GLTFLoader().load(`/assets/room/rooms/${type}/${type}.glb`, gltf => {
+		new GLTFLoader().load(`/static-assets/room/rooms/${type}/${type}.glb`, gltf => {
 			gltf.scene.traverse(child => {
 				if (!(child instanceof THREE.Mesh)) return;
 
@@ -375,7 +375,7 @@ export class Room {
 		const def = furnitureDefs.find(d => d.id === furniture.type);
 		return new Promise<GLTF>((res, rej) => {
 			const loader = new GLTFLoader();
-			loader.load(`/assets/room/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
+			loader.load(`/static-assets/room/furnitures/${furniture.type}/${furniture.type}.glb`, gltf => {
 				const model = gltf.scene;
 
 				// Load animation
