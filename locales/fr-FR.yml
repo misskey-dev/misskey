@@ -977,7 +977,7 @@ _permissions:
   "read:user-groups": "Voir les groupes d'utilisateur·rice·s"
   "write:user-groups": "Éditer les groupes des utilisateur·rice·s"
   "read:channels": "Lire les canaux"
-  "write:channels": "Modifier les canaux"
+  "write:channels": "Gérer les canaux"
 _auth:
   shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
   shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
