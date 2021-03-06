@@ -3,7 +3,7 @@
 ## Variables
 Vous pouvez créer des pages dynamiques en utilisant des variables.Vous pouvez incorporer la valeur d'une variable en insérant le <b>{ variablename }</b> dans votre texte.Par exemple, si la valeur de la variable "thing" dans le texte <b>Hello { thing } world!</b> est <b>ai</b>, votre trexte devient alors : <b>Hello ai world!</b>.
 
-変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。
+Les variables sont évaluées du haut vers le bas, il n'est donc pas possible de référencer une variable située plus bas que celle en cours.Par exemple, si vous définissez, dans l'ordre, 3 variables telles que <b>A、B、C</b>, vous pourrez référencer en <b>C</b> aussi bien <b>A</b> que <b>B</b> ; par contre, vous ne pourrez référencer en <b>A</b> ni <b>B</b> ni <b>C</b>.
 
 ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
 
