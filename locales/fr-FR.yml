@@ -882,6 +882,7 @@ _theme:
     infoWarnBg: "Arrière-plan des avertissements"
     infoWarnFg: "Texte d’avertissement"
     cwBg: "Arrière-plan du CW"
+    cwFg: "Texte du bouton CW"
     cwHoverBg: "Arrière-plan du bouton CW (survolé)"
     buttonBg: "Arrière-plan du bouton"
     buttonHoverBg: "Arrière-plan du bouton (survolé)"
