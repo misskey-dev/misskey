@@ -70,6 +70,12 @@ export const meta = {
 			code: 'NO_SUCH_FOLDER',
 			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'DriveFile'
 	}
 };
 

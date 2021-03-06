@@ -4,6 +4,11 @@ import deleteFollowing from '../../../../../services/following/delete';
 import { Followings, Users } from '../../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': '指定したドメインの全ユーザーのフォローを全て解除します。',
+		'en-US': 'Unfollow all users in the specified domain.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,

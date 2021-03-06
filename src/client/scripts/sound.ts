@@ -16,7 +16,7 @@ export function playFile(file: string, volume: number) {
 	if (cache.has(file)) {
 		audio = cache.get(file);
 	} else {
-		audio = new Audio(`/assets/sounds/${file}.mp3`);
+		audio = new Audio(`/static-assets/sounds/${file}.mp3`);
 		cache.set(file, audio);
 	}
 	audio.volume = masterVolume - ((1 - volume) * masterVolume);

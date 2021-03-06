@@ -29,7 +29,7 @@
 				</I18n>
 			</div>
 		</div>
-		<img src="/assets/misskey.svg" class="misskey"/>
+		<img src="/static-assets/misskey.svg" class="misskey"/>
 	</div>
 </div>
 </template>
