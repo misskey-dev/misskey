@@ -1,105 +1,114 @@
 <template>
-<div class="_section">
-	<section class="_card _vMargin">
-		<div class="_title"><Fa :icon="faCog"/> {{ $t('general') }}</div>
-		<div class="_content">
-			<div>{{ $t('defaultNavigationBehaviour') }}</div>
-			<MkSwitch v-model:value="defaultSideView">{{ $t('openInSideView') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('whenServerDisconnected') }}</div>
-			<MkRadio v-model="serverDisconnectedBehavior" value="reload">{{ $t('_serverDisconnectedBehavior.reload') }}</MkRadio>
-			<MkRadio v-model="serverDisconnectedBehavior" value="dialog">{{ $t('_serverDisconnectedBehavior.dialog') }}</MkRadio>
-			<MkRadio v-model="serverDisconnectedBehavior" value="quiet">{{ $t('_serverDisconnectedBehavior.quiet') }}</MkRadio>
-		</div>
-		<div class="_content">
-			<MkSwitch v-model:value="imageNewTab">{{ $t('openImageInNewTab') }}</MkSwitch>
-			<MkSwitch v-model:value="showFixedPostForm">{{ $t('showFixedPostForm') }}</MkSwitch>
-			<MkSwitch v-model:value="enableInfiniteScroll">{{ $t('enableInfiniteScroll') }}</MkSwitch>
-			<MkSwitch v-model:value="disablePagesScript">{{ $t('disablePagesScript') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('chatOpenBehavior') }}</div>
-			<MkRadio v-model="chatOpenBehavior" value="page">{{ $t('showInPage') }}</MkRadio>
-			<MkRadio v-model="chatOpenBehavior" value="window">{{ $t('openInWindow') }}</MkRadio>
-			<MkRadio v-model="chatOpenBehavior" value="popout">{{ $t('popout') }}</MkRadio>
-		</div>
-		<div class="_content">
-			<MkSelect v-model:value="lang">
-				<template #label>{{ $t('uiLanguage') }}</template>
+<FormBase>
+	<FormSwitch v-model:value="titlebar">{{ $ts.showTitlebar }}</FormSwitch>
+	<FormSwitch v-model:value="showFixedPostForm">{{ $ts.showFixedPostForm }}</FormSwitch>
 
-				<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
-			</MkSelect>
-		</div>
-	</section>
+	<FormSelect v-model:value="lang">
+		<template #label>{{ $ts.uiLanguage }}</template>
+		<option v-for="x in langs" :value="x[0]" :key="x[0]">{{ x[1] }}</option>
+		<template #caption>
+			<I18n :src="$ts.i18nInfo" tag="span">
+				<template #link>
+					<MkLink url="https://crowdin.com/project/misskey">Crowdin</MkLink>
+				</template>
+			</I18n>
+		</template>
+	</FormSelect>
 
-	<section class="_card _vMargin">
-		<div class="_title"><Fa :icon="faCog"/> {{ $t('appearance') }}</div>
-		<div class="_content">
-			<MkSwitch v-model:value="disableAnimatedMfm">{{ $t('disableAnimatedMfm') }}</MkSwitch>
-			<MkSwitch v-model:value="reduceAnimation">{{ $t('reduceUiAnimation') }}</MkSwitch>
-			<MkSwitch v-model:value="useBlurEffectForModal">{{ $t('useBlurEffectForModal') }}</MkSwitch>
-			<MkSwitch v-model:value="useOsNativeEmojis">
-				{{ $t('useOsNativeEmojis') }}
-				<template #desc><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></template>
-			</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('fontSize') }}</div>
-			<MkRadio v-model="fontSize" value="small"><span style="font-size: 14px;">Aa</span></MkRadio>
-			<MkRadio v-model="fontSize" :value="null"><span style="font-size: 16px;">Aa</span></MkRadio>
-			<MkRadio v-model="fontSize" value="large"><span style="font-size: 18px;">Aa</span></MkRadio>
-			<MkRadio v-model="fontSize" value="veryLarge"><span style="font-size: 20px;">Aa</span></MkRadio>
-		</div>
-		<div class="_content">
-			<div>{{ $t('instanceTicker') }}</div>
-			<MkRadio v-model="instanceTicker" value="none">{{ $t('_instanceTicker.none') }}</MkRadio>
-			<MkRadio v-model="instanceTicker" value="remote">{{ $t('_instanceTicker.remote') }}</MkRadio>
-			<MkRadio v-model="instanceTicker" value="always">{{ $t('_instanceTicker.always') }}</MkRadio>
-		</div>
-	</section>
+	<FormGroup>
+		<template #label>{{ $ts.behavior }}</template>
+		<FormSwitch v-model:value="imageNewTab">{{ $ts.openImageInNewTab }}</FormSwitch>
+		<FormSwitch v-model:value="enableInfiniteScroll">{{ $ts.enableInfiniteScroll }}</FormSwitch>
+		<FormSwitch v-model:value="useReactionPickerForContextMenu">{{ $ts.useReactionPickerForContextMenu }}</FormSwitch>
+		<FormSwitch v-model:value="disablePagesScript">{{ $ts.disablePagesScript }}</FormSwitch>
+	</FormGroup>
 
-	<section class="_card _vMargin">
-		<div class="_title"><Fa :icon="faColumns"/> {{ $t('deck') }}</div>
-		<div class="_content">
-			<div>{{ $t('defaultNavigationBehaviour') }}</div>
-			<MkSwitch v-model:value="deckNavWindow">{{ $t('openInWindow') }}</MkSwitch>
-		</div>
-		<div class="_content">
-			<MkSwitch v-model:value="deckAlwaysShowMainColumn">
-				{{ $t('_deck.alwaysShowMainColumn') }}
-			</MkSwitch>
-		</div>
-		<div class="_content">
-			<div>{{ $t('_deck.columnAlign') }}</div>
-			<MkRadio v-model="deckColumnAlign" value="left">{{ $t('left') }}</MkRadio>
-			<MkRadio v-model="deckColumnAlign" value="center">{{ $t('center') }}</MkRadio>
-		</div>
-	</section>
+	<FormSelect v-model:value="serverDisconnectedBehavior">
+		<template #label>{{ $ts.whenServerDisconnected }}</template>
+		<option value="reload">{{ $ts._serverDisconnectedBehavior.reload }}</option>
+		<option value="dialog">{{ $ts._serverDisconnectedBehavior.dialog }}</option>
+		<option value="quiet">{{ $ts._serverDisconnectedBehavior.quiet }}</option>
+	</FormSelect>
 
-	<MkButton @click="cacheClear()" primary style="margin: var(--margin) auto;">{{ $t('cacheClear') }}</MkButton>
-</div>
+	<FormGroup>
+		<template #label>{{ $ts.appearance }}</template>
+		<FormSwitch v-model:value="disableAnimatedMfm">{{ $ts.disableAnimatedMfm }}</FormSwitch>
+		<FormSwitch v-model:value="reduceAnimation">{{ $ts.reduceUiAnimation }}</FormSwitch>
+		<FormSwitch v-model:value="useBlurEffectForModal">{{ $ts.useBlurEffectForModal }}</FormSwitch>
+		<FormSwitch v-model:value="showGapBetweenNotesInTimeline">{{ $ts.showGapBetweenNotesInTimeline }}</FormSwitch>
+		<FormSwitch v-model:value="loadRawImages">{{ $ts.loadRawImages }}</FormSwitch>
+		<FormSwitch v-model:value="disableShowingAnimatedImages">{{ $ts.disableShowingAnimatedImages }}</FormSwitch>
+		<FormSwitch v-model:value="useSystemFont">{{ $ts.useSystemFont }}</FormSwitch>
+		<FormSwitch v-model:value="useOsNativeEmojis">{{ $ts.useOsNativeEmojis }}
+			<div><Mfm text="🍮🍦🍭🍩🍰🍫🍬🥞🍪" :key="useOsNativeEmojis"/></div>
+		</FormSwitch>
+	</FormGroup>
+
+	<FormRadios v-model="fontSize">
+		<template #desc>{{ $ts.fontSize }}</template>
+		<option value="small"><span style="font-size: 14px;">Aa</span></option>
+		<option :value="null"><span style="font-size: 16px;">Aa</span></option>
+		<option value="large"><span style="font-size: 18px;">Aa</span></option>
+		<option value="veryLarge"><span style="font-size: 20px;">Aa</span></option>
+	</FormRadios>
+
+	<FormSelect v-model:value="instanceTicker">
+		<template #label>{{ $ts.instanceTicker }}</template>
+		<option value="none">{{ $ts._instanceTicker.none }}</option>
+		<option value="remote">{{ $ts._instanceTicker.remote }}</option>
+		<option value="always">{{ $ts._instanceTicker.always }}</option>
+	</FormSelect>
+
+	<FormSelect v-model:value="nsfw">
+		<template #label>{{ $ts.nsfw }}</template>
+		<option value="respect">{{ $ts._nsfw.respect }}</option>
+		<option value="ignore">{{ $ts._nsfw.ignore }}</option>
+		<option value="force">{{ $ts._nsfw.force }}</option>
+	</FormSelect>
+
+	<FormGroup>
+		<template #label>{{ $ts.defaultNavigationBehaviour }}</template>
+		<FormSwitch v-model:value="defaultSideView">{{ $ts.openInSideView }}</FormSwitch>
+	</FormGroup>
+
+	<FormSelect v-model:value="chatOpenBehavior">
+		<template #label>{{ $ts.chatOpenBehavior }}</template>
+		<option value="page">{{ $ts.showInPage }}</option>
+		<option value="window">{{ $ts.openInWindow }}</option>
+		<option value="popout">{{ $ts.popout }}</option>
+	</FormSelect>
+
+	<FormLink to="/settings/deck">{{ $ts.deck }}</FormLink>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faImage, faCog, faColumns, faCogs } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkRadio from '@/components/ui/radio.vue';
-import MkRange from '@/components/ui/range.vue';
+import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
+import FormRadios from '@/components/form/radios.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormLink from '@/components/form/link.vue';
+import FormButton from '@/components/form/button.vue';
+import MkLink from '@/components/link.vue';
 import { langs } from '@/config';
-import { clientDb, set } from '@/db';
+import { defaultStore } from '@/store';
+import { ColdDeviceStorage } from '@/store';
 import * as os from '@/os';
+import { unisonReload } from '@/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
-		MkButton,
-		MkSwitch,
-		MkSelect,
-		MkRadio,
-		MkRange,
+		MkLink,
+		FormSwitch,
+		FormSelect,
+		FormRadios,
+		FormBase,
+		FormGroup,
+		FormLink,
+		FormButton,
 	},
 
 	emits: ['info'],
@@ -107,106 +116,43 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('general'),
-					icon: faCogs
-				}]
+				title: this.$ts.general,
+				icon: faCogs
 			},
 			langs,
 			lang: localStorage.getItem('lang'),
 			fontSize: localStorage.getItem('fontSize'),
+			useSystemFont: localStorage.getItem('useSystemFont') != null,
 			faImage, faCog, faColumns
 		}
 	},
 
 	computed: {
-		serverDisconnectedBehavior: {
-			get() { return this.$store.state.device.serverDisconnectedBehavior; },
-			set(value) { this.$store.commit('device/set', { key: 'serverDisconnectedBehavior', value }); }
-		},
-
-		reduceAnimation: {
-			get() { return !this.$store.state.device.animation; },
-			set(value) { this.$store.commit('device/set', { key: 'animation', value: !value }); }
-		},
-
-		useBlurEffectForModal: {
-			get() { return this.$store.state.device.useBlurEffectForModal; },
-			set(value) { this.$store.commit('device/set', { key: 'useBlurEffectForModal', value: value }); }
-		},
-
-		disableAnimatedMfm: {
-			get() { return !this.$store.state.device.animatedMfm; },
-			set(value) { this.$store.commit('device/set', { key: 'animatedMfm', value: !value }); }
-		},
-
-		useOsNativeEmojis: {
-			get() { return this.$store.state.device.useOsNativeEmojis; },
-			set(value) { this.$store.commit('device/set', { key: 'useOsNativeEmojis', value }); }
-		},
-
-		imageNewTab: {
-			get() { return this.$store.state.device.imageNewTab; },
-			set(value) { this.$store.commit('device/set', { key: 'imageNewTab', value }); }
-		},
-
-		disablePagesScript: {
-			get() { return this.$store.state.device.disablePagesScript; },
-			set(value) { this.$store.commit('device/set', { key: 'disablePagesScript', value }); }
-		},
-
-		showFixedPostForm: {
-			get() { return this.$store.state.device.showFixedPostForm; },
-			set(value) { this.$store.commit('device/set', { key: 'showFixedPostForm', value }); }
-		},
-
-		defaultSideView: {
-			get() { return this.$store.state.device.defaultSideView; },
-			set(value) { this.$store.commit('device/set', { key: 'defaultSideView', value }); }
-		},
-
-		deckNavWindow: {
-			get() { return this.$store.state.device.deckNavWindow; },
-			set(value) { this.$store.commit('device/set', { key: 'deckNavWindow', value }); }
-		},
-
-		chatOpenBehavior: {
-			get() { return this.$store.state.device.chatOpenBehavior; },
-			set(value) { this.$store.commit('device/set', { key: 'chatOpenBehavior', value }); }
-		},
-
-		instanceTicker: {
-			get() { return this.$store.state.device.instanceTicker; },
-			set(value) { this.$store.commit('device/set', { key: 'instanceTicker', value }); }
-		},
-
-		enableInfiniteScroll: {
-			get() { return this.$store.state.device.enableInfiniteScroll; },
-			set(value) { this.$store.commit('device/set', { key: 'enableInfiniteScroll', value }); }
-		},
-
-		deckAlwaysShowMainColumn: {
-			get() { return this.$store.state.device.deckAlwaysShowMainColumn; },
-			set(value) { this.$store.commit('device/set', { key: 'deckAlwaysShowMainColumn', value }); }
-		},
-
-		deckColumnAlign: {
-			get() { return this.$store.state.device.deckColumnAlign; },
-			set(value) { this.$store.commit('device/set', { key: 'deckColumnAlign', value }); }
-		},
+		serverDisconnectedBehavior: defaultStore.makeGetterSetter('serverDisconnectedBehavior'),
+		reduceAnimation: defaultStore.makeGetterSetter('animation', v => !v, v => !v),
+		useBlurEffectForModal: defaultStore.makeGetterSetter('useBlurEffectForModal'),
+		showGapBetweenNotesInTimeline: defaultStore.makeGetterSetter('showGapBetweenNotesInTimeline'),
+		disableAnimatedMfm: defaultStore.makeGetterSetter('animatedMfm', v => !v, v => !v),
+		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
+		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
+		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
+		titlebar: defaultStore.makeGetterSetter('titlebar'),
+		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
+		nsfw: defaultStore.makeGetterSetter('nsfw'),
+		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
+		showFixedPostForm: defaultStore.makeGetterSetter('showFixedPostForm'),
+		defaultSideView: defaultStore.makeGetterSetter('defaultSideView'),
+		chatOpenBehavior: ColdDeviceStorage.makeGetterSetter('chatOpenBehavior'),
+		instanceTicker: defaultStore.makeGetterSetter('instanceTicker'),
+		enableInfiniteScroll: defaultStore.makeGetterSetter('enableInfiniteScroll'),
+		useReactionPickerForContextMenu: defaultStore.makeGetterSetter('useReactionPickerForContextMenu'),
 	},
 
 	watch: {
 		lang() {
 			localStorage.setItem('lang', this.lang);
-
-			return set('_version_', `changeLang-${(new Date()).toJSON()}`, clientDb.i18n)
-				.then(() => location.reload())
-				.catch(() => {
-					os.dialog({
-						type: 'error',
-					});
-				});
+			localStorage.removeItem('locale');
+			this.reloadAsk();
 		},
 
 		fontSize() {
@@ -215,11 +161,32 @@ export default defineComponent({
 			} else {
 				localStorage.setItem('fontSize', this.fontSize);
 			}
-			location.reload();
+			this.reloadAsk();
+		},
+
+		useSystemFont() {
+			if (this.useSystemFont) {
+				localStorage.setItem('useSystemFont', 't');
+			} else {
+				localStorage.removeItem('useSystemFont');
+			}
+			this.reloadAsk();
 		},
 
 		enableInfiniteScroll() {
-			location.reload()
+			this.reloadAsk();
+		},
+
+		showGapBetweenNotesInTimeline() {
+			this.reloadAsk();
+		},
+
+		titlebar() {
+			this.reloadAsk();
+		},
+
+		instanceTicker() {
+			this.reloadAsk();
 		},
 	},
 
@@ -228,20 +195,15 @@ export default defineComponent({
 	},
 
 	methods: {
-		cacheClear() {
-			// Clear cache (service worker)
-			try {
-				navigator.serviceWorker.controller.postMessage('clear');
+		async reloadAsk() {
+			const { canceled } = await os.dialog({
+				type: 'info',
+				text: this.$ts.reloadToApplySetting,
+				showCancelButton: true
+			});
+			if (canceled) return;
 
-				navigator.serviceWorker.getRegistrations().then(registrations => {
-					for (const registration of registrations) registration.unregister();
-				});
-			} catch (e) {
-				console.error(e);
-			}
-
-			// Force reload
-			location.reload(true);
+			unisonReload();
 		}
 	}
 });

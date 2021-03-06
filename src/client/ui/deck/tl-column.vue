@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
+<XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
 		<Fa v-if="column.tl === 'home'" :icon="faHome"/>
 		<Fa v-else-if="column.tl === 'local'" :icon="faComments"/>
@@ -25,6 +25,7 @@ import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@
 import XColumn from './column.vue';
 import XTimeline from '@/components/timeline.vue';
 import * as os from '@/os';
+import { removeColumn, updateColumn } from './deck-store';
 
 export default defineComponent({
 	components: {
@@ -45,7 +46,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			menu: null,
 			disabled: false,
 			indicated: false,
 			columnActive: true,
@@ -59,49 +59,42 @@ export default defineComponent({
 		}
 	},
 
-	created() {
-		this.menu = [{
-			icon: faCog,
-			text: this.$t('timeline'),
-			action: this.setType
-		}];
-	},
-
 	mounted() {
 		if (this.column.tl == null) {
 			this.setType();
 		} else {
-			this.disabled = !this.$store.state.i.isModerator && !this.$store.state.i.isAdmin && (
-				this.$store.state.instance.meta.disableLocalTimeline && ['local', 'social'].includes(this.column.tl) ||
-				this.$store.state.instance.meta.disableGlobalTimeline && ['global'].includes(this.column.tl));
+			this.disabled = !this.$i.isModerator && !this.$i.isAdmin && (
+				this.$instance.disableLocalTimeline && ['local', 'social'].includes(this.column.tl) ||
+				this.$instance.disableGlobalTimeline && ['global'].includes(this.column.tl));
 		}
 	},
 
 	methods: {
 		async setType() {
 			const { canceled, result: src } = await os.dialog({
-				title: this.$t('timeline'),
+				title: this.$ts.timeline,
 				type: null,
 				select: {
 					items: [{
-						value: 'home', text: this.$t('_timelines.home')
+						value: 'home', text: this.$ts._timelines.home
 					}, {
-						value: 'local', text: this.$t('_timelines.local')
+						value: 'local', text: this.$ts._timelines.local
 					}, {
-						value: 'social', text: this.$t('_timelines.social')
+						value: 'social', text: this.$ts._timelines.social
 					}, {
-						value: 'global', text: this.$t('_timelines.global')
+						value: 'global', text: this.$ts._timelines.global
 					}]
 				},
 			});
 			if (canceled) {
 				if (this.column.tl == null) {
-					this.$store.commit('deviceUser/removeDeckColumn', this.column.id);
+					removeColumn(this.column.id);
 				}
 				return;
 			}
-			this.column.tl = src;
-			this.$store.commit('deviceUser/updateDeckColumn', this.column);
+			updateColumn(this.column.id, {
+				tl: src
+			});
 		},
 
 		queueUpdated(q) {

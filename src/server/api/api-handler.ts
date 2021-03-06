@@ -11,7 +11,7 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 	const reply = (x?: any, y?: ApiError) => {
 		if (x == null) {
 			ctx.status = 204;
-		} else if (typeof x === 'number') {
+		} else if (typeof x === 'number' && y) {
 			ctx.status = x;
 			ctx.body = {
 				error: {
@@ -23,7 +23,8 @@ export default (endpoint: IEndpoint, ctx: Koa.Context) => new Promise((res) => {
 				}
 			};
 		} else {
-			ctx.body = x;
+			// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
+			ctx.body = typeof x === 'string' ? JSON.stringify(x) : x;
 		}
 		res();
 	};

@@ -13,8 +13,8 @@ import { ApiError } from '../../error';
 import { Users, DriveFiles, UserProfiles, Pages } from '../../../../models';
 import { User } from '../../../../models/entities/user';
 import { UserProfile } from '../../../../models/entities/user-profile';
-import { ensure } from '../../../../prelude/ensure';
 import { notificationTypes } from '../../../../types';
+import { normalizeForSearch } from '../../../../misc/normalize-for-search';
 
 export const meta = {
 	desc: {
@@ -92,6 +92,10 @@ export const meta = {
 			}
 		},
 
+		isExplorable: {
+			validator: $.optional.bool,
+		},
+
 		carefulBot: {
 			validator: $.optional.bool,
 			desc: {
@@ -103,6 +107,13 @@ export const meta = {
 			validator: $.optional.bool,
 			desc: {
 				'ja-JP': 'フォローしているユーザーからのフォローリクエストを自動承認するか'
+			}
+		},
+
+		noCrawle: {
+			validator: $.optional.bool,
+			desc: {
+				'ja-JP': '検索エンジンによるインデックスを拒否するか否か'
 			}
 		},
 
@@ -120,14 +131,11 @@ export const meta = {
 			}
 		},
 
-		autoWatch: {
+		injectFeaturedNote: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': '投稿の自動ウォッチをするか否か'
-			}
 		},
 
-		injectFeaturedNote: {
+		receiveAnnouncementEmail: {
 			validator: $.optional.bool,
 		},
 
@@ -151,6 +159,10 @@ export const meta = {
 
 		mutingNotificationTypes: {
 			validator: $.optional.arr($.str.or(notificationTypes as unknown as string[]))
+		},
+
+		emailNotificationTypes: {
+			validator: $.optional.arr($.str)
 		},
 	},
 
@@ -199,11 +211,11 @@ export default define(meta, async (ps, user, token) => {
 	const updates = {} as Partial<User>;
 	const profileUpdates = {} as Partial<UserProfile>;
 
-	const profile = await UserProfiles.findOne(user.id).then(ensure);
+	const profile = await UserProfiles.findOneOrFail(user.id);
 
 	if (ps.name !== undefined) updates.name = ps.name;
 	if (ps.description !== undefined) profileUpdates.description = ps.description;
-	//if (ps.lang !== undefined) updates.lang = ps.lang;
+	if (ps.lang !== undefined) profileUpdates.lang = ps.lang;
 	if (ps.location !== undefined) profileUpdates.location = ps.location;
 	if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 	if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
@@ -214,13 +226,16 @@ export default define(meta, async (ps, user, token) => {
 	}
 	if (ps.mutingNotificationTypes !== undefined) profileUpdates.mutingNotificationTypes = ps.mutingNotificationTypes as typeof notificationTypes[number][];
 	if (typeof ps.isLocked === 'boolean') updates.isLocked = ps.isLocked;
+	if (typeof ps.isExplorable === 'boolean') updates.isExplorable = ps.isExplorable;
 	if (typeof ps.isBot === 'boolean') updates.isBot = ps.isBot;
 	if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 	if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
+	if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
 	if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
-	if (typeof ps.autoWatch === 'boolean') profileUpdates.autoWatch = ps.autoWatch;
 	if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
+	if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
 	if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+	if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
 	if (ps.avatarId) {
 		const avatar = await DriveFiles.findOne(ps.avatarId);
@@ -282,7 +297,7 @@ export default define(meta, async (ps, user, token) => {
 	if (newDescription != null) {
 		const tokens = parse(newDescription);
 		emojis = emojis.concat(extractEmojis(tokens!));
-		tags = extractHashtags(tokens!).map(tag => tag.toLowerCase()).splice(0, 32);
+		tags = extractHashtags(tokens!).map(tag => normalizeForSearch(tag)).splice(0, 32);
 	}
 
 	updates.emojis = emojis;

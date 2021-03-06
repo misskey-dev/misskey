@@ -19,6 +19,7 @@ import XHeader from './_common_/header.vue';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { resolve } from '@/router';
+import { url } from '@/config';
 
 export default defineComponent({
 	components: {
@@ -27,21 +28,27 @@ export default defineComponent({
 
 	provide() {
 		return {
-			navHook: (url) => {
-				this.navigate(url);
+			navHook: (path) => {
+				this.navigate(path);
 			}
 		};
 	},
 
 	data() {
 		return {
-			url: null,
+			path: null,
 			component: null,
 			props: {},
 			pageInfo: null,
 			history: [],
 			faTimes, faChevronLeft,
 		};
+	},
+
+	computed: {
+		url(): string {
+			return url + this.path;
+		}
 	},
 
 	methods: {
@@ -52,10 +59,10 @@ export default defineComponent({
 			}
 		},
 
-		navigate(url, record = true) {
-			if (record && this.url) this.history.push(this.url);
-			this.url = url;
-			const { component, props } = resolve(url);
+		navigate(path, record = true) {
+			if (record && this.path) this.history.push(this.path);
+			this.path = path;
+			const { component, props } = resolve(path);
 			this.component = component;
 			this.props = props;
 		},
@@ -65,7 +72,7 @@ export default defineComponent({
 		},
 
 		close() {
-			this.url = null;
+			this.path = null;
 			this.component = null;
 			this.props = {};
 		},
@@ -73,31 +80,31 @@ export default defineComponent({
 		onContextmenu(e) {
 			os.contextMenu([{
 				type: 'label',
-				text: this.url,
+				text: this.path,
 			}, {
 				icon: faExpandAlt,
-				text: this.$t('showInPage'),
+				text: this.$ts.showInPage,
 				action: () => {
-					this.$router.push(this.url);
+					this.$router.push(this.path);
 					this.close();
 				}
 			}, {
 				icon: faWindowMaximize,
-				text: this.$t('openInWindow'),
+				text: this.$ts.openInWindow,
 				action: () => {
-					os.pageWindow(this.url);
+					os.pageWindow(this.path);
 					this.close();
 				}
 			}, null, {
 				icon: faExternalLinkAlt,
-				text: this.$t('openInNewTab'),
+				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.url, '_blank');
 					this.close();
 				}
 			}, {
 				icon: faLink,
-				text: this.$t('copyLink'),
+				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);
 				}
@@ -135,7 +142,6 @@ export default defineComponent({
 			-webkit-backdrop-filter: blur(32px);
 			backdrop-filter: blur(32px);
 			background-color: var(--header);
-			border-bottom: solid 1px var(--divider);
 
 			> ._button {
 				height: $header-height;

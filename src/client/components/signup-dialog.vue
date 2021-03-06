@@ -5,7 +5,7 @@
 	@close="$refs.dialog.close()"
 	@closed="$emit('closed')"
 >
-	<template #header>{{ $t('signup') }}</template>
+	<template #header>{{ $ts.signup }}</template>
 
 	<div class="_section">
 		<XSignup :auto-set="autoSet" @signup="onSignup"/>

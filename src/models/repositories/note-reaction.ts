@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { NoteReaction } from '../entities/note-reaction';
 import { Users } from '..';
-import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { convertLegacyReaction } from '../../misc/reaction-lib';
 
@@ -13,7 +12,7 @@ export class NoteReactionRepository extends Repository<NoteReaction> {
 		src: NoteReaction['id'] | NoteReaction,
 		me?: any
 	): Promise<PackedNoteReaction> {
-		const reaction = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const reaction = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: reaction.id,

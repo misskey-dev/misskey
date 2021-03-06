@@ -2,7 +2,6 @@ import $ from 'cafy';
 import define from '../../../define';
 import deleteFollowing from '../../../../../services/following/delete';
 import { Followings, Users } from '../../../../../models';
-import { ensure } from '../../../../../prelude/ensure';
 
 export const meta = {
 	desc: {
@@ -28,8 +27,8 @@ export default define(meta, async (ps, me) => {
 	});
 
 	const pairs = await Promise.all(followings.map(f => Promise.all([
-		Users.findOne(f.followerId).then(ensure),
-		Users.findOne(f.followeeId).then(ensure)
+		Users.findOneOrFail(f.followerId),
+		Users.findOneOrFail(f.followeeId)
 	])));
 
 	for (const pair of pairs) {

@@ -1,29 +1,45 @@
 <template>
-<div>
-	<div class="_section">
-		<X2fa/>
-	</div>
-	<div class="_section">
-		<MkButton primary @click="change()" full>{{ $t('changePassword') }}</MkButton>
-	</div>
-	<div class="_section">
-		<MkButton class="_vMargin" primary @click="regenerateToken" full><Fa :icon="faSyncAlt"/> {{ $t('regenerateLoginToken') }}</MkButton>
-		<div class="_caption _vMargin" style="padding: 0 6px;">{{ $t('regenerateLoginTokenDescription') }}</div>
-	</div>
-</div>
+<FormBase>
+	<X2fa/>
+	<FormLink to="/settings/2fa"><template #icon><Fa :icon="faMobileAlt"/></template>{{ $ts.twoStepAuthentication }}</FormLink>
+	<FormButton primary @click="change()">{{ $ts.changePassword }}</FormButton>
+	<FormPagination :pagination="pagination">
+		<template #label>{{ $ts.signinHistory }}</template>
+		<template #default="{items}">
+			<div class="_formPanel timnmucd" v-for="item in items" :key="item.id">
+				<header>
+					<Fa class="icon succ" :icon="faCheck" v-if="item.success"/>
+					<Fa class="icon fail" :icon="faTimesCircle" v-else/>
+					<code class="ip _monospace">{{ item.ip }}</code>
+					<MkTime :time="item.createdAt" class="time"/>
+				</header>
+			</div>
+		</template>
+	</FormPagination>
+	<FormGroup>
+		<FormButton danger @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $ts.regenerateLoginToken }}</FormButton>
+		<template #caption>{{ $ts.regenerateLoginTokenDescription }}</template>
+	</FormGroup>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLock, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import X2fa from './security.2fa.vue';
+import { faCheck, faTimesCircle, faLock, faSyncAlt, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
+import FormBase from '@/components/form/base.vue';
+import FormLink from '@/components/form/link.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormButton from '@/components/form/button.vue';
+import FormPagination from '@/components/form/pagination.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		MkButton,
-		X2fa,
+		FormBase,
+		FormLink,
+		FormButton,
+		FormPagination,
+		FormGroup,
 	},
 	
 	emits: ['info'],
@@ -31,12 +47,14 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('security'),
-					icon: faLock
-				}]
+				title: this.$ts.security,
+				icon: faLock
 			},
-			faLock, faSyncAlt
+			pagination: {
+				endpoint: 'i/signin-history',
+				limit: 5,
+			},
+			faLock, faSyncAlt, faCheck, faTimesCircle, faMobileAlt,
 		}
 	},
 
@@ -47,7 +65,7 @@ export default defineComponent({
 	methods: {
 		async change() {
 			const { canceled: canceled1, result: currentPassword } = await os.dialog({
-				title: this.$t('currentPassword'),
+				title: this.$ts.currentPassword,
 				input: {
 					type: 'password'
 				}
@@ -55,7 +73,7 @@ export default defineComponent({
 			if (canceled1) return;
 
 			const { canceled: canceled2, result: newPassword } = await os.dialog({
-				title: this.$t('newPassword'),
+				title: this.$ts.newPassword,
 				input: {
 					type: 'password'
 				}
@@ -63,7 +81,7 @@ export default defineComponent({
 			if (canceled2) return;
 
 			const { canceled: canceled3, result: newPassword2 } = await os.dialog({
-				title: this.$t('newPasswordRetype'),
+				title: this.$ts.newPasswordRetype,
 				input: {
 					type: 'password'
 				}
@@ -73,7 +91,7 @@ export default defineComponent({
 			if (newPassword !== newPassword2) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('retypedNotMatch')
+					text: this.$ts.retypedNotMatch
 				});
 				return;
 			}
@@ -86,7 +104,7 @@ export default defineComponent({
 
 		regenerateToken() {
 			os.dialog({
-				title: this.$t('password'),
+				title: this.$ts.password,
 				input: {
 					type: 'password'
 				}
@@ -100,3 +118,41 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.timnmucd {
+	padding: 16px;
+
+	> header {
+		display: flex;
+		align-items: center;
+
+		> .icon {
+			width: 1em;
+			margin-right: 0.75em;
+
+			&.succ {
+				color: var(--success);
+			}
+
+			&.fail {
+				color: var(--error);
+			}
+		}
+
+		> .ip {
+			flex: 1;
+			min-width: 0;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			margin-right: 12px;
+		}
+
+		> .time {
+			margin-left: auto;
+			opacity: 0.7;
+		}
+	}
+}
+</style>

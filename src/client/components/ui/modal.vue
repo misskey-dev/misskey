@@ -1,14 +1,12 @@
 <template>
-<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: showing ? 'auto' : 'none' }">
-	<transition :name="$store.state.device.animation ? 'modal-bg' : ''" appear>
-		<div class="bg _modalBg" v-if="showing" @click="onBgClick"></div>
-	</transition>
-	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
-		<transition :name="$store.state.device.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @after-enter="childRendered">
-			<slot v-if="showing"></slot>
-		</transition>
+<transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
+	<div v-show="manualShowing != null ? manualShowing : showing" class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+		<div class="bg _modalBg" @click="onBgClick"></div>
+		<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
+			<slot></slot>
+		</div>
 	</div>
-</div>
+</transition>
 </template>
 
 <script lang="ts">
@@ -29,6 +27,11 @@ export default defineComponent({
 		modal: true
 	},
 	props: {
+		manualShowing: {
+			type: Boolean,
+			required: false,
+			default: null,
+		},
 		srcCenter: {
 			type: Boolean,
 			required: false
@@ -40,7 +43,7 @@ export default defineComponent({
 			required: false
 		}
 	},
-	emits: ['click', 'esc', 'closed'],
+	emits: ['opening', 'click', 'esc', 'close', 'closed'],
 	data() {
 		return {
 			showing: true,
@@ -60,70 +63,84 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		this.fixed = getFixedContainer(this.src) != null;
+		this.$watch('src', () => {
+			this.fixed = getFixedContainer(this.src) != null;
+			this.$nextTick(() => {
+				this.align();
+			});
+		}, { immediate: true });
 
 		this.$nextTick(() => {
-			if (!this.popup) return;
-
 			const popover = this.$refs.content as any;
-
-			// TODO: ResizeObserver無くしたい
 			new ResizeObserver((entries, observer) => {
-				const rect = this.src.getBoundingClientRect();
-				const width = popover.offsetWidth;
-				const height = popover.offsetHeight;
-
-				let left;
-				let top;
-
-				if (this.srcCenter) {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
-					left = (x - (width / 2));
-					top = (y - (height / 2));
-				} else {
-					const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
-					const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
-					left = (x - (width / 2));
-					top = y;
-				}
-
-				if (this.fixed) {
-					if (left + width > window.innerWidth) {
-						left = window.innerWidth - width;
-					}
-
-					if (top + height > window.innerHeight) {
-						top = window.innerHeight - height;
-					}
-				} else {
-					if (left + width - window.pageXOffset > window.innerWidth) {
-						left = window.innerWidth - width + window.pageXOffset;
-					}
-
-					if (top + height - window.pageYOffset > window.innerHeight) {
-						top = window.innerHeight - height + window.pageYOffset;
-					}
-				}
-
-				if (top < 0) {
-					top = 0;
-				}
-
-				if (left < 0) {
-					left = 0;
-				}
-
-				if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
-					this.transformOrigin = 'center top';
-				}
-
-				popover.style.left = left + 'px';
-				popover.style.top = top + 'px';
+				this.align();
 			}).observe(popover);
 		});
 	},
 	methods: {
+		align() {
+			if (!this.popup) return;
+
+			const popover = this.$refs.content as any;
+
+			if (popover == null) return;
+
+			const rect = this.src.getBoundingClientRect();
+			
+			const width = popover.offsetWidth;
+			const height = popover.offsetHeight;
+
+			let left;
+			let top;
+
+			if (this.srcCenter) {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + (this.src.offsetHeight / 2);
+				left = (x - (width / 2));
+				top = (y - (height / 2));
+			} else {
+				const x = rect.left + (this.fixed ? 0 : window.pageXOffset) + (this.src.offsetWidth / 2);
+				const y = rect.top + (this.fixed ? 0 : window.pageYOffset) + this.src.offsetHeight;
+				left = (x - (width / 2));
+				top = y;
+			}
+
+			if (this.fixed) {
+				if (left + width > window.innerWidth) {
+					left = window.innerWidth - width;
+				}
+
+				if (top + height > window.innerHeight) {
+					top = window.innerHeight - height;
+				}
+			} else {
+				if (left + width - window.pageXOffset > window.innerWidth) {
+					left = window.innerWidth - width + window.pageXOffset - 1;
+				}
+
+				if (top + height - window.pageYOffset > window.innerHeight) {
+					top = window.innerHeight - height + window.pageYOffset - 1;
+				}
+			}
+
+			if (top < 0) {
+				top = 0;
+			}
+
+			if (left < 0) {
+				left = 0;
+			}
+
+			if (top > rect.top + (this.fixed ? 0 : window.pageYOffset)) {
+				this.transformOrigin = 'center top';
+			} else {
+				this.transformOrigin = 'center';
+			}
+
+			popover.style.left = left + 'px';
+			popover.style.top = top + 'px';
+		},
+
 		childRendered() {
 			// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 			const content = this.$refs.content.children[0];
@@ -140,47 +157,77 @@ export default defineComponent({
 
 		close() {
 			this.showing = false;
+			this.$emit('close');
 		},
 
 		onBgClick() {
 			if (this.contentClicking) return;
 			this.$emit('click');
+		},
+
+		onClosed() {
+			this.$emit('closed');
 		}
 	}
 });
 </script>
 
-<style vars="{ transformOrigin }">
-.modal-popup-content-enter-active, .modal-popup-content-leave-active,
-.modal-content-enter-from, .modal-content-leave-to {
-  transform-origin: var(--transformOrigin);
+<style lang="scss">
+.modal-popup-enter-active, .modal-popup-leave-active,
+.modal-enter-from, .modal-leave-to {
+	> .content {
+		transform-origin: var(--transformOrigin);
+	}
 }
 </style>
 
 <style lang="scss" scoped>
-.modal-bg-enter-active, .modal-bg-leave-active {
-	transition: opacity 0.3s !important;
-}
-.modal-bg-enter-from, .modal-bg-leave-to {
-	opacity: 0;
-}
-
-.modal-content-enter-active, .modal-content-leave-active {
+.modal-enter-active, .modal-leave-active {
+	// CSS的には無意味だけどこれが無いとVueが認識しない
 	transition: opacity 0.3s, transform 0.3s !important;
+
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+		transition: opacity 0.3s, transform 0.3s !important;
+	}
 }
-.modal-content-enter-from, .modal-content-leave-to {
-	pointer-events: none;
-	opacity: 0;
-	transform: scale(0.9);
+.modal-enter-from, .modal-leave-to {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform: scale(0.9);
+	}
 }
 
-.modal-popup-content-enter-active, .modal-popup-content-leave-active {
+.modal-popup-enter-active, .modal-popup-leave-active {
+	// CSS的には無意味だけどこれが無いとVueが認識しない
 	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+		transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+	}
 }
-.modal-popup-content-enter-from, .modal-popup-content-leave-to {
-	pointer-events: none;
-	opacity: 0;
-	transform: scale(0.9);
+.modal-popup-enter-from, .modal-popup-leave-to {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform: scale(0.9);
+	}
 }
 
 .mk-modal {
@@ -209,12 +256,12 @@ export default defineComponent({
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 		}
 
-		> * {
+		> ::v-deep(*) {
 			margin: auto;
 		}
 
 		&.top {
-			> * {
+			> ::v-deep(*) {
 				margin-top: 0;
 			}
 		}

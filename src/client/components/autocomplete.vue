@@ -8,7 +8,7 @@
 			</span>
 			<span class="username">@{{ acct(user) }}</span>
 		</li>
-		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose">{{ $t('selectUser') }}</li>
+		<li @click="chooseUser()" @keydown="onKeydown" tabindex="-1" class="choose">{{ $ts.selectUser }}</li>
 	</ol>
 	<ol class="hashtags" ref="suggests" v-if="hashtags.length > 0">
 		<li v-for="hashtag in hashtags" @click="complete(type, hashtag)" @keydown="onKeydown" tabindex="-1">
@@ -17,8 +17,8 @@
 	</ol>
 	<ol class="emojis" ref="suggests" v-if="emojis.length > 0">
 		<li v-for="emoji in emojis" @click="complete(type, emoji.emoji)" @keydown="onKeydown" tabindex="-1">
-			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="$store.state.device.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
-			<span class="emoji" v-else-if="!useOsNativeEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-if="emoji.isCustomEmoji"><img :src="$store.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
+			<span class="emoji" v-else-if="!$store.state.useOsNativeEmojis"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span class="emoji" v-else>{{ emoji.emoji }}</span>
 			<span class="name" v-html="emoji.name.replace(q, `<b>${q}</b>`)"></span>
 			<span class="alias" v-if="emoji.aliasOf">({{ emoji.aliasOf }})</span>
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
 import contains from '@/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
@@ -124,14 +124,7 @@ export default defineComponent({
 			emojis: [],
 			items: [],
 			select: -1,
-			emojilist,
 			emojiDb: [] as EmojiDef[]
-		}
-	},
-
-	computed: {
-		useOsNativeEmojis(): boolean {
-			return this.$store.state.device.useOsNativeEmojis;
 		}
 	},
 
@@ -152,7 +145,7 @@ export default defineComponent({
 		this.setPosition();
 
 		//#region Construct Emoji DB
-		const customEmojis = this.$store.state.instance.meta.emojis;
+		const customEmojis = this.$instance.emojis;
 		const emojiDefinitions: EmojiDef[] = [];
 
 		for (const x of customEmojis) {
@@ -178,7 +171,7 @@ export default defineComponent({
 
 		emojiDefinitions.sort((a, b) => a.name.length - b.name.length);
 
-		this.emojiDb = emojiDefinitions.concat(emjdb);
+		this.emojiDb = markRaw(emojiDefinitions.concat(emjdb));
 		//#endregion
 
 		this.textarea.addEventListener('keydown', this.onKeydown);

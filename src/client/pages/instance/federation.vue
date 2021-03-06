@@ -2,38 +2,38 @@
 <div>
 	<div class="_section">
 		<div class="_content">
-			<MkInput v-model:value="host" :debounce="true"><span>{{ $t('host') }}</span></MkInput>
+			<MkInput v-model:value="host" :debounce="true"><span>{{ $ts.host }}</span></MkInput>
 			<div class="inputs" style="display: flex;">
 				<MkSelect v-model:value="state" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('state') }}</template>
-					<option value="all">{{ $t('all') }}</option>
-					<option value="federating">{{ $t('federating') }}</option>
-					<option value="subscribing">{{ $t('subscribing') }}</option>
-					<option value="publishing">{{ $t('publishing') }}</option>
-					<option value="suspended">{{ $t('suspended') }}</option>
-					<option value="blocked">{{ $t('blocked') }}</option>
-					<option value="notResponding">{{ $t('notResponding') }}</option>
+					<template #label>{{ $ts.state }}</template>
+					<option value="all">{{ $ts.all }}</option>
+					<option value="federating">{{ $ts.federating }}</option>
+					<option value="subscribing">{{ $ts.subscribing }}</option>
+					<option value="publishing">{{ $ts.publishing }}</option>
+					<option value="suspended">{{ $ts.suspended }}</option>
+					<option value="blocked">{{ $ts.blocked }}</option>
+					<option value="notResponding">{{ $ts.notResponding }}</option>
 				</MkSelect>
 				<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
-					<template #label>{{ $t('sort') }}</template>
-					<option value="+pubSub">{{ $t('pubSub') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-pubSub">{{ $t('pubSub') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+notes">{{ $t('notes') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-notes">{{ $t('notes') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+users">{{ $t('users') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-users">{{ $t('users') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+following">{{ $t('following') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-following">{{ $t('following') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+followers">{{ $t('followers') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-followers">{{ $t('followers') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+caughtAt">{{ $t('caughtAt') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-caughtAt">{{ $t('caughtAt') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+lastCommunicatedAt">{{ $t('lastCommunicatedAt') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-lastCommunicatedAt">{{ $t('lastCommunicatedAt') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+driveUsage">{{ $t('driveUsage') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-driveUsage">{{ $t('driveUsage') }} ({{ $t('ascendingOrder') }})</option>
-					<option value="+driveFiles">{{ $t('driveFiles') }} ({{ $t('descendingOrder') }})</option>
-					<option value="-driveFiles">{{ $t('driveFiles') }} ({{ $t('ascendingOrder') }})</option>
+					<template #label>{{ $ts.sort }}</template>
+					<option value="+pubSub">{{ $ts.pubSub }} ({{ $ts.descendingOrder }})</option>
+					<option value="-pubSub">{{ $ts.pubSub }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+notes">{{ $ts.notes }} ({{ $ts.descendingOrder }})</option>
+					<option value="-notes">{{ $ts.notes }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+users">{{ $ts.users }} ({{ $ts.descendingOrder }})</option>
+					<option value="-users">{{ $ts.users }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+following">{{ $ts.following }} ({{ $ts.descendingOrder }})</option>
+					<option value="-following">{{ $ts.following }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+followers">{{ $ts.followers }} ({{ $ts.descendingOrder }})</option>
+					<option value="-followers">{{ $ts.followers }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+caughtAt">{{ $ts.caughtAt }} ({{ $ts.descendingOrder }})</option>
+					<option value="-caughtAt">{{ $ts.caughtAt }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+lastCommunicatedAt">{{ $ts.lastCommunicatedAt }} ({{ $ts.descendingOrder }})</option>
+					<option value="-lastCommunicatedAt">{{ $ts.lastCommunicatedAt }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+driveUsage">{{ $ts.driveUsage }} ({{ $ts.descendingOrder }})</option>
+					<option value="-driveUsage">{{ $ts.driveUsage }} ({{ $ts.ascendingOrder }})</option>
+					<option value="+driveFiles">{{ $ts.driveFiles }} ({{ $ts.descendingOrder }})</option>
+					<option value="-driveFiles">{{ $ts.driveFiles }} ({{ $ts.ascendingOrder }})</option>
 				</MkSelect>
 			</div>
 		</div>
@@ -79,10 +79,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('federation'),
-					icon: faGlobe
-				}],
+				title: this.$ts.federation,
+				icon: faGlobe
 			},
 			host: '',
 			state: 'federating',

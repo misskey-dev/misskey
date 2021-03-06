@@ -1,8 +1,8 @@
 @charset "utf-8";
 
 :root {
-	--baseContentWidth: 750px;
-	--radius: 8px;
+	--baseContentWidth: 760px;
+	--radius: 12px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
 
@@ -26,17 +26,21 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
+	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
+	line-height: 1.35;
+	text-size-adjust: 100%;
+	tab-size: 2;
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) var(--panel);
+		scrollbar-color: var(--scrollbarHandle) inherit;
 		scrollbar-width: thin;
 
 		&:hover {
-			scrollbar-color: var(--scrollbarHandleHover) var(--panel);
+			scrollbar-color: var(--scrollbarHandleHover) inherit;
 		}
 
 		&:active {
-			scrollbar-color: var(--accent) var(--panel);
+			scrollbar-color: var(--accent) inherit;
 		}
 
 		&::-webkit-scrollbar {
@@ -45,7 +49,7 @@ html {
 		}
 
 		&::-webkit-scrollbar-track {
-			background: var(--panel);
+			background: inherit;
 		}
 
 		&::-webkit-scrollbar-thumb {
@@ -72,6 +76,10 @@ html {
 	&.f-veryLarge {
 		font-size: 1.2em;
 	}
+
+	&.useSystemFont {
+		font-family: sans-serif;
+	}
 }
 
 html.changing-theme {
@@ -88,8 +96,6 @@ html, body {
 	margin: 0;
 	padding: 0;
 	scroll-behavior: smooth;
-	text-size-adjust: 100%;
-	font-family: Roboto, HelveticaNeue, Arial, sans-serif;
 }
 
 a {
@@ -160,6 +166,8 @@ hr {
 	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
+	font-family: inherit;
+	line-height: inherit;
 
 	&, * {
 		@extend ._noSelect;
@@ -229,8 +237,6 @@ hr {
 }
 
 ._panel {
-	//position: relative;
-	//z-index: 1;
 	background: var(--panel);
 	border-radius: var(--radius);
 	//border: var(--panelBorder);
@@ -244,7 +250,7 @@ hr {
 	> ._title {
 		margin: 0;
 		padding: 22px 32px;
-		font-size: 1.1em;
+		font-size: 1em;
 		border-bottom: solid 1px var(--panelHeaderDivider);
 		font-weight: bold;
 		background: var(--panelHeaderBg);
@@ -282,19 +288,24 @@ hr {
 	}
 }
 
-._close_ ._list_ > * {
+._noGap_ ._list_ {
+	@extend ._panel;
+
+	> * {
+		margin: 0 !important;
+		border: none;
+		border-bottom: solid 1px var(--divider);
+		border-radius: 0;
+		box-shadow: none;
+	}
+}
+
+._inContainer_ ._list_ > * {
+	margin: 0 !important;
 	border: none;
 	border-bottom: solid 1px var(--divider);
 	border-radius: 0;
 	box-shadow: none;
-	margin: 0 !important;
-}
-
-._loadMore {
-	@extend ._panel;
-	@extend ._button;
-	width: 100%;
-	padding: 12px 0;
 }
 
 ._borderButton {
@@ -315,6 +326,7 @@ hr {
 ._popup {
 	background: var(--panel);
 	border-radius: var(--radius);
+	contain: content;
 }
 
 ._section {
@@ -346,7 +358,6 @@ hr {
 
 	> ._title {
 		margin-bottom: 24px;
-		font-size: 1.25em;
 		font-weight: bold;
 	}
 
@@ -379,8 +390,8 @@ hr {
 
 ._acrylic {
 	background: var(--acrylicPanel);
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
 }
 
 ._vMargin {
@@ -446,10 +457,14 @@ hr {
 	opacity: 0.7;
 }
 
+._monospace {
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+}
+
 ._code {
+	@extend ._monospace;
 	background: #2d2d2d;
 	color: #ccc;
-	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 	font-size: 14px;
 	line-height: 1.5;
 	padding: 5px;
@@ -457,6 +472,12 @@ hr {
 
 .prism-editor__textarea:focus {
 	outline: none;
+}
+
+._zoom {
+	transition-duration: 0.5s, 0.5s;
+	transition-property: opacity, transform;
+	transition-timing-function: cubic-bezier(0,.5,.5,1);
 }
 
 .zoom-enter-active, .zoom-leave-active {
@@ -467,39 +488,13 @@ hr {
 	transform: scale(0.9);
 }
 
-.zoom-in-top-enter-active,
-.zoom-in-top-leave-active {
-	opacity: 1;
-	transform: scaleY(1);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
-	transform-origin: center top;
-}
-.zoom-in-top-enter-from,
-.zoom-in-top-leave-active {
-	opacity: 0;
-	transform: scaleY(0);
-}
-
 @keyframes blink {
 	0% { opacity: 1; transform: scale(1); }
 	30% { opacity: 1; transform: scale(1); }
 	90% { opacity: 0; transform: scale(0.5); }
 }
 
-@keyframes anime-spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
-}
-
-@keyframes anime-jump {
-	0% { transform: translateY(0); }
-	25% { transform: translateY(-16px); }
-	50% { transform: translateY(0); }
-	75% { transform: translateY(-8px); }
-	100% { transform: translateY(0); }
-}
-
-@keyframes anime-tada {
+@keyframes tada {
 	from {
 		transform: scale3d(1, 1, 1);
 	}
@@ -525,34 +520,4 @@ hr {
 	to {
 		transform: scale3d(1, 1, 1);
 	}
-}
-
-@keyframes anime-rubberBand {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-
-  30% {
-    transform: scale3d(1.25, 0.75, 1);
-  }
-
-  40% {
-    transform: scale3d(0.75, 1.25, 1);
-  }
-
-  50% {
-    transform: scale3d(1.15, 0.85, 1);
-  }
-
-  65% {
-    transform: scale3d(0.95, 1.05, 1);
-  }
-
-  75% {
-    transform: scale3d(1.05, 0.95, 1);
-  }
-
-  to {
-    transform: scale3d(1, 1, 1);
-  }
 }

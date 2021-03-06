@@ -3,7 +3,6 @@ import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
 import { User } from '../entities/user';
 import { toPuny } from '../../misc/convert-host';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 import config from '../../config';
@@ -48,7 +47,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
 	}
 
-	public async clacDriveUsageOf(user: User['id'] | User): Promise<number> {
+	public async calcDriveUsageOf(user: User['id'] | User): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this
@@ -60,7 +59,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async clacDriveUsageOfHost(host: string): Promise<number> {
+	public async calcDriveUsageOfHost(host: string): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost = :host', { host: toPuny(host) })
@@ -70,7 +69,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async clacDriveUsageOfLocal(): Promise<number> {
+	public async calcDriveUsageOfLocal(): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NULL')
@@ -80,7 +79,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return parseInt(sum, 10) || 0;
 	}
 
-	public async clacDriveUsageOfRemote(): Promise<number> {
+	public async calcDriveUsageOfRemote(): Promise<number> {
 		const { sum } = await this
 			.createQueryBuilder('file')
 			.where('file.userHost IS NOT NULL')
@@ -103,7 +102,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 			self: false
 		}, options);
 
-		const file = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const file = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const meta = await fetchMeta();
 

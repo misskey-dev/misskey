@@ -1,11 +1,11 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faBolt"/> {{ $t('_pages.blocks.switch') }}</template>
+	<template #header><Fa :icon="faBolt"/> {{ $ts._pages.blocks.switch }}</template>
 
 	<section class="kjuadyyj">
-		<MkInput v-model:value="value.name"><template #prefix><Fa :icon="faMagic"/></template><span>{{ $t('_pages.blocks._switch.name') }}</span></MkInput>
-		<MkInput v-model:value="value.text"><span>{{ $t('_pages.blocks._switch.text') }}</span></MkInput>
-		<MkSwitch v-model:value="value.default"><span>{{ $t('_pages.blocks._switch.default') }}</span></MkSwitch>
+		<MkInput v-model:value="value.name"><template #prefix><Fa :icon="faMagic"/></template><span>{{ $ts._pages.blocks._switch.name }}</span></MkInput>
+		<MkInput v-model:value="value.text"><span>{{ $ts._pages.blocks._switch.text }}</span></MkInput>
+		<MkSwitch v-model:value="value.default"><span>{{ $ts._pages.blocks._switch.default }}</span></MkSwitch>
 	</section>
 </XContainer>
 </template>

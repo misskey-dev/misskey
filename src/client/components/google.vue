@@ -1,7 +1,7 @@
 <template>
 <div class="mk-google">
 	<input type="search" v-model="query" :placeholder="q">
-	<button @click="search"><Fa :icon="faSearch"/> {{ $t('search') }}</button>
+	<button @click="search"><Fa :icon="faSearch"/> {{ $ts.search }}</button>
 </div>
 </template>
 
@@ -23,7 +23,7 @@ export default defineComponent({
 	},
 	methods: {
 		search() {
-			const engine = this.$store.state.settings.webSearchEngine ||
+			const engine = this.$store.state.webSearchEngine ||
 				'https://www.google.com/search?q={{query}}';
 			const url = engine.replace('{{query}}', this.query)
 			window.open(url, '_blank');

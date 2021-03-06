@@ -18,10 +18,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('directNotes'),
-					icon: faEnvelope
-				}],
+				title: this.$ts.directNotes,
+				icon: faEnvelope
 			},
 			pagination: {
 				endpoint: 'notes/mentions',

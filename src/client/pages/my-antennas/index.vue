@@ -1,12 +1,12 @@
 <template>
 <div class="ieepwinx _section">
-	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $t('add') }}</MkButton>
+	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
 
 	<div class="_content">
 		<XAntenna v-if="draft" :antenna="draft" @created="onAntennaCreated" style="margin-bottom: var(--margin);"/>
 
 		<MkPagination :pagination="pagination" #default="{items}" class="antennas" ref="list">
-			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @created="onAntennaDeleted"/>
+			<XAntenna v-for="(antenna, i) in items" :key="antenna.id" :antenna="antenna" @deleted="onAntennaDeleted"/>
 		</MkPagination>
 	</div>
 </div>
@@ -29,10 +29,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('manageAntennas'),
-					icon: faSatellite
-				}],
+				title: this.$ts.manageAntennas,
+				icon: faSatellite,
 				action: {
 					icon: faPlus,
 					handler: this.create

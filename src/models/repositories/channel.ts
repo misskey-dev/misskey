@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Channel } from '../entities/channel';
-import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '..';
 import { User } from '../entities/user';
@@ -13,7 +12,7 @@ export class ChannelRepository extends Repository<Channel> {
 		src: Channel['id'] | Channel,
 		me?: User['id'] | User | null | undefined,
 	): Promise<PackedChannel> {
-		const channel = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const channel = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;

@@ -1,20 +1,20 @@
 <template>
-<div class="">
-	<div class="_panel">
-		<prism-editor class="_code" v-model:value="code" :highlight="highlighter" :line-numbers="false"/>
+<div class="iltifgqe">
+	<div class="editor _panel _vMargin">
+		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
 		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
-	<MkContainer :body-togglable="true">
-		<template #header><Fa fixed-width/>{{ $t('output') }}</template>
+	<MkContainer :body-togglable="true" class="_vMargin">
+		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</MkContainer>
 
-	<section class="_section" style="margin-top: var(--margin);">
-		<div class="_content">{{ $t('scratchpadDescription') }}</div>
-	</section>
+	<div class="_vMargin">
+		{{ $ts.scratchpadDescription }}
+	</div>
 </div>
 </template>
 
@@ -44,10 +44,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('scratchpad'),
-					icon: faTerminal,
-				}],
+				title: this.$ts.scratchpad,
+				icon: faTerminal,
 			},
 			code: '',
 			logs: [],
@@ -72,7 +70,8 @@ export default defineComponent({
 		async run() {
 			this.logs = [];
 			const aiscript = new AiScript(createAiScriptEnv({
-				storageKey: 'scratchpad'
+				storageKey: 'scratchpad',
+				token: this.$i?.token,
 			}), {
 				in: (q) => {
 					return new Promise(ok => {
@@ -131,6 +130,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.iltifgqe {
+	padding: 16px;
+
+	> .editor {
+		position: relative;
+	}
+}
+
 .bepmlvbi {
 	padding: 16px;
 

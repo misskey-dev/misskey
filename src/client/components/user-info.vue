@@ -8,22 +8,22 @@
 	</div>
 	<div class="description">
 		<div class="mfm" v-if="user.description">
-			<Mfm :text="user.description" :author="user" :i="$store.state.i" :custom-emojis="user.emojis"/>
+			<Mfm :text="user.description" :author="user" :i="$i" :custom-emojis="user.emojis"/>
 		</div>
-		<span v-else style="opacity: 0.7;">{{ $t('noAccountDescription') }}</span>
+		<span v-else style="opacity: 0.7;">{{ $ts.noAccountDescription }}</span>
 	</div>
 	<div class="status">
 		<div>
-			<p>{{ $t('notes') }}</p><span>{{ user.notesCount }}</span>
+			<p>{{ $ts.notes }}</p><span>{{ user.notesCount }}</span>
 		</div>
 		<div>
-			<p>{{ $t('following') }}</p><span>{{ user.followingCount }}</span>
+			<p>{{ $ts.following }}</p><span>{{ user.followingCount }}</span>
 		</div>
 		<div>
-			<p>{{ $t('followers') }}</p><span>{{ user.followersCount }}</span>
+			<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
 		</div>
 	</div>
-	<MkFollowButton class="koudoku-button" v-if="$store.getters.isSignedIn && user.id != $store.state.i.id" :user="user" mini/>
+	<MkFollowButton class="koudoku-button" v-if="$i && user.id != $i.id" :user="user" mini/>
 </div>
 </template>
 

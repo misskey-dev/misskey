@@ -19,6 +19,9 @@ block og
 	meta(property='og:image'       content= user.avatarUrl)
 
 block meta
+	if user.host || profile.noCrawle
+		meta(name='robots' content='noindex')
+
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)
 	meta(name='misskey:note-id' content=note.id)
@@ -26,9 +29,6 @@ block meta
 	meta(name='twitter:card' content='summary')
 
 	// todo
-	if user.host
-		meta(name='robots' content='noindex')
-
 	if user.twitter
 		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
 

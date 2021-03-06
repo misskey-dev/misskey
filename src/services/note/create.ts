@@ -5,7 +5,6 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import watch from './watch';
 import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '../../config';
@@ -27,13 +26,13 @@ import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
 import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { ensure } from '../../prelude/ensure';
 import { checkHitAntenna } from '../../misc/check-hit-antenna';
 import { checkWordMute } from '../../misc/check-word-mute';
 import { addNoteToAntenna } from '../add-note-to-antenna';
 import { countSameRenotes } from '../../misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
 import { Channel } from '../../models/entities/channel';
+import { normalizeForSearch } from '../../misc/normalize-for-search';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -200,7 +199,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	tags = tags.filter(tag => Array.from(tag || '').length <= 128).splice(0, 32);
 
 	if (data.reply && (user.id !== data.reply.userId) && !mentionedUsers.some(u => u.id === data.reply!.userId)) {
-		mentionedUsers.push(await Users.findOne(data.reply.userId).then(ensure));
+		mentionedUsers.push(await Users.findOneOrFail(data.reply.userId));
 	}
 
 	if (data.visibility == 'specified') {
@@ -213,7 +212,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		}
 
 		if (data.reply && !data.visibleUsers.some(x => x.id === data.reply!.userId)) {
-			data.visibleUsers.push(await Users.findOne(data.reply.userId).then(ensure));
+			data.visibleUsers.push(await Users.findOneOrFail(data.reply.userId));
 		}
 	}
 
@@ -340,17 +339,10 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 		await createMentionedEvents(mentionedUsers, note, nm);
 
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
-
 		// If has in reply to note
 		if (data.reply) {
 			// Fetch watchers
 			nmRelatedPromises.push(notifyToWatchersOfReplyee(data.reply, user, nm));
-
-			// この投稿をWatchする
-			if (Users.isLocalUser(user) && profile.autoWatch) {
-				watch(user.id, data.reply);
-			}
 
 			// 通知
 			if (data.reply.userHost === null) {
@@ -370,11 +362,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 			// Fetch watchers
 			nmRelatedPromises.push(notifyToWatchersOfRenotee(data.renote, user, nm, type));
-
-			// この投稿をWatchする
-			if (Users.isLocalUser(user) && profile.autoWatch) {
-				watch(user.id, data.renote);
-			}
 
 			// Publish event
 			if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
@@ -473,7 +460,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 		text: data.text,
 		hasPoll: data.poll != null,
 		cw: data.cw == null ? null : data.cw,
-		tags: tags.map(tag => tag.toLowerCase()),
+		tags: tags.map(tag => normalizeForSearch(tag)),
 		emojis,
 		userId: user.id,
 		viaMobile: data.viaMobile!,
@@ -560,7 +547,7 @@ function index(note: Note) {
 		index: config.elasticsearch.index || 'misskey_note',
 		id: note.id.toString(),
 		body: {
-			text: note.text.toLowerCase(),
+			text: normalizeForSearch(note.text),
 			userId: note.userId,
 			userHost: note.userHost
 		}

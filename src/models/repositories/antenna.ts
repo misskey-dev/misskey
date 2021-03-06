@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Antenna } from '../entities/antenna';
-import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { AntennaNotes, UserGroupJoinings } from '..';
 
@@ -11,7 +10,7 @@ export class AntennaRepository extends Repository<Antenna> {
 	public async pack(
 		src: Antenna['id'] | Antenna,
 	): Promise<PackedAntenna> {
-		const antenna = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const antenna = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		const hasUnreadNote = (await AntennaNotes.findOne({ antennaId: antenna.id, read: false })) != null;
 		const userGroupJoining = antenna.userGroupJoiningId ? await UserGroupJoinings.findOne(antenna.userGroupJoiningId) : null;

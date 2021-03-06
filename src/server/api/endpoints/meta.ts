@@ -443,8 +443,6 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
-	const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
-
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
@@ -466,8 +464,6 @@ export default define(meta, async (ps, me) => {
 		disableGlobalTimeline: instance.disableGlobalTimeline,
 		driveCapacityPerLocalUserMb: instance.localDriveCapacityMb,
 		driveCapacityPerRemoteUserMb: instance.remoteDriveCapacityMb,
-		cacheRemoteFiles: instance.cacheRemoteFiles,
-		proxyRemoteFiles: instance.proxyRemoteFiles,
 		enableHcaptcha: instance.enableHcaptcha,
 		hcaptchaSiteKey: instance.hcaptchaSiteKey,
 		enableRecaptcha: instance.enableRecaptcha,
@@ -477,11 +473,10 @@ export default define(meta, async (ps, me) => {
 		bannerUrl: instance.bannerUrl,
 		errorImageUrl: instance.errorImageUrl,
 		iconUrl: instance.iconUrl,
+		backgroundImageUrl: instance.backgroundImageUrl,
+		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: await Emojis.packMany(emojis),
-		requireSetup: (await Users.count({
-			host: null,
-		})) === 0,
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,
@@ -490,10 +485,21 @@ export default define(meta, async (ps, me) => {
 
 		enableServiceWorker: instance.enableServiceWorker,
 
-		proxyAccountName: proxyAccount ? proxyAccount.username : null,
+		...(ps.detail ? {
+			pinnedPages: instance.pinnedPages,
+			pinnedClipId: instance.pinnedClipId,
+			cacheRemoteFiles: instance.cacheRemoteFiles,
+			proxyRemoteFiles: instance.proxyRemoteFiles,
+			requireSetup: (await Users.count({
+				host: null,
+			})) === 0,
+		} : {})
 	};
 
 	if (ps.detail) {
+		const proxyAccount = instance.proxyAccountId ? await Users.pack(instance.proxyAccountId).catch(() => null) : null;
+
+		response.proxyAccountName = proxyAccount ? proxyAccount.username : null;
 		response.features = {
 			registration: !instance.disableRegistration,
 			localTimeLine: !instance.disableLocalTimeline,
@@ -508,42 +514,43 @@ export default define(meta, async (ps, me) => {
 			serviceWorker: instance.enableServiceWorker,
 			miauth: true,
 		};
-	}
 
-	if (me && me.isAdmin) {
-		response.useStarForReactionFallback = instance.useStarForReactionFallback;
-		response.pinnedUsers = instance.pinnedUsers;
-		response.hiddenTags = instance.hiddenTags;
-		response.blockedHosts = instance.blockedHosts;
-		response.hcaptchaSecretKey = instance.hcaptchaSecretKey;
-		response.recaptchaSecretKey = instance.recaptchaSecretKey;
-		response.proxyAccountId = instance.proxyAccountId;
-		response.twitterConsumerKey = instance.twitterConsumerKey;
-		response.twitterConsumerSecret = instance.twitterConsumerSecret;
-		response.githubClientId = instance.githubClientId;
-		response.githubClientSecret = instance.githubClientSecret;
-		response.discordClientId = instance.discordClientId;
-		response.discordClientSecret = instance.discordClientSecret;
-		response.summalyProxy = instance.summalyProxy;
-		response.email = instance.email;
-		response.smtpSecure = instance.smtpSecure;
-		response.smtpHost = instance.smtpHost;
-		response.smtpPort = instance.smtpPort;
-		response.smtpUser = instance.smtpUser;
-		response.smtpPass = instance.smtpPass;
-		response.swPrivateKey = instance.swPrivateKey;
-		response.useObjectStorage = instance.useObjectStorage;
-		response.objectStorageBaseUrl = instance.objectStorageBaseUrl;
-		response.objectStorageBucket = instance.objectStorageBucket;
-		response.objectStoragePrefix = instance.objectStoragePrefix;
-		response.objectStorageEndpoint = instance.objectStorageEndpoint;
-		response.objectStorageRegion = instance.objectStorageRegion;
-		response.objectStoragePort = instance.objectStoragePort;
-		response.objectStorageAccessKey = instance.objectStorageAccessKey;
-		response.objectStorageSecretKey = instance.objectStorageSecretKey;
-		response.objectStorageUseSSL = instance.objectStorageUseSSL;
-		response.objectStorageUseProxy = instance.objectStorageUseProxy;
-		response.objectStorageSetPublicRead = instance.objectStorageSetPublicRead;
+		if (me && me.isAdmin) {
+			response.useStarForReactionFallback = instance.useStarForReactionFallback;
+			response.pinnedUsers = instance.pinnedUsers;
+			response.hiddenTags = instance.hiddenTags;
+			response.blockedHosts = instance.blockedHosts;
+			response.hcaptchaSecretKey = instance.hcaptchaSecretKey;
+			response.recaptchaSecretKey = instance.recaptchaSecretKey;
+			response.proxyAccountId = instance.proxyAccountId;
+			response.twitterConsumerKey = instance.twitterConsumerKey;
+			response.twitterConsumerSecret = instance.twitterConsumerSecret;
+			response.githubClientId = instance.githubClientId;
+			response.githubClientSecret = instance.githubClientSecret;
+			response.discordClientId = instance.discordClientId;
+			response.discordClientSecret = instance.discordClientSecret;
+			response.summalyProxy = instance.summalyProxy;
+			response.email = instance.email;
+			response.smtpSecure = instance.smtpSecure;
+			response.smtpHost = instance.smtpHost;
+			response.smtpPort = instance.smtpPort;
+			response.smtpUser = instance.smtpUser;
+			response.smtpPass = instance.smtpPass;
+			response.swPrivateKey = instance.swPrivateKey;
+			response.useObjectStorage = instance.useObjectStorage;
+			response.objectStorageBaseUrl = instance.objectStorageBaseUrl;
+			response.objectStorageBucket = instance.objectStorageBucket;
+			response.objectStoragePrefix = instance.objectStoragePrefix;
+			response.objectStorageEndpoint = instance.objectStorageEndpoint;
+			response.objectStorageRegion = instance.objectStorageRegion;
+			response.objectStoragePort = instance.objectStoragePort;
+			response.objectStorageAccessKey = instance.objectStorageAccessKey;
+			response.objectStorageSecretKey = instance.objectStorageSecretKey;
+			response.objectStorageUseSSL = instance.objectStorageUseSSL;
+			response.objectStorageUseProxy = instance.objectStorageUseProxy;
+			response.objectStorageSetPublicRead = instance.objectStorageSetPublicRead;
+			response.objectStorageS3ForcePathStyle = instance.objectStorageS3ForcePathStyle;
+		}
 	}
 
 	return response;

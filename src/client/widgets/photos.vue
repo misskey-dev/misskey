@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
-	<template #header><Fa :icon="faCamera"/>{{ $t('_widgets.photos') }}</template>
+	<template #header><Fa :icon="faCamera"/>{{ $ts._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>
@@ -74,7 +74,7 @@ export default defineComponent({
 		},
 
 		thumbnail(image: any): string {
-			return this.$store.state.device.disableShowingAnimatedImages
+			return this.$store.state.disableShowingAnimatedImages
 				? getStaticImageUrl(image.thumbnailUrl)
 				: image.thumbnailUrl;
 		},

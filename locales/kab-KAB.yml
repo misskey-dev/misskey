@@ -13,6 +13,7 @@ delete: "Kkes"
 addToList: "Rnu ɣer tebdart"
 reply: "Err"
 loadMore: "Wali ugar"
+showMore: "Wali ugar"
 youGotNewFollower: "Yeṭṭafaṛ-ik·em-id"
 mention: "Bder"
 import: "Kter"
@@ -35,6 +36,13 @@ userList: "Tibdarin"
 uiLanguage: "Tutlayt n wegrudem"
 smtpUser: "Isem n umseqdac"
 smtpPass: "Awal uffir"
+_email:
+  _follow:
+    title: "Yeṭṭafaṛ-ik·em-id"
+_mfm:
+  mention: "Bder"
+  search: "Nadi"
+  font: "Tasefsit"
 _theme:
   keys:
     mention: "Bder"
@@ -54,6 +62,7 @@ _exportOrImport:
   blockingList: "Seḥbes"
   userLists: "Tibdarin"
 _pages:
+  contents: "Agbur"
   font: "Tasefsit"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"

@@ -1,5 +1,5 @@
 <template>
-<div class="jmgmzlwq _panel"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $t('remoteUserCaution') }}<a :href="href" rel="nofollow noopener" target="_blank">{{ $t('showOnRemote') }}</a></div>
+<div class="jmgmzlwq _panel"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/>{{ $ts.remoteUserCaution }}<a :href="href" rel="nofollow noopener" target="_blank">{{ $ts.showOnRemote }}</a></div>
 </template>
 
 <script lang="ts">
@@ -26,6 +26,8 @@ export default defineComponent({
 .jmgmzlwq {
 	font-size: 0.8em;
 	padding: 16px;
+	background: var(--infoWarnBg);
+	color: var(--infoWarnFg);
 
 	> a {
 		margin-left: 4px;

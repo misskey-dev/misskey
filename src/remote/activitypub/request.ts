@@ -6,7 +6,6 @@ import * as crypto from 'crypto';
 import config from '../../config';
 import { ILocalUser } from '../../models/entities/user';
 import { UserKeypairs } from '../../models';
-import { ensure } from '../../prelude/ensure';
 import { getAgentByUrl } from '../../misc/fetch';
 import { URL } from 'url';
 import got from 'got';
@@ -23,9 +22,9 @@ export default async (user: ILocalUser, url: string, object: any) => {
 	sha256.update(data);
 	const hash = sha256.digest('base64');
 
-	const keypair = await UserKeypairs.findOne({
+	const keypair = await UserKeypairs.findOneOrFail({
 		userId: user.id
-	}).then(ensure);
+	});
 
 	await new Promise((resolve, reject) => {
 		const req = https.request({
@@ -75,9 +74,9 @@ export default async (user: ILocalUser, url: string, object: any) => {
 export async function signedGet(url: string, user: ILocalUser) {
 	const timeout = 10 * 1000;
 
-	const keypair = await UserKeypairs.findOne({
+	const keypair = await UserKeypairs.findOneOrFail({
 		userId: user.id
-	}).then(ensure);
+	});
 
 	const req = got.get<any>(url, {
 		headers: {

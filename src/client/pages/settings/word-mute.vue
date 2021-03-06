@@ -1,44 +1,53 @@
 <template>
-<div class="_section">
-	<div class="_card">
-		<MkTab v-model:value="tab" :items="[{ label: $t('_wordMute.soft'), value: 'soft' }, { label: $t('_wordMute.hard'), value: 'hard' }]"/>
-		<div class="_content">
+<div>
+	<MkTab v-model:value="tab">
+		<option value="soft">{{ $ts._wordMute.soft }}</option>
+		<option value="hard">{{ $ts._wordMute.hard }}</option>
+	</MkTab>
+	<FormBase>
+		<div class="_formItem">
 			<div v-show="tab === 'soft'">
-				<MkInfo>{{ $t('_wordMute.softDescription') }}</MkInfo>
-				<MkTextarea v-model:value="softMutedWords">
-					<span>{{ $t('_wordMute.muteWords') }}</span>
-					<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
-				</MkTextarea>
+				<MkInfo>{{ $ts._wordMute.softDescription }}</MkInfo>
+				<FormTextarea v-model:value="softMutedWords">
+					<span>{{ $ts._wordMute.muteWords }}</span>
+					<template #desc>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>
+				</FormTextarea>
 			</div>
 			<div v-show="tab === 'hard'">
-				<MkInfo>{{ $t('_wordMute.hardDescription') }}</MkInfo>
-				<MkTextarea v-model:value="hardMutedWords" style="margin-bottom: 16px;">
-					<span>{{ $t('_wordMute.muteWords') }}</span>
-					<template #desc>{{ $t('_wordMute.muteWordsDescription') }}<br>{{ $t('_wordMute.muteWordsDescription2') }}</template>
-				</MkTextarea>
-				<div v-if="hardWordMutedNotesCount != null" class="_caption">{{ $t('_wordMute.mutedNotes') }}: {{ hardWordMutedNotesCount | number }}</div>
+				<MkInfo>{{ $ts._wordMute.hardDescription }}</MkInfo>
+				<FormTextarea v-model:value="hardMutedWords">
+					<span>{{ $ts._wordMute.muteWords }}</span>
+					<template #desc>{{ $ts._wordMute.muteWordsDescription }}<br>{{ $ts._wordMute.muteWordsDescription2 }}</template>
+				</FormTextarea>
+				<FormKeyValueView v-if="hardWordMutedNotesCount != null">
+					<template #key>{{ $ts._wordMute.mutedNotes }}</template>
+					<template #value>{{ number(hardWordMutedNotesCount) }}</template>
+				</FormKeyValueView>
 			</div>
 		</div>
-		<div class="_footer">
-			<MkButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-		</div>
-	</div>
+		<FormButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+	</FormBase>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCommentSlash, faSave } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormBase from '@/components/form/base.vue';
+import FormKeyValueView from '@/components/form/key-value-view.vue';
+import FormButton from '@/components/form/button.vue';
 import MkTab from '@/components/tab.vue';
 import MkInfo from '@/components/ui/info.vue';
 import * as os from '@/os';
+import number from '@/filters/number';
 
 export default defineComponent({
 	components: {
-		MkButton,
-		MkTextarea,
+		FormBase,
+		FormButton,
+		FormTextarea,
+		FormKeyValueView,
 		MkTab,
 		MkInfo,
 	},
@@ -48,10 +57,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('wordMute'),
-					icon: faCommentSlash
-				}]
+				title: this.$ts.wordMute,
+				icon: faCommentSlash
 			},
 			tab: 'soft',
 			softMutedWords: '',
@@ -78,8 +85,8 @@ export default defineComponent({
 	},
 
 	async created() {
-		this.softMutedWords = this.$store.state.settings.mutedWords.map(x => x.join(' ')).join('\n');
-		this.hardMutedWords = this.$store.state.i.mutedWords.map(x => x.join(' ')).join('\n');
+		this.softMutedWords = this.$store.state.mutedWords.map(x => x.join(' ')).join('\n');
+		this.hardMutedWords = this.$i.mutedWords.map(x => x.join(' ')).join('\n');
 
 		this.hardWordMutedNotesCount = (await os.api('i/get-word-muted-notes-count', {})).count;
 	},
@@ -90,12 +97,14 @@ export default defineComponent({
 
 	methods: {
 		async save() {
-			this.$store.dispatch('settings/set', { key: 'mutedWords', value: this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')) });
+			this.$store.set('mutedWords', this.softMutedWords.trim().split('\n').map(x => x.trim().split(' ')));
 			await os.api('i/update', {
 				mutedWords: this.hardMutedWords.trim().split('\n').map(x => x.trim().split(' ')),
 			});
 			this.changed = false;
 		},
+
+		number
 	}
 });
 </script>

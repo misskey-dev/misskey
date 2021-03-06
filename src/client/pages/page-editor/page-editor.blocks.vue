@@ -1,6 +1,8 @@
 <template>
-<XDraggable tag="div" :list="blocks" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
-	<component v-for="block in blocks" :is="'x-' + block.type" :value="block" @update:value="updateItem" @remove="() => removeItem(block)" :key="block.id" :hpml="hpml"/>
+<XDraggable tag="div" v-model="blocks" item-key="id" handle=".drag-handle" :group="{ name: 'blocks' }" animation="150" swap-threshold="0.5">
+	<template #item="{element}">
+		<component :is="'x-' + element.type" :value="element" @update:value="updateItem" @remove="() => removeItem(element)" :hpml="hpml"/>
+	</template>
 </XDraggable>
 </template>
 
@@ -20,12 +22,13 @@ import XPost from './els/page-editor.el.post.vue';
 import XCounter from './els/page-editor.el.counter.vue';
 import XRadioButton from './els/page-editor.el.radio-button.vue';
 import XCanvas from './els/page-editor.el.canvas.vue';
+import XNote from './els/page-editor.el.note.vue';
 import * as os from '@/os';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
-		XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
+		XSection, XText, XImage, XButton, XTextarea, XTextInput, XTextareaInput, XNumberInput, XSwitch, XIf, XPost, XCounter, XRadioButton, XCanvas, XNote
 	},
 
 	props: {
@@ -38,9 +41,16 @@ export default defineComponent({
 		},
 	},
 
+	emits: ['update:value'],
+
 	computed: {
-		blocks() {
-			return this.value;
+		blocks: {
+			get() {
+				return this.value;
+			},
+			set(value) {
+				this.$emit('update:value', value);
+			}
 		}
 	},
 
@@ -56,6 +66,7 @@ export default defineComponent({
 		},
 
 		removeItem(el) {
+			console.log(el);
 			const i = this.blocks.findIndex(x => x.id === el.id);
 			const newValue = [
 				...this.blocks.slice(0, i),

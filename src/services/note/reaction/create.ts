@@ -1,13 +1,11 @@
 import { publishNoteStream } from '../../stream';
-import watch from '../watch';
 import { renderLike } from '../../../remote/activitypub/renderer/like';
 import DeliverManager from '../../../remote/activitypub/deliver-manager';
 import { renderActivity } from '../../../remote/activitypub/renderer';
-import { IdentifiableError } from '../../../misc/identifiable-error';
 import { toDbReaction, decodeReaction } from '../../../misc/reaction-lib';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
-import { NoteReactions, Users, NoteWatchings, Notes, UserProfiles, Emojis } from '../../../models';
+import { NoteReactions, Users, NoteWatchings, Notes, Emojis } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
 import { genId } from '../../../misc/gen-id';
@@ -100,13 +98,6 @@ export default async (user: User, note: Note, reaction?: string) => {
 			});
 		}
 	});
-
-	const profile = await UserProfiles.findOne(user.id);
-
-	// ユーザーがローカルユーザーかつ自動ウォッチ設定がオンならばこの投稿をWatchする
-	if (Users.isLocalUser(user) && profile!.autoWatch) {
-		watch(user.id, note);
-	}
 
 	//#region 配信
 	if (Users.isLocalUser(user) && !note.localOnly) {

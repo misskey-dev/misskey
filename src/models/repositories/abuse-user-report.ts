@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import { AbuseUserReport } from '../entities/abuse-user-report';
-import { ensure } from '../../prelude/ensure';
 import { awaitAll } from '../../prelude/await-all';
 
 @EntityRepository(AbuseUserReport)
@@ -9,7 +8,7 @@ export class AbuseUserReportRepository extends Repository<AbuseUserReport> {
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
 	) {
-		const report = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const report = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
 			id: report.id,

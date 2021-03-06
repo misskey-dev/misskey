@@ -13,6 +13,12 @@ export default function(app: App) {
 	app.component('MkwDigitalClock', defineAsyncComponent(() => import('./digital-clock.vue')));
 	app.component('MkwFederation', defineAsyncComponent(() => import('./federation.vue')));
 	app.component('MkwPostForm', defineAsyncComponent(() => import('./post-form.vue')));
+	app.component('MkwSlideshow', defineAsyncComponent(() => import('./slideshow.vue')));
+	app.component('MkwServerMetric', defineAsyncComponent(() => import('./server-metric/index.vue')));
+	app.component('MkwOnlineUsers', defineAsyncComponent(() => import('./online-users.vue')));
+	app.component('MkwJobQueue', defineAsyncComponent(() => import('./job-queue.vue')));
+	app.component('MkwButton', defineAsyncComponent(() => import('./button.vue')));
+	app.component('MkwAiscript', defineAsyncComponent(() => import('./aiscript.vue')));
 }
 
 export const widgets = [
@@ -28,4 +34,10 @@ export const widgets = [
 	'digitalClock',
 	'federation',
 	'postForm',
+	'slideshow',
+	'serverMetric',
+	'onlineUsers',
+	'jobQueue',
+	'button',
+	'aiscript',
 ];

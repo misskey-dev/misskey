@@ -334,7 +334,7 @@ export default async function(
 
 	//#region Check drive usage
 	if (user && !isLink) {
-		const usage = await DriveFiles.clacDriveUsageOf(user);
+		const usage = await DriveFiles.calcDriveUsageOf(user);
 
 		const instance = await fetchMeta();
 		const driveCapacity = 1024 * 1024 * (Users.isLocalUser(user) ? instance.localDriveCapacityMb : instance.remoteDriveCapacityMb);

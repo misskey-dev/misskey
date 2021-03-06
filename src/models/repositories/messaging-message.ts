@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
 import { Users, DriveFiles, UserGroups } from '..';
-import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 
 export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSchema>;
@@ -25,7 +24,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 			populateGroup: true,
 		};
 
-		const message = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const message = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return {
 			id: message.id,

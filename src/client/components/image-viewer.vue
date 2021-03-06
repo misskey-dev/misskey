@@ -41,10 +41,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xubzgfga {
-	max-width: 1024px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 
 	> header,
 	> footer {
+		align-self: center;
 		display: inline-block;
 		padding: 6px 9px;
 		font-size: 90%;
@@ -60,7 +63,10 @@ export default defineComponent({
 
 	> img {
 		display: block;
-		max-width: 100%;
+		flex: 1;
+		min-height: 0;
+		object-fit: contain;
+		width: 100%;
 		cursor: zoom-out;
 		image-orientation: from-image;
 	}

@@ -1,35 +1,58 @@
 <template>
-<div class="_section">
-	<div class="_card">
-		<div class="_title"><Fa :icon="faLaugh"/> {{ $t('reaction') }}</div>
-		<div class="_content">
-			<MkInput v-model:value="reactions" style="font-family: 'Segoe UI Emoji', 'Noto Color Emoji', Roboto, HelveticaNeue, Arial, sans-serif">
-				{{ $t('reaction') }}<template #desc>{{ $t('reactionSettingDescription') }} <button class="_textButton" @click="chooseEmoji">{{ $t('chooseEmoji') }}</button></template>
-			</MkInput>
-			<MkButton inline @click="setDefault"><Fa :icon="faUndo"/> {{ $t('default') }}</MkButton>
+<FormBase>
+	<div class="_formItem">
+		<div class="_formLabel">{{ $ts.reactionSettingDescription }}</div>
+		<div class="_formPanel">
+			<XDraggable class="zoaiodol" v-model="reactions" :item-key="item => item" animation="150" delay="100" delay-on-touch-only="true">
+				<template #item="{element}">
+					<button class="_button item" @click="remove(element, $event)">
+						<MkEmoji :emoji="element" :normal="true"/>
+					</button>
+				</template>
+				<template #footer>
+					<button class="_button add" @click="chooseEmoji"><Fa :icon="faPlus"/></button>
+				</template>
+			</XDraggable>
 		</div>
-		<div class="_footer">
-			<MkButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-			<MkButton inline @click="preview"><Fa :icon="faEye"/> {{ $t('preview') }}</MkButton>
-		</div>
+		<div class="_formCaption">{{ $ts.reactionSettingDescription2 }} <button class="_textButton" @click="preview">{{ $ts.preview }}</button></div>
 	</div>
-</div>
+
+	<FormRadios v-model="reactionPickerWidth">
+		<template #desc>{{ $ts.width }}</template>
+		<option :value="1">{{ $ts.small }}</option>
+		<option :value="2">{{ $ts.medium }}</option>
+		<option :value="3">{{ $ts.large }}</option>
+	</FormRadios>
+	<FormRadios v-model="reactionPickerHeight">
+		<template #desc>{{ $ts.height }}</template>
+		<option :value="1">{{ $ts.small }}</option>
+		<option :value="2">{{ $ts.medium }}</option>
+		<option :value="3">{{ $ts.large }}</option>
+	</FormRadios>
+	<FormButton @click="preview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
+	<FormButton danger @click="setDefault"><Fa :icon="faUndo"/> {{ $ts.default }}</FormButton>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
-import { faUndo } from '@fortawesome/free-solid-svg-icons';
-import MkInput from '@/components/ui/input.vue';
-import MkButton from '@/components/ui/button.vue';
-import { emojiRegexWithCustom } from '../../../misc/emoji-regex';
-import { defaultSettings } from '@/store';
+import { faUndo, faPlus } from '@fortawesome/free-solid-svg-icons';
+import XDraggable from 'vuedraggable';
+import FormInput from '@/components/form/input.vue';
+import FormRadios from '@/components/form/radios.vue';
+import FormBase from '@/components/form/base.vue';
+import FormButton from '@/components/form/button.vue';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
-		MkInput,
-		MkButton,
+		FormInput,
+		FormButton,
+		FormBase,
+		FormRadios,
+		XDraggable,
 	},
 
 	emits: ['info'],
@@ -37,27 +60,27 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('reaction'),
-					icon: faLaugh
-				}]
+				title: this.$ts.reaction,
+				icon: faLaugh,
+				action: {
+					icon: faEye,
+					handler: this.preview
+				}
 			},
-			reactions: this.$store.state.settings.reactions.join(''),
-			changed: false,
-			faLaugh, faSave, faEye, faUndo
+			reactions: JSON.parse(JSON.stringify(this.$store.state.reactions)),
+			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
 
 	computed: {
-		splited(): any {
-			return this.reactions.match(emojiRegexWithCustom);
-		},
+		reactionPickerWidth: defaultStore.makeGetterSetter('reactionPickerWidth'),
+		reactionPickerHeight: defaultStore.makeGetterSetter('reactionPickerHeight'),
 	},
 
 	watch: {
 		reactions: {
 			handler() {
-				this.changed = true;
+				this.save();
 			},
 			deep: true
 		}
@@ -69,27 +92,62 @@ export default defineComponent({
 
 	methods: {
 		save() {
-			this.$store.dispatch('settings/set', { key: 'reactions', value: this.splited });
-			this.changed = false;
+			this.$store.set('reactions', this.reactions);
 		},
 
-		async preview(ev) {
-			os.popup(await import('@/components/reaction-picker.vue'), {
-				reactions: this.splited,
-				showFocus: false,
+		remove(reaction, ev) {
+			os.modalMenu([{
+				text: this.$ts.remove,
+				action: () => {
+					this.reactions = this.reactions.filter(x => x !== reaction)
+				}
+			}], ev.currentTarget || ev.target);
+		},
+
+		preview(ev) {
+			os.popup(import('@/components/emoji-picker-dialog.vue'), {
+				asReactionPicker: true,
 				src: ev.currentTarget || ev.target,
 			}, {}, 'closed');
 		},
 
-		setDefault() {
-			this.reactions = defaultSettings.reactions.join('');
+		async setDefault() {
+			const { canceled } = await os.dialog({
+				type: 'warning',
+				text: this.$ts.resetAreYouSure,
+				showCancelButton: true
+			});
+			if (canceled) return;
+
+			this.reactions = JSON.parse(JSON.stringify(this.$store.def.reactions.default));
 		},
 
-		async chooseEmoji(ev) {
-			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
-				this.reactions += emoji;
+		chooseEmoji(ev) {
+			os.pickEmoji(ev.currentTarget || ev.target, {
+				showPinned: false
+			}).then(emoji => {
+				if (!this.reactions.includes(emoji)) {
+					this.reactions.push(emoji);
+				}
 			});
 		}
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.zoaiodol {
+	padding: 16px;
+
+	> .item {
+		display: inline-block;
+		padding: 8px;
+		cursor: move;
+	}
+
+	> .add {
+		display: inline-block;
+		padding: 8px;
+	}
+}
+</style>

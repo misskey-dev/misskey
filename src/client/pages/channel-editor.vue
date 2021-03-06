@@ -2,20 +2,20 @@
 <div>
 	<div class="_section">
 		<div class="_content">
-			<MkInput v-model:value="name">{{ $t('name') }}</MkInput>
+			<MkInput v-model:value="name">{{ $ts.name }}</MkInput>
 
-			<MkTextarea v-model:value="description">{{ $t('description') }}</MkTextarea>
+			<MkTextarea v-model:value="description">{{ $ts.description }}</MkTextarea>
 
 			<div class="banner">
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $t('_channel.setBanner') }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $t('_channel.removeBanner') }}</MkButton>
+					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
 		</div>
 		<div class="_footer">
-			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $t('save') : $t('create') }}</MkButton>
+			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $ts.save : $ts.create }}</MkButton>
 		</div>
 	</div>
 </div>
@@ -46,15 +46,11 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.channelId ? {
-				header: [{
-					title: this.$t('_channel.edit'),
-					icon: faSatelliteDish,
-				}],
+				title: this.$ts._channel.edit,
+				icon: faSatelliteDish,
 			} : {
-				header: [{
-					title: this.$t('_channel.create'),
-					icon: faSatelliteDish,
-				}],
+				title: this.$ts._channel.create,
+				icon: faSatelliteDish,
 			}),
 			channel: null,
 			name: null,

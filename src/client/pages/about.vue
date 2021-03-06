@@ -1,72 +1,105 @@
 <template>
-<div class="mmnnbwxb">
-	<section class="_section info" v-if="meta">
-		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $t('instanceInfo') }}</div>
-		<div class="_content" v-if="meta.description">
-			<div v-html="meta.description"></div>
-		</div>
-		<div class="_content table">
-			<div><b>{{ $t('administrator') }}</b><span>{{ meta.maintainerName }}</span></div>
-			<div><b></b><span>{{ meta.maintainerEmail }}</span></div>
-		</div>
-		<div class="_content table">
-			<div><b>Misskey</b><span>v{{ version }}</span></div>
-		</div>
-	</section>
-
-	<div class="_section">
-		<div class="_content">
-			<MkInstanceStats/>
-		</div>
+<FormBase class="mmnnbwxb" v-if="meta">
+	<div class="_formItem logo">
+		<img v-if="meta.logoImageUrl" :src="meta.logoImageUrl">
+		<span v-else class="text">{{ instanceName }}</span>
 	</div>
-</div>
+	<FormGroup>
+		<FormKeyValueView>
+			<template #key>Misskey</template>
+			<template #value>v{{ version }}</template>
+		</FormKeyValueView>
+	</FormGroup>
+
+	<FormGroup>
+		<FormKeyValueView>
+			<template #key>{{ $ts.administrator }}</template>
+			<template #value>{{ meta.maintainerName }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $ts.contact }}</template>
+			<template #value>{{ meta.maintainerEmail }}</template>
+		</FormKeyValueView>
+	</FormGroup>
+
+	<FormLink v-if="meta.tosUrl" :to="meta.tosUrl" external>{{ $ts.tos }}</FormLink>
+
+	<FormGroup v-if="stats">
+		<template #label>{{ $ts.statistics }}</template>
+		<FormKeyValueView>
+			<template #key>{{ $ts.users }}</template>
+			<template #value>{{ number(stats.originalUsersCount) }}</template>
+		</FormKeyValueView>
+		<FormKeyValueView>
+			<template #key>{{ $ts.notes }}</template>
+			<template #value>{{ number(stats.originalNotesCount) }}</template>
+		</FormKeyValueView>
+	</FormGroup>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { version } from '@/config';
-import MkInstanceStats from '@/components/instance-stats.vue';
+import { version, instanceName } from '@/config';
+import FormLink from '@/components/form/link.vue';
+import FormBase from '@/components/form/base.vue';
+import FormGroup from '@/components/form/group.vue';
+import FormKeyValueView from '@/components/form/key-value-view.vue';
 import * as os from '@/os';
+import number from '@/filters/number';
 
 export default defineComponent({
 	components: {
-		MkInstanceStats
+		FormBase,
+		FormGroup,
+		FormLink,
+		FormKeyValueView,
 	},
 
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('about'),
-					icon: faInfoCircle
-				}]
+				title: this.$ts.instanceInfo,
+				icon: faInfoCircle
 			},
 			version,
-			serverInfo: null,
+			instanceName,
+			stats: null,
 			faInfoCircle
 		}
 	},
 
 	computed: {
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 	},
+
+	created() {
+		os.api('stats').then(stats => {
+			this.stats = stats;
+		});
+	},
+
+	methods: {
+		number
+	}
 });
 </script>
 
 <style lang="scss" scoped>
 .mmnnbwxb {
-	> .info {
-		> .table {
-			> div {
-				display: flex;
+	max-width: 800px;
+	box-sizing: border-box;
+	margin: 0 auto;
 
-				> * {
-					flex: 1;
-				}
-			}
+	> .logo {
+		text-align: center;
+
+		> img {
+			vertical-align: bottom;
+			max-height: 100px;
 		}
 	}
 }

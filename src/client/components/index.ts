@@ -1,16 +1,17 @@
 import { App } from 'vue';
 
-import mfm from './misskey-flavored-markdown.vue';
-import a from './ui/a.vue';
-import acct from './acct.vue';
-import avatar from './avatar.vue';
-import emoji from './emoji.vue';
-import userName from './user-name.vue';
-import ellipsis from './ellipsis.vue';
-import time from './time.vue';
-import url from './url.vue';
-import loading from './loading.vue';
-import error from './error.vue';
+import mfm from './global/misskey-flavored-markdown.vue';
+import a from './global/a.vue';
+import acct from './global/acct.vue';
+import avatar from './global/avatar.vue';
+import emoji from './global/emoji.vue';
+import userName from './global/user-name.vue';
+import ellipsis from './global/ellipsis.vue';
+import time from './global/time.vue';
+import url from './global/url.vue';
+import i18n from './global/i18n';
+import loading from './global/loading.vue';
+import error from './global/error.vue';
 
 export default function(app: App) {
 	app.component('Mfm', mfm);
@@ -24,4 +25,5 @@ export default function(app: App) {
 	app.component('MkUrl', url);
 	app.component('MkLoading', loading);
 	app.component('MkError', error);
+	app.component('I18n', i18n);
 }

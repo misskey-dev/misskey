@@ -157,6 +157,13 @@ export class User {
 	})
 	public isModerator: boolean;
 
+	@Index()
+	@Column('boolean', {
+		default: true,
+		comment: 'Whether the User is explorable.'
+	})
+	public isExplorable: boolean;
+
 	@Column('varchar', {
 		length: 128, array: true, default: '{}'
 	})
@@ -193,6 +200,12 @@ export class User {
 		comment: 'The URI of the User. It will be null if the origin of the user is local.'
 	})
 	public uri: string | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+		comment: 'The URI of the user Follower Collection. It will be null if the origin of the user is local.'
+	})
+	public followersUri: string | null;
 
 	@Index({ unique: true })
 	@Column('char', {

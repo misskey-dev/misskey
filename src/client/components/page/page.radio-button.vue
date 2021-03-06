@@ -1,37 +1,45 @@
 <template>
 <div>
-	<div>{{ hpml.interpolate(value.title) }}</div>
-	<MkRadio v-for="x in value.values" v-model:value="v" :value="x" :key="x">{{ x }}</MkRadio>
+	<div>{{ hpml.interpolate(block.title) }}</div>
+	<MkRadio v-for="item in block.values" :modelValue="value" @update:modelValue="updateValue($event)" :value="item" :key="item">{{ item }}</MkRadio>
 </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import MkRadio from '../ui/radio.vue';
 import * as os from '@/os';
+import { Hpml } from '@/scripts/hpml/evaluator';
+import { RadioButtonVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
 		MkRadio
 	},
 	props: {
-		value: {
+		block: {
+			type: Object as PropType<RadioButtonVarBlock>,
 			required: true
 		},
 		hpml: {
+			type: Object as PropType<Hpml>,
 			required: true
 		}
 	},
-	data() {
-		return {
-			v: this.value.default,
-		};
-	},
-	watch: {
-		v() {
-			this.hpml.updatePageVar(this.value.name, this.v);
-			this.hpml.eval();
+	setup(props, ctx) {
+		const value = computed(() => {
+			return props.hpml.vars.value[props.block.name];
+		});
+
+		function updateValue(newValue: string) {
+			props.hpml.updatePageVar(props.block.name, newValue);
+			props.hpml.eval();
 		}
+
+		return {
+			value,
+			updateValue
+		};
 	}
 });
 </script>

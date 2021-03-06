@@ -3,17 +3,17 @@
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_section">
 			<div class="_content">
-				<MkButton inline @click="invite()">{{ $t('invite') }}</MkButton>
-				<MkButton inline @click="renameGroup()">{{ $t('rename') }}</MkButton>
-				<MkButton inline @click="transfer()">{{ $t('transfer') }}</MkButton>
-				<MkButton inline @click="deleteGroup()">{{ $t('delete') }}</MkButton>
+				<MkButton inline @click="invite()">{{ $ts.invite }}</MkButton>
+				<MkButton inline @click="renameGroup()">{{ $ts.rename }}</MkButton>
+				<MkButton inline @click="transfer()">{{ $ts.transfer }}</MkButton>
+				<MkButton inline @click="deleteGroup()">{{ $ts.delete }}</MkButton>
 			</div>
 		</div>
 	</transition>
 
 	<transition name="zoom" mode="out-in">
 		<div v-if="group" class="_section members _vMargin">
-			<div class="_title">{{ $t('members') }}</div>
+			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
 					<div class="user _panel" v-for="user in users" :key="user.id">
@@ -45,13 +45,18 @@ export default defineComponent({
 		MkButton
 	},
 
+	props: {
+		groupId: {
+			type: String,
+			required: true,
+		},
+	},
+
 	data() {
 		return {
 			INFO: computed(() => this.group ? {
-				header: [{
-					title: this.group.name,
-					icon: faUsers,
-				}],
+				title: this.group.name,
+				icon: faUsers,
 			} : null),
 			group: null,
 			users: [],
@@ -60,7 +65,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		$route: 'fetch'
+		groupId: 'fetch',
 	},
 
 	created() {
@@ -71,7 +76,7 @@ export default defineComponent({
 		fetch() {
 			Progress.start();
 			os.api('users/groups/show', {
-				groupId: this.$route.params.group
+				groupId: this.groupId
 			}).then(group => {
 				this.group = group;
 				os.api('users/show', {
@@ -103,7 +108,7 @@ export default defineComponent({
 
 		async renameGroup() {
 			const { canceled, result: name } = await os.dialog({
-				title: this.$t('groupName'),
+				title: this.$ts.groupName,
 				input: {
 					default: this.group.name
 				}

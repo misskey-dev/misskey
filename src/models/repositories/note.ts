@@ -2,7 +2,6 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { Emojis, Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
-import { ensure } from '../../prelude/ensure';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
@@ -92,11 +91,11 @@ export class NoteRepository extends Repository<Note> {
 		}, options);
 
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const note = typeof src === 'object' ? src : await this.findOne(src).then(ensure);
+		const note = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const host = note.userHost;
 
 		async function populatePoll() {
-			const poll = await Polls.findOne(note.id).then(ensure);
+			const poll = await Polls.findOneOrFail(note.id);
 			const choices = poll.choices.map(c => ({
 				text: c,
 				votes: poll.votes[poll.choices.indexOf(c)],
@@ -412,6 +411,64 @@ export const packedNoteSchema = {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
 			ref: 'Channel'
+		},
+		localOnly: {
+			type: 'boolean' as const,
+			optional: false as const, nullable: true as const,
+		},
+		emojis: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
+				properties: {
+					name: {
+						type: 'string' as const,
+						optional: false as const, nullable: false as const,
+					},
+					url: {
+						type: 'string' as const,
+						optional: false as const, nullable: false as const,
+					},
+				},
+			},
+		},
+		reactions: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			description: 'Key is either Unicode emoji or custom emoji, value is count of that emoji reaction.',
+		},
+		renoteCount: {
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
+		},
+		repliesCount: {
+			type: 'number' as const,
+			optional: false as const, nullable: false as const,
+		},
+		uri: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			description: 'The URI of a note. it will be null when the note is local.',
+		},
+		url: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+			description: 'The human readable url of a note. it will be null when the note is local.',
+		},
+		_featuredId_: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+		},
+		_prId_: {
+			type: 'string' as const,
+			optional: false as const, nullable: true as const,
+		},
+		myReaction: {
+			type: 'object' as const,
+			optional: true as const, nullable: true as const,
+			description: 'Key is either Unicode emoji or custom emoji, value is count of that emoji reaction.',
 		},
 	},
 };

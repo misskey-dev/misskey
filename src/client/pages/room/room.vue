@@ -8,7 +8,7 @@
 				<div v-for="k in Object.keys(selectedFurnitureInfo.props)" :key="k">
 					<p>{{ k }}</p>
 					<template v-if="selectedFurnitureInfo.props[k] === 'image'">
-						<MkButton @click="chooseImage(k, $event)">{{ $t('_rooms.chooseImage') }}</MkButton>
+						<MkButton @click="chooseImage(k, $event)">{{ $ts._rooms.chooseImage }}</MkButton>
 					</template>
 					<template v-else-if="selectedFurnitureInfo.props[k] === 'color'">
 						<input type="color" :value="selectedFurnitureProps ? selectedFurnitureProps[k] : null" @change="updateColor(k, $event)"/>
@@ -17,33 +17,33 @@
 			</template>
 		</div>
 		<div class="_content">
-			<MkButton inline @click="translate()" :primary="isTranslateMode"><Fa :icon="faArrowsAlt"/> {{ $t('_rooms.translate') }}</MkButton>
-			<MkButton inline @click="rotate()" :primary="isRotateMode"><Fa :icon="faUndo"/> {{ $t('_rooms.rotate') }}</MkButton>
-			<MkButton inline v-if="isTranslateMode || isRotateMode" @click="exit()"><Fa :icon="faBan"/> {{ $t('_rooms.exit') }}</MkButton>
+			<MkButton inline @click="translate()" :primary="isTranslateMode"><Fa :icon="faArrowsAlt"/> {{ $ts._rooms.translate }}</MkButton>
+			<MkButton inline @click="rotate()" :primary="isRotateMode"><Fa :icon="faUndo"/> {{ $ts._rooms.rotate }}</MkButton>
+			<MkButton inline v-if="isTranslateMode || isRotateMode" @click="exit()"><Fa :icon="faBan"/> {{ $ts._rooms.exit }}</MkButton>
 		</div>
 		<div class="_content">
-			<MkButton @click="remove()"><Fa :icon="faTrashAlt"/> {{ $t('_rooms.remove') }}</MkButton>
+			<MkButton @click="remove()"><Fa :icon="faTrashAlt"/> {{ $ts._rooms.remove }}</MkButton>
 		</div>
 	</div>
 
 	<div class="menu _section" v-if="isMyRoom">
 		<div class="_content">
-			<MkButton @click="add()"><Fa :icon="faBoxOpen"/> {{ $t('_rooms.addFurniture') }}</MkButton>
+			<MkButton @click="add()"><Fa :icon="faBoxOpen"/> {{ $ts._rooms.addFurniture }}</MkButton>
 		</div>
 		<div class="_content">
 			<MkSelect :value="roomType" @update:value="updateRoomType($event)">
-				<template #label>{{ $t('_rooms.roomType') }}</template>
-				<option value="default">{{ $t('_rooms._roomType.default') }}</option>
-				<option value="washitsu">{{ $t('_rooms._roomType.washitsu') }}</option>
+				<template #label>{{ $ts._rooms.roomType }}</template>
+				<option value="default">{{ $ts._rooms._roomType.default }}</option>
+				<option value="washitsu">{{ $ts._rooms._roomType.washitsu }}</option>
 			</MkSelect>
 			<label v-if="roomType === 'default'">
-				<span>{{ $t('_rooms.carpetColor') }}</span>
+				<span>{{ $ts._rooms.carpetColor }}</span>
 				<input type="color" :value="carpetColor" @change="updateCarpetColor($event)"/>
 			</label>
 		</div>
 		<div class="_content">
-			<MkButton inline :disabled="!changed" primary @click="save()"><Fa :icon="faSave"/> {{ $t('save') }}</MkButton>
-			<MkButton inline @click="clear()"><Fa :icon="faBroom"/> {{ $t('_rooms.clear') }}</MkButton>
+			<MkButton inline :disabled="!changed" primary @click="save()"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="clear()"><Fa :icon="faBroom"/> {{ $ts._rooms.clear }}</MkButton>
 		</div>
 	</div>
 </div>
@@ -62,6 +62,7 @@ import MkButton from '@/components/ui/button.vue';
 import MkSelect from '@/components/ui/select.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
 
 let room: Room;
 
@@ -82,10 +83,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.user ? {
-				header: [{
-					title: this.$t('room'),
-					avatar: this.user,
-				}],
+				title: this.$ts.room,
+				avatar: this.user,
 			} : null),
 			user: null,
 			objectSelected: false,
@@ -109,7 +108,7 @@ export default defineComponent({
 			...parseAcct(this.acct)
 		});
 
-		this.isMyRoom = this.$store.getters.isSignedIn && (this.$store.state.i.id === this.user.id);
+		this.isMyRoom = this.$i && (this.$i.id === this.user.id);
 
 		const roomInfo = await os.api('room/show', {
 			userId: this.user.id
@@ -119,7 +118,7 @@ export default defineComponent({
 		this.carpetColor = roomInfo.carpetColor;
 
 		room = new Room(this.user, this.isMyRoom, roomInfo, this.$el, {
-			graphicsQuality: this.$store.state.device.roomGraphicsQuality,
+			graphicsQuality: ColdDeviceStorage.get('roomGraphicsQuality'),
 			onChangeSelect: obj => {
 				this.objectSelected = obj != null;
 				if (obj) {
@@ -134,7 +133,7 @@ export default defineComponent({
 					});
 				}
 			},
-			useOrthographicCamera: this.$store.state.device.roomUseOrthographicCamera
+			useOrthographicCamera: ColdDeviceStorage.get('roomUseOrthographicCamera'),
 		});
 	},
 
@@ -142,7 +141,7 @@ export default defineComponent({
 		if (this.changed) {
 			os.dialog({
 				type: 'warning',
-				text: this.$t('leaveConfirm'),
+				text: this.$ts.leaveConfirm,
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) {
@@ -172,7 +171,7 @@ export default defineComponent({
 		async add() {
 			const { canceled, result: id } = await os.dialog({
 				type: null,
-				title: this.$t('_rooms.addFurniture'),
+				title: this.$ts._rooms.addFurniture,
 				select: {
 					items: storeItems.map(item => ({
 						value: item.id, text: this.$t('_rooms._furnitures.' + item.id)
@@ -209,7 +208,7 @@ export default defineComponent({
 		clear() {
 			os.dialog({
 				type: 'warning',
-				text: this.$t('_rooms.clearConfirm'),
+				text: this.$ts._rooms.clearConfirm,
 				showCancelButton: true
 			}).then(({ canceled }) => {
 				if (canceled) return;

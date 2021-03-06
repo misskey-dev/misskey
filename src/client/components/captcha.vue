@@ -1,6 +1,6 @@
 <template>
 <div>
-	<span v-if="!available">{{ $t('waiting') }}<MkEllipsis/></span>
+	<span v-if="!available">{{ $ts.waiting }}<MkEllipsis/></span>
 	<div ref="captcha"></div>
 </div>
 </template>
@@ -28,7 +28,6 @@ declare global {
 	interface Window extends CaptchaContainer {
 	}
 }
-import * as os from '@/os';
 
 export default defineComponent({
 	props: {
@@ -58,7 +57,7 @@ export default defineComponent({
 		src() {
 			const endpoint = ({
 				hcaptcha: 'https://hcaptcha.com/1',
-				grecaptcha: 'https://www.google.com/recaptcha',
+				grecaptcha: 'https://www.recaptcha.net/recaptcha',
 			} as Record<PropertyKey, unknown>)[this.provider];
 
 			return `${typeof endpoint == 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
@@ -101,7 +100,7 @@ export default defineComponent({
 			if (this.captcha.render && this.$refs.captcha instanceof Element) {
 				this.captcha.render(this.$refs.captcha, {
 					sitekey: this.sitekey,
-					theme: this.$store.state.device.darkMode ? 'dark' : 'light',
+					theme: this.$store.state.darkMode ? 'dark' : 'light',
 					callback: this.callback,
 					'expired-callback': this.callback,
 					'error-callback': this.callback,

@@ -1,7 +1,7 @@
 <template>
-<div>
+<div class="lznhrdub">
 	<div class="_section">
-		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $t('searchUser') }}</span></MkInput>
+		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.searchUser }}</span></MkInput>
 
 		<XUserList v-if="query" class="_vMargin" :pagination="searchPagination" ref="search"/>
 
@@ -12,30 +12,30 @@
 
 		<template v-if="tag == null">
 			<MkFolder class="_vMargin" persist-key="explore-pinned-users">
-				<template #header><Fa :icon="faBookmark" fixed-width style="margin-right: 0.5em;"/>{{ $t('pinnedUsers') }}</template>
+				<template #header><Fa :icon="faBookmark" fixed-width style="margin-right: 0.5em;"/>{{ $ts.pinnedUsers }}</template>
 				<XUserList :pagination="pinnedUsers"/>
 			</MkFolder>
 			<MkFolder class="_vMargin" persist-key="explore-popular-users">
-				<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
+				<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsers"/>
 			</MkFolder>
 			<MkFolder class="_vMargin" persist-key="explore-recently-updated-users">
-				<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
+				<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFolder>
 			<MkFolder class="_vMargin" persist-key="explore-recently-registered-users">
-				<template #header><Fa :icon="faPlus" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyRegisteredUsers') }}</template>
+				<template #header><Fa :icon="faPlus" fixed-width style="margin-right: 0.5em;"/>{{ $ts.recentlyRegisteredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsers"/>
 			</MkFolder>
 		</template>
 	</div>
 	<div class="_section">
 		<div class="localfedi7 _panel _vMargin" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
-			<header><span>{{ $t('exploreFediverse') }}</span></header>
+			<header><span>{{ $ts.exploreFediverse }}</span></header>
 		</div>
 
 		<MkFolder :body-togglable="true" :expanded="false" ref="tags" class="_vMargin">
-			<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularTags') }}</template>
+			<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ $ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
 				<MkA v-for="tag in tagsLocal" :to="`/explore/tags/${tag.tag}`" :key="'local:' + tag.tag" class="local">{{ tag.tag }}</MkA>
@@ -50,15 +50,15 @@
 
 		<template v-if="tag == null">
 			<MkFolder class="_vMargin">
-				<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $t('popularUsers') }}</template>
+				<template #header><Fa :icon="faChartLine" fixed-width style="margin-right: 0.5em;"/>{{ $ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsersF"/>
 			</MkFolder>
 			<MkFolder class="_vMargin">
-				<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyUpdatedUsers') }}</template>
+				<template #header><Fa :icon="faCommentAlt" fixed-width style="margin-right: 0.5em;"/>{{ $ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsersF"/>
 			</MkFolder>
 			<MkFolder class="_vMargin">
-				<template #header><Fa :icon="faRocket" fixed-width style="margin-right: 0.5em;"/>{{ $t('recentlyDiscoveredUsers') }}</template>
+				<template #header><Fa :icon="faRocket" fixed-width style="margin-right: 0.5em;"/>{{ $ts.recentlyDiscoveredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsersF"/>
 			</MkFolder>
 		</template>
@@ -93,10 +93,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('explore'),
-					icon: faHashtag
-				}],
+				title: this.$ts.explore,
+				icon: faHashtag
 			},
 			pinnedUsers: { endpoint: 'pinned-users' },
 			popularUsers: { endpoint: 'users', limit: 10, noPaging: true, params: {
@@ -144,7 +142,7 @@ export default defineComponent({
 
 	computed: {
 		meta() {
-			return this.$store.state.instance.meta;
+			return this.$instance;
 		},
 		tagUsers(): any {
 			return {
@@ -188,6 +186,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.lznhrdub {
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
 .localfedi7 {
 	color: #fff;
 	padding: 16px;

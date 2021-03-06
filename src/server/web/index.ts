@@ -17,10 +17,9 @@ import packFeed from './feed';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '../../config';
-import { Users, Notes, Emojis, UserProfiles, Pages, Channels } from '../../models';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips } from '../../models';
 import parseAcct from '../../misc/acct/parse';
-import getNoteSummary from '../../misc/get-note-summary';
-import { ensure } from '../../prelude/ensure';
+import { getNoteSummary } from '../../misc/get-note-summary';
 import { getConnection } from 'typeorm';
 import redis from '../../db/redis';
 import locales = require('../../../locales');
@@ -29,7 +28,8 @@ const markdown = MarkdownIt({
 	html: true
 });
 
-const client = `${__dirname}/../../client/`;
+const staticAssets = `${__dirname}/../../../assets/`;
+const assets = `${__dirname}/../../assets/`;
 
 // Init app
 const app = new Koa();
@@ -58,24 +58,31 @@ const router = new Router();
 
 //#region static assets
 
+router.get('/static-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
+		root: staticAssets,
+		maxage: ms('7 days'),
+	});
+});
+
 router.get('/assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path, {
-		root: client,
+	await send(ctx as any, ctx.path.replace('/assets/', ''), {
+		root: assets,
 		maxage: ms('7 days'),
 	});
 });
 
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
-	await send(ctx as any, '/assets/apple-touch-icon.png', {
-		root: client
+	await send(ctx as any, '/apple-touch-icon.png', {
+		root: assets
 	});
 });
 
 // ServiceWorker
-router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
-	await send(ctx as any, `/assets/sw.${ctx.params[0]}.js`, {
-		root: client
+router.get('/sw.js', async ctx => {
+	await send(ctx as any, `/sw.${config.version}.js`, {
+		root: assets
 	});
 });
 
@@ -83,8 +90,8 @@ router.get(/^\/sw\.(.+?)\.js$/, async ctx => {
 router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
-	await send(ctx as any, '/assets/robots.txt', {
-		root: client
+	await send(ctx as any, '/robots.txt', {
+		root: assets
 	});
 });
 
@@ -92,8 +99,8 @@ router.get('/robots.txt', async ctx => {
 
 // Docs
 router.get('/api-doc', async ctx => {
-	await send(ctx as any, '/assets/redoc.html', {
-		root: client
+	await send(ctx as any, '/redoc.html', {
+		root: assets
 	});
 });
 
@@ -110,7 +117,7 @@ router.get('/docs.json', async ctx => {
 		ctx.body = [];
 		return;
 	}
-	const paths = glob.sync(__dirname + `/../../../src/docs/*.${lang}.md`);
+	const paths = glob.sync(__dirname + `/../../../src/docs/${lang}/*.md`);
 	const docs: { path: string; title: string; }[] = [];
 	for (const path of paths) {
 		const md = fs.readFileSync(path, { encoding: 'utf8' });
@@ -199,7 +206,7 @@ router.get(['/@:user', '/@:user/:sub'], async (ctx, next) => {
 	});
 
 	if (user != null) {
-		const profile = await UserProfiles.findOne(user.id).then(ensure);
+		const profile = await UserProfiles.findOneOrFail(user.id);
 		const meta = await fetchMeta();
 		const me = profile.fields
 			? profile.fields
@@ -242,9 +249,11 @@ router.get('/notes/:note', async ctx => {
 
 	if (note) {
 		const _note = await Notes.pack(note);
+		const profile = await UserProfiles.findOneOrFail(note.userId);
 		const meta = await fetchMeta();
 		await ctx.render('note', {
 			note: _note,
+			profile,
 			// TODO: Let locale changeable by instance setting
 			summary: getNoteSummary(_note, locales['ja-JP']),
 			instanceName: meta.name || 'Misskey',
@@ -280,9 +289,11 @@ router.get('/@:user/pages/:page', async ctx => {
 
 	if (page) {
 		const _page = await Pages.pack(page);
+		const profile = await UserProfiles.findOneOrFail(page.userId);
 		const meta = await fetchMeta();
 		await ctx.render('page', {
 			page: _page,
+			profile,
 			instanceName: meta.name || 'Misskey'
 		});
 
@@ -291,6 +302,31 @@ router.get('/@:user/pages/:page', async ctx => {
 		} else {
 			ctx.set('Cache-Control', 'private, max-age=0, must-revalidate');
 		}
+
+		return;
+	}
+
+	ctx.status = 404;
+});
+
+// Clip
+// TODO: 非publicなclipのハンドリング
+router.get('/clips/:clip', async ctx => {
+	const clip = await Clips.findOne({
+		id: ctx.params.clip,
+	});
+
+	if (clip) {
+		const _clip = await Clips.pack(clip);
+		const profile = await UserProfiles.findOneOrFail(clip.userId);
+		const meta = await fetchMeta();
+		await ctx.render('clip', {
+			clip: _clip,
+			profile,
+			instanceName: meta.name || 'Misskey'
+		});
+
+		ctx.set('Cache-Control', 'public, max-age=180');
 
 		return;
 	}
@@ -345,6 +381,18 @@ router.get('/info', async ctx => {
 		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 		originalUsersCount: await Users.count({ host: null }),
 		originalNotesCount: await Notes.count({ userHost: null })
+	});
+});
+
+router.get('/bios', async ctx => {
+	await ctx.render('bios', {
+		version: config.version,
+	});
+});
+
+router.get('/cli', async ctx => {
+	await ctx.render('cli', {
+		version: config.version,
 	});
 });
 

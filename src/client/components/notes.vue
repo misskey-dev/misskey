@@ -2,27 +2,27 @@
 <div class="_list_">
 	<div class="_fullinfo" v-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-		<div>{{ $t('noNotes') }}</div>
+		<div>{{ $ts.noNotes }}</div>
 	</div>
 
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_loadMore" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<MkButton style="margin: 0 auto;" @click="fetchMoreFeature" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
-		</button>
+		</MkButton>
 	</div>
 
 	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<XNote :note="note" @update:note="updated(note, $event)" :detail="detail" :key="note._featuredId_ || note._prId_ || note.id"/>
+		<XNote :note="note" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_loadMore" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<MkButton style="margin: 0 auto;" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
-		</button>
+		</MkButton>
 	</div>
 </div>
 </template>
@@ -32,10 +32,11 @@ import { defineComponent } from 'vue';
 import paging from '@/scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
+import MkButton from '@/components/ui/button.vue';
 
 export default defineComponent({
 	components: {
-		XNote, XList,
+		XNote, XList, MkButton,
 	},
 
 	mixins: [
@@ -53,12 +54,6 @@ export default defineComponent({
 	props: {
 		pagination: {
 			required: true
-		},
-
-		detail: {
-			type: Boolean,
-			required: false,
-			default: false
 		},
 
 		prop: {

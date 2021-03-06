@@ -8,17 +8,17 @@
 	@dragend="onDragend"
 	:title="title"
 >
-	<div class="label" v-if="$store.state.i.avatarId == file.id">
+	<div class="label" v-if="$i.avatarId == file.id">
 		<img src="/assets/label.svg"/>
-		<p>{{ $t('avatar') }}</p>
+		<p>{{ $ts.avatar }}</p>
 	</div>
-	<div class="label" v-if="$store.state.i.bannerId == file.id">
+	<div class="label" v-if="$i.bannerId == file.id">
 		<img src="/assets/label.svg"/>
-		<p>{{ $t('banner') }}</p>
+		<p>{{ $ts.banner }}</p>
 	</div>
 	<div class="label red" v-if="file.isSensitive">
 		<img src="/assets/label-red.svg"/>
-		<p>{{ $t('nsfw') }}</p>
+		<p>{{ $ts.nsfw }}</p>
 	</div>
 
 	<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
@@ -36,7 +36,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
-import bytes from '../filters/bytes';
+import bytes from '@/filters/bytes';
 import * as os from '@/os';
 
 export default defineComponent({
@@ -82,26 +82,26 @@ export default defineComponent({
 	methods: {
 		getMenu() {
 			return [{
-				text: this.$t('rename'),
+				text: this.$ts.rename,
 				icon: faICursor,
 				action: this.rename
 			}, {
-				text: this.file.isSensitive ? this.$t('unmarkAsSensitive') : this.$t('markAsSensitive'),
+				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
 				icon: this.file.isSensitive ? faEye : faEyeSlash,
 				action: this.toggleSensitive
 			}, null, {
-				text: this.$t('copyUrl'),
+				text: this.$ts.copyUrl,
 				icon: faLink,
 				action: this.copyUrl
 			}, {
 				type: 'a',
 				href: this.file.url,
 				target: '_blank',
-				text: this.$t('download'),
+				text: this.$ts.download,
 				icon: faDownload,
 				download: this.file.name
 			}, null, {
-				text: this.$t('delete'),
+				text: this.$ts.delete,
 				icon: faTrashAlt,
 				danger: true,
 				action: this.deleteFile
@@ -137,9 +137,9 @@ export default defineComponent({
 
 		rename() {
 			os.dialog({
-				title: this.$t('renameFile'),
+				title: this.$ts.renameFile,
 				input: {
-					placeholder: this.$t('inputNewFileName'),
+					placeholder: this.$ts.inputNewFileName,
 					default: this.file.name,
 					allowEmpty: false
 				}

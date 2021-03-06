@@ -18,10 +18,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('mentions'),
-					icon: faAt
-				}],
+				title: this.$ts.mentions,
+				icon: faAt
 			},
 			pagination: {
 				endpoint: 'notes/mentions',

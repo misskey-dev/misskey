@@ -27,5 +27,5 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	await sendEmail(ps.to, ps.subject, ps.text);
+	await sendEmail(ps.to, ps.subject, ps.text, ps.text);
 });

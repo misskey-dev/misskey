@@ -2,6 +2,30 @@ import * as tinycolor from 'tinycolor2';
 import Chart from 'chart.js';
 import { Hpml } from './evaluator';
 import { values, utils } from '@syuilo/aiscript';
+import { Fn, HpmlScope } from '.';
+import { Expr } from './expr';
+import * as seedrandom from 'seedrandom';
+
+import {
+	faShareAlt,
+	faPlus,
+	faMinus,
+	faTimes,
+	faDivide,
+	faQuoteRight,
+	faEquals,
+	faGreaterThan,
+	faLessThan,
+	faGreaterThanEqual,
+	faLessThanEqual,
+	faNotEqual,
+	faDice,
+	faExchangeAlt,
+	faRecycle,
+	faIndent,
+	faCalculator,
+} from '@fortawesome/free-solid-svg-icons';
+import { faFlag } from '@fortawesome/free-regular-svg-icons';
 
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
 Chart.pluginService.register({
@@ -16,10 +40,10 @@ Chart.pluginService.register({
 	}
 });
 
-export function initLib(hpml: Hpml) {
+export function initAiLib(hpml: Hpml) {
 	return {
 		'MkPages:updated': values.FN_NATIVE(([callback]) => {
-			hpml.pageVarUpdatedCallback = callback;
+			hpml.pageVarUpdatedCallback = (callback as values.VFn);
 		}),
 		'MkPages:get_canvas': values.FN_NATIVE(([id]) => {
 			utils.assertString(id);
@@ -121,4 +145,120 @@ export function initLib(hpml: Hpml) {
 			});
 		})
 	};
+}
+
+export const funcDefs: Record<string, { in: any[]; out: any; category: string; icon: any; }> = {
+	if:              { in: ['boolean', 0, 0],              out: 0,             category: 'flow',       icon: faShareAlt, },
+	for:             { in: ['number', 'function'],         out: null,          category: 'flow',       icon: faRecycle, },
+	not:             { in: ['boolean'],                    out: 'boolean',     category: 'logical',    icon: faFlag, },
+	or:              { in: ['boolean', 'boolean'],         out: 'boolean',     category: 'logical',    icon: faFlag, },
+	and:             { in: ['boolean', 'boolean'],         out: 'boolean',     category: 'logical',    icon: faFlag, },
+	add:             { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faPlus, },
+	subtract:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faMinus, },
+	multiply:        { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faTimes, },
+	divide:          { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
+	mod:             { in: ['number', 'number'],           out: 'number',      category: 'operation',  icon: faDivide, },
+	round:           { in: ['number'],                     out: 'number',      category: 'operation',  icon: faCalculator, },
+	eq:              { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: faEquals, },
+	notEq:           { in: [0, 0],                         out: 'boolean',     category: 'comparison', icon: faNotEqual, },
+	gt:              { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: faGreaterThan, },
+	lt:              { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: faLessThan, },
+	gtEq:            { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: faGreaterThanEqual, },
+	ltEq:            { in: ['number', 'number'],           out: 'boolean',     category: 'comparison', icon: faLessThanEqual, },
+	strLen:          { in: ['string'],                     out: 'number',      category: 'text',       icon: faQuoteRight, },
+	strPick:         { in: ['string', 'number'],           out: 'string',      category: 'text',       icon: faQuoteRight, },
+	strReplace:      { in: ['string', 'string', 'string'], out: 'string',      category: 'text',       icon: faQuoteRight, },
+	strReverse:      { in: ['string'],                     out: 'string',      category: 'text',       icon: faQuoteRight, },
+	join:            { in: ['stringArray', 'string'],      out: 'string',      category: 'text',       icon: faQuoteRight, },
+	stringToNumber:  { in: ['string'],                     out: 'number',      category: 'convert',    icon: faExchangeAlt, },
+	numberToString:  { in: ['number'],                     out: 'string',      category: 'convert',    icon: faExchangeAlt, },
+	splitStrByLine:  { in: ['string'],                     out: 'stringArray', category: 'convert',    icon: faExchangeAlt, },
+	pick:            { in: [null, 'number'],               out: null,          category: 'list',       icon: faIndent, },
+	listLen:         { in: [null],                         out: 'number',      category: 'list',       icon: faIndent, },
+	rannum:          { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: faDice, },
+	dailyRannum:     { in: ['number', 'number'],           out: 'number',      category: 'random',     icon: faDice, },
+	seedRannum:      { in: [null, 'number', 'number'],     out: 'number',      category: 'random',     icon: faDice, },
+	random:          { in: ['number'],                     out: 'boolean',     category: 'random',     icon: faDice, },
+	dailyRandom:     { in: ['number'],                     out: 'boolean',     category: 'random',     icon: faDice, },
+	seedRandom:      { in: [null, 'number'],               out: 'boolean',     category: 'random',     icon: faDice, },
+	randomPick:      { in: [0],                            out: 0,             category: 'random',     icon: faDice, },
+	dailyRandomPick: { in: [0],                            out: 0,             category: 'random',     icon: faDice, },
+	seedRandomPick:  { in: [null, 0],                      out: 0,             category: 'random',     icon: faDice, },
+	DRPWPM:      { in: ['stringArray'],                out: 'string',      category: 'random',     icon: faDice, }, // dailyRandomPickWithProbabilityMapping
+};
+
+export function initHpmlLib(expr: Expr, scope: HpmlScope, randomSeed: string, visitor?: any) {
+
+	const date = new Date();
+	const day = `${visitor ? visitor.id : ''} ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+
+	const funcs: Record<string, Function> = {
+		not: (a: boolean) => !a,
+		or: (a: boolean, b: boolean) => a || b,
+		and: (a: boolean, b: boolean) => a && b,
+		eq: (a: any, b: any) => a === b,
+		notEq: (a: any, b: any) => a !== b,
+		gt: (a: number, b: number) => a > b,
+		lt: (a: number, b: number) => a < b,
+		gtEq: (a: number, b: number) => a >= b,
+		ltEq: (a: number, b: number) => a <= b,
+		if: (bool: boolean, a: any, b: any) => bool ? a : b,
+		for: (times: number, fn: Fn) => {
+			const result: any[] = [];
+			for (let i = 0; i < times; i++) {
+				result.push(fn.exec({
+					[fn.slots[0]]: i + 1
+				}));
+			}
+			return result;
+		},
+		add: (a: number, b: number) => a + b,
+		subtract: (a: number, b: number) => a - b,
+		multiply: (a: number, b: number) => a * b,
+		divide: (a: number, b: number) => a / b,
+		mod: (a: number, b: number) => a % b,
+		round: (a: number) => Math.round(a),
+		strLen: (a: string) => a.length,
+		strPick: (a: string, b: number) => a[b - 1],
+		strReplace: (a: string, b: string, c: string) => a.split(b).join(c),
+		strReverse: (a: string) => a.split('').reverse().join(''),
+		join: (texts: string[], separator: string) => texts.join(separator || ''),
+		stringToNumber: (a: string) => parseInt(a),
+		numberToString: (a: number) => a.toString(),
+		splitStrByLine: (a: string) => a.split('\n'),
+		pick: (list: any[], i: number) => list[i - 1],
+		listLen: (list: any[]) => list.length,
+		random: (probability: number) => Math.floor(seedrandom(`${randomSeed}:${expr.id}`)() * 100) < probability,
+		rannum: (min: number, max: number) => min + Math.floor(seedrandom(`${randomSeed}:${expr.id}`)() * (max - min + 1)),
+		randomPick: (list: any[]) => list[Math.floor(seedrandom(`${randomSeed}:${expr.id}`)() * list.length)],
+		dailyRandom: (probability: number) => Math.floor(seedrandom(`${day}:${expr.id}`)() * 100) < probability,
+		dailyRannum: (min: number, max: number) => min + Math.floor(seedrandom(`${day}:${expr.id}`)() * (max - min + 1)),
+		dailyRandomPick: (list: any[]) => list[Math.floor(seedrandom(`${day}:${expr.id}`)() * list.length)],
+		seedRandom: (seed: any, probability: number) => Math.floor(seedrandom(seed)() * 100) < probability,
+		seedRannum: (seed: any, min: number, max: number) => min + Math.floor(seedrandom(seed)() * (max - min + 1)),
+		seedRandomPick: (seed: any, list: any[]) => list[Math.floor(seedrandom(seed)() * list.length)],
+		DRPWPM: (list: string[]) => {
+			const xs: any[] = [];
+			let totalFactor = 0;
+			for (const x of list) {
+				const parts = x.split(' ');
+				const factor = parseInt(parts.pop()!, 10);
+				const text = parts.join(' ');
+				totalFactor += factor;
+				xs.push({ factor, text });
+			}
+			const r = seedrandom(`${day}:${expr.id}`)() * totalFactor;
+			let stackedFactor = 0;
+			for (const x of xs) {
+				if (r >= stackedFactor && r <= stackedFactor + x.factor) {
+					return x.text;
+				} else {
+					stackedFactor += x.factor;
+				}
+			}
+			return xs[0].text;
+		},
+	};
+
+	return funcs;
 }

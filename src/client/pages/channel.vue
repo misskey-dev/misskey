@@ -10,19 +10,19 @@
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><Fa :icon="faUsers" fixed-width/><i18n-t keypath="_channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></i18n-t></div>
-				<div><Fa :icon="faPencilAlt" fixed-width/><i18n-t keypath="_channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></i18n-t></div>
+				<div><Fa :icon="faUsers" fixed-width/><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+				<div><Fa :icon="faPencilAlt" fixed-width/><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 			</div>
 			<div class="fade"></div>
 		</div>
 		<div class="description" v-if="channel.description">
-			<Mfm :text="channel.description" :is-note="false" :i="$store.state.i"/>
+			<Mfm :text="channel.description" :is-note="false" :i="$i"/>
 		</div>
 	</div>
 
-	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed/>
+	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed v-if="$i"/>
 
-	<XTimeline class="_content _vMargin" src="channel" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline class="_content _vMargin _noGap_" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 
@@ -54,10 +54,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: computed(() => this.channel ? {
-				header: [{
-					title: this.channel.name,
-					icon: faSatelliteDish,
-				}],
+				title: this.channel.name,
+				icon: faSatelliteDish,
 			} : null),
 			channel: null,
 			showBanner: true,

@@ -15,19 +15,12 @@ export const darkTheme: Theme = require('../themes/_dark.json5');
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
 export const builtinThemes = [
-	require('../themes/l-white.json5'),
-	require('../themes/l-red.json5'),
-	require('../themes/l-green.json5'),
-	require('../themes/l-blue.json5'),
+	require('../themes/l-light.json5'),
 	require('../themes/l-apricot.json5'),
 
-	require('../themes/d-black.json5'),
-	require('../themes/d-red.json5'),
-	require('../themes/d-green.json5'),
-	require('../themes/d-blue.json5'),
+	require('../themes/d-dark.json5'),
 	require('../themes/d-persimmon.json5'),
-
-	require('../themes/d-battery-saver.json5'),
+	require('../themes/d-black.json5'),
 ] as Theme[];
 
 let timeout = null;

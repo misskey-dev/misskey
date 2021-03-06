@@ -1,73 +1,74 @@
 <template>
 <div class="_section">
 	<div class="_content">
-		<div class="gwbmwxkm _panel _vMargin">
-			<header>
-				<div class="title"><Fa :icon="faStickyNote"/> {{ readonly ? $t('_pages.readPage') : pageId ? $t('_pages.editPage') : $t('_pages.newPage') }}</div>
-				<div class="buttons">
-					<button class="_button" @click="del()" v-if="!readonly"><Fa :icon="faTrashAlt"/></button>
-					<button class="_button" @click="() => showOptions = !showOptions"><Fa :icon="faCog"/></button>
-					<button class="_button" @click="save()" v-if="!readonly"><Fa :icon="faSave"/></button>
-				</div>
-			</header>
+		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts._pages.viewPage }}</MkA>
 
-			<section>
-				<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $t('_pages.viewPage') }}</MkA>
+		<div class="buttons" style="margin: 16px 0;">
+			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $ts.duplicate }}</MkButton>
+			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+		</div>
 
+		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
+			<template #header><Fa :icon="faCog"/> {{ $ts._pages.pageSetting }}</template>
+			<div class="_section">
 				<MkInput v-model:value="title">
-					<span>{{ $t('_pages.title') }}</span>
+					<span>{{ $ts._pages.title }}</span>
 				</MkInput>
 
-				<template v-if="showOptions">
-					<MkInput v-model:value="summary">
-						<span>{{ $t('_pages.summary') }}</span>
-					</MkInput>
+				<MkInput v-model:value="summary">
+					<span>{{ $ts._pages.summary }}</span>
+				</MkInput>
 
-					<MkInput v-model:value="name">
-						<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
-						<span>{{ $t('_pages.url') }}</span>
-					</MkInput>
+				<MkInput v-model:value="name">
+					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
+					<span>{{ $ts._pages.url }}</span>
+				</MkInput>
 
-					<MkSwitch v-model:value="alignCenter">{{ $t('_pages.alignCenter') }}</MkSwitch>
+				<MkSwitch v-model:value="alignCenter">{{ $ts._pages.alignCenter }}</MkSwitch>
 
-					<MkSelect v-model:value="font">
-						<template #label>{{ $t('_pages.font') }}</template>
-						<option value="serif">{{ $t('_pages.fontSerif') }}</option>
-						<option value="sans-serif">{{ $t('_pages.fontSansSerif') }}</option>
-					</MkSelect>
+				<MkSelect v-model:value="font">
+					<template #label>{{ $ts._pages.font }}</template>
+					<option value="serif">{{ $ts._pages.fontSerif }}</option>
+					<option value="sans-serif">{{ $ts._pages.fontSansSerif }}</option>
+				</MkSelect>
 
-					<MkSwitch v-model:value="hideTitleWhenPinned">{{ $t('_pages.hideTitleWhenPinned') }}</MkSwitch>
+				<MkSwitch v-model:value="hideTitleWhenPinned">{{ $ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
-					<div class="eyeCatch">
-						<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage()"><Fa :icon="faPlus"/> {{ $t('_pages.eyeCatchingImageSet') }}</MkButton>
-						<div v-else-if="eyeCatchingImage">
-							<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name"/>
-							<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $t('_pages.eyeCatchingImageRemove') }}</MkButton>
-						</div>
+				<div class="eyeCatch">
+					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><Fa :icon="faPlus"/> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
+					<div v-else-if="eyeCatchingImage">
+						<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
+						<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
 					</div>
-				</template>
+				</div>
+			</div>
+		</MkContainer>
 
+		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
+			<template #header><Fa :icon="faStickyNote"/> {{ $ts._pages.contents }}</template>
+			<div class="_section">
 				<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
 
 				<MkButton @click="add()" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
-			</section>
-		</div>
+			</div>
+		</MkContainer>
 
 		<MkContainer :body-togglable="true" class="_vMargin">
-			<template #header><Fa :icon="faMagic"/> {{ $t('_pages.variables') }}</template>
+			<template #header><Fa :icon="faMagic"/> {{ $ts._pages.variables }}</template>
 			<div class="qmuvgica">
-				<XDraggable tag="div" class="variables" v-show="variables.length > 0" :list="variables" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
-					<XVariable v-for="variable in variables"
-						:value="variable"
-						:removable="true"
-						@update:value="v => updateVariable(v)"
-						@remove="() => removeVariable(variable)"
-						:key="variable.name"
-						:hpml="hpml"
-						:name="variable.name"
-						:title="variable.name"
-						:draggable="true"
-					/>
+				<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
+					<template #item="{element}">
+						<XVariable
+							:value="element"
+							:removable="true"
+							@remove="() => removeVariable(element)"
+							:hpml="hpml"
+							:name="element.name"
+							:title="element.name"
+							:draggable="true"
+						/>
+					</template>
 				</XDraggable>
 
 				<MkButton @click="addVariable()" class="add" v-if="!readonly"><Fa :icon="faPlus"/></MkButton>
@@ -75,7 +76,7 @@
 		</MkContainer>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
-			<template #header><Fa :icon="faCode"/> {{ $t('script') }}</template>
+			<template #header><Fa :icon="faCode"/> {{ $ts.script }}</template>
 			<div>
 				<MkTextarea class="_code" v-model:value="script"/>
 			</div>
@@ -85,14 +86,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent, defineAsyncComponent, computed } from 'vue';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
+import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt, faPencilAlt, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
@@ -108,10 +109,11 @@ import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
 import { url } from '@/config';
 import { collectPageVars } from '@/scripts/collect-page-vars';
 import * as os from '@/os';
+import { selectFile } from '@/scripts/select-file';
 
 export default defineComponent({
 	components: {
-		XDraggable: defineAsyncComponent(() => import('vue-draggable-next').then(x => x.VueDraggableNext)),
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
 		XVariable, XBlocks, MkTextarea, MkContainer, MkButton, MkSelect, MkSwitch, MkInput,
 	},
 
@@ -132,7 +134,14 @@ export default defineComponent({
 
 	data() {
 		return {
-			author: this.$store.state.i,
+			INFO: computed(() => this.initPageId ? {
+				title: this.$ts._pages.editPage,
+				icon: faPencilAlt,
+			} : {
+				title: this.$ts._pages.newPage,
+				icon: faPencilAlt,
+			}),
+			author: this.$i,
 			readonly: false,
 			page: null,
 			pageId: null,
@@ -149,9 +158,8 @@ export default defineComponent({
 			variables: [],
 			hpml: null,
 			script: '',
-			showOptions: false,
 			url,
-			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode
+			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode, faCopy
 		};
 	},
 
@@ -223,8 +231,8 @@ export default defineComponent({
 	},
 
 	methods: {
-		save() {
-			const options = {
+		getSaveOptions() {
+			return {
 				title: this.title.trim(),
 				name: this.name.trim(),
 				summary: this.summary,
@@ -236,20 +244,24 @@ export default defineComponent({
 				variables: this.variables,
 				eyeCatchingImageId: this.eyeCatchingImageId,
 			};
+		},
+
+		save() {
+			const options = this.getSaveOptions();
 
 			const onError = err => {
 				if (err.id == '3d81ceae-475f-4600-b2a8-2bc116157532') {
 					if (err.info.param == 'name') {
 						os.dialog({
 							type: 'error',
-							title: this.$t('_pages.invalidNameTitle'),
-							text: this.$t('_pages.invalidNameText')
+							title: this.$ts._pages.invalidNameTitle,
+							text: this.$ts._pages.invalidNameText
 						});
 					}
 				} else if (err.code == 'NAME_ALREADY_EXISTS') {
 					os.dialog({
 						type: 'error',
-						text: this.$t('_pages.nameAlreadyExists')
+						text: this.$ts._pages.nameAlreadyExists
 					});
 				}
 			};
@@ -261,7 +273,7 @@ export default defineComponent({
 					this.currentName = this.name.trim();
 					os.dialog({
 						type: 'success',
-						text: this.$t('_pages.updated')
+						text: this.$ts._pages.updated
 					});
 				}).catch(onError);
 			} else {
@@ -271,9 +283,9 @@ export default defineComponent({
 					this.currentName = this.name.trim();
 					os.dialog({
 						type: 'success',
-						text: this.$t('_pages.created')
+						text: this.$ts._pages.created
 					});
-					this.$router.push(`/my/pages/edit/${this.pageId}`);
+					this.$router.push(`/pages/edit/${this.pageId}`);
 				}).catch(onError);
 			}
 		},
@@ -290,17 +302,31 @@ export default defineComponent({
 				}).then(() => {
 					os.dialog({
 						type: 'success',
-						text: this.$t('_pages.deleted')
+						text: this.$ts._pages.deleted
 					});
-					this.$router.push(`/my/pages`);
+					this.$router.push(`/pages`);
 				});
+			});
+		},
+
+		duplicate() {
+			this.title = this.title + ' - copy';
+			this.name = this.name + '-copy';
+			os.api('pages/create', this.getSaveOptions()).then(page => {
+				this.pageId = page.id;
+				this.currentName = this.name.trim();
+				os.dialog({
+					type: 'success',
+					text: this.$ts._pages.created
+				});
+				this.$router.push(`/pages/edit/${this.pageId}`);
 			});
 		},
 
 		async add() {
 			const { canceled, result: type } = await os.dialog({
 				type: null,
-				title: this.$t('_pages.chooseBlock'),
+				title: this.$ts._pages.chooseBlock,
 				select: {
 					groupedItems: this.getPageBlockList()
 				},
@@ -314,7 +340,7 @@ export default defineComponent({
 
 		async addVariable() {
 			let { canceled, result: name } = await os.dialog({
-				title: this.$t('_pages.enterVariableName'),
+				title: this.$ts._pages.enterVariableName,
 				input: {
 					type: 'text',
 				},
@@ -327,7 +353,7 @@ export default defineComponent({
 			if (this.hpml.isUsedName(name)) {
 				os.dialog({
 					type: 'error',
-					text: this.$t('_pages.variableNameIsAlreadyUsed')
+					text: this.$ts._pages.variableNameIsAlreadyUsed
 				});
 				return;
 			}
@@ -337,40 +363,36 @@ export default defineComponent({
 		},
 
 		removeVariable(v) {
-			const i = this.variables.findIndex(x => x.name === v.name);
-			const newValue = [
-				...this.variables.slice(0, i),
-				...this.variables.slice(i + 1)
-			];
-			this.variables = newValue;
+			this.variables = this.variables.filter(x => x.name !== v.name);
 		},
 
 		getPageBlockList() {
 			return [{
-				label: this.$t('_pages.contentBlocks'),
+				label: this.$ts._pages.contentBlocks,
 				items: [
-					{ value: 'section', text: this.$t('_pages.blocks.section') },
-					{ value: 'text', text: this.$t('_pages.blocks.text') },
-					{ value: 'image', text: this.$t('_pages.blocks.image') },
-					{ value: 'textarea', text: this.$t('_pages.blocks.textarea') },
-					{ value: 'canvas', text: this.$t('_pages.blocks.canvas') },
+					{ value: 'section', text: this.$ts._pages.blocks.section },
+					{ value: 'text', text: this.$ts._pages.blocks.text },
+					{ value: 'image', text: this.$ts._pages.blocks.image },
+					{ value: 'textarea', text: this.$ts._pages.blocks.textarea },
+					{ value: 'note', text: this.$ts._pages.blocks.note },
+					{ value: 'canvas', text: this.$ts._pages.blocks.canvas },
 				]
 			}, {
-				label: this.$t('_pages.inputBlocks'),
+				label: this.$ts._pages.inputBlocks,
 				items: [
-					{ value: 'button', text: this.$t('_pages.blocks.button') },
-					{ value: 'radioButton', text: this.$t('_pages.blocks.radioButton') },
-					{ value: 'textInput', text: this.$t('_pages.blocks.textInput') },
-					{ value: 'textareaInput', text: this.$t('_pages.blocks.textareaInput') },
-					{ value: 'numberInput', text: this.$t('_pages.blocks.numberInput') },
-					{ value: 'switch', text: this.$t('_pages.blocks.switch') },
-					{ value: 'counter', text: this.$t('_pages.blocks.counter') }
+					{ value: 'button', text: this.$ts._pages.blocks.button },
+					{ value: 'radioButton', text: this.$ts._pages.blocks.radioButton },
+					{ value: 'textInput', text: this.$ts._pages.blocks.textInput },
+					{ value: 'textareaInput', text: this.$ts._pages.blocks.textareaInput },
+					{ value: 'numberInput', text: this.$ts._pages.blocks.numberInput },
+					{ value: 'switch', text: this.$ts._pages.blocks.switch },
+					{ value: 'counter', text: this.$ts._pages.blocks.counter }
 				]
 			}, {
-				label: this.$t('_pages.specialBlocks'),
+				label: this.$ts._pages.specialBlocks,
 				items: [
-					{ value: 'if', text: this.$t('_pages.blocks.if') },
-					{ value: 'post', text: this.$t('_pages.blocks.post') }
+					{ value: 'if', text: this.$ts._pages.blocks.if },
+					{ value: 'post', text: this.$ts._pages.blocks.post }
 				]
 			}];
 		},
@@ -413,8 +435,8 @@ export default defineComponent({
 			return list;
 		},
 
-		setEyeCatchingImage() {
-			os.selectDriveFile(false).then(file => {
+		setEyeCatchingImage(e) {
+			selectFile(e.currentTarget || e.target, null, false).then(file => {
 				this.eyeCatchingImageId = file.id;
 			});
 		},

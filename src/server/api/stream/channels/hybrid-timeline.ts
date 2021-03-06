@@ -29,9 +29,9 @@ export default class extends Channel {
 		// フォローしているチャンネルの投稿 の場合だけ
 		if (!(
 			(note.channelId == null && this.user!.id === note.userId) ||
-			(note.channelId == null && this.following.includes(note.userId)) ||
+			(note.channelId == null && this.following.has(note.userId)) ||
 			(note.channelId == null && ((note.user as PackedUser).host == null && note.visibility === 'public')) ||
-			(note.channelId != null && this.followingChannels.includes(note.channelId))
+			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {

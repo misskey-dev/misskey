@@ -116,16 +116,6 @@ export default defineComponent({
 			}
 		};
 		update();
-
-		this.$store.subscribe((mutation, state) => {
-			if (mutation.type !== 'device/set') return;
-
-			if (mutation?.payload?.key !== 'theme') return;
-
-			setTimeout(() => {
-				this.computedStyle = getComputedStyle(document.documentElement);
-			}, 250);
-		});
 	},
 
 	beforeUnmount() {

@@ -94,7 +94,7 @@ export default class Logger {
 					level === 'info' ? this.syslogClient.info :
 					null as never;
 
-				send.bind(this.syslogClient)(message);
+				send.bind(this.syslogClient)(message).catch(() => {});
 			} else {
 				const Logs = getRepository(Log);
 				Logs.insert({
@@ -106,7 +106,7 @@ export default class Logger {
 					level: level,
 					message: message.substr(0, 1000), // 1024を超えるとログが挿入できずエラーになり無限ループする
 					data: data,
-				} as Log);
+				} as Log).catch(() => {});
 			}
 		}
 	}
@@ -116,8 +116,10 @@ export default class Logger {
 			data = data || {};
 			data.e = x;
 			this.log('error', x.toString(), data, important);
+		} else if (typeof x === 'object') {
+			this.log('error', `${(x as any).message || (x as any).name || x}`, data, important);
 		} else {
-			this.log('error', x, data, important);
+			this.log('error', `${x}`, data, important);
 		}
 	}
 

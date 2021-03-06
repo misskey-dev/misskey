@@ -12,6 +12,7 @@ import * as assert from 'assert';
 
 import { parse, parsePlain } from '../src/mfm/parse';
 import { toHtml } from '../src/mfm/to-html';
+import { fromHtml } from '../src/mfm/from-html';
 import { toString } from '../src/mfm/to-string';
 import { createTree as tree, createLeaf as leaf, MfmTree } from '../src/mfm/prelude';
 import { removeOrphanedBrackets } from '../src/mfm/language';
@@ -227,16 +228,6 @@ describe('MFM', () => {
 			});
 		});
 
-		it('big', () => {
-			const tokens = parse('***Strawberry*** Pasta');
-			assert.deepStrictEqual(tokens, [
-				tree('big', [
-					text('Strawberry')
-				], {}),
-				text(' Pasta'),
-			]);
-		});
-
 		it('small', () => {
 			const tokens = parse('<small>smaller</small>');
 			assert.deepStrictEqual(tokens, [
@@ -244,133 +235,6 @@ describe('MFM', () => {
 					text('smaller')
 				], {}),
 			]);
-		});
-
-		it('flip', () => {
-			const tokens = parse('<flip>foo</flip>');
-			assert.deepStrictEqual(tokens, [
-				tree('flip', [
-					text('foo')
-				], {}),
-			]);
-		});
-
-		describe('spin', () => {
-			it('text', () => {
-				const tokens = parse('<spin>foo</spin>');
-				assert.deepStrictEqual(tokens, [
-					tree('spin', [
-						text('foo')
-					], {
-						attr: null
-					}),
-				]);
-			});
-
-			it('emoji', () => {
-				const tokens = parse('<spin>:foo:</spin>');
-				assert.deepStrictEqual(tokens, [
-					tree('spin', [
-						leaf('emoji', { name: 'foo' })
-					], {
-						attr: null
-					}),
-				]);
-			});
-
-			it('with attr', () => {
-				const tokens = parse('<spin left>:foo:</spin>');
-				assert.deepStrictEqual(tokens, [
-					tree('spin', [
-						leaf('emoji', { name: 'foo' })
-					], {
-						attr: 'left'
-					}),
-				]);
-			});
-/*
-			it('multi', () => {
-				const tokens = parse('<spin>:foo:</spin><spin>:foo:</spin>');
-				assert.deepStrictEqual(tokens, [
-					tree('spin', [
-						leaf('emoji', { name: 'foo' })
-					], {
-						attr: null
-					}),
-					tree('spin', [
-						leaf('emoji', { name: 'foo' })
-					], {
-						attr: null
-					}),
-				]);
-			});
-
-			it('nested', () => {
-				const tokens = parse('<spin><spin>:foo:</spin></spin>');
-				assert.deepStrictEqual(tokens, [
-					tree('spin', [
-						tree('spin', [
-							leaf('emoji', { name: 'foo' })
-						], {
-							attr: null
-						}),
-					], {
-						attr: null
-					}),
-				]);
-			});
-*/
-		});
-
-		it('jump', () => {
-			const tokens = parse('<jump>:foo:</jump>');
-			assert.deepStrictEqual(tokens, [
-				tree('jump', [
-					leaf('emoji', { name: 'foo' })
-				], {}),
-			]);
-		});
-
-		describe('motion', () => {
-			it('by triple brackets', () => {
-				const tokens = parse('(((foo)))');
-				assert.deepStrictEqual(tokens, [
-					tree('motion', [
-						text('foo')
-					], {}),
-				]);
-			});
-
-			it('by triple brackets (with other texts)', () => {
-				const tokens = parse('bar(((foo)))bar');
-				assert.deepStrictEqual(tokens, [
-					text('bar'),
-					tree('motion', [
-						text('foo')
-					], {}),
-					text('bar'),
-				]);
-			});
-
-			it('by <motion> tag', () => {
-				const tokens = parse('<motion>foo</motion>');
-				assert.deepStrictEqual(tokens, [
-					tree('motion', [
-						text('foo')
-					], {}),
-				]);
-			});
-
-			it('by <motion> tag (with other texts)', () => {
-				const tokens = parse('bar<motion>foo</motion>bar');
-				assert.deepStrictEqual(tokens, [
-					text('bar'),
-					tree('motion', [
-						text('foo')
-					], {}),
-					text('bar'),
-				]);
-			});
 		});
 
 		describe('mention', () => {
@@ -1081,49 +945,6 @@ describe('MFM', () => {
 			]);
 		});
 
-		describe('title', () => {
-			it('simple', () => {
-				const tokens = parse('【foo】');
-				assert.deepStrictEqual(tokens, [
-					tree('title', [
-						text('foo')
-					], {})
-				]);
-			});
-
-			it('require line break', () => {
-				const tokens = parse('a【foo】');
-				assert.deepStrictEqual(tokens, [
-					text('a【foo】')
-				]);
-			});
-
-			it('with before and after texts', () => {
-				const tokens = parse('before\n【foo】\nafter');
-				assert.deepStrictEqual(tokens, [
-					text('before\n'),
-					tree('title', [
-						text('foo')
-					], {}),
-					text('after')
-				]);
-			});
-
-			it('ignore multiple title blocks', () => {
-				const tokens = parse('【foo】bar【baz】');
-				assert.deepStrictEqual(tokens, [
-					text('【foo】bar【baz】')
-				]);
-			});
-
-			it('disallow linebreak in title', () => {
-				const tokens = parse('【foo\nbar】');
-				assert.deepStrictEqual(tokens, [
-					text('【foo\nbar】')
-				]);
-			});
-		});
-
 		describe('center', () => {
 			it('simple', () => {
 				const tokens = parse('<center>foo</center>');
@@ -1310,30 +1131,6 @@ describe('MFM', () => {
 		it('小さい字', () => {
 			assert.deepStrictEqual(toString(parse('<small>小さい字</small>')), '<small>小さい字</small>');
 		});
-		it('モーション', () => {
-			assert.deepStrictEqual(toString(parse('<motion>モーション</motion>')), '<motion>モーション</motion>');
-		});
-		it('モーション2', () => {
-			assert.deepStrictEqual(toString(parse('(((モーション)))')), '<motion>モーション</motion>');
-		});
-		it('ビッグ＋', () => {
-			assert.deepStrictEqual(toString(parse('*** ビッグ＋ ***')), '*** ビッグ＋ ***');
-		});
-		it('回転', () => {
-			assert.deepStrictEqual(toString(parse('<spin>回転</spin>')), '<spin>回転</spin>');
-		});
-		it('右回転', () => {
-			assert.deepStrictEqual(toString(parse('<spin right>右回転</spin>')), '<spin right>右回転</spin>');
-		});
-		it('左回転', () => {
-			assert.deepStrictEqual(toString(parse('<spin left>左回転</spin>')), '<spin left>左回転</spin>');
-		});
-		it('往復回転', () => {
-			assert.deepStrictEqual(toString(parse('<spin alternate>往復回転</spin>')), '<spin alternate>往復回転</spin>');
-		});
-		it('ジャンプ', () => {
-			assert.deepStrictEqual(toString(parse('<jump>ジャンプ</jump>')), '<jump>ジャンプ</jump>');
-		});
 		it('コードブロック', () => {
 			assert.deepStrictEqual(toString(parse('```\nコードブロック\n```')), '```\nコードブロック\n```');
 		});
@@ -1352,17 +1149,57 @@ describe('MFM', () => {
 		it('詳細なしリンク', () => {
 			assert.deepStrictEqual(toString(parse('?[詳細なしリンク](http://example.com)')), '?[詳細なしリンク](http://example.com)');
 		});
-		it('【タイトル】', () => {
-			assert.deepStrictEqual(toString(parse('【タイトル】')), '[タイトル]');
-		});
-		it('[タイトル]', () => {
-			assert.deepStrictEqual(toString(parse('[タイトル]')), '[タイトル]');
-		});
 		it('インライン数式', () => {
 			assert.deepStrictEqual(toString(parse('\\(インライン数式\\)')), '\\(インライン数式\\)');
 		});
 		it('ブロック数式', () => {
 			assert.deepStrictEqual(toString(parse('\\\[\nブロック数式\n\]\\')), '\\\[\nブロック数式\n\]\\');
 		});
+	});
+});
+
+describe('fromHtml', () => {
+	it('br', () => {
+		assert.deepStrictEqual(fromHtml('<p>abc<br><br/>d</p>'), 'abc\n\nd');
+	});
+
+	it('link with different text', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/b">c</a> d</p>'), 'a [c](https://example.com/b) d');
+	});
+
+	it('link with different text, but not encoded', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/ä">c</a> d</p>'), 'a [c](<https://example.com/ä>) d');
+	});
+
+	it('link with same text', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/b">https://example.com/b</a> d</p>'), 'a https://example.com/b d');
+	});
+
+	it('link with same text, but not encoded', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/ä">https://example.com/ä</a> d</p>'), 'a <https://example.com/ä> d');
+	});
+
+	it('link with no url', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="b">c</a> d</p>'), 'a [c](b) d');
+	});
+
+	it('link without href', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a>c</a> d</p>'), 'a c d');
+	});
+
+	it('link without text', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/b"></a> d</p>'), 'a https://example.com/b d');
+	});
+
+	it('link without both', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a></a> d</p>'), 'a  d');
+	});
+
+	it('mention', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/@user" class="u-url mention">@user</a> d</p>'), 'a @user@example.com d');
+	});
+
+	it('hashtag', () => {
+		assert.deepStrictEqual(fromHtml('<p>a <a href="https://example.com/tags/a">#a</a> d</p>', ['#a']), 'a #a d');
 	});
 });

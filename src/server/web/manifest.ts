@@ -1,5 +1,5 @@
 import * as Koa from 'koa';
-import * as manifest from '../../client/assets/manifest.json';
+import * as manifest from '../../../src/client/assets/manifest.json';
 import { fetchMeta } from '../../misc/fetch-meta';
 
 module.exports = async (ctx: Koa.Context) => {

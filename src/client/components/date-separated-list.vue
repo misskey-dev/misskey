@@ -1,20 +1,7 @@
-<template>
-<transition-group class="sqadhkmv _list_" name="list" tag="div" :data-direction="direction" :data-reversed="reversed ? 'true' : 'false'">
-	<template v-for="(item, i) in items">
-		<slot :item="item"></slot>
-		<div class="separator" v-if="showDate(i, item)" :key="item.id + '_date'">
-			<p class="date">
-				<span><Fa class="icon" :icon="faAngleUp"/>{{ getDateText(item.createdAt) }}</span>
-				<span>{{ getDateText(items[i + 1].createdAt) }}<Fa class="icon" :icon="faAngleDown"/></span>
-			</p>
-		</div>
-	</template>
-</transition-group>
-</template>
-
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, h, TransitionGroup } from 'vue';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default defineComponent({
 	props: {
@@ -34,36 +21,72 @@ export default defineComponent({
 		}
 	},
 
-	data() {
-		return {
-			faAngleUp, faAngleDown
-		};
+	methods: {
+		focus() {
+			this.$slots.default[0].elm.focus();
+		}
 	},
 
-	methods: {
-		getDateText(time: string) {
+	render() {
+		const getDateText = (time: string) => {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
 			return this.$t('monthAndDay', {
 				month: month.toString(),
 				day: date.toString()
 			});
-		},
+		}
 
-		showDate(i, item) {
-			return (
+		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
+			class: 'sqadhkmv _list_',
+			name: 'list',
+			tag: 'div',
+			'data-direction': this.direction,
+			'data-reversed': this.reversed ? 'true' : 'false',
+		} : {
+			class: 'sqadhkmv _list_',
+		}, this.items.map((item, i) => {
+			const el = this.$slots.default({
+				item: item
+			})[0];
+			if (el.key == null && item.id) el.key = item.id;
+
+			if (
 				i != this.items.length - 1 &&
 				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate() &&
 				!item._prId_ &&
 				!this.items[i + 1]._prId_ &&
 				!item._featuredId_ &&
-				!this.items[i + 1]._featuredId_);
-		},
+				!this.items[i + 1]._featuredId_
+			) {
+				const separator = h('div', {
+					class: 'separator',
+					key: item.id + ':separator',
+				}, h('p', {
+					class: 'date'
+				}, [
+					h('span', [
+						h(FontAwesomeIcon, {
+							class: 'icon',
+							icon: faAngleUp,
+						}),
+						getDateText(item.createdAt)
+					]),
+					h('span', [
+						getDateText(this.items[i + 1].createdAt),
+						h(FontAwesomeIcon, {
+							class: 'icon',
+							icon: faAngleDown,
+						})
+					])
+				]));
 
-		focus() {
-			this.$slots.default[0].elm.focus();
-		}
-	}
+				return [el, separator];
+			} else {
+				return el;
+			}
+		}));
+	},
 });
 </script>
 
@@ -97,7 +120,7 @@ export default defineComponent({
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .sqadhkmv {
 	> .separator {
 		text-align: center;

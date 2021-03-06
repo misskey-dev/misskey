@@ -11,33 +11,33 @@
 	<transition name="nav">
 		<nav class="nav" :class="{ iconOnly, hidden }" v-show="showing">
 			<div>
-				<button class="item _button account" @click="openAccountMenu" v-if="$store.getters.isSignedIn">
-					<MkAvatar :user="$store.state.i" class="avatar"/><MkAcct class="text" :user="$store.state.i"/>
+				<button class="item _button account" @click="openAccountMenu">
+					<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 				</button>
-				<button class="item _button index active" @click="top()" v-if="$route.name === 'index'">
-					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
-				</button>
-				<MkA class="item index" active-class="active" to="/" exact v-else>
-					<Fa :icon="faHome" fixed-width/><span class="text">{{ $store.getters.isSignedIn ? $t('timeline') : $t('home') }}</span>
+				<MkA class="item index" active-class="active" to="/" exact>
+					<Fa :icon="faHome" fixed-width/><span class="text">{{ $ts.timeline }}</span>
 				</MkA>
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
 					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
-						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $t(menuDef[item].title) }}</span>
+						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $ts[menuDef[item].title] }}</span>
 						<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
 					</component>
 				</template>
 				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$store.getters.isSignedIn && ($store.state.i.isAdmin || $store.state.i.isModerator)" @click="oepnInstanceMenu">
-					<Fa :icon="faServer" fixed-width/><span class="text">{{ $t('instance') }}</span>
+				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
+					<Fa :icon="faServer" fixed-width/><span class="text">{{ $ts.instance }}</span>
 				</button>
 				<button class="item _button" @click="more">
-					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $t('more') }}</span>
+					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $ts.more }}</span>
 					<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 				</button>
 				<MkA class="item" active-class="active" to="/settings">
-					<Fa :icon="faCog" fixed-width/><span class="text">{{ $t('settings') }}</span>
+					<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
 				</MkA>
+				<button class="item _button post" @click="post">
+					<Fa :icon="faPencilAlt" fixed-width/><span class="text">{{ $ts.note }}</span>
+				</button>
 			</div>
 		</nav>
 	</transition>
@@ -48,33 +48,40 @@
 import { defineComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram, faStream, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
-import { host, instanceName } from '@/config';
+import { host } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { sidebarDef } from '@/sidebar';
+import { getAccounts, addAccount, login } from '@/account';
 
 export default defineComponent({
+	props: {
+		defaultHidden: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
+	},
+
 	data() {
 		return {
 			host: host,
 			showing: false,
-			searching: false,
 			accounts: [],
 			connection: null,
 			menuDef: sidebarDef,
 			iconOnly: false,
-			hidden: false,
+			hidden: this.defaultHidden,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.deviceUser.menu;
+			return this.$store.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
-			if (!this.$store.getters.isSignedIn) return false;
 			for (const def in this.menuDef) {
 				if (this.menu.includes(def)) continue;
 				if (this.menuDef[def].indicated) return true;
@@ -88,7 +95,7 @@ export default defineComponent({
 			this.showing = false;
 		},
 
-		'$store.state.device.sidebarDisplay'() {
+		'$store.reactiveState.sidebarDisplay.value'() {
 			this.calcViewState();
 		},
 
@@ -112,57 +119,54 @@ export default defineComponent({
 
 	methods: {
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.device.sidebarDisplay === 'icon');
-			this.hidden = (window.innerWidth <= 650) || (this.$store.state.device.sidebarDisplay === 'hide');
+			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.sidebarDisplay === 'icon');
+			if (!this.defaultHidden) {
+				this.hidden = (window.innerWidth <= 650);
+			}
 		},
 
 		show() {
 			this.showing = true;
 		},
 
-		top() {
-			window.scroll({ top: 0, behavior: 'smooth' });
+		post() {
+			os.post();
 		},
 
 		search() {
-			if (this.searching) return;
-
-			os.dialog({
-				title: this.$t('search'),
-				input: true
-			}).then(async ({ canceled, result: query }) => {
-				if (canceled || query == null || query === '') return;
-
-				this.searching = true;
-				search(this, query).finally(() => {
-					this.searching = false;
-				});
-			});
+			search();
 		},
 
 		async openAccountMenu(ev) {
-			const accounts = (await os.api('users/show', { userIds: this.$store.state.device.accounts.map(x => x.id) })).filter(x => x.id !== this.$store.state.i.id);
+			const storedAccounts = getAccounts().filter(x => x.id !== this.$i.id);
+			const accountsPromise = os.api('users/show', { userIds: storedAccounts.map(x => x.id) });
 
-			const accountItems = accounts.map(account => ({
-				type: 'user',
-				user: account,
-				action: () => { this.switchAccount(account); }
+			const accountItemPromises = storedAccounts.map(a => new Promise(res => {
+				accountsPromise.then(accounts => {
+					const account = accounts.find(x => x.id === a.id);
+					if (account == null) return res(null);
+					res({
+						type: 'user',
+						user: account,
+						action: () => { this.switchAccount(account); }
+					});
+				});
 			}));
 
 			os.modalMenu([...[{
 				type: 'link',
-				text: this.$t('profile'),
-				to: `/@${ this.$store.state.i.username }`,
-				avatar: this.$store.state.i,
-			}, null, ...accountItems, {
+				text: this.$ts.profile,
+				to: `/@${ this.$i.username }`,
+				avatar: this.$i,
+			}, null, ...accountItemPromises, {
 				icon: faPlus,
-				text: this.$t('addAcount'),
+				text: this.$ts.addAcount,
 				action: () => {
 					os.modalMenu([{
-						text: this.$t('existingAcount'),
+						text: this.$ts.existingAcount,
 						action: () => { this.addAcount(); },
 					}, {
-						text: this.$t('createAccount'),
+						text: this.$ts.createAccount,
 						action: () => { this.createAccount(); },
 					}], ev.currentTarget || ev.target);
 				},
@@ -174,125 +178,93 @@ export default defineComponent({
 		oepnInstanceMenu(ev) {
 			os.modalMenu([{
 				type: 'link',
-				text: this.$t('dashboard'),
+				text: this.$ts.dashboard,
 				to: '/instance',
 				icon: faTachometerAlt,
-			}, null, this.$store.state.i.isAdmin ? {
+			}, null, this.$i.isAdmin ? {
 				type: 'link',
-				text: this.$t('settings'),
+				text: this.$ts.settings,
 				to: '/instance/settings',
 				icon: faCog,
 			} : undefined, {
 				type: 'link',
-				text: this.$t('customEmojis'),
+				text: this.$ts.customEmojis,
 				to: '/instance/emojis',
 				icon: faLaugh,
 			}, {
 				type: 'link',
-				text: this.$t('users'),
+				text: this.$ts.users,
 				to: '/instance/users',
 				icon: faUsers,
 			}, {
 				type: 'link',
-				text: this.$t('files'),
+				text: this.$ts.files,
 				to: '/instance/files',
 				icon: faCloud,
 			}, {
 				type: 'link',
-				text: this.$t('jobQueue'),
+				text: this.$ts.jobQueue,
 				to: '/instance/queue',
 				icon: faExchangeAlt,
 			}, {
 				type: 'link',
-				text: this.$t('federation'),
+				text: this.$ts.federation,
 				to: '/instance/federation',
 				icon: faGlobe,
 			}, {
 				type: 'link',
-				text: this.$t('relays'),
+				text: this.$ts.relays,
 				to: '/instance/relays',
 				icon: faProjectDiagram,
 			}, {
 				type: 'link',
-				text: this.$t('announcements'),
+				text: this.$ts.announcements,
 				to: '/instance/announcements',
 				icon: faBroadcastTower,
 			}, {
 				type: 'link',
-				text: this.$t('abuseReports'),
+				text: this.$ts.abuseReports,
 				to: '/instance/abuses',
 				icon: faExclamationCircle,
 			}, {
 				type: 'link',
-				text: this.$t('logs'),
+				text: this.$ts.logs,
 				to: '/instance/logs',
 				icon: faStream,
 			}], ev.currentTarget || ev.target);
 		},
 
 		more(ev) {
-			const items = Object.keys(this.menuDef).filter(k => !this.menu.includes(k)).map(k => this.menuDef[k]).filter(def => def.show == null ? true : def.show).map(def => ({
-				type: def.to ? 'link' : 'button',
-				text: this.$t(def.title),
-				icon: def.icon,
-				to: def.to,
-				action: def.action,
-				indicate: def.indicated,
-			}));
-			os.modalMenu([...items, null, {
-				type: 'link',
-				text: this.$t('help'),
-				to: '/docs',
-				icon: faQuestionCircle,
-			}, {
-				type: 'link',
-				text: this.$t('aboutX', { x: instanceName }),
-				to: '/about',
-				icon: faInfoCircle,
-			}, {
-				type: 'link',
-				text: this.$t('aboutMisskey'),
-				to: '/about-misskey',
-				icon: faInfoCircle,
-			}], ev.currentTarget || ev.target);
+			os.popup(import('./launch-pad.vue'), {}, {
+			}, 'closed');
 		},
 
-		async addAcount() {
-			os.popup(await import('./signin-dialog.vue'), {}, {
+		addAcount() {
+			os.popup(import('./signin-dialog.vue'), {}, {
 				done: res => {
-					this.$store.dispatch('addAcount', res);
+					addAccount(res.id, res.i);
 					os.success();
 				},
 			}, 'closed');
 		},
 
-		async createAccount() {
-			os.popup(await import('./signup-dialog.vue'), {}, {
+		createAccount() {
+			os.popup(import('./signup-dialog.vue'), {}, {
 				done: res => {
-					this.$store.dispatch('addAcount', res);
+					addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
 				},
 			}, 'closed');
 		},
 
-		async switchAccount(account: any) {
-			const token = this.$store.state.device.accounts.find((x: any) => x.id === account.id).token;
+		switchAccount(account: any) {
+			const storedAccounts = getAccounts();
+			const token = storedAccounts.find(x => x.id === account.id).token;
 			this.switchAccountWithToken(token);
 		},
 
 		switchAccountWithToken(token: string) {
-			os.waiting();
-
-			os.api('i', {}, token).then((i: any) => {
-				this.$store.dispatch('switchAccount', {
-					...i,
-					token: token
-				}).then(() => {
-					this.$nextTick(() => {
-						location.reload();
-					});
-				});
-			});
+			login(token);
 		},
 	}
 });
@@ -324,7 +296,7 @@ export default defineComponent({
 .mvcprjjd {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
+	$nav-icon-only-width: 86px;
 
 	> .nav-back {
 		z-index: 1001;
@@ -388,13 +360,6 @@ export default defineComponent({
 			top: 0;
 			left: 0;
 			z-index: 1001;
-
-			> div {
-				> .index,
-				> .notifications {
-					display: none;
-				}
-			}
 		}
 
 		&:not(.hidden) {
@@ -412,7 +377,6 @@ export default defineComponent({
 			box-sizing: border-box;
 			overflow: auto;
 			background: var(--navBg);
-			border-right: solid 1px var(--divider);
 
 			> .divider {
 				margin: 16px 0;

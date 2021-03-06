@@ -1,170 +1,139 @@
 <template>
-<div class="t9makv94">
-	<section class="_section">
-		<div class="_content">
-			<details>
-				<summary>{{ $t('import') }}</summary>
-				<MkTextarea v-model:value="themeToImport">
-					{{ $t('_theme.importInfo') }}
-				</MkTextarea>
-				<MkButton :disabled="!themeToImport.trim()" @click="importTheme">{{ $t('import') }}</MkButton>
-			</details>
-		</div>
-	</section>
-	<section class="_section">
-		<div class="_content _card _vMargin">
-			<div class="_content">
-				<MkInput v-model:value="name" required><span>{{ $t('name') }}</span></MkInput>
-				<MkInput v-model:value="author" required><span>{{ $t('author') }}</span></MkInput>
-				<MkTextarea v-model:value="description"><span>{{ $t('description') }}</span></MkTextarea>
-				<div class="_inputs">
-					<div v-text="$t('_theme.base')" />
-					<MkRadio v-model="baseTheme" value="light">{{ $t('light') }}</MkRadio>
-					<MkRadio v-model="baseTheme" value="dark">{{ $t('dark') }}</MkRadio>
-				</div>
+<FormBase class="cwepdizn">
+	<div class="_formItem colorPicker">
+		<div class="_formLabel">{{ $ts.backgroundColor }}</div>
+		<div class="_formPanel colors">
+			<div class="row">
+				<button v-for="color in bgColors.filter(x => x.kind === 'light')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
+					<div class="preview" :style="{ background: color.forPreview }"></div>
+				</button>
+			</div>
+			<div class="row">
+				<button v-for="color in bgColors.filter(x => x.kind === 'dark')" :key="color.color" @click="setBgColor(color)" class="color _button" :class="{ active: theme.props.bg === color.color }">
+					<div class="preview" :style="{ background: color.forPreview }"></div>
+				</button>
 			</div>
 		</div>
-		<div class="_content _card _vMargin">
-			<div class="list-view _content">
-				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
-					<div class="_inputs">
-						<div>
-							{{ k.startsWith('$') ? `${k} (${$t('_theme.constant')})` : $t('_theme.keys.' + k) }}
-							<button v-if="k.startsWith('$')" class="_button _link" @click="del(i)" v-text="$t('delete')" />
-						</div>
-						<div>
-							<div class="type" @click="chooseType($event, i)">
-								{{ getTypeOf(v) }} <Fa :icon="faChevronDown"/>
-							</div>
-							<!-- default -->
-							<div v-if="v === null" v-text="baseProps[k]" class="default-value" />
-							<!-- color -->
-							<div v-else-if="typeof v === 'string'" class="color">
-								<input type="color" :value="v" @input="colorChanged($event.target.value, i)"/>
-								<MkInput class="select" :value="v" @update:value="colorChanged($event, i)"/>
-							</div>
-							<!-- ref const -->
-							<MkInput v-else-if="v.type === 'refConst'" v-model:value="v.key">
-								<template #prefix>$</template>
-								<span>{{ $t('name') }}</span>
-							</MkInput>
-							<!-- ref props -->
-							<MkSelect class="select" v-else-if="v.type === 'refProp'" v-model:value="v.key">
-								<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
-							</MkSelect>
-							<!-- func -->
-							<template v-else-if="v.type === 'func'">
-								<MkSelect class="select" v-model:value="v.name">
-									<template #label>{{ $t('_theme.funcKind') }}</template>
-									<option v-for="n in ['alpha', 'darken', 'lighten']" :value="n" :key="n">{{ $t('_theme.' + n) }}</option>
-								</MkSelect>
-								<MkInput type="number" v-model:value="v.arg"><span>{{ $t('_theme.argument') }}</span></MkInput>
-								<MkSelect class="select" v-model:value="v.value">
-									<template #label>{{ $t('_theme.basedProp') }}</template>
-									<option v-for="key in themeProps" :value="key" :key="key">{{ $t('_theme.keys.' + key) }}</option>
-								</MkSelect>
-							</template>
-							<!-- CSS -->
-							<MkInput v-else-if="v.type === 'css'" v-model:value="v.value">
-								<span>CSS</span>
-							</MkInput>
-						</div>
-					</div>
-				</div>
-				<MkButton primary @click="addConst">{{ $t('_theme.addConstant') }}</MkButton>
+	</div>
+	<div class="_formItem colorPicker">
+		<div class="_formLabel">{{ $ts.accentColor }}</div>
+		<div class="_formPanel colors">
+			<div class="row">
+				<button v-for="color in accentColors" :key="color" @click="setAccentColor(color)" class="color rounded _button" :class="{ active: theme.props.accent === color }">
+					<div class="preview" :style="{ background: color }"></div>
+				</button>
 			</div>
 		</div>
-	</section>
-	<section class="_section">
-		<details class="_content">
-			<summary>{{ $t('sample') }}</summary>
-			<MkSample/>
-		</details>
-	</section>
-	<section class="_section">
-		<div class="_content">
-			<MkButton inline @click="preview">{{ $t('preview') }}</MkButton>
-			<MkButton inline primary :disabled="!name || !author" @click="save">{{ $t('save') }}</MkButton>
+	</div>
+	<div class="_formItem colorPicker">
+		<div class="_formLabel">{{ $ts.textColor }}</div>
+		<div class="_formPanel colors">
+			<div class="row">
+				<button v-for="color in fgColors" :key="color" @click="setFgColor(color)" class="color char _button" :class="{ active: (theme.props.fg === color.forLight) || (theme.props.fg === color.forDark) }">
+					<div class="preview" :style="{ color: color.forPreview ? color.forPreview : theme.base === 'light' ? '#5f5f5f' : '#dadada' }">A</div>
+				</button>
+			</div>
 		</div>
-	</section>
-</div>
+	</div>
+	<FormGroup v-if="codeEnabled">
+		<FormTextarea v-model:value="themeCode" tall>
+			<span>{{ $ts._theme.code }}</span>
+		</FormTextarea>
+		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
+	</FormGroup>
+	<FormButton v-else @click="codeEnabled = true"><Fa :icon="faCode"/> {{ $ts.editCode }}</FormButton>
+	<FormGroup>
+		<FormButton @click="showPreview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
+		<FormButton @click="saveAs" primary><Fa :icon="faSave"/> {{ $ts.saveAs }}</FormButton>
+	</FormGroup>
+</FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
-import * as JSON5 from 'json5';
+import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode } from 'punycode';
+import * as tinycolor from 'tinycolor2';
+import { v4 as uuid} from 'uuid';
+import * as JSON5 from 'json5';
 
-import MkRadio from '@/components/ui/radio.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkSample from '@/components/sample.vue';
+import FormBase from '@/components/form/base.vue';
+import FormButton from '@/components/form/button.vue';
+import FormTextarea from '@/components/form/textarea.vue';
+import FormGroup from '@/components/form/group.vue';
 
-import { convertToMisskeyTheme, ThemeValue, convertToViewModel, ThemeViewModel } from '@/scripts/theme-editor';
-import { Theme, applyTheme, lightTheme, darkTheme, themeProps, validateTheme } from '@/scripts/theme';
+import { Theme, applyTheme, validateTheme, darkTheme, lightTheme } from '@/scripts/theme';
 import { host } from '@/config';
 import * as os from '@/os';
+import { ColdDeviceStorage } from '@/store';
+import { addTheme } from '@/theme-store';
 
 export default defineComponent({
 	components: {
-		MkRadio,
-		MkButton,
-		MkInput,
-		MkTextarea,
-		MkSelect,
-		MkSample,
+		FormBase,
+		FormButton,
+		FormTextarea,
+		FormGroup,
 	},
 
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('themeEditor'),
-					icon: faPalette,
-				}],
+				title: this.$ts.themeEditor,
+				icon: faPalette,
 			},
-			theme: [] as ThemeViewModel,
-			name: '',
-			description: '',
-			baseTheme: 'light' as 'dark' | 'light',
-			author: `@${this.$store.state.i.username}@${toUnicode(host)}`,
-			themeToImport: '',
+			theme: {
+				base: 'light',
+				props: lightTheme.props
+			} as Theme,
+			codeEnabled: false,
+			themeCode: null,
+			bgColors: [
+				{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
+				{ color: '#f0eee9', kind: 'light', forPreview: '#f3e2b9' },
+				{ color: '#e9eff0', kind: 'light', forPreview: '#bfe3e8' },
+				{ color: '#f0e9ee', kind: 'light', forPreview: '#f1d1e8' },
+				{ color: '#dce2e0', kind: 'light', forPreview: '#a4dccc' },
+				{ color: '#e2e0dc', kind: 'light', forPreview: '#d8c7a5' },
+				{ color: '#d5dbe0', kind: 'light', forPreview: '#b0cae0' },
+				{ color: '#dad5d5', kind: 'light', forPreview: '#d6afaf' },
+				{ color: '#2b2b2b', kind: 'dark', forPreview: '#444444' },
+				{ color: '#362e29', kind: 'dark', forPreview: '#735c4d' },
+				{ color: '#303629', kind: 'dark', forPreview: '#506d2f' },
+				{ color: '#293436', kind: 'dark', forPreview: '#258192' },
+				{ color: '#2e2936', kind: 'dark', forPreview: '#504069' },
+				{ color: '#252722', kind: 'dark', forPreview: '#3c462f' },
+				{ color: '#212525', kind: 'dark', forPreview: '#303e3e' },
+				{ color: '#191919', kind: 'dark', forPreview: '#272727' },
+			],
+			accentColors: ['#e36749', '#f29924', '#98c934', '#34c9a9', '#34a1c9', '#606df7', '#8d34c9', '#e84d83'],
+			fgColors: [
+				{ color: 'none', forLight: '#5f5f5f', forDark: '#dadada', forPreview: null },
+				{ color: 'red', forLight: '#7f6666', forDark: '#e4d1d1', forPreview: '#ca4343' },
+				{ color: 'yellow', forLight: '#736955', forDark: '#e0d5c0', forPreview: '#d49923' },
+				{ color: 'green', forLight: '#586d5b', forDark: '#d1e4d4', forPreview: '#4cbd5c' },
+				{ color: 'cyan', forLight: '#5d7475', forDark: '#d1e3e4', forPreview: '#2abdc3' },
+				{ color: 'blue', forLight: '#676880', forDark: '#d1d2e4', forPreview: '#7275d8' },
+				{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
+			],
 			changed: false,
-			lightTheme, darkTheme, themeProps,
-			faPalette, faChevronDown, faKeyboard,
+			faPalette, faSave, faEye, faCode,
 		}
 	},
 
-	computed: {
-		baseProps() {
-			return this.baseTheme === 'light' ? this.lightTheme.props : this.darkTheme.props;
-		},
+	created() {
+		this.$watch('theme', this.apply, { deep: true });
+		window.addEventListener('beforeunload', this.beforeunload);
 	},
 
 	beforeUnmount() {
 		window.removeEventListener('beforeunload', this.beforeunload);
 	},
 
-	async beforeRouteLeave(to, from, next) {
-		if (this.changed && !(await this.confirm())) {
-			next(false);
-		} else {
-			next();
+	async beforeRouteLeave(to, from) {
+		if (this.changed && !(await this.leaveConfirm())) {
+			return false;
 		}
-	},
-
-	mounted() {
-		this.init();
-		window.addEventListener('beforeunload', this.beforeunload);
-		const changed = () => this.changed = true;
-		this.$watch('name', changed);
-		this.$watch('description', changed);
-		this.$watch('baseTheme', changed);
-		this.$watch('author', changed);
-		this.$watch('theme', changed);
 	},
 
 	methods: {
@@ -175,134 +144,90 @@ export default defineComponent({
 			}
 		},
 
-		async confirm(): Promise<boolean> {
+		async leaveConfirm(): Promise<boolean> {
 			const { canceled } = await os.dialog({
 				type: 'warning',
-				text: this.$t('leaveConfirm'),
+				text: this.$ts.leaveConfirm,
 				showCancelButton: true
 			});
 			return !canceled;
 		},
 
-		init() {
-			const t: ThemeViewModel = [];
-			for (const key of themeProps) {
-				t.push([ key, null ]);
+		showPreview() {
+			os.pageWindow('preview');
+		},
+
+		setBgColor(color) {
+			if (this.theme.base != color.kind) {
+				const base = color.kind === 'dark' ? darkTheme : lightTheme;
+				for (const prop of Object.keys(base.props)) {
+					if (prop === 'accent') continue;
+					if (prop === 'fg') continue;
+					this.theme.props[prop] = base.props[prop];
+				}
 			}
-			this.theme = t;
+			this.theme.base = color.kind;
+			this.theme.props.bg = color.color;
+
+			if (this.theme.props.fg) {
+				const matchedFgColor = this.fgColors.find(x => [tinycolor(x.forLight).toRgbString(), tinycolor(x.forDark).toRgbString()].includes(tinycolor(this.theme.props.fg).toRgbString()));
+				if (matchedFgColor) this.setFgColor(matchedFgColor);
+			}
 		},
-	
-		async del(i: number) {
-			const { canceled } = await os.dialog({ 
-				type: 'warning',
-				showCancelButton: true,
-				text: this.$t('_theme.deleteConstantConfirm', { const: this.theme[i][0] }),
+
+		setAccentColor(color) {
+			this.theme.props.accent = color;
+		},
+
+		setFgColor(color) {
+			this.theme.props.fg = this.theme.base === 'light' ? color.forLight : color.forDark;
+		},
+
+		apply() {
+			this.themeCode = JSON5.stringify(this.theme, null, '\t');
+			applyTheme(this.theme, false);
+			this.changed = true;
+		},
+
+		applyThemeCode() {
+			let parsed;
+
+			try {
+				parsed = JSON5.parse(this.themeCode);
+			} catch (e) {
+				os.dialog({
+					type: 'error',
+					text: this.$ts._theme.invalid
+				});
+				return;
+			}
+
+			this.theme = parsed;
+		},
+
+		async saveAs() {
+			const { canceled, result: name } = await os.dialog({
+				title: this.$ts.name,
+				input: {
+					allowEmpty: false
+				}
 			});
 			if (canceled) return;
-			Vue.delete(this.theme, i);
-		},
-	
-		async addConst() {
-			const { canceled, result } = await os.dialog({
-				title: this.$t('_theme.inputConstantName'),
-				input: true
-			});
-			if (canceled) return;
-			this.theme.push([ '$' + result, '#000000']);
-		},
-	
-		save() {
-			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
-			const themes = this.$store.state.device.themes.concat(theme);
-			this.$store.commit('device/set', {
-				key: 'themes', value: themes
-			});
+
+			this.theme.id = uuid();
+			this.theme.name = name;
+			this.theme.author = `@${this.$i.username}@${toUnicode(host)}`;
+			addTheme(this.theme);
+			applyTheme(this.theme);
+			if (this.$store.state.darkMode) {
+				ColdDeviceStorage.set('darkTheme', this.theme.id);
+			} else {
+				ColdDeviceStorage.set('lightTheme', this.theme.id);
+			}
+			this.changed = false;
 			os.dialog({
 				type: 'success',
-				text: this.$t('_theme.installed', { name: theme.name })
-			});
-			this.changed = false;
-		},
-	
-		preview() {
-			const theme = convertToMisskeyTheme(this.theme, this.name, this.description, this.author, this.baseTheme);
-			try {
-				applyTheme(theme, false);
-			} catch (e) {
-				os.dialog({
-					type: 'error',
-					text: e.message
-				});
-			}
-		},
-	
-		async importTheme() {
-			if (this.changed && (!await this.confirm())) return;
-
-			try {
-				const theme = JSON5.parse(this.themeToImport) as Theme;
-				if (!validateTheme(theme)) throw new Error(this.$t('_theme.invalid'));
-
-				this.name = theme.name;
-				this.description = theme.desc || '';
-				this.author = theme.author;
-				this.baseTheme = theme.base || 'light';
-				this.theme = convertToViewModel(theme);
-				this.themeToImport = '';
-			} catch (e) {
-				os.dialog({
-					type: 'error',
-					text: e.message
-				});
-			}
-		},
-	
-		colorChanged(color: string, i: number) {
-			this.theme[i] = [this.theme[i][0], color];
-		},
-
-		getTypeOf(v: ThemeValue) {
-			return v === null
-				? this.$t('_theme.defaultValue')
-				: typeof v === 'string'
-					? this.$t('_theme.color')
-					: this.$t('_theme.' + v.type);
-		},
-	
-		async chooseType(e: MouseEvent, i: number) {
-			const newValue = await this.showTypeMenu(e);
-			this.theme[i] = [ this.theme[i][0], newValue ];
-		},
-	
-		showTypeMenu(e: MouseEvent) {
-			return new Promise<ThemeValue>((resolve) => {
-				os.modalMenu([{
-					text: this.$t('_theme.defaultValue'),
-					action: () => resolve(null),
-				}, {
-					text: this.$t('_theme.color'),
-					action: () => resolve('#000000'),
-				}, {
-					text: this.$t('_theme.func'),
-					action: () => resolve({
-						type: 'func', name: 'alpha', arg: 1, value: 'accent'
-					}),
-				}, {
-					text: this.$t('_theme.refProp'),
-					action: () => resolve({
-						type: 'refProp', key: 'accent',
-					}),
-				}, {
-					text: this.$t('_theme.refConst'),
-					action: () => resolve({
-						type: 'refConst', key: '',
-					}),
-				}, {
-					text: 'CSS',
-					action: () => resolve({
-						type: 'css', value: '',
-					}),
-				}], e.currentTarget || e.target);
+				text: this.$t('_theme.installed', { name: this.theme.name })
 			});
 		}
 	}
@@ -310,43 +235,57 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.t9makv94 {
-	> ._section {
-		> ._content {
-			> .list-view {
-				> .item {
-					min-height: 48px;
-					word-break: break-all;
+.cwepdizn {
+	max-width: 800px;
+	margin: 0 auto;
 
-					&:not(:last-child) {
-						margin-bottom: 8px;
+	> .colorPicker {
+		> .colors {
+			padding: 32px;
+			text-align: center;
+
+			> .row {
+				> .color {
+					display: inline-block;
+					position: relative;
+					width: 64px;
+					height: 64px;
+					border-radius: 8px;
+
+					> .preview {
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						margin: auto;
+						width: 42px;
+						height: 42px;
+						border-radius: 4px;
+						box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+						transition: transform 0.15s ease;
 					}
 
-					.select {
-						margin: 24px 0;
-					}
-
-					.type {
-						cursor: pointer;
-					}
-
-					.default-value {
-						opacity: 0.6;
-						pointer-events: none;
-						user-select: none;
-					}
-
-					.color {
-						> input {
-							display: inline-block;
-							width: 1.5em;
-							height: 1.5em;
+					&:hover {
+						> .preview {
+							transform: scale(1.1);
 						}
+					}
 
-						> div {
-							margin-left: 8px;
-							display: inline-block;
+					&.active {
+						box-shadow: 0 0 0 2px var(--divider) inset;
+					}
+
+					&.rounded {
+						border-radius: 999px;
+
+						> .preview {
+							border-radius: 999px;
 						}
+					}
+
+					&.char {
+						line-height: 42px;
 					}
 				}
 			}

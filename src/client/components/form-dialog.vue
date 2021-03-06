@@ -1,6 +1,6 @@
 <template>
 <XModalWindow ref="dialog"
-	:width="400"
+	:width="450"
 	:can-close="false"
 	:with-ok-button="true"
 	:ok-button-disabled="false"
@@ -12,42 +12,61 @@
 	<template #header>
 		{{ title }}
 	</template>
-	<div class="xkpnjxcv _section">
-		<label v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
-			<MkInput v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
+	<FormBase class="xkpnjxcv">
+		<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
+			<FormInput v-if="form[item].type === 'number'" v-model:value="values[item]" type="number" :step="form[item].step || 1">
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</FormInput>
+			<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model:value="values[item]" type="text">
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</FormInput>
+			<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model:value="values[item]">
+				<span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span>
+				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
+			</FormTextarea>
+			<FormSwitch v-else-if="form[item].type === 'boolean'" v-model:value="values[item]">
 				<span v-text="form[item].label || item"></span>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</MkInput>
-			<MkInput v-else-if="form[item].type === 'string' && !item.multiline" v-model:value="values[item]" type="text">
-				<span v-text="form[item].label || item"></span>
+			</FormSwitch>
+			<FormSelect v-else-if="form[item].type === 'enum'" v-model:value="values[item]">
+				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				<option v-for="item in form[item].enum" :value="item.value" :key="item.value">{{ item.label }}</option>
+			</FormSelect>
+			<FormRange v-else-if="form[item].type === 'range'" v-model:value="values[item]" :min="form[item].mim" :max="form[item].max" :step="form[item].step">
+				<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</MkInput>
-			<MkTextarea v-else-if="form[item].type === 'string' && item.multiline" v-model:value="values[item]">
-				<span v-text="form[item].label || item"></span>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</MkTextarea>
-			<MkSwitch v-else-if="form[item].type === 'boolean'" v-model:value="values[item]">
-				<span v-text="form[item].label || item"></span>
-				<template v-if="form[item].description" #desc>{{ form[item].description }}</template>
-			</MkSwitch>
-		</label>
-	</div>
+			</FormRange>
+			<FormButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)">
+				<span v-text="form[item].content || item"></span>
+			</FormButton>
+		</template>
+	</FormBase>
 </XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XModalWindow from '@/components/ui/modal-window.vue';
-import MkInput from './ui/input.vue';
-import MkTextarea from './ui/textarea.vue';
-import MkSwitch from './ui/switch.vue';
+import FormBase from './form/base.vue';
+import FormInput from './form/input.vue';
+import FormTextarea from './form/textarea.vue';
+import FormSwitch from './form/switch.vue';
+import FormSelect from './form/select.vue';
+import FormRange from './form/range.vue';
+import FormButton from './form/button.vue';
 
 export default defineComponent({
 	components: {
 		XModalWindow,
-		MkInput,
-		MkTextarea,
-		MkSwitch,
+		FormBase,
+		FormInput,
+		FormTextarea,
+		FormSwitch,
+		FormSelect,
+		FormRange,
+		FormButton,
 	},
 
 	props: {
@@ -95,12 +114,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xkpnjxcv {
-	> label {
-		display: block;
 
-		&:not(:last-child) {
-			margin-bottom: 32px;
-		}
-	}
 }
 </style>

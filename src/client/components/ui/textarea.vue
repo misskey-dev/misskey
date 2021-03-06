@@ -2,7 +2,7 @@
 <div class="adhpbeos" :class="{ focused, filled, tall, pre }">
 	<div class="input">
 		<span class="label" ref="label"><slot></slot></span>
-		<textarea ref="input" :class="{ code }"
+		<textarea ref="input" :class="{ code, _monospace: code }"
 			:value="value"
 			:required="required"
 			:readonly="readonly"
@@ -14,7 +14,7 @@
 			@blur="focused = false"
 		></textarea>
 	</div>
-	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $t('save') }}</button>
+	<button class="save _textButton" v-if="save && changed" @click="() => { changed = false; save(); }">{{ $ts.save }}</button>
 	<div class="desc _caption"><slot name="desc"></slot></div>
 </div>
 </template>
@@ -166,7 +166,6 @@ export default defineComponent({
 
 			&.code {
 				tab-size: 2;
-				font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
 			}
 		}
 	}

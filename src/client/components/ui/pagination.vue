@@ -1,12 +1,12 @@
 <template>
-<div class="cxiknjgy" :class="{ autoMargin }">
+<div class="cxiknjgy">
 	<slot :items="items"></slot>
 	<div class="empty" v-if="empty" key="_empty_">
 		<slot name="empty"></slot>
 	</div>
 	<div class="more" v-show="more" key="_more_">
-		<MkButton class="button" v-appear="$store.state.device.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
-			<template v-if="!moreFetching">{{ $t('loadMore') }}</template>
+		<MkButton class="button" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
+			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 			<template v-if="moreFetching"><MkLoading inline/></template>
 		</MkButton>
 	</div>
@@ -31,24 +31,12 @@ export default defineComponent({
 		pagination: {
 			required: true
 		},
-		autoMargin: {
-			required: false,
-			default: true
-		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .cxiknjgy {
-	&.autoMargin > *:not(:last-child) {
-		margin-bottom: 16px;
-
-		@media (max-width: 500px) {
-			margin-bottom: 8px;
-		}
-	}
-
 	> .more > .button {
 		margin-left: auto;
 		margin-right: auto;

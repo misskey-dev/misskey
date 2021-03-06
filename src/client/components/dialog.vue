@@ -26,8 +26,8 @@
 			</template>
 		</MkSelect>
 		<div class="buttons" v-if="(showOkButton || showCancelButton) && !actions">
-			<MkButton inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select">{{ (showCancelButton || input || select) ? $t('ok') : $t('gotIt') }}</MkButton>
-			<MkButton inline @click="cancel" v-if="showCancelButton || input || select">{{ $t('cancel') }}</MkButton>
+			<MkButton inline @click="ok" v-if="showOkButton" primary :autofocus="!input && !select">{{ (showCancelButton || input || select) ? $ts.ok : $ts.gotIt }}</MkButton>
+			<MkButton inline @click="cancel" v-if="showCancelButton || input || select">{{ $ts.cancel }}</MkButton>
 		</div>
 		<div class="buttons" v-if="actions">
 			<MkButton v-for="action in actions" inline @click="() => { action.callback(); close(); }" :primary="action.primary" :key="action.text">{{ action.text }}</MkButton>
@@ -169,15 +169,15 @@ export default defineComponent({
 		font-size: 32px;
 
 		&.success {
-			color: var(--accent);
+			color: var(--success);
 		}
 
 		&.error {
-			color: #ec4137;
+			color: var(--error);
 		}
 
 		&.warning {
-			color: #ecb637;
+			color: var(--warn);
 		}
 
 		> * {

@@ -1,14 +1,14 @@
 <template>
 <div class="bgvwxkhb" v-if="!matching">
-	<h1>Misskey {{ $t('_reversi.reversi') }}</h1>
+	<h1>Misskey {{ $ts._reversi.reversi }}</h1>
 
 	<div class="play">
-		<MkButton primary round @click="match" style="margin: var(--margin) auto 0 auto;">{{ $t('invite') }}</MkButton>
+		<MkButton primary round @click="match" style="margin: var(--margin) auto 0 auto;">{{ $ts.invite }}</MkButton>
 	</div>
 
 	<div class="_section">
 		<MkFolder v-if="invitations.length > 0">
-			<template #header>{{ $t('invitations') }}</template>
+			<template #header>{{ $ts.invitations }}</template>
 			<div class="nfcacttm">
 				<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
 					<MkAvatar class="avatar" :user="invitation.parent"/>
@@ -20,25 +20,25 @@
 		</MkFolder>
 
 		<MkFolder v-if="myGames.length > 0">
-			<template #header>{{ $t('_reversi.myGames') }}</template>
+			<template #header>{{ $ts._reversi.myGames }}</template>
 			<div class="knextgwz">
 				<MkA class="game _panel" v-for="g in myGames" tabindex="-1" :to="`/games/reversi/${g.id}`" :key="g.id">
 					<div class="players">
 						<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
 					</div>
-					<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? $t('_reversi.ended') : $t('_reversi.playing') }}</span><MkTime class="time" :time="g.createdAt"/></footer>
+					<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? $ts._reversi.ended : $ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
 				</MkA>
 			</div>
 		</MkFolder>
 
 		<MkFolder v-if="games.length > 0">
-			<template #header>{{ $t('_reversi.allGames') }}</template>
+			<template #header>{{ $ts._reversi.allGames }}</template>
 			<div class="knextgwz">
 				<MkA class="game _panel" v-for="g in games" tabindex="-1" :to="`/games/reversi/${g.id}`" :key="g.id">
 					<div class="players">
 						<MkAvatar class="avatar" :user="g.user1"/><b><MkUserName :user="g.user1"/></b> vs <b><MkUserName :user="g.user2"/></b><MkAvatar class="avatar" :user="g.user2"/>
 					</div>
-					<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? $t('_reversi.ended') : $t('_reversi.playing') }}</span><MkTime class="time" :time="g.createdAt"/></footer>
+					<footer><span class="state" :class="{ playing: !g.isEnded }">{{ g.isEnded ? $ts._reversi.ended : $ts._reversi.playing }}</span><MkTime class="time" :time="g.createdAt"/></footer>
 				</MkA>
 			</div>
 		</MkFolder>
@@ -46,15 +46,15 @@
 </div>
 <div class="sazhgisb" v-else>
 	<h1>
-		<i18n-t keypath="waitingFor" tag="span">
+		<I18n :src="$ts.waitingFor" tag="span">
 			<template #x>
 				<b><MkUserName :user="matching"/></b>
 			</template>
-		</i18n-t>
+		</I18n>
 		<MkEllipsis/>
 	</h1>
 	<div class="cancel">
-		<MkButton inline round @click="cancel">{{ $t('cancel') }}</MkButton>
+		<MkButton inline round @click="cancel">{{ $ts.cancel }}</MkButton>
 	</div>
 </div>
 </template>
@@ -76,10 +76,8 @@ export default defineComponent({
 	data() {
 		return {
 			INFO: {
-				header: [{
-					title: this.$t('_reversi.reversi'),
-					icon: faGamepad
-				}]
+				title: this.$ts._reversi.reversi,
+				icon: faGamepad
 			},
 			games: [],
 			gamesFetching: true,
@@ -93,7 +91,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		if (this.$store.getters.isSignedIn) {
+		if (this.$i) {
 			this.connection = os.stream.useSharedConnection('gamesReversi');
 
 			this.connection.on('invited', this.onInvited);

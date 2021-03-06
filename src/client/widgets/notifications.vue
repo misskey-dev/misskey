@@ -1,6 +1,6 @@
 <template>
 <MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
-	<template #header><Fa :icon="faBell"/>{{ $t('notifications') }}</template>
+	<template #header><Fa :icon="faBell"/>{{ $ts.notifications }}</template>
 	<template #func><button @click="configure()" class="_button"><Fa :icon="faCog"/></button></template>
 
 	<div>
@@ -51,8 +51,8 @@ export default defineComponent({
 	},
 
 	methods: {
-		async configure() {
-			os.popup(await import('@/components/notification-setting-window.vue'), {
+		configure() {
+			os.popup(import('@/components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
 			}, {
 				done: async (res) => {
