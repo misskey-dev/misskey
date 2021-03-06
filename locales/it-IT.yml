@@ -578,7 +578,7 @@ _notification:
     mention: "Menzioni"
     reply: "Rispondi"
     renote: "Rinotta"
-    quote: "Cita il nota"
+    quote: "Cita"
     reaction: "Reazione"
 _deck:
   _columns:
