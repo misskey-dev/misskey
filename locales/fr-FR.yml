@@ -809,6 +809,7 @@ _instanceTicker:
   always: "Toujours afficher"
 _serverDisconnectedBehavior:
   reload: "Rechargement automatique"
+  dialog: "Ouvrir une boîte de dialogue pour l'avertissement"
   quiet: "Afficher un avertissement discret"
 _channel:
   create: "Créer un canal"
