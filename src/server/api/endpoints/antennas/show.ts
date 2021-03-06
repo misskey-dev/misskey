@@ -5,6 +5,11 @@ import { ApiError } from '../../error';
 import { Antennas } from '../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': '指定したアンテナの情報を取得します。',
+		'en-US': 'Acquires the information of the specified antenna.'
+	},
+
 	tags: ['antennas', 'account'],
 
 	requireCredential: true as const,
@@ -23,6 +28,12 @@ export const meta = {
 			code: 'NO_SUCH_ANTENNA',
 			id: 'c06569fb-b025-4f23-b22d-1fcd20d2816b'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Antenna'
 	}
 };
 

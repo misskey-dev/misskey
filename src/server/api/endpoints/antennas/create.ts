@@ -6,6 +6,11 @@ import { ID } from '../../../../misc/cafy-id';
 import { ApiError } from '../../error';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'アンテナを作成します。',
+		'en-US': 'Create a antenna.'
+	},
+
 	tags: ['antennas'],
 
 	requireCredential: true as const,
@@ -70,6 +75,12 @@ export const meta = {
 			code: 'NO_SUCH_USER_GROUP',
 			id: 'aa3c0b9a-8cae-47c0-92ac-202ce5906682'
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Antenna'
 	}
 };
 

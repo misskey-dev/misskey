@@ -29,6 +29,23 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			id: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'id'
+			},
+			page: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const,
+				ref: 'Page'
+			}
+		}
 	}
 };
 

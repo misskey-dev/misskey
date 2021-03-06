@@ -26,6 +26,14 @@ export const meta = {
 		type: 'object' as const,
 		optional: false as const, nullable: false as const,
 		properties: {
+			maintainerName: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			maintainerEmail: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
 			version: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
@@ -37,31 +45,43 @@ export const meta = {
 				optional: false as const, nullable: false as const,
 				description: 'The name of this instance.',
 			},
-			description: {
+			uri: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
+				format: 'url',
+				example: 'https://misskey.example.com'
+			},
+			description: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const,
 				description: 'The description of this instance.',
 			},
-			announcements: {
+			langs: {
 				type: 'array' as const,
 				optional: false as const, nullable: false as const,
 				items: {
-					type: 'object' as const,
-					optional: false as const, nullable: false as const,
-					properties: {
-						title: {
-							type: 'string' as const,
-							optional: false as const, nullable: false as const,
-							description: 'The title of the announcement.',
-						},
-						text: {
-							type: 'string' as const,
-							optional: false as const, nullable: false as const,
-							description: 'The text of the announcement. (can be HTML)',
-						},
-					}
-				},
-				description: 'The announcements of this instance.',
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
+			},
+			tosUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			repositoryUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				default: 'https://github.com/syuilo/misskey'
+			},
+			feedbackUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				default: 'https://github.com/syuilo/misskey/issues/new'
+			},
+			secure: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
+				default: false
 			},
 			disableRegistration: {
 				type: 'boolean' as const,
@@ -78,6 +98,330 @@ export const meta = {
 				optional: false as const, nullable: false as const,
 				description: 'Whether disabled GTL.',
 			},
+			driveCapacityPerLocalUserMb: {
+				type: 'number' as const,
+				optional: false as const, nullable: false as const
+			},
+			driveCapacityPerRemoteUserMb: {
+				type: 'number' as const,
+				optional: false as const, nullable: false as const
+			},
+			cacheRemoteFiles: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			proxyRemoteFiles: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			enableHcaptcha: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			hcaptchaSiteKey: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			enableRecaptcha: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			recaptchaSiteKey: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			swPublickey: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			mascotImageUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				default: '/assets/ai.png'
+			},
+			bannerUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			},
+			errorImageUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				default: 'https://xn--931a.moe/aiart/yubitun.png'
+			},
+			iconUrl: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			maxNoteTextLength: {
+				type: 'number' as const,
+				optional: false as const, nullable: false as const,
+				default: 500
+			},
+			emojis: {
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const,
+					properties: {
+						id: {
+							type: 'string' as const,
+							optional: false as const, nullable: false as const,
+							format: 'id'
+						},
+						aliases: {
+							type: 'array' as const,
+							optional: false as const, nullable: false as const,
+							items: {
+								type: 'string' as const,
+								optional: false as const, nullable: false as const
+							}
+						},
+						category: {
+							type: 'string' as const,
+							optional: false as const, nullable: true as const
+						},
+						host: {
+							type: 'string' as const,
+							optional: false as const, nullable: true as const
+						},
+						url: {
+							type: 'string' as const,
+							optional: false as const, nullable: false as const,
+							format: 'url'
+						}
+					}
+				}
+			},
+			requireSetup: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
+				example: false
+			},
+			enableEmail: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			enableTwitterIntegration: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			enableGithubIntegration: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			enableDiscordIntegration: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			enableServiceWorker: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			proxyAccountName: {
+				type: 'string' as const,
+				optional: false as const, nullable: true as const
+			},
+			features: {
+				type: 'object' as const,
+				optional: true as const, nullable: false as const,
+				properties: {
+					registration: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					localTimeLine: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					globalTimeLine: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					elasticsearch: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					hcaptcha: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					recaptcha: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					objectStorage: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					twitter: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					github: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					discord: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					serviceWorker: {
+						type: 'boolean' as const,
+						optional: false as const, nullable: false as const
+					},
+					miauth: {
+						type: 'boolean' as const,
+						optional: true as const, nullable: false as const,
+						default: true
+					},
+				}
+			},
+			userStarForReactionFallback: {
+				type: 'boolean' as const,
+				optional: true as const, nullable: false as const,
+			},
+			pinnedUsers: {
+				type: 'array' as const,
+				optional: true as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
+			},
+			hiddenTags: {
+				type: 'array' as const,
+				optional: true as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
+			},
+			blockedHosts: {
+				type: 'array' as const,
+				optional: true as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
+			},
+			hcaptchaSecretKey: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			recaptchaSecretKey: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			proxyAccountId: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const,
+				format: 'id'
+			},
+			twitterConsumerKey: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			twitterConsumerSecret: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			githubClientId: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			githubClientSecret: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			discordClientId: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			discordClientSecret: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			summaryProxy: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			email: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			smtpSecure: {
+				type: 'boolean' as const,
+				optional: true as const, nullable: false as const
+			},
+			smtpHost: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			smtpPort: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			smtpUser: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			smtpPass: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			swPrivateKey: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			useObjectStorage: {
+				type: 'boolean' as const,
+				optional: true as const, nullable: false as const
+			},
+			objectStorageBaseUrl: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStorageBucket: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStoragePrefix: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStorageEndpoint: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStorageRegion: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStoragePort: {
+				type: 'number' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStorageAccessKey: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStorageSecretKey: {
+				type: 'string' as const,
+				optional: true as const, nullable: true as const
+			},
+			objectStorageUseSSL: {
+				type: 'boolean' as const,
+				optional: true as const, nullable: false as const
+			},
+			objectStorageUseProxy: {
+				type: 'boolean' as const,
+				optional: true as const, nullable: false as const
+			},
+			objectStorageSetPublicRead: {
+				type: 'boolean' as const,
+				optional: true as const, nullable: false as const
+			}
 		}
 	}
 };
