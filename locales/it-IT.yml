@@ -46,7 +46,7 @@ searchUser: "Cerca Utente"
 reply: "Rispondi"
 loadMore: "Mostra di più"
 showMore: "Mostra di più"
-youGotNewFollower: "Nuovo seguace"
+youGotNewFollower: "Ha iniziato a seguirti"
 receiveFollowRequest: "Nuova richiesta di essere seguito"
 mention: "Menzioni"
 mentions: "Menzioni"
@@ -307,7 +307,7 @@ editCode: "Modifica codice"
 apply: "Applica"
 _email:
   _follow:
-    title: "Nuovo seguace"
+    title: "Ha iniziato a seguirti"
 _registry:
   key: "Dati"
   keys: "Dati"
@@ -571,7 +571,7 @@ _notification:
   youGotQuote: "{name} ha citato il tuo Nota e ha detto"
   youRenoted: "{name} ha rinotta"
   youGotPoll: "{name} ha volluto."
-  youWereFollowed: "Nuovo seguace"
+  youWereFollowed: "Ha iniziato a seguirti"
   _types:
     all: "Tutto"
     follow: "Seiguiti"
