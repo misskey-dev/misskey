@@ -709,6 +709,7 @@ useReactionPickerForContextMenu: "Открывать палитру реакци
 typingUsers: "Стук клавиш. Это {users}…"
 jumpToSpecifiedDate: "Перейти к заданной дате"
 showingPastTimeline: "Отображается старая лента"
+clear: "Очистить"
 _email:
   _follow:
     title: "Новый подписчик"
