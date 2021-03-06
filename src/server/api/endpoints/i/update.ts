@@ -196,6 +196,12 @@ export const meta = {
 			code: 'NO_SUCH_PAGE',
 			id: '8e01b590-7eb9-431b-a239-860e086c408e'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

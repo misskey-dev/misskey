@@ -46,33 +46,35 @@ export const packedAppSchema = {
 	properties: {
 		id: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const,
-			format: 'id',
-			description: 'The unique identifier for this Note.',
-			example: 'xxxxxxxxxx',
+			optional: false as const, nullable: false as const
 		},
 		name: {
 			type: 'string' as const,
-			optional: false as const, nullable: false as const,
-			description: 'アプリケーションの名前'
+			optional: false as const, nullable: false as const
 		},
-		callbackUrl: {
+		createdAt: {
 			type: 'string' as const,
-			optional: false as const, nullable: true as const,
-			description: 'コールバックするURL'
+			optional: false as const, nullable: false as const
+		},
+		lastUsedAt: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const
 		},
 		permission: {
 			type: 'array' as const,
-			optional: true as const, nullable: false as const,
+			optional: false as const, nullable: false as const,
 			items: {
 				type: 'string' as const,
-				optional: false as const, nullable: false as const,
+				optional: false as const, nullable: false as const
 			}
 		},
 		secret: {
 			type: 'string' as const,
-			optional: true as const, nullable: false as const,
-			description: 'アプリケーションのシークレットキー'
+			optional: true as const, nullable: false as const
+		},
+		isAuthorized: {
+			type: 'boolean' as const,
+			optional: true as const, nullable: false as const
 		}
-	},
+	}
 };

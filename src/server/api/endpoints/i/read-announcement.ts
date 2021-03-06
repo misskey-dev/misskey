@@ -7,6 +7,11 @@ import { AnnouncementReads, Announcements, Users } from '../../../../models';
 import { publishMainStream } from '../../../../services/stream';
 
 export const meta = {
+	desc: {
+		'ja-JP': '指定したアナウンスを既読にします。',
+		'en-US': 'Marks the specified announcement as read.'
+	},
+
 	tags: ['account'],
 
 	requireCredential: true as const,

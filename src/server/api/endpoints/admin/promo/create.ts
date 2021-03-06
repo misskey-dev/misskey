@@ -6,6 +6,11 @@ import { getNote } from '../../../common/getters';
 import { PromoNotes } from '../../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'プロモーションを作成します。',
+		'en-US': 'Create a promotion.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,

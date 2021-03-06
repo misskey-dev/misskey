@@ -32,6 +32,12 @@ export const meta = {
 			code: 'NO_SUCH_NOTE',
 			id: '454170ce-9d63-4a43-9da1-ea10afe81e21'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

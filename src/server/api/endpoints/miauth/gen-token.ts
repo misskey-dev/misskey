@@ -32,6 +32,17 @@ export const meta = {
 			validator: $.arr($.str).unique(),
 		},
 	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			token: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			}
+		}
+	}
 };
 
 export default define(meta, async (ps, user) => {

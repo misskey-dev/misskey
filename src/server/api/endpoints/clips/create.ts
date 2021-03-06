@@ -23,6 +23,12 @@ export const meta = {
 			validator: $.optional.nullable.str.range(1, 2048)
 		}
 	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Clip'
+	}
 };
 
 export default define(meta, async (ps, user) => {

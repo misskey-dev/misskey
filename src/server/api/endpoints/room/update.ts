@@ -46,5 +46,6 @@ export default define(meta, async (ps, user) => {
 	// Publish meUpdated event
 	publishMainStream(user.id, 'meUpdated', iObj);
 
+	// TODO: レスポンスがおかしいと思う by YuzuRyo61
 	return iObj;
 });

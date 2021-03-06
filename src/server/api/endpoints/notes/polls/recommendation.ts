@@ -23,6 +23,16 @@ export const meta = {
 			validator: $.optional.num.min(0),
 			default: 0
 		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			ref: 'Note'
+		}
 	}
 };
 
