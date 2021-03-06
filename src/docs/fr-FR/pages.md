@@ -7,4 +7,4 @@ Les variables sont évaluées du haut vers le bas, il n'est donc pas possible de
 
 Pour recevoir une entrée utilisateur, ajoutez un bloc "Entrée" sur la page et définissez le nom des variables que vous souhaitez stocker dans le champ "Nom de la variable" (les variables seront créées automatiquement).Vous pourrez alors exécuter les actions en fonction de l'entrée utilisateur de ces variables.
 
-Utiliser des fonctions vous permettra de mettre en place une façon de calculer des valeurs que vous pourrez réutiliser.Pour créer des fonctions, il faut d'abord définir une variable du type "fonction".関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。
+Utiliser des fonctions vous permettra de mettre en place une façon de calculer des valeurs que vous pourrez réutiliser.Pour créer des fonctions, il faut d'abord définir une variable du type "fonction".Ensuite, vous pouvez configurer des arguments dont la valeur sera utilisable comme une variable à l'intérieur de la fonction. また、関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。
