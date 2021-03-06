@@ -71,7 +71,7 @@ export default define(meta, async (ps, me) => {
 		case 'available': query.where('user.isSuspended = FALSE'); break;
 		case 'admin': query.where('user.isAdmin = TRUE'); break;
 		case 'moderator': query.where('user.isModerator = TRUE'); break;
-		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
+		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR user.isModerator = TRUE'); break;
 		case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 		case 'silenced': query.where('user.isSilenced = TRUE'); break;
 		case 'suspended': query.where('user.isSuspended = TRUE'); break;
