@@ -1,4 +1,4 @@
 # AiScript
 
 ## Fonction
-Réglé sur « passage par copie » par défaut
+Réglé sur « passage par valeur » par défaut.
