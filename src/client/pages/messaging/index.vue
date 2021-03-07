@@ -200,7 +200,7 @@ export default defineComponent({
 
 			&:not(.isMe):not(.isRead) {
 				> div {
-					background-image: url("/assets/unread.svg");
+					background-image: url("/static-assets/client/unread.svg");
 					background-repeat: no-repeat;
 					background-position: 0 center;
 				}
