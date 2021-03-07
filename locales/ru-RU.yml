@@ -623,7 +623,7 @@ random: "Случайные"
 system: "Система"
 switchUi: "Выбор вида"
 desktop: "Стол"
-clip: "Памятки"
+clip: "В памятку"
 createNew: "Новый документ"
 optional: "Необязательно"
 createNewClip: "Новая памятка"
@@ -709,6 +709,7 @@ useReactionPickerForContextMenu: "Открывать палитру реакци
 typingUsers: "Стук клавиш. Это {users}…"
 jumpToSpecifiedDate: "Перейти к заданной дате"
 showingPastTimeline: "Отображается старая лента"
+clear: "Очистить"
 _email:
   _follow:
     title: "Новый подписчик"

@@ -44,6 +44,12 @@ export const meta = {
 			code: 'ALREADY_PINNED',
 			id: '8b18c2b7-68fe-4edb-9892-c0cbaeb6c913'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

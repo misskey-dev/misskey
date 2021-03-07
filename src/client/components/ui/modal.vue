@@ -1,14 +1,12 @@
 <template>
-<div class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-	<transition :name="$store.state.animation ? 'modal-bg' : ''" appear>
-		<div class="bg _modalBg" v-if="manualShowing != null ? manualShowing : showing" @click="onBgClick"></div>
-	</transition>
-	<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
-		<transition :name="$store.state.animation ? popup ? 'modal-popup-content' : 'modal-content' : ''" appear @after-leave="$emit('closed')" @enter="$emit('opening')" @after-enter="childRendered">
-			<slot v-if="manualShowing != null ? true : showing" v-bind:showing="manualShowing"></slot>
-		</transition>
+<transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
+	<div v-show="manualShowing != null ? manualShowing : showing" class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+		<div class="bg _modalBg" @click="onBgClick"></div>
+		<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
+			<slot></slot>
+		</div>
 	</div>
-</div>
+</transition>
 </template>
 
 <script lang="ts">
@@ -84,6 +82,8 @@ export default defineComponent({
 			if (!this.popup) return;
 
 			const popover = this.$refs.content as any;
+
+			if (popover == null) return;
 
 			const rect = this.src.getBoundingClientRect();
 			
@@ -163,42 +163,71 @@ export default defineComponent({
 		onBgClick() {
 			if (this.contentClicking) return;
 			this.$emit('click');
+		},
+
+		onClosed() {
+			this.$emit('closed');
 		}
 	}
 });
 </script>
 
-<style>
-.modal-popup-content-enter-active, .modal-popup-content-leave-active,
-.modal-content-enter-from, .modal-content-leave-to {
-  transform-origin: var(--transformOrigin);
+<style lang="scss">
+.modal-popup-enter-active, .modal-popup-leave-active,
+.modal-enter-from, .modal-leave-to {
+	> .content {
+		transform-origin: var(--transformOrigin);
+	}
 }
 </style>
 
 <style lang="scss" scoped>
-.modal-bg-enter-active, .modal-bg-leave-active {
-	transition: opacity 0.3s !important;
-}
-.modal-bg-enter-from, .modal-bg-leave-to {
-	opacity: 0;
-}
-
-.modal-content-enter-active, .modal-content-leave-active {
+.modal-enter-active, .modal-leave-active {
+	// CSS的には無意味だけどこれが無いとVueが認識しない
 	transition: opacity 0.3s, transform 0.3s !important;
+
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+		transition: opacity 0.3s, transform 0.3s !important;
+	}
 }
-.modal-content-enter-from, .modal-content-leave-to {
-	pointer-events: none;
-	opacity: 0;
-	transform: scale(0.9);
+.modal-enter-from, .modal-leave-to {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform: scale(0.9);
+	}
 }
 
-.modal-popup-content-enter-active, .modal-popup-content-leave-active {
+.modal-popup-enter-active, .modal-popup-leave-active {
+	// CSS的には無意味だけどこれが無いとVueが認識しない
 	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+		transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+	}
 }
-.modal-popup-content-enter-from, .modal-popup-content-leave-to {
-	pointer-events: none;
-	opacity: 0;
-	transform: scale(0.9);
+.modal-popup-enter-from, .modal-popup-leave-to {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform: scale(0.9);
+	}
 }
 
 .mk-modal {
@@ -227,12 +256,12 @@ export default defineComponent({
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 		}
 
-		> * {
+		> ::v-deep(*) {
 			margin: auto;
 		}
 
 		&.top {
-			> * {
+			> ::v-deep(*) {
 				margin-top: 0;
 			}
 		}

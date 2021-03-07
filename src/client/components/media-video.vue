@@ -6,22 +6,24 @@
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
-	<a
-		:href="video.url"
-		rel="nofollow noopener"
-		target="_blank"
-		:style="imageStyle"
+	<video
+		:poster="video.thumbnailUrl"
 		:title="video.name"
+		crossorigin="anonymous"
+		preload="none"
+		controls
 	>
-		<Fa :icon="faPlayCircle"/>
-	</a>
+		<source 
+			:src="video.url" 
+			:type="video.type"
+		>
+	</video>
+	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@/os';
 
@@ -35,17 +37,9 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faPlayCircle,
 			faExclamationTriangle,
 			faEyeSlash
 		};
-	},
-	computed: {
-		imageStyle(): any {
-			return {
-				'background-image': `url(${this.video.thumbnailUrl})`
-			};
-		}
 	},
 	created() {
 		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
@@ -72,7 +66,7 @@ export default defineComponent({
 		right: 12px;
 	}
 
-	> a {
+	> video {
 		display: flex;
 		justify-content: center;
 		align-items: center;

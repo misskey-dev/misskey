@@ -9,6 +9,11 @@ import { ID } from '../../../../../misc/cafy-id';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 
 export const meta = {
+	desc: {
+		'ja-JP': '選択したカスタム絵文字をコピーします。',
+		'en-US': 'Copies the selected custom emoji.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -25,6 +30,19 @@ export const meta = {
 			message: 'No such emoji.',
 			code: 'NO_SUCH_EMOJI',
 			id: 'e2785b66-dca3-4087-9cac-b93c541cc425'
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			id: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'id',
+				description: 'New copied emoji ID'
+			}
 		}
 	}
 };

@@ -7,7 +7,8 @@ import { ID } from '../../../../../misc/cafy-id';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'カスタム絵文字を取得します。'
+		'ja-JP': 'リモートのカスタム絵文字一覧を取得します。',
+		'en-US': 'Gets a list of remote custom emojis.'
 	},
 
 	tags: ['admin'],
@@ -37,6 +38,52 @@ export const meta = {
 
 		untilId: {
 			validator: $.optional.type(ID),
+		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id',
+					description: 'The unique identifier for this Emoji.'
+				},
+				aliases: {
+					type: 'array' as const,
+					optional: false as const, nullable: false as const,
+					description: 'List to make it easier to be displayed as a candidate when entering emoji.',
+					items: {
+						type: 'string' as const,
+						optional: false as const, nullable: false as const
+					}
+				},
+				name: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					description: 'Official name of custom emoji.'
+				},
+				category: {
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
+					description: 'Names categorized in the emoji list.'
+				},
+				host: {
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
+					description: 'If it is another server, the FQDN will be returned here.'
+				},
+				url: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					description: 'Image URL of emoji.'
+				}
+			}
 		}
 	}
 };
