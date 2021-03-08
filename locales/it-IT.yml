@@ -417,6 +417,8 @@ _time:
 _tutorial:
   title: "Come usare Misskey"
   step1_1: "Benvenuto"
+  step6_2: "Puoi inviare una risposta rapida alle note di altri utenti mandando loro \"reazioni\"."
+  step6_3: "Per allegare una reazione, fa un clic sull'icona + della nota e scegli l'emoji che vuoi mandare."
 _permissions:
   "read:blocks": "Visualizza gli account che hai bloccato."
   "write:blocks": "Gestisci gli account che hai bloccato."
