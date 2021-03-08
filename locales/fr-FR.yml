@@ -959,7 +959,7 @@ _permissions:
   "read:drive": "Parcourir le Drive"
   "write:drive": "Écrire sur le Drive"
   "read:favorites": "Afficher les favoris"
-  "write:favorites": "Écrire des favoris"
+  "write:favorites": "Gérer les favoris"
   "read:following": "Voir les informations de vos abonnements"
   "write:following": "Abonnements/Se désabonner"
   "read:messaging": "Cherche à discuter"
