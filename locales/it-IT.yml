@@ -502,6 +502,8 @@ _time:
 _tutorial:
   title: "Come usare Misskey"
   step1_1: "Benvenuto"
+  step1_2: "Questa pagina si chiama una \" Timeline \". Mostra in ordine cronologico le \" note \" delle persone che segui."
+  step1_3: "Attualmente la tua Timeline è vuota perché non segui alcun account e non hai pubblicato alcuna nota ancora."
   step6_2: "Puoi inviare una risposta rapida alle note di altri utenti mandando loro \"reazioni\"."
   step6_3: "Per allegare una reazione, fa un clic sull'icona + della nota e scegli l'emoji che vuoi mandare."
 _permissions:
@@ -510,6 +512,7 @@ _permissions:
   "read:favorites": "Visualizza i tuoi preferiti"
   "write:favorites": "Gestisci i tuoi preferiti"
   "write:following": "Seguiti/ Smetti di seguire"
+  "write:notes": "Creare / Eliminare note"
   "read:notifications": "Visualizza notifiche"
   "read:reactions": "Vedi reazioni"
   "write:reactions": "Gerisci reazioni"
