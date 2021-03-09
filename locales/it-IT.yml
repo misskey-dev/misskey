@@ -631,7 +631,7 @@ _pages:
       array: "Liste"
 _notification:
   youGotQuote: "{name} ha citato il tuo Nota e ha detto"
-  youRenoted: "{name} ha rinota"
+  youRenoted: "{name} ha rinotato"
   youGotPoll: "{name} ha volluto."
   youWereFollowed: "Ha iniziato a seguirti"
   _types:
