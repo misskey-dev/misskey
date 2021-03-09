@@ -161,6 +161,7 @@ noteDeleteConfirm: "Eliminare questo Nota?"
 done: "Fine"
 processing: "In elaborazione"
 preview: "Anteprima"
+default: "Predefinito"
 blocked: "Bloccati"
 suspended: "Sospes@"
 all: "Tutti"
@@ -497,6 +498,7 @@ _timelines:
   local: "Locale"
 _rooms:
   _roomType:
+    default: "Predefinito"
     washitsu: "Washitsu"
   _furnitures:
     milk: "Cartone del latte"
