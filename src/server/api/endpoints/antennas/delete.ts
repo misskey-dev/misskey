@@ -5,6 +5,11 @@ import { ApiError } from '../../error';
 import { Antennas } from '../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'アンテナを削除します。',
+		'en-US': 'Delete a antenna.'
+	},
+
 	tags: ['antennas'],
 
 	requireCredential: true as const,

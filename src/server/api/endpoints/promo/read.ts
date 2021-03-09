@@ -7,6 +7,11 @@ import { PromoReads } from '../../../../models';
 import { genId } from '../../../../misc/gen-id';
 
 export const meta = {
+	desc: {
+		'ja-JP': '指定したノートのプロモーションを既読にします。',
+		'en-US': 'Marks the promotion for the specified note as read.'
+	},
+
 	tags: ['notes'],
 
 	requireCredential: true as const,

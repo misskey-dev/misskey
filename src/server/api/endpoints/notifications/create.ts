@@ -3,6 +3,10 @@ import define from '../../define';
 import { createNotification } from '../../../../services/create-notification';
 
 export const meta = {
+	desc: {
+		'ja-JP': '通知を作成します。'
+	},
+
 	tags: ['notifications'],
 
 	requireCredential: true as const,

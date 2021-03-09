@@ -28,7 +28,8 @@ const markdown = MarkdownIt({
 	html: true
 });
 
-const client = `${__dirname}/../../client/`;
+const staticAssets = `${__dirname}/../../../assets/`;
+const assets = `${__dirname}/../../assets/`;
 
 // Init app
 const app = new Koa();
@@ -57,24 +58,31 @@ const router = new Router();
 
 //#region static assets
 
+router.get('/static-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
+		root: staticAssets,
+		maxage: ms('7 days'),
+	});
+});
+
 router.get('/assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path, {
-		root: client,
+	await send(ctx as any, ctx.path.replace('/assets/', ''), {
+		root: assets,
 		maxage: ms('7 days'),
 	});
 });
 
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
-	await send(ctx as any, '/assets/apple-touch-icon.png', {
-		root: client
+	await send(ctx as any, '/apple-touch-icon.png', {
+		root: assets
 	});
 });
 
 // ServiceWorker
 router.get('/sw.js', async ctx => {
-	await send(ctx as any, `/assets/sw.${config.version}.js`, {
-		root: client
+	await send(ctx as any, `/sw.${config.version}.js`, {
+		root: assets
 	});
 });
 
@@ -82,8 +90,8 @@ router.get('/sw.js', async ctx => {
 router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
-	await send(ctx as any, '/assets/robots.txt', {
-		root: client
+	await send(ctx as any, '/robots.txt', {
+		root: assets
 	});
 });
 
@@ -91,8 +99,8 @@ router.get('/robots.txt', async ctx => {
 
 // Docs
 router.get('/api-doc', async ctx => {
-	await send(ctx as any, '/assets/redoc.html', {
-		root: client
+	await send(ctx as any, '/redoc.html', {
+		root: staticAssets
 	});
 });
 

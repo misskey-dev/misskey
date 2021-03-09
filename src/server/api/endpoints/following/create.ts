@@ -64,6 +64,12 @@ export const meta = {
 			code: 'BLOCKED',
 			id: 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

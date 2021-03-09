@@ -6,7 +6,7 @@ Vous pouvez modifier l'apparence de votre client Misskey à l'aide de thèmes.
 Paramètres > Thèmes
 
 ## Créer un thème
-テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
+Les codes des thèmes sont écrits sous forme d'objets JSON5. Les thèmes comprennent les objets suivants :
 ``` js
 {
     id: '17587283-dd92-4a2c-a22c-be0637c9e22a',
@@ -40,29 +40,29 @@ Paramètres > Thèmes
 * `base` ... Thème clair ou sombre :
     * Sélectionnez `light` pour définir le thème comme thème clair et `dark` pour le définir comme sombre,
     * Le thème héritera des valeurs par défaut du thème spécifié ici ;
-* `props` ... テーマのスタイル定義。これから説明します。
+* `props` ... Définir un style de thème.Voir les explications ci-après.
 
-### テーマのスタイル定義
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+### Définir un style de thème
+C'est dans `props` que vous définirez le style de thème. Les propriétés deviendront des variables CSS et les valeurs spécifieront le contenu. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est clair `light` ce sera l'objet [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est sombre `dark` ce sera l'objet [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5). Cela signifie, par exemple, que s'il n'y pas de propriété `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
 
-#### バリューで使える構文
-* 16進数で表された色
-    * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
-    * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
-    * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
-    * 例: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
-    * 例: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+#### Syntaxe des valeurs
+* Codes de couleur Hex
+    * Ex. : `#00ff00`
+* Couleurs avec les valeurs RVB : `rgb(r, g, b)`
+    * Ex. : `rgb(0, 255, 0)`
+* Couleurs avec les valeurs RVBA : `rgba(r, g, b, a)`
+    * Ex. : `rgba(0, 255, 0, 0.5)`
+* Faire référence aux valeurs d'autres propriétés
+    * Entrer `@{keyname}` pour utiliser la valeur de la propriété citée. Remplacer alors `{keyname}` par le nom de la propriété que vous souhaitez citer.
+    * Ex. : `@panel`
+* Constantes (voir ci-dessous)
+    * Entrer `${constantname}` pour utiliser la valeur de la constante citée.Remplacer alors `{constantname}` par la nom de la constante que vous souhaitez citer.
+    * Ex. : `$main`
+* Fonctions (voir ci-dessous)
+    * `:{functionname}<{argument}<{color}`
 
-#### Constante
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+#### Constantes
+Dans le cas où vous ne souhaiteriez pas qu'une valeur génère une variable CSS mais que vous voudriez l'utiliser comme valeur pour une autre variable CSS, vous avez la possibilité d'utiliser une constante. Il suffit de faire précéder le nom de la propriété de : `$` pour que celle-ci ne génère pas de variable CSS.
 
-#### Fonction
+#### Fonctions
 wip

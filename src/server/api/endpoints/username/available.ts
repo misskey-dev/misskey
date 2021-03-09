@@ -3,6 +3,11 @@ import define from '../../define';
 import { Users, UsedUsernames } from '../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'ユーザーネームが使用されていないかをチェックします。',
+		'en-US': 'Check if the username is being used.'
+	},
+
 	tags: ['users'],
 
 	requireCredential: false as const,
@@ -10,6 +15,18 @@ export const meta = {
 	params: {
 		username: {
 			validator: $.use(Users.validateLocalUsername)
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			available: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const,
+				description: 'Returns true if the username is not used.'
+			}
 		}
 	}
 };

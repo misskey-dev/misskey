@@ -3,6 +3,11 @@ import { driveChart, notesChart, usersChart, instanceChart } from '../../../../s
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'チャートを再同期します。',
+		'en-US': 'Resync the chart.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,

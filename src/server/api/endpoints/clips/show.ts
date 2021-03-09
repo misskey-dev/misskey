@@ -23,6 +23,12 @@ export const meta = {
 			code: 'NO_SUCH_CLIP',
 			id: 'c3c5fe33-d62c-44d2-9ea5-d997703f5c20'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Clip'
 	}
 };
 
