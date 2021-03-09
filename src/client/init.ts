@@ -69,6 +69,7 @@ import { isMobile } from '@/scripts/is-mobile';
 import { getThemes } from '@/theme-store';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reload, reloadChannel } from '@/scripts/unison-reload';
+import { reactionPicker } from '@/scripts/reaction-picker';
 import { deleteLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 
@@ -246,9 +247,22 @@ components(app);
 
 await router.isReady();
 
-//document.body.innerHTML = '<div id="app"></div>';
+const splash = document.getElementById('splash');
+// 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
+if (splash) splash.addEventListener('transitionend', () => {
+	splash.remove();
+});
 
-app.mount('body');
+const rootEl = document.createElement('div');
+document.body.appendChild(rootEl);
+app.mount(rootEl);
+
+reactionPicker.init();
+
+if (splash) {
+	splash.style.opacity = '0';
+	splash.style.pointerEvents = 'none';
+}
 
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {

@@ -6,6 +6,7 @@ export const meta = {
 	requireCredential: false as const,
 
 	desc: {
+		'ja-JP': 'インスタンスの統計を取得します。',
 		'en-US': 'Get the instance\'s statistics'
 	},
 
@@ -43,6 +44,14 @@ export const meta = {
 				optional: false as const, nullable: false as const,
 				description: 'The count of federated instances.',
 			},
+			driveUsageLocal: {
+				type: 'number' as const,
+				optional: false as const, nullable: false as const
+			},
+			driveUsageRemote: {
+				type: 'number' as const,
+				optional: false as const, nullable: false as const
+			}
 		}
 	}
 };

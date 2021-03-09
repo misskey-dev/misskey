@@ -30,7 +30,7 @@
 		</template>
 	</div>
 	<div class="_section">
-		<div class="localfedi7 _panel _vMargin" v-if="tag == null" :style="{ backgroundImage: `url(/assets/fedi.jpg)` }">
+		<div class="localfedi7 _panel _vMargin" v-if="tag == null" :style="{ backgroundImage: `url(/static-assets/client/fedi.jpg)` }">
 			<header><span>{{ $ts.exploreFediverse }}</span></header>
 		</div>
 

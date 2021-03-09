@@ -279,6 +279,7 @@ export default defineComponent({
 
 		reset() {
 			this.$refs.emojis.scrollTop = 0;
+			this.q = '';
 		},
 
 		getKey(emoji: any) {
