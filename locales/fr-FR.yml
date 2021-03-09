@@ -317,7 +317,7 @@ disablingTimelinesInfo: "Même si vous désactivez ces fils, les administrateur�
 registration: "S’inscrire"
 enableRegistration: "Autoriser les nouvelles inscriptions"
 invite: "Inviter"
-proxyRemoteFiles: "Proxy fichiers distants"
+proxyRemoteFiles: "Utiliser les fichiers distants comme proxy"
 proxyRemoteFilesDescription: "Si vous activez ce paramètre, les fichiers distants non stockés ou supprimés en raison d'une capacité excédentaire seront affichés via un proxy local et généreront une miniature. Cela n'affectera pas le stockage du serveur."
 driveCapacityPerLocalAccount: "Volume du Drive par utilisateur local"
 driveCapacityPerRemoteAccount: "Volume du Drive par utilisateur distant"
