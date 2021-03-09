@@ -507,6 +507,8 @@ _permissions:
   "write:reactions": "Gerisci reazioni"
   "read:user-groups": "Vedi gruppi di utenti"
   "write:user-groups": "Gestisci gruppi di utenti"
+_antennaSources:
+  userGroup: "Note dagli utenti di tale gruppo"
 _weekday:
   sunday: "Domenica"
   monday: "Lunedì"
@@ -713,6 +715,7 @@ _notification:
     renote: "Rinota"
     quote: "Cita"
     reaction: "Reazione"
+    groupInvited: "Invitat@ al gruppo"
 _deck:
   _columns:
     notifications: "Notifiche"
