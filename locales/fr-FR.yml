@@ -903,6 +903,8 @@ _sfx:
   chatBg: "Discuter (De fond)"
   antenna: "Réception de l’antenne"
   channel: "Notifications de canal"
+  reversiPutBlack: "Reversi : les pions noirs ont joué"
+  reversiPutWhite: "Reversi : les pions blancs ont joué"
 _ago:
   unknown: "Inconnu"
   future: "Futur"
