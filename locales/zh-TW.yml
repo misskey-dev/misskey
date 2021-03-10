@@ -682,6 +682,8 @@ clear: "清除"
 _email:
   _follow:
     title: "您有新的追隨者"
+_plugin:
+  manage: "管理插件"
 _registry:
   scope: "範圍"
   key: "機碼"
@@ -704,7 +706,9 @@ _nsfw:
 _mfm:
   cheatSheet: "MFM代碼小抄"
   intro: "MFM是Misskey專用的標記語言，可以在Misskey中的各個位置使用。 您可以這裏看到MFM可用語法列表。"
+  dummy: "通過Misskey擴展Fediverse的世界"
   mention: "提及"
+  mentionDescription: "透過 @+用戶名 來標示特定使用者。"
   hashtag: "#tag"
   url: "URL"
   link: "鏈接"
