@@ -345,6 +345,7 @@ usernameInvalidFormat: "Il nome utente può contenere solo lettere, numeri e '_'
 tooShort: "Troppo breve"
 tooLong: "Troppo lungo"
 passwordNotMatched: "Le password non corrispondono."
+language: "Lingua"
 groupInvited: "Invitat@ al gruppo"
 youHaveNoGroups: "Nessun gruppo"
 joinOrCreateGroup: "Puoi creare il tuo gruppo o essere invitat@ a gruppi che già esistono."
