@@ -617,8 +617,8 @@ _visibility:
   followersDescription: "Visibile solo per i tuoi seguaci"
   specified: "Diretta"
   specifiedDescription: "Visibile solo per gli/le utenti menzionatə"
-  localOnly: "Solo Locale"
-  localOnlyDescription: "Solo locale"
+  localOnly: "Soltanto locale"
+  localOnlyDescription: "Nascosta per gli/le utenti remotə"
 _postForm:
   replyPlaceholder: "Nota la tua risposta.."
   quotePlaceholder: "Cita Nota..."
