@@ -421,6 +421,7 @@ no: "No"
 noteFavoritesCount: "Conteggio note tra i preferiti"
 contact: "Contatti"
 developer: "Sviluppatore"
+showGapBetweenNotesInTimeline: "Mostrare un intervallo tra le note sulla timeline"
 duplicate: "Duplica"
 left: "Sinistra"
 center: "Centro"
@@ -588,6 +589,8 @@ _charts:
 _timelines:
   home: "Home"
   local: "Locale"
+  social: "Sociale"
+  global: "Federata"
 _rooms:
   _roomType:
     default: "Predefinito"
