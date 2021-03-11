@@ -616,6 +616,7 @@ openInNewTab: "Ouvrir dans un nouvel onglet"
 openInSideView: "Ouvrir en vue latérale"
 defaultNavigationBehaviour: "Navigation par défaut"
 editTheseSettingsMayBreakAccount: "La modification de ces paramètres peut endommager votre compte."
+instanceTicker: "Informations concernant l'instance d'où sont émises les notes"
 waitingFor: "En attente de {x}"
 random: "Aléatoire"
 system: "Système"
@@ -806,6 +807,7 @@ _reversi:
   canPutEverywhere: "Les pions peuvent être placés partout "
 _instanceTicker:
   none: "Cacher "
+  remote: "Montrer pour les utilisateur·ice·s distant·e·s"
   always: "Toujours afficher"
 _serverDisconnectedBehavior:
   reload: "Rechargement automatique"
