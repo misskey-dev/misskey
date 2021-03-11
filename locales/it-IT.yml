@@ -434,6 +434,7 @@ yes: "Sì"
 no: "No"
 noteFavoritesCount: "Conteggio note tra i preferiti"
 contact: "Contatti"
+experimentalFeatures: "Funzioni sperimentali"
 developer: "Sviluppatore"
 showGapBetweenNotesInTimeline: "Mostrare un intervallo tra le note sulla timeline"
 duplicate: "Duplica"
@@ -477,6 +478,10 @@ _reversi:
   black: "Nero"
   white: "Bianco"
   ended: "Esci"
+_instanceTicker:
+  none: "Nascondi"
+  remote: "Mostra solo per gli/le utenti remotə"
+  always: "Mostra sempre"
 _channel:
   setBanner: "Scegli intestazione"
   removeBanner: "Rimuovi intestazione"
