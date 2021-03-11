@@ -649,6 +649,7 @@ _rooms:
 _pages:
   like: "Mi piace"
   unlike: "Togli Mi piace"
+  featured: "Popolari"
   variables: "Variabili"
   title: "Titolo"
   font: "Tipo di carattere"
