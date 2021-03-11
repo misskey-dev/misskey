@@ -1,9 +1,9 @@
-# タイムラインの比較
+# Confronto delle timeline
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
 ## Home
-自分のフォローしているユーザーの投稿
+Pubblicazioni degli/delle utenti che segui
 
 ## Locale
 全てのローカルユーザーの「ホーム」指定されていない投稿
