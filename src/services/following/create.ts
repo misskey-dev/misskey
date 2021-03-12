@@ -93,7 +93,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	// Publish followed event
 	if (Users.isLocalUser(followee)) {
-		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
+		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
 
 		// 通知を作成
 		createNotification(followee.id, 'follow', {
