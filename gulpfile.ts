@@ -64,7 +64,6 @@ gulp.task('build:client:style', () => {
 gulp.task('build:copy', gulp.parallel('build:copy:locales', 'build:copy:views', 'build:client:script', 'build:client:style', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/emojilist.json',
-		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',
 		'!./src/client/assets/**/*'
 	]).pipe(gulp.dest('./built/'))
