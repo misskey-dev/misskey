@@ -16,11 +16,11 @@ Vous pouvez générer votre propre jeton d'accès en allant dans { Paramètres >
 [Continuer avec « Utiliser l'API ».](#APIの使い方)
 
 ### Demander la génération du jeton d'accès via un utilisateur d'application
-アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
+Pour obtenir un jeton d'accès pour le compte utilisateur final de votre application, suivez la procédure de génération ci-dessous.
 
-#### Step 1
+#### Étape 1
 
-UUIDを生成する。以後これをセッションIDと呼びます。
+Générez un UUID. Nous l'appellerons « ID de session » dans la suite de ce guide.
 
 > このセッションIDは毎回生成し、使いまわさないようにしてください。
 
