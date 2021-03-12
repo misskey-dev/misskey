@@ -10,12 +10,12 @@ Une requête d'API, par essence, nécessite un jeton d'accès. La procédure d'a
 * Dans le premier cas : allez à [« Générer manuellement un jeton d'accès pour son propre compte »](#自分自身のアクセストークンを手動発行する).
 * Dans le second cas : allez à [« Demander la génération du jeton d'accès via un utilisateur d'application »](#アプリケーション利用者にアクセストークンの発行をリクエストする).
 
-### 自分自身のアクセストークンを手動発行する
-「設定 > API」で、自分のアクセストークンを発行できます。
+### Générer manuellement un jeton d'accès pour son propre compte
+Vous pouvez générer votre propre jeton d'accès en allant dans { Paramètres > API }.
 
-[「APIの使い方」へ進む](#APIの使い方)
+[Continuer avec « Utiliser l'API ».](#APIの使い方)
 
-### アプリケーション利用者にアクセストークンの発行をリクエストする
+### Demander la génération du jeton d'accès via un utilisateur d'application
 アプリケーション利用者のアクセストークンを取得するには、以下の手順で発行をリクエストします。
 
 #### Step 1
@@ -49,7 +49,7 @@ UUIDを生成する。以後これをセッションIDと呼びます。
 * `token` ... ユーザーのアクセストークン
 * `user` ... ユーザーの情報
 
-[「APIの使い方」へ進む](#APIの使い方)
+[Continuer avec « Utiliser l'API ».](#APIの使い方)
 
 ## APIの使い方
 **APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
