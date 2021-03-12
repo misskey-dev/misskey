@@ -68,6 +68,11 @@ describe('Fetch resource', () => {
 			const res = await simpleGet('/api.json', 'application/json');
 			assert.strictEqual(res.status, 200);
 		}));
+
+		it('GET favicon.ico', async(async () => {
+			const res = await simpleGet('/favicon.ico', 'image/png');
+			assert.strictEqual(res.status, 200);
+		}));
 	});
 
 	describe('/@:username', () => {
