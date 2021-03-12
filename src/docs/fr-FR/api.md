@@ -22,9 +22,9 @@ Pour obtenir un jeton d'accès pour le compte utilisateur final de votre applica
 
 Générez un UUID. Nous l'appellerons « ID de session » dans la suite de ce guide.
 
-> このセッションIDは毎回生成し、使いまわさないようにしてください。
+> Un même ID de session ne devrait pas être utilisé plusieurs fois ; veillez à en générer un nouveau pour chaque jeton d'accès.
 
-#### Step 2
+#### Étape 2
 
 `{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
 > 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
