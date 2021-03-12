@@ -2,9 +2,9 @@
 
 Vous pouvez utiliser l'API de Misskey pour développer des clients Misskey, des services web s'intégrant à Misskey, des Bots (que nous appellerons plus loin "Applications"), etc. Comme l'API streaming est aussi implémenté, vous avez la possibilité de créer des applications de temps réel.
 
-APIを使い始めるには、まずアクセストークンを取得する必要があります。 このドキュメントでは、アクセストークンを取得する手順を説明した後、基本的なAPIの使い方を説明します。
+Pour pouvoir vous servir de l'API, il vous faudra d'abord obtenir un jeton d'accès. Ce guide a été conçu pour vous accompagner dans le processus d'obtention du jeton d'accès, puis donner des instructions de base sur l'utilisation de l'API.
 
-## アクセストークンの取得
+## Obtenir le jeton d'accès
 基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
 
 * 前者の場合: [「自分自身のアクセストークンを手動発行する」](#自分自身のアクセストークンを手動発行する)に進む
