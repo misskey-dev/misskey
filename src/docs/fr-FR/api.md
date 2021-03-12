@@ -26,7 +26,7 @@ Générez un UUID. Nous l'appellerons « ID de session » dans la suite de ce gu
 
 #### Étape 2
 
-`{_URL_}/miauth/{session}`をユーザーのブラウザで表示させる。`{session}`の部分は、セッションIDに置き換えてください。
+Ouvrez l'adresse `{_URL_}/miauth/{session}` dans le navigateur de l'utilisateur. Remplacez alors la partie `{session}` de l'URL par l'ID de session que vous venez de générer.
 > 例: `{_URL_}/miauth/c1f6d42b-468b-4fd2-8274-e58abdedef6f`
 
 表示する際、URLにクエリパラメータとしていくつかのオプションを設定できます:
