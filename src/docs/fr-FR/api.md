@@ -1,6 +1,6 @@
 # API de Misskey
 
-MisskeyAPIを使ってMisskeyクライアント、Misskey連携Webサービス、Bot等(以下「アプリケーション」と呼びます)を開発できます。 ストリーミングAPIもあるので、リアルタイム性のあるアプリケーションを作ることも可能です。
+Vous pouvez utiliser l'API de Misskey pour développer des clients Misskey, des services web s'intégrant à Misskey, des Bots (que nous appellerons plus loin "Applications"), etc. Comme l'API streaming est aussi implémenté, vous avez la possibilité de créer des applications de temps réel.
 
 APIを使い始めるには、まずアクセストークンを取得する必要があります。 このドキュメントでは、アクセストークンを取得する手順を説明した後、基本的なAPIの使い方を説明します。
 
