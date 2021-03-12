@@ -43,11 +43,11 @@ En ouvrant cette URL, vous pourrez configurer un certain nombre d'options pour l
     * Vous pouvez vérifier quelles sont les permissions disponibles sur [les références API de Misskey](/api-doc).
 
 #### Étape 3
-ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
+Si vous envoyez une requête POST à `{_URL_}/api/miauth/{session}/check` une fois que l'utilisateur a validé le jeton d'accès, la réponse arrivera sous forme de fichier JSON contenant ce jeton.
 
-レスポンスに含まれるプロパティ:
-* `token` ... ユーザーのアクセストークン
-* `user` ... ユーザーの情報
+Propriétés incluses dans la réponse :
+* `token` :  jeton d'accès de l'utilisateur
+* `user` :  données de l'utilisateur
 
 [Continuer avec « Utiliser l'API ».](#APIの使い方)
 
