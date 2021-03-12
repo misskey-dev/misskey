@@ -51,8 +51,8 @@ Propriétés incluses dans la réponse :
 
 [Continuer avec « Utiliser l'API ».](#APIの使い方)
 
-## APIの使い方
-**APIはすべてPOSTで、リクエスト/レスポンスともにJSON形式です。RESTではありません。** アクセストークンは、`i`というパラメータ名でリクエストに含めます。
+## Utiliser l'API
+**L'API utilise seulement la méthode POST, et toutes les requêtes / réponses sont au format JSON. REST n'est pas pris en charge. ** Le jeton d'accès s'insère dans le paramètre de requête nommé `i`.
 
-* [APIリファレンス](/api-doc)
-* [ストリーミングAPI](./stream)
+* [Références API de Misskey](/api-doc)
+* [API streaming](./stream)
