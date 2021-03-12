@@ -92,7 +92,9 @@ gulp.task('build', gulp.parallel(
 
 gulp.task('default', gulp.task('build'));
 
-gulp.watch([
-	'./src/**/*',
-	'!./src/client/**/*'
-], gulp.task('build'));
+gulp.task('watch', () => {
+	gulp.watch([
+		'./src/**/*',
+		'!./src/client/**/*'
+	], { ignoreInitial: false }, gulp.task('build'));
+});
