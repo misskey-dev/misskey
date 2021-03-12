@@ -8577,10 +8577,10 @@ punycode@^1.4.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
   integrity sha1-wNWmOycYgArY4esPpSachN1BhF4=
 
-pureimage@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/pureimage/-/pureimage-0.2.5.tgz#10c9d314bcdfba712229ec70c3849164f537c248"
-  integrity sha512-D/oP8uaS8HLIOPqaxeVU0ZcJHUwvvFjeclKwn0RBeZJn3TBtZgKn7FVBN5auuCHQTC4K/wDAHfkY/JOuGCiohQ==
+pureimage@0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/pureimage/-/pureimage-0.2.7.tgz#e6da5868e42d03a94aab7ad1f9da67c865914ab8"
+  integrity sha512-F3z3QAoIpgqI0Uu122Y18oTRo0Y/aloQSqaAfRSiO4LRIQIHOjP+qUFl8sJ04mhOJ1sHsRfgZ8CUjQqVSXfV1g==
   dependencies:
     jpeg-js "^0.4.1"
     opentype.js "^0.4.3"
