@@ -7,8 +7,8 @@ Pour pouvoir vous servir de l'API, il vous faudra d'abord obtenir un jeton d'acc
 ## Obtenir le jeton d'accès
 Une requête d'API, par essence, nécessite un jeton d'accès. La procédure d'acquisition du jeton diffère selon que vous effectuez la requête vous-même, ou qu'elle est envoyée via une application par un utilisateur final non défini.
 
-* Dans le premier cas : allez à [« Émettre manuellement un jeton d'accès pour son propre compte »](#自分自身のアクセストークンを手動発行する).
-* 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
+* Dans le premier cas : allez à [« Générer manuellement un jeton d'accès pour son propre compte »](#自分自身のアクセストークンを手動発行する).
+* Dans le second cas : allez à [« Demander la génération du jeton d'accès via un utilisateur d'application »](#アプリケーション利用者にアクセストークンの発行をリクエストする).
 
 ### 自分自身のアクセストークンを手動発行する
 「設定 > API」で、自分のアクセストークンを発行できます。
