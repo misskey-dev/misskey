@@ -22,8 +22,8 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"typeRoots": [
-			"node_modules/@types",
-			"src/@types"
+			"../node_modules/@types",
+			"./@types"
 		],
 		"lib": [
 			"esnext"
@@ -31,9 +31,9 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		"./src/**/*.ts"
+		"./**/*.ts"
 	],
 	"exclude": [
-		"./src/client/**/*.ts"
+		"./client/**/*.ts"
 	]
 }
