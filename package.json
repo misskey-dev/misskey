@@ -247,7 +247,7 @@
 		"vanilla-tilt": "1.7.0",
 		"vue": "3.0.7",
 		"vue-color": "2.8.1",
-		"vue-json-pretty": "1.7.1",
+		"vue-json-pretty": "2.0.2",
 		"vue-loader": "16.1.2",
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vue-router": "4.0.5",
