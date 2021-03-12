@@ -5,9 +5,9 @@ Vous pouvez utiliser l'API de Misskey pour développer des clients Misskey, des 
 Pour pouvoir vous servir de l'API, il vous faudra d'abord obtenir un jeton d'accès. Ce guide a été conçu pour vous accompagner dans le processus d'obtention du jeton d'accès, puis donner des instructions de base sur l'utilisation de l'API.
 
 ## Obtenir le jeton d'accès
-基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
+Une requête d'API, par essence, nécessite un jeton d'accès. La procédure d'acquisition du jeton diffère selon que vous effectuez la requête vous-même, ou qu'elle est envoyée via une application par un utilisateur final non défini.
 
-* 前者の場合: [「自分自身のアクセストークンを手動発行する」](#自分自身のアクセストークンを手動発行する)に進む
+* Dans le premier cas : allez à [« Émettre manuellement un jeton d'accès pour son propre compte »](#自分自身のアクセストークンを手動発行する).
 * 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
 
 ### 自分自身のアクセストークンを手動発行する
