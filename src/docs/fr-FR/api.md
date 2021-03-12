@@ -36,13 +36,13 @@ En ouvrant cette URL, vous pourrez configurer un certain nombre d'options pour l
     * > Ex. : `https://missdeck.example.com/icon.png`
 * `callback` :  URL de redirection après l'authentification
     * > Ex. : `https://missdeck.example.com/callback`
-    * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
-* `permission` ... アプリケーションが要求する権限
-    * > 例: `write:notes,write:following,read:drive`
-    * 要求する権限を`,`で区切って列挙します
-    * どのような権限があるかは[APIリファレンス](/api-doc)で確認できます
+    * Lors de la redirection, un paramètre de requête `session` contenant l'ID de session sera joint.
+* `permission` :  permissions requises par l'application
+    * > Ex. : `write:notes,write:following,read:drive`
+    * Listez les permissions requises en utilisant une `,` pour les séparer.
+    * Vous pouvez vérifier quelles sont les permissions disponibles sur [les références API de Misskey](/api-doc).
 
-#### Step 3
+#### Étape 3
 ユーザーが発行を許可した後、`{_URL_}/api/miauth/{session}/check`にPOSTリクエストすると、レスポンスとしてアクセストークンを含むJSONが返ります。
 
 レスポンスに含まれるプロパティ:
