@@ -32,10 +32,10 @@ Ouvrez l'adresse `{_URL_}/miauth/{session}` dans le navigateur de l'utilisateur.
 En ouvrant cette URL, vous pourrez configurer un certain nombre d'options pour les paramètres de requête :
 * `name` :  nom de l'application
     * > Ex. : `MissDeck`
-* `icon` :  アプリケーションのアイコン画像URL
-    * > 例: `https://missdeck.example.com/icon.png`
-* `callback` ... 認証が終わった後にリダイレクトするURL
-    * > 例: `https://missdeck.example.com/callback`
+* `icon` :  URL de l'icône de l'application
+    * > Ex. : `https://missdeck.example.com/icon.png`
+* `callback` :  URL de redirection après l'authentification
+    * > Ex. : `https://missdeck.example.com/callback`
     * リダイレクト時には、`session`というクエリパラメータでセッションIDが付きます
 * `permission` ... アプリケーションが要求する権限
     * > 例: `write:notes,write:following,read:drive`
