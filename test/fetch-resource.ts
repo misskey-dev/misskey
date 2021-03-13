@@ -51,37 +51,37 @@ describe('Fetch resource', () => {
 		}));
 
 		it('GET root', async(async () => {
-			const res = await simpleGet('/', UNSPECIFIED);
+			const res = await simpleGet('/');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		}));
 
 		it('GET docs', async(async () => {
-			const res = await simpleGet('/docs/ja-JP/about', UNSPECIFIED);
+			const res = await simpleGet('/docs/ja-JP/about');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		}));
 
 		it('GET api-doc', async(async () => {
-			const res = await simpleGet('/api-doc', UNSPECIFIED);
+			const res = await simpleGet('/api-doc');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
 		}));
 
 		it('GET api.json', async(async () => {
-			const res = await simpleGet('/api.json', UNSPECIFIED);
+			const res = await simpleGet('/api.json');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, JSON);
 		}));
 
 		it('GET favicon.ico', async(async () => {
-			const res = await simpleGet('/favicon.ico', UNSPECIFIED);
+			const res = await simpleGet('/favicon.ico');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/x-icon');
 		}));
 
 		it('GET apple-touch-icon.png', async(async () => {
-			const res = await simpleGet('/apple-touch-icon.png', UNSPECIFIED);
+			const res = await simpleGet('/apple-touch-icon.png');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/png');
 		}));
