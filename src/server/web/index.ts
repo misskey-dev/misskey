@@ -83,7 +83,7 @@ router.get('/assets/(.*)', async ctx => {
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
 	await send(ctx as any, '/apple-touch-icon.png', {
-		root: assets
+		root: staticAssets
 	});
 });
 
