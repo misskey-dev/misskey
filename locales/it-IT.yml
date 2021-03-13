@@ -68,7 +68,6 @@ lists: "Liste"
 noLists: "Nessuna lista"
 note: "Nota"
 notes: "Note"
-following: "Seguiti"
 followers: "Seguaci"
 followsYou: "Ti segue"
 createList: "Aggiungi una nuova lista"
@@ -632,7 +631,6 @@ _profile:
   changeBanner: "Cambia intestazione"
 _exportOrImport:
   allNotes: "Tutte le note"
-  followingList: "Seguiti"
   muteList: "Silenzia"
   blockingList: "Blocca"
   userLists: "Liste"
@@ -787,7 +785,6 @@ _notification:
   youWereInvitedToGroup: "Invitat@ al gruppo"
   _types:
     all: "Tutto"
-    follow: "Seguiti"
     mention: "Menziona"
     reply: "Rispondi"
     renote: "Rinota"
