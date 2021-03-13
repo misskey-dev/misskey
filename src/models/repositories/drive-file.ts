@@ -197,12 +197,12 @@ export const packedDriveFileSchema = {
 			properties: {
 				width: {
 					type: 'number' as const,
-					optional: false as const, nullable: false as const,
+					optional: true as const, nullable: false as const,
 					example: 1280
 				},
 				height: {
 					type: 'number' as const,
-					optional: false as const, nullable: false as const,
+					optional: true as const, nullable: false as const,
 					example: 720
 				},
 				avgColor: {
