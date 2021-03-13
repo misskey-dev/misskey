@@ -29,6 +29,7 @@ const markdown = MarkdownIt({
 });
 
 const staticAssets = `${__dirname}/../../../assets/`;
+const docAssets = `${__dirname}/../../../src/docs/`;
 const assets = `${__dirname}/../../assets/`;
 
 // Init app
@@ -61,6 +62,13 @@ const router = new Router();
 router.get('/static-assets/(.*)', async ctx => {
 	await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
 		root: staticAssets,
+		maxage: ms('7 days'),
+	});
+});
+
+router.get('/doc-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
+		root: docAssets,
 		maxage: ms('7 days'),
 	});
 });

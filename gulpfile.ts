@@ -77,17 +77,9 @@ gulp.task('cleanall', gulp.parallel('clean', cb =>
 	rimraf('./node_modules', cb)
 ));
 
-gulp.task('copy:docs', () =>
-		gulp.src([
-			'./src/docs/**/*',
-		])
-		.pipe(gulp.dest('./built/assets/docs/'))
-);
-
 gulp.task('build', gulp.parallel(
 	'build:ts',
 	'build:copy',
-	'copy:docs',
 ));
 
 gulp.task('default', gulp.task('build'));
