@@ -73,6 +73,11 @@ describe('Fetch resource', () => {
 			const res = await simpleGet('/favicon.ico', 'image/png');
 			assert.strictEqual(res.status, 200);
 		}));
+
+		it('GET apple-touch-icon.png', async(async () => {
+			const res = await simpleGet('/apple-touch-icon.png', 'image/png');
+			assert.strictEqual(res.status, 200);
+		}));
 	});
 
 	describe('/@:username', () => {
