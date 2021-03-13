@@ -782,6 +782,8 @@ _notification:
   youRenoted: "{name} ha rinotato"
   youGotPoll: "{name} ha volluto."
   youWereFollowed: "Ha iniziato a seguirti"
+  youReceivedFollowRequest: "Hai ricevuto una richiesta di follow"
+  yourFollowRequestAccepted: "La tua richiesta di follow è stata accettata"
   youWereInvitedToGroup: "Invitat@ al gruppo"
   _types:
     all: "Tutto"
