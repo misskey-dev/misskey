@@ -322,7 +322,7 @@ proxyRemoteFilesDescription: "この設定を有効にすると、未保存ま�
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
 inMb: "メガバイト単位"
-iconUrl: "アイコン画像のURL"
+iconUrl: "faviconのURL"
 bannerUrl: "バナー画像のURL"
 basicInfo: "基本情報"
 pinnedUsers: "ピン留めユーザー"
