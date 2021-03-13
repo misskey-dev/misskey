@@ -45,7 +45,7 @@ app.use(views(__dirname + '/views', {
 }));
 
 // Serve favicon
-app.use(favicon(`${__dirname}/../../../assets/favicon.png`));
+app.use(favicon(`${__dirname}/../../../assets/favicon.ico`));
 
 // Common request handler
 app.use(async (ctx, next) => {

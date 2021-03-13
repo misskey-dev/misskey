@@ -110,7 +110,7 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 	});
 }
 
-export const simpleGet = async (path: string, accept: string): Promise<{ status?: number, type?: string, location?: string }> => {
+export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {
 	// node-fetchだと3xxを取れない
 	return await new Promise((resolve, reject) => {
 		const req = http.request(`http://localhost:${port}${path}`, {
