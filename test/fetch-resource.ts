@@ -77,7 +77,7 @@ describe('Fetch resource', () => {
 		it('GET favicon.ico', async(async () => {
 			const res = await simpleGet('/favicon.ico', UNSPECIFIED);
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, 'image/vnd.microsoft.icon');
+			assert.strictEqual(res.type, 'image/x-icon');
 		}));
 
 		it('GET apple-touch-icon.png', async(async () => {
