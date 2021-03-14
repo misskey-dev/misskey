@@ -1491,7 +1491,7 @@ _notification:
   _types:
     all: "Toutes"
     follow: "Abonnements"
-    mention: "Mentionner"
+    mention: "Mentions"
     reply: "Réponses"
     renote: "Partager"
     quote: "Citer"
