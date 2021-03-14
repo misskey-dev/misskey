@@ -793,6 +793,7 @@ _pages:
     types:
       array: "Liste"
 _notification:
+  youGotMention: "{name} ti ha menzionato"
   youGotQuote: "{name} ha citato il tuo Nota e ha detto"
   youRenoted: "{name} ha rinotato"
   youGotPoll: "{name} ha volluto."
