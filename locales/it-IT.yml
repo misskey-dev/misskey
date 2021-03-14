@@ -567,8 +567,9 @@ _tutorial:
   step5_3: "Per seguire altrə utenti, clicca sul loro avatar per aprire la pagina di profilo dove puoi premere il pulsante \"Seguire\". "
   step5_4: "Alcunə utenti scelgono di confermare manualmente le richieste di follow che ricevono, quindi a seconda delle persone potrebbe volerci un pò prima che la tua richiesta sia accolta."
   step6_1: "Ora, se puoi visualizzare le note di altrə utenti sulla tua timeline, ce l'hai fatta!"
-  step6_2: "Puoi inviare una risposta rapida alle note di altri utenti mandando loro \"reazioni\"."
-  step6_3: "Per allegare una reazione, fa un clic sull'icona + della nota e scegli l'emoji che vuoi mandare."
+  step6_2: "Puoi inviare una risposta rapida alle note di altrə utenti mandando loro \"reazioni\"."
+  step6_3: "Per inviare una reazione, premi l'icona + della nota e scegli l'emoji che vuoi mandare."
+  step7_1: "Complimenti! Sei arrivat@ alla fine dell'esercitazione di base su come usare Misskey. "
 _permissions:
   "read:blocks": "Visualizza gli account che hai bloccato."
   "write:blocks": "Gestisci gli account che hai bloccato."
