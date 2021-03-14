@@ -5,7 +5,7 @@ Puoi mandare una reazione rapida alle note degli/delle altrə utenti apponendoci
 È possibile personalizzare il pannello reazioni selezionando gli emoji che vuoi usare. Puoi cambiare i predefiniti nella scheda "Reazioni" delle impostazioni.
 
 ## Inviare reazioni a server remoti
-リアクションはMisskeyオリジナルの機能であるため、リモートインスタンスがMisskeyでない限りは、ほとんどの場合「Like」としてアクティビティが送信されます。一般的にはLikeは「お気に入り」として実装されているようです。 また、相手がMisskeyであったとしても、カスタム絵文字リアクションは伝わらず、自動的に「👍」等にフォールバックされます。
+Siccome le reazioni sono una funzionalità originale di Misskey, vengono ricevute come semplici "Mi piace" dalla maggior parte delle istanze remote del Fediverso, a meno che non sia un'altra istanza Misskey.一般的にはLikeは「お気に入り」として実装されているようです。 また、相手がMisskeyであったとしても、カスタム絵文字リアクションは伝わらず、自動的に「👍」等にフォールバックされます。
 
 ## Ricevere reazioni da server remoti
 リモートから「Like」アクティビティを受信したとき、Misskeyでは「👍」のリアクションとして解釈されます。
