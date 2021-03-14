@@ -54,7 +54,7 @@ showMore: "Mostra di più"
 youGotNewFollower: "Ha iniziato a seguirti"
 receiveFollowRequest: "Hai ricevuto una richiesta di follow."
 followRequestAccepted: "Richiesta di follow accettata"
-mention: "Menziona"
+mention: "Menzioni"
 mentions: "Menzioni"
 directNotes: "Note dirette"
 importAndExport: "Importa ed esporta"
@@ -169,6 +169,7 @@ blockedInstancesDescription: "Elenca le istanze che vuoi bloccare, una per riga.
 muteAndBlock: "Silenziamento e blocco"
 mutedUsers: "Account silenziati"
 blockedUsers: "Account bloccati"
+noUsers: "Nessun utente trovato"
 editProfile: "Modifica profilo"
 noteDeleteConfirm: "Eliminare questo Nota?"
 done: "Fine"
@@ -488,7 +489,8 @@ _registry:
 _aboutMisskey:
   morePatrons: "Ci sono molti altri che ci sostengono. Grazie 🥰"
 _mfm:
-  mention: "Menziona"
+  mention: "Menzioni"
+  mentionDescription: "Si può menzionare un utente specifico digitando il suo nome utente subito dopo il segno @."
   url: "URL"
   link: "Link"
   bold: "Grassetto"
@@ -525,7 +527,7 @@ _theme:
   keys:
     bg: "Sfondo"
     shadow: "Ombra"
-    mention: "Menziona"
+    mention: "Menzioni"
     renote: "Rinota"
     divider: "Interruzione di linea"
 _sfx:
@@ -657,6 +659,7 @@ _timelines:
   social: "Sociale"
   global: "Federata"
 _rooms:
+  roomOf: "Camera di {user}"
   _roomType:
     default: "Predefinito"
     washitsu: "Washitsu"
@@ -803,7 +806,7 @@ _notification:
   youWereInvitedToGroup: "Invitat@ al gruppo"
   _types:
     all: "Tutto"
-    mention: "Menziona"
+    mention: "Menzioni"
     reply: "Rispondi"
     renote: "Rinota"
     quote: "Cita"
