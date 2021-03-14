@@ -561,6 +561,7 @@ _tutorial:
   step3_3: "Scritto il testo della nota, puoi pubblicarla premendo il pulsante nella parte superiore destra della finestra di dialogo."
   step3_4: "Non ti viene niente in mente? Perché non scrivi semplicemente \"Ho appena cominciato a usare Misskey\"?"
   step4_1: "Hai pubblicato qualcosa?"
+  step4_2: "Se puoi visualizzare la tua nota sulla timeline, ce l'hai fatta!"
   step5_2: "La pagina {featured} mostra le note di tendenza su questa istanza e, sfogliandole, magari toverai degli account che ti piacciono e che vorrai seguire. Oppure, potrai trovare utenti popolari usando {explore}."
   step6_2: "Puoi inviare una risposta rapida alle note di altri utenti mandando loro \"reazioni\"."
   step6_3: "Per allegare una reazione, fa un clic sull'icona + della nota e scegli l'emoji che vuoi mandare."
