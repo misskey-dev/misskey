@@ -1,5 +1,5 @@
 # Reazioni
-他の人のノートに、絵文字を付けて簡単にあなたの反応を伝えられる機能です。 リアクションするには、ノートの + アイコンをクリックしてピッカーを表示し、絵文字を選択します。 リアクションには[カスタム絵文字](./custom-emoji)も使用できます。
+Puoi mandare una reazione rapida alle note degli/delle altrə utenti apponendoci emoji. Per reagire, premi il pulsante "+" della nota per aprire il pannello reazioni e scegliere un emoji. Si possono anche usare gli [emoji personalizzati](./custom-emoji).
 
 ## Personalizzare il pannello reazioni
 È possibile personalizzare il pannello reazioni selezionando gli emoji che vuoi usare. Puoi cambiare i predefiniti nella scheda "Reazioni" delle impostazioni.
