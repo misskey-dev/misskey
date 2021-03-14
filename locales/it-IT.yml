@@ -570,6 +570,7 @@ _tutorial:
   step6_2: "Puoi inviare una risposta rapida alle note di altrə utenti mandando loro \"reazioni\"."
   step6_3: "Per inviare una reazione, premi l'icona + della nota e scegli l'emoji che vuoi mandare."
   step7_1: "Complimenti! Sei arrivat@ alla fine dell'esercitazione di base su come usare Misskey. "
+  step7_2: "Se vuoi saperne di più su Misskey, puoi dare un'occhiata alla sezione {help}."
 _permissions:
   "read:blocks": "Visualizza gli account che hai bloccato."
   "write:blocks": "Gestisci gli account che hai bloccato."
