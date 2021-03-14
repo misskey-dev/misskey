@@ -322,7 +322,7 @@ proxyRemoteFilesDescription: "Si vous activez ce paramètre, les fichiers distan
 driveCapacityPerLocalAccount: "Volume du Drive par utilisateur local"
 driveCapacityPerRemoteAccount: "Volume du Drive par utilisateur distant"
 inMb: "en mégaoctets"
-iconUrl: "URL de l’image de l’avatar"
+iconUrl: "URL de l'icône"
 bannerUrl: "URL de l’image de la bannière"
 basicInfo: "Informations basiques"
 pinnedUsers: "Utilisateur·rice épinglé·e"
@@ -825,7 +825,7 @@ _channel:
   notesCount: "{n} Notes"
 _sidebar:
   full: "Complet"
-  icon: "Avatar"
+  icon: "Icônes"
   hide: "Masquer"
 _wordMute:
   muteWords: "Mots à filtrer"
