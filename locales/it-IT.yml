@@ -856,10 +856,12 @@ _pages:
       array: "Liste"
 _notification:
   youGotMention: "{name} ti ha menzionato"
+  youGotReply: "{name} ti ha risposto"
   youGotQuote: "{name} ha citato il tuo Nota e ha detto"
   youRenoted: "{name} ha rinotato"
   youGotPoll: "{name} ha volluto."
   youGotMessagingMessageFromUser: "{name} ti ha mandato un messaggio"
+  youGotMessagingMessageFromGroup: "{name} ti ha mandato un messaggio nella chat"
   youWereFollowed: "Ha iniziato a seguirti"
   youReceivedFollowRequest: "Hai ricevuto una richiesta di follow"
   yourFollowRequestAccepted: "La tua richiesta di follow è stata accettata"
@@ -872,9 +874,11 @@ _notification:
     renote: "Rinota"
     quote: "Cita"
     reaction: "Reazione"
+    pollVote: "Voti ricevuti"
     receiveFollowRequest: "Richiesta di follow ricevuta"
     followRequestAccepted: "Richiesta di follow accettata"
     groupInvited: "Invitat@ al gruppo"
+    app: "Notifiche da applicazioni"
 _deck:
   _columns:
     notifications: "Notifiche"
