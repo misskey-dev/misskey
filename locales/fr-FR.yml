@@ -1088,7 +1088,7 @@ _profile:
 _exportOrImport:
   allNotes: "Toutes les notes"
   followingList: "Abonnements"
-  muteList: "Liste des comptes maqués"
+  muteList: "Liste des comptes masqués"
   blockingList: "Bloquer"
   userLists: "Listes"
 _charts:
@@ -1496,6 +1496,7 @@ _notification:
     renote: "Partager"
     quote: "Citer"
     reaction: "Réactions"
+    pollVote: "Votes dans des sondages"
     receiveFollowRequest: "Demande d'abonnement reçue"
     followRequestAccepted: "Demande d'abonnement acceptée"
     groupInvited: "Invité aux groupes"
