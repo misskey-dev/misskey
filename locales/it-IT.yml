@@ -182,6 +182,7 @@ blocked: "Bloccati"
 suspended: "Sospes@"
 all: "Tutti"
 notResponding: "Nessuna risposta"
+instanceFollowing: "Seguiti dall'istanza"
 instanceFollowers: "Followers dell'istanza"
 instanceUsers: "Utenti dell'istanza"
 changePassword: "Aggiorna Password"
@@ -518,6 +519,8 @@ showingPastTimeline: "Stai visualizzando una vecchia timeline"
 _email:
   _follow:
     title: "Ha iniziato a seguirti"
+  _receiveFollowRequest:
+    title: "Hai ricevuto una richiesta di follow"
 _registry:
   key: "Dati"
   keys: "Dati"
@@ -550,6 +553,7 @@ _channel:
   setBanner: "Scegli intestazione"
   removeBanner: "Rimuovi intestazione"
   featured: "Tendenze"
+  following: "Seguiti"
   usersCount: "{n} partecipanti"
 _sidebar:
   icon: "Icone"
@@ -616,6 +620,7 @@ _permissions:
   "write:blocks": "Gestisci gli account che hai bloccato."
   "read:favorites": "Visualizza i tuoi preferiti"
   "write:favorites": "Gestisci i tuoi preferiti"
+  "read:following": "Vedi le informazioni di follow"
   "write:following": "Seguiti/ Smetti di seguire"
   "write:notes": "Creare / Eliminare note"
   "read:notifications": "Visualizza notifiche"
@@ -852,6 +857,8 @@ _notification:
     renote: "Rinota"
     quote: "Cita"
     reaction: "Reazione"
+    receiveFollowRequest: "Richiesta di follow ricevuta"
+    followRequestAccepted: "Richiesta di follow accettata"
     groupInvited: "Invitat@ al gruppo"
 _deck:
   _columns:
