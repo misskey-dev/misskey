@@ -855,6 +855,7 @@ _pages:
     types:
       array: "Liste"
 _notification:
+  fileUploaded: "File caricato correttamente"
   youGotMention: "{name} ti ha menzionato"
   youGotReply: "{name} ti ha risposto"
   youGotQuote: "{name} ha citato il tuo Nota e ha detto"
