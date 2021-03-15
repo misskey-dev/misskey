@@ -433,6 +433,7 @@ deleteAllFiles: "Elimina tutti i file"
 deleteAllFilesConfirm: "Vuoi davvero eliminare tutti i file?"
 removeAllFollowing: "Cancella tutti i follows"
 removeAllFollowingDescription: "Cancella tutti i follows del server {host}. Per favore, esegui se, ad esempio, l'istanza non esiste più."
+userSuspended: "L'utente è sospes@."
 userSilenced: "L'utente è silenziat@."
 rooms: "Camera"
 visibility: "Visibilità"
@@ -518,6 +519,7 @@ latestVersion: "Ultima versione"
 editCode: "Modifica codice"
 apply: "Applica"
 useReactionPickerForContextMenu: "Cliccare sul tasto destro per aprire il pannello di reazioni"
+typingUsers: "{users} sta(nno) scrivendo"
 showingPastTimeline: "Stai visualizzando una vecchia timeline"
 _email:
   _follow:
@@ -699,8 +701,13 @@ _exportOrImport:
   blockingList: "Blocca"
   userLists: "Liste"
 _charts:
+  usersIncDec: "Variazione del numero di utenti"
+  usersTotal: "Numero totale di utenti"
   activeUsers: "Numero di utenti attivi"
   notesTotal: "Conteggio totale di note"
+_instanceCharts:
+  users: "Variazione del numero di utenti"
+  usersTotal: "Totale cumulativo di utenti"
 _timelines:
   home: "Home"
   local: "Locale"
