@@ -555,6 +555,7 @@ _mfm:
   font: "Tipo di carattere"
 _reversi:
   gameSettings: "Impostazioni di gioco"
+  botSettings: "Opzioni del bot"
   black: "Nero"
   white: "Bianco"
   total: "Totale"
