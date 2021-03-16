@@ -958,8 +958,8 @@ _2fa:
 _permissions:
   "read:account": "Afficher les informations du compte"
   "write:account": "Mettre à jour les informations de votre compte"
-  "read:blocks": "Voir les blocs"
-  "write:blocks": "Écrire des blocs"
+  "read:blocks": "Voir les comptes bloqués"
+  "write:blocks": "Gérer les comptes bloqués"
   "read:drive": "Parcourir le Drive"
   "write:drive": "Écrire sur le Drive"
   "read:favorites": "Afficher les favoris"
@@ -1089,7 +1089,7 @@ _exportOrImport:
   allNotes: "Toutes les notes"
   followingList: "Abonnements"
   muteList: "Liste des comptes masqués"
-  blockingList: "Bloquer"
+  blockingList: "Comptes bloqués"
   userLists: "Listes"
 _charts:
   federationInstancesIncDec: "Variation du nombre des instances fédérées"
