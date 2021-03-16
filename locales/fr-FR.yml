@@ -1489,7 +1489,7 @@ _notification:
   youWereFollowed: "Vous suit"
   youReceivedFollowRequest: "Vous avez reçu une demande d’abonnement"
   yourFollowRequestAccepted: "Votre demande d’abonnement a été accepté"
-  youWereInvitedToGroup: "Invité au groupe"
+  youWereInvitedToGroup: "Invité·e au groupe"
   _types:
     all: "Toutes"
     follow: "Abonnements"
@@ -1501,7 +1501,7 @@ _notification:
     pollVote: "Votes dans des sondages"
     receiveFollowRequest: "Demande d'abonnement reçue"
     followRequestAccepted: "Demande d'abonnement acceptée"
-    groupInvited: "Invité aux groupes"
+    groupInvited: "Invitation à un groupe"
     app: "Notifications provenant des apps"
 _deck:
   alwaysShowMainColumn: "Toujours afficher la colonne principale"
