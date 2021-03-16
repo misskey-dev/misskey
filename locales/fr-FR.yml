@@ -1295,7 +1295,7 @@ _pages:
     _radioButton:
       name: "Nom de la variable"
       title: "Titre"
-      values: "Choix séparés par des sauts de ligne"
+      values: "Liste des choix (un par ligne)"
       default: "Valeur par défaut"
   script:
     categories:
@@ -1311,7 +1311,7 @@ _pages:
       list: "Listes"
     blocks:
       text: "Texte"
-      multiLineText: "Texte (Multi-lignes)"
+      multiLineText: "Texte (multi-ligne)"
       textList: "Liste de texte"
       _textList:
         info: "Veuillez séparer chaque entrée avec un saut de ligne"
@@ -1354,10 +1354,10 @@ _pages:
       _mod:
         arg1: "A"
         arg2: "B"
-      round: "Décimal rond"
+      round: "Arrondir les décimales"
       _round:
         arg1: "Numérique"
-      eq: "A et B sont équivalents"
+      eq: "A et B sont égaux"
       _eq:
         arg1: "A"
         arg2: "B"
@@ -1373,7 +1373,7 @@ _pages:
       _or:
         arg1: "A"
         arg2: "B"
-      lt: "A est plus petit que B"
+      lt: "A est inférieur à B"
       _lt:
         arg1: "A"
         arg2: "B"
