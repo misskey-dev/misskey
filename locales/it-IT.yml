@@ -168,7 +168,7 @@ clearQueue: "Svuota coda"
 clearQueueConfirmTitle: "Vuoi davvero svuotare la coda?"
 blockedInstances: "Istanza bloccati"
 blockedInstancesDescription: "Elenca le istanze che vuoi bloccare, una per riga. Esse non potranno più interagire con la tua istanza."
-muteAndBlock: "Silenziamento e blocco"
+muteAndBlock: "Silenziati / Bloccati"
 mutedUsers: "Account silenziati"
 blockedUsers: "Account bloccati"
 noUsers: "Nessun utente trovato"
@@ -456,7 +456,7 @@ email: "Email"
 smtpHost: "Server remoto"
 smtpUser: "Nome utente"
 smtpPass: "Password"
-wordMute: "Parole silenziate"
+wordMute: "Filtri parole"
 userSaysSomething: "{name} ha detto qualcosa"
 display: "Visualizza"
 copy: "Copia"
@@ -567,6 +567,9 @@ _channel:
 _sidebar:
   icon: "Icone"
   hide: "Nascondere"
+_wordMute:
+  muteWords: "Parole da silenziare"
+  mutedNotes: "Note silenziate"
 _theme:
   constant: "Costante"
   defaultValue: "Valore predefinito"
@@ -702,7 +705,7 @@ _profile:
 _exportOrImport:
   allNotes: "Tutte le note"
   followingList: "Follows"
-  muteList: "Silenzia"
+  muteList: "Account silenziati"
   blockingList: "Blocca"
   userLists: "Liste"
 _charts:
