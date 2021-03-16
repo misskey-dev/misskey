@@ -570,6 +570,7 @@ _sidebar:
 _wordMute:
   muteWords: "Parole da silenziare"
   muteWordsDescription: "Separare con uno spazio indica la condizione \"E\". Separare con un'interruzzione riga indica la condizione \"O\"."
+  muteWordsDescription2: "Metti le parole chiavi tra slash per usare espressioni regolari (regexp)."
   mutedNotes: "Note silenziate"
 _theme:
   constant: "Costante"
