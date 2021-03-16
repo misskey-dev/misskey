@@ -1381,7 +1381,7 @@ _pages:
       _gt:
         arg1: "A"
         arg2: "B"
-      ltEq: "A est plus petit ou égal à B"
+      ltEq: "A est inférieur ou égal à B"
       _ltEq:
         arg1: "A"
         arg2: "B"
