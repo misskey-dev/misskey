@@ -113,8 +113,8 @@ block: "Blocca"
 unblock: "Sblocca"
 suspend: "Sospendi"
 unsuspend: "Annulla la sospensione dell'account"
-blockConfirm: "Vuoi bloccare?"
-unblockConfirm: "Vuoi sbloccare?"
+blockConfirm: "Vuoi davvero bloccare l'account?"
+unblockConfirm: "Vuoi davvero sbloccare l'account?"
 suspendConfirm: "Vuoi davvero sospendere questo account?"
 unsuspendConfirm: "Vuoi annullare la sospensione dell'account?"
 selectList: "Seleziona una lista"
@@ -166,7 +166,7 @@ instanceInfo: "Informazioni sull'istanza"
 statistics: "Statistiche"
 clearQueue: "Svuota coda"
 clearQueueConfirmTitle: "Vuoi davvero svuotare la coda?"
-blockedInstances: "Istanza bloccati"
+blockedInstances: "Istanze bloccate"
 blockedInstancesDescription: "Elenca le istanze che vuoi bloccare, una per riga. Esse non potranno più interagire con la tua istanza."
 muteAndBlock: "Silenziati / Bloccati"
 mutedUsers: "Account silenziati"
@@ -178,7 +178,7 @@ done: "Fine"
 processing: "In elaborazione"
 preview: "Anteprima"
 default: "Predefinito"
-blocked: "Bloccati"
+blocked: "Bloccato"
 suspended: "Sospes@"
 all: "Tutti"
 notResponding: "Nessuna risposta"
@@ -634,8 +634,8 @@ _tutorial:
   step7_2: "Se vuoi saperne di più su Misskey, puoi dare un'occhiata alla sezione {help}."
   step7_3: "Da ultimo, buon divertimento su Misskey! 🚀"
 _permissions:
-  "read:blocks": "Visualizza gli account che hai bloccato."
-  "write:blocks": "Gestisci gli account che hai bloccato."
+  "read:blocks": "Visualizza gli account bloccati"
+  "write:blocks": "Gestisci gli account bloccati"
   "read:favorites": "Visualizza i tuoi preferiti"
   "write:favorites": "Gestisci i tuoi preferiti"
   "read:following": "Vedi le informazioni di follow"
@@ -675,6 +675,7 @@ _widgets:
   photos: "Foto"
   digitalClock: "Orologio digitale"
   federation: "Federazione"
+  button: "Pulsante"
   onlineUsers: "Utenti online"
 _cw:
   hide: "Nascondere"
@@ -714,7 +715,7 @@ _exportOrImport:
   allNotes: "Tutte le note"
   followingList: "Follows"
   muteList: "Account silenziati"
-  blockingList: "Blocca"
+  blockingList: "Account bloccati"
   userLists: "Liste"
 _charts:
   usersIncDec: "Variazione del numero di utenti"
@@ -774,21 +775,40 @@ _pages:
   title: "Titolo"
   font: "Tipo di carattere"
   blocks:
+    text: "Testo"
+    textarea: "Area di testo"
+    section: "Sezione"
     image: "Immagini"
+    button: "Pulsante"
     if: "Se"
     _if:
       variable: "Variabili"
     _post:
       text: "Contenuto"
     _textInput:
+      name: "Nome della variabile"
       text: "Titolo"
+      default: "Valore predefinito"
     _textareaInput:
+      name: "Nome della variabile"
       text: "Titolo"
+      default: "Valore predefinito"
     _numberInput:
+      name: "Nome della variabile"
       text: "Titolo"
+      default: "Valore predefinito"
+    _canvas:
+      width: "Larghezza"
+      height: "Altezza"
+    note: "Nota integrata"
+    _note:
+      id: "ID nota"
     _switch:
+      name: "Nome della variabile"
       text: "Titolo"
+      default: "Valore predefinito"
     _counter:
+      name: "Nome della variabile"
       text: "Titolo"
     _button:
       text: "Titolo"
@@ -796,7 +816,9 @@ _pages:
         _dialog:
           content: "Contenuto"
     _radioButton:
+      name: "Nome della variabile"
       title: "Titolo"
+      default: "Valore predefinito"
   script:
     categories:
       comparison: "Metodo comparativo"
@@ -805,6 +827,15 @@ _pages:
       fn: "Funzione"
       list: "Liste"
     blocks:
+      text: "Testo"
+      _strLen:
+        arg1: "Testo"
+      _strPick:
+        arg1: "Testo"
+      _strReplace:
+        arg1: "Testo"
+      _strReverse:
+        arg1: "Testo"
       _join:
         arg1: "Liste"
       _add:
@@ -862,9 +893,14 @@ _pages:
         arg1: "Liste"
       _listLen:
         arg1: "Liste"
+      _stringToNumber:
+        arg1: "Testo"
+      _splitStrByLine:
+        arg1: "Testo"
       ref: "Variabili"
       fn: "Funzione"
     types:
+      string: "Testo"
       array: "Liste"
 _notification:
   fileUploaded: "File caricato correttamente"
