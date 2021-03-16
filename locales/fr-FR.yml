@@ -1263,7 +1263,7 @@ _pages:
       id: "Identifiant de la note"
       idDescription: "Pour configurer la note, vous pouvez aussi coller ici l'URL correspondante."
       detailed: "Afficher les détails"
-    switch: "Basculer"
+    switch: "Interrupteur"
     _switch:
       name: "Nom de la variable"
       text: "Titre"
@@ -1272,16 +1272,16 @@ _pages:
     _counter:
       name: "Nom de la variable"
       text: "Titre"
-      inc: "Augmenter le chiffre"
+      inc: "Augmenter de"
     _button:
       text: "Titre"
       colored: "Coloré"
-      action: "L'opération lorsque le bouton sera pressé"
+      action: "Opération à effectuer lorsque le bouton est pressé"
       _action:
         dialog: "Afficher une fenêtre de dialogue"
         _dialog:
           content: "Contenu"
-        resetRandom: "Réinitialiser le nombre aléatoire"
+        resetRandom: "Réinitialiser un nombre aléatoire"
         pushEvent: "Envoyer un évènement"
         _pushEvent:
           event: "Nom de l’évènement"
