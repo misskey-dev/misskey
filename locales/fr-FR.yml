@@ -1238,12 +1238,12 @@ _pages:
       text: "Contenu"
       attachCanvasImage: "Publier avec Toile comme image"
       canvasId: "Toile ID"
-    textInput: "Entrée de textuelle"
+    textInput: "Entrée textuelle"
     _textInput:
       name: "Nom de la variable"
       text: "Titre"
       default: "Valeur par défaut"
-    textareaInput: "Entrée de textuelle multiligne"
+    textareaInput: "Entrée textuelle multi-ligne"
     _textareaInput:
       name: "Nom de la variable"
       text: "Titre"
@@ -1258,8 +1258,10 @@ _pages:
       id: "Toile ID"
       width: "Largeur"
       height: "Hauteur"
+    note: "Note intégrée"
     _note:
       id: "Identifiant de la note"
+      idDescription: "Pour configurer la note, vous pouvez aussi coller ici l'URL correspondante."
       detailed: "Afficher les détails"
     switch: "Basculer"
     _switch:
