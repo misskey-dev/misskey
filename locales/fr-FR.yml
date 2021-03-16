@@ -1088,7 +1088,7 @@ _profile:
 _exportOrImport:
   allNotes: "Toutes les notes"
   followingList: "Abonnements"
-  muteList: "Liste des comptes masqués"
+  muteList: "Comptes masqués"
   blockingList: "Comptes bloqués"
   userLists: "Listes"
 _charts:
@@ -1447,7 +1447,7 @@ _pages:
       numberToString: "Convertir du numérique en texte"
       _numberToString:
         arg1: "Numérique"
-      splitStrByLine: "Séparer le texte par lignes"
+      splitStrByLine: "Séparer le texte par des sauts de lignes"
       _splitStrByLine:
         arg1: "Texte"
       ref: "Variables"
@@ -1455,7 +1455,7 @@ _pages:
       fn: "Fonction"
       _fn:
         slots: "Slots"
-        slots-info: "Veuillez délimiter chaque slot par un saut de ligne"
+        slots-info: "Veuillez insérer un seul slot par ligne"
         arg1: "Sortie"
       for: "Répéter"
       _for:
