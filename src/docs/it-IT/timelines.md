@@ -11,5 +11,5 @@ Pubblicazioni degli utenti della tua istanza. Non vengono mostrate le note pubbl
 ## Sociale
 Raggruppa le timeline "home" e "locale".
 
-## Federata
+## グローバル
 Tutte le pubblicazioni ricevute dall'istanza, sia locali che altre. Non vengono mostrate le note pubblicate con lo stato "home".
