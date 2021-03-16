@@ -759,7 +759,6 @@ _timelines:
   home: "Home"
   local: "Locale"
   social: "Sociale"
-  global: "Federata"
 _rooms:
   roomOf: "Camera di {user}"
   _roomType:
