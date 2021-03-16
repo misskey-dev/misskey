@@ -569,6 +569,7 @@ _sidebar:
   hide: "Nascondere"
 _wordMute:
   muteWords: "Parole da silenziare"
+  muteWordsDescription: "Separare con uno spazio indica la condizione \"E\". Separare con un'interruzzione riga indica la condizione \"O\"."
   mutedNotes: "Note silenziate"
 _theme:
   constant: "Costante"
@@ -634,6 +635,8 @@ _permissions:
   "write:favorites": "Gestisci i tuoi preferiti"
   "read:following": "Vedi le informazioni di follow"
   "write:following": "Seguiti/ Smetti di seguire"
+  "read:mutes": "Vedi account silenziati"
+  "write:mutes": "Gerisci account silenziati"
   "write:notes": "Creare / Eliminare note"
   "read:notifications": "Visualizza notifiche"
   "write:notifications": "Gerisci notifiche"
