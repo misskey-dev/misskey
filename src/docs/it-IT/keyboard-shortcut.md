@@ -51,7 +51,7 @@ Le scorciatoie da tastiera sotto citate si possono usare praticamente ovunque.
 </table>
 
 ## Pannello reazioni
-デフォルトで「👍」にフォーカスが当たっている状態です。
+La reazione "👍" è impostata come reazione predefinita.
 <table>
     <thead>
         <tr><th>Scorciatoia</th><th>Effetto</th><th>Accesso universale</th></tr>
