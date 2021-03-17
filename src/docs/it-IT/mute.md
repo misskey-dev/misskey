@@ -2,7 +2,7 @@
 
 Quando si silenzia un utente, i successivi contenuti che lo riguardano non saranno più visualizzati su Misskey:
 
-* タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
+* le pubblicazioni dell'utente sia nelle timeline che nei risultati di ricerca, così come le sue risposte e Rinote;
 * そのユーザーからの通知
 * メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
 
