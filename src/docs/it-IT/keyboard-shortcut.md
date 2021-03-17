@@ -44,9 +44,9 @@ Le scorciatoie da tastiera sotto citate si possono usare praticamente ovunque.
         <tr><th>Scorciatoia</th><th>Effetto</th><th>Accesso universale</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">Enter</kbd></td><td>Renoteする</td><td>-</td></tr>
-        <tr><td><kbd class="key">Q</kbd></td><td>フォームを展開する</td><td><b>Q</b>uote</td></tr>
-        <tr><td><kbd class="key">Esc</kbd></td><td>フォームを閉じる</td><td>-</td></tr>
+        <tr><td><kbd class="key">Enter</kbd></td><td>Rinotare</td><td>-</td></tr>
+        <tr><td><kbd class="key">Q</kbd></td><td>Aprire finestra</td><td><b>Q</b>uote</td></tr>
+        <tr><td><kbd class="key">Esc</kbd></td><td>Chiudere finestra</td><td>-</td></tr>
     </tbody>
 </table>
 
