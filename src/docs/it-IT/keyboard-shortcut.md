@@ -1,13 +1,13 @@
 # Scorciatoie da tastiera
 
 ## Generali
-これらのショートカットは基本的にどこでも使えます。
+Le scorciatoie da tastiera sotto citate si possono usare praticamente ovunque.
 <table>
     <thead>
         <tr><th>Scorciatoia</th><th>Effetto</th><th>Accesso universale</th></tr>
     </thead>
     <tbody>
-        <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>新規投稿</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
+        <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>Nuova pubblicazione</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
         <tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
         <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>通知を表示/隠す</td><td><b>N</b>otifications</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>Cerca</td><td><b>S</b>earch</td></tr>
