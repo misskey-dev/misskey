@@ -12,7 +12,9 @@ export default class TestUniqueChart extends Chart<TestUniqueLog> {
 
 	@autobind
 	protected genNewLog(latest: TestUniqueLog): DeepPartial<TestUniqueLog> {
-		return {};
+		return {
+			foo: [],
+		};
 	}
 
 	@autobind

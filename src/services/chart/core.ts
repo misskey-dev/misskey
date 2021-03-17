@@ -109,7 +109,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const flatten = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}${this.columnDot}${k}` : k;
-				if (typeof v === 'object') {
+				if (typeof v === 'object' && !Array.isArray(v)) {
 					flatten(v, p);
 				} else {
 					columns[this.columnPrefix + p] = v;
@@ -118,6 +118,24 @@ export default abstract class Chart<T extends Record<string, any>> {
 		};
 		flatten(x);
 		return columns;
+	}
+
+	@autobind
+	private static countUniqueFields(x: Record<string, any>) {
+		const exec = (x: Obj) => {
+			const res = {} as Record<string, any>;
+			for (const [k, v] of Object.entries(x)) {
+				if (typeof v === 'object' && !Array.isArray(v)) {
+					res[k] = exec(v);
+				} else if (Array.isArray(v)) {
+					res[k] = Array.from(new Set(v)).length;
+				} else {
+					res[k] = v;
+				}
+			}
+			return res;
+		};
+		return exec(x);
 	}
 
 	@autobind
@@ -132,7 +150,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				// TODO: item が文字列以外の場合も対応
 				// TODO: item をSQLエスケープ
 				const items = v.map(item => `"${item}"`).join(',');
-				query[k] = () => `array_cat("${k}", {${items}})`;
+				query[k] = () => `array_cat("${k}", '{${items}}'::varchar[])`;
 			}
 		}
 
@@ -344,7 +362,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 						if (typeof finalDiffs[k] === 'number') {
 							(finalDiffs[k] as number) += v as number;
 						} else {
-							(finalDiffs[k] as unknown[]).concat(v);
+							(finalDiffs[k] as unknown[]) = (finalDiffs[k] as unknown[]).concat(v);
 						}
 					}
 				}
@@ -457,12 +475,12 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 				if (log) {
 					const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
-					chart.unshift(data);
+					chart.unshift(Chart.countUniqueFields(data));
 				} else {
 					// 隙間埋め
 					const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
 					const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
-					chart.unshift(this.getNewLog(data));
+					chart.unshift(Chart.countUniqueFields(this.getNewLog(data)));
 				}
 			}
 		} else if (span === 'day') {
@@ -498,7 +516,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 			for (const logs of logsForEachDays) {
 				const log = this.aggregate(logs);
-				chart.unshift(log);
+				chart.unshift(Chart.countUniqueFields(log));
 			}
 		}
 
@@ -513,7 +531,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const compact = (x: Obj, path?: string) => {
 			for (const [k, v] of Object.entries(x)) {
 				const p = path ? `${path}.${k}` : k;
-				if (typeof v == 'object') {
+				if (typeof v === 'object' && !Array.isArray(v)) {
 					compact(v, p);
 				} else {
 					const values = chart.map(s => nestedProperty.get(s, p));
