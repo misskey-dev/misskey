@@ -8,6 +8,6 @@ Quando si silenzia un utente, i successivi contenuti che lo riguardano non saran
 
 Per silenziare un utente, premi il pulsante "Silenzia" che si trova sulla sua pagina profilo.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+Gli utenti silenziati da te non vengono informati; nello stesso modo, tu non sarai infomat@ se vieni silenziat@ da un altr@ utente.
 
 設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
