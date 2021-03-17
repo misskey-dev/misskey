@@ -6,7 +6,7 @@ Quando si silenzia un utente, i successivi contenuti che lo riguardano non saran
 * le notifiche riguardo all'utente;
 * la cronologia dei messaggi scambiati con l'utente nella chat.
 
-ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
+Per silenziare un utente, premi il pulsante "Silenzia" che si trova sulla sua pagina profilo.
 
 ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
 
