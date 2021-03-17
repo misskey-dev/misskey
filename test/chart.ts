@@ -85,6 +85,7 @@ describe('Chart', () => {
 
 	it('Can updates', async(async () => {
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
@@ -105,9 +106,10 @@ describe('Chart', () => {
 			},
 		});
 	}));
-	
+
 	it('Can updates (dec)', async(async () => {
 		await testChart.decrement();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
@@ -154,6 +156,7 @@ describe('Chart', () => {
 		await testChart.increment();
 		await testChart.increment();
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
@@ -177,10 +180,12 @@ describe('Chart', () => {
 
 	it('Can updates at different times', async(async () => {
 		await testChart.increment();
+		await testChart.save();
 
 		clock.tick('01:00:00');
 
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
@@ -204,10 +209,12 @@ describe('Chart', () => {
 
 	it('Can padding', async(async () => {
 		await testChart.increment();
+		await testChart.save();
 
 		clock.tick('02:00:00');
 
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
@@ -232,6 +239,7 @@ describe('Chart', () => {
 	// 要求された範囲にログがひとつもない場合でもパディングできる
 	it('Can padding from past range', async(async () => {
 		await testChart.increment();
+		await testChart.save();
 
 		clock.tick('05:00:00');
 
@@ -259,8 +267,12 @@ describe('Chart', () => {
 	// Issue #3190
 	it('Can padding from past range 2', async(async () => {
 		await testChart.increment();
+		await testChart.save();
+
 		clock.tick('05:00:00');
+
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, null);
 		const chartDays = await testChart.getChart('day', 3, null);
@@ -284,10 +296,12 @@ describe('Chart', () => {
 
 	it('Can specify offset', async(async () => {
 		await testChart.increment();
+		await testChart.save();
 
 		clock.tick('01:00:00');
 
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, new Date(Date.UTC(2000, 0, 1, 0, 0, 0)));
 		const chartDays = await testChart.getChart('day', 3, new Date(Date.UTC(2000, 0, 1, 0, 0, 0)));
@@ -313,10 +327,12 @@ describe('Chart', () => {
 		clock.tick('00:30:00');
 
 		await testChart.increment();
+		await testChart.save();
 
 		clock.tick('01:30:00');
 
 		await testChart.increment();
+		await testChart.save();
 
 		const chartHours = await testChart.getChart('hour', 3, new Date(Date.UTC(2000, 0, 1, 0, 0, 0)));
 		const chartDays = await testChart.getChart('day', 3, new Date(Date.UTC(2000, 0, 1, 0, 0, 0)));
@@ -341,6 +357,7 @@ describe('Chart', () => {
 	describe('Grouped', () => {
 		it('Can updates', async(async () => {
 			await testGroupedChart.increment('alice');
+			await testGroupedChart.save();
 
 			const aliceChartHours = await testGroupedChart.getChart('hour', 3, null, 'alice');
 			const aliceChartDays = await testGroupedChart.getChart('day', 3, null, 'alice');
@@ -386,6 +403,7 @@ describe('Chart', () => {
 			await testUniqueChart.uniqueIncrement('alice');
 			await testUniqueChart.uniqueIncrement('alice');
 			await testUniqueChart.uniqueIncrement('bob');
+			await testUniqueChart.save();
 
 			const chartHours = await testUniqueChart.getChart('hour', 3, null);
 			const chartDays = await testUniqueChart.getChart('day', 3, null);

@@ -23,3 +23,9 @@ export const perUserReactionsChart = new PerUserReactionsChart();
 export const hashtagChart = new HashtagChart();
 export const perUserFollowingChart = new PerUserFollowingChart();
 export const perUserDriveChart = new PerUserDriveChart();
+
+// 20分おきにメモリ情報をDBに書き込み
+setInterval(() => {
+	notesChart.save();
+	perUserNotesChart.save();
+}, 1000 * 60 * 20);

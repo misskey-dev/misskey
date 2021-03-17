@@ -25,11 +25,11 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	@autobind
 	public async update(user: User) {
 		const update: Obj = {
-			count: 1
+			users: user.id
 		};
 
-		await this.incIfUnique({
+		await this.inc({
 			[Users.isLocalUser(user) ? 'local' : 'remote']: update
-		}, 'users', user.id);
+		});
 	}
 }
