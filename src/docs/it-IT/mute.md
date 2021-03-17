@@ -3,8 +3,8 @@
 Quando si silenzia un utente, i successivi contenuti che lo riguardano non saranno più visualizzati su Misskey:
 
 * le pubblicazioni dell'utente sia nelle timeline che nei risultati di ricerca, così come le sue risposte e Rinote;
-* そのユーザーからの通知
-* メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
+* le notifiche riguardo all'utente;
+* la cronologia dei messaggi scambiati con l'utente nella chat.
 
 ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
 
