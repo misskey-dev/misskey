@@ -10,6 +10,7 @@ import PerUserReactionsChart from './charts/classes/per-user-reactions';
 import HashtagChart from './charts/classes/hashtag';
 import PerUserFollowingChart from './charts/classes/per-user-following';
 import PerUserDriveChart from './charts/classes/per-user-drive';
+import { beforeShutdown } from '../../misc/before-shutdown';
 
 export const federationChart = new FederationChart();
 export const notesChart = new NotesChart();
@@ -29,3 +30,6 @@ setInterval(() => {
 	notesChart.save();
 	perUserNotesChart.save();
 }, 1000 * 60 * 20);
+
+beforeShutdown(() => notesChart.save());
+beforeShutdown(() => perUserNotesChart.save());
