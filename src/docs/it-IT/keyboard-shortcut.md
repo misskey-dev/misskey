@@ -8,10 +8,10 @@ Le scorciatoie da tastiera sotto citate si possono usare praticamente ovunque.
     </thead>
     <tbody>
         <tr><td><kbd class="key">P</kbd>, <kbd class="key">N</kbd></td><td>Nuova pubblicazione</td><td><b>P</b>ost, <b>N</b>ew, <b>N</b>ote</td></tr>
-        <tr><td><kbd class="key">T</kbd></td><td>タイムラインの最も新しい投稿にフォーカス</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
-        <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>通知を表示/隠す</td><td><b>N</b>otifications</td></tr>
+        <tr><td><kbd class="key">T</kbd></td><td>Evidenziare l'ultima pubblicazione sulla timeline</td><td><b>T</b>imeline, <b>T</b>op</td></tr>
+        <tr><td><kbd class="group"><kbd class="key">Shift</kbd> + <kbd class="key">N</kbd></kbd></td><td>Mostrare/nascondere notifiche</td><td><b>N</b>otifications</td></tr>
         <tr><td><kbd class="key">S</kbd></td><td>Cerca</td><td><b>S</b>earch</td></tr>
-        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>ヘルプを表示</td><td><b>H</b>elp</td></tr>
+        <tr><td><kbd class="key">H</kbd>, <kbd class="key">?</kbd></td><td>Visualizzare l'aiuto</td><td><b>H</b>elp</td></tr>
     </tbody>
 </table>
 
