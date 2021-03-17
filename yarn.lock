@@ -358,10 +358,10 @@
   dependencies:
     type-detect "4.0.8"
 
-"@sinonjs/fake-timers@6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-6.0.1.tgz#293674fccb3262ac782c7aadfdeca86b10c75c40"
-  integrity sha512-MZPUxrmFubI36XS1DI3qmI0YdN1gks62JtFZvxR67ljjSNCeK6U08Zx4msEWOXuofgqUt6zPHSi1H9fbjR/NRA==
+"@sinonjs/fake-timers@7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-7.0.2.tgz#a53e71d4154ee704ea9b36a6d0b0780e246fadd1"
+  integrity sha512-dF84L5YC90gIOegPDCYymPIsDmwMWWSh7BwfDXQYePi8lVIEp7IZ1UVGkME8FjXOsDPxan12x4aaK+Lo6wVh9A==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 

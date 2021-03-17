@@ -72,7 +72,7 @@ describe('Chart', () => {
 		testUniqueChart = new TestUniqueChart();
 
 		clock = lolex.install({
-			now: new Date('2000-01-01 00:00:00')
+			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0))
 		});
 		done();
 	});
