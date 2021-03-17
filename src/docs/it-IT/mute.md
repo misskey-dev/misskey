@@ -10,4 +10,4 @@ Per silenziare un utente, premi il pulsante "Silenzia" che si trova sulla sua pa
 
 Gli utenti silenziati da te non vengono informati; nello stesso modo, tu non sarai infomat@ se vieni silenziat@ da un altr@ utente.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+Puoi controllare la lista di utenti che hai silenziato nelle Impostazioni account > "Silenziati / Bloccati".
