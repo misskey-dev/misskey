@@ -25,7 +25,7 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	@autobind
 	public async update(user: User) {
 		const update: Obj = {
-			users: user.id
+			users: [user.id]
 		};
 
 		await this.inc({

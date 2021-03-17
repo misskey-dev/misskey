@@ -58,7 +58,14 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}[] = [];
 	public schema: Schema;
 	protected repository: Repository<Log>;
+
 	protected abstract genNewLog(latest: T): DeepPartial<T>;
+
+	/**
+	 * @param logs 日時が新しい方が先頭
+	 */
+	protected abstract aggregate(logs: T[]): T;
+
 	protected abstract fetchActual(group: string | null): Promise<DeepPartial<T>>;
 
 	@autobind
@@ -337,7 +344,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 						if (typeof finalDiffs[k] === 'number') {
 							(finalDiffs[k] as number) += v as number;
 						} else {
-							(finalDiffs[k] as unknown[]).push(v);
+							(finalDiffs[k] as unknown[]).concat(v);
 						}
 					}
 				}
@@ -385,8 +392,6 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 	@autobind
 	public async getChart(span: 'hour' | 'day', amount: number, begin: Date | null, group: string | null = null): Promise<ArrayValue<T>> {
-		if (span === 'day') return {};
-
 		const [y, m, d, h, _m, _s, _ms] = begin ? Chart.parseDate(subtractTime(addTime(begin, 1, span), 1)) : Chart.getCurrentDate();
 		const [y2, m2, d2, h2] = begin ? Chart.parseDate(addTime(begin, 1, span)) : [] as never;
 
@@ -461,33 +466,10 @@ export default abstract class Chart<T extends Record<string, any>> {
 				}
 			}
 		} else if (span === 'day') {
-			/* TODO
-			const sum = (a: Record<string, number | unknown[]> | Log, b: Log): Record<string, number | unknown[]> => {
-				const res = {} as Record<string, number | unknown[]>;
-
-				for (const [k, v] of Object.entries(a).filter(([k]) => k.startsWith(Chart.columnPrefix))) {
-					if (typeof v === 'number') {
-						res[k] = v;
-					} else {
-						res[k] = [...v]; // copy array
-					}
-				}
-
-				for (const [k, v] of Object.entries(b).filter(([k]) => k.startsWith(Chart.columnPrefix))) {
-					if (typeof v === 'number') {
-						(res[k] as number) += v;
-					} else {
-						res[k] = [...res[k], ...v]; // copy array
-					}
-				}
-
-				return res;
-			};
-
-			const logForEachDays: (Log | Record<string, number | unknown[]>)[] = [];
+			const logsForEachDays: T[][] = [];
 			let currentDay = -1;
 			let currentDayIndex = -1;
-			for (let i = ((amount * 24) - 1); i >= 0; i--) {
+			for (let i = ((amount - 1) * 24) + h; i >= 0; i--) {
 				const current = subtractTime(dateUTC([y, m, d, h]), i, 'hour');
 				const _currentDay = Chart.parseDate(current)[2];
 				if (currentDay != _currentDay) currentDayIndex++;
@@ -496,28 +478,28 @@ export default abstract class Chart<T extends Record<string, any>> {
 				const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));
 
 				if (log) {
-					if (logForEachDays[currentDayIndex]) {
-						logForEachDays[currentDayIndex] = sum(logForEachDays[currentDayIndex], log);
+					if (logsForEachDays[currentDayIndex]) {
+						logsForEachDays[currentDayIndex].unshift(Chart.convertFlattenColumnsToObject(log));
 					} else {
-						logForEachDays[currentDayIndex] = log;
+						logsForEachDays[currentDayIndex] = [Chart.convertFlattenColumnsToObject(log)];
 					}
 				} else {
 					// 隙間埋め
 					const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
 					const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
 					const newLog = this.getNewLog(data);
-					logForEachDays[currentDayIndex] = newLog;
+					if (logsForEachDays[currentDayIndex]) {
+						logsForEachDays[currentDayIndex].unshift(newLog);
+					} else {
+						logsForEachDays[currentDayIndex] = [newLog];
+					}
 				}
 			}
 
-			for (let i = 0; i < logForEachDays.length; i++) {
-				const log = logForEachDays[i];
-
-				const data = Chart.convertFlattenColumnsToObject(log);
-
-				chart.unshift(data);
+			for (const logs of logsForEachDays) {
+				const log = this.aggregate(logs);
+				chart.unshift(log);
 			}
-			*/
 		}
 
 		const res: ArrayValue<T> = {} as any;
@@ -534,8 +516,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 				if (typeof v == 'object') {
 					compact(v, p);
 				} else {
-					const values = chart.map(s => nestedProperty.get(s, p))
-						.map(v => parseInt(v, 10)); // TypeORMのバグ(？)で何故か数値カラムの値が文字列型になっているので数値に戻す
+					const values = chart.map(s => nestedProperty.get(s, p));
 					nestedProperty.set(res, p, values);
 				}
 			}

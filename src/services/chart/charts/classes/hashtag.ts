@@ -25,7 +25,7 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	@autobind
 	public async update(hashtag: string, user: User) {
 		const update: Obj = {
-			users: user.id
+			users: [user.id]
 		};
 
 		await this.inc({
