@@ -750,7 +750,7 @@
   dependencies:
     "@types/koa" "*"
 
-"@types/koa@*", "@types/koa@2.13.1":
+"@types/koa@*", "@types/koa@2.13.1", "@types/koa@^2.13.1":
   version "2.13.1"
   resolved "https://registry.yarnpkg.com/@types/koa/-/koa-2.13.1.tgz#e29877a6b5ad3744ab1024f6ec75b8cbf6ec45db"
   integrity sha512-Qbno7FWom9nNqu0yHZ6A0+RWt4mrYBhw3wpBAQ3+IuzGcLlfeYkzZrnMq5wsxulN2np8M4KKeUpTodsOsSad5Q==
@@ -3310,7 +3310,7 @@ debug@4, debug@4.3.1, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
   dependencies:
     ms "2.1.2"
 
-debug@^3.1.0, debug@^3.2.6:
+debug@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
@@ -5996,23 +5996,13 @@ koa-mount@4.0.0:
     debug "^4.0.1"
     koa-compose "^4.1.0"
 
-koa-send@5.0.1:
+koa-send@5.0.1, koa-send@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/koa-send/-/koa-send-5.0.1.tgz#39dceebfafb395d0d60beaffba3a70b4f543fe79"
   integrity sha512-tmcyQ/wXXuxpDxyNXv5yNNkdAMdFRqwtegBXUaowiQzUKqJehttS0x2j0eOZDQAyloAth5w6wwBImnFzkUz3pQ==
   dependencies:
     debug "^4.1.1"
     http-errors "^1.7.3"
-    resolve-path "^1.4.0"
-
-koa-send@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/koa-send/-/koa-send-5.0.0.tgz#5e8441e07ef55737734d7ced25b842e50646e7eb"
-  integrity sha512-90ZotV7t0p3uN9sRwW2D484rAaKIsD8tAVtypw/aBU+ryfV+fR2xrcAwhI8Wl6WRkojLUs/cB9SBSCuIb+IanQ==
-  dependencies:
-    debug "^3.1.0"
-    http-errors "^1.6.3"
-    mz "^2.7.0"
     resolve-path "^1.4.0"
 
 koa-slow@2.1.0:
@@ -6023,11 +6013,12 @@ koa-slow@2.1.0:
     lodash.isregexp "3.0.5"
     q "1.4.1"
 
-koa-views@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/koa-views/-/koa-views-7.0.0.tgz#039a90620991f6668566010b3c1df31481f78c98"
-  integrity sha512-I9H2Dood5MhwzmWk7hkWuxEBObd3uv/4eEPJP2r43Ro+rK8ICKjrIKEzKrfT89JNX69vWOEU8JreJwRjb5HOFw==
+koa-views@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/koa-views/-/koa-views-7.0.1.tgz#0c8f8e65d5cd2e08249430cb83dc361e49a17a5a"
+  integrity sha512-yS8751DXHXXDbdl/oUZd0PsgnxR0MLiguu77Eqrgu6yawE9Hi99wNKiVENb0Kfgsmvq/8px7YCI+USgxaTB1LA==
   dependencies:
+    "@types/koa" "^2.13.1"
     consolidate "^0.16.0"
     debug "^4.1.0"
     get-paths "0.0.7"
