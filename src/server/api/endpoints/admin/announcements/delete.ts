@@ -10,6 +10,11 @@ export const meta = {
 	requireCredential: true as const,
 	requireModerator: true,
 
+	desc: {
+		'ja-JP': 'アナウンスを削除します。',
+		'en-US': 'Delete a announcement.'
+	},
+
 	params: {
 		id: {
 			validator: $.type(ID)

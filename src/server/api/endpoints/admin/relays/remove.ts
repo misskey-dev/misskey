@@ -4,7 +4,8 @@ import { removeRelay } from '../../../../../services/relay';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'Remove relay'
+		'ja-JP': 'リレーを削除します。',
+		'en-US': 'Remove relay'
 	},
 
 	tags: ['admin'],

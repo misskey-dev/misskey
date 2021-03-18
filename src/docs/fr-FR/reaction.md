@@ -1,11 +1,11 @@
 # Réactions
-他の人のノートに、絵文字を付けて簡単にあなたの反応を伝えられる機能です。 リアクションするには、ノートの + アイコンをクリックしてピッカーを表示し、絵文字を選択します。 リアクションには[カスタム絵文字](./custom-emoji)も使用できます。
+Les réactions vous permettent d'interagir facilement avec les notes des autres utilisateur·rice·s en y attribuant des émojis. Pour réagir, cliquez sur le « + » de la note afin d'afficher le panneau de sélection puis choisissez un émoji. Il est également possible d'utiliser des [émojis personnalisés](./custom-emoji).
 
-## リアクションピッカーのカスタマイズ
-ピッカーに表示される絵文字を自分好みにカスタマイズすることができます。 設定の「リアクション」で設定します。
+## Personnalisation du panneau de réactions
+Il est possible de choisir les émojis affichés dans le panneau de réactions en allant dans l'onglet « réactions » des paramètres.
 
-## リモート投稿へのリアクションについて
-リアクションはMisskeyオリジナルの機能であるため、リモートインスタンスがMisskeyでない限りは、ほとんどの場合「Like」としてアクティビティが送信されます。一般的にはLikeは「お気に入り」として実装されているようです。 また、相手がMisskeyであったとしても、カスタム絵文字リアクションは伝わらず、自動的に「👍」等にフォールバックされます。
+## Envoi de réactions à des serveurs distants
+Les réactions étant une fonctionnalité originale de Misskey, la plupart des autres instances du Fediverse recevront votre réaction comme un simple "J'aime" - à moins qu'il s'agisse d'une autre instance Misskey.Généralement dans le Fediverse, les " J'aime " sont appelés " Favoris ". En outre, si vous réagissez avec un émoji personnalisé, même si l'instance destinataire est une instance Misskey, il sera automatiquement transmis comme un " 👍 " ou assimilé.
 
-## リモートからのリアクションについて
-リモートから「Like」アクティビティを受信したとき、Misskeyでは「👍」のリアクションとして解釈されます。
+## Réception de réactions de la part de serveurs distants
+Les " J'aime " que vous recevez de la part d'utilisateur·ice·s d'autres instances apparaissent sur Misskey sous la forme de " 👍 ".

@@ -66,7 +66,9 @@ if (!program.quiet) {
 
 // Display detail of uncaught exception
 process.on('uncaughtException', err => {
-	logger.error(err);
+	try {
+		logger.error(err);
+	} catch { }
 });
 
 // Dying away...

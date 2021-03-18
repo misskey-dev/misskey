@@ -21,6 +21,22 @@ export const meta = {
 		publickey: {
 			validator: $.str
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			state: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				enum: ['already-subscribed', 'subscribed']
+			},
+			key: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			}
+		}
 	}
 };
 

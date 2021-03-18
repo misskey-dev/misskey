@@ -28,7 +28,9 @@ const markdown = MarkdownIt({
 	html: true
 });
 
-const client = `${__dirname}/../../client/`;
+const staticAssets = `${__dirname}/../../../assets/`;
+const docAssets = `${__dirname}/../../../src/docs/`;
+const assets = `${__dirname}/../../assets/`;
 
 // Init app
 const app = new Koa();
@@ -43,7 +45,7 @@ app.use(views(__dirname + '/views', {
 }));
 
 // Serve favicon
-app.use(favicon(`${__dirname}/../../../assets/favicon.png`));
+app.use(favicon(`${__dirname}/../../../assets/favicon.ico`));
 
 // Common request handler
 app.use(async (ctx, next) => {
@@ -57,24 +59,38 @@ const router = new Router();
 
 //#region static assets
 
+router.get('/static-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/static-assets/', ''), {
+		root: staticAssets,
+		maxage: ms('7 days'),
+	});
+});
+
+router.get('/doc-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
+		root: docAssets,
+		maxage: ms('7 days'),
+	});
+});
+
 router.get('/assets/(.*)', async ctx => {
-	await send(ctx as any, ctx.path, {
-		root: client,
+	await send(ctx as any, ctx.path.replace('/assets/', ''), {
+		root: assets,
 		maxage: ms('7 days'),
 	});
 });
 
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
-	await send(ctx as any, '/assets/apple-touch-icon.png', {
-		root: client
+	await send(ctx as any, '/apple-touch-icon.png', {
+		root: staticAssets
 	});
 });
 
 // ServiceWorker
 router.get('/sw.js', async ctx => {
-	await send(ctx as any, `/assets/sw.${config.version}.js`, {
-		root: client
+	await send(ctx as any, `/sw.${config.version}.js`, {
+		root: assets
 	});
 });
 
@@ -82,8 +98,8 @@ router.get('/sw.js', async ctx => {
 router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
-	await send(ctx as any, '/assets/robots.txt', {
-		root: client
+	await send(ctx as any, '/robots.txt', {
+		root: assets
 	});
 });
 
@@ -91,8 +107,8 @@ router.get('/robots.txt', async ctx => {
 
 // Docs
 router.get('/api-doc', async ctx => {
-	await send(ctx as any, '/assets/redoc.html', {
-		root: client
+	await send(ctx as any, '/redoc.html', {
+		root: staticAssets
 	});
 });
 
@@ -373,6 +389,18 @@ router.get('/info', async ctx => {
 		proxyAccountName: proxyAccount ? proxyAccount.username : null,
 		originalUsersCount: await Users.count({ host: null }),
 		originalNotesCount: await Notes.count({ userHost: null })
+	});
+});
+
+router.get('/bios', async ctx => {
+	await ctx.render('bios', {
+		version: config.version,
+	});
+});
+
+router.get('/cli', async ctx => {
+	await ctx.render('cli', {
+		version: config.version,
 	});
 });
 

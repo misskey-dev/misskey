@@ -1,5 +1,5 @@
 import Xev from 'xev';
-import { deliverQueue, inboxQueue } from '../queue';
+import { deliverQueue, inboxQueue } from '../queue/queues';
 
 const ev = new Xev();
 

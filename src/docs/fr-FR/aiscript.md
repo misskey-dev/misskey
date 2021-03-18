@@ -1,4 +1,4 @@
 # AiScript
 
 ## Fonction
-デフォルトで値渡しです。
+Réglé sur « passage par valeur » par défaut.

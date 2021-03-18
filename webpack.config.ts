@@ -147,7 +147,7 @@ module.exports = {
 		}),
 	],
 	output: {
-		path: __dirname + '/built/client/assets',
+		path: __dirname + '/built/assets',
 		filename: `[name].${meta.version}.js`,
 		publicPath: `/assets/`,
 		pathinfo: false,

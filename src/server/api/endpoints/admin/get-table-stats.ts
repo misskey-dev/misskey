@@ -6,6 +6,7 @@ export const meta = {
 	requireModerator: true,
 
 	desc: {
+		'ja-JP': 'テーブル情報を取得します。',
 		'en-US': 'Get table stats'
 	},
 
@@ -13,6 +14,17 @@ export const meta = {
 
 	params: {
 	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		example: {
+			migrations: {
+				count: 66,
+				size: 32768
+			},
+		}
+	}
 };
 
 export default define(meta, async () => {

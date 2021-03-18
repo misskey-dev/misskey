@@ -18,6 +18,18 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: ActiveUsersLog[]): ActiveUsersLog {
+		return {
+			local: {
+				users: logs.reduce((a, b) => a.concat(b.local.users), [] as ActiveUsersLog['local']['users']),
+			},
+			remote: {
+				users: logs.reduce((a, b) => a.concat(b.remote.users), [] as ActiveUsersLog['remote']['users']),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(): Promise<DeepPartial<ActiveUsersLog>> {
 		return {};
 	}
@@ -25,11 +37,11 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	@autobind
 	public async update(user: User) {
 		const update: Obj = {
-			count: 1
+			users: [user.id]
 		};
 
-		await this.incIfUnique({
+		await this.inc({
 			[Users.isLocalUser(user) ? 'local' : 'remote']: update
-		}, 'users', user.id);
+		});
 	}
 }

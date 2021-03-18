@@ -5,6 +5,11 @@ import { DriveFiles } from '../../../../models';
 import { ID } from '../../../../misc/cafy-id';
 
 export const meta = {
+	desc: {
+		'ja-JP': '対象のユーザーのファイルを全て削除します。',
+		'en-US': 'Delete all files to specified user.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
