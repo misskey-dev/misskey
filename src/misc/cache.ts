@@ -3,6 +3,7 @@ export class Cache<T> {
 	private lifetime: number;
 
 	constructor(lifetime: Cache<never>['lifetime']) {
+		this.cache = new Map();
 		this.lifetime = lifetime;
 	}
 
