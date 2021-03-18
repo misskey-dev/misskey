@@ -3,12 +3,18 @@ import { User } from '../../models/entities/user';
 import { Users, AccessTokens, Apps } from '../../models';
 import { AccessToken } from '../../models/entities/access-token';
 
+const cache = {} as Record<string, User>;
+
 export default async (token: string): Promise<[User | null | undefined, AccessToken | null | undefined]> => {
 	if (token == null) {
 		return [null, null];
 	}
 
 	if (isNativeToken(token)) {
+		if (cache[token]) { // TODO: キャッシュされてから一定時間経過していたら破棄する
+			return [cache[token], null];
+		}
+
 		// Fetch user
 		const user = await Users
 			.findOne({ token });
@@ -17,8 +23,11 @@ export default async (token: string): Promise<[User | null | undefined, AccessTo
 			throw new Error('user not found');
 		}
 
+		cache[token] = user;
+
 		return [user, null];
 	} else {
+		// TODO: cache
 		const accessToken = await AccessTokens.findOne({
 			where: [{
 				hash: token.toLowerCase() // app
