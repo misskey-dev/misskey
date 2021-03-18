@@ -1,3 +1,7 @@
+// https://github.com/typeorm/typeorm/issues/2400
+const types = require('pg').types;
+types.setTypeParser(20, Number);
+
 import { createConnection, Logger, getConnection } from 'typeorm';
 import config from '../config';
 import { entities as charts } from '../services/chart/entities';

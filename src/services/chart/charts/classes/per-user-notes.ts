@@ -21,6 +21,20 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: PerUserNotesLog[]): PerUserNotesLog {
+		return {
+			total: logs[0].total,
+			inc: logs.reduce((a, b) => a + b.inc, 0),
+			dec: logs.reduce((a, b) => a + b.dec, 0),
+			diffs: {
+				reply: logs.reduce((a, b) => a + b.diffs.reply, 0),
+				renote: logs.reduce((a, b) => a + b.diffs.renote, 0),
+				normal: logs.reduce((a, b) => a + b.diffs.normal, 0),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(group: string): Promise<DeepPartial<PerUserNotesLog>> {
 		const [count] = await Promise.all([
 			Notes.count({ userId: group }),
