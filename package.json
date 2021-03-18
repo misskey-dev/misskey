@@ -118,7 +118,7 @@
 		"bcryptjs": "2.4.3",
 		"blurhash": "1.1.3",
 		"broadcast-channel": "3.5.3",
-		"bull": "3.20.1",
+		"bull": "3.21.0",
 		"cafy": "15.2.1",
 		"cbor": "7.0.3",
 		"chalk": "4.1.0",
