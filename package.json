@@ -107,7 +107,7 @@
 		"@types/webpack-stream": "3.2.11",
 		"@types/websocket": "1.0.2",
 		"@types/ws": "7.4.0",
-		"@typescript-eslint/parser": "4.17.0",
+		"@typescript-eslint/parser": "4.18.0",
 		"@vue/compiler-sfc": "3.0.7",
 		"abort-controller": "3.0.0",
 		"apexcharts": "3.25.0",
