@@ -7,7 +7,7 @@ export class Cache<T> {
 		this.lifetime = lifetime;
 	}
 
-	public set(key: string | null, value: T):void {
+	public set(key: string | null, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),
 			value
