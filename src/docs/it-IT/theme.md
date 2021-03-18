@@ -1,12 +1,12 @@
 # Tema
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Puoi utilizzare i temi per cambiare l'aspetto del client Misskey.
 
 ## Impostazioni tema
-設定 > テーマ
+Impostazioni > Tema
 
 ## Creare un tema
-テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
+Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli oggetti sotto citati:
 ``` js
 {
     id: '17587283-dd92-4a2c-a22c-be0637c9e22a',
