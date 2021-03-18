@@ -17,16 +17,18 @@ if (localStorage.getItem('vuex') != null) {
 	set('accounts', JSON.parse(JSON.stringify(vuex.device.accounts)));
 	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
 
-	for (const [k, v] of 	Object.entries(vuex.device.userData)) {
-		localStorage.setItem('pizzax::base::' + k, JSON.stringify({
-			widgets: v.widgets
-		}));
-
-		if (v.deck) {
-			localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
-				columns: v.deck.columns,
-				layout: v.deck.layout,
+	if (vuex.device.userData) {
+		for (const [k, v] of 	Object.entries(vuex.device.userData)) {
+			localStorage.setItem('pizzax::base::' + k, JSON.stringify({
+				widgets: v.widgets
 			}));
+
+			if (v.deck) {
+				localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
+					columns: v.deck.columns,
+					layout: v.deck.layout,
+				}));
+			}
 		}
 	}
 
@@ -69,11 +71,13 @@ import { initializeSw } from '@/scripts/initialize-sw';
 import { reload, reloadChannel } from '@/scripts/unison-reload';
 import { deleteLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { reactionPicker } from '@/scripts/reaction-picker';
 
 console.info(`Misskey v${version}`);
 
 // boot.jsのやつを解除
 window.onerror = null;
+window.onunhandledrejection = null;
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -243,9 +247,22 @@ components(app);
 
 await router.isReady();
 
-//document.body.innerHTML = '<div id="app"></div>';
+const splash = document.getElementById('splash');
+// 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
+if (splash) splash.addEventListener('transitionend', () => {
+	splash.remove();
+});
 
-app.mount('body');
+const rootEl = document.createElement('div');
+document.body.appendChild(rootEl);
+app.mount(rootEl);
+
+reactionPicker.init();
+
+if (splash) {
+	splash.style.opacity = '0';
+	splash.style.pointerEvents = 'none';
+}
 
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 	import('@/scripts/theme').then(({ builtinThemes }) => {

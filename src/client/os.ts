@@ -1,5 +1,8 @@
+// TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
+
 import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
+import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Sentry from '@sentry/browser';
 import Stream from '@/scripts/stream';
 import { apiUrl, debug } from '@/config';
@@ -289,7 +292,7 @@ export async function selectDriveFolder(multiple: boolean) {
 
 export async function pickEmoji(src?: HTMLElement, opts) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/emoji-picker.vue'), {
+		popup(import('@/components/emoji-picker-dialog.vue'), {
 			src,
 			...opts
 		}, {
@@ -297,6 +300,60 @@ export async function pickEmoji(src?: HTMLElement, opts) {
 				resolve(emoji);
 			},
 		}, 'closed');
+	});
+}
+
+type AwaitType<T> =
+	T extends Promise<infer U> ? U :
+	T extends (...args: any[]) => Promise<infer V> ? V :
+	T;
+let openingEmojiPicker: AwaitType<ReturnType<typeof popup>> | null = null;
+let activeTextarea: HTMLTextAreaElement | HTMLInputElement | null = null;
+export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: typeof activeTextarea) {
+	if (openingEmojiPicker) return;
+
+	activeTextarea = initialTextarea;
+
+	const textareas = document.querySelectorAll('textarea, input');
+	for (const textarea of Array.from(textareas)) {
+		textarea.addEventListener('focus', () => {
+			activeTextarea = textarea;
+		});
+	}
+
+	const observer = new MutationObserver(records => {
+		for (const record of records) {
+			for (const node of Array.from(record.addedNodes).filter(node => node instanceof HTMLElement) as HTMLElement[]) {
+				const textareas = node.querySelectorAll('textarea, input') as NodeListOf<NonNullable<typeof activeTextarea>>;
+				for (const textarea of Array.from(textareas).filter(textarea => textarea.dataset.preventEmojiInsert == null)) {
+					if (document.activeElement === textarea) activeTextarea = textarea;
+					textarea.addEventListener('focus', () => {
+						activeTextarea = textarea;
+					});
+				}
+			}
+		}
+	});
+
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
+		attributes: false,
+		characterData: false,
+	});
+
+	openingEmojiPicker = await popup(import('@/components/emoji-picker-window.vue'), {
+		src,
+		...opts
+	}, {
+		chosen: emoji => {
+			insertTextAtCursor(activeTextarea, emoji);
+		},
+		closed: () => {
+			openingEmojiPicker!.dispose();
+			openingEmojiPicker = null;
+			observer.disconnect();
+		}
 	});
 }
 

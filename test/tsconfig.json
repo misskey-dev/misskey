@@ -1,0 +1,36 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"noEmitOnError": false,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noUnusedParameters": false,
+		"noUnusedLocals": true,
+		"noFallthroughCasesInSwitch": true,
+		"declaration": false,
+		"sourceMap": true,
+		"target": "es2017",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"removeComments": false,
+		"noLib": false,
+		"strict": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": false,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"typeRoots": [
+			"../node_modules/@types",
+			"../src/@types"
+		],
+		"lib": [
+			"esnext"
+		]
+	},
+	"compileOnSave": false,
+	"include": [
+		"./**/*.ts"
+	]
+}

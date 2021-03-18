@@ -13,7 +13,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 			version: 'v1',
 			title: 'Misskey API',
 			description: getDescription(lang),
-			'x-logo': { url: '/assets/api-doc.png' }
+			'x-logo': { url: '/static-assets/api-doc.png' }
 		},
 
 		externalDocs: {
@@ -180,7 +180,7 @@ export function genOpenapiSpec(lang = 'ja-JP') {
 					}
 				},
 				'403': {
-					description: 'Forbiddon error',
+					description: 'Forbidden error',
 					content: {
 						'application/json': {
 							schema: {

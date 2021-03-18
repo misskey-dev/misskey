@@ -3,6 +3,11 @@ import define from '../../define';
 import { Users } from '../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': '管理者用のユーザー一覧を表示します。',
+		'en-US': 'Displays a list of users for administrators.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -61,6 +66,16 @@ export const meta = {
 			validator: $.optional.str,
 			default: null
 		}
+	},
+
+	res: {
+		type: 'array' as const,
+		nullable: false as const, optional: false as const,
+		items: {
+			type: 'object' as const,
+			nullable: false as const, optional: false as const,
+			ref: 'User'
+		}
 	}
 };
 
@@ -71,7 +86,7 @@ export default define(meta, async (ps, me) => {
 		case 'available': query.where('user.isSuspended = FALSE'); break;
 		case 'admin': query.where('user.isAdmin = TRUE'); break;
 		case 'moderator': query.where('user.isModerator = TRUE'); break;
-		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR isModerator = TRUE'); break;
+		case 'adminOrModerator': query.where('user.isAdmin = TRUE OR user.isModerator = TRUE'); break;
 		case 'alive': query.where('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
 		case 'silenced': query.where('user.isSilenced = TRUE'); break;
 		case 'suspended': query.where('user.isSuspended = TRUE'); break;

@@ -7,10 +7,14 @@ import { instanceChart } from '../../services/chart';
 import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
 import { fetchMeta } from '../../misc/fetch-meta';
 import { toPuny } from '../../misc/convert-host';
+import { Cache } from '../../misc/cache';
+import { Instance } from '../../models/entities/instance';
 
 const logger = new Logger('deliver');
 
 let latest: string | null = null;
+
+const suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
 
 export default async (job: Bull.Job) => {
 	const { host } = new URL(job.data.to);
@@ -22,12 +26,15 @@ export default async (job: Bull.Job) => {
 	}
 
 	// isSuspendedなら中断
-	const suspendedHosts = await Instances.find({
-		where: {
-			isSuspended: true
-		},
-		cache: 60 * 1000
-	});
+	let suspendedHosts = suspendedHostsCache.get(null);
+	if (suspendedHosts == null) {
+		suspendedHosts = await Instances.find({
+			where: {
+				isSuspended: true
+			},
+		});
+		suspendedHostsCache.set(null, suspendedHosts);
+	}
 	if (suspendedHosts.map(x => x.host).includes(toPuny(host))) {
 		return 'skip (suspended)';
 	}

@@ -2,6 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { Instances } from '../../../../models';
 import { toPuny } from '../../../../misc/convert-host';
+import config from '../../../../config';
 
 export const meta = {
 	tags: ['federation'],
@@ -12,6 +13,12 @@ export const meta = {
 		host: {
 			validator: $.str
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'FederationInstance'
 	}
 };
 

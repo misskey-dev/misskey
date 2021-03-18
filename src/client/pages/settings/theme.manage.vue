@@ -93,6 +93,8 @@ export default defineComponent({
 
 		uninstall() {
 			removeTheme(this.selectedTheme);
+			this.selectedThemeId = null;
+			os.success();
 		},
 	}
 });

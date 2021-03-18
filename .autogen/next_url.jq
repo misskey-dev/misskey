@@ -1,2 +1,0 @@
-.links
-.next

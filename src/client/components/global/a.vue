@@ -98,6 +98,11 @@ export default defineComponent({
 		},
 
 		nav() {
+			if (this.behavior === 'browser') {
+				location.href = this.to;
+				return;
+			}
+
 			if (this.to.startsWith('/my/messaging')) {
 				if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return this.window();
 				if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return this.popout();

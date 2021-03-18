@@ -29,6 +29,27 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		},
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id'
+				},
+				group: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const,
+					ref: 'UserGroup'
+				}
+			}
+		}
 	}
 };
 

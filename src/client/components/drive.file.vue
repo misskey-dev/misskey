@@ -9,15 +9,15 @@
 	:title="title"
 >
 	<div class="label" v-if="$i.avatarId == file.id">
-		<img src="/assets/label.svg"/>
+		<img src="/static-assets/client/label.svg"/>
 		<p>{{ $ts.avatar }}</p>
 	</div>
 	<div class="label" v-if="$i.bannerId == file.id">
-		<img src="/assets/label.svg"/>
+		<img src="/static-assets/client/label.svg"/>
 		<p>{{ $ts.banner }}</p>
 	</div>
 	<div class="label red" v-if="file.isSensitive">
-		<img src="/assets/label-red.svg"/>
+		<img src="/static-assets/client/label-red.svg"/>
 		<p>{{ $ts.nsfw }}</p>
 	</div>
 

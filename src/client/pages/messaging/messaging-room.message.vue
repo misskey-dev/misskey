@@ -4,7 +4,7 @@
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }" >
 			<button class="delete-button" v-if="isMe" :title="$ts.delete" @click="del">
-				<img src="/assets/remove.png" alt="Delete"/>
+				<img src="/static-assets/client/remove.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
 				<Mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$i"/>

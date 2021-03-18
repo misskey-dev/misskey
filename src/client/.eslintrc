@@ -1,4 +1,24 @@
 {
+	"env": {
+		"node": false,
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:vue/recommended"
+	],
+	"rules": {
+		"vue/require-v-for-key": 0,
+		"vue/max-attributes-per-line": 0,
+		"vue/html-indent": 0,
+		"vue/html-self-closing": 0,
+		"vue/no-unused-vars": 0,
+		"vue/attributes-order": 0,
+		"vue/require-prop-types": 0,
+		"vue/require-default-prop": 0,
+		"vue/html-closing-bracket-spacing": 0,
+		"vue/singleline-html-element-content-newline": 0,
+		"vue/no-v-html": 0
+	},
 	"globals": {
 		"_DEV_": false,
 		"_LANGS_": false,
