@@ -32,7 +32,9 @@ const shutdownListeners = [];
  * @param  {function(string)} fn Function to execute on shutdown.
  */
 const processOnce = (signals, fn) => {
-	return signals.forEach(sig => process.once(sig, fn));
+	for (const sig of signals) {
+		process.once(sig, fn);
+	}
 };
 
 /**
