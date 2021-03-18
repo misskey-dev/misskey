@@ -25,11 +25,26 @@ export const hashtagChart = new HashtagChart();
 export const perUserFollowingChart = new PerUserFollowingChart();
 export const perUserDriveChart = new PerUserDriveChart();
 
+const charts = [
+	federationChart,
+	notesChart,
+	usersChart,
+	networkChart,
+	activeUsersChart,
+	instanceChart,
+	perUserNotesChart,
+	driveChart,
+	perUserReactionsChart,
+	hashtagChart,
+	perUserFollowingChart,
+	perUserDriveChart,
+];
+
 // 20分おきにメモリ情報をDBに書き込み
 setInterval(() => {
-	notesChart.save();
-	perUserNotesChart.save();
+	for (const chart of charts) {
+		chart.save();
+	}
 }, 1000 * 60 * 20);
 
-beforeShutdown(() => notesChart.save());
-beforeShutdown(() => perUserNotesChart.save());
+beforeShutdown(() => Promise.all(charts.map(chart => chart.save())));
