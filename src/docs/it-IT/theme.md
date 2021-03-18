@@ -42,10 +42,10 @@ Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli og
     * テーマはここで設定されたベーステーマを継承します。
 * `props` ... テーマのスタイル定義。これから説明します。
 
-### テーマのスタイル定義
+### Impostare uno stile di tema
 `props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
 
-#### バリューで使える構文
+#### Sintassi dei valori
 * 16進数で表された色
     * 例: `#00ff00`
 * `rgb(r, g, b)`形式で表された色
