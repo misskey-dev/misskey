@@ -4,7 +4,7 @@
 
 import '@/style.scss';
 
-import { set } from 'idb-keyval';
+import { set } from '@/scripts/idb-proxy';
 
 // TODO: そのうち消す
 if (localStorage.getItem('vuex') != null) {
@@ -69,9 +69,9 @@ import { isMobile } from '@/scripts/is-mobile';
 import { getThemes } from '@/theme-store';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reload, reloadChannel } from '@/scripts/unison-reload';
+import { reactionPicker } from '@/scripts/reaction-picker';
 import { deleteLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { reactionPicker } from '@/scripts/reaction-picker';
 
 console.info(`Misskey v${version}`);
 

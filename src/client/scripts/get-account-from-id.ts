@@ -1,4 +1,4 @@
-import { get } from 'idb-keyval';
+import { get } from '@/scripts/idb-proxy';
 
 export async function getAccountFromId(id: string) {
 	const accounts = await get('accounts') as { token: string; id: string; }[];

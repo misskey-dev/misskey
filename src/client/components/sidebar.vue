@@ -242,7 +242,7 @@ export default defineComponent({
 		addAcount() {
 			os.popup(import('./signin-dialog.vue'), {}, {
 				done: async res => {
-					addAccount(res.id, res.i);
+					await addAccount(res.id, res.i);
 					os.success();
 				},
 			}, 'closed');
