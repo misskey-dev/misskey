@@ -632,6 +632,7 @@ _theme:
   keys:
     bg: "Sfondo"
     fg: "Testo"
+    focus: "Focalizzazione"
     indicator: "Indicatore"
     panel: "Pannello"
     shadow: "Ombra"
