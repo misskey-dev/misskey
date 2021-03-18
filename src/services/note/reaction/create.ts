@@ -12,11 +12,12 @@ import { genId } from '../../../misc/gen-id';
 import { createNotification } from '../../create-notification';
 import deleteReaction from './delete';
 import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
+import { NoteReaction } from '../../../models/entities/note-reaction';
 
 export default async (user: User, note: Note, reaction?: string) => {
 	reaction = await toDbReaction(reaction, user.host);
 
-	let record;
+	let record: NoteReaction;
 
 	// Create reaction
 	try {
