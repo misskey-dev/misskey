@@ -18,6 +18,18 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: HashtagLog[]): HashtagLog {
+		return {
+			local: {
+				users: logs.reduce((a, b) => a.concat(b.local.users), [] as HashtagLog['local']['users']),
+			},
+			remote: {
+				users: logs.reduce((a, b) => a.concat(b.remote.users), [] as HashtagLog['remote']['users']),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(): Promise<DeepPartial<HashtagLog>> {
 		return {};
 	}
