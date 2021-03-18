@@ -44,7 +44,7 @@
 		"@fortawesome/vue-fontawesome": "3.0.0-3",
 		"@koa/cors": "3.1.0",
 		"@koa/multer": "3.0.0",
-		"@koa/router": "9.0.1",
+		"@koa/router": "10.0.0",
 		"@sentry/browser": "5.29.2",
 		"@sentry/tracing": "5.29.2",
 		"@sinonjs/fake-timers": "7.0.2",
