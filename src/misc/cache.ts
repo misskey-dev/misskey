@@ -3,10 +3,11 @@ export class Cache<T> {
 	private lifetime: number;
 
 	constructor(lifetime: Cache<never>['lifetime']) {
+		this.cache = new Map();
 		this.lifetime = lifetime;
 	}
 
-	public set(key: string | null, value: T):void {
+	public set(key: string | null, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),
 			value
