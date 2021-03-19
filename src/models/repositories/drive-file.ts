@@ -134,7 +134,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 	}
 
 	public async packMany(
-		files: any[],
+		files: (DriveFile['id'] | DriveFile)[],
 		options?: PackOptions
 	) {
 		const items = await Promise.all(files.map(f => this.pack(f, options)));
