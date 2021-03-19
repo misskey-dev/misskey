@@ -9,6 +9,7 @@ import { toString } from '../../mfm/to-string';
 import { parse } from '../../mfm/parse';
 import { Emoji } from '../entities/emoji';
 import { concat } from '../../prelude/array';
+import { NoteReaction } from '../entities/note-reaction';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
@@ -83,6 +84,9 @@ export class NoteRepository extends Repository<Note> {
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
+			_hint_?: {
+				myReactions: Map<Note['id'], NoteReaction | null>;
+			};
 		}
 	): Promise<PackedNote> {
 		const opts = Object.assign({
@@ -188,6 +192,16 @@ export class NoteRepository extends Repository<Note> {
 		}
 
 		async function populateMyReaction() {
+			if (options?._hint_?.myReactions) {
+				const reaction = options._hint_.myReactions.get(note.id);
+				if (reaction) {
+					return convertLegacyReaction(reaction.reaction);
+				} else if (reaction === null) {
+					return undefined;
+				}
+				// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
+			}
+
 			const reaction = await NoteReactions.findOne({
 				userId: meId!,
 				noteId: note.id,
@@ -245,11 +259,13 @@ export class NoteRepository extends Repository<Note> {
 
 			...(opts.detail ? {
 				reply: note.replyId ? this.pack(note.replyId, meId, {
-					detail: false
+					detail: false,
+					_hint_: options?._hint_
 				}) : undefined,
 
 				renote: note.renoteId ? this.pack(note.renoteId, meId, {
-					detail: true
+					detail: true,
+					_hint_: options?._hint_
 				}) : undefined,
 
 				poll: note.hasPoll ? populatePoll() : undefined,
@@ -272,7 +288,7 @@ export class NoteRepository extends Repository<Note> {
 		return packed;
 	}
 
-	public packMany(
+	public async packMany(
 		notes: (Note['id'] | Note)[],
 		me?: User['id'] | User | null | undefined,
 		options?: {
@@ -280,7 +296,30 @@ export class NoteRepository extends Repository<Note> {
 			skipHide?: boolean;
 		}
 	) {
-		return Promise.all(notes.map(n => this.pack(n, me, options)));
+		if (notes.length === 0) return [];
+
+		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const noteIds = notes.map(n => typeof n === 'object' ? n.id : n);
+		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
+		if (meId) {
+			const renoteIds = notes.filter(n => (typeof n === 'object') && (n.renoteId != null)).map(n => (n as Note).renoteId!);
+			const targets = [...noteIds, ...renoteIds];
+			const myReactions = await NoteReactions.find({
+				userId: meId,
+				noteId: In(targets),
+			});
+
+			for (const target of targets) {
+				myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
+			}
+		}
+
+		return await Promise.all(notes.map(n => this.pack(n, me, {
+			...options,
+			_hint_: {
+				myReactions: myReactionsMap
+			}
+		})));
 	}
 }
 

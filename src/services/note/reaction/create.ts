@@ -15,6 +15,7 @@ import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-e
 import { NoteReaction } from '../../../models/entities/note-reaction';
 
 export default async (user: User, note: Note, reaction?: string) => {
+	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 
 	let record: NoteReaction;
