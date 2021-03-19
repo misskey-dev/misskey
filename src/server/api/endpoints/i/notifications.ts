@@ -85,7 +85,9 @@ export default define(meta, async (ps, user) => {
 
 	const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
 		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
-		.leftJoinAndSelect('notification.notifier', 'notifier');
+		.leftJoinAndSelect('notification.notifier', 'notifier')
+		.leftJoinAndSelect('notification.note', 'note')
+		.leftJoinAndSelect('note.user', 'user');
 
 	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
 	query.setParameters(mutingQuery.getParameters());
