@@ -159,6 +159,8 @@ export default class Connection {
 		}
 
 		if (this.user && read) {
+			// TODO: クライアントでタイムライン読み込みなどすると、一度に大量のreadNoteが発生しクエリ数がすごいことになるので、ある程度まとめてreadNoteするようにする
+			// 具体的には、この箇所ではキュー的な配列にread予定ノートを溜めておくに留めて、別の箇所で定期的にキューにあるノートを配列でreadNoteに渡すような実装にする
 			readNote(this.user.id, payload.id);
 		}
 	}
