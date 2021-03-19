@@ -350,7 +350,15 @@ export default defineComponent({
 
 		capture(withHandler = false) {
 			if (this.$i) {
-				this.connection.send(document.body.contains(this.$el) ? 'sn' : 's', { id: this.appearNote.id });
+				this.connection.send('sn', { id: this.appearNote.id });
+				if (this.appearNote.userId !== this.$i.id) {
+					if (this.appearNote.mentions && this.appearNote.mentions.includes(this.$i.id)) {
+						this.connection.send('readMention', { id: this.appearNote.id });
+					}
+					if (this.appearNote.visibleUserIds && this.appearNote.visibleUserIds.includes(this.$i.id)) {
+						this.connection.send('readSpecifiedNote', { id: this.appearNote.id });
+					}
+				}
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
