@@ -5,6 +5,7 @@ import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMes
 import config from '../../config';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
+import { Emoji } from '../entities/emoji';
 
 export type PackedUser = SchemaType<typeof packedUserSchema>;
 
@@ -149,6 +150,9 @@ export class UserRepository extends Repository<User> {
 		options?: {
 			detail?: boolean,
 			includeSecrets?: boolean,
+			_hint_?: {
+				emojis: Emoji[] | null;
+			};
 		}
 	): Promise<PackedUser> {
 		const opts = Object.assign({
@@ -165,6 +169,34 @@ export class UserRepository extends Repository<User> {
 			order: { id: 'DESC' }
 		}) : [];
 		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
+
+		let emojis: Emoji[] = [];
+		if (user.emojis.length > 0) {
+			// 与えられたhintだけで十分(=新たにクエリする必要がない)かどうかを表すフラグ
+			let enough = true;
+			if (options?._hint_?.emojis) {
+				for (const name of user.emojis) {
+					const matched = options._hint_.emojis.find(x => x.name === name && x.host === user.host);
+					if (matched) {
+						emojis.push(matched);
+					} else {
+						enough = false;
+					}
+				}
+			} else {
+				enough = false;
+			}
+
+			if (!enough) {
+				emojis = await Emojis.find({
+					where: {
+						name: In(user.emojis),
+						host: user.host
+					},
+					select: ['name', 'host', 'url', 'aliases']
+				});
+			}
+		}
 
 		const falsy = opts.detail ? false : undefined;
 
@@ -190,13 +222,7 @@ export class UserRepository extends Repository<User> {
 			} : undefined) : undefined,
 
 			// カスタム絵文字添付
-			emojis: user.emojis.length > 0 ? Emojis.find({
-				where: {
-					name: In(user.emojis),
-					host: user.host
-				},
-				select: ['name', 'host', 'url', 'aliases']
-			}) : [],
+			emojis: emojis,
 
 			...(opts.detail ? {
 				url: profile!.url,

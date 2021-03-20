@@ -85,6 +85,7 @@ export class NoteRepository extends Repository<Note> {
 			detail?: boolean;
 			skipHide?: boolean;
 			_hint_?: {
+				emojis: Emoji[] | null;
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}
@@ -141,10 +142,42 @@ export class NoteRepository extends Repository<Note> {
 		 * @param reactionNames Note等にリアクションされたカスタム絵文字名 (:は含めない)
 		 */
 		async function populateEmojis(emojiNames: string[], noteUserHost: string | null, reactionNames: string[]) {
+			const customReactions = reactionNames?.map(x => decodeReaction(x)).filter(x => x.name);
+
 			let all = [] as {
 				name: string,
 				url: string
 			}[];
+
+			// 与えられたhintだけで十分(=新たにクエリする必要がない)かどうかを表すフラグ
+			let enough = true;
+			if (options?._hint_?.emojis) {
+				for (const name of emojiNames) {
+					const matched = options._hint_.emojis.find(x => x.name === name && x.host === noteUserHost);
+					if (matched) {
+						all.push({
+							name: matched.name,
+							url: matched.url,
+						});
+					} else {
+						enough = false;
+					}
+				}
+				for (const customReaction of customReactions) {
+					const matched = options._hint_.emojis.find(x => x.name === customReaction.name && x.host === customReaction.host);
+					if (matched) {
+						all.push({
+							name: `${matched.name}@${matched.host || '.'}`,	// @host付きでローカルは.
+							url: matched.url,
+						});
+					} else {
+						enough = false;
+					}
+				}
+			} else {
+				enough = false;
+			}
+			if (enough) return all;
 
 			// カスタム絵文字
 			if (emojiNames?.length > 0) {
@@ -163,8 +196,6 @@ export class NoteRepository extends Repository<Note> {
 
 				all = concat([all, tmp]);
 			}
-
-			const customReactions = reactionNames?.map(x => decodeReaction(x)).filter(x => x.name);
 
 			if (customReactions?.length > 0) {
 				const where = [] as {}[];
@@ -230,7 +261,12 @@ export class NoteRepository extends Repository<Note> {
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
 			userId: note.userId,
-			user: Users.pack(note.user || note.userId, meId),
+			user: Users.pack(note.user || note.userId, meId, {
+				detail: false,
+				_hint_: {
+					emojis: options?._hint_?.emojis || null
+				}
+			}),
 			text: text,
 			cw: note.cw,
 			visibility: note.visibility,
@@ -258,12 +294,12 @@ export class NoteRepository extends Repository<Note> {
 			_prId_: (note as any)._prId_ || undefined,
 
 			...(opts.detail ? {
-				reply: note.replyId ? this.pack(note.replyId, meId, {
+				reply: note.replyId ? this.pack(note.reply || note.replyId, meId, {
 					detail: false,
 					_hint_: options?._hint_
 				}) : undefined,
 
-				renote: note.renoteId ? this.pack(note.renoteId, meId, {
+				renote: note.renoteId ? this.pack(note.renote || note.renoteId, meId, {
 					detail: true,
 					_hint_: options?._hint_
 				}) : undefined,
@@ -314,10 +350,48 @@ export class NoteRepository extends Repository<Note> {
 			}
 		}
 
+		// TODO: ここら辺の処理をaggregateEmojisみたいな関数に切り出したい
+		let emojisWhere: any[] = [];
+		for (const note of notes) {
+			if (typeof note !== 'object') continue;
+			emojisWhere.push({
+				name: In(note.emojis),
+				host: note.userHost
+			});
+			if (note.renote) {
+				emojisWhere.push({
+					name: In(note.renote.emojis),
+					host: note.renote.userHost
+				});
+				if (note.renote.user) {
+					emojisWhere.push({
+						name: In(note.renote.user.emojis),
+						host: note.renote.userHost
+					});
+				}
+			}
+			const customReactions = Object.keys(note.reactions).map(x => decodeReaction(x)).filter(x => x.name);
+			emojisWhere = emojisWhere.concat(customReactions.map(x => ({
+				name: x.name,
+				host: x.host
+			})));
+			if (note.user) {
+				emojisWhere.push({
+					name: In(note.user.emojis),
+					host: note.userHost
+				});
+			}
+		}
+		const emojis = emojisWhere.length > 0 ? await Emojis.find({
+			where: emojisWhere,
+			select: ['name', 'host', 'url']
+		}) : null;
+
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
-				myReactions: myReactionsMap
+				myReactions: myReactionsMap,
+				emojis: emojis
 			}
 		})));
 	}

@@ -87,7 +87,11 @@ export default define(meta, async (ps, user) => {
 		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
 		.leftJoinAndSelect('notification.notifier', 'notifier')
 		.leftJoinAndSelect('notification.note', 'note')
-		.leftJoinAndSelect('note.user', 'user');
+		.leftJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser');
 
 	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
 	query.setParameters(mutingQuery.getParameters());

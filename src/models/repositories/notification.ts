@@ -1,11 +1,13 @@
 import { EntityRepository, In, Repository } from 'typeorm';
-import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions } from '..';
+import { Users, Notes, UserGroupInvitations, AccessTokens, NoteReactions, Emojis } from '..';
 import { Notification } from '../entities/notification';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '../../misc/schema';
 import { Note } from '../entities/note';
 import { NoteReaction } from '../entities/note-reaction';
 import { User } from '../entities/user';
+import { decodeReaction } from '../../misc/reaction-lib';
+import { Emoji } from '../entities/emoji';
 
 export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 
@@ -15,6 +17,7 @@ export class NotificationRepository extends Repository<Notification> {
 		src: Notification['id'] | Notification,
 		options: {
 			_hintForEachNotes_: {
+				emojis: Emoji[] | null;
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}
@@ -98,9 +101,47 @@ export class NotificationRepository extends Repository<Notification> {
 			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
 		}
 
+		// TODO: ここら辺の処理をaggregateEmojisみたいな関数に切り出したい
+		let emojisWhere: any[] = [];
+		for (const note of notes) {
+			if (typeof note !== 'object') continue;
+			emojisWhere.push({
+				name: In(note.emojis),
+				host: note.userHost
+			});
+			if (note.renote) {
+				emojisWhere.push({
+					name: In(note.renote.emojis),
+					host: note.renote.userHost
+				});
+				if (note.renote.user) {
+					emojisWhere.push({
+						name: In(note.renote.user.emojis),
+						host: note.renote.userHost
+					});
+				}
+			}
+			const customReactions = Object.keys(note.reactions).map(x => decodeReaction(x)).filter(x => x.name);
+			emojisWhere = emojisWhere.concat(customReactions.map(x => ({
+				name: x.name,
+				host: x.host
+			})));
+			if (note.user) {
+				emojisWhere.push({
+					name: In(note.user.emojis),
+					host: note.userHost
+				});
+			}
+		}
+		const emojis = emojisWhere.length > 0 ? await Emojis.find({
+			where: emojisWhere,
+			select: ['name', 'host', 'url']
+		}) : null;
+
 		return await Promise.all(notifications.map(x => this.pack(x, {
 			_hintForEachNotes_: {
-				myReactions: myReactionsMap
+				myReactions: myReactionsMap,
+				emojis: emojis,
 			}
 		})));
 	}
