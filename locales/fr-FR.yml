@@ -1234,7 +1234,7 @@ _pages:
     if: "Si"
     _if:
       variable: "Variables"
-    post: "Formulaire à publier"
+    post: "Formulaire de publication"
     _post:
       text: "Contenu"
       attachCanvasImage: "Publier avec Toile comme image"
