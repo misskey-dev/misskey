@@ -112,5 +112,5 @@ export default define(meta, async (ps, user) => {
 		readNotification(user.id, notifications.map(x => x.id));
 	}
 
-	return await Notifications.packMany(notifications);
+	return await Notifications.packMany(notifications, user.id);
 });
