@@ -53,11 +53,10 @@ export default async (user: User, note: Note, reaction?: string) => {
 	await Notes.createQueryBuilder().update()
 		.set({
 			reactions: () => sql,
+			score: () => '"score" + 1'
 		})
 		.where('id = :id', { id: note.id })
 		.execute();
-
-	Notes.increment({ id: note.id }, 'score', 1);
 
 	perUserReactionsChart.update(user, note);
 
