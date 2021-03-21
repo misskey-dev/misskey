@@ -594,10 +594,13 @@ function saveReply(reply: Note, note: Note) {
 }
 
 function incNotesCountOfUser(user: User) {
-	Users.increment({ id: user.id }, 'notesCount', 1);
-	Users.update({ id: user.id }, {
-		updatedAt: new Date()
-	});
+	Users.createQueryBuilder().update()
+		.set({
+			updatedAt: new Date(),
+			notesCount: () => '"notesCount" + 1'
+		})
+		.where('id = :id', { id: user.id })
+		.execute();
 }
 
 async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse>): Promise<User[]> {
