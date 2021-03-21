@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create favorite
-	await NoteFavorites.save({
+	await NoteFavorites.insert({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,

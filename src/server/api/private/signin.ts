@@ -53,7 +53,7 @@ export default async (ctx: Koa.Context) => {
 
 	async function fail(status?: number, failure?: { error: string }) {
 		// Append signin history
-		await Signins.save({
+		await Signins.insert({
 			id: genId(),
 			createdAt: new Date(),
 			userId: user.id,
@@ -198,7 +198,7 @@ export default async (ctx: Koa.Context) => {
 
 		const challengeId = genId();
 
-		await AttestationChallenges.save({
+		await AttestationChallenges.insert({
 			userId: user.id,
 			id: challengeId,
 			challenge: hash(Buffer.from(challenge, 'utf-8')).toString('hex'),

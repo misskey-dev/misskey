@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create read
-	await AnnouncementReads.save({
+	await AnnouncementReads.insert({
 		id: genId(),
 		createdAt: new Date(),
 		announcementId: ps.announcementId,

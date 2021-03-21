@@ -46,7 +46,7 @@ export default define(meta, async (ps, user) => {
 		return;
 	}
 
-	await PromoReads.save({
+	await PromoReads.insert({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,

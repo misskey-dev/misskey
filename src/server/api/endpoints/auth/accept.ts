@@ -58,7 +58,7 @@ export default define(meta, async (ps, user) => {
 		const now = new Date();
 
 		// Insert access token doc
-		await AccessTokens.save({
+		await AccessTokens.insert({
 			id: genId(),
 			createdAt: now,
 			lastUsedAt: now,

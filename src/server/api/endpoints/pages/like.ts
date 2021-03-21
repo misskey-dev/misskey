@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create like
-	await PageLikes.save({
+	await PageLikes.insert({
 		id: genId(),
 		createdAt: new Date(),
 		pageId: page.id,

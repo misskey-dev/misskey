@@ -247,7 +247,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		for (const u of us) {
 			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 				if (shouldMute) {
-					MutedNotes.save({
+					MutedNotes.insert({
 						id: genId(),
 						userId: u.userId,
 						noteId: note.id,
@@ -444,8 +444,13 @@ async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 }
 
 function incRenoteCount(renote: Note) {
-	Notes.increment({ id: renote.id }, 'renoteCount', 1);
-	Notes.increment({ id: renote.id }, 'score', 1);
+	Notes.createQueryBuilder().update()
+		.set({
+			renoteCount: () => '"renoteCount" + 1',
+			score: () => '"score" + 1'
+		})
+		.where('id = :id', { id: renote.id })
+		.execute();
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
@@ -525,7 +530,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 			await Notes.insert(insert);
 		}
 
-		return await Notes.findOneOrFail(insert.id);
+		return insert;
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
@@ -594,10 +599,13 @@ function saveReply(reply: Note, note: Note) {
 }
 
 function incNotesCountOfUser(user: User) {
-	Users.increment({ id: user.id }, 'notesCount', 1);
-	Users.update({ id: user.id }, {
-		updatedAt: new Date()
-	});
+	Users.createQueryBuilder().update()
+		.set({
+			updatedAt: new Date(),
+			notesCount: () => '"notesCount" + 1'
+		})
+		.where('id = :id', { id: user.id })
+		.execute();
 }
 
 async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse>): Promise<User[]> {

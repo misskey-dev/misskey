@@ -14,7 +14,7 @@ export class NotificationRepository extends Repository<Notification> {
 	public async pack(
 		src: Notification['id'] | Notification,
 		options: {
-			_hintForEachNotes_: {
+			_hintForEachNotes_?: {
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}

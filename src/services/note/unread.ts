@@ -17,7 +17,7 @@ export default async function(userId: User['id'], note: Note, params: {
 	if (mute.map(m => m.muteeId).includes(note.userId)) return;
 	//#endregion
 
-	const unread = await NoteUnreads.save({
+	const unread = {
 		id: genId(),
 		noteId: note.id,
 		userId: userId,
@@ -25,7 +25,9 @@ export default async function(userId: User['id'], note: Note, params: {
 		isMentioned: params.isMentioned,
 		noteChannelId: note.channelId,
 		noteUserId: note.userId,
-	});
+	};
+
+	await NoteUnreads.insert(unread);
 
 	// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 	setTimeout(async () => {

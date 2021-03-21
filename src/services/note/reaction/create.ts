@@ -18,17 +18,17 @@ export default async (user: User, note: Note, reaction?: string) => {
 	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 
-	let record: NoteReaction;
+	let record: NoteReaction = {
+		id: genId(),
+		createdAt: new Date(),
+		noteId: note.id,
+		userId: user.id,
+		reaction
+	};
 
 	// Create reaction
 	try {
-		record = await NoteReactions.save({
-			id: genId(),
-			createdAt: new Date(),
-			noteId: note.id,
-			userId: user.id,
-			reaction
-		});
+		await NoteReactions.insert(record);
 	} catch (e) {
 		if (isDuplicateKeyValueError(e)) {
 			record = await NoteReactions.findOneOrFail({
@@ -53,11 +53,10 @@ export default async (user: User, note: Note, reaction?: string) => {
 	await Notes.createQueryBuilder().update()
 		.set({
 			reactions: () => sql,
+			score: () => '"score" + 1'
 		})
 		.where('id = :id', { id: note.id })
 		.execute();
-
-	Notes.increment({ id: note.id }, 'score', 1);
 
 	perUserReactionsChart.update(user, note);
 
