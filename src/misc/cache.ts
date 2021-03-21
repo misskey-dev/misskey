@@ -1,5 +1,5 @@
 export class Cache<T> {
-	private cache: Map<string | null, { date: number; value: T | null; }>;
+	private cache: Map<string | null, { date: number; value: T; }>;
 	private lifetime: number;
 
 	constructor(lifetime: Cache<never>['lifetime']) {
@@ -7,14 +7,14 @@ export class Cache<T> {
 		this.lifetime = lifetime;
 	}
 
-	public set(key: string | null, value: T | null): void {
+	public set(key: string | null, value: T): void {
 		this.cache.set(key, {
 			date: Date.now(),
 			value
 		});
 	}
 
-	public get(key: string | null): T | null | undefined {
+	public get(key: string | null): T | undefined {
 		const cached = this.cache.get(key);
 		if (cached == null) return undefined;
 		if ((Date.now() - cached.date) > this.lifetime) {
@@ -28,7 +28,7 @@ export class Cache<T> {
 		this.cache.delete(key);
 	}
 
-	public async fetch(key: string | null, fetcher: () => Promise<T | null>): Promise<T | null> {
+	public async fetch(key: string | null, fetcher: () => Promise<T>): Promise<T> {
 		const cachedValue = this.get(key);
 		if (cachedValue !== undefined) {
 			// Cache HIT
