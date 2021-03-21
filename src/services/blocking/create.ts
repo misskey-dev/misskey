@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
@@ -55,7 +55,10 @@ async function cancelRequest(follower: User, followee: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'unfollow', packed);
+			publishMainStream(follower.id, 'unfollow', packed);
+		});
 	}
 
 	// リモートにフォローリクエストをしていたらUndoFollow送信
@@ -97,7 +100,10 @@ async function unFollow(follower: User, followee: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'unfollow', packed);
+			publishMainStream(follower.id, 'unfollow', packed);
+		});
 	}
 
 	// リモートにフォローをしていたらUndoFollow送信

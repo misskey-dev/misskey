@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
@@ -30,7 +30,10 @@ export default async function(follower: User, followee: User, silent = false) {
 	if (!silent && Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'unfollow', packed);
+			publishMainStream(follower.id, 'unfollow', packed);
+		});
 	}
 
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {

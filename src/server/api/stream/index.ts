@@ -30,10 +30,6 @@ export default class Connection {
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
-	private followingClock: ReturnType<typeof setInterval>;
-	private mutingClock: ReturnType<typeof setInterval>;
-	private followingChannelsClock: ReturnType<typeof setInterval>;
-	private userProfileClock: ReturnType<typeof setInterval>;
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -52,19 +48,51 @@ export default class Connection {
 			this.onBroadcastMessage(type, body);
 		});
 
-		// TODO: reidsでイベントをもらうようにし、ポーリングはしないようにする
 		if (this.user) {
 			this.updateFollowing();
-			this.followingClock = setInterval(this.updateFollowing, 5000);
-
 			this.updateMuting();
-			this.mutingClock = setInterval(this.updateMuting, 5000);
-
 			this.updateFollowingChannels();
-			this.followingChannelsClock = setInterval(this.updateFollowingChannels, 5000);
-
 			this.updateUserProfile();
-			this.userProfileClock = setInterval(this.updateUserProfile, 5000);
+
+			this.subscriber.on(`user:${this.user.id}`, ({ type, body }) => {
+				this.onUserEvent(type, body);
+			});
+		}
+	}
+
+	@autobind
+	private onUserEvent(type: string, body: any) {
+		switch (type) {
+			case 'follow':
+				this.following.add(body.id);
+				break;
+
+			case 'unfollow':
+				this.following.delete(body.id);
+				break;
+
+			case 'mute':
+				this.muting.add(body.id);
+				break;
+
+			case 'unmute':
+				this.muting.delete(body.id);
+				break;
+
+			case 'followChannel':
+				this.followingChannels.add(body.id);
+				break;
+
+			case 'unfollowChannel':
+				this.followingChannels.delete(body.id);
+				break;
+
+			case 'updateUserProfile':
+				this.userProfile = body;
+				break;
+
+			default:
+				break;
 		}
 	}
 
@@ -354,10 +382,5 @@ export default class Connection {
 		for (const c of this.channels.filter(c => c.dispose)) {
 			if (c.dispose) c.dispose();
 		}
-
-		if (this.followingClock) clearInterval(this.followingClock);
-		if (this.mutingClock) clearInterval(this.mutingClock);
-		if (this.followingChannelsClock) clearInterval(this.followingChannelsClock);
-		if (this.userProfileClock) clearInterval(this.userProfileClock);
 	}
 }

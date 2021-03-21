@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
@@ -88,7 +88,10 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'follow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'follow', packed);
+			publishMainStream(follower.id, 'follow', packed);
+		});
 	}
 
 	// Publish followed event
