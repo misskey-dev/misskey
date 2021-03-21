@@ -1,15 +1,14 @@
 import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
-import { Emojis, Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
+import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
 import { SchemaType } from '../../misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
 import { toString } from '../../mfm/to-string';
 import { parse } from '../../mfm/parse';
-import { Emoji } from '../entities/emoji';
-import { concat } from '../../prelude/array';
 import { NoteReaction } from '../entities/note-reaction';
+import { populateEmojis } from '../../misc/populate-emojis';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
@@ -85,7 +84,6 @@ export class NoteRepository extends Repository<Note> {
 			detail?: boolean;
 			skipHide?: boolean;
 			_hint_?: {
-				emojis: Emoji[] | null;
 				myReactions: Map<Note['id'], NoteReaction | null>;
 			};
 		}
@@ -135,93 +133,6 @@ export class NoteRepository extends Repository<Note> {
 			};
 		}
 
-		/**
-		 * 添付用emojisを解決する
-		 * @param emojiNames Note等に添付されたカスタム絵文字名 (:は含めない)
-		 * @param noteUserHost Noteのホスト
-		 * @param reactionNames Note等にリアクションされたカスタム絵文字名 (:は含めない)
-		 */
-		async function populateEmojis(emojiNames: string[], noteUserHost: string | null, reactionNames: string[]) {
-			const customReactions = reactionNames?.map(x => decodeReaction(x)).filter(x => x.name);
-
-			let all = [] as {
-				name: string,
-				url: string
-			}[];
-
-			// 与えられたhintだけで十分(=新たにクエリする必要がない)かどうかを表すフラグ
-			let enough = true;
-			if (options?._hint_?.emojis) {
-				for (const name of emojiNames) {
-					const matched = options._hint_.emojis.find(x => x.name === name && x.host === noteUserHost);
-					if (matched) {
-						all.push({
-							name: matched.name,
-							url: matched.url,
-						});
-					} else {
-						enough = false;
-					}
-				}
-				for (const customReaction of customReactions) {
-					const matched = options._hint_.emojis.find(x => x.name === customReaction.name && x.host === customReaction.host);
-					if (matched) {
-						all.push({
-							name: `${matched.name}@${matched.host || '.'}`,	// @host付きでローカルは.
-							url: matched.url,
-						});
-					} else {
-						enough = false;
-					}
-				}
-			} else {
-				enough = false;
-			}
-			if (enough) return all;
-
-			// カスタム絵文字
-			if (emojiNames?.length > 0) {
-				const tmp = await Emojis.find({
-					where: {
-						name: In(emojiNames),
-						host: noteUserHost
-					},
-					select: ['name', 'host', 'url']
-				}).then(emojis => emojis.map((emoji: Emoji) => {
-					return {
-						name: emoji.name,
-						url: emoji.url,
-					};
-				}));
-
-				all = concat([all, tmp]);
-			}
-
-			if (customReactions?.length > 0) {
-				const where = [] as {}[];
-
-				for (const customReaction of customReactions) {
-					where.push({
-						name: customReaction.name,
-						host: customReaction.host
-					});
-				}
-
-				const tmp = await Emojis.find({
-					where,
-					select: ['name', 'host', 'url']
-				}).then(emojis => emojis.map((emoji: Emoji) => {
-					return {
-						name: `${emoji.name}@${emoji.host || '.'}`,	// @host付きでローカルは.
-						url: emoji.url,
-					};
-				}));
-				all = concat([all, tmp]);
-			}
-
-			return all;
-		}
-
 		async function populateMyReaction() {
 			if (options?._hint_?.myReactions) {
 				const reaction = options._hint_.myReactions.get(note.id);
@@ -257,15 +168,14 @@ export class NoteRepository extends Repository<Note> {
 				: await Channels.findOne(note.channelId)
 			: null;
 
+		const reactionEmojiNames = Object.keys(note.reactions).filter(x => x?.startsWith(':')).map(x => decodeReaction(x).reaction).map(x => x.replace(/:/g, ''));
+
 		const packed = await awaitAll({
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
 			userId: note.userId,
 			user: Users.pack(note.user || note.userId, meId, {
 				detail: false,
-				_hint_: {
-					emojis: options?._hint_?.emojis || null
-				}
 			}),
 			text: text,
 			cw: note.cw,
@@ -277,7 +187,7 @@ export class NoteRepository extends Repository<Note> {
 			repliesCount: note.repliesCount,
 			reactions: convertLegacyReactions(note.reactions),
 			tags: note.tags.length > 0 ? note.tags : undefined,
-			emojis: populateEmojis(note.emojis, host, Object.keys(note.reactions)),
+			emojis: populateEmojis(note.emojis.concat(reactionEmojiNames), host),
 			fileIds: note.fileIds,
 			files: DriveFiles.packMany(note.fileIds),
 			replyId: note.replyId,
@@ -350,48 +260,10 @@ export class NoteRepository extends Repository<Note> {
 			}
 		}
 
-		// TODO: ここら辺の処理をaggregateEmojisみたいな関数に切り出したい
-		let emojisWhere: any[] = [];
-		for (const note of notes) {
-			if (typeof note !== 'object') continue;
-			emojisWhere.push({
-				name: In(note.emojis),
-				host: note.userHost
-			});
-			if (note.renote) {
-				emojisWhere.push({
-					name: In(note.renote.emojis),
-					host: note.renote.userHost
-				});
-				if (note.renote.user) {
-					emojisWhere.push({
-						name: In(note.renote.user.emojis),
-						host: note.renote.userHost
-					});
-				}
-			}
-			const customReactions = Object.keys(note.reactions).map(x => decodeReaction(x)).filter(x => x.name);
-			emojisWhere = emojisWhere.concat(customReactions.map(x => ({
-				name: x.name,
-				host: x.host
-			})));
-			if (note.user) {
-				emojisWhere.push({
-					name: In(note.user.emojis),
-					host: note.userHost
-				});
-			}
-		}
-		const emojis = emojisWhere.length > 0 ? await Emojis.find({
-			where: emojisWhere,
-			select: ['name', 'host', 'url']
-		}) : null;
-
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
-				myReactions: myReactionsMap,
-				emojis: emojis
+				myReactions: myReactionsMap
 			}
 		})));
 	}
