@@ -120,11 +120,11 @@ export default define(meta, async (ps, user) => {
 			.where('note.userId = :meId', { meId: user.id });
 			if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
 		}))
-		.leftJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
+		.innerJoinAndSelect('note.user', 'user')
+		.innerJoinAndSelect('note.reply', 'reply')
+		.innerJoinAndSelect('note.renote', 'renote')
+		.innerJoinAndSelect('reply.user', 'replyUser')
+		.innerJoinAndSelect('renote.user', 'renoteUser')
 		.setParameters(followingQuery.getParameters());
 
 	generateChannelQuery(query, user);
