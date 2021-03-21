@@ -79,11 +79,11 @@ export default define(meta, async (ps, me) => {
 
 		query
 			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
-			.innerJoinAndSelect('note.user', 'user')
-			.innerJoinAndSelect('note.reply', 'reply')
-			.innerJoinAndSelect('note.renote', 'renote')
-			.innerJoinAndSelect('reply.user', 'replyUser')
-			.innerJoinAndSelect('renote.user', 'renoteUser');
+			.leftJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		generateVisibilityQuery(query, me);
 		if (me) generateMutedUserQuery(query, me);
