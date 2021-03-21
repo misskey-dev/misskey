@@ -444,8 +444,13 @@ async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 }
 
 function incRenoteCount(renote: Note) {
-	Notes.increment({ id: renote.id }, 'renoteCount', 1);
-	Notes.increment({ id: renote.id }, 'score', 1);
+	Notes.createQueryBuilder().update()
+		.set({
+			renoteCount: () => '"renoteCount" + 1',
+			score: () => '"score" + 1'
+		})
+		.where('id = :id', { id: renote.id })
+		.execute();
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
@@ -525,7 +530,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 			await Notes.insert(insert);
 		}
 
-		return await Notes.findOneOrFail(insert.id);
+		return insert;
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
