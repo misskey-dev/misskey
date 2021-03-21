@@ -2,6 +2,7 @@ import autobind from 'autobind-decorator';
 import * as websocket from 'websocket';
 import { readNotification } from '../common/read-notification';
 import call from '../call';
+import readNote from '../../../services/note/read';
 import Channel from './channel';
 import channels from './channels';
 import { EventEmitter } from 'events';
@@ -13,8 +14,6 @@ import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '../../../services/stream';
 import { UserGroup } from '../../../models/entities/user-group';
-import { readMention } from '../../../services/note/read-mention';
-import { readSpecifiedNote } from '../../../services/note/read-specified-note';
 
 /**
  * Main stream connection
@@ -116,10 +115,9 @@ export default class Connection {
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
 			case 'readNotification': this.onReadNotification(body); break;
-			case 'readMention': this.onReadMention(body); break;
-			case 'readSpecifiedNote': this.onReadSpecifiedNote(body); break;
-			case 'subNote': this.onSubscribeNote(body); break;
-			case 'sn': this.onSubscribeNote(body); break; // alias
+			case 'subNote': this.onSubscribeNote(body, true); break;
+			case 'sn': this.onSubscribeNote(body, true); break; // alias
+			case 's': this.onSubscribeNote(body, false); break;
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
@@ -172,31 +170,11 @@ export default class Connection {
 		readNotification(this.user!.id, [payload.id]);
 	}
 
-	@autobind
-	private onReadMention(payload: any) {
-		if (!payload.id) return;
-		if (this.user) {
-			// TODO: ある程度まとめてreadMentionするようにする
-			// 具体的には、この箇所ではキュー的な配列にread予定ノートを溜めておくに留めて、別の箇所で定期的にキューにあるノートを配列でreadMentionに渡すような実装にする
-			readMention(this.user.id, [payload.id]);
-		}
-	}
-
-	@autobind
-	private onReadSpecifiedNote(payload: any) {
-		if (!payload.id) return;
-		if (this.user) {
-			// TODO: ある程度まとめてreadSpecifiedNoteするようにする
-			// 具体的には、この箇所ではキュー的な配列にread予定ノートを溜めておくに留めて、別の箇所で定期的にキューにあるノートを配列でreadSpecifiedNoteに渡すような実装にする
-			readSpecifiedNote(this.user.id, [payload.id]);
-		}
-	}
-
 	/**
 	 * 投稿購読要求時
 	 */
 	@autobind
-	private onSubscribeNote(payload: any) {
+	private onSubscribeNote(payload: any, read: boolean) {
 		if (!payload.id) return;
 
 		if (this.subscribingNotes[payload.id] == null) {
@@ -207,6 +185,12 @@ export default class Connection {
 
 		if (this.subscribingNotes[payload.id] === 1) {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
+		}
+
+		if (this.user && read) {
+			// TODO: クライアントでタイムライン読み込みなどすると、一度に大量のreadNoteが発生しクエリ数がすごいことになるので、ある程度まとめてreadNoteするようにする
+			// 具体的には、この箇所ではキュー的な配列にread予定ノートを溜めておくに留めて、別の箇所で定期的にキューにあるノートを配列でreadNoteに渡すような実装にする
+			readNote(this.user.id, payload.id);
 		}
 	}
 

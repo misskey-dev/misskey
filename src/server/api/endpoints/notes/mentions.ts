@@ -1,12 +1,12 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
+import read from '../../../../services/note/read';
 import { Notes, Followings } from '../../../../models';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Brackets } from 'typeorm';
-import { readMention } from '../../../../services/note/read-mention';
 
 export const meta = {
 	desc: {
@@ -83,7 +83,9 @@ export default define(meta, async (ps, user) => {
 
 	const mentions = await query.take(ps.limit!).getMany();
 
-	readMention(user.id, mentions.map(n => n.id));
+	for (const note of mentions) {
+		read(user.id, note.id);
+	}
 
 	return await Notes.packMany(mentions, user);
 });
