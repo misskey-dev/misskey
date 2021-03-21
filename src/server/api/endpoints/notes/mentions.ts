@@ -83,9 +83,7 @@ export default define(meta, async (ps, user) => {
 
 	const mentions = await query.take(ps.limit!).getMany();
 
-	for (const note of mentions) {
-		read(user.id, note.id);
-	}
+	read(user.id, mentions.map(note => note.id));
 
 	return await Notes.packMany(mentions, user);
 });

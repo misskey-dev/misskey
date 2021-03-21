@@ -2,70 +2,54 @@ import { publishMainStream } from '../stream';
 import { Note } from '../../models/entities/note';
 import { User } from '../../models/entities/user';
 import { NoteUnreads, Antennas, AntennaNotes, Users } from '../../models';
-import { Not, IsNull } from 'typeorm';
+import { Not, IsNull, In } from 'typeorm';
 
 /**
- * Mark a note as read
+ * Mark notes as read
  */
 export default async function(
 	userId: User['id'],
-	noteId: Note['id']
+	noteIds: Note['id'][]
 ) {
 	async function careNoteUnreads() {
-		const exist = await NoteUnreads.findOne({
-			userId: userId,
-			noteId: noteId,
-		});
-
-		if (!exist) return;
-
 		// Remove the record
 		await NoteUnreads.delete({
 			userId: userId,
-			noteId: noteId,
+			noteId: In(noteIds),
 		});
 
-		if (exist.isMentioned) {
-			NoteUnreads.count({
-				userId: userId,
-				isMentioned: true
-			}).then(mentionsCount => {
-				if (mentionsCount === 0) {
-					// 全て既読になったイベントを発行
-					publishMainStream(userId, 'readAllUnreadMentions');
-				}
-			});
-		}
+		NoteUnreads.count({
+			userId: userId,
+			isMentioned: true
+		}).then(mentionsCount => {
+			if (mentionsCount === 0) {
+				// 全て既読になったイベントを発行
+				publishMainStream(userId, 'readAllUnreadMentions');
+			}
+		});
 
-		if (exist.isSpecified) {
-			NoteUnreads.count({
-				userId: userId,
-				isSpecified: true
-			}).then(specifiedCount => {
-				if (specifiedCount === 0) {
-					// 全て既読になったイベントを発行
-					publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
-				}
-			});
-		}
+		NoteUnreads.count({
+			userId: userId,
+			isSpecified: true
+		}).then(specifiedCount => {
+			if (specifiedCount === 0) {
+				// 全て既読になったイベントを発行
+				publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
+			}
+		});
 
-		if (exist.noteChannelId) {
-			NoteUnreads.count({
-				userId: userId,
-				noteChannelId: Not(IsNull())
-			}).then(channelNoteCount => {
-				if (channelNoteCount === 0) {
-					// 全て既読になったイベントを発行
-					publishMainStream(userId, 'readAllChannels');
-				}
-			});
-		}
+		NoteUnreads.count({
+			userId: userId,
+			noteChannelId: Not(IsNull())
+		}).then(channelNoteCount => {
+			if (channelNoteCount === 0) {
+				// 全て既読になったイベントを発行
+				publishMainStream(userId, 'readAllChannels');
+			}
+		});
 	}
 
 	async function careAntenna() {
-		const beforeUnread = await Users.getHasUnreadAntenna(userId);
-		if (!beforeUnread) return;
-
 		const antennas = await Antennas.find({ userId });
 
 		await Promise.all(antennas.map(async antenna => {
@@ -78,7 +62,7 @@ export default async function(
 
 			await AntennaNotes.update({
 				antennaId: antenna.id,
-				noteId: noteId
+				noteId: In(noteIds)
 			}, {
 				read: true
 			});

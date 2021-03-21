@@ -14,6 +14,7 @@ import { AccessToken } from '../../../models/entities/access-token';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { publishChannelStream, publishGroupMessagingStream, publishMessagingStream } from '../../../services/stream';
 import { UserGroup } from '../../../models/entities/user-group';
+import { PackedNote } from '../../../models/repositories/note';
 
 /**
  * Main stream connection
@@ -29,6 +30,7 @@ export default class Connection {
 	public subscriber: EventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
+	private cachedNotes: PackedNote[] = [];
 
 	constructor(
 		wsConnection: websocket.connection,
@@ -115,9 +117,9 @@ export default class Connection {
 		switch (type) {
 			case 'api': this.onApiRequest(body); break;
 			case 'readNotification': this.onReadNotification(body); break;
-			case 'subNote': this.onSubscribeNote(body, true); break;
-			case 'sn': this.onSubscribeNote(body, true); break; // alias
-			case 's': this.onSubscribeNote(body, false); break;
+			case 'subNote': this.onSubscribeNote(body); break;
+			case 's': this.onSubscribeNote(body); break; // alias
+			case 'sr': this.onSubscribeNote(body); this.readNote(body); break;
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
@@ -136,6 +138,48 @@ export default class Connection {
 	@autobind
 	private onBroadcastMessage(type: string, body: any) {
 		this.sendMessageToWs(type, body);
+	}
+
+	@autobind
+	public cacheNote(note: PackedNote) {
+		const add = (note: PackedNote) => {
+			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
+			if (existIndex > -1) {
+				this.cachedNotes[existIndex] = note;
+				return;
+			}
+
+			this.cachedNotes.unshift(note);
+			if (this.cachedNotes.length > 32) {
+				this.cachedNotes.splice(32);
+			}
+		};
+
+		add(note);
+		if (note.reply) add(note.reply);
+		if (note.renote) add(note.renote);
+	}
+
+	@autobind
+	private readNote(body: any) {
+		const id = body.id;
+
+		const note = this.cachedNotes.find(n => n.id === id);
+		if (note == null) return;
+
+		if (this.user && (note.userId !== this.user.id)) {
+			if (note.mentions && note.mentions.includes(this.user.id)) {
+				readNote(this.user.id, [note]);
+			} else if (note.visibleUserIds && note.visibleUserIds.includes(this.user.id)) {
+				readNote(this.user.id, [note]);
+			}
+
+			if (this.followingChannels.has(note.channelId)) {
+				// TODO
+			}
+
+			// TODO: アンテナの既読処理
+		}
 	}
 
 	/**
@@ -174,7 +218,7 @@ export default class Connection {
 	 * 投稿購読要求時
 	 */
 	@autobind
-	private onSubscribeNote(payload: any, read: boolean) {
+	private onSubscribeNote(payload: any) {
 		if (!payload.id) return;
 
 		if (this.subscribingNotes[payload.id] == null) {
@@ -185,12 +229,6 @@ export default class Connection {
 
 		if (this.subscribingNotes[payload.id] === 1) {
 			this.subscriber.on(`noteStream:${payload.id}`, this.onNoteStreamMessage);
-		}
-
-		if (this.user && read) {
-			// TODO: クライアントでタイムライン読み込みなどすると、一度に大量のreadNoteが発生しクエリ数がすごいことになるので、ある程度まとめてreadNoteするようにする
-			// 具体的には、この箇所ではキュー的な配列にread予定ノートを溜めておくに留めて、別の箇所で定期的にキューにあるノートを配列でreadNoteに渡すような実装にする
-			readNote(this.user.id, payload.id);
 		}
 	}
 
