@@ -18,7 +18,7 @@ export default async function(blocker: User, blockee: User) {
 		unFollow(blockee, blocker)
 	]);
 
-	await Blockings.save({
+	await Blockings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		blockerId: blocker.id,

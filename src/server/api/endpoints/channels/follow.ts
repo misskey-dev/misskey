@@ -37,7 +37,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.noSuchChannel);
 	}
 
-	await ChannelFollowings.save({
+	await ChannelFollowings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		followerId: user.id,

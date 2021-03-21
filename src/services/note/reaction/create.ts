@@ -18,17 +18,17 @@ export default async (user: User, note: Note, reaction?: string) => {
 	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 
-	let record: NoteReaction;
+	let record: NoteReaction = {
+		id: genId(),
+		createdAt: new Date(),
+		noteId: note.id,
+		userId: user.id,
+		reaction
+	};
 
 	// Create reaction
 	try {
-		record = await NoteReactions.save({
-			id: genId(),
-			createdAt: new Date(),
-			noteId: note.id,
-			userId: user.id,
-			reaction
-		});
+		await NoteReactions.insert(record);
 	} catch (e) {
 		if (isDuplicateKeyValueError(e)) {
 			record = await NoteReactions.findOneOrFail({

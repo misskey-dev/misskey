@@ -10,7 +10,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 	// 通知しない設定になっているか、自分自身の投稿なら既読にする
 	const read = !antenna.notify || (antenna.userId === noteUser.id);
 
-	AntennaNotes.save({
+	AntennaNotes.insert({
 		id: genId(),
 		antennaId: antenna.id,
 		noteId: note.id,

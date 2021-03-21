@@ -22,7 +22,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	let alreadyFollowed = false;
 
-	await Followings.save({
+	await Followings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,

@@ -247,7 +247,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		for (const u of us) {
 			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 				if (shouldMute) {
-					MutedNotes.save({
+					MutedNotes.insert({
 						id: genId(),
 						userId: u.userId,
 						noteId: note.id,
