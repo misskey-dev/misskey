@@ -52,6 +52,7 @@ export default class Connection {
 			this.onBroadcastMessage(type, body);
 		});
 
+		// TODO: reidsでイベントをもらうようにし、ポーリングはしないようにする
 		if (this.user) {
 			this.updateFollowing();
 			this.followingClock = setInterval(this.updateFollowing, 5000);
