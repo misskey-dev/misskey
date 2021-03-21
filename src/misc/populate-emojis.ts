@@ -19,7 +19,7 @@ type PopulatedEmoji = {
  * @param noteUserHost ノートオーナーのホスト
  * @returns 絵文字情報, nullは未マッチを意味する
  */
-export async function pupulateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
+export async function populateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
 	const match = emojiName.match(/^(\w+)(?:@([\w.-]+))?$/);
 	if (!match) return null;
 
@@ -52,7 +52,7 @@ export async function pupulateEmoji(emojiName: string, noteUserHost: string | nu
  * 複数の添付用絵文字情報を解決する (キャシュ付き, 存在しないものは結果から除外される)
  */
 export async function populateEmojis(emojiNames: string[], noteUserHost: string | null): Promise<PopulatedEmoji[]> {
-	const emojis = await Promise.all(emojiNames.map(x => pupulateEmoji(x, noteUserHost)));
+	const emojis = await Promise.all(emojiNames.map(x => populateEmoji(x, noteUserHost)));
 	return emojis.filter((x): x is PopulatedEmoji => x != null);
 }
 
