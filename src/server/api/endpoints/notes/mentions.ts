@@ -63,7 +63,7 @@ export default define(meta, async (ps, user) => {
 			.where(`:meId = ANY(note.mentions)`, { meId: user.id })
 			.orWhere(`:meId = ANY(note.visibleUserIds)`, { meId: user.id });
 		}))
-		.leftJoinAndSelect('note.user', 'user')
+		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('note.reply', 'reply')
 		.leftJoinAndSelect('note.renote', 'renote')
 		.leftJoinAndSelect('reply.user', 'replyUser')
