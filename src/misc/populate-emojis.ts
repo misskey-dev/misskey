@@ -16,7 +16,7 @@ type PopulatedEmoji = {
 /**
  * 添付用絵文字情報を解決する
  * @param emojiName ノートやユーザープロフィールに添付された、またはリアクションのカスタム絵文字名 (:は含めない, リアクションでローカルホストの場合は@.を付ける (これはdecodeReactionで可能))
- * @param noteUserHost ノートやユーザープロフィールの所有者
+ * @param noteUserHost ノートやユーザープロフィールの所有者のホスト
  * @returns 絵文字情報, nullは未マッチを意味する
  */
 export async function populateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
