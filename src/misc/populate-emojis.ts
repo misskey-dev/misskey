@@ -15,8 +15,8 @@ type PopulatedEmoji = {
 
 /**
  * 添付用絵文字情報を解決する
- * @param emojiName ノートやリアクションに添付されたカスタム絵文字名 (:は含めない, リアクションでローカルホストの場合は@.を付ける (これはdecodeReactionで可能))
- * @param noteUserHost ノートオーナーのホスト
+ * @param emojiName ノートやユーザープロフィールに添付された、またはリアクションのカスタム絵文字名 (:は含めない, リアクションでローカルホストの場合は@.を付ける (これはdecodeReactionで可能))
+ * @param noteUserHost ノートやユーザープロフィールの所有者
  * @returns 絵文字情報, nullは未マッチを意味する
  */
 export async function populateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
@@ -27,9 +27,9 @@ export async function populateEmoji(emojiName: string, noteUserHost: string | nu
 
 	// クエリに使うホスト
 	let host = match[2] === '.' ? null	// .はローカルホスト (ここがマッチするのはリアクションのみ)
-		: match[2] === undefined ? noteUserHost	// ノートでホスト省略の場合はローカルホスト (ここがリアクションにマッチすることはない)
+		: match[2] === undefined ? noteUserHost	// ノートなどでホスト省略表記の場合はローカルホスト (ここがリアクションにマッチすることはない)
 		: isSelfHost(match[2]) ? null	// 自ホスト指定
-		: (match[2] || noteUserHost);	// 指定されたホスト || ノートのオーナーのホスト (こっちがリアクションにマッチすることはない)
+		: (match[2] || noteUserHost);	// 指定されたホスト || ノートなどの所有者のホスト (こっちがリアクションにマッチすることはない)
 
 	host = toPunyNullable(host);
 
