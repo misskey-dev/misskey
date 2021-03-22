@@ -361,7 +361,7 @@ export default defineComponent({
 		format(arr) {
 			const now = Date.now();
 			return arr.map((v, i) => ({
-				x: new Date(now - ((this.chartSpan == 'day' ? 86400000 :3600000 ) * i)),
+				x: new Date((now - ((this.chartSpan === 'day' ? 86400000 :3600000) * i)) / (this.chartSpan === 'day' ? 86400000 :3600000)),
 				y: v
 			}));
 		},
