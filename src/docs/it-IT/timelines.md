@@ -1,15 +1,15 @@
-# タイムラインの比較
+# Confronto delle timeline
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
 ## Home
-自分のフォローしているユーザーの投稿
+Pubblicazioni degli utenti che segui.
 
 ## Locale
-全てのローカルユーザーの「ホーム」指定されていない投稿
+Pubblicazioni degli utenti della tua istanza. Non vengono mostrate le note pubblicate con lo stato "principale".
 
-## ソーシャル
-自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿
+## Sociale
+Raggruppa le timeline "home" e "locale".
 
 ## グローバル
-全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿
+Tutte le pubblicazioni ricevute dall'istanza, sia locali che altre. Non vengono mostrate le note pubblicate con lo stato "home".
