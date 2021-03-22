@@ -6,6 +6,7 @@ import { SchemaType } from '../../misc/schema';
 import { Note } from '../entities/note';
 import { NoteReaction } from '../entities/note-reaction';
 import { User } from '../entities/user';
+import { aggregateNoteEmojis, prefetchEmojis } from '../../misc/populate-emojis';
 
 export type PackedNotification = SchemaType<typeof packedNotificationSchema>;
 
@@ -97,6 +98,8 @@ export class NotificationRepository extends Repository<Notification> {
 		for (const target of targets) {
 			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
 		}
+
+		await prefetchEmojis(aggregateNoteEmojis(notes));
 
 		return await Promise.all(notifications.map(x => this.pack(x, {
 			_hintForEachNotes_: {

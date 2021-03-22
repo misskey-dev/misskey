@@ -8,7 +8,7 @@ import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '.
 import { toString } from '../../mfm/to-string';
 import { parse } from '../../mfm/parse';
 import { NoteReaction } from '../entities/note-reaction';
-import { populateEmojis } from '../../misc/populate-emojis';
+import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '../../misc/populate-emojis';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
@@ -258,6 +258,8 @@ export class NoteRepository extends Repository<Note> {
 				myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) || null);
 			}
 		}
+
+		await prefetchEmojis(aggregateNoteEmojis(notes));
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,

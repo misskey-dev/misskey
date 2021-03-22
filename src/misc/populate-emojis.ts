@@ -1,7 +1,10 @@
+import { In } from 'typeorm';
 import { Emojis } from '../models';
 import { Emoji } from '../models/entities/emoji';
+import { Note } from '../models/entities/note';
 import { Cache } from './cache';
 import { isSelfHost, toPunyNullable } from './convert-host';
+import { decodeReaction } from './reaction-lib';
 
 const cache = new Cache<Emoji | null>(1000 * 60 * 60);
 
@@ -70,3 +73,47 @@ export async function populateEmojis(emojiNames: string[], noteUserHost: string 
 	return emojis.filter((x): x is PopulatedEmoji => x != null);
 }
 
+export function aggregateNoteEmojis(notes: Note[]) {
+	let emojis: { name: string | null; host: string | null; }[] = [];
+	for (const note of notes) {
+		emojis = emojis.concat(note.emojis
+			.map(e => parseEmojiStr(e, note.userHost)));
+		if (note.renote) {
+			emojis = emojis.concat(note.renote.emojis
+				.map(e => parseEmojiStr(e, note.renote!.userHost)));
+			if (note.renote.user) {
+				emojis = emojis.concat(note.renote.user.emojis
+					.map(e => parseEmojiStr(e, note.renote!.userHost)));
+			}
+		}
+		const customReactions = Object.keys(note.reactions).map(x => decodeReaction(x)).filter(x => x.name != null) as typeof emojis;
+		emojis = emojis.concat(customReactions);
+		if (note.user) {
+			emojis = emojis.concat(note.user.emojis
+				.map(e => parseEmojiStr(e, note.userHost)));
+		}
+	}
+	return emojis.filter(x => x.name != null) as { name: string; host: string | null; }[];
+}
+
+/**
+ * 与えられた絵文字のリストをデータベースから取得し、キャッシュに追加します
+ */
+export async function prefetchEmojis(emojis: { name: string; host: string | null; }[]): Promise<void> {
+	const notCachedEmojis = emojis.filter(emoji => cache.get(`${emoji.name} ${emoji.host}`) == null);
+	const emojisQuery: any[] = [];
+	const hosts = new Set(notCachedEmojis.map(e => e.host));
+	for (const host of hosts) {
+		emojisQuery.push({
+			name: In(notCachedEmojis.filter(e => e.host === host).map(e => e.name)),
+			host: host
+		});
+	}
+	const _emojis = emojisQuery.length > 0 ? await Emojis.find({
+		where: emojisQuery,
+		select: ['name', 'host', 'url']
+	}) : [];
+	for (const emoji of _emojis) {
+		cache.set(`${emoji.name} ${emoji.host}`, emoji);
+	}
+}
