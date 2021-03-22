@@ -8,7 +8,8 @@ import { getEmojis } from './note';
 import renderEmoji from './emoji';
 import { IIdentifier } from '../models/identifier';
 import renderHashtag from './hashtag';
-import { DriveFiles, UserProfiles, UserKeypairs } from '../../../models';
+import { DriveFiles, UserProfiles } from '../../../models';
+import { getUserKeypair } from '../../../misc/keypair-store';
 
 export async function renderPerson(user: ILocalUser) {
 	const id = `${config.url}/users/${user.id}`;
@@ -49,7 +50,7 @@ export async function renderPerson(user: ILocalUser) {
 		...hashtagTags,
 	];
 
-	const keypair = await UserKeypairs.findOneOrFail(user.id);
+	const keypair = await getUserKeypair(user.id);
 
 	const person = {
 		type: isSystem ? 'Application' : user.isBot ? 'Service' : 'Person',

@@ -38,7 +38,7 @@ export default define(meta, async () => {
 		chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
 	});
 
-	await RegistrationTickets.save({
+	await RegistrationTickets.insert({
 		id: genId(),
 		createdAt: new Date(),
 		code,

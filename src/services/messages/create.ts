@@ -14,7 +14,7 @@ import { renderActivity } from '../../remote/activitypub/renderer';
 import { deliver } from '../../queue';
 
 export async function createMessage(user: User, recipientUser: User | undefined, recipientGroup: UserGroup | undefined, text: string | undefined, file: DriveFile | null, uri?: string) {
-	const message = await MessagingMessages.save({
+	const message = {
 		id: genId(),
 		createdAt: new Date(),
 		fileId: file ? file.id : null,
@@ -25,7 +25,9 @@ export async function createMessage(user: User, recipientUser: User | undefined,
 		isRead: false,
 		reads: [] as any[],
 		uri
-	} as MessagingMessage);
+	} as MessagingMessage;
+
+	await MessagingMessages.insert(message);
 
 	const messageObj = await MessagingMessages.pack(message);
 

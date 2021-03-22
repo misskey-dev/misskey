@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyClipped);
 	}
 
-	await ClipNotes.save({
+	await ClipNotes.insert({
 		id: genId(),
 		noteId: note.id,
 		clipId: clip.id

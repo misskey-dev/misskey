@@ -18,6 +18,7 @@ type executor<T extends IEndpointMeta> =
 	(params: Params<T>, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any, cleanup?: Function) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
+// TODO: API関数に user まるごと渡すのではなくユーザーIDなどの最小限のプロパティだけ渡すようにしたい(キャッシュとか考えないでよくなるため)
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
 		: (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any) => Promise<any> {
 	return (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any) => {
