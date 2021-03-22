@@ -259,21 +259,21 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	});
 
 	// Antenna
-	Antennas.find().then(async antennas => {
-		const followings = await Followings.createQueryBuilder('following')
-			.andWhere(`following.followeeId = :userId`, { userId: note.userId })
-			.getMany();
-
-		const followers = followings.map(f => f.followerId);
-
-		for (const antenna of antennas) {
-			checkHitAntenna(antenna, note, user, followers).then(hit => {
-				if (hit) {
-					addNoteToAntenna(antenna, note, user);
+	Followings.createQueryBuilder('following')
+		.andWhere(`following.followeeId = :userId`, { userId: note.userId })
+		.getMany()
+		.then(followings => {
+			const followers = followings.map(f => f.followerId);
+			Antennas.find().then(async antennas => {
+				for (const antenna of antennas) {
+					checkHitAntenna(antenna, note, user, followers).then(hit => {
+						if (hit) {
+							addNoteToAntenna(antenna, note, user);
+						}
+					});
 				}
 			});
-		}
-	});
+		});
 
 	// Channel
 	if (note.channelId) {
