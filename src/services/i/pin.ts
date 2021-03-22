@@ -37,7 +37,7 @@ export async function addPinned(user: User, noteId: Note['id']) {
 		throw new IdentifiableError('23f0cf4e-59a3-4276-a91d-61a5891c1514', 'That note has already been pinned.');
 	}
 
-	await UserNotePinings.save({
+	await UserNotePinings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,

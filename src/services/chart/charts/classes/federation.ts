@@ -21,6 +21,17 @@ export default class FederationChart extends Chart<FederationLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: FederationLog[]): FederationLog {
+		return {
+			instance: {
+				total: logs[0].instance.total,
+				inc: logs.reduce((a, b) => a + b.instance.inc, 0),
+				dec: logs.reduce((a, b) => a + b.instance.dec, 0),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(): Promise<DeepPartial<FederationLog>> {
 		const [total] = await Promise.all([
 			Instances.count({})

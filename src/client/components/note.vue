@@ -325,7 +325,8 @@ export default defineComponent({
 
 		capture(withHandler = false) {
 			if (this.$i) {
-				this.connection.send(document.body.contains(this.$el) ? 'sn' : 's', { id: this.appearNote.id });
+				// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
+				this.connection.send(document.body.contains(this.$el) ? 'sr' : 's', { id: this.appearNote.id });
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},

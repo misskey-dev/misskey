@@ -77,7 +77,7 @@ export class DriveFile {
 		default: {},
 		comment: 'The any properties of the DriveFile. For example, it includes image width/height.'
 	})
-	public properties: Record<string, any>;
+	public properties: { width?: number; height?: number; avgColor?: string };
 
 	@Index()
 	@Column('boolean')

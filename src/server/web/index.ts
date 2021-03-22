@@ -29,6 +29,7 @@ const markdown = MarkdownIt({
 });
 
 const staticAssets = `${__dirname}/../../../assets/`;
+const docAssets = `${__dirname}/../../../src/docs/`;
 const assets = `${__dirname}/../../assets/`;
 
 // Init app
@@ -44,7 +45,7 @@ app.use(views(__dirname + '/views', {
 }));
 
 // Serve favicon
-app.use(favicon(`${__dirname}/../../../assets/favicon.png`));
+app.use(favicon(`${__dirname}/../../../assets/favicon.ico`));
 
 // Common request handler
 app.use(async (ctx, next) => {
@@ -65,6 +66,13 @@ router.get('/static-assets/(.*)', async ctx => {
 	});
 });
 
+router.get('/doc-assets/(.*)', async ctx => {
+	await send(ctx as any, ctx.path.replace('/doc-assets/', ''), {
+		root: docAssets,
+		maxage: ms('7 days'),
+	});
+});
+
 router.get('/assets/(.*)', async ctx => {
 	await send(ctx as any, ctx.path.replace('/assets/', ''), {
 		root: assets,
@@ -75,7 +83,7 @@ router.get('/assets/(.*)', async ctx => {
 // Apple touch icon
 router.get('/apple-touch-icon.png', async ctx => {
 	await send(ctx as any, '/apple-touch-icon.png', {
-		root: assets
+		root: staticAssets
 	});
 });
 

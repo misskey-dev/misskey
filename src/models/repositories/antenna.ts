@@ -56,16 +56,24 @@ export const packedAntennaSchema = {
 			type: 'array' as const,
 			optional: false as const, nullable: false as const,
 			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
 			}
 		},
-		execludeKeywords: {
+		excludeKeywords: {
 			type: 'array' as const,
 			optional: false as const, nullable: false as const,
 			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
 			}
 		},
 		src: {

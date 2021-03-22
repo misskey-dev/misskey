@@ -18,18 +18,22 @@ export default class extends Channel {
 				case 'notification': {
 					if (this.muting.has(body.userId)) return;
 					if (body.note && body.note.isHidden) {
-						body.note = await Notes.pack(body.note.id, this.user, {
+						const note = await Notes.pack(body.note.id, this.user, {
 							detail: true
 						});
+						this.connection.cacheNote(note);
+						body.note = note;
 					}
 					break;
 				}
 				case 'mention': {
 					if (this.muting.has(body.userId)) return;
 					if (body.isHidden) {
-						body = await Notes.pack(body.id, this.user, {
+						const note = await Notes.pack(body.id, this.user, {
 							detail: true
 						});
+						this.connection.cacheNote(note);
+						body = note;
 					}
 					break;
 				}

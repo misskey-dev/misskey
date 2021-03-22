@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Push the user
-	await UserGroupJoinings.save({
+	await UserGroupJoinings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,

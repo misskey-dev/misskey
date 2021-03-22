@@ -40,6 +40,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		return `Old keyId is no longer supported. ${keyIdLower}`;
 	}
 
+	// TDOO: キャッシュ
 	const dbResolver = new DbResolver();
 
 	// HTTP-Signature keyIdを元にDBから取得

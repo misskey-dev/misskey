@@ -43,6 +43,8 @@ export default class extends Channel {
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 		if (isMutedUserRelated(note, this.muting)) return;
 
+		this.connection.cacheNote(note);
+
 		this.send('note', note);
 	}
 

@@ -22,6 +22,17 @@ export default class TestGroupedChart extends Chart<TestGroupedLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: TestGroupedLog[]): TestGroupedLog {
+		return {
+			foo: {
+				total: logs[0].foo.total,
+				inc: logs.reduce((a, b) => a + b.foo.inc, 0),
+				dec: logs.reduce((a, b) => a + b.foo.dec, 0),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(group: string): Promise<DeepPartial<TestGroupedLog>> {
 		return {
 			foo: {

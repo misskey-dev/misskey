@@ -26,6 +26,22 @@ export default class UsersChart extends Chart<UsersLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: UsersLog[]): UsersLog {
+		return {
+			local: {
+				total: logs[0].local.total,
+				inc: logs.reduce((a, b) => a + b.local.inc, 0),
+				dec: logs.reduce((a, b) => a + b.local.dec, 0),
+			},
+			remote: {
+				total: logs[0].remote.total,
+				inc: logs.reduce((a, b) => a + b.remote.inc, 0),
+				dec: logs.reduce((a, b) => a + b.remote.dec, 0),
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(): Promise<DeepPartial<UsersLog>> {
 		const [localCount, remoteCount] = await Promise.all([
 			Users.count({ host: null }),

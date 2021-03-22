@@ -30,7 +30,7 @@ export async function createNotification(
 		...data
 	} as Partial<Notification>);
 
-	const packed = await Notifications.pack(notification);
+	const packed = await Notifications.pack(notification, {});
 
 	// Publish notification event
 	publishMainStream(notifieeId, 'notification', packed);

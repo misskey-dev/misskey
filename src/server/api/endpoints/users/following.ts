@@ -76,7 +76,8 @@ export default define(meta, async (ps, me) => {
 	}
 
 	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
-		.andWhere(`following.followerId = :userId`, { userId: user.id });
+		.andWhere(`following.followerId = :userId`, { userId: user.id })
+		.innerJoinAndSelect('following.followee', 'followee');
 
 	const followings = await query
 		.take(ps.limit!)

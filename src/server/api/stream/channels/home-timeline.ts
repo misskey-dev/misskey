@@ -64,6 +64,8 @@ export default class extends Channel {
 		// そのためレコードが存在するかのチェックでは不十分なので、改めてcheckWordMuteを呼んでいる
 		if (this.userProfile && await checkWordMute(note, this.user, this.userProfile.mutedWords)) return;
 
+		this.connection.cacheNote(note);
+
 		this.send('note', note);
 	}
 

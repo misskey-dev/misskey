@@ -8,7 +8,7 @@ import { fetchProxyAccount } from '../../misc/fetch-proxy-account';
 import createFollowing from '../following/create';
 
 export async function pushUserToUserList(target: User, list: UserList) {
-	await UserListJoinings.save({
+	await UserListJoinings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: target.id,

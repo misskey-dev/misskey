@@ -10,7 +10,7 @@ export default async (me: User['id'], note: Note) => {
 		return;
 	}
 
-	await NoteWatchings.save({
+	await NoteWatchings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,

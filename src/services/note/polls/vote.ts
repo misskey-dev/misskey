@@ -29,7 +29,7 @@ export default async function(user: User, note: Note, choice: number) {
 	}
 
 	// Create vote
-	await PollVotes.save({
+	await PollVotes.insert({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,

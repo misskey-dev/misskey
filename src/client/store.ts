@@ -212,7 +212,6 @@ type Plugin = {
  */
 export class ColdDeviceStorage {
 	public static default = {
-		themes: [] as Theme[], // TODO: そのうち消す
 		// TODO: テーマをアカウントに保存するようになったのにもかかわらず、以下のどのテーマを使うかという情報だけがブラウザ保存になっていて、アカウント切り替えたりログアウトしたときに不具合が発生するのでなんとかする
 		// テーマIDを保存するのではなく、テーマ自体を保存するようにすれば解決するかも
 		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',

@@ -1,11 +1,15 @@
 export const logSchema = {
 	/**
-	 * アクティブユーザー数
+	 * アクティブユーザー
 	 */
-	count: {
-		type: 'number' as const,
+	users: {
+		type: 'array' as const,
 		optional: false as const, nullable: false as const,
-		description: 'アクティブユーザー数',
+		description: 'アクティブユーザー',
+		items: {
+			type: 'string' as const,
+			optional: false as const, nullable: false as const,
+		}
 	},
 };
 
