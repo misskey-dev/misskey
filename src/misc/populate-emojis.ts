@@ -6,7 +6,7 @@ import { Cache } from './cache';
 import { isSelfHost, toPunyNullable } from './convert-host';
 import { decodeReaction } from './reaction-lib';
 
-const cache = new Cache<Emoji | null>(1000 * 60 * 60);
+const cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
 
 /**
  * 添付用絵文字情報
