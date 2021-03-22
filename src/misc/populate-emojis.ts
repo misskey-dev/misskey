@@ -13,6 +13,30 @@ type PopulatedEmoji = {
 	url: string;
 };
 
+function normalizeHost(src: string | undefined, noteUserHost: string | null): string | null {
+	// クエリに使うホスト
+	let host = src === '.' ? null	// .はローカルホスト (ここがマッチするのはリアクションのみ)
+		: src === undefined ? noteUserHost	// ノートなどでホスト省略表記の場合はローカルホスト (ここがリアクションにマッチすることはない)
+		: isSelfHost(src) ? null	// 自ホスト指定
+		: (src || noteUserHost);	// 指定されたホスト || ノートなどの所有者のホスト (こっちがリアクションにマッチすることはない)
+
+	host = toPunyNullable(host);
+
+	return host;
+}
+
+function parseEmojiStr(emojiName: string, noteUserHost: string | null) {
+	const match = emojiName.match(/^(\w+)(?:@([\w.-]+))?$/);
+	if (!match) return { name: null, host: null };
+
+	const name = match[1];
+
+	// ホスト正規化
+	const host = toPunyNullable(normalizeHost(match[2], noteUserHost));
+
+	return { name, host };
+}
+
 /**
  * 添付用絵文字情報を解決する
  * @param emojiName ノートやユーザープロフィールに添付された、またはリアクションのカスタム絵文字名 (:は含めない, リアクションでローカルホストの場合は@.を付ける (これはdecodeReactionで可能))
@@ -20,18 +44,8 @@ type PopulatedEmoji = {
  * @returns 絵文字情報, nullは未マッチを意味する
  */
 export async function populateEmoji(emojiName: string, noteUserHost: string | null): Promise<PopulatedEmoji | null> {
-	const match = emojiName.match(/^(\w+)(?:@([\w.-]+))?$/);
-	if (!match) return null;
-
-	const name = match[1];
-
-	// クエリに使うホスト
-	let host = match[2] === '.' ? null	// .はローカルホスト (ここがマッチするのはリアクションのみ)
-		: match[2] === undefined ? noteUserHost	// ノートなどでホスト省略表記の場合はローカルホスト (ここがリアクションにマッチすることはない)
-		: isSelfHost(match[2]) ? null	// 自ホスト指定
-		: (match[2] || noteUserHost);	// 指定されたホスト || ノートなどの所有者のホスト (こっちがリアクションにマッチすることはない)
-
-	host = toPunyNullable(host);
+	const { name, host } = parseEmojiStr(emojiName, noteUserHost);
+	if (name == null) return null;
 
 	const queryOrNull = async () => (await Emojis.findOne({
 		name,
