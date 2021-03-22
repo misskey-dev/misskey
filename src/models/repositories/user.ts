@@ -164,7 +164,7 @@ export class UserRepository extends Repository<User> {
 		const pins = opts.detail ? await UserNotePinings.createQueryBuilder('pin')
 			.where('pin.userId = :userId', { userId: user.id })
 			.innerJoinAndSelect('pin.note', 'note')
-			.orderBy('id', 'DESC')
+			.orderBy('pin.id', 'DESC')
 			.getMany() : [];
 		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
 
