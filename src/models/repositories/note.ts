@@ -235,7 +235,7 @@ export class NoteRepository extends Repository<Note> {
 	}
 
 	public async packMany(
-		notes: (Note['id'] | Note)[],
+		notes: Note[],
 		me?: User['id'] | User | null | undefined,
 		options?: {
 			detail?: boolean;
@@ -245,11 +245,10 @@ export class NoteRepository extends Repository<Note> {
 		if (notes.length === 0) return [];
 
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
-		const noteIds = notes.map(n => typeof n === 'object' ? n.id : n);
 		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
 		if (meId) {
-			const renoteIds = notes.filter(n => (typeof n === 'object') && (n.renoteId != null)).map(n => (n as Note).renoteId!);
-			const targets = [...noteIds, ...renoteIds];
+			const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
+			const targets = [...notes.map(n => n.id), ...renoteIds];
 			const myReactions = await NoteReactions.find({
 				userId: meId,
 				noteId: In(targets),

@@ -161,10 +161,11 @@ export class UserRepository extends Repository<User> {
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
-		const pins = opts.detail ? await UserNotePinings.find({
-			where: { userId: user.id },
-			order: { id: 'DESC' }
-		}) : [];
+		const pins = opts.detail ? await UserNotePinings.createQueryBuilder('pin')
+			.where('pin.userId = :userId', { userId: user.id })
+			.innerJoinAndSelect('pin.note', 'note')
+			.orderBy('id', 'DESC')
+			.getMany() : [];
 		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
 
 		const falsy = opts.detail ? false : undefined;
@@ -211,7 +212,7 @@ export class UserRepository extends Repository<User> {
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
 				pinnedNoteIds: pins.map(pin => pin.noteId),
-				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
+				pinnedNotes: Notes.packMany(pins.map(pin => pin.note!), meId, {
 					detail: true
 				}),
 				pinnedPageId: profile!.pinnedPageId,
