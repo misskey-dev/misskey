@@ -295,11 +295,15 @@ export class UserRepository extends Repository<User> {
 		return Promise.all(users.map(u => this.pack(u, me, options)));
 	}
 
-	public isLocalUser(user: User): user is ILocalUser {
+	public isLocalUser(user: User): user is ILocalUser;
+	public isLocalUser(user: { host: User['host'] }): boolean;
+	public isLocalUser(user: User | { host: User['host'] }): boolean {
 		return user.host == null;
 	}
 
-	public isRemoteUser(user: User): user is IRemoteUser {
+	public isRemoteUser(user: User): user is IRemoteUser;
+	public isRemoteUser(user: { host: User['host'] }): boolean;
+	public isRemoteUser(user: User | { host: User['host'] }): boolean {
 		return !this.isLocalUser(user);
 	}
 

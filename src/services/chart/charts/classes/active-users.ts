@@ -35,7 +35,7 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	public async update(user: User) {
+	public async update(user: { id: User['id'], host: User['host'] }) {
 		const update: Obj = {
 			users: [user.id]
 		};
