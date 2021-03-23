@@ -6,7 +6,7 @@ import { publishMainStream } from '../../stream';
 import { insertFollowingDoc } from '../create';
 import { User, ILocalUser } from '../../../models/entities/user';
 import { FollowRequests, Users } from '../../../models';
-import { IdentifiableError } from '../../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 
 export default async function(followee: User, follower: User) {
 	const request = await FollowRequests.findOne({

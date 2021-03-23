@@ -1,6 +1,6 @@
 import define from '../define';
 import { redisClient } from '../../../db/redis';
-import config from '../../../config';
+import config from '@/config';
 
 export const meta = {
 	tags: ['meta'],

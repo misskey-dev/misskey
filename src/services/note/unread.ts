@@ -2,7 +2,7 @@ import { Note } from '../../models/entities/note';
 import { publishMainStream } from '../stream';
 import { User } from '../../models/entities/user';
 import { Mutings, NoteUnreads } from '../../models';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export default async function(userId: User['id'], note: Note, params: {
 	// NOTE: isSpecifiedがtrueならisMentionedは必ずfalse

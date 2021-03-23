@@ -42,7 +42,7 @@ import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 import XList from '@client/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
-import parseAcct from '../../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 import { isBottom, onScrollBottom, scroll } from '@client/scripts/scroll';
 import * as os from '@client/os';
 import { popout } from '@client/scripts/popout';

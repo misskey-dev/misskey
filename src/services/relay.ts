@@ -5,7 +5,7 @@ import renderUndo from '../remote/activitypub/renderer/undo';
 import { deliver } from '../queue';
 import { ILocalUser } from '../models/entities/user';
 import { Users, Relays } from '../models';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 

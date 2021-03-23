@@ -1,4 +1,4 @@
-import parseAcct from '../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 import { host as localHost } from '@client/config';
 
 export async function genSearchQuery(v: any, q: string) {

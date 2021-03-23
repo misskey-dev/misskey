@@ -228,7 +228,7 @@ import MkFolder from '@client/components/ui/folder.vue';
 import MkRemoteCaution from '@client/components/remote-caution.vue';
 import MkTab from '@client/components/tab.vue';
 import Progress from '@client/scripts/loading';
-import parseAcct from '../../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 import { getScrollPosition } from '@client/scripts/scroll';
 import { getUserMenu } from '@client/scripts/get-user-menu';
 import number from '../../filters/number';

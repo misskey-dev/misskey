@@ -1,7 +1,7 @@
 import renderDelete from '../remote/activitypub/renderer/delete';
 import { renderActivity } from '../remote/activitypub/renderer';
 import { deliver } from '../queue';
-import config from '../config';
+import config from '@/config';
 import { User } from '../models/entities/user';
 import { Users, Followings } from '../models';
 import { Not, IsNull } from 'typeorm';

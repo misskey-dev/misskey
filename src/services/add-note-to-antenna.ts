@@ -1,8 +1,8 @@
 import { Antenna } from '../models/entities/antenna';
 import { Note } from '../models/entities/note';
 import { AntennaNotes, Mutings, Notes } from '../models';
-import { genId } from '../misc/gen-id';
-import { isMutedUserRelated } from '../misc/is-muted-user-related';
+import { genId } from '@/misc/gen-id';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { publishAntennaStream, publishMainStream } from './stream';
 import { User } from '../models/entities/user';
 

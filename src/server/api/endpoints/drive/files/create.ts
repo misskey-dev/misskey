@@ -1,6 +1,6 @@
 import * as ms from 'ms';
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import create from '../../../../../services/drive/add-file';
 import define from '../../../define';
 import { apiLogger } from '../../../logger';

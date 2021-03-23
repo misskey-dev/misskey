@@ -1,13 +1,13 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
-import { getJson } from '../../../misc/fetch';
+import { getJson } from '@/misc/fetch';
 import { OAuth2 } from 'oauth';
-import config from '../../../config';
+import config from '@/config';
 import { publishMainStream } from '../../../services/stream';
 import { redisClient } from '../../../db/redis';
 import { v4 as uuid } from 'uuid';
 import signin from '../common/signin';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 

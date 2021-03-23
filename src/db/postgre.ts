@@ -3,7 +3,7 @@ const types = require('pg').types;
 types.setTypeParser(20, Number);
 
 import { createConnection, Logger, getConnection } from 'typeorm';
-import config from '../config';
+import config from '@/config';
 import { entities as charts } from '../services/chart/entities';
 import { dbLogger } from './logger';
 import * as highlight from 'cli-highlight';

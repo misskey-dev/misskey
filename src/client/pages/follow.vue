@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as os from '@client/os';
-import parseAcct from '../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 
 export default defineComponent({
 	created() {

@@ -1,7 +1,7 @@
 import { createSystemUser } from './create-system-user';
 import { ILocalUser } from '../models/entities/user';
 import { Users } from '../models';
-import { Cache } from '../misc/cache';
+import { Cache } from '@/misc/cache';
 
 const ACTOR_USERNAME = 'instance.actor' as const;
 

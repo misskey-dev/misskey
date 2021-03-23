@@ -3,8 +3,8 @@ import define from '../../define';
 import { getConnection } from 'typeorm';
 import { Meta } from '../../../../models/entities/meta';
 import { insertModerationLog } from '../../../../services/insert-moderation-log';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../../misc/hard-limits';
-import { ID } from '../../../../misc/cafy-id';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
+import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	desc: {

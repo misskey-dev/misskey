@@ -2,13 +2,13 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { awaitAll } from '../../prelude/await-all';
-import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
+import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
 import { toString } from '../../mfm/to-string';
 import { parse } from '../../mfm/parse';
 import { NoteReaction } from '../entities/note-reaction';
-import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '../../misc/populate-emojis';
+import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 

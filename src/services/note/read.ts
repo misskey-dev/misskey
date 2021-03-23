@@ -4,8 +4,8 @@ import { User } from '../../models/entities/user';
 import { NoteUnreads, AntennaNotes, Users, Followings, ChannelFollowings } from '../../models';
 import { Not, IsNull, In } from 'typeorm';
 import { Channel } from '../../models/entities/channel';
-import { checkHitAntenna } from '../../misc/check-hit-antenna';
-import { getAntennas } from '../../misc/antenna-cache';
+import { checkHitAntenna } from '@/misc/check-hit-antenna';
+import { getAntennas } from '@/misc/antenna-cache';
 import { PackedNote } from '../../models/repositories/note';
 
 /**

@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	desc: {

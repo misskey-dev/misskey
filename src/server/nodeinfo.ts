@@ -1,6 +1,6 @@
 import * as Router from '@koa/router';
-import config from '../config';
-import { fetchMeta } from '../misc/fetch-meta';
+import config from '@/config';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Users } from '../models';
 // import User from '../models/user';
 // import Note from '../models/note';

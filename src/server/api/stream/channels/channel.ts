@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Channel from '../channel';
 import { Notes, Users } from '../../../../models';
-import { isMutedUserRelated } from '../../../../misc/is-muted-user-related';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { PackedNote } from '../../../../models/repositories/note';
 import { User } from '../../../../models/entities/user';
 

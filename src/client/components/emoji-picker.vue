@@ -74,7 +74,7 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { emojilist } from '../../misc/emojilist';
+import { emojilist } from '@/misc/emojilist';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faClock, faUser, faChevronDown, faShapes, faBicycle, faHashtag } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';

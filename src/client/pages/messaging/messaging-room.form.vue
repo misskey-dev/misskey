@@ -26,7 +26,7 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
-import { formatTimeString } from '../../../misc/format-time-string';
+import { formatTimeString } from '@/misc/format-time-string';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
 import { Autocomplete } from '@client/scripts/autocomplete';

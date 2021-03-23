@@ -1,11 +1,11 @@
 import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '../../../../misc/is-muted-user-related';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
-import { fetchMeta } from '../../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Notes } from '../../../../models';
 import { PackedNote } from '../../../../models/repositories/note';
 import { PackedUser } from '../../../../models/repositories/user';
-import { checkWordMute } from '../../../../misc/check-word-mute';
+import { checkWordMute } from '@/misc/check-word-mute';
 
 export default class extends Channel {
 	public readonly chName = 'hybridTimeline';

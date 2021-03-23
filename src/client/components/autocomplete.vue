@@ -29,9 +29,9 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { emojilist } from '../../misc/emojilist';
+import { emojilist } from '@/misc/emojilist';
 import contains from '@client/scripts/contains';
-import { twemojiSvgBase } from '../../misc/twemoji-base';
+import { twemojiSvgBase } from '@/misc/twemoji-base';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { acct } from '@client/filters/user';
 import * as os from '@client/os';

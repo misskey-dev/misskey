@@ -1,5 +1,5 @@
 import * as redis from 'redis';
-import config from '../config';
+import config from '@/config';
 
 export function createConnection() {
 	return redis.createClient(

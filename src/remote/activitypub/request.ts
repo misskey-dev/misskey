@@ -3,13 +3,13 @@ import * as https from 'https';
 import { sign } from 'http-signature';
 import * as crypto from 'crypto';
 
-import config from '../../config';
+import config from '@/config';
 import { ILocalUser } from '../../models/entities/user';
-import { getAgentByUrl } from '../../misc/fetch';
+import { getAgentByUrl } from '@/misc/fetch';
 import { URL } from 'url';
 import got from 'got';
 import * as Got from 'got';
-import { getUserKeypair } from '../../misc/keypair-store';
+import { getUserKeypair } from '@/misc/keypair-store';
 
 export default async (user: ILocalUser, url: string, object: any) => {
 	const timeout = 10 * 1000;

@@ -1,5 +1,5 @@
 import { packedUserSchema } from '../../../models/repositories/user';
-import { Schema } from '../../../misc/schema';
+import { Schema } from '@/misc/schema';
 import { packedNoteSchema } from '../../../models/repositories/note';
 import { packedUserListSchema } from '../../../models/repositories/user-list';
 import { packedAppSchema } from '../../../models/repositories/app';

@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { Note } from '../../../models/entities/note';
 import { IRemoteUser, ILocalUser } from '../../../models/entities/user';
 import { PollVote } from '../../../models/entities/poll-vote';

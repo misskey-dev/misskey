@@ -1,6 +1,6 @@
 import * as httpSignature from 'http-signature';
 
-import config from '../config';
+import config from '@/config';
 import { ILocalUser } from '../models/entities/user';
 import { program } from '../argv';
 

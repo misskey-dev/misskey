@@ -4,7 +4,7 @@ import { Note } from '../models/entities/note';
 import { UserList } from '../models/entities/user-list';
 import { ReversiGame } from '../models/entities/games/reversi/game';
 import { UserGroup } from '../models/entities/user-group';
-import config from '../config';
+import config from '@/config';
 import { Antenna } from '../models/entities/antenna';
 import { Channel } from '../models/entities/channel';
 

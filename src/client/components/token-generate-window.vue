@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { kinds } from '../../misc/api-permissions';
+import { kinds } from '@/misc/api-permissions';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkInput from './ui/input.vue';
 import MkTextarea from './ui/textarea.vue';

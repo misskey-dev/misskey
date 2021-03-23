@@ -2,10 +2,10 @@ import * as Koa from 'koa';
 import * as bcrypt from 'bcryptjs';
 import * as speakeasy from 'speakeasy';
 import signin from '../common/signin';
-import config from '../../../config';
+import config from '@/config';
 import { Users, Signins, UserProfiles, UserSecurityKeys, AttestationChallenges } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { verifyLogin, hash } from '../2fa';
 import { randomBytes } from 'crypto';
 

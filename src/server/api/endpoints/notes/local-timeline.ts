@@ -1,7 +1,7 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
-import { fetchMeta } from '../../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { ApiError } from '../../error';
 import { Notes } from '../../../../models';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';

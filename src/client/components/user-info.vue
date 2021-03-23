@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import parseAcct from '../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 import MkFollowButton from './follow-button.vue';
 import { userPage } from '../filters/user';
 

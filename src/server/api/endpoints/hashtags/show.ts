@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Hashtags } from '../../../../models';
-import { normalizeForSearch } from '../../../../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
 	desc: {

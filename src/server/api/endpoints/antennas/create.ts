@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { ApiError } from '../../error';
 import { publishInternalEvent } from '../../../../services/stream';
 

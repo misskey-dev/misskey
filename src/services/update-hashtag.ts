@@ -1,9 +1,9 @@
 import { User } from '../models/entities/user';
 import { Hashtags, Users } from '../models';
 import { hashtagChart } from './chart';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { Hashtag } from '../models/entities/hashtag';
-import { normalizeForSearch } from '../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export async function updateHashtags(user: User, tags: string[]) {
 	for (const tag of tags) {

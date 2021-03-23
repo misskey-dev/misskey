@@ -82,7 +82,7 @@
 import { defineComponent } from 'vue';
 import { faPlus, faUsers, faSearch, faBookmark, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
-import parseAcct from '../../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';

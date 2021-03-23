@@ -258,7 +258,7 @@ import MkTextarea from '@client/components/ui/textarea.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
 import MkInfo from '@client/components/ui/info.vue';
 import { url } from '@client/config';
-import getAcct from '../../../misc/acct/render';
+import getAcct from '@/misc/acct/render';
 import * as os from '@client/os';
 import { fetchInstance } from '@client/instance';
 

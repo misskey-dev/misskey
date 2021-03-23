@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { ILocalUser } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 

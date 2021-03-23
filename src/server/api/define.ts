@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { ILocalUser } from '../../models/entities/user';
 import { IEndpointMeta } from './endpoints';
 import { ApiError } from './error';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { AccessToken } from '../../models/entities/access-token';
 
 // TODO: defaultが設定されている場合はその型も考慮する

@@ -2,7 +2,7 @@ import { User } from '../../models/entities/user';
 import { UserGroup } from '../../models/entities/user-group';
 import { DriveFile } from '../../models/entities/drive-file';
 import { MessagingMessages, UserGroupJoinings, Mutings, Users } from '../../models';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { MessagingMessage } from '../../models/entities/messaging-message';
 import { publishMessagingStream, publishMessagingIndexStream, publishMainStream, publishGroupMessagingStream } from '../stream';
 import pushNotification from '../push-notification';

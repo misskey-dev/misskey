@@ -4,9 +4,9 @@ import { IRemoteUser } from '../../../../models/entities/user';
 import { IAnnounce, getApId } from '../../type';
 import { fetchNote, resolveNote } from '../../models/note';
 import { apLogger } from '../../logger';
-import { extractDbHost } from '../../../../misc/convert-host';
-import { fetchMeta } from '../../../../misc/fetch-meta';
-import { getApLock } from '../../../../misc/app-lock';
+import { extractDbHost } from '@/misc/convert-host';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { getApLock } from '@/misc/app-lock';
 import { parseAudience } from '../../audience';
 
 const logger = apLogger;

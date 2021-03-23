@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../define';
-import { ID } from '../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { publishMainStream } from '../../../services/stream';
 import { Users, Pages } from '../../../models';
 import { ApiError } from '../error';

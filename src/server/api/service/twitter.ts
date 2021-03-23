@@ -4,9 +4,9 @@ import { v4 as uuid } from 'uuid';
 import autwh from 'autwh';
 import { redisClient } from '../../../db/redis';
 import { publishMainStream } from '../../../services/stream';
-import config from '../../../config';
+import config from '@/config';
 import signin from '../common/signin';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Users, UserProfiles } from '../../../models';
 import { ILocalUser } from '../../../models/entities/user';
 

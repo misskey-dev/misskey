@@ -1,5 +1,5 @@
-import getAcct from '../../misc/acct/render';
-import getUserName from '../../misc/get-user-name';
+import getAcct from '@/misc/acct/render';
+import getUserName from '@/misc/get-user-name';
 import { url } from '@client/config';
 
 export const acct = user => {

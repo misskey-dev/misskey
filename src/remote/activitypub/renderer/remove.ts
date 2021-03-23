@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { ILocalUser } from '../../../models/entities/user';
 
 export default (user: ILocalUser, target: any, object: any) => ({
