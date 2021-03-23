@@ -8,6 +8,8 @@ import { AccessToken } from '../../models/entities/access-token';
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
 	username: ILocalUser['username'];
+	isAdmin: ILocalUser['isAdmin'];
+	isModerator: ILocalUser['isModerator'];
 };
 
 // TODO: defaultが設定されている場合はその型も考慮する
