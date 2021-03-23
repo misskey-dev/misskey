@@ -1,7 +1,7 @@
 import { publishMainStream } from '../stream';
 import { Note } from '../../models/entities/note';
 import { User } from '../../models/entities/user';
-import { NoteUnreads, AntennaNotes, Users } from '../../models';
+import { NoteUnreads, AntennaNotes, Users, Followings, ChannelFollowings } from '../../models';
 import { Not, IsNull, In } from 'typeorm';
 import { Channel } from '../../models/entities/channel';
 import { checkHitAntenna } from '../../misc/check-hit-antenna';
@@ -14,11 +14,24 @@ import { PackedNote } from '../../models/repositories/note';
 export default async function(
 	userId: User['id'],
 	notes: (Note | PackedNote)[],
-	info: {
-		following: Set<Channel['id']>;
+	info?: {
+		following: Set<User['id']>;
 		followingChannels: Set<Channel['id']>;
 	}
 ) {
+	const following = info?.following ? info.following : new Set<string>((await Followings.find({
+		where: {
+			followerId: userId
+		},
+		select: ['followeeId']
+	})).map(x => x.followeeId));
+	const followingChannels = info?.followingChannels ? info.followingChannels : new Set<string>((await ChannelFollowings.find({
+		where: {
+			followerId: userId
+		},
+		select: ['followeeId']
+	})).map(x => x.followeeId));
+
 	const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
 	const readMentions: (Note | PackedNote)[] = [];
 	const readSpecifiedNotes: (Note | PackedNote)[] = [];
@@ -32,13 +45,13 @@ export default async function(
 			readSpecifiedNotes.push(note);
 		}
 
-		if (note.channelId && info.followingChannels.has(note.channelId)) {
+		if (note.channelId && followingChannels.has(note.channelId)) {
 			readChannelNotes.push(note);
 		}
 
 		if (note.user != null) { // たぶんnullになることは無いはずだけど一応
 			for (const antenna of myAntennas) {
-				if (checkHitAntenna(antenna, note, note.user as any, undefined, Array.from(info.following))) {
+				if (checkHitAntenna(antenna, note, note.user as any, undefined, Array.from(following))) {
 					readAntennaNotes.push(note);
 				}
 			}
