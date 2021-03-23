@@ -1,5 +1,5 @@
 import define from '../define';
-import redis from '../../../db/redis';
+import { redisClient } from '../../../db/redis';
 import config from '../../../config';
 
 export const meta = {
@@ -13,7 +13,7 @@ export const meta = {
 
 export default define(meta, (ps, user) => {
 	return new Promise((res, rej) => {
-		redis.pubsub('numsub', config.host, (_, x) => {
+		redisClient.pubsub('numsub', config.host, (_, x) => {
 			res({
 				count: x[1]
 			});

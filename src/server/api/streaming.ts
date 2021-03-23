@@ -5,7 +5,7 @@ import MainStreamConnection from './stream';
 import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 import { EventEmitter } from 'events';
-import redisClient from '../../db/redis';
+import { subsdcriber as redisClient } from '../../db/redis';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server

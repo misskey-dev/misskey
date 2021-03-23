@@ -1,5 +1,5 @@
 import * as Limiter from 'ratelimiter';
-import limiterDB from '../../db/redis';
+import { redisClient } from '../../db/redis';
 import { IEndpoint } from './endpoints';
 import getAcct from '../../misc/acct/render';
 import { User } from '../../models/entities/user';
@@ -35,7 +35,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 			id: `${user.id}:${key}:min`,
 			duration: limitation.minInterval,
 			max: 1,
-			db: limiterDB!
+			db: redisClient
 		});
 
 		minIntervalLimiter.get((err, info) => {
@@ -63,7 +63,7 @@ export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => 
 			id: `${user.id}:${key}`,
 			duration: limitation.duration,
 			max: limitation.max,
-			db: limiterDB!
+			db: redisClient
 		});
 
 		limiter.get((err, info) => {

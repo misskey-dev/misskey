@@ -2,7 +2,7 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import { v4 as uuid } from 'uuid';
 import autwh from 'autwh';
-import redis from '../../../db/redis';
+import { redisClient } from '../../../db/redis';
 import { publishMainStream } from '../../../services/stream';
 import config from '../../../config';
 import signin from '../common/signin';
@@ -89,7 +89,7 @@ router.get('/connect/twitter', async ctx => {
 
 	const twAuth = await getTwAuth();
 	const twCtx = await twAuth!.begin();
-	redis.set(userToken, JSON.stringify(twCtx));
+	redisClient.set(userToken, JSON.stringify(twCtx));
 	ctx.redirect(twCtx.url);
 });
 
@@ -99,7 +99,7 @@ router.get('/signin/twitter', async ctx => {
 
 	const sessid = uuid();
 
-	redis.set(sessid, JSON.stringify(twCtx));
+	redisClient.set(sessid, JSON.stringify(twCtx));
 
 	ctx.cookies.set('signin_with_twitter_sid', sessid, {
 		path: '/',
@@ -124,7 +124,7 @@ router.get('/tw/cb', async ctx => {
 		}
 
 		const get = new Promise<any>((res, rej) => {
-			redis.get(sessid, async (_, twCtx) => {
+			redisClient.get(sessid, async (_, twCtx) => {
 				res(twCtx);
 			});
 		});
@@ -153,7 +153,7 @@ router.get('/tw/cb', async ctx => {
 		}
 
 		const get = new Promise<any>((res, rej) => {
-			redis.get(userToken, async (_, twCtx) => {
+			redisClient.get(userToken, async (_, twCtx) => {
 				res(twCtx);
 			});
 		});
