@@ -1,5 +1,5 @@
 import { Emojis } from '../models';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 async function main(name: string, url: string, alias?: string): Promise<any> {
 	const aliases = alias != null ? [ alias ] : [];

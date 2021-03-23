@@ -1,16 +1,16 @@
 import { VNode, defineComponent, h } from 'vue';
-import { MfmForest } from '@/../mfm/prelude';
-import { parse, parsePlain } from '@/../mfm/parse';
-import MkUrl from '@/components/global/url.vue';
-import MkLink from '@/components/link.vue';
-import MkMention from '@/components/mention.vue';
-import MkEmoji from '@/components/global/emoji.vue';
-import { concat } from '@/../prelude/array';
-import MkFormula from '@/components/formula.vue';
-import MkCode from '@/components/code.vue';
-import MkGoogle from '@/components/google.vue';
-import MkA from '@/components/global/a.vue';
-import { host } from '@/config';
+import { MfmForest } from '@client/../mfm/prelude';
+import { parse, parsePlain } from '@client/../mfm/parse';
+import MkUrl from '@client/components/global/url.vue';
+import MkLink from '@client/components/link.vue';
+import MkMention from '@client/components/mention.vue';
+import MkEmoji from '@client/components/global/emoji.vue';
+import { concat } from '@client/../prelude/array';
+import MkFormula from '@client/components/formula.vue';
+import MkCode from '@client/components/code.vue';
+import MkGoogle from '@client/components/google.vue';
+import MkA from '@client/components/global/a.vue';
+import { host } from '@client/config';
 
 export default defineComponent({
 	props: {

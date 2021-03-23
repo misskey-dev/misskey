@@ -20,14 +20,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown, faRedo } from '@fortawesome/free-solid-svg-icons';
-import FormRange from '@/components/form/range.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormBase from '@/components/form/base.vue';
-import FormButton from '@/components/form/button.vue';
-import FormGroup from '@/components/form/group.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
-import { playFile } from '@/scripts/sound';
+import FormRange from '@client/components/form/range.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormButton from '@client/components/form/button.vue';
+import FormGroup from '@client/components/form/group.vue';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
+import { playFile } from '@client/scripts/sound';
 
 const soundsTypes = [
 	null,

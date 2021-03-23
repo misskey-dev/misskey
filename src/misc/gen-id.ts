@@ -3,7 +3,7 @@ import { genAid } from './id/aid';
 import { genMeid } from './id/meid';
 import { genMeidg } from './id/meidg';
 import { genObjectId } from './id/object-id';
-import config from '../config';
+import config from '@/config';
 
 const metohd = config.id.toLowerCase();
 

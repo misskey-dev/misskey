@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
@@ -53,7 +53,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyPromoted);
 	}
 
-	await PromoNotes.save({
+	await PromoNotes.insert({
 		noteId: note.id,
 		createdAt: new Date(),
 		expiresAt: new Date(ps.expiresAt),

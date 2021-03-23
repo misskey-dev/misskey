@@ -14,13 +14,30 @@ export class Cache<T> {
 		});
 	}
 
-	public get(key: string | null): T | null {
+	public get(key: string | null): T | undefined {
 		const cached = this.cache.get(key);
-		if (cached == null) return null;
+		if (cached == null) return undefined;
 		if ((Date.now() - cached.date) > this.lifetime) {
 			this.cache.delete(key);
-			return null;
+			return undefined;
 		}
 		return cached.value;
+	}
+
+	public delete(key: string | null) {
+		this.cache.delete(key);
+	}
+
+	public async fetch(key: string | null, fetcher: () => Promise<T>): Promise<T> {
+		const cachedValue = this.get(key);
+		if (cachedValue !== undefined) {
+			// Cache HIT
+			return cachedValue;
+		}
+
+		// Cache MISS
+		const value = await fetcher();
+		this.set(key, value);
+		return value;
 	}
 }

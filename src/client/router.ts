@@ -1,8 +1,8 @@
 import { defineAsyncComponent, markRaw } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import MkLoading from '@/pages/_loading_.vue';
-import MkError from '@/pages/_error_.vue';
-import MkTimeline from '@/pages/timeline.vue';
+import MkLoading from '@client/pages/_loading_.vue';
+import MkError from '@client/pages/_error_.vue';
+import MkTimeline from '@client/pages/timeline.vue';
 import { $i } from './account';
 
 const page = (path: string) => defineAsyncComponent({

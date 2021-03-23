@@ -52,7 +52,7 @@ import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import MkButton from './ui/button.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default defineComponent({

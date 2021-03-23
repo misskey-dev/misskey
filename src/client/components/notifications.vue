@@ -18,13 +18,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import paging from '@/scripts/paging';
-import { markNotificationRead } from '@/scripts/mark-notification-read';
+import paging from '@client/scripts/paging';
+import { markNotificationRead } from '@client/scripts/mark-notification-read';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 import { notificationTypes } from '../../types';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -87,9 +87,11 @@ export default defineComponent({
 		this.connection = os.stream.useSharedConnection('main');
 		this.connection.on('notification', this.onNotification);
 
-		// queueに対してのみ既読処理を行う
 		this.connection.on('readAllNotifications', () => {
-			this.queue = this.queue.map(markNotificationRead);
+			this.queue = this.queue.map(x => markNotificationRead(x));
+			for (const item of this.items) {
+				item.isRead = true;
+			}
 		});
 		this.connection.on('readNotifications', notificationIds => {
 			if (this.queue.length === 0) return;
@@ -97,6 +99,9 @@ export default defineComponent({
 			for (let i = 0; i < this.queue.length; i++) {
 				if (notificationIds.includes(this.queue[i].id)) {
 					this.queue[i] = markNotificationRead(this.queue[i]);
+				}
+				if (notificationIds.includes(this.items[i].id)) {
+					this.items[i].isRead = true;
 				}
 			}
 		});

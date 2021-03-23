@@ -7,8 +7,8 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { faCloud, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
-import XDrive from '@/components/drive.vue';
-import * as os from '@/os';
+import XDrive from '@client/components/drive.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

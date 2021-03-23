@@ -5,9 +5,9 @@ import Logger from '../../services/logger';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
 import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
-import { fetchMeta } from '../../misc/fetch-meta';
-import { toPuny } from '../../misc/convert-host';
-import { Cache } from '../../misc/cache';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { toPuny } from '@/misc/convert-host';
+import { Cache } from '@/misc/cache';
 import { Instance } from '../../models/entities/instance';
 
 const logger = new Logger('deliver');

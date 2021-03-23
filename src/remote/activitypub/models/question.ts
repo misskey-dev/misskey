@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import Resolver from '../resolver';
 import { IObject, IQuestion, isQuestion,  } from '../type';
 import { apLogger } from '../logger';

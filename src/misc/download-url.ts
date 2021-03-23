@@ -4,7 +4,7 @@ import * as util from 'util';
 import fetch from 'node-fetch';
 import { getAgentByUrl } from './fetch';
 import { AbortController } from 'abort-controller';
-import config from '../config';
+import config from '@/config';
 import * as chalk from 'chalk';
 import Logger from '../services/logger';
 

@@ -61,14 +61,13 @@
 import { defineComponent } from 'vue';
 import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { getNoteSummary } from '../../misc/get-note-summary';
+import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { markNotificationRead } from '@/scripts/mark-notification-read';
+import { i18n } from '@client/i18n';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -95,10 +94,16 @@ export default defineComponent({
 			getNoteSummary: (text: string) => getNoteSummary(text, i18n.locale),
 			followRequestDone: false,
 			groupInviteDone: false,
-			connection: null,
-			readObserver: null,
+			readObserver: null as IntersectionObserver | null,
 			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck, faPollH
 		};
+	},
+
+	watch: {
+		'notification.isRead'() {
+			this.readObserver?.unobserve(this.$el);
+			this.readObserver = null;
+		},
 	},
 
 	mounted() {
@@ -108,30 +113,19 @@ export default defineComponent({
 				os.stream.send('readNotification', {
 					id: this.notification.id
 				});
-				entries.map(({ target }) => observer.unobserve(target));
+				for (const { target } of entries) {
+					observer.unobserve(target);
+				}
+				this.readObserver = null;
 			});
 
 			this.readObserver.observe(this.$el);
-
-			this.connection = os.stream.useSharedConnection('main');
-
-			// 既読処理
-			// notification.isReadは更新しないので注意
-			this.connection.on('readAllNotifications', () => {
-				this.readObserver.unobserve(this.$el);
-			});
-			this.connection.on('readNotifications', notificationIds => {
-				if (notificationIds.includes(this.notification.id)) {
-					this.readObserver.unobserve(this.$el);
-				}
-			})
 		}
 	},
 
 	beforeUnmount() {
 		if (!this.notification.isRead) {
-			this.readObserver.unobserve(this.$el);
-			this.connection.dispose();
+			this.readObserver?.unobserve(this.$el);
 		}
 	},
 

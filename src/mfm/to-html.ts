@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import config from '../config';
+import config from '@/config';
 import { intersperse } from '../prelude/array';
 import { MfmForest, MfmTree } from './prelude';
 import { IMentionedRemoteUsers } from '../models/entities/note';

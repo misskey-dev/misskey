@@ -5,9 +5,9 @@
 declare var self: ServiceWorkerGlobalScope;
 
 import { SwMessage, swMessageOrderType } from './types';
-import renderAcct from '../../misc/acct/render';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { appendLoginId } from '@/scripts/login-id';
+import renderAcct from '@/misc/acct/render';
+import { getAccountFromId } from '@client/scripts/get-account-from-id';
+import { appendLoginId } from '@client/scripts/login-id';
 
 export async function api(endpoint: string, userId: string, options: any = {}) {
 	const account = await getAccountFromId(userId);

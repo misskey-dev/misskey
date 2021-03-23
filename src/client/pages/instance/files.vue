@@ -64,13 +64,13 @@
 import { defineComponent } from 'vue';
 import { faCloud, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
-import bytes from '@/filters/bytes';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
+import bytes from '@client/filters/bytes';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

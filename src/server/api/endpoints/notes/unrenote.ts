@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import deleteNote from '../../../../services/note/delete';
 import define from '../../define';
 import * as ms from 'ms';

@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { User, ILocalUser } from '../../../models/entities/user';
 import { Users } from '../../../models';
 

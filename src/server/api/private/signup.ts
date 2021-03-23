@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { verifyHcaptcha, verifyRecaptcha } from '../../../misc/captcha';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { verifyHcaptcha, verifyRecaptcha } from '@/misc/captcha';
 import { Users, RegistrationTickets } from '../../../models';
 import { signup } from '../common/signup';
 

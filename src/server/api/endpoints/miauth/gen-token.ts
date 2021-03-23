@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { AccessTokens } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
-import { secureRndstr } from '../../../../misc/secure-rndstr';
+import { genId } from '@/misc/gen-id';
+import { secureRndstr } from '@/misc/secure-rndstr';
 
 export const meta = {
 	tags: ['auth'],
@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	const now = new Date();
 
 	// Insert access token doc
-	await AccessTokens.save({
+	await AccessTokens.insert({
 		id: genId(),
 		createdAt: now,
 		lastUsedAt: now,

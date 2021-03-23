@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import config from '../../config';
+import config from '@/config';
 import * as jsrsasign from 'jsrsasign';
 
 const ECC_PRELUDE = Buffer.from([0x04]);

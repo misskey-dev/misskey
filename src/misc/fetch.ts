@@ -4,7 +4,7 @@ import * as cache from 'lookup-dns-cache';
 import fetch, { HeadersInit } from 'node-fetch';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import config from '../config';
+import config from '@/config';
 import { URL } from 'url';
 
 export async function getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: HeadersInit) {

@@ -29,10 +29,10 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '@/components/ui/window.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import XWindow from '@client/components/ui/window.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

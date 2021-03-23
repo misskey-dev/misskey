@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import MkWindow from '@/components/ui/window.vue';
-import MkEmojiPicker from '@/components/emoji-picker.vue';
+import MkWindow from '@client/components/ui/window.vue';
+import MkEmojiPicker from '@client/components/emoji-picker.vue';
 
 export default defineComponent({
 	components: {

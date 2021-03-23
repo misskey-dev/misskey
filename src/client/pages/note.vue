@@ -38,12 +38,12 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import XNote from '@/components/note.vue';
-import XNoteDetailed from '@/components/note-detailed.vue';
-import XNotes from '@/components/notes.vue';
-import MkRemoteCaution from '@/components/remote-caution.vue';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import XNote from '@client/components/note.vue';
+import XNoteDetailed from '@client/components/note-detailed.vue';
+import XNotes from '@client/components/notes.vue';
+import MkRemoteCaution from '@client/components/remote-caution.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

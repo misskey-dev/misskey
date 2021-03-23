@@ -6,14 +6,13 @@ import { User, ILocalUser, IRemoteUser } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';
 import { In } from 'typeorm';
-import { IdentifiableError } from '../../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { UserGroup } from '../../../models/entities/user-group';
 import { toArray } from '../../../prelude/array';
 import { renderReadActivity } from '../../../remote/activitypub/renderer/read';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 import orderedCollection from '../../../remote/activitypub/renderer/ordered-collection';
-import { use } from 'matter-js';
 
 /**
  * Mark messages as read

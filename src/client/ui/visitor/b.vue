@@ -51,16 +51,16 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { } from '@fortawesome/free-solid-svg-icons';
-import { host, instanceName } from '@/config';
-import { search } from '@/scripts/search';
-import * as os from '@/os';
-import MkPagination from '@/components/ui/pagination.vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
+import { host, instanceName } from '@client/config';
+import { search } from '@client/scripts/search';
+import * as os from '@client/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import XSigninDialog from '@client/components/signin-dialog.vue';
+import XSignupDialog from '@client/components/signup-dialog.vue';
+import MkButton from '@client/components/ui/button.vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
-import { ColdDeviceStorage } from '@/store';
+import { ColdDeviceStorage } from '@client/store';
 
 const DESKTOP_THRESHOLD = 1100;
 

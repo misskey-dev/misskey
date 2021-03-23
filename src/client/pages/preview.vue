@@ -7,7 +7,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
-import MkSample from '@/components/sample.vue';
+import MkSample from '@client/components/sample.vue';
 
 export default defineComponent({
 	components: {

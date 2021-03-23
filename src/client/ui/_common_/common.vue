@@ -15,14 +15,14 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent, inject } from 'vue';
-import { stream, popup, popups, uploads, pendingApiRequestsCount, pageWindow, post } from '@/os';
-import * as sound from '@/scripts/sound';
-import { $i, login } from '@/account';
-import { SwMessage } from '@/sw/types';
-import { popout } from '@/scripts/popout';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { router } from '@/router';
+import { stream, popup, popups, uploads, pendingApiRequestsCount, pageWindow, post } from '@client/os';
+import * as sound from '@client/scripts/sound';
+import { $i, login } from '@client/account';
+import { SwMessage } from '@client/sw/types';
+import { popout } from '@client/scripts/popout';
+import { defaultStore, ColdDeviceStorage } from '@client/store';
+import { getAccountFromId } from '@client/scripts/get-account-from-id';
+import { router } from '@client/router';
 
 export default defineComponent({
 	components: {
@@ -39,7 +39,7 @@ export default defineComponent({
 					id: notification.id
 				});
 
-				popup(import('@/components/toast.vue'), {
+				popup(import('@client/components/toast.vue'), {
 					notification
 				}, {}, 'closed');
 			}
@@ -51,11 +51,11 @@ export default defineComponent({
 			const connection = stream.useSharedConnection('main', 'UI');
 			connection.on('notification', onNotification);
 
-			const navHook = inject('navHook', null);
-			const sideViewHook = inject('sideViewHook', null);
-
 			//#region Listen message from SW
 			if ('serviceWorker' in navigator) {
+				const navHook = inject('navHook', null);
+				const sideViewHook = inject('sideViewHook', null);
+
 				navigator.serviceWorker.addEventListener('message', ev => {
 					if (_DEV_) {
 						console.log('sw msg', ev.data);

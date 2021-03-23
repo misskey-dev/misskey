@@ -4,14 +4,14 @@ import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import renderUndo from '../../remote/activitypub/renderer/undo';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderTombstone from '../../remote/activitypub/renderer/tombstone';
-import config from '../../config';
+import config from '@/config';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Notes, Users, Instances } from '../../models';
 import { notesChart, perUserNotesChart, instanceChart } from '../chart';
 import { deliverToFollowers, deliverToUser } from '../../remote/activitypub/deliver-manager';
-import { countSameRenotes } from '../../misc/count-same-renotes';
+import { countSameRenotes } from '@/misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
 import { Brackets, In } from 'typeorm';
 

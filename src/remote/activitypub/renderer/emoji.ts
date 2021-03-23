@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { Emoji } from '../../../models/entities/emoji';
 
 export default (emoji: Emoji) => ({

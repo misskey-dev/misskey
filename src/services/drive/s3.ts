@@ -1,6 +1,6 @@
 import * as S3 from 'aws-sdk/clients/s3';
 import { Meta } from '../../models/entities/meta';
-import { getAgentByUrl } from '../../misc/fetch';
+import { getAgentByUrl } from '@/misc/fetch';
 
 export function getS3(meta: Meta) {
 	const u = meta.objectStorageEndpoint != null

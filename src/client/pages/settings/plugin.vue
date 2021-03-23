@@ -8,11 +8,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormLink from '@/components/form/link.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormLink from '@client/components/form/link.vue';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	components: {

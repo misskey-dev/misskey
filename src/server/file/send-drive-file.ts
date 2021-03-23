@@ -4,11 +4,11 @@ import * as rename from 'rename';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 import { serverLogger } from '..';
-import { contentDisposition } from '../../misc/content-disposition';
+import { contentDisposition } from '@/misc/content-disposition';
 import { DriveFiles } from '../../models';
 import { InternalStorage } from '../../services/drive/internal-storage';
-import { downloadUrl } from '../../misc/download-url';
-import { detectType } from '../../misc/get-file-info';
+import { downloadUrl } from '@/misc/download-url';
+import { detectType } from '@/misc/get-file-info';
 import { convertToJpeg, convertToPngOrJpeg } from '../../services/drive/image-processor';
 import { GenerateVideoThumbnail } from '../../services/drive/generate-video-thumbnail';
 

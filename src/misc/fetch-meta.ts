@@ -32,4 +32,4 @@ setInterval(() => {
 	fetchMeta(true).then(meta => {
 		cache = meta;
 	});
-}, 5000);
+}, 1000 * 10);

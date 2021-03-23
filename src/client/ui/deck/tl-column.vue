@@ -23,8 +23,8 @@
 import { defineComponent } from 'vue';
 import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
-import XTimeline from '@/components/timeline.vue';
-import * as os from '@/os';
+import XTimeline from '@client/components/timeline.vue';
+import * as os from '@client/os';
 import { removeColumn, updateColumn } from './deck-store';
 
 export default defineComponent({

@@ -35,8 +35,8 @@
 import { computed, defineComponent } from 'vue';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons';
-import XPage from '@/components/page/page.vue';
-import * as os from '@/os';
+import XPage from '@client/components/page/page.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

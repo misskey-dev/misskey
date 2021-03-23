@@ -14,14 +14,14 @@ import * as glob from 'glob';
 import * as MarkdownIt from 'markdown-it';
 
 import packFeed from './feed';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
-import config from '../../config';
+import config from '@/config';
 import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips } from '../../models';
-import parseAcct from '../../misc/acct/parse';
-import { getNoteSummary } from '../../misc/get-note-summary';
+import parseAcct from '@/misc/acct/parse';
+import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
-import redis from '../../db/redis';
+import { redisClient } from '../../db/redis';
 import locales = require('../../../locales');
 
 const markdown = MarkdownIt({
@@ -379,7 +379,7 @@ router.get('/info', async ctx => {
 		os: os.platform(),
 		node: process.version,
 		psql: await getConnection().query('SHOW server_version').then(x => x[0].server_version),
-		redis: redis.server_info.redis_version,
+		redis: redisClient.server_info.redis_version,
 		cpu: {
 			model: os.cpus()[0].model,
 			cores: os.cpus().length

@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { Users } from '../../../models';
 import { User } from '../../../models/entities/user';
 

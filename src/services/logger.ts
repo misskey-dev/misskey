@@ -5,8 +5,8 @@ import * as dateformat from 'dateformat';
 import { program } from '../argv';
 import { getRepository } from 'typeorm';
 import { Log } from '../models/entities/log';
-import { genId } from '../misc/gen-id';
-import config from '../config';
+import { genId } from '@/misc/gen-id';
+import config from '@/config';
 
 const SyslogPro = require('syslog-pro');
 

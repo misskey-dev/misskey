@@ -1,8 +1,8 @@
-import { get, set } from '@/scripts/idb-proxy';
+import { get, set } from '@client/scripts/idb-proxy';
 import { reactive } from 'vue';
-import { apiUrl } from '@/config';
-import { waiting } from '@/os';
-import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
+import { apiUrl } from '@client/config';
+import { waiting } from '@client/os';
+import { unisonReload, reloadChannel } from '@client/scripts/unison-reload';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -53,7 +53,7 @@ export async function getAccounts(): Promise<{ id: Account['id'], token: Account
 export async function addAccount(id: Account['id'], token: Account['token']) {
 	const accounts = await getAccounts();
 	if (!accounts.some(x => x.id === id)) {
-		return set('accounts', accounts.concat([{ id, token }]));
+		await set('accounts', accounts.concat([{ id, token }]));
 	}
 }
 

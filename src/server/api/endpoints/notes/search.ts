@@ -3,8 +3,8 @@ import es from '../../../../db/elasticsearch';
 import define from '../../define';
 import { Notes } from '../../../../models';
 import { In } from 'typeorm';
-import { ID } from '../../../../misc/cafy-id';
-import config from '../../../../config';
+import { ID } from '@/misc/cafy-id';
+import config from '@/config';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
@@ -79,7 +79,11 @@ export default define(meta, async (ps, me) => {
 
 		query
 			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
-			.leftJoinAndSelect('note.user', 'user');
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		generateVisibilityQuery(query, me);
 		if (me) generateMutedUserQuery(query, me);

@@ -23,7 +23,7 @@ export async function injectFeatured(timeline: Note[], user?: User | null) {
 		.andWhere(`note.score > 0`)
 		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
 		.andWhere(`note.visibility = 'public'`)
-		.leftJoinAndSelect('note.user', 'user');
+		.innerJoinAndSelect('note.user', 'user');
 
 	if (user) {
 		query.andWhere('note.userId != :userId', { userId: user.id });

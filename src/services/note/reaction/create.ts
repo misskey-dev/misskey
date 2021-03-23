@@ -2,32 +2,33 @@ import { publishNoteStream } from '../../stream';
 import { renderLike } from '../../../remote/activitypub/renderer/like';
 import DeliverManager from '../../../remote/activitypub/deliver-manager';
 import { renderActivity } from '../../../remote/activitypub/renderer';
-import { toDbReaction, decodeReaction } from '../../../misc/reaction-lib';
+import { toDbReaction, decodeReaction } from '@/misc/reaction-lib';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, NoteWatchings, Notes, Emojis } from '../../../models';
 import { Not } from 'typeorm';
 import { perUserReactionsChart } from '../../chart';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';
 import deleteReaction from './delete';
-import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import { NoteReaction } from '../../../models/entities/note-reaction';
 
 export default async (user: User, note: Note, reaction?: string) => {
+	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 
-	let record: NoteReaction;
+	let record: NoteReaction = {
+		id: genId(),
+		createdAt: new Date(),
+		noteId: note.id,
+		userId: user.id,
+		reaction
+	};
 
 	// Create reaction
 	try {
-		record = await NoteReactions.save({
-			id: genId(),
-			createdAt: new Date(),
-			noteId: note.id,
-			userId: user.id,
-			reaction
-		});
+		await NoteReactions.insert(record);
 	} catch (e) {
 		if (isDuplicateKeyValueError(e)) {
 			record = await NoteReactions.findOneOrFail({
@@ -52,11 +53,10 @@ export default async (user: User, note: Note, reaction?: string) => {
 	await Notes.createQueryBuilder().update()
 		.set({
 			reactions: () => sql,
+			score: () => '"score" + 1'
 		})
 		.where('id = :id', { id: note.id })
 		.execute();
-
-	Notes.increment({ id: note.id }, 'score', 1);
 
 	perUserReactionsChart.update(user, note);
 

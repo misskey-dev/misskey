@@ -157,7 +157,8 @@ module.exports = {
 			'.js', '.ts', '.json'
 		],
 		alias: {
-			'@': __dirname + '/src/client',
+			'@client': __dirname + '/src/client',
+			'@': __dirname + '/src',
 			'const.styl': __dirname + '/src/client/const.styl'
 		}
 	},

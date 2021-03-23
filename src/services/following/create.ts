@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
@@ -7,13 +7,13 @@ import { deliver } from '../../queue';
 import createFollowRequest from './requests/create';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import Logger from '../logger';
-import { IdentifiableError } from '../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { User } from '../../models/entities/user';
 import { Followings, Users, FollowRequests, Blockings, Instances, UserProfiles } from '../../models';
 import { instanceChart, perUserFollowingChart } from '../chart';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 
 const logger = new Logger('following/create');
 
@@ -22,7 +22,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	let alreadyFollowed = false;
 
-	await Followings.save({
+	await Followings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,
@@ -88,7 +88,10 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'follow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'follow', packed);
+			publishMainStream(follower.id, 'follow', packed);
+		});
 	}
 
 	// Publish followed event

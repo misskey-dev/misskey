@@ -135,18 +135,18 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, faAt, faLink, faEllipsisH, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faStar as farStar, faEnvelope, faComments, faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
-import { instanceName, url } from '@/config';
-import XSidebar from '@/components/sidebar.vue';
+import { instanceName, url } from '@client/config';
+import XSidebar from '@client/components/sidebar.vue';
 import XWidgets from './widgets.vue';
 import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';
 import XTimeline from './timeline.vue';
 import XHeaderClock from './header-clock.vue';
-import * as os from '@/os';
-import { router } from '@/router';
-import { sidebarDef } from '@/sidebar';
-import { search } from '@/scripts/search';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import * as os from '@client/os';
+import { router } from '@client/router';
+import { sidebarDef } from '@client/sidebar';
+import { search } from '@client/scripts/search';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { store } from './store';
 
 export default defineComponent({

@@ -7,10 +7,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
-import XNote from '@/components/note.vue';
-import XNoteDetailed from '@/components/note-detailed.vue';
-import * as os from '@/os';
-import { NoteBlock } from '@/scripts/hpml/block';
+import XNote from '@client/components/note.vue';
+import XNoteDetailed from '@client/components/note-detailed.vue';
+import * as os from '@client/os';
+import { NoteBlock } from '@client/scripts/hpml/block';
 
 export default defineComponent({
 	components: {

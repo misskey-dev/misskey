@@ -1,4 +1,4 @@
-import { IdentifiableError } from '../../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { Notes, Users } from '../../../models';

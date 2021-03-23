@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { ILocalUser, IRemoteUser } from '../../../models/entities/user';
 
 export default (blocker: ILocalUser, blockee: IRemoteUser) => ({

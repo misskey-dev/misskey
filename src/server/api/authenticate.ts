@@ -2,7 +2,7 @@ import isNativeToken from './common/is-native-token';
 import { User } from '../../models/entities/user';
 import { Users, AccessTokens, Apps } from '../../models';
 import { AccessToken } from '../../models/entities/access-token';
-import { Cache } from '../../misc/cache';
+import { Cache } from '@/misc/cache';
 
 // TODO: TypeORMのカスタムキャッシュプロバイダを使っても良いかも
 // ref. https://github.com/typeorm/typeorm/blob/master/docs/caching.md

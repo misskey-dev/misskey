@@ -1,5 +1,5 @@
-import Particle from '@/components/particle.vue';
-import { popup } from '@/os';
+import Particle from '@client/components/particle.vue';
+import { popup } from '@client/os';
 
 export default {
 	mounted(el, binding, vn) {

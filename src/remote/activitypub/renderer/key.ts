@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { ILocalUser } from '../../../models/entities/user';
 import { UserKeypair } from '../../../models/entities/user-keypair';
 import { createPublicKey } from 'crypto';

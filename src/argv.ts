@@ -1,5 +1,5 @@
 import * as program from 'commander';
-import config from './config';
+import config from '@/config';
 
 program
 	.version(config.version)

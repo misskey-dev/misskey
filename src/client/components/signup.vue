@@ -56,12 +56,12 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode';
-import { host, url } from '@/config';
+import { host, url } from '@client/config';
 import MkButton from './ui/button.vue';
 import MkInput from './ui/input.vue';
 import MkSwitch from './ui/switch.vue';
-import * as os from '@/os';
-import { login } from '@/account';
+import * as os from '@client/os';
+import { login } from '@client/account';
 
 export default defineComponent({
 	components: {
