@@ -6,9 +6,9 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import * as os from '@/os';
-import { ImageBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import * as os from '@client/os';
+import { ImageBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 
 export default defineComponent({
 	props: {

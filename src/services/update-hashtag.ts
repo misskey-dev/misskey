@@ -1,9 +1,9 @@
 import { User } from '../models/entities/user';
 import { Hashtags, Users } from '../models';
 import { hashtagChart } from './chart';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { Hashtag } from '../models/entities/hashtag';
-import { normalizeForSearch } from '../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export async function updateHashtags(user: User, tags: string[]) {
 	for (const tag of tags) {
@@ -86,7 +86,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 		}
 	} else {
 		if (isUserAttached) {
-			Hashtags.save({
+			Hashtags.insert({
 				id: genId(),
 				name: tag,
 				mentionedUserIds: [],
@@ -103,7 +103,7 @@ export async function updateHashtag(user: User, tag: string, isUserAttached = fa
 				attachedRemoteUsersCount: Users.isRemoteUser(user) ? 1 : 0,
 			} as Hashtag);
 		} else {
-			Hashtags.save({
+			Hashtags.insert({
 				id: genId(),
 				name: tag,
 				mentionedUserIds: [user.id],

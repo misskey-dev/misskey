@@ -18,8 +18,8 @@ import { defineComponent } from 'vue';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faImage, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
-import * as os from '@/os';
+import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import Chart, { DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
 import { Note } from '../../../../models/entities/note';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users } from '../../../../models';
 import { name, schema } from '../schemas/per-user-reactions';
 
@@ -16,6 +16,18 @@ export default class PerUserReactionsChart extends Chart<PerUserReactionsLog> {
 	@autobind
 	protected genNewLog(latest: PerUserReactionsLog): DeepPartial<PerUserReactionsLog> {
 		return {};
+	}
+
+	@autobind
+	protected aggregate(logs: PerUserReactionsLog[]): PerUserReactionsLog {
+		return {
+			local: {
+				count: logs.reduce((a, b) => a + b.local.count, 0),
+			},
+			remote: {
+				count: logs.reduce((a, b) => a + b.remote.count, 0),
+			},
+		};
 	}
 
 	@autobind

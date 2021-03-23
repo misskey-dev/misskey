@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '@/config';
 import { Note } from '../../models/entities/note';
 import { User, IRemoteUser } from '../../models/entities/user';
 import { UserPublickey } from '../../models/entities/user-publickey';

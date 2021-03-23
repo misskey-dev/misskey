@@ -7,32 +7,33 @@ import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
-import config from '../../config';
+import config from '@/config';
 import { updateHashtags } from '../update-hashtag';
 import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import extractMentions from '../../misc/extract-mentions';
-import extractEmojis from '../../misc/extract-emojis';
-import extractHashtags from '../../misc/extract-hashtags';
+import extractMentions from '@/misc/extract-mentions';
+import extractEmojis from '@/misc/extract-emojis';
+import extractHashtags from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { checkHitAntenna } from '../../misc/check-hit-antenna';
-import { checkWordMute } from '../../misc/check-word-mute';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
+import { checkHitAntenna } from '@/misc/check-hit-antenna';
+import { checkWordMute } from '@/misc/check-word-mute';
 import { addNoteToAntenna } from '../add-note-to-antenna';
-import { countSameRenotes } from '../../misc/count-same-renotes';
+import { countSameRenotes } from '@/misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
 import { Channel } from '../../models/entities/channel';
-import { normalizeForSearch } from '../../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { getAntennas } from '@/misc/antenna-cache';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -241,13 +242,14 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	incNotesCountOfUser(user);
 
 	// Word mute
+	// TODO: cache
 	UserProfiles.find({
 		enableWordMute: true
 	}).then(us => {
 		for (const u of us) {
 			checkWordMute(note, { id: u.userId }, u.mutedWords).then(shouldMute => {
 				if (shouldMute) {
-					MutedNotes.save({
+					MutedNotes.insert({
 						id: genId(),
 						userId: u.userId,
 						noteId: note.id,
@@ -259,21 +261,19 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	});
 
 	// Antenna
-	Antennas.find().then(async antennas => {
-		const followings = await Followings.createQueryBuilder('following')
-			.andWhere(`following.followeeId = :userId`, { userId: note.userId })
-			.getMany();
-
-		const followers = followings.map(f => f.followerId);
-
-		for (const antenna of antennas) {
-			checkHitAntenna(antenna, note, user, followers).then(hit => {
-				if (hit) {
-					addNoteToAntenna(antenna, note, user);
-				}
-			});
-		}
-	});
+	Followings.createQueryBuilder('following')
+		.andWhere(`following.followeeId = :userId`, { userId: note.userId })
+		.getMany()
+		.then(async followings => {
+			const followers = followings.map(f => f.followerId);
+			for (const antenna of (await getAntennas())) {
+				checkHitAntenna(antenna, note, user, followers).then(hit => {
+					if (hit) {
+						addNoteToAntenna(antenna, note, user);
+					}
+				});
+			}
+		});
 
 	// Channel
 	if (note.channelId) {
@@ -444,8 +444,13 @@ async function renderNoteOrRenoteActivity(data: Option, note: Note) {
 }
 
 function incRenoteCount(renote: Note) {
-	Notes.increment({ id: renote.id }, 'renoteCount', 1);
-	Notes.increment({ id: renote.id }, 'score', 1);
+	Notes.createQueryBuilder().update()
+		.set({
+			renoteCount: () => '"renoteCount" + 1',
+			score: () => '"score" + 1'
+		})
+		.where('id = :id', { id: renote.id })
+		.execute();
 }
 
 async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
@@ -525,7 +530,7 @@ async function insertNote(user: User, data: Option, tags: string[], emojis: stri
 			await Notes.insert(insert);
 		}
 
-		return await Notes.findOneOrFail(insert.id);
+		return insert;
 	} catch (e) {
 		// duplicate key error
 		if (isDuplicateKeyValueError(e)) {
@@ -594,10 +599,13 @@ function saveReply(reply: Note, note: Note) {
 }
 
 function incNotesCountOfUser(user: User) {
-	Users.increment({ id: user.id }, 'notesCount', 1);
-	Users.update({ id: user.id }, {
-		updatedAt: new Date()
-	});
+	Users.createQueryBuilder().update()
+		.set({
+			updatedAt: new Date(),
+			notesCount: () => '"notesCount" + 1'
+		})
+		.where('id = :id', { id: user.id })
+		.execute();
 }
 
 async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse>): Promise<User[]> {

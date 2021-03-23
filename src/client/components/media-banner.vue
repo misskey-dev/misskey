@@ -28,8 +28,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	props: {

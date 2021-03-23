@@ -4,9 +4,9 @@
 		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts._pages.viewPage }}</MkA>
 
 		<div class="buttons" style="margin: 16px 0;">
-			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="save" primary class="save" v-if="!readonly"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
 			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $ts.duplicate }}</MkButton>
-			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+			<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
 		</div>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
@@ -98,18 +98,18 @@ import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkInput from '@/components/ui/input.vue';
-import { blockDefs } from '@/scripts/hpml/index';
-import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
-import { url } from '@/config';
-import { collectPageVars } from '@/scripts/collect-page-vars';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkInput from '@client/components/ui/input.vue';
+import { blockDefs } from '@client/scripts/hpml/index';
+import { HpmlTypeChecker } from '@client/scripts/hpml/type-checker';
+import { url } from '@client/config';
+import { collectPageVars } from '@client/scripts/collect-page-vars';
+import * as os from '@client/os';
+import { selectFile } from '@client/scripts/select-file';
 
 export default defineComponent({
 	components: {
@@ -134,12 +134,18 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.initPageId ? {
-				title: this.$ts._pages.editPage,
-				icon: faPencilAlt,
-			} : {
-				title: this.$ts._pages.newPage,
-				icon: faPencilAlt,
+			INFO: computed(() => {
+				let title = this.$ts._pages.newPage;
+				if (this.initPageId) {
+					title = this.$ts._pages.editPage;
+				}
+				else if (this.initPageName && this.initUser) {
+					title = this.$ts._pages.readPage;
+				}
+				return {
+					title: title,
+					icon: faPencilAlt,
+				};
 			}),
 			author: this.$i,
 			readonly: false,

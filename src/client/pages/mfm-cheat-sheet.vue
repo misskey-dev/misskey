@@ -271,7 +271,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import MkTextarea from '@/components/ui/textarea.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
 
 export default defineComponent({
 	components: {

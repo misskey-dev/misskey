@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { queueLogger } from '../../logger';
 import addFile from '../../../services/drive/add-file';
 import dateFormat = require('dateformat');
-import { getFullApAccount } from '../../../misc/convert-host';
+import { getFullApAccount } from '@/misc/convert-host';
 import { Users, Blockings } from '../../../models';
 import { MoreThan } from 'typeorm';
 

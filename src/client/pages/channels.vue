@@ -35,10 +35,10 @@
 import { defineComponent } from 'vue';
 import { faSatelliteDish, faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
-import MkChannelPreview from '@/components/channel-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkTab from '@/components/tab.vue';
+import MkChannelPreview from '@client/components/channel-preview.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkTab from '@client/components/tab.vue';
 
 export default defineComponent({
 	components: {

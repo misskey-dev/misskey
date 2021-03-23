@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { UserGroups, UserGroupJoinings } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { UserGroup } from '../../../../../models/entities/user-group';
 import { UserGroupJoining } from '../../../../../models/entities/user-group-joining';
 
@@ -39,7 +39,7 @@ export default define(meta, async (ps, user) => {
 	} as UserGroup);
 
 	// Push the owner
-	await UserGroupJoinings.save({
+	await UserGroupJoinings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,

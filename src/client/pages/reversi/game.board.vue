@@ -90,11 +90,11 @@ import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../games/reversi/core';
-import { url } from '@/config';
-import MkButton from '@/components/ui/button.vue';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import * as sound from '@/scripts/sound';
+import { url } from '@client/config';
+import MkButton from '@client/components/ui/button.vue';
+import { userPage } from '@client/filters/user';
+import * as os from '@client/os';
+import * as sound from '@client/scripts/sound';
 
 export default defineComponent({
 	components: {

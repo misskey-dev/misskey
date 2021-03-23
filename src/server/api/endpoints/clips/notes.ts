@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ClipNotes, Clips, Notes } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
@@ -71,7 +71,11 @@ export default define(meta, async (ps, user) => {
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(`note.id IN (${ clipQuery.getQuery() })`)
-		.leftJoinAndSelect('note.user', 'user')
+		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.setParameters(clipQuery.getParameters());
 
 	if (user) {

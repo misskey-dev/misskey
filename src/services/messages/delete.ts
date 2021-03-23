@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '@/config';
 import { MessagingMessages, Users } from '../../models';
 import { MessagingMessage } from '../../models/entities/messaging-message';
 import { publishGroupMessagingStream, publishMessagingStream } from '../stream';

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { deleteFile } from '../../../../../services/drive/delete-file';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';

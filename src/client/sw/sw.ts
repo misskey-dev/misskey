@@ -3,12 +3,12 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { createNotification } from '@/sw/create-notification';
-import { swLang } from '@/sw/lang';
-import { swNotificationRead } from '@/sw/notification-read';
-import { pushNotificationData } from '../../types';
+import { createNotification } from '@client/sw/create-notification';
+import { swLang } from '@client/sw/lang';
+import { swNotificationRead } from '@client/sw/notification-read';
+import { pushNotificationData } from '@/types';
 import * as ope from './operations';
-import renderAcct from '../../misc/acct/render';
+import renderAcct from '@/misc/acct/render';
 
 //#region Lifecycle: Install
 self.addEventListener('install', ev => {

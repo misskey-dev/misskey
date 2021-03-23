@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Page } from '../entities/page';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users, DriveFiles, PageLikes } from '..';
 import { awaitAll } from '../../prelude/await-all';
 import { DriveFile } from '../entities/drive-file';

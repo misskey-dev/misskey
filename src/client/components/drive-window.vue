@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XDrive from './drive.vue';
-import XWindow from '@/components/ui/window.vue';
+import XWindow from '@client/components/ui/window.vue';
 
 export default defineComponent({
 	components: {

@@ -46,8 +46,8 @@
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkInput from './ui/input.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import * as os from '@/os';
+import XModalWindow from '@client/components/ui/modal-window.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

@@ -21,9 +21,13 @@
 		"emitDecoratorMetadata": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["../src/*"]
+		},
 		"typeRoots": [
-			"node_modules/@types",
-			"src/@types"
+			"../node_modules/@types",
+			"../src/@types"
 		],
 		"lib": [
 			"esnext"
@@ -31,9 +35,6 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		"./src/**/*.ts"
-	],
-	"exclude": [
-		"./src/client/**/*.ts"
+		"./**/*.ts"
 	]
 }

@@ -29,10 +29,10 @@ import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
-import MkContainer from '@/components/ui/container.vue';
-import MkButton from '@/components/ui/button.vue';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import * as os from '@/os';
+import MkContainer from '@client/components/ui/container.vue';
+import MkButton from '@client/components/ui/button.vue';
+import { createAiScriptEnv } from '@client/scripts/aiscript/api';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

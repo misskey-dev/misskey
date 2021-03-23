@@ -1,10 +1,10 @@
 import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '../../../../misc/is-muted-user-related';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
-import { fetchMeta } from '../../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Notes } from '../../../../models';
 import { PackedNote } from '../../../../models/repositories/note';
-import { checkWordMute } from '../../../../misc/check-word-mute';
+import { checkWordMute } from '@/misc/check-word-mute';
 
 export default class extends Channel {
 	public readonly chName = 'globalTimeline';
@@ -55,6 +55,8 @@ export default class extends Channel {
 		// レコードが追加されるNoteでも追加されるより先にここのストリーミングの処理に到達することが起こる。
 		// そのためレコードが存在するかのチェックでは不十分なので、改めてcheckWordMuteを呼んでいる
 		if (this.userProfile && await checkWordMute(note, this.user, this.userProfile.mutedWords)) return;
+
+		this.connection.cacheNote(note);
 
 		this.send('note', note);
 	}

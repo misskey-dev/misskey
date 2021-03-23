@@ -1,6 +1,6 @@
 import { Directive, ref } from 'vue';
 import autobind from 'autobind-decorator';
-import { popup } from '@/os';
+import { popup } from '@client/os';
 
 export class UserPreview {
 	private el;
@@ -24,7 +24,7 @@ export class UserPreview {
 
 		const showing = ref(true);
 
-		popup(import('@/components/user-preview.vue'), {
+		popup(import('@client/components/user-preview.vue'), {
 			showing,
 			q: this.user,
 			source: this.el

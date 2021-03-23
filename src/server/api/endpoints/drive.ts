@@ -1,5 +1,5 @@
 import define from '../define';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { DriveFiles } from '../../../models';
 
 export const meta = {

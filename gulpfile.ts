@@ -4,7 +4,6 @@
 
 import * as fs from 'fs';
 import * as gulp from 'gulp';
-import * as ts from 'gulp-typescript';
 import * as rimraf from 'rimraf';
 import * as replace from 'gulp-replace';
 const terser = require('gulp-terser');
@@ -12,16 +11,6 @@ const cssnano = require('gulp-cssnano');
 
 const locales: { [x: string]: any } = require('./locales');
 const meta = require('./package.json');
-
-gulp.task('build:ts', () => {
-	const tsProject = ts.createProject('./tsconfig.json');
-
-	return tsProject
-		.src()
-		.pipe(tsProject())
-		.on('error', () => {})
-		.pipe(gulp.dest('./built/'));
-});
 
 gulp.task('build:copy:views', () =>
 	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
@@ -64,7 +53,6 @@ gulp.task('build:client:style', () => {
 gulp.task('build:copy', gulp.parallel('build:copy:locales', 'build:copy:views', 'build:client:script', 'build:client:style', 'build:copy:fonts', () =>
 	gulp.src([
 		'./src/emojilist.json',
-		'./src/server/web/views/**/*',
 		'./src/**/assets/**/*',
 		'!./src/client/assets/**/*'
 	]).pipe(gulp.dest('./built/'))
@@ -78,17 +66,15 @@ gulp.task('cleanall', gulp.parallel('clean', cb =>
 	rimraf('./node_modules', cb)
 ));
 
-gulp.task('copy:docs', () =>
-		gulp.src([
-			'./src/docs/**/*',
-		])
-		.pipe(gulp.dest('./built/assets/docs/'))
-);
-
 gulp.task('build', gulp.parallel(
-	'build:ts',
 	'build:copy',
-	'copy:docs',
 ));
 
 gulp.task('default', gulp.task('build'));
+
+gulp.task('watch', () => {
+	gulp.watch([
+		'./src/**/*',
+		'!./src/client/**/*'
+	], { ignoreInitial: false }, gulp.task('build'));
+});

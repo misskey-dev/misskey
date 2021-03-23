@@ -11,8 +11,8 @@ import { defineComponent } from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
-import XNotifications from '@/components/notifications.vue';
-import * as os from '@/os';
+import XNotifications from '@client/components/notifications.vue';
+import * as os from '@client/os';
 import { updateColumn } from './deck-store';
 
 export default defineComponent({
@@ -40,7 +40,7 @@ export default defineComponent({
 
 	methods: {
 		func() {
-			os.popup(import('@/components/notification-setting-window.vue'), {
+			os.popup(import('@client/components/notification-setting-window.vue'), {
 				includingTypes: this.column.includingTypes,
 			}, {
 				done: async (res) => {

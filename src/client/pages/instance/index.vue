@@ -58,18 +58,18 @@
 import { computed, defineComponent, markRaw } from 'vue';
 import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import VueJsonPretty from 'vue-json-pretty';
-import MkInstanceStats from '@/components/instance-stats.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import { version, url } from '@/config';
+import MkInstanceStats from '@client/components/instance-stats.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkFolder from '@client/components/ui/folder.vue';
+import { version, url } from '@client/config';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
 import MkInstanceInfo from './instance.vue';
 import XMetrics from './index.metrics.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

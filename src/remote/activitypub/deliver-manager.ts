@@ -76,7 +76,7 @@ export default class DeliverManager {
 	public async execute() {
 		if (!Users.isLocalUser(this.actor)) return;
 
-		const inboxes: string[] = [];
+		const inboxes = new Set<string>();
 
 		// build inbox list
 		for (const recipe of this.recipes) {
@@ -89,13 +89,13 @@ export default class DeliverManager {
 				for (const following of followers) {
 					if (Followings.isRemoteFollower(following)) {
 						const inbox = following.followerSharedInbox || following.followerInbox;
-						if (!inboxes.includes(inbox)) inboxes.push(inbox);
+						inboxes.add(inbox);
 					}
 				}
 			} else if (isDirect(recipe)) {
 				// direct deliver
 				const inbox = recipe.to.inbox;
-				if (inbox && !inboxes.includes(inbox)) inboxes.push(inbox);
+				if (inbox) inboxes.add(inbox);
 			}
 		}
 

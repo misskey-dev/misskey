@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faWindowMaximize, faTimes, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
-import XWidgets from '@/components/widgets.vue';
+import XWidgets from '@client/components/widgets.vue';
 import XColumn from './column.vue';
 import { addColumnWidget, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store';
 

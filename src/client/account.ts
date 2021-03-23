@@ -1,8 +1,8 @@
 import { get, set } from '@/scripts/idb-proxy';
 import { reactive } from 'vue';
-import { apiUrl } from '@/config';
-import { waiting } from '@/os';
-import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
+import { apiUrl } from '@client/config';
+import { waiting } from '@client/os';
+import { unisonReload, reloadChannel } from '@client/scripts/unison-reload';
 
 // TODO: 他のタブと永続化されたstateを同期
 

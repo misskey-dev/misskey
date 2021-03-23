@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import MkUserInfo from './user-info.vue';
 import { userPage } from '../filters/user';
 

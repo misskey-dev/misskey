@@ -5,8 +5,8 @@ import Logger from '../../services/logger';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';
 import { Instances } from '../../models';
 import { instanceChart } from '../../services/chart';
-import { fetchMeta } from '../../misc/fetch-meta';
-import { toPuny, extractDbHost } from '../../misc/convert-host';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { toPuny, extractDbHost } from '@/misc/convert-host';
 import { getApId } from '../../remote/activitypub/type';
 import { fetchInstanceMetadata } from '../../services/fetch-instance-metadata';
 import { InboxJobData } from '..';
@@ -40,6 +40,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		return `Old keyId is no longer supported. ${keyIdLower}`;
 	}
 
+	// TDOO: キャッシュ
 	const dbResolver = new DbResolver();
 
 	// HTTP-Signature keyIdを元にDBから取得

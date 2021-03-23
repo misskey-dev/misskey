@@ -1,8 +1,8 @@
 import { Antenna } from '../models/entities/antenna';
 import { Note } from '../models/entities/note';
 import { AntennaNotes, Mutings, Notes } from '../models';
-import { genId } from '../misc/gen-id';
-import { isMutedUserRelated } from '../misc/is-muted-user-related';
+import { genId } from '@/misc/gen-id';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import { publishAntennaStream, publishMainStream } from './stream';
 import { User } from '../models/entities/user';
 
@@ -10,7 +10,7 @@ export async function addNoteToAntenna(antenna: Antenna, note: Note, noteUser: U
 	// 通知しない設定になっているか、自分自身の投稿なら既読にする
 	const read = !antenna.notify || (antenna.userId === noteUser.id);
 
-	AntennaNotes.save({
+	AntennaNotes.insert({
 		id: genId(),
 		antennaId: antenna.id,
 		noteId: note.id,

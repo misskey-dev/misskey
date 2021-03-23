@@ -51,18 +51,18 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { Room } from '@/scripts/room/room';
-import parseAcct from '../../../misc/acct/parse';
+import { Room } from '@client/scripts/room/room';
+import parseAcct from '@/misc/acct/parse';
 import XPreview from './preview.vue';
-const storeItems = require('@/scripts/room/furnitures.json5');
+const storeItems = require('@client/scripts/room/furnitures.json5');
 import { faBoxOpen, faUndo, faArrowsAlt, faBan, faBroom } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../prelude/url';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
+import MkButton from '@client/components/ui/button.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
 
 let room: Room;
 

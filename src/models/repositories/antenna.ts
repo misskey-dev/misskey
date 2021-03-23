@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Antenna } from '../entities/antenna';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { AntennaNotes, UserGroupJoinings } from '..';
 
 export type PackedAntenna = SchemaType<typeof packedAntennaSchema>;
@@ -56,16 +56,24 @@ export const packedAntennaSchema = {
 			type: 'array' as const,
 			optional: false as const, nullable: false as const,
 			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
 			}
 		},
-		execludeKeywords: {
+		excludeKeywords: {
 			type: 'array' as const,
 			optional: false as const, nullable: false as const,
 			items: {
-				type: 'string' as const,
-				optional: false as const, nullable: false as const
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const
+				}
 			}
 		},
 		src: {

@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Channel } from '../entities/channel';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '..';
 import { User } from '../entities/user';
 

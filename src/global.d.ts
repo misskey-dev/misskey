@@ -1,0 +1,1 @@
+type FIXME = any;

@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'onlineUsers',

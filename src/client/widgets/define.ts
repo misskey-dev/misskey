@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 import { throttle } from 'throttle-debounce';
-import { Form } from '@/scripts/form';
-import * as os from '@/os';
+import { Form } from '@client/scripts/form';
+import * as os from '@client/os';
 
 export default function <T extends Form>(data: {
 	name: string;

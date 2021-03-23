@@ -6,7 +6,7 @@ import { User, ILocalUser, IRemoteUser } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';
 import { In } from 'typeorm';
-import { IdentifiableError } from '../../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { UserGroup } from '../../../models/entities/user-group';
 import { toArray } from '../../../prelude/array';
 import { renderReadActivity } from '../../../remote/activitypub/renderer/read';

@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { Announcements } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	desc: {

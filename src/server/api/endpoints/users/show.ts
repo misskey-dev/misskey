@@ -3,7 +3,7 @@ import { resolveUser } from '../../../../remote/resolve-user';
 import define from '../../define';
 import { apiLogger } from '../../logger';
 import { ApiError } from '../../error';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Users } from '../../../../models';
 import { In } from 'typeorm';
 

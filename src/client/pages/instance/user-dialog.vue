@@ -50,12 +50,12 @@
 import { computed, defineComponent } from 'vue';
 import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import Progress from '@/scripts/loading';
+import MkButton from '@client/components/ui/button.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import XModalWindow from '@client/components/ui/modal-window.vue';
+import Progress from '@client/scripts/loading';
 import { acct, userPage } from '../../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

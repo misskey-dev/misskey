@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users } from '../../../../models';
 import { Not, IsNull } from 'typeorm';
 import { User } from '../../../../models/entities/user';
@@ -22,6 +22,22 @@ export default class UsersChart extends Chart<UsersLog> {
 			remote: {
 				total: latest.remote.total,
 			}
+		};
+	}
+
+	@autobind
+	protected aggregate(logs: UsersLog[]): UsersLog {
+		return {
+			local: {
+				total: logs[0].local.total,
+				inc: logs.reduce((a, b) => a + b.local.inc, 0),
+				dec: logs.reduce((a, b) => a + b.local.dec, 0),
+			},
+			remote: {
+				total: logs[0].remote.total,
+				inc: logs.reduce((a, b) => a + b.remote.inc, 0),
+				dec: logs.reduce((a, b) => a + b.remote.dec, 0),
+			},
 		};
 	}
 

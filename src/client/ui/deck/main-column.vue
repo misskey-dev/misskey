@@ -18,10 +18,10 @@
 import { defineComponent } from 'vue';
 import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
-import XNotes from '@/components/notes.vue';
-import XHeader from '@/ui/_common_/header.vue';
-import { deckStore } from '@/ui/deck/deck-store';
-import * as os from '@/os';
+import XNotes from '@client/components/notes.vue';
+import XHeader from '@client/ui/_common_/header.vue';
+import { deckStore } from '@client/ui/deck/deck-store';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

@@ -10,10 +10,10 @@ import { defineComponent, PropType } from 'vue';
 import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
-import { apiUrl } from '@/config';
-import * as os from '@/os';
-import { PostBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { apiUrl } from '@client/config';
+import * as os from '@client/os';
+import { PostBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 
 export default defineComponent({
 	components: {

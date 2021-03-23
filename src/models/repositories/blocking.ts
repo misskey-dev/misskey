@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '..';
 import { Blocking } from '../entities/blocking';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 
 export type PackedBlocking = SchemaType<typeof packedBlockingSchema>;
 

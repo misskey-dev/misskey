@@ -65,19 +65,19 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller } from '@fortawesome/free-solid-svg-icons';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormLink from '@/components/form/link.vue';
-import FormButton from '@/components/form/button.vue';
-import { builtinThemes, applyTheme } from '@/scripts/theme';
-import { selectFile } from '@/scripts/select-file';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage } from '@/store';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { fetchThemes, getThemes } from '@/theme-store';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormButton from '@client/components/form/button.vue';
+import { builtinThemes, applyTheme } from '@client/scripts/theme';
+import { selectFile } from '@client/scripts/select-file';
+import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
+import { ColdDeviceStorage } from '@client/store';
+import { i18n } from '@client/i18n';
+import { defaultStore } from '@client/store';
+import { fetchThemes, getThemes } from '@client/theme-store';
 
 export default defineComponent({
 	components: {

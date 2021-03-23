@@ -9,7 +9,7 @@ import {
 	AttestationChallenges,
 	Users
 } from '../../../../../models';
-import config from '../../../../../config';
+import config from '@/config';
 import { procedures, hash } from '../../../2fa';
 import { publishMainStream } from '../../../../../services/stream';
 

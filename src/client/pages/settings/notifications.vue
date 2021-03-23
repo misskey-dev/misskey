@@ -13,12 +13,12 @@
 import { defineComponent } from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import FormButton from '@/components/form/button.vue';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
 import { notificationTypes } from '../../../types';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -59,7 +59,7 @@ export default defineComponent({
 
 		configure() {
 			const includingTypes = notificationTypes.filter(x => !this.$i.mutingNotificationTypes.includes(x));
-			os.popup(import('@/components/notification-setting-window.vue'), {
+			os.popup(import('@client/components/notification-setting-window.vue'), {
 				includingTypes,
 				showGlobalToggle: false,
 			}, {

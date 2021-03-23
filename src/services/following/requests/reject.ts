@@ -2,7 +2,7 @@ import { renderActivity } from '../../../remote/activitypub/renderer';
 import renderFollow from '../../../remote/activitypub/renderer/follow';
 import renderReject from '../../../remote/activitypub/renderer/reject';
 import { deliver } from '../../../queue';
-import { publishMainStream } from '../../stream';
+import { publishMainStream, publishUserEvent } from '../../stream';
 import { User, ILocalUser } from '../../../models/entities/user';
 import { Users, FollowRequests, Followings } from '../../../models';
 import { decrementFollowing } from '../delete';
@@ -39,5 +39,8 @@ export default async function(followee: User, follower: User) {
 
 	Users.pack(followee, follower, {
 		detail: true
-	}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
+	}).then(packed => {
+		publishUserEvent(follower.id, 'unfollow', packed);
+		publishMainStream(follower.id, 'unfollow', packed);
+	});
 }

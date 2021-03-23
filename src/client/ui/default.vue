@@ -57,14 +57,14 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { instanceName } from '@/config';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
-import XSidebar from '@/components/sidebar.vue';
+import { instanceName } from '@client/config';
+import { StickySidebar } from '@client/scripts/sticky-sidebar';
+import XSidebar from '@client/components/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
-import * as os from '@/os';
-import { sidebarDef } from '@/sidebar';
+import * as os from '@client/os';
+import { sidebarDef } from '@client/sidebar';
 
 const DESKTOP_THRESHOLD = 1100;
 

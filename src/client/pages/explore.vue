@@ -70,11 +70,11 @@
 import { computed, defineComponent } from 'vue';
 import { faChartLine, faPlus, faHashtag, faRocket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
-import XUserList from '@/components/user-list.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import MkInput from '@/components/ui/input.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
+import XUserList from '@client/components/user-list.vue';
+import MkFolder from '@client/components/ui/folder.vue';
+import MkInput from '@client/components/ui/input.vue';
+import number from '@client/filters/number';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ClipNotes, Clips } from '../../../../models';
 import { ApiError } from '../../error';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { getNote } from '../../common/getters';
 
 export const meta = {
@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyClipped);
 	}
 
-	await ClipNotes.save({
+	await ClipNotes.insert({
 		id: genId(),
 		noteId: note.id,
 		clipId: clip.id

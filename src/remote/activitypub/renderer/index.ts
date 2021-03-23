@@ -1,9 +1,9 @@
-import config from '../../../config';
+import config from '@/config';
 import { v4 as uuid } from 'uuid';
 import { IActivity } from '../type';
 import { LdSignature } from '../misc/ld-signature';
 import { ILocalUser } from '../../../models/entities/user';
-import { UserKeypairs } from '../../../models';
+import { getUserKeypair } from '@/misc/keypair-store';
 
 export const renderActivity = (x: any): IActivity | null => {
 	if (x == null) return null;
@@ -23,9 +23,7 @@ export const renderActivity = (x: any): IActivity | null => {
 export const attachLdSignature = async (activity: any, user: ILocalUser): Promise<IActivity | null> => {
 	if (activity == null) return null;
 
-	const keypair = await UserKeypairs.findOneOrFail({
-		userId: user.id
-	});
+	const keypair = await getUserKeypair(user.id);
 
 	const obj = {
 		// as non-standards

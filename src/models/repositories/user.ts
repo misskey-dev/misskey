@@ -1,10 +1,12 @@
 import $ from 'cafy';
 import { EntityRepository, Repository, In, Not } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../entities/user';
-import { Emojis, Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '..';
-import config from '../../config';
-import { SchemaType } from '../../misc/schema';
+import { Notes, NoteUnreads, FollowRequests, Notifications, MessagingMessages, UserNotePinings, Followings, Blockings, Mutings, UserProfiles, UserSecurityKeys, UserGroupJoinings, Pages, Announcements, AnnouncementReads, Antennas, AntennaNotes, ChannelFollowings, Instances } from '..';
+import config from '@/config';
+import { SchemaType } from '@/misc/schema';
 import { awaitAll } from '../../prelude/await-all';
+import { populateEmojis } from '@/misc/populate-emojis';
+import { getAntennas } from '@/misc/antenna-cache';
 
 export type PackedUser = SchemaType<typeof packedUserSchema>;
 
@@ -96,10 +98,10 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
-		const antennas = await Antennas.find({ userId });
+		const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
 
-		const unread = antennas.length > 0 ? await AntennaNotes.findOne({
-			antennaId: In(antennas.map(x => x.id)),
+		const unread = myAntennas.length > 0 ? await AntennaNotes.findOne({
+			antennaId: In(myAntennas.map(x => x.id)),
 			read: false
 		}) : null;
 
@@ -160,10 +162,11 @@ export class UserRepository extends Repository<User> {
 		const meId = me ? typeof me === 'string' ? me : me.id : null;
 
 		const relation = meId && (meId !== user.id) && opts.detail ? await this.getRelation(meId, user.id) : null;
-		const pins = opts.detail ? await UserNotePinings.find({
-			where: { userId: user.id },
-			order: { id: 'DESC' }
-		}) : [];
+		const pins = opts.detail ? await UserNotePinings.createQueryBuilder('pin')
+			.where('pin.userId = :userId', { userId: user.id })
+			.innerJoinAndSelect('pin.note', 'note')
+			.orderBy('pin.id', 'DESC')
+			.getMany() : [];
 		const profile = opts.detail ? await UserProfiles.findOneOrFail(user.id) : null;
 
 		const falsy = opts.detail ? false : undefined;
@@ -188,15 +191,7 @@ export class UserRepository extends Repository<User> {
 				faviconUrl: instance.faviconUrl,
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
-
-			// カスタム絵文字添付
-			emojis: user.emojis.length > 0 ? Emojis.find({
-				where: {
-					name: In(user.emojis),
-					host: user.host
-				},
-				select: ['name', 'host', 'url', 'aliases']
-			}) : [],
+			emojis: populateEmojis(user.emojis, user.host),
 
 			...(opts.detail ? {
 				url: profile!.url,
@@ -218,7 +213,7 @@ export class UserRepository extends Repository<User> {
 				followingCount: user.followingCount,
 				notesCount: user.notesCount,
 				pinnedNoteIds: pins.map(pin => pin.noteId),
-				pinnedNotes: Notes.packMany(pins.map(pin => pin.noteId), meId, {
+				pinnedNotes: Notes.packMany(pins.map(pin => pin.note!), meId, {
 					detail: true
 				}),
 				pinnedPageId: profile!.pinnedPageId,
