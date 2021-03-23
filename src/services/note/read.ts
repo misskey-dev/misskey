@@ -1,22 +1,58 @@
 import { publishMainStream } from '../stream';
 import { Note } from '../../models/entities/note';
 import { User } from '../../models/entities/user';
-import { NoteUnreads, Antennas, AntennaNotes, Users } from '../../models';
+import { NoteUnreads, AntennaNotes, Users } from '../../models';
 import { Not, IsNull, In } from 'typeorm';
+import { Channel } from '../../models/entities/channel';
+import { checkHitAntenna } from '../../misc/check-hit-antenna';
+import { getAntennas } from '../../misc/antenna-cache';
+import { PackedNote } from '../../models/repositories/note';
 
 /**
  * Mark notes as read
  */
 export default async function(
 	userId: User['id'],
-	noteIds: Note['id'][]
+	notes: (Note | PackedNote)[],
+	info: {
+		following: Set<Channel['id']>;
+		followingChannels: Set<Channel['id']>;
+	}
 ) {
-	async function careNoteUnreads() {
+	const myAntennas = (await getAntennas()).filter(a => a.userId === userId);
+	const readMentions: (Note | PackedNote)[] = [];
+	const readSpecifiedNotes: (Note | PackedNote)[] = [];
+	const readChannelNotes: (Note | PackedNote)[] = [];
+	const readAntennaNotes: (Note | PackedNote)[] = [];
+
+	for (const note of notes) {
+		if (note.mentions && note.mentions.includes(userId)) {
+			readMentions.push(note);
+		} else if (note.visibleUserIds && note.visibleUserIds.includes(userId)) {
+			readSpecifiedNotes.push(note);
+		}
+
+		if (note.channelId && info.followingChannels.has(note.channelId)) {
+			readChannelNotes.push(note);
+		}
+
+		if (note.user != null) { // たぶんnullになることは無いはずだけど一応
+			for (const antenna of myAntennas) {
+				if (checkHitAntenna(antenna, note, note.user as any, undefined, Array.from(info.following))) {
+					readAntennaNotes.push(note);
+				}
+			}
+		}
+	}
+
+	if ((readMentions.length > 0) || (readSpecifiedNotes.length > 0) || (readChannelNotes.length > 0)) {
 		// Remove the record
 		await NoteUnreads.delete({
 			userId: userId,
-			noteId: In(noteIds),
+			noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id), ...readChannelNotes.map(n => n.id)]),
 		});
+
+		// TODO: ↓まとめてクエリしたい
 
 		NoteUnreads.count({
 			userId: userId,
@@ -49,33 +85,25 @@ export default async function(
 		});
 	}
 
-	async function careAntenna() {
-		const antennas = await Antennas.find({ userId });
+	if (readAntennaNotes.length > 0) {
+		await AntennaNotes.update({
+			antennaId: In(myAntennas.map(a => a.id)),
+			noteId: In(readAntennaNotes.map(n => n.id))
+		}, {
+			read: true
+		});
 
-		await Promise.all(antennas.map(async antenna => {
-			const countBefore = await AntennaNotes.count({
+		// TODO: まとめてクエリしたい
+		for (const antenna of myAntennas) {
+			const count = await AntennaNotes.count({
 				antennaId: antenna.id,
 				read: false
 			});
 
-			if (countBefore === 0) return;
-
-			await AntennaNotes.update({
-				antennaId: antenna.id,
-				noteId: In(noteIds)
-			}, {
-				read: true
-			});
-
-			const countAfter = await AntennaNotes.count({
-				antennaId: antenna.id,
-				read: false
-			});
-
-			if (countAfter === 0) {
+			if (count === 0) {
 				publishMainStream(userId, 'readAntenna', antenna);
 			}
-		}));
+		}
 
 		Users.getHasUnreadAntenna(userId).then(unread => {
 			if (!unread) {
@@ -83,7 +111,4 @@ export default async function(
 			}
 		});
 	}
-
-	careNoteUnreads();
-	careAntenna();
 }

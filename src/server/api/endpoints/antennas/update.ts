@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
+import { publishInternalEvent } from '../../../../services/stream';
 
 export const meta = {
 	desc: {
@@ -140,6 +141,8 @@ export default define(meta, async (ps, user) => {
 		withFile: ps.withFile,
 		notify: ps.notify,
 	});
+
+	publishInternalEvent('antennaUpdated', Antennas.findOneOrFail(antenna.id));
 
 	return await Antennas.pack(antenna.id);
 });

@@ -168,17 +168,10 @@ export default class Connection {
 		if (note == null) return;
 
 		if (this.user && (note.userId !== this.user.id)) {
-			if (note.mentions && note.mentions.includes(this.user.id)) {
-				readNote(this.user.id, [note]);
-			} else if (note.visibleUserIds && note.visibleUserIds.includes(this.user.id)) {
-				readNote(this.user.id, [note]);
-			}
-
-			if (this.followingChannels.has(note.channelId)) {
-				// TODO
-			}
-
-			// TODO: アンテナの既読処理
+			readNote(this.user.id, [note], {
+				following: this.following,
+				followingChannels: this.followingChannels,
+			});
 		}
 	}
 

@@ -20,6 +20,10 @@ class Publisher {
 		}));
 	}
 
+	public publishInternalEvent = (type: string, value?: any): void => {
+		this.publish('internal', type, typeof value === 'undefined' ? null : value);
+	}
+
 	public publishUserEvent = (userId: User['id'], type: string, value?: any): void => {
 		this.publish(`user:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
@@ -88,6 +92,7 @@ const publisher = new Publisher();
 
 export default publisher;
 
+export const publishInternalEvent = publisher.publishInternalEvent;
 export const publishUserEvent = publisher.publishUserEvent;
 export const publishBroadcastStream = publisher.publishBroadcastStream;
 export const publishMainStream = publisher.publishMainStream;
