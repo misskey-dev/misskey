@@ -124,7 +124,7 @@ if (defaultStore.state.reportError && !_DEV_) {
 document.addEventListener('touchend', () => {}, { passive: true });
 
 // 一斉リロード
-reloadChannel.addEventListener('message', reload);
+reloadChannel.addEventListener('message', shouldRedirectToRoot => reload(shouldRedirectToRoot));
 
 //#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 // TODO: いつの日にか消したい
