@@ -5,6 +5,11 @@ import { ApiError } from './error';
 import { SchemaType } from '@/misc/schema';
 import { AccessToken } from '../../models/entities/access-token';
 
+type SimpleUserInfo = {
+	id: ILocalUser['id'];
+	username: ILocalUser['username'];
+};
+
 // TODO: defaultが設定されている場合はその型も考慮する
 type Params<T extends IEndpointMeta> = {
 	[P in keyof T['params']]: NonNullable<T['params']>[P]['transform'] extends Function
@@ -15,13 +20,12 @@ type Params<T extends IEndpointMeta> = {
 export type Response = Record<string, any> | void;
 
 type executor<T extends IEndpointMeta> =
-	(params: Params<T>, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any, cleanup?: Function) =>
+	(params: Params<T>, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any, cleanup?: Function) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
-// TODO: API関数に user まるごと渡すのではなくユーザーIDなどの最小限のプロパティだけ渡すようにしたい(キャッシュとか考えないでよくなるため)
 export default function <T extends IEndpointMeta>(meta: T, cb: executor<T>)
-		: (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any) => Promise<any> {
-	return (params: any, user: T['requireCredential'] extends true ? ILocalUser : ILocalUser | null, token: AccessToken | null, file?: any) => {
+		: (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => Promise<any> {
+	return (params: any, user: T['requireCredential'] extends true ? SimpleUserInfo : SimpleUserInfo | null, token: AccessToken | null, file?: any) => {
 		function cleanup() {
 			fs.unlink(file.path, () => {});
 		}

@@ -19,10 +19,10 @@ export class ChannelRepository extends Repository<Channel> {
 
 		const hasUnreadNote = me ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
 
-		const following = await ChannelFollowings.findOne({
+		const following = meId ? await ChannelFollowings.findOne({
 			followerId: meId,
 			followeeId: channel.id,
-		});
+		}) : null;
 
 		return {
 			id: channel.id,
