@@ -112,7 +112,7 @@ type Option = {
 	app?: App | null;
 };
 
-export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
+export default async (user: { id: User['id']; host: User['host']; }, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
 	// チャンネル外にリプライしたら対象のスコープに合わせる
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {

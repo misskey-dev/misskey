@@ -1,7 +1,7 @@
 import * as httpSignature from 'http-signature';
 
 import config from '@/config';
-import { ILocalUser } from '../models/entities/user';
+import { ILocalUser, User } from '../models/entities/user';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
@@ -65,7 +65,7 @@ objectStorageQueue
 	.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ILocalUser, content: any, to: any) {
+export function deliver(user: { id: User['id']; host: null; }, content: any, to: any) {
 	if (content == null) return null;
 
 	const data = {
