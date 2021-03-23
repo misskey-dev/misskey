@@ -6,8 +6,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkModal from '@/components/ui/modal.vue';
-import MkPostForm from '@/components/post-form.vue';
+import MkModal from '@client/components/ui/modal.vue';
+import MkPostForm from '@client/components/post-form.vue';
 
 export default defineComponent({
 	components: {

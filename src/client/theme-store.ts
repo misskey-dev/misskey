@@ -1,5 +1,5 @@
-import { api } from '@/os';
-import { $i } from '@/account';
+import { api } from '@client/os';
+import { $i } from '@client/account';
 import { ColdDeviceStorage } from './store';
 import { Theme } from './scripts/theme';
 

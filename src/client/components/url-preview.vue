@@ -36,8 +36,8 @@
 import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
-import { url as local, lang } from '@/config';
-import * as os from '@/os';
+import { url as local, lang } from '@client/config';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {

@@ -23,12 +23,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '@/components/ui/window.vue';
-import XHeader from '@/ui/_common_/header.vue';
-import { popout } from '@/scripts/popout';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { resolve } from '@/router';
-import { url } from '@/config';
+import XWindow from '@client/components/ui/window.vue';
+import XHeader from '@client/ui/_common_/header.vue';
+import { popout } from '@client/scripts/popout';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { resolve } from '@client/router';
+import { url } from '@client/config';
 
 export default defineComponent({
 	components: {

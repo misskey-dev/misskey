@@ -7,10 +7,10 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkTextarea from '../ui/textarea.vue';
-import * as os from '@/os';
-import { Hpml } from '@/scripts/hpml/evaluator';
-import { HpmlTextInput } from '@/scripts/hpml';
-import { TextInputVarBlock } from '@/scripts/hpml/block';
+import * as os from '@client/os';
+import { Hpml } from '@client/scripts/hpml/evaluator';
+import { HpmlTextInput } from '@client/scripts/hpml';
+import { TextInputVarBlock } from '@client/scripts/hpml/block';
 
 export default defineComponent({
 	components: {

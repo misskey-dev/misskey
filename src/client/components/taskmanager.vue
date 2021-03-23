@@ -79,11 +79,11 @@
 <script lang="ts">
 import { defineComponent, markRaw, onBeforeUnmount, ref, shallowRef } from 'vue';
 import { faTerminal } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '@/components/ui/window.vue';
-import MkTab from '@/components/tab.vue';
-import MkButton from '@/components/ui/button.vue';
-import follow from '@/directives/follow-append';
-import * as os from '@/os';
+import XWindow from '@client/components/ui/window.vue';
+import MkTab from '@client/components/tab.vue';
+import MkButton from '@client/components/ui/button.vue';
+import follow from '@client/directives/follow-append';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

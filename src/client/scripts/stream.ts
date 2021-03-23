@@ -2,7 +2,7 @@ import autobind from 'autobind-decorator';
 import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { markRaw } from 'vue';
-import { debug, wsUrl } from '@/config';
+import { debug, wsUrl } from '@client/config';
 import { query as urlQuery } from '../../prelude/url';
 
 /**

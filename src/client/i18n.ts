@@ -1,5 +1,5 @@
 import { markRaw } from 'vue';
-import { locale } from '@/config';
+import { locale } from '@client/config';
 import { I18n } from '../misc/i18n';
 
 export const i18n = markRaw(new I18n(locale));

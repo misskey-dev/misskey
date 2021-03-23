@@ -27,9 +27,9 @@ import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-sol
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
 import { formatTimeString } from '../../../misc/format-time-string';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { Autocomplete } from '@/scripts/autocomplete';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import { Autocomplete } from '@client/scripts/autocomplete';
 import { throttle } from 'throttle-debounce';
 
 export default defineComponent({

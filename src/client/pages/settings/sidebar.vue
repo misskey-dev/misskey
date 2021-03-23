@@ -20,15 +20,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
-import FormSwitch from '@/components/form/switch.vue';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormButton from '@/components/form/button.vue';
-import * as os from '@/os';
-import { sidebarDef } from '@/sidebar';
-import { defaultStore } from '@/store';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormTextarea from '@client/components/form/textarea.vue';
+import FormRadios from '@client/components/form/radios.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
+import { sidebarDef } from '@client/sidebar';
+import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {

@@ -23,10 +23,10 @@
 import { defineComponent } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
 import { faComments } from '@fortawesome/free-regular-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
-import XTimeline from '@/components/timeline.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import XTimeline from '@client/components/timeline.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'timeline',

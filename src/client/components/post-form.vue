@@ -59,17 +59,17 @@ import { length } from 'stringz';
 import { toASCII } from 'punycode';
 import XNotePreview from './note-preview.vue';
 import { parse } from '../../mfm/parse';
-import { host, url } from '@/config';
+import { host, url } from '@client/config';
 import { erase, unique } from '../../prelude/array';
 import extractMentions from '../../misc/extract-mentions';
 import getAcct from '../../misc/acct/render';
 import { formatTimeString } from '../../misc/format-time-string';
-import { Autocomplete } from '@/scripts/autocomplete';
+import { Autocomplete } from '@client/scripts/autocomplete';
 import { noteVisibilities } from '../../types';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
-import { notePostInterruptors, postFormActions } from '@/store';
-import { isMobile } from '@/scripts/is-mobile';
+import * as os from '@client/os';
+import { selectFile } from '@client/scripts/select-file';
+import { notePostInterruptors, postFormActions } from '@client/store';
+import { isMobile } from '@client/scripts/is-mobile';
 import { throttle } from 'throttle-debounce';
 
 export default defineComponent({

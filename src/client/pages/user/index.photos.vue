@@ -18,10 +18,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import notePage from '../../filters/note';
-import * as os from '@/os';
-import MkContainer from '@/components/ui/container.vue';
+import * as os from '@client/os';
+import MkContainer from '@client/components/ui/container.vue';
 
 export default defineComponent({
 	components: {

@@ -30,11 +30,11 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '../../misc/emojilist';
-import contains from '@/scripts/contains';
+import contains from '@client/scripts/contains';
 import { twemojiSvgBase } from '../../misc/twemoji-base';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { acct } from '@/filters/user';
-import * as os from '@/os';
+import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
+import { acct } from '@client/filters/user';
+import * as os from '@client/os';
 
 type EmojiDef = {
 	emoji: string;

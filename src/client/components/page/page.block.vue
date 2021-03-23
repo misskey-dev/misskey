@@ -19,8 +19,8 @@ import XCounter from './page.counter.vue';
 import XRadioButton from './page.radio-button.vue';
 import XCanvas from './page.canvas.vue';
 import XNote from './page.note.vue';
-import { Hpml } from '@/scripts/hpml/evaluator';
-import { Block } from '@/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
+import { Block } from '@client/scripts/hpml/block';
 
 export default defineComponent({
 	components: {

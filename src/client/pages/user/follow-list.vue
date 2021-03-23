@@ -10,8 +10,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkUserInfo from '@/components/user-info.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkUserInfo from '@client/components/user-info.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
 import { userPage, acct } from '../../filters/user';
 
 export default defineComponent({

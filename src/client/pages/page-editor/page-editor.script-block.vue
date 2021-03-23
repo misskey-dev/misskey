@@ -60,11 +60,11 @@ import { defineAsyncComponent, defineComponent } from 'vue';
 import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import { blockDefs } from '@/scripts/hpml/index';
-import * as os from '@/os';
-import { isLiteralValue } from '@/scripts/hpml/expr';
-import { funcDefs } from '@/scripts/hpml/lib';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import { blockDefs } from '@client/scripts/hpml/index';
+import * as os from '@client/os';
+import { isLiteralValue } from '@client/scripts/hpml/expr';
+import { funcDefs } from '@client/scripts/hpml/lib';
 
 export default defineComponent({
 	components: {

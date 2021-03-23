@@ -1,7 +1,7 @@
-import { instance } from '@/instance';
-import { $i } from '@/account';
-import { api } from '@/os';
-import { lang } from '@/config';
+import { instance } from '@client/instance';
+import { $i } from '@client/account';
+import { api } from '@client/os';
+import { lang } from '@client/config';
 
 export async function initializeSw() {
 	if (instance.swPublickey &&

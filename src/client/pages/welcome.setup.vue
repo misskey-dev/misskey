@@ -22,11 +22,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import { host } from '@/config';
-import * as os from '@/os';
-import { login } from '@/account';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import { host } from '@client/config';
+import * as os from '@client/os';
+import { login } from '@client/account';
 
 export default defineComponent({
 	components: {

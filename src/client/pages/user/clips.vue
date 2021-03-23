@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
 import { userPage, acct } from '../../filters/user';
 
 export default defineComponent({

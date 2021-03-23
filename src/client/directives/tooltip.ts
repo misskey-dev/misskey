@@ -1,6 +1,6 @@
 import { Directive, ref } from 'vue';
-import { isDeviceTouch } from '@/scripts/is-device-touch';
-import { popup } from '@/os';
+import { isDeviceTouch } from '@client/scripts/is-device-touch';
+import { popup } from '@client/os';
 
 const start = isDeviceTouch ? 'touchstart' : 'mouseover';
 const end = isDeviceTouch ? 'touchend' : 'mouseleave';
@@ -30,7 +30,7 @@ export default {
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			popup(import('@/components/ui/tooltip.vue'), {
+			popup(import('@client/components/ui/tooltip.vue'), {
 				showing,
 				text: self.text,
 				source: el

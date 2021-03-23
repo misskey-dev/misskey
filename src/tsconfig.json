@@ -23,6 +23,9 @@
 		"isolatedModules": true,
 		"rootDir": "./",
 		"baseUrl": "./",
+		"paths": {
+			"@/*": ["./*"]
+		},
 		"outDir": "../built",
 		"typeRoots": [
 			"../node_modules/@types",

@@ -25,7 +25,7 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { host } from '@/config';
+import { host } from '@client/config';
 import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
 

@@ -36,7 +36,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {

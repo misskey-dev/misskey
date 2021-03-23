@@ -33,17 +33,17 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { faEllipsisH, faCogs, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormButton from '@/components/form/button.vue';
-import * as os from '@/os';
-import { debug } from '@/config';
-import { defaultStore } from '@/store';
-import { signout } from '@/account';
-import { unisonReload } from '@/scripts/unison-reload';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
+import { debug } from '@client/config';
+import { defaultStore } from '@client/store';
+import { signout } from '@client/account';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 export default defineComponent({
 	components: {
@@ -90,7 +90,7 @@ export default defineComponent({
 		},
 
 		taskmanager() {
-			os.popup(import('@/components/taskmanager.vue'), {
+			os.popup(import('@client/components/taskmanager.vue'), {
 			}, {}, 'closed');
 		},
 

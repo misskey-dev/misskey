@@ -17,13 +17,13 @@
 import { defineComponent } from 'vue';
 import { faServer, faSort } from '@fortawesome/free-solid-svg-icons';
 import define from '../define';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'serverMetric',

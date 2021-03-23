@@ -252,15 +252,15 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkInfo from '@/components/ui/info.vue';
-import { url } from '@/config';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkInfo from '@client/components/ui/info.vue';
+import { url } from '@client/config';
 import getAcct from '../../../misc/acct/render';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
+import * as os from '@client/os';
+import { fetchInstance } from '@client/instance';
 
 export default defineComponent({
 	components: {
@@ -269,7 +269,7 @@ export default defineComponent({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
-		Captcha: defineAsyncComponent(() => import('@/components/captcha.vue')),
+		Captcha: defineAsyncComponent(() => import('@client/components/captcha.vue')),
 	},
 
 	data() {

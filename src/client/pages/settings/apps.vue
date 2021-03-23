@@ -40,13 +40,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTrashAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
-import FormPagination from '@/components/form/pagination.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormButton from '@/components/form/button.vue';
-import * as os from '@/os';
+import FormPagination from '@client/components/form/pagination.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
