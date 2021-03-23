@@ -328,10 +328,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 		// Pack the note
 		const noteObj = await Notes.pack(note);
 
-		if (user.notesCount === 0) {
-			(noteObj as any).isFirstNote = true;
-		}
-
 		publishNotesStream(noteObj);
 
 		const nm = new NotificationManager(user, note);
