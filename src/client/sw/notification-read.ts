@@ -11,7 +11,7 @@ type Accounts = {
 	}
 };
 
-class SwNotificationRead {
+class SwNotificationReadManager {
 	private accounts: Accounts = {};
 
 	public async construct() {
@@ -47,4 +47,4 @@ class SwNotificationRead {
 	}
 }
 
-export const swNotificationRead = (new SwNotificationRead()).construct();
+export const swNotificationRead = (new SwNotificationReadManager()).construct();
