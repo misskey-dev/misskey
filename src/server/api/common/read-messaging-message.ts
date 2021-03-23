@@ -13,7 +13,6 @@ import { renderReadActivity } from '../../../remote/activitypub/renderer/read';
 import { renderActivity } from '../../../remote/activitypub/renderer';
 import { deliver } from '../../../queue';
 import orderedCollection from '../../../remote/activitypub/renderer/ordered-collection';
-import { use } from 'matter-js';
 
 /**
  * Mark messages as read
