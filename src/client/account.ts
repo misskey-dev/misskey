@@ -1,4 +1,4 @@
-import { get, set } from '@/scripts/idb-proxy';
+import { get, set } from '@client/scripts/idb-proxy';
 import { reactive } from 'vue';
 import { apiUrl } from '@client/config';
 import { waiting } from '@client/os';
