@@ -1,4 +1,4 @@
-import redis from '../db/redis';
+import { redisClient } from '../db/redis';
 import { User } from '../models/entities/user';
 import { Note } from '../models/entities/note';
 import { UserList } from '../models/entities/user-list';
@@ -14,7 +14,7 @@ class Publisher {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		redis.publish(config.host, JSON.stringify({
+		redisClient.publish(config.host, JSON.stringify({
 			channel: channel,
 			message: message
 		}));
