@@ -296,13 +296,13 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public isLocalUser(user: User): user is ILocalUser;
-	public isLocalUser(user: { host: User['host'] }): boolean;
+	public isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
 	public isLocalUser(user: User | { host: User['host'] }): boolean {
 		return user.host == null;
 	}
 
 	public isRemoteUser(user: User): user is IRemoteUser;
-	public isRemoteUser(user: { host: User['host'] }): boolean;
+	public isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { host: string; };
 	public isRemoteUser(user: User | { host: User['host'] }): boolean {
 		return !this.isLocalUser(user);
 	}
