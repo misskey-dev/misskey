@@ -4,7 +4,6 @@
 
 import * as fs from 'fs';
 import * as gulp from 'gulp';
-import * as ts from 'gulp-typescript';
 import * as rimraf from 'rimraf';
 import * as replace from 'gulp-replace';
 const terser = require('gulp-terser');
@@ -12,16 +11,6 @@ const cssnano = require('gulp-cssnano');
 
 const locales: { [x: string]: any } = require('./locales');
 const meta = require('./package.json');
-
-gulp.task('build:ts', () => {
-	const tsProject = ts.createProject('./src/tsconfig.json');
-
-	return tsProject
-		.src()
-		.pipe(tsProject())
-		.on('error', () => {})
-		.pipe(gulp.dest('./built/'));
-});
 
 gulp.task('build:copy:views', () =>
 	gulp.src('./src/server/web/views/**/*').pipe(gulp.dest('./built/server/web/views'))
@@ -78,7 +67,6 @@ gulp.task('cleanall', gulp.parallel('clean', cb =>
 ));
 
 gulp.task('build', gulp.parallel(
-	'build:ts',
 	'build:copy',
 ));
 

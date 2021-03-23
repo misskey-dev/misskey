@@ -21,6 +21,9 @@
 		"emitDecoratorMetadata": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
+		"rootDir": "./",
+		"baseUrl": "./",
+		"outDir": "../built",
 		"typeRoots": [
 			"../node_modules/@types",
 			"./@types"

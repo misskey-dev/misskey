@@ -12,7 +12,7 @@ import { lessThan } from '../prelude/array';
 import { program } from '../argv';
 import { showMachineInfo } from '../misc/show-machine-info';
 import { initDb } from '../db/postgre';
-import * as meta from '../meta.json';
+const meta = require('../meta.json');
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta', false);
