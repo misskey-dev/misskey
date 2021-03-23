@@ -205,7 +205,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user, token) => {
+export default define(meta, async (ps, _user, token) => {
+	const user = await Users.findOneOrFail(_user.id);
 	const isSecure = token == null;
 
 	const updates = {} as Partial<User>;
