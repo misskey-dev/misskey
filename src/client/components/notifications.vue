@@ -87,9 +87,11 @@ export default defineComponent({
 		this.connection = os.stream.useSharedConnection('main');
 		this.connection.on('notification', this.onNotification);
 
-		// queueに対してのみ既読処理を行う
 		this.connection.on('readAllNotifications', () => {
 			this.queue = this.queue.map(x => markNotificationRead(x));
+			for (const item of this.items) {
+				item.isRead = true;
+			}
 		});
 		this.connection.on('readNotifications', notificationIds => {
 			if (this.queue.length === 0) return;
@@ -97,6 +99,9 @@ export default defineComponent({
 			for (let i = 0; i < this.queue.length; i++) {
 				if (notificationIds.includes(this.queue[i].id)) {
 					this.queue[i] = markNotificationRead(this.queue[i]);
+				}
+				if (notificationIds.includes(this.items[i].id)) {
+					this.items[i].isRead = true;
 				}
 			}
 		});

@@ -51,11 +51,11 @@ export default defineComponent({
 			const connection = stream.useSharedConnection('main', 'UI');
 			connection.on('notification', onNotification);
 
-			const navHook = inject('navHook', null);
-			const sideViewHook = inject('sideViewHook', null);
-
 			//#region Listen message from SW
 			if ('serviceWorker' in navigator) {
+				const navHook = inject('navHook', null);
+				const sideViewHook = inject('sideViewHook', null);
+
 				navigator.serviceWorker.addEventListener('message', ev => {
 					if (_DEV_) {
 						console.log('sw msg', ev.data);
