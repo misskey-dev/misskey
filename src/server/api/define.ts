@@ -7,6 +7,7 @@ import { AccessToken } from '../../models/entities/access-token';
 
 type SimpleUserInfo = {
 	id: ILocalUser['id'];
+	host: ILocalUser['host'];
 	username: ILocalUser['username'];
 	isAdmin: ILocalUser['isAdmin'];
 	isModerator: ILocalUser['isModerator'];
