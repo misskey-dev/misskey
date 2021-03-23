@@ -10,14 +10,14 @@ export type PackedChannel = SchemaType<typeof packedChannelSchema>;
 export class ChannelRepository extends Repository<Channel> {
 	public async pack(
 		src: Channel['id'] | Channel,
-		me?: User['id'] | User | null | undefined,
+		me?: { id: User['id'] } | null | undefined,
 	): Promise<PackedChannel> {
 		const channel = typeof src === 'object' ? src : await this.findOneOrFail(src);
-		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const meId = me ? me.id : null;
 
 		const banner = channel.bannerId ? await DriveFiles.findOne(channel.bannerId) : null;
 
-		const hasUnreadNote = me ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
+		const hasUnreadNote = meId ? (await NoteUnreads.findOne({ noteChannelId: channel.id, userId: meId })) != null : undefined;
 
 		const following = meId ? await ChannelFollowings.findOne({
 			followerId: meId,

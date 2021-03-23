@@ -6,7 +6,7 @@ import { Users } from '..';
 export class FollowRequestRepository extends Repository<FollowRequest> {
 	public async pack(
 		src: FollowRequest['id'] | FollowRequest,
-		me?: any
+		me?: { id: User['id'] } | null | undefined
 	) {
 		const request = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
