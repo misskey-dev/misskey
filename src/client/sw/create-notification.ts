@@ -3,11 +3,11 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { getNoteSummary } from '../../misc/get-note-summary';
-import getUserName from '../../misc/get-user-name';
-import { swLang } from '@/sw/lang';
-import { I18n } from '../../misc/i18n';
-import { pushNotificationData } from '../../types';
+import { getNoteSummary } from '@/misc/get-note-summary';
+import getUserName from '@/misc/get-user-name';
+import { swLang } from '@client/sw/lang';
+import { I18n } from '@/misc/i18n';
+import { pushNotificationData } from '@/types';
 
 export async function createNotification(data: pushNotificationData) {
 	const n = await composeNotification(data);
