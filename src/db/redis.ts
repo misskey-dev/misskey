@@ -1,7 +1,7 @@
 import * as redis from 'redis';
 import config from '../config';
 
-export default redis.createClient(
+const client = redis.createClient(
 	config.redis.port,
 	config.redis.host,
 	{
@@ -10,3 +10,7 @@ export default redis.createClient(
 		db: config.redis.db || 0
 	}
 );
+
+client.subscribe(config.host);
+
+export default client;
