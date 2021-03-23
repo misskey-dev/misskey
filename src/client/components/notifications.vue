@@ -89,7 +89,7 @@ export default defineComponent({
 
 		// queueに対してのみ既読処理を行う
 		this.connection.on('readAllNotifications', () => {
-			this.queue = this.queue.map(markNotificationRead);
+			this.queue = this.queue.map(x => markNotificationRead(x));
 		});
 		this.connection.on('readNotifications', notificationIds => {
 			if (this.queue.length === 0) return;
