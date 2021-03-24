@@ -46,7 +46,7 @@ export default class PerUserNotesChart extends Chart<PerUserNotesLog> {
 	}
 
 	@autobind
-	public async update(user: User, note: Note, isAdditional: boolean) {
+	public async update(user: { id: User['id'] }, note: Note, isAdditional: boolean) {
 		const update: Obj = {
 			diffs: {}
 		};

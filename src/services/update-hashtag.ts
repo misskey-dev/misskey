@@ -5,7 +5,7 @@ import { genId } from '@/misc/gen-id';
 import { Hashtag } from '../models/entities/hashtag';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
-export async function updateHashtags(user: User, tags: string[]) {
+export async function updateHashtags(user: { id: User['id']; host: User['host']; }, tags: string[]) {
 	for (const tag of tags) {
 		await updateHashtag(user, tag);
 	}
@@ -21,7 +21,7 @@ export async function updateUsertags(user: User, tags: string[]) {
 	}
 }
 
-export async function updateHashtag(user: User, tag: string, isUserAttached = false, inc = true) {
+export async function updateHashtag(user: { id: User['id']; host: User['host']; }, tag: string, isUserAttached = false, inc = true) {
 	tag = normalizeForSearch(tag);
 
 	const index = await Hashtags.findOne({ name: tag });

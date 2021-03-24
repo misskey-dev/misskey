@@ -11,6 +11,7 @@ type SimpleUserInfo = {
 	username: ILocalUser['username'];
 	isAdmin: ILocalUser['isAdmin'];
 	isModerator: ILocalUser['isModerator'];
+	isSilenced: ILocalUser['isSilenced'];
 };
 
 // TODO: defaultが設定されている場合はその型も考慮する

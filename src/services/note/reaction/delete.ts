@@ -9,7 +9,7 @@ import { Note } from '../../../models/entities/note';
 import { NoteReactions, Users, Notes } from '../../../models';
 import { decodeReaction } from '@/misc/reaction-lib';
 
-export default async (user: User, note: Note) => {
+export default async (user: { id: User['id']; host: User['host']; }, note: Note) => {
 	// if already unreacted
 	const exist = await NoteReactions.findOne({
 		noteId: note.id,
