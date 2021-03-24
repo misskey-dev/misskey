@@ -24,7 +24,7 @@ export default async (user: { id: User['id'] }, url: string, object: any) => {
 
 	const keypair = await getUserKeypair(user.id);
 
-	await new Promise((resolve, reject) => {
+	await new Promise<void>((resolve, reject) => {
 		const req = https.request({
 			agent: getAgentByUrl(new URL(`https://example.net`)),
 			protocol,
