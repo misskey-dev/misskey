@@ -8,14 +8,14 @@ import { Users, FollowRequests, Followings } from '../../../models';
 import { decrementFollowing } from '../delete';
 
 export default async function(followee: { id: User['id']; host: User['host']; uri: User['host'] }, follower: User) {
-	if (Users.isRemoteUser(follower)) {
+	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		const request = await FollowRequests.findOne({
 			followeeId: followee.id,
 			followerId: follower.id
 		});
 
-		const content = renderActivity(renderReject(renderFollow(follower, followee, request!.requestId!), followee as ILocalUser));
-		deliver(followee as ILocalUser, content, follower.inbox);
+		const content = renderActivity(renderReject(renderFollow(follower, followee, request!.requestId!), followee));
+		deliver(followee, content, follower.inbox);
 	}
 
 	const request = await FollowRequests.findOne({

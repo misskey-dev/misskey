@@ -20,9 +20,9 @@ export default async function(followee: { id: User['id']; host: User['host']; ur
 
 	await insertFollowingDoc(followee, follower);
 
-	if (Users.isRemoteUser(follower)) {
-		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId!), followee as ILocalUser));
-		deliver(followee as ILocalUser, content, follower.inbox);
+	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
+		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId!), followee));
+		deliver(followee, content, follower.inbox);
 	}
 
 	Users.pack(followee.id, followee, {

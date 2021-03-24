@@ -347,7 +347,7 @@ export default async function(
 				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(user as IRemoteUser);
+				deleteOldFile(await Users.findOneOrFail(user.id) as IRemoteUser);
 			}
 		}
 	}
