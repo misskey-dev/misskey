@@ -5,7 +5,7 @@
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/syuilo/misskey.git"
+		"url": "https://github.com/misskey-dev/misskey.git"
 	},
 	"main": "./index.js",
 	"private": true,

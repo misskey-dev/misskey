@@ -13,13 +13,13 @@ Ce guide explique comment installer et configurer Misskey avec Docker.
 ----------------------------------------------------------------
 1. Clone le dépôt de Misskey sur la branche master.
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/misskey-dev/misskey.git`
 
 2. Naviguez dans le dossier du dépôt.
 
 	`cd misskey`
 
-3. Checkout sur le tag de la [dernière version](https://github.com/syuilo/misskey/releases/latest).
+3. Checkout sur le tag de la [dernière version](https://github.com/misskey-dev/misskey/releases/latest).
 
 	`git checkout master`
 

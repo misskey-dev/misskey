@@ -79,7 +79,7 @@ export default defineComponent({
 			localStorage.setItem('v', meta.version);
 		});
 
-		fetch('https://api.github.com/repos/syuilo/misskey/releases', {
+		fetch('https://api.github.com/repos/misskey-dev/misskey/releases', {
 			method: 'GET',
 		})
 		.then(res => res.json())

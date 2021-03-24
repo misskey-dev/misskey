@@ -1,1 +1,1 @@
-see [releases](https://github.com/syuilo/misskey/releases)
+see [releases](https://github.com/misskey-dev/misskey/releases)

@@ -14,7 +14,7 @@
 			{{ $ts._aboutMisskey.about }}
 		</section>
 		<FormGroup>
-			<FormLink to="https://github.com/syuilo/misskey" external>
+			<FormLink to="https://github.com/misskey-dev/misskey" external>
 				<template #icon><Fa :icon="faCode"/></template>
 				{{ $ts._aboutMisskey.source }}
 				<template #suffix>GitHub</template>
@@ -40,7 +40,7 @@
 			<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
 			<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
 			<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
-			<template #caption><MkLink url="https://github.com/syuilo/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
+			<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
 		</FormGroup>
 		<FormGroup>
 			<template #label><Mfm text="[jelly ❤]"/> {{ $ts._aboutMisskey.patrons }}</template>
