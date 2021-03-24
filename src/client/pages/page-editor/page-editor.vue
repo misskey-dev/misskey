@@ -4,9 +4,9 @@
 		<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts._pages.viewPage }}</MkA>
 
 		<div class="buttons" style="margin: 16px 0;">
-			<MkButton inline @click="save" primary class="save"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="save" primary class="save" v-if="!readonly"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
 			<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $ts.duplicate }}</MkButton>
-			<MkButton inline @click="del" class="delete" v-if="pageId"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+			<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
 		</div>
 
 		<MkContainer :body-togglable="true" :expanded="true" class="_vMargin">
@@ -134,12 +134,18 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.initPageId ? {
-				title: this.$ts._pages.editPage,
-				icon: faPencilAlt,
-			} : {
-				title: this.$ts._pages.newPage,
-				icon: faPencilAlt,
+			INFO: computed(() => {
+				let title = this.$ts._pages.newPage;
+				if (this.initPageId) {
+					title = this.$ts._pages.editPage;
+				}
+				else if (this.initPageName && this.initUser) {
+					title = this.$ts._pages.readPage;
+				}
+				return {
+					title: title,
+					icon: faPencilAlt,
+				};
 			}),
 			author: this.$i,
 			readonly: false,

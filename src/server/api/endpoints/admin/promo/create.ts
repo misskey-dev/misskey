@@ -53,7 +53,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyPromoted);
 	}
 
-	await PromoNotes.save({
+	await PromoNotes.insert({
 		noteId: note.id,
 		createdAt: new Date(),
 		expiresAt: new Date(ps.expiresAt),

@@ -4,40 +4,6 @@
 
 import '@/style.scss';
 
-// TODO: そのうち消す
-if (localStorage.getItem('vuex') != null) {
-	const vuex = JSON.parse(localStorage.getItem('vuex'));
-
-	localStorage.setItem('account', JSON.stringify({
-		...vuex.i,
-		token: localStorage.getItem('i')
-	}));
-	localStorage.setItem('accounts', JSON.stringify(vuex.device.accounts));
-	localStorage.setItem('miux:themes', JSON.stringify(vuex.device.themes));
-
-	if (vuex.device.userData) {
-		for (const [k, v] of 	Object.entries(vuex.device.userData)) {
-			localStorage.setItem('pizzax::base::' + k, JSON.stringify({
-				widgets: v.widgets
-			}));
-
-			if (v.deck) {
-				localStorage.setItem('pizzax::deck::' + k, JSON.stringify({
-					columns: v.deck.columns,
-					layout: v.deck.layout,
-				}));
-			}
-		}
-	}
-
-	localStorage.setItem('vuex-old', JSON.stringify(vuex));
-	localStorage.removeItem('vuex');
-	localStorage.removeItem('i');
-	localStorage.removeItem('locale');
-
-	location.reload();
-}
-
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { createApp, watch } from 'vue';

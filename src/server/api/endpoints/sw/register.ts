@@ -58,7 +58,7 @@ export default define(meta, async (ps, user) => {
 		};
 	}
 
-	await SwSubscriptions.save({
+	await SwSubscriptions.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,

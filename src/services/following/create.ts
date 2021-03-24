@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderAccept from '../../remote/activitypub/renderer/accept';
@@ -22,7 +22,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	let alreadyFollowed = false;
 
-	await Followings.save({
+	await Followings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		followerId: follower.id,
@@ -88,12 +88,15 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'follow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'follow', packed);
+			publishMainStream(follower.id, 'follow', packed);
+		});
 	}
 
 	// Publish followed event
 	if (Users.isLocalUser(followee)) {
-		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed)),
+		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
 
 		// 通知を作成
 		createNotification(followee.id, 'follow', {

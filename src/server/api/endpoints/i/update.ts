@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import { ID } from '../../../../misc/cafy-id';
-import { publishMainStream } from '../../../../services/stream';
+import { publishMainStream, publishUserEvent } from '../../../../services/stream';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
@@ -317,6 +317,7 @@ export default define(meta, async (ps, user, token) => {
 
 	// Publish meUpdated event
 	publishMainStream(user.id, 'meUpdated', iObj);
+	publishUserEvent(user.id, 'updateUserProfile', await UserProfiles.findOne(user.id));
 
 	// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 	if (user.isLocked && ps.isLocked === false) {

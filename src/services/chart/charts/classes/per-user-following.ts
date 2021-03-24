@@ -36,6 +36,36 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
+	protected aggregate(logs: PerUserFollowingLog[]): PerUserFollowingLog {
+		return {
+			local: {
+				followings: {
+					total: logs[0].local.followings.total,
+					inc: logs.reduce((a, b) => a + b.local.followings.inc, 0),
+					dec: logs.reduce((a, b) => a + b.local.followings.dec, 0),
+				},
+				followers: {
+					total: logs[0].local.followers.total,
+					inc: logs.reduce((a, b) => a + b.local.followers.inc, 0),
+					dec: logs.reduce((a, b) => a + b.local.followers.dec, 0),
+				},
+			},
+			remote: {
+				followings: {
+					total: logs[0].remote.followings.total,
+					inc: logs.reduce((a, b) => a + b.remote.followings.inc, 0),
+					dec: logs.reduce((a, b) => a + b.remote.followings.dec, 0),
+				},
+				followers: {
+					total: logs[0].remote.followers.total,
+					inc: logs.reduce((a, b) => a + b.remote.followers.inc, 0),
+					dec: logs.reduce((a, b) => a + b.remote.followers.dec, 0),
+				},
+			},
+		};
+	}
+
+	@autobind
 	protected async fetchActual(group: string): Promise<DeepPartial<PerUserFollowingLog>> {
 		const [
 			localFollowingsCount,

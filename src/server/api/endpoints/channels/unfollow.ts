@@ -3,6 +3,7 @@ import { ID } from '../../../../misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Channels, ChannelFollowings } from '../../../../models';
+import { publishUserEvent } from '../../../../services/stream';
 
 export const meta = {
 	tags: ['channels'],
@@ -39,4 +40,6 @@ export default define(meta, async (ps, user) => {
 		followerId: user.id,
 		followeeId: channel.id,
 	});
+
+	publishUserEvent(user.id, 'unfollowChannel', channel);
 });
