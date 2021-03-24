@@ -71,12 +71,12 @@ export const meta = {
 			repositoryUrl: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				default: 'https://github.com/syuilo/misskey'
+				default: 'https://github.com/misskey-dev/misskey'
 			},
 			feedbackUrl: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				default: 'https://github.com/syuilo/misskey/issues/new'
+				default: 'https://github.com/misskey-dev/misskey/issues/new'
 			},
 			secure: {
 				type: 'boolean' as const,

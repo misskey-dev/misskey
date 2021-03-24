@@ -68,13 +68,13 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create folder
-	const folder = await DriveFolders.save({
+	const folder = await DriveFolders.insert({
 		id: genId(),
 		createdAt: new Date(),
 		name: ps.name,
 		parentId: parent !== null ? parent.id : null,
 		userId: user.id
-	});
+	}).then(x => DriveFolders.findOneOrFail(x.identifiers[0]));
 
 	const folderObj = await DriveFolders.pack(folder);
 

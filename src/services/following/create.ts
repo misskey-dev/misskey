@@ -17,7 +17,7 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 
 const logger = new Logger('following/create');
 
-export async function insertFollowingDoc(followee: User, follower: User) {
+export async function insertFollowingDoc(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'] }, follower: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'] }) {
 	if (follower.id === followee.id) return;
 
 	let alreadyFollowed = false;
@@ -86,7 +86,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	// Publish follow event
 	if (Users.isLocalUser(follower)) {
-		Users.pack(followee, follower, {
+		Users.pack(followee.id, follower, {
 			detail: true
 		}).then(packed => {
 			publishUserEvent(follower.id, 'follow', packed);
@@ -96,7 +96,7 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 
 	// Publish followed event
 	if (Users.isLocalUser(followee)) {
-		Users.pack(follower, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
+		Users.pack(follower.id, followee).then(packed => publishMainStream(followee.id, 'followed', packed));
 
 		// 通知を作成
 		createNotification(followee.id, 'follow', {
@@ -105,7 +105,12 @@ export async function insertFollowingDoc(followee: User, follower: User) {
 	}
 }
 
-export default async function(follower: User, followee: User, requestId?: string) {
+export default async function(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string) {
+	const [follower, followee] = await Promise.all([
+		Users.findOneOrFail(_follower.id),
+		Users.findOneOrFail(_followee.id)
+	]);
+
 	// check blocking
 	const [blocking, blocked] = await Promise.all([
 		Blockings.findOne({

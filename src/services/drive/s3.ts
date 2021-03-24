@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import * as S3 from 'aws-sdk/clients/s3';
 import { Meta } from '../../models/entities/meta';
 import { getAgentByUrl } from '@/misc/fetch';

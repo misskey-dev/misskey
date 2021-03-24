@@ -43,7 +43,7 @@ Themencodes werden im Format eines JSON5-Objekts gespeichert. Themen werden wie 
 * `props` ... Definitionen der Themenoptionen.Diese werden im folgenden erläutert.
 
 ### Definition von Themenoptionen
-Die Optionen des Themas werden in `props` definiert. Die Schlüssel werden zu CSS-Variablen, die Werte geben den Inhalt an. Zusätzlich werden die `props` des gewählten Basisthemas von diesem Thema geerbt. Ist die `base` dieses Themas auf `light` gesetzt, so werden sie aus [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) kopiert, ist sie auf `dark` gesetzt, so werden sie aus [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5) kopiert. Beispielsweise wird, falls sich in den `props` dieses Themas keine Definition für den Schlüssel `panel` befindet, so wird der Wert von `panel` aus dem Basisthema verwendet.
+Die Optionen des Themas werden in `props` definiert. Die Schlüssel werden zu CSS-Variablen, die Werte geben den Inhalt an. Zusätzlich werden die `props` des gewählten Basisthemas von diesem Thema geerbt. Ist die `base` dieses Themas auf `light` gesetzt, so werden sie aus [_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5) kopiert, ist sie auf `dark` gesetzt, so werden sie aus [_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5) kopiert. Beispielsweise wird, falls sich in den `props` dieses Themas keine Definition für den Schlüssel `panel` befindet, so wird der Wert von `panel` aus dem Basisthema verwendet.
 
 #### Syntax für Wertangaben
 * Hexadezimalfarben

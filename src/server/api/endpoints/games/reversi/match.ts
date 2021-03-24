@@ -72,7 +72,7 @@ export default define(meta, async (ps, user) => {
 			isLlotheo: false
 		} as Partial<ReversiGame>);
 
-		publishReversiStream(exist.parentId, 'matched', await ReversiGames.pack(game, exist.parentId));
+		publishReversiStream(exist.parentId, 'matched', await ReversiGames.pack(game, { id: exist.parentId }));
 
 		const other = await ReversiMatchings.count({
 			childId: user.id

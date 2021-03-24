@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import * as Bull from 'bull';
 import request from '../../remote/activitypub/request';
 import { registerOrFetchInstanceDoc } from '../../services/register-or-fetch-instance-doc';

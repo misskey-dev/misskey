@@ -302,7 +302,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @return Created drive file
  */
 export default async function(
-	user: User | null,
+	user: { id: User['id']; host: User['host'] } | null,
 	path: string,
 	name: string | null = null,
 	comment: string | null = null,
@@ -347,7 +347,7 @@ export default async function(
 				throw new Error('no-free-space');
 			} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-				deleteOldFile(user as IRemoteUser);
+				deleteOldFile(await Users.findOneOrFail(user.id) as IRemoteUser);
 			}
 		}
 	}

@@ -100,7 +100,7 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	public async update(follower: User, followee: User, isFollow: boolean) {
+	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean) {
 		const update: Obj = {};
 
 		update.total = isFollow ? 1 : -1;

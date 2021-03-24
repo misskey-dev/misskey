@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as stream from 'stream';
 import * as util from 'util';
+import { URL } from 'url';
 import fetch from 'node-fetch';
 import { getAgentByUrl } from './fetch';
 import { AbortController } from 'abort-controller';
