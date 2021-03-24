@@ -31,12 +31,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const userGroup = await UserGroups.save({
+	const userGroup = await UserGroups.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
-	} as UserGroup);
+	} as UserGroup).then(x => UserGroups.findOneOrFail(x.identifiers[0]));;
 
 	// Push the owner
 	await UserGroupJoinings.insert({
