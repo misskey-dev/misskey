@@ -6,6 +6,7 @@ import { ApiError } from '../../error';
 import { ID } from '@/misc/cafy-id';
 import { Users } from '../../../../models';
 import { In } from 'typeorm';
+import { User } from '@/models/entities/user';
 
 export const meta = {
 	desc: {
@@ -81,9 +82,9 @@ export default define(meta, async (ps, me) => {
 		});
 
 		// リクエストされた通りに並べ替え
-		const _users = [];
+		const _users: User[] = [];
 		for (const id of ps.userIds) {
-			_users.push(users.find(x => x.id === id));
+			_users.push(users.find(x => x.id === id)!);
 		}
 
 		return await Promise.all(_users.map(u => Users.pack(u, me, {

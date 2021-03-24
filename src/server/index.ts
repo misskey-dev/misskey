@@ -89,7 +89,7 @@ router.get('/verify-email/:code', async ctx => {
 			emailVerifyCode: null
 		});
 
-		publishMainStream(profile.userId, 'meUpdated', await Users.pack(profile.userId, profile.userId, {
+		publishMainStream(profile.userId, 'meUpdated', await Users.pack(profile.userId, { id: profile.userId }, {
 			detail: true,
 			includeSecrets: true
 		}));

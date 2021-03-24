@@ -26,7 +26,7 @@ export default class extends Channel {
 					childId: body.id
 				});
 				if (matching == null) return;
-				publishMainStream(matching.childId, 'reversiInvited', await ReversiMatchings.pack(matching, matching.childId));
+				publishMainStream(matching.childId, 'reversiInvited', await ReversiMatchings.pack(matching, { id: matching.childId }));
 				break;
 		}
 	}

@@ -1,9 +1,9 @@
 import config from '@/config';
-import { ILocalUser } from '../../../models/entities/user';
+import { User } from '@/models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { Poll } from '../../../models/entities/poll';
 
-export default async function renderQuestion(user: ILocalUser, note: Note, poll: Poll) {
+export default async function renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll) {
 	const question = {
 		type: 'Question',
 		id: `${config.url}/questions/${note.id}`,

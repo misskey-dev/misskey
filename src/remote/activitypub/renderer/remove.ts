@@ -1,7 +1,7 @@
 import config from '@/config';
-import { ILocalUser } from '../../../models/entities/user';
+import { User } from '@/models/entities/user';
 
-export default (user: ILocalUser, target: any, object: any) => ({
+export default (user: { id: User['id'] }, target: any, object: any) => ({
 	type: 'Remove',
 	actor: `${config.url}/users/${user.id}`,
 	target,

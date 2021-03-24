@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import config from '@/config';
 import { toASCII } from 'punycode';
 

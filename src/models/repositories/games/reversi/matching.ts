@@ -2,12 +2,13 @@ import { EntityRepository, Repository } from 'typeorm';
 import { ReversiMatching } from '../../../entities/games/reversi/matching';
 import { Users } from '../../..';
 import { awaitAll } from '../../../../prelude/await-all';
+import { User } from '@/models/entities/user';
 
 @EntityRepository(ReversiMatching)
 export class ReversiMatchingRepository extends Repository<ReversiMatching> {
 	public async pack(
 		src: ReversiMatching['id'] | ReversiMatching,
-		me: any
+		me: { id: User['id'] }
 	) {
 		const matching = typeof src === 'object' ? src : await this.findOneOrFail(src);
 

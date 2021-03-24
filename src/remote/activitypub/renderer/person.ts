@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import renderImage from './image';
 import renderKey from './key';
 import config from '@/config';

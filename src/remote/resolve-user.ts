@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import webFinger from './webfinger';
 import config from '@/config';
 import { createPerson, updatePerson } from './activitypub/models/person';

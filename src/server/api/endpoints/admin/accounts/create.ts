@@ -34,7 +34,8 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, me) => {
+export default define(meta, async (ps, _me) => {
+	const me = _me ? await Users.findOneOrFail(_me.id) : null;
 	const noUsers = (await Users.count({
 		host: null,
 	})) === 0;

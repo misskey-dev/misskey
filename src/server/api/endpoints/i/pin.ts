@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	return await Users.pack(user, user, {
+	return await Users.pack(user.id, user, {
 		detail: true
 	});
 });

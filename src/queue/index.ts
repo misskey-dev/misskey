@@ -1,7 +1,7 @@
 import * as httpSignature from 'http-signature';
 
 import config from '@/config';
-import { ILocalUser } from '../models/entities/user';
+import { User } from '../models/entities/user';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
@@ -65,7 +65,7 @@ objectStorageQueue
 	.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: ILocalUser, content: any, to: any) {
+export function deliver(user: { id: User['id']; host: null; }, content: any, to: any) {
 	if (content == null) return null;
 
 	const data = {
@@ -102,7 +102,7 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 	});
 }
 
-export function createDeleteDriveFilesJob(user: ILocalUser) {
+export function createDeleteDriveFilesJob(user: { id: User['id'] }) {
 	return dbQueue.add('deleteDriveFiles', {
 		user: user
 	}, {
@@ -111,7 +111,7 @@ export function createDeleteDriveFilesJob(user: ILocalUser) {
 	});
 }
 
-export function createExportNotesJob(user: ILocalUser) {
+export function createExportNotesJob(user: { id: User['id'] }) {
 	return dbQueue.add('exportNotes', {
 		user: user
 	}, {
@@ -120,7 +120,7 @@ export function createExportNotesJob(user: ILocalUser) {
 	});
 }
 
-export function createExportFollowingJob(user: ILocalUser) {
+export function createExportFollowingJob(user: { id: User['id'] }) {
 	return dbQueue.add('exportFollowing', {
 		user: user
 	}, {
@@ -129,7 +129,7 @@ export function createExportFollowingJob(user: ILocalUser) {
 	});
 }
 
-export function createExportMuteJob(user: ILocalUser) {
+export function createExportMuteJob(user: { id: User['id'] }) {
 	return dbQueue.add('exportMute', {
 		user: user
 	}, {
@@ -138,7 +138,7 @@ export function createExportMuteJob(user: ILocalUser) {
 	});
 }
 
-export function createExportBlockingJob(user: ILocalUser) {
+export function createExportBlockingJob(user: { id: User['id'] }) {
 	return dbQueue.add('exportBlocking', {
 		user: user
 	}, {
@@ -147,7 +147,7 @@ export function createExportBlockingJob(user: ILocalUser) {
 	});
 }
 
-export function createExportUserListsJob(user: ILocalUser) {
+export function createExportUserListsJob(user: { id: User['id'] }) {
 	return dbQueue.add('exportUserLists', {
 		user: user
 	}, {
@@ -156,7 +156,7 @@ export function createExportUserListsJob(user: ILocalUser) {
 	});
 }
 
-export function createImportFollowingJob(user: ILocalUser, fileId: DriveFile['id']) {
+export function createImportFollowingJob(user: { id: User['id'] }, fileId: DriveFile['id']) {
 	return dbQueue.add('importFollowing', {
 		user: user,
 		fileId: fileId
@@ -166,7 +166,7 @@ export function createImportFollowingJob(user: ILocalUser, fileId: DriveFile['id
 	});
 }
 
-export function createImportUserListsJob(user: ILocalUser, fileId: DriveFile['id']) {
+export function createImportUserListsJob(user: { id: User['id'] }, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
 		fileId: fileId

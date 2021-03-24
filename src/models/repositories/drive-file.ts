@@ -53,7 +53,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
 	}
 
-	public async calcDriveUsageOf(user: User['id'] | User): Promise<number> {
+	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this
