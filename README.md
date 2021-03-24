@@ -22,6 +22,11 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 
 ---
 
+Do you have a question? Or are you experiencing trouble?
+Visit [our forum](https://forum.misskey.io/)!
+
+---
+
 ![](https://ja.mstdn.wiki/images/e/ed/Deck.jpg)
 
 :sparkles: Features
