@@ -1,4 +1,3 @@
-import $ from 'cafy';
 import define from '../../../define';
 import { RegistryItems } from '../../../../../models';
 

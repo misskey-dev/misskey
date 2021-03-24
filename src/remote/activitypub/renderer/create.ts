@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { Note } from '../../../models/entities/note';
 
 export default (object: any, note: Note) => {

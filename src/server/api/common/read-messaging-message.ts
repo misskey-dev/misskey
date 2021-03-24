@@ -1,11 +1,11 @@
 import { publishMainStream, publishGroupMessagingStream } from '../../../services/stream';
 import { publishMessagingStream } from '../../../services/stream';
 import { publishMessagingIndexStream } from '../../../services/stream';
-import { User, ILocalUser, IRemoteUser } from '../../../models/entities/user';
+import { User, IRemoteUser } from '../../../models/entities/user';
 import { MessagingMessage } from '../../../models/entities/messaging-message';
 import { MessagingMessages, UserGroupJoinings, Users } from '../../../models';
 import { In } from 'typeorm';
-import { IdentifiableError } from '../../../misc/identifiable-error';
+import { IdentifiableError } from '@/misc/identifiable-error';
 import { UserGroup } from '../../../models/entities/user-group';
 import { toArray } from '../../../prelude/array';
 import { renderReadActivity } from '../../../remote/activitypub/renderer/read';
@@ -107,7 +107,7 @@ export async function readGroupMessagingMessage(
 	}
 }
 
-export async function deliverReadActivity(user: ILocalUser, recipient: IRemoteUser, messages: MessagingMessage | MessagingMessage[]) {
+export async function deliverReadActivity(user: { id: User['id']; host: null; }, recipient: IRemoteUser, messages: MessagingMessage | MessagingMessage[]) {
 	messages = toArray(messages).filter(x => x.uri);
 	const contents = messages.map(x => renderReadActivity(user, x));
 

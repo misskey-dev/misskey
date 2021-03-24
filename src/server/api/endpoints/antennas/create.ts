@@ -1,9 +1,10 @@
 import $ from 'cafy';
 import define from '../../define';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { ApiError } from '../../error';
+import { publishInternalEvent } from '../../../../services/stream';
 
 export const meta = {
 	desc: {
@@ -88,7 +89,7 @@ export default define(meta, async (ps, user) => {
 	let userList;
 	let userGroupJoining;
 
-	if (ps.src === 'list') {
+	if (ps.src === 'list' && ps.userListId) {
 		userList = await UserLists.findOne({
 			id: ps.userListId,
 			userId: user.id,
@@ -97,7 +98,7 @@ export default define(meta, async (ps, user) => {
 		if (userList == null) {
 			throw new ApiError(meta.errors.noSuchUserList);
 		}
-	} else if (ps.src === 'group') {
+	} else if (ps.src === 'group' && ps.userGroupId) {
 		userGroupJoining = await UserGroupJoinings.findOne({
 			userGroupId: ps.userGroupId,
 			userId: user.id,
@@ -108,7 +109,7 @@ export default define(meta, async (ps, user) => {
 		}
 	}
 
-	const antenna = await Antennas.save({
+	const antenna = await Antennas.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
@@ -123,7 +124,9 @@ export default define(meta, async (ps, user) => {
 		withReplies: ps.withReplies,
 		withFile: ps.withFile,
 		notify: ps.notify,
-	});
+	}).then(x => Antennas.findOneOrFail(x.identifiers[0]));
+
+	publishInternalEvent('antennaCreated', antenna);
 
 	return await Antennas.pack(antenna);
 });

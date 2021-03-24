@@ -13,8 +13,8 @@ import { computed, defineComponent } from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
-import { url, lang } from '@/config';
-import MkLink from '@/components/link.vue';
+import { url, lang } from '@client/config';
+import MkLink from '@client/components/link.vue';
 
 const markdown = MarkdownIt({
 	html: true

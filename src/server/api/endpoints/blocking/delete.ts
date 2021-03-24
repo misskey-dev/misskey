@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import * as ms from 'ms';
 import deleteBlocking from '../../../../services/blocking/delete';
 import define from '../../define';
@@ -126,7 +126,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const blocker = user;
+	const blocker = await Users.findOneOrFail(user.id);
 
 	// Check if the blockee is yourself
 	if (user.id === ps.userId) {
@@ -152,7 +152,7 @@ export default define(meta, async (ps, user) => {
 	// Delete blocking
 	await deleteBlocking(blocker, blockee);
 
-	return await Users.pack(blockee.id, user, {
+	return await Users.pack(blockee.id, blocker, {
 		detail: true
 	});
 });

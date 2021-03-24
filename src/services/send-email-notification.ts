@@ -2,7 +2,7 @@ import { UserProfiles } from '../models';
 import { User } from '../models/entities/user';
 import { sendEmail } from './send-email';
 import * as locales from '../../locales/';
-import { I18n } from '../misc/i18n';
+import { I18n } from '@/misc/i18n';
 
 // TODO: locale ファイルをクライアント用とサーバー用で分けたい
 

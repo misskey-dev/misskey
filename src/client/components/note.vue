@@ -114,15 +114,15 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { focusPrev, focusNext } from '@/scripts/focus';
-import { url } from '@/config';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { noteActions, noteViewInterruptors } from '@/store';
-import { reactionPicker } from '@/scripts/reaction-picker';
+import { pleaseLogin } from '@client/scripts/please-login';
+import { focusPrev, focusNext } from '@client/scripts/focus';
+import { url } from '@client/config';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { checkWordMute } from '@client/scripts/check-word-mute';
+import { userPage } from '@client/filters/user';
+import * as os from '@client/os';
+import { noteActions, noteViewInterruptors } from '@client/store';
+import { reactionPicker } from '@client/scripts/reaction-picker';
 
 function markRawAll(...xs) {
 	for (const x of xs) {
@@ -141,8 +141,8 @@ export default defineComponent({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
-		MkInstanceTicker: defineAsyncComponent(() => import('@/components/instance-ticker.vue')),
+		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
+		MkInstanceTicker: defineAsyncComponent(() => import('@client/components/instance-ticker.vue')),
 	},
 
 	inject: {
@@ -662,7 +662,7 @@ export default defineComponent({
 						text: this.$ts.reportAbuse,
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
-							os.popup(import('@/components/abuse-report-window.vue'), {
+							os.popup(import('@client/components/abuse-report-window.vue'), {
 								user: this.appearNote.user,
 								initialComment: `Note: ${u}\n-----\n`
 							}, {}, 'closed');

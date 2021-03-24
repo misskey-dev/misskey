@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users } from '../../../../models';
 import { name, schema } from '../schemas/active-users';
 
@@ -35,7 +35,7 @@ export default class ActiveUsersChart extends Chart<ActiveUsersLog> {
 	}
 
 	@autobind
-	public async update(user: User) {
+	public async update(user: { id: User['id'], host: User['host'] }) {
 		const update: Obj = {
 			users: [user.id]
 		};

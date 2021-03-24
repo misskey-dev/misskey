@@ -2,13 +2,13 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFile } from '../entities/drive-file';
 import { Users, DriveFolders } from '..';
 import { User } from '../entities/user';
-import { toPuny } from '../../misc/convert-host';
+import { toPuny } from '@/misc/convert-host';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
-import config from '../../config';
+import { SchemaType } from '@/misc/schema';
+import config from '@/config';
 import { query, appendQuery } from '../../prelude/url';
 import { Meta } from '../entities/meta';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 
 export type PackedDriveFile = SchemaType<typeof packedDriveFileSchema>;
 
@@ -53,7 +53,7 @@ export class DriveFileRepository extends Repository<DriveFile> {
 		return thumbnail ? (file.thumbnailUrl || (isImage ? (file.webpublicUrl || file.url) : null)) : (file.webpublicUrl || file.url);
 	}
 
-	public async calcDriveUsageOf(user: User['id'] | User): Promise<number> {
+	public async calcDriveUsageOf(user: User['id'] | { id: User['id'] }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this

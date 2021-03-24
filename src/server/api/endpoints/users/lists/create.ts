@@ -1,7 +1,7 @@
 import $ from 'cafy';
 import define from '../../../define';
 import { UserLists } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { UserList } from '../../../../../models/entities/user-list';
 
 export const meta = {
@@ -30,12 +30,12 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const userList = await UserLists.save({
+	const userList = await UserLists.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
-	} as UserList);
+	} as UserList).then(x => UserLists.findOneOrFail(x.identifiers[0]));
 
 	return await UserLists.pack(userList);
 });

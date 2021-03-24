@@ -2,8 +2,8 @@ import $ from 'cafy';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Users, UserProfiles } from '../../../../models';
-import { ID } from '../../../../misc/cafy-id';
-import { toPunyNullable } from '../../../../misc/convert-host';
+import { ID } from '@/misc/cafy-id';
+import { toPunyNullable } from '@/misc/convert-host';
 
 export const meta = {
 	desc: {

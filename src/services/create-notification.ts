@@ -1,7 +1,7 @@
 import { publishMainStream } from './stream';
 import pushSw from './push-notification';
 import { Notifications, Mutings, UserProfiles } from '../models';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { User } from '../models/entities/user';
 import { Notification } from '../models/entities/notification';
 import { sendEmailNotification } from './send-email-notification';

@@ -39,8 +39,8 @@
 import { defineComponent } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
-import MkUrlPreview from '@/components/url-preview.vue';
-import * as os from '@/os';
+import MkUrlPreview from '@client/components/url-preview.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

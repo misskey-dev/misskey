@@ -1,8 +1,8 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { AnnouncementReads, Announcements, Users } from '../../../../models';
 import { publishMainStream } from '../../../../services/stream';
 

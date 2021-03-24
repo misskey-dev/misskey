@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as katex from 'katex';import * as os from '@/os';
+import * as katex from 'katex';import * as os from '@client/os';
 
 export default defineComponent({
 	props: {

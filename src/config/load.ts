@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import { Source, Mixin } from './types';
-import * as meta from '../meta.json';
+const meta = require('../meta.json');
 
 /**
  * Path of configuration directory

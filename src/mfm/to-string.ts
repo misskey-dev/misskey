@@ -1,5 +1,5 @@
 import { MfmForest, MfmTree } from './prelude';
-import { nyaize } from '../misc/nyaize';
+import { nyaize } from '@/misc/nyaize';
 
 export type RestoreOptions = {
 	doNyaize?: boolean;

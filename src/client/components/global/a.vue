@@ -7,12 +7,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { router } from '@/router';
-import { url } from '@/config';
-import { popout } from '@/scripts/popout';
-import { ColdDeviceStorage } from '@/store';
+import * as os from '@client/os';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { router } from '@client/router';
+import { url } from '@client/config';
+import { popout } from '@client/scripts/popout';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	inject: {

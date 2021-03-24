@@ -48,12 +48,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faUsers, faPlus, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkAvatars from '@/components/avatars.vue';
-import MkTab from '@/components/tab.vue';
-import * as os from '@/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkAvatars from '@client/components/avatars.vue';
+import MkTab from '@client/components/tab.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

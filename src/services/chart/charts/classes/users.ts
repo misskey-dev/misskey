@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users } from '../../../../models';
 import { Not, IsNull } from 'typeorm';
 import { User } from '../../../../models/entities/user';
@@ -59,7 +59,7 @@ export default class UsersChart extends Chart<UsersLog> {
 	}
 
 	@autobind
-	public async update(user: User, isAdditional: boolean) {
+	public async update(user: { id: User['id'], host: User['host'] }, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.total = isAdditional ? 1 : -1;

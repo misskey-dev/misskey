@@ -126,7 +126,7 @@ import { defineComponent, markRaw } from 'vue';
 import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
-import number from '@/filters/number';
+import number from '@client/filters/number';
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -137,7 +137,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

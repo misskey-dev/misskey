@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { removePinned } from '../../../../services/i/pin';
 import define from '../../define';
 import { ApiError } from '../../error';
@@ -47,7 +47,7 @@ export default define(meta, async (ps, user) => {
 		throw e;
 	});
 
-	return await Users.pack(user, user, {
+	return await Users.pack(user.id, user, {
 		detail: true
 	});
 });

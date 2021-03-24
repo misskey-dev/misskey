@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Followings, Users } from '../../../../models';
 import { Not, IsNull } from 'typeorm';
 import { User } from '../../../../models/entities/user';
@@ -100,7 +100,7 @@ export default class PerUserFollowingChart extends Chart<PerUserFollowingLog> {
 	}
 
 	@autobind
-	public async update(follower: User, followee: User, isFollow: boolean) {
+	public async update(follower: { id: User['id']; host: User['host']; }, followee: { id: User['id']; host: User['host']; }, isFollow: boolean) {
 		const update: Obj = {};
 
 		update.total = isFollow ? 1 : -1;

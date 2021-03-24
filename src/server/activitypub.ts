@@ -12,12 +12,12 @@ import Followers from './activitypub/followers';
 import Following from './activitypub/following';
 import Featured from './activitypub/featured';
 import { inbox as processInbox } from '../queue';
-import { isSelfHost } from '../misc/convert-host';
+import { isSelfHost } from '@/misc/convert-host';
 import { Notes, Users, Emojis, NoteReactions } from '../models';
 import { ILocalUser, User } from '../models/entities/user';
 import { In } from 'typeorm';
 import { renderLike } from '../remote/activitypub/renderer/like';
-import { getUserKeypair } from '../misc/keypair-store';
+import { getUserKeypair } from '@/misc/keypair-store';
 
 // Init router
 const router = new Router();

@@ -9,9 +9,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotifications from '@/components/notifications.vue';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import XNotifications from '@client/components/notifications.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

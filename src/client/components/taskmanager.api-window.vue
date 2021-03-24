@@ -23,8 +23,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as JSON5 from 'json5';
-import XWindow from '@/components/ui/window.vue';
-import MkTab from '@/components/tab.vue';
+import XWindow from '@client/components/ui/window.vue';
+import MkTab from '@client/components/tab.vue';
 
 export default defineComponent({
 	components: {

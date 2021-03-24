@@ -38,13 +38,13 @@
 import { computed, defineComponent } from 'vue';
 import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import MkDriveFileThumbnail from '@/components/drive-file-thumbnail.vue';
-import Progress from '@/scripts/loading';
-import bytes from '@/filters/bytes';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import XModalWindow from '@client/components/ui/modal-window.vue';
+import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
+import Progress from '@client/scripts/loading';
+import bytes from '@client/filters/bytes';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

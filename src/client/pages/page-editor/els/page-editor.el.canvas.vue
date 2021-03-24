@@ -14,8 +14,8 @@
 import { defineComponent } from 'vue';
 import { faPaintBrush, faMagic } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkInput from '@/components/ui/input.vue';
-import * as os from '@/os';
+import MkInput from '@client/components/ui/input.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

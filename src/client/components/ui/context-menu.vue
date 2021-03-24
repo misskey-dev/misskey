@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import contains from '@/scripts/contains';
+import contains from '@client/scripts/contains';
 import MkMenu from './menu.vue';
 
 export default defineComponent({

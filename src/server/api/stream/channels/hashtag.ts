@@ -1,9 +1,9 @@
 import autobind from 'autobind-decorator';
-import { isMutedUserRelated } from '../../../../misc/is-muted-user-related';
+import { isMutedUserRelated } from '@/misc/is-muted-user-related';
 import Channel from '../channel';
 import { Notes } from '../../../../models';
 import { PackedNote } from '../../../../models/repositories/note';
-import { normalizeForSearch } from '../../../../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export default class extends Channel {
 	public readonly chName = 'hashtag';

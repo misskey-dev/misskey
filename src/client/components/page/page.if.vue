@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { IfBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { IfBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 import { defineComponent, defineAsyncComponent, PropType } from 'vue';
 
 export default defineComponent({

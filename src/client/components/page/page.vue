@@ -8,10 +8,10 @@
 import { defineComponent, onMounted, nextTick, onUnmounted, PropType } from 'vue';
 import { parse } from '@syuilo/aiscript';
 import XBlock from './page.block.vue';
-import { Hpml } from '@/scripts/hpml/evaluator';
-import { url } from '@/config';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
+import { Hpml } from '@client/scripts/hpml/evaluator';
+import { url } from '@client/config';
+import { $i } from '@client/account';
+import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {

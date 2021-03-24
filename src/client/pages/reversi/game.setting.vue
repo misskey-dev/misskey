@@ -128,9 +128,9 @@ import { defineComponent } from 'vue';
 import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as maps from '../../../games/reversi/maps';
-import MkButton from '@/components/ui/button.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkRadio from '@/components/ui/radio.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkRadio from '@client/components/ui/radio.vue';
 
 export default defineComponent({
 	components: {

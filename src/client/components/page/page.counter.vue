@@ -7,9 +7,9 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkButton from '../ui/button.vue';
-import * as os from '@/os';
-import { CounterVarBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import * as os from '@client/os';
+import { CounterVarBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 
 export default defineComponent({
 	components: {

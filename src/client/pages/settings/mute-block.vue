@@ -34,14 +34,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkTab from '@/components/tab.vue';
-import MkInfo from '@/components/ui/info.vue';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkTab from '@client/components/tab.vue';
+import MkInfo from '@client/components/ui/info.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import { userPage } from '@client/filters/user';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

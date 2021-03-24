@@ -2,13 +2,13 @@ import { EntityRepository, Repository, In } from 'typeorm';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { awaitAll } from '../../prelude/await-all';
-import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '../../misc/reaction-lib';
+import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
 import { toString } from '../../mfm/to-string';
 import { parse } from '../../mfm/parse';
 import { NoteReaction } from '../entities/note-reaction';
-import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '../../misc/populate-emojis';
+import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
 export type PackedNote = SchemaType<typeof packedNoteSchema>;
 
@@ -79,7 +79,7 @@ export class NoteRepository extends Repository<Note> {
 
 	public async pack(
 		src: Note['id'] | Note,
-		me?: User['id'] | User | null | undefined,
+		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -93,7 +93,7 @@ export class NoteRepository extends Repository<Note> {
 			skipHide: false
 		}, options);
 
-		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const meId = me ? me.id : null;
 		const note = typeof src === 'object' ? src : await this.findOneOrFail(src);
 		const host = note.userHost;
 
@@ -174,7 +174,7 @@ export class NoteRepository extends Repository<Note> {
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
 			userId: note.userId,
-			user: Users.pack(note.user || note.userId, meId, {
+			user: Users.pack(note.user || note.userId, me, {
 				detail: false,
 			}),
 			text: text,
@@ -204,12 +204,12 @@ export class NoteRepository extends Repository<Note> {
 			_prId_: (note as any)._prId_ || undefined,
 
 			...(opts.detail ? {
-				reply: note.replyId ? this.pack(note.reply || note.replyId, meId, {
+				reply: note.replyId ? this.pack(note.reply || note.replyId, me, {
 					detail: false,
 					_hint_: options?._hint_
 				}) : undefined,
 
-				renote: note.renoteId ? this.pack(note.renote || note.renoteId, meId, {
+				renote: note.renoteId ? this.pack(note.renote || note.renoteId, me, {
 					detail: true,
 					_hint_: options?._hint_
 				}) : undefined,
@@ -236,7 +236,7 @@ export class NoteRepository extends Repository<Note> {
 
 	public async packMany(
 		notes: Note[],
-		me?: User['id'] | User | null | undefined,
+		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -244,7 +244,7 @@ export class NoteRepository extends Repository<Note> {
 	) {
 		if (notes.length === 0) return [];
 
-		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
 		if (meId) {
 			const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);

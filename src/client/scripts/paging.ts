@@ -1,5 +1,5 @@
 import { markRaw } from 'vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from './scroll';
 
 const SECOND_FETCH_LIMIT = 30;

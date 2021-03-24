@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { AccessTokens } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
-import { secureRndstr } from '../../../../misc/secure-rndstr';
+import { genId } from '@/misc/gen-id';
+import { secureRndstr } from '@/misc/secure-rndstr';
 
 export const meta = {
 	tags: ['auth'],

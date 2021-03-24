@@ -2,7 +2,7 @@ import renderDocument from './document';
 import renderHashtag from './hashtag';
 import renderMention from './mention';
 import renderEmoji from './emoji';
-import config from '../../../config';
+import config from '@/config';
 import toHtml from '../misc/get-note-html';
 import { Note, IMentionedRemoteUsers } from '../../../models/entities/note';
 import { DriveFile } from '../../../models/entities/drive-file';

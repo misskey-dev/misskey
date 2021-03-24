@@ -1,6 +1,7 @@
+import { URL } from 'url';
 import * as promiseLimit from 'promise-limit';
 
-import config from '../../../config';
+import config from '@/config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue } from '../type';
@@ -16,17 +17,17 @@ import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys 
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pining';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { instanceChart, usersChart } from '../../../services/chart';
 import { UserPublickey } from '../../../models/entities/user-publickey';
-import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
-import { toPuny } from '../../../misc/convert-host';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
+import { toPuny } from '@/misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { toArray } from '../../../prelude/array';
 import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
-import { normalizeForSearch } from '../../../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 const logger = apLogger;
 

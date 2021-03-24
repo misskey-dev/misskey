@@ -7,9 +7,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotes from '@/components/notes.vue';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import XNotes from '@client/components/notes.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

@@ -4,13 +4,13 @@ import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vu
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as Sentry from '@sentry/browser';
-import Stream from '@/scripts/stream';
-import { apiUrl, debug } from '@/config';
-import MkPostFormDialog from '@/components/post-form-dialog.vue';
-import MkWaitingDialog from '@/components/waiting-dialog.vue';
-import { resolve } from '@/router';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
+import Stream from '@client/scripts/stream';
+import { apiUrl, debug } from '@client/config';
+import MkPostFormDialog from '@client/components/post-form-dialog.vue';
+import MkWaitingDialog from '@client/components/waiting-dialog.vue';
+import { resolve } from '@client/router';
+import { $i } from '@client/account';
+import { defaultStore } from '@client/store';
 
 export const stream = markRaw(new Stream());
 
@@ -196,7 +196,7 @@ export async function popup(component: Component | typeof import('*.vue') | Prom
 
 export function pageWindow(path: string) {
 	const { component, props } = resolve(path);
-	popup(import('@/components/page-window.vue'), {
+	popup(import('@client/components/page-window.vue'), {
 		initialPath: path,
 		initialComponent: markRaw(component),
 		initialProps: props,
@@ -205,7 +205,7 @@ export function pageWindow(path: string) {
 
 export function dialog(props: Record<string, any>) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/dialog.vue'), props, {
+		popup(import('@client/components/dialog.vue'), props, {
 			done: result => {
 				resolve(result ? result : { canceled: true });
 			},
@@ -219,7 +219,7 @@ export function success() {
 		setTimeout(() => {
 			showing.value = false;
 		}, 1000);
-		popup(import('@/components/waiting-dialog.vue'), {
+		popup(import('@client/components/waiting-dialog.vue'), {
 			success: true,
 			showing: showing
 		}, {
@@ -231,7 +231,7 @@ export function success() {
 export function waiting() {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
-		popup(import('@/components/waiting-dialog.vue'), {
+		popup(import('@client/components/waiting-dialog.vue'), {
 			success: false,
 			showing: showing
 		}, {
@@ -242,7 +242,7 @@ export function waiting() {
 
 export function form(title, form) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/form-dialog.vue'), { title, form }, {
+		popup(import('@client/components/form-dialog.vue'), { title, form }, {
 			done: result => {
 				resolve(result);
 			},
@@ -252,7 +252,7 @@ export function form(title, form) {
 
 export async function selectUser() {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/user-select-dialog.vue'), {}, {
+		popup(import('@client/components/user-select-dialog.vue'), {}, {
 			ok: user => {
 				resolve(user);
 			},
@@ -262,7 +262,7 @@ export async function selectUser() {
 
 export async function selectDriveFile(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/drive-select-dialog.vue'), {
+		popup(import('@client/components/drive-select-dialog.vue'), {
 			type: 'file',
 			multiple
 		}, {
@@ -277,7 +277,7 @@ export async function selectDriveFile(multiple: boolean) {
 
 export async function selectDriveFolder(multiple: boolean) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/drive-select-dialog.vue'), {
+		popup(import('@client/components/drive-select-dialog.vue'), {
 			type: 'folder',
 			multiple
 		}, {
@@ -292,7 +292,7 @@ export async function selectDriveFolder(multiple: boolean) {
 
 export async function pickEmoji(src?: HTMLElement, opts) {
 	return new Promise((resolve, reject) => {
-		popup(import('@/components/emoji-picker-dialog.vue'), {
+		popup(import('@client/components/emoji-picker-dialog.vue'), {
 			src,
 			...opts
 		}, {
@@ -342,7 +342,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 		characterData: false,
 	});
 
-	openingEmojiPicker = await popup(import('@/components/emoji-picker-window.vue'), {
+	openingEmojiPicker = await popup(import('@client/components/emoji-picker-window.vue'), {
 		src,
 		...opts
 	}, {
@@ -360,7 +360,7 @@ export async function openEmojiPicker(src?: HTMLElement, opts, initialTextarea: 
 export function modalMenu(items: any[], src?: HTMLElement, options?: { align?: string; viaKeyboard?: boolean }) {
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(import('@/components/ui/modal-menu.vue'), {
+		popup(import('@client/components/ui/modal-menu.vue'), {
 			items,
 			src,
 			align: options?.align,
@@ -380,7 +380,7 @@ export function contextMenu(items: any[], ev: MouseEvent) {
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
-		popup(import('@/components/ui/context-menu.vue'), {
+		popup(import('@client/components/ui/context-menu.vue'), {
 			items,
 			ev,
 		}, {

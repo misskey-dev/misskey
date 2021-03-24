@@ -48,11 +48,11 @@
 import { defineComponent } from 'vue';
 import { faGripVertical, faChevronLeft, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faListUl, faPlus, faUserClock, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faInfoCircle, faQuestionCircle, faProjectDiagram, faStream, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope, faLaugh, faComments } from '@fortawesome/free-regular-svg-icons';
-import { host } from '@/config';
-import { search } from '@/scripts/search';
-import * as os from '@/os';
-import { sidebarDef } from '@/sidebar';
-import { getAccounts, addAccount, login } from '@/account';
+import { host } from '@client/config';
+import { search } from '@client/scripts/search';
+import * as os from '@client/os';
+import { sidebarDef } from '@client/sidebar';
+import { getAccounts, addAccount, login } from '@client/account';
 
 export default defineComponent({
 	props: {

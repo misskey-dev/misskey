@@ -3,9 +3,9 @@ import { renderFollowRelay } from '../remote/activitypub/renderer/follow-relay';
 import { renderActivity, attachLdSignature } from '../remote/activitypub/renderer';
 import renderUndo from '../remote/activitypub/renderer/undo';
 import { deliver } from '../queue';
-import { ILocalUser } from '../models/entities/user';
+import { ILocalUser, User } from '../models/entities/user';
 import { Users, Relays } from '../models';
-import { genId } from '../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
 
@@ -75,7 +75,7 @@ export async function relayRejected(id: string) {
 	return JSON.stringify(result);
 }
 
-export async function deliverToRelays(user: ILocalUser, activity: any) {
+export async function deliverToRelays(user: { id: User['id']; host: null; }, activity: any) {
 	if (activity == null) return;
 
 	const relays = await Relays.find({

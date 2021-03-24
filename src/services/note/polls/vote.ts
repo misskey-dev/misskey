@@ -3,7 +3,7 @@ import { User } from '../../../models/entities/user';
 import { Note } from '../../../models/entities/note';
 import { PollVotes, NoteWatchings, Polls } from '../../../models';
 import { Not } from 'typeorm';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { createNotification } from '../../create-notification';
 
 export default async function(user: User, note: Note, choice: number) {

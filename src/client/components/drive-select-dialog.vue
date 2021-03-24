@@ -20,8 +20,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XDrive from './drive.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import number from '@/filters/number';
+import XModalWindow from '@client/components/ui/modal-window.vue';
+import number from '@client/filters/number';
 
 export default defineComponent({
 	components: {

@@ -9,8 +9,8 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import XNotes from '@/components/notes.vue';
+import Progress from '@client/scripts/loading';
+import XNotes from '@client/components/notes.vue';
 
 export default defineComponent({
 	components: {
