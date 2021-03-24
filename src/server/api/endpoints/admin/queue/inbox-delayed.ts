@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import define from '../../../define';
 import { inboxQueue } from '../../../../../queue';
 
