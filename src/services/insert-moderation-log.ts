@@ -1,8 +1,8 @@
-import { ILocalUser } from '../models/entities/user';
 import { ModerationLogs } from '../models';
 import { genId } from '@/misc/gen-id';
+import { User } from '@/models/entities/user';
 
-export async function insertModerationLog(moderator: ILocalUser, type: string, info?: Record<string, any>) {
+export async function insertModerationLog(moderator: { id: User['id'] }, type: string, info?: Record<string, any>) {
 	await ModerationLogs.insert({
 		id: genId(),
 		createdAt: new Date(),

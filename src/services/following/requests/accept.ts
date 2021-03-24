@@ -8,7 +8,7 @@ import { User, ILocalUser } from '../../../models/entities/user';
 import { FollowRequests, Users } from '../../../models';
 import { IdentifiableError } from '@/misc/identifiable-error';
 
-export default async function(followee: User, follower: User) {
+export default async function(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']; }, follower: User) {
 	const request = await FollowRequests.findOne({
 		followeeId: followee.id,
 		followerId: follower.id
@@ -25,7 +25,7 @@ export default async function(followee: User, follower: User) {
 		deliver(followee as ILocalUser, content, follower.inbox);
 	}
 
-	Users.pack(followee, followee, {
+	Users.pack(followee.id, followee, {
 		detail: true
 	}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 }

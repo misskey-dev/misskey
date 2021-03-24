@@ -156,8 +156,8 @@ export default class Connection {
 		};
 
 		add(note);
-		if (note.reply) add(note.reply);
-		if (note.renote) add(note.renote);
+		if (note.reply) add(note.reply as PackedNote);
+		if (note.renote) add(note.renote as PackedNote);
 	}
 
 	@autobind

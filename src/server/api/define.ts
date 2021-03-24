@@ -9,6 +9,9 @@ type SimpleUserInfo = {
 	id: ILocalUser['id'];
 	host: ILocalUser['host'];
 	username: ILocalUser['username'];
+	uri: ILocalUser['uri'];
+	inbox: ILocalUser['inbox'];
+	sharedInbox: ILocalUser['sharedInbox'];
 	isAdmin: ILocalUser['isAdmin'];
 	isModerator: ILocalUser['isModerator'];
 	isSilenced: ILocalUser['isSilenced'];

@@ -7,7 +7,7 @@ import { User, ILocalUser } from '../../../models/entities/user';
 import { Users, FollowRequests, Followings } from '../../../models';
 import { decrementFollowing } from '../delete';
 
-export default async function(followee: User, follower: User) {
+export default async function(followee: { id: User['id']; host: User['host']; uri: User['host'] }, follower: User) {
 	if (Users.isRemoteUser(follower)) {
 		const request = await FollowRequests.findOne({
 			followeeId: followee.id,
@@ -37,7 +37,7 @@ export default async function(followee: User, follower: User) {
 		}
 	}
 
-	Users.pack(followee, follower, {
+	Users.pack(followee.id, follower, {
 		detail: true
 	}).then(packed => {
 		publishUserEvent(follower.id, 'unfollow', packed);

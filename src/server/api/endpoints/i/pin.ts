@@ -54,14 +54,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	await addPinned(user, ps.noteId).catch(e => {
+	await addPinned(user.id, ps.noteId).catch(e => {
 		if (e.id === '70c4e51f-5bea-449c-a030-53bee3cce202') throw new ApiError(meta.errors.noSuchNote);
 		if (e.id === '15a018eb-58e5-4da1-93be-330fcc5e4e1a') throw new ApiError(meta.errors.pinLimitExceeded);
 		if (e.id === '23f0cf4e-59a3-4276-a91d-61a5891c1514') throw new ApiError(meta.errors.alreadyPinned);
 		throw e;
 	});
 
-	return await Users.pack(user, user, {
+	return await Users.pack(user.id, user, {
 		detail: true
 	});
 });

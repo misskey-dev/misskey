@@ -140,7 +140,7 @@ export default define(meta, async (ps, user) => {
 	const query = makePaginationQuery(ReversiGames.createQueryBuilder('game'), ps.sinceId, ps.untilId)
 		.andWhere('game.isStarted = TRUE');
 
-	if (ps.my) {
+	if (ps.my && user) {
 		query.andWhere(new Brackets(qb => { qb
 			.where('game.user1Id = :userId', { userId: user.id })
 			.orWhere('game.user2Id = :userId', { userId: user.id });

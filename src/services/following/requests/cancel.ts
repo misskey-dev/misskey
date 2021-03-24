@@ -7,10 +7,13 @@ import { IdentifiableError } from '@/misc/identifiable-error';
 import { User, ILocalUser } from '../../../models/entities/user';
 import { Users, FollowRequests } from '../../../models';
 
-export default async function(followee: User, follower: User) {
+export default async function(followee: { id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox'] }, follower: { id: User['id']; host: User['host']; uri: User['host'] }) {
 	if (Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
-		deliver(follower as ILocalUser, content, followee.inbox);
+
+		if (Users.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
+			deliver(follower, content, followee.inbox);
+		}
 	}
 
 	const request = await FollowRequests.findOne({
@@ -27,7 +30,7 @@ export default async function(followee: User, follower: User) {
 		followerId: follower.id
 	});
 
-	Users.pack(followee, followee, {
+	Users.pack(followee.id, followee, {
 		detail: true
 	}).then(packed => publishMainStream(followee.id, 'meUpdated', packed));
 }

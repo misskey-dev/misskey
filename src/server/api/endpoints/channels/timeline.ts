@@ -97,7 +97,7 @@ export default define(meta, async (ps, user) => {
 
 	const timeline = await query.take(ps.limit!).getMany();
 
-	activeUsersChart.update(user);
+	if (user) activeUsersChart.update(user);
 
 	return await Notes.packMany(timeline, user);
 });

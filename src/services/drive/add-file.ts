@@ -302,7 +302,7 @@ async function deleteOldFile(user: IRemoteUser) {
  * @return Created drive file
  */
 export default async function(
-	user: User | null,
+	user: { id: User['id']; host: User['host'] } | null,
 	path: string,
 	name: string | null = null,
 	comment: string | null = null,

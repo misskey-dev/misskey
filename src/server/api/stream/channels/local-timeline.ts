@@ -44,8 +44,9 @@ export default class extends Channel {
 
 		// 関係ない返信は除外
 		if (note.reply) {
+			const reply = note.reply as PackedNote;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-			if (note.reply.userId !== this.user!.id && note.userId !== this.user!.id && note.reply.userId !== note.userId) return;
+			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
