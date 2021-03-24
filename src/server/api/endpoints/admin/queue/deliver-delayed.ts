@@ -1,6 +1,6 @@
+import { deliverQueue } from '@/queue/queues';
 import { URL } from 'url';
 import define from '../../../define';
-import { deliverQueue } from '../../../../../queue';
 
 export const meta = {
 	desc: {
