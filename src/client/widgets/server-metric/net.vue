@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import bytes from '@/filters/bytes';
+import bytes from '@client/filters/bytes';
 
 export default defineComponent({
 	props: {

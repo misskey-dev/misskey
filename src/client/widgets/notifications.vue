@@ -12,10 +12,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faBell, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
-import XNotifications from '@/components/notifications.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import XNotifications from '@client/components/notifications.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'notifications',
@@ -52,7 +52,7 @@ export default defineComponent({
 
 	methods: {
 		configure() {
-			os.popup(import('@/components/notification-setting-window.vue'), {
+			os.popup(import('@client/components/notification-setting-window.vue'), {
 				includingTypes: this.props.includingTypes,
 			}, {
 				done: async (res) => {

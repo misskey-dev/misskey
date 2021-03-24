@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import config from '../../../config';
+import config from '@/config';
 import define from '../define';
-import { fetchMeta } from '../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { Emojis, Users } from '../../../models';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '../../../misc/hard-limits';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 
 export const meta = {
 	desc: {

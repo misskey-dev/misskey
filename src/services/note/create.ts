@@ -7,44 +7,45 @@ import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
-import config from '../../config';
+import config from '@/config';
 import { updateHashtags } from '../update-hashtag';
 import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import extractMentions from '../../misc/extract-mentions';
-import extractEmojis from '../../misc/extract-emojis';
-import extractHashtags from '../../misc/extract-hashtags';
+import extractMentions from '@/misc/extract-mentions';
+import extractEmojis from '@/misc/extract-emojis';
+import extractHashtags from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings } from '../../models';
 import { DriveFile } from '../../models/entities/drive-file';
 import { App } from '../../models/entities/app';
 import { Not, getConnection, In } from 'typeorm';
 import { User, ILocalUser, IRemoteUser } from '../../models/entities/user';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { notesChart, perUserNotesChart, activeUsersChart, instanceChart } from '../chart';
 import { Poll, IPoll } from '../../models/entities/poll';
 import { createNotification } from '../create-notification';
-import { isDuplicateKeyValueError } from '../../misc/is-duplicate-key-value-error';
-import { checkHitAntenna } from '../../misc/check-hit-antenna';
-import { checkWordMute } from '../../misc/check-word-mute';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
+import { checkHitAntenna } from '@/misc/check-hit-antenna';
+import { checkWordMute } from '@/misc/check-word-mute';
 import { addNoteToAntenna } from '../add-note-to-antenna';
-import { countSameRenotes } from '../../misc/count-same-renotes';
+import { countSameRenotes } from '@/misc/count-same-renotes';
 import { deliverToRelays } from '../relay';
 import { Channel } from '../../models/entities/channel';
-import { normalizeForSearch } from '../../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
+import { getAntennas } from '@/misc/antenna-cache';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
 class NotificationManager {
-	private notifier: User;
+	private notifier: { id: User['id']; };
 	private note: Note;
 	private queue: {
 		target: ILocalUser['id'];
 		reason: NotificationType;
 	}[];
 
-	constructor(notifier: User, note: Note) {
+	constructor(notifier: { id: User['id']; }, note: Note) {
 		this.notifier = notifier;
 		this.note = note;
 		this.queue = [];
@@ -111,7 +112,7 @@ type Option = {
 	app?: App | null;
 };
 
-export default async (user: User, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
+export default async (user: { id: User['id']; username: User['username']; host: User['host']; isSilenced: User['isSilenced']; }, data: Option, silent = false) => new Promise<Note>(async (res, rej) => {
 	// チャンネル外にリプライしたら対象のスコープに合わせる
 	// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 	if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -241,6 +242,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	incNotesCountOfUser(user);
 
 	// Word mute
+	// TODO: cache
 	UserProfiles.find({
 		enableWordMute: true
 	}).then(us => {
@@ -262,17 +264,15 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 	Followings.createQueryBuilder('following')
 		.andWhere(`following.followeeId = :userId`, { userId: note.userId })
 		.getMany()
-		.then(followings => {
+		.then(async followings => {
 			const followers = followings.map(f => f.followerId);
-			Antennas.find().then(async antennas => {
-				for (const antenna of antennas) {
-					checkHitAntenna(antenna, note, user, followers).then(hit => {
-						if (hit) {
-							addNoteToAntenna(antenna, note, user);
-						}
-					});
-				}
-			});
+			for (const antenna of (await getAntennas())) {
+				checkHitAntenna(antenna, note, user, followers).then(hit => {
+					if (hit) {
+						addNoteToAntenna(antenna, note, user);
+					}
+				});
+			}
 		});
 
 	// Channel
@@ -327,10 +327,6 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 
 		// Pack the note
 		const noteObj = await Notes.pack(note);
-
-		if (user.notesCount === 0) {
-			(noteObj as any).isFirstNote = true;
-		}
 
 		publishNotesStream(noteObj);
 
@@ -424,7 +420,7 @@ export default async (user: User, data: Option, silent = false) => new Promise<N
 			// この処理が行われるのはノート作成後なので、ノートが一つしかなかったら最初の投稿だと判断できる
 			// TODO: とはいえノートを削除して何回も投稿すればその分だけインクリメントされる雑さもあるのでどうにかしたい
 			if (count === 1) {
-				Channels.increment({ id: data.channel.id }, 'usersCount', 1);
+				Channels.increment({ id: data.channel!.id }, 'usersCount', 1);
 			}
 		});
 	}
@@ -453,7 +449,7 @@ function incRenoteCount(renote: Note) {
 		.execute();
 }
 
-async function insertNote(user: User, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
+async function insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: User[]) {
 	const insert = new Note({
 		id: genId(data.createdAt!),
 		createdAt: data.createdAt!,
@@ -559,7 +555,7 @@ function index(note: Note) {
 	});
 }
 
-async function notifyToWatchersOfRenotee(renote: Note, user: User, nm: NotificationManager, type: NotificationType) {
+async function notifyToWatchersOfRenotee(renote: Note, user: { id: User['id']; }, nm: NotificationManager, type: NotificationType) {
 	const watchers = await NoteWatchings.find({
 		noteId: renote.id,
 		userId: Not(user.id)
@@ -570,7 +566,7 @@ async function notifyToWatchersOfRenotee(renote: Note, user: User, nm: Notificat
 	}
 }
 
-async function notifyToWatchersOfReplyee(reply: Note, user: User, nm: NotificationManager) {
+async function notifyToWatchersOfReplyee(reply: Note, user: { id: User['id']; }, nm: NotificationManager) {
 	const watchers = await NoteWatchings.find({
 		noteId: reply.id,
 		userId: Not(user.id)
@@ -598,7 +594,7 @@ function saveReply(reply: Note, note: Note) {
 	Notes.increment({ id: reply.id }, 'repliesCount', 1);
 }
 
-function incNotesCountOfUser(user: User) {
+function incNotesCountOfUser(user: { id: User['id']; }) {
 	Users.createQueryBuilder().update()
 		.set({
 			updatedAt: new Date(),
@@ -608,7 +604,7 @@ function incNotesCountOfUser(user: User) {
 		.execute();
 }
 
-async function extractMentionedUsers(user: User, tokens: ReturnType<typeof parse>): Promise<User[]> {
+async function extractMentionedUsers(user: { host: User['host']; }, tokens: ReturnType<typeof parse>): Promise<User[]> {
 	if (tokens == null) return [];
 
 	const mentions = extractMentions(tokens);

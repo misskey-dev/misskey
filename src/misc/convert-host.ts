@@ -1,4 +1,5 @@
-import config from '../config';
+import { URL } from 'url';
+import config from '@/config';
 import { toASCII } from 'punycode';
 
 export function getFullApAccount(username: string, host: string | null) {

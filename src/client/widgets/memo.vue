@@ -12,9 +12,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'memo',

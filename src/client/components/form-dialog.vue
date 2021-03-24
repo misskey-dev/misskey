@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@client/components/ui/modal-window.vue';
 import FormBase from './form/base.vue';
 import FormInput from './form/input.vue';
 import FormTextarea from './form/textarea.vue';

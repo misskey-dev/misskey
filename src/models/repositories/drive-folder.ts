@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { DriveFolders, DriveFiles } from '..';
 import { DriveFolder } from '../entities/drive-folder';
 import { awaitAll } from '../../prelude/await-all';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 
 export type PackedDriveFolder = SchemaType<typeof packedDriveFolderSchema>;
 

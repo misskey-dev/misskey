@@ -1,7 +1,7 @@
 import { reactive } from 'vue';
-import { apiUrl } from '@/config';
-import { waiting } from '@/os';
-import { unisonReload } from '@/scripts/unison-reload';
+import { apiUrl } from '@client/config';
+import { waiting } from '@client/os';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 // TODO: 他のタブと永続化されたstateを同期
 

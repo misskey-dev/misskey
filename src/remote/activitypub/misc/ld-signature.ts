@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 import * as jsonld from 'jsonld';
 import { CONTEXTS } from './contexts';
 import fetch from 'node-fetch';
-import { httpAgent, httpsAgent } from '../../../misc/fetch';
+import { httpAgent, httpsAgent } from '@/misc/fetch';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
 

@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { instanceName } from '@/config';
+import { instanceName } from '@client/config';
 
 export default defineComponent({
 	props: {

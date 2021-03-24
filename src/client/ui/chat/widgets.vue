@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import XWidgets from '@/components/widgets.vue';
+import XWidgets from '@client/components/widgets.vue';
 import { store } from './store';
 
 export default defineComponent({

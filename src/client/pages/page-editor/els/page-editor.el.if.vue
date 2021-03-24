@@ -29,8 +29,8 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
-import MkSelect from '@/components/ui/select.vue';
-import * as os from '@/os';
+import MkSelect from '@client/components/ui/select.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

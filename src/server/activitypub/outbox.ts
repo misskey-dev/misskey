@@ -1,7 +1,7 @@
 import * as Router from '@koa/router';
-import config from '../../config';
+import config from '@/config';
 import $ from 'cafy';
-import { ID } from '../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderOrderedCollection from '../../remote/activitypub/renderer/ordered-collection';
 import renderOrderedCollectionPage from '../../remote/activitypub/renderer/ordered-collection-page';

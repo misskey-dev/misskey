@@ -1,11 +1,11 @@
 import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faPaperclip, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers, faLeaf } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
-import { search } from '@/scripts/search';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { search } from '@client/scripts/search';
+import * as os from '@client/os';
+import { i18n } from '@client/i18n';
 import { $i } from './account';
-import { unisonReload } from '@/scripts/unison-reload';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 export const sidebarDef = {
 	notifications: {

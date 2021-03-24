@@ -74,15 +74,15 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { emojilist } from '../../misc/emojilist';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
+import { emojilist } from '@/misc/emojilist';
+import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faClock, faUser, faChevronDown, faShapes, faBicycle, faHashtag } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
-import Particle from '@/components/particle.vue';
-import * as os from '@/os';
-import { isDeviceTouch } from '@/scripts/is-device-touch';
-import { isMobile } from '@/scripts/is-mobile';
-import { emojiCategories } from '@/instance';
+import Particle from '@client/components/particle.vue';
+import * as os from '@client/os';
+import { isDeviceTouch } from '@client/scripts/is-device-touch';
+import { isMobile } from '@client/scripts/is-mobile';
+import { emojiCategories } from '@client/instance';
 import XSection from './emoji-picker.section.vue';
 
 export default defineComponent({

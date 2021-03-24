@@ -28,12 +28,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faDownload, faUpload, faBoxes } from '@fortawesome/free-solid-svg-icons';
-import FormSelect from '@/components/form/select.vue';
-import FormButton from '@/components/form/button.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
+import FormSelect from '@client/components/form/select.vue';
+import FormButton from '@client/components/form/button.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import * as os from '@client/os';
+import { selectFile } from '@client/scripts/select-file';
 
 export default defineComponent({
 	components: {

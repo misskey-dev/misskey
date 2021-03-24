@@ -1,9 +1,9 @@
 import { AiScript, utils, values } from '@syuilo/aiscript';
 import { deserialize } from '@syuilo/aiscript/built/serializer';
 import { jsToVal } from '@syuilo/aiscript/built/interpreter/util';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import { dialog } from '@/os';
-import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@/store';
+import { createAiScriptEnv } from '@client/scripts/aiscript/api';
+import { dialog } from '@client/os';
+import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@client/store';
 
 const pluginContexts = new Map<string, AiScript>();
 

@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '@/config';
 import { initialize as initializeQueue } from './initialize';
 
 export const deliverQueue = initializeQueue('deliver', config.deliverJobPerSec || 128);

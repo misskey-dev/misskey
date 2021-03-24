@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Notes, Channels } from '../../../../models';
@@ -97,7 +97,7 @@ export default define(meta, async (ps, user) => {
 
 	const timeline = await query.take(ps.limit!).getMany();
 
-	activeUsersChart.update(user);
+	if (user) activeUsersChart.update(user);
 
 	return await Notes.packMany(timeline, user);
 });

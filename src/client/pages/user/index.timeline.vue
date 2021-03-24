@@ -11,9 +11,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XNotes from '@/components/notes.vue';
-import MkTab from '@/components/tab.vue';
-import * as os from '@/os';
+import XNotes from '@client/components/notes.vue';
+import MkTab from '@client/components/tab.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

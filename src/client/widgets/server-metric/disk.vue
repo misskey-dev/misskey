@@ -14,7 +14,7 @@
 import { defineComponent } from 'vue';
 import { faHdd } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
-import bytes from '@/filters/bytes';
+import bytes from '@client/filters/bytes';
 
 export default defineComponent({
 	components: {

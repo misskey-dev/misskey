@@ -39,12 +39,12 @@ import { defineComponent } from 'vue';
 import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
 import { faUndo, faPlus } from '@fortawesome/free-solid-svg-icons';
 import XDraggable from 'vuedraggable';
-import FormInput from '@/components/form/input.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/form/base.vue';
-import FormButton from '@/components/form/button.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
+import FormInput from '@client/components/form/input.vue';
+import FormRadios from '@client/components/form/radios.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
+import { defaultStore } from '@client/store';
 
 export default defineComponent({
 	components: {
@@ -105,7 +105,7 @@ export default defineComponent({
 		},
 
 		preview(ev) {
-			os.popup(import('@/components/emoji-picker-dialog.vue'), {
+			os.popup(import('@client/components/emoji-picker-dialog.vue'), {
 				asReactionPicker: true,
 				src: ev.currentTarget || ev.target,
 			}, {}, 'closed');

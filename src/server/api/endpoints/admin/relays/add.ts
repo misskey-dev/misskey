@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import $ from 'cafy';
 import define from '../../../define';
 import { addRelay } from '../../../../../services/relay';

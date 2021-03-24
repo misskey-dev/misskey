@@ -41,11 +41,11 @@
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
 import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faPencilAlt, faAt } from '@fortawesome/free-solid-svg-icons';
 import { faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import Progress from '@/scripts/loading';
-import XTimeline from '@/components/timeline.vue';
-import XPostForm from '@/components/post-form.vue';
-import { scroll } from '@/scripts/scroll';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import XTimeline from '@client/components/timeline.vue';
+import XPostForm from '@client/components/post-form.vue';
+import { scroll } from '@client/scripts/scroll';
+import * as os from '@client/os';
 
 export default defineComponent({
 	name: 'timeline',

@@ -3,8 +3,8 @@ import define from '../../define';
 import { ApiError } from '../../error';
 import { Channels, DriveFiles } from '../../../../models';
 import { Channel } from '../../../../models/entities/channel';
-import { genId } from '../../../../misc/gen-id';
-import { ID } from '../../../../misc/cafy-id';
+import { genId } from '@/misc/gen-id';
+import { ID } from '@/misc/cafy-id';
 
 export const meta = {
 	tags: ['channels'],

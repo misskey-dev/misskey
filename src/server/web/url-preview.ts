@@ -1,10 +1,10 @@
 import * as Koa from 'koa';
 import summaly from 'summaly';
-import { fetchMeta } from '../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import Logger from '../../services/logger';
-import config from '../../config';
+import config from '@/config';
 import { query } from '../../prelude/url';
-import { getJson } from '../../misc/fetch';
+import { getJson } from '@/misc/fetch';
 
 const logger = new Logger('url-preview');
 

@@ -48,13 +48,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import getAcct from '../../../misc/acct/render';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import getAcct from '@/misc/acct/render';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

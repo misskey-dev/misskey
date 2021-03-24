@@ -1,13 +1,13 @@
 import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { i18n } from '@/i18n';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { host } from '@/config';
-import getAcct from '../../misc/acct/render';
-import * as os from '@/os';
-import { userActions } from '@/store';
-import { router } from '@/router';
-import { $i } from '@/account';
+import { i18n } from '@client/i18n';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { host } from '@client/config';
+import getAcct from '@/misc/acct/render';
+import * as os from '@client/os';
+import { userActions } from '@client/store';
+import { router } from '@client/router';
+import { $i } from '@client/account';
 
 export function getUserMenu(user) {
 	const meId = $i ? $i.id : null;
@@ -104,7 +104,7 @@ export function getUserMenu(user) {
 	}
 
 	function reportAbuse() {
-		os.popup(import('@/components/abuse-report-window.vue'), {
+		os.popup(import('@client/components/abuse-report-window.vue'), {
 			user: user,
 		}, {}, 'closed');
 	}

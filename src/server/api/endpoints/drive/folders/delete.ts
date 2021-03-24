@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { publishDriveStream } from '../../../../../services/stream';
 import { ApiError } from '../../../error';

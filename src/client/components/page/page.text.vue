@@ -6,15 +6,15 @@
 </template>
 
 <script lang="ts">
-import { TextBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import { TextBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 import { defineAsyncComponent, defineComponent, PropType } from 'vue';
 import { parse } from '../../../mfm/parse';
 import { unique } from '../../../prelude/array';
 
 export default defineComponent({
 	components: {
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
+		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
 	},
 	props: {
 		block: {

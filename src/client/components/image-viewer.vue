@@ -14,9 +14,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import bytes from '@/filters/bytes';
-import number from '@/filters/number';
-import MkModal from '@/components/ui/modal.vue';
+import bytes from '@client/filters/bytes';
+import number from '@client/filters/number';
+import MkModal from '@client/components/ui/modal.vue';
 
 export default defineComponent({
 	components: {
