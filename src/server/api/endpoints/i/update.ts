@@ -1,10 +1,10 @@
 import $ from 'cafy';
+import * as mfm from 'mfm-js';
 import { ID } from '@/misc/cafy-id';
 import { publishMainStream, publishUserEvent } from '../../../../services/stream';
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
-import { parse, parsePlain } from '../../../../mfm/parse';
 import extractEmojis from '@/misc/extract-emojis';
 import extractHashtags from '@/misc/extract-hashtags';
 import * as langmap from 'langmap';
@@ -291,12 +291,12 @@ export default define(meta, async (ps, _user, token) => {
 	const newDescription = profileUpdates.description === undefined ? profile.description : profileUpdates.description;
 
 	if (newName != null) {
-		const tokens = parsePlain(newName);
+		const tokens = mfm.parsePlain(newName);
 		emojis = emojis.concat(extractEmojis(tokens!));
 	}
 
 	if (newDescription != null) {
-		const tokens = parse(newDescription);
+		const tokens = mfm.parse(newDescription);
 		emojis = emojis.concat(extractEmojis(tokens!));
 		tags = extractHashtags(tokens!).map(tag => normalizeForSearch(tag)).splice(0, 32);
 	}

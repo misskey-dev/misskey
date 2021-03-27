@@ -9,7 +9,7 @@
 import { TextBlock } from '@client/scripts/hpml/block';
 import { Hpml } from '@client/scripts/hpml/evaluator';
 import { defineAsyncComponent, defineComponent, PropType } from 'vue';
-import { parse } from '../../../mfm/parse';
+import * as mfm from 'mfm-js';
 import { unique } from '../../../prelude/array';
 
 export default defineComponent({
@@ -34,11 +34,11 @@ export default defineComponent({
 	computed: {
 		urls(): string[] {
 			if (this.text) {
-				const ast = parse(this.text);
+				const ast = mfm.parse(this.text);
 				// TODO: 再帰的にURL要素がないか調べる
 				return unique(ast
-					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
+					.filter(t => ((t.type == 'url' || t.type == 'link') && t.props.url && !t.props.silent))
+					.map(t => t.props.url));
 			} else {
 				return [];
 			}

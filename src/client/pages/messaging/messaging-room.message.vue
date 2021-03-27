@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { parse } from '../../../mfm/parse';
+import * as mfm from 'mfm-js';
 import { unique } from '../../../prelude/array';
 import MkUrlPreview from '@client/components/url-preview.vue';
 import * as os from '@client/os';
@@ -60,10 +60,10 @@ export default defineComponent({
 		},
 		urls(): string[] {
 			if (this.message.text) {
-				const ast = parse(this.message.text);
+				const ast = mfm.parse(this.message.text);
 				return unique(ast
-					.filter(t => ((t.node.type === 'url' || t.node.type === 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
+					.filter(t => ((t.type === 'url' || t.type === 'link') && t.props.url && !t.props.silent))
+					.map(t => t.props.url));
 			} else {
 				return [];
 			}
