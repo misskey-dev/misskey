@@ -1,13 +1,13 @@
 import * as Bull from 'bull';
 
 import { queueLogger } from '../../logger';
-import parseAcct from '../../../misc/acct/parse';
+import parseAcct from '@/misc/acct/parse';
 import { resolveUser } from '../../../remote/resolve-user';
 import { pushUserToUserList } from '../../../services/user-list/push';
-import { downloadTextFile } from '../../../misc/download-text-file';
-import { isSelfHost, toPuny } from '../../../misc/convert-host';
+import { downloadTextFile } from '@/misc/download-text-file';
+import { isSelfHost, toPuny } from '@/misc/convert-host';
 import { DriveFiles, Users, UserLists, UserListJoinings } from '../../../models';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 const logger = queueLogger.createSubLogger('import-user-lists');
 

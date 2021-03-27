@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { App } from '../entities/app';
 import { AccessTokens } from '..';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 
 export type PackedApp = SchemaType<typeof packedAppSchema>;
 
@@ -9,7 +9,7 @@ export type PackedApp = SchemaType<typeof packedAppSchema>;
 export class AppRepository extends Repository<App> {
 	public async pack(
 		src: App['id'] | App,
-		me?: any,
+		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecret?: boolean,

@@ -3,15 +3,15 @@ import * as https from 'https';
 import { sign } from 'http-signature';
 import * as crypto from 'crypto';
 
-import config from '../../config';
-import { ILocalUser } from '../../models/entities/user';
-import { getAgentByUrl } from '../../misc/fetch';
+import config from '@/config';
+import { User } from '@/models/entities/user';
+import { getAgentByUrl } from '@/misc/fetch';
 import { URL } from 'url';
 import got from 'got';
 import * as Got from 'got';
-import { getUserKeypair } from '../../misc/keypair-store';
+import { getUserKeypair } from '@/misc/keypair-store';
 
-export default async (user: ILocalUser, url: string, object: any) => {
+export default async (user: { id: User['id'] }, url: string, object: any) => {
 	const timeout = 10 * 1000;
 
 	const { protocol, hostname, port, pathname, search } = new URL(url);
@@ -24,7 +24,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
 
 	const keypair = await getUserKeypair(user.id);
 
-	await new Promise((resolve, reject) => {
+	await new Promise<void>((resolve, reject) => {
 		const req = https.request({
 			agent: getAgentByUrl(new URL(`https://example.net`)),
 			protocol,
@@ -69,7 +69,7 @@ export default async (user: ILocalUser, url: string, object: any) => {
  * @param user http-signature user
  * @param url URL to fetch
  */
-export async function signedGet(url: string, user: ILocalUser) {
+export async function signedGet(url: string, user: { id: User['id'] }) {
 	const timeout = 10 * 1000;
 
 	const keypair = await getUserKeypair(user.id);

@@ -1,6 +1,6 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { name, schema } from '../schemas/test';
 
 type TestLog = SchemaType<typeof schema>;

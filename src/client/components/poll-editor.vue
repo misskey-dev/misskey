@@ -52,7 +52,7 @@
 import { defineComponent } from 'vue';
 import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { addTime } from '../../prelude/time';
-import { formatDateTimeString } from '../../misc/format-time-string';
+import { formatDateTimeString } from '@/misc/format-time-string';
 import MkInput from './ui/input.vue';
 import MkSelect from './ui/select.vue';
 import MkSwitch from './ui/switch.vue';

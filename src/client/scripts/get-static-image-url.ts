@@ -1,4 +1,4 @@
-import { url as instanceUrl } from '@/config';
+import { url as instanceUrl } from '@client/config';
 import * as url from '../../prelude/url';
 
 export function getStaticImageUrl(baseUrl: string): string {

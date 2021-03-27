@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import MkModal from '@/components/ui/modal.vue';
+import MkModal from '@client/components/ui/modal.vue';
 
 export default defineComponent({
 	components: {

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import read from '../../../../services/note/read';
 import { Notes, Followings } from '../../../../models';
@@ -83,7 +83,7 @@ export default define(meta, async (ps, user) => {
 
 	const mentions = await query.take(ps.limit!).getMany();
 
-	read(user.id, mentions.map(note => note.id));
+	read(user.id, mentions);
 
 	return await Notes.packMany(mentions, user);
 });

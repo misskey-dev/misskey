@@ -1,6 +1,6 @@
 import endpoints from '../endpoints';
 import * as locale from '../../../../locales/';
-import { kinds as kindsList } from '../../../misc/api-permissions';
+import { kinds as kindsList } from '@/misc/api-permissions';
 
 export interface IKindInfo {
 	endpoints: string[];

@@ -31,16 +31,16 @@
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { faInfoCircle, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormButton from '@/components/form/button.vue';
-import FormKeyValueView from '@/components/form/key-value-view.vue';
-import MkInfo from '@/components/ui/info.vue';
-import * as os from '@/os';
-import { version, instanceName } from '@/config';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import MkInfo from '@client/components/ui/info.vue';
+import * as os from '@client/os';
+import { version, instanceName } from '@client/config';
 
 export default defineComponent({
 	components: {

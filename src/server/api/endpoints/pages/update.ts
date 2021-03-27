@@ -3,7 +3,7 @@ import * as ms from 'ms';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Pages, DriveFiles } from '../../../../models';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Not } from 'typeorm';
 
 export const meta = {

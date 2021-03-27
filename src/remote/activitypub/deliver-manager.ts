@@ -1,5 +1,5 @@
 import { Users, Followings } from '../../models';
-import { ILocalUser, IRemoteUser } from '../../models/entities/user';
+import { ILocalUser, IRemoteUser, User } from '../../models/entities/user';
 import { deliver } from '../../queue';
 
 //#region types
@@ -24,7 +24,7 @@ const isDirect = (recipe: any): recipe is IDirectRecipe =>
 //#endregion
 
 export default class DeliverManager {
-	private actor: ILocalUser;
+	private actor: { id: User['id']; host: null; };
 	private activity: any;
 	private recipes: IRecipe[] = [];
 
@@ -33,7 +33,7 @@ export default class DeliverManager {
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
-	constructor(actor: ILocalUser, activity: any) {
+	constructor(actor: { id: User['id']; host: null; }, activity: any) {
 		this.actor = actor;
 		this.activity = activity;
 	}

@@ -2,7 +2,7 @@ import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '../../../../../models';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Emoji } from '../../../../../models/entities/emoji';
 
 export const meta = {
@@ -96,9 +96,9 @@ export default define(meta, async (ps) => {
 		emojis = await q.getMany();
 
 		emojis = emojis.filter(emoji =>
-			emoji.name.includes(ps.query) ||
-			emoji.aliases.some(a => a.includes(ps.query)) ||
-			emoji.category?.includes(ps.query));
+			emoji.name.includes(ps.query!) ||
+			emoji.aliases.some(a => a.includes(ps.query!)) ||
+			emoji.category?.includes(ps.query!));
 
 		emojis.splice(ps.limit! + 1);
 	} else {

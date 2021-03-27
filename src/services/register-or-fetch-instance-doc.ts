@@ -1,9 +1,9 @@
 import { Instance } from '../models/entities/instance';
 import { Instances } from '../models';
 import { federationChart } from './chart';
-import { genId } from '../misc/gen-id';
-import { toPuny } from '../misc/convert-host';
-import { Cache } from '../misc/cache';
+import { genId } from '@/misc/gen-id';
+import { toPuny } from '@/misc/convert-host';
+import { Cache } from '@/misc/cache';
 
 const cache = new Cache<Instance>(1000 * 60 * 60);
 

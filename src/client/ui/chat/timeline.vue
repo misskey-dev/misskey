@@ -25,12 +25,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
-import * as os from '@/os';
-import * as sound from '@/scripts/sound';
-import { scrollToBottom, getScrollPosition, getScrollContainer } from '@/scripts/scroll';
-import follow from '@/directives/follow-append';
+import * as os from '@client/os';
+import * as sound from '@client/scripts/sound';
+import { scrollToBottom, getScrollPosition, getScrollContainer } from '@client/scripts/scroll';
+import follow from '@client/directives/follow-append';
 import XPostForm from './post-form.vue';
-import MkInfo from '@/components/ui/info.vue';
+import MkInfo from '@client/components/ui/info.vue';
 
 export default defineComponent({
 	components: {

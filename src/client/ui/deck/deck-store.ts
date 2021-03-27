@@ -1,6 +1,6 @@
 import { throttle } from 'throttle-debounce';
-import { i18n } from '@/i18n';
-import { api } from '@/os';
+import { i18n } from '@client/i18n';
+import { api } from '@client/os';
 import { markRaw, watch } from 'vue';
 import { Storage } from '../../pizzax';
 

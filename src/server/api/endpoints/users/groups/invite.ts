@@ -1,10 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getUser } from '../../../common/getters';
 import { UserGroups, UserGroupJoinings, UserGroupInvitations } from '../../../../../models';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { UserGroupInvitation } from '../../../../../models/entities/user-group-invitation';
 import { createNotification } from '../../../../../services/create-notification';
 
@@ -96,12 +96,12 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.alreadyInvited);
 	}
 
-	const invitation = await UserGroupInvitations.save({
+	const invitation = await UserGroupInvitations.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		userGroupId: userGroup.id
-	} as UserGroupInvitation);
+	} as UserGroupInvitation).then(x => UserGroupInvitations.findOneOrFail(x.identifiers[0]));
 
 	// 通知を作成
 	createNotification(user.id, 'groupInvited', {

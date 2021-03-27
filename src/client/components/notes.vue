@@ -29,10 +29,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
 	components: {

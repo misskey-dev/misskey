@@ -33,10 +33,10 @@
 import { defineComponent } from 'vue';
 import { faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStickyNote, faHeart } from '@fortawesome/free-regular-svg-icons';
-import MkPagePreview from '@/components/page-preview.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkTab from '@/components/tab.vue';
+import MkPagePreview from '@client/components/page-preview.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkTab from '@client/components/tab.vue';
 
 export default defineComponent({
 	components: {

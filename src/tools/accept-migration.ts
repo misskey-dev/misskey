@@ -1,7 +1,7 @@
 // ex) node built/tools/accept-migration Yo 1000000000001
 
 import { createConnection } from 'typeorm';
-import config from '../config';
+import config from '@/config';
 
 createConnection({
 	type: 'postgres',

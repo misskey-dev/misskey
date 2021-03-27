@@ -32,7 +32,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {

@@ -45,14 +45,14 @@
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faLaugh, faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { i18n } from '@/i18n';
-import FormLink from '@/components/form/link.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormBase from '@/components/form/base.vue';
-import FormButton from '@/components/form/button.vue';
-import { scroll } from '@/scripts/scroll';
-import { signout } from '@/account';
-import { unisonReload } from '@/scripts/unison-reload';
+import { i18n } from '@client/i18n';
+import FormLink from '@client/components/form/link.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormButton from '@client/components/form/button.vue';
+import { scroll } from '@client/scripts/scroll';
+import { signout } from '@client/account';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 export default defineComponent({
 	components: {

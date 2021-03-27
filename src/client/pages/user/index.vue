@@ -221,19 +221,19 @@ import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChar
 import { faCalendarAlt, faBookmark as farBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
-import XNote from '@/components/note.vue';
-import MkFollowButton from '@/components/follow-button.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import MkRemoteCaution from '@/components/remote-caution.vue';
-import MkTab from '@/components/tab.vue';
-import Progress from '@/scripts/loading';
-import parseAcct from '../../../misc/acct/parse';
-import { getScrollPosition } from '@/scripts/scroll';
-import { getUserMenu } from '@/scripts/get-user-menu';
+import XNote from '@client/components/note.vue';
+import MkFollowButton from '@client/components/follow-button.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkFolder from '@client/components/ui/folder.vue';
+import MkRemoteCaution from '@client/components/remote-caution.vue';
+import MkTab from '@client/components/tab.vue';
+import Progress from '@client/scripts/loading';
+import parseAcct from '@/misc/acct/parse';
+import { getScrollPosition } from '@client/scripts/scroll';
+import { getUserMenu } from '@client/scripts/get-user-menu';
 import number from '../../filters/number';
 import { userPage, acct as getAcct } from '../../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

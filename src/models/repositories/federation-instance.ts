@@ -1,4 +1,4 @@
-import config from '../../config';
+import config from '@/config';
 
 export const packedFederationInstanceSchema = {
 	type: 'object' as const,

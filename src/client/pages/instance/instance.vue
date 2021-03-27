@@ -126,15 +126,15 @@
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
 import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import MkUsersDialog from '@/components/users-dialog.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkInfo from '@/components/ui/info.vue';
+import XModalWindow from '@client/components/ui/modal-window.vue';
+import MkUsersDialog from '@client/components/users-dialog.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkInfo from '@client/components/ui/info.vue';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));

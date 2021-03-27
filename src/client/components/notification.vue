@@ -61,13 +61,13 @@
 import { defineComponent } from 'vue';
 import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { getNoteSummary } from '../../misc/get-note-summary';
+import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { i18n } from '@client/i18n';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

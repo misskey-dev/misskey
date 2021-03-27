@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '@/config';
 import { NoteReaction } from '../../../models/entities/note-reaction';
 import { Note } from '../../../models/entities/note';
 import { Emojis } from '../../../models';

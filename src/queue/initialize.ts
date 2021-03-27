@@ -1,5 +1,5 @@
 import * as Queue from 'bull';
-import config from '../config';
+import config from '@/config';
 
 export function initialize(name: string, limitPerSec = -1) {
 	return new Queue(name, {

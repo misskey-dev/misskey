@@ -98,18 +98,18 @@ import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkInput from '@/components/ui/input.vue';
-import { blockDefs } from '@/scripts/hpml/index';
-import { HpmlTypeChecker } from '@/scripts/hpml/type-checker';
-import { url } from '@/config';
-import { collectPageVars } from '@/scripts/collect-page-vars';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkInput from '@client/components/ui/input.vue';
+import { blockDefs } from '@client/scripts/hpml/index';
+import { HpmlTypeChecker } from '@client/scripts/hpml/type-checker';
+import { url } from '@client/config';
+import { collectPageVars } from '@client/scripts/collect-page-vars';
+import * as os from '@client/os';
+import { selectFile } from '@client/scripts/select-file';
 
 export default defineComponent({
 	components: {

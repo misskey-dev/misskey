@@ -1,11 +1,11 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { DriveFiles, Followings, Users, Notes } from '../../../../models';
 import { DriveFile } from '../../../../models/entities/drive-file';
 import { name, schema } from '../schemas/instance';
 import { Note } from '../../../../models/entities/note';
-import { toPuny } from '../../../../misc/convert-host';
+import { toPuny } from '@/misc/convert-host';
 
 type InstanceLog = SchemaType<typeof schema>;
 

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Apps } from '../../../../models';
@@ -46,6 +46,6 @@ export default define(meta, async (ps, user, token) => {
 
 	return await Apps.pack(ap, user, {
 		detail: true,
-		includeSecret: isSecure && (ap.userId === user.id)
+		includeSecret: isSecure && (ap.userId === user!.id)
 	});
 });

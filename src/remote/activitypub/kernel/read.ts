@@ -1,6 +1,6 @@
 import { IRemoteUser } from '../../../models/entities/user';
 import { IRead, getApId } from '../type';
-import { isSelfHost, extractDbHost } from '../../../misc/convert-host';
+import { isSelfHost, extractDbHost } from '@/misc/convert-host';
 import { MessagingMessages } from '../../../models';
 import { readUserMessagingMessage } from '../../../server/api/common/read-messaging-message';
 

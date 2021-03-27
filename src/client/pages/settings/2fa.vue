@@ -69,16 +69,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
-import { hostname } from '@/config';
-import { byteify, hexify, stringify } from '@/scripts/2fa';
-import MkButton from '@/components/ui/button.vue';
-import MkInfo from '@/components/ui/info.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormButton from '@/components/form/button.vue';
-import * as os from '@/os';
+import { hostname } from '@client/config';
+import { byteify, hexify, stringify } from '@client/scripts/2fa';
+import MkButton from '@client/components/ui/button.vue';
+import MkInfo from '@client/components/ui/info.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

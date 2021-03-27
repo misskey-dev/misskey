@@ -18,12 +18,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 import { notificationTypes } from '../../types';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

@@ -18,9 +18,9 @@
 import { defineComponent } from 'vue';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
+import MkButton from '@client/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

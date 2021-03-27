@@ -7,9 +7,9 @@
 <script lang="ts">
 import { defineComponent, PropType, unref } from 'vue';
 import MkButton from '../ui/button.vue';
-import * as os from '@/os';
-import { ButtonBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import * as os from '@client/os';
+import { ButtonBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 
 export default defineComponent({
 	components: {

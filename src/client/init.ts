@@ -2,33 +2,33 @@
  * Client entry point
  */
 
-import '@/style.scss';
+import '@client/style.scss';
 
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { createApp, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import widgets from '@/widgets';
-import directives from '@/directives';
-import components from '@/components';
-import { version, ui, lang, host } from '@/config';
-import { router } from '@/router';
-import { applyTheme } from '@/scripts/theme';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { i18n } from '@/i18n';
-import { stream, dialog, post } from '@/os';
-import * as sound from '@/scripts/sound';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { fetchInstance, instance } from '@/instance';
-import { makeHotkey } from '@/scripts/hotkey';
-import { search } from '@/scripts/search';
-import { isMobile } from '@/scripts/is-mobile';
-import { getThemes } from '@/theme-store';
-import { initializeSw } from '@/scripts/initialize-sw';
-import { reloadChannel } from '@/scripts/unison-reload';
-import { reactionPicker } from '@/scripts/reaction-picker';
+import widgets from '@client/widgets';
+import directives from '@client/directives';
+import components from '@client/components';
+import { version, ui, lang, host } from '@client/config';
+import { router } from '@client/router';
+import { applyTheme } from '@client/scripts/theme';
+import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
+import { i18n } from '@client/i18n';
+import { stream, dialog, post } from '@client/os';
+import * as sound from '@client/scripts/sound';
+import { $i, refreshAccount, login, updateAccount, signout } from '@client/account';
+import { defaultStore, ColdDeviceStorage } from '@client/store';
+import { fetchInstance, instance } from '@client/instance';
+import { makeHotkey } from '@client/scripts/hotkey';
+import { search } from '@client/scripts/search';
+import { isMobile } from '@client/scripts/is-mobile';
+import { getThemes } from '@client/theme-store';
+import { initializeSw } from '@client/scripts/initialize-sw';
+import { reloadChannel } from '@client/scripts/unison-reload';
+import { reactionPicker } from '@client/scripts/reaction-picker';
 
 console.info(`Misskey v${version}`);
 
@@ -156,12 +156,12 @@ fetchInstance().then(() => {
 stream.init($i);
 
 const app = createApp(await (
-	window.location.search === '?zen' ? import('@/ui/zen.vue') :
-	!$i                               ? import('@/ui/visitor.vue') :
-	ui === 'deck'                     ? import('@/ui/deck.vue') :
-	ui === 'desktop'                  ? import('@/ui/desktop.vue') :
-	ui === 'chat'                     ? import('@/ui/chat/index.vue') :
-	import('@/ui/default.vue')
+	window.location.search === '?zen' ? import('@client/ui/zen.vue') :
+	!$i                               ? import('@client/ui/visitor.vue') :
+	ui === 'deck'                     ? import('@client/ui/deck.vue') :
+	ui === 'desktop'                  ? import('@client/ui/desktop.vue') :
+	ui === 'chat'                     ? import('@client/ui/chat/index.vue') :
+	import('@client/ui/default.vue')
 ).then(x => x.default));
 
 if (_DEV_) {
@@ -204,7 +204,7 @@ if (splash) {
 }
 
 watch(defaultStore.reactiveState.darkMode, (darkMode) => {
-	import('@/scripts/theme').then(({ builtinThemes }) => {
+	import('@client/scripts/theme').then(({ builtinThemes }) => {
 		const themes = builtinThemes.concat(getThemes());
 		applyTheme(themes.find(x => x.id === (darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'))));
 	});

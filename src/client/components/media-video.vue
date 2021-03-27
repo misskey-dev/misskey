@@ -20,7 +20,7 @@
 import { defineComponent } from 'vue';
 import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 import DPlayer from '@nyaone/dplayer-misskey';
 
 export default defineComponent({

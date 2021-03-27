@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as Path from 'path';
-import config from '../../config';
+import config from '@/config';
 
 export class InternalStorage {
 	private static readonly path = Path.resolve(__dirname, '../../../files');

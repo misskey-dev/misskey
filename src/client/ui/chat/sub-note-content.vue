@@ -21,9 +21,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faReply } from '@fortawesome/free-solid-svg-icons';
-import XPoll from '@/components/poll.vue';
-import XMediaList from '@/components/media-list.vue';
-import * as os from '@/os';
+import XPoll from '@client/components/poll.vue';
+import XMediaList from '@client/components/media-list.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

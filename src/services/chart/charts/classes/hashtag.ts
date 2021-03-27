@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
 import Chart, { Obj, DeepPartial } from '../../core';
 import { User } from '../../../../models/entities/user';
-import { SchemaType } from '../../../../misc/schema';
+import { SchemaType } from '@/misc/schema';
 import { Users } from '../../../../models';
 import { name, schema } from '../schemas/hashtag';
 
@@ -35,7 +35,7 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	public async update(hashtag: string, user: User) {
+	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }) {
 		const update: Obj = {
 			users: [user.id]
 		};

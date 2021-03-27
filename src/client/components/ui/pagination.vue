@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MkButton from './button.vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 
 export default defineComponent({
 	components: {

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import * as ms from 'ms';
 import create from '../../../../services/blocking/create';
 import define from '../../define';
@@ -62,7 +62,7 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const blocker = user;
+	const blocker = await Users.findOneOrFail(user.id);
 
 	// 自分自身
 	if (user.id === ps.userId) {
@@ -93,7 +93,7 @@ export default define(meta, async (ps, user) => {
 		noteUserId: blockee.id
 	});
 
-	return await Users.pack(blockee.id, user, {
+	return await Users.pack(blockee.id, blocker, {
 		detail: true
 	});
 });

@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { publishNoteStream } from '../../../../../services/stream';
 import { createNotification } from '../../../../../services/create-notification';
 import define from '../../../define';
@@ -12,7 +12,7 @@ import { deliverQuestionUpdate } from '../../../../../services/note/polls/update
 import { PollVotes, NoteWatchings, Users, Polls } from '../../../../../models';
 import { Not } from 'typeorm';
 import { IRemoteUser } from '../../../../../models/entities/user';
-import { genId } from '../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	desc: {
