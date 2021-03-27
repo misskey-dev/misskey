@@ -45,7 +45,7 @@ export default defineComponent({
 	render() {
 		if (this.text == null || this.text == '') return;
 
-		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text)!;
+		const ast = (this.plain ? mfm.parsePlain : mfm.parse)(this.text);
 
 		const validTime = (t: string | null | undefined) => {
 			if (t == null) return null;
