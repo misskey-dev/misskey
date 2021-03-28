@@ -5,7 +5,7 @@ import { intersperse } from '../prelude/array';
 import { IMentionedRemoteUsers } from '../models/entities/note';
 import { wellKnownServices } from '../well-known-services';
 
-export function toHtml(nodes: ReturnType<typeof mfm.parse> | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
+export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 	if (nodes == null) {
 		return null;
 	}
@@ -15,7 +15,9 @@ export function toHtml(nodes: ReturnType<typeof mfm.parse> | null, mentionedRemo
 	const doc = window.document;
 
 	function appendChildren(children: mfm.MfmNode['children'], targetElement: any): void {
-		for (const child of children.map(t => handlers[t.type](t))) targetElement.appendChild(child);
+		if (children) {
+			for (const child of children.map(x => handlers[x.type](x))) targetElement.appendChild(child);
+		}
 	}
 
 	const handlers: { [key: string]: (node: mfm.MfmNode) => any } = {
@@ -63,8 +65,12 @@ export function toHtml(nodes: ReturnType<typeof mfm.parse> | null, mentionedRemo
 			return el;
 		},
 
-		emoji(node) {
-			return doc.createTextNode(node.props.emoji ? node.props.emoji : `\u200B:${node.props.name}:\u200B`);
+		emojiCode(node) {
+			return doc.createTextNode(`\u200B:${node.props.name}:\u200B`);
+		},
+
+		unicodeEmoji(node) {
+			return doc.createTextNode(node.props.emoji);
 		},
 
 		hashtag(node) {
