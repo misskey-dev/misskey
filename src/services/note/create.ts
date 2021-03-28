@@ -13,7 +13,7 @@ import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '@/misc/extract-mentions';
-import extractEmojis from '@/misc/extract-emojis';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import extractHashtags from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings } from '../../models';
@@ -192,7 +192,7 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 		tags = data.apHashtags || extractHashtags(combinedTokens);
 
-		emojis = data.apEmojis || extractEmojis(combinedTokens);
+		emojis = data.apEmojis || extractCustomEmojisFromMfm(combinedTokens);
 
 		mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
 	}

@@ -5,7 +5,7 @@ import { publishMainStream, publishUserEvent } from '../../../../services/stream
 import acceptAllFollowRequests from '../../../../services/following/requests/accept-all';
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
-import extractEmojis from '@/misc/extract-emojis';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import extractHashtags from '@/misc/extract-hashtags';
 import * as langmap from 'langmap';
 import { updateUsertags } from '../../../../services/update-hashtag';
@@ -292,12 +292,12 @@ export default define(meta, async (ps, _user, token) => {
 
 	if (newName != null) {
 		const tokens = mfm.parsePlain(newName);
-		emojis = emojis.concat(extractEmojis(tokens!));
+		emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
 	}
 
 	if (newDescription != null) {
 		const tokens = mfm.parse(newDescription);
-		emojis = emojis.concat(extractEmojis(tokens!));
+		emojis = emojis.concat(extractCustomEmojisFromMfm(tokens!));
 		tags = extractHashtags(tokens!).map(tag => normalizeForSearch(tag)).splice(0, 32);
 	}
 

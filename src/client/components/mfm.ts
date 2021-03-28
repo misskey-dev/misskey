@@ -244,10 +244,19 @@ export default defineComponent({
 					}
 				}
 
-				case 'emoji': {
+				case 'emojiCode': {
 					return [h(MkEmoji, {
 						key: Math.random(),
-						emoji: token.props.name ? `:${token.props.name}:` : token.props.emoji,
+						emoji: `:${token.props.name}:`,
+						customEmojis: this.customEmojis,
+						normal: this.plain
+					})];
+				}
+
+				case 'unicodeEmoji': {
+					return [h(MkEmoji, {
+						key: Math.random(),
+						emoji: token.props.emoji,
 						customEmojis: this.customEmojis,
 						normal: this.plain
 					})];
