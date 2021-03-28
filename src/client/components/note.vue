@@ -102,11 +102,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
+import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
 import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import * as mfm from 'mfm-js';
-import { sum, unique } from '../../prelude/array';
+import { sum } from '../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -123,6 +123,7 @@ import { userPage } from '@client/filters/user';
 import * as os from '@client/os';
 import { noteActions, noteViewInterruptors } from '@client/store';
 import { reactionPicker } from '@client/scripts/reaction-picker';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 function markRawAll(...xs) {
 	for (const x of xs) {
@@ -238,21 +239,7 @@ export default defineComponent({
 
 		urls(): string[] {
 			if (this.appearNote.text) {
-				const ast = mfm.parse(this.appearNote.text);
-				// TODO: 再帰的にURL要素がないか調べる
-				const urls = unique(ast
-					.filter(t => ((t.type == 'url' || t.type == 'link') && t.props.url && !t.props.silent))
-					.map(t => t.props.url));
-
-				// unique without hash
-				// [ http://a/#1, http://a/#2, http://b/#3 ] => [ http://a/#1, http://b/#3 ]
-				const removeHash = x => x.replace(/#[^#]*$/, '');
-
-				return urls.reduce((array, url) => {
-					const removed = removeHash(url);
-					if (!array.map(x => removeHash(x)).includes(removed)) array.push(url);
-					return array;
-				}, []);
+				return extractUrlFromMfm(mfm.parse(this.appearNote.text));
 			} else {
 				return null;
 			}

@@ -7,7 +7,7 @@ export default function(nodes: mfm.MfmNode[]): string[] {
 	function scan(nodes: mfm.MfmNode[]) {
 		for (const node of nodes) {
 			if (node.type === 'emoji') emojiNodes.push(node);
-			if (node.children) scan(node.children);
+			else if (node.children) scan(node.children);
 		}
 	}
 

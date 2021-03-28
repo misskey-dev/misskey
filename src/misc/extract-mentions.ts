@@ -9,7 +9,7 @@ export default function(nodes: mfm.MfmNode[]): mfm.MfmMention['props'][] {
 	function scan(nodes: mfm.MfmNode[]) {
 		for (const node of nodes) {
 			if (node.type === 'mention') mentionNodes.push(node);
-			if (node.children) scan(node.children);
+			else if (node.children) scan(node.children);
 		}
 	}
 

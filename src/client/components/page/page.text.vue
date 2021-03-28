@@ -10,7 +10,7 @@ import { TextBlock } from '@client/scripts/hpml/block';
 import { Hpml } from '@client/scripts/hpml/evaluator';
 import { defineAsyncComponent, defineComponent, PropType } from 'vue';
 import * as mfm from 'mfm-js';
-import { unique } from '../../../prelude/array';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 export default defineComponent({
 	components: {
@@ -34,11 +34,7 @@ export default defineComponent({
 	computed: {
 		urls(): string[] {
 			if (this.text) {
-				const ast = mfm.parse(this.text);
-				// TODO: 再帰的にURL要素がないか調べる
-				return unique(ast
-					.filter(t => ((t.type == 'url' || t.type == 'link') && t.props.url && !t.props.silent))
-					.map(t => t.props.url));
+				return extractUrlFromMfm(mfm.parse(this.text));
 			} else {
 				return [];
 			}
