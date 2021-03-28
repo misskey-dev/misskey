@@ -1,9 +1,18 @@
-import { EmojiNode, MfmForest } from '../mfm/prelude';
-import { preorderF } from '../prelude/tree';
-import { unique } from '../prelude/array';
+import * as mfm from 'mfm-js';
+import { unique } from '@/prelude/array';
 
-export default function(mfmForest: MfmForest): string[] {
-	const emojiNodes = preorderF(mfmForest).filter(x => x.type === 'emoji') as EmojiNode[];
-	const emojis = emojiNodes.filter(x => x.props.name && x.props.name.length <= 100).map(x => x.props.name);
+export default function(nodes: mfm.MfmNode[]): string[] {
+	const emojiNodes = [] as mfm.MfmEmoji[];
+
+	function scan(nodes: mfm.MfmNode[]) {
+		for (const node of nodes) {
+			if (node.type === 'emoji') emojiNodes.push(node);
+			if (node.children) scan(node.children);
+		}
+	}
+
+	scan(nodes);
+
+	const emojis = emojiNodes.filter(x => x.props.name && x.props.name.length <= 100).map(x => x.props.name!);
 	return unique(emojis);
 }
