@@ -75,11 +75,6 @@ export default defineComponent({
 						case 'post':
 							return post(data.options);
 						case 'push':
-							if (data.url.startsWith('/my/messaging')) {
-								if (router.currentRoute.value.path === data.url) return;
-								if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return pageWindow(data.url);
-								if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return popout(data.url);
-							}
 							if (router.currentRoute.value.path === data.url) {
 								return window.scroll({ top: 0, behavior: 'smooth' });
 							}
