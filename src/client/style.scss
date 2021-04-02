@@ -244,6 +244,20 @@ hr {
 	overflow: hidden;
 }
 
+._block {
+	@extend ._panel;
+}
+
+._fit_ ._block {
+	border-radius: 0;
+	box-shadow: none;
+}
+
+._fit_ ._list_ {
+	border-radius: 0;
+	box-shadow: none;
+}
+
 ._card {
 	@extend ._panel;
 

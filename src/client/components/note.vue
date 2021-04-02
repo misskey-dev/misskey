@@ -1,6 +1,6 @@
 <template>
 <div
-	class="tkcbzcuz _panel"
+	class="tkcbzcuz _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"

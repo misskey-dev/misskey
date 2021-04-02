@@ -5,7 +5,7 @@
 	<div class="_section">
 		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _content _vMargin"/>
 		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _panel _content _vMargin" fixed/>
-		<div class="tabs _panel _vMargin">
+		<div class="tabs _block _vMargin">
 			<div class="left">
 				<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
 				<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>

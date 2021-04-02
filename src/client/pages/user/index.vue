@@ -101,7 +101,7 @@
 		<div class="profile _content _vMargin">
 			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_vMargin"/>
 
-			<div class="_vMargin _panel main" :key="user.id">
+			<div class="_vMargin _block main" :key="user.id">
 				<div class="banner-container" :style="style">
 					<div class="banner" ref="banner" :style="style"></div>
 					<div class="fade"></div>
