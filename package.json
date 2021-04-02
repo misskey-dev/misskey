@@ -180,7 +180,7 @@
 		"markdown-it": "12.0.4",
 		"markdown-it-anchor": "7.1.0",
 		"matter-js": "0.16.1",
-		"mfm-js": "0.10.0",
+		"mfm-js": "0.12.0",
 		"mocha": "8.3.2",
 		"moji": "0.5.1",
 		"ms": "2.1.3",

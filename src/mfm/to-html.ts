@@ -5,28 +5,6 @@ import { intersperse } from '../prelude/array';
 import { IMentionedRemoteUsers } from '../models/entities/note';
 import { wellKnownServices } from '../well-known-services';
 
-type NodeType<T extends mfm.MfmNode['type']> =
-	T extends 'quote' ? mfm.MfmQuote :
-	T extends 'search' ? mfm.MfmSearch :
-	T extends 'blockCode' ? mfm.MfmCodeBlock :
-	T extends 'mathBlock' ? mfm.MfmMathBlock :
-	T extends 'center' ? mfm.MfmCenter :
-	T extends 'unicodeEmoji' ? mfm.MfmUnicodeEmoji :
-	T extends 'emojiCode' ? mfm.MfmEmojiCode :
-	T extends 'bold' ? mfm.MfmBold :
-	T extends 'small' ? mfm.MfmSmall :
-	T extends 'italic' ? mfm.MfmItalic :
-	T extends 'strike' ? mfm.MfmStrike :
-	T extends 'inlineCode' ? mfm.MfmInlineCode :
-	T extends 'mathInline' ? mfm.MfmMathInline :
-	T extends 'mention' ? mfm.MfmMention :
-	T extends 'hashtag' ? mfm.MfmHashtag :
-	T extends 'url' ? mfm.MfmUrl :
-	T extends 'link' ? mfm.MfmLink :
-	T extends 'fn' ? mfm.MfmFn :
-	T extends 'text' ? mfm.MfmText :
-	never;
-
 export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMentionedRemoteUsers = []) {
 	if (nodes == null) {
 		return null;
@@ -42,7 +20,7 @@ export function toHtml(nodes: mfm.MfmNode[] | null, mentionedRemoteUsers: IMenti
 		}
 	}
 
-	const handlers: { [K in mfm.MfmNode['type']]: (node: NodeType<K>) => any } = {
+	const handlers: { [K in mfm.MfmNode['type']]: (node: mfm.NodeType<K>) => any } = {
 		bold(node) {
 			const el = doc.createElement('b');
 			appendChildren(node.children, el);
