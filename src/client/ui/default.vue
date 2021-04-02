@@ -106,7 +106,7 @@ export default defineComponent({
 		},
 
 		attachSticky(el) {
-			const sticky = new StickySidebar(el, this.$refs.widgetsSpacer, 16);
+			const sticky = new StickySidebar(el, this.$refs.widgetsSpacer, 16, 16);
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
@@ -204,14 +204,12 @@ export default defineComponent({
 				background: var(--bg);
 			}
 		}
-	}
 
-	> .widgets {
-		padding: 0 var(--margin);
-		border-left: solid 1px var(--divider);
-
-		@media (max-width: $widgets-hide-threshold) {
-			display: none;
+		> .widgets {
+			::v-deep(._panel.widget),
+			::v-deep(._block.widget) {
+				border: solid 1px var(--divider);
+			}
 		}
 	}
 }

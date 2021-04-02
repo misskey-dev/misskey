@@ -61,7 +61,6 @@ export default defineComponent({
 .efzpzdvf {
 	position: sticky;
 	height: min-content;
-	min-height: 100vh;
 	box-sizing: border-box;
 
 	> * {
