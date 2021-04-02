@@ -136,7 +136,7 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt, faShareAlt, faSatelliteDish, faListUl, faSatellite, faCog, faSearch, faPlus, faStar, faAt, faLink, faEllipsisH, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faStar as farStar, faEnvelope, faComments, faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
 import { instanceName, url } from '@client/config';
-import XSidebar from '@client/components/sidebar.vue';
+import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XWidgets from './widgets.vue';
 import XCommon from '../_common_/common.vue';
 import XSide from './side.vue';

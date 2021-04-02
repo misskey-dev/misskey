@@ -59,7 +59,7 @@ import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, fa
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
-import XSidebar from '@client/components/sidebar.vue';
+import XSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';

@@ -36,7 +36,7 @@ import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, fa
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
-import XSidebar from '@client/components/sidebar.vue';
+import XSidebar from './default.sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
@@ -181,12 +181,17 @@ export default defineComponent({
 		--panelShadow: none;
 		margin: 32px auto;
 
+		> .sidebar {
+			width: 220px;
+		}
+
 		> .main {
 			width: 750px;
 			margin: 0 16px;
 			border: solid 1px var(--divider);
 			--section-padding: 0;
 			--baseContentWidth: 100%;
+			--margin: 10px;
 
 			> .header {
 				position: sticky;
@@ -213,7 +218,4 @@ export default defineComponent({
 		}
 	}
 }
-</style>
-
-<style lang="scss">
 </style>
