@@ -30,7 +30,7 @@
 		panelShadow: '" 0 8px 24px rgb(21 43 75 / 8%)',
 		acrylicPanel: ':alpha<0.5<@panel',
 		shadow: 'rgba(0, 0, 0, 0.1)',
-		header: ':alpha<0.7<@bg',
+		header: ':alpha<0.7<@panel',
 		navBg: '@panel',
 		navFg: '@fg',
 		navHoverFg: ':darken<17<@fg',

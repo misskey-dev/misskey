@@ -4,7 +4,7 @@
 		<XSidebar ref="nav" class="sidebar"/>
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
-			<header v-if="$store.state.titlebar" class="header" @click="onHeaderClick">
+			<header v-if="$store.state.titlebar && $route.name !== 'index'" class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo"/>
 			</header>
 			<div class="content _fit_">
@@ -179,7 +179,7 @@ export default defineComponent({
 	> .columns {
 		display: flex;
 		--panelShadow: none;
-		margin: 16px auto;
+		margin: 32px auto;
 
 		> .main {
 			width: 750px;
@@ -189,8 +189,14 @@ export default defineComponent({
 			--baseContentWidth: 100%;
 
 			> .header {
-				position: relative;
+				position: sticky;
+				z-index: 1000;
+				top: 0;
 				height: 50px;
+				line-height: 50px;
+				-webkit-backdrop-filter: blur(32px);
+				backdrop-filter: blur(32px);
+				background-color: var(--header);
 				border-bottom: solid 1px var(--divider);
 			}
 

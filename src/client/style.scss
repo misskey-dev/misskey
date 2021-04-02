@@ -242,6 +242,7 @@ hr {
 	//border: var(--panelBorder);
 	box-shadow: var(--panelShadow);
 	overflow: hidden;
+	overflow: clip;
 }
 
 ._block {
