@@ -5,7 +5,7 @@
 	</button>
 	<div class="post" @click="post">
 		<MkButton class="button" primary full>
-			<Fa :icon="faPencilAlt" fixed-width/><span class="text">{{ $ts.note }}</span>
+			<Fa :icon="faPencilAlt" fixed-width/><span class="text" v-if="!iconOnly">{{ $ts.note }}</span>
 		</MkButton>
 	</div>
 	<div class="divider"></div>
@@ -241,13 +241,13 @@ export default defineComponent({
 .npcljfve {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$nav-width: 250px;
-	$nav-icon-only-width: 86px;
+	$nav-icon-only-width: 55px;
 	$avatar-size: 32px;
 	$avatar-margin: 8px;
 
 	&.iconOnly {
 		flex: 0 0 $nav-icon-only-width;
-		width: $nav-icon-only-width;
+		width: $nav-icon-only-width !important;
 
 		> .divider {
 			margin: 8px auto;
@@ -295,6 +295,10 @@ export default defineComponent({
 		z-index: 1;
 		padding: 16px 0;
 		background: var(--bg);
+
+		> .button {
+			min-width: 0;
+		}
 	}
 
 	> .item {
