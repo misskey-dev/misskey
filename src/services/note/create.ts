@@ -1,3 +1,4 @@
+import * as mfm from 'mfm-js';
 import es from '../../db/elasticsearch';
 import { publishMainStream, publishNotesStream } from '../stream';
 import DeliverManager from '../../remote/activitypub/deliver-manager';
@@ -5,7 +6,6 @@ import renderNote from '../../remote/activitypub/renderer/note';
 import renderCreate from '../../remote/activitypub/renderer/create';
 import renderAnnounce from '../../remote/activitypub/renderer/announce';
 import { renderActivity } from '../../remote/activitypub/renderer';
-import { parse } from '../../mfm/parse';
 import { resolveUser } from '../../remote/resolve-user';
 import config from '@/config';
 import { updateHashtags } from '../update-hashtag';
@@ -13,7 +13,7 @@ import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
 import extractMentions from '@/misc/extract-mentions';
-import extractEmojis from '@/misc/extract-emojis';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import extractHashtags from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';
 import { Mutings, Users, NoteWatchings, Notes, Instances, UserProfiles, Antennas, Followings, MutedNotes, Channels, ChannelFollowings } from '../../models';
@@ -182,17 +182,17 @@ export default async (user: { id: User['id']; username: User['username']; host: 
 
 	// Parse MFM if needed
 	if (!tags || !emojis || !mentionedUsers) {
-		const tokens = data.text ? parse(data.text)! : [];
-		const cwTokens = data.cw ? parse(data.cw)! : [];
+		const tokens = data.text ? mfm.parse(data.text)! : [];
+		const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
 		const choiceTokens = data.poll && data.poll.choices
-			? concat(data.poll.choices.map(choice => parse(choice)!))
+			? concat(data.poll.choices.map(choice => mfm.parse(choice)!))
 			: [];
 
 		const combinedTokens = tokens.concat(cwTokens).concat(choiceTokens);
 
 		tags = data.apHashtags || extractHashtags(combinedTokens);
 
-		emojis = data.apEmojis || extractEmojis(combinedTokens);
+		emojis = data.apEmojis || extractCustomEmojisFromMfm(combinedTokens);
 
 		mentionedUsers = data.apMentions || await extractMentionedUsers(user, combinedTokens);
 	}
@@ -604,7 +604,7 @@ function incNotesCountOfUser(user: { id: User['id']; }) {
 		.execute();
 }
 
-async function extractMentionedUsers(user: { host: User['host']; }, tokens: ReturnType<typeof parse>): Promise<User[]> {
+async function extractMentionedUsers(user: { host: User['host']; }, tokens: mfm.MfmNode[]): Promise<User[]> {
 	if (tokens == null) return [];
 
 	const mentions = extractMentions(tokens);
