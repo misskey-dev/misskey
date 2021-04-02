@@ -1,7 +1,7 @@
 <template>
-<div class="mk-app" :class="{ wallpaper }">
+<div class="mk-app" :class="{ wallpaper, isMobile }">
 	<div class="columns">
-		<XSidebar ref="nav" class="sidebar"/>
+		<XSidebar class="sidebar" v-if="!isMobile"/>
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
 			<header v-if="$store.state.titlebar && $route.name !== 'index'" class="header" @click="onHeaderClick">
@@ -20,7 +20,7 @@
 
 		<XSide class="side" ref="side"/>
 
-		<div class="widgets">
+		<div v-if="isDesktop" class="widgets">
 			<div ref="widgetsSpacer"></div>
 			<XWidgets @mounted="attachSticky"/>
 		</div>
@@ -43,6 +43,9 @@ import XSide from './default.side.vue';
 import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';
 
+const DESKTOP_THRESHOLD = 1100;
+const MOBILE_THRESHOLD = 600;
+
 export default defineComponent({
 	components: {
 		XCommon,
@@ -64,6 +67,9 @@ export default defineComponent({
 		return {
 			pageInfo: null,
 			menuDef: sidebarDef,
+			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
+			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
+			widgetsShowing: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt,
 		};
@@ -94,6 +100,13 @@ export default defineComponent({
 				id: 'c', place: 'right', data: {}
 			}]);
 		}
+	},
+
+	mounted() {
+		window.addEventListener('resize', () => {
+			this.isMobile = (window.innerWidth <= MOBILE_THRESHOLD);
+			this.isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
+		}, { passive: true });
 	},
 
 	methods: {
@@ -164,22 +177,37 @@ export default defineComponent({
 .mk-app {
 	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$widgets-hide-threshold: 1090px;
+	$widgets-hide-threshold: 1200px;
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
-	display: flex;
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
 		//backdrop-filter: blur(4px);
 	}
 
+	&.isMobile {
+		> .columns {
+			display: block;
+			margin: 0;
+
+			> .main {
+				margin: 0;
+				border: none;
+				width: 100%;
+				border-radius: 0;
+			}
+		}
+	}
+
 	> .columns {
 		display: flex;
+		justify-content: center;
+		max-width: 100%;
+		margin: 32px 0;
 		--panelShadow: none;
-		margin: 32px auto;
 
 		> .sidebar {
 			width: 220px;
@@ -214,6 +242,10 @@ export default defineComponent({
 			::v-deep(._panel.widget),
 			::v-deep(._block.widget) {
 				border: solid 1px var(--divider);
+			}
+
+			@media (max-width: $widgets-hide-threshold) {
+				display: none;
 			}
 		}
 	}

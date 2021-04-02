@@ -93,7 +93,7 @@ export default defineComponent({
 
 	methods: {
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1279) || (this.$store.state.sidebarDisplay === 'icon');
+			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.sidebarDisplay === 'icon');
 		},
 
 		post() {
@@ -244,6 +244,8 @@ export default defineComponent({
 	$nav-icon-only-width: 55px;
 	$avatar-size: 32px;
 	$avatar-margin: 8px;
+
+	padding-left: 16px;
 
 	&.iconOnly {
 		flex: 0 0 $nav-icon-only-width;
