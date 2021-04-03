@@ -35,7 +35,7 @@ export default class HashtagChart extends Chart<HashtagLog> {
 	}
 
 	@autobind
-	public async update(hashtag: string, user: User) {
+	public async update(hashtag: string, user: { id: User['id'], host: User['host'] }) {
 		const update: Obj = {
 			users: [user.id]
 		};

@@ -6,7 +6,7 @@ import { User } from '../models/entities/user';
 import { Users, Followings } from '../models';
 import { Not, IsNull } from 'typeorm';
 
-export async function doPostSuspend(user: User) {
+export async function doPostSuspend(user: { id: User['id']; host: User['host'] }) {
 	if (Users.isLocalUser(user)) {
 		// 知り得る全SharedInboxにDelete配信
 		const content = renderActivity(renderDelete(`${config.url}/users/${user.id}`, user));
@@ -28,7 +28,7 @@ export async function doPostSuspend(user: User) {
 		}
 
 		for (const inbox of queue) {
-			deliver(user as any, content, inbox);
+			deliver(user, content, inbox);
 		}
 	}
 }

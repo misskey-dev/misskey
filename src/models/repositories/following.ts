@@ -3,6 +3,7 @@ import { Users } from '..';
 import { Following } from '../entities/following';
 import { awaitAll } from '../../prelude/await-all';
 import { SchemaType } from '@/misc/schema';
+import { User } from '../entities/user';
 
 type LocalFollowerFollowing = Following & {
 	followerHost: null;
@@ -50,7 +51,7 @@ export class FollowingRepository extends Repository<Following> {
 
 	public async pack(
 		src: Following['id'] | Following,
-		me?: any,
+		me?: { id: User['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
@@ -76,7 +77,7 @@ export class FollowingRepository extends Repository<Following> {
 
 	public packMany(
 		followings: any[],
-		me?: any,
+		me?: { id: User['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;

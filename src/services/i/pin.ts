@@ -16,7 +16,7 @@ import { deliverToRelays } from '../relay';
  * @param user
  * @param noteId
  */
-export async function addPinned(user: User, noteId: Note['id']) {
+export async function addPinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch pinee
 	const note = await Notes.findOne({
 		id: noteId,
@@ -55,7 +55,7 @@ export async function addPinned(user: User, noteId: Note['id']) {
  * @param user
  * @param noteId
  */
-export async function removePinned(user: User, noteId: Note['id']) {
+export async function removePinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
 	// Fetch unpinee
 	const note = await Notes.findOne({
 		id: noteId,

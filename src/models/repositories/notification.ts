@@ -31,38 +31,38 @@ export class NotificationRepository extends Repository<Notification> {
 			userId: notification.notifierId,
 			user: notification.notifierId ? Users.pack(notification.notifier || notification.notifierId) : null,
 			...(notification.type === 'mention' ? {
-				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId, {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_
 				}),
 			} : {}),
 			...(notification.type === 'reply' ? {
-				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId, {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_
 				}),
 			} : {}),
 			...(notification.type === 'renote' ? {
-				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId, {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_
 				}),
 			} : {}),
 			...(notification.type === 'quote' ? {
-				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId, {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_
 				}),
 			} : {}),
 			...(notification.type === 'reaction' ? {
-				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId, {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_
 				}),
 				reaction: notification.reaction
 			} : {}),
 			...(notification.type === 'pollVote' ? {
-				note: Notes.pack(notification.note || notification.noteId!, notification.notifieeId, {
+				note: Notes.pack(notification.note || notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
 					_hint_: options._hintForEachNotes_
 				}),

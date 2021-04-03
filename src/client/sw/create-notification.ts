@@ -11,7 +11,9 @@ import { pushNotificationData } from '@/types';
 
 export async function createNotification(data: pushNotificationData) {
 	const n = await composeNotification(data);
-	if (n) return self.registration.showNotification(...n);
+
+	if (n) await self.registration.showNotification(...n);
+	else await createEmptyNotification();
 }
 
 async function composeNotification(data: pushNotificationData): Promise<[string, NotificationOptions] | null | undefined> {
@@ -183,26 +185,16 @@ async function composeNotification(data: pushNotificationData): Promise<[string,
 	}
 }
 
-export async function createAllReadNotification(type: 'notifications' | 'messagingMessages') {
-	const n = await composeAllReadNotification(type);
-	if (n) return self.registration.showNotification(...n);
-}
-
-async function composeAllReadNotification(type: string): Promise<[string, NotificationOptions] | null | undefined> {
+export async function createEmptyNotification() {
 	if (!swLang.i18n) swLang.fetchLocale();
 	const i18n = await swLang.i18n as I18n<any>;
 	const { t } = i18n;
 
-	if (type === 'notifications') {
-		return [t('readAllNotifications'), {
+	await self.registration.showNotification(
+		t('_notification.emptyPushNotificationMessage'),
+		{
 			silent: true,
-			tag: 'user_visible_auto_notification',
-		}];
-	}
-	if (type === 'messagingMessages') {
-		return [t('readAllMessagingMessages'), {
-			silent: true,
-			tag: 'user_visible_auto_notification',
-		}];
-	}
+			tag: 'read_notification',
+		}
+	);
 }

@@ -1,7 +1,7 @@
 import config from '@/config';
-import { ILocalUser } from '../../../models/entities/user';
+import { User } from '@/models/entities/user';
 
-export default (object: any, user: ILocalUser) => {
+export default (object: any, user: { id: User['id'] }) => {
 	const activity = {
 		id: `${config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 		actor: `${config.url}/users/${user.id}`,

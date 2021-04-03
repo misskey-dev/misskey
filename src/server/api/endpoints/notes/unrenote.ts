@@ -5,7 +5,7 @@ import define from '../../define';
 import * as ms from 'ms';
 import { getNote } from '../../common/getters';
 import { ApiError } from '../../error';
-import { Notes } from '../../../../models';
+import { Notes, Users } from '../../../../models';
 
 export const meta = {
 	desc: {
@@ -55,6 +55,6 @@ export default define(meta, async (ps, user) => {
 	});
 
 	for (const note of renotes) {
-		deleteNote(user, note);
+		deleteNote(await Users.findOneOrFail(user.id), note);
 	}
 });

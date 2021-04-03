@@ -59,7 +59,7 @@ export default class UsersChart extends Chart<UsersLog> {
 	}
 
 	@autobind
-	public async update(user: User, isAdditional: boolean) {
+	public async update(user: { id: User['id'], host: User['host'] }, isAdditional: boolean) {
 		const update: Obj = {};
 
 		update.total = isAdditional ? 1 : -1;

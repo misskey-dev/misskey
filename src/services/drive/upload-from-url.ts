@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import create from './add-file';
 import { User } from '../../models/entities/user';
 import { driveLogger } from './logger';
@@ -11,7 +12,7 @@ const logger = driveLogger.createSubLogger('downloader');
 
 export default async (
 	url: string,
-	user: User | null,
+	user: { id: User['id']; host: User['host'] } | null,
 	folderId: DriveFolder['id'] | null = null,
 	uri: string | null = null,
 	sensitive = false,

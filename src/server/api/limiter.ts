@@ -7,7 +7,7 @@ import Logger from '../../services/logger';
 
 const logger = new Logger('limiter');
 
-export default (endpoint: IEndpoint, user: User) => new Promise((ok, reject) => {
+export default (endpoint: IEndpoint, user: User) => new Promise<void>((ok, reject) => {
 	const limitation = endpoint.meta.limit!;
 
 	const key = limitation.hasOwnProperty('key')

@@ -5,7 +5,7 @@
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": true,

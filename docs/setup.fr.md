@@ -41,13 +41,13 @@ Installez les paquets suivants :
 
 2. Clonez la branche master du dépôt misskey.
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/misskey-dev/misskey.git`
 
 3. Accédez au dossier misskey.
 
 	`cd misskey`
 
-4. Checkout sur le tag de la [version la plus récente](https://github.com/syuilo/misskey/releases/latest)
+4. Checkout sur le tag de la [version la plus récente](https://github.com/misskey-dev/misskey/releases/latest)
 
 	`git checkout master`
  

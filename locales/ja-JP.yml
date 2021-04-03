@@ -1575,8 +1575,7 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   youWereInvitedToGroup: "{userName}があなたをグループに招待しました"
-  readAllNotifications: "通知はすべて既読です"
-  readAllMessagingMessages: "チャットはすべて既読です"
+  emptyPushNotificationMessage: "プッシュ通知の更新をしました"
 
   _types:
     all: "すべて"

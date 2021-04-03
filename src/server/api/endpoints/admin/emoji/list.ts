@@ -96,9 +96,9 @@ export default define(meta, async (ps) => {
 		emojis = await q.getMany();
 
 		emojis = emojis.filter(emoji =>
-			emoji.name.includes(ps.query) ||
-			emoji.aliases.some(a => a.includes(ps.query)) ||
-			emoji.category?.includes(ps.query));
+			emoji.name.includes(ps.query!) ||
+			emoji.aliases.some(a => a.includes(ps.query!)) ||
+			emoji.category?.includes(ps.query!));
 
 		emojis.splice(ps.limit! + 1);
 	} else {

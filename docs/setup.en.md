@@ -40,13 +40,13 @@ Please install and setup these softwares:
 
 2. Clone the misskey repo from master branch.
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/misskey-dev/misskey.git`
 
 3. Navigate to misskey directory
 
 	`cd misskey`
 
-4. Checkout to the [latest release](https://github.com/syuilo/misskey/releases/latest)
+4. Checkout to the [latest release](https://github.com/misskey-dev/misskey/releases/latest)
 
 	`git checkout master`
 

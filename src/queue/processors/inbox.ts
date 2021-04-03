@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import * as Bull from 'bull';
 import * as httpSignature from 'http-signature';
 import perform from '../../remote/activitypub/perform';

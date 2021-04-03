@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import * as promiseLimit from 'promise-limit';
 
 import config from '@/config';

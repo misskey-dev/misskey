@@ -14,7 +14,7 @@ import deleteReaction from './delete';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import { NoteReaction } from '../../../models/entities/note-reaction';
 
-export default async (user: User, note: Note, reaction?: string) => {
+export default async (user: { id: User['id']; host: User['host']; }, note: Note, reaction?: string) => {
 	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 

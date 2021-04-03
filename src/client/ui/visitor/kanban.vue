@@ -28,7 +28,7 @@
 				</div>
 				<div class="powered-by" v-if="poweredBy">
 					<b><MkA to="/">{{ host }}</MkA></b>
-					<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
+					<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
 				</div>
 			</template>
 		</div>

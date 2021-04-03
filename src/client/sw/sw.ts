@@ -3,7 +3,7 @@
  */
 declare var self: ServiceWorkerGlobalScope;
 
-import { createNotification } from '@client/sw/create-notification';
+import { createEmptyNotification, createNotification } from '@client/sw/create-notification';
 import { swLang } from '@client/sw/lang';
 import { swNotificationRead } from '@client/sw/notification-read';
 import { pushNotificationData } from '@/types';
@@ -41,12 +41,6 @@ self.addEventListener('fetch', ev => {
 
 //#region When: Caught Notification
 self.addEventListener('push', ev => {
-	setTimeout(async () => {
-		for (const n of await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })) {
-			n.close();
-		}
-	}, 5000);
-
 	// クライアント取得
 	ev.waitUntil(self.clients.matchAll({
 		includeUncontrolled: true,
@@ -62,6 +56,7 @@ self.addEventListener('push', ev => {
 			case 'notification':
 			case 'unreadMessagingMessage':
 				return createNotification(data);
+
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
 					if (n.data.type === 'notification') n.close();
@@ -91,6 +86,18 @@ self.addEventListener('push', ev => {
 				}
 				break;
 		}
+
+		createEmptyNotification();
+		setTimeout(async () => {
+			for (const n of
+				[
+					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
+					...(await self.registration.getNotifications({ tag: 'read_notification' }))
+				]
+			) {
+				n.close();
+			}
+		}, 500);
 	}));
 });
 //#endregion

@@ -32,14 +32,14 @@ export const meta = {
 };
 
 export default define(meta, async (ps, user) => {
-	const clip = await Clips.save({
+	const clip = await Clips.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,
 		name: ps.name,
 		isPublic: ps.isPublic,
 		description: ps.description,
-	});
+	}).then(x => Clips.findOneOrFail(x.identifiers[0]));
 
 	return await Clips.pack(clip);
 });
