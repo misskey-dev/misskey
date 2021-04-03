@@ -94,7 +94,7 @@
 import { defineComponent } from 'vue';
 import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 
 import MkRadio from '@client/components/ui/radio.vue';
 import MkButton from '@client/components/ui/button.vue';

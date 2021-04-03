@@ -56,7 +56,7 @@ import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlob
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode/';
 import XNotePreview from './note-preview.vue';
 import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';

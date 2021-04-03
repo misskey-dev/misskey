@@ -88,6 +88,7 @@
 		"@types/parsimmon": "1.10.6",
 		"@types/portscanner": "2.1.0",
 		"@types/pug": "2.0.4",
+		"@types/punycode": "2.1.0",
 		"@types/qrcode": "1.4.0",
 		"@types/random-seed": "0.3.3",
 		"@types/ratelimiter": "3.4.1",

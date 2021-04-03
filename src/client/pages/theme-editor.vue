@@ -52,7 +52,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
 import * as JSON5 from 'json5';
