@@ -8,7 +8,7 @@ import { WriteStream } from 'fs';
 
 const size = 256; // px
 const n = 5; // resolution
-const margin = (size / n) / 1.5;
+const margin = (size / n);
 const colors = [
 	'#e57373',
 	'#F06292',
