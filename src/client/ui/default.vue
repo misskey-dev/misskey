@@ -4,7 +4,7 @@
 		<XSidebar class="sidebar" v-if="!isMobile"/>
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
-			<header v-if="$store.state.titlebar && $route.name !== 'index'" class="header" @click="onHeaderClick">
+			<header v-if="$store.state.titlebar" class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo"/>
 			</header>
 			<div class="content _fit_">
@@ -26,6 +26,28 @@
 		</div>
 	</div>
 
+	<div class="buttons" v-if="isMobile">
+		<button class="button nav _button" @click="showDrawerNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><Fa :icon="faHome"/></button>
+		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
+		<button class="button widget _button" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
+		<button class="button post _button" @click="post"><Fa :icon="faPencilAlt"/></button>
+	</div>
+
+	<XDrawerSidebar ref="drawerNav" class="sidebar" v-if="isMobile"/>
+
+	<transition name="tray-back">
+		<div class="tray-back _modalBg"
+			v-if="widgetsShowing"
+			@click="widgetsShowing = false"
+			@touchstart.passive="widgetsShowing = false"
+		></div>
+	</transition>
+
+	<transition name="tray">
+		<XWidgets v-if="widgetsShowing" class="tray"/>
+	</transition>
+
 	<XCommon/>
 </div>
 </template>
@@ -37,6 +59,7 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from './default.sidebar.vue';
+import XDrawerSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import XSide from './default.side.vue';
@@ -50,6 +73,7 @@ export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
+		XDrawerSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
 		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
@@ -133,6 +157,10 @@ export default defineComponent({
 			window.scroll({ top: 0, behavior: 'smooth' });
 		},
 
+		showDrawerNav() {
+			this.$refs.drawerNav.show();
+		},
+
 		onTransition() {
 			if (window._scroll) window._scroll();
 		},
@@ -174,6 +202,28 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.tray-enter-active,
+.tray-leave-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-enter-from,
+.tray-leave-active {
+	opacity: 0;
+	transform: translateX(240px);
+}
+
+.tray-back-enter-active,
+.tray-back-leave-active {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tray-back-enter-from,
+.tray-back-leave-active {
+	opacity: 0;
+}
+
 .mk-app {
 	$header-height: 58px; // TODO: どこかに集約したい
 	$ui-font-size: 1em; // TODO: どこかに集約したい
@@ -216,7 +266,6 @@ export default defineComponent({
 		> .main {
 			width: 750px;
 			margin: 0 16px;
-			border: solid 1px var(--divider);
 			--section-padding: 0;
 			--baseContentWidth: 100%;
 			--margin: 10px;
@@ -230,7 +279,6 @@ export default defineComponent({
 				-webkit-backdrop-filter: blur(32px);
 				backdrop-filter: blur(32px);
 				background-color: var(--header);
-				border-bottom: solid 1px var(--divider);
 			}
 
 			> .content {
@@ -239,15 +287,96 @@ export default defineComponent({
 		}
 
 		> .widgets {
-			::v-deep(._panel.widget),
-			::v-deep(._block.widget) {
-				border: solid 1px var(--divider);
-			}
-
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
 			}
 		}
+	}
+
+	> .buttons {
+		position: fixed;
+		z-index: 1000;
+		bottom: 0;
+		padding: 16px;
+		display: flex;
+		width: 100%;
+		box-sizing: border-box;
+		-webkit-backdrop-filter: blur(32px);
+		backdrop-filter: blur(32px);
+		background-color: var(--header);
+
+		> .button {
+			position: relative;
+			flex: 1;
+			padding: 0;
+			margin: auto;
+			height: 64px;
+			border-radius: 8px;
+			background: var(--panel);
+			color: var(--fg);
+
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
+
+			@media (max-width: 400px) {
+				height: 60px;
+
+				&:not(:last-child) {
+					margin-right: 8px;
+				}
+			}
+
+			&:hover {
+				background: var(--X2);
+			}
+
+			> i {
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: var(--indicator);
+				font-size: 16px;
+				animation: blink 1s infinite;
+			}
+
+			&:first-child {
+				margin-left: 0;
+			}
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			> * {
+				font-size: 22px;
+			}
+
+			&:disabled {
+				cursor: default;
+
+				> * {
+					opacity: 0.5;
+				}
+			}
+		}
+	}
+
+	> .tray-back {
+		z-index: 1001;
+	}
+
+	> .tray {
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: 1001;
+		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+		height: calc(var(--vh, 1vh) * 100);
+		padding: var(--margin);
+		box-sizing: border-box;
+		overflow: auto;
+		background: var(--bg);
 	}
 }
 </style>

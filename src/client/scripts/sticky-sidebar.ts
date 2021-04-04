@@ -5,24 +5,26 @@ export class StickySidebar {
 	private marginTop: number;
 	private isTop = false;
 	private isBottom = false;
+	private offsetTop: number;
 
-	constructor(el: StickySidebar['el'], spacer: StickySidebar['spacer'], marginTop = 0) {
+	constructor(el: StickySidebar['el'], spacer: StickySidebar['spacer'], marginTop = 0, offsetTop = 0) {
 		this.el = el;
 		this.spacer = spacer;
 		this.marginTop = marginTop;
+		this.offsetTop = offsetTop;
 	}
 
 	public calc(scrollTop: number) {
 		if (scrollTop > this.lastScrollTop) { // downscroll
-			const overflow = this.el.clientHeight - window.innerHeight;
+			const overflow = Math.max(0, (this.el.clientHeight + this.marginTop) - window.innerHeight);
 			this.el.style.bottom = null;
-			this.el.style.top = `${-overflow}px`;
+			this.el.style.top = `${-overflow + this.marginTop}px`;
 
 			this.isBottom = (scrollTop + window.innerHeight) >= (this.el.offsetTop + this.el.clientHeight);
 
 			if (this.isTop) {
 				this.isTop = false;
-				this.spacer.style.marginTop = `${this.lastScrollTop}px`;
+				this.spacer.style.marginTop = `${Math.max(0, this.lastScrollTop - this.offsetTop)}px`;
 			}
 		} else { // upscroll
 			const overflow = this.el.clientHeight - window.innerHeight;
@@ -34,7 +36,7 @@ export class StickySidebar {
 			if (this.isBottom) {
 				this.isBottom = false;
 				const overflow = this.el.clientHeight - window.innerHeight;
-				this.spacer.style.marginTop = `${this.lastScrollTop - (overflow + this.marginTop)}px`;
+				this.spacer.style.marginTop = `${this.lastScrollTop - (overflow + this.marginTop) - this.offsetTop}px`;
 			}
 		}
 
