@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import { faLock, faGavel } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from './ui/button.vue';

@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import { host } from '@client/config';
 
 export default defineComponent({
