@@ -615,7 +615,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .pxiwixjf {
 	position: relative;
-	border: solid 1px var(--divider);
+	border: solid 0.5px var(--divider);
 	border-radius: 8px;
 
 	> .form {
@@ -696,7 +696,7 @@ export default defineComponent({
 		> .cw {
 			z-index: 1;
 			padding-bottom: 8px;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 		}
 
 		> .text {

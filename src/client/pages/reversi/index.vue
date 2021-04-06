@@ -259,7 +259,7 @@ export default defineComponent({
 		> footer {
 			display: flex;
 			align-items: baseline;
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 			padding: 6px 8px;
 			font-size: 0.9em;
 

@@ -354,7 +354,7 @@ export default defineComponent({
 		flex-direction: column;
 		width: 250px;
 		height: 100vh;
-		border-right: solid 1px var(--divider);
+		border-right: solid 0.5px var(--divider);
 
 		> .header, > .footer {
 			$padding: 8px;
@@ -367,11 +367,11 @@ export default defineComponent({
 			user-select: none;
 
 			&.header {
-				border-bottom: solid 1px var(--divider);
+				border-bottom: solid 0.5px var(--divider);
 			}
 
 			&.footer {
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 			}
 
 			> .left, > .right {
@@ -526,7 +526,7 @@ export default defineComponent({
 			padding: $padding;
 			box-sizing: border-box;
 			background-color: var(--panel);
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 			user-select: none;
 
 			> .left {
@@ -599,7 +599,7 @@ export default defineComponent({
 
 	> .side {
 		width: 350px;
-		border-left: solid 1px var(--divider);
+		border-left: solid 0.5px var(--divider);
 
 		&.widgets.sideViewOpening {
 			@media (max-width: 1400px) {

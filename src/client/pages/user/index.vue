@@ -415,7 +415,7 @@ export default defineComponent({
 					font-size: 80%;
 					padding: 8px 12px;
 					margin-bottom: 20px;
-					border: solid 1px var(--divider);
+					border: solid 0.5px var(--divider);
 					border-radius: 999px;
 				}
 			}
@@ -423,7 +423,7 @@ export default defineComponent({
 			> .status {
 				display: flex;
 				padding: 20px 16px;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 				font-size: 90%;
 
 				> a {
@@ -451,13 +451,13 @@ export default defineComponent({
 
 			> .description {
 				padding: 20px 16px;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 				font-size: 90%;
 			}
 
 			> .fields {
 				padding: 20px 16px;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 				font-size: 90%;
 
 				> .field {
@@ -654,7 +654,7 @@ export default defineComponent({
 				text-align: center;
 				padding: 50px 8px 16px 8px;
 				font-weight: bold;
-				border-bottom: solid 1px var(--divider);
+				border-bottom: solid 0.5px var(--divider);
 
 				> .bottom {
 					> * {
@@ -689,7 +689,7 @@ export default defineComponent({
 			> .fields {
 				padding: 24px;
 				font-size: 0.9em;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 
 				> .field {
 					display: flex;
@@ -726,7 +726,7 @@ export default defineComponent({
 			> .status {
 				display: flex;
 				padding: 24px;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 
 				> a {
 					flex: 1;

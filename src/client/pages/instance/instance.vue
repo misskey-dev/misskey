@@ -500,12 +500,12 @@ export default defineComponent({
 		}
 
 		&:not(:first-child) {
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 		}
 	}
 
 	> .chart {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		padding: 16px 0 12px 0;
 
 		> .header {

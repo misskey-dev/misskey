@@ -276,7 +276,7 @@ export default defineComponent({
 			-webkit-backdrop-filter: blur(32px);
 			backdrop-filter: blur(32px);
 			background-color: var(--header);
-			//border-bottom: solid 1px var(--divider);
+			//border-bottom: solid 0.5px var(--divider);
 			user-select: none;
 		}
 
@@ -303,12 +303,12 @@ export default defineComponent({
 	> .side {
 		min-width: 370px;
 		max-width: 370px;
-		border-left: solid 1px var(--divider);
+		border-left: solid 0.5px var(--divider);
 	}
 
 	> .widgets {
 		padding: 0 var(--margin);
-		border-left: solid 1px var(--divider);
+		border-left: solid 0.5px var(--divider);
 
 		@media (max-width: $widgets-hide-threshold) {
 			display: none;

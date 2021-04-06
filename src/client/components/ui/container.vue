@@ -136,7 +136,7 @@ export default defineComponent({
 		position: relative;
 		color: var(--panelHeaderFg);
 		background: var(--panelHeaderBg);
-		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
+		border-bottom: solid 0.5px var(--panelHeaderDivider);
 		z-index: 2;
 		line-height: 1.4em;
 
@@ -172,7 +172,7 @@ export default defineComponent({
 			padding: 24px;
 
 			& + ._content {
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 			}
 		}
 	}

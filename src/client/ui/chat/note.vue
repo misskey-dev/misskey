@@ -1127,7 +1127,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 }
 

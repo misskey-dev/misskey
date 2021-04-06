@@ -288,7 +288,7 @@ export default defineComponent({
 
 	> .divider {
 		margin: 10px 0;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	> .post {

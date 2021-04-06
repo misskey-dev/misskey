@@ -139,7 +139,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-left: solid 1px var(--divider);
+		border-left: solid 0.5px var(--divider);
 		margin-top: 10px;
 	}
 }
