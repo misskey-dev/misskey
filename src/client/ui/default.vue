@@ -20,8 +20,7 @@
 
 		<XSide class="side" ref="side"/>
 
-		<div v-if="isDesktop" class="widgets">
-			<div ref="widgetsSpacer"></div>
+		<div v-if="isDesktop" class="widgets" ref="widgets">
 			<XWidgets @mounted="attachSticky"/>
 		</div>
 	</div>
@@ -142,8 +141,8 @@ export default defineComponent({
 			}
 		},
 
-		attachSticky(el) {
-			const sticky = new StickySidebar(el, this.$refs.widgetsSpacer, 16, 16);
+		attachSticky() {
+			const sticky = new StickySidebar(this.$refs.widgets, 16);
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });

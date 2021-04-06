@@ -1,5 +1,6 @@
 export class StickySidebar {
 	private lastScrollTop = 0;
+	private container: HTMLElement;
 	private el: HTMLElement;
 	private spacer: HTMLElement;
 	private marginTop: number;
@@ -7,11 +8,13 @@ export class StickySidebar {
 	private isBottom = false;
 	private offsetTop: number;
 
-	constructor(el: StickySidebar['el'], spacer: StickySidebar['spacer'], marginTop = 0, offsetTop = 0) {
-		this.el = el;
-		this.spacer = spacer;
+	constructor(container: StickySidebar['container'], marginTop = 0) {
+		this.container = container;
+		this.el = this.container.children[0] as HTMLElement;
+		this.spacer = document.createElement('div');
+		this.container.prepend(this.spacer);
 		this.marginTop = marginTop;
-		this.offsetTop = offsetTop;
+		this.offsetTop = this.container.getBoundingClientRect().top;
 	}
 
 	public calc(scrollTop: number) {
@@ -27,16 +30,15 @@ export class StickySidebar {
 				this.spacer.style.marginTop = `${Math.max(0, this.lastScrollTop - this.offsetTop)}px`;
 			}
 		} else { // upscroll
-			const overflow = this.el.clientHeight - window.innerHeight;
+			const overflow = (this.el.clientHeight + this.marginTop) - window.innerHeight;
 			this.el.style.top = null;
-			this.el.style.bottom = `${-overflow - this.marginTop}px`;
+			this.el.style.bottom = `${-overflow}px`;
 
 			this.isTop = scrollTop <= this.el.offsetTop;
 
 			if (this.isBottom) {
 				this.isBottom = false;
-				const overflow = this.el.clientHeight - window.innerHeight;
-				this.spacer.style.marginTop = `${this.lastScrollTop - (overflow + this.marginTop) - this.offsetTop}px`;
+				this.spacer.style.marginTop = `${this.lastScrollTop - (overflow - this.marginTop) - this.offsetTop}px`;
 			}
 		}
 
