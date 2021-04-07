@@ -245,7 +245,7 @@ export default defineComponent({
 	$avatar-size: 32px;
 	$avatar-margin: 8px;
 
-	padding-left: 16px;
+	padding: 0 16px;
 
 	&.iconOnly {
 		flex: 0 0 $nav-icon-only-width;

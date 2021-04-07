@@ -264,7 +264,7 @@ export default defineComponent({
 
 		> .main {
 			width: 750px;
-			margin: 0 16px;
+			margin: 0 16px 0 0;
 			--section-padding: 0;
 			--baseContentWidth: 100%;
 			--margin: 10px;
@@ -288,6 +288,18 @@ export default defineComponent({
 		> .widgets {
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
+			}
+		}
+
+		@media (max-width: 850px) {
+			margin: 0;
+
+			> .sidebar {
+				border-right: solid 0.5px var(--divider);
+			}
+
+			> .main {
+				margin: 0;
 			}
 		}
 	}
