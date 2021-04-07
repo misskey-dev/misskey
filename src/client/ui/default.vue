@@ -7,7 +7,7 @@
 			<header v-if="$store.state.titlebar" class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo"/>
 			</header>
-			<div class="content _fit_">
+			<div class="content _flat_">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
@@ -224,8 +224,8 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 58px; // TODO: どこかに集約したい
-	$ui-font-size: 1em; // TODO: どこかに集約したい
+	$header-height: 50px;
+	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
@@ -256,7 +256,6 @@ export default defineComponent({
 		justify-content: center;
 		max-width: 100%;
 		margin: 32px 0;
-		--panelShadow: none;
 
 		> .sidebar {
 			width: 220px;
@@ -267,25 +266,29 @@ export default defineComponent({
 			margin: 0 16px 0 0;
 			--section-padding: 0;
 			--baseContentWidth: 100%;
-			--margin: 10px;
+			--margin: 16px;
 
 			> .header {
 				position: sticky;
 				z-index: 1000;
 				top: 0;
-				height: 50px;
-				line-height: 50px;
+				height: $header-height;
+				line-height: $header-height;
 				-webkit-backdrop-filter: blur(32px);
 				backdrop-filter: blur(32px);
 				background-color: var(--header);
+				border-bottom: solid 0.5px var(--divider);
 			}
 
 			> .content {
-				background: var(--bg);
+				//background: var(--bg);
+				--stickyTop: #{$header-height};
 			}
 		}
 
 		> .widgets {
+			//--panelShadow: none;
+
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
 			}

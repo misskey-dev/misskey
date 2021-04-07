@@ -93,12 +93,12 @@
 			</div>
 		</div>
 	</div>
-	<div class="ftskorzw narrow _section" v-else-if="user && narrow === true" v-size="{ max: [500] }">
+	<div class="ftskorzw narrow _root" v-else-if="user && narrow === true" v-size="{ max: [500] }">
 		<!-- TODO -->
 		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSuspended }}</div> -->
 		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSilenced }}</div> -->
 
-		<div class="profile _content _vMargin">
+		<div class="profile _section">
 			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_vMargin"/>
 
 			<div class="_vMargin _block main" :key="user.id">
@@ -177,37 +177,39 @@
 			</div>
 		</div>
 
-		<div class="nav _vMargin">
-			<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
-				<Fa :icon="faCommentAlt" class="icon"/>
-				<span>{{ $ts.notes }}</span>
-			</MkA>
-			<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
-				<Fa :icon="faPaperclip" class="icon"/>
-				<span>{{ $ts.clips }}</span>
-			</MkA>
-			<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
-				<Fa :icon="faFileAlt" class="icon"/>
-				<span>{{ $ts.pages }}</span>
-			</MkA>
-		</div>
+		<div class="contents _section">
+			<div class="nav _isolated">
+				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
+					<Fa :icon="faCommentAlt" class="icon"/>
+					<span>{{ $ts.notes }}</span>
+				</MkA>
+				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
+					<Fa :icon="faPaperclip" class="icon"/>
+					<span>{{ $ts.clips }}</span>
+				</MkA>
+				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
+					<Fa :icon="faFileAlt" class="icon"/>
+					<span>{{ $ts.pages }}</span>
+				</MkA>
+			</div>
 
-		<template v-if="page === 'index'">
-			<div class="_content _vMargin">
-				<div v-if="user.pinnedNotes.length > 0" class="_vMargin">
-					<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+			<template v-if="page === 'index'">
+				<div>
+					<div v-if="user.pinnedNotes.length > 0">
+						<XNote v-for="note in user.pinnedNotes" class="note _blockIsolated" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+					</div>
+					<XPhotos :user="user" :key="user.id"/>
+					<XActivity :user="user" :key="user.id"/>
 				</div>
-				<XPhotos :user="user" :key="user.id" class="_vMargin"/>
-				<XActivity :user="user" :key="user.id" class="_vMargin"/>
-			</div>
-			<div class="_content _vMargin">
-				<XUserTimeline :user="user" class="_content"/>
-			</div>
-		</template>
-		<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _vMargin"/>
-		<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _vMargin"/>
-		<XClips v-else-if="page === 'clips'" :user="user" class="_vMargin"/>
-		<XPages v-else-if="page === 'pages'" :user="user" class="_vMargin"/>
+				<div>
+					<XUserTimeline :user="user"/>
+				</div>
+			</template>
+			<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _vMargin"/>
+			<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _vMargin"/>
+			<XClips v-else-if="page === 'clips'" :user="user" class="_vMargin"/>
+			<XPages v-else-if="page === 'pages'" :user="user" class="_vMargin"/>
+		</div>
 	</div>
 	<div v-else-if="error">
 		<MkError @retry="fetch()"/>
@@ -304,7 +306,7 @@ export default defineComponent({
 
 	mounted() {
 		window.requestAnimationFrame(this.parallaxLoop);
-		this.narrow = this.$el.clientWidth < 1000;
+		this.narrow = true; //this.$el.clientWidth < 1000;
 	},
 
 	beforeUnmount() {
@@ -543,6 +545,7 @@ export default defineComponent({
 	max-width: 100vw;
 	box-sizing: border-box;
 	overflow: hidden;
+	overflow: clip;
 
 	> .punished {
 		font-size: 0.8em;
@@ -753,41 +756,42 @@ export default defineComponent({
 		}
 	}
 
-	> .nav {
-		display: flex;
-		align-items: center;
-		margin-top: var(--margin);
-		//font-size: 120%;
-		font-weight: bold;
+	> .contents {
+		> .nav {
+			display: flex;
+			align-items: center;
+			//font-size: 120%;
+			font-weight: bold;
 
-		> .link {
-			flex: 1;
-			display: inline-block;
-			padding: 16px;
-			text-align: center;
-			border-bottom: solid 3px transparent;
+			> .link {
+				flex: 1;
+				display: inline-block;
+				padding: 16px;
+				text-align: center;
+				border-bottom: solid 3px transparent;
 
-			&:hover {
-				text-decoration: none;
-			}
+				&:hover {
+					text-decoration: none;
+				}
 
-			&.active {
-				color: var(--accent);
-				border-bottom-color: var(--accent);
-			}
+				&.active {
+					color: var(--accent);
+					border-bottom-color: var(--accent);
+				}
 
-			&:not(.active):hover {
-				color: var(--fgHighlighted);
-			}
+				&:not(.active):hover {
+					color: var(--fgHighlighted);
+				}
 
-			> .icon {
-				margin-right: 6px;
+				> .icon {
+					margin-right: 6px;
+				}
 			}
 		}
-	}
 
-	> .content {
-		margin-bottom: var(--margin);
+		> .content {
+			margin-bottom: var(--margin);
+		}
 	}
 
 	&.max-width_500px {
@@ -831,8 +835,10 @@ export default defineComponent({
 			}
 		}
 
-		> .nav {
-			font-size: 80%;
+		> .contents {
+			> .nav {
+				font-size: 80%;
+			}
 		}
 	}
 }

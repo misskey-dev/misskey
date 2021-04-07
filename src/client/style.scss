@@ -249,19 +249,19 @@ hr {
 	@extend ._panel;
 }
 
-._fit_ ._block {
-	border-radius: 0;
-	box-shadow: none;
+._blockIsolated {
+	@extend ._panel;
+	margin: var(--margin) 0;
 }
 
-._fit_ ._list_ {
-	border-radius: 0;
-	box-shadow: none;
+._isolated {
+	margin: var(--margin) 0;
 }
 
 ._card {
 	@extend ._panel;
 
+	// TODO: _cardTitle に
 	> ._title {
 		margin: 0;
 		padding: 22px 32px;
@@ -277,6 +277,7 @@ hr {
 		}
 	}
 
+	// TODO: _cardContent に
 	> ._content {
 		padding: 32px;
 
@@ -293,6 +294,7 @@ hr {
 		}
 	}
 
+	// TODO: _cardFooter に
 	> ._footer {
 		border-top: solid 0.5px var(--divider);
 		padding: 24px 32px;
@@ -301,26 +303,6 @@ hr {
 			padding: 16px;
 		}
 	}
-}
-
-._noGap_ ._list_ {
-	@extend ._panel;
-
-	> * {
-		margin: 0 !important;
-		border: none;
-		border-bottom: solid 0.5px var(--divider);
-		border-radius: 0;
-		box-shadow: none;
-	}
-}
-
-._inContainer_ ._list_ > * {
-	margin: 0 !important;
-	border: none;
-	border-bottom: solid 0.5px var(--divider);
-	border-radius: 0;
-	box-shadow: none;
 }
 
 ._borderButton {
@@ -344,47 +326,35 @@ hr {
 	contain: content;
 }
 
-._section {
-	padding: var(--section-padding, 32px);
-
-	&:empty {
-		display: none;
-	}
-
-	&:not(:empty) + ._section {
-		border-top: solid 0.5px var(--divider);
-	}
-
-	@media (max-width: 500px) {
-		padding: var(--section-padding, 10px);
-
-		> ._title {
-			font-size: 1.1em;
-			font-weight: bold;
-		}
-	}
-
-	> ._title,
-	> ._content {
-		box-sizing: border-box;
-		max-width: var(--baseContentWidth);
-		margin: 0 auto;
-	}
-
-	> ._title {
-		margin-bottom: 24px;
-		font-weight: bold;
-	}
-
-	&._fitBottom {
-		padding-bottom: 0;
-	}
+._root {
+	box-sizing: border-box;
+	margin: var(--section-padding, 32px) auto;
+	max-width: min(var(--baseContentWidth), calc(100% - (var(--section-padding, 32px) * 2)));
 }
 
-._narrow_ ._section {
-	> ._title {
-		padding: 8px;
-		font-size: 1em;
+._flat_ {
+	--panelShadow: none;
+
+	._block {
+		//border-top: solid 0.5px var(--divider);
+		//border-bottom: solid 0.5px var(--divider);
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	._blockIsolated {
+		border: solid 0.5px var(--divider);
+		margin: var(--margin);
+	}
+
+	._isolated {
+		margin: 0;
+	}
+
+	._section {
+		&:not(:empty) + ._section {
+			border-top: solid 0.5px var(--divider);
+		}
 	}
 }
 

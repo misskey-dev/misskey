@@ -1,6 +1,6 @@
 <template>
 <div
-	class="tkcbzcuz _block"
+	class="tkcbzcuz"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -90,7 +90,7 @@
 		</div>
 	</article>
 </div>
-<div v-else class="_panel muted" @click="muted = false">
+<div v-else class="muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
@@ -851,6 +851,7 @@ export default defineComponent({
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	overflow: hidden;
+	overflow: clip;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
@@ -981,11 +982,12 @@ export default defineComponent({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			//position: sticky;
-			//top: 72px;
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
+			position: sticky;
+			top: calc(22px + var(--stickyTop, 0px));
+			left: 0;
 		}
 
 		> .main {
@@ -1129,6 +1131,7 @@ export default defineComponent({
 				margin: 0 10px 8px 0;
 				width: 50px;
 				height: 50px;
+				top: calc(14px + var(--stickyTop, 0px));
 			}
 		}
 	}

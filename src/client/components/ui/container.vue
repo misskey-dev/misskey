@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _block" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
+<div class="ukygtjoj _blockIsolated" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
