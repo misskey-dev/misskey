@@ -1,8 +1,6 @@
 <template>
-<div>
-	<div class="_section">
-		<XNotifications class="_content" @before="before" @after="after" page/>
-	</div>
+<div class="_root">
+	<XNotifications class="_content" @before="before" @after="after" page/>
 </div>
 </template>
 

@@ -264,8 +264,6 @@ export default defineComponent({
 		> .main {
 			width: 750px;
 			margin: 0 16px 0 0;
-			--section-padding: 0;
-			--baseContentWidth: 100%;
 			--margin: 16px;
 
 			> .header {
@@ -303,6 +301,9 @@ export default defineComponent({
 
 			> .main {
 				margin: 0;
+				border-radius: 0;
+				box-shadow: none;
+				width: 100%;
 			}
 		}
 	}

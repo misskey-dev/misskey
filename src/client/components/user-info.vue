@@ -141,4 +141,8 @@ export default defineComponent({
 		right: 8px;
 	}
 }
+
+._flat_ .vjnjpkug {
+	border: solid 0.5px var(--divider);
+}
 </style>

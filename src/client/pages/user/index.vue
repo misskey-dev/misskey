@@ -236,6 +236,7 @@ import { getUserMenu } from '@client/scripts/get-user-menu';
 import number from '../../filters/number';
 import { userPage, acct as getAcct } from '../../filters/user';
 import * as os from '@client/os';
+import { url } from '@client/config';
 
 export default defineComponent({
 	components: {
@@ -270,6 +271,10 @@ export default defineComponent({
 			INFO: computed(() => this.user ? {
 				userName: this.user,
 				avatar: this.user,
+				share: {
+					title: this.user.name,
+					url: `${url}/@${this.user.username}`
+				},
 				action: {
 					icon: faEllipsisH,
 					handler: this.menu

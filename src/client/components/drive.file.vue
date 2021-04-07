@@ -330,8 +330,8 @@ export default defineComponent({
 	}
 
 	> .thumbnail {
-		width: 128px;
-		height: 128px;
+		width: 110px;
+		height: 110px;
 		margin: auto;
 	}
 

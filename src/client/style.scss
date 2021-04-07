@@ -333,6 +333,8 @@ hr {
 }
 
 ._flat_ {
+	--section-padding: 0;
+	--baseContentWidth: 100%;
 	--panelShadow: none;
 
 	._block {

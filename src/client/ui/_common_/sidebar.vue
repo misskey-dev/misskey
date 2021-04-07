@@ -235,12 +235,12 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(import('../../components/launch-pad.vue'), {}, {
+			os.popup(import('@client/components/launch-pad.vue'), {}, {
 			}, 'closed');
 		},
 
 		addAcount() {
-			os.popup(import('../../components/signin-dialog.vue'), {}, {
+			os.popup(import('@client/components/signin-dialog.vue'), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
 					os.success();
@@ -249,7 +249,7 @@ export default defineComponent({
 		},
 
 		createAccount() {
-			os.popup(import('../../components/signup-dialog.vue'), {}, {
+			os.popup(import('@client/components/signup-dialog.vue'), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
