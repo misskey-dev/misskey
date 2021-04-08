@@ -988,6 +988,11 @@ export default defineComponent({
 			position: sticky;
 			top: calc(22px + var(--stickyTop, 0px));
 			left: 0;
+
+			/* iOSはoverflow: clipをサポートしていない影響でposition: stickyが動作しない */ 
+			@supports (-webkit-touch-callout: none) {
+				top: 0;
+			}
 		}
 
 		> .main {
@@ -1132,6 +1137,11 @@ export default defineComponent({
 				width: 50px;
 				height: 50px;
 				top: calc(14px + var(--stickyTop, 0px));
+
+				/* iOSはoverflow: clipをサポートしていない影響でposition: stickyが動作しない */ 
+				@supports (-webkit-touch-callout: none) {
+					top: 0;
+				}
 			}
 		}
 	}

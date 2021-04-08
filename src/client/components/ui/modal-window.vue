@@ -94,10 +94,10 @@ export default defineComponent({
 	flex-direction: column;
 	contain: content;
 
-	--section-padding: 24px;
+	--root-margin: 24px;
 
 	@media (max-width: 500px) {
-		--section-padding: 16px;
+		--root-margin: 16px;
 	}
 
 	> .header {

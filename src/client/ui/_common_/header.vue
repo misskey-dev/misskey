@@ -74,11 +74,16 @@ export default defineComponent({
 		},
 
 		menu(ev) {
-			modalMenu([this.info.share ? {
-				text: this.$ts.share,
-				icon: faShareAlt,
-				action: this.share
-			} : undefined], ev.currentTarget || ev.target);
+			const menu = this.info.menu ? this.info.menu() : [];
+			if (this.info.share) {
+				if (menu.length > 0) menu.push(null);
+				menu.push({
+					text: this.$ts.share,
+					icon: faShareAlt,
+					action: this.share
+				});
+			}
+			modalMenu(menu, ev.currentTarget || ev.target);
 		}
 	}
 });

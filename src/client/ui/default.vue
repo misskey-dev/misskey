@@ -227,6 +227,7 @@ export default defineComponent({
 	$header-height: 50px;
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
+	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
@@ -247,6 +248,10 @@ export default defineComponent({
 				border: none;
 				width: 100%;
 				border-radius: 0;
+
+				> .header {
+					width: 100%;
+				}
 			}
 		}
 	}
@@ -258,13 +263,14 @@ export default defineComponent({
 		margin: 32px 0;
 
 		> .sidebar {
-			width: 220px;
+			width: 260px;
 		}
 
 		> .main {
 			width: 750px;
 			margin: 0 16px 0 0;
-			--margin: 16px;
+			background: var(--bg);
+			--margin: 12px;
 
 			> .header {
 				position: sticky;
@@ -279,8 +285,17 @@ export default defineComponent({
 			}
 
 			> .content {
-				//background: var(--bg);
+				background: var(--bg);
 				--stickyTop: #{$header-height};
+			}
+
+			@media (max-width: 850px) {
+				padding-top: $header-height;
+
+				> .header {
+					position: fixed;
+					width: calc(100% - #{$nav-icon-only-width});
+				}
 			}
 		}
 

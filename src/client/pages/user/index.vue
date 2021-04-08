@@ -98,7 +98,7 @@
 		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSuspended }}</div> -->
 		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSilenced }}</div> -->
 
-		<div class="profile _section">
+		<div class="profile">
 			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_vMargin"/>
 
 			<div class="_vMargin _block main" :key="user.id">
@@ -177,7 +177,7 @@
 			</div>
 		</div>
 
-		<div class="contents _section">
+		<div class="contents">
 			<div class="nav _isolated">
 				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
 					<Fa :icon="faCommentAlt" class="icon"/>
@@ -196,7 +196,7 @@
 			<template v-if="page === 'index'">
 				<div>
 					<div v-if="user.pinnedNotes.length > 0">
-						<XNote v-for="note in user.pinnedNotes" class="note _blockIsolated" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+						<XNote v-for="note in user.pinnedNotes" class="note _block _isolated" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
 					<XPhotos :user="user" :key="user.id"/>
 					<XActivity :user="user" :key="user.id"/>
@@ -547,7 +547,6 @@ export default defineComponent({
 }
 
 .ftskorzw.narrow {
-	max-width: 100vw;
 	box-sizing: border-box;
 	overflow: hidden;
 	overflow: clip;

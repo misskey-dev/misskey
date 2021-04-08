@@ -249,11 +249,6 @@ hr {
 	@extend ._panel;
 }
 
-._blockIsolated {
-	@extend ._panel;
-	margin: var(--margin) 0;
-}
-
 ._isolated {
 	margin: var(--margin) 0;
 }
@@ -328,12 +323,20 @@ hr {
 
 ._root {
 	box-sizing: border-box;
-	margin: var(--section-padding, 32px) auto;
-	max-width: min(var(--baseContentWidth), calc(100% - (var(--section-padding, 32px) * 2)));
+	margin: var(--root-margin, 32px) auto;
+	max-width: min(var(--baseContentWidth), calc(100% - (var(--root-margin, 32px) * 2)));
+
+	._hr {
+		margin: var(--margin) calc(var(--root-margin, 32px) * -1);
+	}
+
+	@media (max-width: 500px) {
+		--root-margin: 10px;
+	}
 }
 
 ._flat_ {
-	--section-padding: 0;
+	--root-margin: 0;
 	--baseContentWidth: 100%;
 	--panelShadow: none;
 
@@ -344,18 +347,9 @@ hr {
 		box-shadow: none;
 	}
 
-	._blockIsolated {
-		border: solid 0.5px var(--divider);
-		margin: var(--margin);
-	}
-
-	._isolated {
-		margin: 0;
-	}
-
-	._section {
-		&:not(:empty) + ._section {
-			border-top: solid 0.5px var(--divider);
+	@media (max-width: 500px) {
+		._root {
+			--root-margin: 0;
 		}
 	}
 }

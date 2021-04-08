@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _blockIsolated"
+	class="note _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"

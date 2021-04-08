@@ -241,11 +241,12 @@ export default defineComponent({
 .npcljfve {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
 	$nav-width: 250px;
-	$nav-icon-only-width: 55px;
+	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 	$avatar-size: 32px;
 	$avatar-margin: 8px;
 
 	padding: 0 16px;
+	box-sizing: border-box;
 
 	&.iconOnly {
 		flex: 0 0 $nav-icon-only-width;

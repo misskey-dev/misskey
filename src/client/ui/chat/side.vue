@@ -117,7 +117,7 @@ export default defineComponent({
 .mrajymqm {
 	$header-height: 54px; // TODO: どこかに集約したい
 
-	--section-padding: 16px;
+	--root-margin: 16px;
 	--margin: var(--marginHalf);
 
 	height: 100%;

@@ -80,6 +80,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .dpvffvvy {
-	--section-padding: 16px;
+	--root-margin: 16px;
 }
 </style>

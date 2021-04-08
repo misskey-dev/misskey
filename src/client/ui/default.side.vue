@@ -118,7 +118,7 @@ export default defineComponent({
 .qvzfzxam {
 	$header-height: 58px; // TODO: どこかに集約したい
 
-	--section-padding: 16px;
+	--root-margin: 16px;
 	--margin: var(--marginHalf);
 
 	> .container {

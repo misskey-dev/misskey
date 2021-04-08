@@ -7,7 +7,7 @@
 >
 	<template #header>{{ $ts.signup }}</template>
 
-	<div class="_section">
+	<div class="_root">
 		<XSignup :auto-set="autoSet" @signup="onSignup"/>
 	</div>
 </XModalWindow>
