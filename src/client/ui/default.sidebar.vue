@@ -265,6 +265,14 @@ export default defineComponent({
 			width: calc(100% - 32px);
 		}
 
+		> .post {
+			> .button {
+				width: 46px;
+				height: 46px;
+				padding: 0;
+			}
+		}
+
 		> .item {
 			padding-left: 0;
 			width: 100%;
@@ -285,13 +293,6 @@ export default defineComponent({
 				display: none;
 			}
 
-			&:first-child {
-				margin-bottom: 8px;
-			}
-
-			&:last-child {
-				margin-top: 8px;
-			}
 		}
 	}
 
