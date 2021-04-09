@@ -20,8 +20,6 @@
 			</div>
 		</main>
 
-		<XSide class="side" ref="side"/>
-
 		<div v-if="isDesktop" class="widgets" ref="widgets">
 			<XWidgets @mounted="attachSticky"/>
 		</div>
@@ -63,7 +61,6 @@ import XSidebar from './default.sidebar.vue';
 import XDrawerSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
-import XSide from './default.side.vue';
 import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';
 
@@ -77,15 +74,6 @@ export default defineComponent({
 		XDrawerSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
-		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
-	},
-
-	provide() {
-		return {
-			sideViewHook: (url) => {
-				this.$refs.side.navigate(url);
-			}
-		};
 	},
 
 	data() {
@@ -184,12 +172,6 @@ export default defineComponent({
 			os.contextMenu([{
 				type: 'label',
 				text: path,
-			}, {
-				icon: faColumns,
-				text: this.$ts.openInSideView,
-				action: () => {
-					this.$refs.side.navigate(path);
-				}
 			}, {
 				icon: faWindowMaximize,
 				text: this.$ts.openInWindow,
