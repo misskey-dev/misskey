@@ -11,6 +11,7 @@ export class StickySidebar {
 	constructor(container: StickySidebar['container'], marginTop = 0) {
 		this.container = container;
 		this.el = this.container.children[0] as HTMLElement;
+		this.el.style.position = 'sticky';
 		this.spacer = document.createElement('div');
 		this.container.prepend(this.spacer);
 		this.marginTop = marginTop;

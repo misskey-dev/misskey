@@ -1,7 +1,9 @@
 <template>
 <div class="mk-app" :class="{ wallpaper, isMobile }">
 	<div class="columns">
-		<XSidebar class="sidebar" v-if="!isMobile"/>
+		<div class="sidebar" ref="sidebar" v-if="!isMobile">
+			<XSidebar/>
+		</div>
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
 			<header v-if="$store.state.titlebar" class="header" @click="onHeaderClick">
@@ -262,10 +264,6 @@ export default defineComponent({
 		max-width: 100%;
 		margin: 32px 0;
 
-		> .sidebar {
-			width: 260px;
-		}
-
 		> .main {
 			width: 750px;
 			margin: 0 16px 0 0;
@@ -334,6 +332,7 @@ export default defineComponent({
 		-webkit-backdrop-filter: blur(32px);
 		backdrop-filter: blur(32px);
 		background-color: var(--header);
+		border-top: solid 0.5px var(--divider);
 
 		> .button {
 			position: relative;

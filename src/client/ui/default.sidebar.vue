@@ -43,6 +43,7 @@ import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';
 import { getAccounts, addAccount, login } from '@client/account';
 import MkButton from '@client/components/ui/button.vue';
+import { StickySidebar } from '@client/scripts/sticky-sidebar';
 
 export default defineComponent({
 	components: {
@@ -89,6 +90,13 @@ export default defineComponent({
 	created() {
 		window.addEventListener('resize', this.calcViewState);
 		this.calcViewState();
+	},
+
+	mounted() {
+		const sticky = new StickySidebar(this.$el.parentElement, 16);
+		window.addEventListener('scroll', () => {
+			sticky.calc(window.scrollY);
+		}, { passive: true });
 	},
 
 	methods: {
@@ -240,13 +248,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .npcljfve {
 	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$nav-width: 250px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 	$avatar-size: 32px;
 	$avatar-margin: 8px;
 
 	padding: 0 16px;
 	box-sizing: border-box;
+	width: 260px;
 
 	&.iconOnly {
 		flex: 0 0 $nav-icon-only-width;
