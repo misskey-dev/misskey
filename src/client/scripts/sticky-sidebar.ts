@@ -28,7 +28,7 @@ export class StickySidebar {
 
 			if (this.isTop) {
 				this.isTop = false;
-				this.spacer.style.marginTop = `${Math.max(0, this.lastScrollTop - this.offsetTop)}px`;
+				this.spacer.style.marginTop = `${Math.max(0, this.lastScrollTop + this.marginTop - this.offsetTop)}px`;
 			}
 		} else { // upscroll
 			const overflow = (this.el.clientHeight + this.marginTop) - window.innerHeight;
@@ -39,7 +39,7 @@ export class StickySidebar {
 
 			if (this.isBottom) {
 				this.isBottom = false;
-				this.spacer.style.marginTop = `${this.lastScrollTop - (overflow - this.marginTop) - this.offsetTop}px`;
+				this.spacer.style.marginTop = `${this.lastScrollTop + this.marginTop - this.offsetTop - overflow}px`;
 			}
 		}
 
