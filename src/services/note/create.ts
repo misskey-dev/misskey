@@ -12,7 +12,7 @@ import { updateHashtags } from '../update-hashtag';
 import { concat } from '../../prelude/array';
 import insertNoteUnread from './unread';
 import { registerOrFetchInstanceDoc } from '../register-or-fetch-instance-doc';
-import extractMentions from '@/misc/extract-mentions';
+import { extractMentions } from '@/misc/extract-mentions';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
 import { extractHashtags } from '@/misc/extract-hashtags';
 import { Note, IMentionedRemoteUsers } from '../../models/entities/note';

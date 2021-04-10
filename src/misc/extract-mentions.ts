@@ -2,7 +2,7 @@
 
 import * as mfm from 'mfm-js';
 
-export default function(nodes: mfm.MfmNode[]): mfm.MfmMention['props'][] {
+export function extractMentions(nodes: mfm.MfmNode[]): mfm.MfmMention['props'][] {
 	// TODO: 重複を削除
 	const mentions = [] as mfm.MfmMention['props'][];
 
