@@ -150,7 +150,7 @@ export default defineComponent({
 			font-size: 1.25em;
 			padding: 0 0 0.5em 0;
 			margin: 1.5em 0 1em 0;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 		}
 
 		::v-deep(table) {
@@ -170,7 +170,7 @@ export default defineComponent({
 		::v-deep(kbd.key) {
 			display: inline-block;
 			padding: 6px 8px;
-			border: solid 1px var(--divider);
+			border: solid 0.5px var(--divider);
 			border-radius: 4px;
 			box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 		}

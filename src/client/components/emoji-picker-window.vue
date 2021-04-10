@@ -119,7 +119,7 @@ export default defineComponent({
 		> .index {
 			min-height: var(--height);
 			position: relative;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 				
 			> .arrow {
 				position: absolute;
@@ -177,7 +177,7 @@ export default defineComponent({
 			}
 
 			&.result {
-				border-bottom: solid 1px var(--divider);
+				border-bottom: solid 0.5px var(--divider);
 
 				&:empty {
 					display: none;

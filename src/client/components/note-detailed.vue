@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _panel"
+	class="note _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -1007,7 +1007,7 @@ export default defineComponent({
 						margin: 0 0.5em;
 						padding: 4px 6px;
 						font-size: 80%;
-						border: solid 1px var(--divider);
+						border: solid 0.5px var(--divider);
 						border-radius: 4px;
 					}
 
@@ -1110,7 +1110,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {

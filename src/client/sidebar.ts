@@ -143,6 +143,12 @@ export const sidebarDef = {
 					unisonReload();
 				}
 			}, {
+				text: 'pope',
+				action: () => {
+					localStorage.setItem('ui', 'pope');
+					unisonReload();
+				}
+			}, {
 				text: 'Chat (β)',
 				action: () => {
 					localStorage.setItem('ui', 'chat');

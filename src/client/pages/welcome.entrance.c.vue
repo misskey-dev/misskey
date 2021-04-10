@@ -255,7 +255,7 @@ export default defineComponent({
 					}
 
 					> .status {
-						border-top: solid 1px var(--divider);
+						border-top: solid 0.5px var(--divider);
 						padding: 32px;
 						font-size: 90%;
 
@@ -263,7 +263,7 @@ export default defineComponent({
 							> span:not(:last-child) {
 								padding-right: 1em;
 								margin-right: 1em;
-								border-right: solid 1px var(--divider);
+								border-right: solid 0.5px var(--divider);
 							}
 						}
 

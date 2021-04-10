@@ -122,7 +122,7 @@ export default defineComponent({
 		color: var(--fg);
 		background: transparent;
 		border: none;
-		border-bottom: solid 1px var(--divider);
+		border-bottom: solid 0.5px var(--divider);
 		border-radius: 0;
 		box-sizing: border-box;
 		font: inherit;
@@ -147,7 +147,7 @@ export default defineComponent({
 	}
 
 	> .logs {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		text-align: left;
 		padding: 16px;
 

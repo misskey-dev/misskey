@@ -142,7 +142,7 @@ export default defineComponent({
 	> .user {
 		$height: 32px;
 		padding: 16px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		line-height: $height;
 
 		> .avatar {

@@ -1,5 +1,5 @@
 <template>
-<div class="ukygtjoj _panel" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
+<div class="ukygtjoj _block _isolated" :class="{ naked, hideHeader: !showHeader, scrollable, closed: !showBody }" v-size="{ max: [380] }">
 	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
@@ -136,7 +136,7 @@ export default defineComponent({
 		position: relative;
 		color: var(--panelHeaderFg);
 		background: var(--panelHeaderBg);
-		box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
+		border-bottom: solid 0.5px var(--panelHeaderDivider);
 		z-index: 2;
 		line-height: 1.4em;
 
@@ -172,7 +172,7 @@ export default defineComponent({
 			padding: 24px;
 
 			& + ._content {
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 			}
 		}
 	}

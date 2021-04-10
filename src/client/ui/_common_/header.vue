@@ -12,14 +12,16 @@
 				<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 			</div>
 		</div>
-		<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
+		<button class="_button menu" @click.stop="menu"><Fa :icon="faEllipsisH"/></button>
+		<!--<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>-->
 	</template>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronLeft, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faCircle, faShareAlt, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { modalMenu } from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -42,7 +44,7 @@ export default defineComponent({
 		return {
 			canBack: false,
 			height: 0,
-			faChevronLeft, faCircle
+			faChevronLeft, faCircle, faShareAlt, faEllipsisH,
 		};
 	},
 
@@ -66,6 +68,23 @@ export default defineComponent({
 		back() {
 			if (this.canBack) this.$router.back();
 		},
+
+		share() {
+			navigator.share(this.info.share);
+		},
+
+		menu(ev) {
+			const menu = this.info.menu ? this.info.menu() : [];
+			if (this.info.share) {
+				if (menu.length > 0) menu.push(null);
+				menu.push({
+					text: this.$ts.share,
+					icon: faShareAlt,
+					action: this.share
+				});
+			}
+			modalMenu(menu, ev.currentTarget || ev.target);
+		}
 	}
 });
 </script>
@@ -74,59 +93,33 @@ export default defineComponent({
 .fdidabkb {
 	&.center {
 		text-align: center;
-	}
 
-	> .back {
-		height: var(--height);
-		width: var(--height);
-	}
-
-	> .action {
-		height: var(--height);
-		width: var(--height);
-	}
-
-	> .titleContainer {
-		width: calc(100% - (var(--height) * 2));
-
-		> .title {
-			height: var(--height);
-
-			> .avatar {
-				$size: 32px;
-				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
-				pointer-events: none;
-			}
-		}
-	}
-}
-</style>
-
-<style lang="scss" scoped>
-.fdidabkb {
-	> .back {
-		position: absolute;
-		z-index: 1;
-		top: 0;
-		left: 0;
-	}
-
-	> .action {
-		position: absolute;
-		z-index: 1;
-		top: 0;
-		right: 0;
-	}
-
-	&.center {
 		> .titleContainer {
 			margin: 0 auto;
 		}
 	}
 
+	> .back,
+	> .menu {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		height: var(--height);
+		width: var(--height);
+	}
+
+	> .back {
+		left: 0;
+	}
+
+	> .menu {
+		right: 0;
+	}
+
 	> .titleContainer {
 		overflow: auto;
 		white-space: nowrap;
+		width: calc(100% - (var(--height) * 2));
 
 		> .title {
 			display: inline-block;
@@ -136,16 +129,7 @@ export default defineComponent({
 			text-overflow: ellipsis;
 			padding: 0 16px;
 			position: relative;
-
-			> .indicator {
-				position: absolute;
-				top: initial;
-				right: 8px;
-				top: 8px;
-				color: var(--indicator);
-				font-size: 12px;
-				animation: blink 1s infinite;
-			}
+			height: var(--height);
 
 			> .icon + .text {
 				margin-left: 8px;
@@ -157,6 +141,8 @@ export default defineComponent({
 				width: $size;
 				height: $size;
 				vertical-align: bottom;
+				margin: calc((var(--height) - #{$size}) / 2) 8px calc((var(--height) - #{$size}) / 2) 0;
+				pointer-events: none;
 			}
 		}
 	}

@@ -235,12 +235,12 @@ export default defineComponent({
 		},
 
 		more(ev) {
-			os.popup(import('./launch-pad.vue'), {}, {
+			os.popup(import('@client/components/launch-pad.vue'), {}, {
 			}, 'closed');
 		},
 
 		addAcount() {
-			os.popup(import('./signin-dialog.vue'), {}, {
+			os.popup(import('@client/components/signin-dialog.vue'), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
 					os.success();
@@ -249,7 +249,7 @@ export default defineComponent({
 		},
 
 		createAccount() {
-			os.popup(import('./signup-dialog.vue'), {}, {
+			os.popup(import('@client/components/signup-dialog.vue'), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
 					this.switchAccountWithToken(res.i);
@@ -380,7 +380,7 @@ export default defineComponent({
 
 			> .divider {
 				margin: 16px 0;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 			}
 
 			> .item {
@@ -443,13 +443,13 @@ export default defineComponent({
 				&:first-child {
 					top: 0;
 					margin-bottom: 16px;
-					border-bottom: solid 1px var(--divider);
+					border-bottom: solid 0.5px var(--divider);
 				}
 
 				&:last-child {
 					bottom: 0;
 					margin-top: 16px;
-					border-top: solid 1px var(--divider);
+					border-top: solid 0.5px var(--divider);
 				}
 			}
 		}

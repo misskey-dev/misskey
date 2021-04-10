@@ -1,39 +1,37 @@
 <template>
-<div class="cmuxhskf" v-hotkey.global="keymap">
+<div class="cmuxhskf _root" v-hotkey.global="keymap">
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
-	<div class="_section">
-		<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _content _vMargin"/>
-		<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _panel _content _vMargin" fixed/>
-		<div class="tabs _panel _vMargin">
-			<div class="left">
-				<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
-				<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>
-				<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social" v-if="isLocalTimelineAvailable"><Fa :icon="faShareAlt"/></button>
-				<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global" v-if="isGlobalTimelineAvailable"><Fa :icon="faGlobe"/></button>
-				<span class="divider"></span>
-				<button class="_button tab" @click="() => { src = 'mentions'; saveSrc(); }" :class="{ active: src === 'mentions' }" v-tooltip="$ts.mentions"><Fa :icon="faAt"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadMentions"/></button>
-				<button class="_button tab" @click="() => { src = 'directs'; saveSrc(); }" :class="{ active: src === 'directs' }" v-tooltip="$ts.directNotes"><Fa :icon="faEnvelope"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadSpecifiedNotes"/></button>
-			</div>
-			<div class="right">
-				<button class="_button tab" @click="chooseChannel" :class="{ active: src === 'channel' }" v-tooltip="$ts.channel"><Fa :icon="faSatelliteDish"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadChannel"/></button>
-				<button class="_button tab" @click="chooseAntenna" :class="{ active: src === 'antenna' }" v-tooltip="$ts.antennas"><Fa :icon="faSatellite"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadAntenna"/></button>
-				<button class="_button tab" @click="chooseList" :class="{ active: src === 'list' }" v-tooltip="$ts.lists"><Fa :icon="faListUl"/></button>
-			</div>
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
+	<div class="tabs _block _vMargin">
+		<div class="left">
+			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
+			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>
+			<button class="_button tab" @click="() => { src = 'social'; saveSrc(); }" :class="{ active: src === 'social' }" v-tooltip="$ts._timelines.social" v-if="isLocalTimelineAvailable"><Fa :icon="faShareAlt"/></button>
+			<button class="_button tab" @click="() => { src = 'global'; saveSrc(); }" :class="{ active: src === 'global' }" v-tooltip="$ts._timelines.global" v-if="isGlobalTimelineAvailable"><Fa :icon="faGlobe"/></button>
+			<span class="divider"></span>
+			<button class="_button tab" @click="() => { src = 'mentions'; saveSrc(); }" :class="{ active: src === 'mentions' }" v-tooltip="$ts.mentions"><Fa :icon="faAt"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadMentions"/></button>
+			<button class="_button tab" @click="() => { src = 'directs'; saveSrc(); }" :class="{ active: src === 'directs' }" v-tooltip="$ts.directNotes"><Fa :icon="faEnvelope"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadSpecifiedNotes"/></button>
 		</div>
-		<XTimeline ref="tl"
-			class="_content _vMargin"
-			:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
-			:src="src"
-			:list="list ? list.id : null"
-			:antenna="antenna ? antenna.id : null"
-			:channel="channel ? channel.id : null"
-			:sound="true"
-			@before="before()"
-			@after="after()"
-			@queue="queueUpdated"
-		/>
+		<div class="right">
+			<button class="_button tab" @click="chooseChannel" :class="{ active: src === 'channel' }" v-tooltip="$ts.channel"><Fa :icon="faSatelliteDish"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadChannel"/></button>
+			<button class="_button tab" @click="chooseAntenna" :class="{ active: src === 'antenna' }" v-tooltip="$ts.antennas"><Fa :icon="faSatellite"/><Fa :icon="faCircle" class="i" v-if="$i.hasUnreadAntenna"/></button>
+			<button class="_button tab" @click="chooseList" :class="{ active: src === 'list' }" v-tooltip="$ts.lists"><Fa :icon="faListUl"/></button>
+		</div>
 	</div>
+	<XTimeline ref="tl"
+		class="_vMargin"
+		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
+		:src="src"
+		:list="list ? list.id : null"
+		:antenna="antenna ? antenna.id : null"
+		:channel="channel ? channel.id : null"
+		:sound="true"
+		@before="before()"
+		@after="after()"
+		@queue="queueUpdated"
+	/>
 </div>
 </template>
 
@@ -200,6 +198,18 @@ export default defineComponent({
 			});
 		},
 
+		async timetravel() {
+			const { canceled, result: date } = await os.dialog({
+				title: this.$ts.date,
+				input: {
+					type: 'date'
+				}
+			});
+			if (canceled) return;
+
+			this.$refs.tl.timetravel(new Date(date));
+		},
+
 		focus() {
 			(this.$refs.tl as any).focus();
 		}
@@ -221,70 +231,65 @@ export default defineComponent({
 		}
 	}
 
-	> ._section {
-		> .tabs {
-			display: flex;
-			box-sizing: border-box;
-			padding: 0 8px;
-			max-width: var(--baseContentWidth);
+	> .tabs {
+		display: flex;
+		box-sizing: border-box;
+		padding: 0 8px;
+		white-space: nowrap;
+		overflow: auto;
+
+		// 影の都合上
+		position: relative;
+
+		> .right {
 			margin-left: auto;
-			margin-right: auto;
-			white-space: nowrap;
-			overflow: auto;
+		}
 
-			// 影の都合上
-			position: relative;
+		> .left, > .right {
+			> .tab {
+				position: relative;
+				height: 50px;
+				padding: 0 12px;
 
-			> .right {
-				margin-left: auto;
+				&:hover {
+					color: var(--fgHighlighted);
+				}
+
+				&.active {
+					color: var(--fgHighlighted);
+
+					&:after {
+						content: "";
+						display: block;
+						position: absolute;
+						bottom: 0;
+						left: 0;
+						right: 0;
+						margin: 0 auto;
+						width: calc(100% - 16px);
+						height: 4px;
+						background: var(--accent);
+						border-radius: 8px 8px 0 0;
+					}
+				}
+
+				> .i {
+					position: absolute;
+					top: 16px;
+					right: 8px;
+					color: var(--indicator);
+					font-size: 8px;
+					animation: blink 1s infinite;
+				}
 			}
 
-			> .left, > .right {
-				> .tab {
-					position: relative;
-					height: 50px;
-					padding: 0 12px;
-
-					&:hover {
-						color: var(--fgHighlighted);
-					}
-
-					&.active {
-						color: var(--fgHighlighted);
-
-						&:after {
-							content: "";
-							display: block;
-							position: absolute;
-							bottom: 0;
-							left: 0;
-							right: 0;
-							margin: 0 auto;
-							width: calc(100% - 16px);
-							height: 4px;
-							background: var(--accent);
-							border-radius: 8px 8px 0 0;
-						}
-					}
-
-					> .i {
-						position: absolute;
-						top: 16px;
-						right: 8px;
-						color: var(--indicator);
-						font-size: 8px;
-						animation: blink 1s infinite;
-					}
-				}
-
-				> .divider {
-					display: inline-block;
-					width: 1px;
-					height: 28px;
-					vertical-align: middle;
-					margin: 0 8px;
-					background: var(--divider);
-				}
+			> .divider {
+				display: inline-block;
+				width: 1px;
+				height: 28px;
+				vertical-align: middle;
+				margin: 0 8px;
+				background: var(--divider);
 			}
 		}
 	}

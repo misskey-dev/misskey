@@ -704,6 +704,7 @@ export default defineComponent({
 	> .main {
 		flex: 1;
 		overflow: auto;
+		padding: var(--margin);
 
 		&, * {
 			user-select: none;
@@ -735,7 +736,7 @@ export default defineComponent({
 				> .folder,
 				> .file {
 					flex-grow: 1;
-					width: 144px;
+					width: 128px;
 					margin: 4px;
 					box-sizing: border-box;
 				}
@@ -743,7 +744,7 @@ export default defineComponent({
 				> .padding {
 					flex-grow: 1;
 					pointer-events: none;
-					width: 144px + 8px;
+					width: 128px + 8px;
 				}
 			}
 

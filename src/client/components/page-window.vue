@@ -14,7 +14,7 @@
 		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
 		<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 	</template>
-	<div class="yrolvcoq" style="min-height: 100%; background: var(--bg);">
+	<div class="yrolvcoq _flat_">
 		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
 </XWindow>
@@ -155,6 +155,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .yrolvcoq {
-	--section-padding: 16px;
+	min-height: 100%;
+	background: var(--bg);
 }
 </style>

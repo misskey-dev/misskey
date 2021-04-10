@@ -1,5 +1,5 @@
 <template>
-<div class="lznhrdub">
+<div class="lznhrdub _root">
 	<div class="_section">
 		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.searchUser }}</span></MkInput>
 

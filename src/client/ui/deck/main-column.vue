@@ -4,7 +4,7 @@
 		<XHeader :info="pageInfo"/>
 	</template>
 
-	<router-view v-slot="{ Component }">
+	<router-view v-slot="{ Component }" class="_flat_">
 		<transition>
 			<keep-alive :include="['timeline']">
 				<component :is="Component" :ref="changePage" @contextmenu.stop="onContextmenu"/>
