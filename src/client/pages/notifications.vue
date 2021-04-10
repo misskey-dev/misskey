@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import XNotifications from '@client/components/notifications.vue';
 import * as os from '@client/os';
@@ -21,7 +21,14 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.notifications,
-				icon: faBell
+				icon: faBell,
+				actions: [{
+					text: this.$ts.markAllAsRead,
+					icon: faCheck,
+					handler: () => {
+						os.apiWithDialog('notifications/mark-all-as-read');
+					}
+				}]
 			},
 		};
 	},

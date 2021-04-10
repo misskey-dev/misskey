@@ -276,10 +276,6 @@ export default defineComponent({
 					title: this.user.name,
 					url: `${url}/@${this.user.username}`
 				},
-				action: {
-					icon: faEllipsisH,
-					handler: this.menu
-				}
 			} : null),
 			user: null,
 			error: null,

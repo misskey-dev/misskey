@@ -45,6 +45,7 @@ import MkRemoteCaution from '@client/components/remote-caution.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
+import { url } from '@client/config';
 
 export default defineComponent({
 	components: {
@@ -65,6 +66,11 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: computed(() => this.note ? {
 				title: this.$ts.note,
 				avatar: this.note.user,
+				share: {
+					title: this.$t('noteOf', { user: this.note.user.name }),
+					text: this.note.text,
+					url: `${url}/notes/${this.note.id}`
+				},
 			} : null),
 			note: null,
 			clips: null,

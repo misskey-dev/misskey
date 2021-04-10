@@ -12,8 +12,12 @@
 				<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 			</div>
 		</div>
-		<button class="_button menu" @click.stop="menu"><Fa :icon="faEllipsisH"/></button>
-		<!--<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>-->
+		<div class="buttons">
+			<template v-if="info.actions && showActions">
+				<button v-for="action in info.actions" class="_button button" @click.stop="action.handler" v-tooltip="action.text"><Fa :icon="action.icon"/></button>
+			</template>
+			<button v-if="showMenu" class="_button button" @click.stop="menu"><Fa :icon="faEllipsisH"/></button>
+		</div>
 	</template>
 </div>
 </template>
@@ -43,9 +47,19 @@ export default defineComponent({
 	data() {
 		return {
 			canBack: false,
+			showActions: false,
 			height: 0,
 			faChevronLeft, faCircle, faShareAlt, faEllipsisH,
 		};
+	},
+
+	computed: {
+		showMenu() {
+			if (this.info.actions != null && !this.showActions) return true;
+			if (this.info.menu != null) return true;
+			if (this.info.share != null) return true;
+			return false;
+		}
 	},
 
 	watch: {
@@ -59,8 +73,10 @@ export default defineComponent({
 
 	mounted() {
 		this.height = this.$el.parentElement.offsetHeight + 'px';
+		this.showActions = this.$el.parentElement.offsetWidth >= 500;
 		new ResizeObserver((entries, observer) => {
 			this.height = this.$el.parentElement.offsetHeight + 'px';
+			this.showActions = this.$el.parentElement.offsetWidth >= 500;
 		}).observe(this.$el);
 	},
 
@@ -99,21 +115,25 @@ export default defineComponent({
 		}
 	}
 
-	> .back,
-	> .menu {
+	> .back {
 		position: absolute;
 		z-index: 1;
 		top: 0;
+		left: 0;
 		height: var(--height);
 		width: var(--height);
 	}
 
-	> .back {
-		left: 0;
-	}
-
-	> .menu {
+	> .buttons {
+		position: absolute;
+		z-index: 1;
+		top: 0;
 		right: 0;
+
+		> .button {
+			height: var(--height);
+			width: var(--height);
+		}
 	}
 
 	> .titleContainer {
