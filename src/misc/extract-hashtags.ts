@@ -1,7 +1,7 @@
 import * as mfm from 'mfm-js';
 import { unique } from '@/prelude/array';
 
-export default function(nodes: mfm.MfmNode[]): string[] {
+export function extractHashtags(nodes: mfm.MfmNode[]): string[] {
 	const hashtags = [] as string[];
 
 	mfm.inspect(nodes, (node) => {
