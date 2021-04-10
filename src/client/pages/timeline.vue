@@ -198,6 +198,18 @@ export default defineComponent({
 			});
 		},
 
+		async timetravel() {
+			const { canceled, result: date } = await os.dialog({
+				title: this.$ts.date,
+				input: {
+					type: 'date'
+				}
+			});
+			if (canceled) return;
+
+			this.$refs.tl.timetravel(new Date(date));
+		},
+
 		focus() {
 			(this.$refs.tl as any).focus();
 		}
