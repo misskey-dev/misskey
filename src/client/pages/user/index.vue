@@ -237,6 +237,7 @@ import number from '../../filters/number';
 import { userPage, acct as getAcct } from '../../filters/user';
 import * as os from '@client/os';
 import { url } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -268,7 +269,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.user ? {
+			[symbols.PAGE_INFO]: computed(() => this.user ? {
 				userName: this.user,
 				avatar: this.user,
 				share: {

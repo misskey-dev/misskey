@@ -13,6 +13,7 @@ import FormGroup from '@client/components/form/group.vue';
 import FormLink from '@client/components/form/link.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -24,7 +25,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.plugins,
 				icon: faPlug
 			},
@@ -34,7 +35,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 });
 </script>

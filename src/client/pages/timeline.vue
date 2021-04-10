@@ -44,6 +44,7 @@ import XTimeline from '@client/components/timeline.vue';
 import XPostForm from '@client/components/post-form.vue';
 import { scroll } from '@client/scripts/scroll';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	name: 'timeline',
@@ -63,7 +64,7 @@ export default defineComponent({
 			menuOpened: false,
 			queue: 0,
 			width: 0,
-			INFO: computed(() => ({
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
 				icon: this.src === 'local' ? faComments : this.src === 'social' ? faShareAlt : this.src === 'global' ? faGlobe : faHome,
 				action: {

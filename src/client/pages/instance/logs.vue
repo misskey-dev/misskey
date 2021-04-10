@@ -37,6 +37,7 @@ import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -48,7 +49,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.serverLogs,
 				icon: faStream
 			},

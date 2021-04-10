@@ -33,6 +33,7 @@ import MkContainer from '@client/components/ui/container.vue';
 import MkButton from '@client/components/ui/button.vue';
 import { createAiScriptEnv } from '@client/scripts/aiscript/api';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -43,7 +44,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.scratchpad,
 				icon: faTerminal,
 			},

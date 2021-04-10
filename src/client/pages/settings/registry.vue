@@ -21,6 +21,7 @@ import FormGroup from '@client/components/form/group.vue';
 import FormButton from '@client/components/form/button.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -38,7 +39,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.registry,
 				icon: faCogs
 			},
@@ -51,7 +52,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

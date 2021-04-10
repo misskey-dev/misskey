@@ -78,6 +78,7 @@ import { ColdDeviceStorage } from '@client/store';
 import { i18n } from '@client/i18n';
 import { defaultStore } from '@client/store';
 import { fetchThemes, getThemes } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -144,7 +145,7 @@ export default defineComponent({
 		});
 
 		return {
-			INFO,
+			[symbols.PAGE_INFO]: INFO,
 			darkThemes,
 			lightThemes,
 			darkTheme,

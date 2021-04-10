@@ -75,6 +75,7 @@ import MkFolder from '@client/components/ui/folder.vue';
 import MkInput from '@client/components/ui/input.vue';
 import number from '@client/filters/number';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -92,7 +93,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.explore,
 				icon: faHashtag
 			},

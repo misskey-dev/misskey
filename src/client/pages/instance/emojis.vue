@@ -59,6 +59,7 @@ import MkPagination from '@client/components/ui/pagination.vue';
 import MkTab from '@client/components/tab.vue';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -70,7 +71,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.customEmojis,
 				icon: faLaugh,
 				action: {

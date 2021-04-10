@@ -20,6 +20,7 @@ import MkContainer from '@client/components/ui/container.vue';
 import XPostForm from '@client/components/post-form.vue';
 import XNotes from '@client/components/notes.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -37,7 +38,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.clip ? {
+			[symbols.PAGE_INFO]: computed(() => this.clip ? {
 				title: this.clip.name,
 				icon: faPaperclip,
 				action: {

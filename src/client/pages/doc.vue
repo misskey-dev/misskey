@@ -15,6 +15,7 @@ import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import { url, lang } from '@client/config';
 import MkLink from '@client/components/link.vue';
+import * as symbols from '@client/symbols';
 
 const markdown = MarkdownIt({
 	html: true
@@ -38,7 +39,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.title ? {
+			[symbols.PAGE_INFO]: computed(() => this.title ? {
 				title: this.title,
 				icon: faQuestionCircle,
 			} : null),

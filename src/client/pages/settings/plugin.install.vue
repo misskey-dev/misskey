@@ -29,6 +29,7 @@ import MkInfo from '@client/components/ui/info.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { unisonReload } from '@client/scripts/unison-reload';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -46,7 +47,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.install,
 				icon: faDownload
 			},
@@ -56,7 +57,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

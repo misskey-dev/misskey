@@ -37,6 +37,7 @@ import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons';
 import XPage from '@client/components/page/page.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -56,7 +57,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.page ? {
+			[symbols.PAGE_INFO]: computed(() => this.page ? {
 				title: computed(() => this.page.title || this.page.name),
 				avatar: this.page.user,
 			} : null),

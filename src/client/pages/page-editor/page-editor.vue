@@ -108,6 +108,7 @@ import { url } from '@client/config';
 import { collectPageVars } from '@client/scripts/collect-page-vars';
 import * as os from '@client/os';
 import { selectFile } from '@client/scripts/select-file';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -132,7 +133,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => {
+			[symbols.PAGE_INFO]: computed(() => {
 				let title = this.$ts._pages.newPage;
 				if (this.initPageId) {
 					title = this.$ts._pages.editPage;

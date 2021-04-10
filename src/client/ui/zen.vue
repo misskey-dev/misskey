@@ -28,6 +28,7 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { host } from '@client/config';
 import XHeader from './_common_/header.vue';
 import XCommon from './_common_/common.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -50,8 +51,8 @@ export default defineComponent({
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 

@@ -32,6 +32,7 @@ import MkInput from '@client/components/ui/input.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -40,7 +41,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: 'API console',
 				icon: faTerminal
 			},

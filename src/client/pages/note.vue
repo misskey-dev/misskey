@@ -44,6 +44,7 @@ import XNotes from '@client/components/notes.vue';
 import MkRemoteCaution from '@client/components/remote-caution.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -61,7 +62,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			INFO: computed(() => this.note ? {
+			[symbols.PAGE_INFO]: computed(() => this.note ? {
 				title: this.$ts.note,
 				avatar: this.note.user,
 			} : null),

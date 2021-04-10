@@ -22,6 +22,7 @@ import XNotes from '@client/components/notes.vue';
 import XHeader from '@client/ui/_common_/header.vue';
 import { deckStore } from '@client/ui/deck/deck-store';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -51,8 +52,8 @@ export default defineComponent({
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 

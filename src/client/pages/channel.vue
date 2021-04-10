@@ -35,6 +35,7 @@ import XPostForm from '@client/components/post-form.vue';
 import XTimeline from '@client/components/timeline.vue';
 import XChannelFollowButton from '@client/components/channel-follow-button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -53,7 +54,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.channel ? {
+			[symbols.PAGE_INFO]: computed(() => this.channel ? {
 				title: this.channel.name,
 				icon: faSatelliteDish,
 			} : null),

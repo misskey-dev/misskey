@@ -43,6 +43,7 @@ import getAcct from '@/misc/acct/render';
 import MkButton from '@client/components/ui/button.vue';
 import { acct } from '../../filters/user';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -51,7 +52,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.messaging,
 				icon: faComments
 			},

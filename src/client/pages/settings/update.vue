@@ -41,6 +41,7 @@ import FormKeyValueView from '@client/components/form/key-value-view.vue';
 import MkInfo from '@client/components/ui/info.vue';
 import * as os from '@client/os';
 import { version, instanceName } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -58,7 +59,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: 'Misskey Update',
 				icon: faSyncAlt
 			},
@@ -70,7 +71,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 
 		os.api('meta', {
 			detail: false

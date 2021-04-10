@@ -28,6 +28,7 @@ import FormGroup from '@client/components/form/group.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { playFile } from '@client/scripts/sound';
+import * as symbols from '@client/symbols';
 
 const soundsTypes = [
 	null,
@@ -68,7 +69,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.sounds,
 				icon: faMusic
 			},
@@ -100,7 +101,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

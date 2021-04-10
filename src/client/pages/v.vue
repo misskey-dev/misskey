@@ -14,11 +14,12 @@
 import { defineComponent } from 'vue';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { version } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: 'Misskey',
 				icon: null
 			},

@@ -63,6 +63,7 @@ import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';
+import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 600;
@@ -125,8 +126,8 @@ export default defineComponent({
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 				document.title = `${this.pageInfo.title} | ${instanceName}`;
 			}
 		},

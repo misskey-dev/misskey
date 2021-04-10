@@ -143,6 +143,7 @@ import FormKeyValueView from '@client/components/form/key-value-view.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -159,7 +160,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.accountInfo,
 				icon: faInfoCircle
 			},
@@ -168,7 +169,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 
 		os.api('users/stats', {
 			userId: this.$i.id

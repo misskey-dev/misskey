@@ -261,6 +261,7 @@ import { url } from '@client/config';
 import getAcct from '@/misc/acct/render';
 import * as os from '@client/os';
 import { fetchInstance } from '@client/instance';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -274,7 +275,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.instance,
 				icon: faCog,
 			},

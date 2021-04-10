@@ -17,6 +17,7 @@ import * as os from '@client/os';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { resolve } from '@client/router';
 import { url } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -51,8 +52,8 @@ export default defineComponent({
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 

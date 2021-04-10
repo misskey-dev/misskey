@@ -38,6 +38,7 @@ import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -46,7 +47,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.list ? {
+			[symbols.PAGE_INFO]: computed(() => this.list ? {
 				title: this.list.name,
 				icon: faListUl,
 			} : null),

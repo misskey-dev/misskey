@@ -53,6 +53,7 @@ import FormButton from '@client/components/form/button.vue';
 import { scroll } from '@client/scripts/scroll';
 import { signout } from '@client/account';
 import { unisonReload } from '@client/scripts/unison-reload';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -148,7 +149,7 @@ export default defineComponent({
 		});
 
 		return {
-			INFO,
+			[symbols.PAGE_INFO]: INFO,
 			narrow,
 			view,
 			el,

@@ -67,6 +67,7 @@ import { host } from '@client/config';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { addTheme } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -78,7 +79,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
 				icon: faPalette,
 			},

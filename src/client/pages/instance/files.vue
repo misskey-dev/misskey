@@ -71,6 +71,7 @@ import MkPagination from '@client/components/ui/pagination.vue';
 import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
 import bytes from '@client/filters/bytes';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -83,7 +84,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
 				icon: faCloud
 			},

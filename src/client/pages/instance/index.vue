@@ -70,6 +70,7 @@ import number from '../../filters/number';
 import MkInstanceInfo from './instance.vue';
 import XMetrics from './index.metrics.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -85,7 +86,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				tabs: [{
 					id: 'index',
 					title: null,

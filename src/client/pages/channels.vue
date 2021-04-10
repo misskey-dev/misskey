@@ -39,6 +39,7 @@ import MkChannelPreview from '@client/components/channel-preview.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkTab from '@client/components/tab.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -46,7 +47,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.channel,
 				icon: faSatelliteDish,
 				action: {
