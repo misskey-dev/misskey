@@ -1,7 +1,7 @@
 <template>
 <div class="fdidabkb" :class="{ center }" :style="`--height:${height};`">
 	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
-		<button class="_button back" v-if="withBack && canBack" @click.stop="back()"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button back" v-if="withBack && canBack" @click.stop="back()" v-tooltip="$ts.goBack"><Fa :icon="faChevronLeft"/></button>
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">

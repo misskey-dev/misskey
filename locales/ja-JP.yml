@@ -711,6 +711,7 @@ jumpToSpecifiedDate: "特定の日付にジャンプ"
 showingPastTimeline: "過去のタイムラインを表示しています"
 clear: "クリア"
 markAllAsRead: "全て既読にする"
+goBack: "戻る"
 
 _email:
   _follow:
