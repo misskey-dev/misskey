@@ -6,17 +6,10 @@ import { unique } from '@/prelude/array';
 const removeHash = (x: string) => x.replace(/#[^#]*$/, '');
 
 export function extractUrlFromMfm(nodes: mfm.MfmNode[], respectSilentFlag = true): string[] {
-	let urls = [] as string[];
-
-	mfm.inspect(nodes, (node) => {
-		if (node.type === 'url') {
-			urls.push(node.props.url);
-		} else if (node.type === 'link' && (!respectSilentFlag || !node.props.silent)) {
-			urls.push(node.props.url);
-		}
+	const urlNodes = mfm.extract(nodes, (node) => {
+		return (node.type === 'url') || (node.type === 'link' && (!respectSilentFlag || !node.props.silent));
 	});
-
-	urls = unique(urls);
+	const urls: string[] = unique(urlNodes.map(x => x.props.url));
 
 	return urls.reduce((array, url) => {
 		const urlWithoutHash = removeHash(url);
