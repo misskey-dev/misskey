@@ -26,6 +26,7 @@
 import { defineComponent } from 'vue';
 import { faChevronLeft, faCircle, faShareAlt, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { modalMenu } from '@client/os';
+import { url } from '@client/config';
 
 export default defineComponent({
 	props: {
@@ -86,7 +87,10 @@ export default defineComponent({
 		},
 
 		share() {
-			navigator.share(this.info.share);
+			navigator.share({
+				url: url + this.info.path,
+				...this.info.share,
+			});
 		},
 
 		menu(ev) {

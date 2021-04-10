@@ -687,6 +687,7 @@ textColor: "文字"
 saveAs: "名前を付けて保存"
 advanced: "高度"
 value: "値"
+createdAt: "作成日時"
 updatedAt: "更新日時"
 saveConfirm: "保存しますか？"
 deleteConfirm: "削除しますか？"
@@ -712,6 +713,7 @@ showingPastTimeline: "過去のタイムラインを表示しています"
 clear: "クリア"
 markAllAsRead: "全て既読にする"
 goBack: "戻る"
+unlikeConfirm: "いいね解除しますか？"
 
 _email:
   _follow:

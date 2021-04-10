@@ -238,7 +238,6 @@ import { getUserMenu } from '@client/scripts/get-user-menu';
 import number from '../../filters/number';
 import { userPage, acct as getAcct } from '../../filters/user';
 import * as os from '@client/os';
-import { url } from '@client/config';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
@@ -274,9 +273,9 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: computed(() => this.user ? {
 				userName: this.user,
 				avatar: this.user,
+				path: `/@${this.user.username}`,
 				share: {
 					title: this.user.name,
-					url: `${url}/@${this.user.username}`
 				},
 			} : null),
 			user: null,
