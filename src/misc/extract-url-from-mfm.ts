@@ -6,29 +6,21 @@ import { unique } from '@/prelude/array';
 const removeHash = (x: string) => x.replace(/#[^#]*$/, '');
 
 export function extractUrlFromMfm(nodes: mfm.MfmNode[], respectSilentFlag = true): string[] {
-	const urlNodes = [] as (mfm.MfmUrl | mfm.MfmLink)[];
+	let urls = [] as string[];
 
-	function scan(nodes: mfm.MfmNode[]) {
-		for (const node of nodes) {
-			if (node.type === 'url') {
-				urlNodes.push(node);
-			} else if (node.type === 'link') {
-				if (!respectSilentFlag || !node.props.silent) {
-					urlNodes.push(node);
-				}
-			} else if (node.children) {
-				scan(node.children);
-			}
+	mfm.inspect(nodes, (node) => {
+		if (node.type === 'url') {
+			urls.push(node.props.url);
+		} else if (node.type === 'link' && (!respectSilentFlag || !node.props.silent)) {
+			urls.push(node.props.url);
 		}
-	}
+	});
 
-	scan(nodes);
-
-	const urls = unique(urlNodes.map(x => x.props.url));
+	urls = unique(urls);
 
 	return urls.reduce((array, url) => {
-		const removed = removeHash(url);
-		if (!array.map(x => removeHash(x)).includes(removed)) array.push(url);
+		const urlWithoutHash = removeHash(url);
+		if (!array.map(x => removeHash(x)).includes(urlWithoutHash)) array.push(url);
 		return array;
 	}, [] as string[]);
 }
