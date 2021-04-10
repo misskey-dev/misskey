@@ -1,6 +1,6 @@
 <template>
 <div v-if="channel" class="_section">
-	<div class="wpgynlbz _content _panel _vMargin" :class="{ hide: !showBanner }">
+	<div class="wpgynlbz _content _panel _gap" :class="{ hide: !showBanner }">
 		<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
 			<template v-if="showBanner"><Fa :icon="faAngleUp"/></template>
@@ -20,9 +20,9 @@
 		</div>
 	</div>
 
-	<XPostForm :channel="channel" class="post-form _content _panel _vMargin" fixed v-if="$i"/>
+	<XPostForm :channel="channel" class="post-form _content _panel _gap" fixed v-if="$i"/>
 
-	<XTimeline class="_content _vMargin _noGap_" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline class="_content _gap _noGap_" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 

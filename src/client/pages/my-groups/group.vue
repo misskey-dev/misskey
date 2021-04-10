@@ -12,7 +12,7 @@
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_section members _vMargin">
+		<div v-if="group" class="_section members _gap">
 			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">

@@ -1,19 +1,19 @@
 <template>
 <div class="fcuexfpr _root">
 	<div v-if="note" class="note" v-anim>
-		<div class="_vMargin" v-if="showNext">
+		<div class="_gap" v-if="showNext">
 			<XNotes class="_content _noGap_" :pagination="next"/>
 		</div>
 
-		<div class="main _vMargin">
+		<div class="main _gap">
 			<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
-			<div class="_content _vMargin">
-				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_vMargin"/>
-				<XNoteDetailed v-model:note="note" :key="note.id" class="_vMargin"/>
+			<div class="_content _gap">
+				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_gap"/>
+				<XNoteDetailed v-model:note="note" :key="note.id" class="_gap"/>
 			</div>
-			<div class="_content clips _vMargin" v-if="clips && clips.length > 0">
+			<div class="_content clips _gap" v-if="clips && clips.length > 0">
 				<div class="title">{{ $ts.clip }}</div>
-				<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _vMargin">
+				<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
 					<b>{{ item.name }}</b>
 					<div v-if="item.description" class="description">{{ item.description }}</div>
 					<div class="user">
@@ -24,7 +24,7 @@
 			<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
 		</div>
 
-		<div class="_vMargin" v-if="showPrev">
+		<div class="_gap" v-if="showPrev">
 			<XNotes class="_content _noGap_" :pagination="prev"/>
 		</div>
 	</div>

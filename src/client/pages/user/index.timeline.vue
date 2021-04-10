@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkTab v-model:value="with_" class="_isolated _section">
+	<MkTab v-model:value="with_" class="_gap _section">
 		<option :value="null">{{ $ts.notes }}</option>
 		<option value="replies">{{ $ts.notesAndReplies }}</option>
 		<option value="files">{{ $ts.withFiles }}</option>

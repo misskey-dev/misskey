@@ -1,18 +1,18 @@
 <template>
 <div class="iltifgqe">
-	<div class="editor _panel _vMargin">
+	<div class="editor _panel _gap">
 		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
 		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
-	<MkContainer :body-togglable="true" class="_vMargin">
+	<MkContainer :body-togglable="true" class="_gap">
 		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</MkContainer>
 
-	<div class="_vMargin">
+	<div class="_gap">
 		{{ $ts.scratchpadDescription }}
 	</div>
 </div>

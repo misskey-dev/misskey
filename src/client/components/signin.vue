@@ -40,9 +40,9 @@
 	</div>
 	<div class="_hr"></div>
 	<div class="social">
-		<a class="_borderButton _vMargin" v-if="meta && meta.enableTwitterIntegration" :href="`${apiUrl}/signin/twitter`"><Fa :icon="faTwitter" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
-		<a class="_borderButton _vMargin" v-if="meta && meta.enableGithubIntegration" :href="`${apiUrl}/signin/github`"><Fa :icon="faGithub" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
-		<a class="_borderButton _vMargin" v-if="meta && meta.enableDiscordIntegration" :href="`${apiUrl}/signin/discord`"><Fa :icon="faDiscord" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Discord' }) }}</a>
+		<a class="_borderButton _gap" v-if="meta && meta.enableTwitterIntegration" :href="`${apiUrl}/signin/twitter`"><Fa :icon="faTwitter" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
+		<a class="_borderButton _gap" v-if="meta && meta.enableGithubIntegration" :href="`${apiUrl}/signin/github`"><Fa :icon="faGithub" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
+		<a class="_borderButton _gap" v-if="meta && meta.enableDiscordIntegration" :href="`${apiUrl}/signin/discord`"><Fa :icon="faDiscord" style="margin-right: 4px;"/>{{ $t('signinWith', { x: 'Discord' }) }}</a>
 	</div>
 </form>
 </template>

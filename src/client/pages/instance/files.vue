@@ -35,7 +35,7 @@
 				</MkInput>
 			</div>
 			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">
-				<button class="file _panel _button _vMargin" v-for="file in items" :key="file.id" @click="show(file, $event)">
+				<button class="file _panel _button _gap" v-for="file in items" :key="file.id" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
 						<div>

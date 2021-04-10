@@ -2,9 +2,10 @@
 <div class="cmuxhskf _root" v-hotkey.global="keymap">
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _isolated"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _isolated" fixed/>
-	<div class="tabs _block _vMargin">
+	<div class="_magnet"></div>
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _gap"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _gap" fixed/>
+	<div class="tabs _block _gap">
 		<div class="left">
 			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
 			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>
@@ -21,7 +22,7 @@
 		</div>
 	</div>
 	<XTimeline ref="tl"
-		class="_vMargin"
+		class="_gap"
 		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
 		:src="src"
 		:list="list ? list.id : null"

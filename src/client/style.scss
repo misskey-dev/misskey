@@ -249,6 +249,14 @@ hr {
 	@extend ._panel;
 }
 
+._gap {
+	margin: var(--margin) 0;
+}
+
+._magnet {
+	margin-bottom: calc(var(--margin) * -1);
+}
+
 ._isolated {
 	margin: var(--margin) 0;
 }
@@ -347,6 +355,10 @@ hr {
 		box-shadow: none;
 	}
 
+	._isolated {
+		margin: var(--margin);
+	}
+
 	@media (max-width: 500px) {
 		._root {
 			--root-margin: 0;
@@ -373,12 +385,6 @@ hr {
 	background: var(--acrylicPanel);
 	-webkit-backdrop-filter: blur(15px);
 	backdrop-filter: blur(15px);
-}
-
-._vMargin {
-	& + ._vMargin {
-		margin-top: var(--margin);
-	}
 }
 
 ._table {

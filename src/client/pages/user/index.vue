@@ -1,9 +1,9 @@
 <template>
 <div>
 	<div class="ftskorzw wide _section" v-if="user && narrow === false">
-		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_vMargin"/>
+		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
 
-		<div class="banner-container _vMargin" :style="style">
+		<div class="banner-container _gap" :style="style">
 			<div class="banner" ref="banner" :style="style"></div>
 		</div>
 		<div class="contents">
@@ -56,11 +56,11 @@
 						</dd>
 					</dl>
 				</div>
-				<XActivity :user="user" :key="user.id" class="_vMargin"/>
-				<XPhotos :user="user" :key="user.id" class="_vMargin"/>
+				<XActivity :user="user" :key="user.id" class="_gap"/>
+				<XPhotos :user="user" :key="user.id" class="_gap"/>
 			</div>
 			<div class="main">
-				<div class="nav _vMargin">
+				<div class="nav _gap">
 					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
 						<Fa :icon="faCommentAlt" class="icon"/>
 						<span>{{ $ts.notes }}</span>
@@ -79,17 +79,17 @@
 					</div>
 				</div>
 				<template v-if="page === 'index'">
-					<div v-if="user.pinnedNotes.length > 0" class="_vMargin">
-						<XNote v-for="note in user.pinnedNotes" class="note _vMargin" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+					<div v-if="user.pinnedNotes.length > 0" class="_gap">
+						<XNote v-for="note in user.pinnedNotes" class="note _gap" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
-					<div class="_vMargin">
+					<div class="_gap">
 						<XUserTimeline :user="user"/>
 					</div>
 				</template>
-				<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_vMargin"/>
-				<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_vMargin"/>
-				<XClips v-else-if="page === 'clips'" :user="user" class="_vMargin"/>
-				<XPages v-else-if="page === 'pages'" :user="user" class="_vMargin"/>
+				<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_gap"/>
+				<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_gap"/>
+				<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
+				<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
 			</div>
 		</div>
 	</div>
@@ -98,10 +98,12 @@
 		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSuspended }}</div> -->
 		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSilenced }}</div> -->
 
-		<div class="profile">
-			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_vMargin"/>
+		<div class="_magnet"></div>
 
-			<div class="_vMargin _block main" :key="user.id">
+		<div class="profile">
+			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
+
+			<div class="_gap _block main" :key="user.id">
 				<div class="banner-container" :style="style">
 					<div class="banner" ref="banner" :style="style"></div>
 					<div class="fade"></div>
@@ -178,7 +180,7 @@
 		</div>
 
 		<div class="contents">
-			<div class="nav _isolated">
+			<div class="nav _gap">
 				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
 					<Fa :icon="faCommentAlt" class="icon"/>
 					<span>{{ $ts.notes }}</span>
@@ -196,7 +198,7 @@
 			<template v-if="page === 'index'">
 				<div>
 					<div v-if="user.pinnedNotes.length > 0">
-						<XNote v-for="note in user.pinnedNotes" class="note _block _isolated" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+						<XNote v-for="note in user.pinnedNotes" class="note _block _gap" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
 					<XPhotos :user="user" :key="user.id"/>
 					<XActivity :user="user" :key="user.id"/>
@@ -205,10 +207,10 @@
 					<XUserTimeline :user="user"/>
 				</div>
 			</template>
-			<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _vMargin"/>
-			<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _vMargin"/>
-			<XClips v-else-if="page === 'clips'" :user="user" class="_vMargin"/>
-			<XPages v-else-if="page === 'pages'" :user="user" class="_vMargin"/>
+			<XFollowList v-else-if="page === 'following'" type="following" :user="user" class="_content _gap"/>
+			<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
+			<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
+			<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
 		</div>
 	</div>
 	<div v-else-if="error">

@@ -4,9 +4,9 @@
 		<template #header><Fa :icon="faTachometerAlt"/> {{ $ts.overview }}</template>
 
 		<div class="sboqnrfi" :style="{ gridTemplateRows: overviewHeight }">
-			<MkInstanceStats :chart-limit="300" :detailed="true" class="_vMargin" ref="stats"/>
+			<MkInstanceStats :chart-limit="300" :detailed="true" class="_gap" ref="stats"/>
 
-			<MkContainer :body-togglable="true" class="_vMargin">
+			<MkContainer :body-togglable="true" class="_gap">
 				<template #header><Fa :icon="faInfoCircle"/>{{ $ts.instanceInfo }}</template>
 
 				<div class="_content">
@@ -19,7 +19,7 @@
 				</div>
 			</MkContainer>
 			
-			<MkContainer :body-togglable="true" :scrollable="true" class="_vMargin" style="height: 300px;">
+			<MkContainer :body-togglable="true" :scrollable="true" class="_gap" style="height: 300px;">
 				<template #header><Fa :icon="faDatabase"/>{{ $ts.database }}</template>
 
 				<div class="_content" v-if="dbInfo">

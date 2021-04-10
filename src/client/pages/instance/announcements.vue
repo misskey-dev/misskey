@@ -3,7 +3,7 @@
 	<div class="_section">
 		<div class="_content">
 			<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
-			<section class="_card _vMargin announcements" v-for="announcement in announcements">
+			<section class="_card _gap announcements" v-for="announcement in announcements">
 				<div class="_content announcement">
 					<MkInput v-model:value="announcement.title">
 						<span>{{ $ts.title }}</span>

@@ -1,7 +1,7 @@
 <template>
 <div class="_section">
 	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
-		<section class="_card announcement _vMargin" v-for="(announcement, i) in items" :key="announcement.id">
+		<section class="_card announcement _gap" v-for="(announcement, i) in items" :key="announcement.id">
 			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>

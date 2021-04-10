@@ -1,6 +1,6 @@
 <template>
 <div v-if="clip" class="_section">
-	<div class="okzinsic _content _panel _vMargin">
+	<div class="okzinsic _content _panel _gap">
 		<div class="description" v-if="clip.description">
 			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 		</div>
@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<XNotes class="_content _vMargin" :pagination="pagination" :detail="true"/>
+	<XNotes class="_content _gap" :pagination="pagination" :detail="true"/>
 </div>
 </template>
 

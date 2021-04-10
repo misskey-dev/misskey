@@ -11,20 +11,20 @@
 	<div class="_section">
 		<div class="_content grwlizim featured" v-if="tab === 'featured'">
 			<MkPagination :pagination="featuredPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 
 		<div class="_content grwlizim following" v-if="tab === 'following'">
 			<MkPagination :pagination="followingPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 
 		<div class="_content grwlizim owned" v-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
 			<MkPagination :pagination="ownedPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 	</div>

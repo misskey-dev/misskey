@@ -12,7 +12,7 @@
 		</div>
 	</section>
 	<section class="_section">
-		<div class="_content _card _vMargin">
+		<div class="_content _card _gap">
 			<div class="_content">
 				<MkInput v-model:value="name" required><span>{{ $ts.name }}</span></MkInput>
 				<MkInput v-model:value="author" required><span>{{ $ts.author }}</span></MkInput>
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="_content _card _vMargin">
+		<div class="_content _card _gap">
 			<div class="list-view _content">
 				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
 					<div class="_inputs">

@@ -15,7 +15,7 @@
 	</div>
 
 	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<XNote :note="note" class="_block _isolated" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
+		<XNote :note="note" class="_block _gap" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
 	</XList>
 
 	<div v-show="more && !reversed" style="margin-top: var(--margin);">
