@@ -1,5 +1,5 @@
 <template>
-<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj _panel" tabindex="-1">
+<MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj _block _isolated" tabindex="-1">
 	<div class="thumbnail" v-if="page.eyeCatchingImage" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>
 	<article>
 		<header>
@@ -35,7 +35,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .vhpxefrj {
 	display: block;
-	width: 100%;
 
 	&:hover {
 		text-decoration: none;

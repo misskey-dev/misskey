@@ -359,6 +359,10 @@ hr {
 		margin: var(--margin);
 	}
 
+	._block._isolated {
+		border-radius: var(--radius);
+	}
+
 	@media (max-width: 500px) {
 		._root {
 			--root-margin: 0;

@@ -1,5 +1,5 @@
 <template>
-<div class="fdidabkb" :class="{ center }" :style="`--height:${height};`">
+<div class="fdidabkb" :class="{ center }" :style="`--height:${height};`" :key="key">
 	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
 		<button class="_button back" v-if="withBack && canBack" @click.stop="back()" v-tooltip="$ts.goBack"><Fa :icon="faChevronLeft"/></button>
 	</transition>
@@ -50,6 +50,7 @@ export default defineComponent({
 			canBack: false,
 			showActions: false,
 			height: 0,
+			key: 0,
 			faChevronLeft, faCircle, faShareAlt, faEllipsisH,
 		};
 	},
@@ -64,6 +65,10 @@ export default defineComponent({
 	},
 
 	watch: {
+		info() {
+			this.key++;
+		},
+
 		$route: {
 			handler(to, from) {
 				this.canBack = (window.history.length > 0 && !['index'].includes(to.name));

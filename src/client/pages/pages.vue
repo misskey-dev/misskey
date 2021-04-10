@@ -48,10 +48,11 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.pages,
 				icon: faStickyNote,
-				action: {
+				actions: [{
 					icon: faPlus,
+					text: this.$ts.create,
 					handler: this.create
-				}
+				}]
 			},
 			tab: 'featured',
 			featuredPagesPagination: {
