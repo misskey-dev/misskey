@@ -69,8 +69,8 @@ export default defineComponent({
 
 	data() {
 		return {
-			width: 850,
-			height: 650,
+			width: 860,
+			height: 660,
 			pageInfo: null,
 			path: this.initialPath,
 			component: this.initialComponent,

@@ -230,6 +230,7 @@ export default defineComponent({
 
 			> .main {
 				margin: 0;
+				padding-bottom: 92px;
 				border: none;
 				width: 100%;
 				border-radius: 0;

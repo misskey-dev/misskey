@@ -73,10 +73,11 @@ export default defineComponent({
 	},
 
 	setup(props, context) {
-		const INFO = ref({
+		const indexInfo = {
 			title: i18n.locale.settings,
 			icon: faCog
-		});
+		};
+		const INFO = ref(indexInfo);
 		const page = ref(props.initialPage);
 		const narrow = ref(false);
 		const view = ref(null);
@@ -152,6 +153,9 @@ export default defineComponent({
 				page.value = 'profile';
 			} else {
 				page.value = props.initialPage;
+				if (props.initialPage == null) {
+					INFO.value = indexInfo;
+				}
 			}
 		});
 
