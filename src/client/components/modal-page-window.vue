@@ -10,7 +10,9 @@
 			<button class="_button" @click="$refs.modal.close()"><Fa :icon="faTimes"/></button>
 		</div>
 		<div class="body _flat_">
-			<component :is="component" v-bind="props" :ref="changePage"/>
+			<keep-alive>
+				<component :is="component" v-bind="props" :ref="changePage"/>
+			</keep-alive>
 		</div>
 	</div>
 </MkModal>

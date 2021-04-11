@@ -1,25 +1,29 @@
 <template>
 <div>
-<section class="_section">
-	<MkInput v-model:value="endpoint" :datalist="endpoints" @update:value="onEndpointChange()">
-		<span>Endpoint</span>
-	</MkInput>
-	<MkTextarea v-model:value="body" code>
-		<span>Params (JSON or JSON5)</span>
-	</MkTextarea>
-	<MkSwitch v-model:value="withCredential">
-		With credential
-	</MkSwitch>
-	<MkButton primary full @click="send" :disabled="sending">
-		<template v-if="sending"><MkEllipsis/></template>
-		<template v-else><Fa :icon="faPaperPlane"/> Send</template>
-	</MkButton>
-</section>
-<section class="_section" v-if="res">
-	<MkTextarea v-model:value="res" code readonly tall>
-		<span>Response</span>
-	</MkTextarea>
-</section>
+	<div class="_root">
+		<div class="_block" style="padding: 24px;">
+			<MkInput v-model:value="endpoint" :datalist="endpoints" @update:value="onEndpointChange()">
+				<span>Endpoint</span>
+			</MkInput>
+			<MkTextarea v-model:value="body" code>
+				<span>Params (JSON or JSON5)</span>
+			</MkTextarea>
+			<MkSwitch v-model:value="withCredential">
+				With credential
+			</MkSwitch>
+			<MkButton primary full @click="send" :disabled="sending">
+				<template v-if="sending"><MkEllipsis/></template>
+				<template v-else><Fa :icon="faPaperPlane"/> Send</template>
+			</MkButton>
+		</div>
+	</div>
+	<div class="_root" v-if="res">
+		<div class="_block" style="padding: 24px;">
+			<MkTextarea v-model:value="res" code readonly tall>
+				<span>Response</span>
+			</MkTextarea>
+		</div>
+	</div>
 </div>
 </template>
 

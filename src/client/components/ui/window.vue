@@ -395,7 +395,7 @@ export default defineComponent({
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 5000;
+	z-index: 10000; // mk-modalのと同じでなければならない
 
 	&.front {
 		z-index: 11000; // front指定の時は、mk-modalのよりも大きくなければならない

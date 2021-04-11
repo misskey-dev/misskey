@@ -148,7 +148,11 @@ export default defineComponent({
 		}, { immediate: true });
 
 		watch(() => props.initialPage, () => {
-			page.value = props.initialPage;
+			if (props.initialPage == null && !narrow.value) {
+				page.value = 'profile';
+			} else {
+				page.value = props.initialPage;
+			}
 		});
 
 		onMounted(() => {
