@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app" :class="{ wallpaper, isMobile }">
-	<div class="columns">
+	<div class="columns" :class="{ fullView }">
 		<div class="sidebar" ref="sidebar" v-if="!isMobile">
 			<XSidebar/>
 		</div>
@@ -9,7 +9,7 @@
 			<header v-if="$store.state.titlebar" class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo"/>
 			</header>
-			<div class="content _flat_">
+			<div class="content" :class="{ _flat_: !fullView }">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faExpand, faPencilAlt, faCompress } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
@@ -84,6 +84,7 @@ export default defineComponent({
 			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			widgetsShowing: false,
+			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt,
 		};
@@ -174,6 +175,12 @@ export default defineComponent({
 				type: 'label',
 				text: path,
 			}, {
+				icon: this.fullView ? faCompress : faExpand,
+				text: this.fullView ? this.$ts.quitFullView : this.$ts.fullView,
+				action: () => {
+					this.fullView = !this.fullView;
+				}
+			}, {
 				icon: faWindowMaximize,
 				text: this.$ts.openInWindow,
 				action: () => {
@@ -247,6 +254,25 @@ export default defineComponent({
 		justify-content: center;
 		max-width: 100%;
 		margin: 32px 0;
+
+		&.fullView {
+			margin: 0;
+		
+			> .sidebar {
+				display: none;
+			}
+
+			> .widgets {
+				display: none;
+			}
+
+			> .main {
+				margin: 0;
+				border-radius: 0;
+				box-shadow: none;
+				width: 100%;
+			}
+		}
 
 		> .main {
 			width: 750px;

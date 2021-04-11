@@ -714,6 +714,8 @@ clear: "クリア"
 markAllAsRead: "全て既読にする"
 goBack: "戻る"
 unlikeConfirm: "いいね解除しますか？"
+fullView: "フルビュー"
+quitFullView: "フルビュー解除"
 
 _email:
   _follow:
