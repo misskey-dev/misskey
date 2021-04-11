@@ -342,7 +342,7 @@ hr {
 		--root-margin: 10px;
 	}
 
-	& + ._root {
+	& + ._root:not(:empty) {
 		&:before {
 			content: "";
 			display: block;
