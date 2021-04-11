@@ -1,40 +1,42 @@
 <template>
 <div class="vvcocwet" :class="{ wide: !narrow }" ref="el">
-	<FormBase class="nav" v-if="!narrow || page == null" :force-wide="!narrow">
-		<FormGroup>
-			<template #label>{{ $ts.basicSettings }}</template>
-			<FormLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><Fa :icon="faUser"/></template>{{ $ts.profile }}</FormLink>
-			<FormLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><Fa :icon="faLockOpen"/></template>{{ $ts.privacy }}</FormLink>
-			<FormLink :active="page === 'reaction'" replace to="/settings/reaction"><template #icon><Fa :icon="faLaugh"/></template>{{ $ts.reaction }}</FormLink>
-			<FormLink :active="page === 'drive'" replace to="/settings/drive"><template #icon><Fa :icon="faCloud"/></template>{{ $ts.drive }}</FormLink>
-			<FormLink :active="page === 'notifications'" replace to="/settings/notifications"><template #icon><Fa :icon="faBell"/></template>{{ $ts.notifications }}</FormLink>
-			<FormLink :active="page === 'email'" replace to="/settings/email"><template #icon><Fa :icon="faEnvelope"/></template>{{ $ts.email }}</FormLink>
-			<FormLink :active="page === 'integration'" replace to="/settings/integration"><template #icon><Fa :icon="faShareAlt"/></template>{{ $ts.integration }}</FormLink>
-			<FormLink :active="page === 'security'" replace to="/settings/security"><template #icon><Fa :icon="faLock"/></template>{{ $ts.security }}</FormLink>
-		</FormGroup>
-		<FormGroup>
-			<template #label>{{ $ts.clientSettings }}</template>
-			<FormLink :active="page === 'general'" replace to="/settings/general"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.general }}</FormLink>
-			<FormLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><Fa :icon="faPalette"/></template>{{ $ts.theme }}</FormLink>
-			<FormLink :active="page === 'sidebar'" replace to="/settings/sidebar"><template #icon><Fa :icon="faListUl"/></template>{{ $ts.sidebar }}</FormLink>
-			<FormLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><Fa :icon="faMusic"/></template>{{ $ts.sounds }}</FormLink>
-			<FormLink :active="page === 'plugin'" replace to="/settings/plugin"><template #icon><Fa :icon="faPlug"/></template>{{ $ts.plugins }}</FormLink>
-		</FormGroup>
-		<FormGroup>
-			<template #label>{{ $ts.otherSettings }}</template>
-			<FormLink :active="page === 'import-export'" replace to="/settings/import-export"><template #icon><Fa :icon="faBoxes"/></template>{{ $ts.importAndExport }}</FormLink>
-			<FormLink :active="page === 'mute-block'" replace to="/settings/mute-block"><template #icon><Fa :icon="faBan"/></template>{{ $ts.muteAndBlock }}</FormLink>
-			<FormLink :active="page === 'word-mute'" replace to="/settings/word-mute"><template #icon><Fa :icon="faCommentSlash"/></template>{{ $ts.wordMute }}</FormLink>
-			<FormLink :active="page === 'api'" replace to="/settings/api"><template #icon><Fa :icon="faKey"/></template>API</FormLink>
-			<FormLink :active="page === 'other'" replace to="/settings/other"><template #icon><Fa :icon="faEllipsisH"/></template>{{ $ts.other }}</FormLink>
-		</FormGroup>
-		<FormGroup>
-			<FormButton @click="clear">{{ $ts.clearCache }}</FormButton>
-		</FormGroup>
-		<FormGroup>
-			<FormButton @click="logout" danger>{{ $ts.logout }}</FormButton>
-		</FormGroup>
-	</FormBase>
+	<div class="nav" v-if="!narrow || page == null">
+		<FormBase>
+			<FormGroup>
+				<template #label>{{ $ts.basicSettings }}</template>
+				<FormLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><Fa :icon="faUser"/></template>{{ $ts.profile }}</FormLink>
+				<FormLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><Fa :icon="faLockOpen"/></template>{{ $ts.privacy }}</FormLink>
+				<FormLink :active="page === 'reaction'" replace to="/settings/reaction"><template #icon><Fa :icon="faLaugh"/></template>{{ $ts.reaction }}</FormLink>
+				<FormLink :active="page === 'drive'" replace to="/settings/drive"><template #icon><Fa :icon="faCloud"/></template>{{ $ts.drive }}</FormLink>
+				<FormLink :active="page === 'notifications'" replace to="/settings/notifications"><template #icon><Fa :icon="faBell"/></template>{{ $ts.notifications }}</FormLink>
+				<FormLink :active="page === 'email'" replace to="/settings/email"><template #icon><Fa :icon="faEnvelope"/></template>{{ $ts.email }}</FormLink>
+				<FormLink :active="page === 'integration'" replace to="/settings/integration"><template #icon><Fa :icon="faShareAlt"/></template>{{ $ts.integration }}</FormLink>
+				<FormLink :active="page === 'security'" replace to="/settings/security"><template #icon><Fa :icon="faLock"/></template>{{ $ts.security }}</FormLink>
+			</FormGroup>
+			<FormGroup>
+				<template #label>{{ $ts.clientSettings }}</template>
+				<FormLink :active="page === 'general'" replace to="/settings/general"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.general }}</FormLink>
+				<FormLink :active="page === 'theme'" replace to="/settings/theme"><template #icon><Fa :icon="faPalette"/></template>{{ $ts.theme }}</FormLink>
+				<FormLink :active="page === 'sidebar'" replace to="/settings/sidebar"><template #icon><Fa :icon="faListUl"/></template>{{ $ts.sidebar }}</FormLink>
+				<FormLink :active="page === 'sounds'" replace to="/settings/sounds"><template #icon><Fa :icon="faMusic"/></template>{{ $ts.sounds }}</FormLink>
+				<FormLink :active="page === 'plugin'" replace to="/settings/plugin"><template #icon><Fa :icon="faPlug"/></template>{{ $ts.plugins }}</FormLink>
+			</FormGroup>
+			<FormGroup>
+				<template #label>{{ $ts.otherSettings }}</template>
+				<FormLink :active="page === 'import-export'" replace to="/settings/import-export"><template #icon><Fa :icon="faBoxes"/></template>{{ $ts.importAndExport }}</FormLink>
+				<FormLink :active="page === 'mute-block'" replace to="/settings/mute-block"><template #icon><Fa :icon="faBan"/></template>{{ $ts.muteAndBlock }}</FormLink>
+				<FormLink :active="page === 'word-mute'" replace to="/settings/word-mute"><template #icon><Fa :icon="faCommentSlash"/></template>{{ $ts.wordMute }}</FormLink>
+				<FormLink :active="page === 'api'" replace to="/settings/api"><template #icon><Fa :icon="faKey"/></template>API</FormLink>
+				<FormLink :active="page === 'other'" replace to="/settings/other"><template #icon><Fa :icon="faEllipsisH"/></template>{{ $ts.other }}</FormLink>
+			</FormGroup>
+			<FormGroup>
+				<FormButton @click="clear">{{ $ts.clearCache }}</FormButton>
+			</FormGroup>
+			<FormGroup>
+				<FormButton @click="logout" danger>{{ $ts.logout }}</FormButton>
+			</FormGroup>
+		</FormBase>
+	</div>
 	<div class="main">
 		<component :is="component" :key="page" @info="onInfo" v-bind="pageProps"/>
 	</div>
@@ -64,7 +66,7 @@ export default defineComponent({
 	},
 
 	props: {
-		page: {
+		initialPage: {
 			type: String,
 			required: false
 		}
@@ -75,6 +77,7 @@ export default defineComponent({
 			title: i18n.locale.settings,
 			icon: faCog
 		});
+		const page = ref(props.initialPage);
 		const narrow = ref(false);
 		const view = ref(null);
 		const el = ref(null);
@@ -83,8 +86,8 @@ export default defineComponent({
 		};
 		const pageProps = ref({});
 		const component = computed(() => {
-			if (props.page == null) return null;
-			switch (props.page) {
+			if (page.value == null) return null;
+			switch (page.value) {
 				case 'profile': return defineAsyncComponent(() => import('./profile.vue'));
 				case 'privacy': return defineAsyncComponent(() => import('./privacy.vue'));
 				case 'reaction': return defineAsyncComponent(() => import('./reaction.vue'));
@@ -117,10 +120,10 @@ export default defineComponent({
 				case 'registry': return defineAsyncComponent(() => import('./registry.vue'));
 				case 'experimental-features': return defineAsyncComponent(() => import('./experimental-features.vue'));
 			}
-			if (props.page.startsWith('registry/keys/system/')) {
+			if (page.value.startsWith('registry/keys/system/')) {
 				return defineAsyncComponent(() => import('./registry.keys.vue'));
 			}
-			if (props.page.startsWith('registry/value/system/')) {
+			if (page.value.startsWith('registry/value/system/')) {
 				return defineAsyncComponent(() => import('./registry.value.vue'));
 			}
 		});
@@ -128,12 +131,12 @@ export default defineComponent({
 		watch(component, () => {
 			pageProps.value = {};
 
-			if (props.page) {
-				if (props.page.startsWith('registry/keys/system/')) {
-					pageProps.value.scope = props.page.replace('registry/keys/system/', '').split('/');
+			if (page.value) {
+				if (page.value.startsWith('registry/keys/system/')) {
+					pageProps.value.scope = page.value.replace('registry/keys/system/', '').split('/');
 				}
-				if (props.page.startsWith('registry/value/system/')) {
-					const path = props.page.replace('registry/value/system/', '').split('/');
+				if (page.value.startsWith('registry/value/system/')) {
+					const path = page.value.replace('registry/value/system/', '').split('/');
 					pageProps.value.xKey = path.pop();
 					pageProps.value.scope = path;
 				}
@@ -144,12 +147,20 @@ export default defineComponent({
 			});
 		}, { immediate: true });
 
+		watch(() => props.initialPage, () => {
+			page.value = props.initialPage;
+		});
+
 		onMounted(() => {
-			narrow.value = el.value.offsetWidth < 1025;
+			narrow.value = el.value.offsetWidth < 800;
+			if (!narrow.value) {
+				page.value = 'profile';
+			}
 		});
 
 		return {
 			[symbols.PAGE_INFO]: INFO,
+			page,
 			narrow,
 			view,
 			el,
@@ -176,25 +187,20 @@ export default defineComponent({
 		display: flex;
 		max-width: 1100px;
 		margin: 0 auto;
+		height: 100%;
 
 		> .nav {
 			width: 32%;
 			box-sizing: border-box;
 			border-right: solid 0.5px var(--divider);
+			overflow: auto;
 		}
 
 		> .main {
 			flex: 1;
 			min-width: 0;
+			overflow: auto;
 			--baseContentWidth: 100%;
-
-			::v-deep(._section) {
-				padding: 0 0 32px 0;
-
-				& + ._section {
-					padding-top: 32px;
-				}
-			}
 		}
 	}
 }

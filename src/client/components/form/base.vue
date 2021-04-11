@@ -20,12 +20,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rbusrurv {
+	// 他のCSSからも参照されるので消さないように
+	--formXPadding: 32px;
+	--formYPadding: 32px;
+
 	line-height: 1.4em;
 	background: var(--bg);
-	padding: 32px;
+	padding: var(--formYPadding) var(--formXPadding);
 
 	&:not(.wide).max-width_400px {
-		padding: 32px 0;
+		--formXPadding: 0px;
 
 		> ::v-deep(*) {
 			._formPanel {

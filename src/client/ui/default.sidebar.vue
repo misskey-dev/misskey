@@ -27,7 +27,7 @@
 		<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $ts.more }}</span>
 		<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
 	</button>
-	<MkA class="item" active-class="active" to="/settings">
+	<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 		<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
 	</MkA>
 </div>
@@ -57,6 +57,7 @@ export default defineComponent({
 			connection: null,
 			menuDef: sidebarDef,
 			iconOnly: false,
+			settingsWindowed: false,
 			faGripVertical, faChevronLeft, faComments, faHashtag, faBroadcastTower, faFireAlt, faEllipsisH, faPencilAlt, faBars, faTimes, faBell, faSearch, faUserCog, faCog, faUser, faHome, faStar, faCircle, faAt, faEnvelope, faListUl, faPlus, faUserClock, faLaugh, faUsers, faTachometerAlt, faExchangeAlt, faGlobe, faChartBar, faCloud, faServer, faProjectDiagram
 		};
 	},
@@ -102,6 +103,7 @@ export default defineComponent({
 	methods: {
 		calcViewState() {
 			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.sidebarDisplay === 'icon');
+			this.settingsWindowed = (window.innerWidth > 1400);
 		},
 
 		post() {
