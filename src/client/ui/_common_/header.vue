@@ -99,7 +99,14 @@ export default defineComponent({
 		},
 
 		menu(ev) {
-			const menu = this.info.menu ? this.info.menu() : [];
+			let menu = this.info.menu ? this.info.menu() : [];
+			if (!this.showActions && this.info.actions) {
+				menu = [...this.info.actions.map(x => ({
+					text: x.text,
+					icon: x.icon,
+					action: x.handler
+				})), menu.length > 0 ? null : undefined, ...menu];
+			}
 			if (this.info.share) {
 				if (menu.length > 0) menu.push(null);
 				menu.push({

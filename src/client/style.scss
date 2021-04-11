@@ -336,10 +336,20 @@ hr {
 
 	._hr {
 		margin: var(--margin) calc(var(--root-margin, 32px) * -1);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	@media (max-width: 500px) {
 		--root-margin: 10px;
+	}
+
+	& + ._root {
+		&:before {
+			content: "";
+			display: block;
+			margin: var(--root-margin) calc(var(--root-margin, 32px) * -1);
+			border-top: solid 0.5px var(--divider);
+		}
 	}
 }
 

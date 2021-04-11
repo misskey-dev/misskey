@@ -11,7 +11,7 @@
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 	</nav>
-	<div class="main _section" :class="{ uploading: uploadings.length > 0, fetching }"
+	<div class="main" :class="{ uploading: uploadings.length > 0, fetching }"
 		ref="main"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"

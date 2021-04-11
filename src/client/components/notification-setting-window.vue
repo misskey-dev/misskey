@@ -9,13 +9,13 @@
 	@closed="$emit('closed')"
 >
 	<template #header>{{ $ts.notificationSetting }}</template>
-	<div v-if="showGlobalToggle" class="_section">
+	<div v-if="showGlobalToggle" class="_root">
 		<MkSwitch v-model:value="useGlobalSetting">
 			{{ $ts.useGlobalSetting }}
 			<template #desc>{{ $ts.useGlobalSettingDesc }}</template>
 		</MkSwitch>
 	</div>
-	<div v-if="!useGlobalSetting" class="_section">
+	<div v-if="!useGlobalSetting" class="_root">
 		<MkInfo>{{ $ts.notificationSettingDesc }}</MkInfo>
 		<MkButton inline @click="disableAll">{{ $ts.disableAll }}</MkButton>
 		<MkButton inline @click="enableAll">{{ $ts.enableAll }}</MkButton>
