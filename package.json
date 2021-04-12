@@ -253,6 +253,7 @@
 		"vue-prism-editor": "2.0.0-alpha.2",
 		"vue-router": "4.0.5",
 		"vue-style-loader": "4.1.3",
+		"vue-svg-loader": "0.17.0-beta.2",
 		"vuedraggable": "4.0.1",
 		"web-push": "3.4.4",
 		"webpack": "5.27.2",

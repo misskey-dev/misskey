@@ -30,6 +30,11 @@
 	<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 		<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
 	</MkA>
+	<div class="divider"></div>
+	<div class="foo">
+		<MkEmoji :normal="true" :no-style="true" emoji="🍮"/>
+	</div>
+	<!--<MisskeyLogo class="misskey"/>-->
 </div>
 </template>
 
@@ -44,10 +49,12 @@ import { sidebarDef } from '@client/sidebar';
 import { getAccounts, addAccount, login } from '@client/account';
 import MkButton from '@client/components/ui/button.vue';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
+import MisskeyLogo from '@/../assets/client/misskey.svg';
 
 export default defineComponent({
 	components: {
-		MkButton
+		MkButton,
+		MisskeyLogo,
 	},
 
 	data() {
@@ -313,6 +320,16 @@ export default defineComponent({
 		> .button {
 			min-width: 0;
 		}
+	}
+
+	> .misskey {
+		fill: currentColor;
+	}
+
+	> .foo {
+		text-align: center;
+		padding: 8px 0 16px 0;
+		opacity: 0.5;
 	}
 
 	> .item {

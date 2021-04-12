@@ -24,7 +24,7 @@ export default defineComponent({
 	--formXPadding: 32px;
 	--formYPadding: 32px;
 
-	line-height: 1.4em;
+	line-height: 1.3em;
 	background: var(--bg);
 	padding: var(--formYPadding) var(--formXPadding);
 
