@@ -9,19 +9,19 @@ export type Theme = {
 	props: Record<string, string>;
 };
 
-export const lightTheme: Theme = require('../themes/_light.json5');
-export const darkTheme: Theme = require('../themes/_dark.json5');
+export const lightTheme: Theme = require('@client/themes/_light.json5');
+export const darkTheme: Theme = require('@client/themes/_dark.json5');
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
 export const builtinThemes = [
-	require('../themes/l-light.json5'),
-	require('../themes/l-apricot.json5'),
-	require('../themes/l-rainy.json5'),
+	require('@client/themes/l-light.json5'),
+	require('@client/themes/l-apricot.json5'),
+	require('@client/themes/l-rainy.json5'),
 
-	require('../themes/d-dark.json5'),
-	require('../themes/d-persimmon.json5'),
-	require('../themes/d-black.json5'),
+	require('@client/themes/d-dark.json5'),
+	require('@client/themes/d-persimmon.json5'),
+	require('@client/themes/d-black.json5'),
 ] as Theme[];
 
 let timeout = null;

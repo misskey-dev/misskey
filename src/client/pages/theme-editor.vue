@@ -221,9 +221,9 @@ export default defineComponent({
 			addTheme(this.theme);
 			applyTheme(this.theme);
 			if (this.$store.state.darkMode) {
-				ColdDeviceStorage.set('darkTheme', this.theme.id);
+				ColdDeviceStorage.set('darkTheme', this.theme);
 			} else {
-				ColdDeviceStorage.set('lightTheme', this.theme.id);
+				ColdDeviceStorage.set('lightTheme', this.theme);
 			}
 			this.changed = false;
 			os.dialog({

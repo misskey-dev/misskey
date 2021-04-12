@@ -27,7 +27,7 @@
 	</FormGroup>
 
 	<template v-if="darkMode">
-		<FormSelect v-model:value="darkTheme">
+		<FormSelect v-model:value="darkThemeId">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<optgroup :label="$ts.darkThemes">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -36,7 +36,7 @@
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-		<FormSelect v-model:value="lightTheme">
+		<FormSelect v-model:value="lightThemeId">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<optgroup :label="$ts.lightThemes">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -47,7 +47,7 @@
 		</FormSelect>
 	</template>
 	<template v-else>
-		<FormSelect v-model:value="lightTheme">
+		<FormSelect v-model:value="lightThemeId">
 			<template #label>{{ $ts.themeForLightMode }}</template>
 			<optgroup :label="$ts.lightThemes">
 				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -56,7 +56,7 @@
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
 			</optgroup>
 		</FormSelect>
-		<FormSelect v-model:value="darkTheme">
+		<FormSelect v-model:value="darkThemeId">
 			<template #label>{{ $ts.themeForDarkMode }}</template>
 			<optgroup :label="$ts.darkThemes">
 				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
@@ -77,7 +77,7 @@
 
 	<FormGroup>
 		<FormLink to="/theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }}</FormLink>
-		<FormLink to="/advanced-theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>
+		<!--<FormLink to="/advanced-theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>-->
 	</FormGroup>
 
 	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
@@ -93,7 +93,7 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormButton from '@client/components/form/button.vue';
-import { builtinThemes, applyTheme } from '@client/scripts/theme';
+import { builtinThemes } from '@client/scripts/theme';
 import { selectFile } from '@client/scripts/select-file';
 import { isDeviceDarkmode } from '@client/scripts/is-device-darkmode';
 import { ColdDeviceStorage } from '@client/store';
@@ -124,24 +124,28 @@ export default defineComponent({
 		const themes = computed(() => builtinThemes.concat(installedThemes.value));
 		const darkThemes = computed(() => themes.value.filter(t => t.base == 'dark' || t.kind == 'dark'));
 		const lightThemes = computed(() => themes.value.filter(t => t.base == 'light' || t.kind == 'light'));
-		const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
-		const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
+		const darkTheme = ColdDeviceStorage.ref('darkTheme');
+		const darkThemeId = computed({
+			get() {
+				return darkTheme.value.id;
+			},
+			set(id) {
+				ColdDeviceStorage.set('darkTheme', themes.value.find(x => x.id === id))
+			}
+		});
+		const lightTheme = ColdDeviceStorage.ref('lightTheme');
+		const lightThemeId = computed({
+			get() {
+				return lightTheme.value.id;
+			},
+			set(id) {
+				ColdDeviceStorage.set('lightTheme', themes.value.find(x => x.id === id))
+			}
+		});
 		const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 		const syncDeviceDarkMode = computed(ColdDeviceStorage.makeGetterSetter('syncDeviceDarkMode'));
 		const wallpaper = ref(localStorage.getItem('wallpaper'));
 		const themesCount = installedThemes.value.length;
-
-		watch(darkTheme, () => {
-			if (defaultStore.state.darkMode) {
-				applyTheme(themes.value.find(x => x.id === darkTheme.value));
-			}
-		});
-
-		watch(lightTheme, () => {
-			if (!defaultStore.state.darkMode) {
-				applyTheme(themes.value.find(x => x.id === lightTheme.value));
-			}
-		});
 
 		watch(syncDeviceDarkMode, () => {
 			if (syncDeviceDarkMode) {
@@ -162,6 +166,12 @@ export default defineComponent({
 			emit('info', INFO);
 		});
 
+		onActivated(() => {
+			fetchThemes().then(() => {
+				installedThemes.value = getThemes();
+			});
+		});
+
 		fetchThemes().then(() => {
 			installedThemes.value = getThemes();
 		});
@@ -170,8 +180,8 @@ export default defineComponent({
 			[symbols.PAGE_INFO]: INFO,
 			darkThemes,
 			lightThemes,
-			darkTheme,
-			lightTheme,
+			darkThemeId,
+			lightThemeId,
 			darkMode,
 			syncDeviceDarkMode,
 			themesCount,
