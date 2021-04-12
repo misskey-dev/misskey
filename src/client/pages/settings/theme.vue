@@ -1,24 +1,5 @@
 <template>
 <FormBase>
-	<FormSelect v-model:value="lightTheme" v-if="!darkMode">
-		<template #label>{{ $ts.themeForLightMode }}</template>
-		<optgroup :label="$ts.lightThemes">
-			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="$ts.darkThemes">
-			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-	</FormSelect>
-	<FormSelect v-model:value="darkTheme" v-else>
-		<template #label>{{ $ts.themeForDarkMode }}</template>
-		<optgroup :label="$ts.darkThemes">
-			<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-		<optgroup :label="$ts.lightThemes">
-			<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
-		</optgroup>
-	</FormSelect>
-
 	<FormGroup>
 		<div class="rfqxtzch _formItem _formPanel">
 			<div class="darkMode">
@@ -44,6 +25,47 @@
 		</div>
 		<FormSwitch v-model:value="syncDeviceDarkMode">{{ $ts.syncDeviceDarkMode }}</FormSwitch>
 	</FormGroup>
+
+	<template v-if="darkMode">
+		<FormSelect v-model:value="darkTheme">
+			<template #label>{{ $ts.themeForDarkMode }}</template>
+			<optgroup :label="$ts.darkThemes">
+				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup :label="$ts.lightThemes">
+				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+		</FormSelect>
+		<FormSelect v-model:value="lightTheme">
+			<template #label>{{ $ts.themeForLightMode }}</template>
+			<optgroup :label="$ts.lightThemes">
+				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup :label="$ts.darkThemes">
+				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+		</FormSelect>
+	</template>
+	<template v-else>
+		<FormSelect v-model:value="lightTheme">
+			<template #label>{{ $ts.themeForLightMode }}</template>
+			<optgroup :label="$ts.lightThemes">
+				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup :label="$ts.darkThemes">
+				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+		</FormSelect>
+		<FormSelect v-model:value="darkTheme">
+			<template #label>{{ $ts.themeForDarkMode }}</template>
+			<optgroup :label="$ts.darkThemes">
+				<option v-for="x in darkThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+			<optgroup :label="$ts.lightThemes">
+				<option v-for="x in lightThemes" :value="x.id" :key="x.id">{{ x.name }}</option>
+			</optgroup>
+		</FormSelect>
+	</template>
 
 	<FormButton primary v-if="wallpaper == null" @click="setWallpaper">{{ $ts.setWallpaper }}</FormButton>
 	<FormButton primary v-else @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>

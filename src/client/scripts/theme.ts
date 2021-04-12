@@ -29,10 +29,10 @@ let timeout = null;
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) clearTimeout(timeout);
 
-	document.documentElement.classList.add('changing-theme');
+	document.documentElement.classList.add('_themeChanging_');
 
 	timeout = setTimeout(() => {
-		document.documentElement.classList.remove('changing-theme');
+		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
 	// Deep copy

@@ -82,9 +82,9 @@ html {
 	}
 }
 
-html.changing-theme {
+html._themeChanging_ {
 	&, * {
-		transition: background 1s ease !important;
+		transition: background 1s ease, border 1s ease !important;
 	}
 }
 
