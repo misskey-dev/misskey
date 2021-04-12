@@ -275,6 +275,7 @@ export default defineComponent({
 		}
 
 		> .main {
+			min-width: 0;
 			width: 750px;
 			margin: 0 16px 0 0;
 			background: var(--bg);
