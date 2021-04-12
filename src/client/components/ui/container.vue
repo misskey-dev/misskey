@@ -116,7 +116,7 @@ export default defineComponent({
 
 .ukygtjoj {
 	position: relative;
-	overflow: hidden;
+	overflow: clip;
 
 	&.naked {
 		background: transparent !important;
@@ -133,7 +133,9 @@ export default defineComponent({
 	}
 
 	> header {
-		position: relative;
+		position: sticky;
+		top: var(--stickyTop, 0px);
+		left: 0;
 		color: var(--panelHeaderFg);
 		background: var(--panelHeaderBg);
 		border-bottom: solid 0.5px var(--panelHeaderDivider);
