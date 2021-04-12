@@ -11,7 +11,16 @@ import { toUnicode } from 'punycode/';
 import { host } from '@client/config';
 
 export default defineComponent({
-	props: ['user', 'detail'],
+	props: {
+		user: {
+			type: Object,
+			required: true
+		},
+		detail: {
+			type: Boolean,
+			default: false
+		},
+	},
 	data() {
 		return {
 			host: toUnicode(host),
