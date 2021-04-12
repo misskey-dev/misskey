@@ -271,6 +271,7 @@ export default defineComponent({
 	data() {
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.user ? {
+				title: this.user.name ? `${this.user.name} (@${this.user.username})` : `@${this.user.username}`,
 				userName: this.user,
 				avatar: this.user,
 				path: `/@${this.user.username}`,
