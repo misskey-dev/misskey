@@ -98,11 +98,10 @@ export default defineComponent({
 	> header {
 		display: flex;
 		position: relative;
-		z-index: 2;
-		// TODO
-		// position: sticky;
-		// top: var(--stickyTopOffset);
-		// backdrop-filter: blur(20px);
+		z-index: 10;
+		position: sticky;
+		top: var(--stickyTop, 0px);
+		backdrop-filter: blur(20px);
 
 		> .title {
 			margin: 0;

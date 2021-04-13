@@ -5,7 +5,7 @@ export default {
 		//const query = binding.value;
 
 		const header = src.children[0];
-		const currentStickyTop = getComputedStyle(src).getPropertyValue('--stickyTop');
+		const currentStickyTop = getComputedStyle(src).getPropertyValue('--stickyTop') || '0px';
 		src.style.setProperty('--stickyTop', `${parseInt(currentStickyTop) + header.offsetHeight}px`);
 		header.style.setProperty('--stickyTop', currentStickyTop);
 		header.style.position = 'sticky';

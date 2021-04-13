@@ -259,6 +259,7 @@ export default defineComponent({
 	> .contents {
 		width: 100%;
 		min-width: 0;
+		--stickyTop: #{$header-height};
 
 		&.withHeader {
 			padding-top: $header-height;
