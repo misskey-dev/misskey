@@ -1,5 +1,5 @@
 <template>
-<span class="mk-acct" v-once>
+<span class="mk-acct">
 	<span class="name">@{{ user.username }}</span>
 	<span class="host" v-if="user.host || detail || $store.state.showFullAcct">@{{ user.host || host }}</span>
 </span>
