@@ -168,7 +168,7 @@ export default defineComponent({
 	}
 
 	> .header {
-		$height: 54px;
+		$height: 52px;
 		$height-narrow: 42px;
 		display: flex;
 		flex-shrink: 0;

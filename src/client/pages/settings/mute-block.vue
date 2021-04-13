@@ -6,7 +6,7 @@
 	</MkTab>
 	<div v-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination" class="muting">
-			<template #empty><MkInfo>{{ $ts.noUsers }}</MkInfo></template>
+			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
 			<template #default="{items}">
 				<FormGroup>
 					<FormLink v-for="mute in items" :key="mute.id" :to="userPage(mute.mutee)">
@@ -18,7 +18,7 @@
 	</div>
 	<div v-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination" class="blocking">
-			<template #empty><MkInfo>{{ $ts.noUsers }}</MkInfo></template>
+			<template #empty><FormInfo>{{ $ts.noUsers }}</FormInfo></template>
 			<template #default="{items}">
 				<FormGroup>
 					<FormLink v-for="block in items" :key="block.id" :to="userPage(block.blockee)">
@@ -36,7 +36,7 @@ import { defineComponent } from 'vue';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkTab from '@client/components/tab.vue';
-import MkInfo from '@client/components/ui/info.vue';
+import FormInfo from '@client/components/form/info.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
@@ -48,7 +48,7 @@ export default defineComponent({
 	components: {
 		MkPagination,
 		MkTab,
-		MkInfo,
+		FormInfo,
 		FormBase,
 		FormGroup,
 		FormLink,

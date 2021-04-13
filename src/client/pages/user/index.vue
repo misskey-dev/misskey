@@ -545,7 +545,6 @@ export default defineComponent({
 
 .ftskorzw.narrow {
 	box-sizing: border-box;
-	overflow: hidden;
 	overflow: clip;
 
 	> .punished {

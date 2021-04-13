@@ -1,8 +1,8 @@
 <template>
 <FormBase>
 	<template v-if="meta">
-		<MkInfo v-if="version === meta.version">{{ $ts.youAreRunningUpToDateClient }}</MkInfo>
-		<MkInfo v-else warn>{{ $ts.newVersionOfClientAvailable }}</MkInfo>
+		<FormInfo v-if="version === meta.version">{{ $ts.youAreRunningUpToDateClient }}</FormInfo>
+		<FormInfo v-else warn>{{ $ts.newVersionOfClientAvailable }}</FormInfo>
 	</template>
 	<FormGroup>
 		<template #label>{{ instanceName }}</template>
@@ -38,7 +38,7 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormButton from '@client/components/form/button.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import MkInfo from '@client/components/ui/info.vue';
+import FormInfo from '@client/components/form/info.vue';
 import * as os from '@client/os';
 import { version, instanceName } from '@client/config';
 import * as symbols from '@client/symbols';
@@ -52,7 +52,7 @@ export default defineComponent({
 		FormLink,
 		FormGroup,
 		FormKeyValueView,
-		MkInfo,
+		FormInfo,
 	},
 
 	emits: ['info'],

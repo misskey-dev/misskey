@@ -1,10 +1,16 @@
 ._formPanel {
 	background: var(--panel);
 	border-radius: var(--radius);
+	transition: background 0.2s ease;
 
 	&._formClickable {
 		&:hover {
 			//background: var(--panelHighlight);
+		}
+
+		&:active {
+			background: var(--panelHighlight);
+			transition: background 0s;
 		}
 	}
 }

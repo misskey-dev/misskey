@@ -36,7 +36,6 @@ import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fo
 import MkButton from '@client/components/ui/button.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkSelect from '@client/components/ui/select.vue';
-import MkInfo from '@client/components/ui/info.vue';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
@@ -49,7 +48,6 @@ export default defineComponent({
 		MkButton,
 		MkTextarea,
 		MkSelect,
-		MkInfo,
 		FormSwitch,
 		FormBase,
 		FormGroup,
