@@ -1,18 +1,9 @@
 import * as mfm from 'mfm-js';
 import { unique } from '@/prelude/array';
 
-export default function(nodes: mfm.MfmNode[]): string[] {
-	const hashtagNodes = [] as mfm.MfmHashtag[];
+export function extractHashtags(nodes: mfm.MfmNode[]): string[] {
+	const hashtagNodes = mfm.extract(nodes, (node) => node.type === 'hashtag');
+	const hashtags = unique(hashtagNodes.map(x => x.props.hashtag));
 
-	function scan(nodes: mfm.MfmNode[]) {
-		for (const node of nodes) {
-			if (node.type === 'hashtag') hashtagNodes.push(node);
-			else if (node.children) scan(node.children);
-		}
-	}
-
-	scan(nodes);
-
-	const hashtags = hashtagNodes.map(x => x.props.hashtag);
-	return unique(hashtags);
+	return hashtags;
 }

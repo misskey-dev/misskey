@@ -44,6 +44,7 @@ import FormKeyValueView from '@client/components/form/key-value-view.vue';
 import FormBase from '@client/components/form/base.vue';
 import * as os from '@client/os';
 import bytes from '@client/filters/bytes';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -57,7 +58,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.drive,
 				icon: faCloud
 			},
@@ -100,7 +101,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

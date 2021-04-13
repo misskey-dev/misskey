@@ -1,6 +1,6 @@
 import { URL } from 'url';
 import config from '@/config';
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode/';
 
 export function getFullApAccount(username: string, host: string | null) {
 	return host ? `${username}@${toPuny(host)}` : `${username}@${toPuny(config.host)}`;

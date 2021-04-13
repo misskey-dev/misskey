@@ -49,6 +49,7 @@ import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import XHeader from './header.vue';
 import { ColdDeviceStorage } from '@client/store';
+import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -110,8 +111,8 @@ export default defineComponent({
 
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 

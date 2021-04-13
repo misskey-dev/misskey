@@ -1,6 +1,6 @@
 <template>
 <div
-	class="tkcbzcuz _panel"
+	class="tkcbzcuz"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -90,7 +90,7 @@
 		</div>
 	</article>
 </div>
-<div v-else class="_panel muted" @click="muted = false">
+<div v-else class="muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
@@ -103,7 +103,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import * as mfm from 'mfm-js';
 import { sum } from '../../prelude/array';
@@ -600,6 +600,11 @@ export default defineComponent({
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
+				{
+					icon: faShareAlt,
+					text: this.$ts.share,
+					action: this.share
+				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
 					icon: faStar,
@@ -825,6 +830,14 @@ export default defineComponent({
 			});
 		},
 
+		share() {
+			navigator.share({
+				title: this.$t('noteOf', { user: this.appearNote.user.name }),
+				text: this.appearNote.text,
+				url: `${url}/notes/${this.appearNote.id}`
+			});
+		},
+
 		focus() {
 			this.$el.focus();
 		},
@@ -850,7 +863,7 @@ export default defineComponent({
 .tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden;
+	overflow: clip;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
@@ -981,11 +994,12 @@ export default defineComponent({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			//position: sticky;
-			//top: 72px;
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
+			position: sticky;
+			top: calc(22px + var(--stickyTop, 0px));
+			left: 0;
 		}
 
 		> .main {
@@ -1106,7 +1120,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {
@@ -1129,6 +1143,7 @@ export default defineComponent({
 				margin: 0 10px 8px 0;
 				width: 50px;
 				height: 50px;
+				top: calc(14px + var(--stickyTop, 0px));
 			}
 		}
 	}

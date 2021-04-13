@@ -52,7 +52,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
 import * as JSON5 from 'json5';
@@ -67,6 +67,7 @@ import { host } from '@client/config';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { addTheme } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -78,7 +79,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
 				icon: faPalette,
 			},
@@ -220,9 +221,9 @@ export default defineComponent({
 			addTheme(this.theme);
 			applyTheme(this.theme);
 			if (this.$store.state.darkMode) {
-				ColdDeviceStorage.set('darkTheme', this.theme.id);
+				ColdDeviceStorage.set('darkTheme', this.theme);
 			} else {
-				ColdDeviceStorage.set('lightTheme', this.theme.id);
+				ColdDeviceStorage.set('lightTheme', this.theme);
 			}
 			this.changed = false;
 			os.dialog({

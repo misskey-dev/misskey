@@ -8,19 +8,15 @@
 			</template>
 		</I18n>
 	</template>
-	<div class="dpvffvvy">
+	<div class="dpvffvvy _monolithic_">
 		<div class="_section">
-			<div class="_content">
-				<MkTextarea v-model:value="comment">
-					<span>{{ $ts.details }}</span>
-					<template #desc>{{ $ts.fillAbuseReportDescription }}</template>
-				</MkTextarea>
-			</div>
+			<MkTextarea v-model:value="comment">
+				<span>{{ $ts.details }}</span>
+				<template #desc>{{ $ts.fillAbuseReportDescription }}</template>
+			</MkTextarea>
 		</div>
 		<div class="_section">
-			<div class="_content">
-				<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $ts.send }}</MkButton>
-			</div>
+			<MkButton @click="send" primary full :disabled="comment.length === 0">{{ $ts.send }}</MkButton>
 		</div>
 	</div>
 </XWindow>
@@ -80,6 +76,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .dpvffvvy {
-	--section-padding: 16px;
+	--root-margin: 16px;
 }
 </style>

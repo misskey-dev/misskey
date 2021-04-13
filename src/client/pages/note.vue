@@ -1,19 +1,19 @@
 <template>
-<div class="fcuexfpr">
+<div class="fcuexfpr _root">
 	<div v-if="note" class="note" v-anim>
-		<div class="_section" v-if="showNext">
+		<div class="_gap" v-if="showNext">
 			<XNotes class="_content _noGap_" :pagination="next"/>
 		</div>
 
-		<div class="_section main">
-			<MkButton v-if="!showNext && hasNext" class="load next _content" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
-			<div class="_content _vMargin">
-				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_vMargin"/>
-				<XNoteDetailed v-model:note="note" :key="note.id" class="_vMargin"/>
+		<div class="main _gap">
+			<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
+			<div class="_content _gap">
+				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_gap"/>
+				<XNoteDetailed v-model:note="note" :key="note.id" class="_gap"/>
 			</div>
-			<div class="_content clips _vMargin" v-if="clips && clips.length > 0">
+			<div class="_content clips _gap" v-if="clips && clips.length > 0">
 				<div class="title">{{ $ts.clip }}</div>
-				<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _vMargin">
+				<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
 					<b>{{ item.name }}</b>
 					<div v-if="item.description" class="description">{{ item.description }}</div>
 					<div class="user">
@@ -21,10 +21,10 @@
 					</div>
 				</MkA>
 			</div>
-			<MkButton v-if="!showPrev && hasPrev" class="load prev _content" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
+			<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
 		</div>
 
-		<div class="_section" v-if="showPrev">
+		<div class="_gap" v-if="showPrev">
 			<XNotes class="_content _noGap_" :pagination="prev"/>
 		</div>
 	</div>
@@ -44,6 +44,7 @@ import XNotes from '@client/components/notes.vue';
 import MkRemoteCaution from '@client/components/remote-caution.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -61,9 +62,14 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			INFO: computed(() => this.note ? {
+			[symbols.PAGE_INFO]: computed(() => this.note ? {
 				title: this.$ts.note,
 				avatar: this.note.user,
+				path: `/notes/${this.note.id}`,
+				share: {
+					title: this.$t('noteOf', { user: this.note.user.name }),
+					text: this.note.text,
+				},
 			} : null),
 			note: null,
 			clips: null,
@@ -137,6 +143,7 @@ export default defineComponent({
 		> .main {
 			> .load {
 				min-width: 0;
+				margin: 0 auto;
 				border-radius: 999px;
 
 				&.next {
@@ -165,7 +172,7 @@ export default defineComponent({
 					> .user {
 						$height: 32px;
 						padding-top: 16px;
-						border-top: solid 1px var(--divider);
+						border-top: solid 0.5px var(--divider);
 						line-height: $height;
 
 						> .avatar {

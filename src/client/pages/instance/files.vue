@@ -35,7 +35,7 @@
 				</MkInput>
 			</div>
 			<MkPagination :pagination="pagination" #default="{items}" class="urempief" ref="files">
-				<button class="file _panel _button _vMargin" v-for="file in items" :key="file.id" @click="show(file, $event)">
+				<button class="file _panel _button _gap" v-for="file in items" :key="file.id" @click="show(file, $event)">
 					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 					<div class="body">
 						<div>
@@ -71,6 +71,7 @@ import MkPagination from '@client/components/ui/pagination.vue';
 import MkDriveFileThumbnail from '@client/components/drive-file-thumbnail.vue';
 import bytes from '@client/filters/bytes';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -83,7 +84,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
 				icon: faCloud
 			},

@@ -146,7 +146,7 @@ export default defineComponent({
 	> .sub {
 		margin-top: 8px;
 		padding-top: 8px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

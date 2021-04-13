@@ -123,7 +123,7 @@ export default defineComponent({
 
 .gqnyydlz {
 	position: relative;
-	border: solid 1px var(--divider);
+	border: solid 0.5px var(--divider);
 
 	> i {
 		display: block;

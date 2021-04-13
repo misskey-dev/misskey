@@ -65,6 +65,7 @@ import * as os from '@client/os';
 import MkButton from '@client/components/ui/button.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -75,7 +76,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._reversi.reversi,
 				icon: faGamepad
 			},
@@ -259,7 +260,7 @@ export default defineComponent({
 		> footer {
 			display: flex;
 			align-items: baseline;
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 			padding: 6px 8px;
 			font-size: 0.9em;
 

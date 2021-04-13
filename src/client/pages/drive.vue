@@ -6,9 +6,10 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faCloud, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import XDrive from '@client/components/drive.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -17,22 +18,13 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: computed(() => this.folder ? this.folder.name : this.$ts.drive),
 				icon: faCloud,
-				action: {
-					icon: faEllipsisH,
-					handler: this.menu
-				}
+				menu: () => this.$refs.drive.getMenu()
 			},
 			folder: null,
 		};
 	},
-
-	methods: {
-		menu(ev) {
-			os.modalMenu(this.$refs.drive.getMenu(), ev.currentTarget || ev.target);
-		}
-	}
 });
 </script>

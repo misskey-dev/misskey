@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
-	<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: height ? `${height}px` : null }">
+	<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) :  (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header">
 			<button class="_button" v-if="withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
 			<span class="title">
@@ -61,6 +61,11 @@ export default defineComponent({
 			required: false,
 			default: true,
 		},
+		scroll: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
 	},
 
 	emits: ['click', 'close', 'closed', 'ok'],
@@ -94,10 +99,10 @@ export default defineComponent({
 	flex-direction: column;
 	contain: content;
 
-	--section-padding: 24px;
+	--root-margin: 24px;
 
 	@media (max-width: 500px) {
-		--section-padding: 16px;
+		--root-margin: 16px;
 	}
 
 	> .header {

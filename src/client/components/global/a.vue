@@ -93,6 +93,10 @@ export default defineComponent({
 			os.pageWindow(this.to);
 		},
 
+		modalWindow() {
+			os.modalPageWindow(this.to);
+		},
+
 		popout() {
 			popout(this.to);
 		},
@@ -111,6 +115,8 @@ export default defineComponent({
 			if (this.behavior) {
 				if (this.behavior === 'window') {
 					return this.window();
+				} else if (this.behavior === 'modalWindow') {
+					return this.modalWindow();
 				}
 			}
 

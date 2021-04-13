@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import { host as localHost } from '@client/config';
 import { wellKnownServices } from '../../well-known-services';
 import * as os from '@client/os';

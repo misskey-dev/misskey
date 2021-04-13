@@ -1,7 +1,7 @@
 <template>
 <div class="_section">
 	<MkPagination :pagination="pagination" #default="{items}" class="ruryvtyk _content">
-		<section class="_card announcement _vMargin" v-for="(announcement, i) in items" :key="announcement.id">
+		<section class="_card announcement _gap" v-for="(announcement, i) in items" :key="announcement.id">
 			<div class="_title"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 			<div class="_content">
 				<Mfm :text="announcement.text"/>
@@ -21,6 +21,7 @@ import { faCheck, faBroadcastTower } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -30,7 +31,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
 				icon: faBroadcastTower
 			},

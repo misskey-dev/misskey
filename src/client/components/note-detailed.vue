@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _panel"
+	class="note _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import * as mfm from 'mfm-js';
 import { sum } from '../../prelude/array';
@@ -625,6 +625,11 @@ export default defineComponent({
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
+				{
+					icon: faShareAlt,
+					text: this.$ts.share,
+					action: this.share
+				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
 					icon: faStar,
@@ -850,6 +855,14 @@ export default defineComponent({
 			});
 		},
 
+		share() {
+			navigator.share({
+				title: this.$t('noteOf', { user: this.appearNote.user.name }),
+				text: this.appearNote.text,
+				url: `${url}/notes/${this.appearNote.id}`
+			});
+		},
+
 		focus() {
 			this.$el.focus();
 		},
@@ -1007,7 +1020,7 @@ export default defineComponent({
 						margin: 0 0.5em;
 						padding: 4px 6px;
 						font-size: 80%;
-						border: solid 1px var(--divider);
+						border: solid 0.5px var(--divider);
 						border-radius: 4px;
 					}
 
@@ -1110,7 +1123,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {
