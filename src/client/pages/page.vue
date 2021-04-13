@@ -1,5 +1,7 @@
 <template>
 <div class="xcukqgmh _root" v-if="page" :key="page.id" v-size="{ max: [450] }">
+	<div class="_magnet"></div>
+
 	<div class="_block main">
 		<!--
 		<div class="header">
@@ -191,7 +193,7 @@ export default defineComponent({
 	}
 
 	> .footer {
-		padding: var(--padding);
+		margin: var(--padding);
 		font-size: 85%;
 		opacity: 0.75;
 	}

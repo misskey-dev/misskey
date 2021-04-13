@@ -249,10 +249,6 @@ hr {
 	margin: var(--margin) 0;
 }
 
-._magnet {
-	margin-bottom: calc(var(--margin) * -1);
-}
-
 ._gap {
 	margin: var(--margin) 0;
 }
@@ -369,6 +365,10 @@ hr {
 	._block._isolated {
 		border-radius: var(--radius);
 	}
+
+	._magnet {
+		margin-bottom: calc(var(--margin) * -1);
+	}	
 
 	@media (max-width: 500px) {
 		._root {
