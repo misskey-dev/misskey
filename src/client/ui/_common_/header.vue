@@ -8,8 +8,8 @@
 			<div class="title">
 				<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
 				<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
-				<span v-if="info.title" class="text">{{ info.title }}</span>
-				<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
+				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
+				<span v-else-if="info.title" class="text">{{ info.title }}</span>
 			</div>
 		</div>
 		<div class="buttons">

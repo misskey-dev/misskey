@@ -3,9 +3,9 @@
 	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
 	<div class="_magnet"></div>
-	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block _gap"/>
-	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block _gap" fixed/>
-	<div class="tabs _block _gap">
+	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+	<div class="tabs _block">
 		<div class="left">
 			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
 			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>

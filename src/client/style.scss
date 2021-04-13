@@ -246,9 +246,6 @@ hr {
 
 ._block {
 	@extend ._panel;
-}
-
-._gap {
 	margin: var(--margin) 0;
 }
 
@@ -256,7 +253,7 @@ hr {
 	margin-bottom: calc(var(--margin) * -1);
 }
 
-._isolated {
+._gap {
 	margin: var(--margin) 0;
 }
 
@@ -333,20 +330,21 @@ hr {
 	margin: var(--root-margin, 32px) auto;
 	max-width: min(var(--baseContentWidth), calc(100% - (var(--root-margin, 32px) * 2)));
 
-	._hr {
-		margin: var(--margin) calc(var(--root-margin, 32px) * -1);
-		border-top: solid 0.5px var(--divider);
-	}
-
 	@media (max-width: 500px) {
 		--root-margin: 10px;
 	}
+}
 
-	& + ._root:not(:empty) {
-		&:before {
-			content: "";
-			display: block;
-			margin: var(--root-margin) calc(var(--root-margin, 32px) * -1);
+._monolithic_ {
+	._section {
+		box-sizing: border-box;
+		padding: var(--root-margin, 32px);
+	
+		@media (max-width: 500px) {
+			--root-margin: 10px;
+		}
+	
+		& + ._section:not(:empty) {
 			border-top: solid 0.5px var(--divider);
 		}
 	}

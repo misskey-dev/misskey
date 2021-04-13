@@ -98,12 +98,10 @@
 		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSuspended }}</div> -->
 		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSilenced }}</div> -->
 
-		<div class="_magnet"></div>
-
 		<div class="profile">
-			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
+			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>
 
-			<div class="_gap _block main" :key="user.id">
+			<div class="_block main" :key="user.id">
 				<div class="banner-container" :style="style">
 					<div class="banner" ref="banner" :style="style"></div>
 					<div class="fade"></div>
@@ -198,7 +196,7 @@
 			<template v-if="page === 'index'">
 				<div>
 					<div v-if="user.pinnedNotes.length > 0">
-						<XNote v-for="note in user.pinnedNotes" class="note _block _gap" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
+						<XNote v-for="note in user.pinnedNotes" class="note _block" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
 					<XPhotos :user="user" :key="user.id"/>
 					<XActivity :user="user" :key="user.id"/>
@@ -842,6 +840,18 @@ export default defineComponent({
 			> .nav {
 				font-size: 80%;
 			}
+		}
+	}
+}
+
+._flat_ .ftskorzw.narrow {
+	> .profile {
+		> .warn {
+			margin: 0;
+		}
+
+		> .main {
+			margin-top: 0;
 		}
 	}
 }
