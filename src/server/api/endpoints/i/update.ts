@@ -6,7 +6,7 @@ import acceptAllFollowRequests from '../../../../services/following/requests/acc
 import { publishToFollowers } from '../../../../services/i/update';
 import define from '../../define';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm';
-import extractHashtags from '@/misc/extract-hashtags';
+import { extractHashtags } from '@/misc/extract-hashtags';
 import * as langmap from 'langmap';
 import { updateUsertags } from '../../../../services/update-hashtag';
 import { ApiError } from '../../error';

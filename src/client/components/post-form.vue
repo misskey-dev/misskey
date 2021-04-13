@@ -56,12 +56,12 @@ import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlob
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode/';
 import XNotePreview from './note-preview.vue';
 import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';
 import { erase, unique } from '../../prelude/array';
-import extractMentions from '@/misc/extract-mentions';
+import { extractMentions } from '@/misc/extract-mentions';
 import getAcct from '@/misc/acct/render';
 import { formatTimeString } from '@/misc/format-time-string';
 import { Autocomplete } from '@client/scripts/autocomplete';
@@ -793,7 +793,7 @@ export default defineComponent({
 		> .cw {
 			z-index: 1;
 			padding-bottom: 8px;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 		}
 
 		> .text {

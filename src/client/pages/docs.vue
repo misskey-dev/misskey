@@ -16,11 +16,12 @@
 import { defineComponent } from 'vue';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { url, lang } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.help,
 				icon: faQuestionCircle
 			},

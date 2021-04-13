@@ -53,7 +53,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faEllipsisH, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import XSigninDialog from '@client/components/signin-dialog.vue';
 import XSignupDialog from '@client/components/signup-dialog.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -283,7 +283,7 @@ export default defineComponent({
 				}
 
 				> .status {
-					border-top: solid 1px var(--divider);
+					border-top: solid 0.5px var(--divider);
 					padding: 32px;
 					font-size: 90%;
 
@@ -291,7 +291,7 @@ export default defineComponent({
 						> span:not(:last-child) {
 							padding-right: 1em;
 							margin-right: 1em;
-							border-right: solid 1px var(--divider);
+							border-right: solid 0.5px var(--divider);
 						}
 					}
 

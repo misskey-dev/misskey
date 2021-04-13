@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkPagination :pagination="pagination" #default="{items}" ref="list">
-		<MkPagePreview v-for="page in items" :page="page" :key="page.id" class="_vMargin"/>
+		<MkPagePreview v-for="page in items" :page="page" :key="page.id" class="_gap"/>
 	</MkPagination>
 </div>
 </template>

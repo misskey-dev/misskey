@@ -97,7 +97,7 @@ export default defineComponent({
 			font: inherit;
 			font-weight: normal;
 			font-size: 1em;
-			height: 52px;
+			height: 48px;
 			background: none;
 			border: none;
 			border-radius: 0;

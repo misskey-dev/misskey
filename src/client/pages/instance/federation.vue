@@ -67,6 +67,7 @@ import MkSelect from '@client/components/ui/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkInstanceInfo from './instance.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -78,7 +79,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.federation,
 				icon: faGlobe
 			},

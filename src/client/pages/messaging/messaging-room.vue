@@ -47,6 +47,7 @@ import { isBottom, onScrollBottom, scroll } from '@client/scripts/scroll';
 import * as os from '@client/os';
 import { popout } from '@client/scripts/popout';
 import * as sound from '@client/scripts/sound';
+import * as symbols from '@client/symbols';
 
 const Component = defineComponent({
 	components: {
@@ -70,7 +71,7 @@ const Component = defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => !this.fetching ? this.user ? {
+			[symbols.PAGE_INFO]: computed(() => !this.fetching ? this.user ? {
 				userName: this.user,
 				avatar: this.user,
 				action: {

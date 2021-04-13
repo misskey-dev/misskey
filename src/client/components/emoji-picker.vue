@@ -402,7 +402,7 @@ export default defineComponent({
 		> .tab {
 			flex: 1;
 			height: 38px;
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 
 			&.active {
 				border-top: solid 1px var(--accent);
@@ -425,7 +425,7 @@ export default defineComponent({
 		> div {
 			&:not(.index) {
 				padding: 4px 0 8px 0;
-				border-top: solid 1px var(--divider);
+				border-top: solid 0.5px var(--divider);
 			}
 
 			> header {
@@ -492,7 +492,7 @@ export default defineComponent({
 			}
 
 			&.result {
-				border-bottom: solid 1px var(--divider);
+				border-bottom: solid 0.5px var(--divider);
 
 				&:empty {
 					display: none;

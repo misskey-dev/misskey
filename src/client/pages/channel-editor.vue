@@ -30,6 +30,7 @@ import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -45,7 +46,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.channelId ? {
+			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
 				title: this.$ts._channel.edit,
 				icon: faSatelliteDish,
 			} : {

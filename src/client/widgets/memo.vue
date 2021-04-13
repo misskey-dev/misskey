@@ -77,7 +77,7 @@ export default defineComponent({
 		color: var(--fg);
 		background: transparent;
 		border: none;
-		border-bottom: solid 1px var(--divider);
+		border-bottom: solid 0.5px var(--divider);
 		border-radius: 0;
 		box-sizing: border-box;
 		font: inherit;

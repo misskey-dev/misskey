@@ -12,7 +12,7 @@ import { host } from '@client/config';
 import { search } from '@client/scripts/search';
 import XCommon from './_common_/common.vue';
 import * as os from '@client/os';
-import XSidebar from '@client/components/sidebar.vue';
+import XSidebar from '@client/ui/_common_/sidebar.vue';
 import { sidebarDef } from '@client/sidebar';
 import { ColdDeviceStorage } from '@client/store';
 

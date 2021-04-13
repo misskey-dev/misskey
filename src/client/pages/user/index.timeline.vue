@@ -1,11 +1,11 @@
 <template>
 <div>
-	<MkTab v-model:value="with_" class="_vMargin">
+	<MkTab v-model:value="with_" class="_gap _section">
 		<option :value="null">{{ $ts.notes }}</option>
 		<option value="replies">{{ $ts.notesAndReplies }}</option>
 		<option value="files">{{ $ts.withFiles }}</option>
 	</MkTab>
-	<XNotes ref="timeline" class="_vMargin" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
+	<XNotes ref="timeline" class="_section _noGap_" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)"/>
 </div>
 </template>
 

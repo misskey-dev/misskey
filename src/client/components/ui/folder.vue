@@ -137,4 +137,8 @@ export default defineComponent({
 		}
 	}
 }
+
+._flat_ .ssazuxis {
+	margin: var(--margin);
+}
 </style>

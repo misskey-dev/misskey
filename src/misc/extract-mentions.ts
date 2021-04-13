@@ -2,18 +2,10 @@
 
 import * as mfm from 'mfm-js';
 
-export default function(nodes: mfm.MfmNode[]): mfm.MfmMention['props'][] {
+export function extractMentions(nodes: mfm.MfmNode[]): mfm.MfmMention['props'][] {
 	// TODO: 重複を削除
-	const mentionNodes = [] as mfm.MfmMention[];
+	const mentionNodes = mfm.extract(nodes, (node) => node.type === 'mention');
+	const mentions = mentionNodes.map(x => x.props);
 
-	function scan(nodes: mfm.MfmNode[]) {
-		for (const node of nodes) {
-			if (node.type === 'mention') mentionNodes.push(node);
-			else if (node.children) scan(node.children);
-		}
-	}
-
-	scan(nodes);
-
-	return mentionNodes.map(x => x.props);
+	return mentions;
 }

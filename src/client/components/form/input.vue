@@ -215,7 +215,7 @@ export default defineComponent({
 	}
 
 	> .input {
-		$height: 52px;
+		$height: 48px;
 		position: relative;
 
 		> input {
