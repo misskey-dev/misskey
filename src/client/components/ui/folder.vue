@@ -101,6 +101,8 @@ export default defineComponent({
 		z-index: 10;
 		position: sticky;
 		top: var(--stickyTop, 0px);
+		background: var(--X17);
+		-webkit-backdrop-filter: blur(8px);
 		backdrop-filter: blur(20px);
 
 		> .title {
@@ -138,6 +140,8 @@ export default defineComponent({
 }
 
 ._flat_ .ssazuxis {
-	margin: var(--margin);
+	> header {
+		padding: 0 16px;
+	}
 }
 </style>
