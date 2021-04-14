@@ -94,6 +94,7 @@ export default defineComponent({
 
 		uninstall() {
 			removeTheme(this.selectedTheme);
+			this.installedThemes = this.installedThemes.filter(t => t.id !== this.selectedThemeId);
 			this.selectedThemeId = null;
 			os.success();
 		},
