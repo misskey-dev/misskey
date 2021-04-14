@@ -22,7 +22,7 @@ export const router = createRouter({
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/@:acct/room', props: true, component: page('room/room') },
-		{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ page: route.params.page || null }) },
+		{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ initialPage: route.params.page || null }) },
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
 		{ path: '/about-misskey', component: page('about-misskey') },

@@ -12,7 +12,7 @@
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_section members _vMargin">
+		<div v-if="group" class="_section members _gap">
 			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
@@ -39,6 +39,7 @@ import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -54,7 +55,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.group ? {
+			[symbols.PAGE_INFO]: computed(() => this.group ? {
 				title: this.group.name,
 				icon: faUsers,
 			} : null),

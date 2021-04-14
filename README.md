@@ -4,8 +4,8 @@
 
 <div align="center">
 
-[![CircleCI](https://img.shields.io/circleci/project/github/syuilo/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/syuilo/misskey)
-[![Dependencies](https://img.shields.io/david/syuilo/misskey.svg?style=for-the-badge&logo=npm)](https://david-dm.org/syuilo/misskey)
+[![CircleCI](https://img.shields.io/circleci/project/github/misskey-dev/misskey.svg?style=for-the-badge&logo=circleci)](https://circleci.com/gh/misskey-dev/misskey)
+[![Dependencies](https://img.shields.io/david/misskey-dev/misskey.svg?style=for-the-badge&logo=npm)](https://david-dm.org/misskey-dev/misskey)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge&logo=github)](http://makeapullrequest.com)
 [![Awesome Humane Tech](https://raw.githubusercontent.com/humanetech-community/awesome-humane-tech/main/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech)
 
@@ -22,11 +22,16 @@ Why don't you take a short break from the hustle and bustle of the city, and div
 
 ---
 
+Do you have a question? Or are you experiencing trouble?
+Visit [our forum](https://forum.misskey.io/)!
+
+---
+
 ![](https://ja.mstdn.wiki/images/e/ed/Deck.jpg)
 
 :sparkles: Features
 ----------------------------------------------------------------
-<a href="https://xn--931a.moe/"><img src="https://github.com/syuilo/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/></a>
+<a href="https://xn--931a.moe/"><img src="https://github.com/misskey-dev/misskey/blob/develop/assets/ai-orig.png?raw=true" align="right" height="320px"/></a>
 
 <h3>Posting</h3>
 <p>

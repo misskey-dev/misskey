@@ -35,6 +35,7 @@
 			</div>
 		</div>
 	</div>
+
 	<FormGroup v-if="codeEnabled">
 		<FormTextarea v-model:value="themeCode" tall>
 			<span>{{ $ts._theme.code }}</span>
@@ -42,6 +43,14 @@
 		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
 	</FormGroup>
 	<FormButton v-else @click="codeEnabled = true"><Fa :icon="faCode"/> {{ $ts.editCode }}</FormButton>
+
+	<FormGroup v-if="descriptionEnabled">
+		<FormTextarea v-model:value="description">
+			<span>{{ $ts._theme.description }}</span>
+		</FormTextarea>
+	</FormGroup>
+	<FormButton v-else @click="descriptionEnabled = true">{{ $ts.addDescription }}</FormButton>
+
 	<FormGroup>
 		<FormButton @click="showPreview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
 		<FormButton @click="saveAs" primary><Fa :icon="faSave"/> {{ $ts.saveAs }}</FormButton>
@@ -52,7 +61,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
 import * as JSON5 from 'json5';
@@ -67,6 +76,7 @@ import { host } from '@client/config';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { addTheme } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -78,7 +88,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
 				icon: faPalette,
 			},
@@ -87,6 +97,8 @@ export default defineComponent({
 				props: lightTheme.props
 			} as Theme,
 			codeEnabled: false,
+			descriptionEnabled: false,
+			description: null,
 			themeCode: null,
 			bgColors: [
 				{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
@@ -217,12 +229,13 @@ export default defineComponent({
 			this.theme.id = uuid();
 			this.theme.name = name;
 			this.theme.author = `@${this.$i.username}@${toUnicode(host)}`;
+			if (this.description) this.theme.desc = this.description;
 			addTheme(this.theme);
 			applyTheme(this.theme);
 			if (this.$store.state.darkMode) {
-				ColdDeviceStorage.set('darkTheme', this.theme.id);
+				ColdDeviceStorage.set('darkTheme', this.theme);
 			} else {
-				ColdDeviceStorage.set('lightTheme', this.theme.id);
+				ColdDeviceStorage.set('lightTheme', this.theme);
 			}
 			this.changed = false;
 			os.dialog({

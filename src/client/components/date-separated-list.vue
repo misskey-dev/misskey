@@ -37,14 +37,16 @@ export default defineComponent({
 			});
 		}
 
+		const noGap = [...document.querySelectorAll('._noGap_')].some(el => el.contains(this.$parent.$el));
+
 		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
-			class: 'sqadhkmv _list_',
+			class: 'sqadhkmv' + (noGap ? ' _block' : ''),
 			name: 'list',
 			tag: 'div',
 			'data-direction': this.direction,
 			'data-reversed': this.reversed ? 'true' : 'false',
 		} : {
-			class: 'sqadhkmv _list_',
+			class: 'sqadhkmv',
 		}, this.items.map((item, i) => {
 			const el = this.$slots.default({
 				item: item
@@ -117,11 +119,7 @@ export default defineComponent({
 			transform: translateY(-64px);
 		}
 	}
-}
-</style>
 
-<style lang="scss">
-.sqadhkmv {
 	> .separator {
 		text-align: center;
 
@@ -154,5 +152,26 @@ export default defineComponent({
 			}
 		}
 	}
+}
+
+._noGap_ .sqadhkmv {
+	> * {
+		margin: 0 !important;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+
+		&:not(:last-child) {
+			border-bottom: solid 0.5px var(--divider);
+		}
+	}
+}
+
+._inContainer_ .sqadhkmv > * {
+	margin: 0 !important;
+	border: none;
+	border-bottom: solid 0.5px var(--divider);
+	border-radius: 0;
+	box-shadow: none;
 }
 </style>

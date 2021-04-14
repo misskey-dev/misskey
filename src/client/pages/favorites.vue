@@ -10,6 +10,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import XNotes from '@client/components/notes.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -18,7 +19,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.favorites,
 				icon: faStar
 			},

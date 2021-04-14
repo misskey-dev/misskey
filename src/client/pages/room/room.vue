@@ -63,6 +63,7 @@ import MkSelect from '@client/components/ui/select.vue';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
+import * as symbols from '@client/symbols';
 
 let room: Room;
 
@@ -82,7 +83,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.user ? {
+			[symbols.PAGE_INFO]: computed(() => this.user ? {
 				title: this.$ts.room,
 				avatar: this.user,
 			} : null),

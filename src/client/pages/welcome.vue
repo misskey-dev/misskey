@@ -11,6 +11,7 @@ import XSetup from './welcome.setup.vue';
 import XEntrance from './welcome.entrance.a.vue';
 import { instanceName } from '@client/config';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -20,7 +21,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: instanceName,
 				icon: null
 			},

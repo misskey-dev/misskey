@@ -12,7 +12,7 @@
 		</div>
 	</section>
 	<section class="_section">
-		<div class="_content _card _vMargin">
+		<div class="_content _card _gap">
 			<div class="_content">
 				<MkInput v-model:value="name" required><span>{{ $ts.name }}</span></MkInput>
 				<MkInput v-model:value="author" required><span>{{ $ts.author }}</span></MkInput>
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="_content _card _vMargin">
+		<div class="_content _card _gap">
 			<div class="list-view _content">
 				<div class="item" v-for="([ k, v ], i) in theme" :key="k">
 					<div class="_inputs">
@@ -94,7 +94,7 @@
 import { defineComponent } from 'vue';
 import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 
 import MkRadio from '@client/components/ui/radio.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -109,6 +109,7 @@ import { host } from '@client/config';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { addTheme } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -122,7 +123,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
 				icon: faPalette,
 			},

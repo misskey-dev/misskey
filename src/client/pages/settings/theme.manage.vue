@@ -13,6 +13,9 @@
 		<FormInput readonly :value="selectedTheme.author">
 			<span>{{ $ts.author }}</span>
 		</FormInput>
+		<FormTextarea readonly :value="selectedTheme.desc" v-if="selectedTheme.desc">
+			<span>{{ $ts._theme.description }}</span>
+		</FormTextarea>
 		<FormTextarea readonly tall :value="selectedThemeCode">
 			<span>{{ $ts._theme.code }}</span>
 			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $ts.copy }}</button></template>
@@ -38,6 +41,7 @@ import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { getThemes, removeTheme } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -54,7 +58,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.manage,
 				icon: faFolderOpen
 			},
@@ -82,7 +86,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -93,6 +97,7 @@ export default defineComponent({
 
 		uninstall() {
 			removeTheme(this.selectedTheme);
+			this.installedThemes = this.installedThemes.filter(t => t.id !== this.selectedThemeId);
 			this.selectedThemeId = null;
 			os.success();
 		},

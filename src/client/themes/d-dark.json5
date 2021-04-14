@@ -18,7 +18,7 @@
 		panelHeaderDivider: '@divider',
 		infoFg: '@accent',
 		infoBg: 'rgb(0, 0, 0)',
-		header: ':alpha<0.7<@bg',
+		header: ':alpha<0.7<@panel',
 		navBg: '#363636',
 		renote: '@accent',
 		mention: '#da6d35',

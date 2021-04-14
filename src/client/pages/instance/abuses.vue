@@ -34,7 +34,7 @@
 			-->
 
 			<MkPagination :pagination="pagination" #default="{items}" ref="reports" style="margin-top: var(--margin);">
-				<div class="bcekxzvu _card _vMargin" v-for="report in items" :key="report.id">
+				<div class="bcekxzvu _card _gap" v-for="report in items" :key="report.id">
 					<div class="_content target">
 						<MkAvatar class="avatar" :user="report.targetUser"/>
 						<div class="info">
@@ -72,6 +72,7 @@ import MkSelect from '@client/components/ui/select.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import { acct } from '../../filters/user';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -83,7 +84,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.abuseReports,
 				icon: faExclamationCircle
 			},

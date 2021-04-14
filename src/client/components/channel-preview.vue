@@ -123,7 +123,7 @@ export default defineComponent({
 
 	> footer {
 		padding: 12px 16px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 
 		> span {
 			opacity: 0.7;

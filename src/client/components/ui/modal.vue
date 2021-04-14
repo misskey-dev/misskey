@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
+<transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? popup ? 500 : 300 : 0" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
 	<div v-show="manualShowing != null ? manualShowing : showing" class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div class="bg _modalBg" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
@@ -183,9 +183,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal-enter-active, .modal-leave-active {
-	// CSS的には無意味だけどこれが無いとVueが認識しない
-	transition: opacity 0.3s, transform 0.3s !important;
-
 	> .bg {
 		transition: opacity 0.3s !important;
 	}
@@ -207,9 +204,6 @@ export default defineComponent({
 }
 
 .modal-popup-enter-active, .modal-popup-leave-active {
-	// CSS的には無意味だけどこれが無いとVueが認識しない
-	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-
 	> .bg {
 		transition: opacity 0.3s !important;
 	}
