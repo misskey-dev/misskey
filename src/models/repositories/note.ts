@@ -1,12 +1,12 @@
 import { EntityRepository, Repository, In } from 'typeorm';
+import * as mfm from 'mfm-js';
 import { Note } from '../entities/note';
 import { User } from '../entities/user';
 import { Users, PollVotes, DriveFiles, NoteReactions, Followings, Polls, Channels } from '..';
 import { SchemaType } from '@/misc/schema';
+import { nyaize } from '@/misc/nyaize';
 import { awaitAll } from '../../prelude/await-all';
 import { convertLegacyReaction, convertLegacyReactions, decodeReaction } from '@/misc/reaction-lib';
-import { toString } from '../../mfm/to-string';
-import { parse } from '../../mfm/parse';
 import { NoteReaction } from '../entities/note-reaction';
 import { aggregateNoteEmojis, populateEmojis, prefetchEmojis } from '@/misc/populate-emojis';
 
@@ -223,8 +223,13 @@ export class NoteRepository extends Repository<Note> {
 		});
 
 		if (packed.user.isCat && packed.text) {
-			const tokens = packed.text ? parse(packed.text) : [];
-			packed.text = toString(tokens, { doNyaize: true });
+			const tokens = packed.text ? mfm.parse(packed.text) : [];
+			mfm.inspect(tokens, node => {
+				if (node.type === 'text') {
+					node.props.text = nyaize(node.props.text);
+				}
+			});
+			packed.text = mfm.toString(tokens);
 		}
 
 		if (!opts.skipHide) {

@@ -104,6 +104,12 @@ module.exports = {
 				}
 			}, postcss]
 		}, {
+			test: /\.svg$/,
+			use: [
+				'vue-loader',
+				'vue-svg-loader',
+			],
+		}, {
 			test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
 			type: 'asset/resource'
 		}, {

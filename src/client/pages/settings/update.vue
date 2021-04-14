@@ -1,8 +1,8 @@
 <template>
 <FormBase>
 	<template v-if="meta">
-		<MkInfo v-if="version === meta.version">{{ $ts.youAreRunningUpToDateClient }}</MkInfo>
-		<MkInfo v-else warn>{{ $ts.newVersionOfClientAvailable }}</MkInfo>
+		<FormInfo v-if="version === meta.version">{{ $ts.youAreRunningUpToDateClient }}</FormInfo>
+		<FormInfo v-else warn>{{ $ts.newVersionOfClientAvailable }}</FormInfo>
 	</template>
 	<FormGroup>
 		<template #label>{{ instanceName }}</template>
@@ -38,9 +38,10 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormButton from '@client/components/form/button.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
-import MkInfo from '@client/components/ui/info.vue';
+import FormInfo from '@client/components/form/info.vue';
 import * as os from '@client/os';
 import { version, instanceName } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -51,14 +52,14 @@ export default defineComponent({
 		FormLink,
 		FormGroup,
 		FormKeyValueView,
-		MkInfo,
+		FormInfo,
 	},
 
 	emits: ['info'],
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: 'Misskey Update',
 				icon: faSyncAlt
 			},
@@ -70,7 +71,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 
 		os.api('meta', {
 			detail: false
@@ -79,7 +80,7 @@ export default defineComponent({
 			localStorage.setItem('v', meta.version);
 		});
 
-		fetch('https://api.github.com/repos/syuilo/misskey/releases', {
+		fetch('https://api.github.com/repos/misskey-dev/misskey/releases', {
 			method: 'GET',
 		})
 		.then(res => res.json())

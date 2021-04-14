@@ -1,6 +1,6 @@
 <template>
 <div v-if="clip" class="_section">
-	<div class="okzinsic _content _panel _vMargin">
+	<div class="okzinsic _content _panel _gap">
 		<div class="description" v-if="clip.description">
 			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 		</div>
@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<XNotes class="_content _vMargin" :pagination="pagination" :detail="true"/>
+	<XNotes class="_content _gap" :pagination="pagination" :detail="true"/>
 </div>
 </template>
 
@@ -20,6 +20,7 @@ import MkContainer from '@client/components/ui/container.vue';
 import XPostForm from '@client/components/post-form.vue';
 import XNotes from '@client/components/notes.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -37,7 +38,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.clip ? {
+			[symbols.PAGE_INFO]: computed(() => this.clip ? {
 				title: this.clip.name,
 				icon: faPaperclip,
 				action: {
@@ -142,7 +143,7 @@ export default defineComponent({
 	> .user {
 		$height: 32px;
 		padding: 16px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		line-height: $height;
 
 		> .avatar {

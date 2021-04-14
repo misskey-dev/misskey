@@ -7,8 +7,8 @@
   ],
   "author": "syuilo <i@syuilo.com>",
   "license": "MIT",
-  "repository": "https://github.com/syuilo/misskey.git",
-  "bugs": "https://github.com/syuilo/misskey/issues",
+  "repository": "https://github.com/misskey-dev/misskey.git",
+  "bugs": "https://github.com/misskey-dev/misskey/issues",
   "main": "./built/core.js",
   "types": "./built/core.d.ts",
   "scripts": {

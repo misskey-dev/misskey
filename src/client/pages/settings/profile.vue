@@ -59,6 +59,7 @@ import FormGroup from '@client/components/form/group.vue';
 import { host, langs } from '@client/config';
 import { selectFile } from '@client/scripts/select-file';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -75,7 +76,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.profile,
 				icon: faUser
 			},
@@ -136,7 +137,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

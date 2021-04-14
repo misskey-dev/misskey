@@ -36,7 +36,7 @@ import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from '@client/config';
 import DeckColumnCore from '@client/ui/deck/column-core.vue';
-import XSidebar from '@client/components/sidebar.vue';
+import XSidebar from '@client/ui/_common_/sidebar.vue';
 import { getScrollContainer } from '@client/scripts/scroll';
 import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';

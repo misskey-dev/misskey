@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkPagination :pagination="pagination" #default="{items}" ref="list">
-		<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _vMargin">
+		<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
 			<b>{{ item.name }}</b>
 			<div v-if="item.description" class="description">{{ item.description }}</div>
 		</MkA>

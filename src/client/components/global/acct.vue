@@ -1,5 +1,5 @@
 <template>
-<span class="mk-acct" v-once>
+<span class="mk-acct">
 	<span class="name">@{{ user.username }}</span>
 	<span class="host" v-if="user.host || detail || $store.state.showFullAcct">@{{ user.host || host }}</span>
 </span>
@@ -7,11 +7,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode/';
 import { host } from '@client/config';
 
 export default defineComponent({
-	props: ['user', 'detail'],
+	props: {
+		user: {
+			type: Object,
+			required: true
+		},
+		detail: {
+			type: Boolean,
+			default: false
+		},
+	},
 	data() {
 		return {
 			host: toUnicode(host),

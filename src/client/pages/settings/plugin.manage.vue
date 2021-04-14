@@ -36,19 +36,18 @@ import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fo
 import MkButton from '@client/components/ui/button.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkSelect from '@client/components/ui/select.vue';
-import MkInfo from '@client/components/ui/info.vue';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		MkButton,
 		MkTextarea,
 		MkSelect,
-		MkInfo,
 		FormSwitch,
 		FormBase,
 		FormGroup,
@@ -58,7 +57,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.manage,
 				icon: faPlug
 			},
@@ -68,7 +67,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

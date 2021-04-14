@@ -43,7 +43,7 @@ Le code des thèmes est écrit sous forme d'objets JSON5. Les thèmes comprennen
 * `props` ... Définir un style de thème.Voir les explications ci-après.
 
 ### Définir un style de thème
-C'est dans `props` que vous définirez le style de thème. Les propriétés deviendront des variables CSS et les valeurs associées spécifieront le contenu de ces variables. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est clair `light` ce sera l'objet [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est sombre `dark` ce sera l'objet [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5). Cela signifie, par exemple, que s'il n'y pas de propriété `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
+C'est dans `props` que vous définirez le style de thème. Les propriétés deviendront des variables CSS et les valeurs associées spécifieront le contenu de ces variables. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est clair `light` ce sera l'objet [_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est sombre `dark` ce sera l'objet [_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5). Cela signifie, par exemple, que s'il n'y pas de propriété `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
 
 #### Syntaxe des valeurs
 * Codes de couleur Hex

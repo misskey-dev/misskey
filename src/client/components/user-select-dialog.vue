@@ -153,7 +153,7 @@ export default defineComponent({
 		> .user {
 			display: flex;
 			align-items: center;
-			padding: 8px var(--section-padding);
+			padding: 8px var(--root-margin);
 			font-size: 14px;
 
 			&:hover {

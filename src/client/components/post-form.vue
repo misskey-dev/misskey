@@ -56,12 +56,12 @@ import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlob
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode/';
 import XNotePreview from './note-preview.vue';
-import { parse } from '../../mfm/parse';
+import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';
 import { erase, unique } from '../../prelude/array';
-import extractMentions from '@/misc/extract-mentions';
+import { extractMentions } from '@/misc/extract-mentions';
 import getAcct from '@/misc/acct/render';
 import { formatTimeString } from '@/misc/format-time-string';
 import { Autocomplete } from '@client/scripts/autocomplete';
@@ -229,7 +229,7 @@ export default defineComponent({
 		}
 
 		if (this.reply && this.reply.text != null) {
-			const ast = parse(this.reply.text);
+			const ast = mfm.parse(this.reply.text);
 
 			for (const x of extractMentions(ast)) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
@@ -580,7 +580,7 @@ export default defineComponent({
 					this.deleteDraft();
 					this.$emit('posted');
 					if (this.text && this.text != '') {
-						const hashtags = parse(this.text).filter(x => x.node.type === 'hashtag').map(x => x.node.props.hashtag);
+						const hashtags = mfm.parse(this.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
 						const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
 						localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 					}
@@ -767,7 +767,7 @@ export default defineComponent({
 		> .cw {
 			z-index: 1;
 			padding-bottom: 8px;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 		}
 
 		> .text {

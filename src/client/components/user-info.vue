@@ -104,7 +104,7 @@ export default defineComponent({
 	> .description {
 		padding: 16px;
 		font-size: 0.8em;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 
 		> .mfm {
 			display: -webkit-box;
@@ -116,7 +116,7 @@ export default defineComponent({
 
 	> .status {
 		padding: 10px 16px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 
 		> div {
 			display: inline-block;

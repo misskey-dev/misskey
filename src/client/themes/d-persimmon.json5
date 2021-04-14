@@ -16,7 +16,6 @@
 		panelShadow: '" 0 8px 24px rgb(0 0 0 / 25%)',
 		infoFg: '@fg',
 		infoBg: '#333c3b',
-		header: ':alpha<0.7<@bg',
 		navBg: '#141714',
 		renote: '@accent',
 		mention: '@accent',
