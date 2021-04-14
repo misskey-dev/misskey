@@ -13,6 +13,9 @@
 		<FormInput readonly :value="selectedTheme.author">
 			<span>{{ $ts.author }}</span>
 		</FormInput>
+		<FormTextarea readonly :value="selectedTheme.desc" v-if="selectedTheme.desc">
+			<span>{{ $ts._theme.description }}</span>
+		</FormTextarea>
 		<FormTextarea readonly tall :value="selectedThemeCode">
 			<span>{{ $ts._theme.code }}</span>
 			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $ts.copy }}</button></template>

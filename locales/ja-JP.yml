@@ -716,6 +716,7 @@ goBack: "戻る"
 unlikeConfirm: "いいね解除しますか？"
 fullView: "フルビュー"
 quitFullView: "フルビュー解除"
+addDescription: "説明を追加"
 
 _email:
   _follow:
@@ -884,6 +885,7 @@ _theme:
   install: "テーマのインストール"
   manage: "テーマの管理"
   code: "テーマコード"
+  description: "説明"
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"
   builtinThemes: "標準のテーマ"
