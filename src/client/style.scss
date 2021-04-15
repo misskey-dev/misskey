@@ -366,14 +366,16 @@ hr {
 		border-radius: var(--radius);
 	}
 
-	._magnet {
-		margin-bottom: calc(var(--margin) * -1);
-	}	
-
 	@media (max-width: 500px) {
 		._root {
 			--root-margin: 0;
 		}
+	}
+}
+
+._magnetParent {
+	._magnetChild:not(* + ._magnetChild) {
+		margin-top: 0;
 	}
 }
 
