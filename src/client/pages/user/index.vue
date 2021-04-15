@@ -198,6 +198,7 @@
 					<div v-if="user.pinnedNotes.length > 0">
 						<XNote v-for="note in user.pinnedNotes" class="note _block" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
+					<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
 					<XPhotos :user="user" :key="user.id"/>
 					<XActivity :user="user" :key="user.id"/>
 				</div>
@@ -229,6 +230,7 @@ import MkContainer from '@client/components/ui/container.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import MkRemoteCaution from '@client/components/remote-caution.vue';
 import MkTab from '@client/components/tab.vue';
+import MkInfo from '@client/components/ui/info.vue';
 import Progress from '@client/scripts/loading';
 import parseAcct from '@/misc/acct/parse';
 import { getScrollPosition } from '@client/scripts/scroll';
@@ -247,6 +249,7 @@ export default defineComponent({
 		MkRemoteCaution,
 		MkFolder,
 		MkTab,
+		MkInfo,
 		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
 		XClips: defineAsyncComponent(() => import('./clips.vue')),
 		XPages: defineAsyncComponent(() => import('./pages.vue')),

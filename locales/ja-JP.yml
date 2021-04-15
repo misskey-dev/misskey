@@ -717,6 +717,7 @@ unlikeConfirm: "いいね解除しますか？"
 fullView: "フルビュー"
 quitFullView: "フルビュー解除"
 addDescription: "説明を追加"
+userPagePinTip: "個々のノートのメニューから「ピン留め」を選択することで、ここにノートを表示しておくことができます。"
 
 _email:
   _follow:
