@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	<div class="deliver">
-		<div class="label">Deliver queue<Fa :icon="faExclamationTriangle" v-if="inbox.waiting > 0" class="icon"/></div>
+		<div class="label">Deliver queue<Fa :icon="faExclamationTriangle" v-if="deliver.waiting > 0" class="icon"/></div>
 		<div class="values">
 			<div>
 				<div>Process</div>

@@ -1,7 +1,6 @@
 <template>
-<div class="mfcuwfyp _noGap_">
-	<div class="_magnet"></div>
-	<XList class="notifications" :items="items" v-slot="{ item: notification }">
+<div class="mfcuwfyp _noGap_ _magnetParent">
+	<XList class="notifications _magnetChild" :items="items" v-slot="{ item: notification }">
 		<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
 		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 	</XList>

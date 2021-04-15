@@ -24,11 +24,9 @@ export default defineComponent({
 	methods: {
 		focus() {
 			this.$slots.default[0].elm.focus();
-		}
-	},
+		},
 
-	render() {
-		const getDateText = (time: string) => {
+		getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
 			return this.$t('monthAndDay', {
@@ -36,8 +34,12 @@ export default defineComponent({
 				day: date.toString()
 			});
 		}
+	},
 
+	render() {
 		const noGap = [...document.querySelectorAll('._noGap_')].some(el => el.contains(this.$parent.$el));
+
+		if (this.items.length === 0) return;
 
 		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
 			class: 'sqadhkmv' + (noGap ? ' _block' : ''),
@@ -72,10 +74,10 @@ export default defineComponent({
 							class: 'icon',
 							icon: faAngleUp,
 						}),
-						getDateText(item.createdAt)
+						this.getDateText(item.createdAt)
 					]),
 					h('span', [
-						getDateText(this.items[i + 1].createdAt),
+						this.getDateText(this.items[i + 1].createdAt),
 						h(FontAwesomeIcon, {
 							class: 'icon',
 							icon: faAngleDown,

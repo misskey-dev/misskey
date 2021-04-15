@@ -1,6 +1,5 @@
 <template>
 <FormBase>
-	<FormSwitch v-model:value="titlebar">{{ $ts.showTitlebar }}</FormSwitch>
 	<FormSwitch v-model:value="showFixedPostForm">{{ $ts.showFixedPostForm }}</FormSwitch>
 
 	<FormSelect v-model:value="lang">
@@ -137,7 +136,6 @@ export default defineComponent({
 		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
 		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
 		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
-		titlebar: defaultStore.makeGetterSetter('titlebar'),
 		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
 		nsfw: defaultStore.makeGetterSetter('nsfw'),
 		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
@@ -179,10 +177,6 @@ export default defineComponent({
 		},
 
 		showGapBetweenNotesInTimeline() {
-			this.reloadAsk();
-		},
-
-		titlebar() {
 			this.reloadAsk();
 		},
 

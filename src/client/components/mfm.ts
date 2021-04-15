@@ -58,10 +58,13 @@ export default defineComponent({
 					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (!this.plain) {
-						const x = text.split('\n')
-							.map(t => t == '' ? [h('br')] : [t, h('br')]);
-						x[x.length - 1].pop();
-						return x;
+						const res = [];
+						for (const t of text.split('\n')) {
+							res.push(h('br'));
+							res.push(t);
+						}
+						res.shift();
+						return res;
 					} else {
 						return [text.replace(/\n/g, ' ')];
 					}
