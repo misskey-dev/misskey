@@ -718,6 +718,7 @@ fullView: "フルビュー"
 quitFullView: "フルビュー解除"
 addDescription: "説明を追加"
 userPagePinTip: "個々のノートのメニューから「ピン留め」を選択することで、ここにノートを表示しておくことができます。"
+notSpecifiedMentionWarning: "宛先に含まれていないメンションがあります"
 
 _email:
   _follow:
