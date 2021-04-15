@@ -1,6 +1,6 @@
 <template>
 <div class="cmuxhskf _root" v-hotkey.global="keymap">
-	<div class="new" v-if="queue > 0" :style="{ width: width + 'px' }"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
+	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 
 	<div class="_magnet"></div>
 	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
@@ -64,7 +64,6 @@ export default defineComponent({
 			channel: null,
 			menuOpened: false,
 			queue: 0,
-			width: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
 				icon: this.src === 'local' ? faComments : this.src === 'social' ? faShareAlt : this.src === 'global' ? faGlobe : faHome,
@@ -126,10 +125,6 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.width = this.$el.offsetWidth;
-	},
-
 	methods: {
 		before() {
 			Progress.start();
@@ -140,7 +135,6 @@ export default defineComponent({
 		},
 
 		queueUpdated(q) {
-			if (this.$el.offsetWidth !== 0) this.width = this.$el.offsetWidth;
 			this.queue = q;
 		},
 
@@ -223,8 +217,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .cmuxhskf {
 	> .new {
-		position: fixed;
+		position: sticky;
+		top: calc(var(--stickyTop, 0px) + 16px);
 		z-index: 1000;
+		width: 100%;
 
 		> button {
 			display: block;
