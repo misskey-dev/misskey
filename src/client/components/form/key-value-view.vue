@@ -24,6 +24,7 @@ export default defineComponent({
 
 	> .key {
 		margin-right: 12px;
+		white-space: nowrap;
 	}
 
 	> .value {
