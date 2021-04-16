@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="props.showHeader" :body-togglable="bodyTogglable" :scrollable="scrollable">
+<MkContainer :show-header="props.showHeader" :foldable="foldable" :scrollable="scrollable">
 	<template #header><Fa :icon="faGlobe"/>{{ $ts._widgets.federation }}</template>
 
 	<div class="wbrkwalb">
@@ -42,7 +42,7 @@ export default defineComponent({
 		MkContainer, MkMiniChart
 	},
 	props: {
-		bodyTogglable: {
+		foldable: {
 			type: Boolean,
 			required: false,
 			default: false

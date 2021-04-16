@@ -4,7 +4,7 @@
 		<template #header><Fa :icon="faHeartbeat"/> {{ $ts.metrics }}</template>
 		<div class="_section" style="padding: 0 var(--margin);">
 			<div class="_content">
-				<MkContainer :body-togglable="false" class="_gap">
+				<MkContainer :foldable="false" class="_gap">
 					<template #header><Fa :icon="faMicrochip"/>{{ $ts.cpuAndMemory }}</template>
 					<!--
 					<template #func>
@@ -27,7 +27,7 @@
 					</div>
 				</MkContainer>
 
-				<MkContainer :body-togglable="false" class="_gap">
+				<MkContainer :foldable="false" class="_gap">
 					<template #header><Fa :icon="faHdd"/> {{ $ts.disk }}</template>
 					<!--
 					<template #func>
@@ -50,7 +50,7 @@
 					</div>
 				</MkContainer>
 
-				<MkContainer :body-togglable="false" class="_gap">
+				<MkContainer :foldable="false" class="_gap">
 					<template #header><Fa :icon="faExchangeAlt"/> {{ $ts.network }}</template>
 					<!--
 					<template #func>
@@ -78,7 +78,7 @@
 		<template #header><Fa :icon="faClipboardList"/> {{ $ts.jobQueue }}</template>
 
 		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
-			<MkContainer :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
+			<MkContainer :foldable="false" :scrollable="true" :resize-base-el="() => $el">
 				<template #header><Fa :icon="faExclamationTriangle"/> {{ $ts.delayed }}</template>
 
 				<div class="_content">

@@ -5,7 +5,7 @@
 		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
-	<MkContainer :body-togglable="true" class="_gap">
+	<MkContainer :foldable="true" class="_gap">
 		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>

@@ -2,7 +2,7 @@
 <div class="fcuexfpr _root">
 	<div v-if="note" class="note" v-anim>
 		<div class="_gap" v-if="showNext">
-			<XNotes class="_content _noGap_" :pagination="next"/>
+			<XNotes class="_content" :pagination="next" :no-gap="true"/>
 		</div>
 
 		<div class="main _gap">
@@ -25,7 +25,7 @@
 		</div>
 
 		<div class="_gap" v-if="showPrev">
-			<XNotes class="_content _noGap_" :pagination="prev"/>
+			<XNotes class="_content" :pagination="prev" :no-gap="true"/>
 		</div>
 	</div>
 

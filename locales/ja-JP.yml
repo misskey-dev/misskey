@@ -716,6 +716,12 @@ goBack: "戻る"
 unlikeConfirm: "いいね解除しますか？"
 fullView: "フルビュー"
 quitFullView: "フルビュー解除"
+addDescription: "説明を追加"
+userPagePinTip: "個々のノートのメニューから「ピン留め」を選択することで、ここにノートを表示しておくことができます。"
+notSpecifiedMentionWarning: "宛先に含まれていないメンションがあります"
+info: "情報"
+userInfo: "ユーザー情報"
+unknown: "不明"
 
 _email:
   _follow:
@@ -884,6 +890,7 @@ _theme:
   install: "テーマのインストール"
   manage: "テーマの管理"
   code: "テーマコード"
+  description: "説明"
   installed: "{name}をインストールしました"
   installedThemes: "インストールされたテーマ"
   builtinThemes: "標準のテーマ"

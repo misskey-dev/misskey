@@ -1,11 +1,13 @@
 <template>
 <div class="lznhrdub _root">
-	<div class="_section">
-		<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.searchUser }}</span></MkInput>
+	<div>
+		<div class="_isolated">
+			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.searchUser }}</span></MkInput>
+		</div>
 
 		<XUserList v-if="query" class="_gap" :pagination="searchPagination" ref="search"/>
 
-		<div class="localfedi7 _panel _gap" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
+		<div class="localfedi7 _block _isolated" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
 			<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
 			<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 		</div>
@@ -29,12 +31,12 @@
 			</MkFolder>
 		</template>
 	</div>
-	<div class="_section">
-		<div class="localfedi7 _panel _gap" v-if="tag == null" :style="{ backgroundImage: `url(/static-assets/client/fedi.jpg)` }">
+	<div>
+		<div class="localfedi7 _block _isolated" v-if="tag == null" :style="{ backgroundImage: `url(/static-assets/client/fedi.jpg)` }">
 			<header><span>{{ $ts.exploreFediverse }}</span></header>
 		</div>
 
-		<MkFolder :body-togglable="true" :expanded="false" ref="tags" class="_gap">
+		<MkFolder :foldable="true" :expanded="false" ref="tags" class="_gap">
 			<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ $ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
