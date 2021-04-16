@@ -6,10 +6,11 @@
 		<div class="stream" v-if="!fetching && images.length > 0">
 			<MkA v-for="image in images"
 				class="img"
-				:style="`background-image: url(${thumbnail(image.file)})`"
 				:to="notePage(image.note)"
 				:key="image.id"
-			></MkA>
+			>
+				<ImgWithBlurhash :hash="image.blurhash" :src="thumbnail(image.file)" :alt="image.name" :title="image.name"/>
+			</MkA>
 		</div>
 		<p class="empty" v-if="!fetching && images.length == 0">{{ $ts.nothing }}</p>
 	</div>
@@ -23,10 +24,12 @@ import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import notePage from '../../filters/note';
 import * as os from '@client/os';
 import MkContainer from '@client/components/ui/container.vue';
+import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';
 
 export default defineComponent({
 	components: {
 		MkContainer,
+		ImgWithBlurhash,
 	},
 	props: {
 		user: {
@@ -88,10 +91,8 @@ export default defineComponent({
 
 		> .img {
 			height: 128px;
-			background-position: center center;
-			background-size: cover;
-			background-clip: content-box;
 			border-radius: 6px;
+			overflow: clip;
 		}
 	}
 
