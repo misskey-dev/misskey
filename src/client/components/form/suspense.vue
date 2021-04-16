@@ -80,7 +80,6 @@ export default defineComponent({
 .fade-leave-active {
 	transition: opacity 0.125s ease;
 }
-
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
