@@ -5,6 +5,8 @@
 		<div>{{ $ts.noNotes }}</div>
 	</div>
 
+	<MkLoading v-if="fetching"/>
+
 	<MkError v-if="error" @retry="init()"/>
 
 	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
