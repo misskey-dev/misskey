@@ -1,4 +1,4 @@
-import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faListUl, faEye, faEyeSlash, faBan, faPencilAlt, faComments, faUsers, faMicrophoneSlash, faPlug, faExclamationCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { i18n } from '@client/i18n';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
@@ -125,6 +125,12 @@ export function getUserMenu(user) {
 		text: i18n.locale.copyUsername,
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
+		}
+	}, {
+		icon: faInfoCircle,
+		text: i18n.locale.info,
+		action: () => {
+			os.pageWindow(`/user-info/${user.id}`);
 		}
 	}, {
 		icon: faEnvelope,

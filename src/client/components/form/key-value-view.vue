@@ -23,7 +23,7 @@ export default defineComponent({
 	padding: 14px 16px;
 
 	> .key {
-		margin-right: 8px;
+		margin-right: 12px;
 	}
 
 	> .value {

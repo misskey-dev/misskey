@@ -195,6 +195,7 @@ export class UserRepository extends Repository<User> {
 
 			...(opts.detail ? {
 				url: profile!.url,
+				uri: user.uri,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				bannerUrl: user.bannerUrl,
