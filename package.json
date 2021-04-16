@@ -158,7 +158,7 @@
 		"https-proxy-agent": "5.0.0",
 		"idb-keyval": "5.0.5",
 		"insert-text-at-cursor": "0.3.0",
-		"is-root": "3.0.0",
+		"is-root": "2.1.0",
 		"is-svg": "4.3.1",
 		"js-yaml": "4.1.0",
 		"jsdom": "16.5.3",
