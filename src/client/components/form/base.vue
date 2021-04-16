@@ -24,9 +24,12 @@ export default defineComponent({
 	--formXPadding: 32px;
 	--formYPadding: 32px;
 
+	font-size: 95%;
 	line-height: 1.3em;
 	background: var(--bg);
 	padding: var(--formYPadding) var(--formXPadding);
+	max-width: 750px;
+	margin: 0 auto;
 
 	&:not(.wide).max-width_400px {
 		--formXPadding: 0px;
