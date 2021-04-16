@@ -22,9 +22,16 @@ export default defineComponent({
 	align-items: center;
 	padding: 14px 16px;
 
+	> .key {
+		margin-right: 8px;
+	}
+
 	> .value {
 		margin-left: auto;
 		opacity: 0.7;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 	}
 }
 </style>
