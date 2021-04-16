@@ -1,6 +1,8 @@
 <template>
 <FormBase>
-	<template v-if="user">
+	<FormGroup v-if="user">
+		<template #label><MkAcct :user="user"/></template>
+
 		<FormKeyValueView>
 			<template #key>ID</template>
 			<template #value><span class="_monospace">{{ user.id }}</span></template>
@@ -19,13 +21,13 @@
 		<FormObjectView tall :value="user">
 			<span>Raw</span>
 		</FormObjectView>
-	</template>
+	</FormGroup>
 </FormBase>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { computed, defineAsyncComponent, defineComponent } from 'vue';
+import { faExternalLinkAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -61,10 +63,17 @@ export default defineComponent({
 
 	data() {
 		return {
-			[symbols.PAGE_INFO]: {
+			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.userInfo,
-				icon: faInfoCircle
-			},
+				icon: faInfoCircle,
+				actions: this.user ? [this.user.url ? {
+					text: this.user.url,
+					icon: faExternalLinkAlt,
+					handler: () => {
+						window.open(this.user.url, '_blank');
+					}
+				} : undefined].filter(x => x !== undefined) : [],
+			})),
 			user: null,
 		}
 	},
