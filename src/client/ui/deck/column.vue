@@ -265,7 +265,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .dnpfarvg {
-	--section-padding: 10px;
+	--root-margin: 10px;
 
 	height: 100%;
 	overflow: hidden;

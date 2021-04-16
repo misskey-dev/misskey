@@ -110,7 +110,7 @@ export default defineComponent({
 			position: relative;
 			margin: 4px 0;
 			padding: 4px 8px;
-			border: solid 1px var(--divider);
+			border: solid 0.5px var(--divider);
 			border-radius: 4px;
 			overflow: hidden;
 			cursor: pointer;

@@ -1,6 +1,5 @@
 <template>
 <FormBase>
-	<FormSwitch v-model:value="titlebar">{{ $ts.showTitlebar }}</FormSwitch>
 	<FormSwitch v-model:value="showFixedPostForm">{{ $ts.showFixedPostForm }}</FormSwitch>
 
 	<FormSelect v-model:value="lang">
@@ -98,6 +97,7 @@ import { defaultStore } from '@client/store';
 import { ColdDeviceStorage } from '@client/store';
 import * as os from '@client/os';
 import { unisonReload } from '@client/scripts/unison-reload';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -115,7 +115,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.general,
 				icon: faCogs
 			},
@@ -136,7 +136,6 @@ export default defineComponent({
 		useOsNativeEmojis: defaultStore.makeGetterSetter('useOsNativeEmojis'),
 		disableShowingAnimatedImages: defaultStore.makeGetterSetter('disableShowingAnimatedImages'),
 		loadRawImages: defaultStore.makeGetterSetter('loadRawImages'),
-		titlebar: defaultStore.makeGetterSetter('titlebar'),
 		imageNewTab: defaultStore.makeGetterSetter('imageNewTab'),
 		nsfw: defaultStore.makeGetterSetter('nsfw'),
 		disablePagesScript: defaultStore.makeGetterSetter('disablePagesScript'),
@@ -181,17 +180,13 @@ export default defineComponent({
 			this.reloadAsk();
 		},
 
-		titlebar() {
-			this.reloadAsk();
-		},
-
 		instanceTicker() {
 			this.reloadAsk();
 		},
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

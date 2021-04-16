@@ -4,7 +4,7 @@
 		<Fa :icon="faTerminal" style="margin-right: 0.5em;"/>Task Manager
 	</template>
 	<div class="qljqmnzj _monospace">
-		<MkTab v-model:value="tab" style="border-bottom: solid 1px var(--divider);">
+		<MkTab v-model:value="tab" style="border-bottom: solid 0.5px var(--divider);">
 			<option value="windows">Windows</option>
 			<option value="stream">Stream</option>
 			<option value="streamPool">Stream (Pool)</option>
@@ -215,7 +215,7 @@ export default defineComponent({
 		width: 100%;
 		padding: 8px 16px;
 		box-sizing: border-box;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		font-size: 0.9em;
 
 		> div {

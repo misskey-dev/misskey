@@ -44,6 +44,7 @@ import { debug } from '@client/config';
 import { defaultStore } from '@client/store';
 import { signout } from '@client/account';
 import { unisonReload } from '@client/scripts/unison-reload';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -59,7 +60,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.other,
 				icon: faEllipsisH
 			},
@@ -73,7 +74,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

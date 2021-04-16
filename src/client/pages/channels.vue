@@ -11,20 +11,20 @@
 	<div class="_section">
 		<div class="_content grwlizim featured" v-if="tab === 'featured'">
 			<MkPagination :pagination="featuredPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 
 		<div class="_content grwlizim following" v-if="tab === 'following'">
 			<MkPagination :pagination="followingPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 
 		<div class="_content grwlizim owned" v-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
 			<MkPagination :pagination="ownedPagination" #default="{items}">
-				<MkChannelPreview v-for="channel in items" class="_vMargin" :channel="channel" :key="channel.id"/>
+				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>
 		</div>
 	</div>
@@ -39,6 +39,7 @@ import MkChannelPreview from '@client/components/channel-preview.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkTab from '@client/components/tab.vue';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -46,7 +47,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.channel,
 				icon: faSatelliteDish,
 				action: {

@@ -203,6 +203,15 @@ export function pageWindow(path: string) {
 	}, {}, 'closed');
 }
 
+export function modalPageWindow(path: string) {
+	const { component, props } = resolve(path);
+	popup(import('@client/components/modal-page-window.vue'), {
+		initialPath: path,
+		initialComponent: markRaw(component),
+		initialProps: props,
+	}, {}, 'closed');
+}
+
 export function dialog(props: Record<string, any>) {
 	return new Promise((resolve, reject) => {
 		popup(import('@client/components/dialog.vue'), props, {

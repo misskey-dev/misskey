@@ -47,6 +47,7 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormButton from '@client/components/form/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -58,7 +59,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.installedApps,
 				icon: faPlug,
 			},
@@ -74,7 +75,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

@@ -116,7 +116,7 @@ describe('Get file info', () => {
 	}));
 
 	it('SVG with XML definition', async (async () => {
-		// https://github.com/syuilo/misskey/issues/4413
+		// https://github.com/misskey-dev/misskey/issues/4413
 		const path = `${__dirname}/resources/with-xml-def.svg`;
 		const info = await getFileInfo(path) as any;
 		delete info.warnings;

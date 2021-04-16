@@ -1,6 +1,6 @@
 <template>
 <div
-	class="tkcbzcuz _panel"
+	class="tkcbzcuz"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -90,7 +90,7 @@
 		</div>
 	</article>
 </div>
-<div v-else class="_panel muted" @click="muted = false">
+<div v-else class="muted" @click="muted = false">
 	<I18n :src="$ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.userId">
@@ -102,11 +102,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
+import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { parse } from '../../mfm/parse';
-import { sum, unique } from '../../prelude/array';
+import * as mfm from 'mfm-js';
+import { sum } from '../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -123,6 +123,7 @@ import { userPage } from '@client/filters/user';
 import * as os from '@client/os';
 import { noteActions, noteViewInterruptors } from '@client/store';
 import { reactionPicker } from '@client/scripts/reaction-picker';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 function markRawAll(...xs) {
 	for (const x of xs) {
@@ -238,21 +239,7 @@ export default defineComponent({
 
 		urls(): string[] {
 			if (this.appearNote.text) {
-				const ast = parse(this.appearNote.text);
-				// TODO: 再帰的にURL要素がないか調べる
-				const urls = unique(ast
-					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
-
-				// unique without hash
-				// [ http://a/#1, http://a/#2, http://b/#3 ] => [ http://a/#1, http://b/#3 ]
-				const removeHash = x => x.replace(/#[^#]*$/, '');
-
-				return urls.reduce((array, url) => {
-					const removed = removeHash(url);
-					if (!array.map(x => removeHash(x)).includes(removed)) array.push(url);
-					return array;
-				}, []);
+				return extractUrlFromMfm(mfm.parse(this.appearNote.text));
 			} else {
 				return null;
 			}
@@ -613,6 +600,11 @@ export default defineComponent({
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
+				{
+					icon: faShareAlt,
+					text: this.$ts.share,
+					action: this.share
+				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
 					icon: faStar,
@@ -838,6 +830,14 @@ export default defineComponent({
 			});
 		},
 
+		share() {
+			navigator.share({
+				title: this.$t('noteOf', { user: this.appearNote.user.name }),
+				text: this.appearNote.text,
+				url: `${url}/notes/${this.appearNote.id}`
+			});
+		},
+
 		focus() {
 			this.$el.focus();
 		},
@@ -863,7 +863,7 @@ export default defineComponent({
 .tkcbzcuz {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden;
+	overflow: clip;
 	contain: content;
 
 	// これらの指定はパフォーマンス向上には有効だが、ノートの高さは一定でないため、
@@ -994,11 +994,12 @@ export default defineComponent({
 		> .avatar {
 			flex-shrink: 0;
 			display: block;
-			//position: sticky;
-			//top: 72px;
 			margin: 0 14px 8px 0;
 			width: 58px;
 			height: 58px;
+			position: sticky;
+			top: calc(22px + var(--stickyTop, 0px));
+			left: 0;
 		}
 
 		> .main {
@@ -1119,7 +1120,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {
@@ -1142,6 +1143,7 @@ export default defineComponent({
 				margin: 0 10px 8px 0;
 				width: 50px;
 				height: 50px;
+				top: calc(14px + var(--stickyTop, 0px));
 			}
 		}
 	}

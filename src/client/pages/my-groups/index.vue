@@ -54,6 +54,7 @@ import MkContainer from '@client/components/ui/container.vue';
 import MkAvatars from '@client/components/avatars.vue';
 import MkTab from '@client/components/tab.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -66,7 +67,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.groups,
 				icon: faUsers
 			},

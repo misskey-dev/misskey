@@ -98,11 +98,12 @@ export default defineComponent({
 	> header {
 		display: flex;
 		position: relative;
-		z-index: 2;
-		// TODO
-		// position: sticky;
-		// top: var(--stickyTopOffset);
-		// backdrop-filter: blur(20px);
+		z-index: 10;
+		position: sticky;
+		top: var(--stickyTop, 0px);
+		background: var(--X17);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(20px);
 
 		> .title {
 			margin: 0;
@@ -135,6 +136,12 @@ export default defineComponent({
 				padding: 8px 10px 8px 0;
 			}
 		}
+	}
+}
+
+._flat_ .ssazuxis {
+	> header {
+		padding: 0 16px;
 	}
 }
 </style>

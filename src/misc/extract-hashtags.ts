@@ -1,9 +1,9 @@
-import { HashtagNode, MfmForest } from '../mfm/prelude';
-import { preorderF } from '../prelude/tree';
-import { unique } from '../prelude/array';
+import * as mfm from 'mfm-js';
+import { unique } from '@/prelude/array';
 
-export default function(mfmForest: MfmForest): string[] {
-	const hashtagNodes = preorderF(mfmForest).filter(x => x.type === 'hashtag') as HashtagNode[];
-	const hashtags = hashtagNodes.map(x => x.props.hashtag);
-	return unique(hashtags);
+export function extractHashtags(nodes: mfm.MfmNode[]): string[] {
+	const hashtagNodes = mfm.extract(nodes, (node) => node.type === 'hashtag');
+	const hashtags = unique(hashtagNodes.map(x => x.props.hashtag));
+
+	return hashtags;
 }

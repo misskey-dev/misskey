@@ -1,25 +1,23 @@
 <template>
-<div class="xcukqgmh" v-if="page" :key="page.id">
-	<div class="_section main">
-		<div class="_content">
-			<div class="banner">
-				<img :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId"/>
-			</div>
-			<div>
-				<XPage :page="page"/>
-				<small style="display: block; opacity: 0.7; margin-top: 1em;">@{{ page.user.username }}</small>
-			</div>
+<div class="xcukqgmh _root _magnetParent" v-if="page" :key="page.id" v-size="{ max: [450] }">
+	<div class="_block _magnetChild main">
+		<!--
+		<div class="header">
+			<h1>{{ page.title }}</h1>
 		</div>
-	</div>
-	<div class="_section like">
-		<div class="_content">
-			<button class="_button" @click="unlike()" v-if="page.isLiked" :title="$ts._pages.unlike"><Fa :icon="faHeartS"/></button>
-			<button class="_button" @click="like()" v-else :title="$ts._pages.like"><Fa :icon="faHeartR"/></button>
-			<span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span>
+		-->
+		<div class="banner">
+			<img :src="page.eyeCatchingImage.url" v-if="page.eyeCatchingImageId"/>
 		</div>
-	</div>
-	<div class="_section links">
-		<div class="_content">
+		<div class="content">
+			<XPage :page="page"/>
+			<small style="display: block; opacity: 0.7; margin-top: 1em;">@{{ page.user.username }}</small>
+		</div>
+		<div class="like">
+			<MkButton class="button" @click="unlike()" v-if="page.isLiked" v-tooltip="$ts._pages.unlike" primary><Fa :icon="faHeartS"/><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
+			<MkButton class="button" @click="like()" v-else v-tooltip="$ts._pages.like"><Fa :icon="faHeartR"/><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
+		</div>
+		<div class="links">
 			<MkA :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ $ts._pages.viewSource }}</MkA>
 			<template v-if="$i && $i.id === page.userId">
 				<MkA :to="`/pages/edit/${page.id}`" class="link">{{ $ts._pages.editThisPage }}</MkA>
@@ -28,19 +26,26 @@
 			</template>
 		</div>
 	</div>
+	<div class="footer">
+		<div><Fa :icon="faClock"/> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+		<div v-if="page.createdAt != page.updatedAt"><Fa :icon="faClock"/> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
+	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartR } from '@fortawesome/free-regular-svg-icons';
+import { faHeart as faHeartR, faClock } from '@fortawesome/free-regular-svg-icons';
 import XPage from '@client/components/page/page.vue';
+import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
-		XPage
+		XPage,
+		MkButton,
 	},
 
 	props: {
@@ -56,12 +61,17 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.page ? {
+			[symbols.PAGE_INFO]: computed(() => this.page ? {
 				title: computed(() => this.page.title || this.page.name),
 				avatar: this.page.user,
+				path: `/@${this.page.user.username}/pages/${this.page.name}`,
+				share: {
+					title: this.page.title || this.page.name,
+					text: this.page.summary,
+				},
 			} : null),
 			page: null,
-			faHeartS, faHeartR
+			faHeartS, faHeartR, faClock,
 		};
 	},
 
@@ -92,7 +102,7 @@ export default defineComponent({
 		},
 
 		like() {
-			os.api('pages/like', {
+			os.apiWithDialog('pages/like', {
 				pageId: this.page.id,
 			}).then(() => {
 				this.page.isLiked = true;
@@ -100,8 +110,14 @@ export default defineComponent({
 			});
 		},
 
-		unlike() {
-			os.api('pages/unlike', {
+		async unlike() {
+			const confirm = await os.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				text: this.$ts.unlikeConfirm,
+			});
+			if (confirm.canceled) return;
+			os.apiWithDialog('pages/unlike', {
 				pageId: this.page.id,
 			}).then(() => {
 				this.page.isLiked = false;
@@ -120,25 +136,64 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xcukqgmh {
+	--padding: 32px;
+
+	&.max-width_450px {
+		--padding: 16px;
+	}
+
 	> .main {
-		> ._content {
-			> .banner {
-				> img {
-					display: block;
-					width: 100%;
-					height: 120px;
-					object-fit: cover;
+		> .header {
+			padding: 16px;
+
+			> h1 {
+				margin: 0;
+			}
+		}
+
+		> .banner {
+			> img {
+				display: block;
+				width: 100%;
+				height: 120px;
+				object-fit: cover;
+			}
+		}
+
+		> .content {
+			padding: var(--padding);
+		}
+
+		> .like {
+			padding: var(--padding);
+			border-top: solid 0.5px var(--divider);
+
+			> .button {
+				--accent: rgb(216 71 106);
+				--X8: rgb(241 92 128);
+				--buttonBg: rgb(216 71 106 / 5%);
+				--buttonHoverBg: rgb(216 71 106 / 10%);
+
+				::v-deep(.count) {
+					margin-left: 0.5em;
 				}
 			}
 		}
-	}
 
-	> .links {
-		> ._content {
+		> .links {
+			padding: var(--padding);
+			border-top: solid 0.5px var(--divider);
+
 			> .link {
 				margin-right: 0.75em;
 			}
 		}
+	}
+
+	> .footer {
+		margin: var(--padding);
+		font-size: 85%;
+		opacity: 0.75;
 	}
 }
 </style>

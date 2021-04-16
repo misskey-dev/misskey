@@ -1,13 +1,15 @@
 <template>
-<div class="mk-app" :class="{ wallpaper }">
-	<XSidebar ref="nav" class="sidebar"/>
+<div class="mk-app" :class="{ wallpaper, isMobile }">
+	<div class="columns" :class="{ fullView }">
+		<div class="sidebar" ref="sidebar" v-if="!isMobile">
+			<XSidebar/>
+		</div>
 
-	<div class="contents" ref="contents" :class="{ withHeader: $store.state.titlebar }" @contextmenu.stop="onContextmenu">
-		<header v-if="$store.state.titlebar" class="header" ref="header" @click="onHeaderClick">
-			<XHeader :info="pageInfo"/>
-		</header>
-		<main ref="main">
-			<div class="content">
+		<main class="main _panel" @contextmenu.stop="onContextmenu">
+			<header class="header" @click="onHeaderClick">
+				<XHeader :info="pageInfo"/>
+			</header>
+			<div class="content" :class="{ _flat_: !fullView }">
 				<router-view v-slot="{ Component }">
 					<transition :name="$store.state.animation ? 'page' : ''" mode="out-in" @enter="onTransition">
 						<keep-alive :include="['timeline']">
@@ -16,26 +18,22 @@
 					</transition>
 				</router-view>
 			</div>
-			<div class="spacer"></div>
 		</main>
+
+		<div v-if="isDesktop" class="widgets" ref="widgets">
+			<XWidgets @mounted="attachSticky"/>
+		</div>
 	</div>
 
-	<XSide v-if="isDesktop" class="side" ref="side"/>
-
-	<div v-if="isDesktop" class="widgets">
-		<div ref="widgetsSpacer"></div>
-		<XWidgets @mounted="attachSticky"/>
-	</div>
-
-	<div class="buttons" :class="{ navHidden }">
-		<button class="button nav _button" @click="showNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+	<div class="buttons" v-if="isMobile">
+		<button class="button nav _button" @click="showDrawerNav" ref="navButton"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
 		<button class="button home _button" @click="$route.name === 'index' ? top() : $router.push('/')"><Fa :icon="faHome"/></button>
 		<button class="button notifications _button" @click="$router.push('/my/notifications')"><Fa :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></button>
 		<button class="button widget _button" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
 		<button class="button post _button" @click="post"><Fa :icon="faPencilAlt"/></button>
 	</div>
 
-	<button class="widgetButton _button" :class="{ navHidden }" @click="widgetsShowing = true"><Fa :icon="faLayerGroup"/></button>
+	<XDrawerSidebar ref="drawerNav" class="sidebar" v-if="isMobile"/>
 
 	<transition name="tray-back">
 		<div class="tray-back _modalBg"
@@ -55,43 +53,38 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faExpand, faPencilAlt, faCompress } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
-import XSidebar from '@client/components/sidebar.vue';
+import XSidebar from './default.sidebar.vue';
+import XDrawerSidebar from '@client/ui/_common_/sidebar.vue';
 import XCommon from './_common_/common.vue';
 import XHeader from './_common_/header.vue';
-import XSide from './default.side.vue';
 import * as os from '@client/os';
 import { sidebarDef } from '@client/sidebar';
+import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
+const MOBILE_THRESHOLD = 600;
 
 export default defineComponent({
 	components: {
 		XCommon,
 		XSidebar,
+		XDrawerSidebar,
 		XHeader,
 		XWidgets: defineAsyncComponent(() => import('./default.widgets.vue')),
-		XSide, // NOTE: dynamic importするとAsyncComponentWrapperが間に入るせいでref取得できなくて面倒になる
-	},
-
-	provide() {
-		return {
-			sideViewHook: this.isDesktop ? (url) => {
-				this.$refs.side.navigate(url);
-			} : null
-		};
 	},
 
 	data() {
 		return {
 			pageInfo: null,
-			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			menuDef: sidebarDef,
-			navHidden: false,
+			isMobile: window.innerWidth <= MOBILE_THRESHOLD,
+			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			widgetsShowing: false,
+			fullView: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
 			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt,
 		};
@@ -125,46 +118,23 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.adjustUI();
-
-		const ro = new ResizeObserver((entries, observer) => {
-			this.adjustUI();
-		});
-
-		ro.observe(this.$refs.contents);
-
-		window.addEventListener('resize', this.adjustUI, { passive: true });
-
-		if (!this.isDesktop) {
-			window.addEventListener('resize', () => {
-				if (window.innerWidth >= DESKTOP_THRESHOLD) this.isDesktop = true;
-			}, { passive: true });
-		}
+		window.addEventListener('resize', () => {
+			this.isMobile = (window.innerWidth <= MOBILE_THRESHOLD);
+			this.isDesktop = (window.innerWidth >= DESKTOP_THRESHOLD);
+		}, { passive: true });
 	},
 
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 				document.title = `${this.pageInfo.title} | ${instanceName}`;
 			}
 		},
 
-		adjustUI() {
-			const navWidth = this.$refs.nav.$el.offsetWidth;
-			this.navHidden = navWidth === 0;
-			if (this.$refs.contents == null) return;
-			const width = this.$refs.contents.offsetWidth;
-			if (this.$refs.header) this.$refs.header.style.width = `${width}px`;
-		},
-
-		showNav() {
-			this.$refs.nav.show();
-		},
-
-		attachSticky(el) {
-			const sticky = new StickySidebar(el, this.$refs.widgetsSpacer);
+		attachSticky() {
+			const sticky = new StickySidebar(this.$refs.widgets, 16);
 			window.addEventListener('scroll', () => {
 				sticky.calc(window.scrollY);
 			}, { passive: true });
@@ -176,6 +146,10 @@ export default defineComponent({
 
 		top() {
 			window.scroll({ top: 0, behavior: 'smooth' });
+		},
+
+		showDrawerNav() {
+			this.$refs.drawerNav.show();
 		},
 
 		onTransition() {
@@ -201,10 +175,10 @@ export default defineComponent({
 				type: 'label',
 				text: path,
 			}, {
-				icon: faColumns,
-				text: this.$ts.openInSideView,
+				icon: this.fullView ? faCompress : faExpand,
+				text: this.fullView ? this.$ts.quitFullView : this.$ts.fullView,
 				action: () => {
-					this.$refs.side.navigate(path);
+					this.fullView = !this.fullView;
 				}
 			}, {
 				icon: faWindowMaximize,
@@ -242,99 +216,119 @@ export default defineComponent({
 }
 
 .mk-app {
-	$header-height: 58px; // TODO: どこかに集約したい
-	$ui-font-size: 1em; // TODO: どこかに集約したい
-	$widgets-hide-threshold: 1090px;
+	$header-height: 50px;
+	$ui-font-size: 1em;
+	$widgets-hide-threshold: 1200px;
+	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
-	display: flex;
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
 		//backdrop-filter: blur(4px);
 	}
 
-	> .contents {
-		width: 100%;
-		min-width: 0;
+	&.isMobile {
+		> .columns {
+			display: block;
+			margin: 0;
 
-		&.withHeader {
-			padding-top: $header-height;
+			> .main {
+				margin: 0;
+				padding-bottom: 92px;
+				border: none;
+				width: 100%;
+				border-radius: 0;
+
+				> .header {
+					width: 100%;
+				}
+			}
+		}
+	}
+
+	> .columns {
+		display: flex;
+		justify-content: center;
+		max-width: 100%;
+		margin: 32px 0;
+
+		&.fullView {
+			margin: 0;
+		
+			> .sidebar {
+				display: none;
+			}
+
+			> .widgets {
+				display: none;
+			}
+
+			> .main {
+				margin: 0;
+				border-radius: 0;
+				box-shadow: none;
+				width: 100%;
+			}
 		}
 
-		> .header {
-			position: fixed;
-			z-index: 1000;
-			top: 0;
-			height: $header-height;
-			width: 100%;
-			line-height: $header-height;
-			text-align: center;
-			font-weight: bold;
-			//background-color: var(--panel);
-			-webkit-backdrop-filter: blur(32px);
-			backdrop-filter: blur(32px);
-			background-color: var(--header);
-			//border-bottom: solid 1px var(--divider);
-			user-select: none;
-		}
-
-		> main {
+		> .main {
 			min-width: 0;
+			width: 750px;
+			margin: 0 16px 0 0;
+			background: var(--bg);
+			--margin: 12px;
+
+			> .header {
+				position: sticky;
+				z-index: 1000;
+				top: 0;
+				height: $header-height;
+				line-height: $header-height;
+				-webkit-backdrop-filter: blur(32px);
+				backdrop-filter: blur(32px);
+				background-color: var(--header);
+				border-bottom: solid 0.5px var(--divider);
+			}
 
 			> .content {
-				> * {
-					// ほんとは単に calc(100vh - #{$header-height}) と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-					min-height: calc((var(--vh, 1vh) * 100) - #{$header-height});
-				}
+				background: var(--bg);
+				--stickyTop: #{$header-height};
 			}
 
-			> .spacer {
-				height: 82px;
+			@media (max-width: 850px) {
+				padding-top: $header-height;
 
-				@media (min-width: ($widgets-hide-threshold + 1px)) {
-					display: none;
+				> .header {
+					position: fixed;
+					width: calc(100% - #{$nav-icon-only-width});
 				}
 			}
 		}
-	}
 
-	> .side {
-		min-width: 370px;
-		max-width: 370px;
-		border-left: solid 1px var(--divider);
-	}
+		> .widgets {
+			//--panelShadow: none;
 
-	> .widgets {
-		padding: 0 var(--margin);
-		border-left: solid 1px var(--divider);
-
-		@media (max-width: $widgets-hide-threshold) {
-			display: none;
-		}
-	}
-
-	> .widgetButton {
-		display: block;
-		position: fixed;
-		z-index: 1000;
-		bottom: 32px;
-		right: 32px;
-		width: 64px;
-		height: 64px;
-		border-radius: 100%;
-		box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-		font-size: 22px;
-		background: var(--panel);
-
-		&.navHidden {
-			display: none;
+			@media (max-width: $widgets-hide-threshold) {
+				display: none;
+			}
 		}
 
-		@media (min-width: ($widgets-hide-threshold + 1px)) {
-			display: none;
+		@media (max-width: 850px) {
+			margin: 0;
+
+			> .sidebar {
+				border-right: solid 0.5px var(--divider);
+			}
+
+			> .main {
+				margin: 0;
+				border-radius: 0;
+				box-shadow: none;
+				width: 100%;
+			}
 		}
 	}
 
@@ -349,10 +343,7 @@ export default defineComponent({
 		-webkit-backdrop-filter: blur(32px);
 		backdrop-filter: blur(32px);
 		background-color: var(--header);
-
-		&:not(.navHidden) {
-			display: none;
-		}
+		border-top: solid 0.5px var(--divider);
 
 		> .button {
 			position: relative;
@@ -428,7 +419,4 @@ export default defineComponent({
 		background: var(--bg);
 	}
 }
-</style>
-
-<style lang="scss">
 </style>

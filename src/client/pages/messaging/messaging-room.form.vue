@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-form _panel"
+<div class="pemppnzi _block"
 	@dragover.stop="onDragover"
 	@drop.stop="onDrop"
 >
@@ -230,7 +230,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mk-messaging-form {
+.pemppnzi {
 	position: relative;
 
 	> textarea {

@@ -26,6 +26,7 @@ import { applyTheme, validateTheme } from '@client/scripts/theme';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 import { addTheme, getThemes } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -42,7 +43,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.install,
 				icon: faDownload
 			},
@@ -52,7 +53,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

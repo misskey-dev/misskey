@@ -34,6 +34,7 @@ import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import * as os from '@client/os';
 import { selectFile } from '@client/scripts/select-file';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -46,7 +47,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.importAndExport,
 				icon: faBoxes
 			},
@@ -55,7 +56,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

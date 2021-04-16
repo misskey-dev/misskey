@@ -1,6 +1,6 @@
 import { Ref, ref } from 'vue';
 import * as getCaretCoordinates from 'textarea-caret';
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode/';
 import { popup } from '@client/os';
 
 export class Autocomplete {

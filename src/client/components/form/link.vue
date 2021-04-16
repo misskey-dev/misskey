@@ -66,6 +66,7 @@ export default defineComponent({
 
 		&.active {
 			color: var(--accent);
+			background: var(--panelHighlight);
 		}
 
 		> .icon {

@@ -1,32 +1,48 @@
 ._formPanel {
 	background: var(--panel);
 	border-radius: var(--radius);
+	transition: background 0.2s ease;
 
 	&._formClickable {
 		&:hover {
 			//background: var(--panelHighlight);
 		}
+
+		&:active {
+			background: var(--panelHighlight);
+			transition: background 0s;
+		}
+	}
+}
+
+._formLabel,
+._formCaption {
+	font-size: 80%;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
 	}
 }
 
 ._formLabel {
-	font-size: 80%;
-	padding: 0 16px 8px 16px;
-	opacity: 0.8;
+	position: sticky;
+	top: var(--stickyTop, 0px);
+	z-index: 2;
+	margin: -8px calc(var(--formXPadding) * -1) 0 calc(var(--formXPadding) * -1);
+	padding: 8px calc(16px + var(--formXPadding)) 8px calc(16px + var(--formXPadding));
+	background: var(--X17);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
 
-	&:empty {
-		display: none;
-	}
+._themeChanging_ ._formLabel {
+	transition: none !important;
+	background: transparent;
 }
 
 ._formCaption {
-	font-size: 80%;
 	padding: 8px 16px 0 16px;
-	opacity: 0.8;
-
-	&:empty {
-		display: none;
-	}
 }
 
 ._formItem {

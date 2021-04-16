@@ -48,6 +48,7 @@ import FormGroup from '@client/components/form/group.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -59,7 +60,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceInfo,
 				icon: faInfoCircle
 			},

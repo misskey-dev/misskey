@@ -24,11 +24,9 @@ export default defineComponent({
 	methods: {
 		focus() {
 			this.$slots.default[0].elm.focus();
-		}
-	},
+		},
 
-	render() {
-		const getDateText = (time: string) => {
+		getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
 			return this.$t('monthAndDay', {
@@ -36,15 +34,21 @@ export default defineComponent({
 				day: date.toString()
 			});
 		}
+	},
+
+	render() {
+		const noGap = [...document.querySelectorAll('._noGap_')].some(el => el.contains(this.$parent.$el));
+
+		if (this.items.length === 0) return;
 
 		return h(this.$store.state.animation ? TransitionGroup : 'div', this.$store.state.animation ? {
-			class: 'sqadhkmv _list_',
+			class: 'sqadhkmv' + (noGap ? ' _block' : ''),
 			name: 'list',
 			tag: 'div',
 			'data-direction': this.direction,
 			'data-reversed': this.reversed ? 'true' : 'false',
 		} : {
-			class: 'sqadhkmv _list_',
+			class: 'sqadhkmv',
 		}, this.items.map((item, i) => {
 			const el = this.$slots.default({
 				item: item
@@ -70,10 +74,10 @@ export default defineComponent({
 							class: 'icon',
 							icon: faAngleUp,
 						}),
-						getDateText(item.createdAt)
+						this.getDateText(item.createdAt)
 					]),
 					h('span', [
-						getDateText(this.items[i + 1].createdAt),
+						this.getDateText(this.items[i + 1].createdAt),
 						h(FontAwesomeIcon, {
 							class: 'icon',
 							icon: faAngleDown,
@@ -117,11 +121,7 @@ export default defineComponent({
 			transform: translateY(-64px);
 		}
 	}
-}
-</style>
 
-<style lang="scss">
-.sqadhkmv {
 	> .separator {
 		text-align: center;
 
@@ -154,5 +154,26 @@ export default defineComponent({
 			}
 		}
 	}
+}
+
+._noGap_ .sqadhkmv {
+	> * {
+		margin: 0 !important;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+
+		&:not(:last-child) {
+			border-bottom: solid 0.5px var(--divider);
+		}
+	}
+}
+
+._inContainer_ .sqadhkmv > * {
+	margin: 0 !important;
+	border: none;
+	border-bottom: solid 0.5px var(--divider);
+	border-radius: 0;
+	box-shadow: none;
 }
 </style>

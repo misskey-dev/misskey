@@ -34,6 +34,7 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><Fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
+		<MkInfo warn v-if="hasNotSpecifiedMentions" class="hasNotSpecifiedMentions">{{ $ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ $ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
@@ -56,12 +57,12 @@ import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlob
 import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode/';
 import XNotePreview from './note-preview.vue';
-import { parse } from '../../mfm/parse';
+import * as mfm from 'mfm-js';
 import { host, url } from '@client/config';
 import { erase, unique } from '../../prelude/array';
-import extractMentions from '@/misc/extract-mentions';
+import { extractMentions } from '@/misc/extract-mentions';
 import getAcct from '@/misc/acct/render';
 import { formatTimeString } from '@/misc/format-time-string';
 import { Autocomplete } from '@client/scripts/autocomplete';
@@ -71,12 +72,14 @@ import { selectFile } from '@client/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@client/store';
 import { isMobile } from '@client/scripts/is-mobile';
 import { throttle } from 'throttle-debounce';
+import MkInfo from '@client/components/ui/info.vue';
 
 export default defineComponent({
 	components: {
 		XNotePreview,
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
-		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
+		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue')),
+		MkInfo,
 	},
 
 	inject: ['modal'],
@@ -143,6 +146,7 @@ export default defineComponent({
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
+			hasNotSpecifiedMentions: false,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
 			imeText: '',
 			typing: throttle(3000, () => {
@@ -214,6 +218,18 @@ export default defineComponent({
 		}
 	},
 
+	watch: {
+		text() {
+			this.checkMissingMention();
+		},
+		visibleUsers: {
+			handler() {
+				this.checkMissingMention();
+			},
+			deep: true
+		}
+	},
+
 	mounted() {
 		if (this.initialText) {
 			this.text = this.initialText;
@@ -229,7 +245,7 @@ export default defineComponent({
 		}
 
 		if (this.reply && this.reply.text != null) {
-			const ast = parse(this.reply.text);
+			const ast = mfm.parse(this.reply.text);
 
 			for (const x of extractMentions(ast)) {
 				const mention = x.host ? `@${x.username}@${toASCII(x.host)}` : `@${x.username}`;
@@ -336,6 +352,32 @@ export default defineComponent({
 			this.$watch('files', () => this.saveDraft(), { deep: true });
 			this.$watch('visibility', () => this.saveDraft());
 			this.$watch('localOnly', () => this.saveDraft());
+		},
+
+		checkMissingMention() {
+			if (this.visibility === 'specified') {
+				const ast = mfm.parse(this.text);
+
+				for (const x of extractMentions(ast)) {
+					if (!this.visibleUsers.some(u => (u.username === x.username) && (u.host == x.host))) {
+						this.hasNotSpecifiedMentions = true;
+						return;
+					}
+				}
+				this.hasNotSpecifiedMentions = false;
+			}
+		},
+
+		addMissingMention() {
+			const ast = mfm.parse(this.text);
+
+			for (const x of extractMentions(ast)) {
+				if (!this.visibleUsers.some(u => (u.username === x.username) && (u.host == x.host))) {
+					os.api('users/show', { username: x.username, host: x.host }).then(user => {
+						this.visibleUsers.push(user);
+					});
+				}
+			}
 		},
 
 		togglePoll() {
@@ -580,7 +622,7 @@ export default defineComponent({
 					this.deleteDraft();
 					this.$emit('posted');
 					if (this.text && this.text != '') {
-						const hashtags = parse(this.text).filter(x => x.node.type === 'hashtag').map(x => x.node.props.hashtag);
+						const hashtags = mfm.parse(this.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
 						const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
 						localStorage.setItem('hashtags', JSON.stringify(unique(hashtags.concat(history))));
 					}
@@ -741,6 +783,10 @@ export default defineComponent({
 			}
 		}
 
+		> .hasNotSpecifiedMentions {
+			margin: 0 20px 16px 20px;
+		}
+
 		> .cw,
 		> .text {
 			display: block;
@@ -767,7 +813,7 @@ export default defineComponent({
 		> .cw {
 			z-index: 1;
 			padding-bottom: 8px;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 		}
 
 		> .text {
