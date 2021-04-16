@@ -34,6 +34,7 @@
 				<button @click="addVisibleUser" class="_buttonPrimary"><Fa :icon="faPlus" fixed-width/></button>
 			</div>
 		</div>
+		<MkInfo warn v-if="hasNotSpecifiedMentions" class="hasNotSpecifiedMentions">{{ $ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ $ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cw" class="cw" v-model="cw" :placeholder="$ts.annotation" @keydown="onKeydown">
 		<textarea v-model="text" class="text" :class="{ withCw: useCw }" ref="text" :disabled="posting" :placeholder="placeholder" @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd" />
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
@@ -71,12 +72,14 @@ import { selectFile } from '@client/scripts/select-file';
 import { notePostInterruptors, postFormActions } from '@client/store';
 import { isMobile } from '@client/scripts/is-mobile';
 import { throttle } from 'throttle-debounce';
+import MkInfo from '@client/components/ui/info.vue';
 
 export default defineComponent({
 	components: {
 		XNotePreview,
 		XPostFormAttaches: defineAsyncComponent(() => import('./post-form-attaches.vue')),
-		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue'))
+		XPollEditor: defineAsyncComponent(() => import('./poll-editor.vue')),
+		MkInfo,
 	},
 
 	inject: ['modal'],
@@ -159,6 +162,7 @@ export default defineComponent({
 			autocomplete: null,
 			draghover: false,
 			quoteId: null,
+			hasNotSpecifiedMentions: false,
 			recentHashtags: JSON.parse(localStorage.getItem('hashtags') || '[]'),
 			imeText: '',
 			typing: throttle(3000, () => {
@@ -227,6 +231,18 @@ export default defineComponent({
 
 		max(): number {
 			return this.$instance ? this.$instance.maxNoteTextLength : 1000;
+		}
+	},
+
+	watch: {
+		text() {
+			this.checkMissingMention();
+		},
+		visibleUsers: {
+			handler() {
+				this.checkMissingMention();
+			},
+			deep: true
 		}
 	},
 
@@ -364,6 +380,32 @@ export default defineComponent({
 			this.$watch('files', () => this.saveDraft(), { deep: true });
 			this.$watch('visibility', () => this.saveDraft());
 			this.$watch('localOnly', () => this.saveDraft());
+		},
+
+		checkMissingMention() {
+			if (this.visibility === 'specified') {
+				const ast = mfm.parse(this.text);
+
+				for (const x of extractMentions(ast)) {
+					if (!this.visibleUsers.some(u => (u.username === x.username) && (u.host == x.host))) {
+						this.hasNotSpecifiedMentions = true;
+						return;
+					}
+				}
+				this.hasNotSpecifiedMentions = false;
+			}
+		},
+
+		addMissingMention() {
+			const ast = mfm.parse(this.text);
+
+			for (const x of extractMentions(ast)) {
+				if (!this.visibleUsers.some(u => (u.username === x.username) && (u.host == x.host))) {
+					os.api('users/show', { username: x.username, host: x.host }).then(user => {
+						this.visibleUsers.push(user);
+					});
+				}
+			}
 		},
 
 		togglePoll() {
@@ -765,6 +807,10 @@ export default defineComponent({
 					}
 				}
 			}
+		}
+
+		> .hasNotSpecifiedMentions {
+			margin: 0 20px 16px 20px;
 		}
 
 		> .cw,

@@ -2,8 +2,8 @@
 <div class="mk-app" :class="{ wallpaper }">
 	<XSidebar ref="nav" class="sidebar"/>
 
-	<div class="contents" ref="contents" :class="{ withHeader: $store.state.titlebar }" @contextmenu.stop="onContextmenu">
-		<header v-if="$store.state.titlebar" class="header" ref="header" @click="onHeaderClick">
+	<div class="contents" ref="contents" @contextmenu.stop="onContextmenu">
+		<header class="header" ref="header" @click="onHeaderClick">
 			<XHeader :info="pageInfo"/>
 		</header>
 		<main ref="main">
@@ -259,10 +259,8 @@ export default defineComponent({
 	> .contents {
 		width: 100%;
 		min-width: 0;
-
-		&.withHeader {
-			padding-top: $header-height;
-		}
+		--stickyTop: #{$header-height};
+		padding-top: $header-height;
 
 		> .header {
 			position: fixed;

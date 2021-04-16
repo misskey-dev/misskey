@@ -6,7 +6,7 @@
 		</div>
 
 		<main class="main _panel" @contextmenu.stop="onContextmenu">
-			<header v-if="$store.state.titlebar" class="header" @click="onHeaderClick">
+			<header class="header" @click="onHeaderClick">
 				<XHeader :info="pageInfo"/>
 			</header>
 			<div class="content" :class="{ _flat_: !fullView }">
@@ -310,6 +310,7 @@ export default defineComponent({
 
 		> .widgets {
 			//--panelShadow: none;
+			width: 300px;
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
