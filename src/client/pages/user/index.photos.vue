@@ -1,5 +1,5 @@
 <template>
-<MkContainer :max-height="300">
+<MkContainer :max-height="300" :foldable="true">
 	<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $ts.images }}</template>
 	<div class="ujigsodd">
 		<MkLoading v-if="fetching"/>

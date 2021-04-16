@@ -4,7 +4,7 @@
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
 			<slot name="func"></slot>
-			<button class="_button" v-if="bodyTogglable" @click="() => showBody = !showBody">
+			<button class="_button" v-if="foldable" @click="() => showBody = !showBody">
 				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
 				<template v-else><Fa :icon="faAngleDown"/></template>
 			</button>
@@ -42,7 +42,7 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
-		bodyTogglable: {
+		foldable: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -99,7 +99,7 @@ export default defineComponent({
 	},
 	methods: {
 		toggleContent(show: boolean) {
-			if (!this.bodyTogglable) return;
+			if (!this.foldable) return;
 			this.showBody = show;
 		},
 
