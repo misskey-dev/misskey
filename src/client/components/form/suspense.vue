@@ -1,16 +1,20 @@
 <template>
-<div class="_formItem" v-if="pending">
-	<div class="_formPanel">
-		pending
+<transition name="fade" mode="out-in">
+	<div class="_formItem" v-if="pending">
+		<div class="_formPanel">
+			<MkLoading/>
+		</div>
 	</div>
-</div>
-<slot v-else-if="resolved" :result="result"></slot>
-<div class="_formItem" v-else>
-	<div class="_formPanel">
-		error!
-		<button @click="retry">retry</button>
+	<div v-else-if="resolved">
+		<slot :result="result"></slot>
 	</div>
-</div>
+	<div class="_formItem" v-else>
+		<div class="_formPanel">
+			error!
+			<button @click="retry">retry</button>
+		</div>
+	</div>
+</transition>
 </template>
 
 <script lang="ts">
@@ -72,5 +76,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
 
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
 </style>

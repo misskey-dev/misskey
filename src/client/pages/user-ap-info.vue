@@ -1,8 +1,8 @@
 <template>
 <FormBase>
-	<FormGroup>
-		<template #label>ActivityPub</template>
-		<FormSuspense :p="apPromiseFactory" v-slot="{ result: ap }">
+	<FormSuspense :p="apPromiseFactory" v-slot="{ result: ap }">
+		<FormGroup>
+			<template #label>ActivityPub</template>
 			<FormKeyValueView>
 				<template #key>Type</template>
 				<template #value><span class="_monospace">{{ ap.type }}</span></template>
@@ -48,8 +48,8 @@
 				<template #key>{{ $ts.instanceInfo }}</template>
 				<template #value>(Local user)</template>
 			</FormKeyValueView>
-		</FormSuspense>
-	</FormGroup>
+		</FormGroup>
+	</FormSuspense>
 </FormBase>
 </template>
 
