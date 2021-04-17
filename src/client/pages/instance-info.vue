@@ -86,10 +86,19 @@
 				<template #key>{{ $ts.registeredAt }}</template>
 				<template #value><MkTime mode="detail" :time="instance.caughtAt"/></template>
 			</FormKeyValueView>
+			<FormKeyValueView>
+				<template #key>{{ $ts.updatedAt }}</template>
+				<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
+			</FormKeyValueView>
 		</FormGroup>
 		<FormObjectView tall :value="instance">
 			<span>Raw</span>
 		</FormObjectView>
+		<FormGroup>
+			<FormLink :to="`https://${host}/.well-known/host-meta`" external>host-meta</FormLink>
+			<FormLink :to="`https://${host}/.well-known/host-meta.json`" external>host-meta.json</FormLink>
+			<FormLink :to="`https://${host}/.well-known/nodeinfo`" external>nodeinfo</FormLink>
+		</FormGroup>
 	</FormGroup>
 </FormBase>
 </template>
