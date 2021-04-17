@@ -6,6 +6,7 @@ import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 import { EventEmitter } from 'events';
 import { subsdcriber as redisClient } from '../../db/redis';
+import { Users } from '@/models';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server
@@ -45,5 +46,11 @@ module.exports = (server: http.Server) => {
 				connection.send('pong');
 			}
 		});
+
+		if (user) {
+			Users.update(user.id, {
+				lastActiveDate: new Date(),
+			});
+		}
 	});
 };
