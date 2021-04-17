@@ -8,7 +8,7 @@
 		</div>
 		<div class="contents">
 			<div class="side _forceContainerFull_">
-				<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
+				<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 				<div class="name">
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<MkAcct :user="user" :detail="true" class="acct"/>
@@ -121,7 +121,7 @@
 						<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 					</div>
 				</div>
-				<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
+				<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 				<div class="title">
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<div class="bottom">

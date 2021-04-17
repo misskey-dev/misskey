@@ -5,7 +5,7 @@
 			<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 		</div>
 		<div class="user">
-			<MkAvatar :user="clip.user" class="avatar"/> <MkUserName :user="clip.user" :nowrap="false"/>
+			<MkAvatar :user="clip.user" class="avatar" :show-indicator="true"/> <MkUserName :user="clip.user" :nowrap="false"/>
 		</div>
 	</div>
 
