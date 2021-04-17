@@ -710,6 +710,8 @@ typingUsers: "{users}正在输入"
 jumpToSpecifiedDate: "跳转到特定日期"
 showingPastTimeline: "显示过去的时间线"
 clear: "清除"
+goBack: "返回"
+info: "关于"
 _email:
   _follow:
     title: "你有新的关注者"
@@ -865,6 +867,7 @@ _theme:
   install: "安装主题"
   manage: "主题管理"
   code: "主题代码"
+  description: "描述"
   installed: "{name} 已安装"
   installedThemes: "已安装的主题"
   builtinThemes: "标准主题"

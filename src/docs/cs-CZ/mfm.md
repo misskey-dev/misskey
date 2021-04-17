@@ -1,2 +1,2 @@
 # MFM
-MFMは、Misskey Flavored Markdownの略で、Misskeyの様々な場所で使用できる専用のマークアップ言語です。 MFMで使用可能な構文は[MFMチートシート](/mfm-cheat-sheet)で確認できます。
+MFM je zkratka pro "Misskey Flavored Markdown". Speciální markup, který může být použit na mnoha místech v Misskey. Syntaxi můžete vidět na [MFM taháku](/mfm-cheat-sheet).

@@ -710,6 +710,8 @@ typingUsers: "{users} ist/sind am schreiben..."
 jumpToSpecifiedDate: "Zu bestimmtem Datum springen"
 showingPastTimeline: "Momentan wird eine alte Chronik angezeigt"
 clear: "Zurückkehren"
+goBack: "Zurück"
+info: "Über"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
@@ -865,6 +867,7 @@ _theme:
   install: "Thema installieren"
   manage: "Themaverwaltung"
   code: "Themen-Code"
+  description: "Beschreibung"
   installed: "{name} wurde installiert"
   installedThemes: "Installierte Themen"
   builtinThemes: "Eingebaute Themen"
