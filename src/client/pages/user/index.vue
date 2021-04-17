@@ -1,6 +1,6 @@
 <template>
-<div>
-	<div class="ftskorzw wide _section" v-if="user && narrow === false">
+<transition name="fade" mode="out-in">
+	<div class="ftskorzw wide" v-if="user && narrow === false">
 		<MkRemoteCaution v-if="user.host != null" :href="user.url" class="_gap"/>
 
 		<div class="banner-container _gap" :style="style">
@@ -8,7 +8,7 @@
 		</div>
 		<div class="contents">
 			<div class="side _forceContainerFull_">
-				<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
+				<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 				<div class="name">
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<MkAcct :user="user" :detail="true" class="acct"/>
@@ -121,7 +121,7 @@
 						<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 					</div>
 				</div>
-				<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
+				<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 				<div class="title">
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<div class="bottom">
@@ -212,10 +212,9 @@
 			<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
 		</div>
 	</div>
-	<div v-else-if="error">
-		<MkError @retry="fetch()"/>
-	</div>
-</div>
+	<MkError v-else-if="error" @retry="fetch()"/>
+	<MkLoading v-else/>
+</transition>
 </template>
 
 <script lang="ts">
@@ -279,6 +278,7 @@ export default defineComponent({
 				share: {
 					title: this.user.name,
 				},
+				menu: () => getUserMenu(this.user),
 			} : null),
 			user: null,
 			error: null,
@@ -323,6 +323,7 @@ export default defineComponent({
 
 		fetch() {
 			if (this.acct == null) return;
+			this.user = null;
 			Progress.start();
 			os.api('users/show', parseAcct(this.acct)).then(user => {
 				this.user = user;
@@ -368,6 +369,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+
 .ftskorzw.wide {
 	max-width: 1150px;
 	margin: 0 auto;

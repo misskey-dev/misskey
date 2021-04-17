@@ -1,5 +1,7 @@
-import * as program from 'commander';
+import { Command } from 'commander';
 import config from '@/config';
+
+const program = new Command();
 
 program
 	.version(config.version)

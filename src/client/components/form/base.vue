@@ -24,9 +24,12 @@ export default defineComponent({
 	--formXPadding: 32px;
 	--formYPadding: 32px;
 
+	font-size: 95%;
 	line-height: 1.3em;
 	background: var(--bg);
 	padding: var(--formYPadding) var(--formXPadding);
+	max-width: 750px;
+	margin: 0 auto;
 
 	&:not(.wide).max-width_400px {
 		--formXPadding: 0px;
@@ -40,16 +43,16 @@ export default defineComponent({
 			}
 
 			._form_group {
-				> * {
-					&:not(:first-child) {
+				> *:not(._formNoConcat) {
+					&:not(:last-child):not(._formNoConcatPrev) {
 						&._formPanel, ._formPanel {
-							border-top: none;
+							border-bottom: solid 0.5px var(--divider);
 						}
 					}
 
-					&:not(:last-child) {
+					&:not(:first-child):not(._formNoConcatNext) {
 						&._formPanel, ._formPanel {
-							border-bottom: solid 0.5px var(--divider);
+							border-top: none;
 						}
 					}
 				}

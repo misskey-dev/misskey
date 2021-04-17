@@ -22,7 +22,7 @@ RUN apk add --no-cache \
     vips-dev \
     vips
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc ./
 RUN yarn install
 COPY . ./
 RUN yarn build

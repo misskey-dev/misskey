@@ -1,37 +1,37 @@
 <template>
 <div class="fcuexfpr _root">
-	<div v-if="note" class="note" v-anim>
-		<div class="_gap" v-if="showNext">
-			<XNotes class="_content _noGap_" :pagination="next"/>
-		</div>
-
-		<div class="main _gap">
-			<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
-			<div class="_content _gap">
-				<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_gap"/>
-				<XNoteDetailed v-model:note="note" :key="note.id" class="_gap"/>
+	<transition name="fade" mode="out-in">
+		<div v-if="note" class="note">
+			<div class="_gap" v-if="showNext">
+				<XNotes class="_content" :pagination="next" :no-gap="true"/>
 			</div>
-			<div class="_content clips _gap" v-if="clips && clips.length > 0">
-				<div class="title">{{ $ts.clip }}</div>
-				<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
-					<b>{{ item.name }}</b>
-					<div v-if="item.description" class="description">{{ item.description }}</div>
-					<div class="user">
-						<MkAvatar :user="item.user" class="avatar"/> <MkUserName :user="item.user" :nowrap="false"/>
-					</div>
-				</MkA>
+
+			<div class="main _gap">
+				<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
+				<div class="_content _gap">
+					<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_gap"/>
+					<XNoteDetailed v-model:note="note" :key="note.id" class="_gap"/>
+				</div>
+				<div class="_content clips _gap" v-if="clips && clips.length > 0">
+					<div class="title">{{ $ts.clip }}</div>
+					<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
+						<b>{{ item.name }}</b>
+						<div v-if="item.description" class="description">{{ item.description }}</div>
+						<div class="user">
+							<MkAvatar :user="item.user" class="avatar" :show-indicator="true"/> <MkUserName :user="item.user" :nowrap="false"/>
+						</div>
+					</MkA>
+				</div>
+				<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
 			</div>
-			<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
-		</div>
 
-		<div class="_gap" v-if="showPrev">
-			<XNotes class="_content _noGap_" :pagination="prev"/>
+			<div class="_gap" v-if="showPrev">
+				<XNotes class="_content" :pagination="prev" :no-gap="true"/>
+			</div>
 		</div>
-	</div>
-
-	<div v-if="error">
-		<MkError @retry="fetch()"/>
-	</div>
+		<MkError v-else-if="error" @retry="fetch()"/>
+		<MkLoading v-else/>
+	</transition>
 </div>
 </template>
 
@@ -106,6 +106,7 @@ export default defineComponent({
 	},
 	methods: {
 		fetch() {
+			this.note = null;
 			os.api('notes/show', {
 				noteId: this.noteId
 			}).then(note => {
@@ -138,6 +139,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+
 .fcuexfpr {
 	> .note {
 		> .main {

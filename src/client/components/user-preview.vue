@@ -3,7 +3,7 @@
 	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ top: top + 'px', left: left + 'px' }" @mouseover="() => { $emit('mouseover'); }" @mouseleave="() => { $emit('mouseleave'); }">
 		<div v-if="fetched" class="info">
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
-			<MkAvatar class="avatar" :user="user" :disable-preview="true"/>
+			<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 			<div class="title">
 				<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 				<p class="username"><MkAcct :user="user"/></p>
