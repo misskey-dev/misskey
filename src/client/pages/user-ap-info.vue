@@ -22,7 +22,7 @@
 				</FormKeyValueView>
 				<FormKeyValueView>
 					<template #key>Shared Inbox</template>
-					<template #value><span class="_monospace">{{ ap.sharedInbox }}</span></template>
+					<template #value><span class="_monospace">{{ ap.sharedInbox || ap.endpoints.sharedInbox }}</span></template>
 				</FormKeyValueView>
 				<FormKeyValueView>
 					<template #key>Outbox</template>

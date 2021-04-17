@@ -14,6 +14,10 @@
 			</FormKeyValueView>
 		</FormGroup>
 
+		<FormTextarea readonly :value="instance.description">
+			<span>{{ $ts.description }}</span>
+		</FormTextarea>
+
 		<FormGroup>
 			<FormKeyValueView>
 				<template #key>{{ $ts.software }}</template>
@@ -99,6 +103,27 @@
 			<FormLink :to="`https://${host}/.well-known/host-meta.json`" external>host-meta.json</FormLink>
 			<FormLink :to="`https://${host}/.well-known/nodeinfo`" external>nodeinfo</FormLink>
 		</FormGroup>
+		<FormSuspense :p="dnsPromiseFactory" v-slot="{ result: dns }">
+			<FormGroup>
+				<template #label>DNS</template>
+				<FormKeyValueView v-for="record in dns.a" :key="record">
+					<template #key>A</template>
+					<template #value><span class="_monospace">{{ record }}</span></template>
+				</FormKeyValueView>
+				<FormKeyValueView v-for="record in dns.aaaa" :key="record">
+					<template #key>AAAA</template>
+					<template #value><span class="_monospace">{{ record }}</span></template>
+				</FormKeyValueView>
+				<FormKeyValueView v-for="record in dns.cname" :key="record">
+					<template #key>CNAME</template>
+					<template #value><span class="_monospace">{{ record }}</span></template>
+				</FormKeyValueView>
+				<FormKeyValueView v-for="record in dns.txt">
+					<template #key>TXT</template>
+					<template #value><span class="_monospace">{{ record[0] }}</span></template>
+				</FormKeyValueView>
+			</FormGroup>
+		</FormSuspense>
 	</FormGroup>
 </FormBase>
 </template>
@@ -167,6 +192,9 @@ export default defineComponent({
 				}],
 			},
 			instance: null,
+			dnsPromiseFactory: () => os.api('federation/dns', {
+				host: this.host
+			}),
 			now: null,
 			canvas: null,
 			chart: null,

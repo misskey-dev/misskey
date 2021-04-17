@@ -18,6 +18,13 @@
 			</FormKeyValueView>
 		</FormGroup>
 
+		<FormGroup>
+			<FormKeyValueView>
+				<template #key>{{ $ts.updatedAt }}</template>
+				<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+			</FormKeyValueView>
+		</FormGroup>
+
 		<FormObjectView tall :value="user">
 			<span>Raw</span>
 		</FormObjectView>
