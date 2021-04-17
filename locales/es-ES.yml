@@ -652,6 +652,8 @@ backgroundColor: "Fondo"
 accentColor: "Acento"
 textColor: "Texto"
 value: "Valores"
+goBack: "Deseleccionar"
+info: "Información"
 _email:
   _follow:
     title: "te ha seguido"
@@ -745,6 +747,7 @@ _theme:
   install: "Instalar tema"
   manage: "Gestor de temas"
   code: "Código del tema"
+  description: "Descripción"
   installed: "{name} ha sido instalado"
   alreadyInstalled: "Este tema ya está instalado"
   invalid: "El formato del tema no es válido"
