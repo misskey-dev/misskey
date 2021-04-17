@@ -7,6 +7,7 @@ import { SchemaType } from '@/misc/schema';
 import { awaitAll } from '../../prelude/await-all';
 import { populateEmojis } from '@/misc/populate-emojis';
 import { getAntennas } from '@/misc/antenna-cache';
+import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const';
 
 export type PackedUser = SchemaType<typeof packedUserSchema>;
 
@@ -145,6 +146,17 @@ export class UserRepository extends Repository<User> {
 		return count > 0;
 	}
 
+	public getOnlineStatus(user: User): string {
+		if (user.hideOnlineStatus == null) return 'unknown';
+		if (user.lastActiveDate == null) return 'unknown';
+		const elapsed = Date.now() - user.lastActiveDate.getTime();
+		return (
+			elapsed < USER_ONLINE_THRESHOLD ? 'online' :
+			elapsed < USER_ACTIVE_THRESHOLD ? 'active' :
+			'offline'
+		);
+	}
+
 	public async pack(
 		src: User['id'] | User,
 		me?: { id: User['id'] } | null | undefined,
@@ -192,11 +204,14 @@ export class UserRepository extends Repository<User> {
 				themeColor: instance.themeColor,
 			} : undefined) : undefined,
 			emojis: populateEmojis(user.emojis, user.host),
+			onlineStatus: this.getOnlineStatus(user),
 
 			...(opts.detail ? {
 				url: profile!.url,
+				uri: user.uri,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
+				lastFetchedAt: user.lastFetchedAt?.toISOString(),
 				bannerUrl: user.bannerUrl,
 				bannerBlurhash: user.bannerBlurhash,
 				bannerColor: null, // 後方互換性のため
@@ -237,6 +252,7 @@ export class UserRepository extends Repository<User> {
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				noCrawle: profile!.noCrawle,
 				isExplorable: user.isExplorable,
+				hideOnlineStatus: user.hideOnlineStatus,
 				hasUnreadSpecifiedNotes: NoteUnreads.count({
 					where: { userId: user.id, isSpecified: true },
 					take: 1

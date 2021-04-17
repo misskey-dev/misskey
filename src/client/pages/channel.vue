@@ -22,7 +22,7 @@
 
 	<XPostForm :channel="channel" class="post-form _content _panel _gap" fixed v-if="$i"/>
 
-	<XTimeline class="_content _gap _noGap_" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
+	<XTimeline class="_content _gap" src="channel" :key="channelId" :channel="channelId" @before="before" @after="after"/>
 </div>
 </template>
 

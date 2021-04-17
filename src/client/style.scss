@@ -26,6 +26,7 @@ html {
 	background-position: center;
 	color: var(--fg);
 	overflow: auto;
+	overflow-wrap: break-word;
 	font-family: "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	line-height: 1.35;
 	text-size-adjust: 100%;
@@ -86,10 +87,6 @@ html._themeChanging_ {
 	&, * {
 		transition: background 1s ease, border 1s ease !important;
 	}
-}
-
-body {
-	overflow-wrap: break-word;
 }
 
 html, body {
@@ -458,7 +455,7 @@ hr {
 }
 
 ._monospace {
-	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace !important;
 }
 
 ._code {

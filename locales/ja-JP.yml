@@ -720,6 +720,15 @@ quitFullView: "フルビュー解除"
 addDescription: "説明を追加"
 userPagePinTip: "個々のノートのメニューから「ピン留め」を選択することで、ここにノートを表示しておくことができます。"
 notSpecifiedMentionWarning: "宛先に含まれていないメンションがあります"
+info: "情報"
+userInfo: "ユーザー情報"
+unknown: "不明"
+onlineStatus: "オンライン状態"
+hideOnlineStatus: "オンライン状態を隠す"
+hideOnlineStatusDescription: "オンライン状態を隠すと、検索などの一部機能において利便性が低下することがあります。"
+online: "オンライン"
+active: "アクティブ"
+offline: "オフライン"
 
 _email:
   _follow:

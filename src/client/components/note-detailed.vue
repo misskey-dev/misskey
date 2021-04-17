@@ -35,7 +35,7 @@
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
 		<header class="header">
-			<MkAvatar class="avatar" :user="appearNote.user"/>
+			<MkAvatar class="avatar" :user="appearNote.user" :show-indicator="true"/>
 			<div class="body">
 				<div class="top">
 					<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.user.id">

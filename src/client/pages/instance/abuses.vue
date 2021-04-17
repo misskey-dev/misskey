@@ -36,7 +36,7 @@
 			<MkPagination :pagination="pagination" #default="{items}" ref="reports" style="margin-top: var(--margin);">
 				<div class="bcekxzvu _card _gap" v-for="report in items" :key="report.id">
 					<div class="_content target">
-						<MkAvatar class="avatar" :user="report.targetUser"/>
+						<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>
 						<div class="info">
 							<MkUserName class="name" :user="report.targetUser"/>
 							<div class="acct">@{{ acct(report.targetUser) }}</div>

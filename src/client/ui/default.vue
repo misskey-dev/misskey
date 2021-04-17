@@ -310,6 +310,7 @@ export default defineComponent({
 
 		> .widgets {
 			//--panelShadow: none;
+			width: 300px;
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;

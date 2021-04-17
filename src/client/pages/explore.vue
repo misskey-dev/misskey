@@ -36,7 +36,7 @@
 			<header><span>{{ $ts.exploreFediverse }}</span></header>
 		</div>
 
-		<MkFolder :body-togglable="true" :expanded="false" ref="tags" class="_gap">
+		<MkFolder :foldable="true" :expanded="false" ref="tags" class="_gap">
 			<template #header><Fa :icon="faHashtag" fixed-width style="margin-right: 0.5em;"/>{{ $ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
