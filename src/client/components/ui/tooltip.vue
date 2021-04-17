@@ -39,7 +39,7 @@ export default defineComponent({
 			const contentHeight = this.$refs.content.offsetHeight;
 
 			let left = rect.left + window.pageXOffset + (this.source.offsetWidth / 2);
-			let top = rect.top + window.pageYOffset + this.source.offsetHeight;
+			let top = rect.top + window.pageYOffset - contentHeight;
 
 			left -= (this.$el.offsetWidth / 2);
 
@@ -47,9 +47,9 @@ export default defineComponent({
 				left = window.innerWidth - contentWidth + window.pageXOffset - 1;
 			}
 
-			if (top + contentHeight - window.pageYOffset > window.innerHeight) {
-				top = rect.top + window.pageYOffset - contentHeight;
-				this.$refs.content.style.transformOrigin = 'center bottom';
+			if (top - window.pageYOffset < 0) {
+				top = rect.top + window.pageYOffset + this.source.offsetHeight;
+				this.$refs.content.style.transformOrigin = 'center top';
 			}
 
 			this.$el.style.left = left + 'px';
@@ -81,6 +81,6 @@ export default defineComponent({
 	text-align: center;
 	border-radius: 4px;
 	pointer-events: none;
-	transform-origin: center top;
+	transform-origin: center bottom;
 }
 </style>
