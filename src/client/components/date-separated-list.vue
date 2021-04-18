@@ -171,12 +171,4 @@ export default defineComponent({
 		}
 	}
 }
-
-._inContainer_ .sqadhkmv > * {
-	margin: 0 !important;
-	border: none;
-	border-bottom: solid 0.5px var(--divider);
-	border-radius: 0;
-	box-shadow: none;
-}
 </style>
