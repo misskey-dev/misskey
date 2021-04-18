@@ -618,7 +618,12 @@ typingUsers: "{users} sta(nno) scrivendo"
 showingPastTimeline: "Stai visualizzando una vecchia timeline"
 markAllAsRead: "Segna tutti come già letti"
 goBack: "Indietro"
+fullView: "Schermo intero"
+quitFullView: "Esci dalla modalità a schermo intero"
+addDescription: "Aggiungi descrizione"
 info: "Informazioni"
+userInfo: "Informazioni utente"
+unknown: "Sconosciuto"
 _email:
   _follow:
     title: "Ha iniziato a seguirti"
