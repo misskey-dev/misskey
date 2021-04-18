@@ -628,6 +628,7 @@ info: "Informazioni"
 userInfo: "Informazioni utente"
 unknown: "Sconosciuto"
 onlineStatus: "Stato di connessione"
+hideOnlineStatus: "Stato invisibile"
 online: "Online"
 offline: "Offline"
 _email:
