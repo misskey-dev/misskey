@@ -689,6 +689,8 @@ deleteConfirm: "Ви дійсно бажаєте це видалити?"
 invalidValue: "Некоректне значення."
 registry: "Реєстр"
 closeAccount: "Закрити обліковий запис"
+goBack: "Назад"
+info: "Інформація"
 _email:
   _follow:
     title: "Новий підписник"
@@ -830,6 +832,7 @@ _theme:
   install: "Встановити тему"
   manage: "Керування темами"
   code: "Код теми"
+  description: "Опис"
   installed: "Тему {name} встановлено"
   installedThemes: "Встановлені теми"
   builtinThemes: "Вбудоваі теми"

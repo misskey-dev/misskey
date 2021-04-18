@@ -1,11 +1,11 @@
-# テーマ
+# Vzhled
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Můžete si vybrat vzhled a změnit tím jak vypadá Misskey klient.
 
-## テーマの設定
-設定 > テーマ
+## Nastavení vzhledu
+Nastavení > vzhled
 
-## テーマを作成する
+## Vytvořit vzhled
 テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
 ``` js
 {
@@ -33,9 +33,9 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
+* `id` ... Unikátní ID vzhledu. UUID je povinné.
+* `name` ... Jméno vzhledu
+* `author` ... Autor vzhledu
 * `desc` ... テーマの説明(オプション)
 * `base` ... 明るいテーマか、暗いテーマか
     * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
