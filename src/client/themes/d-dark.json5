@@ -16,8 +16,6 @@
 		panelShadow: '" 0 8px 24px rgb(0 0 0 / 25%)',
 		panelHeaderBg: '@panel',
 		panelHeaderDivider: '@divider',
-		infoFg: '@accent',
-		infoBg: 'rgb(0, 0, 0)',
 		header: ':alpha<0.7<@panel',
 		navBg: '#363636',
 		renote: '@accent',

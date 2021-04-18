@@ -12,7 +12,7 @@
 			v-anim="i"
 		>
 			<div>
-				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
+				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
 				<header v-if="message.groupId">
 					<span class="name">{{ message.group.name }}</span>
 					<MkTime :time="message.createdAt" class="time"/>

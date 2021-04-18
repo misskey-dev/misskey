@@ -71,6 +71,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xubzgfgb {
+	position: relative;
 	width: 100%;
 	height: 100%;
 
@@ -82,6 +83,7 @@ export default defineComponent({
 	}
 
 	> canvas {
+		position: absolute;
 		object-fit: cover;
 	}
 

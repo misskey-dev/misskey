@@ -8,7 +8,7 @@
 		<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
 	</div>
 
-	<MkContainer :body-togglable="true" :expanded="true" class="_gap">
+	<MkContainer :foldable="true" :expanded="true" class="_gap">
 		<template #header><Fa :icon="faCog"/> {{ $ts._pages.pageSetting }}</template>
 		<div style="padding: 16px;">
 			<MkInput v-model:value="title">
@@ -44,7 +44,7 @@
 		</div>
 	</MkContainer>
 
-	<MkContainer :body-togglable="true" :expanded="true" class="_gap">
+	<MkContainer :foldable="true" :expanded="true" class="_gap">
 		<template #header><Fa :icon="faStickyNote"/> {{ $ts._pages.contents }}</template>
 		<div style="padding: 16px;">
 			<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
@@ -53,7 +53,7 @@
 		</div>
 	</MkContainer>
 
-	<MkContainer :body-togglable="true" class="_gap">
+	<MkContainer :foldable="true" class="_gap">
 		<template #header><Fa :icon="faMagic"/> {{ $ts._pages.variables }}</template>
 		<div class="qmuvgica">
 			<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
@@ -74,7 +74,7 @@
 		</div>
 	</MkContainer>
 
-	<MkContainer :body-togglable="true" :expanded="true" class="_gap">
+	<MkContainer :foldable="true" :expanded="true" class="_gap">
 		<template #header><Fa :icon="faCode"/> {{ $ts.script }}</template>
 		<div>
 			<MkTextarea class="_code" v-model:value="script"/>

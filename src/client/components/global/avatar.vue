@@ -1,9 +1,11 @@
 <template>
 <span class="eiwwqkts _noSelect" :class="{ cat }" :title="acct(user)" v-if="disableLink" v-user-preview="disablePreview ? undefined : user.id" @click="onClick">
 	<img class="inner" :src="url" decoding="async"/>
+	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
 </span>
 <MkA class="eiwwqkts _noSelect" :class="{ cat }" :to="userPage(user)" :title="acct(user)" :target="target" v-else v-user-preview="disablePreview ? undefined : user.id">
 	<img class="inner" :src="url" decoding="async"/>
+	<MkUserOnlineIndicator v-if="showIndicator" class="indicator" :user="user"/>
 </MkA>
 </template>
 
@@ -12,8 +14,12 @@ import { defineComponent } from 'vue';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { extractAvgColorFromBlurhash } from '@client/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@client/filters/user';
+import MkUserOnlineIndicator from '@client/components/user-online-indicator.vue';
 
 export default defineComponent({
+	components: {
+		MkUserOnlineIndicator
+	},
 	props: {
 		user: {
 			type: Object,
@@ -28,6 +34,10 @@ export default defineComponent({
 			default: false
 		},
 		disablePreview: {
+			required: false,
+			default: false
+		},
+		showIndicator: {
 			required: false,
 			default: false
 		}
@@ -93,7 +103,7 @@ export default defineComponent({
 		}
 	}
 
-	.inner {
+	> .inner {
 		position: absolute;
 		bottom: 0;
 		left: 0;
@@ -105,6 +115,15 @@ export default defineComponent({
 		object-fit: cover;
 		width: 100%;
 		height: 100%;
+	}
+
+	> .indicator {
+		position: absolute;
+		z-index: 1;
+		bottom: 0;
+		left: 0;
+		width: 20%;
+		height: 20%;
 	}
 }
 </style>

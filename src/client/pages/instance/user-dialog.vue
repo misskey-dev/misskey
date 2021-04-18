@@ -8,7 +8,7 @@
 	<div class="vrcsvlkm" v-if="user && info">
 		<div class="_section">
 			<div class="banner" :style="bannerStyle">
-				<MkAvatar class="avatar" :user="user"/>
+				<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
 			</div>
 		</div>
 		<div class="_section">

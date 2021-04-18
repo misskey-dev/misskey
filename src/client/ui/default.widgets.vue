@@ -2,8 +2,8 @@
 <div class="efzpzdvf">
 	<XWidgets :edit="editMode" :widgets="$store.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
-	<button v-if="editMode" @click="editMode = false" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $ts.editWidgetsExit }}</button>
-	<button v-else @click="editMode = true" class="_textButton" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $ts.editWidgets }}</button>
+	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $ts.editWidgetsExit }}</button>
+	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $ts.editWidgets }}</button>
 </div>
 </template>
 
@@ -62,18 +62,11 @@ export default defineComponent({
 	position: sticky;
 	height: min-content;
 	box-sizing: border-box;
+	padding-bottom: 8px;
 
-	> * {
-		margin: var(--margin) 0;
-		width: 300px;
-
-		&:first-child {
-			margin-top: 0;
-		}
-	}
-
-	> .add {
-		margin: 0 auto;
+	> .edit {
+		display: block;
+		margin: 16px auto;
 	}
 }
 </style>

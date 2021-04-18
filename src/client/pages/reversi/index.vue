@@ -11,7 +11,7 @@
 			<template #header>{{ $ts.invitations }}</template>
 			<div class="nfcacttm">
 				<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
-					<MkAvatar class="avatar" :user="invitation.parent"/>
+					<MkAvatar class="avatar" :user="invitation.parent" :show-indicator="true"/>
 					<span class="name"><b><MkUserName :user="invitation.parent"/></b></span>
 					<span class="username">@{{ invitation.parent.username }}</span>
 					<MkTime :time="invitation.createdAt" class="time"/>
