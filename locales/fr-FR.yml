@@ -718,6 +718,7 @@ addDescription: "Ajouter une description"
 info: "Informations"
 userInfo: "Informations sur l'utilisateur"
 unknown: "Inconnu"
+hideOnlineStatus: "Toujours apparaître hors ligne"
 online: "En ligne"
 offline: "Hors ligne"
 _email:
