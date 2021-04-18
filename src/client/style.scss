@@ -243,7 +243,10 @@ hr {
 
 ._block {
 	@extend ._panel;
-	margin: var(--margin) 0;
+
+	& + ._block {
+		margin-top: var(--margin);
+	}
 }
 
 ._gap {
@@ -372,12 +375,6 @@ hr {
 		._root {
 			--root-margin: 0px;
 		}
-	}
-}
-
-._magnetParent {
-	._magnetChild:not(* + ._magnetChild) {
-		margin-top: 0;
 	}
 }
 
