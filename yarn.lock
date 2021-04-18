@@ -6695,10 +6695,10 @@ methods@^1.1.2:
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
 
-mfm-js@0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/mfm-js/-/mfm-js-0.15.0.tgz#b7dea4225a992ac4fd873ad6b2cad069f171dc24"
-  integrity sha512-JW7AAQzXejo60JGwx+wzodkp45XKYBEq4bYlMDcxjmi2e+P0IOhAcpz2HPBbzxnO/4X3WPuklU8B16RUZpFFdg==
+mfm-js@0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/mfm-js/-/mfm-js-0.16.0.tgz#71852124eba5564f8a94cd7476a4eaa4ddeed1cd"
+  integrity sha512-z33e1yPj9dLN+DjDHakhslvGhCnzTxsUNpodyFw3nemO6gnKOE1adUrm49jjB2boQxtBExKhH7FERMCsNFcpBQ==
   dependencies:
     twemoji-parser "13.0.x"
 
