@@ -243,7 +243,10 @@ hr {
 
 ._block {
 	@extend ._panel;
-	margin: var(--margin) 0;
+
+	& + ._block {
+		margin-top: var(--margin);
+	}
 }
 
 ._gap {
@@ -323,6 +326,11 @@ hr {
 	margin: var(--root-margin, 32px) auto;
 	max-width: min(var(--baseContentWidth), calc(100% - (var(--root-margin, 32px) * 2)));
 
+	// 子marginが突き抜けるのを防ぐため
+	// https://stackoverflow.com/questions/1762539/margin-on-child-element-moves-parent-element
+	padding-top: 1px;
+	margin-top: calc(var(--root-margin, 32px) - 1px);
+
 	@media (max-width: 500px) {
 		--root-margin: 10px;
 	}
@@ -344,7 +352,7 @@ hr {
 }
 
 ._flat_ {
-	--root-margin: 0;
+	--root-margin: 0px;
 	--baseContentWidth: 100%;
 	--panelShadow: none;
 
@@ -365,14 +373,8 @@ hr {
 
 	@media (max-width: 500px) {
 		._root {
-			--root-margin: 0;
+			--root-margin: 0px;
 		}
-	}
-}
-
-._magnetParent {
-	._magnetChild:not(* + ._magnetChild) {
-		margin-top: 0;
 	}
 }
 

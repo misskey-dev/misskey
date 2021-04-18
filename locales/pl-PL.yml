@@ -644,6 +644,8 @@ backgroundColor: "Tło"
 accentColor: "Akcent"
 textColor: "Tekst"
 value: "Wartość"
+goBack: "Wróć"
+info: "Informacje"
 _email:
   _follow:
     title: "Zaobserwował(a) Cię"
@@ -762,6 +764,7 @@ _theme:
   install: "Zainstaluj motyw"
   manage: "Zarządzanie motywami"
   code: "Kod motywu"
+  description: "Opis"
   installed: "Zainstalowano {name}"
   installedThemes: "Zainstalowane motywy"
   builtinThemes: "Wbudowane motywy"

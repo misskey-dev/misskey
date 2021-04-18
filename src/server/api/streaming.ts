@@ -35,10 +35,22 @@ module.exports = (server: http.Server) => {
 
 		const main = new MainStreamConnection(connection, ev, user, app);
 
+		const intervalId = user ? setInterval(() => {
+			Users.update(user.id, {
+				lastActiveDate: new Date(),
+			});
+		}, 1000 * 60 * 5) : null;
+		if (user) {
+			Users.update(user.id, {
+				lastActiveDate: new Date(),
+			});
+		}
+
 		connection.once('close', () => {
 			ev.removeAllListeners();
 			main.dispose();
 			redisClient.off('message', onRedisMessage);
+			if (intervalId) clearInterval(intervalId);
 		});
 
 		connection.on('message', async (data) => {
@@ -46,11 +58,5 @@ module.exports = (server: http.Server) => {
 				connection.send('pong');
 			}
 		});
-
-		if (user) {
-			Users.update(user.id, {
-				lastActiveDate: new Date(),
-			});
-		}
 	});
 };

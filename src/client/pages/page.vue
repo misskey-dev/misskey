@@ -1,6 +1,6 @@
 <template>
-<div class="xcukqgmh _root _magnetParent" v-if="page" :key="page.id" v-size="{ max: [450] }">
-	<div class="_block _magnetChild main">
+<div class="xcukqgmh _root" v-if="page" :key="page.id" v-size="{ max: [450] }">
+	<div class="_block main">
 		<!--
 		<div class="header">
 			<h1>{{ page.title }}</h1>

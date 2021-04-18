@@ -6,8 +6,8 @@
 
 	<p class="mfcuwfyp" v-else-if="empty">{{ $ts.noNotifications }}</p>
 
-	<div v-else class="_magnetParent">
-		<XList class="notifications _magnetChild" :items="items" v-slot="{ item: notification }" :no-gap="true">
+	<div v-else>
+		<XList class="notifications" :items="items" v-slot="{ item: notification }" :no-gap="true">
 			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
 			<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 		</XList>
