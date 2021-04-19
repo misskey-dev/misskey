@@ -10,9 +10,9 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, PropType } from 'vue';
-import * as os from '@/os';
-import { SectionBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
+import * as os from '@client/os';
+import { SectionBlock } from '@client/scripts/hpml/block';
+import { Hpml } from '@client/scripts/hpml/evaluator';
 
 export default defineComponent({
 	components: {

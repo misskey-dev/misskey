@@ -2,10 +2,10 @@
  * Tests for detection of file information
  *
  * How to run the tests:
- * > TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register
+ * > npx cross-env TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register
  *
  * To specify test:
- * > TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register -g 'test name'
+ * > npx cross-env TS_NODE_FILES=true npx mocha test/get-file-info.ts --require ts-node/register -g 'test name'
  */
 
 import * as assert from 'assert';
@@ -116,7 +116,7 @@ describe('Get file info', () => {
 	}));
 
 	it('SVG with XML definition', async (async () => {
-		// https://github.com/syuilo/misskey/issues/4413
+		// https://github.com/misskey-dev/misskey/issues/4413
 		const path = `${__dirname}/resources/with-xml-def.svg`;
 		const info = await getFileInfo(path) as any;
 		delete info.warnings;

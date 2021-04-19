@@ -1,8 +1,13 @@
+import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '@/queue/queues';
 import $ from 'cafy';
 import define from '../../../define';
-import { deliverQueue, inboxQueue, dbQueue, objectStorageQueue } from '../../../../../queue';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'ジョブ一覧を表示します。',
+		'en-US': 'Display the job list.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -21,6 +26,38 @@ export const meta = {
 			validator: $.optional.num,
 			default: 50
 		},
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id'
+				},
+				data: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const
+				},
+				attempts: {
+					type: 'number' as const,
+					optional: false as const, nullable: false as const
+				},
+				maxAttempts: {
+					type: 'number' as const,
+					optional: false as const, nullable: false as const
+				},
+				timestamp: {
+					type: 'number' as const,
+					optional: false as const, nullable: false as const
+				}
+			}
+		}
 	}
 };
 

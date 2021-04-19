@@ -36,9 +36,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faQuestionCircle, faInfoCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
-import MkModal from '@/components/ui/modal.vue';
-import { sidebarDef } from '@/sidebar';
-import { instanceName } from '@/config';
+import MkModal from '@client/components/ui/modal.vue';
+import { sidebarDef } from '@client/sidebar';
+import { instanceName } from '@client/config';
 
 export default defineComponent({
 	components: {
@@ -146,7 +146,7 @@ export default defineComponent({
 	> .sub {
 		margin-top: 8px;
 		padding-top: 8px;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

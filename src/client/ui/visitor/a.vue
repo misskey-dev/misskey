@@ -32,7 +32,7 @@
 			</main>
 			<div class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>
-				<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
+				<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
 			</div>
 		</div>
 	</div>
@@ -42,13 +42,14 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { } from '@fortawesome/free-solid-svg-icons';
-import { host, instanceName } from '@/config';
-import { search } from '@/scripts/search';
-import * as os from '@/os';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
+import { host, instanceName } from '@client/config';
+import { search } from '@client/scripts/search';
+import * as os from '@client/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
 import XHeader from './header.vue';
-import { ColdDeviceStorage } from '@/store';
+import { ColdDeviceStorage } from '@client/store';
+import * as symbols from '@client/symbols';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -110,8 +111,8 @@ export default defineComponent({
 
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 

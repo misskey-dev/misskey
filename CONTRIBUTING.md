@@ -8,7 +8,7 @@
   - 温度感高めで見てほしいものは責付いてください。
 
 ## Issues
-Feature suggestions and bug reports are filed in https://github.com/syuilo/misskey/issues .
+Feature suggestions and bug reports are filed in https://github.com/misskey-dev/misskey/issues .
 
 * Please search existing issues to avoid duplication. If your issue is already filed, please add your reaction or comment to the existing one.
 * If you have multiple independent issues, please submit them separately.

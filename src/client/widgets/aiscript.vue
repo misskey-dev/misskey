@@ -15,11 +15,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTerminal } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
-import * as os from '@/os';
+import * as os from '@client/os';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
+import { createAiScriptEnv } from '@client/scripts/aiscript/api';
 
 const widget = define({
 	name: 'aiscript',
@@ -122,7 +122,7 @@ export default defineComponent({
 		color: var(--fg);
 		background: transparent;
 		border: none;
-		border-bottom: solid 1px var(--divider);
+		border-bottom: solid 0.5px var(--divider);
 		border-radius: 0;
 		box-sizing: border-box;
 		font: inherit;
@@ -147,7 +147,7 @@ export default defineComponent({
 	}
 
 	> .logs {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 		text-align: left;
 		padding: 16px;
 

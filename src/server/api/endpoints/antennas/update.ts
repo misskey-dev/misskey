@@ -1,10 +1,16 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Antennas, UserLists, UserGroupJoinings } from '../../../../models';
+import { publishInternalEvent } from '../../../../services/stream';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'アンテナの情報を更新します。',
+		'en-US': 'Updates the information of the specified antenna.'
+	},
+
 	tags: ['antennas'],
 
 	requireCredential: true as const,
@@ -79,6 +85,12 @@ export const meta = {
 			code: 'NO_SUCH_USER_GROUP',
 			id: '109ed789-b6eb-456e-b8a9-6059d567d385'
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'Antenna'
 	}
 };
 
@@ -96,7 +108,7 @@ export default define(meta, async (ps, user) => {
 	let userList;
 	let userGroupJoining;
 
-	if (ps.src === 'list') {
+	if (ps.src === 'list' && ps.userListId) {
 		userList = await UserLists.findOne({
 			id: ps.userListId,
 			userId: user.id,
@@ -105,7 +117,7 @@ export default define(meta, async (ps, user) => {
 		if (userList == null) {
 			throw new ApiError(meta.errors.noSuchUserList);
 		}
-	} else if (ps.src === 'group') {
+	} else if (ps.src === 'group' && ps.userGroupId) {
 		userGroupJoining = await UserGroupJoinings.findOne({
 			userGroupId: ps.userGroupId,
 			userId: user.id,
@@ -129,6 +141,8 @@ export default define(meta, async (ps, user) => {
 		withFile: ps.withFile,
 		notify: ps.notify,
 	});
+
+	publishInternalEvent('antennaUpdated', Antennas.findOneOrFail(antenna.id));
 
 	return await Antennas.pack(antenna.id);
 });

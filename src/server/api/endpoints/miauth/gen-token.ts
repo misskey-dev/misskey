@@ -1,8 +1,8 @@
 import $ from 'cafy';
 import define from '../../define';
 import { AccessTokens } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
-import { secureRndstr } from '../../../../misc/secure-rndstr';
+import { genId } from '@/misc/gen-id';
+import { secureRndstr } from '@/misc/secure-rndstr';
 
 export const meta = {
 	tags: ['auth'],
@@ -32,6 +32,17 @@ export const meta = {
 			validator: $.arr($.str).unique(),
 		},
 	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			token: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const
+			}
+		}
+	}
 };
 
 export default define(meta, async (ps, user) => {
@@ -41,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	const now = new Date();
 
 	// Insert access token doc
-	await AccessTokens.save({
+	await AccessTokens.insert({
 		id: genId(),
 		createdAt: now,
 		lastUsedAt: now,

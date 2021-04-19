@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faInfoCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {
@@ -52,5 +52,9 @@ export default defineComponent({
 	> i {
 		margin-right: 4px;
 	}
+}
+
+._flat_ .fpezltsf {
+	border-radius: 0;
 }
 </style>

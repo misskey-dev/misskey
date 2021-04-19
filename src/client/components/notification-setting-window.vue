@@ -9,24 +9,26 @@
 	@closed="$emit('closed')"
 >
 	<template #header>{{ $ts.notificationSetting }}</template>
-	<div v-if="showGlobalToggle" class="_section">
-		<MkSwitch v-model:value="useGlobalSetting">
-			{{ $ts.useGlobalSetting }}
-			<template #desc>{{ $ts.useGlobalSettingDesc }}</template>
-		</MkSwitch>
-	</div>
-	<div v-if="!useGlobalSetting" class="_section">
-		<MkInfo>{{ $ts.notificationSettingDesc }}</MkInfo>
-		<MkButton inline @click="disableAll">{{ $ts.disableAll }}</MkButton>
-		<MkButton inline @click="enableAll">{{ $ts.enableAll }}</MkButton>
-		<MkSwitch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</MkSwitch>
+	<div class="_monolithic_">
+		<div v-if="showGlobalToggle" class="_section">
+			<MkSwitch v-model:value="useGlobalSetting">
+				{{ $ts.useGlobalSetting }}
+				<template #desc>{{ $ts.useGlobalSettingDesc }}</template>
+			</MkSwitch>
+		</div>
+		<div v-if="!useGlobalSetting" class="_section">
+			<MkInfo>{{ $ts.notificationSettingDesc }}</MkInfo>
+			<MkButton inline @click="disableAll">{{ $ts.disableAll }}</MkButton>
+			<MkButton inline @click="enableAll">{{ $ts.enableAll }}</MkButton>
+			<MkSwitch v-for="type in notificationTypes" :key="type" v-model:value="typesMap[type]">{{ $t(`_notification._types.${type}`) }}</MkSwitch>
+		</div>
 	</div>
 </XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
+import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkSwitch from './ui/switch.vue';
 import MkInfo from './ui/info.vue';
 import MkButton from './ui/button.vue';

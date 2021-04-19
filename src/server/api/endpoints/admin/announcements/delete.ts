@@ -1,6 +1,6 @@
 import $ from 'cafy';
 import define from '../../../define';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Announcements } from '../../../../../models';
 import { ApiError } from '../../../error';
 
@@ -9,6 +9,11 @@ export const meta = {
 
 	requireCredential: true as const,
 	requireModerator: true,
+
+	desc: {
+		'ja-JP': 'アナウンスを削除します。',
+		'en-US': 'Delete a announcement.'
+	},
 
 	params: {
 		id: {

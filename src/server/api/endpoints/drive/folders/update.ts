@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { publishDriveStream } from '../../../../../services/stream';
 import define from '../../../define';
 import { ApiError } from '../../../error';
@@ -61,6 +61,12 @@ export const meta = {
 			code: 'NO_SUCH_PARENT_FOLDER',
 			id: 'ce104e3a-faaf-49d5-b459-10ff0cbbcaa1'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'DriveFolder'
 	}
 };
 

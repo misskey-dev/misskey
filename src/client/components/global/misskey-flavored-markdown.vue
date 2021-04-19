@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import MfmCore from '@/components/mfm';
+import MfmCore from '@client/components/mfm';
 
 export default defineComponent({
 	components: {

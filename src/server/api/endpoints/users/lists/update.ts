@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { UserLists } from '../../../../../models';
@@ -32,6 +32,12 @@ export const meta = {
 				'en-US': 'name of this user list'
 			}
 		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'UserList',
 	},
 
 	errors: {

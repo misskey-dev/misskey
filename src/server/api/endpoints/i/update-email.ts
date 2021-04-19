@@ -2,7 +2,7 @@ import $ from 'cafy';
 import { publishMainStream } from '../../../../services/stream';
 import define from '../../define';
 import rndstr from 'rndstr';
-import config from '../../../../config';
+import config from '@/config';
 import * as ms from 'ms';
 import * as bcrypt from 'bcryptjs';
 import { Users, UserProfiles } from '../../../../models';

@@ -1,6 +1,6 @@
 <template>
 <div
-	class="note _panel"
+	class="note _block"
 	v-if="!muted"
 	v-show="!isDeleted"
 	:tabindex="!isDeleted ? '-1' : null"
@@ -35,7 +35,7 @@
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
 		<header class="header">
-			<MkAvatar class="avatar" :user="appearNote.user"/>
+			<MkAvatar class="avatar" :user="appearNote.user" :show-indicator="true"/>
 			<div class="body">
 				<div class="top">
 					<MkA class="name" :to="userPage(appearNote.user)" v-user-preview="appearNote.user.id">
@@ -120,11 +120,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, defineComponent, markRaw, ref } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
+import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip, faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { parse } from '../../mfm/parse';
-import { sum, unique } from '../../prelude/array';
+import * as mfm from 'mfm-js';
+import { sum } from '../../prelude/array';
 import XSub from './note.sub.vue';
 import XNoteHeader from './note-header.vue';
 import XNotePreview from './note-preview.vue';
@@ -132,14 +132,16 @@ import XReactionsViewer from './reactions-viewer.vue';
 import XMediaList from './media-list.vue';
 import XCwButton from './cw-button.vue';
 import XPoll from './poll.vue';
-import { pleaseLogin } from '@/scripts/please-login';
-import { focusPrev, focusNext } from '@/scripts/focus';
-import { url } from '@/config';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { checkWordMute } from '@/scripts/check-word-mute';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { noteActions, noteViewInterruptors } from '@/store';
+import { pleaseLogin } from '@client/scripts/please-login';
+import { focusPrev, focusNext } from '@client/scripts/focus';
+import { url } from '@client/config';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { checkWordMute } from '@client/scripts/check-word-mute';
+import { userPage } from '@client/filters/user';
+import * as os from '@client/os';
+import { noteActions, noteViewInterruptors } from '@client/store';
+import { reactionPicker } from '@client/scripts/reaction-picker';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
 function markRawAll(...xs) {
 	for (const x of xs) {
@@ -159,8 +161,8 @@ export default defineComponent({
 		XMediaList,
 		XCwButton,
 		XPoll,
-		MkUrlPreview: defineAsyncComponent(() => import('@/components/url-preview.vue')),
-		MkInstanceTicker: defineAsyncComponent(() => import('@/components/instance-ticker.vue')),
+		MkUrlPreview: defineAsyncComponent(() => import('@client/components/url-preview.vue')),
+		MkInstanceTicker: defineAsyncComponent(() => import('@client/components/instance-ticker.vue')),
 	},
 
 	inject: {
@@ -251,21 +253,7 @@ export default defineComponent({
 
 		urls(): string[] {
 			if (this.appearNote.text) {
-				const ast = parse(this.appearNote.text);
-				// TODO: 再帰的にURL要素がないか調べる
-				const urls = unique(ast
-					.filter(t => ((t.node.type == 'url' || t.node.type == 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
-
-				// unique without hash
-				// [ http://a/#1, http://a/#2, http://b/#3 ] => [ http://a/#1, http://b/#3 ]
-				const removeHash = x => x.replace(/#[^#]*$/, '');
-
-				return urls.reduce((array, url) => {
-					const removed = removeHash(url);
-					if (!array.map(x => removeHash(x)).includes(removed)) array.push(url);
-					return array;
-				}, []);
+				return extractUrlFromMfm(mfm.parse(this.appearNote.text));
 			} else {
 				return null;
 			}
@@ -349,7 +337,8 @@ export default defineComponent({
 
 		capture(withHandler = false) {
 			if (this.$i) {
-				this.connection.send(document.body.contains(this.$el) ? 'sn' : 's', { id: this.appearNote.id });
+				// TODO: このノートがストリーミング経由で流れてきた場合のみ sr する
+				this.connection.send(document.body.contains(this.$el) ? 'sr' : 's', { id: this.appearNote.id });
 				if (withHandler) this.connection.on('noteUpdated', this.onStreamNoteUpdated);
 			}
 		},
@@ -523,20 +512,14 @@ export default defineComponent({
 		react(viaKeyboard = false) {
 			pleaseLogin();
 			this.blur();
-			os.popup(import('@/components/emoji-picker.vue'), {
-				src: this.$refs.reactButton,
-				asReactionPicker: true
-			}, {
-				done: reaction => {
-					if (reaction) {
-						os.api('notes/reactions/create', {
-							noteId: this.appearNote.id,
-							reaction: reaction
-						});
-					}
-					this.focus();
-				},
-			}, 'closed');
+			reactionPicker.show(this.$refs.reactButton, reaction => {
+				os.api('notes/reactions/create', {
+					noteId: this.appearNote.id,
+					reaction: reaction
+				});
+			}, () => {
+				this.focus();
+			});
 		},
 
 		reactDirectly(reaction) {
@@ -642,6 +625,11 @@ export default defineComponent({
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
+				{
+					icon: faShareAlt,
+					text: this.$ts.share,
+					action: this.share
+				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
 					icon: faStar,
@@ -691,7 +679,7 @@ export default defineComponent({
 						text: this.$ts.reportAbuse,
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
-							os.popup(import('@/components/abuse-report-window.vue'), {
+							os.popup(import('@client/components/abuse-report-window.vue'), {
 								user: this.appearNote.user,
 								initialComment: `Note: ${u}\n-----\n`
 							}, {}, 'closed');
@@ -756,7 +744,13 @@ export default defineComponent({
 			};
 			if (isLink(e.target)) return;
 			if (window.getSelection().toString() !== '') return;
-			os.contextMenu(this.getMenu(), e).then(this.focus);
+
+			if (this.$store.state.useReactionPickerForContextMenu) {
+				e.preventDefault();
+				this.react();
+			} else {
+				os.contextMenu(this.getMenu(), e).then(this.focus);
+			}
 		},
 
 		menu(viaKeyboard = false) {
@@ -858,6 +852,14 @@ export default defineComponent({
 			os.apiWithDialog('admin/promo/create', {
 				noteId: this.appearNote.id,
 				expiresAt: Date.now() + (86400000 * days)
+			});
+		},
+
+		share() {
+			navigator.share({
+				title: this.$t('noteOf', { user: this.appearNote.user.name }),
+				text: this.appearNote.text,
+				url: `${url}/notes/${this.appearNote.id}`
 			});
 		},
 
@@ -1018,7 +1020,7 @@ export default defineComponent({
 						margin: 0 0.5em;
 						padding: 4px 6px;
 						font-size: 80%;
-						border: solid 1px var(--divider);
+						border: solid 0.5px var(--divider);
 						border-radius: 4px;
 					}
 
@@ -1121,7 +1123,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	&.max-width_500px {

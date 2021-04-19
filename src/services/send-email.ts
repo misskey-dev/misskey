@@ -1,14 +1,14 @@
 import * as nodemailer from 'nodemailer';
-import { fetchMeta } from '../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import Logger from './logger';
-import config from '../config';
+import config from '@/config';
 
 export const logger = new Logger('email');
 
 export async function sendEmail(to: string, subject: string, html: string, text: string) {
 	const meta = await fetchMeta(true);
 
-	const iconUrl = `${config.url}/assets/mi-white.png`;
+	const iconUrl = `${config.url}/static-assets/mi-white.png`;
 	const emailSettingUrl = `${config.url}/settings/email`;
 
 	const enableAuth = meta.smtpUser != null && meta.smtpUser !== '';

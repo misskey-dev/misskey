@@ -1,7 +1,7 @@
 <template>
 <div class="_section">
 	<div class="_content">
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Dialog</div>
 			<div class="_content">
 				<MkInput v-model:value="dialogTitle">
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Form</div>
 			<div class="_content">
 				<MkInput v-model:value="formTitle">
@@ -46,7 +46,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">MFM</div>
 			<div class="_content">
 				<MkTextarea v-model:value="mfm">
@@ -58,7 +58,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">selectDriveFile</div>
 			<div class="_content">
 				<MkSwitch v-model:value="selectDriveFileMultiple">
@@ -71,7 +71,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">selectDriveFolder</div>
 			<div class="_content">
 				<MkSwitch v-model:value="selectDriveFolderMultiple">
@@ -84,7 +84,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">selectUser</div>
 			<div class="_content">
 				<MkButton @click="selectUser()">selectUser</MkButton>
@@ -94,7 +94,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Notification</div>
 			<div class="_content">
 				<MkInput v-model:value="notificationIconUrl">
@@ -110,7 +110,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Waiting dialog</div>
 			<div class="_content">
 				<MkButton inline @click="openWaitingDialog()">icon only</MkButton>
@@ -118,7 +118,7 @@
 			</div>
 		</div>
 
-		<div class="_card _vMargin">
+		<div class="_card _gap">
 			<div class="_title">Messaging window</div>
 			<div class="_content">
 				<MkButton @click="messagingWindowOpen()">open</MkButton>
@@ -133,12 +133,13 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkRadio from '@/components/ui/radio.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkRadio from '@client/components/ui/radio.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -151,7 +152,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: 'TEST',
 				icon: faExclamationTriangle
 			},

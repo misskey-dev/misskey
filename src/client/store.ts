@@ -144,9 +144,13 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true
 	},
-	showGapBetweenNotesInTimeline: {
+	useReactionPickerForContextMenu: {
 		where: 'device',
 		default: true
+	},
+	showGapBetweenNotesInTimeline: {
+		where: 'device',
+		default: false
 	},
 	darkMode: {
 		where: 'device',
@@ -180,10 +184,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'full' as 'full' | 'icon'
 	},
-	titlebar: {
-		where: 'device',
-		default: true
-	},
 	reportError: {
 		where: 'device',
 		default: false
@@ -208,9 +208,8 @@ type Plugin = {
  */
 export class ColdDeviceStorage {
 	public static default = {
-		themes: [] as Theme[], // TODO: そのうち消す
-		darkTheme: '8050783a-7f63-445a-b270-36d0f6ba1677',
-		lightTheme: '4eea646f-7afa-4645-83e9-83af0333cd37',
+		lightTheme: require('@client/themes/l-light.json5') as Theme,
+		darkTheme: require('@client/themes/d-dark.json5') as Theme,
 		syncDeviceDarkMode: true,
 		chatOpenBehavior: 'page' as 'page' | 'window' | 'popout',
 		plugins: [] as Plugin[],

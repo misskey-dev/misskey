@@ -1,6 +1,7 @@
 import { defineComponent } from 'vue';
-import { Form } from '@/scripts/form';
-import * as os from '@/os';
+import { throttle } from 'throttle-debounce';
+import { Form } from '@client/scripts/form';
+import * as os from '@client/os';
 
 export default function <T extends Form>(data: {
 	name: string;
@@ -21,7 +22,10 @@ export default function <T extends Form>(data: {
 
 		data() {
 			return {
-				props: this.widget ? JSON.parse(JSON.stringify(this.widget.data)) : {}
+				props: this.widget ? JSON.parse(JSON.stringify(this.widget.data)) : {},
+				save: throttle(3000, () => {
+					this.$emit('updateProps', this.props);
+				}),
 			};
 		},
 
@@ -66,10 +70,6 @@ export default function <T extends Form>(data: {
 
 				this.save();
 			},
-
-			save() {
-				this.$emit('updateProps', this.props);
-			}
 		}
 	});
 }

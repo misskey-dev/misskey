@@ -2,12 +2,13 @@ import $ from 'cafy';
 import define from '../../../define';
 import { Emojis } from '../../../../../models';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { Emoji } from '../../../../../models/entities/emoji';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'カスタム絵文字を取得します。'
+		'ja-JP': 'カスタム絵文字一覧を取得します。',
+		'en-US': 'List custom emojis.'
 	},
 
 	tags: ['admin'],
@@ -33,6 +34,52 @@ export const meta = {
 		untilId: {
 			validator: $.optional.type(ID),
 		}
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			properties: {
+				id: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					format: 'id',
+					description: 'The unique identifier for this Emoji.'
+				},
+				aliases: {
+					type: 'array' as const,
+					optional: false as const, nullable: false as const,
+					description: 'List to make it easier to be displayed as a candidate when entering emoji.',
+					items: {
+						type: 'string' as const,
+						optional: false as const, nullable: false as const
+					}
+				},
+				name: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					description: 'Official name of custom emoji.'
+				},
+				category: {
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
+					description: 'Names categorized in the emoji list.'
+				},
+				host: {
+					type: 'string' as const,
+					optional: false as const, nullable: true as const,
+					description: 'If it is another server, the FQDN will be returned here.'
+				},
+				url: {
+					type: 'string' as const,
+					optional: false as const, nullable: false as const,
+					description: 'Image URL of emoji.'
+				}
+			}
+		}
 	}
 };
 
@@ -49,9 +96,9 @@ export default define(meta, async (ps) => {
 		emojis = await q.getMany();
 
 		emojis = emojis.filter(emoji =>
-			emoji.name.includes(ps.query) ||
-			emoji.aliases.some(a => a.includes(ps.query)) ||
-			emoji.category?.includes(ps.query));
+			emoji.name.includes(ps.query!) ||
+			emoji.aliases.some(a => a.includes(ps.query!)) ||
+			emoji.category?.includes(ps.query!));
 
 		emojis.splice(ps.limit! + 1);
 	} else {

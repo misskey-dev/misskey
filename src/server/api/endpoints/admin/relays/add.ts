@@ -1,3 +1,4 @@
+import { URL } from 'url';
 import $ from 'cafy';
 import define from '../../../define';
 import { addRelay } from '../../../../../services/relay';
@@ -5,7 +6,8 @@ import { ApiError } from '../../../error';
 
 export const meta = {
 	desc: {
-		'ja-JP': 'Add relay'
+		'ja-JP': 'リレーを追加します。',
+		'en-US': 'Add relay'
 	},
 
 	tags: ['admin'],
@@ -25,6 +27,33 @@ export const meta = {
 			code: 'INVALID_URL',
 			id: 'fb8c92d3-d4e5-44e7-b3d4-800d5cef8b2c'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			id: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'id'
+			},
+			inbox: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				format: 'url'
+			},
+			status: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				default: 'requesting',
+				enum: [
+					'requesting',
+					'accepted',
+					'rejected'
+				]
+			}
+		}
 	}
 };
 

@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../../define';
 import { ApiError } from '../../../../error';
 import { UserGroupJoinings, UserGroupInvitations } from '../../../../../../models';
-import { genId } from '../../../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { UserGroupJoining } from '../../../../../../models/entities/user-group-joining';
 
 export const meta = {
@@ -52,7 +52,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Push the user
-	await UserGroupJoinings.save({
+	await UserGroupJoinings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		userId: user.id,

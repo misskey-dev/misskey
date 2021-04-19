@@ -9,7 +9,7 @@
 	<template #header>Req Viewer</template>
 
 	<div class="rlkneywz">
-		<MkTab v-model:value="tab" style="border-bottom: solid 1px var(--divider);">
+		<MkTab v-model:value="tab" style="border-bottom: solid 0.5px var(--divider);">
 			<option value="req">Request</option>
 			<option value="res">Response</option>
 		</MkTab>
@@ -23,8 +23,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import * as JSON5 from 'json5';
-import XWindow from '@/components/ui/window.vue';
-import MkTab from '@/components/tab.vue';
+import XWindow from '@client/components/ui/window.vue';
+import MkTab from '@client/components/tab.vue';
 
 export default defineComponent({
 	components: {

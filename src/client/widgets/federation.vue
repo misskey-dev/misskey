@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="props.showHeader" :body-togglable="bodyTogglable" :scrollable="scrollable">
+<MkContainer :show-header="props.showHeader" :foldable="foldable" :scrollable="scrollable">
 	<template #header><Fa :icon="faGlobe"/>{{ $ts._widgets.federation }}</template>
 
 	<div class="wbrkwalb">
@@ -21,10 +21,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import MkContainer from '@/components/ui/container.vue';
+import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
-import MkMiniChart from '@/components/mini-chart.vue';
-import * as os from '@/os';
+import MkMiniChart from '@client/components/mini-chart.vue';
+import * as os from '@client/os';
 
 const widget = define({
 	name: 'federation',
@@ -42,7 +42,7 @@ export default defineComponent({
 		MkContainer, MkMiniChart
 	},
 	props: {
-		bodyTogglable: {
+		foldable: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -100,7 +100,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			padding: 14px 16px;
-			border-bottom: solid 1px var(--divider);
+			border-bottom: solid 0.5px var(--divider);
 
 			> img {
 				display: block;

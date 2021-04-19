@@ -1,13 +1,13 @@
-# Mettre en sourdine
+# Masquer
 
-ユーザーをミュートすると、そのユーザーに関する次のコンテンツがMisskeyに表示されなくなります:
+Le contenu afférent à un utilisateur ne vous sera plus présenté dès lors que vous le masquez :
 
-* タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
-* そのユーザーからの通知
-* メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
+* les publications de cet·te utilisateur·ice dans le fil ou les résultats de recherche, de même que ses réponses et Renotes ;
+* les notifications touchant à cet·te utilisateur·ice ;
+* l'historique des messages avec cet·te utilisateur·ice.
 
-ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
+Pour masquer un·e utilisateur·ice, utilisez le bouton « Masquer » de sa page de profil.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+L'utilisateur·rice que vous ignorez ne sera pas prévenu·e. De même, vous ne serez pas prévenu·e lorsque vous serez ignoré·e par un·e autre utilisateur·rice.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+Vous pouvez vérifier la liste des utilisateur·rice·s masqué·e·s depuis l'onglet « Masqués » de vos paramètres.

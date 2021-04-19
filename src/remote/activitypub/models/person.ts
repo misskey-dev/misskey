@@ -1,6 +1,7 @@
+import { URL } from 'url';
 import * as promiseLimit from 'promise-limit';
 
-import config from '../../../config';
+import config from '@/config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
 import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue } from '../type';
@@ -12,21 +13,21 @@ import { extractApHashtags } from './tag';
 import { apLogger } from '../logger';
 import { Note } from '../../../models/entities/note';
 import { updateUsertags } from '../../../services/update-hashtag';
-import { Users, UserNotePinings, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
+import { Users, Instances, DriveFiles, Followings, UserProfiles, UserPublickeys } from '../../../models';
 import { User, IRemoteUser } from '../../../models/entities/user';
 import { Emoji } from '../../../models/entities/emoji';
 import { UserNotePining } from '../../../models/entities/user-note-pining';
-import { genId } from '../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { instanceChart, usersChart } from '../../../services/chart';
 import { UserPublickey } from '../../../models/entities/user-publickey';
-import { isDuplicateKeyValueError } from '../../../misc/is-duplicate-key-value-error';
-import { toPuny } from '../../../misc/convert-host';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
+import { toPuny } from '@/misc/convert-host';
 import { UserProfile } from '../../../models/entities/user-profile';
 import { validActor } from '../../../remote/activitypub/type';
 import { getConnection } from 'typeorm';
 import { toArray } from '../../../prelude/array';
 import { fetchInstanceMetadata } from '../../../services/fetch-instance-metadata';
-import { normalizeForSearch } from '../../../misc/normalize-for-search';
+import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 const logger = apLogger;
 
@@ -479,18 +480,19 @@ export async function updateFeatured(userId: User['id']) {
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 
-	// delete
-	await UserNotePinings.delete({ userId: user.id });
+	await getConnection().transaction(async transactionalEntityManager => {
+		await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
 
-	// とりあえずidを別の時間で生成して順番を維持
-	let td = 0;
-	for (const note of featuredNotes.filter(note => note != null)) {
-		td -= 1000;
-		UserNotePinings.save({
-			id: genId(new Date(Date.now() + td)),
-			createdAt: new Date(),
-			userId: user.id,
-			noteId: note!.id
-		} as UserNotePining);
-	}
+		// とりあえずidを別の時間で生成して順番を維持
+		let td = 0;
+		for (const note of featuredNotes.filter(note => note != null)) {
+			td -= 1000;
+			transactionalEntityManager.insert(UserNotePining, {
+				id: genId(new Date(Date.now() + td)),
+				createdAt: new Date(),
+				userId: user.id,
+				noteId: note!.id
+			});
+		}
+	});
 }

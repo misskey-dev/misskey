@@ -2,9 +2,14 @@ import $ from 'cafy';
 import define from '../../../define';
 import { DriveFiles } from '../../../../../models';
 import { makePaginationQuery } from '../../../common/make-pagination-query';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 
 export const meta = {
+	desc: {
+		'ja-JP': '管理用のドライブの一覧を表示します。',
+		'en-US': 'Displays a list of management drives.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: false as const,
@@ -41,6 +46,16 @@ export const meta = {
 			validator: $.optional.nullable.str,
 			default: null
 		},
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'object' as const,
+			optional: false as const, nullable: false as const,
+			ref: 'DriveFile'
+		}
 	}
 };
 

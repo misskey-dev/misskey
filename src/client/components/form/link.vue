@@ -8,7 +8,7 @@
 			<Fa :icon="faExternalLinkAlt" class="icon"/>
 		</span>
 	</a>
-	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" v-else>
+	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
@@ -38,6 +38,10 @@ export default defineComponent({
 			type: Boolean,
 			required: false
 		},
+		behavior: {
+			type: String,
+			required: false,
+		},
 	},
 	data() {
 		return {
@@ -62,6 +66,7 @@ export default defineComponent({
 
 		&.active {
 			color: var(--accent);
+			background: var(--panelHighlight);
 		}
 
 		> .icon {

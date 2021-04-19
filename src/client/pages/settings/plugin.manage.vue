@@ -33,22 +33,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkInfo from '@/components/ui/info.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
+import MkButton from '@client/components/ui/button.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
 		MkButton,
 		MkTextarea,
 		MkSelect,
-		MkInfo,
 		FormSwitch,
 		FormBase,
 		FormGroup,
@@ -58,7 +57,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.manage,
 				icon: faPlug
 			},
@@ -68,7 +67,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -76,7 +75,7 @@ export default defineComponent({
 			ColdDeviceStorage.set('plugins', this.plugins.filter(x => x.id !== plugin.id));
 			os.success();
 			this.$nextTick(() => {
-				location.reload();
+				unisonReload();
 			});
 		},
 

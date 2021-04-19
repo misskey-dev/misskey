@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import { readNotification } from '../../common/read-notification';
 import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
@@ -85,7 +85,13 @@ export default define(meta, async (ps, user) => {
 
 	const query = makePaginationQuery(Notifications.createQueryBuilder('notification'), ps.sinceId, ps.untilId)
 		.andWhere(`notification.notifieeId = :meId`, { meId: user.id })
-		.leftJoinAndSelect('notification.notifier', 'notifier');
+		.leftJoinAndSelect('notification.notifier', 'notifier')
+		.leftJoinAndSelect('notification.note', 'note')
+		.leftJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser');
 
 	query.andWhere(`notification.notifierId NOT IN (${ mutingQuery.getQuery() })`);
 	query.setParameters(mutingQuery.getParameters());
@@ -110,5 +116,5 @@ export default define(meta, async (ps, user) => {
 		readNotification(user.id, notifications.map(x => x.id));
 	}
 
-	return await Notifications.packMany(notifications);
+	return await Notifications.packMany(notifications, user.id);
 });

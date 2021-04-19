@@ -1,12 +1,12 @@
 <template>
-<XNotes :class="{ _noGap_: !$store.state.showGapBetweenNotesInTimeline }" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
+<XNotes :no-gap="!$store.state.showGapBetweenNotesInTimeline" ref="tl" :pagination="pagination" @before="$emit('before')" @after="e => $emit('after', e)" @queue="$emit('queue', $event)"/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import XNotes from './notes.vue';
-import * as os from '@/os';
-import * as sound from '@/scripts/sound';
+import * as os from '@client/os';
+import * as sound from '@client/scripts/sound';
 
 export default defineComponent({
 	components: {
@@ -56,6 +56,7 @@ export default defineComponent({
 				includeLocalRenotes: this.$store.state.showLocalRenotes
 			},
 			query: {},
+			date: null
 		};
 	},
 
@@ -157,7 +158,7 @@ export default defineComponent({
 			endpoint: endpoint,
 			limit: 10,
 			params: init => ({
-				untilDate: init ? undefined : (this.date ? this.date.getTime() : undefined),
+				untilDate: this.date?.getTime(),
 				...this.baseQuery, ...this.query
 			})
 		};
@@ -171,6 +172,11 @@ export default defineComponent({
 	methods: {
 		focus() {
 			this.$refs.tl.focus();
+		},
+
+		timetravel(date?: Date) {
+			this.date = date;
+			this.$refs.tl.reload();
 		}
 	}
 });

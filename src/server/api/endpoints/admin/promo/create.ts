@@ -1,11 +1,16 @@
 import $ from 'cafy';
-import { ID } from '../../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../../define';
 import { ApiError } from '../../../error';
 import { getNote } from '../../../common/getters';
 import { PromoNotes } from '../../../../../models';
 
 export const meta = {
+	desc: {
+		'ja-JP': 'プロモーションを作成します。',
+		'en-US': 'Create a promotion.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -48,7 +53,7 @@ export default define(meta, async (ps, user) => {
 		throw new ApiError(meta.errors.alreadyPromoted);
 	}
 
-	await PromoNotes.save({
+	await PromoNotes.insert({
 		noteId: note.id,
 		createdAt: new Date(),
 		expiresAt: new Date(ps.expiresAt),

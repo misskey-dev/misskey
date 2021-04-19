@@ -27,11 +27,13 @@
 import { defineComponent } from 'vue';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import { faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import FormButton from '@/components/form/button.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import * as os from '@/os';
+import FormButton from '@client/components/form/button.vue';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -45,7 +47,7 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.emailNotification,
 				icon: faEnvelope
 			},
@@ -69,7 +71,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

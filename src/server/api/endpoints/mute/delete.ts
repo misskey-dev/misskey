@@ -1,9 +1,10 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getUser } from '../../common/getters';
 import { Mutings } from '../../../../models';
+import { publishUserEvent } from '../../../../services/stream';
 
 export const meta = {
 	desc: {
@@ -76,4 +77,6 @@ export default define(meta, async (ps, user) => {
 	await Mutings.delete({
 		id: exist.id
 	});
+
+	publishUserEvent(user.id, 'unmute', mutee);
 });

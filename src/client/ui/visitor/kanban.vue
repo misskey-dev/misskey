@@ -28,7 +28,7 @@
 				</div>
 				<div class="powered-by" v-if="poweredBy">
 					<b><MkA to="/">{{ host }}</MkA></b>
-					<small>Powered by <a href="https://github.com/syuilo/misskey" target="_blank">Misskey</a></small>
+					<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
 				</div>
 			</template>
 		</div>
@@ -39,12 +39,12 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { } from '@fortawesome/free-solid-svg-icons';
-import { host, instanceName } from '@/config';
-import * as os from '@/os';
-import MkPagination from '@/components/ui/pagination.vue';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
+import { host, instanceName } from '@client/config';
+import * as os from '@client/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import XSigninDialog from '@client/components/signin-dialog.vue';
+import XSignupDialog from '@client/components/signup-dialog.vue';
+import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
 	components: {

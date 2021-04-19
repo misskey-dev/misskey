@@ -17,7 +17,7 @@
 	<div class="tbhwbxda _section result" v-if="username != '' || host != ''" :class="{ hit: users.length > 0 }">
 		<div class="users" v-if="users.length > 0">
 			<div class="user" v-for="user in users" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
-				<MkAvatar :user="user" class="avatar"/>
+				<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 				<div class="body">
 					<MkUserName :user="user" class="name"/>
 					<MkAcct :user="user" class="acct"/>
@@ -31,7 +31,7 @@
 	<div class="tbhwbxda _section recent" v-if="username == '' && host == ''">
 		<div class="users">
 			<div class="user" v-for="user in recentUsers" :key="user.id" :class="{ selected: selected && selected.id === user.id }" @click="selected = user" @dblclick="ok()">
-				<MkAvatar :user="user" class="avatar"/>
+				<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 				<div class="body">
 					<MkUserName :user="user" class="name"/>
 					<MkAcct :user="user" class="acct"/>
@@ -46,8 +46,8 @@
 import { defineComponent } from 'vue';
 import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkInput from './ui/input.vue';
-import XModalWindow from '@/components/ui/modal-window.vue';
-import * as os from '@/os';
+import XModalWindow from '@client/components/ui/modal-window.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -153,7 +153,7 @@ export default defineComponent({
 		> .user {
 			display: flex;
 			align-items: center;
-			padding: 8px var(--section-padding);
+			padding: 8px var(--root-margin);
 			font-size: 14px;
 
 			&:hover {

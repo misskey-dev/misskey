@@ -1,4 +1,4 @@
-# Creating plugins
+# New Plugin
 If you use the plugin function of the Misskey web client, you can expand the web client with a variety of different functionality. This page will list metadata definitions for plugin creation as well as an AiScript API reference for plugins.
 
 ## Metadata

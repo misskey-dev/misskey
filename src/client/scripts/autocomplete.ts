@@ -1,7 +1,7 @@
 import { Ref, ref } from 'vue';
 import * as getCaretCoordinates from 'textarea-caret';
-import { toASCII } from 'punycode';
-import { popup } from '@/os';
+import { toASCII } from 'punycode/';
+import { popup } from '@client/os';
 
 export class Autocomplete {
 	private suggestion: {
@@ -150,7 +150,7 @@ export class Autocomplete {
 			const _y = ref(y);
 			const _q = ref(q);
 
-			const { dispose } = await popup(import('@/components/autocomplete.vue'), {
+			const { dispose } = await popup(import('@client/components/autocomplete.vue'), {
 				textarea: this.textarea,
 				close: this.close,
 				type: type,

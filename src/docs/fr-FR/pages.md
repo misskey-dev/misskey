@@ -1,10 +1,10 @@
 # Pages
 
 ## Variables
-変数を使うことで動的なページを作成できます。テキスト内で <b>{ 変数名 }</b> と書くとそこに変数の値を埋め込めます。例えば <b>Hello { thing } world!</b> というテキストで、変数(thing)の値が <b>ai</b> だった場合、テキストは <b>Hello ai world!</b> になります。
+Vous pouvez créer des pages dynamiques en utilisant des variables.Vous pouvez incorporer la valeur d'une variable en insérant le <b>{ variablename }</b> dans votre texte.Par exemple, si la valeur de la variable "thing" dans le texte <b>Hello { thing } world!</b> est <b>ai</b>, votre trexte devient alors : <b>Hello ai world!</b>.
 
-変数の評価(値を算出すること)は上から下に行われるので、ある変数の中で自分より下の変数を参照することはできません。例えば上から <b>A、B、C</b> と3つの変数を定義したとき、<b>C</b>の中で<b>A</b>や<b>B</b>を参照することはできますが、<b>A</b>の中で<b>B</b>や<b>C</b>を参照することはできません。
+Les variables sont prises en compte dans l'ordre chronologique, de haut en bas. Il n'est donc pas possible d'appeler une variable située plus bas dans le code. Par exemple, si vous définissez, dans l'ordre, 3 variables telles que <b>A, B, C</b>, vous pourrez appeler en <b>C</b> aussi bien <b>A</b> que <b>B</b> ; par contre, vous ne pourrez appeler en <b>A</b> ni <b>B</b> ni <b>C</b>.
 
-ユーザーからの入力を受け取るには、ページに「ユーザー入力」ブロックを設置し、「変数名」に入力を格納したい変数名を設定します(変数は自動で作成されます)。その変数を使ってユーザー入力に応じた動作を行えます。
+Pour recevoir une entrée utilisateur, ajoutez un bloc "Entrée" sur la page et définissez le nom des variables que vous souhaitez stocker dans le champ "Nom de la variable" (les variables seront créées automatiquement).Vous pourrez alors exécuter les actions en fonction de l'entrée utilisateur de ces variables.
 
-関数を使うと、値の算出処理を再利用可能な形にまとめることができます。関数を作るには、「関数」タイプの変数を作成します。関数にはスロット(引数)を設定することができ、スロットの値は関数内で変数として利用可能です。また、関数を引数に取る関数(高階関数と呼ばれます)も存在します。関数は予め定義しておくほかに、このような高階関数のスロットに即席でセットすることもできます。
+Appeler des fonctions vous permet de définir des valeurs que vous pourrez réutiliser. Pour créer des fonctions, il faut d'abord définir une variable du type "fonction". Vous pouvez y configurer des « slots » (arguments), dont la valeur devient alors disponible en tant que variable à l'intérieur de la fonction. Par ailleurs, il existe ce que l'on appelle des "fonctions d'ordre supérieur" dont les arguments sont aussi des fonctions. En plus de paramétrer des fonctions à l'avance, vous avez également la possibilité de définir des fonctions à l'improviste directement dans les « slots » de ces fonctions d'ordre supérieur.

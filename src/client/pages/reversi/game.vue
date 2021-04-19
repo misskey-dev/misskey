@@ -8,8 +8,9 @@
 import { defineComponent } from 'vue';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -26,7 +27,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._reversi.reversi,
 				icon: faGamepad
 			},

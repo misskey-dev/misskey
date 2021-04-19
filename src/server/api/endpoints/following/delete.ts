@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import * as ms from 'ms';
 import deleteFollowing from '../../../../services/following/delete';
 import define from '../../define';
@@ -52,6 +52,12 @@ export const meta = {
 			code: 'NOT_FOLLOWING',
 			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09'
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		ref: 'User'
 	}
 };
 

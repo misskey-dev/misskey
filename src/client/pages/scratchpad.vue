@@ -1,18 +1,18 @@
 <template>
 <div class="iltifgqe">
-	<div class="editor _panel _vMargin">
+	<div class="editor _panel _gap">
 		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
 		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
 	</div>
 
-	<MkContainer :body-togglable="true" class="_vMargin">
+	<MkContainer :foldable="true" class="_gap">
 		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
 	</MkContainer>
 
-	<div class="_vMargin">
+	<div class="_gap">
 		{{ $ts.scratchpadDescription }}
 	</div>
 </div>
@@ -29,10 +29,11 @@ import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import { AiScript, parse, utils, values } from '@syuilo/aiscript';
-import MkContainer from '@/components/ui/container.vue';
-import MkButton from '@/components/ui/button.vue';
-import { createAiScriptEnv } from '@/scripts/aiscript/api';
-import * as os from '@/os';
+import MkContainer from '@client/components/ui/container.vue';
+import MkButton from '@client/components/ui/button.vue';
+import { createAiScriptEnv } from '@client/scripts/aiscript/api';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -43,7 +44,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.scratchpad,
 				icon: faTerminal,
 			},

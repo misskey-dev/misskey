@@ -14,7 +14,7 @@
 		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
 		<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 	</template>
-	<div class="yrolvcoq" style="min-height: 100%; background: var(--bg);">
+	<div class="yrolvcoq _flat_">
 		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
 </XWindow>
@@ -23,12 +23,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns } from '@fortawesome/free-solid-svg-icons';
-import XWindow from '@/components/ui/window.vue';
-import XHeader from '@/ui/_common_/header.vue';
-import { popout } from '@/scripts/popout';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { resolve } from '@/router';
-import { url } from '@/config';
+import XWindow from '@client/components/ui/window.vue';
+import XHeader from '@client/ui/_common_/header.vue';
+import { popout } from '@client/scripts/popout';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { resolve } from '@client/router';
+import { url } from '@client/config';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -123,8 +124,8 @@ export default defineComponent({
 	methods: {
 		changePage(page) {
 			if (page == null) return;
-			if (page.INFO) {
-				this.pageInfo = page.INFO;
+			if (page[symbols.PAGE_INFO]) {
+				this.pageInfo = page[symbols.PAGE_INFO];
 			}
 		},
 
@@ -155,6 +156,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .yrolvcoq {
-	--section-padding: 16px;
+	min-height: 100%;
+	background: var(--bg);
 }
 </style>

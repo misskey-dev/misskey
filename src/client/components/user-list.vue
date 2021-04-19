@@ -1,7 +1,7 @@
 <template>
 <MkError v-if="error" @retry="init()"/>
 
-<div v-else class="efvhhmdq">
+<div v-else class="efvhhmdq _isolated">
 	<div class="no-users" v-if="empty">
 		<p>{{ $ts.noUsers }}</p>
 	</div>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import MkUserInfo from './user-info.vue';
 import { userPage } from '../filters/user';
 

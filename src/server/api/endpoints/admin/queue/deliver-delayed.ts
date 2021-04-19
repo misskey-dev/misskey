@@ -1,13 +1,44 @@
+import { deliverQueue } from '@/queue/queues';
+import { URL } from 'url';
 import define from '../../../define';
-import { deliverQueue } from '../../../../../queue';
 
 export const meta = {
+	desc: {
+		'ja-JP': '他サーバーへ送るキューの遅延一覧を返します。',
+		'en-US': 'Returns a list of delays in queues sent to other servers.'
+	},
+
 	tags: ['admin'],
 
 	requireCredential: true as const,
 	requireModerator: true,
 
 	params: {
+	},
+
+	res: {
+		type: 'array' as const,
+		optional: false as const, nullable: false as const,
+		items: {
+			type: 'array' as const,
+			optional: false as const, nullable: false as const,
+			items: {
+				anyOf: [
+					{
+						type: 'string' as const,
+						description: 'FQDN to fediverse server'
+					},
+					{
+						type: 'number' as const,
+						description: 'Delayed queue counts'
+					}
+				]
+			}
+		},
+		example: [[
+			'example.com',
+			12
+		]]
 	}
 };
 

@@ -1,7 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { MessagingMessage } from '../entities/messaging-message';
 import { Users, DriveFiles, UserGroups } from '..';
-import { SchemaType } from '../../misc/schema';
+import { SchemaType } from '@/misc/schema';
+import { User } from '../entities/user';
 
 export type PackedMessagingMessage = SchemaType<typeof packedMessagingMessageSchema>;
 
@@ -13,7 +14,7 @@ export class MessagingMessageRepository extends Repository<MessagingMessage> {
 
 	public async pack(
 		src: MessagingMessage['id'] | MessagingMessage,
-		me?: any,
+		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			populateRecipient?: boolean,
 			populateGroup?: boolean,

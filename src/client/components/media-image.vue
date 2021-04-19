@@ -24,11 +24,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
+import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
+import { extractAvgColorFromBlurhash } from '@client/scripts/extract-avg-color-from-blurhash';
 import ImageViewer from './image-viewer.vue';
-import ImgWithBlurhash from './img-with-blurhash.vue';
-import * as os from '@/os';
+import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -123,7 +123,7 @@ export default defineComponent({
 
 .gqnyydlz {
 	position: relative;
-	border: solid 1px var(--divider);
+	border: solid 0.5px var(--divider);
 
 	> i {
 		display: block;

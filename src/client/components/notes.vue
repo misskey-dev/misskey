@@ -1,41 +1,46 @@
 <template>
-<div class="_list_">
-	<div class="_fullinfo" v-if="empty">
+<transition name="fade" mode="out-in">
+	<MkLoading v-if="fetching"/>
+
+	<MkError v-else-if="error" @retry="init()"/>
+
+	<div class="_fullinfo" v-else-if="empty">
 		<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 		<div>{{ $ts.noNotes }}</div>
 	</div>
 
-	<MkError v-if="error" @retry="init()"/>
+	<div v-else>
+		<div v-show="more && reversed" style="margin-bottom: var(--margin);">
+			<MkButton style="margin: 0 auto;" @click="fetchMoreFeature" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
+				<template v-if="moreFetching"><MkLoading inline/></template>
+			</MkButton>
+		</div>
 
-	<div v-show="more && reversed" style="margin-bottom: var(--margin);">
-		<button class="_loadMore" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
-			<template v-if="moreFetching"><MkLoading inline/></template>
-		</button>
+		<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed" :no-gap="noGap">
+			<XNote :note="note" class="_block" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
+		</XList>
+
+		<div v-show="more && !reversed" style="margin-top: var(--margin);">
+			<MkButton style="margin: 0 auto;" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
+				<template v-if="moreFetching"><MkLoading inline/></template>
+			</MkButton>
+		</div>
 	</div>
-
-	<XList ref="notes" :items="notes" v-slot="{ item: note }" :direction="reversed ? 'up' : 'down'" :reversed="reversed">
-		<XNote :note="note" @update:note="updated(note, $event)" :key="note._featuredId_ || note._prId_ || note.id"/>
-	</XList>
-
-	<div v-show="more && !reversed" style="margin-top: var(--margin);">
-		<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
-			<template v-if="moreFetching"><MkLoading inline/></template>
-		</button>
-	</div>
-</div>
+</transition>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import XNote from './note.vue';
 import XList from './date-separated-list.vue';
+import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
 	components: {
-		XNote, XList,
+		XNote, XList, MkButton,
 	},
 
 	mixins: [
@@ -54,11 +59,15 @@ export default defineComponent({
 		pagination: {
 			required: true
 		},
-
 		prop: {
 			type: String,
 			required: false
-		}
+		},
+		noGap: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	emits: ['before', 'after'],
@@ -89,3 +98,14 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+</style>

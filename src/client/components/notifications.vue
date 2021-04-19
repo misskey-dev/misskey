@@ -1,29 +1,33 @@
 <template>
-<div class="mfcuwfyp">
-	<XList class="notifications" :items="items" v-slot="{ item: notification }">
-		<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
-		<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
-	</XList>
+<transition name="fade" mode="out-in">
+	<MkLoading v-if="fetching"/>
 
-	<button class="_loadMore" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
-		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
-		<template v-if="moreFetching"><MkLoading inline/></template>
-	</button>
+	<MkError v-else-if="error" @retry="init()"/>
 
-	<p class="empty" v-if="empty">{{ $ts.noNotifications }}</p>
+	<p class="mfcuwfyp" v-else-if="empty">{{ $ts.noNotifications }}</p>
 
-	<MkError v-if="error" @retry="init()"/>
-</div>
+	<div v-else>
+		<XList class="notifications" :items="items" v-slot="{ item: notification }" :no-gap="true">
+			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
+			<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
+		</XList>
+
+		<button class="_buttonPrimary" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }">
+			<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
+			<template v-if="moreFetching"><MkLoading inline/></template>
+		</button>
+	</div>
+</transition>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import XNotification from './notification.vue';
 import XList from './date-separated-list.vue';
 import XNote from './note.vue';
 import { notificationTypes } from '../../types';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -120,17 +124,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mfcuwfyp {
-	> .empty {
-		margin: 0;
-		padding: 16px;
-		text-align: center;
-		color: var(--fg);
-	}
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.125s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
 
-	> .placeholder {
-		padding: 32px;
-		opacity: 0.3;
-	}
+.mfcuwfyp {
+	margin: 0;
+	padding: 16px;
+	text-align: center;
+	color: var(--fg);
 }
 </style>

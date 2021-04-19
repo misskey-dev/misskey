@@ -24,7 +24,7 @@ import { defineComponent } from 'vue';
 import XNoteHeader from './note-header.vue';
 import XSubNoteContent from './sub-note-content.vue';
 import XCwButton from './cw-button.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	name: 'XSub',
@@ -139,7 +139,7 @@ export default defineComponent({
 	}
 
 	> .reply {
-		border-left: solid 1px var(--divider);
+		border-left: solid 0.5px var(--divider);
 		margin-top: 10px;
 	}
 }

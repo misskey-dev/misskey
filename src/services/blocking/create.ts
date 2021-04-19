@@ -1,4 +1,4 @@
-import { publishMainStream } from '../stream';
+import { publishMainStream, publishUserEvent } from '../stream';
 import { renderActivity } from '../../remote/activitypub/renderer';
 import renderFollow from '../../remote/activitypub/renderer/follow';
 import renderUndo from '../../remote/activitypub/renderer/undo';
@@ -8,7 +8,7 @@ import renderReject from '../../remote/activitypub/renderer/reject';
 import { User } from '../../models/entities/user';
 import { Blockings, Users, FollowRequests, Followings } from '../../models';
 import { perUserFollowingChart } from '../chart';
-import { genId } from '../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export default async function(blocker: User, blockee: User) {
 	await Promise.all([
@@ -18,7 +18,7 @@ export default async function(blocker: User, blockee: User) {
 		unFollow(blockee, blocker)
 	]);
 
-	await Blockings.save({
+	await Blockings.insert({
 		id: genId(),
 		createdAt: new Date(),
 		blockerId: blocker.id,
@@ -55,7 +55,10 @@ async function cancelRequest(follower: User, followee: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'unfollow', packed);
+			publishMainStream(follower.id, 'unfollow', packed);
+		});
 	}
 
 	// リモートにフォローリクエストをしていたらUndoFollow送信
@@ -97,7 +100,10 @@ async function unFollow(follower: User, followee: User) {
 	if (Users.isLocalUser(follower)) {
 		Users.pack(followee, follower, {
 			detail: true
-		}).then(packed => publishMainStream(follower.id, 'unfollow', packed));
+		}).then(packed => {
+			publishUserEvent(follower.id, 'unfollow', packed);
+			publishMainStream(follower.id, 'unfollow', packed);
+		});
 	}
 
 	// リモートにフォローをしていたらUndoFollow送信

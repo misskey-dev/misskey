@@ -9,15 +9,15 @@
 	:title="title"
 >
 	<div class="label" v-if="$i.avatarId == file.id">
-		<img src="/assets/label.svg"/>
+		<img src="/static-assets/client/label.svg"/>
 		<p>{{ $ts.avatar }}</p>
 	</div>
 	<div class="label" v-if="$i.bannerId == file.id">
-		<img src="/assets/label.svg"/>
+		<img src="/static-assets/client/label.svg"/>
 		<p>{{ $ts.banner }}</p>
 	</div>
 	<div class="label red" v-if="file.isSensitive">
-		<img src="/assets/label-red.svg"/>
+		<img src="/static-assets/client/label-red.svg"/>
 		<p>{{ $ts.nsfw }}</p>
 	</div>
 
@@ -34,10 +34,10 @@
 import { defineComponent } from 'vue';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faDownload, faLink, faICursor, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue';
-import bytes from '@/filters/bytes';
-import * as os from '@/os';
+import bytes from '@client/filters/bytes';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -330,8 +330,8 @@ export default defineComponent({
 	}
 
 	> .thumbnail {
-		width: 128px;
-		height: 128px;
+		width: 110px;
+		height: 110px;
 		margin: auto;
 	}
 

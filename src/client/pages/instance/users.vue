@@ -53,8 +53,8 @@
 			</div>
 
 			<MkPagination :pagination="pagination" #default="{items}" class="users" ref="users">
-				<button class="user _panel _button _vMargin" v-for="user in items" :key="user.id" @click="show(user)">
-					<MkAvatar class="avatar" :user="user" :disable-link="true"/>
+				<button class="user _panel _button _gap" v-for="user in items" :key="user.id" @click="show(user)">
+					<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
 					<div class="body">
 						<header>
 							<MkUserName class="name" :user="user"/>
@@ -82,13 +82,14 @@
 import { defineComponent } from 'vue';
 import { faPlus, faUsers, faSearch, faBookmark, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { faSnowflake, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
-import parseAcct from '../../../misc/acct/parse';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkPagination from '@/components/ui/pagination.vue';
+import parseAcct from '@/misc/acct/parse';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
 import { acct } from '../../filters/user';
-import * as os from '@/os';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -100,7 +101,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.users,
 				icon: faUsers,
 				action: {

@@ -7,12 +7,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
-import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { router } from '@/router';
-import { url } from '@/config';
-import { popout } from '@/scripts/popout';
-import { ColdDeviceStorage } from '@/store';
+import * as os from '@client/os';
+import copyToClipboard from '@client/scripts/copy-to-clipboard';
+import { router } from '@client/router';
+import { url } from '@client/config';
+import { popout } from '@client/scripts/popout';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	inject: {
@@ -93,11 +93,20 @@ export default defineComponent({
 			os.pageWindow(this.to);
 		},
 
+		modalWindow() {
+			os.modalPageWindow(this.to);
+		},
+
 		popout() {
 			popout(this.to);
 		},
 
 		nav() {
+			if (this.behavior === 'browser') {
+				location.href = this.to;
+				return;
+			}
+
 			if (this.to.startsWith('/my/messaging')) {
 				if (ColdDeviceStorage.get('chatOpenBehavior') === 'window') return this.window();
 				if (ColdDeviceStorage.get('chatOpenBehavior') === 'popout') return this.popout();
@@ -106,6 +115,8 @@ export default defineComponent({
 			if (this.behavior) {
 				if (this.behavior === 'window') {
 					return this.window();
+				} else if (this.behavior === 'modalWindow') {
+					return this.modalWindow();
 				}
 			}
 

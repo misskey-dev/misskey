@@ -14,7 +14,7 @@
 import { defineComponent } from 'vue';
 import { faMemory } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
-import bytes from '@/filters/bytes';
+import bytes from '@client/filters/bytes';
 
 export default defineComponent({
 	components: {
@@ -45,10 +45,10 @@ export default defineComponent({
 	},
 	methods: {
 		onStats(stats) {
-			this.usage = stats.mem.used / this.meta.mem.total;
+			this.usage = stats.mem.active / this.meta.mem.total;
 			this.total = this.meta.mem.total;
-			this.used = stats.mem.used;
-			this.free = this.meta.mem.total - stats.mem.used;
+			this.used = stats.mem.active;
+			this.free = this.meta.mem.total - stats.mem.active;
 		},
 		bytes
 	}

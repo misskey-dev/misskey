@@ -1,8 +1,8 @@
 import { defineAsyncComponent, markRaw } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import MkLoading from '@/pages/_loading_.vue';
-import MkError from '@/pages/_error_.vue';
-import MkTimeline from '@/pages/timeline.vue';
+import MkLoading from '@client/pages/_loading_.vue';
+import MkError from '@client/pages/_error_.vue';
+import MkTimeline from '@client/pages/timeline.vue';
 import { $i } from './account';
 
 const page = (path: string) => defineAsyncComponent({
@@ -22,7 +22,7 @@ export const router = createRouter({
 		{ path: '/@:user/pages/:page', component: page('page'), props: route => ({ pageName: route.params.page, username: route.params.user }) },
 		{ path: '/@:user/pages/:pageName/view-source', component: page('page-editor/page-editor'), props: route => ({ initUser: route.params.user, initPageName: route.params.pageName }) },
 		{ path: '/@:acct/room', props: true, component: page('room/room') },
-		{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ page: route.params.page || null }) },
+		{ path: '/settings/:page(.*)?', name: 'settings', component: page('settings/index'), props: route => ({ initialPage: route.params.page || null }) },
 		{ path: '/announcements', component: page('announcements') },
 		{ path: '/about', component: page('about') },
 		{ path: '/about-misskey', component: page('about-misskey') },
@@ -72,6 +72,9 @@ export const router = createRouter({
 		{ path: '/instance/abuses', component: page('instance/abuses') },
 		{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },
 		{ path: '/tags/:tag', component: page('tag'), props: route => ({ tag: route.params.tag }) },
+		{ path: '/user-info/:user', component: page('user-info'), props: route => ({ userId: route.params.user }) },
+		{ path: '/user-ap-info/:user', component: page('user-ap-info'), props: route => ({ userId: route.params.user }) },
+		{ path: '/instance-info/:host', component: page('instance-info'), props: route => ({ host: route.params.host }) },
 		{ path: '/games/reversi', component: page('reversi/index') },
 		{ path: '/games/reversi/:gameId', component: page('reversi/game'), props: route => ({ gameId: route.params.gameId }) },
 		{ path: '/mfm-cheat-sheet', component: page('mfm-cheat-sheet') },

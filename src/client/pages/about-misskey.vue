@@ -1,10 +1,10 @@
 <template>
-<div style="overflow: hidden;">
+<div style="overflow: clip;">
 	<FormBase class="znqjceqz">
 		<div id="debug"></div>
 		<section class="_formItem about">
 			<div class="_formPanel panel" :class="{ playing: easterEggEngine != null }" ref="about">
-				<img src="/assets/about-icon.png" alt="" class="icon" ref="icon" @load="iconLoaded" draggable="false"/>
+				<img src="/static-assets/client/about-icon.png" alt="" class="icon" ref="icon" @load="iconLoaded" draggable="false"/>
 				<div class="misskey">Misskey</div>
 				<div class="version">v{{ version }}</div>
 				<span class="emoji" v-for="emoji in easterEggEmojis" :key="emoji.id" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }"><MkEmoji class="emoji" :emoji="emoji.emoji" :custom-emojis="$instance.emojis" :is-reaction="false" :normal="true" :no-style="true"/></span>
@@ -14,7 +14,7 @@
 			{{ $ts._aboutMisskey.about }}
 		</section>
 		<FormGroup>
-			<FormLink to="https://github.com/syuilo/misskey" external>
+			<FormLink to="https://github.com/misskey-dev/misskey" external>
 				<template #icon><Fa :icon="faCode"/></template>
 				{{ $ts._aboutMisskey.source }}
 				<template #suffix>GitHub</template>
@@ -40,7 +40,8 @@
 			<FormLink to="https://github.com/rinsuki" external>@rinsuki</FormLink>
 			<FormLink to="https://github.com/Xeltica" external>@Xeltica</FormLink>
 			<FormLink to="https://github.com/u1-liquid" external>@u1-liquid</FormLink>
-			<template #caption><MkLink url="https://github.com/syuilo/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
+			<FormLink to="https://github.com/marihachi" external>@marihachi</FormLink>
+			<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ $ts._aboutMisskey.allContributors }}</MkLink></template>
 		</FormGroup>
 		<FormGroup>
 			<template #label><Mfm text="[jelly ❤]"/> {{ $ts._aboutMisskey.patrons }}</template>
@@ -55,14 +56,15 @@
 import { defineComponent } from 'vue';
 import { faInfoCircle, faCode, faLanguage, faHandHoldingMedical, } from '@fortawesome/free-solid-svg-icons';
 import VanillaTilt from 'vanilla-tilt';
-import { version } from '@/config';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormKeyValueView from '@/components/form/key-value-view.vue';
-import MkLink from '@/components/link.vue';
-import { physics } from '@/scripts/physics.ts';
-import * as os from '@/os';
+import { version } from '@client/config';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import MkLink from '@client/components/link.vue';
+import { physics } from '@client/scripts/physics.ts';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 const patrons = [
 	'Satsuki Yanagi',
@@ -114,7 +116,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.aboutMisskey,
 				icon: null
 			},

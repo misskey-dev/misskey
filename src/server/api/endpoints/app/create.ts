@@ -1,9 +1,9 @@
 import $ from 'cafy';
 import define from '../../define';
 import { Apps } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 import { unique } from '../../../../prelude/array';
-import { secureRndstr } from '../../../../misc/secure-rndstr';
+import { secureRndstr } from '@/misc/secure-rndstr';
 
 export const meta = {
 	tags: ['app'],

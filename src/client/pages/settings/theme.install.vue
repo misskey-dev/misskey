@@ -15,17 +15,18 @@
 import { defineComponent } from 'vue';
 import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormRadios from '@/components/form/radios.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormLink from '@/components/form/link.vue';
-import FormButton from '@/components/form/button.vue';
-import { applyTheme, validateTheme } from '@/scripts/theme';
-import * as os from '@/os';
-import { ColdDeviceStorage } from '@/store';
-import { addTheme, getThemes } from '@/theme-store';
+import FormTextarea from '@client/components/form/textarea.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormRadios from '@client/components/form/radios.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormButton from '@client/components/form/button.vue';
+import { applyTheme, validateTheme } from '@client/scripts/theme';
+import * as os from '@client/os';
+import { ColdDeviceStorage } from '@client/store';
+import { addTheme, getThemes } from '@client/theme-store';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -42,7 +43,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.install,
 				icon: faDownload
 			},
@@ -52,7 +53,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

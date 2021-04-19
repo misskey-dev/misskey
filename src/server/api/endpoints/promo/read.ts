@@ -1,12 +1,17 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { getNote } from '../../common/getters';
 import { PromoReads } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
+	desc: {
+		'ja-JP': '指定したノートのプロモーションを既読にします。',
+		'en-US': 'Marks the promotion for the specified note as read.'
+	},
+
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -41,7 +46,7 @@ export default define(meta, async (ps, user) => {
 		return;
 	}
 
-	await PromoReads.save({
+	await PromoReads.insert({
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,

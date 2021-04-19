@@ -53,12 +53,13 @@
 import { computed, defineComponent } from 'vue';
 import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkTab from '@/components/tab.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkTab from '@client/components/tab.vue';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -70,7 +71,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.customEmojis,
 				icon: faLaugh,
 				action: {

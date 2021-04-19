@@ -1,9 +1,9 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { ApiError } from '../../error';
 import { Pages, PageLikes } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
+import { genId } from '@/misc/gen-id';
 
 export const meta = {
 	desc: {
@@ -68,7 +68,7 @@ export default define(meta, async (ps, user) => {
 	}
 
 	// Create like
-	await PageLikes.save({
+	await PageLikes.insert({
 		id: genId(),
 		createdAt: new Date(),
 		pageId: page.id,

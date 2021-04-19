@@ -3,8 +3,9 @@
 	<div class="top">
 		<MkFeaturedPhotos class="bg"/>
 		<XTimeline class="tl"/>
-		<div class="shape"></div>
-		<img src="/assets/misskey.svg" class="misskey"/>
+		<div class="shape1"></div>
+		<div class="shape2"></div>
+		<img src="/static-assets/client/misskey.svg" class="misskey"/>
 		<div class="emojis">
 			<MkEmoji :normal="true" :no-style="true" emoji="👍"/>
 			<MkEmoji :normal="true" :no-style="true" emoji="❤"/>
@@ -18,7 +19,9 @@
 			</div>
 			<div class="fg">
 				<h1>
-					<img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span>
+					<!-- 背景色によってはロゴが見えなくなるのでとりあえず無効に -->
+					<!-- <img class="logo" v-if="meta.logoImageUrl" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span> -->
+					<span class="text">{{ instanceName }}</span>
 				</h1>
 				<div class="about">
 					<div class="desc" v-html="meta.description || $ts.headlineMisskey"></div>
@@ -50,16 +53,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faEllipsisH, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode } from 'punycode';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
-import XNote from '@/components/note.vue';
-import MkFeaturedPhotos from '@/components/featured-photos.vue';
+import { toUnicode } from 'punycode/';
+import XSigninDialog from '@client/components/signin-dialog.vue';
+import XSignupDialog from '@client/components/signup-dialog.vue';
+import MkButton from '@client/components/ui/button.vue';
+import XNote from '@client/components/note.vue';
+import MkFeaturedPhotos from '@client/components/featured-photos.vue';
 import XTimeline from './welcome.timeline.vue';
-import { host, instanceName } from '@/config';
-import * as os from '@/os';
-import number from '@/filters/number';
+import { host, instanceName } from '@client/config';
+import * as os from '@client/os';
+import number from '@client/filters/number';
 
 export default defineComponent({
 	components: {
@@ -154,8 +157,8 @@ export default defineComponent({
 		> .bg {
 			position: absolute;
 			top: 0;
-			left: 0;
-			width: 100%;
+			right: 0;
+			width: 80%; // 100%からshapeの幅を引いている
 			height: 100%;
 		}
 
@@ -176,14 +179,24 @@ export default defineComponent({
 			}
 		}
 
-		> .shape {
+		> .shape1 {
 			position: absolute;
 			top: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;
 			background: var(--accent);
-			clip-path: polygon(0% 0%, 50% 0%, 15% 100%, 0% 100%);
+			clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
+		}
+		> .shape2 {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: var(--accent);
+			clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
+			opacity: 0.5;
 		}
 
 		> .misskey {
@@ -270,7 +283,7 @@ export default defineComponent({
 				}
 
 				> .status {
-					border-top: solid 1px var(--divider);
+					border-top: solid 0.5px var(--divider);
 					padding: 32px;
 					font-size: 90%;
 
@@ -278,7 +291,7 @@ export default defineComponent({
 						> span:not(:last-child) {
 							padding-right: 1em;
 							margin-right: 1em;
-							border-right: solid 1px var(--divider);
+							border-right: solid 0.5px var(--divider);
 						}
 					}
 

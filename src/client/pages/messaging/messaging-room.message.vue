@@ -1,10 +1,10 @@
 <template>
 <div class="thvuemwp" :class="{ isMe }" v-size="{ max: [400, 500] }">
-	<MkAvatar class="avatar" :user="message.user"/>
+	<MkAvatar class="avatar" :user="message.user" :show-indicator="true"/>
 	<div class="content">
 		<div class="balloon" :class="{ noText: message.text == null }" >
 			<button class="delete-button" v-if="isMe" :title="$ts.delete" @click="del">
-				<img src="/assets/remove.png" alt="Delete"/>
+				<img src="/static-assets/client/remove.png" alt="Delete"/>
 			</button>
 			<div class="content" v-if="!message.isDeleted">
 				<Mfm class="text" v-if="message.text" ref="text" :text="message.text" :i="$i"/>
@@ -37,10 +37,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { parse } from '../../../mfm/parse';
-import { unique } from '../../../prelude/array';
-import MkUrlPreview from '@/components/url-preview.vue';
-import * as os from '@/os';
+import * as mfm from 'mfm-js';
+import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
+import MkUrlPreview from '@client/components/url-preview.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -60,10 +60,7 @@ export default defineComponent({
 		},
 		urls(): string[] {
 			if (this.message.text) {
-				const ast = parse(this.message.text);
-				return unique(ast
-					.filter(t => ((t.node.type === 'url' || t.node.type === 'link') && t.node.props.url && !t.node.props.silent))
-					.map(t => t.node.props.url));
+				return extractUrlFromMfm(mfm.parse(this.message.text));
 			} else {
 				return [];
 			}
@@ -88,6 +85,8 @@ export default defineComponent({
 	display: flex;
 
 	> .avatar {
+		position: sticky;
+		top: calc(var(--stickyTop, 0px) + 16px);
 		display: block;
 		width: 54px;
 		height: 54px;
@@ -276,6 +275,11 @@ export default defineComponent({
 			> .balloon {
 				background: $me-balloon-color;
 				text-align: left;
+
+				::selection {
+					color: var(--accent);
+					background-color: #fff;
+				} 
 
 				&.noText {
 					background: transparent;

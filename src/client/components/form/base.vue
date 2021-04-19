@@ -20,12 +20,19 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .rbusrurv {
-	line-height: 1.4em;
+	// 他のCSSからも参照されるので消さないように
+	--formXPadding: 32px;
+	--formYPadding: 32px;
+
+	font-size: 95%;
+	line-height: 1.3em;
 	background: var(--bg);
-	padding: 32px;
+	padding: var(--formYPadding) var(--formXPadding);
+	max-width: 750px;
+	margin: 0 auto;
 
 	&:not(.wide).max-width_400px {
-		padding: 32px 0;
+		--formXPadding: 0px;
 
 		> ::v-deep(*) {
 			._formPanel {
@@ -36,16 +43,16 @@ export default defineComponent({
 			}
 
 			._form_group {
-				> * {
-					&:not(:first-child) {
+				> *:not(._formNoConcat) {
+					&:not(:last-child):not(._formNoConcatPrev) {
 						&._formPanel, ._formPanel {
-							border-top: none;
+							border-bottom: solid 0.5px var(--divider);
 						}
 					}
 
-					&:not(:last-child) {
+					&:not(:first-child):not(._formNoConcatNext) {
 						&._formPanel, ._formPanel {
-							border-bottom: solid 0.5px var(--divider);
+							border-top: none;
 						}
 					}
 				}

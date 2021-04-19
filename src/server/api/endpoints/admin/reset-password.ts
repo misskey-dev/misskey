@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import * as bcrypt from 'bcryptjs';
 import rndstr from 'rndstr';
@@ -8,6 +8,7 @@ import { Users, UserProfiles } from '../../../../models';
 export const meta = {
 	desc: {
 		'ja-JP': '指定したユーザーのパスワードをリセットします。',
+		'en-US': 'Reset password to specified user.'
 	},
 
 	tags: ['admin'],
@@ -23,6 +24,19 @@ export const meta = {
 				'en-US': 'The user ID which you want to suspend'
 			}
 		},
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			password: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				minLength: 8,
+				maxLength: 8
+			}
+		}
 	}
 };
 

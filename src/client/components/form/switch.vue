@@ -57,7 +57,7 @@ export default defineComponent({
 	> .main {
 		position: relative;
 		display: flex;
-		padding: 16px;
+		padding: 14px 16px;
 		cursor: pointer;
 
 		> * {

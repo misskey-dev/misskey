@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XReactionsViewer from '@/components/reactions-viewer.vue';
-import * as os from '@/os';
+import XReactionsViewer from '@client/components/reactions-viewer.vue';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

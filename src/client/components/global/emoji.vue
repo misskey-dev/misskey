@@ -7,8 +7,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import { twemojiSvgBase } from '@/../misc/twemoji-base';
+import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
+import { twemojiSvgBase } from '@client/../misc/twemoji-base';
 
 export default defineComponent({
 	props: {

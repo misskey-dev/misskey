@@ -26,8 +26,8 @@ import {
 	faFileArchive,
 	faFilm
 	} from '@fortawesome/free-solid-svg-icons';
-import ImgWithBlurhash from './img-with-blurhash.vue';
-import { ColdDeviceStorage } from '@/store';
+import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	components: {

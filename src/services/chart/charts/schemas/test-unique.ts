@@ -3,9 +3,12 @@ export const schema = {
 	optional: false as const, nullable: false as const,
 	properties: {
 		foo: {
-			type: 'number' as const,
+			type: 'array' as const,
 			optional: false as const, nullable: false as const,
-			description: ''
+			items: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+			}
 		},
 	}
 };

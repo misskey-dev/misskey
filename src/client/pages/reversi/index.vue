@@ -11,7 +11,7 @@
 			<template #header>{{ $ts.invitations }}</template>
 			<div class="nfcacttm">
 				<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
-					<MkAvatar class="avatar" :user="invitation.parent"/>
+					<MkAvatar class="avatar" :user="invitation.parent" :show-indicator="true"/>
 					<span class="name"><b><MkUserName :user="invitation.parent"/></b></span>
 					<span class="username">@{{ invitation.parent.username }}</span>
 					<MkTime :time="invitation.createdAt" class="time"/>
@@ -61,10 +61,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import * as os from '@/os';
-import MkButton from '@/components/ui/button.vue';
-import MkFolder from '@/components/ui/folder.vue';
+import * as os from '@client/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkFolder from '@client/components/ui/folder.vue';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -75,7 +76,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts._reversi.reversi,
 				icon: faGamepad
 			},
@@ -259,7 +260,7 @@ export default defineComponent({
 		> footer {
 			display: flex;
 			align-items: baseline;
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 			padding: 6px 8px;
 			font-size: 0.9em;
 

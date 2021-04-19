@@ -49,7 +49,11 @@ export default define(meta, async (ps, user) => {
 		.andWhere(`note.score > 0`)
 		.andWhere(`note.createdAt > :date`, { date: new Date(Date.now() - day) })
 		.andWhere(`note.visibility = 'public'`)
-		.leftJoinAndSelect('note.user', 'user');
+		.innerJoinAndSelect('note.user', 'user')
+		.leftJoinAndSelect('note.reply', 'reply')
+		.leftJoinAndSelect('note.renote', 'renote')
+		.leftJoinAndSelect('reply.user', 'replyUser')
+		.leftJoinAndSelect('renote.user', 'renoteUser');
 
 	if (user) generateMutedUserQuery(query, user);
 

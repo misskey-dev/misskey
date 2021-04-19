@@ -1,6 +1,6 @@
 <template>
 <div v-if="meta" class="_section">
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $ts.basicInfo }}</div>
 		<div class="_content">
 			<MkInput v-model:value="name">{{ $ts.instanceName }}</MkInput>
@@ -20,7 +20,7 @@
 
 	<MkInput v-model:value="pinnedClipId">{{ $ts.pinnedClipId }}</MkInput>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_content">
 			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $ts.maxNoteTextLength }}</MkInput>
 		</div>
@@ -34,7 +34,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faUser"/> {{ $ts.registration }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRegistration" @update:value="save()">{{ $ts.enableRegistration }}</MkSwitch>
@@ -42,7 +42,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $ts.hcaptcha }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableHcaptcha">{{ $ts.enableHcaptcha }}</MkSwitch>
@@ -60,7 +60,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $ts.recaptcha }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRecaptcha" ref="enableRecaptcha">{{ $ts.enableRecaptcha }}</MkSwitch>
@@ -78,7 +78,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faEnvelope" /> {{ $ts.emailConfig }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableEmail" @update:value="save()">{{ $ts.enableEmail }}<template #desc>{{ $ts.emailConfigInfo }}</template></MkSwitch>
@@ -101,7 +101,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faBolt"/> {{ $ts.serviceworker }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableServiceWorker">{{ $ts.enableServiceworker }}<template #desc>{{ $ts.serviceworkerInfo }}</template></MkSwitch>
@@ -117,7 +117,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faThumbtack"/> {{ $ts.pinnedUsers }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="pinnedUsers">
@@ -129,7 +129,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faThumbtack"/> {{ $ts.pinnedPages }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="pinnedPages">
@@ -141,7 +141,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faCloud"/> {{ $ts.files }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="cacheRemoteFiles">{{ $ts.cacheRemoteFiles }}<template #desc>{{ $ts.cacheRemoteFilesDescription }}</template></MkSwitch>
@@ -154,7 +154,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faCloud"/> {{ $ts.objectStorage }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="useObjectStorage">{{ $ts.useObjectStorage }}</MkSwitch>
@@ -183,7 +183,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faGhost"/> {{ $ts.proxyAccount }}</div>
 		<div class="_content">
 			<MkInput :value="proxyAccount ? proxyAccount.username : null" disabled><template #prefix>@</template>{{ $ts.proxyAccount }}<template #desc>{{ $ts.proxyAccountDescription }}</template></MkInput>
@@ -191,7 +191,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faBan"/> {{ $ts.blockedInstances }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="blockedHosts">
@@ -203,7 +203,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faShareAlt"/> {{ $ts.integration }}</div>
 		<div class="_content">
 			<header><Fa :icon="faTwitter"/> Twitter</header>
@@ -237,7 +237,7 @@
 		</div>
 	</section>
 
-	<section class="_card _vMargin">
+	<section class="_card _gap">
 		<div class="_title"><Fa :icon="faArchway" /> Summaly Proxy</div>
 		<div class="_content">
 			<MkInput v-model:value="summalyProxy">URL</MkInput>
@@ -252,15 +252,16 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import MkSwitch from '@/components/ui/switch.vue';
-import MkInfo from '@/components/ui/info.vue';
-import { url } from '@/config';
-import getAcct from '../../../misc/acct/render';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import MkSwitch from '@client/components/ui/switch.vue';
+import MkInfo from '@client/components/ui/info.vue';
+import { url } from '@client/config';
+import getAcct from '@/misc/acct/render';
+import * as os from '@client/os';
+import { fetchInstance } from '@client/instance';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -269,12 +270,12 @@ export default defineComponent({
 		MkTextarea,
 		MkSwitch,
 		MkInfo,
-		Captcha: defineAsyncComponent(() => import('@/components/captcha.vue')),
+		Captcha: defineAsyncComponent(() => import('@client/components/captcha.vue')),
 	},
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.instance,
 				icon: faCog,
 			},

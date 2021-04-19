@@ -8,13 +8,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { host } from '@/config';
-import { search } from '@/scripts/search';
+import { host } from '@client/config';
+import { search } from '@client/scripts/search';
 import XCommon from './_common_/common.vue';
-import * as os from '@/os';
-import XSidebar from '@/components/sidebar.vue';
-import { sidebarDef } from '@/sidebar';
-import { ColdDeviceStorage } from '@/store';
+import * as os from '@client/os';
+import XSidebar from '@client/ui/_common_/sidebar.vue';
+import { sidebarDef } from '@client/sidebar';
+import { ColdDeviceStorage } from '@client/store';
 
 export default defineComponent({
 	components: {

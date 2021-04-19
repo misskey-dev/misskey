@@ -34,12 +34,12 @@ import { defineComponent } from 'vue';
 import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortawesome/free-solid-svg-icons';
 import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
-import { host } from '@/config';
-import DeckColumnCore from '@/ui/deck/column-core.vue';
-import XSidebar from '@/components/sidebar.vue';
-import { getScrollContainer } from '@/scripts/scroll';
-import * as os from '@/os';
-import { sidebarDef } from '@/sidebar';
+import { host } from '@client/config';
+import DeckColumnCore from '@client/ui/deck/column-core.vue';
+import XSidebar from '@client/ui/_common_/sidebar.vue';
+import { getScrollContainer } from '@client/scripts/scroll';
+import * as os from '@client/os';
+import { sidebarDef } from '@client/sidebar';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn, loadDeck } from './deck/deck-store';
 

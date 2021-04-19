@@ -3,29 +3,11 @@
 		"parser": "@typescript-eslint/parser"
 	},
 	"extends": [
-		"eslint:recommended",
-		"plugin:vue/recommended"
+		"eslint:recommended"
 	],
 	"rules": {
-		"vue/require-v-for-key": 0,
-		"vue/max-attributes-per-line": 0,
-		"vue/html-indent": 0,
-		"vue/html-self-closing": 0,
-		"vue/no-unused-vars": 0,
-		"vue/attributes-order": 0,
-		"vue/require-prop-types": 0,
-		"vue/require-default-prop": 0,
-		"vue/html-closing-bracket-spacing": 0,
-		"vue/singleline-html-element-content-newline": 0,
-		"vue/no-v-html": 0,
 		"no-console": 0,
 		"no-unused-vars": 0,
 		"no-empty": 0
-	},
-	"globals": {
-		"ENV": true,
-		"VERSION": true,
-		"API": true,
-		"LANGS": true
 	}
 }

@@ -29,7 +29,7 @@
 				</I18n>
 			</div>
 		</div>
-		<img src="/assets/misskey.svg" class="misskey"/>
+		<img src="/static-assets/client/misskey.svg" class="misskey"/>
 	</div>
 </div>
 </template>
@@ -37,16 +37,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faEllipsisH, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { toUnicode } from 'punycode';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import MkButton from '@/components/ui/button.vue';
-import XNote from '@/components/note.vue';
-import MkFeaturedPhotos from '@/components/featured-photos.vue';
+import { toUnicode } from 'punycode/';
+import XSigninDialog from '@client/components/signin-dialog.vue';
+import XSignupDialog from '@client/components/signup-dialog.vue';
+import MkButton from '@client/components/ui/button.vue';
+import XNote from '@client/components/note.vue';
+import MkFeaturedPhotos from '@client/components/featured-photos.vue';
 import XTimeline from './welcome.timeline.vue';
-import { host, instanceName } from '@/config';
-import * as os from '@/os';
-import number from '@/filters/number';
+import { host, instanceName } from '@client/config';
+import * as os from '@client/os';
+import number from '@client/filters/number';
 
 export default defineComponent({
 	components: {

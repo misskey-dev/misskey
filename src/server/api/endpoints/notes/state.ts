@@ -1,5 +1,5 @@
 import $ from 'cafy';
-import { ID } from '../../../../misc/cafy-id';
+import { ID } from '@/misc/cafy-id';
 import define from '../../define';
 import { NoteFavorites, NoteWatchings } from '../../../../models';
 
@@ -19,6 +19,21 @@ export const meta = {
 			desc: {
 				'ja-JP': '対象の投稿のID',
 				'en-US': 'Target note ID.'
+			}
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			isFavorited: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
+			},
+			isWatching: {
+				type: 'boolean' as const,
+				optional: false as const, nullable: false as const
 			}
 		}
 	}

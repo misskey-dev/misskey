@@ -3,7 +3,7 @@
 	<div class="_section">
 		<div class="_content">
 			<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
-			<section class="_card _vMargin announcements" v-for="announcement in announcements">
+			<section class="_card _gap announcements" v-for="announcement in announcements">
 				<div class="_content announcement">
 					<MkInput v-model:value="announcement.title">
 						<span>{{ $ts.title }}</span>
@@ -30,10 +30,11 @@
 import { defineComponent } from 'vue';
 import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkTextarea from '@/components/ui/textarea.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkTextarea from '@client/components/ui/textarea.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -44,7 +45,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
 				icon: faBroadcastTower
 			},

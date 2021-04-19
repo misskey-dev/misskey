@@ -13,9 +13,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faListUl, faPlus } from '@fortawesome/free-solid-svg-icons';
-import MkPagination from '@/components/ui/pagination.vue';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import MkPagination from '@client/components/ui/pagination.vue';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -25,7 +26,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.manageLists,
 				icon: faListUl,
 				action: {

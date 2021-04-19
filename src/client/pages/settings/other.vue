@@ -23,23 +23,28 @@
 
 	<FormLink to="/settings/registry"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.registry }}</FormLink>
 
+	<FormLink to="/bios" behavior="browser"><template #icon><Fa :icon="faDoorOpen"/></template>BIOS</FormLink>
+	<FormLink to="/cli" behavior="browser"><template #icon><Fa :icon="faDoorOpen"/></template>CLI</FormLink>
+
 	<FormButton @click="closeAccount" danger>{{ $ts.closeAccount }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faEllipsisH, faCogs } from '@fortawesome/free-solid-svg-icons';
-import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
-import FormLink from '@/components/form/link.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormButton from '@/components/form/button.vue';
-import * as os from '@/os';
-import { debug } from '@/config';
-import { defaultStore } from '@/store';
-import { signout } from '@/account';
+import { faEllipsisH, faCogs, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormSelect from '@client/components/form/select.vue';
+import FormLink from '@client/components/form/link.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormButton from '@client/components/form/button.vue';
+import * as os from '@client/os';
+import { debug } from '@client/config';
+import { defaultStore } from '@client/store';
+import { signout } from '@client/account';
+import { unisonReload } from '@client/scripts/unison-reload';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -55,12 +60,12 @@ export default defineComponent({
 	
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.other,
 				icon: faEllipsisH
 			},
 			debug,
-			faCogs
+			faCogs, faDoorOpen,
 		}
 	},
 
@@ -69,14 +74,14 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
 		changeDebug(v) {
 			console.log(v);
 			localStorage.setItem('debug', v.toString());
-			location.reload();
+			unisonReload();
 		},
 
 		onChangeInjectFeaturedNote(v) {
@@ -86,7 +91,7 @@ export default defineComponent({
 		},
 
 		taskmanager() {
-			os.popup(import('@/components/taskmanager.vue'), {
+			os.popup(import('@client/components/taskmanager.vue'), {
 			}, {}, 'closed');
 		},
 

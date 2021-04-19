@@ -1,6 +1,6 @@
 import * as promiseLimit from 'promise-limit';
 
-import config from '../../../config';
+import config from '@/config';
 import Resolver from '../resolver';
 import post from '../../../services/note/create';
 import { resolvePerson, updatePerson } from './person';
@@ -14,14 +14,14 @@ import vote from '../../../services/note/polls/vote';
 import { apLogger } from '../logger';
 import { DriveFile } from '../../../models/entities/drive-file';
 import { deliverQuestionUpdate } from '../../../services/note/polls/update';
-import { extractDbHost, toPuny } from '../../../misc/convert-host';
+import { extractDbHost, toPuny } from '@/misc/convert-host';
 import { Emojis, Polls, MessagingMessages } from '../../../models';
 import { Note } from '../../../models/entities/note';
 import { IObject, getOneApId, getApId, getOneApHrefNullable, validPost, IPost, isEmoji } from '../type';
 import { Emoji } from '../../../models/entities/emoji';
-import { genId } from '../../../misc/gen-id';
-import { fetchMeta } from '../../../misc/fetch-meta';
-import { getApLock } from '../../../misc/app-lock';
+import { genId } from '@/misc/gen-id';
+import { fetchMeta } from '@/misc/fetch-meta';
+import { getApLock } from '@/misc/app-lock';
 import { createMessage } from '../../../services/messages/create';
 import { parseAudience } from '../audience';
 import { extractApMentions } from './mention';

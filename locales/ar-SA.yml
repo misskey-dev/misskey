@@ -88,6 +88,7 @@ enterEmoji: "أدخل إيموجي"
 unrenote: "إلغاء مشاركة الملاحظة"
 quote: "اقتبس"
 pinnedNote: "ملاحظة مدبسة"
+pinned: "دبّسها على الصفحة الشخصية"
 you: "أنت"
 clickToShow: "اضغط للعرض"
 sensitive: "محتوى حساس"
@@ -428,6 +429,10 @@ latestVersion: "آخر نسخة مستقرة"
 usageAmount: "الإستخدام"
 capacity: "السعة"
 inUse: "مستخدم"
+info: "عن"
+_email:
+  _follow:
+    title: "يتابعك"
 _mfm:
   mention: "أشر الى"
   quote: "اقتبس"

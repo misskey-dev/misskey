@@ -14,9 +14,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import MkButton from '@/components/ui/button.vue';
-import XPostForm from '@/components/post-form.vue';
-import * as os from '@/os';
+import MkButton from '@client/components/ui/button.vue';
+import XPostForm from '@client/components/post-form.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -26,7 +27,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.share,
 				icon: faShareAlt
 			},

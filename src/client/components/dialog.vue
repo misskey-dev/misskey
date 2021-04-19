@@ -40,10 +40,10 @@
 import { defineComponent } from 'vue';
 import { faSpinner, faInfoCircle, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
-import MkModal from '@/components/ui/modal.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkSelect from '@/components/ui/select.vue';
+import MkModal from '@client/components/ui/modal.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkSelect from '@client/components/ui/select.vue';
 
 export default defineComponent({
 	components: {

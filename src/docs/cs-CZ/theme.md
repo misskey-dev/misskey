@@ -1,11 +1,11 @@
-# テーマ
+# Vzhled
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Můžete si vybrat vzhled a změnit tím jak vypadá Misskey klient.
 
-## テーマの設定
-設定 > テーマ
+## Nastavení vzhledu
+Nastavení > vzhled
 
-## テーマを作成する
+## Vytvořit vzhled
 テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
 ``` js
 {
@@ -33,9 +33,9 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
+* `id` ... Unikátní ID vzhledu. UUID je povinné.
+* `name` ... Jméno vzhledu
+* `author` ... Autor vzhledu
 * `desc` ... テーマの説明(オプション)
 * `base` ... 明るいテーマか、暗いテーマか
     * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
@@ -43,7 +43,7 @@
 * `props` ... テーマのスタイル定義。これから説明します。
 
 ### テーマのスタイル定義
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
 
 #### バリューで使える構文
 * 16進数で表された色

@@ -104,8 +104,14 @@ module.exports = {
 				}
 			}, postcss]
 		}, {
+			test: /\.svg$/,
+			use: [
+				'vue-loader',
+				'vue-svg-loader',
+			],
+		}, {
 			test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
-			loader: 'url-loader'
+			type: 'asset/resource'
 		}, {
 			test: /\.json5$/,
 			loader: 'json5-loader',
@@ -147,7 +153,7 @@ module.exports = {
 		}),
 	],
 	output: {
-		path: __dirname + '/built/client/assets',
+		path: __dirname + '/built/assets',
 		filename: `[name].${meta.version}.js`,
 		publicPath: `/assets/`,
 		pathinfo: false,
@@ -157,7 +163,8 @@ module.exports = {
 			'.js', '.ts', '.json'
 		],
 		alias: {
-			'@': __dirname + '/src/client',
+			'@client': __dirname + '/src/client',
+			'@': __dirname + '/src',
 			'const.styl': __dirname + '/src/client/const.styl'
 		}
 	},

@@ -1,5 +1,5 @@
 <template>
-<div class="mk-messaging-form _panel"
+<div class="pemppnzi _block"
 	@dragover.stop="onDragover"
 	@drop.stop="onDrop"
 >
@@ -7,6 +7,7 @@
 		v-model="text"
 		ref="text"
 		@keypress="onKeypress"
+		@compositionupdate="onCompositionUpdate"
 		@paste="onPaste"
 		:placeholder="$ts.inputMessageHere"
 	></textarea>
@@ -25,10 +26,11 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
-import { formatTimeString } from '../../../misc/format-time-string';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
-import { Autocomplete } from '@/scripts/autocomplete';
+import { formatTimeString } from '@/misc/format-time-string';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import { Autocomplete } from '@client/scripts/autocomplete';
+import { throttle } from 'throttle-debounce';
 
 export default defineComponent({
 	props: {
@@ -46,6 +48,9 @@ export default defineComponent({
 			text: null,
 			file: null,
 			sending: false,
+			typing: throttle(3000, () => {
+				os.stream.send('typingOnMessaging', this.user ? { partner: this.user.id } : { group: this.group.id });
+			}),
 			faPaperPlane, faPhotoVideo, faLaughSquint
 		};
 	},
@@ -147,9 +152,14 @@ export default defineComponent({
 		},
 
 		onKeypress(e) {
+			this.typing();
 			if ((e.which == 10 || e.which == 13) && (e.ctrlKey || e.metaKey) && this.canSend) {
 				this.send();
 			}
+		},
+
+		onCompositionUpdate() {
+			this.typing();
 		},
 
 		chooseFile(e) {
@@ -213,16 +223,14 @@ export default defineComponent({
 		},
 
 		async insertEmoji(ev) {
-			os.pickEmoji(ev.currentTarget || ev.target).then(emoji => {
-				insertTextAtCursor(this.$refs.text, emoji);
-			});
+			os.openEmojiPicker(ev.currentTarget || ev.target, {}, this.$refs.text);
 		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-.mk-messaging-form {
+.pemppnzi {
 	position: relative;
 
 	> textarea {

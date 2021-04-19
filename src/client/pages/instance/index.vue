@@ -4,9 +4,9 @@
 		<template #header><Fa :icon="faTachometerAlt"/> {{ $ts.overview }}</template>
 
 		<div class="sboqnrfi" :style="{ gridTemplateRows: overviewHeight }">
-			<MkInstanceStats :chart-limit="300" :detailed="true" class="_vMargin" ref="stats"/>
+			<MkInstanceStats :chart-limit="300" :detailed="true" class="_gap" ref="stats"/>
 
-			<MkContainer :body-togglable="true" class="_vMargin">
+			<MkContainer :foldable="true" class="_gap">
 				<template #header><Fa :icon="faInfoCircle"/>{{ $ts.instanceInfo }}</template>
 
 				<div class="_content">
@@ -19,7 +19,7 @@
 				</div>
 			</MkContainer>
 			
-			<MkContainer :body-togglable="true" :scrollable="true" class="_vMargin" style="height: 300px;">
+			<MkContainer :foldable="true" :scrollable="true" class="_gap" style="height: 300px;">
 				<template #header><Fa :icon="faDatabase"/>{{ $ts.database }}</template>
 
 				<div class="_content" v-if="dbInfo">
@@ -58,18 +58,19 @@
 import { computed, defineComponent, markRaw } from 'vue';
 import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import VueJsonPretty from 'vue-json-pretty';
-import MkInstanceStats from '@/components/instance-stats.vue';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkFolder from '@/components/ui/folder.vue';
-import { version, url } from '@/config';
+import MkInstanceStats from '@client/components/instance-stats.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkFolder from '@client/components/ui/folder.vue';
+import { version, url } from '@client/config';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
 import MkInstanceInfo from './instance.vue';
 import XMetrics from './index.metrics.vue';
-import * as os from '@/os';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -85,7 +86,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				tabs: [{
 					id: 'index',
 					title: null,

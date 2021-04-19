@@ -40,13 +40,13 @@ adduser --disabled-password --disabled-login misskey
 
 2. 克隆 Misskey 项目的 master 分支。
 
-	`git clone -b master git://github.com/syuilo/misskey.git`
+	`git clone -b master git://github.com/misskey-dev/misskey.git`
 
 3. 进入 misskey 文件夹。
 
 	`cd misskey`
 
-4. 检查 [最新发布版](https://github.com/syuilo/misskey/releases/latest) 标签。
+4. 检查 [最新发布版](https://github.com/misskey-dev/misskey/releases/latest) 标签。
 
 	`git checkout master`
 

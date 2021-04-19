@@ -9,7 +9,7 @@
 			<div class="page active link" v-if="info">
 				<div class="title">
 					<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
-					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
+					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 					<span v-if="info.title" class="text">{{ info.title }}</span>
 					<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 				</div>
@@ -28,7 +28,7 @@
 		</button>
 		<div class="title" v-if="info">
 			<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
-			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true"/>
+			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 			<span v-if="info.title" class="text">{{ info.title }}</span>
 			<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 		</div>
@@ -42,10 +42,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars } from '@fortawesome/free-solid-svg-icons';
-import XSigninDialog from '@/components/signin-dialog.vue';
-import XSignupDialog from '@/components/signup-dialog.vue';
-import * as os from '@/os';
-import { search } from '@/scripts/search';
+import XSigninDialog from '@client/components/signin-dialog.vue';
+import XSignupDialog from '@client/components/signup-dialog.vue';
+import * as os from '@client/os';
+import { search } from '@client/scripts/search';
 
 export default defineComponent({
 	props: {

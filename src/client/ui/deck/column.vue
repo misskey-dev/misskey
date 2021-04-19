@@ -1,6 +1,6 @@
 <template>
 <!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section class="dnpfarvg _panel _narrow_" :class="{ paged: isMainColumn, naked, _inContainer_: !isMainColumn, active, isStacked, draghover, dragging, dropready }"
+<section class="dnpfarvg _panel _narrow_" :class="{ paged: isMainColumn, naked, active, isStacked, draghover, dragging, dropready }"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -34,7 +34,7 @@
 import { defineComponent } from 'vue';
 import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt, faCog } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
-import * as os from '@/os';
+import * as os from '@client/os';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store';
 import { deckStore } from './deck-store';
 
@@ -265,7 +265,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .dnpfarvg {
-	--section-padding: 10px;
+	--root-margin: 10px;
 
 	height: 100%;
 	overflow: hidden;

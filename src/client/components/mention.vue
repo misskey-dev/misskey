@@ -16,10 +16,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { toUnicode } from 'punycode';
-import { host as localHost } from '@/config';
+import { toUnicode } from 'punycode/';
+import { host as localHost } from '@client/config';
 import { wellKnownServices } from '../../well-known-services';
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	props: {

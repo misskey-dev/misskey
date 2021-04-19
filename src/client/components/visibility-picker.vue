@@ -46,7 +46,7 @@
 import { defineComponent } from 'vue';
 import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import MkModal from '@/components/ui/modal.vue';
+import MkModal from '@client/components/ui/modal.vue';
 
 export default defineComponent({
 	components: {
@@ -97,7 +97,7 @@ export default defineComponent({
 
 	> .divider {
 		margin: 8px 0;
-		border-top: solid 1px var(--divider);
+		border-top: solid 0.5px var(--divider);
 	}
 
 	> button {

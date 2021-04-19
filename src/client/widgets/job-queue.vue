@@ -5,40 +5,40 @@
 		<div class="values">
 			<div>
 				<div>Process</div>
-				<div>{{ number(inbox.activeSincePrevTick) }}</div>
+				<div :class="{ inc: inbox.activeSincePrevTick > prev.inbox.activeSincePrevTick, dec: inbox.activeSincePrevTick < prev.inbox.activeSincePrevTick }">{{ number(inbox.activeSincePrevTick) }}</div>
 			</div>
 			<div>
 				<div>Active</div>
-				<div>{{ number(inbox.active) }}</div>
+				<div :class="{ inc: inbox.active > prev.inbox.active, dec: inbox.active < prev.inbox.active }">{{ number(inbox.active) }}</div>
 			</div>
 			<div>
 				<div>Delayed</div>
-				<div>{{ number(inbox.delayed) }}</div>
+				<div :class="{ inc: inbox.delayed > prev.inbox.delayed, dec: inbox.delayed < prev.inbox.delayed }">{{ number(inbox.delayed) }}</div>
 			</div>
 			<div>
 				<div>Waiting</div>
-				<div>{{ number(inbox.waiting) }}</div>
+				<div :class="{ inc: inbox.waiting > prev.inbox.waiting, dec: inbox.waiting < prev.inbox.waiting }">{{ number(inbox.waiting) }}</div>
 			</div>
 		</div>
 	</div>
 	<div class="deliver">
-		<div class="label">Deliver queue<Fa :icon="faExclamationTriangle" v-if="inbox.waiting > 0" class="icon"/></div>
+		<div class="label">Deliver queue<Fa :icon="faExclamationTriangle" v-if="deliver.waiting > 0" class="icon"/></div>
 		<div class="values">
 			<div>
 				<div>Process</div>
-				<div>{{ number(deliver.activeSincePrevTick) }}</div>
+				<div :class="{ inc: deliver.activeSincePrevTick > prev.deliver.activeSincePrevTick, dec: deliver.activeSincePrevTick < prev.deliver.activeSincePrevTick }">{{ number(deliver.activeSincePrevTick) }}</div>
 			</div>
 			<div>
 				<div>Active</div>
-				<div>{{ number(deliver.active) }}</div>
+				<div :class="{ inc: deliver.active > prev.deliver.active, dec: deliver.active < prev.deliver.active }">{{ number(deliver.active) }}</div>
 			</div>
 			<div>
 				<div>Delayed</div>
-				<div>{{ number(deliver.delayed) }}</div>
+				<div :class="{ inc: deliver.delayed > prev.deliver.delayed, dec: deliver.delayed < prev.deliver.delayed }">{{ number(deliver.delayed) }}</div>
 			</div>
 			<div>
 				<div>Waiting</div>
-				<div>{{ number(deliver.waiting) }}</div>
+				<div :class="{ inc: deliver.waiting > prev.deliver.waiting, dec: deliver.waiting < prev.deliver.waiting }">{{ number(deliver.waiting) }}</div>
 			</div>
 		</div>
 	</div>
@@ -49,8 +49,8 @@
 import { defineComponent } from 'vue';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import define from './define';
-import * as os from '@/os';
-import number from '@/filters/number';
+import * as os from '@client/os';
+import number from '@client/filters/number';
 
 const widget = define({
 	name: 'jobQueue',
@@ -79,10 +79,15 @@ export default defineComponent({
 				waiting: 0,
 				delayed: 0,
 			},
+			prev: {},
 			faExclamationTriangle,
 		};
 	},
 	created() {
+		for (const domain of ['inbox', 'deliver']) {
+			this.prev[domain] = JSON.parse(JSON.stringify(this[domain]));
+		}
+	
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
 
@@ -99,6 +104,7 @@ export default defineComponent({
 	methods: {
 		onStats(stats) {
 			for (const domain of ['inbox', 'deliver']) {
+				this.prev[domain] = JSON.parse(JSON.stringify(this[domain]));
 				this[domain].activeSincePrevTick = stats[domain].activeSincePrevTick;
 				this[domain].active = stats[domain].active;
 				this[domain].waiting = stats[domain].waiting;
@@ -130,7 +136,7 @@ export default defineComponent({
 		padding: 16px;
 
 		&:not(:first-child) {
-			border-top: solid 1px var(--divider);
+			border-top: solid 0.5px var(--divider);
 		}
 
 		> .label {
@@ -151,6 +157,16 @@ export default defineComponent({
 
 				> div:first-child {
 					opacity: 0.7;
+				}
+
+				> div:last-child {
+					&.inc {
+						color: var(--warn);
+					}
+
+					&.dec {
+						color: var(--success);
+					}
 				}
 			}
 		}

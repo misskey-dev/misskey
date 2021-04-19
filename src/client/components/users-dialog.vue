@@ -7,7 +7,7 @@
 
 	<div class="users">
 		<MkA v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
-			<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
+			<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true" :show-indicator="true"/>
 			<div class="body">
 				<MkUserName :user="extract ? extract(item) : item" class="name"/>
 				<MkAcct :user="extract ? extract(item) : item" class="acct"/>
@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import paging from '@/scripts/paging';
+import paging from '@client/scripts/paging';
 import { userPage } from '../filters/user';
 
 export default defineComponent({

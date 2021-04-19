@@ -1,10 +1,11 @@
 import { faBell, faComments, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { faAt, faBroadcastTower, faCloud, faColumns, faDoorClosed, faFileAlt, faFireAlt, faGamepad, faHashtag, faListUl, faPaperclip, faSatellite, faSatelliteDish, faSearch, faStar, faTerminal, faUserClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { computed } from 'vue';
-import { search } from '@/scripts/search';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { search } from '@client/scripts/search';
+import * as os from '@client/os';
+import { i18n } from '@client/i18n';
 import { $i } from './account';
+import { unisonReload } from '@client/scripts/unison-reload';
 
 export const sidebarDef = {
 	notifications: {
@@ -133,19 +134,31 @@ export const sidebarDef = {
 				text: i18n.locale.default,
 				action: () => {
 					localStorage.setItem('ui', 'default');
-					location.reload();
+					unisonReload();
 				}
 			}, {
 				text: i18n.locale.deck,
 				action: () => {
 					localStorage.setItem('ui', 'deck');
-					location.reload();
+					unisonReload();
+				}
+			}, {
+				text: 'pope',
+				action: () => {
+					localStorage.setItem('ui', 'pope');
+					unisonReload();
+				}
+			}, {
+				text: 'Chat (β)',
+				action: () => {
+					localStorage.setItem('ui', 'chat');
+					unisonReload();
 				}
 			}, {
 				text: i18n.locale.desktop + ' (β)',
 				action: () => {
 					localStorage.setItem('ui', 'desktop');
-					location.reload();
+					unisonReload();
 				}
 			}], ev.currentTarget || ev.target);
 		},

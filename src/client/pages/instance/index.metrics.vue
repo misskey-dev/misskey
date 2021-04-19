@@ -4,7 +4,7 @@
 		<template #header><Fa :icon="faHeartbeat"/> {{ $ts.metrics }}</template>
 		<div class="_section" style="padding: 0 var(--margin);">
 			<div class="_content">
-				<MkContainer :body-togglable="false" class="_vMargin">
+				<MkContainer :foldable="false" class="_gap">
 					<template #header><Fa :icon="faMicrochip"/>{{ $ts.cpuAndMemory }}</template>
 					<!--
 					<template #func>
@@ -27,7 +27,7 @@
 					</div>
 				</MkContainer>
 
-				<MkContainer :body-togglable="false" class="_vMargin">
+				<MkContainer :foldable="false" class="_gap">
 					<template #header><Fa :icon="faHdd"/> {{ $ts.disk }}</template>
 					<!--
 					<template #func>
@@ -50,7 +50,7 @@
 					</div>
 				</MkContainer>
 
-				<MkContainer :body-togglable="false" class="_vMargin">
+				<MkContainer :foldable="false" class="_gap">
 					<template #header><Fa :icon="faExchangeAlt"/> {{ $ts.network }}</template>
 					<!--
 					<template #func>
@@ -78,7 +78,7 @@
 		<template #header><Fa :icon="faClipboardList"/> {{ $ts.jobQueue }}</template>
 
 		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
-			<MkContainer :body-togglable="false" :scrollable="true" :resize-base-el="() => $el">
+			<MkContainer :foldable="false" :scrollable="true" :resize-base-el="() => $el">
 				<template #header><Fa :icon="faExclamationTriangle"/> {{ $ts.delayed }}</template>
 
 				<div class="_content">
@@ -103,13 +103,13 @@
 import { defineComponent, markRaw } from 'vue';
 import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
-import MkButton from '@/components/ui/button.vue';
-import MkSelect from '@/components/ui/select.vue';
-import MkInput from '@/components/ui/input.vue';
-import MkContainer from '@/components/ui/container.vue';
-import MkFolder from '@/components/ui/folder.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkSelect from '@client/components/ui/select.vue';
+import MkInput from '@client/components/ui/input.vue';
+import MkContainer from '@client/components/ui/container.vue';
+import MkFolder from '@client/components/ui/folder.vue';
 import MkwFederation from '../../widgets/federation.vue';
-import { version, url } from '@/config';
+import { version, url } from '@client/config';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
 import MkInstanceInfo from './instance.vue';
@@ -121,7 +121,7 @@ const alpha = (hex, a) => {
 	const b = parseInt(result[3], 16);
 	return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
-import * as os from '@/os';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {

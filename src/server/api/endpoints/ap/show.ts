@@ -1,22 +1,23 @@
 import $ from 'cafy';
 import define from '../../define';
-import config from '../../../../config';
+import config from '@/config';
 import { createPerson } from '../../../../remote/activitypub/models/person';
 import { createNote } from '../../../../remote/activitypub/models/note';
 import Resolver from '../../../../remote/activitypub/resolver';
 import { ApiError } from '../../error';
-import { extractDbHost } from '../../../../misc/convert-host';
+import { extractDbHost } from '@/misc/convert-host';
 import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
-import { fetchMeta } from '../../../../misc/fetch-meta';
+import { fetchMeta } from '@/misc/fetch-meta';
 import { validActor, validPost } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
 
 	desc: {
-		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。'
+		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。',
+		'en-US': 'Browse to the ActivityPub object by specifying the URI.'
 	},
 
 	requireCredential: false as const,
@@ -35,6 +36,22 @@ export const meta = {
 			message: 'No such object.',
 			code: 'NO_SUCH_OBJECT',
 			id: 'dc94d745-1262-4e63-a17d-fecaa57efc82'
+		}
+	},
+
+	res: {
+		type: 'object' as const,
+		optional: false as const, nullable: false as const,
+		properties: {
+			type: {
+				type: 'string' as const,
+				optional: false as const, nullable: false as const,
+				enum: ['User', 'Note']
+			},
+			object: {
+				type: 'object' as const,
+				optional: false as const, nullable: false as const
+			}
 		}
 	}
 };

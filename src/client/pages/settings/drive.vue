@@ -38,12 +38,13 @@ import * as tinycolor from 'tinycolor2';
 import ApexCharts from 'apexcharts';
 import { faCloud, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import FormButton from '@/components/form/button.vue';
-import FormGroup from '@/components/form/group.vue';
-import FormKeyValueView from '@/components/form/key-value-view.vue';
-import FormBase from '@/components/form/base.vue';
-import * as os from '@/os';
-import bytes from '@/filters/bytes';
+import FormButton from '@client/components/form/button.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import FormBase from '@client/components/form/base.vue';
+import * as os from '@client/os';
+import bytes from '@client/filters/bytes';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -57,7 +58,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: {
+			[symbols.PAGE_INFO]: {
 				title: this.$ts.drive,
 				icon: faCloud
 			},
@@ -100,7 +101,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.$emit('info', this.INFO);
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {

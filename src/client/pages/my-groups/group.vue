@@ -12,12 +12,12 @@
 	</transition>
 
 	<transition name="zoom" mode="out-in">
-		<div v-if="group" class="_section members _vMargin">
+		<div v-if="group" class="_section members _gap">
 			<div class="_title">{{ $ts.members }}</div>
 			<div class="_content">
 				<div class="users">
 					<div class="user _panel" v-for="user in users" :key="user.id">
-						<MkAvatar :user="user" class="avatar"/>
+						<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>
 							<MkAcct :user="user" class="acct"/>
@@ -36,9 +36,10 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
-import Progress from '@/scripts/loading';
-import MkButton from '@/components/ui/button.vue';
-import * as os from '@/os';
+import Progress from '@client/scripts/loading';
+import MkButton from '@client/components/ui/button.vue';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -54,7 +55,7 @@ export default defineComponent({
 
 	data() {
 		return {
-			INFO: computed(() => this.group ? {
+			[symbols.PAGE_INFO]: computed(() => this.group ? {
 				title: this.group.name,
 				icon: faUsers,
 			} : null),

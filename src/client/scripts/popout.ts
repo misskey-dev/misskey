@@ -1,4 +1,4 @@
-import * as config from '@/config';
+import * as config from '@client/config';
 
 export function popout(path: string, w?: HTMLElement) {
 	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;
