@@ -671,8 +671,15 @@ _registry:
   createKey: "Crea chiave"
 _aboutMisskey:
   source: "Codice sorgente"
+  translation: "Tradurre Misskey"
   morePatrons: "Ci sono molti altri che ci sostengono. Grazie 🥰"
+_nsfw:
+  respect: "Nascondere i media segnati come sensibli"
+  ignore: "Visualizzare i media segnati come sensibili"
+  force: "Nascondere tutti i media"
 _mfm:
+  cheatSheet: "Bigliettino MFM"
+  dummy: "Il Fediverso si espande con Misskey"
   mention: "Menzioni"
   mentionDescription: "Si può menzionare un utente specifico digitando il suo nome utente subito dopo il segno @."
   hashtag: "Hashtag"
@@ -688,6 +695,7 @@ _mfm:
   blur: "Sfocatura"
   font: "Tipo di carattere"
 _reversi:
+  reversi: "Reversi"
   gameSettings: "Impostazioni di gioco"
   botSettings: "Opzioni del bot"
   black: "Nero"
