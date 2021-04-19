@@ -809,6 +809,8 @@ _tutorial:
   step7_1: "Complimenti! Sei arrivat@ alla fine dell'esercitazione di base su come usare Misskey. "
   step7_2: "Se vuoi saperne di più su Misskey, puoi dare un'occhiata alla sezione {help}."
   step7_3: "Da ultimo, buon divertimento su Misskey! 🚀"
+_2fa:
+  registerDevice: "Aggiungi dispositivo"
 _permissions:
   "read:blocks": "Visualizza gli account bloccati"
   "write:blocks": "Gestisci gli account bloccati"
