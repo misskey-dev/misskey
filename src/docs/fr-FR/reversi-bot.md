@@ -110,7 +110,7 @@ y = Math.floor(pos / mapWidth)
 ```
 
 ### フォームコントロールの種類
-#### Basculer
+#### Interrupteur
 type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
 
 ##### プロパティ

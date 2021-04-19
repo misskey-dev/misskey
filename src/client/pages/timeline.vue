@@ -1,10 +1,8 @@
 <template>
-<div class="cmuxhskf _root _magnetParent" v-hotkey.global="keymap">
-	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
-
+<div class="cmuxhskf _root" v-hotkey.global="keymap">
 	<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
 	<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
-	<div class="tabs _block _magnetChild">
+	<div class="tabs _block">
 		<div class="left">
 			<button class="_button tab" @click="() => { src = 'home'; saveSrc(); }" :class="{ active: src === 'home' }" v-tooltip="$ts._timelines.home"><Fa :icon="faHome"/></button>
 			<button class="_button tab" @click="() => { src = 'local'; saveSrc(); }" :class="{ active: src === 'local' }" v-tooltip="$ts._timelines.local" v-if="isLocalTimelineAvailable"><Fa :icon="faComments"/></button>
@@ -32,6 +30,7 @@
 		@after="after()"
 		@queue="queueUpdated"
 	/>
+	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 </div>
 </template>
 
