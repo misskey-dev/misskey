@@ -729,6 +729,7 @@ hideOnlineStatusDescription: "オンライン状態を隠すと、検索など�
 online: "オンライン"
 active: "アクティブ"
 offline: "オフライン"
+postToGallery: "ギャラリーへ投稿"
 
 _email:
   _follow:

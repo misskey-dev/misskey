@@ -31,6 +31,11 @@ export const meta = {
 		fileIds: {
 			validator: $.arr($.type(ID)).unique().range(1, 32),
 		},
+
+		isSensitive: {
+			validator: $.optional.bool,
+			default: false,
+		},
 	},
 
 	res: {
@@ -63,6 +68,7 @@ export default define(meta, async (ps, user) => {
 		title: ps.title,
 		description: ps.description,
 		userId: user.id,
+		isSensitive: ps.isSensitive,
 	}));
 
 	return await GalleryPosts.pack(post);

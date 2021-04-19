@@ -1,11 +1,5 @@
 <template>
 <FormBase>
-	<FormGroup>
-		<div class="_formItem _formPanel" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
-		</div>
-		<FormButton @click="selectFile" primary>Select file</FormButton>
-	</FormGroup>
-
 	<FormInput v-model:value="title">
 		<span>{{ $ts.title }}</span>
 	</FormInput>
@@ -14,9 +8,15 @@
 		<span>{{ $ts.description }}</span>
 	</FormTextarea>
 
-	<FormSwitch v-model:value="isSensitive">{{ $ts.isSensitive }}</FormSwitch>
+	<FormGroup>
+		<div v-for="file in files" :key="file.id" class="_formItem _formPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+		</div>
+		<FormButton @click="selectFile" primary>{{ $ts.attachFile }}</FormButton>
+	</FormGroup>
 
-	<FormButton @click="save(true)" primary><Fa :icon="faSave"/> {{ $ts.publish }}</FormButton>
+	<FormSwitch v-model:value="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
+
+	<FormButton @click="publish" primary><Fa :icon="faSave"/> {{ $ts.publish }}</FormButton>
 </FormBase>
 </template>
 
@@ -24,15 +24,16 @@
 import { defineComponent } from 'vue';
 import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import FormButton from '@/components/form/button.vue';
-import FormInput from '@/components/form/input.vue';
-import FormTextarea from '@/components/form/textarea.vue';
-import FormSwitch from '@/components/form/switch.vue';
-import FormTuple from '@/components/form/tuple.vue';
-import FormBase from '@/components/form/base.vue';
-import FormGroup from '@/components/form/group.vue';
-import { selectFile } from '@/scripts/select-file';
-import * as os from '@/os';
+import FormButton from '@client/components/form/button.vue';
+import FormInput from '@client/components/form/input.vue';
+import FormTextarea from '@client/components/form/textarea.vue';
+import FormSwitch from '@client/components/form/switch.vue';
+import FormTuple from '@client/components/form/tuple.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import { selectFile } from '@client/scripts/select-file';
+import * as os from '@client/os';
+import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
@@ -44,15 +45,13 @@ export default defineComponent({
 		FormGroup,
 	},
 	
-	emits: ['info'],
-
 	data() {
 		return {
-			INFO: {
-				title: this.$ts.profile,
+			[symbols.PAGE_INFO]: {
+				title: this.$ts.postToGallery,
 				icon: faUser
 			},
-			file: null,
+			files: [],
 			description: null,
 			title: null,
 			isSensitive: false,
@@ -60,20 +59,30 @@ export default defineComponent({
 		}
 	},
 
-	mounted() {
-		this.$emit('info', this.INFO);
-	},
-
 	methods: {
 		selectFile(e) {
-			selectFile(e.currentTarget || e.target).then(file => {
-				this.file = file;
+			selectFile(e.currentTarget || e.target, null, true).then(files => {
+				this.files = this.files.concat(files);
 			});
 		},
+
+		publish() {
+			os.apiWithDialog('gallery/create', {
+				title: this.title,
+				description: this.description,
+				fileIds: this.files.map(file => file.id),
+				isSensitive: this.isSensitive,
+			});
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
-
+.wqugxsfx {
+	height: 200px;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
 </style>
