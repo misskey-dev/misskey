@@ -99,9 +99,12 @@
 			<span>Raw</span>
 		</FormObjectView>
 		<FormGroup>
+			<template #label>Well-known resources</template>
 			<FormLink :to="`https://${host}/.well-known/host-meta`" external>host-meta</FormLink>
 			<FormLink :to="`https://${host}/.well-known/host-meta.json`" external>host-meta.json</FormLink>
 			<FormLink :to="`https://${host}/.well-known/nodeinfo`" external>nodeinfo</FormLink>
+			<FormLink :to="`https://${host}/robots.txt`" external>robots.txt</FormLink>
+			<FormLink :to="`https://${host}/manifest.json`" external>manifest.json</FormLink>
 		</FormGroup>
 		<FormSuspense :p="dnsPromiseFactory" v-slot="{ result: dns }">
 			<FormGroup>
