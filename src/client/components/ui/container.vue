@@ -169,7 +169,7 @@ export default defineComponent({
 			margin: 0;
 			padding: 12px 16px;
 
-			> ::v-deep([data-icon]) {
+			> ::v-deep(i) {
 				margin-right: 6px;
 			}
 

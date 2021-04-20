@@ -724,7 +724,7 @@ export default defineComponent({
 					opacity: 0.7;
 				}
 
-				> [data-icon] {
+				> i {
 					margin-left: 6px;
 				}
 			}

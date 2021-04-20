@@ -207,7 +207,7 @@ export default defineComponent({
 			opacity: 0.7;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 			width: 20px;
 		}

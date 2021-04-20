@@ -271,17 +271,17 @@ export default defineComponent({
 			overflow: hidden;
 			text-overflow: ellipsis;
 
-			> [data-icon] {
+			> i {
 				vertical-align: super;
 				font-size: 50%;
 				opacity: 0.5;
 			}
 
-			> [data-icon]:first-child {
+			> i:first-child {
 				margin-right: 4px;
 			}
 
-			> [data-icon]:last-child {
+			> i:last-child {
 				margin-left: 4px;
 			}
 		}

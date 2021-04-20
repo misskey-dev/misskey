@@ -943,7 +943,7 @@ export default defineComponent({
 			border-radius: 6px;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 

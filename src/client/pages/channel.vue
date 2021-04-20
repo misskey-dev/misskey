@@ -111,7 +111,7 @@ export default defineComponent({
 		background: rgba(0, 0, 0, 0.5);
 		border-radius: 100%;
 		
-		> [data-icon] {
+		> i {
 			vertical-align: middle;
 		}
 	}

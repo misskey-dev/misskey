@@ -190,7 +190,7 @@ export default defineComponent({
 		font-size: 0.8em;
 		color: #f00;
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 	}

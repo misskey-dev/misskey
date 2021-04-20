@@ -135,7 +135,7 @@ export default defineComponent({
 			> span {
 				position: relative;
 
-				> [data-icon] {
+				> i {
 					margin-right: 4px;
 				}
 

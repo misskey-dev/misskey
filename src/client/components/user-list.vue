@@ -83,7 +83,7 @@ export default defineComponent({
 			cursor: wait;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 	}

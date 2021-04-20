@@ -666,7 +666,7 @@ export default defineComponent({
 					> b {
 						display: block;
 
-						> [data-icon] {
+						> i {
 							width: 16px;
 							margin-right: 8px;
 						}

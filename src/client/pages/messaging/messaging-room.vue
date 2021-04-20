@@ -356,7 +356,7 @@ export default Component;
 			font-size: 0.8em;
 			opacity: 0.5;
 
-			[data-icon] {
+			i {
 				margin-right: 4px;
 			}
 		}
@@ -370,7 +370,7 @@ export default Component;
 			color: var(--messagingRoomInfo);
 			opacity: 0.5;
 
-			[data-icon] {
+			i {
 				margin-right: 4px;
 			}
 		}
@@ -396,7 +396,7 @@ export default Component;
 				cursor: wait;
 			}
 
-			> [data-icon] {
+			> i {
 				margin-right: 4px;
 			}
 		}

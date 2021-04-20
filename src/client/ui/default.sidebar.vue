@@ -289,7 +289,7 @@ export default defineComponent({
 			font-size: $ui-font-size * 1.1;
 			line-height: 3.7rem;
 
-			> [data-icon],
+			> i,
 			> .avatar {
 				margin-right: 0;
 			}
@@ -344,11 +344,11 @@ export default defineComponent({
 		text-align: left;
 		box-sizing: border-box;
 
-		> [data-icon] {
+		> i {
 			width: 32px;
 		}
 
-		> [data-icon],
+		> i,
 		> .avatar {
 			margin-right: $avatar-margin;
 		}

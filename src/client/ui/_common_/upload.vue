@@ -92,7 +92,7 @@ export default defineComponent({
   overflow: hidden;
   flex-shrink: 1;
 }
-.mk-uploader > ol > li > .top > .name > [data-icon] {
+.mk-uploader > ol > li > .top > .name > i {
   margin-right: 4px;
 }
 .mk-uploader > ol > li > .top > .status {

@@ -312,7 +312,7 @@ export default defineComponent({
 		font-size: 0.9em;
 		color: var(--desktopDriveFolderFg);
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 			margin-left: 2px;
 			text-align: left;

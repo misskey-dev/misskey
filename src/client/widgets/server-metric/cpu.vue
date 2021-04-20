@@ -68,7 +68,7 @@ export default defineComponent({
 				font-weight: bold;
 				margin-bottom: 4px;
 
-				> [data-icon] {
+				> i {
 					margin-right: 4px;
 				}
 			}

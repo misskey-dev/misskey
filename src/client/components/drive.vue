@@ -693,7 +693,7 @@ export default defineComponent({
 					opacity: 0.5;
 					cursor: default;
 
-					> [data-icon] {
+					> i {
 						margin: 0;
 					}
 				}

@@ -914,7 +914,7 @@ export default defineComponent({
 		white-space: pre;
 		color: #d28a3f;
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 
@@ -952,7 +952,7 @@ export default defineComponent({
 			border-radius: 6px;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 

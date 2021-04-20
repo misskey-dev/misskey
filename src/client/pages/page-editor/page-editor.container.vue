@@ -105,7 +105,7 @@ export default defineComponent({
 			font-weight: bold;
 			box-shadow: 0 1px rgba(#000, 0.07);
 
-			> [data-icon] {
+			> i {
 				margin-right: 6px;
 			}
 

@@ -109,7 +109,7 @@ export default defineComponent({
 			margin: 0;
 			padding: 12px 16px 12px 0;
 
-			> [data-icon] {
+			> i {
 				margin-right: 6px;
 			}
 

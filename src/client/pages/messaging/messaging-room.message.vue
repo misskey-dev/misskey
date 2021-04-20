@@ -221,7 +221,7 @@ export default defineComponent({
 				margin: 0 8px;
 			}
 
-			> [data-icon] {
+			> i {
 				margin-left: 4px;
 			}
 		}
