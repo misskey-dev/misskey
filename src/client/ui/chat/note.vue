@@ -23,7 +23,7 @@
 		</I18n>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
-				<Fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
+				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">

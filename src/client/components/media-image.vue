@@ -9,7 +9,7 @@
 	</div>
 </div>
 <div class="gqnyydlz" :style="{ background: color }" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 	<a
 		:href="image.url"
 		:title="image.name"

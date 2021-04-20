@@ -22,7 +22,7 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="func" class="menu _button" v-tooltip="func.title" @click.stop="func.handler"><Fa :icon="func.icon || faCog"/></button>
+		<button v-if="func" class="menu _button" v-tooltip="func.title" @click.stop="func.handler"><i :class="func.icon || 'fas fa-cog'"></i></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>

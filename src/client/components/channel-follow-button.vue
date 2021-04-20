@@ -13,7 +13,7 @@
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $ts.processing }}</span><Fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>

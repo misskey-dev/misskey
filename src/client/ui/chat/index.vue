@@ -109,8 +109,8 @@
 					<i class="fas fa-search"></i>
 				</button>
 				<button class="_button button follow" v-if="tl.startsWith('channel:') && currentChannel" :class="{ followed: currentChannel.isFollowing }" @click="toggleChannelFollow" v-tooltip="currentChannel.isFollowing ? $ts.unfollow : $ts.follow">
-					<Fa v-if="currentChannel.isFollowing" :icon="faStar"/>
-					<Fa v-else :icon="farStar"/>
+					<i v-if="currentChannel.isFollowing" class="fas fa-star"></i>
+					<i v-else class="far fa-star"></i>
 				</button>
 				<button class="_button button menu" v-if="tl.startsWith('channel:') && currentChannel" @click="openChannelMenu">
 					<i class="fas fa-ellipsis-h"></i>

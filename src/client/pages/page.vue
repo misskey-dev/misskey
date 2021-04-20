@@ -14,8 +14,8 @@
 			<small style="display: block; opacity: 0.7; margin-top: 1em;">@{{ page.user.username }}</small>
 		</div>
 		<div class="like">
-			<MkButton class="button" @click="unlike()" v-if="page.isLiked" v-tooltip="$ts._pages.unlike" primary><Fa :icon="faHeartS"/><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
-			<MkButton class="button" @click="like()" v-else v-tooltip="$ts._pages.like"><Fa :icon="faHeartR"/><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
+			<MkButton class="button" @click="unlike()" v-if="page.isLiked" v-tooltip="$ts._pages.unlike" primary><i class="fas fa-heart"></i><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
+			<MkButton class="button" @click="like()" v-else v-tooltip="$ts._pages.like"><i class="far fa-heart"></i><span class="count" v-if="page.likedCount > 0">{{ page.likedCount }}</span></MkButton>
 		</div>
 		<div class="links">
 			<MkA :to="`/@${username}/pages/${pageName}/view-source`" class="link">{{ $ts._pages.viewSource }}</MkA>
@@ -27,16 +27,14 @@
 		</div>
 	</div>
 	<div class="footer">
-		<div><i class="fas fa-clock"></i> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-		<div v-if="page.createdAt != page.updatedAt"><i class="fas fa-clock"></i> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
+		<div><i class="far fa-clock"></i> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+		<div v-if="page.createdAt != page.updatedAt"><i class="far fa-clock"></i> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faHeart as faHeartS } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartR, faClock } from '@fortawesome/free-regular-svg-icons';
 import XPage from '@client/components/page/page.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
@@ -71,7 +69,6 @@ export default defineComponent({
 				},
 			} : null),
 			page: null,
-			faHeartS, faHeartR, faClock,
 		};
 	},
 

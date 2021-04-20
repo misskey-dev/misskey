@@ -2,15 +2,15 @@
 <MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
 	<div class="mk-dialog">
 		<div class="icon" v-if="icon">
-			<Fa :icon="icon"/>
+			<i :class="icon"></i>
 		</div>
 		<div class="icon" v-else-if="!input && !select" :class="type">
-			<Fa :icon="faCheck" v-if="type === 'success'"/>
-			<Fa :icon="faTimesCircle" v-if="type === 'error'"/>
-			<Fa :icon="faExclamationTriangle" v-if="type === 'warning'"/>
-			<Fa :icon="faInfoCircle" v-if="type === 'info'"/>
-			<Fa :icon="faQuestionCircle" v-if="type === 'question'"/>
-			<Fa :icon="faSpinner" pulse v-if="type === 'waiting'"/>
+			<i v-if="type === 'success'" class="fas fa-check"></i>
+			<i v-else-if="type === 'error'" class="fas fa-times-circle"></i>
+			<i v-else-if="type === 'warning'" class="fas fa-exclamation-triangle"></i>
+			<i v-else-if="type === 'info'" class="fas fa-information-circle"></i>
+			<i v-else-if="type === 'question'" class="fas fa-question-circle"></i>
+			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div class="body" v-if="text"><Mfm :text="text"/></div>

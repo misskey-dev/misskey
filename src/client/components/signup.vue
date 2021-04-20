@@ -10,7 +10,7 @@
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 			<template #desc>
-				<span v-if="usernameState == 'wait'" style="color:#999"><Fa :icon="faSpinner" pulse fixed-width/> {{ $ts.checking }}</span>
+				<span v-if="usernameState == 'wait'" style="color:#999"><i class="fas fa-spinner fa-pulse fa-fw"></i> {{ $ts.checking }}</span>
 				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
 				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
 				<span v-if="usernameState == 'error'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>

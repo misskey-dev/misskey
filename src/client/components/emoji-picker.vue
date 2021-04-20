@@ -42,7 +42,7 @@
 			</section>
 
 			<section>
-				<header class="_acrylic"><i class="fas fa-clock fa-fw"></i> {{ $ts.recentUsed }}</header>
+				<header class="_acrylic"><i class="far fa-clock fa-fw"></i> {{ $ts.recentUsed }}</header>
 				<div>
 					<button v-for="emoji in $store.state.recentlyUsedEmojis"
 						class="_button"

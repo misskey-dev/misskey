@@ -9,7 +9,7 @@
 			<span v-if="full">{{ $ts.followRequestPending }}</span><i class="fas fa-hourglass-half"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked"> <!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ $ts.processing }}</span><Fa :icon="faSpinner" pulse/>
+			<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse"></i>
 		</template>
 		<template v-else-if="isFollowing">
 			<span v-if="full">{{ $ts.unfollow }}</span><i class="fas fa-minus"></i>
@@ -22,7 +22,7 @@
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $ts.processing }}</span><Fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>

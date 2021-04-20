@@ -1,6 +1,6 @@
 <template>
 <XContainer :removable="removable" @remove="() => $emit('remove')" :error="error" :warn="warn" :draggable="draggable">
-	<template #header><Fa v-if="icon" :icon="icon"/> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
+	<template #header><i v-if="icon" :class="icon"></i> <template v-if="title">{{ title }} <span class="turmquns" v-if="typeText">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button @click="changeType()" class="_button">
 			<i class="fas fa-pencil-alt"></i>

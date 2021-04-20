@@ -28,7 +28,7 @@
 				<ol v-if="registration && !registration.error">
 					<li v-if="registration.stage >= 0">
 						{{ $ts.tapSecurityKey }}
-						<Fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 0" />
+						<i v-if="registration.saving && registration.stage == 0" class="fas fa-spinner fa-pulse fa-fw"></i>
 					</li>
 					<li v-if="registration.stage >= 1">
 						<MkForm :disabled="registration.stage != 1 || registration.saving">
@@ -36,7 +36,7 @@
 								<span>{{ $ts.securityKeyName }}</span>
 							</MkInput>
 							<MkButton @click="registerKey" :disabled="keyName.length == 0">{{ $ts.registerSecurityKey }}</MkButton>
-							<Fa icon="spinner" pulse fixed-width v-if="registration.saving && registration.stage == 1" />
+							<i v-if="registration.saving && registration.stage == 1" class="fas fa-spinner fa-pulse fa-fw"></i>
 						</MkForm>
 					</li>
 				</ol>

@@ -17,13 +17,13 @@
 				<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
 				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : 'fas fa-paper-plane'"/></button>
+			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
 		<XNotePreview class="preview" v-if="reply" :note="reply"/>
 		<XNotePreview class="preview" v-if="renote" :note="renote"/>
-		<div class="with-quote" v-if="quoteId"><Fa icon="quote-left"/> {{ $ts.quoteAttached }}<button @click="quoteId = null"><Fa icon="times"/></button></div>
+		<div class="with-quote" v-if="quoteId"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
 			<div class="visibleUsers">
@@ -41,7 +41,7 @@
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<footer>
 			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
-			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><Fa :icon="faPollH"/></button>
+			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
 			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><i class="fas fa-eye-slash"></i></button>
 			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><i class="fas fa-at"></i></button>
 			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><i class="fas fa-laugh-squint"></i></button>

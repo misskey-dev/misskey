@@ -16,7 +16,7 @@
 	</div>
 	<button class="more _button" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching">
 		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
-		<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
+		<template v-if="moreFetching"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 	</button>
 
 	<p class="empty" v-if="empty">{{ $ts.noUsers }}</p>

@@ -9,7 +9,7 @@
 			<p class="empty" v-if="!fetching && messages.length == 0"><i class="fas fa-info-circle"></i>{{ $ts.noMessagesYet }}</p>
 			<p class="no-history" v-if="!fetching && messages.length > 0 && !existMoreMessages"><i class="fas fa-flag"></i>{{ $ts.noMoreHistory }}</p>
 			<button class="more _button" ref="loadMore" :class="{ fetching: fetchingMoreMessages }" v-show="existMoreMessages" @click="fetchMoreMessages" :disabled="fetchingMoreMessages">
-				<template v-if="fetchingMoreMessages"><Fa icon="spinner" pulse fixed-width/></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
+				<template v-if="fetchingMoreMessages"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>{{ fetchingMoreMessages ? $ts.loading : $ts.loadMore }}
 			</button>
 			<XList class="messages" :items="messages" v-slot="{ item: message }" direction="up" reversed>
 				<XMessage :message="message" :is-group="group != null" :key="message.id"/>
@@ -26,7 +26,7 @@
 			</div>
 			<transition name="fade">
 				<div class="new-message" v-show="showIndicator">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i><Fa :icon="faArrowCircleDown"/></i>{{ $ts.newMessageExists }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i><i class="fas fa-arrow-circle-down"></i></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>

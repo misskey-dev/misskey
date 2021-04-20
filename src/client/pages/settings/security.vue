@@ -8,8 +8,8 @@
 		<template #default="{items}">
 			<div class="_formPanel timnmucd" v-for="item in items" :key="item.id">
 				<header>
-					<Fa class="icon succ" :icon="faCheck" v-if="item.success"/>
-					<Fa class="icon fail" :icon="faTimesCircle" v-else/>
+					<i v-if="item.success" class="fas fa-check icon succ"></i>
+					<i v-else class="fas fa-times-circle icon fail"></i>
 					<code class="ip _monospace">{{ item.ip }}</code>
 					<MkTime :time="item.createdAt" class="time"/>
 				</header>

@@ -18,7 +18,7 @@
 			:type="video.type"
 		>
 	</video>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>
 </template>
 
