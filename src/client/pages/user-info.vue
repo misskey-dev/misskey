@@ -72,10 +72,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.userInfo,
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				actions: this.user ? [this.user.url ? {
 					text: this.user.url,
-					icon: faExternalLinkAlt,
+					icon: 'fas fa-external-link-alt',
 					handler: () => {
 						window.open(this.user.url, '_blank');
 					}

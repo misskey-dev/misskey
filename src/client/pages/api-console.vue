@@ -43,7 +43,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'API console',
-				icon: faTerminal
+				icon: 'fas fa-terminal'
 			},
 
 			endpoint: '',

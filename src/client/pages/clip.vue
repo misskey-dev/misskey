@@ -40,9 +40,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.clip ? {
 				title: this.clip.name,
-				icon: faPaperclip,
+				icon: 'fas fa-paperclip',
 				action: {
-					icon: faEllipsisH,
+					icon: 'fas fa-ellipsis'H,
 					handler: this.menu
 				}
 			} : null),
@@ -81,7 +81,7 @@ export default defineComponent({
 	methods: {
 		menu(ev) {
 			os.modalMenu([this.isOwned ? {
-				icon: faPencilAlt,
+				icon: 'fas fa-pencil-alt',
 				text: this.$ts.edit,
 				action: async () => {
 					const { canceled, result } = await os.form(this.clip.name, {
@@ -111,7 +111,7 @@ export default defineComponent({
 					});
 				}
 			} : undefined, this.isOwned ? {
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				text: this.$ts.delete,
 				danger: true,
 				action: async () => {

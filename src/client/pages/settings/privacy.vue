@@ -56,7 +56,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.privacy,
-				icon: faLockOpen
+				icon: 'fas fa-lock-open'
 			},
 			isLocked: false,
 			autoAcceptFollowed: false,

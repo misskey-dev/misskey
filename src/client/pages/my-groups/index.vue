@@ -69,7 +69,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.groups,
-				icon: faUsers
+				icon: 'fas fa-users'
 			},
 			tab: 'owned',
 			ownedPagination: {

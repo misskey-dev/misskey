@@ -96,7 +96,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.userInfo,
-				icon: faInfoCircle
+				icon: 'fas fa-info-circle'
 			},
 			user: null,
 			apPromiseFactory: null,

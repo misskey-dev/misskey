@@ -49,7 +49,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.security,
-				icon: faLock
+				icon: 'fas fa-lock'
 			},
 			pagination: {
 				endpoint: 'i/signin-history',

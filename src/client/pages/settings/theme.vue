@@ -117,7 +117,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const INFO = {
 			title: i18n.locale.theme,
-			icon: faPalette
+			icon: 'fas fa-palette'
 		};
 
 		const installedThemes = ref(getThemes());

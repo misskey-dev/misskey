@@ -20,7 +20,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.directNotes,
-				icon: faEnvelope
+				icon: 'fas fa-envelope'
 			},
 			pagination: {
 				endpoint: 'notes/mentions',

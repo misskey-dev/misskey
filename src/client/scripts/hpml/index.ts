@@ -22,13 +22,13 @@ export type Fn = {
 export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
 
 export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {
-	text:          { out: 'string',      category: 'value', icon: faQuoteRight, },
-	multiLineText: { out: 'string',      category: 'value', icon: faAlignLeft, },
-	textList:      { out: 'stringArray', category: 'value', icon: faList, },
-	number:        { out: 'number',      category: 'value', icon: faSortNumericUp, },
-	ref:           { out: null,          category: 'value', icon: faMagic, },
-	aiScriptVar:   { out: null,          category: 'value', icon: faMagic, },
-	fn:            { out: 'function',    category: 'value', icon: faSquareRootAlt, },
+	text:          { out: 'string',      category: 'value', icon: 'fas fa-quote-right', },
+	multiLineText: { out: 'string',      category: 'value', icon: 'fas fa-align-left', },
+	textList:      { out: 'stringArray', category: 'value', icon: 'fas fa-list', },
+	number:        { out: 'number',      category: 'value', icon: 'fas fa-sort-numeric-up', },
+	ref:           { out: null,          category: 'value', icon: 'fas fa-magic', },
+	aiScriptVar:   { out: null,          category: 'value', icon: 'fas fa-magic', },
+	fn:            { out: 'function',    category: 'value', icon: 'fas fa-square-root-alt', },
 };
 
 export const blockDefs = [

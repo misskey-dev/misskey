@@ -90,7 +90,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
-				icon: faPalette,
+				icon: 'fas fa-palette',
 			},
 			theme: {
 				base: 'light',

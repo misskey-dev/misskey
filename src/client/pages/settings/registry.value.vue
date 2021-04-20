@@ -77,7 +77,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.registry,
-				icon: faCogs
+				icon: 'fas fa-cogs'
 			},
 			value: null,
 			valueForEditor: null,

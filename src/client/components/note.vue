@@ -442,7 +442,7 @@ export default defineComponent({
 			this.blur();
 			os.modalMenu([{
 				text: this.$ts.renote,
-				icon: faRetweet,
+				icon: 'fas fa-retweet',
 				action: () => {
 					os.api('notes/create', {
 						renoteId: this.appearNote.id
@@ -450,7 +450,7 @@ export default defineComponent({
 				}
 			}, {
 				text: this.$ts.quote,
-				icon: faQuoteRight,
+				icon: 'fas fa-quote-right',
 				action: () => {
 					os.post({
 						renote: this.appearNote,
@@ -586,62 +586,62 @@ export default defineComponent({
 				});
 
 				menu = [{
-					icon: faCopy,
+					icon: 'fas fa-copy',
 					text: this.$ts.copyContent,
 					action: this.copyContent
 				}, {
-					icon: faLink,
+					icon: 'fas fa-link',
 					text: this.$ts.copyLink,
 					action: this.copyLink
 				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: faExternalLinkSquareAlt,
+					icon: 'fas fa-external-link-square-alt',
 					text: this.$ts.showOnRemote,
 					action: () => {
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
 				{
-					icon: faShareAlt,
+					icon: 'fas fa-share-alt',
 					text: this.$ts.share,
 					action: this.share
 				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
-					icon: faStar,
+					icon: 'fas fa-star',
 					text: this.$ts.unfavorite,
 					action: () => this.toggleFavorite(false)
 				} : {
-					icon: faStar,
+					icon: 'fas fa-star',
 					text: this.$ts.favorite,
 					action: () => this.toggleFavorite(true)
 				}),
 				{
-					icon: faPaperclip,
+					icon: 'fas fa-paperclip',
 					text: this.$ts.clip,
 					action: () => this.clip()
 				},
 				(this.appearNote.userId != this.$i.id) ? statePromise.then(state => state.isWatching ? {
-					icon: faEyeSlash,
+					icon: 'fas fa-eye-slash',
 					text: this.$ts.unwatch,
 					action: () => this.toggleWatch(false)
 				} : {
-					icon: faEye,
+					icon: 'fas fa-eye',
 					text: this.$ts.watch,
 					action: () => this.toggleWatch(true)
 				}) : undefined,
 				this.appearNote.userId == this.$i.id ? (this.$i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
-					icon: faThumbtack,
+					icon: 'fas fa-thumbtack',
 					text: this.$ts.unpin,
 					action: () => this.togglePin(false)
 				} : {
-					icon: faThumbtack,
+					icon: 'fas fa-thumbtack',
 					text: this.$ts.pin,
 					action: () => this.togglePin(true)
 				} : undefined,
 				...(this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					{
-						icon: faBullhorn,
+						icon: 'fas fa-bullhorn',
 						text: this.$ts.promote,
 						action: this.promote
 					}]
@@ -650,7 +650,7 @@ export default defineComponent({
 				...(this.appearNote.userId != this.$i.id ? [
 					null,
 					{
-						icon: faExclamationCircle,
+						icon: 'fas fa-exclamation-circle',
 						text: this.$ts.reportAbuse,
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
@@ -665,12 +665,12 @@ export default defineComponent({
 				...(this.appearNote.userId == this.$i.id || this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					this.appearNote.userId == this.$i.id ? {
-						icon: faEdit,
+						icon: 'fas fa-edit',
 						text: this.$ts.deleteAndEdit,
 						action: this.delEdit
 					} : undefined,
 					{
-						icon: faTrashAlt,
+						icon: 'fas fa-trash-alt',
 						text: this.$ts.delete,
 						danger: true,
 						action: this.del
@@ -680,15 +680,15 @@ export default defineComponent({
 				.filter(x => x !== undefined);
 			} else {
 				menu = [{
-					icon: faCopy,
+					icon: 'fas fa-copy',
 					text: this.$ts.copyContent,
 					action: this.copyContent
 				}, {
-					icon: faLink,
+					icon: 'fas fa-link',
 					text: this.$ts.copyLink,
 					action: this.copyLink
 				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: faExternalLinkSquareAlt,
+					icon: 'fas fa-external-link-square-alt',
 					text: this.$ts.showOnRemote,
 					action: () => {
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
@@ -699,7 +699,7 @@ export default defineComponent({
 
 			if (noteActions.length > 0) {
 				menu = menu.concat([null, ...noteActions.map(action => ({
-					icon: faPlug,
+					icon: 'fas fa-plug',
 					text: action.title,
 					action: () => {
 						action.handler(this.appearNote);
@@ -738,7 +738,7 @@ export default defineComponent({
 			if (!this.isMyRenote) return;
 			os.modalMenu([{
 				text: this.$ts.unrenote,
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: () => {
 					os.api('notes/delete', {
@@ -781,7 +781,7 @@ export default defineComponent({
 		async clip() {
 			const clips = await os.api('clips/list');
 			os.modalMenu([{
-				icon: faPlus,
+				icon: 'fas fa-plus',
 				text: this.$ts.createNew,
 				action: async () => {
 					const { canceled, result } = await os.form(this.$ts.createNewClip, {

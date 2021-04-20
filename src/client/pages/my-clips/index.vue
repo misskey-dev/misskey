@@ -31,9 +31,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.clip,
-				icon: faPaperclip,
+				icon: 'fas fa-paperclip',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.create
 				}
 			},

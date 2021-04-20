@@ -20,7 +20,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.featured,
-				icon: faFireAlt
+				icon: 'fas fa-fire-alt'
 			},
 			pagination: {
 				endpoint: 'notes/featured',

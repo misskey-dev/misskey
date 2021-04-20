@@ -21,10 +21,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.notifications,
-				icon: faBell,
+				icon: 'fas fa-bell',
 				actions: [{
 					text: this.$ts.markAllAsRead,
-					icon: faCheck,
+					icon: 'fas fa-check',
 					handler: () => {
 						os.apiWithDialog('notifications/mark-all-as-read');
 					}

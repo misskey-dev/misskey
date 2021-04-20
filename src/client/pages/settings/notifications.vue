@@ -35,7 +35,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.notifications,
-				icon: faBell
+				icon: 'fas fa-bell'
 			},
 			faCog
 		}

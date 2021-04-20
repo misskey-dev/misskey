@@ -100,11 +100,11 @@ export default defineComponent({
 				action: () => { this.rename(file) }
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? faEyeSlash : faEye,
+				icon: file.isSensitive ? faEyeSlash : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file) }
 			}, {
 				text: this.$ts.attachCancel,
-				icon: faTimesCircle,
+				icon: 'fas fa-times-circle',
 				action: () => { this.detachMedia(file.id) }
 			}], ev.currentTarget || ev.target).then(() => this.menu = null);
 		}

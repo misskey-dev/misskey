@@ -59,7 +59,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.deck,
-				icon: faColumns
+				icon: 'fas fa-columns'
 			},
 			faImage, faCog,
 		}

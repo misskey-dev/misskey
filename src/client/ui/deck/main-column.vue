@@ -72,7 +72,7 @@ export default defineComponent({
 				type: 'label',
 				text: path,
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);

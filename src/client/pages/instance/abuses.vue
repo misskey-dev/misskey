@@ -86,7 +86,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.abuseReports,
-				icon: faExclamationCircle
+				icon: 'fas fa-exclamation-circle'
 			},
 			searchUsername: '',
 			searchHost: '',

@@ -49,7 +49,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.emailNotification,
-				icon: faEnvelope
+				icon: 'fas fa-envelope'
 			},
 
 			mention: this.$i.emailNotificationTypes.includes('mention'),

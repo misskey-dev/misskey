@@ -241,7 +241,7 @@ export default defineComponent({
 		onContextmenu(e) {
 			os.contextMenu([{
 				text: this.$ts.openInWindow,
-				icon: faWindowRestore,
+				icon: 'fas fa-window-restore',
 				action: () => {
 					os.popup(import('./drive-window.vue'), {
 						initialFolder: this.folder
@@ -254,7 +254,7 @@ export default defineComponent({
 				action: this.rename
 			}, null, {
 				text: this.$ts.delete,
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: this.deleteFolder
 			}], e);

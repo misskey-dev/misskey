@@ -49,7 +49,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.list ? {
 				title: this.list.name,
-				icon: faListUl,
+				icon: 'fas fa-list-ul',
 			} : null),
 			list: null,
 			users: [],

@@ -39,7 +39,7 @@
 					<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
 					<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 				</button>
-				<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
+				<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : 'fas fa-paper-plane'"/></button>
 			</div>
 		</footer>
 	</div>

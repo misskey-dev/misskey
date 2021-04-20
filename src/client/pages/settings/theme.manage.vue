@@ -60,7 +60,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.manage,
-				icon: faFolderOpen
+				icon: 'fas fa-folder-open'
 			},
 			installedThemes: getThemes(),
 			builtinThemes,

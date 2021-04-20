@@ -46,7 +46,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.followRequests,
-				icon: faUserClock,
+				icon: 'fas fa-user-clock',
 			},
 			pagination: {
 				endpoint: 'following/requests/list',

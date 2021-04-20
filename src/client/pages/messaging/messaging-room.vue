@@ -75,14 +75,14 @@ const Component = defineComponent({
 				userName: this.user,
 				avatar: this.user,
 				action: {
-					icon: faEllipsisH,
+					icon: 'fas fa-ellipsis'H,
 					handler: this.menu,
 				},
 			} : {
 				title: this.group.name,
-				icon: faUsers,
+				icon: 'fas fa-users',
 				action: {
-					icon: faEllipsisH,
+					icon: 'fas fa-ellipsis'H,
 					handler: this.menu,
 				},
 			} : null),
@@ -325,14 +325,14 @@ const Component = defineComponent({
 
 			os.modalMenu([this.inWindow ? undefined : {
 				text: this.$ts.openInWindow,
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				action: () => {
 					os.pageWindow(path);
 					this.$router.back();
 				},
 			}, this.inWindow ? undefined : {
 				text: this.$ts.popout,
-				icon: faExternalLinkAlt,
+				icon: 'fas fa-external-link-alt',
 				action: () => {
 					popout(path);
 					this.$router.back();

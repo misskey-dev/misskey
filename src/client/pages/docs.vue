@@ -23,7 +23,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.help,
-				icon: faQuestionCircle
+				icon: 'fas fa-question-circle'
 			},
 			docs: [],
 			faQuestionCircle

@@ -277,7 +277,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instance,
-				icon: faCog,
+				icon: 'fas fa-cog',
 			},
 			meta: null,
 			url,

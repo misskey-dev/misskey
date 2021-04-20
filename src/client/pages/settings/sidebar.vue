@@ -45,7 +45,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.sidebar,
-				icon: faListUl
+				icon: 'fas fa-list-ul'
 			},
 			menuDef: sidebarDef,
 			items: '',

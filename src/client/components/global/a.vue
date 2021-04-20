@@ -57,31 +57,31 @@ export default defineComponent({
 				type: 'label',
 				text: this.to,
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(this.to);
 				}
 			}, this.sideViewHook ? {
-				icon: faColumns,
+				icon: 'fas fa-columns',
 				text: this.$ts.openInSideView,
 				action: () => {
 					this.sideViewHook(this.to);
 				}
 			} : undefined, {
-				icon: faExpandAlt,
+				icon: 'fas fa-expand-alt',
 				text: this.$ts.showInPage,
 				action: () => {
 					this.$router.push(this.to);
 				}
 			}, null, {
-				icon: faExternalLinkAlt,
+				icon: 'fas fa-external-link-alt',
 				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.to, '_blank');
 				}
 			}, {
-				icon: faLink,
+				icon: 'fas fa-link',
 				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(`${url}${this.to}`);

@@ -60,7 +60,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.muteAndBlock,
-				icon: faBan
+				icon: 'fas fa-ban'
 			},
 			tab: 'mute',
 			mutingPagination: {

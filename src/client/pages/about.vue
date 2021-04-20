@@ -62,7 +62,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceInfo,
-				icon: faInfoCircle
+				icon: 'fas fa-info-circle'
 			},
 			version,
 			instanceName,

@@ -81,7 +81,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.federation,
-				icon: faGlobe
+				icon: 'fas fa-globe'
 			},
 			host: '',
 			state: 'federating',

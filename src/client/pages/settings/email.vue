@@ -47,7 +47,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.email,
-				icon: faEnvelope
+				icon: 'fas fa-envelope'
 			},
 			faCog, faExclamationTriangle, faCheck, faBell
 		}

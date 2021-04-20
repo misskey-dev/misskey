@@ -49,7 +49,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.install,
-				icon: faDownload
+				icon: 'fas fa-download'
 			},
 			code: null,
 			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye

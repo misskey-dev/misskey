@@ -78,7 +78,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.profile,
-				icon: faUser
+				icon: 'fas fa-user'
 			},
 			host,
 			langs,

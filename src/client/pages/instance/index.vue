@@ -91,21 +91,21 @@ export default defineComponent({
 					id: 'index',
 					title: null,
 					tooltip: this.$ts.instance,
-					icon: faServer,
+					icon: 'fas fa-server',
 					onClick: () => { this.page = 'index'; },
 					selected: computed(() => this.page === 'index')
 				}, {
 					id: 'metrics',
 					title: null,
 					tooltip: this.$ts.metrics,
-					icon: faHeartbeat,
+					icon: 'fas fa-heartbeat',
 					onClick: () => { this.page = 'metrics'; },
 					selected: computed(() => this.page === 'metrics')
 				}, {
 					id: 'logs',
 					title: null,
 					tooltip: this.$ts.logs,
-					icon: faStream,
+					icon: 'fas fa-stream',
 					onClick: () => { this.page = 'logs'; },
 					selected: computed(() => this.page === 'logs')
 				}]

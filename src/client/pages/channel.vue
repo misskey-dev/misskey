@@ -56,7 +56,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.channel ? {
 				title: this.channel.name,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 			} : null),
 			channel: null,
 			showBanner: true,

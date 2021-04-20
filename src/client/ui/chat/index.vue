@@ -293,7 +293,7 @@ export default defineComponent({
 		openChannelMenu(ev) {
 			os.modalMenu([{
 				text: this.$ts.copyUrl,
-				icon: faLink,
+				icon: 'fas fa-link',
 				action: () => {
 					copyToClipboard(`${url}/channels/${this.currentChannel.id}`);
 				}
@@ -323,13 +323,13 @@ export default defineComponent({
 				type: 'label',
 				text: path,
 			}, {
-				icon: faColumns,
+				icon: 'fas fa-columns',
 				text: this.$ts.openInSideView,
 				action: () => {
 					this.$refs.side.navigate(path);
 				}
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);

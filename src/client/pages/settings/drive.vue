@@ -60,7 +60,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.drive,
-				icon: faCloud
+				icon: 'fas fa-cloud'
 			},
 			fetching: true,
 			usage: null,

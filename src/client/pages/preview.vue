@@ -19,7 +19,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.preview,
-				icon: faEye,
+				icon: 'fas fa-eye',
 			},
 		}
 	},

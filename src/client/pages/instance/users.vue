@@ -103,9 +103,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.users,
-				icon: faUsers,
+				icon: 'fas fa-users',
 				action: {
-					icon: faSearch,
+					icon: 'fas fa-search',
 					handler: this.searchUser
 				}
 			},

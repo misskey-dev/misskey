@@ -24,7 +24,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.error,
-				icon: faExclamationTriangle
+				icon: 'fas fa-exclamation-triangle'
 			},
 			faExclamationTriangle
 		};

@@ -111,7 +111,7 @@ export default defineComponent({
 				if (menu.length > 0) menu.push(null);
 				menu.push({
 					text: this.$ts.share,
-					icon: faShareAlt,
+					icon: 'fas fa-share-alt',
 					action: this.share
 				});
 			}

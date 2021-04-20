@@ -45,7 +45,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._theme.install,
-				icon: faDownload
+				icon: 'fas fa-download'
 			},
 			installThemeCode: null,
 			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye

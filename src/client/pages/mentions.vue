@@ -20,7 +20,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.mentions,
-				icon: faAt
+				icon: 'fas fa-at'
 			},
 			pagination: {
 				endpoint: 'notes/mentions',

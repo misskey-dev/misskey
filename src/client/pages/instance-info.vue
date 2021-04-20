@@ -185,10 +185,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceInfo,
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				actions: [{
 					text: `https://${this.host}`,
-					icon: faExternalLinkAlt,
+					icon: 'fas fa-external-link-alt',
 					handler: () => {
 						window.open(`https://${this.host}`, '_blank');
 					}

@@ -49,9 +49,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.channel,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.create
 				}
 			},

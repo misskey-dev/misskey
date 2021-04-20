@@ -93,7 +93,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.twoStepAuthentication,
-				icon: faLock
+				icon: 'fas fa-lock'
 			},
 			data: null,
 			supportsCredentials: !!navigator.credentials,

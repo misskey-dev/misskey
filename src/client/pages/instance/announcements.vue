@@ -47,7 +47,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
-				icon: faBroadcastTower
+				icon: 'fas fa-broadcast-tower'
 			},
 			announcements: [],
 			faBroadcastTower, faSave, faTrashAlt, faPlus

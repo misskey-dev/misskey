@@ -606,11 +606,11 @@ export default defineComponent({
 				type: 'label'
 			}, {
 				text: this.$ts.upload,
-				icon: faUpload,
+				icon: 'fas fa-upload',
 				action: () => { this.selectLocalFile(); }
 			}, {
 				text: this.$ts.fromUrl,
-				icon: faLink,
+				icon: 'fas fa-link',
 				action: () => { this.urlUpload(); }
 			}, null, {
 				text: this.folder ? this.folder.name : this.$ts.drive,
@@ -621,11 +621,11 @@ export default defineComponent({
 				action: () => { this.renameFolder(this.folder); }
 			} : undefined, this.folder ? {
 				text: this.$ts.deleteFolder,
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				action: () => { this.deleteFolder(this.folder); }
 			} : undefined, {
 				text: this.$ts.createFolder,
-				icon: faFolderPlus,
+				icon: 'fas fa-folder-plus',
 				action: () => { this.createFolder(); }
 			}];
 		},

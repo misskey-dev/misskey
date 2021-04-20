@@ -51,7 +51,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.serverLogs,
-				icon: faStream
+				icon: 'fas fa-stream'
 			},
 			logs: [],
 			logLevel: 'all',

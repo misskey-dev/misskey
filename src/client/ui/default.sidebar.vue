@@ -143,7 +143,7 @@ export default defineComponent({
 				to: `/@${ this.$i.username }`,
 				avatar: this.$i,
 			}, null, ...accountItemPromises, {
-				icon: faPlus,
+				icon: 'fas fa-plus',
 				text: this.$ts.addAcount,
 				action: () => {
 					os.modalMenu([{
@@ -164,57 +164,57 @@ export default defineComponent({
 				type: 'link',
 				text: this.$ts.dashboard,
 				to: '/instance',
-				icon: faTachometerAlt,
+				icon: 'fas fa-tachometer-alt',
 			}, null, this.$i.isAdmin ? {
 				type: 'link',
 				text: this.$ts.settings,
 				to: '/instance/settings',
-				icon: faCog,
+				icon: 'fas fa-cog',
 			} : undefined, {
 				type: 'link',
 				text: this.$ts.customEmojis,
 				to: '/instance/emojis',
-				icon: faLaugh,
+				icon: 'fas fa-laugh',
 			}, {
 				type: 'link',
 				text: this.$ts.users,
 				to: '/instance/users',
-				icon: faUsers,
+				icon: 'fas fa-users',
 			}, {
 				type: 'link',
 				text: this.$ts.files,
 				to: '/instance/files',
-				icon: faCloud,
+				icon: 'fas fa-cloud',
 			}, {
 				type: 'link',
 				text: this.$ts.jobQueue,
 				to: '/instance/queue',
-				icon: faExchangeAlt,
+				icon: 'fas fa-exchange-alt',
 			}, {
 				type: 'link',
 				text: this.$ts.federation,
 				to: '/instance/federation',
-				icon: faGlobe,
+				icon: 'fas fa-globe',
 			}, {
 				type: 'link',
 				text: this.$ts.relays,
 				to: '/instance/relays',
-				icon: faProjectDiagram,
+				icon: 'fas fa-project-diagram',
 			}, {
 				type: 'link',
 				text: this.$ts.announcements,
 				to: '/instance/announcements',
-				icon: faBroadcastTower,
+				icon: 'fas fa-broadcast-tower',
 			}, {
 				type: 'link',
 				text: this.$ts.abuseReports,
 				to: '/instance/abuses',
-				icon: faExclamationCircle,
+				icon: 'fas fa-exclamation-circle',
 			}, {
 				type: 'link',
 				text: this.$ts.logs,
 				to: '/instance/logs',
-				icon: faStream,
+				icon: 'fas fa-stream',
 			}], ev.currentTarget || ev.target);
 		},
 

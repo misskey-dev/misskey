@@ -34,7 +34,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.experimentalFeatures,
-				icon: faFlask
+				icon: 'fas fa-flask'
 			},
 			stats: null
 		}

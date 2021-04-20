@@ -33,7 +33,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.jobQueue,
-				icon: faExchangeAlt,
+				icon: 'fas fa-exchange-alt',
 			},
 			connection: os.stream.useSharedConnection('queueStats'),
 			faExchangeAlt, faTrashAlt

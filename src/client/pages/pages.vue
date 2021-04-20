@@ -47,9 +47,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.pages,
-				icon: faStickyNote,
+				icon: 'fas fa-sticky-note',
 				actions: [{
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					text: this.$ts.create,
 					handler: this.create
 				}]

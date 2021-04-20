@@ -134,7 +134,7 @@ export default defineComponent({
 
 		getMenu() {
 			const items = [{
-				icon: faPencilAlt,
+				icon: 'fas fa-pencil-alt',
 				text: this.$ts.edit,
 				action: async () => {
 					const { canceled, result } = await os.form(this.column.name, {
@@ -158,43 +158,43 @@ export default defineComponent({
 					updateColumn(this.column.id, result);
 				}
 			}, null, {
-				icon: faArrowLeft,
+				icon: 'fas fa-arrow-left',
 				text: this.$ts._deck.swapLeft,
 				action: () => {
 					swapLeftColumn(this.column.id);
 				}
 			}, {
-				icon: faArrowRight,
+				icon: 'fas fa-arrow-right',
 				text: this.$ts._deck.swapRight,
 				action: () => {
 					swapRightColumn(this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: faArrowUp,
+				icon: 'fas fa-arrow-up',
 				text: this.$ts._deck.swapUp,
 				action: () => {
 					swapUpColumn(this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				icon: faArrowDown,
+				icon: 'fas fa-arrow-down',
 				text: this.$ts._deck.swapDown,
 				action: () => {
 					swapDownColumn(this.column.id);
 				}
 			} : undefined, null, {
-				icon: faWindowRestore,
+				icon: 'fas fa-window-restore',
 				text: this.$ts._deck.stackLeft,
 				action: () => {
 					stackLeftColumn(this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts._deck.popRight,
 				action: () => {
 					popRightColumn(this.column.id);
 				}
 			} : undefined, null, {
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				text: this.$ts.remove,
 				danger: true,
 				action: () => {

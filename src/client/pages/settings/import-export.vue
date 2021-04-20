@@ -49,7 +49,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.importAndExport,
-				icon: faBoxes
+				icon: 'fas fa-boxes'
 			},
 			faDownload, faUpload, faBoxes
 		}

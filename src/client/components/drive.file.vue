@@ -87,22 +87,22 @@ export default defineComponent({
 				action: this.rename
 			}, {
 				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: this.file.isSensitive ? faEye : faEyeSlash,
+				icon: this.file.isSensitive ? faEye : 'fas fa-eye-slash',
 				action: this.toggleSensitive
 			}, null, {
 				text: this.$ts.copyUrl,
-				icon: faLink,
+				icon: 'fas fa-link',
 				action: this.copyUrl
 			}, {
 				type: 'a',
 				href: this.file.url,
 				target: '_blank',
 				text: this.$ts.download,
-				icon: faDownload,
+				icon: 'fas fa-download',
 				download: this.file.name
 			}, null, {
 				text: this.$ts.delete,
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: this.deleteFile
 			}];

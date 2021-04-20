@@ -62,9 +62,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.reaction,
-				icon: faLaugh,
+				icon: 'fas fa-laugh',
 				action: {
-					icon: faEye,
+					icon: 'fas fa-eye',
 					handler: this.preview
 				}
 			},

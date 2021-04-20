@@ -36,7 +36,7 @@
 				<span>{{ $ts._visibility.localOnly }}</span>
 				<span>{{ $ts._visibility.localOnlyDescription }}</span>
 			</div>
-			<div><Fa :icon="localOnly ? faToggleOn : faToggleOff" :key="localOnly"/></div>
+			<div><Fa :icon="localOnly ? faToggleOn : 'fas fa-toggle-off'" :key="localOnly"/></div>
 		</button>
 	</div>
 </MkModal>

@@ -41,7 +41,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.title ? {
 				title: this.title,
-				icon: faQuestionCircle,
+				icon: 'fas fa-question-circle',
 			} : null),
 			title: null,
 			body: null,

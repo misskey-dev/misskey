@@ -27,7 +27,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.plugins,
-				icon: faPlug
+				icon: 'fas fa-plug'
 			},
 			plugins: ColdDeviceStorage.get('plugins').length,
 			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog

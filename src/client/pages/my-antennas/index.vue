@@ -31,9 +31,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.manageAntennas,
-				icon: faSatellite,
+				icon: 'fas fa-satellite',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.create
 				}
 			},

@@ -29,7 +29,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._reversi.reversi,
-				icon: faGamepad
+				icon: 'fas fa-gamepad'
 			},
 			game: null,
 			connection: null,

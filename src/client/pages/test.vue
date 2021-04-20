@@ -154,7 +154,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'TEST',
-				icon: faExclamationTriangle
+				icon: 'fas fa-exclamation-triangle'
 			},
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',

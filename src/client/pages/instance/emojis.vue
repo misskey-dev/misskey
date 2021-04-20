@@ -73,9 +73,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.customEmojis,
-				icon: faLaugh,
+				icon: 'fas fa-laugh',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.add
 				}
 			},
@@ -144,7 +144,7 @@ export default defineComponent({
 				text: ':' + emoji.name + ':',
 			}, {
 				text: this.$ts.import,
-				icon: faPlus,
+				icon: 'fas fa-plus',
 				action: () => { this.im(emoji) }
 			}], ev.currentTarget || ev.target);
 		}

@@ -71,7 +71,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.sounds,
-				icon: faMusic
+				icon: 'fas fa-music'
 			},
 			sounds: {},
 			faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown, faRedo,
@@ -84,7 +84,7 @@ export default defineComponent({
 			set(value) { ColdDeviceStorage.set('sound_masterVolume', value); }
 		},
 		volumeIcon() {
-			return this.masterVolume === 0 ? faVolumeMute : faVolumeUp;
+			return this.masterVolume === 0 ? faVolumeMute : 'fas fa-volume-up';
 		}
 	},
 

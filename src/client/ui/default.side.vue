@@ -83,28 +83,28 @@ export default defineComponent({
 				type: 'label',
 				text: this.path,
 			}, {
-				icon: faExpandAlt,
+				icon: 'fas fa-expand-alt',
 				text: this.$ts.showInPage,
 				action: () => {
 					this.$router.push(this.path);
 					this.close();
 				}
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(this.path);
 					this.close();
 				}
 			}, null, {
-				icon: faExternalLinkAlt,
+				icon: 'fas fa-external-link-alt',
 				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.url, '_blank');
 					this.close();
 				}
 			}, {
-				icon: faLink,
+				icon: 'fas fa-link',
 				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);

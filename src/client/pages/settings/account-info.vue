@@ -162,7 +162,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.accountInfo,
-				icon: faInfoCircle
+				icon: 'fas fa-info-circle'
 			},
 			stats: null
 		}

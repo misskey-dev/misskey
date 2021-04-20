@@ -40,7 +40,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.relays,
-				icon: faProjectDiagram,
+				icon: 'fas fa-project-diagram',
 			},
 			relays: [],
 			inbox: '',

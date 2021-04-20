@@ -37,7 +37,7 @@ export async function search() {
 		// TODO
 		//v.$root.$emit('warp', date);
 		os.dialog({
-			icon: faHistory,
+			icon: 'fas fa-history',
 			iconOnly: true, autoClose: true
 		});
 		return;

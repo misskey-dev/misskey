@@ -29,7 +29,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.share,
-				icon: faShareAlt
+				icon: 'fas fa-share-alt'
 			},
 			title: null,
 			text: null,

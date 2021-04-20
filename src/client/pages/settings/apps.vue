@@ -61,7 +61,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.installedApps,
-				icon: faPlug,
+				icon: 'fas fa-plug',
 			},
 			pagination: {
 				endpoint: 'i/apps',

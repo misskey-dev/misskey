@@ -86,7 +86,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
-				icon: faCloud
+				icon: 'fas fa-cloud'
 			},
 			q: null,
 			origin: 'local',

@@ -125,19 +125,19 @@ export default defineComponent({
 		showMenu(ev) {
 			os.modalMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				action: () => {
 					os.pageWindow('/about');
 				}
 			}, {
 				text: this.$ts.aboutMisskey,
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				action: () => {
 					os.pageWindow('/about-misskey');
 				}
 			}, null, {
 				text: this.$ts.help,
-				icon: faQuestionCircle,
+				icon: 'fas fa-question-circle',
 				action: () => {
 					os.pageWindow('/docs');
 				}

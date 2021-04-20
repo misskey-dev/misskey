@@ -59,7 +59,7 @@ export default defineComponent({
 					h('span', [
 						h(FontAwesomeIcon, {
 							class: 'icon',
-							icon: faAngleUp,
+							icon: 'fas fa-angle-up',
 						}),
 						getDateText(item.createdAt)
 					]),
@@ -67,7 +67,7 @@ export default defineComponent({
 						getDateText(this.items[i + 1].createdAt),
 						h(FontAwesomeIcon, {
 							class: 'icon',
-							icon: faAngleDown,
+							icon: 'fas fa-angle-down',
 						})
 					])
 				]));

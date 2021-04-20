@@ -64,9 +64,9 @@ export default defineComponent({
 			queue: 0,
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.timeline,
-				icon: this.src === 'local' ? faComments : this.src === 'social' ? faShareAlt : this.src === 'global' ? faGlobe : faHome,
+				icon: this.src === 'local' ? faComments : this.src === 'social' ? faShareAlt : this.src === 'global' ? faGlobe : 'fas fa-home',
 				actions: [{
-					icon: faCalendarAlt,
+					icon: 'fas fa-calendar-alt',
 					text: this.$ts.jumpToSpecifiedDate,
 					handler: this.timetravel
 				}]

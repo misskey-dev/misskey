@@ -175,13 +175,13 @@ export default defineComponent({
 				type: 'label',
 				text: path,
 			}, {
-				icon: this.fullView ? faCompress : faExpand,
+				icon: this.fullView ? faCompress : 'fas fa-expand',
 				text: this.fullView ? this.$ts.quitFullView : this.$ts.fullView,
 				action: () => {
 					this.fullView = !this.fullView;
 				}
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);

@@ -18,7 +18,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.notFound,
-				icon: faExclamationTriangle
+				icon: 'fas fa-exclamation-triangle'
 			},
 		}
 	},

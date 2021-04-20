@@ -20,7 +20,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: computed(() => this.folder ? this.folder.name : this.$ts.drive),
-				icon: faCloud,
+				icon: 'fas fa-cloud',
 				menu: () => this.$refs.drive.getMenu()
 			},
 			folder: null,

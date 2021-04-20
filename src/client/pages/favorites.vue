@@ -21,7 +21,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.favorites,
-				icon: faStar
+				icon: 'fas fa-star'
 			},
 			pagination: {
 				endpoint: 'i/favorites',

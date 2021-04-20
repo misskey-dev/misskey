@@ -33,7 +33,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
-				icon: faBroadcastTower
+				icon: 'fas fa-broadcast-tower'
 			},
 			pagination: {
 				endpoint: 'announcements',

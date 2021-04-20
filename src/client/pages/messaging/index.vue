@@ -54,7 +54,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.messaging,
-				icon: faComments
+				icon: 'fas fa-comments'
 			},
 			fetching: true,
 			moreFetching: false,
@@ -120,11 +120,11 @@ export default defineComponent({
 		start(ev) {
 			os.modalMenu([{
 				text: this.$ts.messagingWithUser,
-				icon: faUser,
+				icon: 'fas fa-user',
 				action: () => { this.startUser() }
 			}, {
 				text: this.$ts.messagingWithGroup,
-				icon: faUsers,
+				icon: 'fas fa-users',
 				action: () => { this.startGroup() }
 			}], ev.currentTarget || ev.target);
 		},

@@ -28,9 +28,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.manageLists,
-				icon: faListUl,
+				icon: 'fas fa-list-ul',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.create
 				}
 			},

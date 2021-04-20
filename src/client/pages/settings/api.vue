@@ -31,7 +31,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'API',
-				icon: faKey
+				icon: 'fas fa-key'
 			},
 			isDesktop: window.innerWidth >= 1100,
 		};

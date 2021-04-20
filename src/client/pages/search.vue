@@ -22,7 +22,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: computed(() => this.$t('searchWith', { q: this.$route.query.q })),
-				icon: faSearch
+				icon: 'fas fa-search'
 			},
 			pagination: {
 				endpoint: 'notes/search',

@@ -46,7 +46,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.scratchpad,
-				icon: faTerminal,
+				icon: 'fas fa-terminal',
 			},
 			code: '',
 			logs: [],

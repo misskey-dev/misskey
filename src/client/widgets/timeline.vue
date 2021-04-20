@@ -9,7 +9,7 @@
 			<Fa v-if="props.src === 'list'" :icon="faListUl"/>
 			<Fa v-if="props.src === 'antenna'" :icon="faSatellite"/>
 			<span style="margin-left: 8px;">{{ props.src === 'list' ? props.list.name : props.src === 'antenna' ? props.antenna.name : $t('_timelines.' + props.src) }}</span>
-			<Fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
+			<Fa :icon="menuOpened ? faAngleUp : 'fas fa-angle-down'" style="margin-left: 8px;"/>
 		</button>
 	</template>
 
@@ -75,7 +75,7 @@ export default defineComponent({
 			]);
 			const antennaItems = antennas.map(antenna => ({
 				text: antenna.name,
-				icon: faSatellite,
+				icon: 'fas fa-satellite',
 				action: () => {
 					this.props.antenna = antenna;
 					this.setSrc('antenna');
@@ -83,7 +83,7 @@ export default defineComponent({
 			}));
 			const listItems = lists.map(list => ({
 				text: list.name,
-				icon: faListUl,
+				icon: 'fas fa-list-ul',
 				action: () => {
 					this.props.list = list;
 					this.setSrc('list');
@@ -91,19 +91,19 @@ export default defineComponent({
 			}));
 			os.modalMenu([{
 				text: this.$ts._timelines.home,
-				icon: faHome,
+				icon: 'fas fa-home',
 				action: () => { this.setSrc('home') }
 			}, {
 				text: this.$ts._timelines.local,
-				icon: faComments,
+				icon: 'fas fa-comments',
 				action: () => { this.setSrc('local') }
 			}, {
 				text: this.$ts._timelines.social,
-				icon: faShareAlt,
+				icon: 'fas fa-share-alt',
 				action: () => { this.setSrc('social') }
 			}, {
 				text: this.$ts._timelines.global,
-				icon: faGlobe,
+				icon: 'fas fa-globe',
 				action: () => { this.setSrc('global') }
 			}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget || ev.target).then(() => {
 				this.menuOpened = false;

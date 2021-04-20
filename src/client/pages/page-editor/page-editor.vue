@@ -143,7 +143,7 @@ export default defineComponent({
 				}
 				return {
 					title: title,
-					icon: faPencilAlt,
+					icon: 'fas fa-pencil-alt',
 				};
 			}),
 			author: this.$i,

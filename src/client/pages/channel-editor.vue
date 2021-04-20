@@ -48,10 +48,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
 				title: this.$ts._channel.edit,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 			} : {
 				title: this.$ts._channel.create,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 			}),
 			channel: null,
 			name: null,

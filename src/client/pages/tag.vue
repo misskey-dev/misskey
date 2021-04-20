@@ -27,7 +27,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.tag,
-				icon: faHashtag
+				icon: 'fas fa-hashtag'
 			},
 			pagination: {
 				endpoint: 'notes/search-by-tag',

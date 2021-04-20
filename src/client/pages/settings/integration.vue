@@ -51,7 +51,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.integration,
-				icon: faShareAlt
+				icon: 'fas fa-share-alt'
 			},
 			apiUrl,
 			twitterForm: null,
