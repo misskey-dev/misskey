@@ -1,11 +1,11 @@
 import $ from 'cafy';
 import * as ms from 'ms';
-import define from '../../define';
-import { ID } from '../../../../misc/cafy-id';
-import { DriveFiles, GalleryPosts } from '../../../../models';
-import { genId } from '../../../../misc/gen-id';
-import { GalleryPost } from '../../../../models/entities/gallery-post';
-import { ApiError } from '../../error';
+import define from '../../../define';
+import { ID } from '../../../../../misc/cafy-id';
+import { DriveFiles, GalleryPosts } from '../../../../../models';
+import { genId } from '../../../../../misc/gen-id';
+import { GalleryPost } from '../../../../../models/entities/gallery-post';
+import { ApiError } from '../../../error';
 
 export const meta = {
 	tags: ['gallery'],

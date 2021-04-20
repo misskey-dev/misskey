@@ -67,7 +67,7 @@ export default defineComponent({
 		},
 
 		publish() {
-			os.apiWithDialog('gallery/create', {
+			os.apiWithDialog('gallery/posts/create', {
 				title: this.title,
 				description: this.description,
 				fileIds: this.files.map(file => file.id),

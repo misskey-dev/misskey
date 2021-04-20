@@ -38,6 +38,7 @@ export const router = createRouter({
 		{ path: '/pages/new', component: page('page-editor/page-editor') },
 		{ path: '/pages/edit/:pageId', component: page('page-editor/page-editor'), props: route => ({ initPageId: route.params.pageId }) },
 		{ path: '/gallery/new', component: page('gallery/new') },
+		{ path: '/gallery/:postId', component: page('gallery/post'), props: route => ({ postId: route.params.postId }) },
 		{ path: '/channels', component: page('channels') },
 		{ path: '/channels/new', component: page('channel-editor') },
 		{ path: '/channels/:channelId/edit', component: page('channel-editor'), props: true },
