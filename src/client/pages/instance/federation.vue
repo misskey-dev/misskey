@@ -42,7 +42,7 @@
 		<div class="_content">
 			<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
 				<div class="ppgwaixt _panel" v-for="instance in items" :key="instance.id" @click="info(instance)">
-					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
+					<div class="host"><i class="fas fa-circle indicator" :class="getStatus(instance)"></i><b>{{ instance.host }}</b></div>
 					<div class="status">
 						<span class="sub" v-if="instance.followersCount > 0"><i class="fas fa-caret-down icon"></i>Sub</span>
 						<span class="sub" v-else><i class="fas fa-caret-down icon"></i>-</span>

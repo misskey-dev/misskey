@@ -1,6 +1,6 @@
 <template>
 <XColumn :column="column" :is-stacked="isStacked">
-	<template #header><Fa :icon="faAt" style="margin-right: 8px;"/>{{ column.name }}</template>
+	<template #header><i class="fas fa-at" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
 </XColumn>

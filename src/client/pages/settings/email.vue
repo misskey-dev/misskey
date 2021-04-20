@@ -3,8 +3,8 @@
 	<FormGroup>
 		<template #label>{{ $ts.emailAddress }}</template>
 		<FormLink to="/settings/email/address">
-			<template v-if="$i.email && !$i.emailVerified" #icon><Fa :icon="faExclamationTriangle" style="color: var(--warn);"/></template>
-			<template v-else-if="$i.email && $i.emailVerified" #icon><Fa :icon="faCheck" style="color: var(--success);"/></template>
+			<template v-if="$i.email && !$i.emailVerified" #icon><i class="fas fa-exclamation-triangle" style="color: var(--warn);"></i></template>
+			<template v-else-if="$i.email && $i.emailVerified" #icon><i class="fas fa-check" style="color: var(--success);"></i></template>
 			{{ $i.email || $ts.notSet }}
 		</FormLink>
 	</FormGroup>

@@ -1,6 +1,6 @@
 <template>
 <XColumn :func="{ handler: func, title: $ts.editWidgets }" :naked="true" :column="column" :is-stacked="isStacked">
-	<template #header><Fa :icon="faWindowMaximize" style="margin-right: 8px;"/>{{ column.name }}</template>
+	<template #header><i class="fas fa-window-maximize" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<div class="wtdtxvec">
 		<XWidgets :edit="edit" :widgets="column.widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>

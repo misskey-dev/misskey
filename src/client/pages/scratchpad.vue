@@ -6,7 +6,7 @@
 	</div>
 
 	<MkContainer :foldable="true" class="_gap">
-		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
+		<template #header>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>

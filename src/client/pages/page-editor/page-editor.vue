@@ -1,6 +1,6 @@
 <template>
 <div class="_root">
-	<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts._pages.viewPage }}</MkA>
+	<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><i class="fas fa-external-link-square-alt"></i> {{ $ts._pages.viewPage }}</MkA>
 
 	<div class="buttons" style="margin: 16px;">
 		<MkButton inline @click="save" primary class="save" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>

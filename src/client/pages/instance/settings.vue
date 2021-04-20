@@ -79,7 +79,7 @@
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faEnvelope" /> {{ $ts.emailConfig }}</div>
+		<div class="_title"><i class="fas fa-envelope"></i> {{ $ts.emailConfig }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableEmail" @update:value="save()">{{ $ts.enableEmail }}<template #desc>{{ $ts.emailConfigInfo }}</template></MkSwitch>
 			<MkInput v-model:value="email" type="email" :disabled="!enableEmail">{{ $ts.email }}</MkInput>
@@ -95,7 +95,7 @@
 			<MkInfo>{{ $ts.emptyToDisableSmtpAuth }}</MkInfo>
 			<MkSwitch v-model:value="smtpSecure" :disabled="!enableEmail">{{ $ts.smtpSecure }}<template #desc>{{ $ts.smtpSecureInfo }}</template></MkSwitch>
 			<div>
-			  <MkButton :disabled="!enableEmail" primary inline @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+				<MkButton :disabled="!enableEmail" primary inline @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 				<MkButton :disabled="!enableEmail" inline @click="testEmail()">{{ $ts.testEmail }}</MkButton>
 			</div>
 		</div>
@@ -206,7 +206,7 @@
 	<section class="_card _gap">
 		<div class="_title"><i class="fas fa-share-alt"></i> {{ $ts.integration }}</div>
 		<div class="_content">
-			<header><i class="fas fa-twitter"></i> Twitter</header>
+			<header><i class="fab fa-twitter"></i> Twitter</header>
 			<MkSwitch v-model:value="enableTwitterIntegration">{{ $ts.enable }}</MkSwitch>
 			<template v-if="enableTwitterIntegration">
 				<MkInfo>Callback URL: {{ `${url}/api/tw/cb` }}</MkInfo>
@@ -238,7 +238,7 @@
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faArchway" /> Summaly Proxy</div>
+		<div class="_title"><i class="fas fa-archway"></i> Summaly Proxy</div>
 		<div class="_content">
 			<MkInput v-model:value="summalyProxy">URL</MkInput>
 			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>

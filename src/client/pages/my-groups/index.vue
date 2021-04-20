@@ -4,7 +4,7 @@
 		<MkTab v-model:value="tab">
 			<option value="owned">{{ $ts.ownedGroups }}</option>
 			<option value="joined">{{ $ts.joinedGroups }}</option>
-			<option value="invites"><Fa :icon="faEnvelopeOpenText"/> {{ $ts.invites }}</option>
+			<option value="invites"><i class="fas fa-envelope-open-text"></i> {{ $ts.invites }}</option>
 		</MkTab>
 	</div>
 

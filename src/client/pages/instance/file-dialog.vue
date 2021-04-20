@@ -21,7 +21,7 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkButton full @click="showUser"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts.user }}</MkButton>
+				<MkButton full @click="showUser"><i class="fas fa-external-link-square-alt"></i> {{ $ts.user }}</MkButton>
 				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 			</div>
 		</div>

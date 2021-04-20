@@ -95,8 +95,8 @@
 	</div>
 	<div class="ftskorzw narrow _root" v-else-if="user && narrow === true" v-size="{ max: [500] }">
 		<!-- TODO -->
-		<!-- <div class="punished" v-if="user.isSuspended"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSuspended }}</div> -->
-		<!-- <div class="punished" v-if="user.isSilenced"><Fa :icon="faExclamationTriangle" style="margin-right: 8px;"/> {{ $ts.userSilenced }}</div> -->
+		<!-- <div class="punished" v-if="user.isSuspended"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSuspended }}</div> -->
+		<!-- <div class="punished" v-if="user.isSilenced"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> {{ $ts.userSilenced }}</div> -->
 
 		<div class="profile">
 			<MkRemoteCaution v-if="user.host != null" :href="user.url" class="warn"/>

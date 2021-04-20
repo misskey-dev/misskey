@@ -1,6 +1,6 @@
 <template>
 <XColumn :column="column" :is-stacked="isStacked" :func="{ handler: func, title: $ts.notificationSetting }">
-	<template #header><Fa :icon="faBell" style="margin-right: 8px;"/>{{ column.name }}</template>
+	<template #header><i class="fas fa-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotifications :include-types="column.includingTypes"/>
 </XColumn>

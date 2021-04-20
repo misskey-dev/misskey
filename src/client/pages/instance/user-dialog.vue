@@ -31,7 +31,7 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkButton full @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts.profile }}</MkButton>
+				<MkButton full @click="openProfile"><i class="fas fa-external-link-square-alt"></i> {{ $ts.profile }}</MkButton>
 				<MkButton full v-if="user.host != null" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</MkButton>
 				<MkButton full @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</MkButton>
 				<MkButton full @click="deleteAllFiles" danger><i class="fas fa-trash-alt"></i> {{ $ts.deleteAllFiles }}</MkButton>

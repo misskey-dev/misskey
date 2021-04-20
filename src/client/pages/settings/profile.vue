@@ -19,7 +19,7 @@
 
 	<FormInput v-model:value="location" manual-save>
 		<span>{{ $ts.location }}</span>
-		<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
+		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
 	</FormInput>
 
 	<FormInput v-model:value="birthday" type="date" manual-save>

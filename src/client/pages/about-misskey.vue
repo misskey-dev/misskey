@@ -25,7 +25,7 @@
 				<template #suffix>Crowdin</template>
 			</FormLink>
 			<FormLink to="https://www.patreon.com/syuilo" external>
-				<template #icon><Fa :icon="faHandHoldingMedical"/></template>
+				<template #icon><i class="fas fa-hand-holding-medical"></i></template>
 				{{ $ts._aboutMisskey.donate }}
 				<template #suffix>Patreon</template>
 			</FormLink>

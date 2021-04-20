@@ -1,7 +1,7 @@
 <template>
 <XWindow ref="window" :initial-width="650" :initial-height="420" :can-resize="true" @closed="$emit('closed')">
 	<template #header>
-		<Fa :icon="faTerminal" style="margin-right: 0.5em;"/>Task Manager
+		<i class="fas fa-terminal" style="margin-right: 0.5em;"></i>Task Manager
 	</template>
 	<div class="qljqmnzj _monospace">
 		<MkTab v-model:value="tab" style="border-bottom: solid 0.5px var(--divider);">

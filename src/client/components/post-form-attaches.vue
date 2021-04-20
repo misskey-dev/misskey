@@ -5,7 +5,7 @@
 			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div class="sensitive" v-if="element.isSensitive">
-					<Fa class="icon" :icon="faExclamationTriangle"/>
+					<i class="fas fa-exclamation-triangle icon"></i>
 				</div>
 			</div>
 		</template>

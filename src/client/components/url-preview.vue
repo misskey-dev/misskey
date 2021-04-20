@@ -26,7 +26,7 @@
 	</transition>
 	<div class="expandTweet" v-if="tweetId">
 		<a @click="tweetExpanded = true">
-			<i class="fas fa-twitter"></i> {{ $ts.expandTweet }}
+			<i class="fab fa-twitter"></i> {{ $ts.expandTweet }}
 		</a>
 	</div>
 </div>
