@@ -1138,6 +1138,7 @@ _deck:
   swapUp: "Sposta in alto"
   swapDown: "Sposta in basso"
   stackLeft: "Impila a sinistra"
+  popRight: "Estrai a destra"
   profile: "Profilo"
   _columns:
     main: "Principale"
