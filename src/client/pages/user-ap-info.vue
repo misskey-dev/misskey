@@ -58,7 +58,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -96,7 +95,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.userInfo,
-				icon: faInfoCircle
+				icon: 'fas fa-info-circle'
 			},
 			user: null,
 			apPromiseFactory: null,

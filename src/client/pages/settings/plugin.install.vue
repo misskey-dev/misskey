@@ -8,13 +8,12 @@
 		</FormTextarea>
 	</FormGroup>
 
-	<FormButton @click="install" :disabled="code == null" primary inline><Fa :icon="faCheck"/> {{ $ts.install }}</FormButton>
+	<FormButton @click="install" :disabled="code == null" primary inline><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import { AiScript, parse } from '@syuilo/aiscript';
 import { serialize } from '@syuilo/aiscript/built/serializer';
 import { v4 as uuid } from 'uuid';
@@ -49,10 +48,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._plugin.install,
-				icon: faDownload
+				icon: 'fas fa-download'
 			},
 			code: null,
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
 		}
 	},
 

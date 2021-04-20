@@ -1,4 +1,3 @@
-import { faUpload, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import { i18n } from '@client/i18n';
 
@@ -73,15 +72,15 @@ export function selectFile(src: any, label: string | null, multiple = false) {
 			type: 'label'
 		} : undefined, {
 			text: i18n.locale.upload,
-			icon: faUpload,
+			icon: 'fas fa-upload',
 			action: chooseFileFromPc
 		}, {
 			text: i18n.locale.fromDrive,
-			icon: faCloud,
+			icon: 'fas fa-cloud',
 			action: chooseFileFromDrive
 		}, {
 			text: i18n.locale.fromUrl,
-			icon: faLink,
+			icon: 'fas fa-link',
 			action: chooseFileFromUrl
 		}], src);
 	});

@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faEllipsisH, faPaperclip, faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XPostForm from '@client/components/post-form.vue';
 import XNotes from '@client/components/notes.vue';
@@ -40,9 +39,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.clip ? {
 				title: this.clip.name,
-				icon: faPaperclip,
+				icon: 'fas fa-paperclip',
 				action: {
-					icon: faEllipsisH,
+					icon: 'fas fa-ellipsis'H,
 					handler: this.menu
 				}
 			} : null),
@@ -81,7 +80,7 @@ export default defineComponent({
 	methods: {
 		menu(ev) {
 			os.modalMenu([this.isOwned ? {
-				icon: faPencilAlt,
+				icon: 'fas fa-pencil-alt',
 				text: this.$ts.edit,
 				action: async () => {
 					const { canceled, result } = await os.form(this.clip.name, {
@@ -111,7 +110,7 @@ export default defineComponent({
 					});
 				}
 			} : undefined, this.isOwned ? {
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				text: this.$ts.delete,
 				danger: true,
 				action: async () => {

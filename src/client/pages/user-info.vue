@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent } from 'vue';
-import { faExternalLinkAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -72,10 +71,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => ({
 				title: this.$ts.userInfo,
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				actions: this.user ? [this.user.url ? {
 					text: this.user.url,
-					icon: faExternalLinkAlt,
+					icon: 'fas fa-external-link-alt',
 					handler: () => {
 						window.open(this.user.url, '_blank');
 					}

@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import XNotes from '@client/components/notes.vue';
 import * as os from '@client/os';
@@ -21,7 +20,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.favorites,
-				icon: faStar
+				icon: 'fas fa-star'
 			},
 			pagination: {
 				endpoint: 'i/favorites',

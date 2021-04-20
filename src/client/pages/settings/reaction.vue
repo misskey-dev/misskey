@@ -10,7 +10,7 @@
 					</button>
 				</template>
 				<template #footer>
-					<button class="_button add" @click="chooseEmoji"><Fa :icon="faPlus"/></button>
+					<button class="_button add" @click="chooseEmoji"><i class="fas fa-plus"></i></button>
 				</template>
 			</XDraggable>
 		</div>
@@ -29,15 +29,13 @@
 		<option :value="2">{{ $ts.medium }}</option>
 		<option :value="3">{{ $ts.large }}</option>
 	</FormRadios>
-	<FormButton @click="preview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
-	<FormButton danger @click="setDefault"><Fa :icon="faUndo"/> {{ $ts.default }}</FormButton>
+	<FormButton @click="preview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+	<FormButton danger @click="setDefault"><i class="fas fa-undo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
-import { faUndo, faPlus } from '@fortawesome/free-solid-svg-icons';
 import XDraggable from 'vuedraggable';
 import FormInput from '@client/components/form/input.vue';
 import FormRadios from '@client/components/form/radios.vue';
@@ -62,14 +60,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.reaction,
-				icon: faLaugh,
+				icon: 'fas fa-laugh',
 				action: {
-					icon: faEye,
+					icon: 'fas fa-eye',
 					handler: this.preview
 				}
 			},
 			reactions: JSON.parse(JSON.stringify(this.$store.state.reactions)),
-			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
 

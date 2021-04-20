@@ -12,7 +12,7 @@
 		</MkSwitch>
 		<MkButton primary full @click="send" :disabled="sending">
 			<template v-if="sending"><MkEllipsis/></template>
-			<template v-else><Fa :icon="faPaperPlane"/> Send</template>
+			<template v-else><i class="fas fa-paper-plane"></i> Send</template>
 		</MkButton>
 	</div>
 	<div v-if="res" class="_block" style="padding: 24px;">
@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTerminal, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -43,7 +42,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'API console',
-				icon: faTerminal
+				icon: 'fas fa-terminal'
 			},
 
 			endpoint: '',
@@ -53,7 +52,6 @@ export default defineComponent({
 			endpoints: [],
 			withCredential: true,
 
-			faPaperPlane
 		};
 	},
 

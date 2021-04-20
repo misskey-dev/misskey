@@ -12,14 +12,13 @@
 		<!-- <MkRadio v-model="sidebarDisplay" value="hide" disabled>{{ $ts._sidebar.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton @click="save()" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
-	<FormButton @click="reset()" danger><Fa :icon="faRedo"/> {{ $ts.default }}</FormButton>
+	<FormButton @click="save()" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+	<FormButton @click="reset()" danger><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormRadios from '@client/components/form/radios.vue';
@@ -45,11 +44,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.sidebar,
-				icon: faListUl
+				icon: 'fas fa-list-ul'
 			},
 			menuDef: sidebarDef,
 			items: '',
-			faSave, faRedo
 		}
 	},
 

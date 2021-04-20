@@ -42,7 +42,7 @@
 		</FormTextarea>
 		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
 	</FormGroup>
-	<FormButton v-else @click="codeEnabled = true"><Fa :icon="faCode"/> {{ $ts.editCode }}</FormButton>
+	<FormButton v-else @click="codeEnabled = true"><i class="fas fa-code"></i> {{ $ts.editCode }}</FormButton>
 
 	<FormGroup v-if="descriptionEnabled">
 		<FormTextarea v-model:value="description">
@@ -52,15 +52,14 @@
 	<FormButton v-else @click="descriptionEnabled = true">{{ $ts.addDescription }}</FormButton>
 
 	<FormGroup>
-		<FormButton @click="showPreview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
-		<FormButton @click="saveAs" primary><Fa :icon="faSave"/> {{ $ts.saveAs }}</FormButton>
+		<FormButton @click="showPreview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+		<FormButton @click="saveAs" primary><i class="fas fa-save"></i> {{ $ts.saveAs }}</FormButton>
 	</FormGroup>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode } from 'punycode/';
 import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
@@ -90,7 +89,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
-				icon: faPalette,
+				icon: 'fas fa-palette',
 			},
 			theme: {
 				base: 'light',
@@ -129,7 +128,6 @@ export default defineComponent({
 				{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 			],
 			changed: false,
-			faPalette, faSave, faEye, faCode,
 		}
 	},
 

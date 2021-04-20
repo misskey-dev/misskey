@@ -42,7 +42,7 @@
 			</section>
 
 			<section>
-				<header class="_acrylic"><Fa :icon="faClock" fixed-width/> {{ $ts.recentUsed }}</header>
+				<header class="_acrylic"><i class="far fa-clock fa-fw"></i> {{ $ts.recentUsed }}</header>
 				<div>
 					<button v-for="emoji in $store.state.recentlyUsedEmojis"
 						class="_button"
@@ -64,10 +64,10 @@
 		</div>
 	</div>
 	<div class="tabs">
-		<button class="_button tab" :class="{ active: tab === 'index' }" @click="tab = 'index'"><Fa :icon="faAsterisk" fixed-width/></button>
-		<button class="_button tab" :class="{ active: tab === 'custom' }" @click="tab = 'custom'"><Fa :icon="faLaugh" fixed-width/></button>
-		<button class="_button tab" :class="{ active: tab === 'unicode' }" @click="tab = 'unicode'"><Fa :icon="faLeaf" fixed-width/></button>
-		<button class="_button tab" :class="{ active: tab === 'tags' }" @click="tab = 'tags'"><Fa :icon="faHashtag" fixed-width/></button>
+		<button class="_button tab" :class="{ active: tab === 'index' }" @click="tab = 'index'"><i class="fas fa-asterisk fa-fw"></i></button>
+		<button class="_button tab" :class="{ active: tab === 'custom' }" @click="tab = 'custom'"><i class="fas fa-laugh fa-fw"></i></button>
+		<button class="_button tab" :class="{ active: tab === 'unicode' }" @click="tab = 'unicode'"><i class="fas fa-leaf fa-fw"></i></button>
+		<button class="_button tab" :class="{ active: tab === 'tags' }" @click="tab = 'tags'"><i class="fas fa-hashtag fa-fw"></i></button>
 	</div>
 </div>
 </template>
@@ -76,8 +76,6 @@
 import { defineComponent, markRaw } from 'vue';
 import { emojilist } from '@/misc/emojilist';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
-import { faAsterisk, faLeaf, faUtensils, faFutbol, faCity, faDice, faGlobe, faClock, faUser, faChevronDown, faShapes, faBicycle, faHashtag } from '@fortawesome/free-solid-svg-icons';
-import { faHeart, faFlag, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import Particle from '@client/components/particle.vue';
 import * as os from '@client/os';
 import { isDeviceTouch } from '@client/scripts/is-device-touch';
@@ -117,7 +115,6 @@ export default defineComponent({
 			searchResultUnicode: [],
 			tab: 'index',
 			categories: ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'],
-			faGlobe, faClock, faChevronDown, faAsterisk, faLaugh, faUtensils, faLeaf, faShapes, faBicycle, faHashtag,
 		};
 	},
 

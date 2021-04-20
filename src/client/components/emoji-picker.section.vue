@@ -1,7 +1,7 @@
 <template>
 <section>
 	<header class="_acrylic" @click="shown = !shown">
-		<Fa :icon="shown ? faChevronDown : faChevronUp" :key="shown" fixed-width class="toggle"/> <slot></slot> ({{ emojis.length }})
+		<i class="toggle fa-fw" :class="shown ? 'fas fa-chevron-down' : 'fas fa-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
 	</header>
 	<div v-if="shown">
 		<button v-for="emoji in emojis"
@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 
 export default defineComponent({
@@ -36,7 +35,6 @@ export default defineComponent({
 		return {
 			getStaticImageUrl,
 			shown: this.initialShown,
-			faChevronUp, faChevronDown,
 		};
 	},
 

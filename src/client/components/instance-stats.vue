@@ -3,7 +3,7 @@
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faUser"/>{{ $ts.users }}</b>
+				<b><i class="fas fa-user"></i>{{ $ts.users }}</b>
 				<small>{{ $ts.local }}</small>
 			</div>
 			<div>
@@ -23,7 +23,7 @@
 		</div>
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faUser"/>{{ $ts.users }}</b>
+				<b><i class="fas fa-user"></i>{{ $ts.users }}</b>
 				<small>{{ $ts.remote }}</small>
 			</div>
 			<div>
@@ -43,7 +43,7 @@
 		</div>
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faPencilAlt"/>{{ $ts.notes }}</b>
+				<b><i class="fas fa-pencil-alt"></i>{{ $ts.notes }}</b>
 				<small>{{ $ts.local }}</small>
 			</div>
 			<div>
@@ -63,7 +63,7 @@
 		</div>
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faPencilAlt"/>{{ $ts.notes }}</b>
+				<b><i class="fas fa-pencil-alt"></i>{{ $ts.notes }}</b>
 				<small>{{ $ts.remote }}</small>
 			</div>
 			<div>
@@ -84,7 +84,7 @@
 	</div>
 
 	<section class="_card">
-		<div class="_title" style="position: relative;"><Fa :icon="faChartBar"/> {{ $ts.statistics }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><Fa :icon="faSync"/></button></div>
+		<div class="_title" style="position: relative;"><i class="fas fa-chart-bar"></i> {{ $ts.statistics }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><i class="fas fa-sync"></i></button></div>
 		<div class="_content" style="margin-top: -8px;">
 			<div class="selects" style="display: flex;">
 				<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
@@ -123,7 +123,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
 import number from '@client/filters/number';
@@ -173,7 +172,6 @@ export default defineComponent({
 			chartInstance: null,
 			chartSrc: 'notes',
 			chartSpan: 'hour',
-			faChartBar, faUser, faPencilAlt, faSync
 		}
 	},
 
@@ -666,7 +664,7 @@ export default defineComponent({
 					> b {
 						display: block;
 
-						> [data-icon] {
+						> i {
 							width: 16px;
 							margin-right: 8px;
 						}

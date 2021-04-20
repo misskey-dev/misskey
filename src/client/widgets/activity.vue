@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><Fa :icon="faChartBar"/>{{ $ts._widgets.activity }}</template>
-	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
+	<template #header><i class="fas fa-chart-bar"></i>{{ $ts._widgets.activity }}</template>
+	<template #func><button @click="toggleView()" class="_button"><i class="fas fa-sort"></i></button></template>
 
 	<div>
 		<MkLoading v-if="fetching"/>
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChartBar, faSort } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import XCalendar from './activity.calendar.vue';
@@ -52,7 +51,6 @@ export default defineComponent({
 		return {
 			fetching: true,
 			activity: null,
-			faChartBar, faSort
 		};
 	},
 	mounted() {

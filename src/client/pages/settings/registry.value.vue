@@ -22,7 +22,7 @@
 			<FormTextarea tall v-model:value="valueForEditor" class="_monospace" style="tab-size: 2;">
 				<span>{{ $ts.value }} (JSON)</span>
 			</FormTextarea>
-			<FormButton @click="save" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+			<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 		</FormGroup>
 
 		<FormKeyValueView>
@@ -30,14 +30,13 @@
 			<template #value><MkTime :time="value.updatedAt" mode="detail"/></template>
 		</FormKeyValueView>
 
-		<FormButton danger @click="del"><Fa :icon="faTrash"/> {{ $ts.delete }}</FormButton>
+		<FormButton danger @click="del"><i class="fas fa-trash"></i> {{ $ts.delete }}</FormButton>
 	</template>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faCogs, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import FormInfo from '@client/components/form/info.vue';
 import FormSwitch from '@client/components/form/switch.vue';
@@ -77,11 +76,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.registry,
-				icon: faCogs
+				icon: 'fas fa-cogs'
 			},
 			value: null,
 			valueForEditor: null,
-			faSave, faTrash,
 		}
 	},
 

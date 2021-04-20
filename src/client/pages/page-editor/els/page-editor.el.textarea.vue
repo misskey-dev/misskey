@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faAlignLeft"/> {{ $ts._pages.blocks.textarea }}</template>
+	<template #header><i class="fas fa-align-left"></i> {{ $ts._pages.blocks.textarea }}</template>
 
 	<section class="ihymsbbe">
 		<textarea v-model="value.text"></textarea>
@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@client/os';
 
@@ -27,7 +26,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faAlignLeft,
 		};
 	},
 

@@ -16,10 +16,10 @@
 				<span class="acct">@{{ acct(user) }}</span>
 			</div>
 			<div class="status">
-				<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
-				<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
-				<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
-				<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
+				<span class="staff" v-if="user.isAdmin"><i class="fas fa-bookmark"></i></span>
+				<span class="staff" v-if="user.isModerator"><i class="far fa-bookmark"></i></span>
+				<span class="punished" v-if="user.isSilenced"><i class="fas fa-microphone-slash"></i></span>
+				<span class="punished" v-if="user.isSuspended"><i class="fas fa-snowflake"></i></span>
 			</div>
 		</div>
 		<div class="_section">
@@ -31,10 +31,10 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkButton full @click="openProfile"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts.profile }}</MkButton>
-				<MkButton full v-if="user.host != null" @click="updateRemoteUser"><Fa :icon="faSync"/> {{ $ts.updateRemoteUser }}</MkButton>
-				<MkButton full @click="resetPassword"><Fa :icon="faKey"/> {{ $ts.resetPassword }}</MkButton>
-				<MkButton full @click="deleteAllFiles" danger><Fa :icon="faTrashAlt"/> {{ $ts.deleteAllFiles }}</MkButton>
+				<MkButton full @click="openProfile"><i class="fas fa-external-link-square-alt"></i> {{ $ts.profile }}</MkButton>
+				<MkButton full v-if="user.host != null" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</MkButton>
+				<MkButton full @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</MkButton>
+				<MkButton full @click="deleteAllFiles" danger><i class="fas fa-trash-alt"></i> {{ $ts.deleteAllFiles }}</MkButton>
 			</div>
 		</div>
 		<div class="_section">
@@ -48,8 +48,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
 import XModalWindow from '@client/components/ui/modal-window.vue';
@@ -79,7 +77,6 @@ export default defineComponent({
 			moderator: false,
 			silenced: false,
 			suspended: false,
-			faTimes, faBookmark, farBookmark, faKey, faSync, faMicrophoneSlash, faSnowflake, faTrashAlt, faExternalLinkSquareAlt
 		};
 	},
 

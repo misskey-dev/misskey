@@ -30,13 +30,12 @@
 	</div>
 	<template #caption><slot name="desc"></slot></template>
 
-	<FormButton v-if="manualSave && changed" @click="updated" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 </FormGroup>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
-import { faExclamationCircle, faSave } from '@fortawesome/free-solid-svg-icons';
 import './form.scss';
 import FormButton from './button.vue';
 import FormGroup from './group.vue';
@@ -191,7 +190,6 @@ export default defineComponent({
 			onInput,
 			onKeydown,
 			updated,
-			faExclamationCircle, faSave,
 		};
 	},
 });

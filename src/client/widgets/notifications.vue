@@ -1,7 +1,7 @@
 <template>
 <MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
-	<template #header><Fa :icon="faBell"/>{{ $ts.notifications }}</template>
-	<template #func><button @click="configure()" class="_button"><Fa :icon="faCog"/></button></template>
+	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
+	<template #func><button @click="configure()" class="_button"><i class="fas fa-cog"></i></button></template>
 
 	<div class="_flat_">
 		<XNotifications :include-types="props.includingTypes"/>
@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBell, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XNotifications from '@client/components/notifications.vue';
 import define from './define';
@@ -46,7 +45,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faBell, faCog
 		};
 	},
 

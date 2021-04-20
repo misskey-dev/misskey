@@ -7,7 +7,6 @@ import '@client/style.scss';
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch } from 'vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -184,8 +183,6 @@ app.config.globalProperties = {
 };
 
 app.use(router);
-// eslint-disable-next-line vue/component-definition-name-casing
-app.component('Fa', FontAwesomeIcon);
 
 widgets(app);
 directives(app);

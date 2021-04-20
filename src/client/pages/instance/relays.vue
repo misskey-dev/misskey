@@ -1,21 +1,21 @@
 <template>
 <div class="relaycxt">
 	<section class="_section add">
-		<div class="_title"><Fa :icon="faPlus"/> {{ $ts.addRelay }}</div>
+		<div class="_title"><i class="fas fa-plus"></i> {{ $ts.addRelay }}</div>
 		<div class="_content">
 			<MkInput v-model:value="inbox">
 				<span>{{ $ts.inboxUrl }}</span>
 			</MkInput>
-			<MkButton @click="add(inbox)" primary><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
+			<MkButton @click="add(inbox)" primary><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_section relays">
-		<div class="_title"><Fa :icon="faProjectDiagram"/> {{ $ts.addedRelays }}</div>
+		<div class="_title"><i class="fas fa-project-diagram"></i> {{ $ts.addedRelays }}</div>
 		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
-			<MkButton class="button" inline @click="remove(relay.inbox)"><Fa :icon="faTrashAlt"/> {{ $ts.remove }}</MkButton>
+			<MkButton class="button" inline @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -23,8 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import * as os from '@client/os';
@@ -40,11 +38,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.relays,
-				icon: faProjectDiagram,
+				icon: 'fas fa-project-diagram',
 			},
 			relays: [],
 			inbox: '',
-			faPlus, faProjectDiagram, faSave, faTrashAlt
 		}
 	},
 

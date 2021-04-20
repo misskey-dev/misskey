@@ -15,8 +15,8 @@
 	:title="title"
 >
 	<p class="name">
-		<template v-if="hover"><Fa :icon="faFolderOpen" fixed-width/></template>
-		<template v-if="!hover"><Fa :icon="faFolder" fixed-width/></template>
+		<template v-if="hover"><i class="fas fa-folder-open fa-fw"></i></template>
+		<template v-if="!hover"><i class="fas fa-folder fa-fw"></i></template>
 		{{ folder.name }}
 	</p>
 	<p class="upload" v-if="$store.state.uploadFolder == folder.id">
@@ -28,9 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faFolder, faFolderOpen, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@client/os';
-import { faICursor } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -57,7 +55,6 @@ export default defineComponent({
 			hover: false,
 			draghover: false,
 			isDragging: false,
-			faFolder, faFolderOpen
 		};
 	},
 
@@ -241,7 +238,7 @@ export default defineComponent({
 		onContextmenu(e) {
 			os.contextMenu([{
 				text: this.$ts.openInWindow,
-				icon: faWindowRestore,
+				icon: 'fas fa-window-restore',
 				action: () => {
 					os.popup(import('./drive-window.vue'), {
 						initialFolder: this.folder
@@ -254,7 +251,7 @@ export default defineComponent({
 				action: this.rename
 			}, null, {
 				text: this.$ts.delete,
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: this.deleteFolder
 			}], e);
@@ -312,7 +309,7 @@ export default defineComponent({
 		font-size: 0.9em;
 		color: var(--desktopDriveFolderFg);
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 			margin-left: 2px;
 			text-align: left;

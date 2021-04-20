@@ -34,7 +34,7 @@
 						</div>
 						<div>
 							<div class="type" @click="chooseType($event, i)">
-								{{ getTypeOf(v) }} <Fa :icon="faChevronDown"/>
+								{{ getTypeOf(v) }} <i class="fas fa-chevron-down"></i>
 							</div>
 							<!-- default -->
 							<div v-if="v === null" v-text="baseProps[k]" class="default-value" />
@@ -92,7 +92,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import { toUnicode } from 'punycode/';
 
@@ -125,7 +124,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.themeEditor,
-				icon: faPalette,
+				icon: 'fas fa-palette',
 			},
 			theme: [] as ThemeViewModel,
 			name: '',
@@ -135,7 +134,6 @@ export default defineComponent({
 			themeToImport: '',
 			changed: false,
 			lightTheme, darkTheme, themeProps,
-			faPalette, faChevronDown, faKeyboard,
 		}
 	},
 

@@ -4,15 +4,15 @@
 		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
-			<Fa :icon="faPlus" v-if="notification.type === 'follow'"/>
-			<Fa :icon="faClock" v-else-if="notification.type === 'receiveFollowRequest'"/>
-			<Fa :icon="faCheck" v-else-if="notification.type === 'followRequestAccepted'"/>
-			<Fa :icon="faIdCardAlt" v-else-if="notification.type === 'groupInvited'"/>
-			<Fa :icon="faRetweet" v-else-if="notification.type === 'renote'"/>
-			<Fa :icon="faReply" v-else-if="notification.type === 'reply'"/>
-			<Fa :icon="faAt" v-else-if="notification.type === 'mention'"/>
-			<Fa :icon="faQuoteLeft" v-else-if="notification.type === 'quote'"/>
-			<Fa :icon="faPollH" v-else-if="notification.type === 'pollVote'"/>
+			<i v-if="notification.type === 'follow'" class="fas fa-plus"></i>
+			<i v-else-if="notification.type === 'receiveFollowRequest'" class="fas fa-clock"></i>
+			<i v-else-if="notification.type === 'followRequestAccepted'" class="fas fa-check"></i>
+			<i v-else-if="notification.type === 'groupInvited'" class="fas fa-id-card-alt"></i>
+			<i v-else-if="notification.type === 'renote'" class="fas fa-retweet"></i>
+			<i v-else-if="notification.type === 'reply'" class="fas fa-reply"></i>
+			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
+			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
+			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
 			<XReactionIcon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
 		</div>
 	</div>
@@ -23,14 +23,14 @@
 			<MkTime :time="notification.createdAt" v-if="withTime" class="time"/>
 		</header>
 		<MkA v-if="notification.type === 'reaction'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<Fa :icon="faQuoteLeft"/>
+			<i class="fas fa-quote-left"></i>
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
-			<Fa :icon="faQuoteRight"/>
+			<i class="fas fa-quote-right"></i>
 		</MkA>
 		<MkA v-if="notification.type === 'renote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
-			<Fa :icon="faQuoteLeft"/>
+			<i class="fas fa-quote-left"></i>
 			<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.renote.emojis"/>
-			<Fa :icon="faQuoteRight"/>
+			<i class="fas fa-quote-right"></i>
 		</MkA>
 		<MkA v-if="notification.type === 'reply'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
@@ -42,9 +42,9 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
 		</MkA>
 		<MkA v-if="notification.type === 'pollVote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
-			<Fa :icon="faQuoteLeft"/>
+			<i class="fas fa-quote-left"></i>
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="!full" :custom-emojis="notification.note.emojis"/>
-			<Fa :icon="faQuoteRight"/>
+			<i class="fas fa-quote-right"></i>
 		</MkA>
 		<span v-if="notification.type === 'follow'" class="text" style="opacity: 0.6;">{{ $ts.youGotNewFollower }}<div v-if="full"><MkFollowButton :user="notification.user" :full="true"/></div></span>
 		<span v-if="notification.type === 'followRequestAccepted'" class="text" style="opacity: 0.6;">{{ $ts.followRequestAccepted }}</span>
@@ -59,8 +59,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
-import { faClock } from '@fortawesome/free-regular-svg-icons';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
@@ -96,7 +94,6 @@ export default defineComponent({
 			groupInviteDone: false,
 			connection: null,
 			readObserver: null,
-			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck, faPollH
 		};
 	},
 
@@ -271,17 +268,17 @@ export default defineComponent({
 			overflow: hidden;
 			text-overflow: ellipsis;
 
-			> [data-icon] {
+			> i {
 				vertical-align: super;
 				font-size: 50%;
 				opacity: 0.5;
 			}
 
-			> [data-icon]:first-child {
+			> i:first-child {
 				margin-right: 4px;
 			}
 
-			> [data-icon]:last-child {
+			> i:last-child {
 				margin-left: 4px;
 			}
 		}
