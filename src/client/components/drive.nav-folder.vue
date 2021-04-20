@@ -7,7 +7,7 @@
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<i v-if="folder == null"><i class="fas fa-cloud"></i></i>
+	<i v-if="folder == null" class="fas fa-cloud"></i>
 	<span>{{ folder == null ? $ts.drive : folder.name }}</span>
 </div>
 </template>

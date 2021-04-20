@@ -22,7 +22,7 @@
 		/>
 	</template>
 
-	<button v-if="$i" class="nav _button" @click="showNav()"><i class="fas fa-bars"></i><i v-if="navIndicated"><i class="fas fa-circle"></i></i></button>
+	<button v-if="$i" class="nav _button" @click="showNav()"><i class="fas fa-bars"></i><span v-if="navIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
 	<button v-if="$i" class="post _buttonPrimary" @click="post()"><i class="fas fa-pencil-alt"></i></button>
 
 	<XCommon/>
@@ -219,7 +219,7 @@ export default defineComponent({
 			background: var(--X2);
 		}
 
-		> i {
+		> .indicator {
 			position: absolute;
 			top: 0;
 			left: 0;

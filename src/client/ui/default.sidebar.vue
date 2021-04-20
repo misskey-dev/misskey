@@ -16,7 +16,7 @@
 		<div v-if="item === '-'" class="divider"></div>
 		<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
 			<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
-			<i v-if="menuDef[item].indicated"><i class="fas fa-circle"></i></i>
+			<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
 		</component>
 	</template>
 	<div class="divider"></div>
@@ -25,7 +25,7 @@
 	</button>
 	<button class="item _button" @click="more">
 		<i class="fas fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
-		<i v-if="otherNavItemIndicated"><i class="fas fa-circle"></i></i>
+		<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
 	</button>
 	<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 		<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
@@ -359,7 +359,7 @@ export default defineComponent({
 			vertical-align: middle;
 		}
 
-		> i {
+		> .indicator {
 			position: absolute;
 			top: 0;
 			left: 20px;

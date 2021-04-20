@@ -10,10 +10,10 @@
 				</button>
 			</div>
 			<div class="right">
-				<MkA class="item" to="/my/messaging" v-tooltip="$ts.messaging"><i class="fas fa-comments icon"></i><i v-if="$i.hasUnreadMessagingMessage"><i class="fas fa-circle"></i></i></MkA>
-				<MkA class="item" to="/my/messages" v-tooltip="$ts.directNotes"><i class="fas fa-envelope icon"></i><i v-if="$i.hasUnreadSpecifiedNotes"><i class="fas fa-circle"></i></i></MkA>
-				<MkA class="item" to="/my/mentions" v-tooltip="$ts.mentions"><i class="fas fa-at icon"></i><i v-if="$i.hasUnreadMentions"><i class="fas fa-circle"></i></i></MkA>
-				<MkA class="item" to="/my/notifications" v-tooltip="$ts.notifications"><i class="fas fa-bell icon"></i><i v-if="$i.hasUnreadNotification"><i class="fas fa-circle"></i></i></MkA>
+				<MkA class="item" to="/my/messaging" v-tooltip="$ts.messaging"><i class="fas fa-comments icon"></i><span v-if="$i.hasUnreadMessagingMessage" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA class="item" to="/my/messages" v-tooltip="$ts.directNotes"><i class="fas fa-envelope icon"></i><span v-if="$i.hasUnreadSpecifiedNotes" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA class="item" to="/my/mentions" v-tooltip="$ts.mentions"><i class="fas fa-at icon"></i><span v-if="$i.hasUnreadMentions" class="indicator"><i class="fas fa-circle"></i></span></MkA>
+				<MkA class="item" to="/my/notifications" v-tooltip="$ts.notifications"><i class="fas fa-bell icon"></i><span v-if="$i.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></MkA>
 			</div>
 		</header>
 		<div class="body">
@@ -398,7 +398,7 @@ export default defineComponent({
 						margin: auto;
 					}
 
-					> i {
+					> .indicator {
 						position: absolute;
 						top: 8px;
 						right: 8px;

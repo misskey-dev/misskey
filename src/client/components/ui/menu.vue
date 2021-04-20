@@ -16,22 +16,22 @@
 			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
+			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</MkA>
 		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item">
 			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
+			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</a>
 		<button v-else-if="item.type === 'user'" @click="clicked(item.action, $event)" :tabindex="i" class="_button item">
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
-			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
+			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</button>
 		<button v-else @click="clicked(item.action, $event)" :tabindex="i" class="_button item" :class="{ danger: item.danger }">
 			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
+			<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 		</button>
 	</template>
 	<span v-if="_items.length === 0" class="none item">
@@ -218,7 +218,7 @@ export default defineComponent({
 			height: 20px;
 		}
 
-		> i {
+		> .indicator {
 			position: absolute;
 			top: 5px;
 			left: 13px;

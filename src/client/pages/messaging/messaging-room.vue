@@ -26,7 +26,7 @@
 			</div>
 			<transition name="fade">
 				<div class="new-message" v-show="showIndicator">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i><i class="fas fa-arrow-circle-down"></i></i>{{ $ts.newMessageExists }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-arrow-circle-down"></i>{{ $ts.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" :user="user" :group="group" ref="form"/>

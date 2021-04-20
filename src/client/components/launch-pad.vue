@@ -6,12 +6,12 @@
 				<button v-if="item.action" class="_button" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
+					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 				</button>
 				<MkA v-else :to="item.to" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
+					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 				</MkA>
 			</template>
 		</div>
@@ -127,7 +127,7 @@ export default defineComponent({
 				line-height: 1.5em;
 			}
 
-			> i {
+			> .indicator {
 				position: absolute;
 				top: 32px;
 				left: 32px;
