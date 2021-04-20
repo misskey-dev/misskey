@@ -29,7 +29,7 @@
 				<span class="read" v-if="isMe && message.isRead">{{ $ts.messageRead }}</span>
 			</template>
 			<MkTime :time="message.createdAt"/>
-			<template v-if="message.is_edited"><Fa icon="pencil-alt"/></template>
+			<template v-if="message.is_edited"><i class="fas fa-pencil-alt"></i></template>
 		</footer>
 	</div>
 </div>

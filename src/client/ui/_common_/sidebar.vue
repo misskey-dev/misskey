@@ -20,7 +20,7 @@
 				<template v-for="item in menu">
 					<div v-if="item === '-'" class="divider"></div>
 					<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
-						<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $ts[menuDef[item].title] }}</span>
+						<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
 						<i v-if="menuDef[item].indicated"><i class="fas fa-circle"></i></i>
 					</component>
 				</template>
@@ -29,7 +29,7 @@
 					<i class="fas fa-server fa-fw"></i><span class="text">{{ $ts.instance }}</span>
 				</button>
 				<button class="item _button" @click="more">
-					<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $ts.more }}</span>
+					<i class="fa fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
 					<i v-if="otherNavItemIndicated"><i class="fas fa-circle"></i></i>
 				</button>
 				<MkA class="item" active-class="active" to="/settings">

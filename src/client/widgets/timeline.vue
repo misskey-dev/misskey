@@ -2,14 +2,14 @@
 <MkContainer :show-header="props.showHeader" :style="`height: ${props.height}px;`" :scrollable="true">
 	<template #header>
 		<button @click="choose" class="_button">
-			<Fa v-if="props.src === 'home'" :icon="faHome"/>
-			<Fa v-if="props.src === 'local'" :icon="faComments"/>
-			<Fa v-if="props.src === 'social'" :icon="faShareAlt"/>
-			<Fa v-if="props.src === 'global'" :icon="faGlobe"/>
-			<Fa v-if="props.src === 'list'" :icon="faListUl"/>
-			<Fa v-if="props.src === 'antenna'" :icon="faSatellite"/>
+			<i v-if="props.src === 'home'" class="fas fa-home"></i>
+			<i v-else-if="props.src === 'local'" class="fas fa-comments"></i>
+			<i v-else-if="props.src === 'social'" class="fas fa-share-alt"></i>
+			<i v-else-if="props.src === 'global'" class="fas fa-globe"></i>
+			<i v-else-if="props.src === 'list'" class="fas fa-list-ul"></i>
+			<i v-else-if="props.src === 'antenna'" class="fas fa-satellite"></i>
 			<span style="margin-left: 8px;">{{ props.src === 'list' ? props.list.name : props.src === 'antenna' ? props.antenna.name : $t('_timelines.' + props.src) }}</span>
-			<Fa :icon="menuOpened ? faAngleUp : 'fas fa-angle-down'" style="margin-left: 8px;"/>
+			<i :class="menuOpened ? 'fas fa-angle-up' : 'fas fa-angle-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>
 

@@ -4,15 +4,15 @@
 		<MkAvatar v-if="notification.user" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
-			<Fa :icon="faPlus" v-if="notification.type === 'follow'"/>
-			<Fa :icon="faClock" v-else-if="notification.type === 'receiveFollowRequest'"/>
-			<Fa :icon="faCheck" v-else-if="notification.type === 'followRequestAccepted'"/>
-			<Fa :icon="faIdCardAlt" v-else-if="notification.type === 'groupInvited'"/>
-			<Fa :icon="faRetweet" v-else-if="notification.type === 'renote'"/>
-			<Fa :icon="faReply" v-else-if="notification.type === 'reply'"/>
-			<Fa :icon="faAt" v-else-if="notification.type === 'mention'"/>
-			<Fa :icon="faQuoteLeft" v-else-if="notification.type === 'quote'"/>
-			<Fa :icon="faPollH" v-else-if="notification.type === 'pollVote'"/>
+			<i v-if="notification.type === 'follow'" class="fas fa-plus"></i>
+			<i v-else-if="notification.type === 'receiveFollowRequest'" class="fas fa-clock"></i>
+			<i v-else-if="notification.type === 'followRequestAccepted'" class="fas fa-check"></i>
+			<i v-else-if="notification.type === 'groupInvited'" class="fas fa-id-card-alt"></i>
+			<i v-else-if="notification.type === 'renote'" class="fas fa-retweet"></i>
+			<i v-else-if="notification.type === 'reply'" class="fas fa-reply"></i>
+			<i v-else-if="notification.type === 'mention'" class="fas fa-at"></i>
+			<i v-else-if="notification.type === 'quote'" class="fas fa-quote-left"></i>
+			<i v-else-if="notification.type === 'pollVote'" class="fas fa-poll-h"></i>
 			<XReactionIcon v-else-if="notification.type === 'reaction'" :reaction="notification.reaction" :custom-emojis="notification.note.emojis" :no-style="true"/>
 		</div>
 	</div>
