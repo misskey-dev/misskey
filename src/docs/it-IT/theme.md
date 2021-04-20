@@ -33,7 +33,7 @@ Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli og
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
+* `id` ... Identificativo univoco del tema. UUIDをおすすめします。
 * `name` ... テーマ名
 * `author` ... テーマの作者
 * `desc` ... テーマの説明(オプション)
