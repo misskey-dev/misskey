@@ -1137,6 +1137,8 @@ _deck:
   swapRight: "Sposta a destra"
   swapUp: "Sposta in alto"
   swapDown: "Sposta in basso"
+  stackLeft: "Impila a sinistra"
+  profile: "Profilo"
   _columns:
     main: "Principale"
     widgets: "Widget"
