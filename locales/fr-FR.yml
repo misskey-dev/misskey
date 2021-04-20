@@ -1533,7 +1533,7 @@ _deck:
   swapUp: "Déplacer vers le haut"
   swapDown: "Déplacer vers le bas"
   stackLeft: "Empiler à gauche"
-  popRight: "Vers la droite"
+  popRight: "Extraire à droite"
   profile: "Profil"
   _columns:
     main: "Principale"
