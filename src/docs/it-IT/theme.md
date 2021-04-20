@@ -39,7 +39,7 @@ Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli og
 * `desc` ... Descrizione tema (facoltativa)
 * `base` ... Imposta tema chiaro o tema scuro
     * Scegli `light` per impostare un tema chiaro, e `dark` per impostare un tema scuro.
-    * テーマはここで設定されたベーステーマを継承します。
+    * Il tema erediterà dalle caratteristiche del tema di base impostato qui.
 * `props` ... Imposta uno stile di tema. (Vedi spiegazioni sotto.)
 
 ### Impostare uno stile di tema
