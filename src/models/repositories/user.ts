@@ -147,7 +147,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	public getOnlineStatus(user: User): string {
-		if (user.hideOnlineStatus == null) return 'unknown';
+		if (user.hideOnlineStatus) return 'unknown';
 		if (user.lastActiveDate == null) return 'unknown';
 		const elapsed = Date.now() - user.lastActiveDate.getTime();
 		return (
