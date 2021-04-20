@@ -41,7 +41,7 @@ export default defineComponent({
 				title: this.clip.name,
 				icon: 'fas fa-paperclip',
 				action: {
-					icon: 'fas fa-ellipsis'H,
+					icon: 'fas fa-ellipsis-h',
 					handler: this.menu
 				}
 			} : null),

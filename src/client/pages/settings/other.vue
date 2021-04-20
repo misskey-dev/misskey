@@ -61,7 +61,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.other,
-				icon: 'fas fa-ellipsis'H
+				icon: 'fas fa-ellipsis-h'
 			},
 			debug,
 		}
