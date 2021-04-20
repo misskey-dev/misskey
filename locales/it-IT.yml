@@ -672,7 +672,9 @@ _registry:
 _aboutMisskey:
   source: "Codice sorgente"
   translation: "Tradurre Misskey"
+  donate: "Sostieni Misskey"
   morePatrons: "Ci sono molti altri che ci sostengono. Grazie 🥰"
+  patrons: "Sostenitori"
 _nsfw:
   respect: "Nascondere i media segnati come sensibli"
   ignore: "Visualizzare i media segnati come sensibili"
