@@ -172,7 +172,7 @@ export default defineComponent({
 				type: 'label',
 				text: path,
 			}, {
-				icon: this.fullView ? faCompress : 'fas fa-expand',
+				icon: this.fullView ? 'fas fa-compress' : 'fas fa-expand',
 				text: this.fullView ? this.$ts.quitFullView : this.$ts.fullView,
 				action: () => {
 					this.fullView = !this.fullView;

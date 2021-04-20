@@ -153,7 +153,7 @@ export function getUserMenu(user) {
 
 	if ($i && meId != user.id) {
 		menu = menu.concat([null, {
-			icon: user.isMuted ? faEye : 'fas fa-eye-slash',
+			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
 			text: user.isMuted ? i18n.locale.unmute : i18n.locale.mute,
 			action: toggleMute
 		}, {

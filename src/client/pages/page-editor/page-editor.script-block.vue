@@ -114,7 +114,7 @@ export default defineComponent({
 	computed: {
 		icon(): any {
 			if (this.value.type === null) return null;
-			if (this.value.type.startsWith('fn:')) return faPlug;
+			if (this.value.type.startsWith('fn:')) return 'fas fa-plug';
 			return blockDefs.find(x => x.type === this.value.type).icon;
 		},
 		typeText(): any {

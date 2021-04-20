@@ -85,7 +85,7 @@ export default defineComponent({
 				action: this.rename
 			}, {
 				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: this.file.isSensitive ? faEye : 'fas fa-eye-slash',
+				icon: this.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
 				action: this.toggleSensitive
 			}, null, {
 				text: this.$ts.copyUrl,

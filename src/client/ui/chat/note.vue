@@ -122,14 +122,6 @@ import { noteActions, noteViewInterruptors } from '@client/store';
 import { reactionPicker } from '@client/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
 
-function markRawAll(...xs) {
-	for (const x of xs) {
-		markRaw(x);
-	}
-}
-
-markRawAll(faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish);
-
 export default defineComponent({
 	components: {
 		XSub,

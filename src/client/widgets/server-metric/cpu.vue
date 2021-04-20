@@ -2,7 +2,7 @@
 <div class="vrvdvrys">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><fa :icon="faMicrochip"/>CPU</p>
+		<p><i class="fas fa-microchip"></i>CPU</p>
 		<p>{{ meta.cpu.cores }} Logical cores</p>
 		<p>{{ meta.cpu.model }}</p>
 	</div>

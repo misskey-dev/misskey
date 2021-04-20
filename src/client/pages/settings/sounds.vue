@@ -82,7 +82,7 @@ export default defineComponent({
 			set(value) { ColdDeviceStorage.set('sound_masterVolume', value); }
 		},
 		volumeIcon() {
-			return this.masterVolume === 0 ? faVolumeMute : 'fas fa-volume-up';
+			return this.masterVolume === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up';
 		}
 	},
 

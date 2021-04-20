@@ -2,7 +2,7 @@
 <div class="zlxnikvl">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><fa :icon="faMemory"/>RAM</p>
+		<p><i class="fas fa-memory"></i>RAM</p>
 		<p>Total: {{ bytes(total, 1) }}</p>
 		<p>Used: {{ bytes(used, 1) }}</p>
 		<p>Free: {{ bytes(free, 1) }}</p>
