@@ -38,7 +38,7 @@ Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli og
 * `author` ... Autore/Autrice del tema
 * `desc` ... Descrizione tema (facoltativa)
 * `base` ... Imposta tema chiaro o tema scuro
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
+    * Scegli `light` per impostare un tema chiaro, e `dark` per impostare un tema scuro.
     * テーマはここで設定されたベーステーマを継承します。
 * `props` ... Imposta uno stile di tema. (Vedi spiegazioni sotto.)
 
