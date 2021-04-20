@@ -5,14 +5,14 @@
 		<div class="buttons">
 			<slot name="func"></slot>
 			<button v-if="removable" @click="remove()" class="_button">
-				<Fa :icon="faTrashAlt"/>
+				<i class="fas fa-trash-alt"></i>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
-				<Fa :icon="faBars"/>
+				<i class="fas fa-bars"></i>
 			</button>
 			<button @click="toggleContent(!showBody)" class="_button">
-				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
-				<template v-else><Fa :icon="faAngleDown"/></template>
+				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
+				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
 		</div>
 	</header>

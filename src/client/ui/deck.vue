@@ -22,7 +22,7 @@
 		/>
 	</template>
 
-	<button v-if="$i" class="nav _button" @click="showNav()"><Fa :icon="faBars"/><i v-if="navIndicated"><Fa :icon="faCircle"/></i></button>
+	<button v-if="$i" class="nav _button" @click="showNav()"><i class="fas fa-bars"></i><i v-if="navIndicated"><i class="fas fa-circle"></i></i></button>
 	<button v-if="$i" class="post _buttonPrimary" @click="post()"><i class="fas fa-pencil-alt"></i></button>
 
 	<XCommon/>

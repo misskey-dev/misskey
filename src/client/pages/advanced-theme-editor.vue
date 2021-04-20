@@ -34,7 +34,7 @@
 						</div>
 						<div>
 							<div class="type" @click="chooseType($event, i)">
-								{{ getTypeOf(v) }} <Fa :icon="faChevronDown"/>
+								{{ getTypeOf(v) }} <i class="fas fa-chevron-down"></i>
 							</div>
 							<!-- default -->
 							<div v-if="v === null" v-text="baseProps[k]" class="default-value" />

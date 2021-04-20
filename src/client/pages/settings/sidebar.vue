@@ -12,8 +12,8 @@
 		<!-- <MkRadio v-model="sidebarDisplay" value="hide" disabled>{{ $ts._sidebar.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</FormRadios>
 
-	<FormButton @click="save()" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
-	<FormButton @click="reset()" danger><Fa :icon="faRedo"/> {{ $ts.default }}</FormButton>
+	<FormButton @click="save()" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
+	<FormButton @click="reset()" danger><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 

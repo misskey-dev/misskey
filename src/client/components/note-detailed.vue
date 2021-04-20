@@ -30,7 +30,7 @@
 				<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
 				<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
+			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -42,14 +42,14 @@
 						<MkUserName :user="appearNote.user"/>
 					</MkA>
 					<span class="is-bot" v-if="appearNote.user.isBot">bot</span>
-					<span class="admin" v-if="appearNote.user.isAdmin"><Fa :icon="faBookmark"/></span>
-					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><Fa :icon="farBookmark"/></span>
+					<span class="admin" v-if="appearNote.user.isAdmin"><i class="fas fa-bookmark"></i></span>
+					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><i class="far fa-bookmark"></i></span>
 					<span class="visibility" v-if="appearNote.visibility !== 'public'">
 						<Fa v-if="appearNote.visibility === 'home'" :icon="faHome"/>
 						<Fa v-if="appearNote.visibility === 'followers'" :icon="faUnlock"/>
 						<Fa v-if="appearNote.visibility === 'specified'" :icon="faEnvelope"/>
 					</span>
-					<span class="localOnly" v-if="appearNote.localOnly"><Fa :icon="faBiohazard"/></span>
+					<span class="localOnly" v-if="appearNote.localOnly"><i class="fas fa-biohazard"></i></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
@@ -75,16 +75,16 @@
 					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="true" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><XNotePreview :note="appearNote.renote"/></div>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><Fa :icon="faSatelliteDish"/> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<div class="info">
-					<span class="mobile" v-if="note.viaMobile"><Fa :icon="faMobileAlt"/></span>
+					<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
 					<MkTime class="created-at" :time="note.createdAt" mode="detail"/>
 				</div>
 				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()" class="button _button">
-					<template v-if="appearNote.reply"><Fa :icon="faReplyAll"/></template>
+					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
 					<template v-else><i class="fas fa-reply"></i></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
@@ -92,7 +92,7 @@
 					<i class="fas fa-retweet"></i><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
-					<Fa :icon="faBan"/>
+					<i class="fas fa-ban"></i>
 				</button>
 				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
 					<i class="fas fa-plus"></i>

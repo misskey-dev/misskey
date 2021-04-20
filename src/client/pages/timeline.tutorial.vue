@@ -1,6 +1,6 @@
 <template>
 <div class="_card tbkwesmv">
-	<div class="_title"><Fa :icon="faInfoCircle"/> {{ $ts._tutorial.title }}</div>
+	<div class="_title"><i class="fas fa-info-circle"></i> {{ $ts._tutorial.title }}</div>
 	<div class="_content" v-if="tutorial === 0">
 		<div>{{ $ts._tutorial.step1_1 }}</div>
 		<div>{{ $ts._tutorial.step1_2 }}</div>
@@ -52,15 +52,15 @@
 	<div class="_footer navigation">
 		<div class="step">
 			<button class="arrow _button" @click="tutorial--" :disabled="tutorial === 0">
-				<Fa :icon="faChevronLeft"/>
+				<i class="fas fa-chevron-left"></i>
 			</button>
 			<span>{{ tutorial + 1 }} / 7</span>
 			<button class="arrow _button" @click="tutorial++" :disabled="tutorial === 6">
-				<Fa :icon="faChevronRight"/>
+				<i class="fas fa-chevron-right"></i>
 			</button>
 		</div>
-		<MkButton class="ok" @click="tutorial = -1" primary v-if="tutorial === 6"><Fa :icon="faCheck"/> {{ $ts.gotIt }}</MkButton>
-		<MkButton class="ok" @click="tutorial++" primary v-else><Fa :icon="faCheck"/> {{ $ts.next }}</MkButton>
+		<MkButton class="ok" @click="tutorial = -1" primary v-if="tutorial === 6"><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
+		<MkButton class="ok" @click="tutorial++" primary v-else><i class="fas fa-check"></i> {{ $ts.next }}</MkButton>
 	</div>
 </div>
 </template>

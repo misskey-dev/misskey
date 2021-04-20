@@ -1,9 +1,9 @@
 <template>
 <div class="mrajymqm _narrow_" v-if="component">
 	<header class="header" @contextmenu.prevent.stop="onContextmenu">
-		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 		<XHeader class="title" :info="pageInfo" :with-back="false" :center="false"/>
-		<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+		<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 	</header>
 	<component :is="component" v-bind="props" :ref="changePage"/>
 </div>

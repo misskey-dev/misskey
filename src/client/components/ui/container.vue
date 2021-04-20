@@ -5,8 +5,8 @@
 		<div class="sub">
 			<slot name="func"></slot>
 			<button class="_button" v-if="foldable" @click="() => showBody = !showBody">
-				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
-				<template v-else><Fa :icon="faAngleDown"/></template>
+				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
+				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
 		</div>
 	</header>

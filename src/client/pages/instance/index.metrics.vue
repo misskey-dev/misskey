@@ -1,15 +1,15 @@
 <template>
 <div>
 	<MkFolder>
-		<template #header><Fa :icon="faHeartbeat"/> {{ $ts.metrics }}</template>
+		<template #header><i class="fas fa-heartbeat"></i> {{ $ts.metrics }}</template>
 		<div class="_section" style="padding: 0 var(--margin);">
 			<div class="_content">
 				<MkContainer :foldable="false" class="_gap">
-					<template #header><Fa :icon="faMicrochip"/>{{ $ts.cpuAndMemory }}</template>
+					<template #header><i class="fas fa-microchip"></i>{{ $ts.cpuAndMemory }}</template>
 					<!--
 					<template #func>
-						<button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button>
-						<button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button>
+						<button class="_button" @click="resume" :disabled="!paused"><i class="fas fa-play"></i></button>
+						<button class="_button" @click="pause" :disabled="paused"><i class="fas fa-pause"></i></button>
 					</template>
 					-->
 
@@ -28,11 +28,11 @@
 				</MkContainer>
 
 				<MkContainer :foldable="false" class="_gap">
-					<template #header><Fa :icon="faHdd"/> {{ $ts.disk }}</template>
+					<template #header><i class="fas fa-hdd"></i> {{ $ts.disk }}</template>
 					<!--
 					<template #func>
-						<button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button>
-						<button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button>
+						<button class="_button" @click="resume" :disabled="!paused"><i class="fas fa-play"></i></button>
+						<button class="_button" @click="pause" :disabled="paused"><i class="fas fa-pause"></i></button>
 					</template>
 					-->
 
@@ -51,11 +51,11 @@
 				</MkContainer>
 
 				<MkContainer :foldable="false" class="_gap">
-					<template #header><Fa :icon="faExchangeAlt"/> {{ $ts.network }}</template>
+					<template #header><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</template>
 					<!--
 					<template #func>
-						<button class="_button" @click="resume" :disabled="!paused"><Fa :icon="faPlay"/></button>
-						<button class="_button" @click="pause" :disabled="paused"><Fa :icon="faPause"/></button>
+						<button class="_button" @click="resume" :disabled="!paused"><i class="fas fa-play"></i></button>
+						<button class="_button" @click="pause" :disabled="paused"><i class="fas fa-pause"></i></button>
 					</template>
 					-->
 
@@ -75,11 +75,11 @@
 	</MkFolder>
 
 	<MkFolder>
-		<template #header><Fa :icon="faClipboardList"/> {{ $ts.jobQueue }}</template>
+		<template #header><i class="fas fa-clipboard-list"></i> {{ $ts.jobQueue }}</template>
 
 		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
 			<MkContainer :foldable="false" :scrollable="true" :resize-base-el="() => $el">
-				<template #header><Fa :icon="faExclamationTriangle"/> {{ $ts.delayed }}</template>
+				<template #header><i class="fas fa-exclamation-triangle"></i> {{ $ts.delayed }}</template>
 
 				<div class="_content">
 					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
@@ -89,10 +89,10 @@
 				</div>
 			</MkContainer>
 			<XQueue :connection="queueConnection" domain="inbox" ref="queue" class="queue">
-				<template #title><Fa :icon="faExchangeAlt"/> In</template>
+				<template #title><i class="fas fa-exchange-alt"></i> In</template>
 			</XQueue>
 			<XQueue :connection="queueConnection" domain="deliver" class="queue">
-				<template #title><Fa :icon="faExchangeAlt"/> Out</template>
+				<template #title><i class="fas fa-exchange-alt"></i> Out</template>
 			</XQueue>
 		</div>
 	</MkFolder>

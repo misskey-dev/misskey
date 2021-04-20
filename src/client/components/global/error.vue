@@ -2,7 +2,7 @@
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><Fa :icon="faExclamationTriangle"/> {{ $ts.somethingHappened }}</p>
+		<p><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</p>
 		<MkButton @click="() => $emit('retry')" class="button">{{ $ts.retry }}</MkButton>
 	</div>
 </transition>

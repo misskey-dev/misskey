@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
-	<template #header><Fa :icon="faCamera"/>{{ $ts._widgets.photos }}</template>
+	<template #header><i class="fas fa-camera"></i>{{ $ts._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>

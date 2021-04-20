@@ -4,10 +4,10 @@
 		<FormTextarea v-model:value="installThemeCode">
 			<span>{{ $ts._theme.code }}</span>
 		</FormTextarea>
-		<FormButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
+		<FormButton @click="() => preview(installThemeCode)" :disabled="installThemeCode == null" inline><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
 	</FormGroup>
 
-	<FormButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><Fa :icon="faCheck"/> {{ $ts.install }}</FormButton>
+	<FormButton @click="() => install(installThemeCode)" :disabled="installThemeCode == null" primary inline><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
 </FormBase>
 </template>
 

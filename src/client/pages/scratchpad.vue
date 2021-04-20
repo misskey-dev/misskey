@@ -2,7 +2,7 @@
 <div class="iltifgqe">
 	<div class="editor _panel _gap">
 		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
-		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
+		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><i class="fas fa-play"></i></MkButton>
 	</div>
 
 	<MkContainer :foldable="true" class="_gap">

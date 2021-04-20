@@ -10,12 +10,12 @@
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $ts._channel.removeBanner }}</MkButton>
+					<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
 		</div>
 		<div class="_footer">
-			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $ts.save : $ts.create }}</MkButton>
+			<MkButton @click="save()" primary><i class="fas fa-save"></i> {{ channelId ? $ts.save : $ts.create }}</MkButton>
 		</div>
 	</div>
 </div>

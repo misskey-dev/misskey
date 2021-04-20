@@ -35,8 +35,8 @@
 					<div class="_title">{{ invitation.group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
 					<div class="_footer">
-						<MkButton @click="acceptInvite(invitation)" primary inline><Fa :icon="faCheck"/> {{ $ts.accept }}</MkButton>
-						<MkButton @click="rejectInvite(invitation)" primary inline><Fa :icon="faBan"/> {{ $ts.reject }}</MkButton>
+						<MkButton @click="acceptInvite(invitation)" primary inline><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
+						<MkButton @click="rejectInvite(invitation)" primary inline><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
 					</div>
 				</div>
 			</MkPagination>

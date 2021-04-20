@@ -1,9 +1,9 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faImage"/> {{ $ts._pages.blocks.image }}</template>
+	<template #header><i class="fas fa-image"></i> {{ $ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
-			<Fa :icon="faFolderOpen"/>
+			<i class="fas fa-folder-open"></i>
 		</button>
 	</template>
 

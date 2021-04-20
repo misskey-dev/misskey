@@ -10,7 +10,7 @@
 			</MkInput>
 			<MkInput v-model:value="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 				<span>{{ $ts.password }}</span>
-				<template #prefix><Fa :icon="faLock"/></template>
+				<template #prefix><i class="fas fa-lock"></i></template>
 			</MkInput>
 			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 		</div>
@@ -28,11 +28,11 @@
 				<p style="margin-bottom:0;">{{ $ts.twoStepAuthentication }}</p>
 				<MkInput v-model:value="password" type="password" :with-password-toggle="true" v-if="user && user.usePasswordLessLogin" required>
 					<span>{{ $ts.password }}</span>
-					<template #prefix><Fa :icon="faLock"/></template>
+					<template #prefix><i class="fas fa-lock"></i></template>
 				</MkInput>
 				<MkInput v-model:value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" spellcheck="false" required>
 					<span>{{ $ts.token }}</span>
-					<template #prefix><Fa :icon="faGavel"/></template>
+					<template #prefix><i class="fas fa-gavel"></i></template>
 				</MkInput>
 				<MkButton type="submit" :disabled="signing" primary style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 			</div>

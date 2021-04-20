@@ -16,14 +16,14 @@
 			</div>
 		</button>
 		<button class="_button" @click="choose('followers')" :class="{ active: v == 'followers' }" data-index="3" key="followers">
-			<div><Fa :icon="faUnlock"/></div>
+			<div><i class="fas fa-unlock"></i></div>
 			<div>
 				<span>{{ $ts._visibility.followers }}</span>
 				<span>{{ $ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
 		<button :disabled="localOnly" class="_button" @click="choose('specified')" :class="{ active: v == 'specified' }" data-index="4" key="specified">
-			<div><Fa :icon="faEnvelope"/></div>
+			<div><i class="fas fa-envelope"></i></div>
 			<div>
 				<span>{{ $ts._visibility.specified }}</span>
 				<span>{{ $ts._visibility.specifiedDescription }}</span>
@@ -31,7 +31,7 @@
 		</button>
 		<div class="divider"></div>
 		<button class="_button localOnly" @click="localOnly = !localOnly" :class="{ active: localOnly }" data-index="5" key="localOnly">
-			<div><Fa :icon="faBiohazard"/></div>
+			<div><i class="fas fa-biohazard"></i></div>
 			<div>
 				<span>{{ $ts._visibility.localOnly }}</span>
 				<span>{{ $ts._visibility.localOnlyDescription }}</span>

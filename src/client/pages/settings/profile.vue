@@ -24,7 +24,7 @@
 
 	<FormInput v-model:value="birthday" type="date" manual-save>
 		<span>{{ $ts.birthday }}</span>
-		<template #prefix><Fa :icon="faBirthdayCake"/></template>
+		<template #prefix><i class="fas fa-birthday-cake"></i></template>
 	</FormInput>
 
 	<FormSelect v-model:value="lang">

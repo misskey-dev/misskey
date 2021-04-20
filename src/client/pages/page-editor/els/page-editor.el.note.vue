@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faStickyNote"/> {{ $ts._pages.blocks.note }}</template>
+	<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.blocks.note }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
 		<MkInput v-model:value="id">

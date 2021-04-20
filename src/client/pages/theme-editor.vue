@@ -42,7 +42,7 @@
 		</FormTextarea>
 		<FormButton @click="applyThemeCode" primary>{{ $ts.apply }}</FormButton>
 	</FormGroup>
-	<FormButton v-else @click="codeEnabled = true"><Fa :icon="faCode"/> {{ $ts.editCode }}</FormButton>
+	<FormButton v-else @click="codeEnabled = true"><i class="fas fa-code"></i> {{ $ts.editCode }}</FormButton>
 
 	<FormGroup v-if="descriptionEnabled">
 		<FormTextarea v-model:value="description">
@@ -52,8 +52,8 @@
 	<FormButton v-else @click="descriptionEnabled = true">{{ $ts.addDescription }}</FormButton>
 
 	<FormGroup>
-		<FormButton @click="showPreview"><Fa :icon="faEye"/> {{ $ts.preview }}</FormButton>
-		<FormButton @click="saveAs" primary><Fa :icon="faSave"/> {{ $ts.saveAs }}</FormButton>
+		<FormButton @click="showPreview"><i class="fas fa-eye"></i> {{ $ts.preview }}</FormButton>
+		<FormButton @click="saveAs" primary><i class="fas fa-save"></i> {{ $ts.saveAs }}</FormButton>
 	</FormGroup>
 </FormBase>
 </template>

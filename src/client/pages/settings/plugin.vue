@@ -1,7 +1,7 @@
 <template>
 <FormBase>
-	<FormLink to="/settings/plugin/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._plugin.install }}</FormLink>
-	<FormLink to="/settings/plugin/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._plugin.manage }}<template #suffix>{{ plugins }}</template></FormLink>
+	<FormLink to="/settings/plugin/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._plugin.install }}</FormLink>
+	<FormLink to="/settings/plugin/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ $ts._plugin.manage }}<template #suffix>{{ plugins }}</template></FormLink>
 </FormBase>
 </template>
 

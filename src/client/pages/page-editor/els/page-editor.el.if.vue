@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faQuestion"/> {{ $ts._pages.blocks.if }}</template>
+	<template #header><i class="fas fa-question"></i> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
 		<button @click="add()" class="_button">
 			<i class="fas fa-plus"></i>

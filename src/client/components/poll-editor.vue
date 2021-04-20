@@ -1,7 +1,7 @@
 <template>
 <div class="zmdxowus">
 	<p class="caution" v-if="choices.length < 2">
-		<Fa :icon="faExclamationTriangle"/>{{ $ts._poll.noOnlyOneChoice }}
+		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
@@ -9,7 +9,7 @@
 				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
 			</MkInput>
 			<button @click="remove(i)" class="_button">
-				<Fa :icon="faTimes"/>
+				<i class="fas fa-times"></i>
 			</button>
 		</li>
 	</ul>

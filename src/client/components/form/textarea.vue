@@ -18,7 +18,7 @@
 	</div>
 	<template #caption><slot name="desc"></slot></template>
 
-	<FormButton v-if="manualSave && changed" @click="updated" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+	<FormButton v-if="manualSave && changed" @click="updated" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 </FormGroup>
 </template>
 

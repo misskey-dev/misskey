@@ -1,7 +1,7 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+		<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>

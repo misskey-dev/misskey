@@ -2,12 +2,12 @@
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
 	<div class="ebkgoccj _popup _narrow_" @keydown="onKeydown" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) :  (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header">
-			<button class="_button" v-if="withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
+			<button class="_button" v-if="withOkButton" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<span class="title">
 				<slot name="header"></slot>
 			</span>
-			<button class="_button" v-if="!withOkButton" @click="$emit('close')"><Fa :icon="faTimes"/></button>
-			<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><Fa :icon="faCheck"/></button>
+			<button class="_button" v-if="!withOkButton" @click="$emit('close')"><i class="fas fa-times"></i></button>
+			<button class="_button" v-if="withOkButton" @click="$emit('ok')" :disabled="okButtonDisabled"><i class="fas fa-check"></i></button>
 		</div>
 		<div class="body" v-if="padding">
 			<div class="_section">

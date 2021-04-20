@@ -9,11 +9,11 @@
 		<FormButton v-for="type in Object.keys(sounds)" :key="type" :center="false" @click="edit(type)">
 			{{ $t('_sfx.' + type) }}
 			<template #suffix>{{ sounds[type].type || $ts.none }}</template>
-			<template #suffixIcon><Fa :icon="faChevronDown"/></template>
+			<template #suffixIcon><i class="fas fa-chevron-down"></i></template>
 		</FormButton>
 	</FormGroup>
 
-	<FormButton @click="reset()" danger><Fa :icon="faRedo"/> {{ $ts.default }}</FormButton>
+	<FormButton @click="reset()" danger><i class="fas fa-redo"></i> {{ $ts.default }}</FormButton>
 </FormBase>
 </template>
 

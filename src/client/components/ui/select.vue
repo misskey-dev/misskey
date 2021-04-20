@@ -15,7 +15,7 @@
 		</select>
 		<div class="suffix">
 			<slot name="suffix">
-				<Fa :icon="faChevronDown"/>
+				<i class="fas fa-chevron-down"></i>
 			</slot>
 		</div>
 	</div>

@@ -5,30 +5,30 @@
 	</button>
 	<div class="post" @click="post">
 		<MkButton class="button" primary full>
-			<Fa :icon="faPencilAlt" fixed-width/><span class="text" v-if="!iconOnly">{{ $ts.note }}</span>
+			<i class="fas fa-pencil-alt fa-fw"></i><span class="text" v-if="!iconOnly">{{ $ts.note }}</span>
 		</MkButton>
 	</div>
 	<div class="divider"></div>
 	<MkA class="item index" active-class="active" to="/" exact>
-		<Fa :icon="faHome" fixed-width/><span class="text">{{ $ts.timeline }}</span>
+		<i class="fas fa-home fa-fw"></i><span class="text">{{ $ts.timeline }}</span>
 	</MkA>
 	<template v-for="item in menu">
 		<div v-if="item === '-'" class="divider"></div>
 		<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
-			<Fa :icon="menuDef[item].icon" fixed-width/><span class="text">{{ $ts[menuDef[item].title] }}</span>
-			<i v-if="menuDef[item].indicated"><Fa :icon="faCircle"/></i>
+			<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
+			<i v-if="menuDef[item].indicated"><i class="fas fa-circle"></i></i>
 		</component>
 	</template>
 	<div class="divider"></div>
 	<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
-		<Fa :icon="faServer" fixed-width/><span class="text">{{ $ts.instance }}</span>
+		<i class="fas fa-server fa-fw"></i><span class="text">{{ $ts.instance }}</span>
 	</button>
 	<button class="item _button" @click="more">
-		<Fa :icon="faEllipsisH" fixed-width/><span class="text">{{ $ts.more }}</span>
-		<i v-if="otherNavItemIndicated"><Fa :icon="faCircle"/></i>
+		<i class="fas fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
+		<i v-if="otherNavItemIndicated"><i class="fas fa-circle"></i></i>
 	</button>
 	<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<Fa :icon="faCog" fixed-width/><span class="text">{{ $ts.settings }}</span>
+		<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>
 	<div class="foo">

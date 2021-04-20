@@ -10,7 +10,7 @@
 	<transition name="zoom" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url" v-if="!fetching">
 			<div class="thumbnail" v-if="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$ts.enablePlayer"><Fa :icon="faPlayCircle"/></button>
+				<button class="_button" v-if="!playerEnabled && player.url" @click.prevent="playerEnabled = true" :title="$ts.enablePlayer"><i class="fas fa-play-circle"></i></button>
 			</div>
 			<article>
 				<header>
@@ -26,7 +26,7 @@
 	</transition>
 	<div class="expandTweet" v-if="tweetId">
 		<a @click="tweetExpanded = true">
-			<Fa :icon="faTwitter"/> {{ $ts.expandTweet }}
+			<i class="fas fa-twitter"></i> {{ $ts.expandTweet }}
 		</a>
 	</div>
 </div>

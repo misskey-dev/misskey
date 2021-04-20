@@ -39,8 +39,8 @@
 		<MkSwitch v-model:value="notify">{{ $ts.notifyAntenna }}</MkSwitch>
 	</div>
 	<div class="_footer">
-		<MkButton inline @click="saveAntenna()" primary><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><Fa :icon="faTrash"/> {{ $ts.delete }}</MkButton>
+		<MkButton inline @click="saveAntenna()" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
 	</div>
 </div>
 </template>

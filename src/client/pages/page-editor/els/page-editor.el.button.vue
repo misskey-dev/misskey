@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faBolt"/> {{ $ts._pages.blocks.button }}</template>
+	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.button }}</template>
 
 	<section class="xfhsjczc">
 		<MkInput v-model:value="value.text"><span>{{ $ts._pages.blocks._button.text }}</span></MkInput>

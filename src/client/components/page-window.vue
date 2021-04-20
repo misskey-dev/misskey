@@ -11,7 +11,7 @@
 		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>
 	<template #buttons>
-		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 		<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 	</template>
 	<div class="yrolvcoq _flat_">

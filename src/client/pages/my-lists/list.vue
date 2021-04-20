@@ -22,7 +22,7 @@
 							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 				</div>

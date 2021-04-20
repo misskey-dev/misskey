@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faStickyNote"/>{{ $ts._widgets.memo }}</template>
+	<template #header><i class="fas fa-sticky-note"></i>{{ $ts._widgets.memo }}</template>
 
 	<div class="otgbylcu">
 		<textarea v-model="text" :placeholder="$ts.placeholder" @input="onChange"></textarea>

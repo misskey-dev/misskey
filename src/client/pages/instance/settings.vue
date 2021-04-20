@@ -1,20 +1,20 @@
 <template>
 <div v-if="meta" class="_section">
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faInfoCircle"/> {{ $ts.basicInfo }}</div>
+		<div class="_title"><i class="fas fa-info-circle"></i> {{ $ts.basicInfo }}</div>
 		<div class="_content">
 			<MkInput v-model:value="name">{{ $ts.instanceName }}</MkInput>
 			<MkTextarea v-model:value="description">{{ $ts.instanceDescription }}</MkTextarea>
-			<MkInput v-model:value="iconUrl"><template #icon><Fa :icon="faLink"/></template>{{ $ts.iconUrl }}</MkInput>
-			<MkInput v-model:value="bannerUrl"><template #icon><Fa :icon="faLink"/></template>{{ $ts.bannerUrl }}</MkInput>
-			<MkInput v-model:value="backgroundImageUrl"><template #icon><Fa :icon="faLink"/></template>{{ $ts.backgroundImageUrl }}</MkInput>
-			<MkInput v-model:value="logoImageUrl"><template #icon><Fa :icon="faLink"/></template>{{ $ts.logoImageUrl }}</MkInput>
-			<MkInput v-model:value="tosUrl"><template #icon><Fa :icon="faLink"/></template>{{ $ts.tosUrl }}</MkInput>
+			<MkInput v-model:value="iconUrl"><template #icon><i class="fas fa-link"></i></template>{{ $ts.iconUrl }}</MkInput>
+			<MkInput v-model:value="bannerUrl"><template #icon><i class="fas fa-link"></i></template>{{ $ts.bannerUrl }}</MkInput>
+			<MkInput v-model:value="backgroundImageUrl"><template #icon><i class="fas fa-link"></i></template>{{ $ts.backgroundImageUrl }}</MkInput>
+			<MkInput v-model:value="logoImageUrl"><template #icon><i class="fas fa-link"></i></template>{{ $ts.logoImageUrl }}</MkInput>
+			<MkInput v-model:value="tosUrl"><template #icon><i class="fas fa-link"></i></template>{{ $ts.tosUrl }}</MkInput>
 			<MkInput v-model:value="maintainerName">{{ $ts.maintainerName }}</MkInput>
-			<MkInput v-model:value="maintainerEmail" type="email"><template #icon><Fa :icon="faEnvelope"/></template>{{ $ts.maintainerEmail }}</MkInput>
+			<MkInput v-model:value="maintainerEmail" type="email"><template #icon><i class="fas fa-envelope"></i></template>{{ $ts.maintainerEmail }}</MkInput>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
@@ -43,12 +43,12 @@
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $ts.hcaptcha }}</div>
+		<div class="_title"><i class="fas fa-shield-alt"></i> {{ $ts.hcaptcha }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableHcaptcha">{{ $ts.enableHcaptcha }}</MkSwitch>
 			<template v-if="enableHcaptcha">
-				<MkInput v-model:value="hcaptchaSiteKey" :disabled="!enableHcaptcha"><template #icon><Fa :icon="faKey"/></template>{{ $ts.hcaptchaSiteKey }}</MkInput>
-				<MkInput v-model:value="hcaptchaSecretKey" :disabled="!enableHcaptcha"><template #icon><Fa :icon="faKey"/></template>{{ $ts.hcaptchaSecretKey }}</MkInput>
+				<MkInput v-model:value="hcaptchaSiteKey" :disabled="!enableHcaptcha"><template #icon><i class="fas fa-key"></i></template>{{ $ts.hcaptchaSiteKey }}</MkInput>
+				<MkInput v-model:value="hcaptchaSecretKey" :disabled="!enableHcaptcha"><template #icon><i class="fas fa-key"></i></template>{{ $ts.hcaptchaSecretKey }}</MkInput>
 			</template>
 		</div>
 		<div class="_content" v-if="enableHcaptcha">
@@ -56,17 +56,17 @@
 			<captcha v-if="enableHcaptcha" provider="hcaptcha" :sitekey="hcaptchaSiteKey || '10000000-ffff-ffff-ffff-000000000001'"/>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faShieldAlt"/> {{ $ts.recaptcha }}</div>
+		<div class="_title"><i class="fas fa-shield-alt"></i> {{ $ts.recaptcha }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRecaptcha" ref="enableRecaptcha">{{ $ts.enableRecaptcha }}</MkSwitch>
 			<template v-if="enableRecaptcha">
-				<MkInput v-model:value="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><Fa :icon="faKey"/></template>{{ $ts.recaptchaSiteKey }}</MkInput>
-				<MkInput v-model:value="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><Fa :icon="faKey"/></template>{{ $ts.recaptchaSecretKey }}</MkInput>
+				<MkInput v-model:value="recaptchaSiteKey" :disabled="!enableRecaptcha"><template #icon><i class="fas fa-key"></i></template>{{ $ts.recaptchaSiteKey }}</MkInput>
+				<MkInput v-model:value="recaptchaSecretKey" :disabled="!enableRecaptcha"><template #icon><i class="fas fa-key"></i></template>{{ $ts.recaptchaSecretKey }}</MkInput>
 			</template>
 		</div>
 		<div class="_content" v-if="enableRecaptcha && recaptchaSiteKey">
@@ -74,7 +74,7 @@
 			<captcha v-if="enableRecaptcha" provider="grecaptcha" :sitekey="recaptchaSiteKey"/>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
@@ -95,54 +95,54 @@
 			<MkInfo>{{ $ts.emptyToDisableSmtpAuth }}</MkInfo>
 			<MkSwitch v-model:value="smtpSecure" :disabled="!enableEmail">{{ $ts.smtpSecure }}<template #desc>{{ $ts.smtpSecureInfo }}</template></MkSwitch>
 			<div>
-			  <MkButton :disabled="!enableEmail" primary inline @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			  <MkButton :disabled="!enableEmail" primary inline @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 				<MkButton :disabled="!enableEmail" inline @click="testEmail()">{{ $ts.testEmail }}</MkButton>
 			</div>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faBolt"/> {{ $ts.serviceworker }}</div>
+		<div class="_title"><i class="fas fa-bolt"></i> {{ $ts.serviceworker }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableServiceWorker">{{ $ts.enableServiceworker }}<template #desc>{{ $ts.serviceworkerInfo }}</template></MkSwitch>
 			<template v-if="enableServiceWorker">
 				<div class="_inputs">
-					<MkInput v-model:value="swPublicKey" :disabled="!enableServiceWorker"><template #icon><Fa :icon="faKey"/></template>Public key</MkInput>
-					<MkInput v-model:value="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><Fa :icon="faKey"/></template>Private key</MkInput>
+					<MkInput v-model:value="swPublicKey" :disabled="!enableServiceWorker"><template #icon><i class="fas fa-key"></i></template>Public key</MkInput>
+					<MkInput v-model:value="swPrivateKey" :disabled="!enableServiceWorker"><template #icon><i class="fas fa-key"></i></template>Private key</MkInput>
 				</div>
 			</template>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faThumbtack"/> {{ $ts.pinnedUsers }}</div>
+		<div class="_title"><i class="fas fa-thumbtack"></i> {{ $ts.pinnedUsers }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="pinnedUsers">
 				<template #desc>{{ $ts.pinnedUsersDescription }} <button class="_textButton" @click="addPinUser">{{ $ts.addUser }}</button></template>
 			</MkTextarea>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faThumbtack"/> {{ $ts.pinnedPages }}</div>
+		<div class="_title"><i class="fas fa-thumbtack"></i> {{ $ts.pinnedPages }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="pinnedPages">
 				<template #desc>{{ $ts.pinnedPagesDescription }}</template>
 			</MkTextarea>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faCloud"/> {{ $ts.files }}</div>
+		<div class="_title"><i class="fas fa-cloud"></i> {{ $ts.files }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="cacheRemoteFiles">{{ $ts.cacheRemoteFiles }}<template #desc>{{ $ts.cacheRemoteFilesDescription }}</template></MkSwitch>
 			<MkSwitch v-model:value="proxyRemoteFiles">{{ $ts.proxyRemoteFiles }}<template #desc>{{ $ts.proxyRemoteFilesDescription }}</template></MkSwitch>
@@ -150,12 +150,12 @@
 			<MkInput v-model:value="remoteDriveCapacityMb" type="number" :disabled="!cacheRemoteFiles">{{ $ts.driveCapacityPerRemoteAccount }}<template #suffix>MB</template><template #desc>{{ $ts.inMb }}</template></MkInput>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faCloud"/> {{ $ts.objectStorage }}</div>
+		<div class="_title"><i class="fas fa-cloud"></i> {{ $ts.objectStorage }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="useObjectStorage">{{ $ts.useObjectStorage }}</MkSwitch>
 			<template v-if="useObjectStorage">
@@ -169,8 +169,8 @@
 					<MkInput v-model:value="objectStorageRegion" :disabled="!useObjectStorage">{{ $ts.objectStorageRegion }}<template #desc>{{ $ts.objectStorageRegionDesc }}</template></MkInput>
 				</div>
 				<div class="_inputs">
-					<MkInput v-model:value="objectStorageAccessKey" :disabled="!useObjectStorage"><template #icon><Fa :icon="faKey"/></template>Access key</MkInput>
-					<MkInput v-model:value="objectStorageSecretKey" :disabled="!useObjectStorage"><template #icon><Fa :icon="faKey"/></template>Secret key</MkInput>
+					<MkInput v-model:value="objectStorageAccessKey" :disabled="!useObjectStorage"><template #icon><i class="fas fa-key"></i></template>Access key</MkInput>
+					<MkInput v-model:value="objectStorageSecretKey" :disabled="!useObjectStorage"><template #icon><i class="fas fa-key"></i></template>Secret key</MkInput>
 				</div>
 				<MkSwitch v-model:value="objectStorageUseSSL" :disabled="!useObjectStorage">{{ $ts.objectStorageUseSSL }}<template #desc>{{ $ts.objectStorageUseSSLDesc }}</template></MkSwitch>
 				<MkSwitch v-model:value="objectStorageUseProxy" :disabled="!useObjectStorage">{{ $ts.objectStorageUseProxy }}<template #desc>{{ $ts.objectStorageUseProxyDesc }}</template></MkSwitch>
@@ -179,12 +179,12 @@
 			</template>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faGhost"/> {{ $ts.proxyAccount }}</div>
+		<div class="_title"><i class="fas fa-ghost"></i> {{ $ts.proxyAccount }}</div>
 		<div class="_content">
 			<MkInput :value="proxyAccount ? proxyAccount.username : null" disabled><template #prefix>@</template>{{ $ts.proxyAccount }}<template #desc>{{ $ts.proxyAccountDescription }}</template></MkInput>
 			<MkButton primary @click="chooseProxyAccount">{{ $ts.chooseProxyAccount }}</MkButton>
@@ -192,48 +192,48 @@
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faBan"/> {{ $ts.blockedInstances }}</div>
+		<div class="_title"><i class="fas fa-ban"></i> {{ $ts.blockedInstances }}</div>
 		<div class="_content">
 			<MkTextarea v-model:value="blockedHosts">
 				<template #desc>{{ $ts.blockedInstancesDescription }}</template>
 			</MkTextarea>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
 	<section class="_card _gap">
 		<div class="_title"><i class="fas fa-share-alt"></i> {{ $ts.integration }}</div>
 		<div class="_content">
-			<header><Fa :icon="faTwitter"/> Twitter</header>
+			<header><i class="fas fa-twitter"></i> Twitter</header>
 			<MkSwitch v-model:value="enableTwitterIntegration">{{ $ts.enable }}</MkSwitch>
 			<template v-if="enableTwitterIntegration">
 				<MkInfo>Callback URL: {{ `${url}/api/tw/cb` }}</MkInfo>
-				<MkInput v-model:value="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><Fa :icon="faKey"/></template>Consumer Key</MkInput>
-				<MkInput v-model:value="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><Fa :icon="faKey"/></template>Consumer Secret</MkInput>
+				<MkInput v-model:value="twitterConsumerKey" :disabled="!enableTwitterIntegration"><template #icon><i class="fas fa-key"></i></template>Consumer Key</MkInput>
+				<MkInput v-model:value="twitterConsumerSecret" :disabled="!enableTwitterIntegration"><template #icon><i class="fas fa-key"></i></template>Consumer Secret</MkInput>
 			</template>
 		</div>
 		<div class="_content">
-			<header><Fa :icon="faGithub"/> GitHub</header>
+			<header><i class="fas fa-github"></i> GitHub</header>
 			<MkSwitch v-model:value="enableGithubIntegration">{{ $ts.enable }}</MkSwitch>
 			<template v-if="enableGithubIntegration">
 				<MkInfo>Callback URL: {{ `${url}/api/gh/cb` }}</MkInfo>
-				<MkInput v-model:value="githubClientId" :disabled="!enableGithubIntegration"><template #icon><Fa :icon="faKey"/></template>Client ID</MkInput>
-				<MkInput v-model:value="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><Fa :icon="faKey"/></template>Client Secret</MkInput>
+				<MkInput v-model:value="githubClientId" :disabled="!enableGithubIntegration"><template #icon><i class="fas fa-key"></i></template>Client ID</MkInput>
+				<MkInput v-model:value="githubClientSecret" :disabled="!enableGithubIntegration"><template #icon><i class="fas fa-key"></i></template>Client Secret</MkInput>
 			</template>
 		</div>
 		<div class="_content">
-			<header><Fa :icon="faDiscord"/> Discord</header>
+			<header><i class="fas fa-discord"></i> Discord</header>
 			<MkSwitch v-model:value="enableDiscordIntegration">{{ $ts.enable }}</MkSwitch>
 			<template v-if="enableDiscordIntegration">
 				<MkInfo>Callback URL: {{ `${url}/api/dc/cb` }}</MkInfo>
-				<MkInput v-model:value="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><Fa :icon="faKey"/></template>Client ID</MkInput>
-				<MkInput v-model:value="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><Fa :icon="faKey"/></template>Client Secret</MkInput>
+				<MkInput v-model:value="discordClientId" :disabled="!enableDiscordIntegration"><template #icon><i class="fas fa-key"></i></template>Client ID</MkInput>
+				<MkInput v-model:value="discordClientSecret" :disabled="!enableDiscordIntegration"><template #icon><i class="fas fa-key"></i></template>Client Secret</MkInput>
 			</template>
 		</div>
 		<div class="_footer">
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 
@@ -241,7 +241,7 @@
 		<div class="_title"><Fa :icon="faArchway" /> Summaly Proxy</div>
 		<div class="_content">
 			<MkInput v-model:value="summalyProxy">URL</MkInput>
-			<MkButton primary @click="save(true)"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
+			<MkButton primary @click="save(true)"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
 		</div>
 	</section>
 </div>

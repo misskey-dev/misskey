@@ -1,6 +1,6 @@
 <template>
 <section class="_card">
-	<div class="_title"><Fa :icon="faLock"/> {{ $ts.twoStepAuthentication }}</div>
+	<div class="_title"><i class="fas fa-lock"></i> {{ $ts.twoStepAuthentication }}</div>
 	<div class="_content">
 		<MkButton v-if="!data && !$i.twoFactorEnabled" @click="register">{{ $ts._2fa.registerDevice }}</MkButton>
 		<template v-if="$i.twoFactorEnabled">

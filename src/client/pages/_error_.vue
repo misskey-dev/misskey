@@ -3,7 +3,7 @@
 	<div class="_section">
 		<div class="mjndxjch _content">
 			<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-			<p><Fa :icon="faExclamationTriangle"/> {{ $ts.pageLoadError }}</p>
+			<p><i class="fas fa-exclamation-triangle"></i> {{ $ts.pageLoadError }}</p>
 			<p>{{ $ts.pageLoadErrorDescription }}</p>
 		</div>
 	</div>

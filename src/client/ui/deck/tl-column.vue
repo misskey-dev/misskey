@@ -10,7 +10,7 @@
 
 	<div class="iwaalbte" v-if="disabled">
 		<p>
-			<Fa :icon="faMinusCircle"/>
+			<i class="fas fa-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>

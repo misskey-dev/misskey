@@ -11,11 +11,11 @@
 	</section>
 
 	<section class="_section relays">
-		<div class="_title"><Fa :icon="faProjectDiagram"/> {{ $ts.addedRelays }}</div>
+		<div class="_title"><i class="fas fa-project-diagram"></i> {{ $ts.addedRelays }}</div>
 		<div class="_content relay" v-for="relay in relays" :key="relay.inbox">
 			<div>{{ relay.inbox }}</div>
 			<div>{{ $t(`_relayStatus.${relay.status}`) }}</div>
-			<MkButton class="button" inline @click="remove(relay.inbox)"><Fa :icon="faTrashAlt"/> {{ $ts.remove }}</MkButton>
+			<MkButton class="button" inline @click="remove(relay.inbox)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 		</div>
 	</section>
 </div>

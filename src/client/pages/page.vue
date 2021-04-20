@@ -27,8 +27,8 @@
 		</div>
 	</div>
 	<div class="footer">
-		<div><Fa :icon="faClock"/> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
-		<div v-if="page.createdAt != page.updatedAt"><Fa :icon="faClock"/> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
+		<div><i class="fas fa-clock"></i> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
+		<div v-if="page.createdAt != page.updatedAt"><i class="fas fa-clock"></i> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 	</div>
 </div>
 </template>

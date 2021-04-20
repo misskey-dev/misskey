@@ -1,7 +1,7 @@
 <template>
 <XColumn :func="{ handler: setAntenna, title: $ts.selectAntenna }" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<Fa :icon="faSatellite"/><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="fas fa-satellite"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<XTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => $emit('loaded')"/>

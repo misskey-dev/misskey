@@ -1,8 +1,8 @@
 <template>
 <div class="fzenkabp _formItem">
 	<div class="_formPanel" :class="{ warn }">
-		<i v-if="warn"><Fa :icon="faExclamationTriangle"/></i>
-		<i v-else><Fa :icon="faInfoCircle"/></i>
+		<i v-if="warn"><i class="fas fa-exclamation-triangle"></i></i>
+		<i v-else><i class="fas fa-info-circle"></i></i>
 		<slot></slot>
 	</div>
 </div>

@@ -16,7 +16,7 @@
 			<span>{{ $ts.tags }}</span>
 			<template #desc>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
 		</MkInput>
-		<MkButton danger @click="del()"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+		<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 	</div>
 </XModalWindow>
 </template>

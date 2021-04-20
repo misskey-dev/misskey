@@ -20,7 +20,7 @@
 			<span>{{ $ts._theme.code }}</span>
 			<template #desc><button @click="copyThemeCode()" class="_textButton">{{ $ts.copy }}</button></template>
 		</FormTextarea>
-		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><Fa :icon="faTrashAlt"/> {{ $ts.uninstall }}</FormButton>
+		<FormButton @click="uninstall()" danger v-if="!builtinThemes.some(t => t.id == selectedTheme.id)"><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</FormButton>
 	</template>
 </FormBase>
 </template>

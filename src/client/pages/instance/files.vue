@@ -2,7 +2,7 @@
 <div class="xrmjdkdw">
 	<div class="_section">
 		<div class="_content">
-			<MkButton primary @click="clear()"><Fa :icon="faTrashAlt"/> {{ $ts.clearCachedFiles }}</MkButton>
+			<MkButton primary @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearCachedFiles }}</MkButton>
 		</div>
 	</div>
 

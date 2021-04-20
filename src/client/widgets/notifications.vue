@@ -1,6 +1,6 @@
 <template>
 <MkContainer :style="`height: ${props.height}px;`" :show-header="props.showHeader" :scrollable="true">
-	<template #header><Fa :icon="faBell"/>{{ $ts.notifications }}</template>
+	<template #header><i class="fas fa-bell"></i>{{ $ts.notifications }}</template>
 	<template #func><button @click="configure()" class="_button"><i class="fas fa-cog"></i></button></template>
 
 	<div class="_flat_">

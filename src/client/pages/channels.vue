@@ -2,9 +2,9 @@
 <div>
 	<div class="_section" style="padding: 0;" v-if="$i">
 		<MkTab class="_content" v-model:value="tab">
-			<option value="featured"><Fa :icon="faFireAlt"/> {{ $ts._channel.featured }}</option>
-			<option value="following"><Fa :icon="faHeart"/> {{ $ts._channel.following }}</option>
-			<option value="owned"><Fa :icon="faEdit"/> {{ $ts._channel.owned }}</option>
+			<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._channel.featured }}</option>
+			<option value="following"><i class="fas fa-heart"></i> {{ $ts._channel.following }}</option>
+			<option value="owned"><i class="fas fa-edit"></i> {{ $ts._channel.owned }}</option>
 		</MkTab>
 	</div>
 

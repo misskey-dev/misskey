@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faTerminal"/>{{ $ts._widgets.aiscript }}</template>
+	<template #header><i class="fas fa-terminal"></i>{{ $ts._widgets.aiscript }}</template>
 
 	<div class="uylguesu _monospace">
 		<textarea v-model="props.script" placeholder="(1 + 1)"></textarea>

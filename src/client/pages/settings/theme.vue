@@ -72,15 +72,15 @@
 
 	<FormGroup>
 		<FormLink to="https://assets.msky.cafe/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ $ts._theme.explore }}</FormLink>
-		<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._theme.install }}</FormLink>
+		<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._theme.install }}</FormLink>
 	</FormGroup>
 
 	<FormGroup>
-		<FormLink to="/theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }}</FormLink>
-		<!--<FormLink to="/advanced-theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>-->
+		<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }}</FormLink>
+		<!--<FormLink to="/advanced-theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>-->
 	</FormGroup>
 
-	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+	<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
 </FormBase>
 </template>
 

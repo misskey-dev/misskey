@@ -10,7 +10,7 @@
 		</MkInput>
 		<MkInput v-model:value="password" type="password">
 			<span>{{ $ts.password }}</span>
-			<template #prefix><Fa :icon="faLock"/></template>
+			<template #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<footer>
 			<MkButton primary type="submit" :disabled="submitting">{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/></MkButton>

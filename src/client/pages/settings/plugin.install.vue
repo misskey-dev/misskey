@@ -8,7 +8,7 @@
 		</FormTextarea>
 	</FormGroup>
 
-	<FormButton @click="install" :disabled="code == null" primary inline><Fa :icon="faCheck"/> {{ $ts.install }}</FormButton>
+	<FormButton @click="install" :disabled="code == null" primary inline><i class="fas fa-check"></i> {{ $ts.install }}</FormButton>
 </FormBase>
 </template>
 

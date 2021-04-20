@@ -5,7 +5,7 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<Fa :icon="faExternalLinkAlt" class="icon"/>
+			<i class="fas fa-external-link-alt icon"></i>
 		</span>
 	</a>
 	<MkA class="main _button _formPanel _formClickable" :class="{ active }" :to="to" :behavior="behavior" v-else>
@@ -13,7 +13,7 @@
 		<span class="text"><slot></slot></span>
 		<span class="right">
 			<span class="text"><slot name="suffix"></slot></span>
-			<Fa :icon="faChevronRight" class="icon"/>
+			<i class="fas fa-chevron-right icon"></i>
 		</span>
 	</MkA>
 </div>

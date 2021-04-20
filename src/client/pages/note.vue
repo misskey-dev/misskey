@@ -7,7 +7,7 @@
 			</div>
 
 			<div class="main _gap">
-				<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><Fa :icon="faChevronUp"/></MkButton>
+				<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="fas fa-chevron-up"></i></MkButton>
 				<div class="_content _gap">
 					<MkRemoteCaution v-if="note.user.host != null" :href="note.url || note.uri" class="_gap"/>
 					<XNoteDetailed v-model:note="note" :key="note.id" class="_gap"/>
@@ -22,7 +22,7 @@
 						</div>
 					</MkA>
 				</div>
-				<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><Fa :icon="faChevronDown"/></MkButton>
+				<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="fas fa-chevron-down"></i></MkButton>
 			</div>
 
 			<div class="_gap" v-if="showPrev">

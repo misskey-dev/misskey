@@ -1,14 +1,14 @@
 <template>
 <div>
 	<XQueue :connection="connection" domain="inbox">
-		<template #title><Fa :icon="faExchangeAlt"/> In</template>
+		<template #title><i class="fas fa-exchange-alt"></i> In</template>
 	</XQueue>
 	<XQueue :connection="connection" domain="deliver">
-		<template #title><Fa :icon="faExchangeAlt"/> Out</template>
+		<template #title><i class="fas fa-exchange-alt"></i> Out</template>
 	</XQueue>
 	<section class="_section">
 		<div class="_content">
-			<MkButton @click="clear()"><Fa :icon="faTrashAlt"/> {{ $ts.clearQueue }}</MkButton>
+			<MkButton @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</MkButton>
 		</div>
 	</section>
 </div>

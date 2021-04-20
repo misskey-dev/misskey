@@ -17,18 +17,18 @@
 			</template>
 		</div>
 		<div class="_content">
-			<MkButton inline @click="translate()" :primary="isTranslateMode"><Fa :icon="faArrowsAlt"/> {{ $ts._rooms.translate }}</MkButton>
-			<MkButton inline @click="rotate()" :primary="isRotateMode"><Fa :icon="faUndo"/> {{ $ts._rooms.rotate }}</MkButton>
-			<MkButton inline v-if="isTranslateMode || isRotateMode" @click="exit()"><Fa :icon="faBan"/> {{ $ts._rooms.exit }}</MkButton>
+			<MkButton inline @click="translate()" :primary="isTranslateMode"><i class="fas fa-arrows-alt"></i> {{ $ts._rooms.translate }}</MkButton>
+			<MkButton inline @click="rotate()" :primary="isRotateMode"><i class="fas fa-undo"></i> {{ $ts._rooms.rotate }}</MkButton>
+			<MkButton inline v-if="isTranslateMode || isRotateMode" @click="exit()"><i class="fas fa-ban"></i> {{ $ts._rooms.exit }}</MkButton>
 		</div>
 		<div class="_content">
-			<MkButton @click="remove()"><Fa :icon="faTrashAlt"/> {{ $ts._rooms.remove }}</MkButton>
+			<MkButton @click="remove()"><i class="fas fa-trash-alt"></i> {{ $ts._rooms.remove }}</MkButton>
 		</div>
 	</div>
 
 	<div class="menu _section" v-if="isMyRoom">
 		<div class="_content">
-			<MkButton @click="add()"><Fa :icon="faBoxOpen"/> {{ $ts._rooms.addFurniture }}</MkButton>
+			<MkButton @click="add()"><i class="fas fa-box-open"></i> {{ $ts._rooms.addFurniture }}</MkButton>
 		</div>
 		<div class="_content">
 			<MkSelect :value="roomType" @update:value="updateRoomType($event)">
@@ -42,8 +42,8 @@
 			</label>
 		</div>
 		<div class="_content">
-			<MkButton inline :disabled="!changed" primary @click="save()"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
-			<MkButton inline @click="clear()"><Fa :icon="faBroom"/> {{ $ts._rooms.clear }}</MkButton>
+			<MkButton inline :disabled="!changed" primary @click="save()"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+			<MkButton inline @click="clear()"><i class="fas fa-broom"></i> {{ $ts._rooms.clear }}</MkButton>
 		</div>
 	</div>
 </div>

@@ -15,8 +15,8 @@
 		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<button class="toggleActive _button" @click="toggleActive" v-if="isStacked && !isMainColumn">
-			<template v-if="active"><Fa :icon="faAngleUp"/></template>
-			<template v-else><Fa :icon="faAngleDown"/></template>
+			<template v-if="active"><i class="fas fa-angle-up"></i></template>
+			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 		<div class="action">
 			<slot name="action"></slot>

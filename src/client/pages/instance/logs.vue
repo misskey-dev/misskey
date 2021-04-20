@@ -24,7 +24,7 @@
 		</code>
 	</div>
 
-	<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $ts.deleteAll }}</MkButton>
+	<MkButton @click="deleteAllLogs()" primary><i class="fas fa-trash-alt"></i> {{ $ts.deleteAll }}</MkButton>
 </div>
 </template>
 

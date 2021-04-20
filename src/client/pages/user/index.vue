@@ -34,15 +34,15 @@
 				</div>
 				<div class="fields system">
 					<dl class="field" v-if="user.location">
-						<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $ts.location }}</dt>
+						<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
 						<dd class="value">{{ user.location }}</dd>
 					</dl>
 					<dl class="field" v-if="user.birthday">
-						<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $ts.birthday }}</dt>
+						<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
 						<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 					</dl>
 					<dl class="field">
-						<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $ts.registeredDate }}</dt>
+						<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
 						<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 					</dl>
 				</div>
@@ -62,15 +62,15 @@
 			<div class="main">
 				<div class="nav _gap">
 					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
-						<Fa :icon="faCommentAlt" class="icon"/>
+						<i class="fas fa-comment-alt icon"></i>
 						<span>{{ $ts.notes }}</span>
 					</MkA>
 					<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
-						<Fa :icon="faPaperclip" class="icon"/>
+						<i class="fas fa-paperclip icon"></i>
 						<span>{{ $ts.clips }}</span>
 					</MkA>
 					<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
-						<Fa :icon="faFileAlt" class="icon"/>
+						<i class="fas fa-file-alt icon"></i>
 						<span>{{ $ts.pages }}</span>
 					</MkA>
 					<div class="actions">
@@ -109,10 +109,10 @@
 						<MkUserName class="name" :user="user" :nowrap="true"/>
 						<div class="bottom">
 							<span class="username"><MkAcct :user="user" :detail="true" /></span>
-							<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-							<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-							<span v-if="user.isLocked" :title="$ts.isLocked"><Fa :icon="faLock"/></span>
-							<span v-if="user.isBot" :title="$ts.isBot"><Fa :icon="faRobot"/></span>
+							<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+							<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+							<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+							<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
 						</div>
 					</div>
 					<span class="followed" v-if="$i && $i.id != user.id && user.isFollowed">{{ $ts.followsYou }}</span>
@@ -126,10 +126,10 @@
 					<MkUserName :user="user" :nowrap="false" class="name"/>
 					<div class="bottom">
 						<span class="username"><MkAcct :user="user" :detail="true" /></span>
-						<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><Fa :icon="faBookmark"/></span>
-						<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><Fa :icon="farBookmark"/></span>
-						<span v-if="user.isLocked" :title="$ts.isLocked"><Fa :icon="faLock"/></span>
-						<span v-if="user.isBot" :title="$ts.isBot"><Fa :icon="faRobot"/></span>
+						<span v-if="user.isAdmin" :title="$ts.isAdmin" style="color: var(--badge);"><i class="fas fa-bookmark"></i></span>
+						<span v-if="!user.isAdmin && user.isModerator" :title="$ts.isModerator" style="color: var(--badge);"><i class="far fa-bookmark"></i></span>
+						<span v-if="user.isLocked" :title="$ts.isLocked"><i class="fas fa-lock"></i></span>
+						<span v-if="user.isBot" :title="$ts.isBot"><i class="fas fa-robot"></i></span>
 					</div>
 				</div>
 				<div class="description">
@@ -138,15 +138,15 @@
 				</div>
 				<div class="fields system">
 					<dl class="field" v-if="user.location">
-						<dt class="name"><Fa :icon="faMapMarker" fixed-width/> {{ $ts.location }}</dt>
+						<dt class="name"><i class="fas fa-map-marker fa-fw"></i> {{ $ts.location }}</dt>
 						<dd class="value">{{ user.location }}</dd>
 					</dl>
 					<dl class="field" v-if="user.birthday">
-						<dt class="name"><Fa :icon="faBirthdayCake" fixed-width/> {{ $ts.birthday }}</dt>
+						<dt class="name"><i class="fas fa-birthday-cake fa-fw"></i> {{ $ts.birthday }}</dt>
 						<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
 					</dl>
 					<dl class="field">
-						<dt class="name"><Fa :icon="faCalendarAlt" fixed-width/> {{ $ts.registeredDate }}</dt>
+						<dt class="name"><i class="fas fa-calendar-alt fa-fw"></i> {{ $ts.registeredDate }}</dt>
 						<dd class="value">{{ new Date(user.createdAt).toLocaleString() }} (<MkTime :time="user.createdAt"/>)</dd>
 					</dl>
 				</div>
@@ -180,15 +180,15 @@
 		<div class="contents">
 			<div class="nav _gap">
 				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
-					<Fa :icon="faCommentAlt" class="icon"/>
+					<i class="fas fa-comment-alt icon"></i>
 					<span>{{ $ts.notes }}</span>
 				</MkA>
 				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
-					<Fa :icon="faPaperclip" class="icon"/>
+					<i class="fas fa-paperclip icon"></i>
 					<span>{{ $ts.clips }}</span>
 				</MkA>
 				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
-					<Fa :icon="faFileAlt" class="icon"/>
+					<i class="fas fa-file-alt icon"></i>
 					<span>{{ $ts.pages }}</span>
 				</MkA>
 			</div>

@@ -1,7 +1,7 @@
 <template>
 <FormBase>
 	<X2fa/>
-	<FormLink to="/settings/2fa"><template #icon><Fa :icon="faMobileAlt"/></template>{{ $ts.twoStepAuthentication }}</FormLink>
+	<FormLink to="/settings/2fa"><template #icon><i class="fas fa-mobile-alt"></i></template>{{ $ts.twoStepAuthentication }}</FormLink>
 	<FormButton primary @click="change()">{{ $ts.changePassword }}</FormButton>
 	<FormPagination :pagination="pagination">
 		<template #label>{{ $ts.signinHistory }}</template>
@@ -17,7 +17,7 @@
 		</template>
 	</FormPagination>
 	<FormGroup>
-		<FormButton danger @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $ts.regenerateLoginToken }}</FormButton>
+		<FormButton danger @click="regenerateToken"><i class="fas fa-sync-alt"></i> {{ $ts.regenerateLoginToken }}</FormButton>
 		<template #caption>{{ $ts.regenerateLoginTokenDescription }}</template>
 	</FormGroup>
 </FormBase>

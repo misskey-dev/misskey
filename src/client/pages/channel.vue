@@ -3,15 +3,15 @@
 	<div class="wpgynlbz _content _panel _gap" :class="{ hide: !showBanner }">
 		<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
-			<template v-if="showBanner"><Fa :icon="faAngleUp"/></template>
-			<template v-else><Fa :icon="faAngleDown"/></template>
+			<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
+			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 		<div class="hideOverlay" v-if="!showBanner">
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><Fa :icon="faUsers" fixed-width/><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-				<div><Fa :icon="faPencilAlt" fixed-width/><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+				<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+				<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 			</div>
 			<div class="fade"></div>
 		</div>

@@ -3,7 +3,7 @@
 	<template v-if="meta">
 		<MkInput v-if="meta.disableRegistration" v-model:value="invitationCode" type="text" :autocomplete="Math.random()" spellcheck="false" required>
 			<span>{{ $ts.invitationCode }}</span>
-			<template #prefix><Fa :icon="faKey"/></template>
+			<template #prefix><i class="fas fa-key"></i></template>
 		</MkInput>
 		<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :autocomplete="Math.random()" spellcheck="false" required @update:value="onChangeUsername">
 			<span>{{ $ts.username }}</span>
@@ -11,29 +11,29 @@
 			<template #suffix>@{{ host }}</template>
 			<template #desc>
 				<span v-if="usernameState == 'wait'" style="color:#999"><Fa :icon="faSpinner" pulse fixed-width/> {{ $ts.checking }}</span>
-				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $ts.available }}</span>
-				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.unavailable }}</span>
-				<span v-if="usernameState == 'error'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.error }}</span>
-				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.usernameInvalidFormat }}</span>
-				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.tooShort }}</span>
-				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.tooLong }}</span>
+				<span v-if="usernameState == 'ok'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.available }}</span>
+				<span v-if="usernameState == 'unavailable'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.unavailable }}</span>
+				<span v-if="usernameState == 'error'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.error }}</span>
+				<span v-if="usernameState == 'invalid-format'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.usernameInvalidFormat }}</span>
+				<span v-if="usernameState == 'min-range'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooShort }}</span>
+				<span v-if="usernameState == 'max-range'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.tooLong }}</span>
 			</template>
 		</MkInput>
 		<MkInput v-model:value="password" type="password" :autocomplete="Math.random()" required @update:value="onChangePassword">
 			<span>{{ $ts.password }}</span>
-			<template #prefix><Fa :icon="faLock"/></template>
+			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #desc>
-				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.weakPassword }}</p>
-				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $ts.normalPassword }}</p>
-				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $ts.strongPassword }}</p>
+				<p v-if="passwordStrength == 'low'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.weakPassword }}</p>
+				<p v-if="passwordStrength == 'medium'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.normalPassword }}</p>
+				<p v-if="passwordStrength == 'high'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.strongPassword }}</p>
 			</template>
 		</MkInput>
 		<MkInput v-model:value="retypedPassword" type="password" :autocomplete="Math.random()" required @update:value="onChangePasswordRetype">
 			<span>{{ $ts.password }} ({{ $ts.retype }})</span>
-			<template #prefix><Fa :icon="faLock"/></template>
+			<template #prefix><i class="fas fa-lock"></i></template>
 			<template #desc>
-				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><Fa :icon="faCheck" fixed-width/> {{ $ts.passwordMatched }}</p>
-				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><Fa :icon="faExclamationTriangle" fixed-width/> {{ $ts.passwordNotMatched }}</p>
+				<p v-if="passwordRetypeState == 'match'" style="color:#3CB7B5"><i class="fas fa-check fa-fw"></i> {{ $ts.passwordMatched }}</p>
+				<p v-if="passwordRetypeState == 'not-match'" style="color:#FF1161"><i class="fas fa-exclamation-triangle fa-fw"></i> {{ $ts.passwordNotMatched }}</p>
 			</template>
 		</MkInput>
 		<label v-if="meta.tosUrl" class="tou">

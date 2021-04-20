@@ -3,9 +3,9 @@
 	<MkA class="view" v-if="pageId" :to="`/@${ author.username }/pages/${ currentName }`"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts._pages.viewPage }}</MkA>
 
 	<div class="buttons" style="margin: 16px;">
-		<MkButton inline @click="save" primary class="save" v-if="!readonly"><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><Fa :icon="faCopy"/> {{ $ts.duplicate }}</MkButton>
-		<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+		<MkButton inline @click="save" primary class="save" v-if="!readonly"><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton inline @click="duplicate" class="duplicate" v-if="pageId"><i class="fas fa-copy"></i> {{ $ts.duplicate }}</MkButton>
+		<MkButton inline @click="del" class="delete" v-if="pageId && !readonly"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 	</div>
 
 	<MkContainer :foldable="true" :expanded="true" class="_gap">
@@ -38,14 +38,14 @@
 				<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="fas fa-plus"></i> {{ $ts._pages.eyeCatchingImageSet }}</MkButton>
 				<div v-else-if="eyeCatchingImage">
 					<img :src="eyeCatchingImage.url" :alt="eyeCatchingImage.name" style="max-width: 100%;"/>
-					<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><Fa :icon="faTrashAlt"/> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
+					<MkButton @click="removeEyeCatchingImage()" v-if="!readonly"><i class="fas fa-trash-alt"></i> {{ $ts._pages.eyeCatchingImageRemove }}</MkButton>
 				</div>
 			</div>
 		</div>
 	</MkContainer>
 
 	<MkContainer :foldable="true" :expanded="true" class="_gap">
-		<template #header><Fa :icon="faStickyNote"/> {{ $ts._pages.contents }}</template>
+		<template #header><i class="fas fa-sticky-note"></i> {{ $ts._pages.contents }}</template>
 		<div style="padding: 16px;">
 			<XBlocks class="content" v-model:value="content" :hpml="hpml"/>
 
@@ -54,7 +54,7 @@
 	</MkContainer>
 
 	<MkContainer :foldable="true" class="_gap">
-		<template #header><Fa :icon="faMagic"/> {{ $ts._pages.variables }}</template>
+		<template #header><i class="fas fa-magic"></i> {{ $ts._pages.variables }}</template>
 		<div class="qmuvgica">
 			<XDraggable tag="div" class="variables" v-show="variables.length > 0" v-model="variables" item-key="name" handle=".drag-handle" :group="{ name: 'variables' }" animation="150" swap-threshold="0.5">
 				<template #item="{element}">
@@ -75,7 +75,7 @@
 	</MkContainer>
 
 	<MkContainer :foldable="true" :expanded="true" class="_gap">
-		<template #header><Fa :icon="faCode"/> {{ $ts.script }}</template>
+		<template #header><i class="fas fa-code"></i> {{ $ts.script }}</template>
 		<div>
 			<MkTextarea class="_code" v-model:value="script"/>
 		</div>

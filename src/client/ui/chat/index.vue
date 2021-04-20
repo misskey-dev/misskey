@@ -10,63 +10,63 @@
 				</button>
 			</div>
 			<div class="right">
-				<MkA class="item" to="/my/messaging" v-tooltip="$ts.messaging"><Fa class="icon" :icon="faComments"/><i v-if="$i.hasUnreadMessagingMessage"><Fa :icon="faCircle"/></i></MkA>
-				<MkA class="item" to="/my/messages" v-tooltip="$ts.directNotes"><Fa class="icon" :icon="faEnvelope"/><i v-if="$i.hasUnreadSpecifiedNotes"><Fa :icon="faCircle"/></i></MkA>
-				<MkA class="item" to="/my/mentions" v-tooltip="$ts.mentions"><Fa class="icon" :icon="faAt"/><i v-if="$i.hasUnreadMentions"><Fa :icon="faCircle"/></i></MkA>
-				<MkA class="item" to="/my/notifications" v-tooltip="$ts.notifications"><Fa class="icon" :icon="faBell"/><i v-if="$i.hasUnreadNotification"><Fa :icon="faCircle"/></i></MkA>
+				<MkA class="item" to="/my/messaging" v-tooltip="$ts.messaging"><i class="fas fa-comments icon"></i><i v-if="$i.hasUnreadMessagingMessage"><i class="fas fa-circle"></i></i></MkA>
+				<MkA class="item" to="/my/messages" v-tooltip="$ts.directNotes"><i class="fas fa-envelope icon"></i><i v-if="$i.hasUnreadSpecifiedNotes"><i class="fas fa-circle"></i></i></MkA>
+				<MkA class="item" to="/my/mentions" v-tooltip="$ts.mentions"><i class="fas fa-at icon"></i><i v-if="$i.hasUnreadMentions"><i class="fas fa-circle"></i></i></MkA>
+				<MkA class="item" to="/my/notifications" v-tooltip="$ts.notifications"><i class="fas fa-bell icon"></i><i v-if="$i.hasUnreadNotification"><i class="fas fa-circle"></i></i></MkA>
 			</div>
 		</header>
 		<div class="body">
 			<div class="container">
 				<div class="header">{{ $ts.timeline }}</div>
 				<div class="body">
-					<MkA to="/timeline/home" class="item" :class="{ active: tl === 'home' }"><Fa :icon="faHome" class="icon"/>{{ $ts._timelines.home }}</MkA>
-					<MkA to="/timeline/local" class="item" :class="{ active: tl === 'local' }"><Fa :icon="faComments" class="icon"/>{{ $ts._timelines.local }}</MkA>
-					<MkA to="/timeline/social" class="item" :class="{ active: tl === 'social' }"><Fa :icon="faShareAlt" class="icon"/>{{ $ts._timelines.social }}</MkA>
-					<MkA to="/timeline/global" class="item" :class="{ active: tl === 'global' }"><Fa :icon="faGlobe" class="icon"/>{{ $ts._timelines.global }}</MkA>
+					<MkA to="/timeline/home" class="item" :class="{ active: tl === 'home' }"><i class="fas fa-home icon"></i>{{ $ts._timelines.home }}</MkA>
+					<MkA to="/timeline/local" class="item" :class="{ active: tl === 'local' }"><i class="fas fa-comments icon"></i>{{ $ts._timelines.local }}</MkA>
+					<MkA to="/timeline/social" class="item" :class="{ active: tl === 'social' }"><i class="fas fa-share-alt icon"></i>{{ $ts._timelines.social }}</MkA>
+					<MkA to="/timeline/global" class="item" :class="{ active: tl === 'global' }"><i class="fas fa-globe icon"></i>{{ $ts._timelines.global }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="followedChannels">
 				<div class="header">{{ $ts.channel }} ({{ $ts.following }})<button class="_button add" @click="addChannel"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
-					<MkA v-for="channel in followedChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }`, read: !channel.hasUnreadNote }"><Fa :icon="faSatelliteDish" class="icon"/>{{ channel.name }}</MkA>
+					<MkA v-for="channel in followedChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }`, read: !channel.hasUnreadNote }"><i class="fas fa-satellite-dish icon"></i>{{ channel.name }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="featuredChannels">
 				<div class="header">{{ $ts.channel }}<button class="_button add" @click="addChannel"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
-					<MkA v-for="channel in featuredChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }` }"><Fa :icon="faSatelliteDish" class="icon"/>{{ channel.name }}</MkA>
+					<MkA v-for="channel in featuredChannels" :key="channel.id" :to="`/channels/${ channel.id }`" class="item" :class="{ active: tl === `channel:${ channel.id }` }"><i class="fas fa-satellite-dish icon"></i>{{ channel.name }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="lists">
 				<div class="header">{{ $ts.lists }}<button class="_button add" @click="addList"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
-					<MkA v-for="list in lists" :key="list.id" :to="`/my/list/${ list.id }`" class="item" :class="{ active: tl === `list:${ list.id }` }"><Fa :icon="faListUl" class="icon"/>{{ list.name }}</MkA>
+					<MkA v-for="list in lists" :key="list.id" :to="`/my/list/${ list.id }`" class="item" :class="{ active: tl === `list:${ list.id }` }"><i class="fas fa-list-ul icon"></i>{{ list.name }}</MkA>
 				</div>
 			</div>
 			<div class="container" v-if="antennas">
 				<div class="header">{{ $ts.antennas }}<button class="_button add" @click="addAntenna"><i class="fas fa-plus"></i></button></div>
 				<div class="body">
-					<MkA v-for="antenna in antennas" :key="antenna.id" :to="`/my/antenna/${ antenna.id }`" class="item" :class="{ active: tl === `antenna:${ antenna.id }` }"><Fa :icon="faSatellite" class="icon"/>{{ antenna.name }}</MkA>
+					<MkA v-for="antenna in antennas" :key="antenna.id" :to="`/my/antenna/${ antenna.id }`" class="item" :class="{ active: tl === `antenna:${ antenna.id }` }"><i class="fas fa-satellite icon"></i>{{ antenna.name }}</MkA>
 				</div>
 			</div>
 			<div class="container">
 				<div class="body">
-					<MkA to="/my/favorites" class="item"><Fa :icon="faStar" class="icon"/>{{ $ts.favorites }}</MkA>
+					<MkA to="/my/favorites" class="item"><i class="fas fa-star icon"></i>{{ $ts.favorites }}</MkA>
 				</div>
 			</div>
 		</div>
 		<footer class="footer">
 			<div class="left">
 				<button class="_button menu" @click="showMenu">
-					<Fa class="icon" :icon="faBars"/>
+					<i class="fas fa-bars icon"></i>
 				</button>
 			</div>
 			<div class="right">
 				<button class="_button item search" @click="search" v-tooltip="$ts.search">
 					<i class="fas fa-search"></i>
 				</button>
-				<MkA class="item" to="/settings" v-tooltip="$ts.settings"><Fa class="icon" :icon="faCog"/></MkA>
+				<MkA class="item" to="/settings" v-tooltip="$ts.settings"><i class="fas fa-cog icon"></i></MkA>
 			</div>
 		</footer>
 	</div>
@@ -75,23 +75,23 @@
 		<header class="header" ref="header" @click="onHeaderClick">
 			<div class="left">
 				<template v-if="tl === 'home'">
-					<Fa :icon="faHome" class="icon"/>
+					<i class="fas fa-home icon"></i>
 					<div class="title">{{ $ts._timelines.home }}</div>
 				</template>
 				<template v-else-if="tl === 'local'">
-					<Fa :icon="faComments" class="icon"/>
+					<i class="fas fa-comments icon"></i>
 					<div class="title">{{ $ts._timelines.local }}</div>
 				</template>
 				<template v-else-if="tl === 'social'">
-					<Fa :icon="faShareAlt" class="icon"/>
+					<i class="fas fa-share-alt icon"></i>
 					<div class="title">{{ $ts._timelines.social }}</div>
 				</template>
 				<template v-else-if="tl === 'global'">
-					<Fa :icon="faGlobe" class="icon"/>
+					<i class="fas fa-globe icon"></i>
 					<div class="title">{{ $ts._timelines.global }}</div>
 				</template>
 				<template v-else-if="tl.startsWith('channel:')">
-					<Fa :icon="faSatelliteDish" class="icon"/>
+					<i class="fas fa-satellite-dish icon"></i>
 					<div class="title" v-if="currentChannel">{{ currentChannel.name }}<div class="description">{{ currentChannel.description }}</div></div>
 				</template>
 			</div>
@@ -100,7 +100,7 @@
 				<div class="instance">{{ instanceName }}</div>
 				<XHeaderClock class="clock"/>
 				<button class="_button button timetravel" @click="timetravel" v-tooltip="$ts.jumpToSpecifiedDate">
-					<Fa :icon="faCalendarAlt"/>
+					<i class="fas fa-calendar-alt"></i>
 				</button>
 				<button class="_button button search" v-if="tl.startsWith('channel:') && currentChannel" @click="inChannelSearch" v-tooltip="$ts.inChannelSearch">
 					<i class="fas fa-search"></i>

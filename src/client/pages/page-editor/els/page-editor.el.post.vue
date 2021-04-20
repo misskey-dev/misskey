@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faPaperPlane"/> {{ $ts._pages.blocks.post }}</template>
+	<template #header><i class="fas fa-paper-plane"></i> {{ $ts._pages.blocks.post }}</template>
 
 	<section style="padding: 16px;">
 		<MkTextarea v-model:value="value.text">{{ $ts._pages.blocks._post.text }}</MkTextarea>

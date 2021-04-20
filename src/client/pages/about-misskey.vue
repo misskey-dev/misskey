@@ -15,12 +15,12 @@
 		</section>
 		<FormGroup>
 			<FormLink to="https://github.com/misskey-dev/misskey" external>
-				<template #icon><Fa :icon="faCode"/></template>
+				<template #icon><i class="fas fa-code"></i></template>
 				{{ $ts._aboutMisskey.source }}
 				<template #suffix>GitHub</template>
 			</FormLink>
 			<FormLink to="https://crowdin.com/project/misskey" external>
-				<template #icon><Fa :icon="faLanguage"/></template>
+				<template #icon><i class="fas fa-language"></i></template>
 				{{ $ts._aboutMisskey.translation }}
 				<template #suffix>Crowdin</template>
 			</FormLink>

@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faRssSquare"/>RSS</template>
+	<template #header><i class="fas fa-rss-square"></i>RSS</template>
 	<template #func><button class="_button" @click="setting"><i class="fas fa-cog"></i></button></template>
 
 	<div class="ekmkgxbj">

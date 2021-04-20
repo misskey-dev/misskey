@@ -16,8 +16,8 @@
 					</MkInput>
 					<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons">
-						<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
-						<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $ts.remove }}</MkButton>
+						<MkButton class="button" inline @click="save(announcement)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+						<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
 					</div>
 				</div>
 			</section>

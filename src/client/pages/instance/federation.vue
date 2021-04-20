@@ -44,12 +44,12 @@
 				<div class="ppgwaixt _panel" v-for="instance in items" :key="instance.id" @click="info(instance)">
 					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
 					<div class="status">
-						<span class="sub" v-if="instance.followersCount > 0"><Fa :icon="faCaretDown" class="icon"/>Sub</span>
-						<span class="sub" v-else><Fa :icon="faCaretDown" class="icon"/>-</span>
-						<span class="pub" v-if="instance.followingCount > 0"><Fa :icon="faCaretUp" class="icon"/>Pub</span>
-						<span class="pub" v-else><Fa :icon="faCaretUp" class="icon"/>-</span>
-						<span class="lastCommunicatedAt"><Fa :icon="faExchangeAlt" class="icon"/><MkTime :time="instance.lastCommunicatedAt"/></span>
-						<span class="latestStatus"><Fa :icon="faTrafficLight" class="icon"/>{{ instance.latestStatus || '-' }}</span>
+						<span class="sub" v-if="instance.followersCount > 0"><i class="fas fa-caret-down icon"></i>Sub</span>
+						<span class="sub" v-else><i class="fas fa-caret-down icon"></i>-</span>
+						<span class="pub" v-if="instance.followingCount > 0"><i class="fas fa-caret-up icon"></i>Pub</span>
+						<span class="pub" v-else><i class="fas fa-caret-up icon"></i>-</span>
+						<span class="lastCommunicatedAt"><i class="fas fa-exchange-alt icon"></i><MkTime :time="instance.lastCommunicatedAt"/></span>
+						<span class="latestStatus"><i class="fas fa-traffic-light icon"></i>{{ instance.latestStatus || '-' }}</span>
 					</div>
 				</div>
 			</MkPagination>

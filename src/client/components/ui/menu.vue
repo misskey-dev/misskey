@@ -13,25 +13,25 @@
 			<span><MkEllipsis/></span>
 		</span>
 		<MkA v-else-if="item.type === 'link'" :to="item.to" @click.passive="close()" :tabindex="i" class="_button item">
-			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
 		</MkA>
 		<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" @click="close()" :tabindex="i" class="_button item">
-			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
 		</a>
 		<button v-else-if="item.type === 'user'" @click="clicked(item.action, $event)" :tabindex="i" class="_button item">
 			<MkAvatar :user="item.user" class="avatar"/><MkUserName :user="item.user"/>
-			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
 		</button>
 		<button v-else @click="clicked(item.action, $event)" :tabindex="i" class="_button item" :class="{ danger: item.danger }">
-			<Fa v-if="item.icon" :icon="item.icon" fixed-width/>
+			<i v-if="item.icon" class="fa-fw" :class="item.icon"></i>
 			<MkAvatar v-if="item.avatar" :user="item.avatar" class="avatar"/>
 			<span>{{ item.text }}</span>
-			<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
+			<i v-if="item.indicate"><i class="fas fa-circle"></i></i>
 		</button>
 	</template>
 	<span v-if="_items.length === 0" class="none item">

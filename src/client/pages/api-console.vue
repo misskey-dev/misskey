@@ -12,7 +12,7 @@
 		</MkSwitch>
 		<MkButton primary full @click="send" :disabled="sending">
 			<template v-if="sending"><MkEllipsis/></template>
-			<template v-else><Fa :icon="faPaperPlane"/> Send</template>
+			<template v-else><i class="fas fa-paper-plane"></i> Send</template>
 		</MkButton>
 	</div>
 	<div v-if="res" class="_block" style="padding: 24px;">

@@ -23,7 +23,7 @@
 		<div class="_formItem">
 			<div class="_formPanel" style="padding: 16px;">
 				<MkButton @click="config(plugin)" inline v-if="plugin.config"><i class="fas fa-cog"></i> {{ $ts.settings }}</MkButton>
-				<MkButton @click="uninstall(plugin)" inline danger><Fa :icon="faTrashAlt"/> {{ $ts.uninstall }}</MkButton>
+				<MkButton @click="uninstall(plugin)" inline danger><i class="fas fa-trash-alt"></i> {{ $ts.uninstall }}</MkButton>
 			</div>
 		</div>
 	</FormGroup>

@@ -1,7 +1,7 @@
 <template>
 <div class="mk-media-banner">
 	<div class="sensitive" v-if="media.isSensitive && hide" @click="hide = false">
-		<span class="icon"><Fa :icon="faExclamationTriangle"/></span>
+		<span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
 		<b>{{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
@@ -19,7 +19,7 @@
 		:title="media.name"
 		:download="media.name"
 	>
-		<span class="icon"><Fa icon="download"/></span>
+		<span class="icon"><i class="fas fa-download"></i></span>
 		<b>{{ media.name }}</b>
 	</a>
 </div>

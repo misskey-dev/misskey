@@ -2,12 +2,12 @@
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
 	<div class="hrmcaedk _popup _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header">
-			<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+			<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 			<span class="title">
 				<XHeader :info="pageInfo" :with-back="false"/>
 			</span>
-			<button class="_button" @click="$refs.modal.close()"><Fa :icon="faTimes"/></button>
+			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
 		<div class="body _flat_">
 			<keep-alive>

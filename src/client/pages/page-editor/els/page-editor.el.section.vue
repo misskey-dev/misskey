@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faStickyNote"/> {{ value.title }}</template>
+	<template #header><i class="fas fa-sticky-note"></i> {{ value.title }}</template>
 	<template #func>
 		<button @click="rename()" class="_button">
 			<i class="fas fa-pencil-alt"></i>

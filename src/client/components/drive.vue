@@ -4,10 +4,10 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<XNavFolder :class="{ current: folder == null }"/>
 			<template v-for="f in hierarchyFolders">
-				<span class="separator"><Fa :icon="faAngleRight"/></span>
+				<span class="separator"><i class="fas fa-angle-right"></i></span>
 				<XNavFolder :folder="f"/>
 			</template>
-			<span class="separator" v-if="folder != null"><Fa :icon="faAngleRight"/></span>
+			<span class="separator" v-if="folder != null"><i class="fas fa-angle-right"></i></span>
 			<span class="folder current" v-if="folder != null">{{ folder.name }}</span>
 		</div>
 	</nav>

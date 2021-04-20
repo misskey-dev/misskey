@@ -22,7 +22,7 @@
 			<FormTextarea tall v-model:value="valueForEditor" class="_monospace" style="tab-size: 2;">
 				<span>{{ $ts.value }} (JSON)</span>
 			</FormTextarea>
-			<FormButton @click="save" primary><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+			<FormButton @click="save" primary><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 		</FormGroup>
 
 		<FormKeyValueView>
@@ -30,7 +30,7 @@
 			<template #value><MkTime :time="value.updatedAt" mode="detail"/></template>
 		</FormKeyValueView>
 
-		<FormButton danger @click="del"><Fa :icon="faTrash"/> {{ $ts.delete }}</FormButton>
+		<FormButton danger @click="del"><i class="fas fa-trash"></i> {{ $ts.delete }}</FormButton>
 	</template>
 </FormBase>
 </template>

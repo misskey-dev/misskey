@@ -8,7 +8,7 @@
 				<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 			</div>
 			<div class="_footer" v-if="$i && !announcement.isRead">
-				<MkButton @click="read(items, announcement, i)" primary><Fa :icon="faCheck"/> {{ $ts.gotIt }}</MkButton>
+				<MkButton @click="read(items, announcement, i)" primary><i class="fas fa-check"></i> {{ $ts.gotIt }}</MkButton>
 			</div>
 		</section>
 	</MkPagination>

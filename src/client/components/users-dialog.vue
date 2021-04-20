@@ -2,7 +2,7 @@
 <div class="mk-users-dialog">
 	<div class="header">
 		<span>{{ title }}</span>
-		<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+		<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 	</div>
 
 	<div class="users">
