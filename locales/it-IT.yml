@@ -670,10 +670,13 @@ _registry:
   domain: "Dominio"
   createKey: "Crea chiave"
 _aboutMisskey:
+  about: "Misskey è un software libero e open source, sviluppato da syuilo dal 2014."
+  contributors: "Principali sostenitori"
+  allContributors: "Tutti i sostenitori"
   source: "Codice sorgente"
   translation: "Tradurre Misskey"
   donate: "Sostieni Misskey"
-  morePatrons: "Ci sono molti altri che ci sostengono. Grazie 🥰"
+  morePatrons: "Apprezziamo sinceramente il supporto di tante altre persone. Grazie mille! 🥰"
   patrons: "Sostenitori"
 _nsfw:
   respect: "Nascondere i media segnati come sensibli"
