@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faDownload, faUpload, faBoxes } from '@fortawesome/free-solid-svg-icons';
 import FormSelect from '@client/components/form/select.vue';
 import FormButton from '@client/components/form/button.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -51,7 +50,6 @@ export default defineComponent({
 				title: this.$ts.importAndExport,
 				icon: 'fas fa-boxes'
 			},
-			faDownload, faUpload, faBoxes
 		}
 	},
 

@@ -44,8 +44,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGlobe, faUnlock, faHome, faBiohazard, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
-import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import MkModal from '@client/components/ui/modal.vue';
 
 export default defineComponent({
@@ -70,7 +68,6 @@ export default defineComponent({
 		return {
 			v: this.currentVisibility,
 			localOnly: this.currentLocalOnly,
-			faGlobe, faUnlock, faEnvelope, faHome, faBiohazard, faToggleOn, faToggleOff
 		}
 	},
 	watch: {

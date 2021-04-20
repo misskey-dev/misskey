@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import { host } from '@client/config';
@@ -40,7 +39,6 @@ export default defineComponent({
 			password: '',
 			submitting: false,
 			host,
-			faLock
 		}
 	},
 

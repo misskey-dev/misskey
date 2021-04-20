@@ -11,7 +11,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import ApexCharts from 'apexcharts';
-import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import MkContainer from '@client/components/ui/container.vue';
 
@@ -35,7 +34,6 @@ export default defineComponent({
 			fetching: true,
 			data: [],
 			peak: null,
-			faChartBar,
 		};
 	},
 	mounted() {

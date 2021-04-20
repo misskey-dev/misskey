@@ -47,13 +47,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleRight, faFolderPlus, faICursor, faLink, faUpload } from '@fortawesome/free-solid-svg-icons';
 import XNavFolder from './drive.nav-folder.vue';
 import XFolder from './drive.folder.vue';
 import XFile from './drive.file.vue';
 import MkButton from './ui/button.vue';
 import * as os from '@client/os';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default defineComponent({
 	components: {
@@ -125,7 +123,6 @@ export default defineComponent({
 			),
 			moreFilesElement: null as Element,
 
-			faAngleRight
 		};
 	},
 

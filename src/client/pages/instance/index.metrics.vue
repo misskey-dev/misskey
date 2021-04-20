@@ -101,7 +101,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkButton from '@client/components/ui/button.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -153,7 +152,6 @@ export default defineComponent({
 			overviewHeight: '1fr',
 			queueHeight: '1fr',
 			paused: false,
-			faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
 

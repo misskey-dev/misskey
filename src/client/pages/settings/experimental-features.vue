@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faFlask } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormLink from '@client/components/form/link.vue';

@@ -23,8 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import * as os from '@client/os';
@@ -44,7 +42,6 @@ export default defineComponent({
 			},
 			relays: [],
 			inbox: '',
-			faPlus, faProjectDiagram, faSave, faTrashAlt
 		}
 	},
 

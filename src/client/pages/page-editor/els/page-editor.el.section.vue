@@ -19,8 +19,6 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@client/os';
 
@@ -43,7 +41,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faStickyNote, faPlus, faPencilAlt
 		};
 	},
 

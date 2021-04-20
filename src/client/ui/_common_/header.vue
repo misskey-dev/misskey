@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronLeft, faCircle, faShareAlt, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { modalMenu } from '@client/os';
 import { url } from '@client/config';
 
@@ -51,7 +50,6 @@ export default defineComponent({
 			showActions: false,
 			height: 0,
 			key: 0,
-			faChevronLeft, faCircle, faShareAlt, faEllipsisH,
 		};
 	},
 

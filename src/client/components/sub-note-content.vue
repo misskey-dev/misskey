@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faReply } from '@fortawesome/free-solid-svg-icons';
 import XPoll from './poll.vue';
 import XMediaList from './media-list.vue';
 import * as os from '@client/os';
@@ -38,7 +37,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faReply
 		};
 	}
 });

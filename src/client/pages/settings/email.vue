@@ -22,8 +22,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCog, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import FormButton from '@client/components/form/button.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -49,7 +47,6 @@ export default defineComponent({
 				title: this.$ts.email,
 				icon: 'fas fa-envelope'
 			},
-			faCog, faExclamationTriangle, faCheck, faBell
 		}
 	},
 

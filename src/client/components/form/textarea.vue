@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watch } from 'vue';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
 import './form.scss';
 import FormButton from './button.vue';
 import FormGroup from './group.vue';
@@ -106,7 +105,6 @@ export default defineComponent({
 			changed,
 			focus,
 			onInput,
-			faSave,
 		};
 	}
 });

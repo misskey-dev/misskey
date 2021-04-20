@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import contains from '@client/scripts/contains';
 import * as os from '@client/os';
 
@@ -114,7 +113,6 @@ export default defineComponent({
 		return {
 			showing: true,
 			id: Math.random().toString(), // TODO: UUIDとかにする
-			faTimes
 		};
 	},
 

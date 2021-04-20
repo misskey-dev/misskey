@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@client/components/ui/window.vue';
 import XHeader from '@client/ui/_common_/header.vue';
 import { popout } from '@client/scripts/popout';
@@ -76,7 +75,6 @@ export default defineComponent({
 			component: this.initialComponent,
 			props: this.initialProps,
 			history: [],
-			faChevronLeft,
 		};
 	},
 

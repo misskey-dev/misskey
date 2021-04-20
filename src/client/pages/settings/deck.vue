@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faImage, faCog, faColumns } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormRadios from '@client/components/form/radios.vue';
@@ -61,7 +60,6 @@ export default defineComponent({
 				title: this.$ts.deck,
 				icon: 'fas fa-columns'
 			},
-			faImage, faCog,
 		}
 	},
 

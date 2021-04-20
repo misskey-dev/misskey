@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '@/misc/acct/render';
 import MkButton from '@client/components/ui/button.vue';
 import { acct } from '../../filters/user';
@@ -60,7 +59,6 @@ export default defineComponent({
 			moreFetching: false,
 			messages: [],
 			connection: null,
-			faUser, faUsers, faComments, faPlus
 		};
 	},
 

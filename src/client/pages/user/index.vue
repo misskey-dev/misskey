@@ -219,8 +219,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import { faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faPaperclip, faFileAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarAlt, faBookmark as farBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import * as age from 's-age';
 import XUserTimeline from './index.timeline.vue';
 import XNote from '@client/components/note.vue';
@@ -284,7 +282,6 @@ export default defineComponent({
 			error: null,
 			parallaxAnimationId: null,
 			narrow: null,
-			faExclamationTriangle, faEllipsisH, faRobot, faLock, faBookmark, farBookmark, faChartBar, faImage, faBirthdayCake, faMapMarker, faCalendarAlt, faCommentAlt, faPaperclip, faFileAlt,
 		};
 	},
 

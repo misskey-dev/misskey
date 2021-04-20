@@ -78,7 +78,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw, onBeforeUnmount, ref, shallowRef } from 'vue';
-import { faTerminal } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@client/components/ui/window.vue';
 import MkTab from '@client/components/tab.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -139,7 +138,6 @@ export default defineComponent({
 			pools,
 			killPopup,
 			showReq,
-			faTerminal,
 		};
 	},
 });

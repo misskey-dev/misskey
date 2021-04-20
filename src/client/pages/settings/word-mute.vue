@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCommentSlash, faSave } from '@fortawesome/free-solid-svg-icons';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
@@ -66,7 +65,6 @@ export default defineComponent({
 			hardMutedWords: '',
 			hardWordMutedNotesCount: null,
 			changed: false,
-			faSave,
 		}
 	},
 

@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBan } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkTab from '@client/components/tab.vue';
 import FormInfo from '@client/components/form/info.vue';

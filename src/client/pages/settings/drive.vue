@@ -36,8 +36,6 @@
 import { defineComponent } from 'vue';
 import * as tinycolor from 'tinycolor2';
 import ApexCharts from 'apexcharts';
-import { faCloud, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
-import { faClock, faEyeSlash, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import FormButton from '@client/components/form/button.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
@@ -66,7 +64,6 @@ export default defineComponent({
 			usage: null,
 			capacity: null,
 			uploadFolder: null,
-			faCloud, faClock, faEyeSlash, faFolderOpen, faTrashAlt
 		}
 	},
 

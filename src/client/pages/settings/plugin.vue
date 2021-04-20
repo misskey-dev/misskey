@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -30,7 +29,6 @@ export default defineComponent({
 				icon: 'fas fa-plug'
 			},
 			plugins: ColdDeviceStorage.get('plugins').length,
-			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog
 		}
 	},
 

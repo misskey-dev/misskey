@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import MkModal from './modal.vue';
 
 export default defineComponent({
@@ -72,7 +71,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faTimes, faCheck
 		};
 	},
 

@@ -59,8 +59,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faCheck, faPollH } from '@fortawesome/free-solid-svg-icons';
-import { faClock } from '@fortawesome/free-regular-svg-icons';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import XReactionIcon from './reaction-icon.vue';
 import MkFollowButton from './follow-button.vue';
@@ -96,7 +94,6 @@ export default defineComponent({
 			groupInviteDone: false,
 			connection: null,
 			readObserver: null,
-			faIdCardAlt, faPlus, faQuoteLeft, faQuoteRight, faRetweet, faReply, faAt, faClock, faCheck, faPollH
 		};
 	},
 

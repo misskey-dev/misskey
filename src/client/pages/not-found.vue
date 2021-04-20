@@ -9,7 +9,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 

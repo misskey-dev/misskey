@@ -40,7 +40,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { version, instanceName } from '@client/config';
 import FormLink from '@client/components/form/link.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -67,7 +66,6 @@ export default defineComponent({
 			version,
 			instanceName,
 			stats: null,
-			faInfoCircle
 		}
 	},
 

@@ -39,7 +39,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTrashAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import FormPagination from '@client/components/form/pagination.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -70,7 +69,6 @@ export default defineComponent({
 					sort: '+lastUsedAt'
 				}
 			},
-			faTrashAlt, faPlug
 		};
 	},
 

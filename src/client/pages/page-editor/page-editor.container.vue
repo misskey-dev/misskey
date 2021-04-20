@@ -26,8 +26,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -56,7 +54,6 @@ export default defineComponent({
 	data() {
 		return {
 			showBody: this.expanded,
-			faTrashAlt, faBars, faAngleUp, faAngleDown
 		};
 	},
 	methods: {

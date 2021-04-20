@@ -28,7 +28,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -68,7 +67,6 @@ export default defineComponent({
 			showBody: this.expanded,
 			omitted: null,
 			ignoreOmit: false,
-			faAngleUp, faAngleDown
 		};
 	},
 	mounted() {

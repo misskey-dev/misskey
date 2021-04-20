@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
@@ -40,7 +39,6 @@ export default defineComponent({
 		return {
 			id: this.value.note,
 			note: null,
-			faStickyNote
 		};
 	},
 

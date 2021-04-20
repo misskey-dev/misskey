@@ -33,8 +33,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSatelliteDish, faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import MkChannelPreview from '@client/components/channel-preview.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -68,7 +66,6 @@ export default defineComponent({
 				endpoint: 'channels/owned',
 				limit: 5,
 			},
-			faSatelliteDish, faPlus, faEdit, faHeart, faFireAlt
 		};
 	},
 	methods: {

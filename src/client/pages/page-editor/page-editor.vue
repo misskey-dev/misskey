@@ -91,8 +91,6 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { faICursor, faPlus, faMagic, faCog, faCode, faExternalLinkSquareAlt, faPencilAlt, faCopy } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faStickyNote, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XVariable from './page-editor.script-block.vue';
 import XBlocks from './page-editor.blocks.vue';
@@ -164,7 +162,6 @@ export default defineComponent({
 			hpml: null,
 			script: '',
 			url,
-			faPlus, faICursor, faSave, faStickyNote, faMagic, faCog, faTrashAlt, faExternalLinkSquareAlt, faCode, faCopy
 		};
 	},
 

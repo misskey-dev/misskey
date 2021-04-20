@@ -50,7 +50,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { addTime } from '../../prelude/time';
 import { formatDateTimeString } from '@/misc/format-time-string';
 import MkInput from './ui/input.vue';
@@ -84,7 +83,6 @@ export default defineComponent({
 			atTime: '00:00',
 			after: 0,
 			unit: 'second',
-			faExclamationTriangle, faTimes
 		};
 	},
 

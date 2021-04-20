@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -37,8 +36,6 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle,
-			faEyeSlash
 		};
 	},
 	created() {

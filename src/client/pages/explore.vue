@@ -70,8 +70,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faChartLine, faPlus, faHashtag, faRocket, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark, faCommentAlt } from '@fortawesome/free-regular-svg-icons';
 import XUserList from '@client/components/user-list.vue';
 import MkFolder from '@client/components/ui/folder.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -139,7 +137,6 @@ export default defineComponent({
 			stats: null,
 			query: null,
 			num: number,
-			faBookmark, faChartLine, faCommentAlt, faPlus, faHashtag, faRocket, faSearch,
 		};
 	},
 

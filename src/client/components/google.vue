@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -15,7 +14,6 @@ export default defineComponent({
 	data() {
 		return {
 			query: null,
-			faSearch
 		};
 	},
 	mounted() {

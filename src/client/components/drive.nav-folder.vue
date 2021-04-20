@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -29,7 +28,6 @@ export default defineComponent({
 		return {
 			hover: false,
 			draghover: false,
-			faCloud
 		};
 	},
 

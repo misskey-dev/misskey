@@ -24,8 +24,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, faBiohazard } from '@fortawesome/free-solid-svg-icons';
-import { faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import notePage from '../filters/note';
 import { userPage } from '../filters/user';
 import * as os from '@client/os';
@@ -40,7 +38,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faHome, faUnlock, faEnvelope, faMobileAlt, faBookmark, farBookmark, faBiohazard
 		};
 	},
 

@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMemory } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
 import bytes from '@client/filters/bytes';
 
@@ -34,7 +33,6 @@ export default defineComponent({
 			total: 0,
 			used: 0,
 			free: 0,
-			faMemory,
 		};
 	},
 	mounted() {

@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faEllipsisH, faPaperclip, faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XPostForm from '@client/components/post-form.vue';
 import XNotes from '@client/components/notes.vue';

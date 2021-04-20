@@ -42,7 +42,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import { focusPrev, focusNext } from '@client/scripts/focus';
 import contains from '@client/scripts/contains';
 
@@ -65,7 +64,6 @@ export default defineComponent({
 	data() {
 		return {
 			_items: [],
-			faCircle,
 		};
 	},
 	computed: {

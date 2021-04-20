@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import notePage from '../../filters/note';
 import * as os from '@client/os';
@@ -41,7 +40,6 @@ export default defineComponent({
 		return {
 			fetching: true,
 			images: [],
-			faImage
 		};
 	},
 	mounted() {

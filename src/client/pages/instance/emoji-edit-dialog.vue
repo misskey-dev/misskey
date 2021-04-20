@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -51,7 +50,6 @@ export default defineComponent({
 			category: this.emoji.category,
 			aliases: this.emoji.aliases?.join(' '),
 			categories: [],
-			faTrashAlt,
 		}
 	},
 

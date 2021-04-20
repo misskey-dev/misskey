@@ -56,7 +56,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, markRaw } from 'vue';
-import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -117,7 +116,6 @@ export default defineComponent({
 			serverInfo: null,
 			modLogs: [],
 			dbInfo: null,
-			faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
 

@@ -39,7 +39,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '@client/components/ui/select.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -62,7 +61,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faBolt
 		};
 	},
 

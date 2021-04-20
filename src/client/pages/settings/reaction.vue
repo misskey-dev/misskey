@@ -36,8 +36,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLaugh, faSave, faEye } from '@fortawesome/free-regular-svg-icons';
-import { faUndo, faPlus } from '@fortawesome/free-solid-svg-icons';
 import XDraggable from 'vuedraggable';
 import FormInput from '@client/components/form/input.vue';
 import FormRadios from '@client/components/form/radios.vue';
@@ -69,7 +67,6 @@ export default defineComponent({
 				}
 			},
 			reactions: JSON.parse(JSON.stringify(this.$store.state.reactions)),
-			faLaugh, faSave, faEye, faUndo, faPlus
 		}
 	},
 

@@ -92,7 +92,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faChevronDown, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import { toUnicode } from 'punycode/';
 
@@ -135,7 +134,6 @@ export default defineComponent({
 			themeToImport: '',
 			changed: false,
 			lightTheme, darkTheme, themeProps,
-			faPalette, faChevronDown, faKeyboard,
 		}
 	},
 

@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import XPostForm from '@client/components/post-form.vue';
 import * as os from '@client/os';
@@ -37,7 +36,6 @@ export default defineComponent({
 			initialText: null,
 			posted: false,
 
-			faShareAlt
 		}
 	},
 

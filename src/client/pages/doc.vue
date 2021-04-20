@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import { url, lang } from '@client/config';

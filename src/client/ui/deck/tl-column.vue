@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '@client/components/timeline.vue';
 import * as os from '@client/os';
@@ -49,7 +48,6 @@ export default defineComponent({
 			disabled: false,
 			indicated: false,
 			columnActive: true,
-			faMinusCircle, faHome, faComments, faShareAlt, faGlobe,
 		};
 	},
 

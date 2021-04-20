@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
@@ -53,7 +52,6 @@ export default defineComponent({
 			} : null),
 			list: null,
 			users: [],
-			faTimes, faListUl
 		};
 	},
 

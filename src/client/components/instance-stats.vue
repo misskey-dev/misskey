@@ -123,7 +123,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faChartBar, faUser, faPencilAlt, faSync } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import MkSelect from './ui/select.vue';
 import number from '@client/filters/number';
@@ -173,7 +172,6 @@ export default defineComponent({
 			chartInstance: null,
 			chartSrc: 'notes',
 			chartSpan: 'hour',
-			faChartBar, faUser, faPencilAlt, faSync
 		}
 	},
 

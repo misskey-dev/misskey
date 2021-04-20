@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAlignLeft } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import * as os from '@client/os';
 
@@ -27,7 +26,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faAlignLeft,
 		};
 	},
 

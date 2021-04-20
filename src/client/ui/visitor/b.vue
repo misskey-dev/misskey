@@ -50,7 +50,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { } from '@fortawesome/free-solid-svg-icons';
 import { host, instanceName } from '@client/config';
 import { search } from '@client/scripts/search';
 import * as os from '@client/os';

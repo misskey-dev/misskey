@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faServer, faSort } from '@fortawesome/free-solid-svg-icons';
 import define from '../define';
 import MkContainer from '@client/components/ui/container.vue';
 import XCpuMemory from './cpu-mem.vue';
@@ -58,7 +57,6 @@ export default defineComponent({
 		return {
 			meta: null,
 			connection: null,
-			faServer, faSort,
 		};
 	},
 	created() {

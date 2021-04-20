@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
 
 export default defineComponent({
@@ -29,7 +28,6 @@ export default defineComponent({
 	data() {
 		return {
 			usage: 0,
-			faMicrochip,
 		};
 	},
 	mounted() {

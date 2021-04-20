@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MkModal from '@client/components/ui/modal.vue';
 import XHeader from '@client/ui/_common_/header.vue';
 import { popout } from '@client/scripts/popout';
@@ -76,7 +75,6 @@ export default defineComponent({
 			component: this.initialComponent,
 			props: this.initialProps,
 			history: [],
-			faChevronLeft, faTimes,
 		};
 	},
 

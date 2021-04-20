@@ -25,8 +25,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
-import { faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import FormButton from '@client/components/form/button.vue';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormBase from '@client/components/form/base.vue';

@@ -51,8 +51,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
@@ -98,7 +96,6 @@ export default defineComponent({
 					host: (this.host && this.host !== '') ? this.host : null
 				}))
 			},
-			faTrashAlt, faPlus, faLaugh, faSave, faSearch,
 		}
 	},
 

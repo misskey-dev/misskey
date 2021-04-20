@@ -3,14 +3,6 @@
  */
 
 import autobind from 'autobind-decorator';
-import {
-	faMagic,
-	faSquareRootAlt,
-	faAlignLeft,
-	faList,
-	faQuoteRight,
-	faSortNumericUp,
-} from '@fortawesome/free-solid-svg-icons';
 import { Hpml } from './evaluator';
 import { funcDefs } from './lib';
 

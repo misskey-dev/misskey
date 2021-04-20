@@ -27,7 +27,6 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { faPlus, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkSelect from '@client/components/ui/select.vue';
 import * as os from '@client/os';
@@ -51,7 +50,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faPlus, faQuestion
 		};
 	},
 

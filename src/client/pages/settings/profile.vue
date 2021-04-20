@@ -47,8 +47,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
 import FormButton from '@client/components/form/button.vue';
 import FormInput from '@client/components/form/input.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
@@ -101,7 +99,6 @@ export default defineComponent({
 			isCat: false,
 			alwaysMarkNsfw: false,
 			saving: false,
-			faSave, faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake
 		}
 	},
 

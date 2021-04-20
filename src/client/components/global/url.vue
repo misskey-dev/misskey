@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@client/config';
 import { isDeviceTouch } from '@client/scripts/is-device-touch';
@@ -55,7 +54,6 @@ export default defineComponent({
 			hideTimer: null,
 			checkTimer: null,
 			close: null,
-			faExternalLinkSquareAlt
 		};
 	},
 	created() {

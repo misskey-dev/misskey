@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -32,7 +31,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faPaperPlane
 		};
 	},
 

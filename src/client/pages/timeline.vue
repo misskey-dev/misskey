@@ -36,8 +36,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, computed } from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faPencilAlt, faAt } from '@fortawesome/free-solid-svg-icons';
-import { faComments, faEnvelope, faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
 import Progress from '@client/scripts/loading';
 import XTimeline from '@client/components/timeline.vue';
 import XPostForm from '@client/components/post-form.vue';
@@ -71,7 +69,6 @@ export default defineComponent({
 					handler: this.timetravel
 				}]
 			})),
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite, faSatelliteDish, faCircle, faEllipsisH, faAt, faEnvelope,
 		};
 	},
 

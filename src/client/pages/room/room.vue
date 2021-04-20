@@ -55,8 +55,6 @@ import { Room } from '@client/scripts/room/room';
 import parseAcct from '@/misc/acct/parse';
 import XPreview from './preview.vue';
 const storeItems = require('@client/scripts/room/furnitures.json5');
-import { faBoxOpen, faUndo, faArrowsAlt, faBan, faBroom } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { query as urlQuery } from '../../../prelude/url';
 import MkButton from '@client/components/ui/button.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -98,7 +96,6 @@ export default defineComponent({
 			isRotateMode: false,
 			isMyRoom: false,
 			changed: false,
-			faBoxOpen, faSave, faTrashAlt, faUndo, faArrowsAlt, faBan, faBroom,
 		};
 	},
 

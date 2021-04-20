@@ -31,8 +31,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { apiUrl } from '@client/config';
 import FormBase from '@client/components/form/base.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -60,7 +58,6 @@ export default defineComponent({
 			enableTwitterIntegration: false,
 			enableDiscordIntegration: false,
 			enableGithubIntegration: false,
-			faShareAlt, faTwitter, faDiscord, faGithub
 		};
 	},
 

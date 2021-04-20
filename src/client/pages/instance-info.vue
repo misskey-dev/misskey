@@ -133,7 +133,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faExternalLinkAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';

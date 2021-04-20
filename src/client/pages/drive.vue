@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import XDrive from '@client/components/drive.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';

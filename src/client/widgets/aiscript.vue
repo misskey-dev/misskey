@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTerminal } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import * as os from '@client/os';
@@ -46,7 +45,6 @@ export default defineComponent({
 	data() {
 		return {
 			logs: [],
-			faTerminal
 		};
 	},
 

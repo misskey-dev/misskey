@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
@@ -42,7 +41,6 @@ export default defineComponent({
 				limit: 10,
 			},
 			draft: null,
-			faPlus
 		};
 	},
 

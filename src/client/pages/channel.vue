@@ -28,8 +28,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XPostForm from '@client/components/post-form.vue';
 import XTimeline from '@client/components/timeline.vue';
@@ -67,7 +65,6 @@ export default defineComponent({
 					channelId: this.channelId,
 				})
 			},
-			faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown,
 		};
 	},
 

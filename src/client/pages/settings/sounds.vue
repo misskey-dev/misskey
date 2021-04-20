@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown, faRedo } from '@fortawesome/free-solid-svg-icons';
 import FormRange from '@client/components/form/range.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -74,7 +73,6 @@ export default defineComponent({
 				icon: 'fas fa-music'
 			},
 			sounds: {},
-			faMusic, faPlay, faVolumeUp, faVolumeMute, faChevronDown, faRedo,
 		}
 	},
 

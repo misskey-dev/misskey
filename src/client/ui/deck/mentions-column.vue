@@ -8,7 +8,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAt } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import XColumn from './column.vue';
 import XNotes from '@client/components/notes.vue';

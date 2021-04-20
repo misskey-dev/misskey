@@ -38,8 +38,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSpinner, faInfoCircle, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import MkModal from '@client/components/ui/modal.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -99,7 +97,6 @@ export default defineComponent({
 		return {
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
-			faTimesCircle, faQuestionCircle, faSpinner, faInfoCircle, faExclamationTriangle, faCheck
 		};
 	},
 

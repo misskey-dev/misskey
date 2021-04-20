@@ -45,8 +45,6 @@
 
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent, nextTick, onMounted, reactive, ref, watch } from 'vue';
-import { faCog, faPalette, faPlug, faUser, faListUl, faLock, faCommentSlash, faMusic, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faCloud } from '@fortawesome/free-solid-svg-icons';
-import { faLaugh, faBell, faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { i18n } from '@client/i18n';
 import FormLink from '@client/components/form/link.vue';
 import FormGroup from '@client/components/form/group.vue';
@@ -183,7 +181,6 @@ export default defineComponent({
 				localStorage.removeItem('theme');
 				unisonReload();
 			},
-			faPalette, faPlug, faUser, faListUl, faLock, faLaugh, faCommentSlash, faMusic, faBell, faCogs, faEllipsisH, faBan, faShareAlt, faLockOpen, faKey, faBoxes, faEnvelope, faCloud,
 		};
 	},
 });

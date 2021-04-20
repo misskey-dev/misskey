@@ -47,7 +47,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import define from './define';
 import * as os from '@client/os';
 import number from '@client/filters/number';
@@ -80,7 +79,6 @@ export default defineComponent({
 				delayed: 0,
 			},
 			prev: {},
-			faExclamationTriangle,
 		};
 	},
 	created() {

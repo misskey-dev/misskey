@@ -17,7 +17,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 
 export default defineComponent({
@@ -36,7 +35,6 @@ export default defineComponent({
 		return {
 			getStaticImageUrl,
 			shown: this.initialShown,
-			faChevronUp, faChevronDown,
 		};
 	},
 

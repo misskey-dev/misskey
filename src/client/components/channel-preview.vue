@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSatelliteDish, faUsers, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -57,7 +56,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faSatelliteDish, faUsers, faPencilAlt,
 		};
 	},
 });

@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XNotes from '@client/components/notes.vue';
 import XHeader from '@client/ui/_common_/header.vue';

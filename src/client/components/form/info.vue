@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faInfoCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -22,7 +21,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faInfoCircle, faExclamationTriangle
 		};
 	}
 });

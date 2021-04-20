@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBell, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XNotifications from '@client/components/notifications.vue';
 import define from './define';
@@ -46,7 +45,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faBell, faCog
 		};
 	},
 

@@ -16,17 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import {
-	faFile,
-	faFileAlt,
-	faFileImage,
-	faMusic,
-	faFileVideo,
-	faFileCsv,
-	faFilePdf,
-	faFileArchive,
-	faFilm
-	} from '@fortawesome/free-solid-svg-icons';
 import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';
 import { ColdDeviceStorage } from '@client/store';
 
@@ -50,15 +39,6 @@ export default defineComponent({
 			isContextmenuShowing: false,
 			isDragging: false,
 
-			faFile,
-			faFileAlt,
-			faFileImage,
-			faMusic,
-			faFileVideo,
-			faFileCsv,
-			faFilePdf,
-			faFileArchive,
-			faFilm
 		};
 	},
 	computed: {

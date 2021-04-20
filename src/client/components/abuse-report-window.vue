@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@client/components/ui/window.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -53,7 +52,6 @@ export default defineComponent({
 	data() {
 		return {
 			comment: this.initialComment || '',
-			faExclamationCircle,
 		};
 	},
 

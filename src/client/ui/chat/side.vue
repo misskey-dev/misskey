@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faChevronLeft, faExpandAlt, faWindowMaximize, faExternalLinkAlt, faLink } from '@fortawesome/free-solid-svg-icons';
 import XHeader from '../_common_/header.vue';
 import * as os from '@client/os';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
@@ -39,7 +38,6 @@ export default defineComponent({
 			props: {},
 			pageInfo: null,
 			history: [],
-			faTimes, faChevronLeft,
 		};
 	},
 

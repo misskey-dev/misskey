@@ -30,8 +30,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStream } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -56,7 +54,6 @@ export default defineComponent({
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
-			faTrashAlt,
 		}
 	},
 

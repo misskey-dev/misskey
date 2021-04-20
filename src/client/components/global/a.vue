@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExpandAlt, faColumns, faExternalLinkAlt, faLink, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { router } from '@client/router';

@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormSelect from '@client/components/form/select.vue';
@@ -48,7 +47,6 @@ export default defineComponent({
 				icon: 'fas fa-download'
 			},
 			installThemeCode: null,
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye
 		}
 	},
 

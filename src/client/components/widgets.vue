@@ -30,7 +30,6 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { faTimes, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import MkSelect from '@client/components/ui/select.vue';
 import MkButton from '@client/components/ui/button.vue';
 import { widgets as widgetDefs } from '@client/widgets';
@@ -59,7 +58,6 @@ export default defineComponent({
 			widgetAdderSelected: null,
 			widgetDefs,
 			settings: {},
-			faTimes, faPlus, faCog
 		};
 	},
 

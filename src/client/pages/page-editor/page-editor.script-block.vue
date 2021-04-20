@@ -57,7 +57,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faPencilAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import { v4 as uuid } from 'uuid';
 import XContainer from './page-editor.container.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
@@ -109,7 +108,6 @@ export default defineComponent({
 			error: null,
 			warn: null,
 			slots: '',
-			faPencilAlt
 		};
 	},
 

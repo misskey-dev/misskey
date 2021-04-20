@@ -56,7 +56,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import debounce from 'v-debounce';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -205,7 +204,6 @@ export default defineComponent({
 			focus,
 			onInput,
 			onKeydown,
-			faExclamationCircle,
 		};
 	},
 });

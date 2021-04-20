@@ -249,9 +249,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faPencilAlt, faShareAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt, faEnvelope } from '@fortawesome/free-regular-svg-icons';
-import { faTwitter, faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
@@ -344,7 +341,6 @@ export default defineComponent({
 			smtpUser: '',
 			smtpPass: '',
 			summalyProxy: '',
-			faPencilAlt, faTwitter, faDiscord, faGithub, faShareAlt, faTrashAlt, faGhost, faCog, faPlus, faCloud, faInfoCircle, faBan, faSave, faServer, faLink, faEnvelope, faThumbtack, faUser, faShieldAlt, faKey, faBolt, faArchway
 		}
 	},
 

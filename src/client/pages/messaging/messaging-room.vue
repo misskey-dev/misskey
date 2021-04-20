@@ -37,8 +37,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faArrowCircleDown, faFlag, faUsers, faInfoCircle, faEllipsisH, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
 import XList from '@client/components/date-separated-list.vue';
 import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
@@ -103,7 +101,6 @@ const Component = defineComponent({
 					&& this.existMoreMessages
 					&& this.fetchMoreMessages()
 			),
-			faArrowCircleDown, faFlag, faInfoCircle
 		};
 	},
 

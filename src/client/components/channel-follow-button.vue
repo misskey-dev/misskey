@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSpinner, faPlus, faMinus, } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -40,7 +39,6 @@ export default defineComponent({
 		return {
 			isFollowing: this.channel.isFollowing,
 			wait: false,
-			faSpinner, faPlus, faMinus,
 		};
 	},
 

@@ -37,7 +37,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faCogs, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import FormInfo from '@client/components/form/info.vue';
 import FormSwitch from '@client/components/form/switch.vue';
@@ -81,7 +80,6 @@ export default defineComponent({
 			},
 			value: null,
 			valueForEditor: null,
-			faSave, faTrash,
 		}
 	},
 

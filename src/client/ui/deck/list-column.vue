@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faListUl, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '@client/components/timeline.vue';
 import * as os from '@client/os';
@@ -35,7 +34,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faListUl
 		};
 	},
 

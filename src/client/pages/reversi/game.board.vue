@@ -85,9 +85,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../games/reversi/core';
 import { url } from '@client/config';
@@ -120,7 +117,6 @@ export default defineComponent({
 			logPos: 0,
 			watchers: [],
 			pollingClock: null,
-			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle, faPlay
 		};
 	},
 

@@ -54,8 +54,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLayerGroup, faBars, faHome, faCircle, faWindowMaximize, faColumns, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { instanceName } from '@client/config';
 import { StickySidebar } from '@client/scripts/sticky-sidebar';
 import XSidebar from '@client/ui/_common_/sidebar.vue';
@@ -93,7 +91,6 @@ export default defineComponent({
 			navHidden: false,
 			widgetsShowing: false,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faLayerGroup, faBars, faBell, faHome, faCircle, faPencilAlt,
 		};
 	},
 

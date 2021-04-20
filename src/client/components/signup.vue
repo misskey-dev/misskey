@@ -53,7 +53,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faLock, faExclamationTriangle, faSpinner, faCheck, faKey } from '@fortawesome/free-solid-svg-icons';
 const getPasswordStrength = require('syuilo-password-strength');
 import { toUnicode } from 'punycode/';
 import { host, url } from '@client/config';
@@ -96,7 +95,6 @@ export default defineComponent({
 			ToSAgreement: false,
 			hCaptchaResponse: null,
 			reCaptchaResponse: null,
-			faLock, faExclamationTriangle, faSpinner, faCheck, faKey
 		}
 	},
 

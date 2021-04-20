@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
@@ -19,7 +18,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faExclamationTriangle
 		};
 	},
 });

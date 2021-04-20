@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import './form.scss';
 
 export default defineComponent({
@@ -47,7 +46,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faChevronDown,
 		};
 	},
 	computed: {

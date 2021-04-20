@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import MkMiniChart from '@client/components/mini-chart.vue';
@@ -58,7 +57,6 @@ export default defineComponent({
 			instances: [],
 			charts: [],
 			fetching: true,
-			faGlobe
 		};
 	},
 	mounted() {

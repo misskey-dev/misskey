@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 const localStoragePrefix = 'ui:folder:';
 
@@ -43,7 +42,6 @@ export default defineComponent({
 	data() {
 		return {
 			showBody: (this.persistKey && localStorage.getItem(localStoragePrefix + this.persistKey)) ? localStorage.getItem(localStoragePrefix + this.persistKey) === 't' : this.expanded,
-			faAngleUp, faAngleDown
 		};
 	},
 	watch: {

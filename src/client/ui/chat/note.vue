@@ -102,8 +102,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip, faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import * as mfm from 'mfm-js';
 import { sum } from '../../../prelude/array';
 import XSub from './note.sub.vue';
@@ -174,7 +172,6 @@ export default defineComponent({
 			isDeleted: false,
 			muted: false,
 			operating: false,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish
 		};
 	},
 

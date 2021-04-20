@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import { ColdDeviceStorage } from '@client/store';
 
@@ -41,7 +40,6 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle
 		};
 	},
 	mounted() {

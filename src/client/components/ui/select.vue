@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -49,7 +48,6 @@ export default defineComponent({
 	data() {
 		return {
 			focused: false,
-			faChevronDown,
 		};
 	},
 	computed: {

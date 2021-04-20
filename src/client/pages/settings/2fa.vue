@@ -68,7 +68,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { hostname } from '@client/config';
 import { byteify, hexify, stringify } from '@client/scripts/2fa';
 import MkButton from '@client/components/ui/button.vue';
@@ -101,7 +100,6 @@ export default defineComponent({
 			registration: null,
 			keyName: '',
 			token: null,
-			faLock
 		};
 	},
 

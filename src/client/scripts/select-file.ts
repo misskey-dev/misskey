@@ -1,4 +1,3 @@
-import { faUpload, faCloud, faLink } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import { i18n } from '@client/i18n';
 

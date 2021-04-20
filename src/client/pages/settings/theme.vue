@@ -86,7 +86,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
-import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -191,7 +190,6 @@ export default defineComponent({
 					wallpaper.value = file.url;
 				});
 			},
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller,
 		};
 	}
 });

@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faRssSquare, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import * as os from '@client/os';
@@ -43,7 +42,6 @@ export default defineComponent({
 			items: [],
 			fetching: true,
 			clock: null,
-			faRssSquare, faCog
 		};
 	},
 	mounted() {

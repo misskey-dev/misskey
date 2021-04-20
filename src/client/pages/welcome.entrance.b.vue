@@ -36,7 +36,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faEllipsisH, faInfoCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode } from 'punycode/';
 import XSigninDialog from '@client/components/signin-dialog.vue';
 import XSignupDialog from '@client/components/signup-dialog.vue';
@@ -64,7 +63,6 @@ export default defineComponent({
 			stats: null,
 			tags: [],
 			onlineUsersCount: null,
-			faEllipsisH
 		};
 	},
 

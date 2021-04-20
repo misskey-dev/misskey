@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faPaperPlane, faPhotoVideo, faLaughSquint } from '@fortawesome/free-solid-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import * as autosize from 'autosize';
 import { formatTimeString } from '@/misc/format-time-string';
@@ -51,7 +50,6 @@ export default defineComponent({
 			typing: throttle(3000, () => {
 				os.stream.send('typingOnMessaging', this.user ? { partner: this.user.id } : { group: this.group.id });
 			}),
-			faPaperPlane, faPhotoVideo, faLaughSquint
 		};
 	},
 	computed: {

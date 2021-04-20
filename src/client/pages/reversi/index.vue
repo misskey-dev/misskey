@@ -64,7 +64,6 @@ import { defineComponent } from 'vue';
 import * as os from '@client/os';
 import MkButton from '@client/components/ui/button.vue';
 import MkFolder from '@client/components/ui/folder.vue';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({

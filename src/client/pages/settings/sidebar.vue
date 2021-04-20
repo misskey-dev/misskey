@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faListUl, faSave, faRedo } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormRadios from '@client/components/form/radios.vue';
@@ -49,7 +48,6 @@ export default defineComponent({
 			},
 			menuDef: sidebarDef,
 			items: '',
-			faSave, faRedo
 		}
 	},
 

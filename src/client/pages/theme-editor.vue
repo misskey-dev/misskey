@@ -60,7 +60,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPalette, faSave, faEye, faCode } from '@fortawesome/free-solid-svg-icons';
 import { toUnicode } from 'punycode/';
 import * as tinycolor from 'tinycolor2';
 import { v4 as uuid} from 'uuid';
@@ -129,7 +128,6 @@ export default defineComponent({
 				{ color: 'pink', forLight: '#84667d', forDark: '#e4d1e0', forPreview: '#b12390' },
 			],
 			changed: false,
-			faPalette, faSave, faEye, faCode,
 		}
 	},
 

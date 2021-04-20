@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -62,7 +61,6 @@ export default defineComponent({
 				icon: 'fas fa-plug'
 			},
 			plugins: ColdDeviceStorage.get('plugins'),
-			faPlug, faSave, faTrashAlt, faFolderOpen, faDownload, faCog
 		}
 	},
 

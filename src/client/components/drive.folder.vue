@@ -28,9 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faFolder, faFolderOpen, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@client/os';
-import { faICursor } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -57,7 +55,6 @@ export default defineComponent({
 			hover: false,
 			draghover: false,
 			isDragging: false,
-			faFolder, faFolderOpen
 		};
 	},
 

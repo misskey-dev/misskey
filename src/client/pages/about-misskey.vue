@@ -54,7 +54,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faInfoCircle, faCode, faLanguage, faHandHoldingMedical, } from '@fortawesome/free-solid-svg-icons';
 import VanillaTilt from 'vanilla-tilt';
 import { version } from '@client/config';
 import FormLink from '@client/components/form/link.vue';
@@ -125,7 +124,6 @@ export default defineComponent({
 			easterEggReady: false,
 			easterEggEmojis: [],
 			easterEggEngine: null,
-			faInfoCircle, faCode, faLanguage, faHandHoldingMedical,
 		}
 	},
 

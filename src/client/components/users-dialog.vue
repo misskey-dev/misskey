@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import paging from '@client/scripts/paging';
 import { userPage } from '../filters/user';
 
@@ -50,7 +49,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faTimes
 		};
 	},
 

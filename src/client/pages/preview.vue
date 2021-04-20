@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
 import MkSample from '@client/components/sample.vue';
 import * as symbols from '@client/symbols';
 

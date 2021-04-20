@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUserClock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import { userPage, acct } from '../filters/user';
 import * as os from '@client/os';
@@ -52,7 +51,6 @@ export default defineComponent({
 				endpoint: 'following/requests/list',
 				limit: 10,
 			},
-			faCheck, faTimes, faUserClock
 		};
 	},
 

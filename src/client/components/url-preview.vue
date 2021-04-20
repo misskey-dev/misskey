@@ -34,8 +34,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'; 
 import { url as local, lang } from '@client/config';
 import * as os from '@client/os';
 
@@ -83,7 +81,6 @@ export default defineComponent({
 			self: self,
 			attr: self ? 'to' : 'href',
 			target: self ? null : '_blank',
-			faPlayCircle, faTwitter
 		};
 	},
 

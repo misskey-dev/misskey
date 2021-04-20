@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
 import { apiUrl } from '@client/config';
@@ -38,7 +37,6 @@ export default defineComponent({
 			text: this.hpml.interpolate(this.block.text),
 			posted: false,
 			posting: false,
-			faCheck, faPaperPlane
 		};
 	},
 	watch: {

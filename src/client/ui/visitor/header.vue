@@ -41,7 +41,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars } from '@fortawesome/free-solid-svg-icons';
 import XSigninDialog from '@client/components/signin-dialog.vue';
 import XSignupDialog from '@client/components/signup-dialog.vue';
 import * as os from '@client/os';
@@ -58,7 +57,6 @@ export default defineComponent({
 		return {
 			narrow: null,
 			showMenu: false,
-			faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars,
 		};
 	},
 

@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPaintBrush, faMagic } from '@fortawesome/free-solid-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@client/components/ui/input.vue';
 import * as os from '@client/os';
@@ -30,7 +29,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faPaintBrush, faMagic
 		};
 	},
 

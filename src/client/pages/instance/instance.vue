@@ -125,7 +125,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Chart from 'chart.js';
-import { faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkUsersDialog from '@client/components/users-dialog.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -174,7 +173,6 @@ export default defineComponent({
 			chartInstance: null,
 			chartSrc: 'requests',
 			chartSpan: 'hour',
-			faTimes, faCrosshairs, faCloudDownloadAlt, faCloudUploadAlt, faUsers, faPencilAlt, faFileImage, faDatabase, faTrafficLight, faLongArrowAltUp, faLongArrowAltDown, faMinusCircle, faTrashAlt
 		};
 	},
 

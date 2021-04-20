@@ -6,27 +6,6 @@ import { Fn, HpmlScope } from '.';
 import { Expr } from './expr';
 import * as seedrandom from 'seedrandom';
 
-import {
-	faShareAlt,
-	faPlus,
-	faMinus,
-	faTimes,
-	faDivide,
-	faQuoteRight,
-	faEquals,
-	faGreaterThan,
-	faLessThan,
-	faGreaterThanEqual,
-	faLessThanEqual,
-	faNotEqual,
-	faDice,
-	faExchangeAlt,
-	faRecycle,
-	faIndent,
-	faCalculator,
-} from '@fortawesome/free-solid-svg-icons';
-import { faFlag } from '@fortawesome/free-regular-svg-icons';
-
 // https://stackoverflow.com/questions/38493564/chart-area-background-color-chartjs
 Chart.pluginService.register({
 	beforeDraw: (chart, easing) => {

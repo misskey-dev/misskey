@@ -23,8 +23,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -58,7 +56,6 @@ export default defineComponent({
 			description: null,
 			bannerUrl: null,
 			bannerId: null,
-			faSave, faTrashAlt, faPlus,faSatelliteDish,
 		};
 	},
 

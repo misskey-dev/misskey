@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSatellite, faPlus } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import XAntenna from './index.antenna.vue';
@@ -42,7 +41,6 @@ export default defineComponent({
 				limit: 10,
 			},
 			draft: null,
-			faSatellite, faPlus
 		};
 	},
 

@@ -31,8 +31,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faPencilAlt, faChevronLeft, faBars, faCircle } from '@fortawesome/free-solid-svg-icons';
-import {  } from '@fortawesome/free-regular-svg-icons';
 import { v4 as uuid } from 'uuid';
 import { host } from '@client/config';
 import DeckColumnCore from '@client/ui/deck/column-core.vue';
@@ -64,7 +62,6 @@ export default defineComponent({
 			host: host,
 			menuDef: sidebarDef,
 			wallpaper: localStorage.getItem('wallpaper') != null,
-			faPlus, faPencilAlt, faChevronLeft, faBars, faCircle
 		};
 	},
 

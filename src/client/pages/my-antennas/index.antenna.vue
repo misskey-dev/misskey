@@ -47,7 +47,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
@@ -83,7 +82,6 @@ export default defineComponent({
 			notify: false,
 			userLists: null,
 			userGroups: null,
-			faSave, faTrash
 		};
 	},
 

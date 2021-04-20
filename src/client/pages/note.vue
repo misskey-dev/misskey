@@ -37,7 +37,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import XNote from '@client/components/note.vue';
 import XNoteDetailed from '@client/components/note-detailed.vue';
 import XNotes from '@client/components/notes.vue';
@@ -95,7 +94,6 @@ export default defineComponent({
 					sinceId: this.note.id,
 				})
 			},
-			faChevronUp, faChevronDown
 		};
 	},
 	watch: {

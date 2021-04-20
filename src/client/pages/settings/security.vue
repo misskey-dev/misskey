@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCheck, faTimesCircle, faLock, faSyncAlt, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
 import FormBase from '@client/components/form/base.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormGroup from '@client/components/form/group.vue';
@@ -55,7 +54,6 @@ export default defineComponent({
 				endpoint: 'i/signin-history',
 				limit: 5,
 			},
-			faLock, faSyncAlt, faCheck, faTimesCircle, faMobileAlt,
 		}
 	},
 

@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
@@ -46,7 +45,6 @@ export default defineComponent({
 			images: [],
 			fetching: true,
 			connection: null,
-			faCamera
 		};
 	},
 	mounted() {

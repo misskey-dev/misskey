@@ -8,8 +8,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
 import XColumn from './column.vue';
 import XNotifications from '@client/components/notifications.vue';
 import * as os from '@client/os';
@@ -34,7 +32,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faBell
 		}
 	},
 

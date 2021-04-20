@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faHdd } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
 import bytes from '@client/filters/bytes';
 
@@ -31,7 +30,6 @@ export default defineComponent({
 			total: this.meta.fs.total,
 			used: this.meta.fs.used,
 			available: this.meta.fs.total - this.meta.fs.used,
-			faHdd,
 		};
 	},
 	methods: {

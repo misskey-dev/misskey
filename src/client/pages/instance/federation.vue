@@ -60,7 +60,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -103,7 +102,6 @@ export default defineComponent({
 						{})
 				})
 			},
-			faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight
 		}
 	},
 

@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTerminal, faPlay } from '@fortawesome/free-solid-svg-icons';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -50,7 +49,6 @@ export default defineComponent({
 			},
 			code: '',
 			logs: [],
-			faTerminal, faPlay
 		}
 	},
 
