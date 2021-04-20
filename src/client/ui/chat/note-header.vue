@@ -13,9 +13,9 @@
 			<MkTime :time="note.createdAt"/>
 		</MkA>
 		<span class="visibility" v-if="note.visibility !== 'public'">
-			<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
-			<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
-			<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
+			<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
+			<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
+			<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 		</span>
 		<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
 	</div>
