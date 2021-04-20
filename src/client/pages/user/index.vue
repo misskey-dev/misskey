@@ -74,7 +74,7 @@
 						<span>{{ $ts.pages }}</span>
 					</MkA>
 					<div class="actions">
-						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
+						<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
 						<MkFollowButton v-if="!$i || $i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 					</div>
 				</div>
@@ -117,7 +117,7 @@
 					</div>
 					<span class="followed" v-if="$i && $i.id != user.id && user.isFollowed">{{ $ts.followsYou }}</span>
 					<div class="actions" v-if="$i">
-						<button @click="menu" class="menu _button"><Fa :icon="faEllipsisH"/></button>
+						<button @click="menu" class="menu _button"><i class="fas fa-ellipsis-h"></i></button>
 						<MkFollowButton v-if="$i.id != user.id" :user="user" :inline="true" :transparent="false" :full="true" class="koudoku"/>
 					</div>
 				</div>

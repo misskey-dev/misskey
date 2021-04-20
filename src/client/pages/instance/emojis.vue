@@ -9,8 +9,8 @@
 
 	<div class="_section">
 		<div class="local" v-if="tab === 'local'">
-			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $ts.addEmoji }}</MkButton>
-			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.search }}</span></MkInput>
+			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.addEmoji }}</MkButton>
+			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
 			<MkPagination :pagination="pagination" ref="emojis">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template #default="{items}">
@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="remote" v-else-if="tab === 'remote'">
-			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.search }}</span></MkInput>
+			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $ts.host }}</span></MkInput>
 			<MkPagination :pagination="remotePagination" ref="remoteEmojis">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>

@@ -2,14 +2,14 @@
 <MkModal ref="modal" :src="src" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div class="gqyayizv _popup">
 		<button class="_button" @click="choose('public')" :class="{ active: v == 'public' }" data-index="1" key="public">
-			<div><Fa :icon="faGlobe"/></div>
+			<div><i class="fas fa-globe"></i></div>
 			<div>
 				<span>{{ $ts._visibility.public }}</span>
 				<span>{{ $ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
 		<button class="_button" @click="choose('home')" :class="{ active: v == 'home' }" data-index="2" key="home">
-			<div><Fa :icon="faHome"/></div>
+			<div><i class="fas fa-home"></i></div>
 			<div>
 				<span>{{ $ts._visibility.home }}</span>
 				<span>{{ $ts._visibility.homeDescription }}</span>

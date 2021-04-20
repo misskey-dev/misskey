@@ -26,7 +26,7 @@
 				<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><Fa :icon="faPhotoVideo"/></button>
 				<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><Fa :icon="faPollH"/></button>
 				<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><Fa :icon="faEyeSlash"/></button>
-				<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><Fa :icon="faAt"/></button>
+				<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><i class="fas fa-at"></i></button>
 				<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><Fa :icon="faLaughSquint"/></button>
 				<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
 			</div>
@@ -34,8 +34,8 @@
 				<span class="text-count" :class="{ over: textLength > max }">{{ max - textLength }}</span>
 				<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
 				<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
-					<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
-					<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
+					<span v-if="visibility === 'public'"><i class="fas fa-globe"></i></span>
+					<span v-if="visibility === 'home'"><i class="fas fa-home"></i></span>
 					<span v-if="visibility === 'followers'"><Fa :icon="faUnlock"/></span>
 					<span v-if="visibility === 'specified'"><Fa :icon="faEnvelope"/></span>
 				</button>

@@ -3,7 +3,7 @@
 	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
 	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $ts.editWidgetsExit }}</button>
-	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $ts.editWidgets }}</button>
+	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
 </div>
 </template>
 

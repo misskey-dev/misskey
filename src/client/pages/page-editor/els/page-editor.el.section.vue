@@ -3,10 +3,10 @@
 	<template #header><Fa :icon="faStickyNote"/> {{ value.title }}</template>
 	<template #func>
 		<button @click="rename()" class="_button">
-			<Fa :icon="faPencilAlt"/>
+			<i class="fas fa-pencil-alt"></i>
 		</button>
 		<button @click="add()" class="_button">
-			<Fa :icon="faPlus"/>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 

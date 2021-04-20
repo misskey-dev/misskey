@@ -22,7 +22,7 @@
 
 	<section class="_card _gap">
 		<div class="_content">
-			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()"><template #icon><Fa :icon="faPencilAlt"/></template>{{ $ts.maxNoteTextLength }}</MkInput>
+			<MkInput v-model:value="maxNoteTextLength" type="number" :save="() => save()"><template #icon><i class="fas fa-pencil-alt"></i></template>{{ $ts.maxNoteTextLength }}</MkInput>
 		</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableLocalTimeline" @update:value="save()">{{ $ts.enableLocalTimeline }}</MkSwitch>
@@ -35,7 +35,7 @@
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faUser"/> {{ $ts.registration }}</div>
+		<div class="_title"><i class="fas fa-user"></i> {{ $ts.registration }}</div>
 		<div class="_content">
 			<MkSwitch v-model:value="enableRegistration" @update:value="save()">{{ $ts.enableRegistration }}</MkSwitch>
 			<MkButton v-if="!enableRegistration" @click="invite">{{ $ts.invite }}</MkButton>
@@ -204,7 +204,7 @@
 	</section>
 
 	<section class="_card _gap">
-		<div class="_title"><Fa :icon="faShareAlt"/> {{ $ts.integration }}</div>
+		<div class="_title"><i class="fas fa-share-alt"></i> {{ $ts.integration }}</div>
 		<div class="_content">
 			<header><Fa :icon="faTwitter"/> Twitter</header>
 			<MkSwitch v-model:value="enableTwitterIntegration">{{ $ts.enable }}</MkSwitch>

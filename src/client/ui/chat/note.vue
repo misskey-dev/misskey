@@ -13,7 +13,7 @@
 	<div class="info" v-if="appearNote._featuredId_"><Fa :icon="faBolt"/> {{ $ts.featured }}</div>
 	<div class="renote" v-if="isRenote">
 		<MkAvatar class="avatar" :user="note.user"/>
-		<Fa :icon="faRetweet"/>
+		<i class="fas fa-retweet"></i>
 		<I18n :src="$ts.renotedBy" tag="span">
 			<template #user>
 				<MkA class="name" :to="userPage(note.user)" v-user-preview="note.userId">
@@ -47,7 +47,7 @@
 				<div class="content" :class="{ collapsed }" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
-						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><Fa :icon="faReply"/></MkA>
+						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
@@ -67,23 +67,23 @@
 			<footer class="footer _panel">
 				<button @click="reply()" class="button _button" v-tooltip="$ts.reply">
 					<template v-if="appearNote.reply"><Fa :icon="faReplyAll"/></template>
-					<template v-else><Fa :icon="faReply"/></template>
+					<template v-else><i class="fas fa-reply"></i></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton" v-tooltip="$ts.renote">
-					<Fa :icon="faRetweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+					<i class="fas fa-retweet"></i><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
 					<Fa :icon="faBan"/>
 				</button>
 				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton" v-tooltip="$ts.reaction">
-					<Fa :icon="faPlus"/>
+					<i class="fas fa-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton" v-tooltip="$ts.reaction">
-					<Fa :icon="faMinus"/>
+					<i class="fas fa-minus"></i>
 				</button>
 				<button class="button _button" @click="menu()" ref="menuButton">
-					<Fa :icon="faEllipsisH"/>
+					<i class="fas fa-ellipsis-h"></i>
 				</button>
 			</footer>
 		</div>

@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :foldable="foldable" :scrollable="scrollable">
-	<template #header><Fa :icon="faGlobe"/>{{ $ts._widgets.federation }}</template>
+	<template #header><i class="fas fa-globe"></i>{{ $ts._widgets.federation }}</template>
 
 	<div class="wbrkwalb">
 		<MkLoading v-if="fetching"/>

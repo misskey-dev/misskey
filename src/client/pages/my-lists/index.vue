@@ -1,6 +1,6 @@
 <template>
 <div class="qkcjvfiv _section">
-	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $ts.createList }}</MkButton>
+	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.createList }}</MkButton>
 
 	<MkPagination :pagination="pagination" #default="{items}" class="lists _content" ref="list">
 		<div class="list _panel" v-for="(list, i) in items" :key="list.id">

@@ -7,12 +7,12 @@
 	</div>
 
 	<div class="_section lookup">
-		<div class="_title"><Fa :icon="faSearch"/> {{ $ts.lookup }}</div>
+		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
 		<div class="_content">
 			<MkInput class="target" v-model:value="q" type="text" @enter="find()">
 				<span>{{ $ts.fileIdOrUrl }}</span>
 			</MkInput>
-			<MkButton @click="find()" primary><Fa :icon="faSearch"/> {{ $ts.lookup }}</MkButton>
+			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</div>
 

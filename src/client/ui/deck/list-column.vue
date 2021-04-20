@@ -1,7 +1,7 @@
 <template>
 <XColumn :func="{ handler: setList, title: $ts.selectList }" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<Fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="fas fa-list-ul"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<XTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>

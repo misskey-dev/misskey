@@ -3,7 +3,7 @@
 	<template #header><Fa :icon="faQuestion"/> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
 		<button @click="add()" class="_button">
-			<Fa :icon="faPlus"/>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 

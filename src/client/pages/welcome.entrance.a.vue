@@ -43,7 +43,7 @@
 						<template #n><b>{{ onlineUsersCount }}</b></template>
 					</I18n>
 				</div>
-				<button class="_button _acrylic menu" @click="showMenu"><Fa :icon="faEllipsisH"/></button>
+				<button class="_button _acrylic menu" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 			</div>
 		</div>
 	</div>

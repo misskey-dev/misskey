@@ -3,7 +3,7 @@
 	<div class="stats" v-if="info">
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faUser"/>{{ $ts.users }}</b>
+				<b><i class="fas fa-user"></i>{{ $ts.users }}</b>
 				<small>{{ $ts.local }}</small>
 			</div>
 			<div>
@@ -23,7 +23,7 @@
 		</div>
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faUser"/>{{ $ts.users }}</b>
+				<b><i class="fas fa-user"></i>{{ $ts.users }}</b>
 				<small>{{ $ts.remote }}</small>
 			</div>
 			<div>
@@ -43,7 +43,7 @@
 		</div>
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faPencilAlt"/>{{ $ts.notes }}</b>
+				<b><i class="fas fa-pencil-alt"></i>{{ $ts.notes }}</b>
 				<small>{{ $ts.local }}</small>
 			</div>
 			<div>
@@ -63,7 +63,7 @@
 		</div>
 		<div class="_panel">
 			<div>
-				<b><Fa :icon="faPencilAlt"/>{{ $ts.notes }}</b>
+				<b><i class="fas fa-pencil-alt"></i>{{ $ts.notes }}</b>
 				<small>{{ $ts.remote }}</small>
 			</div>
 			<div>

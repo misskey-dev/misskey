@@ -22,7 +22,7 @@
 		</div>
 
 		<div class="_content grwlizim owned" v-if="tab === 'owned'">
-			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
 			<MkPagination :pagination="ownedPagination" #default="{items}">
 				<MkChannelPreview v-for="channel in items" class="_gap" :channel="channel" :key="channel.id"/>
 			</MkPagination>

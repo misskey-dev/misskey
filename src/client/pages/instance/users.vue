@@ -2,17 +2,17 @@
 <div class="mk-instance-users">
 	<div class="_section">
 		<div class="_content">
-			<MkButton inline primary @click="addUser()"><Fa :icon="faPlus"/> {{ $ts.addUser }}</MkButton>
+			<MkButton inline primary @click="addUser()"><i class="fas fa-plus"></i> {{ $ts.addUser }}</MkButton>
 		</div>
 	</div>
 
 	<div class="_section lookup">
-		<div class="_title"><Fa :icon="faSearch"/> {{ $ts.lookup }}</div>
+		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
 		<div class="_content">
 			<MkInput class="target" v-model:value="target" type="text" @enter="showUser()">
 				<span>{{ $ts.usernameOrUserId }}</span>
 			</MkInput>
-			<MkButton @click="showUser()" primary><Fa :icon="faSearch"/> {{ $ts.lookup }}</MkButton>
+			<MkButton @click="showUser()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</div>
 

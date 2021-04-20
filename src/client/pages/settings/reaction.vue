@@ -10,7 +10,7 @@
 					</button>
 				</template>
 				<template #footer>
-					<button class="_button add" @click="chooseEmoji"><Fa :icon="faPlus"/></button>
+					<button class="_button add" @click="chooseEmoji"><i class="fas fa-plus"></i></button>
 				</template>
 			</XDraggable>
 		</div>

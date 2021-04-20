@@ -7,7 +7,7 @@
 			<MkTextarea v-model:value="description">{{ $ts.description }}</MkTextarea>
 
 			<div class="banner">
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $ts._channel.setBanner }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
 					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $ts._channel.removeBanner }}</MkButton>
