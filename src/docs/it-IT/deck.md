@@ -15,4 +15,4 @@ Il deck è una delle interfacce utente disponibili.「カラム」と呼ばれ�
 カラムメニューの「編集」を選択するとカラムの設定を編集できます。カラムの名前を変えたり、幅を変えたりできます。
 
 ## Impostazioni deck
-デッキに関する設定は、[settings/deck](/settings/deck)で行えます。
+Puoi trovare le opzioni d'impostazione in [settings/deck](/settings/deck).
