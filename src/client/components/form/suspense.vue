@@ -5,9 +5,9 @@
 			<MkLoading/>
 		</div>
 	</div>
-	<div v-else-if="resolved">
+	<FormGroup v-else-if="resolved" class="_formItem">
 		<slot :result="result"></slot>
-	</div>
+	</FormGroup>
 	<div class="_formItem" v-else>
 		<div class="_formPanel">
 			error!
@@ -20,8 +20,13 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from 'vue';
 import './form.scss';
+import FormGroup from './group.vue';
 
 export default defineComponent({
+	components: {
+		FormGroup,
+	},
+
 	props: {
 		p: {
 			type: Function as PropType<() => Promise<any>>,

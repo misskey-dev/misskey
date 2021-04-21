@@ -1,14 +1,14 @@
 <template>
 <div>
 	<XQueue :connection="connection" domain="inbox">
-		<template #title><Fa :icon="faExchangeAlt"/> In</template>
+		<template #title><i class="fas fa-exchange-alt"></i> In</template>
 	</XQueue>
 	<XQueue :connection="connection" domain="deliver">
-		<template #title><Fa :icon="faExchangeAlt"/> Out</template>
+		<template #title><i class="fas fa-exchange-alt"></i> Out</template>
 	</XQueue>
 	<section class="_section">
 		<div class="_content">
-			<MkButton @click="clear()"><Fa :icon="faTrashAlt"/> {{ $ts.clearQueue }}</MkButton>
+			<MkButton @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearQueue }}</MkButton>
 		</div>
 	</section>
 </div>
@@ -16,8 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import XQueue from './queue.chart.vue';
 import * as os from '@client/os';
@@ -33,10 +31,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.jobQueue,
-				icon: faExchangeAlt,
+				icon: 'fas fa-exchange-alt',
 			},
 			connection: os.stream.useSharedConnection('queueStats'),
-			faExchangeAlt, faTrashAlt
 		}
 	},
 

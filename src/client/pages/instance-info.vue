@@ -14,6 +14,10 @@
 			</FormKeyValueView>
 		</FormGroup>
 
+		<FormTextarea readonly :value="instance.description">
+			<span>{{ $ts.description }}</span>
+		</FormTextarea>
+
 		<FormGroup>
 			<FormKeyValueView>
 				<template #key>{{ $ts.software }}</template>
@@ -86,17 +90,49 @@
 				<template #key>{{ $ts.registeredAt }}</template>
 				<template #value><MkTime mode="detail" :time="instance.caughtAt"/></template>
 			</FormKeyValueView>
+			<FormKeyValueView>
+				<template #key>{{ $ts.updatedAt }}</template>
+				<template #value><MkTime mode="detail" :time="instance.infoUpdatedAt"/></template>
+			</FormKeyValueView>
 		</FormGroup>
 		<FormObjectView tall :value="instance">
 			<span>Raw</span>
 		</FormObjectView>
+		<FormGroup>
+			<template #label>Well-known resources</template>
+			<FormLink :to="`https://${host}/.well-known/host-meta`" external>host-meta</FormLink>
+			<FormLink :to="`https://${host}/.well-known/host-meta.json`" external>host-meta.json</FormLink>
+			<FormLink :to="`https://${host}/.well-known/nodeinfo`" external>nodeinfo</FormLink>
+			<FormLink :to="`https://${host}/robots.txt`" external>robots.txt</FormLink>
+			<FormLink :to="`https://${host}/manifest.json`" external>manifest.json</FormLink>
+		</FormGroup>
+		<FormSuspense :p="dnsPromiseFactory" v-slot="{ result: dns }">
+			<FormGroup>
+				<template #label>DNS</template>
+				<FormKeyValueView v-for="record in dns.a" :key="record">
+					<template #key>A</template>
+					<template #value><span class="_monospace">{{ record }}</span></template>
+				</FormKeyValueView>
+				<FormKeyValueView v-for="record in dns.aaaa" :key="record">
+					<template #key>AAAA</template>
+					<template #value><span class="_monospace">{{ record }}</span></template>
+				</FormKeyValueView>
+				<FormKeyValueView v-for="record in dns.cname" :key="record">
+					<template #key>CNAME</template>
+					<template #value><span class="_monospace">{{ record }}</span></template>
+				</FormKeyValueView>
+				<FormKeyValueView v-for="record in dns.txt">
+					<template #key>TXT</template>
+					<template #value><span class="_monospace">{{ record[0] }}</span></template>
+				</FormKeyValueView>
+			</FormGroup>
+		</FormSuspense>
 	</FormGroup>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faExternalLinkAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
@@ -148,16 +184,19 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceInfo,
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				actions: [{
 					text: `https://${this.host}`,
-					icon: faExternalLinkAlt,
+					icon: 'fas fa-external-link-alt',
 					handler: () => {
 						window.open(`https://${this.host}`, '_blank');
 					}
 				}],
 			},
 			instance: null,
+			dnsPromiseFactory: () => os.api('federation/dns', {
+				host: this.host
+			}),
 			now: null,
 			canvas: null,
 			chart: null,

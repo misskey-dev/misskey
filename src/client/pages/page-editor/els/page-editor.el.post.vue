@@ -1,6 +1,6 @@
 <template>
 <XContainer @remove="() => $emit('remove')" :draggable="true">
-	<template #header><Fa :icon="faPaperPlane"/> {{ $ts._pages.blocks.post }}</template>
+	<template #header><i class="fas fa-paper-plane"></i> {{ $ts._pages.blocks.post }}</template>
 
 	<section style="padding: 16px;">
 		<MkTextarea v-model:value="value.text">{{ $ts._pages.blocks._post.text }}</MkTextarea>
@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import XContainer from '../page-editor.container.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -32,7 +31,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faPaperPlane
 		};
 	},
 

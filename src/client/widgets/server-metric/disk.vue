@@ -2,7 +2,7 @@
 <div class="zbwaqsat">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><fa :icon="faHdd"/>Disk</p>
+		<p><i class="fas fa-hdd"></i>Disk</p>
 		<p>Total: {{ bytes(total, 1) }}</p>
 		<p>Free: {{ bytes(available, 1) }}</p>
 		<p>Used: {{ bytes(used, 1) }}</p>
@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faHdd } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
 import bytes from '@client/filters/bytes';
 
@@ -31,7 +30,6 @@ export default defineComponent({
 			total: this.meta.fs.total,
 			used: this.meta.fs.used,
 			available: this.meta.fs.total - this.meta.fs.used,
-			faHdd,
 		};
 	},
 	methods: {
@@ -62,7 +60,7 @@ export default defineComponent({
 				font-weight: bold;
 				margin-bottom: 4px;
 
-				> [data-icon] {
+				> i {
 					margin-right: 4px;
 				}
 			}

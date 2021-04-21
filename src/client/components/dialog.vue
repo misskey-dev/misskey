@@ -2,15 +2,15 @@
 <MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
 	<div class="mk-dialog">
 		<div class="icon" v-if="icon">
-			<Fa :icon="icon"/>
+			<i :class="icon"></i>
 		</div>
 		<div class="icon" v-else-if="!input && !select" :class="type">
-			<Fa :icon="faCheck" v-if="type === 'success'"/>
-			<Fa :icon="faTimesCircle" v-if="type === 'error'"/>
-			<Fa :icon="faExclamationTriangle" v-if="type === 'warning'"/>
-			<Fa :icon="faInfoCircle" v-if="type === 'info'"/>
-			<Fa :icon="faQuestionCircle" v-if="type === 'question'"/>
-			<Fa :icon="faSpinner" pulse v-if="type === 'waiting'"/>
+			<i v-if="type === 'success'" class="fas fa-check"></i>
+			<i v-else-if="type === 'error'" class="fas fa-times-circle"></i>
+			<i v-else-if="type === 'warning'" class="fas fa-exclamation-triangle"></i>
+			<i v-else-if="type === 'info'" class="fas fa-information-circle"></i>
+			<i v-else-if="type === 'question'" class="fas fa-question-circle"></i>
+			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div class="body" v-if="text"><Mfm :text="text"/></div>
@@ -38,8 +38,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSpinner, faInfoCircle, faExclamationTriangle, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faTimesCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import MkModal from '@client/components/ui/modal.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -99,7 +97,6 @@ export default defineComponent({
 		return {
 			inputValue: this.input && this.input.default ? this.input.default : null,
 			selectedValue: this.select ? this.select.default ? this.select.default : this.select.items ? this.select.items[0].value : this.select.groupedItems[0].items[0].value : null,
-			faTimesCircle, faQuestionCircle, faSpinner, faInfoCircle, faExclamationTriangle, faCheck
 		};
 	},
 

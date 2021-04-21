@@ -27,7 +27,6 @@
 // SPECIFICATION: https://wiki.misskey.io/ja/advanced-functions/share
 
 import { defineComponent } from 'vue';
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import XPostForm from '@client/components/post-form.vue';
 import * as os from '@client/os';
@@ -45,7 +44,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.share,
-				icon: faShareAlt
+				icon: 'fas fa-share-alt'
 			},
 			state: 'fetching' as 'fetching' | 'writing' | 'posted',
 
@@ -58,7 +57,6 @@ export default defineComponent({
 			files: null as any[] | null,
 			visibleUsers: [] as any[],
 
-			faShareAlt
 		}
 	},
 

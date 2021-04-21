@@ -42,14 +42,14 @@
 		<div class="_content">
 			<MkPagination :pagination="pagination" #default="{items}" ref="instances" :key="host + state">
 				<div class="ppgwaixt _panel" v-for="instance in items" :key="instance.id" @click="info(instance)">
-					<div class="host"><Fa :icon="faCircle" class="indicator" :class="getStatus(instance)"/><b>{{ instance.host }}</b></div>
+					<div class="host"><i class="fas fa-circle indicator" :class="getStatus(instance)"></i><b>{{ instance.host }}</b></div>
 					<div class="status">
-						<span class="sub" v-if="instance.followersCount > 0"><Fa :icon="faCaretDown" class="icon"/>Sub</span>
-						<span class="sub" v-else><Fa :icon="faCaretDown" class="icon"/>-</span>
-						<span class="pub" v-if="instance.followingCount > 0"><Fa :icon="faCaretUp" class="icon"/>Pub</span>
-						<span class="pub" v-else><Fa :icon="faCaretUp" class="icon"/>-</span>
-						<span class="lastCommunicatedAt"><Fa :icon="faExchangeAlt" class="icon"/><MkTime :time="instance.lastCommunicatedAt"/></span>
-						<span class="latestStatus"><Fa :icon="faTrafficLight" class="icon"/>{{ instance.latestStatus || '-' }}</span>
+						<span class="sub" v-if="instance.followersCount > 0"><i class="fas fa-caret-down icon"></i>Sub</span>
+						<span class="sub" v-else><i class="fas fa-caret-down icon"></i>-</span>
+						<span class="pub" v-if="instance.followingCount > 0"><i class="fas fa-caret-up icon"></i>Pub</span>
+						<span class="pub" v-else><i class="fas fa-caret-up icon"></i>-</span>
+						<span class="lastCommunicatedAt"><i class="fas fa-exchange-alt icon"></i><MkTime :time="instance.lastCommunicatedAt"/></span>
+						<span class="latestStatus"><i class="fas fa-traffic-light icon"></i>{{ instance.latestStatus || '-' }}</span>
 					</div>
 				</div>
 			</MkPagination>
@@ -60,7 +60,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -81,7 +80,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.federation,
-				icon: faGlobe
+				icon: 'fas fa-globe'
 			},
 			host: '',
 			state: 'federating',
@@ -103,7 +102,6 @@ export default defineComponent({
 						{})
 				})
 			},
-			faGlobe, faCircle, faExchangeAlt, faCaretDown, faCaretUp, faTrafficLight
 		}
 	},
 

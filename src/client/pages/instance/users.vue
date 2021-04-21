@@ -2,22 +2,22 @@
 <div class="mk-instance-users">
 	<div class="_section">
 		<div class="_content">
-			<MkButton inline primary @click="addUser()"><Fa :icon="faPlus"/> {{ $ts.addUser }}</MkButton>
+			<MkButton inline primary @click="addUser()"><i class="fas fa-plus"></i> {{ $ts.addUser }}</MkButton>
 		</div>
 	</div>
 
 	<div class="_section lookup">
-		<div class="_title"><Fa :icon="faSearch"/> {{ $ts.lookup }}</div>
+		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
 		<div class="_content">
 			<MkInput class="target" v-model:value="target" type="text" @enter="showUser()">
 				<span>{{ $ts.usernameOrUserId }}</span>
 			</MkInput>
-			<MkButton @click="showUser()" primary><Fa :icon="faSearch"/> {{ $ts.lookup }}</MkButton>
+			<MkButton @click="showUser()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</div>
 
 	<div class="_section users">
-		<div class="_title"><Fa :icon="faUsers"/> {{ $ts.users }}</div>
+		<div class="_title"><i class="fas fa-users"></i> {{ $ts.users }}</div>
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
 				<MkSelect v-model:value="sort" style="margin: 0; flex: 1;">
@@ -54,15 +54,15 @@
 
 			<MkPagination :pagination="pagination" #default="{items}" class="users" ref="users">
 				<button class="user _panel _button _gap" v-for="user in items" :key="user.id" @click="show(user)">
-					<MkAvatar class="avatar" :user="user" :disable-link="true"/>
+					<MkAvatar class="avatar" :user="user" :disable-link="true" :show-indicator="true"/>
 					<div class="body">
 						<header>
 							<MkUserName class="name" :user="user"/>
 							<span class="acct">@{{ acct(user) }}</span>
-							<span class="staff" v-if="user.isAdmin"><Fa :icon="faBookmark"/></span>
-							<span class="staff" v-if="user.isModerator"><Fa :icon="farBookmark"/></span>
-							<span class="punished" v-if="user.isSilenced"><Fa :icon="faMicrophoneSlash"/></span>
-							<span class="punished" v-if="user.isSuspended"><Fa :icon="faSnowflake"/></span>
+							<span class="staff" v-if="user.isAdmin"><i class="fas fa-bookmark"></i></span>
+							<span class="staff" v-if="user.isModerator"><i class="far fa-bookmark"></i></span>
+							<span class="punished" v-if="user.isSilenced"><i class="fas fa-microphone-slash"></i></span>
+							<span class="punished" v-if="user.isSuspended"><i class="fas fa-snowflake"></i></span>
 						</header>
 						<div>
 							<span>{{ $ts.lastUsed }}: <MkTime v-if="user.updatedAt" :time="user.updatedAt" mode="detail"/></span>
@@ -80,8 +80,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faUsers, faSearch, faBookmark, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
-import { faSnowflake, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import parseAcct from '@/misc/acct/parse';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -103,9 +101,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.users,
-				icon: faUsers,
+				icon: 'fas fa-users',
 				action: {
-					icon: faSearch,
+					icon: 'fas fa-search',
 					handler: this.searchUser
 				}
 			},
@@ -127,7 +125,6 @@ export default defineComponent({
 				}),
 				offsetMode: true
 			},
-			faPlus, faUsers, faSearch, faBookmark, farBookmark, faMicrophoneSlash, faSnowflake
 		}
 	},
 

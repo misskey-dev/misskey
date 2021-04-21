@@ -1,15 +1,14 @@
 <template>
 <div class="efzpzdvf">
-	<XWidgets :edit="editMode" :widgets="$store.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
+	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
-	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><Fa :icon="faCheck"/> {{ $ts.editWidgetsExit }}</button>
-	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><Fa :icon="faPencilAlt"/> {{ $ts.editWidgets }}</button>
+	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
+	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faPencilAlt, faPlus, faBars, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import XWidgets from '@client/components/widgets.vue';
 import * as os from '@client/os';
 
@@ -23,7 +22,6 @@ export default defineComponent({
 	data() {
 		return {
 			editMode: false,
-			faPencilAlt, faPlus, faBars, faTimes, faCheck,
 		};
 	},
 
@@ -63,6 +61,10 @@ export default defineComponent({
 	height: min-content;
 	box-sizing: border-box;
 	padding-bottom: 8px;
+
+	> .widgets {
+		width: 300px;
+	}
 
 	> .edit {
 		display: block;

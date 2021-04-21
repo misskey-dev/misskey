@@ -3,15 +3,15 @@
 	<div class="wpgynlbz _content _panel _gap" :class="{ hide: !showBanner }">
 		<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 		<button class="_button toggle" @click="() => showBanner = !showBanner">
-			<template v-if="showBanner"><Fa :icon="faAngleUp"/></template>
-			<template v-else><Fa :icon="faAngleDown"/></template>
+			<template v-if="showBanner"><i class="fas fa-angle-up"></i></template>
+			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 		<div class="hideOverlay" v-if="!showBanner">
 		</div>
 		<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" class="banner">
 			<div class="status">
-				<div><Fa :icon="faUsers" fixed-width/><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
-				<div><Fa :icon="faPencilAlt" fixed-width/><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
+				<div><i class="fas fa-users fa-fw"></i><I18n :src="$ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
+				<div><i class="fas fa-pencil-alt fa-fw"></i><I18n :src="$ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
 			</div>
 			<div class="fade"></div>
 		</div>
@@ -28,8 +28,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import {  } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XPostForm from '@client/components/post-form.vue';
 import XTimeline from '@client/components/timeline.vue';
@@ -56,7 +54,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.channel ? {
 				title: this.channel.name,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 			} : null),
 			channel: null,
 			showBanner: true,
@@ -67,7 +65,6 @@ export default defineComponent({
 					channelId: this.channelId,
 				})
 			},
-			faSatelliteDish, faUsers, faPencilAlt, faAngleUp, faAngleDown,
 		};
 	},
 
@@ -111,7 +108,7 @@ export default defineComponent({
 		background: rgba(0, 0, 0, 0.5);
 		border-radius: 100%;
 		
-		> [data-icon] {
+		> i {
 			vertical-align: middle;
 		}
 	}

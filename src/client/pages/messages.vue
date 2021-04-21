@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import XNotes from '@client/components/notes.vue';
 import * as symbols from '@client/symbols';
@@ -20,7 +19,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.directNotes,
-				icon: faEnvelope
+				icon: 'fas fa-envelope'
 			},
 			pagination: {
 				endpoint: 'notes/mentions',
@@ -29,7 +28,6 @@ export default defineComponent({
 					visibility: 'specified'
 				})
 			},
-			faEnvelope
 		};
 	},
 

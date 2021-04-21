@@ -1,13 +1,13 @@
 <template>
 <div v-if="meta" v-show="page === 'index'" class="xhexznfu _section">
 	<MkFolder>
-		<template #header><Fa :icon="faTachometerAlt"/> {{ $ts.overview }}</template>
+		<template #header><i class="fas fa-tachometer-alt"></i> {{ $ts.overview }}</template>
 
 		<div class="sboqnrfi" :style="{ gridTemplateRows: overviewHeight }">
 			<MkInstanceStats :chart-limit="300" :detailed="true" class="_gap" ref="stats"/>
 
 			<MkContainer :foldable="true" class="_gap">
-				<template #header><Fa :icon="faInfoCircle"/>{{ $ts.instanceInfo }}</template>
+				<template #header><i class="fas fa-info-circle"></i>{{ $ts.instanceInfo }}</template>
 
 				<div class="_content">
 					<div class="_keyValue"><b>Misskey</b><span>v{{ version }}</span></div>
@@ -20,7 +20,7 @@
 			</MkContainer>
 			
 			<MkContainer :foldable="true" :scrollable="true" class="_gap" style="height: 300px;">
-				<template #header><Fa :icon="faDatabase"/>{{ $ts.database }}</template>
+				<template #header><i class="fas fa-database"></i>{{ $ts.database }}</template>
 
 				<div class="_content" v-if="dbInfo">
 					<table style="border-collapse: collapse; width: 100%;">
@@ -42,7 +42,7 @@
 </div>
 <div v-if="page === 'logs'" class="_section">
 	<MkFolder>
-		<template #header><Fa :icon="faStream"/> {{ $ts.logs }}</template>
+		<template #header><i class="fas fa-stream"></i> {{ $ts.logs }}</template>
 
 		<div class="_keyValue" v-for="log in modLogs">
 			<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><MkTime :time="log.createdAt" style="opacity: 0.7;"/>
@@ -56,7 +56,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, markRaw } from 'vue';
-import { faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import VueJsonPretty from 'vue-json-pretty';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -91,21 +90,21 @@ export default defineComponent({
 					id: 'index',
 					title: null,
 					tooltip: this.$ts.instance,
-					icon: faServer,
+					icon: 'fas fa-server',
 					onClick: () => { this.page = 'index'; },
 					selected: computed(() => this.page === 'index')
 				}, {
 					id: 'metrics',
 					title: null,
 					tooltip: this.$ts.metrics,
-					icon: faHeartbeat,
+					icon: 'fas fa-heartbeat',
 					onClick: () => { this.page = 'metrics'; },
 					selected: computed(() => this.page === 'metrics')
 				}, {
 					id: 'logs',
 					title: null,
 					tooltip: this.$ts.logs,
-					icon: faStream,
+					icon: 'fas fa-stream',
 					onClick: () => { this.page = 'logs'; },
 					selected: computed(() => this.page === 'logs')
 				}]
@@ -117,7 +116,6 @@ export default defineComponent({
 			serverInfo: null,
 			modLogs: [],
 			dbInfo: null,
-			faPlay, faPause, faDatabase, faServer, faExchangeAlt, faMicrochip, faHdd, faStream, faTrashAlt, faInfoCircle, faExclamationTriangle, faTachometerAlt, faHeartbeat, faClipboardList,
 		}
 	},
 

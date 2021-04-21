@@ -9,8 +9,8 @@
 
 	<div class="_section">
 		<div class="local" v-if="tab === 'local'">
-			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $ts.addEmoji }}</MkButton>
-			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.search }}</span></MkInput>
+			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.addEmoji }}</MkButton>
+			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
 			<MkPagination :pagination="pagination" ref="emojis">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
 				<template #default="{items}">
@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="remote" v-else-if="tab === 'remote'">
-			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><Fa :icon="faSearch"/></template><span>{{ $ts.search }}</span></MkInput>
+			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
 			<MkInput v-model:value="host" :debounce="true"><span>{{ $ts.host }}</span></MkInput>
 			<MkPagination :pagination="remotePagination" ref="remoteEmojis">
 				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
@@ -51,8 +51,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt, faLaugh } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
@@ -73,9 +71,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.customEmojis,
-				icon: faLaugh,
+				icon: 'fas fa-laugh',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.add
 				}
 			},
@@ -98,7 +96,6 @@ export default defineComponent({
 					host: (this.host && this.host !== '') ? this.host : null
 				}))
 			},
-			faTrashAlt, faPlus, faLaugh, faSave, faSearch,
 		}
 	},
 
@@ -144,7 +141,7 @@ export default defineComponent({
 				text: ':' + emoji.name + ':',
 			}, {
 				text: this.$ts.import,
-				icon: faPlus,
+				icon: 'fas fa-plus',
 				action: () => { this.im(emoji) }
 			}], ev.currentTarget || ev.target);
 		}

@@ -2,17 +2,17 @@
 <div class="xrmjdkdw">
 	<div class="_section">
 		<div class="_content">
-			<MkButton primary @click="clear()"><Fa :icon="faTrashAlt"/> {{ $ts.clearCachedFiles }}</MkButton>
+			<MkButton primary @click="clear()"><i class="fas fa-trash-alt"></i> {{ $ts.clearCachedFiles }}</MkButton>
 		</div>
 	</div>
 
 	<div class="_section lookup">
-		<div class="_title"><Fa :icon="faSearch"/> {{ $ts.lookup }}</div>
+		<div class="_title"><i class="fas fa-search"></i> {{ $ts.lookup }}</div>
 		<div class="_content">
 			<MkInput class="target" v-model:value="q" type="text" @enter="find()">
 				<span>{{ $ts.fileIdOrUrl }}</span>
 			</MkInput>
-			<MkButton @click="find()" primary><Fa :icon="faSearch"/> {{ $ts.lookup }}</MkButton>
+			<MkButton @click="find()" primary><i class="fas fa-search"></i> {{ $ts.lookup }}</MkButton>
 		</div>
 	</div>
 
@@ -62,8 +62,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCloud, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -86,7 +84,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.files,
-				icon: faCloud
+				icon: 'fas fa-cloud'
 			},
 			q: null,
 			origin: 'local',
@@ -101,7 +99,6 @@ export default defineComponent({
 					hostname: (this.hostname && this.hostname !== '') ? this.hostname : null,
 				}),
 			},
-			faTrashAlt, faCloud, faSearch,
 		}
 	},
 

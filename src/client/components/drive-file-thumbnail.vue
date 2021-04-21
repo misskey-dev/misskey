@@ -1,31 +1,21 @@
 <template>
 <div class="zdjebgpv" ref="thumbnail">
 	<ImgWithBlurhash v-if="isThumbnailAvailable" :hash="file.blurhash" :src="file.thumbnailUrl" :alt="file.name" :title="file.name" :style="`object-fit: ${ fit }`"/>
-	<Fa :icon="faFileImage" class="icon" v-else-if="is === 'image'"/>
-	<Fa :icon="faFileVideo" class="icon" v-else-if="is === 'video'"/>
-	<Fa :icon="faMusic" class="icon" v-else-if="is === 'audio' || is === 'midi'"/>
-	<Fa :icon="faFileCsv" class="icon" v-else-if="is === 'csv'"/>
-	<Fa :icon="faFilePdf" class="icon" v-else-if="is === 'pdf'"/>
-	<Fa :icon="faFileAlt" class="icon" v-else-if="is === 'textfile'"/>
-	<Fa :icon="faFileArchive" class="icon" v-else-if="is === 'archive'"/>
-	<Fa :icon="faFile" class="icon" v-else/>
-	<Fa :icon="faFilm" class="icon-sub" v-if="isThumbnailAvailable && is === 'video'"/>
+	<i v-else-if="is === 'image'" class="fas fa-file-image icon"></i>
+	<i v-else-if="is === 'video'" class="fas fa-file-video icon"></i>
+	<i v-else-if="is === 'audio' || is === 'midi'" class="fas fa-music icon"></i>
+	<i v-else-if="is === 'csv'" class="fas fa-file-csv icon"></i>
+	<i v-else-if="is === 'pdf'" class="fas fa-file-pdf icon"></i>
+	<i v-else-if="is === 'textfile'" class="fas fa-file-alt icon"></i>
+	<i v-else-if="is === 'archive'" class="fas fa-file-archive icon"></i>
+	<i v-else class="fas fa-file icon"></i>
+
+	<i v-if="isThumbnailAvailable && is === 'video'" class="fas fa-film icon-sub"></i>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import {
-	faFile,
-	faFileAlt,
-	faFileImage,
-	faMusic,
-	faFileVideo,
-	faFileCsv,
-	faFilePdf,
-	faFileArchive,
-	faFilm
-	} from '@fortawesome/free-solid-svg-icons';
 import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';
 import { ColdDeviceStorage } from '@client/store';
 
@@ -49,15 +39,6 @@ export default defineComponent({
 			isContextmenuShowing: false,
 			isDragging: false,
 
-			faFile,
-			faFileAlt,
-			faFileImage,
-			faMusic,
-			faFileVideo,
-			faFileCsv,
-			faFilePdf,
-			faFileArchive,
-			faFilm
 		};
 	},
 	computed: {

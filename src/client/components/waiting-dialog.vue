@@ -1,8 +1,8 @@
 <template>
 <MkModal ref="modal" @click="success ? done() : () => {}" @closed="$emit('closed')">
 	<div class="iuyakobc" :class="{ iconOnly: (text == null) || success }">
-		<Fa class="icon success" v-if="success" :icon="faCheck"/>
-		<Fa class="icon waiting" v-else :icon="faSpinner" pulse/>
+		<i v-if="success" class="fas fa-check icon success"></i>
+		<i v-else class="fas fa-spinner fa-pulse icon waiting"></i>
 		<div class="text" v-if="text && !success">{{ text }}<MkEllipsis/></div>
 	</div>
 </MkModal>
@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import MkModal from '@client/components/ui/modal.vue';
 
 export default defineComponent({
@@ -37,7 +36,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faCheck, faSpinner,
 		};
 	},
 

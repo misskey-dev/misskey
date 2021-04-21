@@ -36,7 +36,7 @@
 			<MkPagination :pagination="pagination" #default="{items}" ref="reports" style="margin-top: var(--margin);">
 				<div class="bcekxzvu _card _gap" v-for="report in items" :key="report.id">
 					<div class="_content target">
-						<MkAvatar class="avatar" :user="report.targetUser"/>
+						<MkAvatar class="avatar" :user="report.targetUser" :show-indicator="true"/>
 						<div class="info">
 							<MkUserName class="name" :user="report.targetUser"/>
 							<div class="acct">@{{ acct(report.targetUser) }}</div>
@@ -63,8 +63,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faUsers, faSearch, faBookmark, faMicrophoneSlash, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { faSnowflake, faBookmark as farBookmark } from '@fortawesome/free-regular-svg-icons';
 import parseAcct from '@/misc/acct/parse';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -86,7 +84,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.abuseReports,
-				icon: faExclamationCircle
+				icon: 'fas fa-exclamation-circle'
 			},
 			searchUsername: '',
 			searchHost: '',
@@ -102,7 +100,6 @@ export default defineComponent({
 					targetUserOrigin: this.targetUserOrigin,
 				}),
 			},
-			faPlus, faUsers, faSearch, faBookmark, farBookmark, faMicrophoneSlash, faSnowflake
 		}
 	},
 

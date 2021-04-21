@@ -2,12 +2,12 @@
 <div class="mk-users-dialog">
 	<div class="header">
 		<span>{{ title }}</span>
-		<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+		<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 	</div>
 
 	<div class="users">
 		<MkA v-for="item in items" class="user" :key="item.id" :to="userPage(extract ? extract(item) : item)">
-			<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true"/>
+			<MkAvatar :user="extract ? extract(item) : item" class="avatar" :disable-link="true" :show-indicator="true"/>
 			<div class="body">
 				<MkUserName :user="extract ? extract(item) : item" class="name"/>
 				<MkAcct :user="extract ? extract(item) : item" class="acct"/>
@@ -16,7 +16,7 @@
 	</div>
 	<button class="more _button" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" v-show="more" :disabled="moreFetching">
 		<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
-		<template v-if="moreFetching"><Fa :icon="faSpinner" pulse fixed-width/></template>
+		<template v-if="moreFetching"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 	</button>
 
 	<p class="empty" v-if="empty">{{ $ts.noUsers }}</p>
@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import paging from '@client/scripts/paging';
 import { userPage } from '../filters/user';
 
@@ -50,7 +49,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faTimes
 		};
 	},
 

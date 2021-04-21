@@ -24,14 +24,12 @@
 		</code>
 	</div>
 
-	<MkButton @click="deleteAllLogs()" primary><Fa :icon="faTrashAlt"/> {{ $ts.deleteAll }}</MkButton>
+	<MkButton @click="deleteAllLogs()" primary><i class="fas fa-trash-alt"></i> {{ $ts.deleteAll }}</MkButton>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faStream } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -51,12 +49,11 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.serverLogs,
-				icon: faStream
+				icon: 'fas fa-stream'
 			},
 			logs: [],
 			logLevel: 'all',
 			logDomain: '',
-			faTrashAlt,
 		}
 	},
 

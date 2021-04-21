@@ -7,14 +7,13 @@
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<i v-if="folder == null"><Fa :icon="faCloud"/></i>
+	<i v-if="folder == null" class="fas fa-cloud"></i>
 	<span>{{ folder == null ? $ts.drive : folder.name }}</span>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -29,7 +28,6 @@ export default defineComponent({
 		return {
 			hover: false,
 			draghover: false,
-			faCloud
 		};
 	},
 

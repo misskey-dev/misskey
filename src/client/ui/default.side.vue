@@ -2,10 +2,10 @@
 <div class="qvzfzxam _narrow_" v-if="component">
 	<div class="container">
 		<header class="header" @contextmenu.prevent.stop="onContextmenu">
-			<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+			<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 			<XHeader class="title" :info="pageInfo" :with-back="false"/>
-			<button class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+			<button class="_button" @click="close()"><i class="fas fa-times"></i></button>
 		</header>
 		<component :is="component" v-bind="props" :ref="changePage"/>
 	</div>
@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faChevronLeft, faExpandAlt, faWindowMaximize, faExternalLinkAlt, faLink } from '@fortawesome/free-solid-svg-icons';
 import XHeader from './_common_/header.vue';
 import * as os from '@client/os';
 import copyToClipboard from '@client/scripts/copy-to-clipboard';
@@ -42,7 +41,6 @@ export default defineComponent({
 			props: {},
 			pageInfo: null,
 			history: [],
-			faTimes, faChevronLeft,
 		};
 	},
 
@@ -83,28 +81,28 @@ export default defineComponent({
 				type: 'label',
 				text: this.path,
 			}, {
-				icon: faExpandAlt,
+				icon: 'fas fa-expand-alt',
 				text: this.$ts.showInPage,
 				action: () => {
 					this.$router.push(this.path);
 					this.close();
 				}
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(this.path);
 					this.close();
 				}
 			}, null, {
-				icon: faExternalLinkAlt,
+				icon: 'fas fa-external-link-alt',
 				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.url, '_blank');
 					this.close();
 				}
 			}, {
-				icon: faLink,
+				icon: 'fas fa-link',
 				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);

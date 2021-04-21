@@ -5,14 +5,14 @@
 		<div class="buttons">
 			<slot name="func"></slot>
 			<button v-if="removable" @click="remove()" class="_button">
-				<Fa :icon="faTrashAlt"/>
+				<i class="fas fa-trash-alt"></i>
 			</button>
 			<button v-if="draggable" class="drag-handle _button">
-				<Fa :icon="faBars"/>
+				<i class="fas fa-bars"></i>
 			</button>
 			<button @click="toggleContent(!showBody)" class="_button">
-				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
-				<template v-else><Fa :icon="faAngleDown"/></template>
+				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
+				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
 		</div>
 	</header>
@@ -26,8 +26,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBars, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -56,7 +54,6 @@ export default defineComponent({
 	data() {
 		return {
 			showBody: this.expanded,
-			faTrashAlt, faBars, faAngleUp, faAngleDown
 		};
 	},
 	methods: {
@@ -105,7 +102,7 @@ export default defineComponent({
 			font-weight: bold;
 			box-shadow: 0 1px rgba(#000, 0.07);
 
-			> [data-icon] {
+			> i {
 				margin-right: 6px;
 			}
 
