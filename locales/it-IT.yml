@@ -718,6 +718,7 @@ _mfm:
   search: "Cerca"
   blur: "Sfocatura"
   font: "Tipo di carattere"
+  fontDescription: "Puoi scegliere il tipo di carattere per il contenuto."
 _reversi:
   reversi: "Reversi"
   gameSettings: "Impostazioni di gioco"
@@ -998,6 +999,8 @@ _pages:
   title: "Titolo"
   hideTitleWhenPinned: "Nascondere il titolo pagina quando è fissata in cima al profilo."
   font: "Tipo di carattere"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans serif"
   chooseBlock: "Aggiungi blocco"
   blocks:
     text: "Testo"
