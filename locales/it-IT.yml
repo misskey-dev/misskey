@@ -732,6 +732,8 @@ _instanceTicker:
   always: "Mostra sempre"
 _serverDisconnectedBehavior:
   reload: "Ricarica automaticamente"
+  dialog: "Apri avviso in finestra"
+  quiet: "Visualizza avviso in modo discreto"
 _channel:
   create: "Nuovo canale"
   edit: "Gerisci canale"
@@ -743,6 +745,7 @@ _channel:
   usersCount: "{n} partecipanti"
   notesCount: "{n} note"
 _sidebar:
+  full: "Intera"
   icon: "Icone"
   hide: "Nascondere"
 _wordMute:
