@@ -8,15 +8,17 @@
 >
 	<template #header>:{{ emoji.name }}:</template>
 
-	<div class="yigymqpb _section">
-		<img :src="emoji.url" class="img"/>
-		<MkInput v-model:value="name"><span>{{ $ts.name }}</span></MkInput>
-		<MkInput v-model:value="category" :datalist="categories"><span>{{ $ts.category }}</span></MkInput>
-		<MkInput v-model:value="aliases">
-			<span>{{ $ts.tags }}</span>
-			<template #desc>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
-		</MkInput>
-		<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+	<div class="_monolithic_">
+		<div class="yigymqpb _section">
+			<img :src="emoji.url" class="img"/>
+			<MkInput v-model:value="name"><span>{{ $ts.name }}</span></MkInput>
+			<MkInput v-model:value="category" :datalist="categories"><span>{{ $ts.category }}</span></MkInput>
+			<MkInput v-model:value="aliases">
+				<span>{{ $ts.tags }}</span>
+				<template #desc>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
+			</MkInput>
+			<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+		</div>
 	</div>
 </XModalWindow>
 </template>
