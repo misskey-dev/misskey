@@ -807,6 +807,11 @@ _theme:
     infoWarnFg: "Testo di avviso"
     cwBg: "Sfondo del CW"
     cwFg: "Testo del pulsante CW"
+    cwHoverBg: "Sfondo del pulsante CW (sorvolato)"
+    toastBg: "Sfondo di notifica a comparsa"
+    toastFg: "Testo di notifica a comparsa"
+    buttonBg: "Sfondo del pulsante"
+    buttonHoverBg: "Sfondo del pulsante (sorvolato)"
 _sfx:
   note: "Nota"
   noteMy: "Mia nota"
