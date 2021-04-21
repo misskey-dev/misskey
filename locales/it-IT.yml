@@ -812,6 +812,9 @@ _theme:
     toastFg: "Testo di notifica a comparsa"
     buttonBg: "Sfondo del pulsante"
     buttonHoverBg: "Sfondo del pulsante (sorvolato)"
+    inputBorder: "Inquadra casella di testo"
+    listItemHoverBg: "Sfondo della voce di elenco (sorvolato)"
+    driveFolderBg: "Sfondo della cartella di disco"
 _sfx:
   note: "Nota"
   noteMy: "Mia nota"
