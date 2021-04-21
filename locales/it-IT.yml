@@ -749,9 +749,11 @@ _sidebar:
   icon: "Icone"
   hide: "Nascondere"
 _wordMute:
-  muteWords: "Parole da silenziare"
+  muteWords: "Parole da filtrare"
   muteWordsDescription: "Separare con uno spazio indica la condizione \"E\". Separare con un'interruzzione riga indica la condizione \"O\"."
   muteWordsDescription2: "Metti le parole chiavi tra slash per usare espressioni regolari (regexp)."
+  softDescription: "Nascondi della timeline note che rispondono alle condizioni impostate qui."
+  hardDescription: "Impedisci alla timeline di caricare le note che rispondono alle condizioni impostate qui. Inoltre, le note scompariranno in modo irreversibile, anche se le condizioni verranno successivamente rimosse."
   soft: "Moderato"
   hard: "Severo"
   mutedNotes: "Note silenziate"
