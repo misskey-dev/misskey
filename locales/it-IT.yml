@@ -436,6 +436,7 @@ youHaveNoGroups: "Nessun gruppo"
 joinOrCreateGroup: "Puoi creare il tuo gruppo o essere invitat@ a gruppi che già esistono."
 noHistory: "Nessuna cronologia"
 signinHistory: "Cronologia di accesso all'account"
+doing: "In corso..."
 category: "Categoria"
 tags: "Tag"
 docSource: "Sorgente della scheda"
@@ -603,6 +604,7 @@ no: "No"
 driveFilesCount: "Numero di file nel Drive"
 driveUsage: "Utilizzazione del Drive"
 alwaysMarkSensitive: "Segnare i media come sensibili per impostazione predefinita"
+verificationEmailSent: "Una mail di verifica è stata inviata. Si prega di accedere al collegamento per compiere la verifica."
 notSet: "Non impostato"
 emailVerified: "Il tuo indirizzo email è stato verificato"
 noteFavoritesCount: "Conteggio note tra i preferiti"
@@ -868,6 +870,7 @@ _widgets:
   button: "Pulsante"
   onlineUsers: "Utenti online"
   jobQueue: "Coda di lavoro"
+  serverMetric: "Statistiche server"
 _cw:
   hide: "Nascondere"
   show: "Mostra di più"
@@ -924,6 +927,8 @@ _timelines:
   global: "Federata"
 _rooms:
   roomOf: "Camera di {user}"
+  remove: "Togli"
+  leaveConfirm: "Hai fatto modifiche ancora non salvate. Vuoi davvero uscire?"
   _roomType:
     default: "Predefinito"
     washitsu: "Washitsu"
@@ -1015,6 +1020,12 @@ _pages:
       _action:
         _dialog:
           content: "Contenuto"
+        pushEvent: "Inviare evento"
+        _pushEvent:
+          event: "Nome evento"
+          message: "Messaggio da visualizzare quando abilitato"
+          variable: "Variabile da inviare"
+          no-variable: "Nessun contenuto"
     _radioButton:
       name: "Nome della variabile"
       title: "Titolo"
