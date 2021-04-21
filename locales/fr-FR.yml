@@ -908,6 +908,8 @@ _theme:
     cwBg: "Arrière-plan du CW"
     cwFg: "Texte du bouton CW"
     cwHoverBg: "Arrière-plan du bouton CW (survolé)"
+    toastBg: "Arrière-plan de la bulle de notification"
+    toastFg: "Texte de la bulle de notification"
     buttonBg: "Arrière-plan du bouton"
     buttonHoverBg: "Arrière-plan du bouton (survolé)"
     inputBorder: "Cadre de la zone de texte"
