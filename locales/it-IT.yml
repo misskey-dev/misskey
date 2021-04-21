@@ -881,6 +881,8 @@ _permissions:
   "write:user-groups": "Gestisci gruppi di utenti"
   "read:channels": "Visualizza canali"
   "write:channels": "Gerisci canali"
+_auth:
+  shareAccess: "Autorizzare「{name}」ad accedere al tuo account?"
 _antennaSources:
   all: "Tutte le note"
   homeTimeline: "Note dagli utenti che segui"
