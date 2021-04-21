@@ -657,6 +657,7 @@ inChannelSearch: "Cerca in canale"
 useReactionPickerForContextMenu: "Cliccare sul tasto destro per aprire il pannello di reazioni"
 typingUsers: "{users} sta(nno) scrivendo"
 showingPastTimeline: "Stai visualizzando una vecchia timeline"
+clear: "Cancella"
 markAllAsRead: "Segna tutti come già letti"
 goBack: "Indietro"
 unlikeConfirm: "Non ti piace più?"
@@ -679,6 +680,8 @@ _email:
   _receiveFollowRequest:
     title: "Hai ricevuto una richiesta di follow"
 _plugin:
+  install: "Installa estensioni"
+  installWarn: "Si prega di installare soltanto estensioni che provengono da fonti affidabili."
   manage: "Gestisci estensioni"
 _registry:
   key: "Dati"
@@ -727,6 +730,8 @@ _instanceTicker:
   none: "Nascondi"
   remote: "Mostra solo per gli/le utenti remotə"
   always: "Mostra sempre"
+_serverDisconnectedBehavior:
+  reload: "Ricarica automaticamente"
 _channel:
   create: "Nuovo canale"
   edit: "Gerisci canale"
