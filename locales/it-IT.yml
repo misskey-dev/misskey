@@ -786,6 +786,7 @@ _theme:
     divider: "Interruzione di linea"
 _sfx:
   note: "Nota"
+  noteMy: "Mia nota"
   notification: "Notifiche"
   chat: "Messaggi"
   antenna: "Ricezione dell'antenna"
