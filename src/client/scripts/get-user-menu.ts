@@ -124,7 +124,13 @@ export function getUserMenu(user) {
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host || host}`);
 		}
-	}, {
+	}, ($i && ($i.isAdmin || $i.isModerator)) ? {
+		icon: 'fas fa-info-circle',
+		text: i18n.locale.info,
+		action: () => {
+			os.pageWindow(`/instance/user/${user.id}`);
+		}
+	} : {
 		icon: 'fas fa-info-circle',
 		text: i18n.locale.info,
 		action: () => {

@@ -1,34 +1,36 @@
 <template>
 <FormBase>
-	<FormGroup v-if="user">
-		<template #label><MkAcct :user="user"/></template>
-
-		<FormKeyValueView>
-			<template #key>ID</template>
-			<template #value><span class="_monospace">{{ user.id }}</span></template>
-		</FormKeyValueView>
-
+	<FormSuspense :p="init">
 		<FormGroup>
-			<FormLink :to="`/user-ap-info/${user.id}`">ActivityPub</FormLink>
+			<template #label><MkAcct :user="user"/></template>
 
-			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
-			<FormKeyValueView v-else>
-				<template #key>{{ $ts.instanceInfo }}</template>
-				<template #value>(Local user)</template>
-			</FormKeyValueView>
-		</FormGroup>
-
-		<FormGroup>
 			<FormKeyValueView>
-				<template #key>{{ $ts.updatedAt }}</template>
-				<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+				<template #key>ID</template>
+				<template #value><span class="_monospace">{{ user.id }}</span></template>
 			</FormKeyValueView>
-		</FormGroup>
 
-		<FormObjectView tall :value="user">
-			<span>Raw</span>
-		</FormObjectView>
-	</FormGroup>
+			<FormGroup>
+				<FormLink :to="`/user-ap-info/${user.id}`">ActivityPub</FormLink>
+
+				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
+				<FormKeyValueView v-else>
+					<template #key>{{ $ts.instanceInfo }}</template>
+					<template #value>(Local user)</template>
+				</FormKeyValueView>
+			</FormGroup>
+
+			<FormGroup>
+				<FormKeyValueView>
+					<template #key>{{ $ts.updatedAt }}</template>
+					<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+				</FormKeyValueView>
+			</FormGroup>
+
+			<FormObjectView tall :value="user">
+				<span>Raw</span>
+			</FormObjectView>
+		</FormGroup>
+	</FormSuspense>
 </FormBase>
 </template>
 
@@ -80,23 +82,27 @@ export default defineComponent({
 					}
 				} : undefined].filter(x => x !== undefined) : [],
 			})),
+			init: null,
 			user: null,
 		}
 	},
 
-	mounted() {
-		this.fetch();
+	watch: {
+		userId: {
+			handler() {
+				this.init = () => os.api('users/show', {
+					userId: this.userId
+				}).then(user => {
+					this.user = user;
+				});
+			},
+			immediate: true
+		}
 	},
 
 	methods: {
 		number,
 		bytes,
-
-		async fetch() {
-			this.user = await os.api('users/show', {
-				userId: this.userId
-			});
-		}
 	}
 });
 </script>

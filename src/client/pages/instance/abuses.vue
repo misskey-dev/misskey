@@ -1,5 +1,5 @@
 <template>
-<div class="">
+<div class="lcixvhis">
 	<div class="_section reports">
 		<div class="_content">
 			<div class="inputs" style="display: flex;">
@@ -80,6 +80,8 @@ export default defineComponent({
 		MkPagination,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
@@ -117,6 +119,10 @@ export default defineComponent({
 		},
 	},
 
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
+	},
+
 	methods: {
 		acct,
 
@@ -132,6 +138,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.lcixvhis {
+	margin: var(--margin);
+}
+
 .bcekxzvu {
 	> .target {
 		display: flex;

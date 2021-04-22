@@ -25,9 +25,9 @@
 					</component>
 				</template>
 				<div class="divider"></div>
-				<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
+				<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/instance">
 					<i class="fas fa-server fa-fw"></i><span class="text">{{ $ts.instance }}</span>
-				</button>
+				</MkA>
 				<button class="item _button" @click="more">
 					<i class="fa fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
 					<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
@@ -170,65 +170,6 @@ export default defineComponent({
 			}]], ev.currentTarget || ev.target, {
 				align: 'left'
 			});
-		},
-
-		oepnInstanceMenu(ev) {
-			os.modalMenu([{
-				type: 'link',
-				text: this.$ts.dashboard,
-				to: '/instance',
-				icon: 'fas fa-tachometer-alt',
-			}, null, this.$i.isAdmin ? {
-				type: 'link',
-				text: this.$ts.settings,
-				to: '/instance/settings',
-				icon: 'fas fa-cog',
-			} : undefined, {
-				type: 'link',
-				text: this.$ts.customEmojis,
-				to: '/instance/emojis',
-				icon: 'fas fa-laugh',
-			}, {
-				type: 'link',
-				text: this.$ts.users,
-				to: '/instance/users',
-				icon: 'fas fa-users',
-			}, {
-				type: 'link',
-				text: this.$ts.files,
-				to: '/instance/files',
-				icon: 'fas fa-cloud',
-			}, {
-				type: 'link',
-				text: this.$ts.jobQueue,
-				to: '/instance/queue',
-				icon: 'fas fa-exchange-alt',
-			}, {
-				type: 'link',
-				text: this.$ts.federation,
-				to: '/instance/federation',
-				icon: 'fas fa-globe',
-			}, {
-				type: 'link',
-				text: this.$ts.relays,
-				to: '/instance/relays',
-				icon: 'fas fa-project-diagram',
-			}, {
-				type: 'link',
-				text: this.$ts.announcements,
-				to: '/instance/announcements',
-				icon: 'fas fa-broadcast-tower',
-			}, {
-				type: 'link',
-				text: this.$ts.abuseReports,
-				to: '/instance/abuses',
-				icon: 'fas fa-exclamation-circle',
-			}, {
-				type: 'link',
-				text: this.$ts.logs,
-				to: '/instance/logs',
-				icon: 'fas fa-stream',
-			}], ev.currentTarget || ev.target);
 		},
 
 		more(ev) {

@@ -29,6 +29,7 @@ export default defineComponent({
 <style lang="scss">
 .pxhvhrfw {
 	display: flex;
+	font-size: 90%;
 
 	> button {
 		flex: 1;

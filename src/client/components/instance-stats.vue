@@ -1,123 +1,35 @@
 <template>
-<div class="zbcjwnqg" v-size="{ max: [550, 1000] }">
-	<div class="stats" v-if="info">
-		<div class="_panel">
-			<div>
-				<b><i class="fas fa-user"></i>{{ $ts.users }}</b>
-				<small>{{ $ts.local }}</small>
-			</div>
-			<div>
-				<dl class="total">
-					<dt>{{ $ts.total }}</dt>
-					<dd>{{ number(info.originalUsersCount) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: usersLocalDoD > 0 }">
-					<dt>{{ $ts.dayOverDayChanges }}</dt>
-					<dd>{{ number(usersLocalDoD) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: usersLocalWoW > 0 }">
-					<dt>{{ $ts.weekOverWeekChanges }}</dt>
-					<dd>{{ number(usersLocalWoW) }}</dd>
-				</dl>
-			</div>
-		</div>
-		<div class="_panel">
-			<div>
-				<b><i class="fas fa-user"></i>{{ $ts.users }}</b>
-				<small>{{ $ts.remote }}</small>
-			</div>
-			<div>
-				<dl class="total">
-					<dt>{{ $ts.total }}</dt>
-					<dd>{{ number((info.usersCount - info.originalUsersCount)) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: usersRemoteDoD > 0 }">
-					<dt>{{ $ts.dayOverDayChanges }}</dt>
-					<dd>{{ number(usersRemoteDoD) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: usersRemoteWoW > 0 }">
-					<dt>{{ $ts.weekOverWeekChanges }}</dt>
-					<dd>{{ number(usersRemoteWoW) }}</dd>
-				</dl>
-			</div>
-		</div>
-		<div class="_panel">
-			<div>
-				<b><i class="fas fa-pencil-alt"></i>{{ $ts.notes }}</b>
-				<small>{{ $ts.local }}</small>
-			</div>
-			<div>
-				<dl class="total">
-					<dt>{{ $ts.total }}</dt>
-					<dd>{{ number(info.originalNotesCount) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: notesLocalDoD > 0 }">
-					<dt>{{ $ts.dayOverDayChanges }}</dt>
-					<dd>{{ number(notesLocalDoD) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: notesLocalWoW > 0 }">
-					<dt>{{ $ts.weekOverWeekChanges }}</dt>
-					<dd>{{ number(notesLocalWoW) }}</dd>
-				</dl>
-			</div>
-		</div>
-		<div class="_panel">
-			<div>
-				<b><i class="fas fa-pencil-alt"></i>{{ $ts.notes }}</b>
-				<small>{{ $ts.remote }}</small>
-			</div>
-			<div>
-				<dl class="total">
-					<dt>{{ $ts.total }}</dt>
-					<dd>{{ number((info.notesCount - info.originalNotesCount)) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: notesRemoteDoD > 0 }">
-					<dt>{{ $ts.dayOverDayChanges }}</dt>
-					<dd>{{ number(notesRemoteDoD) }}</dd>
-				</dl>
-				<dl class="diff" :class="{ inc: notesRemoteWoW > 0 }">
-					<dt>{{ $ts.weekOverWeekChanges }}</dt>
-					<dd>{{ number(notesRemoteWoW) }}</dd>
-				</dl>
-			</div>
-		</div>
+<div class="zbcjwnqg" style="margin-top: -8px;">
+	<div class="selects" style="display: flex;">
+		<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
+			<optgroup :label="$ts.federation">
+				<option value="federation-instances">{{ $ts._charts.federationInstancesIncDec }}</option>
+				<option value="federation-instances-total">{{ $ts._charts.federationInstancesTotal }}</option>
+			</optgroup>
+			<optgroup :label="$ts.users">
+				<option value="users">{{ $ts._charts.usersIncDec }}</option>
+				<option value="users-total">{{ $ts._charts.usersTotal }}</option>
+				<option value="active-users">{{ $ts._charts.activeUsers }}</option>
+			</optgroup>
+			<optgroup :label="$ts.notes">
+				<option value="notes">{{ $ts._charts.notesIncDec }}</option>
+				<option value="local-notes">{{ $ts._charts.localNotesIncDec }}</option>
+				<option value="remote-notes">{{ $ts._charts.remoteNotesIncDec }}</option>
+				<option value="notes-total">{{ $ts._charts.notesTotal }}</option>
+			</optgroup>
+			<optgroup :label="$ts.drive">
+				<option value="drive-files">{{ $ts._charts.filesIncDec }}</option>
+				<option value="drive-files-total">{{ $ts._charts.filesTotal }}</option>
+				<option value="drive">{{ $ts._charts.storageUsageIncDec }}</option>
+				<option value="drive-total">{{ $ts._charts.storageUsageTotal }}</option>
+			</optgroup>
+		</MkSelect>
+		<MkSelect v-model:value="chartSpan" style="margin: 0;">
+			<option value="hour">{{ $ts.perHour }}</option>
+			<option value="day">{{ $ts.perDay }}</option>
+		</MkSelect>
 	</div>
-
-	<section class="_card">
-		<div class="_title" style="position: relative;"><i class="fas fa-chart-bar"></i> {{ $ts.statistics }}<button @click="fetchChart" class="_button" style="position: absolute; right: 0; bottom: 0; top: 0; padding: inherit;"><i class="fas fa-sync"></i></button></div>
-		<div class="_content" style="margin-top: -8px;">
-			<div class="selects" style="display: flex;">
-				<MkSelect v-model:value="chartSrc" style="margin: 0; flex: 1;">
-					<optgroup :label="$ts.federation">
-						<option value="federation-instances">{{ $ts._charts.federationInstancesIncDec }}</option>
-						<option value="federation-instances-total">{{ $ts._charts.federationInstancesTotal }}</option>
-					</optgroup>
-					<optgroup :label="$ts.users">
-						<option value="users">{{ $ts._charts.usersIncDec }}</option>
-						<option value="users-total">{{ $ts._charts.usersTotal }}</option>
-						<option value="active-users">{{ $ts._charts.activeUsers }}</option>
-					</optgroup>
-					<optgroup :label="$ts.notes">
-						<option value="notes">{{ $ts._charts.notesIncDec }}</option>
-						<option value="local-notes">{{ $ts._charts.localNotesIncDec }}</option>
-						<option value="remote-notes">{{ $ts._charts.remoteNotesIncDec }}</option>
-						<option value="notes-total">{{ $ts._charts.notesTotal }}</option>
-					</optgroup>
-					<optgroup :label="$ts.drive">
-						<option value="drive-files">{{ $ts._charts.filesIncDec }}</option>
-						<option value="drive-files-total">{{ $ts._charts.filesTotal }}</option>
-						<option value="drive">{{ $ts._charts.storageUsageIncDec }}</option>
-						<option value="drive-total">{{ $ts._charts.storageUsageTotal }}</option>
-					</optgroup>
-				</MkSelect>
-				<MkSelect v-model:value="chartSpan" style="margin: 0;">
-					<option value="hour">{{ $ts.perHour }}</option>
-					<option value="day">{{ $ts.perDay }}</option>
-				</MkSelect>
-			</div>
-			<canvas ref="chart"></canvas>
-		</div>
-	</section>
+	<canvas ref="chart"></canvas>
 </div>
 </template>
 
@@ -158,7 +70,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			info: null,
 			notesLocalWoW: 0,
 			notesLocalDoD: 0,
 			notesRemoteWoW: 0,
@@ -216,8 +127,6 @@ export default defineComponent({
 	},
 
 	async created() {
-		this.info = await os.api('stats');
-
 		this.now = new Date();
 
 		this.fetchChart();
@@ -256,15 +165,6 @@ export default defineComponent({
 				}
 			};
 
-			this.notesLocalWoW = this.info.originalNotesCount - chart.perDay.notes.local.total[7];
-			this.notesLocalDoD = this.info.originalNotesCount - chart.perDay.notes.local.total[1];
-			this.notesRemoteWoW = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[7];
-			this.notesRemoteDoD = (this.info.notesCount - this.info.originalNotesCount) - chart.perDay.notes.remote.total[1];
-			this.usersLocalWoW = this.info.originalUsersCount - chart.perDay.users.local.total[7];
-			this.usersLocalDoD = this.info.originalUsersCount - chart.perDay.users.local.total[1];
-			this.usersRemoteWoW = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[7];
-			this.usersRemoteDoD = (this.info.usersCount - this.info.originalUsersCount) - chart.perDay.users.remote.total[1];
-
 			this.chart = chart;
 
 			this.renderChart();
@@ -300,10 +200,10 @@ export default defineComponent({
 					aspectRatio: 2.5,
 					layout: {
 						padding: {
-							left: 0,
-							right: 0,
+							left: 16,
+							right: 16,
 							top: 16,
-							bottom: 0
+							bottom: 8
 						}
 					},
 					legend: {
@@ -630,90 +530,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .zbcjwnqg {
-	&.max-width_1000px {
-		> .stats {
-			grid-template-columns: 1fr 1fr;
-			grid-template-rows: 1fr 1fr;
-		}
-	}
-
-	&.max-width_550px {
-		> .stats {
-			grid-template-columns: 1fr;
-			grid-template-rows: 1fr 1fr 1fr 1fr;
-		}
-	}
-
-	> .stats {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		grid-template-rows: 1fr;
-		gap: var(--margin);
-		margin-bottom: var(--margin);
-		font-size: 90%;
-
-		> div {
-			display: flex;
-			box-sizing: border-box;
-			padding: 16px 20px;
-
-			> div {
-				width: 50%;
-
-				&:first-child {
-					> b {
-						display: block;
-
-						> i {
-							width: 16px;
-							margin-right: 8px;
-						}
-					}
-
-					> small {
-						margin-left: 16px + 8px;
-						opacity: 0.7;
-					}
-				}
-
-				&:last-child {
-					> dl {
-						display: flex;
-						margin: 0;
-						line-height: 1.5em;
-
-						> dt,
-						> dd {
-							width: 50%;
-							margin: 0;
-						}
-
-						> dd {
-							text-overflow: ellipsis;
-							overflow: hidden;
-							white-space: nowrap;
-						}
-
-						&.total {
-							> dt,
-							> dd {
-								font-weight: bold;
-							}
-						}
-
-						&.diff.inc {
-							> dd {
-								color: #82c11c;
-
-								&:before {
-									content: "+";
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+	> .selects {
+		padding: 8px 16px 0 16px;
 	}
 }
 </style>

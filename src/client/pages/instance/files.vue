@@ -80,6 +80,8 @@ export default defineComponent({
 		MkDriveFileThumbnail,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
@@ -112,6 +114,10 @@ export default defineComponent({
 		searchHost() {
 			this.$refs.files.reload();
 		},
+	},
+
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -153,6 +159,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xrmjdkdw {
+	margin: var(--margin);
+
 	.urempief {
 		margin-top: var(--margin);
 

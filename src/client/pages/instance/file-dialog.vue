@@ -82,9 +82,7 @@ export default defineComponent({
 		},
 
 		showUser() {
-			os.popup(import('./user-dialog.vue'), {
-				userId: this.file.userId
-			}, {}, 'closed');
+			os.pageWindow(`/instance/user/${this.file.userId}`);
 		},
 
 		async del() {
