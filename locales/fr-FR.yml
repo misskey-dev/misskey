@@ -726,6 +726,7 @@ hideOnlineStatusDescription: "Rendre votre statut invisible peut diminuer les pe
 online: "En ligne"
 offline: "Hors ligne"
 notRecommended: "Déconseillé"
+botProtection: "Protection contre les bots"
 selectAccount: "Sélectionner un compte"
 enabled: "Activé"
 disabled: "Désactivé"
