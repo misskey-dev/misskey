@@ -730,6 +730,7 @@ botProtection: "Protection contre les bots"
 selectAccount: "Sélectionner un compte"
 enabled: "Activé"
 disabled: "Désactivé"
+quickAction: "Actions rapides"
 user: "Utilisateur·rice·s"
 _email:
   _follow:
