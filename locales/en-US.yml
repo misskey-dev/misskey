@@ -567,6 +567,7 @@ pluginTokenRequestedDescription: "This plugin will be able to use the permission
 notificationType: "Notification type"
 edit: "Edit"
 useStarForReactionFallback: "Use ★ as fallback if the reaction emoji is unknown"
+emailServer: "Email server"
 enableEmail: "Enable email distribution"
 emailConfigInfo: "Used to confirm your email during sign-up and if you forget your password"
 email: "Email"
@@ -726,6 +727,11 @@ hideOnlineStatusDescription: "Hiding your online status reduces the convenience 
 online: "Online"
 active: "Active"
 offline: "Offline"
+notRecommended: "Not recommended"
+botProtection: "Bot Protection"
+selectAccount: "Select account"
+enabled: "Enabled"
+disabled: "Disabled"
 user: "Users"
 _email:
   _follow:
