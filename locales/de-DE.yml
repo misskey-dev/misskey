@@ -349,7 +349,6 @@ antennaExcludeKeywords: "Schlüsselwörter, die ignoriert werden sollen"
 antennaKeywordsDescription: "Mit Leerzeichen für eine \"UND\"-Verknüpfung trennen, durch Zeilenumbrüche für eine \"ODER\"-Verknüpfung trennen."
 notifyAntenna: "Über neue Notizen benachrichtigen"
 withFileAntenna: "Nur Notizen mit Dateien"
-serviceworker: "ServiceWorker"
 enableServiceworker: "ServiceWorker aktivieren"
 antennaUsersDescription: "Benutzernamen getrennt durch Zeilenumbrüche angeben"
 caseSensitive: "Groß-/Kleinschreibung unterscheiden"
@@ -568,7 +567,6 @@ pluginTokenRequestedDescription: "Dieses Plugin wird die hier konfigurierten Ber
 notificationType: "Benachrichtigungsart"
 edit: "Bearbeiten"
 useStarForReactionFallback: "Verwende ★ falls das Reaktions-Emoji unbekannt ist"
-emailConfig: "Email-Server Konfiguration"
 enableEmail: "Email-Versand aktivieren"
 emailConfigInfo: "Zur Email-Bestätigung bei Registrierung und zum Zurücksetzen des Passworts verwendet"
 email: "Email"
@@ -728,6 +726,7 @@ hideOnlineStatusDescription: "Das Verbergen deines Online-Statuses reduziert die
 online: "Online"
 active: "Aktiv"
 offline: "Offline"
+user: "Benutzer"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
