@@ -24,6 +24,8 @@ export default defineComponent({
 	--formXPadding: 32px;
 	--formYPadding: 32px;
 
+	--formContentHMargin: 16px;
+
 	font-size: 95%;
 	line-height: 1.3em;
 	background: var(--bg);
