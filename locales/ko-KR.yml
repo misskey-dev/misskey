@@ -724,7 +724,7 @@ onlineStatus: "온라인 상태"
 hideOnlineStatus: "온라인 상태 숨기기"
 hideOnlineStatusDescription: "온라인 상태를 숨기면, 검색과 같은 일부 기능에 영향을 미칠 수 있습니다."
 online: "온라인"
-active: "자리 비움"
+active: "최근에 활동함"
 offline: "오프라인"
 user: "유저"
 _email:
