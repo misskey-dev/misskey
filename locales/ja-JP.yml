@@ -734,6 +734,7 @@ selectAccount: "アカウントを選択"
 enabled: "有効"
 disabled: "無効"
 quickAction: "クイックアクション"
+user: "ユーザー"
 
 _email:
   _follow:

@@ -1,35 +1,44 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
+		<FormLink :to="userPage(user)">Profile</FormLink>
+
 		<FormGroup>
-			<template #label><MkAcct :user="user"/></template>
+			<FormKeyValueView>
+				<template #key>Acct</template>
+				<template #value><span class="_monospace">{{ acct(user) }}</span></template>
+			</FormKeyValueView>
 
 			<FormKeyValueView>
 				<template #key>ID</template>
 				<template #value><span class="_monospace">{{ user.id }}</span></template>
 			</FormKeyValueView>
-
-			<FormGroup>
-				<FormLink :to="`/user-ap-info/${user.id}`">ActivityPub</FormLink>
-
-				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
-				<FormKeyValueView v-else>
-					<template #key>{{ $ts.instanceInfo }}</template>
-					<template #value>(Local user)</template>
-				</FormKeyValueView>
-			</FormGroup>
-
-			<FormGroup>
-				<FormKeyValueView>
-					<template #key>{{ $ts.updatedAt }}</template>
-					<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
-				</FormKeyValueView>
-			</FormGroup>
-
-			<FormObjectView tall :value="user">
-				<span>Raw</span>
-			</FormObjectView>
 		</FormGroup>
+
+		<FormGroup>
+			<FormLink :to="`/user-ap-info/${user.id}`">ActivityPub</FormLink>
+
+			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
+			<FormKeyValueView v-else>
+				<template #key>{{ $ts.instanceInfo }}</template>
+				<template #value>(Local user)</template>
+			</FormKeyValueView>
+		</FormGroup>
+
+		<FormGroup>
+			<FormKeyValueView>
+				<template #key>{{ $ts.updatedAt }}</template>
+				<template #value><MkTime v-if="user.lastFetchedAt" mode="detail" :time="user.lastFetchedAt"/><span v-else>N/A</span></template>
+			</FormKeyValueView>
+		</FormGroup>
+
+		<FormGroup>
+			<FormButton><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
+		</FormGroup>
+
+		<FormObjectView tall :value="user">
+			<span>Raw</span>
+		</FormObjectView>
 	</FormSuspense>
 </FormBase>
 </template>
@@ -49,6 +58,7 @@ import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';
 import * as symbols from '@client/symbols';
 import { url } from '@client/config';
+import { userPage, acct } from '@client/filters/user';
 
 export default defineComponent({
 	components: {
@@ -84,16 +94,20 @@ export default defineComponent({
 			})),
 			init: null,
 			user: null,
+			info: null,
 		}
 	},
 
 	watch: {
 		userId: {
 			handler() {
-				this.init = () => os.api('users/show', {
+				this.init = () => Promise.all([os.api('users/show', {
 					userId: this.userId
-				}).then(user => {
+				}), os.api('admin/show-user', {
+					userId: this.userId
+				})]).then(([user, info]) => {
 					this.user = user;
+					this.info = info;
 				});
 			},
 			immediate: true
@@ -103,6 +117,8 @@ export default defineComponent({
 	methods: {
 		number,
 		bytes,
+		userPage,
+		acct,
 	}
 });
 </script>

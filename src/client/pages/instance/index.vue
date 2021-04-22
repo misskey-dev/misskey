@@ -12,11 +12,13 @@
 			</FormGroup>
 			<FormGroup>
 				<template #label>{{ $ts.quickAction }}</template>
-				<FormButton v-if="$instance.disableRegistration" @click="invite">{{ $ts.invite }}</FormButton>
+				<FormButton @click="lookup"><i class="fas fa-search"></i> {{ $ts.lookup }}</FormButton>
+				<FormButton v-if="$instance.disableRegistration" @click="invite"><i class="fas fa-user"></i> {{ $ts.invite }}</FormButton>
 			</FormGroup>
 			<FormGroup>
 				<FormLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</FormLink>
 				<FormLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</FormLink>
+				<FormLink :active="page === 'federation'" replace to="/instance/federation"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.federation }}</FormLink>
 				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
 			</FormGroup>
 			<FormGroup>
@@ -50,6 +52,7 @@ import FormButton from '@client/components/form/button.vue';
 import { scroll } from '@client/scripts/scroll';
 import * as symbols from '@client/symbols';
 import * as os from '@client/os';
+import { lookupUser } from '@client/scripts/lookup-user';
 
 export default defineComponent({
 	components: {
@@ -84,6 +87,7 @@ export default defineComponent({
 			if (page.value == null) return null;
 			switch (page.value) {
 				case 'overview': return defineAsyncComponent(() => import('./overview.vue'));
+				case 'users': return defineAsyncComponent(() => import('./users.vue'));
 				case 'emojis': return defineAsyncComponent(() => import('./emojis.vue'));
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
@@ -143,6 +147,22 @@ export default defineComponent({
 			});
 		};
 
+		const lookup = (ev) => {
+			os.modalMenu([{
+				text: i18n.locale.user,
+				icon: 'fas fa-user',
+				action: () => {
+					lookupUser();
+				}
+			}, {
+				text: i18n.locale.note,
+				icon: 'fas fa-pencil-alt',
+				action: () => {
+					
+				}
+			}], ev.currentTarget || ev.target);
+		};
+
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
@@ -153,6 +173,7 @@ export default defineComponent({
 			pageProps,
 			component,
 			invite,
+			lookup,
 		};
 	},
 });
