@@ -567,6 +567,7 @@ pluginTokenRequestedDescription: "Ce plugin pourra utiliser les autorisations d�
 notificationType: "Type de notifications"
 edit: "Editer"
 useStarForReactionFallback: "Utiliser ★ comme alternative si l’émoji de réaction est inconnu"
+emailServer: "Serveur mail"
 enableEmail: "Activer la distribution de courriel"
 emailConfigInfo: "Utilisé pour confirmer votre adresse de courriel et la réinitialisation de votre mot de passe en cas d’oubli."
 email: "E-mail "
@@ -724,6 +725,10 @@ hideOnlineStatus: "Se rendre invisible"
 hideOnlineStatusDescription: "Rendre votre statut invisible peut diminuer les performances de certaines fonctionnalités, telles que la Recherche."
 online: "En ligne"
 offline: "Hors ligne"
+notRecommended: "Déconseillé"
+selectAccount: "Sélectionner un compte"
+enabled: "Activé"
+disabled: "Désactivé"
 user: "Utilisateur·rice·s"
 _email:
   _follow:
