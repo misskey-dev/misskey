@@ -349,7 +349,6 @@ antennaExcludeKeywords: "제외할 키워드"
 antennaKeywordsDescription: "공백으로 구분하는 경우 AND, 줄바꿈으로 구분하는 경우 OR로 지정됩니다"
 notifyAntenna: "새로운 노트를 알림"
 withFileAntenna: "파일이 첨부된 노트만"
-serviceworker: "ServiceWorker"
 enableServiceworker: "ServiceWorker 사용"
 antennaUsersDescription: "유저명을 한 줄에 한 명씩 적습니다"
 caseSensitive: "대소문자를 구분"
@@ -568,7 +567,6 @@ pluginTokenRequestedDescription: "이 플러그인은 여기서 설정한 권한
 notificationType: "알림 유형"
 edit: "편집"
 useStarForReactionFallback: "알 수 없는 리액션 이모지 대신 ★ 사용"
-emailConfig: "메일 서버 설정"
 enableEmail: "이메일 송신 기능 활성화"
 emailConfigInfo: "가입 시 메일 주소 확인이나 비밀번호 초기화 시에 사용합니다."
 email: "이메일"
@@ -728,6 +726,7 @@ hideOnlineStatusDescription: "온라인 상태를 숨기면, 검색과 같은 �
 online: "온라인"
 active: "자리 비움"
 offline: "오프라인"
+user: "유저"
 _email:
   _follow:
     title: "새로운 팔로워가 있습니다"
