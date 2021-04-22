@@ -430,6 +430,7 @@ usageAmount: "الإستخدام"
 capacity: "السعة"
 inUse: "مستخدم"
 info: "عن"
+user: "المستخدمون"
 _email:
   _follow:
     title: "يتابعك"
