@@ -349,7 +349,6 @@ antennaExcludeKeywords: "Keywords to exclude"
 antennaKeywordsDescription: "Separate with spaces for AND condition. Separate with line breaks for OR."
 notifyAntenna: "Notify for new notes"
 withFileAntenna: "Filter only notes with file(s) attached"
-serviceworker: "ServiceWorker"
 enableServiceworker: "Enable ServiceWorker"
 antennaUsersDescription: "List one username per line"
 caseSensitive: "Case sensitive"
@@ -568,7 +567,6 @@ pluginTokenRequestedDescription: "This plugin will be able to use the permission
 notificationType: "Notification type"
 edit: "Edit"
 useStarForReactionFallback: "Use ★ as fallback if the reaction emoji is unknown"
-emailConfig: "Email server configuration"
 enableEmail: "Enable email distribution"
 emailConfigInfo: "Used to confirm your email during sign-up and if you forget your password"
 email: "Email"
@@ -728,6 +726,7 @@ hideOnlineStatusDescription: "Hiding your online status reduces the convenience 
 online: "Online"
 active: "Active"
 offline: "Offline"
+user: "Users"
 _email:
   _follow:
     title: "You've got a new follower"
