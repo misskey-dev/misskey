@@ -1095,7 +1095,7 @@ _postForm:
   channelPlaceholder: "Publier vers le canal"
   _placeholders:
     a: "Quoi de neuf ?"
-    b: "Quoi de neuf ?"
+    b: "Il s'est passé quelque chose ?"
     c: "Qu’avez-vous en tête ?"
     d: "Désirez-vous publier quelques mots ?"
     e: "Écrivez ici"
