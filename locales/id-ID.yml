@@ -213,6 +213,7 @@ invites: "Undang"
 invitations: "Undang"
 smtpUser: "Nama Pengguna"
 smtpPass: "Kata sandi"
+user: "Pengguna"
 _email:
   _follow:
     title: "Sedang mengikuti"
