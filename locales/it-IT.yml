@@ -946,6 +946,8 @@ _postForm:
   replyPlaceholder: "Nota la tua risposta.."
   quotePlaceholder: "Cita Nota..."
   channelPlaceholder: "Pubblica in canale"
+  _placeholders:
+    a: "Che succede?"
 _profile:
   name: "Nome"
   username: "Nome utente"
