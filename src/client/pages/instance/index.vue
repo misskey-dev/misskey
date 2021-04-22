@@ -19,7 +19,11 @@
 				<FormLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</FormLink>
 				<FormLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</FormLink>
 				<FormLink :active="page === 'federation'" replace to="/instance/federation"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.federation }}</FormLink>
+				<FormLink :active="page === 'queue'" replace to="/instance/queue"><template #icon><i class="fas fa-clipboard-list"></i></template>{{ $ts.jobQueue }}</FormLink>
+				<FormLink :active="page === 'files'" replace to="/instance/files"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
+				<FormLink :active="page === 'announcements'" replace to="/instance/announcements"><template #icon><i class="fas fa-broadcast-tower"></i></template>{{ $ts.announcements }}</FormLink>
 				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
+				<FormLink :active="page === 'abuses'" replace to="/instance/abuses"><template #icon><i class="fas fa-exclamation-circle"></i></template>{{ $ts.abuseReports }}</FormLink>
 			</FormGroup>
 			<FormGroup>
 				<template #label>{{ $ts.settings }}</template>
@@ -29,6 +33,7 @@
 				<FormLink :active="page === 'object-storage'" replace to="/instance/object-storage"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.objectStorage }}</FormLink>
 				<FormLink :active="page === 'security'" replace to="/instance/security"><template #icon><i class="fas fa-lock"></i></template>{{ $ts.security }}</FormLink>
 				<FormLink :active="page === 'service-worker'" replace to="/instance/service-worker"><template #icon><i class="fas fa-bolt"></i></template>ServiceWorker</FormLink>
+				<FormLink :active="page === 'relays'" replace to="/instance/relays"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.relays }}</FormLink>
 				<FormLink :active="page === 'integrations'" replace to="/instance/integrations"><template #icon><i class="fas fa-share-alt"></i></template>{{ $ts.integration }}</FormLink>
 				<FormLink :active="page === 'instance-block'" replace to="/instance/instance-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.instanceBlocking }}</FormLink>
 				<FormLink :active="page === 'proxy-account'" replace to="/instance/proxy-account"><template #icon><i class="fas fa-ghost"></i></template>{{ $ts.proxyAccount }}</FormLink>
@@ -89,7 +94,12 @@ export default defineComponent({
 				case 'overview': return defineAsyncComponent(() => import('./overview.vue'));
 				case 'users': return defineAsyncComponent(() => import('./users.vue'));
 				case 'emojis': return defineAsyncComponent(() => import('./emojis.vue'));
+				case 'federation': return defineAsyncComponent(() => import('./federation.vue'));
+				case 'queue': return defineAsyncComponent(() => import('./queue.vue'));
+				case 'files': return defineAsyncComponent(() => import('./files.vue'));
+				case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
+				case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
 				case 'files-settings': return defineAsyncComponent(() => import('./files-settings.vue'));
 				case 'email-settings': return defineAsyncComponent(() => import('./email-settings.vue'));
@@ -97,6 +107,7 @@ export default defineComponent({
 				case 'security': return defineAsyncComponent(() => import('./security.vue'));
 				case 'bot-protection': return defineAsyncComponent(() => import('./bot-protection.vue'));
 				case 'service-worker': return defineAsyncComponent(() => import('./service-worker.vue'));
+				case 'relays': return defineAsyncComponent(() => import('./relays.vue'));
 				case 'integrations': return defineAsyncComponent(() => import('./integrations.vue'));
 				case 'integrations/twitter': return defineAsyncComponent(() => import('./integrations-twitter.vue'));
 				case 'integrations/github': return defineAsyncComponent(() => import('./integrations-github.vue'));
@@ -158,7 +169,19 @@ export default defineComponent({
 				text: i18n.locale.note,
 				icon: 'fas fa-pencil-alt',
 				action: () => {
-					
+					alert('TODO');
+				}
+			}, {
+				text: i18n.locale.file,
+				icon: 'fas fa-cloud',
+				action: () => {
+					alert('TODO');
+				}
+			}, {
+				text: i18n.locale.instance,
+				icon: 'fas fa-globe',
+				action: () => {
+					alert('TODO');
 				}
 			}], ev.currentTarget || ev.target);
 		};

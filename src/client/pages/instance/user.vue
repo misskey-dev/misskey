@@ -1,6 +1,10 @@
 <template>
 <FormBase>
 	<FormSuspense :p="init">
+		<div class="_formItem aeakzknw">
+			<MkAvatar class="avatar" :user="user" :show-indicator="true"/>
+		</div>
+
 		<FormLink :to="userPage(user)">Profile</FormLink>
 
 		<FormGroup>
@@ -13,6 +17,17 @@
 				<template #key>ID</template>
 				<template #value><span class="_monospace">{{ user.id }}</span></template>
 			</FormKeyValueView>
+		</FormGroup>
+
+		<FormGroup>
+			<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" @update:value="toggleModerator" v-model:value="moderator">{{ $ts.moderator }}</FormSwitch>
+			<FormSwitch @update:value="toggleSilence" v-model:value="silenced">{{ $ts.silence }}</FormSwitch>
+			<FormSwitch @update:value="toggleSuspend" v-model:value="suspended">{{ $ts.suspend }}</FormSwitch>
+		</FormGroup>
+
+		<FormGroup>
+			<FormButton v-if="user.host != null" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ $ts.updateRemoteUser }}</FormButton>
+			<FormButton v-if="user.host == null" @click="resetPassword"><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
 		</FormGroup>
 
 		<FormGroup>
@@ -32,10 +47,6 @@
 			</FormKeyValueView>
 		</FormGroup>
 
-		<FormGroup>
-			<FormButton><i class="fas fa-key"></i> {{ $ts.resetPassword }}</FormButton>
-		</FormGroup>
-
 		<FormObjectView tall :value="user">
 			<span>Raw</span>
 		</FormObjectView>
@@ -46,7 +57,7 @@
 <script lang="ts">
 import { computed, defineAsyncComponent, defineComponent } from 'vue';
 import FormObjectView from '@client/components/form/object-view.vue';
-import FormTextarea from '@client/components/form/textarea.vue';
+import FormSwitch from '@client/components/form/switch.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
@@ -63,7 +74,7 @@ import { userPage, acct } from '@client/filters/user';
 export default defineComponent({
 	components: {
 		FormBase,
-		FormTextarea,
+		FormSwitch,
 		FormObjectView,
 		FormButton,
 		FormLink,
@@ -95,20 +106,16 @@ export default defineComponent({
 			init: null,
 			user: null,
 			info: null,
+			moderator: false,
+			silenced: false,
+			suspended: false,
 		}
 	},
 
 	watch: {
 		userId: {
 			handler() {
-				this.init = () => Promise.all([os.api('users/show', {
-					userId: this.userId
-				}), os.api('admin/show-user', {
-					userId: this.userId
-				})]).then(([user, info]) => {
-					this.user = user;
-					this.info = info;
-				});
+				this.init = this.createFetcher();
 			},
 			immediate: true
 		}
@@ -119,6 +126,104 @@ export default defineComponent({
 		bytes,
 		userPage,
 		acct,
+
+		createFetcher() {
+			return () => Promise.all([os.api('users/show', {
+				userId: this.userId
+			}), os.api('admin/show-user', {
+				userId: this.userId
+			})]).then(([user, info]) => {
+				this.user = user;
+				this.info = info;
+				this.moderator = this.info.isModerator;
+				this.silenced = this.info.isSilenced;
+				this.suspended = this.info.isSuspended;
+			});
+		},
+
+		refreshUser() {
+			this.init = this.createFetcher();
+		},
+
+		async updateRemoteUser() {
+			await os.apiWithDialog('admin/update-remote-user', { userId: this.user.id });
+			this.refreshUser();
+		},
+
+		async resetPassword() {
+			os.apiWithDialog('admin/reset-password', {
+				userId: this.user.id,
+			}, undefined, ({ password }) => {
+				os.dialog({
+					type: 'success',
+					text: this.$t('newPasswordIs', { password })
+				});
+			});
+		},
+
+		async toggleSilence(v) {
+			const confirm = await os.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				text: v ? this.$ts.silenceConfirm : this.$ts.unsilenceConfirm,
+			});
+			if (confirm.canceled) {
+				this.silenced = !v;
+			} else {
+				await os.api(v ? 'admin/silence-user' : 'admin/unsilence-user', { userId: this.user.id });
+				await this.refreshUser();
+			}
+		},
+
+		async toggleSuspend(v) {
+			const confirm = await os.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				text: v ? this.$ts.suspendConfirm : this.$ts.unsuspendConfirm,
+			});
+			if (confirm.canceled) {
+				this.suspended = !v;
+			} else {
+				await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: this.user.id });
+				await this.refreshUser();
+			}
+		},
+
+		async toggleModerator(v) {
+			await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: this.user.id });
+			await this.refreshUser();
+		},
+
+		async deleteAllFiles() {
+			const confirm = await os.dialog({
+				type: 'warning',
+				showCancelButton: true,
+				text: this.$ts.deleteAllFilesConfirm,
+			});
+			if (confirm.canceled) return;
+			const process = async () => {
+				await os.api('admin/delete-all-files-of-a-user', { userId: this.user.id });
+				os.success();
+			};
+			await process().catch(e => {
+				os.dialog({
+					type: 'error',
+					text: e.toString()
+				});
+			});
+			await this.refreshUser();
+		},
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.aeakzknw {
+	> .avatar {
+		display: block;
+		margin: 0 auto;
+		width: 64px;
+		height: 64px;
+	}
+}
+</style>
