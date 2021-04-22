@@ -3,6 +3,11 @@
 	<div class="nav" v-if="!narrow || page == null">
 		<FormBase>
 			<FormGroup>
+				<div class="_formItem">
+					<div class="_formPanel lxpfedzu">
+						<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+					</div>
+				</div>
 				<FormLink :active="page === 'overview'" replace to="/instance/overview"><template #icon><i class="fas fa-tachometer-alt"></i></template>{{ $ts.overview }}</FormLink>
 			</FormGroup>
 			<FormGroup>
@@ -11,6 +16,7 @@
 			</FormGroup>
 			<FormGroup>
 				<FormLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</FormLink>
+				<FormLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</FormLink>
 				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
 			</FormGroup>
 			<FormGroup>
@@ -78,6 +84,7 @@ export default defineComponent({
 			if (page.value == null) return null;
 			switch (page.value) {
 				case 'overview': return defineAsyncComponent(() => import('./overview.vue'));
+				case 'emojis': return defineAsyncComponent(() => import('./emojis.vue'));
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
 				case 'files-settings': return defineAsyncComponent(() => import('./files-settings.vue'));
@@ -172,6 +179,17 @@ export default defineComponent({
 			overflow: auto;
 			--baseContentWidth: 100%;
 		}
+	}
+}
+
+.lxpfedzu {
+	padding: 16px;
+
+	> img {
+		display: block;
+		margin: auto;
+		height: 42px;
+		border-radius: 8px;
 	}
 }
 </style>

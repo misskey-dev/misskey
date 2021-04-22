@@ -1,66 +1,58 @@
 <template>
 <FormBase>
-	<FormSuspense :p="dnsPromiseFactory" v-slot="{ result: dns }">
+	<FormSuspense :p="init">
+		<FormSuspense :p="fetchStats" v-slot="{ result: stats }">
+			<FormGroup>
+				<FormKeyValueView>
+					<template #key>Users</template>
+					<template #value>{{ number(stats.originalUsersCount) }}</template>
+				</FormKeyValueView>
+				<FormKeyValueView>
+					<template #key>Notes</template>
+					<template #value>{{ number(stats.originalNotesCount) }}</template>
+				</FormKeyValueView>
+			</FormGroup>
+		</FormSuspense>
+	
+		<div class="_formItem">
+			<div class="_formPanel">
+				<MkInstanceStats :chart-limit="300" :detailed="true"/>
+			</div>
+		</div>
+
+		<XMetrics/>
+
+		<FormSuspense :p="fetchServerInfo" v-slot="{ result: serverInfo }">
+			<FormGroup>
+				<FormKeyValueView>
+					<template #key>Node.js</template>
+					<template #value>{{ serverInfo.node }}</template>
+				</FormKeyValueView>
+				<FormKeyValueView>
+					<template #key>PostgreSQL</template>
+					<template #value>{{ serverInfo.psql }}</template>
+				</FormKeyValueView>
+				<FormKeyValueView>
+					<template #key>Redis</template>
+					<template #value>{{ serverInfo.redis }}</template>
+				</FormKeyValueView>
+			</FormGroup>
+		</FormSuspense>
 	</FormSuspense>
 </FormBase>
-<div v-if="meta" v-show="page === 'index'" class="xhexznfu _section">
-	<MkFolder>
-		<template #header><i class="fas fa-tachometer-alt"></i> {{ $ts.overview }}</template>
-
-		<div class="sboqnrfi" :style="{ gridTemplateRows: overviewHeight }">
-			<MkInstanceStats :chart-limit="300" :detailed="true" class="_gap" ref="stats"/>
-
-			<MkContainer :foldable="true" class="_gap">
-				<template #header><i class="fas fa-info-circle"></i>{{ $ts.instanceInfo }}</template>
-
-				<div class="_content">
-					<div class="_keyValue"><b>Misskey</b><span>v{{ version }}</span></div>
-				</div>
-				<div class="_content" v-if="serverInfo">
-					<div class="_keyValue"><b>Node.js</b><span>{{ serverInfo.node }}</span></div>
-					<div class="_keyValue"><b>PostgreSQL</b><span>v{{ serverInfo.psql }}</span></div>
-					<div class="_keyValue"><b>Redis</b><span>v{{ serverInfo.redis }}</span></div>
-				</div>
-			</MkContainer>
-			
-			<MkContainer :foldable="true" :scrollable="true" class="_gap" style="height: 300px;">
-				<template #header><i class="fas fa-database"></i>{{ $ts.database }}</template>
-
-				<div class="_content" v-if="dbInfo">
-					<table style="border-collapse: collapse; width: 100%;">
-						<tr style="opacity: 0.7;">
-							<th style="text-align: left; padding: 0 8px 8px 0;">Table</th>
-							<th style="text-align: left; padding: 0 8px 8px 0;">Records</th>
-							<th style="text-align: left; padding: 0 0 8px 0;">Size</th>
-						</tr>
-						<tr v-for="table in dbInfo" :key="table[0]">
-							<th style="text-align: left; padding: 0 8px 0 0; word-break: break-all;">{{ table[0] }}</th>
-							<td style="padding: 0 8px 0 0;">{{ number(table[1].count) }}</td>
-							<td style="padding: 0; opacity: 0.7;">{{ bytes(table[1].size) }}</td>
-						</tr>
-					</table>
-				</div>
-			</MkContainer>
-		</div>
-	</MkFolder>
-</div>
-<div v-if="page === 'logs'" class="_section">
-	<MkFolder>
-		<template #header><i class="fas fa-stream"></i> {{ $ts.logs }}</template>
-
-		<div class="_keyValue" v-for="log in modLogs">
-			<b>{{ log.type }}</b><span>by {{ log.user.username }}</span><MkTime :time="log.createdAt" style="opacity: 0.7;"/>
-		</div>
-	</MkFolder>
-</div>
-<div v-if="page === 'metrics'">
-	<XMetrics/>
-</div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, markRaw } from 'vue';
 import VueJsonPretty from 'vue-json-pretty';
+import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import FormInput from '@client/components/form/input.vue';
+import FormButton from '@client/components/form/button.vue';
+import FormBase from '@client/components/form/base.vue';
+import FormGroup from '@client/components/form/group.vue';
+import FormTextarea from '@client/components/form/textarea.vue';
+import FormInfo from '@client/components/form/info.vue';
+import FormSuspense from '@client/components/form/suspense.vue';
 import MkInstanceStats from '@client/components/instance-stats.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkSelect from '@client/components/ui/select.vue';
@@ -71,12 +63,16 @@ import { version, url } from '@client/config';
 import bytes from '../../filters/bytes';
 import number from '../../filters/number';
 import MkInstanceInfo from './instance.vue';
-import XMetrics from './index.metrics.vue';
+import XMetrics from './metrics.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
 	components: {
+		FormBase,
+		FormSuspense,
+		FormGroup,
+		FormKeyValueView,
 		MkInstanceStats,
 		MkButton,
 		MkSelect,
@@ -87,62 +83,34 @@ export default defineComponent({
 		VueJsonPretty,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
-				tabs: [{
-					id: 'index',
-					title: null,
-					tooltip: this.$ts.instance,
-					icon: 'fas fa-server',
-					onClick: () => { this.page = 'index'; },
-					selected: computed(() => this.page === 'index')
-				}, {
-					id: 'metrics',
-					title: null,
-					tooltip: this.$ts.metrics,
-					icon: 'fas fa-heartbeat',
-					onClick: () => { this.page = 'metrics'; },
-					selected: computed(() => this.page === 'metrics')
-				}, {
-					id: 'logs',
-					title: null,
-					tooltip: this.$ts.logs,
-					icon: 'fas fa-stream',
-					onClick: () => { this.page = 'logs'; },
-					selected: computed(() => this.page === 'logs')
-				}]
+				title: this.$ts.overview,
+				icon: 'fas fa-tachometer-alt'
 			},
 			page: 'index',
 			version,
 			url,
 			stats: null,
-			serverInfo: null,
-			modLogs: [],
-			dbInfo: null,
+			fetchStats: () => os.api('stats', {}),
+			fetchServerInfo: () => os.api('admin/server-info', {}),
+			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),
+			fetchModLogs: () => os.api('admin/show-moderation-logs', {}),
 		}
 	},
 
-	computed: {
-		meta() {
-			return this.$instance;
-		},
-	},
-
-	mounted() {
-		this.fetchJobs();
-		this.fetchModLogs();
-
-		os.api('admin/server-info', {}).then(res => {
-			this.serverInfo = res;
-		});
-
-		os.api('admin/get-table-stats', {}).then(res => {
-			this.dbInfo = Object.entries(res).sort((a, b) => b[1].size - a[1].size);
-		});
+	async mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
+		async init() {
+			this.meta = await os.api('meta', { detail: true });
+		},
+	
 		async showInstanceInfo(q) {
 			let instance = q;
 			if (typeof q === 'string') {
@@ -153,18 +121,6 @@ export default defineComponent({
 			os.popup(MkInstanceInfo, {
 				instance: instance
 			}, {}, 'closed');
-		},
-
-		fetchJobs() {
-			os.api('admin/queue/deliver-delayed', {}).then(jobs => {
-				this.jobs = jobs;
-			});
-		},
-
-		fetchModLogs() {
-			os.api('admin/show-moderation-logs', {}).then(logs => {
-				this.modLogs = logs;
-			});
 		},
 
 		bytes,

@@ -1,101 +1,52 @@
 <template>
-<div>
-	<MkFolder>
-		<template #header><i class="fas fa-heartbeat"></i> {{ $ts.metrics }}</template>
-		<div class="_section" style="padding: 0 var(--margin);">
-			<div class="_content">
-				<MkContainer :foldable="false" class="_gap">
-					<template #header><i class="fas fa-microchip"></i>{{ $ts.cpuAndMemory }}</template>
-					<!--
-					<template #func>
-						<button class="_button" @click="resume" :disabled="!paused"><i class="fas fa-play"></i></button>
-						<button class="_button" @click="pause" :disabled="paused"><i class="fas fa-pause"></i></button>
-					</template>
-					-->
-
-					<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-						<canvas :ref="cpumem"></canvas>
-					</div>
-					<div class="_content" v-if="serverInfo">
-						<div class="_table">
-							<div class="_row">
-								<div class="_cell"><div class="_label">MEM total</div>{{ bytes(serverInfo.mem.total) }}</div>
-								<div class="_cell"><div class="_label">MEM used</div>{{ bytes(memUsage) }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
-								<div class="_cell"><div class="_label">MEM free</div>{{ bytes(serverInfo.mem.total - memUsage) }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
-							</div>
-						</div>
-					</div>
-				</MkContainer>
-
-				<MkContainer :foldable="false" class="_gap">
-					<template #header><i class="fas fa-hdd"></i> {{ $ts.disk }}</template>
-					<!--
-					<template #func>
-						<button class="_button" @click="resume" :disabled="!paused"><i class="fas fa-play"></i></button>
-						<button class="_button" @click="pause" :disabled="paused"><i class="fas fa-pause"></i></button>
-					</template>
-					-->
-
-					<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-						<canvas :ref="disk"></canvas>
-					</div>
-					<div class="_content" v-if="serverInfo">
-						<div class="_table">
-							<div class="_row">
-								<div class="_cell"><div class="_label">Disk total</div>{{ bytes(serverInfo.fs.total) }}</div>
-								<div class="_cell"><div class="_label">Disk used</div>{{ bytes(serverInfo.fs.used) }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
-								<div class="_cell"><div class="_label">Disk free</div>{{ bytes(serverInfo.fs.total - serverInfo.fs.used) }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
-							</div>
-						</div>
-					</div>
-				</MkContainer>
-
-				<MkContainer :foldable="false" class="_gap">
-					<template #header><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</template>
-					<!--
-					<template #func>
-						<button class="_button" @click="resume" :disabled="!paused"><i class="fas fa-play"></i></button>
-						<button class="_button" @click="pause" :disabled="paused"><i class="fas fa-pause"></i></button>
-					</template>
-					-->
-
-					<div class="_content" style="margin-top: -8px; margin-bottom: -12px;">
-						<canvas :ref="net"></canvas>
-					</div>
-					<div class="_content" v-if="serverInfo">
-						<div class="_table">
-							<div class="_row">
-								<div class="_cell"><div class="_label">Interface</div>{{ serverInfo.net.interface }}</div>
-							</div>
-						</div>
-					</div>
-				</MkContainer>
+<div class="_formItem">
+	<div class="_formLabel"><i class="fas fa-microchip"></i> {{ $ts.cpuAndMemory }}</div>
+	<div class="_formPanel xhexznfu">
+		<div>
+			<canvas :ref="cpumem"></canvas>
+		</div>
+		<div v-if="serverInfo">
+			<div class="_table">
+				<div class="_row">
+					<div class="_cell"><div class="_label">MEM total</div>{{ bytes(serverInfo.mem.total) }}</div>
+					<div class="_cell"><div class="_label">MEM used</div>{{ bytes(memUsage) }} ({{ (memUsage / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+					<div class="_cell"><div class="_label">MEM free</div>{{ bytes(serverInfo.mem.total - memUsage) }} ({{ ((serverInfo.mem.total - memUsage) / serverInfo.mem.total * 100).toFixed(0) }}%)</div>
+				</div>
 			</div>
 		</div>
-	</MkFolder>
-
-	<MkFolder>
-		<template #header><i class="fas fa-clipboard-list"></i> {{ $ts.jobQueue }}</template>
-
-		<div class="vkyrmkwb" :style="{ gridTemplateRows: queueHeight }">
-			<MkContainer :foldable="false" :scrollable="true" :resize-base-el="() => $el">
-				<template #header><i class="fas fa-exclamation-triangle"></i> {{ $ts.delayed }}</template>
-
-				<div class="_content">
-					<div class="_keyValue" v-for="job in jobs" :key="job[0]">
-						<button class="_button" @click="showInstanceInfo(job[0])">{{ job[0] }}</button>
-						<div style="text-align: right;">{{ number(job[1]) }} jobs</div>
-					</div>
-				</div>
-			</MkContainer>
-			<XQueue :connection="queueConnection" domain="inbox" ref="queue" class="queue">
-				<template #title><i class="fas fa-exchange-alt"></i> In</template>
-			</XQueue>
-			<XQueue :connection="queueConnection" domain="deliver" class="queue">
-				<template #title><i class="fas fa-exchange-alt"></i> Out</template>
-			</XQueue>
+	</div>
+</div>
+<div class="_formItem">
+	<div class="_formLabel"><i class="fas fa-hdd"></i> {{ $ts.disk }}</div>
+	<div class="_formPanel xhexznfu">
+		<div>
+			<canvas :ref="disk"></canvas>
 		</div>
-	</MkFolder>
+		<div v-if="serverInfo">
+			<div class="_table">
+				<div class="_row">
+					<div class="_cell"><div class="_label">Disk total</div>{{ bytes(serverInfo.fs.total) }}</div>
+					<div class="_cell"><div class="_label">Disk used</div>{{ bytes(serverInfo.fs.used) }} ({{ (serverInfo.fs.used / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+					<div class="_cell"><div class="_label">Disk free</div>{{ bytes(serverInfo.fs.total - serverInfo.fs.used) }} ({{ ((serverInfo.fs.total - serverInfo.fs.used) / serverInfo.fs.total * 100).toFixed(0) }}%)</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="_formItem">
+	<div class="_formLabel"><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</div>
+	<div class="_formPanel xhexznfu">
+		<div>
+			<canvas :ref="net"></canvas>
+		</div>
+		<div v-if="serverInfo">
+			<div class="_table">
+				<div class="_row">
+					<div class="_cell"><div class="_label">Interface</div>{{ serverInfo.net.interface }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -188,9 +139,11 @@ export default defineComponent({
 	},
 
 	beforeUnmount() {
-		this.connection.off('stats', this.onStats);
-		this.connection.off('statsLog', this.onStatsLog);
-		this.connection.dispose();
+		if (this.connection) {
+			this.connection.off('stats', this.onStats);
+			this.connection.off('statsLog', this.onStatsLog);
+			this.connection.dispose();
+		}
 		this.queueConnection.dispose();
 	},
 
@@ -232,9 +185,9 @@ export default defineComponent({
 					aspectRatio: 3,
 					layout: {
 						padding: {
-							left: 0,
-							right: 0,
-							top: 8,
+							left: 16,
+							right: 16,
+							top: 16,
 							bottom: 0
 						}
 					},
@@ -304,9 +257,9 @@ export default defineComponent({
 					aspectRatio: 3,
 					layout: {
 						padding: {
-							left: 0,
-							right: 0,
-							top: 8,
+							left: 16,
+							right: 16,
+							top: 16,
 							bottom: 0
 						}
 					},
@@ -375,9 +328,9 @@ export default defineComponent({
 					aspectRatio: 3,
 					layout: {
 						padding: {
-							left: 0,
-							right: 0,
-							top: 8,
+							left: 16,
+							right: 16,
+							top: 16,
 							bottom: 0
 						}
 					},
@@ -494,81 +447,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .xhexznfu {
-	&.min-width_1000px {
-		.sboqnrfi {
-			display: grid;
-			grid-template-columns: 3.2fr 1fr;
-			grid-template-rows: 1fr;
-			gap: 16px 16px;
-
-			> .stats {
-				height: min-content;
-			}
-
-			> .column {
-				display: flex;
-				flex-direction: column;
-
-				> .info {
-					flex-shrink: 0;
-					flex-grow: 0;
-				}
-
-				> .db {
-					flex: 1;
-					flex-grow: 0;
-					height: 100%;
-				}
-
-				> .fed {
-					flex: 1;
-					flex-grow: 0;
-					height: 100%;
-				}
-
-				> *:not(:last-child) {
-					margin-bottom: var(--margin);
-				}
-			}
-		}
-
-		.segusily {
-			display: grid;
-			grid-template-columns: 1fr 1fr 1fr;
-			grid-template-rows: 1fr;
-			gap: 16px 16px;
-			padding: 0 16px;
-		}
-
-		.vkyrmkwb {
-			display: grid;
-			grid-template-columns: 0.5fr 1fr 1fr;
-			grid-template-rows: 1fr;
-			gap: 16px 16px;
-			margin-bottom: var(--margin);
-
-			> .queue {
-				height: min-content;
-			}
-
-			> * {
-				margin-bottom: 0;
-			}
-		}
-
-		.uwuemslx {
-			display: grid;
-			grid-template-columns: 2fr 3fr;
-			grid-template-rows: 1fr;
-			gap: 16px 16px;
-			height: 400px;
-		}
-	}
-
-	.vkyrmkwb {
-		> * {
-			margin-bottom: var(--margin);
-		}
+	> div:nth-child(2) {
+		padding: 16px;
+		border-top: solid 0.5px var(--divider);
 	}
 }
 </style>

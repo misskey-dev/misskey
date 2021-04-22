@@ -195,7 +195,7 @@
 
 			<template v-if="page === 'index'">
 				<div>
-					<div v-if="user.pinnedNotes.length > 0">
+					<div v-if="user.pinnedNotes.length > 0" class="_gap">
 						<XNote v-for="note in user.pinnedNotes" class="note _block" :note="note" @update:note="pinnedNoteUpdated(note, $event)" :key="note.id" :pinned="true"/>
 					</div>
 					<MkInfo v-else-if="$i && $i.id === user.id">{{ $ts.userPagePinTip }}</MkInfo>
