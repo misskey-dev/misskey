@@ -948,13 +948,22 @@ _postForm:
   channelPlaceholder: "Pubblica in canale"
   _placeholders:
     a: "Che succede?"
+    b: "È successo qualcosa?"
+    c: "Che cos'hai in mente?"
+    d: "Vuoi dire qualcosa?"
+    e: "Scrivi qualcosa qui"
+    f: "Aspettando che scriva..."
 _profile:
   name: "Nome"
   username: "Nome utente"
   description: "Bio"
+  youCanIncludeHashtags: "Puoi anche includere hashtag."
   metadata: "Metadati"
+  metadataEdit: "Modifica informazioni aggiuntive"
+  metadataDescription: "Puoi pubblicare fino a quattro informazioni aggiuntive sul profilo."
   metadataLabel: "Etichetta"
   metadataContent: "Contenuto"
+  changeAvatar: "Modifica immagine profilo"
   changeBanner: "Cambia intestazione"
 _exportOrImport:
   allNotes: "Tutte le note"
