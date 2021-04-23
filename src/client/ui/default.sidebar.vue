@@ -1,6 +1,6 @@
 <template>
 <div class="npcljfve" :class="{ iconOnly }">
-	<button class="item _button account" @click="openAccountMenu">
+	<button class="item _button account" @click="openAccountMenu" v-click-anime>
 		<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 	</button>
 	<div class="post" @click="post">
@@ -9,25 +9,25 @@
 		</MkButton>
 	</div>
 	<div class="divider"></div>
-	<MkA class="item index" active-class="active" to="/" exact>
+	<MkA class="item index" active-class="active" to="/" exact v-click-anime>
 		<i class="fas fa-home fa-fw"></i><span class="text">{{ $ts.timeline }}</span>
 	</MkA>
 	<template v-for="item in menu">
 		<div v-if="item === '-'" class="divider"></div>
-		<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to">
+		<component v-else-if="menuDef[item] && (menuDef[item].show !== false)" :is="menuDef[item].to ? 'MkA' : 'button'" class="item _button" :class="item" active-class="active" v-on="menuDef[item].action ? { click: menuDef[item].action } : {}" :to="menuDef[item].to" v-click-anime>
 			<i class="fa-fw" :class="menuDef[item].icon"></i><span class="text">{{ $ts[menuDef[item].title] }}</span>
 			<span v-if="menuDef[item].indicated" class="indicator"><i class="fas fa-circle"></i></span>
 		</component>
 	</template>
 	<div class="divider"></div>
-	<button class="item _button" :class="{ active: $route.path === '/instance' || $route.path.startsWith('/instance/') }" v-if="$i.isAdmin || $i.isModerator" @click="oepnInstanceMenu">
+	<MkA v-if="$i.isAdmin || $i.isModerator" class="item" active-class="active" to="/instance" :behavior="settingsWindowed ? 'modalWindow' : null" v-click-anime>
 		<i class="fas fa-server fa-fw"></i><span class="text">{{ $ts.instance }}</span>
-	</button>
-	<button class="item _button" @click="more">
+	</MkA>
+	<button class="item _button" @click="more" v-click-anime>
 		<i class="fas fa-ellipsis-h fa-fw"></i><span class="text">{{ $ts.more }}</span>
 		<span v-if="otherNavItemIndicated" class="indicator"><i class="fas fa-circle"></i></span>
 	</button>
-	<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
+	<MkA class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null" v-click-anime>
 		<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>
@@ -141,11 +141,11 @@ export default defineComponent({
 				avatar: this.$i,
 			}, null, ...accountItemPromises, {
 				icon: 'fas fa-plus',
-				text: this.$ts.addAcount,
+				text: this.$ts.addAccount,
 				action: () => {
 					os.modalMenu([{
-						text: this.$ts.existingAcount,
-						action: () => { this.addAcount(); },
+						text: this.$ts.existingAccount,
+						action: () => { this.addAccount(); },
 					}, {
 						text: this.$ts.createAccount,
 						action: () => { this.createAccount(); },
@@ -156,71 +156,12 @@ export default defineComponent({
 			});
 		},
 
-		oepnInstanceMenu(ev) {
-			os.modalMenu([{
-				type: 'link',
-				text: this.$ts.dashboard,
-				to: '/instance',
-				icon: 'fas fa-tachometer-alt',
-			}, null, this.$i.isAdmin ? {
-				type: 'link',
-				text: this.$ts.settings,
-				to: '/instance/settings',
-				icon: 'fas fa-cog',
-			} : undefined, {
-				type: 'link',
-				text: this.$ts.customEmojis,
-				to: '/instance/emojis',
-				icon: 'fas fa-laugh',
-			}, {
-				type: 'link',
-				text: this.$ts.users,
-				to: '/instance/users',
-				icon: 'fas fa-users',
-			}, {
-				type: 'link',
-				text: this.$ts.files,
-				to: '/instance/files',
-				icon: 'fas fa-cloud',
-			}, {
-				type: 'link',
-				text: this.$ts.jobQueue,
-				to: '/instance/queue',
-				icon: 'fas fa-exchange-alt',
-			}, {
-				type: 'link',
-				text: this.$ts.federation,
-				to: '/instance/federation',
-				icon: 'fas fa-globe',
-			}, {
-				type: 'link',
-				text: this.$ts.relays,
-				to: '/instance/relays',
-				icon: 'fas fa-project-diagram',
-			}, {
-				type: 'link',
-				text: this.$ts.announcements,
-				to: '/instance/announcements',
-				icon: 'fas fa-broadcast-tower',
-			}, {
-				type: 'link',
-				text: this.$ts.abuseReports,
-				to: '/instance/abuses',
-				icon: 'fas fa-exclamation-circle',
-			}, {
-				type: 'link',
-				text: this.$ts.logs,
-				to: '/instance/logs',
-				icon: 'fas fa-stream',
-			}], ev.currentTarget || ev.target);
-		},
-
 		more(ev) {
 			os.popup(import('@client/components/launch-pad.vue'), {}, {
 			}, 'closed');
 		},
 
-		addAcount() {
+		addAccount() {
 			os.popup(import('@client/components/signin-dialog.vue'), {}, {
 				done: res => {
 					addAccount(res.id, res.i);

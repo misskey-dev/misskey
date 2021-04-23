@@ -45,7 +45,7 @@
 			</I18n>
 		</label>
 		<captcha v-if="meta.enableHcaptcha" class="captcha" provider="hcaptcha" ref="hcaptcha" v-model:value="hCaptchaResponse" :sitekey="meta.hcaptchaSiteKey"/>
-		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="grecaptcha" ref="recaptcha" v-model:value="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
+		<captcha v-if="meta.enableRecaptcha" class="captcha" provider="recaptcha" ref="recaptcha" v-model:value="reCaptchaResponse" :sitekey="meta.recaptchaSiteKey"/>
 		<MkButton type="submit" :disabled="shouldDisableSubmitting" primary>{{ $ts.start }}</MkButton>
 	</template>
 </form>

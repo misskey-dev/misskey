@@ -1,50 +1,46 @@
 <template>
-<div class="mk-instance-emojis">
-	<div class="_section" style="padding: 0;">
-		<MkTab v-model:value="tab">
-			<option value="local">{{ $ts.local }}</option>
-			<option value="remote">{{ $ts.remote }}</option>
-		</MkTab>
+<div class="ogwlenmc">
+	<MkTab v-model:value="tab">
+		<option value="local">{{ $ts.local }}</option>
+		<option value="remote">{{ $ts.remote }}</option>
+	</MkTab>
+
+	<div class="local" v-if="tab === 'local'">
+		<MkButton primary @click="add" style="margin: var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.addEmoji }}</MkButton>
+		<MkInput v-model:value="query" :debounce="true" type="search" style="margin: var(--margin);"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
+		<MkPagination :pagination="pagination" ref="emojis">
+			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+			<template #default="{items}">
+				<div class="ldhfsamy">
+					<button class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="edit(emoji)">
+						<img :src="emoji.url" class="img" :alt="emoji.name"/>
+						<div class="body">
+							<div class="name _monospace">{{ emoji.name }}</div>
+							<div class="info">{{ emoji.category }}</div>
+						</div>
+					</button>
+				</div>
+			</template>
+		</MkPagination>
 	</div>
 
-	<div class="_section">
-		<div class="local" v-if="tab === 'local'">
-			<MkButton primary @click="add" style="margin: 0 auto var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.addEmoji }}</MkButton>
-			<MkInput v-model:value="query" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
-			<MkPagination :pagination="pagination" ref="emojis">
-				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template #default="{items}">
-					<div class="emojis">
-						<button class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="edit(emoji)">
-							<img :src="emoji.url" class="img" :alt="emoji.name"/>
-							<div class="body">
-								<div class="name">{{ emoji.name }}</div>
-								<div class="info">{{ emoji.category }}</div>
-							</div>
-						</button>
-					</div>
-				</template>
-			</MkPagination>
-		</div>
-
-		<div class="remote" v-else-if="tab === 'remote'">
-			<MkInput v-model:value="queryRemote" :debounce="true" type="search"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
-			<MkInput v-model:value="host" :debounce="true"><span>{{ $ts.host }}</span></MkInput>
-			<MkPagination :pagination="remotePagination" ref="remoteEmojis">
-				<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
-				<template #default="{items}">
-					<div class="emojis">
-						<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji, $event)">
-							<img :src="emoji.url" class="img" :alt="emoji.name"/>
-							<div class="body">
-								<div class="name">{{ emoji.name }}</div>
-								<div class="info">{{ emoji.host }}</div>
-							</div>
+	<div class="remote" v-else-if="tab === 'remote'">
+		<MkInput v-model:value="queryRemote" :debounce="true" type="search" style="margin: var(--margin);"><template #icon><i class="fas fa-search"></i></template><span>{{ $ts.search }}</span></MkInput>
+		<MkInput v-model:value="host" :debounce="true" style="margin: var(--margin);"><span>{{ $ts.host }}</span></MkInput>
+		<MkPagination :pagination="remotePagination" ref="remoteEmojis">
+			<template #empty><span>{{ $ts.noCustomEmojis }}</span></template>
+			<template #default="{items}">
+				<div class="ldhfsamy">
+					<div class="emoji _panel _button" v-for="emoji in items" :key="emoji.id" @click="remoteMenu(emoji, $event)">
+						<img :src="emoji.url" class="img" :alt="emoji.name"/>
+						<div class="body">
+							<div class="name _monospace">{{ emoji.name }}</div>
+							<div class="info">{{ emoji.host }}</div>
 						</div>
 					</div>
-				</template>
-			</MkPagination>
-		</div>
+				</div>
+			</template>
+		</MkPagination>
 	</div>
 </div>
 </template>
@@ -66,6 +62,8 @@ export default defineComponent({
 		MkInput,
 		MkPagination,
 	},
+
+	emits: ['info'],
 
 	data() {
 		return {
@@ -97,6 +95,10 @@ export default defineComponent({
 				}))
 			},
 		}
+	},
+
+	async mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -150,85 +152,86 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mk-instance-emojis {
-	> ._section {
-		> .local {
-			.emojis {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-				grid-gap: var(--margin);
-		
-				> .emoji {
-					display: flex;
-					align-items: center;
-					padding: 12px;
-					text-align: left;
+.ogwlenmc {
+	> .local {
+		.ldhfsamy {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			grid-gap: 12px;
+			margin: var(--margin);
+	
+			> .emoji {
+				display: flex;
+				align-items: center;
+				padding: 12px;
+				text-align: left;
 
-					&:hover {
-						color: var(--accent);
-					}
+				&:hover {
+					color: var(--accent);
+				}
 
-					> .img {
-						width: 42px;
-						height: 42px;
-					}
+				> .img {
+					width: 42px;
+					height: 42px;
+				}
 
-					> .body {
-						padding: 0 0 0 8px;
-						white-space: nowrap;
+				> .body {
+					padding: 0 0 0 8px;
+					white-space: nowrap;
+					overflow: hidden;
+
+					> .name {
+						text-overflow: ellipsis;
 						overflow: hidden;
+					}
 
-						> .name {
-							text-overflow: ellipsis;
-							overflow: hidden;
-						}
-
-						> .info {
-							opacity: 0.5;
-							text-overflow: ellipsis;
-							overflow: hidden;
-						}
+					> .info {
+						opacity: 0.5;
+						text-overflow: ellipsis;
+						overflow: hidden;
 					}
 				}
 			}
 		}
+	}
 
-		> .remote {
-			.emojis {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-				grid-gap: var(--margin);
+	> .remote {
+		.ldhfsamy {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			grid-gap: 12px;
+			margin: var(--margin);
 
-				> .emoji {
-					display: flex;
-					align-items: center;
-					padding: 12px;
-					text-align: left;
+			> .emoji {
+				display: flex;
+				align-items: center;
+				padding: 12px;
+				text-align: left;
 
-					&:hover {
-						color: var(--accent);
-					}
+				&:hover {
+					color: var(--accent);
+				}
 
-					> .img {
-						width: 32px;
-						height: 32px;
-					}
+				> .img {
+					width: 32px;
+					height: 32px;
+				}
 
-					> .body {
-						padding: 0 0 0 8px;
-						white-space: nowrap;
+				> .body {
+					padding: 0 0 0 8px;
+					white-space: nowrap;
+					overflow: hidden;
+
+					> .name {
+						text-overflow: ellipsis;
 						overflow: hidden;
+					}
 
-						> .name {
-							text-overflow: ellipsis;
-							overflow: hidden;
-						}
-
-						> .info {
-							opacity: 0.5;
-							text-overflow: ellipsis;
-							overflow: hidden;
-						}
+					> .info {
+						opacity: 0.5;
+						font-size: 90%;
+						text-overflow: ellipsis;
+						overflow: hidden;
 					}
 				}
 			}

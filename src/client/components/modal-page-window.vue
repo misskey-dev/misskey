@@ -1,7 +1,7 @@
 <template>
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
 	<div class="hrmcaedk _popup _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
-		<div class="header">
+		<div class="header" @contextmenu="onContextmenu">
 			<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 			<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 			<span class="title">
@@ -27,6 +27,7 @@ import copyToClipboard from '@client/scripts/copy-to-clipboard';
 import { resolve } from '@client/router';
 import { url } from '@client/config';
 import * as symbols from '@client/symbols';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -148,6 +149,10 @@ export default defineComponent({
 			popout(this.path, this.$el);
 			this.$refs.window.close();
 		},
+
+		onContextmenu(e) {
+			os.contextMenu(this.contextmenu, e);
+		}
 	},
 });
 </script>

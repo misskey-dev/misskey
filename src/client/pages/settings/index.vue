@@ -3,6 +3,14 @@
 	<div class="nav" v-if="!narrow || page == null">
 		<FormBase>
 			<FormGroup>
+				<div class="_formItem">
+					<div class="_formPanel lwjxoukj">
+						<MkAvatar :user="$i" class="avatar"/>
+					</div>
+				</div>
+				<FormLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</FormLink>
+			</FormGroup>
+			<FormGroup>
 				<template #label>{{ $ts.basicSettings }}</template>
 				<FormLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</FormLink>
 				<FormLink :active="page === 'privacy'" replace to="/settings/privacy"><template #icon><i class="fas fa-lock-open"></i></template>{{ $ts.privacy }}</FormLink>
@@ -87,6 +95,7 @@ export default defineComponent({
 		const component = computed(() => {
 			if (page.value == null) return null;
 			switch (page.value) {
+				case 'accounts': return defineAsyncComponent(() => import('./accounts.vue'));
 				case 'profile': return defineAsyncComponent(() => import('./profile.vue'));
 				case 'privacy': return defineAsyncComponent(() => import('./privacy.vue'));
 				case 'reaction': return defineAsyncComponent(() => import('./reaction.vue'));
@@ -207,6 +216,17 @@ export default defineComponent({
 			overflow: auto;
 			--baseContentWidth: 100%;
 		}
+	}
+}
+
+.lwjxoukj {
+	padding: 16px;
+
+	> .avatar {
+		display: block;
+		margin: auto;
+		width: 42px;
+		height: 42px;
 	}
 }
 </style>
