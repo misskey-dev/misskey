@@ -40,6 +40,11 @@ if ((typeof ColdDeviceStorage.get('lightTheme') === 'string') || (typeof ColdDev
 	ColdDeviceStorage.set('lightTheme', require('@client/themes/l-light.json5'));
 	ColdDeviceStorage.set('darkTheme', require('@client/themes/d-dark.json5'));
 }
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://use.fontawesome.com/releases/v5.15.3/css/all.css';
+document.head.appendChild(link);
+// TODOここまで
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
