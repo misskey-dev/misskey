@@ -522,7 +522,7 @@ hr {
 }
 
 ._anime_bounce {
-  animation: bounce ease 1s;
+  animation: bounce ease 0.7s;
   animation-iteration-count: 1;
   transform-origin: 50% 50%;
 }
@@ -534,14 +534,11 @@ hr {
   0% {
     transform:  scaleX(0.90) scaleY(0.90) ;
   }
-  13% {
+  19% {
     transform:  scaleX(1.10) scaleY(1.10) ;
   }
-  35% {
+  48% {
     transform:  scaleX(0.95) scaleY(0.95) ;
-  }
-  63% {
-    transform:  scaleX(1.01) scaleY(1.01) ;
   }
   100% {
     transform:  scaleX(1.00) scaleY(1.00) ;
