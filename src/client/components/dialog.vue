@@ -8,7 +8,7 @@
 			<i v-if="type === 'success'" class="fas fa-check"></i>
 			<i v-else-if="type === 'error'" class="fas fa-times-circle"></i>
 			<i v-else-if="type === 'warning'" class="fas fa-exclamation-triangle"></i>
-			<i v-else-if="type === 'info'" class="fas fa-information-circle"></i>
+			<i v-else-if="type === 'info'" class="fas fa-info-circle"></i>
 			<i v-else-if="type === 'question'" class="fas fa-question-circle"></i>
 			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
 		</div>

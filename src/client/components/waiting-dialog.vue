@@ -68,10 +68,9 @@ export default defineComponent({
 		padding: 0;
 		width: 96px;
 		height: 96px;
-
-		> .icon {
-			height: 100%;
-		}
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	> .icon {
