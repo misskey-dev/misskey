@@ -94,7 +94,9 @@ export default defineComponent({
 		if (localOnly === '0') this.localOnly = false;
 		else if (localOnly === '1') this.localOnly = true;
 
-		await Promise.all([(async () => {
+
+		try {
+			//#region Reply
 			const replyId = urlParams.get('replyId');
 			const replyUri = urlParams.get('replyUri');
 			if (replyId) {
@@ -109,33 +111,40 @@ export default defineComponent({
 					this.reply = obj.object;
 				}
 			}
-		})(),(async () => {
-			const renoteId = urlParams.get('renoteId');
-			const renoteUri = urlParams.get('renoteUri');
-			if (renoteId) {
-				this.renote = await os.api('notes/show', {
-					noteId: renoteId
-				});
-			} else if (renoteUri) {
-				const obj = await os.api('ap/show', {
-					uri: renoteUri
-				}) as any;
-				if (obj.type === 'Note') {
-					this.renote = obj.object;
+			//#endregion
+
+			//#region Renote
+				const renoteId = urlParams.get('renoteId');
+				const renoteUri = urlParams.get('renoteUri');
+				if (renoteId) {
+					this.renote = await os.api('notes/show', {
+						noteId: renoteId
+					});
+				} else if (renoteUri) {
+					const obj = await os.api('ap/show', {
+						uri: renoteUri
+					}) as any;
+					if (obj.type === 'Note') {
+						this.renote = obj.object;
+					}
 				}
-			}
-		})(),(async () => {
-			const fileIds = urlParams.get('fileIds');
-			if (fileIds) {
-				const promises = Promise.all(fileIds.split(',')
-					.map(fileId => os.api('drive/files/show', { fileId }).catch(() => Error(`invalid fileId: ${fileId}`))));
-				await promises.then(files => this.files = files);
-			}
-		})(),]).catch(e => os.dialog({
-			type: 'error',
-			title: e.message,
-			text: e.name
-		}));
+			//#endregion
+
+			//#region Drive files
+				const fileIds = urlParams.get('fileIds');
+				if (fileIds) {
+					const promises = Promise.all(fileIds.split(',')
+						.map(fileId => os.api('drive/files/show', { fileId }).catch(() => Error(`invalid fileId: ${fileId}`))));
+					await promises.then(files => this.files = files);
+				}
+			//#endregion
+		} catch (e) {
+			os.dialog({
+				type: 'error',
+				title: e.message,
+				text: e.name
+			});
+		}
 
 		this.state = 'writing';
 	},
