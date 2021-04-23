@@ -737,6 +737,7 @@ quickAction: "クイックアクション"
 user: "ユーザー"
 administration: "管理"
 accounts: "アカウント"
+switch: "切り替え"
 
 _email:
   _follow:
