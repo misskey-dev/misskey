@@ -97,7 +97,7 @@ self.addEventListener('push', ev => {
 			) {
 				n.close();
 			}
-		}, 500);
+		}, 1000);
 	}));
 });
 //#endregion
