@@ -162,7 +162,7 @@ export default defineComponent({
 		},
 
 		show(user) {
-			os.pageWindow(`/instance/user/${user.id}`);
+			os.pageWindow(`/user-info/${user.id}`);
 		},
 
 		acct

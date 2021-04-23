@@ -59,7 +59,6 @@ export const router = createRouter({
 		{ path: '/my/antennas', component: page('my-antennas/index') },
 		{ path: '/my/clips', component: page('my-clips/index') },
 		{ path: '/scratchpad', component: page('scratchpad') },
-		{ path: '/instance/user/:user', component: page('instance/user'), props: route => ({ userId: route.params.user }) },
 		{ path: '/instance/:page(.*)?', component: page('instance/index'), props: route => ({ initialPage: route.params.page || null }) },
 		{ path: '/instance', component: page('instance/index') },
 		{ path: '/notes/:note', name: 'note', component: page('note'), props: route => ({ noteId: route.params.note }) },

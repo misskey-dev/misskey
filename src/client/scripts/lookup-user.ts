@@ -10,7 +10,7 @@ export async function lookupUser() {
 	if (canceled) return;
 
 	const show = (user) => {
-		os.pageWindow(`/instance/user/${user.id}`);
+		os.pageWindow(`/user-info/${user.id}`);
 	};
 
 	const usernamePromise = os.api('users/show', parseAcct(result));

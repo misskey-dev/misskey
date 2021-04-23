@@ -82,7 +82,7 @@ export default defineComponent({
 		},
 
 		showUser() {
-			os.pageWindow(`/instance/user/${this.file.userId}`);
+			os.pageWindow(`/user-info/${this.file.userId}`);
 		},
 
 		async del() {
