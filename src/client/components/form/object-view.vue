@@ -75,7 +75,7 @@ export default defineComponent({
 			max-width: 100%;
 			min-height: 130px;
 			margin: 0;
-			padding: 16px;
+			padding: 16px var(--formContentHMargin);
 			box-sizing: border-box;
 			font: inherit;
 			font-weight: normal;

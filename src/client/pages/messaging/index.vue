@@ -1,6 +1,6 @@
 <template>
 <div class="yweeujhr _root" v-size="{ max: [400] }">
-	<MkButton @click="start" primary class="start"><Fa :icon="faPlus"/> {{ $ts.startMessaging }}</MkButton>
+	<MkButton @click="start" primary class="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 	<div class="history" v-if="messages.length > 0">
 		<MkA v-for="(message, i) in messages"
@@ -12,7 +12,7 @@
 			v-anim="i"
 		>
 			<div>
-				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user"/>
+				<MkAvatar class="avatar" :user="message.groupId ? message.user : isMe(message) ? message.recipient : message.user" :show-indicator="true"/>
 				<header v-if="message.groupId">
 					<span class="name">{{ message.group.name }}</span>
 					<MkTime :time="message.createdAt" class="time"/>
@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faUser, faUsers, faComments, faPlus } from '@fortawesome/free-solid-svg-icons';
 import getAcct from '@/misc/acct/render';
 import MkButton from '@client/components/ui/button.vue';
 import { acct } from '../../filters/user';
@@ -54,13 +53,12 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.messaging,
-				icon: faComments
+				icon: 'fas fa-comments'
 			},
 			fetching: true,
 			moreFetching: false,
 			messages: [],
 			connection: null,
-			faUser, faUsers, faComments, faPlus
 		};
 	},
 
@@ -120,11 +118,11 @@ export default defineComponent({
 		start(ev) {
 			os.modalMenu([{
 				text: this.$ts.messagingWithUser,
-				icon: faUser,
+				icon: 'fas fa-user',
 				action: () => { this.startUser() }
 			}, {
 				text: this.$ts.messagingWithGroup,
-				icon: faUsers,
+				icon: 'fas fa-users',
 				action: () => { this.startGroup() }
 			}], ev.currentTarget || ev.target);
 		},

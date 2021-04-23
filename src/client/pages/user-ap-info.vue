@@ -22,7 +22,7 @@
 				</FormKeyValueView>
 				<FormKeyValueView>
 					<template #key>Shared Inbox</template>
-					<template #value><span class="_monospace">{{ ap.sharedInbox }}</span></template>
+					<template #value><span class="_monospace">{{ ap.sharedInbox || ap.endpoints.sharedInbox }}</span></template>
 				</FormKeyValueView>
 				<FormKeyValueView>
 					<template #key>Outbox</template>
@@ -43,6 +43,9 @@
 			<FormObjectView tall :value="ap">
 				<span>Raw</span>
 			</FormObjectView>
+			<FormGroup>
+				<FormLink :to="`https://${user.host}/.well-known/webfinger?resource=acct:${user.username}`" external>WebFinger</FormLink>
+			</FormGroup>
 			<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ $ts.instanceInfo }}<template #suffix>{{ user.host }}</template></FormLink>
 			<FormKeyValueView v-else>
 				<template #key>{{ $ts.instanceInfo }}</template>
@@ -55,7 +58,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -93,7 +95,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.userInfo,
-				icon: faInfoCircle
+				icon: 'fas fa-info-circle'
 			},
 			user: null,
 			apPromiseFactory: null,

@@ -18,6 +18,9 @@ export default defineComponent({
 		}
 	},
 	watch: {
+		modelValue() {
+			this.value = this.modelValue;
+		},
 		value() {
 			this.$emit('update:modelValue', this.value);
 		}

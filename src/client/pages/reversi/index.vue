@@ -11,7 +11,7 @@
 			<template #header>{{ $ts.invitations }}</template>
 			<div class="nfcacttm">
 				<button class="invitation _panel _button" v-for="invitation in invitations" tabindex="-1" @click="accept(invitation)">
-					<MkAvatar class="avatar" :user="invitation.parent"/>
+					<MkAvatar class="avatar" :user="invitation.parent" :show-indicator="true"/>
 					<span class="name"><b><MkUserName :user="invitation.parent"/></b></span>
 					<span class="username">@{{ invitation.parent.username }}</span>
 					<MkTime :time="invitation.createdAt" class="time"/>
@@ -64,7 +64,6 @@ import { defineComponent } from 'vue';
 import * as os from '@client/os';
 import MkButton from '@client/components/ui/button.vue';
 import MkFolder from '@client/components/ui/folder.vue';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 import * as symbols from '@client/symbols';
 
 export default defineComponent({
@@ -78,7 +77,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._reversi.reversi,
-				icon: faGamepad
+				icon: 'fas fa-gamepad'
 			},
 			games: [],
 			gamesFetching: true,

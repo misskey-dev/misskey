@@ -2,7 +2,11 @@ block vars
 
 doctype html
 
-!= '\n<!-- Thank you for using Misskey! @syuilo -->\n'
+!= '\n'
+!= '<!-- Thank you for using Misskey! -->\n'
+!= '<!-- If you are reading this message... how about joining the development of Misskey? -->\n'
+!= '<!-- https://github.com/misskey-dev/misskey -->'
+!= '\n'
 
 html
 
@@ -20,13 +24,15 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
+		link(rel='preload' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css' as='style')
+		link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.15.3/css/all.css')
 
 		title
 			block title
 				= title || 'Misskey'
 
 		block desc
-			meta(name='description' content= desc || '✨🌎✨ A federated blogging platform ✨🚀✨')
+			meta(name='description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 
 		block meta
 

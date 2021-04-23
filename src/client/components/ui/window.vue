@@ -4,13 +4,13 @@
 		<div class="body _popup _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<slot v-if="closeRight" name="buttons"><button class="_button" style="pointer-events: none;"></button></slot>
-				<button v-else class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+				<button v-else class="_button" @click="close()"><i class="fas fa-times"></i></button>
 
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 
-				<button v-if="closeRight" class="_button" @click="close()"><Fa :icon="faTimes"/></button>
+				<button v-if="closeRight" class="_button" @click="close()"><i class="fas fa-times"></i></button>
 				<slot v-else name="buttons"><button class="_button" style="pointer-events: none;"></button></slot>
 			</div>
 			<div class="body" v-if="padding">
@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import contains from '@client/scripts/contains';
 import * as os from '@client/os';
 
@@ -114,7 +113,6 @@ export default defineComponent({
 		return {
 			showing: true,
 			id: Math.random().toString(), // TODO: UUIDとかにする
-			faTimes
 		};
 	},
 

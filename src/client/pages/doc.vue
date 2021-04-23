@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
 import { url, lang } from '@client/config';
@@ -41,7 +40,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.title ? {
 				title: this.title,
-				icon: faQuestionCircle,
+				icon: 'fas fa-question-circle',
 			} : null),
 			title: null,
 			body: null,

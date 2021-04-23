@@ -7,15 +7,15 @@
 			<MkTextarea v-model:value="description">{{ $ts.description }}</MkTextarea>
 
 			<div class="banner">
-				<MkButton v-if="bannerId == null" @click="setBannerImage"><Fa :icon="faPlus"/> {{ $ts._channel.setBanner }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="fas fa-plus"></i> {{ $ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()"><Fa :icon="faTrashAlt"/> {{ $ts._channel.removeBanner }}</MkButton>
+					<MkButton @click="removeBannerImage()"><i class="fas fa-trash-alt"></i> {{ $ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
 		</div>
 		<div class="_footer">
-			<MkButton @click="save()" primary><Fa :icon="faSave"/> {{ channelId ? $ts.save : $ts.create }}</MkButton>
+			<MkButton @click="save()" primary><i class="fas fa-save"></i> {{ channelId ? $ts.save : $ts.create }}</MkButton>
 		</div>
 	</div>
 </div>
@@ -23,8 +23,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faPlus, faSatelliteDish } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -48,17 +46,16 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.channelId ? {
 				title: this.$ts._channel.edit,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 			} : {
 				title: this.$ts._channel.create,
-				icon: faSatelliteDish,
+				icon: 'fas fa-satellite-dish',
 			}),
 			channel: null,
 			name: null,
 			description: null,
 			bannerUrl: null,
 			bannerId: null,
-			faSave, faTrashAlt, faPlus,faSatelliteDish,
 		};
 	},
 

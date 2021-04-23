@@ -19,12 +19,12 @@
 
 	<FormInput v-model:value="location" manual-save>
 		<span>{{ $ts.location }}</span>
-		<template #prefix><Fa :icon="faMapMarkerAlt"/></template>
+		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
 	</FormInput>
 
 	<FormInput v-model:value="birthday" type="date" manual-save>
 		<span>{{ $ts.birthday }}</span>
-		<template #prefix><Fa :icon="faBirthdayCake"/></template>
+		<template #prefix><i class="fas fa-birthday-cake"></i></template>
 	</FormInput>
 
 	<FormSelect v-model:value="lang">
@@ -47,8 +47,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
 import FormButton from '@client/components/form/button.vue';
 import FormInput from '@client/components/form/input.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
@@ -78,7 +76,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.profile,
-				icon: faUser
+				icon: 'fas fa-user'
 			},
 			host,
 			langs,
@@ -101,7 +99,6 @@ export default defineComponent({
 			isCat: false,
 			alwaysMarkNsfw: false,
 			saving: false,
-			faSave, faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake
 		}
 	},
 

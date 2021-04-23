@@ -6,8 +6,8 @@
 
 	<p class="mfcuwfyp" v-else-if="empty">{{ $ts.noNotifications }}</p>
 
-	<div v-else class="_magnetParent">
-		<XList class="notifications _magnetChild" :items="items" v-slot="{ item: notification }" :no-gap="true">
+	<div v-else>
+		<XList class="notifications" :items="items" v-slot="{ item: notification }" :no-gap="true">
 			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :note="notification.note" @update:note="noteUpdated(notification.note, $event)" :key="notification.id"/>
 			<XNotification v-else :notification="notification" :with-time="true" :full="true" class="_panel notification" :key="notification.id"/>
 		</XList>
@@ -92,18 +92,20 @@ export default defineComponent({
 		this.connection.on('notification', this.onNotification);
 
 		this.connection.on('readAllNotifications', () => {
-			this.queue = this.queue.map(x => markNotificationRead(x));
+			for (const item of this.queue) {
+				item.isRead = true;
+			}
 			for (const item of this.items) {
 				item.isRead = true;
 			}
 		});
 		this.connection.on('readNotifications', notificationIds => {
-			if (this.queue.length === 0) return;
-
 			for (let i = 0; i < this.queue.length; i++) {
 				if (notificationIds.includes(this.queue[i].id)) {
-					this.queue[i] = markNotificationRead(this.queue[i]);
+					this.queue[i].isRead = true;
 				}
+			}
+			for (let i = 0; i < this.items.length; i++) {
 				if (notificationIds.includes(this.items[i].id)) {
 					this.items[i].isRead = true;
 				}

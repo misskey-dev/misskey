@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { url, lang } from '@client/config';
 import * as symbols from '@client/symbols';
 
@@ -23,10 +22,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.help,
-				icon: faQuestionCircle
+				icon: 'fas fa-question-circle'
 			},
 			docs: [],
-			faQuestionCircle
 		}
 	},
 

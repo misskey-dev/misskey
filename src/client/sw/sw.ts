@@ -59,17 +59,17 @@ self.addEventListener('push', ev => {
 
 			case 'readAllNotifications':
 				for (const n of await self.registration.getNotifications()) {
-					if (n.data.type === 'notification') n.close();
+					if (n?.data?.type === 'notification') n.close();
 				}
 				break;
 			case 'readAllMessagingMessages':
 				for (const n of await self.registration.getNotifications()) {
-					if (n.data.type === 'unreadMessagingMessage') n.close();
+					if (n?.data?.type === 'unreadMessagingMessage') n.close();
 				}
 				break;
 			case 'readNotifications':
 				for (const n of await self.registration.getNotifications()) {
-					if (data.body.notificationIds?.includes(n.data.body.id)) {
+					if (data.body?.notificationIds?.includes(n.data.body.id)) {
 						n.close();
 					}
 				}
@@ -97,7 +97,7 @@ self.addEventListener('push', ev => {
 			) {
 				n.close();
 			}
-		}, 500);
+		}, 1000);
 	}));
 });
 //#endregion

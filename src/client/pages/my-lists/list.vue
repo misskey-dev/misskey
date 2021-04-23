@@ -16,13 +16,13 @@
 			<div class="_content">
 				<div class="users">
 					<div class="user _panel" v-for="user in users" :key="user.id">
-						<MkAvatar :user="user" class="avatar"/>
+						<MkAvatar :user="user" class="avatar" :show-indicator="true"/>
 						<div class="body">
 							<MkUserName :user="user" class="name"/>
 							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 				</div>
@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faTimes, faListUl } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
@@ -49,11 +48,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.list ? {
 				title: this.list.name,
-				icon: faListUl,
+				icon: 'fas fa-list-ul',
 			} : null),
 			list: null,
 			users: [],
-			faTimes, faListUl
 		};
 	},
 

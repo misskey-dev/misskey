@@ -1,6 +1,6 @@
 <template>
 <MkContainer :max-height="300" :foldable="true">
-	<template #header><Fa :icon="faImage" style="margin-right: 0.5em;"/>{{ $ts.images }}</template>
+	<template #header><i class="fas fa-image" style="margin-right: 0.5em;"></i>{{ $ts.images }}</template>
 	<div class="ujigsodd">
 		<MkLoading v-if="fetching"/>
 		<div class="stream" v-if="!fetching && images.length > 0">
@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import notePage from '../../filters/note';
 import * as os from '@client/os';
@@ -41,7 +40,6 @@ export default defineComponent({
 		return {
 			fetching: true,
 			images: [],
-			faImage
 		};
 	},
 	mounted() {

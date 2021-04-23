@@ -266,7 +266,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import * as symbols from '@client/symbols';
 
@@ -279,7 +278,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._mfm.cheatSheet,
-				icon: faQuestionCircle,
+				icon: 'fas fa-question-circle',
 			},
 			preview_mention: '@example',
 			preview_hashtag: '#test',
@@ -294,19 +293,19 @@ export default defineComponent({
 			preview_inlineMath: '\\(x= \\frac{-b\' \\pm \\sqrt{(b\')^2-ac}}{a}\\)',
 			preview_quote: `> ${this.$ts._mfm.dummy}`,
 			preview_search: `${this.$ts._mfm.dummy} 検索`,
-			preview_jelly: `[jelly 🍮]`,
-			preview_tada: `[tada 🍮]`,
-			preview_jump: `[jump 🍮]`,
-			preview_bounce: `[bounce 🍮]`,
-			preview_shake: `[shake 🍮]`,
-			preview_twitch: `[twitch 🍮]`,
-			preview_spin: `[spin 🍮] [spin.left 🍮] [spin.alternate 🍮]\n[spin.x 🍮] [spin.x,left 🍮] [spin.x,alternate 🍮]\n[spin.y 🍮] [spin.y,left 🍮] [spin.y,alternate 🍮]`,
-			preview_flip: `[flip ${this.$ts._mfm.dummy}]\n[flip.v ${this.$ts._mfm.dummy}]\n[flip.h,v ${this.$ts._mfm.dummy}]`,
-			preview_font: `[font.serif ${this.$ts._mfm.dummy}]\n[font.monospace ${this.$ts._mfm.dummy}]\n[font.cursive ${this.$ts._mfm.dummy}]\n[font.fantasy ${this.$ts._mfm.dummy}]`,
-			preview_x2: `[x2 🍮]`,
-			preview_x3: `[x3 🍮]`,
-			preview_x4: `[x4 🍮]`,
-			preview_blur: `[blur ${this.$ts._mfm.dummy}]`,
+			preview_jelly: `$[jelly 🍮]`,
+			preview_tada: `$[tada 🍮]`,
+			preview_jump: `$[jump 🍮]`,
+			preview_bounce: `$[bounce 🍮]`,
+			preview_shake: `$[shake 🍮]`,
+			preview_twitch: `$[twitch 🍮]`,
+			preview_spin: `$[spin 🍮] $[spin.left 🍮] $[spin.alternate 🍮]\n$[spin.x 🍮] $[spin.x,left 🍮] $[spin.x,alternate 🍮]\n$[spin.y 🍮] $[spin.y,left 🍮] $[spin.y,alternate 🍮]`,
+			preview_flip: `$[flip ${this.$ts._mfm.dummy}]\n$[flip.v ${this.$ts._mfm.dummy}]\n$[flip.h,v ${this.$ts._mfm.dummy}]`,
+			preview_font: `$[font.serif ${this.$ts._mfm.dummy}]\n$[font.monospace ${this.$ts._mfm.dummy}]\n$[font.cursive ${this.$ts._mfm.dummy}]\n$[font.fantasy ${this.$ts._mfm.dummy}]`,
+			preview_x2: `$[x2 🍮]`,
+			preview_x3: `$[x3 🍮]`,
+			preview_x4: `$[x4 🍮]`,
+			preview_blur: `$[blur ${this.$ts._mfm.dummy}]`,
 		}
 	},
 });

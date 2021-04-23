@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import XDrive from '@client/components/drive.vue';
 import * as os from '@client/os';
 import * as symbols from '@client/symbols';
@@ -20,7 +19,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: computed(() => this.folder ? this.folder.name : this.$ts.drive),
-				icon: faCloud,
+				icon: 'fas fa-cloud',
 				menu: () => this.$refs.drive.getMenu()
 			},
 			folder: null,

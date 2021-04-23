@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader">
-	<template #header><Fa :icon="faTerminal"/>{{ $ts._widgets.aiscript }}</template>
+	<template #header><i class="fas fa-terminal"></i>{{ $ts._widgets.aiscript }}</template>
 
 	<div class="uylguesu _monospace">
 		<textarea v-model="props.script" placeholder="(1 + 1)"></textarea>
@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTerminal } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import * as os from '@client/os';
@@ -46,7 +45,6 @@ export default defineComponent({
 	data() {
 		return {
 			logs: [],
-			faTerminal
 		};
 	},
 

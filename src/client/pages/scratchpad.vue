@@ -2,11 +2,11 @@
 <div class="iltifgqe">
 	<div class="editor _panel _gap">
 		<PrismEditor class="_code code" v-model="code" :highlight="highlighter" :line-numbers="false"/>
-		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><Fa :icon="faPlay"/></MkButton>
+		<MkButton style="position: absolute; top: 8px; right: 8px;" @click="run()" primary><i class="fas fa-play"></i></MkButton>
 	</div>
 
 	<MkContainer :foldable="true" class="_gap">
-		<template #header><Fa fixed-width/>{{ $ts.output }}</template>
+		<template #header>{{ $ts.output }}</template>
 		<div class="bepmlvbi">
 			<div v-for="log in logs" class="log" :key="log.id" :class="{ print: log.print }">{{ log.text }}</div>
 		</div>
@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTerminal, faPlay } from '@fortawesome/free-solid-svg-icons';
 import 'prismjs';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -46,11 +45,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.scratchpad,
-				icon: faTerminal,
+				icon: 'fas fa-terminal',
 			},
 			code: '',
 			logs: [],
-			faTerminal, faPlay
 		}
 	},
 

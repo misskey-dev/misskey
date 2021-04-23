@@ -1,35 +1,29 @@
 <template>
 <div class="ztgjmzrw">
-	<div class="_section">
-		<div class="_content">
-			<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
-			<section class="_card _gap announcements" v-for="announcement in announcements">
-				<div class="_content announcement">
-					<MkInput v-model:value="announcement.title">
-						<span>{{ $ts.title }}</span>
-					</MkInput>
-					<MkTextarea v-model:value="announcement.text">
-						<span>{{ $ts.text }}</span>
-					</MkTextarea>
-					<MkInput v-model:value="announcement.imageUrl">
-						<span>{{ $ts.imageUrl }}</span>
-					</MkInput>
-					<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
-					<div class="buttons">
-						<MkButton class="button" inline @click="save(announcement)" primary><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
-						<MkButton class="button" inline @click="remove(announcement)"><Fa :icon="faTrashAlt"/> {{ $ts.remove }}</MkButton>
-					</div>
-				</div>
-			</section>
+	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
+	<section class="_card _gap announcements" v-for="announcement in announcements">
+		<div class="_content announcement">
+			<MkInput v-model:value="announcement.title">
+				<span>{{ $ts.title }}</span>
+			</MkInput>
+			<MkTextarea v-model:value="announcement.text">
+				<span>{{ $ts.text }}</span>
+			</MkTextarea>
+			<MkInput v-model:value="announcement.imageUrl">
+				<span>{{ $ts.imageUrl }}</span>
+			</MkInput>
+			<p v-if="announcement.reads">{{ $t('nUsersRead', { n: announcement.reads }) }}</p>
+			<div class="buttons">
+				<MkButton class="button" inline @click="save(announcement)" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+				<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ $ts.remove }}</MkButton>
+			</div>
 		</div>
-	</div>
+	</section>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faBroadcastTower, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faSave, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
@@ -43,14 +37,15 @@ export default defineComponent({
 		MkTextarea,
 	},
 
+	emits: ['info'],
+
 	data() {
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.announcements,
-				icon: faBroadcastTower
+				icon: 'fas fa-broadcast-tower'
 			},
 			announcements: [],
-			faBroadcastTower, faSave, faTrashAlt, faPlus
 		}
 	},
 
@@ -58,6 +53,10 @@ export default defineComponent({
 		os.api('admin/announcements/list').then(announcements => {
 			this.announcements = announcements;
 		});
+	},
+
+	mounted() {
+		this.$emit('info', this[symbols.PAGE_INFO]);
 	},
 
 	methods: {
@@ -112,3 +111,9 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.ztgjmzrw {
+	margin: var(--margin);
+}
+</style>

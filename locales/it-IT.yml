@@ -615,6 +615,7 @@ inChannelSearch: "Cerca in canale"
 useReactionPickerForContextMenu: "Cliccare sul tasto destro per aprire il pannello di reazioni"
 typingUsers: "{users} sta(nno) scrivendo"
 showingPastTimeline: "Stai visualizzando una vecchia timeline"
+info: "Informazioni"
 _email:
   _follow:
     title: "Ha iniziato a seguirti"
@@ -676,6 +677,7 @@ _theme:
   install: "Installa un tema"
   manage: "Gerisci temi"
   code: "Codice tema"
+  description: "Descrizione"
   installed: "{name} è installato"
   installedThemes: "Temi installati"
   builtinThemes: "Temi integrati"

@@ -2,7 +2,7 @@
 <div class="vrvdvrys">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><fa :icon="faMicrochip"/>CPU</p>
+		<p><i class="fas fa-microchip"></i>CPU</p>
 		<p>{{ meta.cpu.cores }} Logical cores</p>
 		<p>{{ meta.cpu.model }}</p>
 	</div>
@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
 
 export default defineComponent({
@@ -29,7 +28,6 @@ export default defineComponent({
 	data() {
 		return {
 			usage: 0,
-			faMicrochip,
 		};
 	},
 	mounted() {
@@ -68,7 +66,7 @@ export default defineComponent({
 				font-weight: bold;
 				margin-bottom: 4px;
 
-				> [data-icon] {
+				> i {
 					margin-right: 4px;
 				}
 			}

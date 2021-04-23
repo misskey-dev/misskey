@@ -71,22 +71,21 @@
 	<FormButton primary v-else @click="wallpaper = null">{{ $ts.removeWallpaper }}</FormButton>
 
 	<FormGroup>
-		<FormLink to="https://assets.msky.cafe/theme/list" external><template #icon><Fa :icon="faGlobe"/></template>{{ $ts._theme.explore }}</FormLink>
-		<FormLink to="/settings/theme/install"><template #icon><Fa :icon="faDownload"/></template>{{ $ts._theme.install }}</FormLink>
+		<FormLink to="https://assets.msky.cafe/theme/list" external><template #icon><i class="fas fa-globe"></i></template>{{ $ts._theme.explore }}</FormLink>
+		<FormLink to="/settings/theme/install"><template #icon><i class="fas fa-download"></i></template>{{ $ts._theme.install }}</FormLink>
 	</FormGroup>
 
 	<FormGroup>
-		<FormLink to="/theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }}</FormLink>
-		<!--<FormLink to="/advanced-theme-editor"><template #icon><Fa :icon="faPaintRoller"/></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>-->
+		<FormLink to="/theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }}</FormLink>
+		<!--<FormLink to="/advanced-theme-editor"><template #icon><i class="fas fa-paint-roller"></i></template>{{ $ts._theme.make }} ({{ $ts.advanced }})</FormLink>-->
 	</FormGroup>
 
-	<FormLink to="/settings/theme/manage"><template #icon><Fa :icon="faFolderOpen"/></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
+	<FormLink to="/settings/theme/manage"><template #icon><i class="fas fa-folder-open"></i></template>{{ $ts._theme.manage }}<template #suffix>{{ themesCount }}</template></FormLink>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onActivated, onMounted, ref, watch } from 'vue';
-import { faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -117,7 +116,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const INFO = {
 			title: i18n.locale.theme,
-			icon: faPalette
+			icon: 'fas fa-palette'
 		};
 
 		const installedThemes = ref(getThemes());
@@ -191,7 +190,6 @@ export default defineComponent({
 					wallpaper.value = file.url;
 				});
 			},
-			faPalette, faDownload, faFolderOpen, faCheck, faTrashAlt, faEye, faGlobe, faPaintRoller,
 		};
 	}
 });

@@ -1,9 +1,9 @@
 <template>
 <div>
 	<MkTab v-model:value="tab" v-if="$i">
-		<option value="featured"><Fa :icon="faFireAlt"/> {{ $ts._pages.featured }}</option>
-		<option value="my"><Fa :icon="faEdit"/> {{ $ts._pages.my }}</option>
-		<option value="liked"><Fa :icon="faHeart"/> {{ $ts._pages.liked }}</option>
+		<option value="featured"><i class="fas fa-fire-alt"></i> {{ $ts._pages.featured }}</option>
+		<option value="my"><i class="fas fa-edit"></i> {{ $ts._pages.my }}</option>
+		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._pages.liked }}</option>
 	</MkTab>
 
 	<div class="_section">
@@ -14,7 +14,7 @@
 		</div>
 
 		<div class="rknalgpo _content my" v-if="tab === 'my'">
-			<MkButton class="new" @click="create()"><Fa :icon="faPlus"/></MkButton>
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
 			<MkPagination :pagination="myPagesPagination" #default="{items}">
 				<MkPagePreview v-for="page in items" class="ckltabjg" :page="page" :key="page.id"/>
 			</MkPagination>
@@ -31,8 +31,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faEdit, faFireAlt } from '@fortawesome/free-solid-svg-icons';
-import { faStickyNote, faHeart } from '@fortawesome/free-regular-svg-icons';
 import MkPagePreview from '@client/components/page-preview.vue';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
@@ -47,9 +45,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.pages,
-				icon: faStickyNote,
+				icon: 'fas fa-sticky-note',
 				actions: [{
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					text: this.$ts.create,
 					handler: this.create
 				}]
@@ -67,7 +65,6 @@ export default defineComponent({
 				endpoint: 'i/page-likes',
 				limit: 5,
 			},
-			faStickyNote, faPlus, faEdit, faHeart, faFireAlt
 		};
 	},
 	methods: {

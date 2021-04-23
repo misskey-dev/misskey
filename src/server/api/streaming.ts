@@ -6,6 +6,7 @@ import { ParsedUrlQuery } from 'querystring';
 import authenticate from './authenticate';
 import { EventEmitter } from 'events';
 import { subsdcriber as redisClient } from '../../db/redis';
+import { Users } from '@/models';
 
 module.exports = (server: http.Server) => {
 	// Init websocket server
@@ -34,10 +35,22 @@ module.exports = (server: http.Server) => {
 
 		const main = new MainStreamConnection(connection, ev, user, app);
 
+		const intervalId = user ? setInterval(() => {
+			Users.update(user.id, {
+				lastActiveDate: new Date(),
+			});
+		}, 1000 * 60 * 5) : null;
+		if (user) {
+			Users.update(user.id, {
+				lastActiveDate: new Date(),
+			});
+		}
+
 		connection.once('close', () => {
 			ev.removeAllListeners();
 			main.dispose();
 			redisClient.off('message', onRedisMessage);
+			if (intervalId) clearInterval(intervalId);
 		});
 
 		connection.on('message', async (data) => {

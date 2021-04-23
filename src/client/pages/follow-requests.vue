@@ -9,7 +9,7 @@
 		</template>
 		<template #default="{items}">
 			<div class="user _panel" v-for="req in items" :key="req.id">
-				<MkAvatar class="avatar" :user="req.follower"/>
+				<MkAvatar class="avatar" :user="req.follower" :show-indicator="true"/>
 				<div class="body">
 					<div class="name">
 						<MkA class="name" :to="userPage(req.follower)" v-user-preview="req.follower.id"><MkUserName :user="req.follower"/></MkA>
@@ -19,8 +19,8 @@
 						<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="accept(req.follower)"><Fa :icon="faCheck"/></button>
-						<button class="_button" @click="reject(req.follower)"><Fa :icon="faTimes"/></button>
+						<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
+						<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
 					</div>
 				</div>
 			</div>
@@ -31,7 +31,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUserClock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import { userPage, acct } from '../filters/user';
 import * as os from '@client/os';
@@ -46,13 +45,12 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.followRequests,
-				icon: faUserClock,
+				icon: 'fas fa-user-clock',
 			},
 			pagination: {
 				endpoint: 'following/requests/list',
 				limit: 10,
 			},
-			faCheck, faTimes, faUserClock
 		};
 	},
 
