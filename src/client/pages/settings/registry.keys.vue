@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faCogs } from '@fortawesome/free-solid-svg-icons';
 import * as JSON5 from 'json5';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
@@ -57,7 +56,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.registry,
-				icon: faCogs
+				icon: 'fas fa-cogs'
 			},
 			keys: null,
 		}

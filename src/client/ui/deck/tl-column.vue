@@ -1,16 +1,16 @@
 <template>
 <XColumn :func="{ handler: setType, title: $ts.timeline }" :column="column" :is-stacked="isStacked" :indicated="indicated" @change-active-state="onChangeActiveState">
 	<template #header>
-		<Fa v-if="column.tl === 'home'" :icon="faHome"/>
-		<Fa v-else-if="column.tl === 'local'" :icon="faComments"/>
-		<Fa v-else-if="column.tl === 'social'" :icon="faShareAlt"/>
-		<Fa v-else-if="column.tl === 'global'" :icon="faGlobe"/>
+		<i v-if="column.tl === 'home'" class="fas fa-home"></i>
+		<i v-else-if="column.tl === 'local'" class="fas fa-comments"></i>
+		<i v-else-if="column.tl === 'social'" class="fas fa-share-alt"></i>
+		<i v-else-if="column.tl === 'global'" class="fas fa-globe"></i>
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<div class="iwaalbte" v-if="disabled">
 		<p>
-			<Fa :icon="faMinusCircle"/>
+			<i class="fas fa-minus-circle"></i>
 			{{ $t('disabled-timeline.title') }}
 		</p>
 		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMinusCircle, faHome, faComments, faShareAlt, faGlobe, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '@client/components/timeline.vue';
 import * as os from '@client/os';
@@ -49,7 +48,6 @@ export default defineComponent({
 			disabled: false,
 			indicated: false,
 			columnActive: true,
-			faMinusCircle, faHome, faComments, faShareAlt, faGlobe,
 		};
 	},
 

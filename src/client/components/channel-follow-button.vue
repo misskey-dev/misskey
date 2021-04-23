@@ -6,21 +6,20 @@
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ $ts.unfollow }}</span><Fa :icon="faMinus"/>
+			<span v-if="full">{{ $ts.unfollow }}</span><i class="fas fa-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ $ts.follow }}</span><Fa :icon="faPlus"/>
+			<span v-if="full">{{ $ts.follow }}</span><i class="fas fa-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ $ts.processing }}</span><Fa :icon="faSpinner" pulse fixed-width/>
+		<span v-if="full">{{ $ts.processing }}</span><i class="fas fa-spinner fa-pulse fa-fw"></i>
 	</template>
 </button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSpinner, faPlus, faMinus, } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -40,7 +39,6 @@ export default defineComponent({
 		return {
 			isFollowing: this.channel.isFollowing,
 			wait: false,
-			faSpinner, faPlus, faMinus,
 		};
 	},
 

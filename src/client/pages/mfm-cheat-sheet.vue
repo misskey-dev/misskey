@@ -266,7 +266,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
 import MkTextarea from '@client/components/ui/textarea.vue';
 import * as symbols from '@client/symbols';
 
@@ -279,7 +278,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts._mfm.cheatSheet,
-				icon: faQuestionCircle,
+				icon: 'fas fa-question-circle',
 			},
 			preview_mention: '@example',
 			preview_hashtag: '#test',

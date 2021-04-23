@@ -4,7 +4,7 @@
 		<li v-for="ctx in uploads" :key="ctx.id">
 			<div class="img" :style="{ backgroundImage: `url(${ ctx.img })` }"></div>
 			<div class="top">
-				<p class="name"><Fa :icon="faSpinner" pulse/>{{ ctx.name }}</p>
+				<p class="name"><i class="fas fa-spinner fa-pulse"></i>{{ ctx.name }}</p>
 				<p class="status">
 					<span class="initing" v-if="ctx.progressValue === undefined">{{ $ts.waiting }}<MkEllipsis/></span>
 					<span class="kb" v-if="ctx.progressValue !== undefined">{{ String(Math.floor(ctx.progressValue / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i> / {{ String(Math.floor(ctx.progressMax / 1024)).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,') }}<i>KB</i></span>
@@ -19,14 +19,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
 	data() {
 		return {
 			uploads: os.uploads,
-			faSpinner
 		};
 	},
 });
@@ -92,7 +90,7 @@ export default defineComponent({
   overflow: hidden;
   flex-shrink: 1;
 }
-.mk-uploader > ol > li > .top > .name > [data-icon] {
+.mk-uploader > ol > li > .top > .name > i {
   margin-right: 4px;
 }
 .mk-uploader > ol > li > .top > .status {

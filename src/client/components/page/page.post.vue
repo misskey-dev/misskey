@@ -1,13 +1,15 @@
 <template>
 <div class="ngbfujlo">
 	<MkTextarea :value="text" readonly style="margin: 0;"></MkTextarea>
-	<MkButton class="button" primary @click="post()" :disabled="posting || posted"><Fa v-if="posted" :icon="faCheck"/><Fa v-else :icon="faPaperPlane"/></MkButton>
+	<MkButton class="button" primary @click="post()" :disabled="posting || posted">
+		<i v-if="posted" class="fas fa-check"></i>
+		<i v-else class="fas fa-paper-plane"></i>
+	</MkButton>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import MkTextarea from '../ui/textarea.vue';
 import MkButton from '../ui/button.vue';
 import { apiUrl } from '@client/config';
@@ -35,7 +37,6 @@ export default defineComponent({
 			text: this.hpml.interpolate(this.block.text),
 			posted: false,
 			posting: false,
-			faCheck, faPaperPlane
 		};
 	},
 	watch: {

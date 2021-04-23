@@ -99,9 +99,12 @@
 			<span>Raw</span>
 		</FormObjectView>
 		<FormGroup>
+			<template #label>Well-known resources</template>
 			<FormLink :to="`https://${host}/.well-known/host-meta`" external>host-meta</FormLink>
 			<FormLink :to="`https://${host}/.well-known/host-meta.json`" external>host-meta.json</FormLink>
 			<FormLink :to="`https://${host}/.well-known/nodeinfo`" external>nodeinfo</FormLink>
+			<FormLink :to="`https://${host}/robots.txt`" external>robots.txt</FormLink>
+			<FormLink :to="`https://${host}/manifest.json`" external>manifest.json</FormLink>
 		</FormGroup>
 		<FormSuspense :p="dnsPromiseFactory" v-slot="{ result: dns }">
 			<FormGroup>
@@ -130,7 +133,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faExternalLinkAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import Chart from 'chart.js';
 import FormObjectView from '@client/components/form/object-view.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
@@ -182,10 +184,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.instanceInfo,
-				icon: faInfoCircle,
+				icon: 'fas fa-info-circle',
 				actions: [{
 					text: `https://${this.host}`,
-					icon: faExternalLinkAlt,
+					icon: 'fas fa-external-link-alt',
 					handler: () => {
 						window.open(`https://${this.host}`, '_blank');
 					}

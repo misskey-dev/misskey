@@ -1,27 +1,30 @@
 <template>
-<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="onShow">
+<div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+		<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>
 <div class="kkjnbbplepmiyuadieoenjgutgcmtsvu" v-else>
-	<i><Fa :icon="faEyeSlash" @click="onHide"/></i>
-	<a
-		:style="imageStyle"
-		@click="onPlay($event)"
+	<video
+		:poster="video.thumbnailUrl"
+		:title="video.name"
+		crossorigin="anonymous"
+		preload="none"
+		controls
 	>
-		<Fa :icon="faPlayCircle"/>
-	</a>
+		<source 
+			:src="video.url" 
+			:type="video.type"
+		>
+	</video>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlayCircle } from '@fortawesome/free-regular-svg-icons';
-import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
-import DPlayer from '@nyaone/dplayer-misskey';
 
 export default defineComponent({
 	props: {
@@ -33,50 +36,10 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faPlayCircle,
-			faExclamationTriangle,
-			faEyeSlash,
-			dp: null,
 		};
-	},
-	computed: {
-		imageStyle(): any {
-			return {
-				'background-image': `url(${this.video.thumbnailUrl})`
-			};
-		}
 	},
 	created() {
 		this.hide = (this.$store.state.nsfw === 'force') ? true : this.video.isSensitive && (this.$store.state.nsfw !== 'ignore');
-	},
-	methods: {
-		onPlay(ev) {
-			if (this.dp === null) {
-				// Only for creating new
-				this.dp = new DPlayer({
-					// Configure parameters
-					container: ev.target,
-					autoplay: true,
-					// theme: '#96baf3',
-					loop: false,
-					lang: 'zh-cn',
-					preload: 'auto',
-					volume: 0.7,
-					video: {
-						url: this.video.url,
-						pic: this.video.thumbnailUrl,
-						type: 'auto',
-					},
-				});
-			}
-		},
-		onShow() {
-			this.hide = false;
-		},
-		onHide() {
-			this.hide = true;
-			this.dp = null;
-		}
 	},
 });
 </script>
@@ -98,25 +61,19 @@ export default defineComponent({
 		cursor: pointer;
 		top: 12px;
 		right: 12px;
-		z-index: 1;
 	}
 
-	> a {
+	> video {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 
+		font-size: 3.5em;
 		overflow: hidden;
 		background-position: center;
 		background-size: cover;
 		width: 100%;
 		height: 100%;
-
-		> svg {
-			// Only for Play button
-			font-size: 3.5em;
-			pointer-events: none;
-		}
 	}
 }
 

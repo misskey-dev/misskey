@@ -99,7 +99,7 @@ router.get('/manifest.json', require('./manifest'));
 
 router.get('/robots.txt', async ctx => {
 	await send(ctx as any, '/robots.txt', {
-		root: assets
+		root: staticAssets
 	});
 });
 

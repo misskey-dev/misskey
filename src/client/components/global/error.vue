@@ -2,7 +2,7 @@
 <transition :name="$store.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
-		<p><Fa :icon="faExclamationTriangle"/> {{ $ts.somethingHappened }}</p>
+		<p><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</p>
 		<MkButton @click="() => $emit('retry')" class="button">{{ $ts.retry }}</MkButton>
 	</div>
 </transition>
@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
@@ -19,7 +18,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faExclamationTriangle
 		};
 	},
 });

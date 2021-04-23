@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { } from '@fortawesome/free-solid-svg-icons';
 import { host, instanceName } from '@client/config';
 import * as os from '@client/os';
 import MkPagination from '@client/components/ui/pagination.vue';
