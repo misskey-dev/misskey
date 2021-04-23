@@ -92,18 +92,20 @@ export default defineComponent({
 		this.connection.on('notification', this.onNotification);
 
 		this.connection.on('readAllNotifications', () => {
-			this.queue = this.queue.map(x => markNotificationRead(x));
+			for (const item of this.queue) {
+				item.isRead = true;
+			}
 			for (const item of this.items) {
 				item.isRead = true;
 			}
 		});
 		this.connection.on('readNotifications', notificationIds => {
-			if (this.queue.length === 0) return;
-
 			for (let i = 0; i < this.queue.length; i++) {
 				if (notificationIds.includes(this.queue[i].id)) {
-					this.queue[i] = markNotificationRead(this.queue[i]);
+					this.queue[i].isRead = true;
 				}
+			}
+			for (let i = 0; i < this.items.length; i++) {
 				if (notificationIds.includes(this.items[i].id)) {
 					this.items[i].isRead = true;
 				}
