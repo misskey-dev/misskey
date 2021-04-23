@@ -218,6 +218,8 @@ export default defineComponent({
 	$widgets-hide-threshold: 1200px;
 	$nav-icon-only-width: 78px; // TODO: どこかに集約したい
 
+	--panelShadow: none;
+
 	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	min-height: calc(var(--vh, 1vh) * 100);
 	box-sizing: border-box;
@@ -250,7 +252,7 @@ export default defineComponent({
 		display: flex;
 		justify-content: center;
 		max-width: 100%;
-		margin: 32px 0;
+		//margin: 32px 0;
 
 		&.fullView {
 			margin: 0;
@@ -276,6 +278,8 @@ export default defineComponent({
 			width: 750px;
 			margin: 0 16px 0 0;
 			background: var(--bg);
+			box-shadow: 0 0 0 1px var(--divider);
+			border-radius: 0;
 			--margin: 12px;
 
 			> .header {
@@ -308,10 +312,15 @@ export default defineComponent({
 		> .widgets {
 			//--panelShadow: none;
 			width: 300px;
+			margin-top: 16px;
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
 			}
+		}
+
+		> .sidebar {
+			margin-top: 16px;
 		}
 
 		@media (max-width: 850px) {
