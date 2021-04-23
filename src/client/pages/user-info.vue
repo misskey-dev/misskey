@@ -162,7 +162,7 @@ export default defineComponent({
 		},
 
 		async updateRemoteUser() {
-			await os.apiWithDialog('admin/update-remote-user', { userId: this.user.id });
+			await os.apiWithDialog('federation/update-remote-user', { userId: this.user.id });
 			this.refreshUser();
 		},
 
