@@ -520,3 +520,27 @@ hr {
 		transform: scale3d(1, 1, 1);
 	}
 }
+
+._anime_bounce {
+  animation: bounce ease 1s;
+  animation-iteration-count: 1;
+  transform-origin: 50% 50%;
+}
+._anime_bounce_ready {
+	transform:  scaleX(0.90) scaleY(0.90) ;
+}
+
+@keyframes bounce{
+  0% {
+    transform:  scaleX(0.90) scaleY(0.90) ;
+  }
+  13% {
+    transform:  scaleX(1.10) scaleY(1.10) ;
+  }
+  35% {
+    transform:  scaleX(0.95) scaleY(0.95) ;
+  }
+  100% {
+    transform:  scaleX(1.00) scaleY(1.00) ;
+  }
+}
