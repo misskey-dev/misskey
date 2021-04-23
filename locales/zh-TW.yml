@@ -765,7 +765,9 @@ _mfm:
   mention: "提及"
   mentionDescription: "透過 @+用戶名 來標示特定使用者。"
   hashtag: "#tag"
+  hashtagDescription: "可以使用\"#\"符號後加文字表示話題標籤。"
   url: "URL"
+  urlDescription: "可以展示URL位址。"
   link: "鏈接"
   bold: "粗體"
   small: "縮小"
@@ -913,6 +915,7 @@ _sfx:
   noteMy: "我的貼文"
   notification: "通知"
   chat: "傳送訊息"
+  chatBg: "聊天背景"
   antenna: "天線接收"
   channel: "頻道通知"
 _ago:
