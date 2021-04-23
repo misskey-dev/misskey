@@ -732,6 +732,9 @@ enabled: "Enabled"
 disabled: "Disabled"
 user: "Users"
 administration: "Management"
+noMaintainerInformationWarning: "Maintainer information is not configured."
+noBotProtectionWarning: "Bot protection is not configured."
+configure: "Configure"
 _email:
   _follow:
     title: "You've got a new follower"
