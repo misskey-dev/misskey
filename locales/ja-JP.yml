@@ -738,6 +738,9 @@ user: "ユーザー"
 administration: "管理"
 accounts: "アカウント"
 switch: "切り替え"
+noMaintainerInformationWarning: "管理者情報が設定されていません。"
+noBotProtectionWarning: "Bot防御が設定されていません。"
+configure: "設定する"
 
 _email:
   _follow:
