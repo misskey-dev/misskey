@@ -5,7 +5,7 @@
 			<div @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div class="sensitive" v-if="element.isSensitive">
-					<Fa class="icon" :icon="faExclamationTriangle"/>
+					<i class="fas fa-exclamation-triangle icon"></i>
 				</div>
 			</div>
 		</template>
@@ -16,8 +16,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faTimesCircle, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
-import { faExclamationTriangle, faICursor } from '@fortawesome/free-solid-svg-icons';
 import MkDriveFileThumbnail from './drive-file-thumbnail.vue'
 import * as os from '@client/os';
 
@@ -44,7 +42,6 @@ export default defineComponent({
 		return {
 			menu: null as Promise<null> | null,
 
-			faExclamationTriangle
 		};
 	},
 
@@ -100,11 +97,11 @@ export default defineComponent({
 				action: () => { this.rename(file) }
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? faEyeSlash : faEye,
+				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file) }
 			}, {
 				text: this.$ts.attachCancel,
-				icon: faTimesCircle,
+				icon: 'fas fa-times-circle',
 				action: () => { this.detachMedia(file.id) }
 			}], ev.currentTarget || ev.target).then(() => this.menu = null);
 		}

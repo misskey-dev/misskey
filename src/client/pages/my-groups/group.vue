@@ -23,7 +23,7 @@
 							<MkAcct :user="user" class="acct"/>
 						</div>
 						<div class="action">
-							<button class="_button" @click="removeUser(user)"><Fa :icon="faTimes"/></button>
+							<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
 						</div>
 					</div>
 				</div>
@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
@@ -57,11 +56,10 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: computed(() => this.group ? {
 				title: this.group.name,
-				icon: faUsers,
+				icon: 'fas fa-users',
 			} : null),
 			group: null,
 			users: [],
-			faTimes, faUsers
 		};
 	},
 

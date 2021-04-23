@@ -1,4 +1,3 @@
-import { faHistory } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 import { i18n } from '@client/i18n';
 import { router } from '@client/router';
@@ -37,7 +36,7 @@ export async function search() {
 		// TODO
 		//v.$root.$emit('warp', date);
 		os.dialog({
-			icon: faHistory,
+			icon: 'fas fa-history',
 			iconOnly: true, autoClose: true
 		});
 		return;

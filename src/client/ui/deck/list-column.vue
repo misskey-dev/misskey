@@ -1,7 +1,7 @@
 <template>
 <XColumn :func="{ handler: setList, title: $ts.selectList }" :column="column" :is-stacked="isStacked">
 	<template #header>
-		<Fa :icon="faListUl"/><span style="margin-left: 8px;">{{ column.name }}</span>
+		<i class="fas fa-list-ul"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
 	<XTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => $emit('loaded')"/>
@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faListUl, faCog } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XTimeline from '@client/components/timeline.vue';
 import * as os from '@client/os';
@@ -35,7 +34,6 @@ export default defineComponent({
 
 	data() {
 		return {
-			faListUl
 		};
 	},
 

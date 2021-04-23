@@ -132,7 +132,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
@@ -154,7 +153,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: 'TEST',
-				icon: faExclamationTriangle
+				icon: 'fas fa-exclamation-triangle'
 			},
 			dialogTitle: 'Hello',
 			dialogBody: 'World!',

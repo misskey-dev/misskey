@@ -15,17 +15,17 @@
 		</section>
 		<FormGroup>
 			<FormLink to="https://github.com/misskey-dev/misskey" external>
-				<template #icon><Fa :icon="faCode"/></template>
+				<template #icon><i class="fas fa-code"></i></template>
 				{{ $ts._aboutMisskey.source }}
 				<template #suffix>GitHub</template>
 			</FormLink>
 			<FormLink to="https://crowdin.com/project/misskey" external>
-				<template #icon><Fa :icon="faLanguage"/></template>
+				<template #icon><i class="fas fa-language"></i></template>
 				{{ $ts._aboutMisskey.translation }}
 				<template #suffix>Crowdin</template>
 			</FormLink>
 			<FormLink to="https://www.patreon.com/syuilo" external>
-				<template #icon><Fa :icon="faHandHoldingMedical"/></template>
+				<template #icon><i class="fas fa-hand-holding-medical"></i></template>
 				{{ $ts._aboutMisskey.donate }}
 				<template #suffix>Patreon</template>
 			</FormLink>
@@ -54,7 +54,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faInfoCircle, faCode, faLanguage, faHandHoldingMedical, } from '@fortawesome/free-solid-svg-icons';
 import VanillaTilt from 'vanilla-tilt';
 import { version } from '@client/config';
 import FormLink from '@client/components/form/link.vue';
@@ -125,7 +124,6 @@ export default defineComponent({
 			easterEggReady: false,
 			easterEggEmojis: [],
 			easterEggEngine: null,
-			faInfoCircle, faCode, faLanguage, faHandHoldingMedical,
 		}
 	},
 

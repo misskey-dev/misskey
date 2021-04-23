@@ -1,15 +1,15 @@
 <template>
 <FormBase>
 	<X2fa/>
-	<FormLink to="/settings/2fa"><template #icon><Fa :icon="faMobileAlt"/></template>{{ $ts.twoStepAuthentication }}</FormLink>
+	<FormLink to="/settings/2fa"><template #icon><i class="fas fa-mobile-alt"></i></template>{{ $ts.twoStepAuthentication }}</FormLink>
 	<FormButton primary @click="change()">{{ $ts.changePassword }}</FormButton>
 	<FormPagination :pagination="pagination">
 		<template #label>{{ $ts.signinHistory }}</template>
 		<template #default="{items}">
 			<div class="_formPanel timnmucd" v-for="item in items" :key="item.id">
 				<header>
-					<Fa class="icon succ" :icon="faCheck" v-if="item.success"/>
-					<Fa class="icon fail" :icon="faTimesCircle" v-else/>
+					<i v-if="item.success" class="fas fa-check icon succ"></i>
+					<i v-else class="fas fa-times-circle icon fail"></i>
 					<code class="ip _monospace">{{ item.ip }}</code>
 					<MkTime :time="item.createdAt" class="time"/>
 				</header>
@@ -17,7 +17,7 @@
 		</template>
 	</FormPagination>
 	<FormGroup>
-		<FormButton danger @click="regenerateToken"><Fa :icon="faSyncAlt"/> {{ $ts.regenerateLoginToken }}</FormButton>
+		<FormButton danger @click="regenerateToken"><i class="fas fa-sync-alt"></i> {{ $ts.regenerateLoginToken }}</FormButton>
 		<template #caption>{{ $ts.regenerateLoginTokenDescription }}</template>
 	</FormGroup>
 </FormBase>
@@ -25,7 +25,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCheck, faTimesCircle, faLock, faSyncAlt, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
 import FormBase from '@client/components/form/base.vue';
 import FormLink from '@client/components/form/link.vue';
 import FormGroup from '@client/components/form/group.vue';
@@ -49,13 +48,12 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.security,
-				icon: faLock
+				icon: 'fas fa-lock'
 			},
 			pagination: {
 				endpoint: 'i/signin-history',
 				limit: 5,
 			},
-			faLock, faSyncAlt, faCheck, faTimesCircle, faMobileAlt,
 		}
 	},
 

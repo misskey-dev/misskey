@@ -18,7 +18,7 @@ type Captcha = {
 	getResponse(id: string): string;
 };
 
-type CaptchaProvider = 'hcaptcha' | 'grecaptcha';
+type CaptchaProvider = 'hcaptcha' | 'recaptcha';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;
@@ -57,7 +57,7 @@ export default defineComponent({
 		src() {
 			const endpoint = ({
 				hcaptcha: 'https://hcaptcha.com/1',
-				grecaptcha: 'https://www.recaptcha.net/recaptcha',
+				recaptcha: 'https://www.recaptcha.net/recaptcha',
 			} as Record<PropertyKey, unknown>)[this.provider];
 
 			return `${typeof endpoint == 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;

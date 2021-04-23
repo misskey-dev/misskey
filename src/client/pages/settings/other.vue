@@ -21,10 +21,10 @@
 		</template>
 	</FormGroup>
 
-	<FormLink to="/settings/registry"><template #icon><Fa :icon="faCogs"/></template>{{ $ts.registry }}</FormLink>
+	<FormLink to="/settings/registry"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.registry }}</FormLink>
 
-	<FormLink to="/bios" behavior="browser"><template #icon><Fa :icon="faDoorOpen"/></template>BIOS</FormLink>
-	<FormLink to="/cli" behavior="browser"><template #icon><Fa :icon="faDoorOpen"/></template>CLI</FormLink>
+	<FormLink to="/bios" behavior="browser"><template #icon><i class="fas fa-door-open"></i></template>BIOS</FormLink>
+	<FormLink to="/cli" behavior="browser"><template #icon><i class="fas fa-door-open"></i></template>CLI</FormLink>
 
 	<FormButton @click="closeAccount" danger>{{ $ts.closeAccount }}</FormButton>
 </FormBase>
@@ -32,7 +32,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { faEllipsisH, faCogs, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -62,10 +61,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.other,
-				icon: faEllipsisH
+				icon: 'fas fa-ellipsis-h'
 			},
 			debug,
-			faCogs, faDoorOpen,
 		}
 	},
 

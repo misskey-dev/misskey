@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent" :class="$style.root" :data-transparent="props.transparent ? true : null">
-	<template #header><Fa :icon="faCamera"/>{{ $ts._widgets.photos }}</template>
+	<template #header><i class="fas fa-camera"></i>{{ $ts._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>
@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import define from './define';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
@@ -46,7 +45,6 @@ export default defineComponent({
 			images: [],
 			fetching: true,
 			connection: null,
-			faCamera
 		};
 	},
 	mounted() {

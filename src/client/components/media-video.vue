@@ -1,7 +1,7 @@
 <template>
 <div class="icozogqfvdetwohsdglrbswgrejoxbdj" v-if="hide" @click="hide = false">
 	<div>
-		<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+		<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
 		<span>{{ $ts.clickToShow }}</span>
 	</div>
 </div>
@@ -18,13 +18,12 @@
 			:type="video.type"
 		>
 	</video>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -37,8 +36,6 @@ export default defineComponent({
 	data() {
 		return {
 			hide: true,
-			faExclamationTriangle,
-			faEyeSlash
 		};
 	},
 	created() {

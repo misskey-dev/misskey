@@ -1,6 +1,6 @@
 <template>
 <XColumn :column="column" :is-stacked="isStacked">
-	<template #header><Fa :icon="faEnvelope" style="margin-right: 8px;"/>{{ column.name }}</template>
+	<template #header><i class="fas fa-envelope" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotes :pagination="pagination" @before="before()" @after="after()"/>
 </XColumn>
@@ -8,7 +8,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Progress from '@client/scripts/loading';
 import XColumn from './column.vue';
 import XNotes from '@client/components/notes.vue';
@@ -40,7 +39,6 @@ export default defineComponent({
 					visibility: 'specified'
 				})
 			},
-			faEnvelope
 		}
 	},
 
