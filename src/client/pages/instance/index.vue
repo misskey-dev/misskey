@@ -16,13 +16,13 @@
 				<FormButton v-if="$instance.disableRegistration" @click="invite"><i class="fas fa-user"></i> {{ $ts.invite }}</FormButton>
 			</FormGroup>
 			<FormGroup>
+				<template #label>{{ $ts.administration }}</template>
 				<FormLink :active="page === 'users'" replace to="/instance/users"><template #icon><i class="fas fa-users"></i></template>{{ $ts.users }}</FormLink>
 				<FormLink :active="page === 'emojis'" replace to="/instance/emojis"><template #icon><i class="fas fa-laugh"></i></template>{{ $ts.customEmojis }}</FormLink>
 				<FormLink :active="page === 'federation'" replace to="/instance/federation"><template #icon><i class="fas fa-globe"></i></template>{{ $ts.federation }}</FormLink>
 				<FormLink :active="page === 'queue'" replace to="/instance/queue"><template #icon><i class="fas fa-clipboard-list"></i></template>{{ $ts.jobQueue }}</FormLink>
 				<FormLink :active="page === 'files'" replace to="/instance/files"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
 				<FormLink :active="page === 'announcements'" replace to="/instance/announcements"><template #icon><i class="fas fa-broadcast-tower"></i></template>{{ $ts.announcements }}</FormLink>
-				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
 				<FormLink :active="page === 'abuses'" replace to="/instance/abuses"><template #icon><i class="fas fa-exclamation-circle"></i></template>{{ $ts.abuseReports }}</FormLink>
 			</FormGroup>
 			<FormGroup>
@@ -38,6 +38,10 @@
 				<FormLink :active="page === 'instance-block'" replace to="/instance/instance-block"><template #icon><i class="fas fa-ban"></i></template>{{ $ts.instanceBlocking }}</FormLink>
 				<FormLink :active="page === 'proxy-account'" replace to="/instance/proxy-account"><template #icon><i class="fas fa-ghost"></i></template>{{ $ts.proxyAccount }}</FormLink>
 				<FormLink :active="page === 'other-settings'" replace to="/instance/other-settings"><template #icon><i class="fas fa-cogs"></i></template>{{ $ts.other }}</FormLink>
+			</FormGroup>
+			<FormGroup>
+				<template #label>{{ $ts.info }}</template>
+				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
 			</FormGroup>
 		</FormBase>
 	</div>
@@ -229,7 +233,7 @@ export default defineComponent({
 .lxpfedzu {
 	padding: 16px;
 
-	> img {
+	> .icon {
 		display: block;
 		margin: auto;
 		height: 42px;

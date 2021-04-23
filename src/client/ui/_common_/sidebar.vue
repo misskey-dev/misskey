@@ -157,11 +157,11 @@ export default defineComponent({
 				avatar: this.$i,
 			}, null, ...accountItemPromises, {
 				icon: 'fas fa-plus',
-				text: this.$ts.addAcount,
+				text: this.$ts.addAccount,
 				action: () => {
 					os.modalMenu([{
-						text: this.$ts.existingAcount,
-						action: () => { this.addAcount(); },
+						text: this.$ts.existingAccount,
+						action: () => { this.addAccount(); },
 					}, {
 						text: this.$ts.createAccount,
 						action: () => { this.createAccount(); },
@@ -177,7 +177,7 @@ export default defineComponent({
 			}, 'closed');
 		},
 
-		addAcount() {
+		addAccount() {
 			os.popup(import('@client/components/signin-dialog.vue'), {}, {
 				done: res => {
 					addAccount(res.id, res.i);
