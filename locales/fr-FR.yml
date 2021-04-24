@@ -735,8 +735,10 @@ user: "Utilisateur·rice·s"
 administration: "Gestion"
 accounts: "Comptes"
 switch: "Remplacer"
+noBotProtectionWarning: "La protection contre les bots n'est pas configurée."
 configure: "Configurer"
 _gallery:
+  like: "J'aime"
   unlike: "Je n’aime pas"
 _email:
   _follow:
