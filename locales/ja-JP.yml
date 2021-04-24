@@ -745,11 +745,14 @@ configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
 gallery: "ギャラリー"
 recentPosts: "最近の投稿"
+popularPosts: "人気の投稿"
 shareWithNote: "ノートで共有"
 
 _gallery:
   my: "自分の投稿"
   liked: "いいねした投稿"
+  like: "いいね！"
+  unlike: "いいね解除"
 
 _email:
   _follow:

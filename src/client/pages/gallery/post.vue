@@ -11,7 +11,7 @@
 				<div class="title">{{ post.title }}</div>
 				<div class="description"><Mfm :text="post.description"/></div>
 				<div class="info">
-					<MkTime :time="post.createdAt" mode="detail"/>
+					<i class="fas fa-clock"></i> <MkTime :time="post.createdAt" mode="detail"/>
 				</div>
 				<div class="actions">
 					<div class="like">

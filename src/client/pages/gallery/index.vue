@@ -24,18 +24,18 @@
 			</MkPagination>
 		</MkFolder>
 	</div>
-	<div v-else-if="tab === 'my'">
-		<MkA to="/gallery/new"><i class="fas fa-plus"></i> {{ $ts.postToGallery }}</MkA>
-		<MkPagination :pagination="myPostsPagination" #default="{items}">
-			<div class="vfpdbgtk">
-				<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
-			</div>
-		</MkPagination>
-	</div>
 	<div v-else-if="tab === 'liked'">
 		<MkPagination :pagination="likedPostsPagination" #default="{items}">
 			<div class="vfpdbgtk">
 				<MkGalleryPostPreview v-for="like in items" :post="like.post" :key="like.id" class="post"/>
+			</div>
+		</MkPagination>
+	</div>
+	<div v-else-if="tab === 'my'">
+		<MkA to="/gallery/new" class="_link" style="margin: 16px;"><i class="fas fa-plus"></i> {{ $ts.postToGallery }}</MkA>
+		<MkPagination :pagination="myPostsPagination" #default="{items}">
+			<div class="vfpdbgtk">
+				<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
 			</div>
 		</MkPagination>
 	</div>
