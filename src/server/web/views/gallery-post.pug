@@ -1,0 +1,35 @@
+extends ./base
+
+block vars
+	- const user = post.user;
+	- const title = post.title;
+	- const url = `${config.url}/gallery/${post.id}`;
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content= post.description)
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content= post.description)
+	meta(property='og:url'         content= url)
+	meta(property='og:image'       content= post.files[0].thumbnailUrl)
+
+block meta
+	if user.host || profile.noCrawle
+		meta(name='robots' content='noindex')
+
+	meta(name='misskey:user-username' content=user.username)
+	meta(name='misskey:user-id' content=user.id)
+
+	meta(name='twitter:card' content='summary')
+
+	// todo
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
+
+	if !user.host
+		link(rel='alternate' href=url type='application/activity+json')
