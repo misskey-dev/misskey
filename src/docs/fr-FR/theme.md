@@ -52,7 +52,7 @@ C'est dans `props` que vous définirez le style de thème. Les propriétés devi
     * Ex. : `rgb(0, 255, 0)`
 * Couleurs avec les valeurs RVBA : `rgba(r, g, b, a)`
     * Ex. : `rgba(0, 255, 0, 0.5)`
-* Faire référence aux valeurs d'autres propriétés
+* Appeler les valeurs d'autres propriétés
     * Entrer `@{keyname}` pour utiliser la valeur de la propriété citée. Remplacer alors `{keyname}` par le nom de la propriété que vous souhaitez citer.
     * Ex. : `@panel`
 * Constantes (voir ci-dessous)
