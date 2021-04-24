@@ -16,14 +16,12 @@
 
 	<FormSwitch v-model:value="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
 
-	<FormButton @click="publish" primary><Fa :icon="faSave"/> {{ $ts.publish }}</FormButton>
+	<FormButton @click="publish" primary><i class="fas fa-save"></i> {{ $ts.publish }}</FormButton>
 </FormBase>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake } from '@fortawesome/free-solid-svg-icons';
-import { faSave } from '@fortawesome/free-regular-svg-icons';
 import FormButton from '@client/components/form/button.vue';
 import FormInput from '@client/components/form/input.vue';
 import FormTextarea from '@client/components/form/textarea.vue';
@@ -49,13 +47,12 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.postToGallery,
-				icon: faUser
+				icon: 'fas fa-pencil-alt'
 			},
 			files: [],
 			description: null,
 			title: null,
 			isSensitive: false,
-			faSave, faUnlockAlt, faCogs, faUser, faMapMarkerAlt, faBirthdayCake
 		}
 	},
 

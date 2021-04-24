@@ -743,6 +743,12 @@ noMaintainerInformationWarning: "管理者情報が設定されていません�
 noBotProtectionWarning: "Bot防御が設定されていません。"
 configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
+gallery: "ギャラリー"
+recentPosts: "最近の投稿"
+
+_gallery:
+  my: "自分の投稿"
+  liked: "いいねした投稿"
 
 _email:
   _follow:

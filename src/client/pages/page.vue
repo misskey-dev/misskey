@@ -170,6 +170,7 @@ export default defineComponent({
 				--X8: rgb(241 92 128);
 				--buttonBg: rgb(216 71 106 / 5%);
 				--buttonHoverBg: rgb(216 71 106 / 10%);
+				color: #ff002f;
 
 				::v-deep(.count) {
 					margin-left: 0.5em;

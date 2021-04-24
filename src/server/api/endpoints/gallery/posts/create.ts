@@ -61,7 +61,7 @@ export default define(meta, async (ps, user) => {
 		throw new Error();
 	}
 
-	const post = await GalleryPosts.save(new GalleryPost({
+	const post = await GalleryPosts.insert(new GalleryPost({
 		id: genId(),
 		createdAt: new Date(),
 		updatedAt: new Date(),
@@ -69,7 +69,8 @@ export default define(meta, async (ps, user) => {
 		description: ps.description,
 		userId: user.id,
 		isSensitive: ps.isSensitive,
-	}));
+		fileIds: files.map(file => file.id)
+	})).then(x => GalleryPosts.findOneOrFail(x.identifiers[0]));
 
 	return await GalleryPosts.pack(post);
 });
