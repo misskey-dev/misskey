@@ -741,6 +741,7 @@ switch: "切换"
 noMaintainerInformationWarning: "管理人员信息未设置。"
 noBotProtectionWarning: "Bot保护未设置。"
 configure: "设置"
+recentPosts: "最新发布"
 _gallery:
   unlike: "取消赞"
 _email:
