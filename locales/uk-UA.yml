@@ -689,6 +689,8 @@ goBack: "Назад"
 info: "Інформація"
 user: "Користувачі"
 administration: "Управління"
+_gallery:
+  unlike: "Не вподобати"
 _email:
   _follow:
     title: "Новий підписник"
