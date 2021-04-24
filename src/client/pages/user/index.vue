@@ -179,19 +179,19 @@
 
 		<div class="contents">
 			<div class="nav _gap">
-				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
+				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link" v-click-anime>
 					<i class="fas fa-comment-alt icon"></i>
 					<span>{{ $ts.notes }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
+				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link" v-click-anime>
 					<i class="fas fa-paperclip icon"></i>
 					<span>{{ $ts.clips }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
+				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link" v-click-anime>
 					<i class="fas fa-file-alt icon"></i>
 					<span>{{ $ts.pages }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'gallery')" :class="{ active: page === 'gallery' }" class="link">
+				<MkA :to="userPage(user, 'gallery')" :class="{ active: page === 'gallery' }" class="link" v-click-anime>
 					<i class="fas fa-icons icon"></i>
 					<span>{{ $ts.gallery }}</span>
 				</MkA>
@@ -776,8 +776,7 @@ export default defineComponent({
 		> .nav {
 			display: flex;
 			align-items: center;
-			//font-size: 120%;
-			font-weight: bold;
+			font-size: 90%;
 
 			> .link {
 				flex: 1;
