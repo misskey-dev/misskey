@@ -51,6 +51,8 @@ import { UserSecurityKey } from '../models/entities/user-security-key';
 import { AttestationChallenge } from '../models/entities/attestation-challenge';
 import { Page } from '../models/entities/page';
 import { PageLike } from '../models/entities/page-like';
+import { GalleryPost } from '../models/entities/gallery-post';
+import { GalleryLike } from '../models/entities/gallery-like';
 import { ModerationLog } from '../models/entities/moderation-log';
 import { UsedUsername } from '../models/entities/used-username';
 import { Announcement } from '../models/entities/announcement';
@@ -137,6 +139,8 @@ export const entities = [
 	NoteUnread,
 	Page,
 	PageLike,
+	GalleryPost,
+	GalleryLike,
 	Log,
 	DriveFile,
 	DriveFolder,

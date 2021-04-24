@@ -704,6 +704,7 @@ editCode: "コードを編集"
 apply: "適用"
 receiveAnnouncementFromInstance: "インスタンスからのお知らせを受け取る"
 emailNotification: "メール通知"
+publish: "公開"
 inChannelSearch: "チャンネル内検索"
 useReactionPickerForContextMenu: "右クリックでリアクションピッカーを開く"
 typingUsers: "{users}が入力中"
@@ -741,6 +742,17 @@ switch: "切り替え"
 noMaintainerInformationWarning: "管理者情報が設定されていません。"
 noBotProtectionWarning: "Bot防御が設定されていません。"
 configure: "設定する"
+postToGallery: "ギャラリーへ投稿"
+gallery: "ギャラリー"
+recentPosts: "最近の投稿"
+popularPosts: "人気の投稿"
+shareWithNote: "ノートで共有"
+
+_gallery:
+  my: "自分の投稿"
+  liked: "いいねした投稿"
+  like: "いいね！"
+  unlike: "いいね解除"
 
 _email:
   _follow:

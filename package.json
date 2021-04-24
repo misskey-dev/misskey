@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.78.0",
+	"version": "12.79.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -176,7 +176,7 @@
 		"markdown-it": "12.0.5",
 		"markdown-it-anchor": "7.1.0",
 		"matter-js": "0.17.1",
-		"mfm-js": "0.16.2",
+		"mfm-js": "0.16.3",
 		"mocha": "8.3.2",
 		"moji": "0.5.1",
 		"ms": "2.1.3",
