@@ -1,7 +1,7 @@
 <template>
 <MkA :to="`/gallery/${post.id}`" class="ttasepnz _panel" tabindex="-1">
 	<div class="thumbnail">
-		<img :src="post.files[0].thumbnailUrl"/>
+		<ImgWithBlurhash class="img" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
 	</div>
 	<article>
 		<header>
@@ -16,10 +16,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { userName } from '../filters/user';
+import { userName } from '@client/filters/user';
+import ImgWithBlurhash from '@client/components/img-with-blurhash.vue';
 import * as os from '@client/os';
 
 export default defineComponent({
+	components: {
+		ImgWithBlurhash
+	},
 	props: {
 		post: {
 			type: Object,
@@ -61,7 +65,7 @@ export default defineComponent({
 		position: absolute;
 		transition: all 0.5s ease;
 
-		> img {
+		> .img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;

@@ -63,13 +63,15 @@ export default defineComponent({
 			});
 		},
 
-		publish() {
-			os.apiWithDialog('gallery/posts/create', {
+		async publish() {
+			const post = await os.apiWithDialog('gallery/posts/create', {
 				title: this.title,
 				description: this.description,
 				fileIds: this.files.map(file => file.id),
 				isSensitive: this.isSensitive,
 			});
+
+			this.$router.push(`/gallery/${post.id}`);
 		}
 	}
 });

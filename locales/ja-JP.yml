@@ -745,6 +745,7 @@ configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
 gallery: "ギャラリー"
 recentPosts: "最近の投稿"
+shareWithNote: "ノートで共有"
 
 _gallery:
   my: "自分の投稿"
