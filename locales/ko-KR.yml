@@ -726,6 +726,8 @@ active: "최근에 활동함"
 offline: "오프라인"
 user: "유저"
 administration: "관리"
+_gallery:
+  unlike: "좋아요 해제"
 _email:
   _follow:
     title: "새로운 팔로워가 있습니다"
