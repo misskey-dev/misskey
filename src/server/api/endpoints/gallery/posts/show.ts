@@ -39,5 +39,5 @@ export default define(meta, async (ps, me) => {
 		throw new ApiError(meta.errors.noSuchPost);
 	}
 
-	return await GalleryPosts.pack(post);
+	return await GalleryPosts.pack(post, me);
 });

@@ -166,7 +166,7 @@ export default defineComponent({
 			border-top: solid 0.5px var(--divider);
 
 			> .button {
-				--accent: rgb(216 71 106);
+				--accent: rgb(241 97 132);
 				--X8: rgb(241 92 128);
 				--buttonBg: rgb(216 71 106 / 5%);
 				--buttonHoverBg: rgb(216 71 106 / 10%);

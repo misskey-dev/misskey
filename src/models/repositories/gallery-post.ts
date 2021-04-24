@@ -11,9 +11,9 @@ export type PackedGalleryPost = SchemaType<typeof packedGalleryPostSchema>;
 export class GalleryPostRepository extends Repository<GalleryPost> {
 	public async pack(
 		src: GalleryPost['id'] | GalleryPost,
-		me?: User['id'] | User | null | undefined,
+		me?: { id: User['id'] } | null | undefined,
 	): Promise<PackedGalleryPost> {
-		const meId = me ? typeof me === 'string' ? me : me.id : null;
+		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.findOneOrFail(src);
 
 		return await awaitAll({
@@ -35,7 +35,7 @@ export class GalleryPostRepository extends Repository<GalleryPost> {
 
 	public packMany(
 		posts: GalleryPost[],
-		me?: User['id'] | User | null | undefined,
+		me?: { id: User['id'] } | null | undefined,
 	) {
 		return Promise.all(posts.map(x => this.pack(x, me)));
 	}

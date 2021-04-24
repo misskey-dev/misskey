@@ -72,5 +72,5 @@ export default define(meta, async (ps, user) => {
 		fileIds: files.map(file => file.id)
 	})).then(x => GalleryPosts.findOneOrFail(x.identifiers[0]));
 
-	return await GalleryPosts.pack(post);
+	return await GalleryPosts.pack(post, user);
 });

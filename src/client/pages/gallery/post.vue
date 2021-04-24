@@ -10,6 +10,9 @@
 			<div class="body _block">
 				<div class="title">{{ post.title }}</div>
 				<div class="description"><Mfm :text="post.description"/></div>
+				<div class="info">
+					<MkTime :time="post.createdAt" mode="detail"/>
+				</div>
 				<div class="actions">
 					<div class="like">
 						<MkButton class="button" @click="unlike()" v-if="post.isLiked" v-tooltip="$ts._gallery.unlike" primary><i class="fas fa-heart"></i><span class="count" v-if="post.likedCount > 0">{{ post.likedCount }}</span></MkButton>
@@ -183,6 +186,12 @@ export default defineComponent({
 			margin-bottom: 16px;
 		}
 
+		> .info {
+			margin-top: 16px;
+			font-size: 90%;
+			opacity: 0.7;
+		}
+
 		> .actions {
 			display: flex;
 			align-items: center;
@@ -192,7 +201,7 @@ export default defineComponent({
 
 			> .like {
 				> .button {
-					--accent: rgb(216 71 106);
+					--accent: rgb(241 97 132);
 					--X8: rgb(241 92 128);
 					--buttonBg: rgb(216 71 106 / 5%);
 					--buttonHoverBg: rgb(216 71 106 / 10%);

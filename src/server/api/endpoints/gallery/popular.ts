@@ -24,5 +24,5 @@ export default define(meta, async (ps, me) => {
 
 	const posts = await query.take(10).getMany();
 
-	return await GalleryPosts.packMany(posts);
+	return await GalleryPosts.packMany(posts, me);
 });

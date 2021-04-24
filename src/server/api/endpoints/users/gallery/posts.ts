@@ -35,5 +35,5 @@ export default define(meta, async (ps, user) => {
 		.take(ps.limit!)
 		.getMany();
 
-	return await GalleryPosts.packMany(posts);
+	return await GalleryPosts.packMany(posts, user);
 });

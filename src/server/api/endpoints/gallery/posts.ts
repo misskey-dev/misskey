@@ -33,11 +33,11 @@ export const meta = {
 	},
 };
 
-export default define(meta, async (ps) => {
+export default define(meta, async (ps, me) => {
 	const query = makePaginationQuery(GalleryPosts.createQueryBuilder('post'), ps.sinceId, ps.untilId)
 		.innerJoinAndSelect('post.user', 'user');
 
 	const posts = await query.take(ps.limit!).getMany();
 
-	return await GalleryPosts.packMany(posts);
+	return await GalleryPosts.packMany(posts, me);
 });

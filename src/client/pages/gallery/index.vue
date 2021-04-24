@@ -2,14 +2,14 @@
 <div class="xprsixdl _root">
 	<MkTab v-model:value="tab" v-if="$i">
 		<option value="explore"><i class="fas fa-icons"></i> {{ $ts.gallery }}</option>
-		<option value="my"><i class="fas fa-edit"></i> {{ $ts._gallery.my }}</option>
 		<option value="liked"><i class="fas fa-heart"></i> {{ $ts._gallery.liked }}</option>
+		<option value="my"><i class="fas fa-edit"></i> {{ $ts._gallery.my }}</option>
 	</MkTab>
 
 	<div v-if="tab === 'explore'">
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-clock"></i>{{ $ts.recentPosts }}</template>
-			<MkPagination :pagination="recentPostsPagination" #default="{items}">
+			<MkPagination :pagination="recentPostsPagination" #default="{items}" :disable-auto-load="true">
 				<div class="vfpdbgtk">
 					<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
 				</div>
@@ -17,7 +17,11 @@
 		</MkFolder>
 		<MkFolder class="_gap">
 			<template #header><i class="fas fa-fire-alt"></i>{{ $ts.popularPosts }}</template>
-			
+			<MkPagination :pagination="popularPostsPagination" #default="{items}" :disable-auto-load="true">
+				<div class="vfpdbgtk">
+					<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
+				</div>
+			</MkPagination>
 		</MkFolder>
 	</div>
 	<div v-else-if="tab === 'my'">
@@ -25,6 +29,13 @@
 		<MkPagination :pagination="myPostsPagination" #default="{items}">
 			<div class="vfpdbgtk">
 				<MkGalleryPostPreview v-for="post in items" :post="post" :key="post.id" class="post"/>
+			</div>
+		</MkPagination>
+	</div>
+	<div v-else-if="tab === 'liked'">
+		<MkPagination :pagination="likedPostsPagination" #default="{items}">
+			<div class="vfpdbgtk">
+				<MkGalleryPostPreview v-for="like in items" :post="like.post" :key="like.id" class="post"/>
 			</div>
 		</MkPagination>
 	</div>
@@ -72,6 +83,10 @@ export default defineComponent({
 			recentPostsPagination: {
 				endpoint: 'gallery/posts',
 				limit: 6,
+			},
+			popularPostsPagination: {
+				endpoint: 'gallery/featured',
+				limit: 5,
 			},
 			myPostsPagination: {
 				endpoint: 'i/gallery/posts',
