@@ -731,6 +731,8 @@ disabled: "Désactivé"
 quickAction: "Actions rapides"
 user: "Utilisateur·rice·s"
 administration: "Gestion"
+_gallery:
+  unlike: "Je n’aime pas"
 _email:
   _follow:
     title: "Vous suit"
