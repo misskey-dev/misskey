@@ -191,6 +191,10 @@
 					<i class="fas fa-file-alt icon"></i>
 					<span>{{ $ts.pages }}</span>
 				</MkA>
+				<MkA :to="userPage(user, 'gallery')" :class="{ active: page === 'gallery' }" class="link">
+					<i class="fas fa-icons icon"></i>
+					<span>{{ $ts.gallery }}</span>
+				</MkA>
 			</div>
 
 			<template v-if="page === 'index'">
@@ -210,6 +214,7 @@
 			<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
 			<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
 			<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
+			<XGallery v-else-if="page === 'gallery'" :user="user" class="_gap"/>
 		</div>
 	</div>
 	<MkError v-else-if="error" @retry="fetch()"/>
@@ -250,6 +255,7 @@ export default defineComponent({
 		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
 		XClips: defineAsyncComponent(() => import('./clips.vue')),
 		XPages: defineAsyncComponent(() => import('./pages.vue')),
+		XGallery: defineAsyncComponent(() => import('./gallery.vue')),
 		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},

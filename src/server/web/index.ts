@@ -17,7 +17,7 @@ import packFeed from './feed';
 import { fetchMeta } from '@/misc/fetch-meta';
 import { genOpenapiSpec } from '../api/openapi/gen-spec';
 import config from '@/config';
-import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips } from '../../models';
+import { Users, Notes, Emojis, UserProfiles, Pages, Channels, Clips, GalleryPosts } from '../../models';
 import parseAcct from '@/misc/acct/parse';
 import { getNoteSummary } from '@/misc/get-note-summary';
 import { getConnection } from 'typeorm';
@@ -332,6 +332,29 @@ router.get('/clips/:clip', async ctx => {
 			clip: _clip,
 			profile,
 			instanceName: meta.name || 'Misskey'
+		});
+
+		ctx.set('Cache-Control', 'public, max-age=180');
+
+		return;
+	}
+
+	ctx.status = 404;
+});
+
+// Gallery post
+router.get('/gallery/:post', async ctx => {
+	const post = await GalleryPosts.findOne(ctx.params.post);
+
+	if (post) {
+		const _post = await GalleryPosts.pack(post);
+		const profile = await UserProfiles.findOneOrFail(post.userId);
+		const meta = await fetchMeta();
+		await ctx.render('gallery-post', {
+			post: _post,
+			profile,
+			instanceName: meta.name || 'Misskey',
+			icon: meta.iconUrl
 		});
 
 		ctx.set('Cache-Control', 'public, max-age=180');
