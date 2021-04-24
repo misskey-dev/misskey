@@ -3,12 +3,12 @@
 	<div class="szkkfdyq _popup">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" class="_button" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action" class="_button" @click="$event => { item.action($event); close(); }" v-click-anime>
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 				</button>
-				<MkA v-else :to="item.to" @click.passive="close()">
+				<MkA v-else :to="item.to" @click.passive="close()" v-click-anime>
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
