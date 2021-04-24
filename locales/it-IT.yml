@@ -683,6 +683,8 @@ disabled: "Inattivo"
 quickAction: "Azioni rapide"
 user: "Utente"
 administration: "Gestione"
+_gallery:
+  unlike: "Togli Mi piace"
 _email:
   _follow:
     title: "Ha iniziato a seguirti"
