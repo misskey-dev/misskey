@@ -4,13 +4,13 @@
 		<MkTab v-model:value="tab">
 			<option value="owned">{{ $ts.ownedGroups }}</option>
 			<option value="joined">{{ $ts.joinedGroups }}</option>
-			<option value="invites"><Fa :icon="faEnvelopeOpenText"/> {{ $ts.invites }}</option>
+			<option value="invites"><i class="fas fa-envelope-open-text"></i> {{ $ts.invites }}</option>
 		</MkTab>
 	</div>
 
 	<div class="_section">
 		<div class="_content" v-if="tab === 'owned'">
-			<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><Fa :icon="faPlus"/> {{ $ts.createGroup }}</MkButton>
+			<MkButton @click="create" primary style="margin: 0 auto var(--margin) auto;"><i class="fas fa-plus"></i> {{ $ts.createGroup }}</MkButton>
 
 			<MkPagination :pagination="ownedPagination" #default="{items}" ref="owned">
 				<div class="_card" v-for="group in items" :key="group.id">
@@ -35,8 +35,8 @@
 					<div class="_title">{{ invitation.group.name }}</div>
 					<div class="_content"><MkAvatars :user-ids="invitation.group.userIds"/></div>
 					<div class="_footer">
-						<MkButton @click="acceptInvite(invitation)" primary inline><Fa :icon="faCheck"/> {{ $ts.accept }}</MkButton>
-						<MkButton @click="rejectInvite(invitation)" primary inline><Fa :icon="faBan"/> {{ $ts.reject }}</MkButton>
+						<MkButton @click="acceptInvite(invitation)" primary inline><i class="fas fa-check"></i> {{ $ts.accept }}</MkButton>
+						<MkButton @click="rejectInvite(invitation)" primary inline><i class="fas fa-ban"></i> {{ $ts.reject }}</MkButton>
 					</div>
 				</div>
 			</MkPagination>
@@ -47,7 +47,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faUsers, faPlus, faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkContainer from '@client/components/ui/container.vue';
@@ -69,7 +68,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.groups,
-				icon: faUsers
+				icon: 'fas fa-users'
 			},
 			tab: 'owned',
 			ownedPagination: {
@@ -84,7 +83,6 @@ export default defineComponent({
 				endpoint: 'i/user-group-invites',
 				limit: 10,
 			},
-			faUsers, faPlus, faEnvelopeOpenText
 		};
 	},
 

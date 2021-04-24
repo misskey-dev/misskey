@@ -5,8 +5,8 @@
 		<div class="sub">
 			<slot name="func"></slot>
 			<button class="_button" v-if="foldable" @click="() => showBody = !showBody">
-				<template v-if="showBody"><Fa :icon="faAngleUp"/></template>
-				<template v-else><Fa :icon="faAngleDown"/></template>
+				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
+				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
 		</div>
 	</header>
@@ -28,7 +28,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 export default defineComponent({
 	props: {
@@ -68,7 +67,6 @@ export default defineComponent({
 			showBody: this.expanded,
 			omitted: null,
 			ignoreOmit: false,
-			faAngleUp, faAngleDown
 		};
 	},
 	mounted() {
@@ -169,7 +167,7 @@ export default defineComponent({
 			margin: 0;
 			padding: 12px 16px;
 
-			> ::v-deep([data-icon]) {
+			> ::v-deep(i) {
 				margin-right: 6px;
 			}
 

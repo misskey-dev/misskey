@@ -6,7 +6,7 @@
 				<template #label>{{ $ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :value="widget" :key="widget">{{ $t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
-			<MkButton inline @click="addWidget" primary><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
+			<MkButton inline @click="addWidget" primary><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 			<MkButton inline @click="$emit('exit')">{{ $ts.close }}</MkButton>
 		</header>
 		<XDraggable
@@ -16,8 +16,8 @@
 		>
 			<template #item="{element}">
 				<div class="customize-container">
-					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><Fa :icon="faCog"/></button>
-					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><Fa :icon="faTimes"/></button>
+					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="fas fa-cog"></i></button>
+					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="fas fa-times"></i></button>
 					<component :is="`mkw-${element.name}`" :widget="element" :setting-callback="setting => settings[element.id] = setting" :column="column" @updateProps="updateWidget(element.id, $event)"/>
 				</div>
 			</template>
@@ -30,7 +30,6 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
 import { v4 as uuid } from 'uuid';
-import { faTimes, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
 import MkSelect from '@client/components/ui/select.vue';
 import MkButton from '@client/components/ui/button.vue';
 import { widgets as widgetDefs } from '@client/widgets';
@@ -59,7 +58,6 @@ export default defineComponent({
 			widgetAdderSelected: null,
 			widgetDefs,
 			settings: {},
-			faTimes, faPlus, faCog
 		};
 	},
 

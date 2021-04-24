@@ -1,6 +1,6 @@
 <template>
 <div class="_section qtcaoidl">
-	<MkButton @click="create" primary class="add"><Fa :icon="faPlus"/> {{ $ts.add }}</MkButton>
+	<MkButton @click="create" primary class="add"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 
 	<div class="_content">
 		<MkPagination :pagination="pagination" #default="{items}" ref="list" class="list">
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faPlus, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import MkPagination from '@client/components/ui/pagination.vue';
 import MkButton from '@client/components/ui/button.vue';
 import * as os from '@client/os';
@@ -31,9 +30,9 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.clip,
-				icon: faPaperclip,
+				icon: 'fas fa-paperclip',
 				action: {
-					icon: faPlus,
+					icon: 'fas fa-plus',
 					handler: this.create
 				}
 			},
@@ -42,7 +41,6 @@ export default defineComponent({
 				limit: 10,
 			},
 			draft: null,
-			faPlus
 		};
 	},
 

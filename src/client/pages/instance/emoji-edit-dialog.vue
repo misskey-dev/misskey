@@ -8,22 +8,23 @@
 >
 	<template #header>:{{ emoji.name }}:</template>
 
-	<div class="yigymqpb _section">
-		<img :src="emoji.url" class="img"/>
-		<MkInput v-model:value="name"><span>{{ $ts.name }}</span></MkInput>
-		<MkInput v-model:value="category" :datalist="categories"><span>{{ $ts.category }}</span></MkInput>
-		<MkInput v-model:value="aliases">
-			<span>{{ $ts.tags }}</span>
-			<template #desc>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
-		</MkInput>
-		<MkButton danger @click="del()"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+	<div class="_monolithic_">
+		<div class="yigymqpb _section">
+			<img :src="emoji.url" class="img"/>
+			<MkInput v-model:value="name"><span>{{ $ts.name }}</span></MkInput>
+			<MkInput v-model:value="category" :datalist="categories"><span>{{ $ts.category }}</span></MkInput>
+			<MkInput v-model:value="aliases">
+				<span>{{ $ts.tags }}</span>
+				<template #desc>{{ $ts.setMultipleBySeparatingWithSpace }}</template>
+			</MkInput>
+			<MkButton danger @click="del()"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
+		</div>
 	</div>
 </XModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
@@ -51,7 +52,6 @@ export default defineComponent({
 			category: this.emoji.category,
 			aliases: this.emoji.aliases?.join(' '),
 			categories: [],
-			faTrashAlt,
 		}
 	},
 

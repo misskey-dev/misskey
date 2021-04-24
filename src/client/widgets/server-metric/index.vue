@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="props.showHeader" :naked="props.transparent">
-	<template #header><Fa :icon="faServer"/>{{ $ts._widgets.serverMetric }}</template>
-	<template #func><button @click="toggleView()" class="_button"><Fa :icon="faSort"/></button></template>
+	<template #header><i class="fas fa-server"></i>{{ $ts._widgets.serverMetric }}</template>
+	<template #func><button @click="toggleView()" class="_button"><i class="fas fa-sort"></i></button></template>
 
 	<div class="mkw-serverMetric" v-if="meta">
 		<XCpuMemory v-if="props.view === 0" :connection="connection" :meta="meta"/>
@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faServer, faSort } from '@fortawesome/free-solid-svg-icons';
 import define from '../define';
 import MkContainer from '@client/components/ui/container.vue';
 import XCpuMemory from './cpu-mem.vue';
@@ -58,7 +57,6 @@ export default defineComponent({
 		return {
 			meta: null,
 			connection: null,
-			faServer, faSort,
 		};
 	},
 	created() {

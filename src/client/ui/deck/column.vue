@@ -15,14 +15,14 @@
 		@contextmenu.prevent.stop="onContextmenu"
 	>
 		<button class="toggleActive _button" @click="toggleActive" v-if="isStacked && !isMainColumn">
-			<template v-if="active"><Fa :icon="faAngleUp"/></template>
-			<template v-else><Fa :icon="faAngleDown"/></template>
+			<template v-if="active"><i class="fas fa-angle-up"></i></template>
+			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 		<div class="action">
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
-		<button v-if="func" class="menu _button" v-tooltip="func.title" @click.stop="func.handler"><Fa :icon="func.icon || faCog"/></button>
+		<button v-if="func" class="menu _button" v-tooltip="func.title" @click.stop="func.handler"><i :class="func.icon || 'fas fa-cog'"></i></button>
 	</header>
 	<div ref="body" v-show="active">
 		<slot></slot>
@@ -32,8 +32,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faArrowRight, faArrowLeft, faPencilAlt, faCog } from '@fortawesome/free-solid-svg-icons';
-import { faWindowMaximize, faTrashAlt, faWindowRestore } from '@fortawesome/free-regular-svg-icons';
 import * as os from '@client/os';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from './deck-store';
 import { deckStore } from './deck-store';
@@ -73,7 +71,6 @@ export default defineComponent({
 			dragging: false,
 			draghover: false,
 			dropready: false,
-			faArrowUp, faArrowDown, faAngleUp, faAngleDown, faCaretDown, faCog,
 		};
 	},
 
@@ -134,7 +131,7 @@ export default defineComponent({
 
 		getMenu() {
 			const items = [{
-				icon: faPencilAlt,
+				icon: 'fas fa-pencil-alt',
 				text: this.$ts.edit,
 				action: async () => {
 					const { canceled, result } = await os.form(this.column.name, {
@@ -158,43 +155,43 @@ export default defineComponent({
 					updateColumn(this.column.id, result);
 				}
 			}, null, {
-				icon: faArrowLeft,
+				icon: 'fas fa-arrow-left',
 				text: this.$ts._deck.swapLeft,
 				action: () => {
 					swapLeftColumn(this.column.id);
 				}
 			}, {
-				icon: faArrowRight,
+				icon: 'fas fa-arrow-right',
 				text: this.$ts._deck.swapRight,
 				action: () => {
 					swapRightColumn(this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: faArrowUp,
+				icon: 'fas fa-arrow-up',
 				text: this.$ts._deck.swapUp,
 				action: () => {
 					swapUpColumn(this.column.id);
 				}
 			} : undefined, this.isStacked ? {
-				icon: faArrowDown,
+				icon: 'fas fa-arrow-down',
 				text: this.$ts._deck.swapDown,
 				action: () => {
 					swapDownColumn(this.column.id);
 				}
 			} : undefined, null, {
-				icon: faWindowRestore,
+				icon: 'fas fa-window-restore',
 				text: this.$ts._deck.stackLeft,
 				action: () => {
 					stackLeftColumn(this.column.id);
 				}
 			}, this.isStacked ? {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts._deck.popRight,
 				action: () => {
 					popRightColumn(this.column.id);
 				}
 			} : undefined, null, {
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				text: this.$ts.remove,
 				danger: true,
 				action: () => {

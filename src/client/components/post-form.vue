@@ -7,31 +7,31 @@
 	@drop.stop="onDrop"
 >
 	<header>
-		<button v-if="!fixed" class="cancel _button" @click="cancel"><Fa :icon="faTimes"/></button>
+		<button v-if="!fixed" class="cancel _button" @click="cancel"><i class="fas fa-times"></i></button>
 		<div>
 			<span class="text-count" :class="{ over: textLength > max }">{{ max - textLength }}</span>
-			<span class="local-only" v-if="localOnly"><Fa :icon="faBiohazard"/></span>
+			<span class="local-only" v-if="localOnly"><i class="fas fa-biohazard"></i></span>
 			<button class="_button visibility" @click="setVisibility" ref="visibilityButton" v-tooltip="$ts.visibility" :disabled="channel != null">
-				<span v-if="visibility === 'public'"><Fa :icon="faGlobe"/></span>
-				<span v-if="visibility === 'home'"><Fa :icon="faHome"/></span>
-				<span v-if="visibility === 'followers'"><Fa :icon="faUnlock"/></span>
-				<span v-if="visibility === 'specified'"><Fa :icon="faEnvelope"/></span>
+				<span v-if="visibility === 'public'"><i class="fas fa-globe"></i></span>
+				<span v-if="visibility === 'home'"><i class="fas fa-home"></i></span>
+				<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
+				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
-			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<Fa :icon="reply ? faReply : renote ? faQuoteRight : faPaperPlane"/></button>
+			<button class="submit _buttonPrimary" :disabled="!canPost" @click="post">{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
 		<XNotePreview class="preview" v-if="reply" :note="reply"/>
 		<XNotePreview class="preview" v-if="renote" :note="renote"/>
-		<div class="with-quote" v-if="quoteId"><Fa icon="quote-left"/> {{ $ts.quoteAttached }}<button @click="quoteId = null"><Fa icon="times"/></button></div>
+		<div class="with-quote" v-if="quoteId"><i class="fas fa-quote-left"></i> {{ $ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ $ts.recipient }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers" :key="u.id">
 					<MkAcct :user="u"/>
-					<button class="_button" @click="removeVisibleUser(u)"><Fa :icon="faTimes"/></button>
+					<button class="_button" @click="removeVisibleUser(u)"><i class="fas fa-times"></i></button>
 				</span>
-				<button @click="addVisibleUser" class="_buttonPrimary"><Fa :icon="faPlus" fixed-width/></button>
+				<button @click="addVisibleUser" class="_buttonPrimary"><i class="fas fa-plus fa-fw"></i></button>
 			</div>
 		</div>
 		<MkInfo warn v-if="hasNotSpecifiedMentions" class="hasNotSpecifiedMentions">{{ $ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ $ts.add }}</button></MkInfo>
@@ -40,12 +40,12 @@
 		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" :poll="poll" @destroyed="poll = null" @updated="onPollUpdate"/>
 		<footer>
-			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><Fa :icon="faPhotoVideo"/></button>
-			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><Fa :icon="faPollH"/></button>
-			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><Fa :icon="faEyeSlash"/></button>
-			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><Fa :icon="faAt"/></button>
-			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><Fa :icon="faLaughSquint"/></button>
-			<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><Fa :icon="faPlug"/></button>
+			<button class="_button" @click="chooseFileFrom" v-tooltip="$ts.attachFile"><i class="fas fa-photo-video"></i></button>
+			<button class="_button" @click="togglePoll" :class="{ active: poll }" v-tooltip="$ts.poll"><i class="fas fa-poll-h"></i></button>
+			<button class="_button" @click="useCw = !useCw" :class="{ active: useCw }" v-tooltip="$ts.useCw"><i class="fas fa-eye-slash"></i></button>
+			<button class="_button" @click="insertMention" v-tooltip="$ts.mention"><i class="fas fa-at"></i></button>
+			<button class="_button" @click="insertEmoji" v-tooltip="$ts.emoji"><i class="fas fa-laugh-squint"></i></button>
+			<button class="_button" @click="showActions" v-tooltip="$ts.plugin" v-if="postFormActions.length > 0"><i class="fas fa-plug"></i></button>
 		</footer>
 	</div>
 </div>
@@ -53,8 +53,6 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent } from 'vue';
-import { faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug } from '@fortawesome/free-solid-svg-icons';
-import { faEyeSlash, faLaughSquint } from '@fortawesome/free-regular-svg-icons';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode/';
@@ -155,7 +153,6 @@ export default defineComponent({
 				}
 			}),
 			postFormActions,
-			faReply, faQuoteRight, faPaperPlane, faTimes, faUpload, faPollH, faGlobe, faHome, faUnlock, faEnvelope, faEyeSlash, faLaughSquint, faPlus, faPhotoVideo, faAt, faBiohazard, faPlug
 		};
 	},
 
@@ -724,7 +721,7 @@ export default defineComponent({
 					opacity: 0.7;
 				}
 
-				> [data-icon] {
+				> i {
 					margin-left: 6px;
 				}
 			}

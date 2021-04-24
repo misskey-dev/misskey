@@ -25,14 +25,13 @@
 				</FormKeyValueView>
 			</div>
 		</div>
-		<FormButton @click="save()" primary inline :disabled="!changed"><Fa :icon="faSave"/> {{ $ts.save }}</FormButton>
+		<FormButton @click="save()" primary inline :disabled="!changed"><i class="fas fa-save"></i> {{ $ts.save }}</FormButton>
 	</FormBase>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCommentSlash, faSave } from '@fortawesome/free-solid-svg-icons';
 import FormTextarea from '@client/components/form/textarea.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
@@ -59,14 +58,13 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.wordMute,
-				icon: faCommentSlash
+				icon: 'fas fa-comment-slash'
 			},
 			tab: 'soft',
 			softMutedWords: '',
 			hardMutedWords: '',
 			hardWordMutedNotesCount: null,
 			changed: false,
-			faSave,
 		}
 	},
 

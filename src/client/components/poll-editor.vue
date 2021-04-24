@@ -1,7 +1,7 @@
 <template>
 <div class="zmdxowus">
 	<p class="caution" v-if="choices.length < 2">
-		<Fa :icon="faExclamationTriangle"/>{{ $ts._poll.noOnlyOneChoice }}
+		<i class="fas fa-exclamation-triangle"></i>{{ $ts._poll.noOnlyOneChoice }}
 	</p>
 	<ul ref="choices">
 		<li v-for="(choice, i) in choices" :key="i">
@@ -9,7 +9,7 @@
 				<span>{{ $t('_poll.choiceN', { n: i + 1 }) }}</span>
 			</MkInput>
 			<button @click="remove(i)" class="_button">
-				<Fa :icon="faTimes"/>
+				<i class="fas fa-times"></i>
 			</button>
 		</li>
 	</ul>
@@ -50,7 +50,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { addTime } from '../../prelude/time';
 import { formatDateTimeString } from '@/misc/format-time-string';
 import MkInput from './ui/input.vue';
@@ -84,7 +83,6 @@ export default defineComponent({
 			atTime: '00:00',
 			after: 0,
 			unit: 'second',
-			faExclamationTriangle, faTimes
 		};
 	},
 
@@ -190,7 +188,7 @@ export default defineComponent({
 		font-size: 0.8em;
 		color: #f00;
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 	}

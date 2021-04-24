@@ -12,7 +12,7 @@
 	<XSub :note="appearNote.reply" class="reply-to" v-if="appearNote.reply"/>
 	<div class="renote" v-if="isRenote">
 		<MkAvatar class="avatar" :user="note.user"/>
-		<Fa :icon="faRetweet"/>
+		<i class="fas fa-retweet"></i>
 		<I18n :src="$ts.renotedBy" tag="span">
 			<template #user>
 				<MkA class="name" :to="userPage(note.user)" v-user-preview="note.userId">
@@ -22,15 +22,15 @@
 		</I18n>
 		<div class="info">
 			<button class="_button time" @click="showRenoteMenu()" ref="renoteTime">
-				<Fa class="dropdownIcon" v-if="isMyRenote" :icon="faEllipsisH"/>
+				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span class="visibility" v-if="note.visibility !== 'public'">
-				<Fa v-if="note.visibility === 'home'" :icon="faHome"/>
-				<Fa v-if="note.visibility === 'followers'" :icon="faUnlock"/>
-				<Fa v-if="note.visibility === 'specified'" :icon="faEnvelope"/>
+				<i v-if="note.visibility === 'home'" class="fas fa-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
+				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><Fa :icon="faBiohazard"/></span>
+			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -42,14 +42,14 @@
 						<MkUserName :user="appearNote.user"/>
 					</MkA>
 					<span class="is-bot" v-if="appearNote.user.isBot">bot</span>
-					<span class="admin" v-if="appearNote.user.isAdmin"><Fa :icon="faBookmark"/></span>
-					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><Fa :icon="farBookmark"/></span>
+					<span class="admin" v-if="appearNote.user.isAdmin"><i class="fas fa-bookmark"></i></span>
+					<span class="moderator" v-if="!appearNote.user.isAdmin && appearNote.user.isModerator"><i class="far fa-bookmark"></i></span>
 					<span class="visibility" v-if="appearNote.visibility !== 'public'">
-						<Fa v-if="appearNote.visibility === 'home'" :icon="faHome"/>
-						<Fa v-if="appearNote.visibility === 'followers'" :icon="faUnlock"/>
-						<Fa v-if="appearNote.visibility === 'specified'" :icon="faEnvelope"/>
+						<i v-if="appearNote.visibility === 'home'" class="fas fa-home"></i>
+						<i v-else-if="appearNote.visibility === 'followers'" class="fas fa-unlock"></i>
+						<i v-else-if="appearNote.visibility === 'specified'" class="fas fa-envelope"></i>
 					</span>
-					<span class="localOnly" v-if="appearNote.localOnly"><Fa :icon="faBiohazard"/></span>
+					<span class="localOnly" v-if="appearNote.localOnly"><i class="fas fa-biohazard"></i></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
@@ -64,7 +64,7 @@
 				<div class="content" v-show="appearNote.cw == null || showContent">
 					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
-						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><Fa :icon="faReply"/></MkA>
+						<MkA class="reply" v-if="appearNote.replyId" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a class="rp" v-if="appearNote.renote != null">RN:</a>
 					</div>
@@ -75,33 +75,33 @@
 					<MkUrlPreview v-for="url in urls" :url="url" :key="url" :compact="true" :detail="true" class="url-preview"/>
 					<div class="renote" v-if="appearNote.renote"><XNotePreview :note="appearNote.renote"/></div>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><Fa :icon="faSatelliteDish"/> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<div class="info">
-					<span class="mobile" v-if="note.viaMobile"><Fa :icon="faMobileAlt"/></span>
+					<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
 					<MkTime class="created-at" :time="note.createdAt" mode="detail"/>
 				</div>
 				<XReactionsViewer :note="appearNote" ref="reactionsViewer"/>
 				<button @click="reply()" class="button _button">
-					<template v-if="appearNote.reply"><Fa :icon="faReplyAll"/></template>
-					<template v-else><Fa :icon="faReply"/></template>
+					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
+					<template v-else><i class="fas fa-reply"></i></template>
 					<p class="count" v-if="appearNote.repliesCount > 0">{{ appearNote.repliesCount }}</p>
 				</button>
 				<button v-if="canRenote" @click="renote()" class="button _button" ref="renoteButton">
-					<Fa :icon="faRetweet"/><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
+					<i class="fas fa-retweet"></i><p class="count" v-if="appearNote.renoteCount > 0">{{ appearNote.renoteCount }}</p>
 				</button>
 				<button v-else class="button _button">
-					<Fa :icon="faBan"/>
+					<i class="fas fa-ban"></i>
 				</button>
 				<button v-if="appearNote.myReaction == null" class="button _button" @click="react()" ref="reactButton">
-					<Fa :icon="faPlus"/>
+					<i class="fas fa-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" class="button _button reacted" @click="undoReact(appearNote)" ref="reactButton">
-					<Fa :icon="faMinus"/>
+					<i class="fas fa-minus"></i>
 				</button>
 				<button class="button _button" @click="menu()" ref="menuButton">
-					<Fa :icon="faEllipsisH"/>
+					<i class="fas fa-ellipsis-h"></i>
 				</button>
 			</footer>
 		</div>
@@ -121,8 +121,6 @@
 
 <script lang="ts">
 import { defineAsyncComponent, defineComponent, markRaw } from 'vue';
-import { faSatelliteDish, faBolt, faTimes, faBullhorn, faStar, faLink, faExternalLinkSquareAlt, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faQuoteRight, faInfoCircle, faBiohazard, faPlug, faExclamationCircle, faPaperclip, faShareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCopy, faTrashAlt, faEdit, faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import * as mfm from 'mfm-js';
 import { sum } from '../../prelude/array';
 import XSub from './note.sub.vue';
@@ -142,14 +140,6 @@ import * as os from '@client/os';
 import { noteActions, noteViewInterruptors } from '@client/store';
 import { reactionPicker } from '@client/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/misc/extract-url-from-mfm';
-
-function markRawAll(...xs) {
-	for (const x of xs) {
-		markRaw(x);
-	}
-}
-
-markRawAll(faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish);
 
 // TODO: note.vueとほぼ同じなので共通化したい
 export default defineComponent({
@@ -188,7 +178,6 @@ export default defineComponent({
 			showContent: false,
 			isDeleted: false,
 			muted: false,
-			faEdit, faBolt, faTimes, faBullhorn, faPlus, faMinus, faRetweet, faReply, faReplyAll, faEllipsisH, faHome, faUnlock, faEnvelope, faThumbtack, faBan, faBiohazard, faPlug, faSatelliteDish
 		};
 	},
 
@@ -467,7 +456,7 @@ export default defineComponent({
 			this.blur();
 			os.modalMenu([{
 				text: this.$ts.renote,
-				icon: faRetweet,
+				icon: 'fas fa-retweet',
 				action: () => {
 					os.api('notes/create', {
 						renoteId: this.appearNote.id
@@ -475,7 +464,7 @@ export default defineComponent({
 				}
 			}, {
 				text: this.$ts.quote,
-				icon: faQuoteRight,
+				icon: 'fas fa-quote-right',
 				action: () => {
 					os.post({
 						renote: this.appearNote,
@@ -611,62 +600,62 @@ export default defineComponent({
 				});
 
 				menu = [{
-					icon: faCopy,
+					icon: 'fas fa-copy',
 					text: this.$ts.copyContent,
 					action: this.copyContent
 				}, {
-					icon: faLink,
+					icon: 'fas fa-link',
 					text: this.$ts.copyLink,
 					action: this.copyLink
 				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: faExternalLinkSquareAlt,
+					icon: 'fas fa-external-link-square-alt',
 					text: this.$ts.showOnRemote,
 					action: () => {
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
 					}
 				} : undefined,
 				{
-					icon: faShareAlt,
+					icon: 'fas fa-share-alt',
 					text: this.$ts.share,
 					action: this.share
 				},
 				null,
 				statePromise.then(state => state.isFavorited ? {
-					icon: faStar,
+					icon: 'fas fa-star',
 					text: this.$ts.unfavorite,
 					action: () => this.toggleFavorite(false)
 				} : {
-					icon: faStar,
+					icon: 'fas fa-star',
 					text: this.$ts.favorite,
 					action: () => this.toggleFavorite(true)
 				}),
 				{
-					icon: faPaperclip,
+					icon: 'fas fa-paperclip',
 					text: this.$ts.clip,
 					action: () => this.clip()
 				},
 				(this.appearNote.userId != this.$i.id) ? statePromise.then(state => state.isWatching ? {
-					icon: faEyeSlash,
+					icon: 'fas fa-eye-slash',
 					text: this.$ts.unwatch,
 					action: () => this.toggleWatch(false)
 				} : {
-					icon: faEye,
+					icon: 'fas fa-eye',
 					text: this.$ts.watch,
 					action: () => this.toggleWatch(true)
 				}) : undefined,
 				this.appearNote.userId == this.$i.id ? (this.$i.pinnedNoteIds || []).includes(this.appearNote.id) ? {
-					icon: faThumbtack,
+					icon: 'fas fa-thumbtack',
 					text: this.$ts.unpin,
 					action: () => this.togglePin(false)
 				} : {
-					icon: faThumbtack,
+					icon: 'fas fa-thumbtack',
 					text: this.$ts.pin,
 					action: () => this.togglePin(true)
 				} : undefined,
 				...(this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					{
-						icon: faBullhorn,
+						icon: 'fas fa-bullhorn',
 						text: this.$ts.promote,
 						action: this.promote
 					}]
@@ -675,7 +664,7 @@ export default defineComponent({
 				...(this.appearNote.userId != this.$i.id ? [
 					null,
 					{
-						icon: faExclamationCircle,
+						icon: 'fas fa-exclamation-circle',
 						text: this.$ts.reportAbuse,
 						action: () => {
 							const u = `${url}/notes/${this.appearNote.id}`;
@@ -690,12 +679,12 @@ export default defineComponent({
 				...(this.appearNote.userId == this.$i.id || this.$i.isModerator || this.$i.isAdmin ? [
 					null,
 					this.appearNote.userId == this.$i.id ? {
-						icon: faEdit,
+						icon: 'fas fa-edit',
 						text: this.$ts.deleteAndEdit,
 						action: this.delEdit
 					} : undefined,
 					{
-						icon: faTrashAlt,
+						icon: 'fas fa-trash-alt',
 						text: this.$ts.delete,
 						danger: true,
 						action: this.del
@@ -705,15 +694,15 @@ export default defineComponent({
 				.filter(x => x !== undefined);
 			} else {
 				menu = [{
-					icon: faCopy,
+					icon: 'fas fa-copy',
 					text: this.$ts.copyContent,
 					action: this.copyContent
 				}, {
-					icon: faLink,
+					icon: 'fas fa-link',
 					text: this.$ts.copyLink,
 					action: this.copyLink
 				}, (this.appearNote.url || this.appearNote.uri) ? {
-					icon: faExternalLinkSquareAlt,
+					icon: 'fas fa-external-link-square-alt',
 					text: this.$ts.showOnRemote,
 					action: () => {
 						window.open(this.appearNote.url || this.appearNote.uri, '_blank');
@@ -724,7 +713,7 @@ export default defineComponent({
 
 			if (noteActions.length > 0) {
 				menu = menu.concat([null, ...noteActions.map(action => ({
-					icon: faPlug,
+					icon: 'fas fa-plug',
 					text: action.title,
 					action: () => {
 						action.handler(this.appearNote);
@@ -763,7 +752,7 @@ export default defineComponent({
 			if (!this.isMyRenote) return;
 			os.modalMenu([{
 				text: this.$ts.unrenote,
-				icon: faTrashAlt,
+				icon: 'fas fa-trash-alt',
 				danger: true,
 				action: () => {
 					os.api('notes/delete', {
@@ -806,7 +795,7 @@ export default defineComponent({
 		async clip() {
 			const clips = await os.api('clips/list');
 			os.modalMenu([{
-				icon: faPlus,
+				icon: 'fas fa-plus',
 				text: this.$ts.createNew,
 				action: async () => {
 					const { canceled, result } = await os.form(this.$ts.createNewClip, {
@@ -943,7 +932,7 @@ export default defineComponent({
 			border-radius: 6px;
 		}
 
-		> [data-icon] {
+		> i {
 			margin-right: 4px;
 		}
 

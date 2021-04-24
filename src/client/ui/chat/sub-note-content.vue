@@ -3,7 +3,7 @@
 	<div class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ $ts.private }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ $ts.deleted }})</span>
-		<MkA class="reply" v-if="note.replyId" :to="`/notes/${note.replyId}`"><Fa :icon="faReply"/></MkA>
+		<MkA class="reply" v-if="note.replyId" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 		<MkA class="rp" v-if="note.renoteId" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
@@ -20,7 +20,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faReply } from '@fortawesome/free-solid-svg-icons';
 import XPoll from '@client/components/poll.vue';
 import XMediaList from '@client/components/media-list.vue';
 import * as os from '@client/os';
@@ -38,7 +37,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faReply
 		};
 	}
 });

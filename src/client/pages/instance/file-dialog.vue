@@ -21,8 +21,8 @@
 		</div>
 		<div class="_section">
 			<div class="_content">
-				<MkButton full @click="showUser"><Fa :icon="faExternalLinkSquareAlt"/> {{ $ts.user }}</MkButton>
-				<MkButton full danger @click="del"><Fa :icon="faTrashAlt"/> {{ $ts.delete }}</MkButton>
+				<MkButton full @click="showUser"><i class="fas fa-external-link-square-alt"></i> {{ $ts.user }}</MkButton>
+				<MkButton full danger @click="del"><i class="fas fa-trash-alt"></i> {{ $ts.delete }}</MkButton>
 			</div>
 		</div>
 		<div class="_section" v-if="info">
@@ -36,8 +36,6 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { faTimes, faBookmark, faKey, faSync, faMicrophoneSlash, faExternalLinkSquareAlt } from '@fortawesome/free-solid-svg-icons';
-import { faSnowflake, faTrashAlt, faBookmark as farBookmark  } from '@fortawesome/free-regular-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkSwitch from '@client/components/ui/switch.vue';
 import XModalWindow from '@client/components/ui/modal-window.vue';
@@ -67,7 +65,6 @@ export default defineComponent({
 			file: null,
 			info: null,
 			isSensitive: false,
-			faTimes, faBookmark, farBookmark, faKey, faSync, faMicrophoneSlash, faSnowflake, faTrashAlt, faExternalLinkSquareAlt
 		};
 	},
 
@@ -85,9 +82,7 @@ export default defineComponent({
 		},
 
 		showUser() {
-			os.popup(import('./user-dialog.vue'), {
-				userId: this.file.userId
-			}, {}, 'closed');
+			os.pageWindow(`/user-info/${this.file.userId}`);
 		},
 
 		async del() {
