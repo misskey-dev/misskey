@@ -10,8 +10,10 @@
 
 	<FormGroup>
 		<div v-for="file in files" :key="file.id" class="_formItem _formPanel wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+			<div class="name">{{ file.name }}</div>
+			<button class="remove _button" @click="remove(file)" v-tooltip="$ts.remove"><i class="fas fa-times"></i></button>
 		</div>
-		<FormButton @click="selectFile" primary>{{ $ts.attachFile }}</FormButton>
+		<FormButton @click="selectFile" primary><i class="fas fa-plus"></i> {{ $ts.attachFile }}</FormButton>
 	</FormGroup>
 
 	<FormSwitch v-model:value="isSensitive">{{ $ts.markAsSensitive }}</FormSwitch>
@@ -63,6 +65,10 @@ export default defineComponent({
 			});
 		},
 
+		remove(file) {
+			this.files = this.files.filter(f => f.id !== file.id);
+		},
+
 		async publish() {
 			const post = await os.apiWithDialog('gallery/posts/create', {
 				title: this.title,
@@ -83,5 +89,22 @@ export default defineComponent({
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
+	position: relative;
+
+	> .name {
+		position: absolute;
+		top: 8px;
+		left: 9px;
+		padding: 8px;
+		background: var(--panel);
+	}
+
+	> .remove {
+		position: absolute;
+		top: 8px;
+		right: 9px;
+		padding: 8px;
+		background: var(--panel);
+	}
 }
 </style>
