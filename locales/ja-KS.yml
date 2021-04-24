@@ -643,6 +643,8 @@ goBack: "戻る"
 info: "情報"
 user: "ユーザー"
 administration: "管理"
+_gallery:
+  unlike: "良くないわ"
 _email:
   _follow:
     title: "フォローされたで"
