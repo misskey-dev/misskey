@@ -741,6 +741,8 @@ switch: "Переключение"
 noMaintainerInformationWarning: "Не заполнены сведения об администраторах"
 noBotProtectionWarning: "Ботозащита не настроена"
 configure: "Настроить"
+_gallery:
+  unlike: "Отменить «нравится»"
 _email:
   _follow:
     title: "Новый подписчик"
