@@ -652,6 +652,8 @@ goBack: "Deseleccionar"
 info: "Información"
 user: "Usuarios"
 administration: "Administrar"
+_gallery:
+  unlike: "Quitar me gusta"
 _email:
   _follow:
     title: "te ha seguido"
