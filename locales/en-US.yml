@@ -740,6 +740,8 @@ switch: "Switch"
 noMaintainerInformationWarning: "Maintainer information is not configured."
 noBotProtectionWarning: "Bot protection is not configured."
 configure: "Configure"
+_gallery:
+  unlike: "Undo like"
 _email:
   _follow:
     title: "You've got a new follower"
