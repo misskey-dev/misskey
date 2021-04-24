@@ -739,6 +739,8 @@ switch: "Wechseln"
 noMaintainerInformationWarning: "Betreiberinformationen sind nicht konfiguriert."
 noBotProtectionWarning: "Bot-Schutz ist nicht konfiguriert."
 configure: "Konfigurieren"
+_gallery:
+  unlike: "\"Gefällt mir\" entfernen"
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
