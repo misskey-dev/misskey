@@ -16,16 +16,16 @@
 			</template>
 		</div>
 		<div class="sub">
-			<MkA to="/docs" @click.passive="close()">
+			<MkA to="/docs" @click.passive="close()" v-click-anime>
 				<i class="fas fa-question-circle icon"></i>
 				<div class="text">{{ $ts.help }}</div>
 			</MkA>
-			<MkA to="/about" @click.passive="close()">
+			<MkA to="/about" @click.passive="close()" v-click-anime>
 				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
 			</MkA>
-			<MkA to="/about-misskey" @click.passive="close()">
-				<i class="fas fa-info-circle icon"></i>
+			<MkA to="/about-misskey" @click.passive="close()" v-click-anime>
+				<img src="/static-assets/favicon.png" class="icon"/>
 				<div class="text">{{ $ts.aboutMisskey }}</div>
 			</MkA>
 		</div>
@@ -101,6 +101,7 @@ export default defineComponent({
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
+			vertical-align: bottom;
 			width: 128px;
 			height: 128px;
 			border-radius: var(--radius);
@@ -117,6 +118,7 @@ export default defineComponent({
 
 			> .icon {
 				font-size: 26px;
+				height: 32px;
 			}
 
 			> .text {

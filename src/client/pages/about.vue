@@ -1,39 +1,57 @@
 <template>
-<FormBase class="mmnnbwxb" v-if="meta">
-	<div class="_formItem logo">
-		<img v-if="meta.logoImageUrl" :src="meta.logoImageUrl">
-		<span v-else class="text">{{ instanceName }}</span>
+<FormBase>
+	<div class="_formItem">
+		<div class="_formPanel fwhjspax">
+			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+			<span class="name">{{ $instance.name || host }}</span>
+		</div>
 	</div>
+
+	<FormTextarea readonly :value="$instance.description">
+	</FormTextarea>
+
 	<FormGroup>
 		<FormKeyValueView>
 			<template #key>Misskey</template>
 			<template #value>v{{ version }}</template>
 		</FormKeyValueView>
+		<FormLink to="/about-misskey">{{ $ts.aboutMisskey }}</FormLink>
 	</FormGroup>
 
 	<FormGroup>
 		<FormKeyValueView>
 			<template #key>{{ $ts.administrator }}</template>
-			<template #value>{{ meta.maintainerName }}</template>
+			<template #value>{{ $instance.maintainerName }}</template>
 		</FormKeyValueView>
 		<FormKeyValueView>
 			<template #key>{{ $ts.contact }}</template>
-			<template #value>{{ meta.maintainerEmail }}</template>
+			<template #value>{{ $instance.maintainerEmail }}</template>
 		</FormKeyValueView>
 	</FormGroup>
 
-	<FormLink v-if="meta.tosUrl" :to="meta.tosUrl" external>{{ $ts.tos }}</FormLink>
+	<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" external>{{ $ts.tos }}</FormLink>
 
-	<FormGroup v-if="stats">
-		<template #label>{{ $ts.statistics }}</template>
-		<FormKeyValueView>
-			<template #key>{{ $ts.users }}</template>
-			<template #value>{{ number(stats.originalUsersCount) }}</template>
-		</FormKeyValueView>
-		<FormKeyValueView>
-			<template #key>{{ $ts.notes }}</template>
-			<template #value>{{ number(stats.originalNotesCount) }}</template>
-		</FormKeyValueView>
+	<FormSuspense :p="initStats">
+		<FormGroup>
+			<template #label>{{ $ts.statistics }}</template>
+			<FormKeyValueView>
+				<template #key>{{ $ts.users }}</template>
+				<template #value>{{ number(stats.originalUsersCount) }}</template>
+			</FormKeyValueView>
+			<FormKeyValueView>
+				<template #key>{{ $ts.notes }}</template>
+				<template #value>{{ number(stats.originalNotesCount) }}</template>
+			</FormKeyValueView>
+		</FormGroup>
+	</FormSuspense>
+
+	<FormGroup>
+		<template #label>Well-known resources</template>
+		<FormLink :to="`/.well-known/host-meta`" external>host-meta</FormLink>
+		<FormLink :to="`/.well-known/host-meta.json`" external>host-meta.json</FormLink>
+		<FormLink :to="`/.well-known/nodeinfo`" external>nodeinfo</FormLink>
+		<FormLink :to="`/robots.txt`" external>robots.txt</FormLink>
+		<FormLink :to="`/manifest.json`" external>manifest.json</FormLink>
 	</FormGroup>
 </FormBase>
 </template>
@@ -45,9 +63,12 @@ import FormLink from '@client/components/form/link.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormKeyValueView from '@client/components/form/key-value-view.vue';
+import FormTextarea from '@client/components/form/textarea.vue';
+import FormSuspense from '@client/components/form/suspense.vue';
 import * as os from '@client/os';
 import number from '@client/filters/number';
 import * as symbols from '@client/symbols';
+import { host } from '@client/config';
 
 export default defineComponent({
 	components: {
@@ -55,6 +76,8 @@ export default defineComponent({
 		FormGroup,
 		FormLink,
 		FormKeyValueView,
+		FormTextarea,
+		FormSuspense,
 	},
 
 	data() {
@@ -63,22 +86,15 @@ export default defineComponent({
 				title: this.$ts.instanceInfo,
 				icon: 'fas fa-info-circle'
 			},
+			host,
 			version,
 			instanceName,
 			stats: null,
+			initStats: () => os.api('stats', {
+			}).then((stats) => {
+				this.stats = stats;
+			})
 		}
-	},
-
-	computed: {
-		meta() {
-			return this.$instance;
-		},
-	},
-
-	created() {
-		os.api('stats').then(stats => {
-			this.stats = stats;
-		});
 	},
 
 	methods: {
@@ -88,18 +104,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mmnnbwxb {
-	max-width: 800px;
-	box-sizing: border-box;
-	margin: 0 auto;
+.fwhjspax {
+	padding: 16px;
+	text-align: center;
 
-	> .logo {
-		text-align: center;
+	> .icon {
+		display: block;
+		margin: auto;
+		height: 64px;
+		border-radius: 8px;
+	}
 
-		> img {
-			vertical-align: bottom;
-			max-height: 100px;
-		}
+	> .name {
+		display: block;
+		margin-top: 12px;
 	}
 }
 </style>

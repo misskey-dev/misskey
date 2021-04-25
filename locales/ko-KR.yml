@@ -726,6 +726,7 @@ active: "최근에 활동함"
 offline: "오프라인"
 user: "유저"
 administration: "관리"
+gallery: "갤러리"
 _gallery:
   unlike: "좋아요 해제"
 _email:
