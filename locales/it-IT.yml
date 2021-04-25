@@ -1119,10 +1119,12 @@ _pages:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    textareaInput: "Immissione testo a più righe"
     _textareaInput:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    numberInput: "Immissione numerica"
     _numberInput:
       name: "Nome della variabile"
       text: "Titolo"
@@ -1135,6 +1137,7 @@ _pages:
       id: "ID nota"
       idDescription: "Qui puoi anche incollare l'URL della nota che vuoi impostare."
       detailed: "Visualizzazione dettagliata"
+    switch: "Interruttore"
     _switch:
       name: "Nome della variabile"
       text: "Titolo"
