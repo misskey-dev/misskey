@@ -1092,7 +1092,13 @@ _pages:
   font: "Tipo di carattere"
   fontSerif: "Serif"
   fontSansSerif: "Sans serif"
+  eyeCatchingImageSet: "Imposta un'immagine attrattiva"
+  eyeCatchingImageRemove: "Elimina l'immagine attrattiva"
   chooseBlock: "Aggiungi blocco"
+  selectType: "Seleziona tipo"
+  enterVariableName: "Digita un nome di variabile"
+  variableNameIsAlreadyUsed: "Esiste già una variabile con lo stesso nome"
+  contentBlocks: "Contenuto"
   blocks:
     text: "Testo"
     textarea: "Area di testo"
