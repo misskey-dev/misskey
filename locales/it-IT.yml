@@ -1099,6 +1099,7 @@ _pages:
   enterVariableName: "Digita un nome di variabile"
   variableNameIsAlreadyUsed: "Esiste già una variabile con lo stesso nome"
   contentBlocks: "Contenuto"
+  inputBlocks: "Blocchi di input"
   blocks:
     text: "Testo"
     textarea: "Area di testo"
