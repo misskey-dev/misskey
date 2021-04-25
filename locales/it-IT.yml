@@ -1161,6 +1161,10 @@ _pages:
           message: "Messaggio da visualizzare quando abilitato"
           variable: "Variabile da inviare"
           no-variable: "Nessun contenuto"
+        callAiScript: "Chiamare AiScript"
+        _callAiScript:
+          functionName: "Nome della funzione"
+    radioButton: "Opzioni"
     _radioButton:
       name: "Nome della variabile"
       title: "Titolo"
