@@ -1266,7 +1266,7 @@ _pages:
   enterVariableName: "Veuillez entrer un nom pour votre variable"
   variableNameIsAlreadyUsed: "Ce nom de variable est déjà utilisé"
   contentBlocks: "Contenu"
-  inputBlocks: "Entrée"
+  inputBlocks: "Blocs d'entrée"
   specialBlocks: "Spécial"
   blocks:
     text: "Texte"
