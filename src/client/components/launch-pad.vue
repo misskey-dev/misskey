@@ -16,15 +16,15 @@
 			</template>
 		</div>
 		<div class="sub">
-			<MkA to="/docs" @click.passive="close()">
+			<MkA to="/docs" @click.passive="close()" v-click-anime>
 				<i class="fas fa-question-circle icon"></i>
 				<div class="text">{{ $ts.help }}</div>
 			</MkA>
-			<MkA to="/about" @click.passive="close()">
+			<MkA to="/about" @click.passive="close()" v-click-anime>
 				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
 			</MkA>
-			<MkA to="/about-misskey" @click.passive="close()">
+			<MkA to="/about-misskey" @click.passive="close()" v-click-anime>
 				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $ts.aboutMisskey }}</div>
 			</MkA>
