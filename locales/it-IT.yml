@@ -1086,6 +1086,7 @@ _pages:
   variables: "Variabili"
   title: "Titolo"
   url: "URL della pagina"
+  summary: "Riassunto di pagina"
   hideTitleWhenPinned: "Nascondere il titolo pagina quando è fissata in cima al profilo."
   font: "Tipo di carattere"
   fontSerif: "Serif"
