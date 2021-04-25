@@ -1264,7 +1264,7 @@ _pages:
   chooseBlock: "Ajouter un bloc"
   selectType: "Choisir un type"
   enterVariableName: "Veuillez entrer un nom pour votre variable"
-  variableNameIsAlreadyUsed: "Cette variable est déjà utilisée"
+  variableNameIsAlreadyUsed: "Ce nom de variable est déjà utilisé"
   contentBlocks: "Contenu"
   inputBlocks: "Entrée"
   specialBlocks: "Spécial"
