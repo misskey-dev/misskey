@@ -1237,7 +1237,7 @@ _pages:
   deleted: "La page a été supprimée"
   pageSetting: "Paramètres de la Page"
   nameAlreadyExists: "L'URL de page spécifiée existe déjà"
-  invalidNameTitle: "La URL de la page spécifiée n’est pas valide"
+  invalidNameTitle: "L'URL de page spécifiée n’est pas valide"
   invalidNameText: "Assurez-vous qu’il n’est pas vide"
   editThisPage: "Éditer cette page"
   viewSource: "Afficher la source"
