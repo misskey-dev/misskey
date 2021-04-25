@@ -1061,6 +1061,7 @@ _rooms:
     cube: "Cubo"
     tv: "Televisore"
     pinguin: "Pinguino"
+    rubik-cube: "Cubo di Rubik"
     bin: "Cestino"
     cup-noodle: "Noodle istantanei"
 _pages:
