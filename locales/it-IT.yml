@@ -1024,6 +1024,7 @@ _rooms:
   clearConfirm: "Sei sicur@ di voler rimuovere tutti i mobili dalla tua camera?"
   leaveConfirm: "Hai fatto modifiche ancora non salvate. Vuoi davvero uscire?"
   chooseImage: "Seleziona immagine"
+  roomType: "Tipo di stanza"
   _roomType:
     default: "Predefinito"
     washitsu: "Washitsu"
