@@ -1158,9 +1158,9 @@ _instanceCharts:
   ff: "Variation des abonné·e·s et des abonnements"
   ffTotal: "Total cumulé du nombre d'abonné·e·s et du nombre d'abonnements"
   cacheSize: "Variation de la taille du cache"
-  cacheSizeTotal: "La taille du cache au total cumulé"
+  cacheSizeTotal: "Total cumulé de la taille du cache"
   files: "Variation du nombre de fichiers"
-  filesTotal: "Nombre de fichiers au total cumulé"
+  filesTotal: "Total cumulé du nombre de fichiers"
 _timelines:
   home: "Principal"
   local: "Local"
