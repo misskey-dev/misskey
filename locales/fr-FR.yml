@@ -905,6 +905,7 @@ _theme:
   importInfo: "Vous pouvez importer un thème vers l’éditeur de thèmes en saisissant son code ici."
   deleteConstantConfirm: "Êtes-vous sûr·e de vouloir supprimer la constante {const} ?"
   keys:
+    accent: "Accentuation"
     bg: "Arrière-plan"
     fg: "Texte"
     focus: "Mise au point"
@@ -940,6 +941,8 @@ _theme:
     driveFolderBg: "Arrière-plan du dossier de disque"
     badge: "Badge"
     messageBg: "Arrière plan de la discussion"
+    accentDarken: "Plus sombre"
+    accentLighten: "Plus clair"
     fgHighlighted: "Texte mis en évidence"
 _sfx:
   note: "Nouvelle note"
