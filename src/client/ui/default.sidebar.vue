@@ -31,8 +31,10 @@
 		<i class="fas fa-cog fa-fw"></i><span class="text">{{ $ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>
-	<div class="foo">
-		<MkEmoji :normal="true" :no-style="true" emoji="🍮"/>
+	<div class="about">
+		<MkA class="link" to="/about" v-click-anime>
+			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" class="_ghost"/>
+		</MkA>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
 </div>
@@ -260,14 +262,21 @@ export default defineComponent({
 		}
 	}
 
-	> .misskey {
+	> .about {
 		fill: currentColor;
-	}
-
-	> .foo {
-		text-align: center;
 		padding: 8px 0 16px 0;
-		opacity: 0.5;
+		text-align: center;
+
+		> .link {
+			display: block;
+			width: 32px;
+			margin: 0 auto;
+
+			img {
+				display: block;
+				width: 100%;
+			}
+		}
 	}
 
 	> .item {
