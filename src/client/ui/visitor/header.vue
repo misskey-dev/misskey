@@ -2,21 +2,21 @@
 <div class="sqxihjet">
 	<div class="wide" v-if="narrow === false">
 		<div class="content">
-			<MkA to="/" class="link" active-class="active"><Fa :icon="faHome" class="icon"/>{{ $ts.home }}</MkA>
-			<MkA to="/explore" class="link" active-class="active"><Fa :icon="faHashtag" class="icon"/>{{ $ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><Fa :icon="faFireAlt" class="icon"/>{{ $ts.featured }}</MkA>
-			<MkA to="/channels" class="link" active-class="active"><Fa :icon="faSatelliteDish" class="icon"/>{{ $ts.channel }}</MkA>
+			<MkA to="/" class="link" active-class="active"><i class="fas fa-home icon"></i>{{ $ts.home }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><i class="fas fa-hashtag icon"></i>{{ $ts.explore }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><i class="fas fa-fire-alt icon"></i>{{ $ts.featured }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><i class="fas fa-satellite-dish icon"></i>{{ $ts.channel }}</MkA>
 			<div class="page active link" v-if="info">
 				<div class="title">
-					<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+					<i v-if="info.icon" class="icon" :class="info.icon"></i>
 					<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 					<span v-if="info.title" class="text">{{ info.title }}</span>
 					<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 				</div>
-				<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><Fa :icon="info.action.icon" :key="info.action.icon"/></button>
+				<button class="_button action" v-if="info.action" @click.stop="info.action.handler"><!-- TODO --></button>
 			</div>
 			<div class="right">
-				<button class="_button search" @click="search()"><Fa :icon="faSearch" class="icon"/><span>{{ $ts.search }}</span></button>
+				<button class="_button search" @click="search()"><i class="fas fa-search icon"></i><span>{{ $ts.search }}</span></button>
 				<button class="_buttonPrimary signup" @click="signup()">{{ $ts.signup }}</button>
 				<button class="_button login" @click="signin()">{{ $ts.login }}</button>
 			</div>
@@ -24,16 +24,16 @@
 	</div>
 	<div class="narrow" v-else-if="narrow === true">
 		<button class="menu _button" @click="$parent.showMenu = true">
-			<Fa :icon="faBars" class="icon"/>
+			<i class="fas fa-bars icon"></i>
 		</button>
 		<div class="title" v-if="info">
-			<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+			<i v-if="info.icon" class="icon" :class="info.icon"></i>
 			<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 			<span v-if="info.title" class="text">{{ info.title }}</span>
 			<MkUserName v-else-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 		</div>
 		<button class="action _button" v-if="info && info.action" @click.stop="info.action.handler">
-			<Fa :icon="info.action.icon" :key="info.action.icon" class="icon"/>
+			<!-- TODO -->
 		</button>
 	</div>
 </div>
@@ -41,7 +41,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars } from '@fortawesome/free-solid-svg-icons';
 import XSigninDialog from '@client/components/signin-dialog.vue';
 import XSignupDialog from '@client/components/signup-dialog.vue';
 import * as os from '@client/os';
@@ -58,7 +57,6 @@ export default defineComponent({
 		return {
 			narrow: null,
 			showMenu: false,
-			faSearch, faHome, faFireAlt, faHashtag, faSatelliteDish, faBars,
 		};
 	},
 

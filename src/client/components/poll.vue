@@ -4,7 +4,7 @@
 		<li v-for="(choice, i) in poll.choices" :key="i" @click="vote(i)" :class="{ voted: choice.voted }">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
-				<template v-if="choice.isVoted"><Fa :icon="faCheck"/></template>
+				<template v-if="choice.isVoted"><i class="fas fa-check"></i></template>
 				<Mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
 				<span class="votes" v-if="showResult">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { sum } from '../../prelude/array';
 import * as os from '@client/os';
 
@@ -38,7 +37,6 @@ export default defineComponent({
 		return {
 			remaining: -1,
 			showResult: false,
-			faCheck
 		};
 	},
 	computed: {
@@ -135,7 +133,7 @@ export default defineComponent({
 			> span {
 				position: relative;
 
-				> [data-icon] {
+				> i {
 					margin-right: 4px;
 				}
 

@@ -22,7 +22,7 @@
 						<div><MkTime :time="token.lastUsedAt"/></div>
 					</div>
 					<div class="actions">
-						<button class="_button" @click="revoke(token)"><Fa :icon="faTrashAlt"/></button>
+						<button class="_button" @click="revoke(token)"><i class="fas fa-trash-alt"></i></button>
 					</div>
 					<details>
 						<summary>{{ $ts.details }}</summary>
@@ -39,7 +39,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faTrashAlt, faPlug } from '@fortawesome/free-solid-svg-icons';
 import FormPagination from '@client/components/form/pagination.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormLink from '@client/components/form/link.vue';
@@ -61,7 +60,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.installedApps,
-				icon: faPlug,
+				icon: 'fas fa-plug',
 			},
 			pagination: {
 				endpoint: 'i/apps',
@@ -70,7 +69,6 @@ export default defineComponent({
 					sort: '+lastUsedAt'
 				}
 			},
-			faTrashAlt, faPlug
 		};
 	},
 

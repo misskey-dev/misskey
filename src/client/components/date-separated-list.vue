@@ -1,7 +1,5 @@
 <script lang="ts">
 import { defineComponent, h, TransitionGroup } from 'vue';
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default defineComponent({
 	props: {
@@ -73,17 +71,15 @@ export default defineComponent({
 					class: 'date'
 				}, [
 					h('span', [
-						h(FontAwesomeIcon, {
-							class: 'icon',
-							icon: faAngleUp,
+						h('i', {
+							class: 'fas fa-angle-up icon',
 						}),
 						this.getDateText(item.createdAt)
 					]),
 					h('span', [
 						this.getDateText(this.items[i + 1].createdAt),
-						h(FontAwesomeIcon, {
-							class: 'icon',
-							icon: faAngleDown,
+						h('i', {
+							class: 'fas fa-angle-down icon',
 						})
 					])
 				]));

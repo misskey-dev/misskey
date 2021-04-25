@@ -10,10 +10,9 @@ export const meta = {
 		'en-US': 'Update specified remote user information.'
 	},
 
-	tags: ['admin'],
+	tags: ['federation'],
 
 	requireCredential: true as const,
-	requireModerator: true,
 
 	params: {
 		userId: {

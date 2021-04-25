@@ -1,27 +1,29 @@
 <template>
-<section class="_section">
-	<div class="_title"><slot name="title"></slot></div>
-	<div class="_content _table">
-		<div class="_row">
-			<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
-			<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
-			<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
-			<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
-		</div>
-	</div>
-	<div class="_content" style="margin-bottom: -8px;">
-		<canvas ref="chart"></canvas>
-	</div>
-	<div class="_content" style="max-height: 180px; overflow: auto;">
-		<div v-if="jobs.length > 0">
-			<div v-for="job in jobs" :key="job[0]">
-				<span>{{ job[0] }}</span>
-				<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
+<div class="_formItem">
+	<div class="_formLabel"><slot name="title"></slot></div>
+	<div class="_formPanel pumxzjhg">
+		<div class="_table status">
+			<div class="_row">
+				<div class="_cell"><div class="_label">Process</div>{{ number(activeSincePrevTick) }}</div>
+				<div class="_cell"><div class="_label">Active</div>{{ number(active) }}</div>
+				<div class="_cell"><div class="_label">Waiting</div>{{ number(waiting) }}</div>
+				<div class="_cell"><div class="_label">Delayed</div>{{ number(delayed) }}</div>
 			</div>
 		</div>
-		<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
+		<div class="">
+			<canvas ref="chart"></canvas>
+		</div>
+		<div class="jobs">
+			<div v-if="jobs.length > 0">
+				<div v-for="job in jobs" :key="job[0]">
+					<span>{{ job[0] }}</span>
+					<span style="margin-left: 8px; opacity: 0.7;">({{ number(job[1]) }} jobs)</span>
+				</div>
+			</div>
+			<span v-else style="opacity: 0.5;">{{ $ts.noJobs }}</span>
+		</div>
 	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts">
@@ -110,10 +112,10 @@ export default defineComponent({
 				aspectRatio: 3,
 				layout: {
 					padding: {
-						left: 0,
-						right: 0,
-						top: 8,
-						bottom: 0
+						left: 16,
+						right: 16,
+						top: 16,
+						bottom: 12
 					}
 				},
 				legend: {
@@ -198,3 +200,19 @@ export default defineComponent({
 	}
 });
 </script>
+
+<style lang="scss" scoped>
+.pumxzjhg {
+	> .status {
+		padding: 16px;
+		border-bottom: solid 0.5px var(--divider);
+	}
+
+	> .jobs {
+		padding: 16px;
+		border-top: solid 0.5px var(--divider);
+		max-height: 180px;
+		overflow: auto;
+	}
+}
+</style>

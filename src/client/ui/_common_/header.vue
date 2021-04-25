@@ -1,12 +1,12 @@
 <template>
 <div class="fdidabkb" :class="{ center }" :style="`--height:${height};`" :key="key">
 	<transition :name="$store.state.animation ? 'header' : ''" mode="out-in" appear>
-		<button class="_button back" v-if="withBack && canBack" @click.stop="back()" v-tooltip="$ts.goBack"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button back" v-if="withBack && canBack" @click.stop="back()" v-tooltip="$ts.goBack"><i class="fas fa-chevron-left"></i></button>
 	</transition>
 	<template v-if="info">
 		<div class="titleContainer">
 			<div class="title">
-				<Fa v-if="info.icon" :icon="info.icon" :key="info.icon" class="icon"/>
+				<i v-if="info.icon" class="icon" :class="info.icon"></i>
 				<MkAvatar v-else-if="info.avatar" class="avatar" :user="info.avatar" :disable-preview="true" :show-indicator="true"/>
 				<MkUserName v-if="info.userName" :user="info.userName" :nowrap="false" class="text"/>
 				<span v-else-if="info.title" class="text">{{ info.title }}</span>
@@ -14,9 +14,9 @@
 		</div>
 		<div class="buttons">
 			<template v-if="info.actions && showActions">
-				<button v-for="action in info.actions" class="_button button" @click.stop="action.handler" v-tooltip="action.text"><Fa :icon="action.icon"/></button>
+				<button v-for="action in info.actions" class="_button button" @click.stop="action.handler" v-tooltip="action.text"><i :class="action.icon"></i></button>
 			</template>
-			<button v-if="showMenu" class="_button button" @click.stop="menu"><Fa :icon="faEllipsisH"/></button>
+			<button v-if="showMenu" class="_button button" @click.stop="menu"><i class="fas fa-ellipsis-h"></i></button>
 		</div>
 	</template>
 </div>
@@ -24,7 +24,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faChevronLeft, faCircle, faShareAlt, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { modalMenu } from '@client/os';
 import { url } from '@client/config';
 
@@ -51,7 +50,6 @@ export default defineComponent({
 			showActions: false,
 			height: 0,
 			key: 0,
-			faChevronLeft, faCircle, faShareAlt, faEllipsisH,
 		};
 	},
 
@@ -111,7 +109,7 @@ export default defineComponent({
 				if (menu.length > 0) menu.push(null);
 				menu.push({
 					text: this.$ts.share,
-					icon: faShareAlt,
+					icon: 'fas fa-share-alt',
 					action: this.share
 				});
 			}

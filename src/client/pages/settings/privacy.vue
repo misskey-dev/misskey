@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faLockOpen } from '@fortawesome/free-solid-svg-icons';
 import FormSwitch from '@client/components/form/switch.vue';
 import FormSelect from '@client/components/form/select.vue';
 import FormBase from '@client/components/form/base.vue';
@@ -56,7 +55,7 @@ export default defineComponent({
 		return {
 			[symbols.PAGE_INFO]: {
 				title: this.$ts.privacy,
-				icon: faLockOpen
+				icon: 'fas fa-lock-open'
 			},
 			isLocked: false,
 			autoAcceptFollowed: false,

@@ -7,7 +7,6 @@ import '@client/style.scss';
 import * as Sentry from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { computed, createApp, watch } from 'vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import widgets from '@client/widgets';
 import directives from '@client/directives';
@@ -41,6 +40,11 @@ if ((typeof ColdDeviceStorage.get('lightTheme') === 'string') || (typeof ColdDev
 	ColdDeviceStorage.set('lightTheme', require('@client/themes/l-light.json5'));
 	ColdDeviceStorage.set('darkTheme', require('@client/themes/d-dark.json5'));
 }
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://use.fontawesome.com/releases/v5.15.3/css/all.css';
+document.head.appendChild(link);
+// TODOここまで
 
 if (_DEV_) {
 	console.warn('Development mode!!!');
@@ -184,8 +188,6 @@ app.config.globalProperties = {
 };
 
 app.use(router);
-// eslint-disable-next-line vue/component-definition-name-casing
-app.component('Fa', FontAwesomeIcon);
 
 widgets(app);
 directives(app);

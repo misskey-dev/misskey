@@ -2,7 +2,7 @@
 <div class="zlxnikvl">
 	<XPie class="pie" :value="usage"/>
 	<div>
-		<p><fa :icon="faMemory"/>RAM</p>
+		<p><i class="fas fa-memory"></i>RAM</p>
 		<p>Total: {{ bytes(total, 1) }}</p>
 		<p>Used: {{ bytes(used, 1) }}</p>
 		<p>Free: {{ bytes(free, 1) }}</p>
@@ -12,7 +12,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faMemory } from '@fortawesome/free-solid-svg-icons';
 import XPie from './pie.vue';
 import bytes from '@client/filters/bytes';
 
@@ -34,7 +33,6 @@ export default defineComponent({
 			total: 0,
 			used: 0,
 			free: 0,
-			faMemory,
 		};
 	},
 	mounted() {
@@ -77,7 +75,7 @@ export default defineComponent({
 				font-weight: bold;
 				margin-bottom: 4px;
 
-				> [data-icon] {
+				> i {
 					margin-right: 4px;
 				}
 			}

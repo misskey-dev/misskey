@@ -40,8 +40,8 @@
 						<img v-if="stone === false" :src="whiteUser.avatarUrl" alt="white">
 					</template>
 					<template v-else>
-						<fa v-if="stone === true" :icon="fasCircle"/>
-						<fa v-if="stone === false" :icon="farCircle"/>
+						<i v-if="stone === true" class="fas fa-circle"></i>
+						<i v-if="stone === false" class="far fa-circle"></i>
 					</template>
 				</div>
 			</div>
@@ -63,12 +63,12 @@
 	<div class="player" v-if="game.isEnded">
 		<span>{{ logPos }} / {{ logs.length }}</span>
 		<div class="buttons" v-if="!autoplaying">
-			<MkButton inline @click="logPos = 0" :disabled="logPos == 0"><fa :icon="faAngleDoubleLeft"/></MkButton>
-			<MkButton inline @click="logPos--" :disabled="logPos == 0"><fa :icon="faAngleLeft"/></MkButton>
-			<MkButton inline @click="logPos++" :disabled="logPos == logs.length"><fa :icon="faAngleRight"/></MkButton>
-			<MkButton inline @click="logPos = logs.length" :disabled="logPos == logs.length"><fa :icon="faAngleDoubleRight"/></MkButton>
+			<MkButton inline @click="logPos = 0" :disabled="logPos == 0"><i class="fas fa-angle-double-left"></i></MkButton>
+			<MkButton inline @click="logPos--" :disabled="logPos == 0"><i class="fas fa-angle-left"></i></MkButton>
+			<MkButton inline @click="logPos++" :disabled="logPos == logs.length"><i class="fas fa-angle-right"></i></MkButton>
+			<MkButton inline @click="logPos = logs.length" :disabled="logPos == logs.length"><i class="fas fa-angle-double-right"></i></MkButton>
 		</div>
-		<MkButton @click="autoplay()" :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;"><fa :icon="faPlay"/></MkButton>
+		<MkButton @click="autoplay()" :disabled="autoplaying" style="margin: var(--margin) auto 0 auto;"><i class="fas fa-play"></i></MkButton>
 	</div>
 
 	<div class="info">
@@ -85,9 +85,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { faCircle as fasCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCircle as farCircle } from '@fortawesome/free-regular-svg-icons';
 import * as CRC32 from 'crc-32';
 import Reversi, { Color } from '../../../games/reversi/core';
 import { url } from '@client/config';
@@ -120,7 +117,6 @@ export default defineComponent({
 			logPos: 0,
 			watchers: [],
 			pollingClock: null,
-			faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight, fasCircle, farCircle, faPlay
 		};
 	},
 

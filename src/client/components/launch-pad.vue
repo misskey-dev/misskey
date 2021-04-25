@@ -3,29 +3,29 @@
 	<div class="szkkfdyq _popup">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" class="_button" @click="$event => { item.action($event); close(); }">
-					<Fa :icon="item.icon" class="icon"/>
+				<button v-if="item.action" class="_button" @click="$event => { item.action($event); close(); }" v-click-anime>
+					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
+					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 				</button>
-				<MkA v-else :to="item.to" @click.passive="close()">
-					<Fa :icon="item.icon" class="icon"/>
+				<MkA v-else :to="item.to" @click.passive="close()" v-click-anime>
+					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
-					<i v-if="item.indicate"><Fa :icon="faCircle"/></i>
+					<span v-if="item.indicate" class="indicator"><i class="fas fa-circle"></i></span>
 				</MkA>
 			</template>
 		</div>
 		<div class="sub">
 			<MkA to="/docs" @click.passive="close()">
-				<Fa :icon="faQuestionCircle" class="icon"/>
+				<i class="fas fa-question-circle icon"></i>
 				<div class="text">{{ $ts.help }}</div>
 			</MkA>
 			<MkA to="/about" @click.passive="close()">
-				<Fa :icon="faInfoCircle" class="icon"/>
+				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $t('aboutX', { x: instanceName }) }}</div>
 			</MkA>
 			<MkA to="/about-misskey" @click.passive="close()">
-				<Fa :icon="faInfoCircle" class="icon"/>
+				<i class="fas fa-info-circle icon"></i>
 				<div class="text">{{ $ts.aboutMisskey }}</div>
 			</MkA>
 		</div>
@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faQuestionCircle, faInfoCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
 import MkModal from '@client/components/ui/modal.vue';
 import { sidebarDef } from '@client/sidebar';
 import { instanceName } from '@client/config';
@@ -52,7 +51,6 @@ export default defineComponent({
 			menuDef: sidebarDef,
 			items: [],
 			instanceName,
-			faQuestionCircle, faInfoCircle, faCircle,
 		};
 	},
 
@@ -127,7 +125,7 @@ export default defineComponent({
 				line-height: 1.5em;
 			}
 
-			> i {
+			> .indicator {
 				position: absolute;
 				top: 32px;
 				left: 32px;

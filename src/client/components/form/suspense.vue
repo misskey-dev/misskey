@@ -5,13 +5,13 @@
 			<MkLoading/>
 		</div>
 	</div>
-	<FormGroup v-else-if="resolved" class="_formItem">
+	<div v-else-if="resolved" class="_formItem">
 		<slot :result="result"></slot>
-	</FormGroup>
+	</div>
 	<div class="_formItem" v-else>
-		<div class="_formPanel">
-			error!
-			<button @click="retry">retry</button>
+		<div class="_formPanel eiurkvay">
+			<div><i class="fas fa-exclamation-triangle"></i> {{ $ts.somethingHappened }}</div>
+			<MkButton inline @click="retry" class="retry"><i class="fas fa-redo-alt"></i> {{ $ts.retry }}</MkButton>
 		</div>
 	</div>
 </transition>
@@ -20,11 +20,11 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from 'vue';
 import './form.scss';
-import FormGroup from './group.vue';
+import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
 	components: {
-		FormGroup,
+		MkButton
 	},
 
 	props: {
@@ -88,5 +88,14 @@ export default defineComponent({
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.eiurkvay {
+	padding: 16px;
+	text-align: center;
+
+	> .retry {
+		margin-top: 16px;
+	}
 }
 </style>

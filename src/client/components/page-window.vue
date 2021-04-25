@@ -11,7 +11,7 @@
 		<XHeader :info="pageInfo" :with-back="false"/>
 	</template>
 	<template #buttons>
-		<button class="_button" @click="back()" v-if="history.length > 0"><Fa :icon="faChevronLeft"/></button>
+		<button class="_button" @click="back()" v-if="history.length > 0"><i class="fas fa-chevron-left"></i></button>
 		<button class="_button" style="pointer-events: none;" v-else><!-- マージンのバランスを取るためのダミー --></button>
 	</template>
 	<div class="yrolvcoq _flat_">
@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExternalLinkAlt, faExpandAlt, faLink, faChevronLeft, faColumns } from '@fortawesome/free-solid-svg-icons';
 import XWindow from '@client/components/ui/window.vue';
 import XHeader from '@client/ui/_common_/header.vue';
 import { popout } from '@client/scripts/popout';
@@ -76,7 +75,6 @@ export default defineComponent({
 			component: this.initialComponent,
 			props: this.initialProps,
 			history: [],
-			faChevronLeft,
 		};
 	},
 
@@ -90,29 +88,29 @@ export default defineComponent({
 				type: 'label',
 				text: this.path,
 			}, {
-				icon: faExpandAlt,
+				icon: 'fas fa-expand-alt',
 				text: this.$ts.showInPage,
 				action: this.expand
 			}, this.sideViewHook ? {
-				icon: faColumns,
+				icon: 'fas fa-columns',
 				text: this.$ts.openInSideView,
 				action: () => {
 					this.sideViewHook(this.path);
 					this.$refs.window.close();
 				}
 			} : undefined, {
-				icon: faExternalLinkAlt,
+				icon: 'fas fa-external-link-alt',
 				text: this.$ts.popout,
 				action: this.popout
 			}, null, {
-				icon: faExternalLinkAlt,
+				icon: 'fas fa-external-link-alt',
 				text: this.$ts.openInNewTab,
 				action: () => {
 					window.open(this.url, '_blank');
 					this.$refs.window.close();
 				}
 			}, {
-				icon: faLink,
+				icon: 'fas fa-link',
 				text: this.$ts.copyLink,
 				action: () => {
 					copyToClipboard(this.url);

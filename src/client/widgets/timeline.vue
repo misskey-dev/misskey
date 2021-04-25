@@ -2,14 +2,14 @@
 <MkContainer :show-header="props.showHeader" :style="`height: ${props.height}px;`" :scrollable="true">
 	<template #header>
 		<button @click="choose" class="_button">
-			<Fa v-if="props.src === 'home'" :icon="faHome"/>
-			<Fa v-if="props.src === 'local'" :icon="faComments"/>
-			<Fa v-if="props.src === 'social'" :icon="faShareAlt"/>
-			<Fa v-if="props.src === 'global'" :icon="faGlobe"/>
-			<Fa v-if="props.src === 'list'" :icon="faListUl"/>
-			<Fa v-if="props.src === 'antenna'" :icon="faSatellite"/>
+			<i v-if="props.src === 'home'" class="fas fa-home"></i>
+			<i v-else-if="props.src === 'local'" class="fas fa-comments"></i>
+			<i v-else-if="props.src === 'social'" class="fas fa-share-alt"></i>
+			<i v-else-if="props.src === 'global'" class="fas fa-globe"></i>
+			<i v-else-if="props.src === 'list'" class="fas fa-list-ul"></i>
+			<i v-else-if="props.src === 'antenna'" class="fas fa-satellite"></i>
 			<span style="margin-left: 8px;">{{ props.src === 'list' ? props.list.name : props.src === 'antenna' ? props.antenna.name : $t('_timelines.' + props.src) }}</span>
-			<Fa :icon="menuOpened ? faAngleUp : faAngleDown" style="margin-left: 8px;"/>
+			<i :class="menuOpened ? 'fas fa-angle-up' : 'fas fa-angle-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>
 
@@ -21,8 +21,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faListUl, faSatellite } from '@fortawesome/free-solid-svg-icons';
-import { faComments } from '@fortawesome/free-regular-svg-icons';
 import MkContainer from '@client/components/ui/container.vue';
 import XTimeline from '@client/components/timeline.vue';
 import define from './define';
@@ -62,7 +60,6 @@ export default defineComponent({
 	data() {
 		return {
 			menuOpened: false,
-			faAngleDown, faAngleUp, faHome, faShareAlt, faGlobe, faComments, faListUl, faSatellite
 		};
 	},
 
@@ -75,7 +72,7 @@ export default defineComponent({
 			]);
 			const antennaItems = antennas.map(antenna => ({
 				text: antenna.name,
-				icon: faSatellite,
+				icon: 'fas fa-satellite',
 				action: () => {
 					this.props.antenna = antenna;
 					this.setSrc('antenna');
@@ -83,7 +80,7 @@ export default defineComponent({
 			}));
 			const listItems = lists.map(list => ({
 				text: list.name,
-				icon: faListUl,
+				icon: 'fas fa-list-ul',
 				action: () => {
 					this.props.list = list;
 					this.setSrc('list');
@@ -91,19 +88,19 @@ export default defineComponent({
 			}));
 			os.modalMenu([{
 				text: this.$ts._timelines.home,
-				icon: faHome,
+				icon: 'fas fa-home',
 				action: () => { this.setSrc('home') }
 			}, {
 				text: this.$ts._timelines.local,
-				icon: faComments,
+				icon: 'fas fa-comments',
 				action: () => { this.setSrc('local') }
 			}, {
 				text: this.$ts._timelines.social,
-				icon: faShareAlt,
+				icon: 'fas fa-share-alt',
 				action: () => { this.setSrc('social') }
 			}, {
 				text: this.$ts._timelines.global,
-				icon: faGlobe,
+				icon: 'fas fa-globe',
 				action: () => { this.setSrc('global') }
 			}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget || ev.target).then(() => {
 				this.menuOpened = false;

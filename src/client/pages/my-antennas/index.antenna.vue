@@ -39,15 +39,14 @@
 		<MkSwitch v-model:value="notify">{{ $ts.notifyAntenna }}</MkSwitch>
 	</div>
 	<div class="_footer">
-		<MkButton inline @click="saveAntenna()" primary><Fa :icon="faSave"/> {{ $ts.save }}</MkButton>
-		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><Fa :icon="faTrash"/> {{ $ts.delete }}</MkButton>
+		<MkButton inline @click="saveAntenna()" primary><i class="fas fa-save"></i> {{ $ts.save }}</MkButton>
+		<MkButton inline @click="deleteAntenna()" v-if="antenna.id != null"><i class="fas fa-trash"></i> {{ $ts.delete }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import MkButton from '@client/components/ui/button.vue';
 import MkInput from '@client/components/ui/input.vue';
 import MkTextarea from '@client/components/ui/textarea.vue';
@@ -83,7 +82,6 @@ export default defineComponent({
 			notify: false,
 			userLists: null,
 			userGroups: null,
-			faSave, faTrash
 		};
 	},
 

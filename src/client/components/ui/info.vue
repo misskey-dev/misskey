@@ -1,14 +1,13 @@
 <template>
 <div class="fpezltsf" :class="{ warn }">
-	<i v-if="warn"><Fa :icon="faExclamationTriangle"/></i>
-	<i v-else><Fa :icon="faInfoCircle"/></i>
+	<i v-if="warn" class="fas fa-exclamation-triangle"></i>
+	<i v-else class="fas fa-info-circle"></i>
 	<slot></slot>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faInfoCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import * as os from '@client/os';
 
 export default defineComponent({
@@ -21,7 +20,6 @@ export default defineComponent({
 	},
 	data() {
 		return {
-			faInfoCircle, faExclamationTriangle
 		};
 	}
 });

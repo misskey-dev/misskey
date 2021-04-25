@@ -3,13 +3,13 @@
 	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.name"/>
 	<div class="text">
 		<div>
-			<b><Fa :icon="faExclamationTriangle"/> {{ $ts.sensitive }}</b>
+			<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
 			<span>{{ $ts.clickToShow }}</span>
 		</div>
 	</div>
 </div>
 <div class="gqnyydlz" :style="{ background: color }" v-else>
-	<i><Fa :icon="faEyeSlash" @click="hide = true"/></i>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 	<a
 		:href="image.url"
 		:title="image.name"
@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faExclamationTriangle, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { getStaticImageUrl } from '@client/scripts/get-static-image-url';
 import { extractAvgColorFromBlurhash } from '@client/scripts/extract-avg-color-from-blurhash';
 import ImageViewer from './image-viewer.vue';
@@ -47,7 +46,6 @@ export default defineComponent({
 		return {
 			hide: true,
 			color: null,
-			faExclamationTriangle, faEyeSlash,
 		};
 	},
 	computed: {

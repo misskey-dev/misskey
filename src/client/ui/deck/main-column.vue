@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
 import XColumn from './column.vue';
 import XNotes from '@client/components/notes.vue';
 import XHeader from '@client/ui/_common_/header.vue';
@@ -65,14 +64,14 @@ export default defineComponent({
 				}
 			};
 			if (isLink(e.target)) return;
-			if (['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
+			if (['INPUT', 'TEXTAREA', 'IMG'].includes(e.target.tagName) || e.target.attributes['contenteditable']) return;
 			if (window.getSelection().toString() !== '') return;
 			const path = this.$route.path;
 			os.contextMenu([{
 				type: 'label',
 				text: path,
 			}, {
-				icon: faWindowMaximize,
+				icon: 'fas fa-window-maximize',
 				text: this.$ts.openInWindow,
 				action: () => {
 					os.pageWindow(path);
