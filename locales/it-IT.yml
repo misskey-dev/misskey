@@ -1142,14 +1142,19 @@ _pages:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    counter: "Contatore"
     _counter:
       name: "Nome della variabile"
       text: "Titolo"
+      inc: "Valore da aggiungere"
     _button:
       text: "Titolo"
+      colored: "Colorato"
       _action:
+        dialog: "Visualizzare una finestra di dialogo"
         _dialog:
           content: "Contenuto"
+        resetRandom: "Ripristinare un numero aleatorio"
         pushEvent: "Inviare evento"
         _pushEvent:
           event: "Nome evento"
