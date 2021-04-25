@@ -1150,6 +1150,7 @@ _pages:
     _button:
       text: "Titolo"
       colored: "Colorato"
+      action: "Operazione da eseguire quando viene premuto il pulsante"
       _action:
         dialog: "Visualizzare una finestra di dialogo"
         _dialog:
@@ -1178,6 +1179,8 @@ _pages:
       list: "Liste"
     blocks:
       text: "Testo"
+      multiLineText: "Testo (a più righe)"
+      textList: "Lista di testo"
       _strLen:
         arg1: "Testo"
       _strPick:
@@ -1232,13 +1235,18 @@ _pages:
         arg2: "B"
       _if:
         arg1: "Se"
+        arg2: "Se"
       random: "Aleatorietà"
       _randomPick:
         arg1: "Liste"
       _dailyRandomPick:
         arg1: "Liste"
+      _seedRandom:
+        arg2: "Probabilità"
       _seedRandomPick:
         arg2: "Liste"
+      _DRPWPM:
+        arg1: "Lista di testo"
       _pick:
         arg1: "Liste"
       _listLen:
@@ -1252,6 +1260,7 @@ _pages:
     types:
       string: "Testo"
       array: "Liste"
+      stringArray: "Lista di testo"
 _notification:
   fileUploaded: "File caricato correttamente"
   youGotMention: "{name} ti ha menzionato"
