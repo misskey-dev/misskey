@@ -1005,6 +1005,7 @@ _instanceCharts:
   users: "Variazione del numero di utenti"
   usersTotal: "Totale cumulativo di utenti"
   notes: "Variazione del numero di note"
+  notesTotal: "Totale cumulato di note"
 _timelines:
   home: "Home"
   local: "Locale"
