@@ -932,6 +932,7 @@ _widgets:
   photos: "Foto"
   digitalClock: "Orologio digitale"
   federation: "Federazione"
+  postForm: "Finestra di pubblicazione"
   button: "Pulsante"
   onlineUsers: "Utenti online"
   jobQueue: "Coda di lavoro"
@@ -1100,6 +1101,7 @@ _pages:
   variableNameIsAlreadyUsed: "Esiste già una variabile con lo stesso nome"
   contentBlocks: "Contenuto"
   inputBlocks: "Blocchi di input"
+  specialBlocks: "Speciale"
   blocks:
     text: "Testo"
     textarea: "Area di testo"
@@ -1109,8 +1111,10 @@ _pages:
     if: "Se"
     _if:
       variable: "Variabili"
+    post: "Finestra di pubblicazione"
     _post:
       text: "Contenuto"
+    textInput: "Immissione testo"
     _textInput:
       name: "Nome della variabile"
       text: "Titolo"
