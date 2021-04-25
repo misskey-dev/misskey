@@ -19,7 +19,7 @@
 						<MkButton class="button" @click="like()" v-else v-tooltip="$ts._gallery.like"><i class="far fa-heart"></i><span class="count" v-if="post.likedCount > 0">{{ post.likedCount }}</span></MkButton>
 					</div>
 					<div class="other">
-						<button class="_button" @click="createNote" v-tooltip="$ts.shareWithNote" v-click-anime><i class="fas fa-retweet fa-fw"></i></button>
+						<button class="_button" @click="shareWithNote" v-tooltip="$ts.shareWithNote" v-click-anime><i class="fas fa-retweet fa-fw"></i></button>
 						<button class="_button" @click="share" v-tooltip="$ts.share" v-click-anime><i class="fas fa-share-alt fa-fw"></i></button>
 					</div>
 				</div>
@@ -125,6 +125,12 @@ export default defineComponent({
 			});
 		},
 
+		shareWithNote() {
+			os.post({
+				initialText: `${this.post.title} ${url}/gallery/${this.post.id}`
+			});
+		},
+
 		like() {
 			os.apiWithDialog('gallery/posts/like', {
 				postId: this.postId,
@@ -148,12 +154,6 @@ export default defineComponent({
 				this.post.likedCount--;
 			});
 		},
-
-		createNote() {
-			os.post({
-				initialText: `${this.post.title} ${url}/gallery/${this.post.id}`
-			});
-		}
 	}
 });
 </script>
