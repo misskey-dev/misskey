@@ -1015,8 +1015,15 @@ _timelines:
   global: "Federata"
 _rooms:
   roomOf: "Camera di {user}"
+  addFurniture: "Disponi mobilia"
+  translate: "Sposta"
+  rotate: "Ruota"
+  exit: "Indietro"
   remove: "Togli"
+  clear: "Rimuovi tutto"
+  clearConfirm: "Sei sicur@ di voler rimuovere tutti i mobili dalla tua camera?"
   leaveConfirm: "Hai fatto modifiche ancora non salvate. Vuoi davvero uscire?"
+  chooseImage: "Seleziona immagine"
   _roomType:
     default: "Predefinito"
     washitsu: "Washitsu"
