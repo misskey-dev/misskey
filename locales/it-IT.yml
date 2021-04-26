@@ -756,6 +756,7 @@ _nsfw:
   force: "Nascondere tutti i media"
 _mfm:
   cheatSheet: "Bigliettino MFM"
+  intro: "MFM è un linguaggio Markdown particolare che si può usare in diverse parti di Misskey. Qui puoi visualizzare a colpo d'occhio tutta la sintassi MFM utile."
   dummy: "Il Fediverso si espande con Misskey"
   mention: "Menzioni"
   mentionDescription: "Si può menzionare un utente specifico digitando il suo nome utente subito dopo il segno @."
@@ -1028,11 +1029,16 @@ _charts:
   filesIncDec: "Variazione del numero dei file"
   filesTotal: "Numero totale di file"
   storageUsageIncDec: "Variazione dell'utilizzo dell'immagazzinamento"
+  storageUsageTotal: "Utilizzo totale dell'immagazzinamento"
 _instanceCharts:
+  requests: "Richieste"
   users: "Variazione del numero di utenti"
   usersTotal: "Totale cumulativo di utenti"
   notes: "Variazione del numero di note"
   notesTotal: "Totale cumulato di note"
+  ff: "Variazione dei follow/ follower"
+  ffTotal: "Totale cumulato dei follow/ follower"
+  cacheSize: "Variazione dello spazio occupato dalla cache"
   files: "Variazione del numero di file"
   filesTotal: "Totale cumulato del numero di file"
 _timelines:
