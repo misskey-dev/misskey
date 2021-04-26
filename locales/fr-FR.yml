@@ -1141,7 +1141,7 @@ _exportOrImport:
   userLists: "Listes"
 _charts:
   federationInstancesIncDec: "Variation du nombre d'instances fédérées"
-  federationInstancesTotal: "Nombre total des instances fédérées"
+  federationInstancesTotal: "Nombre total d'instances fédérées"
   usersIncDec: "Variation du nombre d'utilisateur·rice·s"
   usersTotal: "Nombre des utilisateur·rice·s au total"
   activeUsers: "Utilisateur·rice·s actif·ve·s"
@@ -1156,7 +1156,7 @@ _charts:
 _instanceCharts:
   requests: "Requêtes"
   users: "Variation du nombre d'utilisateur·rice·s"
-  usersTotal: "Nombre d'utilisateur·rice·s au total cumulé"
+  usersTotal: "Total cumulé du nombre d'utilisateur·rice·s"
   notes: "Variation du nombre de notes"
   notesTotal: "Nombre total cumulé des notes"
   ff: "Variation des abonné·e·s / abonnements"
