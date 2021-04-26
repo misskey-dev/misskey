@@ -486,7 +486,7 @@ objectStorageRegionDesc: "Spécifiez une région comme 'xx-east-1'. Si votre ser
 objectStorageUseSSL: "Utiliser SSL"
 objectStorageUseSSLDesc: "Désactivez cette option si vous n'utilisez pas HTTPS pour la connexion API"
 objectStorageUseProxy: "Se connecter via proxy"
-objectStorageUseProxyDesc: "Désactivez cette option si vous n'utilisez pas Proxy pour la connexion API"
+objectStorageUseProxyDesc: "Désactivez cette option si vous n'utilisez pas de proxy pour la connexion API"
 objectStorageSetPublicRead: "Régler sur « public » lors de l'envoi"
 serverLogs: "Journal du serveur"
 deleteAll: "Supprimer tout"
