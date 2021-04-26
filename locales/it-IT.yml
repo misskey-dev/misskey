@@ -473,6 +473,8 @@ objectStoragePrefixDesc: "I file saranno conservati sotto la directory di questo
 objectStorageEndpoint: "Endpoint"
 objectStorageRegion: "Region"
 objectStorageUseSSL: "Usare SSL"
+objectStorageUseProxy: "Usa proxy"
+objectStorageUseProxyDesc: "Disabilita quest'opzione se non usi proxy per la connessione API."
 serverLogs: "Log del server"
 deleteAll: "Cancella cronologia"
 showFixedPostForm: "Visualizzare la finestra di pubblicazione in cima alla timeline"
