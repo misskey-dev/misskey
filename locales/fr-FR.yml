@@ -1187,7 +1187,7 @@ _rooms:
     default: "Par défaut"
     washitsu: "Style japonnais"
   _furnitures:
-    milk: "Lait en carton"
+    milk: "Brique de lait"
     bed: "Lit"
     low-table: "Table basse"
     desk: "Bureau"
@@ -1219,7 +1219,7 @@ _rooms:
     wall-clock: "Horloge murale"
     photoframe: "Cadre photo"
     cube: "Cube"
-    tv: "Téléviseur"
+    tv: "Télé"
     pinguin: "Pingouin"
     rubik-cube: "Cube de Rubik"
     poster-h: "Affiche (horizontale)"
