@@ -161,15 +161,15 @@
 					</dl>
 				</div>
 				<div class="status">
-					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
+					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" v-click-anime>
 						<b>{{ number(user.notesCount) }}</b>
 						<span>{{ $ts.notes }}</span>
 					</MkA>
-					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
+					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }" v-click-anime>
 						<b>{{ number(user.followingCount) }}</b>
 						<span>{{ $ts.following }}</span>
 					</MkA>
-					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
+					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }" v-click-anime>
 						<b>{{ number(user.followersCount) }}</b>
 						<span>{{ $ts.followers }}</span>
 					</MkA>

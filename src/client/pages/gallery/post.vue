@@ -19,6 +19,7 @@
 						<MkButton class="button" @click="like()" v-else v-tooltip="$ts._gallery.like"><i class="far fa-heart"></i><span class="count" v-if="post.likedCount > 0">{{ post.likedCount }}</span></MkButton>
 					</div>
 					<div class="other">
+						<button v-if="$i && $i.id === post.user.id" class="_button" @click="edit" v-tooltip="$ts.edit" v-click-anime><i class="fas fa-pencil-alt fa-fw"></i></button>
 						<button class="_button" @click="shareWithNote" v-tooltip="$ts.shareWithNote" v-click-anime><i class="fas fa-retweet fa-fw"></i></button>
 						<button class="_button" @click="share" v-tooltip="$ts.share" v-click-anime><i class="fas fa-share-alt fa-fw"></i></button>
 					</div>
@@ -84,6 +85,11 @@ export default defineComponent({
 					title: this.post.title,
 					text: this.post.description,
 				},
+				actions: [{
+					icon: 'fas fa-pencil-alt',
+					text: this.$ts.edit,
+					handler: this.edit
+				}]
 			} : null),
 			otherPostsPagination: {
 				endpoint: 'users/gallery/posts',
@@ -154,6 +160,10 @@ export default defineComponent({
 				this.post.likedCount--;
 			});
 		},
+
+		edit() {
+			this.$router.push(`/gallery/${this.post.id}/edit`);
+		}
 	}
 });
 </script>
