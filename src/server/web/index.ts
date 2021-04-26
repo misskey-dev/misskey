@@ -252,7 +252,7 @@ router.get('/users/:user', async ctx => {
 });
 
 // Note
-router.get('/notes/:note', async ctx => {
+router.get('/notes/:note', async (ctx, next) => {
 	const note = await Notes.findOne(ctx.params.note);
 
 	if (note) {
@@ -277,11 +277,11 @@ router.get('/notes/:note', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 
 // Page
-router.get('/@:user/pages/:page', async ctx => {
+router.get('/@:user/pages/:page', async (ctx, next) => {
 	const { username, host } = parseAcct(ctx.params.user);
 	const user = await Users.findOne({
 		usernameLower: username.toLowerCase(),
@@ -314,12 +314,12 @@ router.get('/@:user/pages/:page', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 
 // Clip
 // TODO: 非publicなclipのハンドリング
-router.get('/clips/:clip', async ctx => {
+router.get('/clips/:clip', async (ctx, next) => {
 	const clip = await Clips.findOne({
 		id: ctx.params.clip,
 	});
@@ -339,11 +339,11 @@ router.get('/clips/:clip', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 
 // Gallery post
-router.get('/gallery/:post', async ctx => {
+router.get('/gallery/:post', async (ctx, next) => {
 	const post = await GalleryPosts.findOne(ctx.params.post);
 
 	if (post) {
@@ -362,11 +362,11 @@ router.get('/gallery/:post', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 
 // Channel
-router.get('/channels/:channel', async ctx => {
+router.get('/channels/:channel', async (ctx, next) => {
 	const channel = await Channels.findOne({
 		id: ctx.params.channel,
 	});
@@ -384,7 +384,7 @@ router.get('/channels/:channel', async ctx => {
 		return;
 	}
 
-	ctx.status = 404;
+	await next();
 });
 //#endregion
 

@@ -136,6 +136,7 @@ flagAsBotDescription: "Se l'account esegue principalmente operazioni automatiche
 flagAsCat: "Io sono un gatto"
 flagAsCatDescription: "Abilita l'opzione \"Io sono un gatto\" per l'account."
 autoAcceptFollowed: "Accetta automaticamente le richieste di follow da utenti che già segui"
+addAccount: "Aggiungi account"
 loginFailed: "Accesso non riuscito"
 showOnRemote: "Sfoglia sull'istanza remota"
 general: "Generali"
@@ -439,6 +440,7 @@ category: "Categoria"
 tags: "Tag"
 docSource: "Sorgente della scheda"
 createAccount: "Crea il tuo account"
+existingAccount: "Account esistente"
 regenerate: "Generare di nuovo"
 fontSize: "Dimensione carattere"
 noFollowRequests: "Non hai alcuna richiesta di follow"
@@ -569,6 +571,7 @@ useGlobalSetting: "Usa impostazioni generali"
 useGlobalSettingDesc: "Se abilitato, le impostazioni notifiche dell'account verranno utilizzate. Se disabilitato, si possono definire diverse singole impostazioni."
 other: "Avanzate"
 fileIdOrUrl: "ID o URL del file"
+chatOpenBehavior: "Comportamento della finestra di chat quando viene aperta"
 behavior: "Comportamento"
 abuseReports: "Segnala"
 reportAbuse: "Segnala"
@@ -650,9 +653,12 @@ youAreRunningUpToDateClient: "Stai usando la versione più recente del client."
 newVersionOfClientAvailable: "Una nuova versione del tuo client è disponibile."
 usageAmount: "In utilizzo"
 capacity: "Capacità"
+inUse: "In utilizzo"
 editCode: "Modifica codice"
 apply: "Applica"
+receiveAnnouncementFromInstance: "Ricevi i messaggi informativi dall'istanza"
 emailNotification: "Eventi per notifiche via mail"
+publish: "Pubblico"
 inChannelSearch: "Cerca in canale"
 useReactionPickerForContextMenu: "Cliccare sul tasto destro per aprire il pannello di reazioni"
 typingUsers: "{users} sta(nno) scrivendo"
@@ -683,8 +689,21 @@ disabled: "Inattivo"
 quickAction: "Azioni rapide"
 user: "Utente"
 administration: "Gestione"
+accounts: "Account"
+switch: "Sostituisci"
+noMaintainerInformationWarning: "Le informazioni amministratore non sono impostate."
+noBotProtectionWarning: "Nessuna protezione impostata contro i bot."
+configure: "Imposta"
+postToGallery: "Pubblicare nella galleria"
+gallery: "Galleria"
+recentPosts: "Le più recenti"
+popularPosts: "Le più visualizzate"
+shareWithNote: "Condividere in nota"
 _gallery:
-  unlike: "Togli Mi piace"
+  my: "Le mie pubblicazioni"
+  liked: "Pubblicazioni che mi piacciono"
+  like: "Mi piace!"
+  unlike: "Non mi piace più"
 _email:
   _follow:
     title: "Ha iniziato a seguirti"
@@ -916,6 +935,7 @@ _widgets:
   photos: "Foto"
   digitalClock: "Orologio digitale"
   federation: "Federazione"
+  postForm: "Finestra di pubblicazione"
   button: "Pulsante"
   onlineUsers: "Utenti online"
   jobQueue: "Coda di lavoro"
@@ -989,6 +1009,9 @@ _instanceCharts:
   users: "Variazione del numero di utenti"
   usersTotal: "Totale cumulativo di utenti"
   notes: "Variazione del numero di note"
+  notesTotal: "Totale cumulato di note"
+  files: "Variazione del numero di file"
+  filesTotal: "Totale cumulato del numero di file"
 _timelines:
   home: "Home"
   local: "Locale"
@@ -996,8 +1019,16 @@ _timelines:
   global: "Federata"
 _rooms:
   roomOf: "Camera di {user}"
+  addFurniture: "Disponi mobilia"
+  translate: "Sposta"
+  rotate: "Ruota"
+  exit: "Indietro"
   remove: "Togli"
+  clear: "Rimuovi tutto"
+  clearConfirm: "Sei sicur@ di voler rimuovere tutti i mobili dalla tua camera?"
   leaveConfirm: "Hai fatto modifiche ancora non salvate. Vuoi davvero uscire?"
+  chooseImage: "Seleziona immagine"
+  roomType: "Tipo di stanza"
   _roomType:
     default: "Predefinito"
     washitsu: "Washitsu"
@@ -1034,6 +1065,7 @@ _rooms:
     cube: "Cubo"
     tv: "Televisore"
     pinguin: "Pinguino"
+    rubik-cube: "Cubo di Rubik"
     bin: "Cestino"
     cup-noodle: "Noodle istantanei"
 _pages:
@@ -1044,6 +1076,8 @@ _pages:
   updated: "Pagina aggiornata con successo!"
   deleted: "Pagina eliminata"
   pageSetting: "Impostazioni pagina"
+  nameAlreadyExists: "Esiste già una pagina con lo stesso URL."
+  invalidNameTitle: "L'URL di pagina definito non è valido"
   editThisPage: "Modifica questa pagina"
   viewSource: "Visualizza sorgente"
   viewPage: "Visualizza pagina"
@@ -1056,11 +1090,21 @@ _pages:
   content: "Blocco di pagina"
   variables: "Variabili"
   title: "Titolo"
+  url: "URL della pagina"
+  summary: "Riassunto di pagina"
   hideTitleWhenPinned: "Nascondere il titolo pagina quando è fissata in cima al profilo."
   font: "Tipo di carattere"
   fontSerif: "Serif"
   fontSansSerif: "Sans serif"
+  eyeCatchingImageSet: "Imposta un'immagine attrattiva"
+  eyeCatchingImageRemove: "Elimina l'immagine attrattiva"
   chooseBlock: "Aggiungi blocco"
+  selectType: "Seleziona tipo"
+  enterVariableName: "Digita un nome di variabile"
+  variableNameIsAlreadyUsed: "Esiste già una variabile con lo stesso nome"
+  contentBlocks: "Contenuto"
+  inputBlocks: "Blocchi di input"
+  specialBlocks: "Speciale"
   blocks:
     text: "Testo"
     textarea: "Area di testo"
@@ -1070,16 +1114,20 @@ _pages:
     if: "Se"
     _if:
       variable: "Variabili"
+    post: "Finestra di pubblicazione"
     _post:
       text: "Contenuto"
+    textInput: "Immissione testo"
     _textInput:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    textareaInput: "Immissione testo a più righe"
     _textareaInput:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    numberInput: "Immissione numerica"
     _numberInput:
       name: "Nome della variabile"
       text: "Titolo"
@@ -1092,24 +1140,35 @@ _pages:
       id: "ID nota"
       idDescription: "Qui puoi anche incollare l'URL della nota che vuoi impostare."
       detailed: "Visualizzazione dettagliata"
+    switch: "Interruttore"
     _switch:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    counter: "Contatore"
     _counter:
       name: "Nome della variabile"
       text: "Titolo"
+      inc: "Valore da aggiungere"
     _button:
       text: "Titolo"
+      colored: "Colorato"
+      action: "Operazione da eseguire quando viene premuto il pulsante"
       _action:
+        dialog: "Visualizzare una finestra di dialogo"
         _dialog:
           content: "Contenuto"
+        resetRandom: "Ripristinare un numero aleatorio"
         pushEvent: "Inviare evento"
         _pushEvent:
           event: "Nome evento"
           message: "Messaggio da visualizzare quando abilitato"
           variable: "Variabile da inviare"
           no-variable: "Nessun contenuto"
+        callAiScript: "Chiamare AiScript"
+        _callAiScript:
+          functionName: "Nome della funzione"
+    radioButton: "Opzioni"
     _radioButton:
       name: "Nome della variabile"
       title: "Titolo"
@@ -1123,6 +1182,8 @@ _pages:
       list: "Liste"
     blocks:
       text: "Testo"
+      multiLineText: "Testo (a più righe)"
+      textList: "Lista di testo"
       _strLen:
         arg1: "Testo"
       _strPick:
@@ -1177,13 +1238,18 @@ _pages:
         arg2: "B"
       _if:
         arg1: "Se"
+        arg2: "Se"
       random: "Aleatorietà"
       _randomPick:
         arg1: "Liste"
       _dailyRandomPick:
         arg1: "Liste"
+      _seedRandom:
+        arg2: "Probabilità"
       _seedRandomPick:
         arg2: "Liste"
+      _DRPWPM:
+        arg1: "Lista di testo"
       _pick:
         arg1: "Liste"
       _listLen:
@@ -1197,6 +1263,7 @@ _pages:
     types:
       string: "Testo"
       array: "Liste"
+      stringArray: "Lista di testo"
 _notification:
   fileUploaded: "File caricato correttamente"
   youGotMention: "{name} ti ha menzionato"
