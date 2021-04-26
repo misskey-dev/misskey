@@ -81,7 +81,7 @@ export default defineComponent({
 		getMenu() {
 			return [{
 				text: this.$ts.rename,
-				icon: faICursor,
+				icon: 'fas fa-i-cursor',
 				action: this.rename
 			}, {
 				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,

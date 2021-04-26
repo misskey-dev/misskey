@@ -93,7 +93,7 @@ export default defineComponent({
 			if (this.menu) return;
 			this.menu = os.modalMenu([{
 				text: this.$ts.renameFile,
-				icon: faICursor,
+				icon: 'fas fa-i-cursor',
 				action: () => { this.rename(file) }
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
