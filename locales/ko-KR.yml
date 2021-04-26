@@ -728,6 +728,9 @@ user: "유저"
 administration: "관리"
 gallery: "갤러리"
 _gallery:
+  my: "내 노트"
+  liked: "좋아요를 한 노트"
+  like: "좋아요!"
   unlike: "좋아요 해제"
 _email:
   _follow:
