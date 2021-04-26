@@ -600,7 +600,7 @@ useGlobalSettingDesc: "S'il est activé, les paramètres de notification de votr
 other: "Autre"
 regenerateLoginToken: "Régénérer le jeton de connexion"
 regenerateLoginTokenDescription: "Générer un nouveau jeton d'authentification. Cette opération ne devrait pas être nécessaire ; lors de la génération d'un nouveau jeton, tous les appareils seront déconnectés. "
-setMultipleBySeparatingWithSpace: "Vous pouvez définir plus d’un, séparés par des espaces."
+setMultipleBySeparatingWithSpace: "Vous pouvez en définir plusieurs, en les séparant par des espaces."
 fileIdOrUrl: "ID du fichier ou URL"
 chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouverture"
 behavior: "Comportement"
