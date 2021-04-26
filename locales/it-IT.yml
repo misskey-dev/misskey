@@ -1105,6 +1105,9 @@ _rooms:
     spiral: "Scale a chiocciola"
     bin: "Cestino"
     cup-noodle: "Noodle istantanei"
+    holo-display: "Visualizzazione olografica"
+    energy-drink: "Bevanda energetica"
+    doll-ai: "Bambola Ai"
 _pages:
   newPage: "Crea pagina"
   editPage: "Modifica pagina"
