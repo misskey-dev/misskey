@@ -748,10 +748,10 @@ recentPosts: "최근 포스트"
 popularPosts: "인기 포스트"
 shareWithNote: "노트로 공유"
 _gallery:
-  my: "내 노트"
-  liked: "좋아요를 한 노트"
+  my: "내 갤러리"
+  liked: "좋아요 한 갤러리"
   like: "좋아요!"
-  unlike: "좋아요 해제"
+  unlike: "좋아요 취소"
 _email:
   _follow:
     title: "새로운 팔로워가 있습니다"
