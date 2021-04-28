@@ -101,7 +101,7 @@ Nous allons maintenant expliquer le tableau des contrôles de formulaires. Un co
 `id` ... ID de l'élément de contrôle. `type` ... Le type d'élément de contrôle. Nous y reviendrons plus tard.  Texte affiché à côté de l'élément de contrôle. `value` ... La valeur par défaut de l'élément de contrôle.
 
 ### Gestion des interactions avec les formulaires
-ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
+Lorsqu'un utilisateur interagit avec le formulaire, un événement `update-form` est envoyé par le flux. Le contenu de l'événement contient l'ID du contrôle et la valeur définie par l'utilisateur. Par exemple, si l'utilisateur allume l'interrupteur illustré ci-dessus, l'événement suivant sera diffusé :
 ```javascript
 {
   id: 'switch1',
@@ -111,34 +111,34 @@ Nous allons maintenant expliquer le tableau des contrôles de formulaires. Un co
 
 ### Types d'éléments de contrôles de formulaires
 #### Interrupteur
-type: `switch` Affiche un interrupteur.何かの機能をオン/オフさせたい場合に有用です。
+type: `switch` Affiche un interrupteur.Cette fonction est utile lorsque vous souhaitez activer ou désactiver une fonction.
 
-##### プロパティ
-`label` ... スイッチに表記するテキスト。
+##### Propriétés
+`label` ... Texte à marquer sur l'interrupteur.
 
-#### ラジオボタン
-type: `radio` ラジオボタンを表示します。選択肢を提示するのに有用です。例えば、Botの強さを設定させるなどです。
+#### Boutons radio
+type: `radio` Affiche le bouton radio.Il est utile pour proposer des options.Par exemple, pour choisir la difficulté du bot.
 
-##### プロパティ
-`items` ... ラジオボタンの選択肢。例:
+##### Propriétés
+`items` ... Les options des boutons radio. Par exemple:
 ```javascript
 items: [{
-  label: 'Faible',
+  label: 'Facile',
   value: 1
 }, {
   label: 'Moyen',
   value: 2
 }, {
-  label: 'Fort',
+  label: 'Difficile',
   value: 3
 }]
 ```
 
-#### スライダー
-type: `slider` スライダーを表示します。
+#### Glissière
+type: `slider` Affiche une glissière.
 
-##### プロパティ
-`min` ... スライダーの下限。 `max` ... スライダーの上限。 `step` ... 入力欄で刻むステップ値。
+##### Propriétés
+`min` ... Limite minimum de la glissière. `max` ... Limite maximum de la glissière. `step` ... 入力欄で刻むステップ値。
 
 #### テキストボックス
 type: `textbox` テキストボックスを表示します。ユーザーになにか入力させる一般的な用途に利用できます。
