@@ -35,10 +35,10 @@ Description du paramètre
 Valeur par défaut du paramètre
 
 ## Références API de Misskey
-AiScript標準で組み込まれているAPIは掲載しません。
+L'API intégrée directement dans la norme AiScript elle-même ne sera pas répertoriée.
 
 ### Mk:dialog(title text type)
-ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
+Affiche la boîte de dialogue.typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
 
 ### Mk:confirm(title text type)
 確認ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると question になります。 ユーザーが"OK"を選択した場合は true を、"キャンセル"を選択した場合は false が返ります。
