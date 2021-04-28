@@ -7,18 +7,18 @@ Cette page explique comment développer un bot pour la fonction Reversi de Missk
 2. Lorsqu'une invitation à un jeu arrive, un événement `invited` sera lancé à partir du flux.
     * Le contenu de cet événement est un attribut `parent`, qui contient des informations sur l'utilisateur qui a envoyé l'invitation.
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. Envoie une requête à `games/reversi/match`, où la valeur du paramètre `user_id` est l'attribut `id` de l'objet `parent` obtenu précédemment.
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
+4. Si la requête fonctionne, les informations sur le jeu seront renvoyées et vous pourrez vous connecter au flux `games/reversi-game` avec les paramètres suivants :
     * `i` : Clé API pour le compte du bot
-    * `game`: `game`の`id`
+    * `game`: `game` de `id`
 
-5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
+5. Pendant ce temps, l'adversaire peut modifier les paramètres du jeu. Chaque fois qu'un paramètre est modifié, le flux envoie un événement `update-settings`, donc une logique pour gérer ces événements peut être nécessaire.
 
-6. 設定に満足したら、`{ type: 'accept' }`メッセージをストリームに送信する
+6. Une fois que vous êtes satisfait des paramètres du jeu, envoyez le message `{ type : 'accept' }` au flux.
 
-7. ゲームが開始すると、`started`イベントが流れてくる
-    * イベントの中身にはゲーム情報が含まれている
+7. Lorsque le jeu commence, l'événement `started` sera envoyé.
+    * Les informations sur l'état du jeu seront inclus dans cet événement.
 
 8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
 
