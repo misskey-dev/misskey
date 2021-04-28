@@ -138,13 +138,13 @@ items: [{
 type: `slider` Affiche une glissière.
 
 ##### Propriétés
-`min` ... Limite minimum de la glissière. `max` ... Limite maximum de la glissière. `step` ... 入力欄で刻むステップ値。
+`min` ... Limite minimum de la glissière. `max` ... Limite maximum de la glissière. `step` ... Étapes entre les valeurs de la glissière.
 
-#### テキストボックス
-type: `textbox` テキストボックスを表示します。ユーザーになにか入力させる一般的な用途に利用できます。
+#### Zones de texte
+type: `textbox` Affiche une zone de texte.Cette fonction peut être utilisée à des fins générales lorsque vous souhaitez que l'utilisateur tape quelque chose.
 
-## ユーザーにメッセージを表示する
-設定画面でユーザーと対話する、フォーム以外のもうひとつの方法がこれです。ユーザーになにかメッセージを表示することができます。 例えば、ユーザーがBotの対応していないモードやマップを選択したとき、警告を表示するなどです。 メッセージを表示するには、次のメッセージをストリームに送信します:
+## Afficher un message à l'utilisateur
+C'est un autre moyen, autre que les formulaires, d'interagir avec les utilisateurs dans l'écran de configuration.Vous pouvez afficher un message à l'intention de l'utilisateur. Par exemple, vous pouvez afficher un avertissement lorsque l'utilisateur sélectionne un mode ou une carte qui n'est pas pris en charge par le Bot. Pour afficher un message, envoyez le message suivant au flux :
 ```javascript
 {
   type: 'message',
