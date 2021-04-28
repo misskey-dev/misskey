@@ -44,19 +44,19 @@ Affiche la boîte de dialogue.type peut être défini par les valeurs suivantes.
 Affiche une boîte de dialogue de confirmation.Le type peut être défini par les valeurs suivantes. info success warn error question Si elle est omise, c'est "question" qui est utilisé par défaut. Si l'utilisateur sélectionne "OK", true est renvoyé, si l'utilisateur sélectionne "Cancel", false est renvoyé.
 
 ### Mk:api(endpoint params)
-Envoie une requête à l'API Misskey.第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
+Envoie une requête à l'API Misskey.Le premier paramètre spécifie le point de terminaison de l'API, le second spécifie les paramètres de la requête sous forme d'objet.
 
 ### Mk:save(key value)
-任意の値に任意の名前を付けて永続化します。永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
+Fait persister une valeur arbitraire avec un nom arbitraire.La valeur persistante reste après la fin du contexte AiScript et peut être lue par Mk:load.
 
 ### Mk:load(key)
-Mk:saveで永続化した指定の名前の値を読み取ります。
+Lit la valeur du nom spécifié persisté par Mk:save.
 
 ### Plugin:register_post_form_action(title fn)
-投稿フォームにアクションを追加します。第一引数にアクション名、第二引数にアクションが選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に投稿フォームオブジェクトが渡されます。
+Ajoute une action au formulaire de soumission.Le premier argument est le nom de l'action, le second est la fonction de rappel lorsque l'action est sélectionnée. La fonction de rappel reçoit l'objet du formulaire de soumission comme premier argument.
 
 ### Plugin:register_note_action(title fn)
-ノートメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
+Ajoute un élément au menu note. 第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
 
 ### Plugin:register_user_action(title fn)
 ユーザーメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のユーザーオブジェクトが渡されます。
