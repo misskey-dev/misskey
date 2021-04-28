@@ -1,23 +1,23 @@
 # Création d'un plugin
-Misskey Webクライアントのプラグイン機能を使うと、クライアントを拡張し、様々な機能を追加できます。 ここではプラグインの作成にあたってのメタデータ定義や、AiScript APIリファレンスを掲載します。
+En utilisant la fonction plugin du client web Misskey, vous pouvez étendre et y ajouter de nouvelles fonctionnalités. Cette page liste la définition des métadonnées et les références de l'API AIScript pour la création des plugins.
 
 ## Métadonnées
 プラグインは、AiScriptのメタデータ埋め込み機能を使って、デフォルトとしてプラグインのメタデータを定義する必要があります。 メタデータは次のプロパティを含むオブジェクトです。
 
 ### name
-プラグイン名
+Nom du plugin.
 
 ### author
-プラグイン作者
+Nom de l'auteur du plugin.
 
 ### version
-プラグインバージョン。数値を指定してください。
+Version du plugin.Cette valeur doit être un nombre.
 
 ### description
-プラグインの説明
+Description du plugin.
 
 ### permissions
-プラグインが要求する権限。MisskeyAPIにリクエストする際に用いられます。
+Permissions requises par le plugin.Utilisé pour les requêtes de l'API Misskey.
 
 ### config
 プラグインの設定情報を表すオブジェクト。 キーに設定名、値に以下のプロパティを含めます。
@@ -26,7 +26,7 @@ Misskey Webクライアントのプラグイン機能を使うと、クライア
 設定値の種類を表す文字列。以下から選択します。 string number boolean
 
 #### label
-ユーザーに表示する設定名
+type
 
 #### description
 設定の説明
