@@ -869,6 +869,7 @@ _reversi:
   ended: "Fin de partie"
   playing: "En cours"
   isLlotheo: "Celui ou celle qui a le moins de pièces gagne (Llotheo)"
+  loopedMap: "Carte en boucle"
   canPutEverywhere: "Les pions peuvent être placés partout "
 _instanceTicker:
   none: "Cacher "
@@ -918,6 +919,7 @@ _theme:
   constant: "Constante"
   defaultValue: "Valeur par défaut"
   color: "Couleur"
+  refProp: "Propriété de la référence"
   refConst: "Référencez une constante"
   key: "Clé "
   func: "Fonction"
