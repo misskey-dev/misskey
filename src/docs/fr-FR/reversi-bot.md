@@ -23,7 +23,7 @@ Cette page explique comment développer un bot pour la fonction Reversi de Missk
 8. Pour placer une pierre, envoyez `{ type : 'set', pos : <Position&gt ; }` au flux (voir ci-dessous pour savoir comment calculer la position).
 
 9. Lorsque votre adversaire ou vous-même placer une pierre, un événement `set` est envoyé depuis le flux.
-    * `color` contient la couleur de la pierre déplacée
+    * `color` contient la couleur de la pierre placée
     * `pos` contient la position de la pierre
 
 ## Calculer la position
@@ -55,12 +55,12 @@ y = Math.floor(pos / mapWidth)
 
 ## Information sur la carte
 Les données de la carte sont incluses dans `map` dans les données du jeu. Comme les données sont représentées sous la forme d'un tableau de chaînes de caractères, chaque caractère représente un champ. Sur la base de ces données, vous pouvez reconstruire l'état de la carte :
-* `(Vide)` ... マス無し
-* `-` ... マス
-* `b` ... 初期配置される黒石
-* `w` ... 初期配置される白石
+* `(Vide)` ... Aucun champ
+* `-` ... Champ
+* `b` ... La première pierre placée est noire
+* `w` ... La première pierre placée est blanche
 
-例えば、4*4の次のような単純なマップがあるとします:
+Par exemple, supposons que nous ayons la carte simple suivante de 4×4 :
 ```text
 +---+---+---+---+
 |   |   |   |   |
