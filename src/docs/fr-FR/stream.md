@@ -50,19 +50,19 @@ Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 }
 ```
 
-ここで、
-* `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
-* `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
-* `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
+Ici,
+* Définissez `channel` au nom du canal auquel vous voulez vous connecter.Les types de canaux sont décrits ci-dessous.
+* `id` est un identifiant arbitraire pour interagir avec ce canal.En effet, le flux contient une variété de messages, et nous devons identifier de quel canal provient le message.Cet ID peut être un UUID ou une sorte de numéro aléatoire.
+* `params` sont les paramètres utilisés pour se connecter au canal.Les différents canaux nécessitent des paramètres différents pour la connexion.Lors de la connexion à un canal qui ne nécessite pas de paramètres, cette propriété peut être omise.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
+    <p><i class="fas fa-info-circle"></i> L'ID est "par connexion de canal", et non par canal. En effet, dans certains cas, plusieurs connexions sont établies sur le même canal avec des paramètres différents.</p>
 </div>
 
-### チャンネルからのメッセージを受け取る
-例えばタイムラインのチャンネルなら、新しい投稿があった時にメッセージを発します。そのメッセージを受け取ることで、タイムラインに新しい投稿がされたことをリアルタイムで知ることができます。
+### Recevoir des messages du canal
+Par exemple, lorsqu'un événement est émis dans l'un des canaux du fil en raison de la publication d'un nouveau message.En recevant ce message, vous saurez en temps réel qu'une nouvelle publication a été faite sur votre fil.
 
-チャンネルがメッセージを発すると、次のようなデータがJSONでストリームに流れてきます:
+Lorsqu'un canal émet un message, les données suivantes sont diffusées en JSON :
 ```json
 {
     type: 'channel',
@@ -76,12 +76,12 @@ Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 }
 ```
 
-ここで、
-* `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
-* `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
-* `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
+Ici,
+* `id` est réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.Cela vous permettra de savoir de quel canal provient ce message.
+* `type` est défini comme le type du message.Le type de message qui sera diffusé dépend du canal.
+* `body` est défini comme le contenu du message.En fonction du canal, le type de message qui sera diffusé dépendra du canal.
 
-### チャンネルに向けてメッセージを送信する
+### Envoi d'un message à un canal
 チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
 
 チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
@@ -98,7 +98,7 @@ Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 }
 ```
 
-ここで、
+Ici,
 * `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
 * `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
 * `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
@@ -115,7 +115,7 @@ Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 }
 ```
 
-ここで、
+Ici,
 * `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
 
 ## ストリームを経由してAPIリクエストする
@@ -136,7 +136,7 @@ Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 }
 ```
 
-ここで、
+Ici,
 * `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
 * `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
 * `data`には、エンドポイントのパラメータを含めます。
@@ -158,7 +158,7 @@ APIへリクエストすると、レスポンスがストリームから次の�
 }
 ```
 
-ここで、
+Ici,
 * `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
 * `body`には、レスポンスが含まれています。
 
@@ -185,7 +185,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Ici,
 * `id`にキャプチャしたい投稿の`id`を設定します。
 
 このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
@@ -206,7 +206,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Ici,
 * `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
 * `body`内の`type`に、イベントの種類が設定されます。
 * `body`内の`body`に、イベントの詳細が設定されます。
@@ -289,7 +289,7 @@ Par exemple:
 }
 ```
 
-ここで、
+Ici,
 * `id`にキャプチャを解除したい投稿の`id`を設定します。
 
 このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
