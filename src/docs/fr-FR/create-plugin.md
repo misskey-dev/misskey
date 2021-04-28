@@ -2,7 +2,7 @@
 En utilisant la fonction plugin du client web Misskey, vous pouvez étendre et y ajouter de nouvelles fonctionnalités. Cette page liste la définition des métadonnées et les références de l'API AIScript pour la création des plugins.
 
 ## Métadonnées
-プラグインは、AiScriptのメタデータ埋め込み機能を使って、デフォルトとしてプラグインのメタデータを定義する必要があります。 メタデータは次のプロパティを含むオブジェクトです。
+Les plugins doivent définir des métadonnées de plugin par défaut via le format de métadonnées AiScript. Les métadonnées sont un objet contenant les propriétés suivantes :
 
 ### name
 Nom du plugin.
@@ -26,7 +26,7 @@ Permissions requises par le plugin.Utilisé pour les requêtes de l'API Misskey.
 設定値の種類を表す文字列。以下から選択します。 string number boolean
 
 #### label
-type
+Nom du paramètre affiché à l'utilisateur.
 
 #### description
 設定の説明
