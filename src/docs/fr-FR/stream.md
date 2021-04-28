@@ -100,11 +100,11 @@ Pour envoyer un message à un canal, envoyez les données suivantes au flux en J
 
 Ici,
 * `id` doit être réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.Cela vous permettra d'identifier le canal auquel ce message est destiné.
-* `type` définit le type du message.チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
-* `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
+* `type` définit le type du message.Les différents canaux acceptent différents types de messages.
+* `body` est défini comme le contenu du message.Les différents canaux acceptent différents types de messages.
 
-### チャンネルから切断する
-チャンネルから切断するには、次のようなデータをJSONでストリームに送信します:
+### Déconnexion d'un canal
+Pour se déconnecter d'un canal, envoyez les données suivantes au flux en JSON :
 
 ```json
 {
@@ -118,11 +118,11 @@ Ici,
 Ici,
 * `id` doit être réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.
 
-## ストリームを経由してAPIリクエストする
+## Faire une requête API via le flux
 
-ストリームを経由してAPIリクエストすると、HTTPリクエストを発生させずにAPIを利用できます。そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
+Si vous effectuez une requête d'API via un flux, vous pouvez utiliser l'API sans générer de requête HTTP.Cela peut rendre votre code plus concis et améliorer les performances.
 
-ストリームを経由してAPIリクエストするには、次のようなデータをJSONでストリームに送信します:
+Pour effectuer une demande d'API via un flux, envoyez les données suivantes au flux en JSON :
 ```json
 {
     type: 'api',
@@ -137,8 +137,8 @@ Ici,
 ```
 
 Ici,
-* `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
-* `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
+* `id` doit être défini comme un identifiant unique pour chaque demande d'API afin d'identifier la réponse de l'API.Il peut s'agir de quelque chose comme un UUID ou un simple nombre aléatoire.
+* `endpoint` est le point de terminaison de l'API que vous voulez demander.
 * `data`には、エンドポイントのパラメータを含めます。
 
 <div class="ui info">
