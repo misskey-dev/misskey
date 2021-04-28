@@ -20,14 +20,14 @@ Cette page explique comment développer un bot pour la fonction Reversi de Missk
 7. Lorsque le jeu commence, l'événement `started` sera envoyé.
     * Les informations sur l'état du jeu seront inclus dans cet événement.
 
-8. 石を打つには、ストリームに`{ type: 'set', pos: <位置> }`を送信する(位置の計算方法は後述)
+8. Pour placer une pierre, envoyez `{ type : 'set', pos : <Position&gt ; }` au flux (voir ci-dessous pour savoir comment calculer la position).
 
-9. 相手または自分が石を打つと、ストリームから`set`イベントが流れてくる
-    * `color`として石の色が含まれている
-    * `pos`として位置情報が含まれている
+9. Lorsque votre adversaire ou vous-même placer une pierre, un événement `set` est envoyé depuis le flux.
+    * `color` contient la couleur de la pierre déplacée
+    * `pos` contient la position de la pierre
 
-## 位置の計算法
-8x8のマップを考える場合、各マスの位置(インデックスと呼びます)は次のようになっています:
+## Calculer la position
+Si nous considérons une carte 8x8, la position de chaque carré (appelée index) est la suivante :
 ```
 +--+--+--+--+--+--+--+--+
 | 0| 1| 2| 3| 4| 5| 6| 7|
@@ -38,7 +38,7 @@ Cette page explique comment développer un bot pour la fonction Reversi de Missk
 ...
 ```
 
-### X,Y座標 から インデックス に変換する
+### Trouver les index à partir des coordonnées X, Y
 ```
 pos = x + (y * mapWidth)
 ```
