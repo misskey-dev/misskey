@@ -296,59 +296,59 @@ Par exemple:
 
 # Liste des canaux
 ## `main`
-アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
+Les informations de base relatives au compte seront transmises ici.Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `renote`
-自分の投稿がRenoteされた時に発生するイベントです。自分自身の投稿をRenoteしたときは発生しません。
+Cet événement est déclenché lorsque votre message est renoté.Cela ne se produit pas lorsque vous renotez votre propre message.
 
 #### `mention`
-誰かからメンションされたときに発生するイベントです。
+Il s'agit d'un événement qui se produit lorsque quelqu'un fait vous mentionne.
 
 #### `readAllNotifications`
-自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
+Cet événement indique que toutes les notifications qui vous ont été adressées ont été lues.Cet événement peut être utilisé pour désactiver des choses comme "l'icône indiquant qu'il y a une notification" et d'autres cas.
 
 #### `meUpdated`
-自分の情報が更新されたことを表すイベントです。
+Cet événement indique que vos informations ont été mises à jour.
 
 #### `follow`
-自分が誰かをフォローしたときに発生するイベントです。
+Cet événement se produit lorsque vous suivez quelqu'un.
 
 #### `unfollow`
-自分が誰かのフォローを解除したときに発生するイベントです。
+Cet événement se produit lorsque vous retirez quelqu'un de vos suivis.
 
 #### `followed`
-自分が誰かにフォローされたときに発生するイベントです。
+Cet événement se produit lorsque vous êtes suivi par quelqu'un.
 
 ## `homeTimeline`
-ホームタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+ホームタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
 タイムラインに新しい投稿が流れてきたときに発生するイベントです。
 
 ## `localTimeline`
-ローカルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+ローカルタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
 ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
 
 ## `hybridTimeline`
-ソーシャルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+ソーシャルタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
 ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
 
 ## `globalTimeline`
-グローバルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+グローバルタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
 グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
