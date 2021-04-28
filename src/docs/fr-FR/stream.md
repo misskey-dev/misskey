@@ -2,19 +2,19 @@
 
 L'API Streaming permet d'implémenter l'exécution d'opérations variées et la réception de diverses informations en temps réel. Cela concerne, par exemple, l'affichage des nouvelles publications dans les fils, la réception de nouveaux messages, les nouveaux abonnements, etc.
 
-## ストリームに接続する
+## Se connecter aux flux
 
-ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
+Pour utiliser l'API de streaming, vous devez d'abord effectuer une connexion **websocket**  au serveur Misskey.
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。Par exemple:
+Veuillez vous connecter à l'URL suivante avec le nom de paramètre `i` et inclure les informations d'authentification dans la connexion websocket.Par exemple:
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+Les informations d'identification sont votre clé API ou, en cas de connexion au flux depuis votre application, le jeton d'accès de l'utilisateur.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Pour obtenir des informations sur l'obtention d'accréditations, veuillez consulter <a href="./api">ce document</a>.</p>
 </div>
 
 ---
@@ -276,9 +276,9 @@ Par exemple:
 
 ### Annuler le post-capture
 
-その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
+Si vous souhaitez que le message n'apparaisse plus à l'écran et que vous n'ayez plus besoin de recevoir les événements associés à ce message, vous pouvez envoyer une demande d'annulation de la capture du message.
 
-次のメッセージを送信します:
+Envoyez le message suivant :
 
 ```json
 {
@@ -290,9 +290,9 @@ Par exemple:
 ```
 
 Ici,
-* `id`にキャプチャを解除したい投稿の`id`を設定します。
+* Définissez `id` comme le `id` du message que vous voulez annuler.
 
-このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
+Une fois que vous aurez envoyé ce message, aucun autre événement lié au message ne sera diffusé.
 
 # Liste des canaux
 ## `main`
