@@ -186,11 +186,11 @@ Pour capturer un message, envoyez un message comme le suivant au flux :
 ```
 
 Ici,
-* `id`にキャプチャしたい投稿の`id`を設定します。
+* Définissez `id` comme l'`id` du message que vous voulez capturer.
 
-このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
+Lorsque vous envoyez ce message, vous demandez à Misskey de le saisir, et les événements liés à ce message se succéderont à partir de ce moment-là.
 
-例えば投稿にリアクションが付いたとすると、次のようなメッセージが流れてきます:
+Par exemple, lorsqu'un message suscite une réaction, vous verrez apparaître un message du type suivant :
 
 ```json
 {
@@ -207,17 +207,17 @@ Ici,
 ```
 
 Ici,
-* `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
-* `body`内の`type`に、イベントの種類が設定されます。
-* `body`内の`body`に、イベントの詳細が設定されます。
+* Le `id` dans le `body` est défini comme l'ID du post qui a déclenché l'événement.
+* Le type de l'événement est défini par `type` dans `body`.
+* L'attribut `body` dans `body` contient les informations sur l'événement.
 
-#### イベントの種類
+#### Type d'événements
 
 ##### `reacted`
-その投稿にリアクションがされた時に発生します。
+Cela se produit lorsqu'une réaction est faite à ce message.
 
-* `reaction`に、リアクションの種類が設定されます。
-* `userId`に、リアクションを行ったユーザーのIDが設定されます。
+* `reaction` est défini comme le type de réaction.
+* `userId` sera défini comme l'ID de l'utilisateur qui a fait la réaction.
 
 Par exemple:
 ```json
@@ -235,9 +235,9 @@ Par exemple:
 ```
 
 ##### `deleted`
-その投稿が削除された時に発生します。
+Cela se produit lorsque ce message est supprimé.
 
-* `deletedAt`に、削除日時が設定されます。
+* `deletedAt` est défini comme la date et l'heure de la suppression.
 
 Par exemple:
 ```json
@@ -254,9 +254,9 @@ Par exemple:
 ```
 
 ##### `pollVoted`
-その投稿に添付されたアンケートに投票された時に発生します。
+Déclenché lors du vote sur un sondage dans ce message.
 
-* `choice`に、選択肢IDが設定されます。
+* `choice` contient l'ID du choix sélectionné.
 * `userId`に、投票を行ったユーザーのIDが設定されます。
 
 Par exemple:
