@@ -19,7 +19,7 @@ Les informations d'identification sont votre clé API ou, en cas de connexion au
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。Par exemple:
+Vous pouvez omettre les informations d'authentification, mais dans ce cas, vous utiliserez le système sans vous connecter, et les informations que vous pourrez recevoir et les opérations que vous pourrez effectuer seront limitées.Par exemple:
 
 ```
 %WS_URL%/streaming
@@ -27,9 +27,9 @@ Les informations d'identification sont votre clé API ou, en cas de connexion au
 
 ---
 
-ストリームに接続すると、後述するAPI操作や、投稿の購読を行ったりすることができます。 しかしまだこの段階では、例えばタイムラインへの新しい投稿を受信したりすることはできません。 それを行うには、ストリーム上で、後述する**チャンネル**に接続する必要があります。
+Une fois que vous êtes connecté au flux, vous pouvez utiliser l'API comme décrit ci-dessous, ou vous abonner aux messages. Cependant, à ce stade, vous ne pouvez pas recevoir de nouveaux messages sur votre fil, par exemple. Pour ce faire, vous devez vous connecter à un **canal** sur le flux, comme décrit ci-dessous.
 
-**ストリームでのやり取りはすべてJSONです。**
+**Toutes les interactions dans le flux sont JSON.**
 
 ## Canaux
 L'API de streaming de Misskey possède le concept de canaux.Il s'agit d'un mécanisme permettant de séparer les informations que vous envoyez et recevez. Si vous vous connectez simplement à un flux Misskey, vous ne pourrez pas encore recevoir les messages de votre timeline en temps réel. En vous connectant aux canaux du flux, vous pourrez recevoir diverses informations et en envoyer.
