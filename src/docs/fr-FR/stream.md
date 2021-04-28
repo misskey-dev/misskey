@@ -32,10 +32,10 @@ L'API Streaming permet d'implémenter l'exécution d'opérations variées et la 
 **ストリームでのやり取りはすべてJSONです。**
 
 ## Canaux
-MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+L'API de streaming de Misskey possède le concept de canaux.Il s'agit d'un mécanisme permettant de séparer les informations que vous envoyez et recevez. Si vous vous connectez simplement à un flux Misskey, vous ne pourrez pas encore recevoir les messages de votre timeline en temps réel. En vous connectant aux canaux du flux, vous pourrez recevoir diverses informations et en envoyer.
 
-### チャンネルに接続する
-チャンネルに接続するには、次のようなデータをJSONでストリームに送信します:
+### Se connecter à un canal
+Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 
 ```json
 {
@@ -322,33 +322,33 @@ Cet événement se produit lorsque vous retirez quelqu'un de vos suivis.
 Cet événement se produit lorsque vous êtes suivi par quelqu'un.
 
 ## `homeTimeline`
-ホームタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
+Vous verrez ce flux d'informations s'afficher sur votre fil personnel.Il n'y a pas de paramètres pour ce canal.
 
 ### Liste des événements envoyés
 
 #### `note`
-タイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message arrive sur sur fil.
 
 ## `localTimeline`
-ローカルタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
+Vous verrez l'information affichée sur votre fil local.Il n'y a pas de paramètres pour ce canal.
 
 ### Liste des événements envoyés
 
 #### `note`
-ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message apparaît dans le fil local.
 
 ## `hybridTimeline`
-ソーシャルタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
+Vous verrez l'information affichée sur le fil social.Il n'y a pas de paramètres pour ce canal.
 
 ### Liste des événements envoyés
 
 #### `note`
-ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message apparaît sur votre fil social.
 
 ## `globalTimeline`
-グローバルタイムラインの投稿情報が流れてきます。Il n'y a pas de paramètres pour ce canal.
+Vous verrez l'information s'afficher sur le fil global.Il n'y a pas de paramètres pour ce canal.
 
 ### Liste des événements envoyés
 
 #### `note`
-グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message arrive sur le fil global.
