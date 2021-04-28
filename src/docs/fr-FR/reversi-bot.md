@@ -78,18 +78,18 @@ Dans ce cas, les données de la carte ressembleront à ceci :
 ['----', '-wb-', '-bw-', '----']
 ```
 
-## ユーザーにフォームを提示して対話可能Botを作成する
-ユーザーとのコミュニケーションを行うため、ゲームの設定画面でユーザーにフォームを提示することができます。 例えば、Botの強さをユーザーが設定できるようにする、といったシナリオが考えられます。
+## Créer un Bot interactif en présentant un formulaire à l'utilisateur.
+Afin de communiquer avec l'utilisateur, un formulaire peut être présenté à l'utilisateur sur l'écran des paramètres du jeu. Par exemple, un scénario pourrait consister à permettre à l'utilisateur de définir la force du bot.
 
-フォームを提示するには、`reversi-game`ストリームに次のメッセージを送信します:
+Pour présenter le formulaire, envoyez le message suivant au flux `reversi-game` :
 ```javascript
 {
   type: 'init-form',
-  body: [フォームコントロールの配列]
+  body: [Tableau de contrôles de formulaires]
 }
 ```
 
-フォームコントロールの配列については今から説明します。 フォームコントロールは、次のようなオブジェクトです:
+Nous allons maintenant expliquer le tableau des contrôles de formulaires. Un contrôle de formulaire est un objet qui ressemble à ce qui suit :
 ```javascript
 {
   id: 'switch1',
@@ -98,9 +98,9 @@ Dans ce cas, les données de la carte ressembleront à ceci :
   value: false
 }
 ```
-`id` ... コントロールのID。 `type` ... コントロールの種類。後述します。 `label` ... コントロールと一緒に表記するテキスト。 `value` ... コントロールのデフォルト値。
+`id` ... ID de l'élément de contrôle. `type` ... Le type d'élément de contrôle. Nous y reviendrons plus tard.  Texte affiché à côté de l'élément de contrôle. `value` ... La valeur par défaut de l'élément de contrôle.
 
-### フォームの操作を受け取る
+### Gestion des interactions avec les formulaires
 ユーザーがフォームを操作すると、ストリームから`update-form`イベントが流れてきます。 イベントの中身には、コントロールのIDと、ユーザーが設定した値が含まれています。 例えば、上で示したスイッチをユーザーがオンにしたとすると、次のイベントが流れてきます:
 ```javascript
 {
@@ -109,9 +109,9 @@ Dans ce cas, les données de la carte ressembleront à ceci :
 }
 ```
 
-### フォームコントロールの種類
+### Types d'éléments de contrôles de formulaires
 #### Interrupteur
-type: `switch` スイッチを表示します。何かの機能をオン/オフさせたい場合に有用です。
+type: `switch` Affiche un interrupteur.何かの機能をオン/オフさせたい場合に有用です。
 
 ##### プロパティ
 `label` ... スイッチに表記するテキスト。
