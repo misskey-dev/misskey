@@ -1,16 +1,16 @@
-# MisskeyリバーシBotの開発
-Misskeyのリバーシ機能に対応したBotの開発方法をここに記します。
+# Développement du bot Reversi de Misskey
+Cette page explique comment développer un bot pour la fonction Reversi de Misskey.
 
-1. `games/reversi`ストリームに以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+1. Connectez-vous au flux `games/reversi` avec les paramètres suivants :
+    * `i` : Clé API pour le compte du bot
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+2. Lorsqu'une invitation à un jeu arrive, un événement `invited` sera lancé à partir du flux.
+    * Le contenu de cet événement est un attribut `parent`, qui contient des informations sur l'utilisateur qui a envoyé l'invitation.
 
 3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
 
 4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
-    * `i`: botアカウントのAPIキー
+    * `i` : Clé API pour le compte du bot
     * `game`: `game`の`id`
 
 5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
