@@ -20,19 +20,19 @@ Description du plugin.
 Permissions requises par le plugin.Utilisé pour les requêtes de l'API Misskey.
 
 ### config
-プラグインの設定情報を表すオブジェクト。 キーに設定名、値に以下のプロパティを含めます。
+Un objet représentant les paramètres du plugin. Les clés représentent les noms des paramètres et les valeurs sont l'une des propriétés ci-dessous.
 
 #### type
-設定値の種類を表す文字列。以下から選択します。 string number boolean
+Une chaîne de caractères représentant le type de valeur du paramètre.Sélectionnez l'une des options suivantes : string number boolean
 
 #### label
 Nom du paramètre affiché à l'utilisateur.
 
 #### description
-設定の説明
+Description du paramètre
 
 #### default
-設定のデフォルト値
+Valeur par défaut du paramètre
 
 ## Références API de Misskey
 AiScript標準で組み込まれているAPIは掲載しません。
