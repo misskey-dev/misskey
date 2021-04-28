@@ -38,13 +38,13 @@ Valeur par défaut du paramètre
 L'API intégrée directement dans la norme AiScript elle-même ne sera pas répertoriée.
 
 ### Mk:dialog(title text type)
-Affiche la boîte de dialogue.typeには以下の値が設定できます。 info success warn error question 省略すると info になります。
+Affiche la boîte de dialogue.type peut être défini par les valeurs suivantes. info success warn error question Si elle est omise, c'est "info" qui est utilisée.
 
 ### Mk:confirm(title text type)
-確認ダイアログを表示します。typeには以下の値が設定できます。 info success warn error question 省略すると question になります。 ユーザーが"OK"を選択した場合は true を、"キャンセル"を選択した場合は false が返ります。
+Affiche une boîte de dialogue de confirmation.Le type peut être défini par les valeurs suivantes. info success warn error question Si elle est omise, c'est "question" qui est utilisé par défaut. Si l'utilisateur sélectionne "OK", true est renvoyé, si l'utilisateur sélectionne "Cancel", false est renvoyé.
 
 ### Mk:api(endpoint params)
-Misskey APIにリクエストします。第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
+Envoie une requête à l'API Misskey.第一引数にエンドポイント名、第二引数にパラメータオブジェクトを渡します。
 
 ### Mk:save(key value)
 任意の値に任意の名前を付けて永続化します。永続化した値は、AiScriptコンテキストが終了しても残り、Mk:loadで読み取ることができます。
