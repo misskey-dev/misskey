@@ -139,15 +139,15 @@ Pour effectuer une demande d'API via un flux, envoyez les données suivantes au 
 Ici,
 * `id` doit être défini comme un identifiant unique pour chaque demande d'API afin d'identifier la réponse de l'API.Il peut s'agir de quelque chose comme un UUID ou un simple nombre aléatoire.
 * `endpoint` est le point de terminaison de l'API que vous voulez demander.
-* `data`には、エンドポイントのパラメータを含めます。
+* `data` contient les paramètres de la terminaison.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> APIのエンドポイントやパラメータについてはAPIリファレンスをご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Veuillez vous reporter à la référence de l'API pour les points de terminaison et les paramètres de l'API.</p>
 </div>
 
-### レスポンスの受信
+### Réception des réponses
 
-APIへリクエストすると、レスポンスがストリームから次のような形式で流れてきます。
+Lorsque vous faites une demande à l'API, la réponse viendra du flux dans le format suivant.
 
 ```json
 {
@@ -159,22 +159,22 @@ APIへリクエストすると、レスポンスがストリームから次の�
 ```
 
 Ici,
-* `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
-* `body`には、レスポンスが含まれています。
+* La partie `xxxxxxxxxxxxxxxx` contient le `id` qui a été défini au moment de la demande.Cela vous permet de déterminer à quelle demande il répond.
+* `body` contient la réponse.
 
-## 投稿のキャプチャ
+## Capture de message
 
-Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
+Misskey propose un mécanisme appelé post-capture.Il s'agit de la possibilité de recevoir un flux d'événements pour un message donné.
 
-例えばタイムラインを取得してユーザーに表示したとします。ここで誰かがそのタイムラインに含まれるどれかの投稿に対してリアクションしたとします。
+Par exemple, supposons une situation dans laquelle le fil est affichée pour un utilisateur.Supposons maintenant que quelqu'un réagisse à l'un des messages de ce fil.
 
-しかし、クライアントからするとある投稿にリアクションが付いたことなどは知る由がないため、リアルタイムでリアクションをタイムライン上の投稿に反映して表示するといったことができません。
+Cependant, comme le client n'a aucun moyen de savoir qu'un message a reçu une réaction, il n'est pas possible de refléter la réaction en temps réel sur le message dans le fil.
 
-この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+Pour résoudre ce problème, Misskey fournit un mécanisme de post-capture.Lorsque vous capturez un message, vous recevez des événements liés à ce message, ce qui vous permet de refléter les réactions en temps réel.
 
-### 投稿をキャプチャする
+### Capturer un message
 
-投稿をキャプチャするには、ストリームに次のようなメッセージを送信します:
+Pour capturer un message, envoyez un message comme le suivant au flux :
 
 ```json
 {
