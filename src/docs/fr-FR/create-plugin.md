@@ -56,19 +56,19 @@ Lit la valeur du nom spécifié persisté par Mk:save.
 Ajoute une action au formulaire de soumission.Le premier argument est le nom de l'action, le second est la fonction de rappel lorsque l'action est sélectionnée. La fonction de rappel reçoit l'objet du formulaire de soumission comme premier argument.
 
 ### Plugin:register_note_action(title fn)
-Ajoute un élément au menu note. 第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。
+Ajoute un élément au menu note. Le premier paramètre spécifie le nom de l'action, le second paramètre spécifie une fonction de rappel qui est exécutée lorsque cet élément est sélectionné. La fonction de rappel reçoit un objet note comme premier paramètre.
 
 ### Plugin:register_user_action(title fn)
-ユーザーメニューに項目を追加します。第一引数に項目名、第二引数に項目が選択された際のコールバック関数を渡します。 コールバック関数には、第一引数に対象のユーザーオブジェクトが渡されます。
+Ajoute un élément au menu de l'utilisateur.Le premier paramètre spécifie le nom de l'action, le second paramètre spécifie une fonction de rappel qui est exécutée lorsque cet élément est sélectionné. La fonction de rappel reçoit un objet utilisateur comme premier paramètre.
 
 ### Plugin:register_note_view_interruptor(fn)
-UIに表示されるノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
+Réécrit les informations de la note affichée dans l'interface utilisateur. L'objet note cible est passé comme premier argument à la fonction de rappel. La note est réécrite dans la valeur de retour de la fonction de rappel.
 
 ### Plugin:register_note_post_interruptor(fn)
-ノート投稿時にノート情報を書き換えます。 コールバック関数には、第一引数に対象のノートオブジェクトが渡されます。 コールバック関数の返り値でノートが書き換えられます。
+Réécrit les informations de la note lors de la publication d'une note. L'objet note cible est passé comme premier argument à la fonction de rappel. La note sera réécrite dans la valeur de retour de la fonction de rappel.
 
 ### Plugin:open_url(url)
-第一引数に渡されたURLをブラウザの新しいタブで開きます。
+Ouvre l'URL passée comme premier argument dans un nouvel onglet du navigateur.
 
 ### Plugin:config
-プラグインの設定が格納されるオブジェクト。プラグイン定義のconfigで設定したキーで値が入ります。
+Un objet dans lequel la configuration du plugin est stockée.La valeur est saisie par la clé définie dans la configuration de la définition du plugin.
