@@ -157,7 +157,6 @@ export default defineComponent({
 			maps: maps,
 			form: null,
 			messages: [],
-			fasCircle, farCircle
 		};
 	},
 
