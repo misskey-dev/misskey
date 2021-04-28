@@ -82,9 +82,9 @@ Ici,
 * `body` est défini comme le contenu du message.En fonction du canal, le type de message qui sera diffusé dépendra du canal.
 
 ### Envoi d'un message à un canal
-チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
+Selon le canal, il se peut que vous ne receviez pas seulement des messages, mais que vous puissiez également envoyer certains messages et effectuer certaines opérations.
 
-チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
+Pour envoyer un message à un canal, envoyez les données suivantes au flux en JSON :
 ```json
 {
     type: 'channel',
@@ -99,8 +99,8 @@ Ici,
 ```
 
 Ici,
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
-* `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
+* `id` doit être réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.Cela vous permettra d'identifier le canal auquel ce message est destiné.
+* `type` définit le type du message.チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
 * `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
 
 ### チャンネルから切断する
@@ -116,7 +116,7 @@ Ici,
 ```
 
 Ici,
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
+* `id` doit être réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.
 
 ## ストリームを経由してAPIリクエストする
 
