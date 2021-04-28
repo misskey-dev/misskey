@@ -73,7 +73,7 @@ Par exemple, supposons que nous ayons la carte simple suivante de 4×4 :
 +---+---+---+---+
 ```
 
-この場合、マップデータはこのようになります:
+Dans ce cas, les données de la carte ressembleront à ceci :
 ```javascript
 ['----', '-wb-', '-bw-', '----']
 ```
@@ -123,13 +123,13 @@ type: `radio` ラジオボタンを表示します。選択肢を提示するの
 `items` ... ラジオボタンの選択肢。例:
 ```javascript
 items: [{
-  label: '弱',
+  label: 'Faible',
   value: 1
 }, {
-  label: '中',
+  label: 'Moyen',
   value: 2
 }, {
-  label: '強',
+  label: 'Fort',
   value: 3
 }]
 ```
@@ -149,12 +149,12 @@ type: `textbox` テキストボックスを表示します。ユーザーにな�
 {
   type: 'message',
   body: {
-    text: 'メッセージ内容',
-    type: 'メッセージの種類'
+    text: 'contenu du message',
+    type: 'Type du message'
   }
 }
 ```
-メッセージの種類: `success`, `info`, `warning`, `error`。
+Type de message : `success`, `info`, `warning`, `error`.
 
-## 投了する
-投了をするには、<a href="./api/endpoints/games/reversi/games/surrender">このエンドポイント</a>にリクエストします。
+## Abandonner
+Pour se rendre, faites une demande à <a href="./api/endpoints/games/reversi/games/surrender">cette terminaison</a>.
