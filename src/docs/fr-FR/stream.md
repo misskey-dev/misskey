@@ -257,7 +257,7 @@ Par exemple:
 Déclenché lors du vote sur un sondage dans ce message.
 
 * `choice` contient l'ID du choix sélectionné.
-* `userId`に、投票を行ったユーザーのIDが設定されます。
+* `userId` sera défini comme l'ID de l'utilisateur qui a voté.
 
 Par exemple:
 ```json
@@ -274,7 +274,7 @@ Par exemple:
 }
 ```
 
-### 投稿のキャプチャを解除する
+### Annuler le post-capture
 
 その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
 
