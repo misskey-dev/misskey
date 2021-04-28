@@ -42,20 +42,20 @@ Si nous considérons une carte 8x8, la position de chaque carré (appelée index
 ```
 pos = x + (y * mapWidth)
 ```
-`mapWidth`は、ゲーム情報の`map`から、次のようにして計算できます:
+`mapWidth` est une donnée de la carte prise sur la `map` comme suit :
 ```
 mapWidth = map[0].length
 ```
 
-### インデックス から X,Y座標 に変換する
+### Trouver les coordonnées X, Y depuis l'index
 ```
 x = pos % mapWidth
 y = Math.floor(pos / mapWidth)
 ```
 
-## マップ情報
-マップ情報は、ゲーム情報の`map`に入っています。 文字列の配列になっており、ひとつひとつの文字がマス情報を表しています。 それをもとにマップのデザインを知る事が出来ます:
-* `(スペース)` ... マス無し
+## Information sur la carte
+Les données de la carte sont incluses dans `map` dans les données du jeu. Comme les données sont représentées sous la forme d'un tableau de chaînes de caractères, chaque caractère représente un champ. Sur la base de ces données, vous pouvez reconstruire l'état de la carte :
+* `(Vide)` ... マス無し
 * `-` ... マス
 * `b` ... 初期配置される黒石
 * `w` ... 初期配置される白石
