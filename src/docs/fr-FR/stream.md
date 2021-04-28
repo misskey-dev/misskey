@@ -1,6 +1,6 @@
-# API Stream
+# API streaming
 
-L'API Stream permet d'implémenter l'exécution d'opérations variées et la réception de diverses informations en temps réel. Cela concerne, par exemple, l'affichage des nouvelles publications dans les fils, la réception de nouveaux messages, les nouveaux abonnements, etc.
+L'API Streaming permet d'implémenter l'exécution d'opérations variées et la réception de diverses informations en temps réel. Cela concerne, par exemple, l'affichage des nouvelles publications dans les fils, la réception de nouveaux messages, les nouveaux abonnements, etc.
 
 ## ストリームに接続する
 
@@ -294,7 +294,7 @@ Par exemple:
 
 このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
 
-# チャンネル一覧
+# Liste des canaux
 ## `main`
 アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
 
