@@ -956,7 +956,7 @@ _theme:
     scrollbarHandle: "Poignée de la barre de navigation"
     scrollbarHandleHover: "Poignée de la barre de navigation (survolée)"
     dateLabelFg: "Texte de l'étiquette de la date"
-    infoBg: "Information sur l'arrière-plan"
+    infoBg: "Arrière-plan des informations"
     infoFg: "Texte d'information"
     infoWarnBg: "Arrière-plan des avertissements"
     infoWarnFg: "Texte d’avertissement"
