@@ -1473,7 +1473,7 @@ _notification:
     reply: "回覆"
     renote: "轉發貼文"
     quote: "引用"
-    reaction: "情感"
+    reaction: "反應"
     pollVote: "統計已投票數"
     receiveFollowRequest: "已收到追隨請求"
     followRequestAccepted: "追隨請求已接受"
