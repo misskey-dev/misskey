@@ -43,7 +43,7 @@ Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli og
 * `props` ... Imposta uno stile di tema. (Vedi spiegazioni sotto.)
 
 ### Impostare uno stile di tema
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+Puoi configurare lo stile del tema dentro le `props`. Le chiavi diventeranno nomi di variabili CSS, il cui contenuto verrà definito dai valori associati ad esse. Inoltre, gli oggetti presenti in `props` per impostazione predefinita vengono ereditati dal tema di base. Il tema di base sarà [_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5) per una `base` `chiara`, e [_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5) per una `base` `scura`. Cioè, se non viene definita una chiave `panel` nelle `props` del tema, si terrà conto del valore <0>panel</0> predefinito del tema usato.
 
 #### Sintassi dei valori
 * Colori HEX
