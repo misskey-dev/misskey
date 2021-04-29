@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, TransitionGroup } from 'vue';
+import MkAd from '@client/components/global/ad.vue';
 
 export default defineComponent({
 	props: {
@@ -58,11 +59,7 @@ export default defineComponent({
 
 			if (
 				i != this.items.length - 1 &&
-				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate() &&
-				!item._prId_ &&
-				!this.items[i + 1]._prId_ &&
-				!item._featuredId_ &&
-				!this.items[i + 1]._featuredId_
+				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate()
 			) {
 				const separator = h('div', {
 					class: 'separator',
@@ -86,7 +83,14 @@ export default defineComponent({
 
 				return [el, separator];
 			} else {
-				return el;
+				if (i === 3) {
+					return [h(MkAd, {
+						class: 'ad',
+						key: i + ':ad',
+					}), el];
+				} else {
+					return el;
+				}
 			}
 		}));
 	},
