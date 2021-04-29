@@ -274,7 +274,7 @@ Par exemple :
 }
 ```
 
-### Annuler la post-capture
+### Annuler la capture de publication
 
 Quand une publication n'est plus affichée et que vous n'avez plus besoin de recevoir les événements la concernant, vous pouvez demander l'annulation de la capture.
 
