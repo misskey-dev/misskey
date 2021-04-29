@@ -809,7 +809,7 @@ _mfm:
   quote: "Citer"
   quoteDescription: "Affiche le contenu sous forme de citation."
   emoji: "Émojis personnalisés"
-  emojiDescription: "Entourez le nom de l'emoji personnalisé de deux points pour afficher l'emoji personnalisé."
+  emojiDescription: "Entourez le nom de l'émoji personnalisé de deux points pour l'afficher."
   search: "Rechercher"
   searchDescription: "Affiche une boîte de recherche avec du texte pré-saisi."
   flip: "Inverser"
