@@ -15,14 +15,14 @@ Cette page explique comment développer un bot pour la fonction Reversi de Missk
 
 5. Pendant ce temps, l'adversaire peut modifier les paramètres du jeu. Chaque fois qu'un paramètre est modifié, le flux envoie un événement `update-settings`, donc une logique pour gérer ces événements peut être nécessaire.
 
-6. Une fois que vous êtes satisfait des paramètres du jeu, envoyez le message `{ type : 'accept' }` au flux.
+6. Une fois que vous êtes satisfait·e des paramètres du jeu, envoyez le message `{ type : 'accept' }` au flux.
 
 7. Lorsque le jeu commence, l'événement `started` sera envoyé.
     * Les informations sur l'état du jeu seront inclus dans cet événement.
 
 8. Pour placer une pierre, envoyez `{ type : 'set', pos : <Position&gt ; }` au flux (voir ci-dessous pour savoir comment calculer la position).
 
-9. Lorsque votre adversaire ou vous-même placer une pierre, un événement `set` est envoyé depuis le flux.
+9. Lorsque votre adversaire ou vous-même placez une pierre, un événement `set` est envoyé depuis le flux.
     * `color` contient la couleur de la pierre placée
     * `pos` contient la position de la pierre
 
