@@ -6,7 +6,7 @@ L'API Streaming permet d'implémenter l'exécution d'opérations variées et la 
 
 Pour utiliser l'API de streaming, vous devez d'abord effectuer une connexion **websocket**  au serveur Misskey.
 
-Veuillez vous connecter à l'URL suivante avec le nom de paramètre `i` et inclure les informations d'authentification dans la connexion websocket.Par exemple:
+Veuillez vous connecter à l'URL suivante avec le nom de paramètre `i` et inclure les informations d'authentification dans la connexion websocket.Par exemple :
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
@@ -19,7 +19,7 @@ Les informations d'identification sont votre clé API ou, en cas de connexion au
 
 ---
 
-Vous pouvez omettre les informations d'authentification, mais dans ce cas, vous utiliserez le système sans vous connecter, et les informations que vous pourrez recevoir et les opérations que vous pourrez effectuer seront limitées.Par exemple:
+Vous pouvez omettre les informations d'authentification, mais dans ce cas, vous utiliserez le système sans vous connecter, et les informations que vous pourrez recevoir et les opérations que vous pourrez effectuer seront limitées.Par exemple :
 
 ```
 %WS_URL%/streaming
@@ -219,7 +219,7 @@ Cela se produit lorsqu'une réaction est faite à ce message.
 * `reaction` est défini comme le type de réaction.
 * `userId` sera défini comme l'ID de l'utilisateur qui a fait la réaction.
 
-Par exemple:
+Par exemple :
 ```json
 {
     type: 'noteUpdated',
@@ -239,7 +239,7 @@ Cela se produit lorsque ce message est supprimé.
 
 * `deletedAt` est défini comme la date et l'heure de la suppression.
 
-Par exemple:
+Par exemple :
 ```json
 {
     type: 'noteUpdated',
@@ -259,7 +259,7 @@ Déclenché lors du vote sur un sondage dans ce message.
 * `choice` contient l'ID du choix sélectionné.
 * `userId` sera défini comme l'ID de l'utilisateur qui a voté.
 
-Par exemple:
+Par exemple :
 ```json
 {
     type: 'noteUpdated',
@@ -276,7 +276,7 @@ Par exemple:
 
 ### Annuler le post-capture
 
-Si vous souhaitez que le message n'apparaisse plus à l'écran et que vous n'ayez plus besoin de recevoir les événements associés à ce message, vous pouvez envoyer une demande d'annulation de la capture du message.
+Quand une publication n'est plus affichée et que vous n'avez plus besoin de recevoir les événements la concernant, vous pouvez demander l'annulation de la capture.
 
 Envoyez le message suivant :
 
