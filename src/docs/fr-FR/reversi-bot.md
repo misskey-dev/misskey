@@ -120,7 +120,7 @@ type: `switch` Affiche un interrupteur.Cette fonction est utile lorsque vous sou
 type: `radio` Affiche le bouton radio.Il est utile pour proposer des options.Par exemple, pour choisir la difficulté du bot.
 
 ##### Propriétés
-`items` ... Les options des boutons radio. Par exemple:
+`items` ... Les options des boutons radio. Par exemple :
 ```javascript
 items: [{
   label: 'Facile',
