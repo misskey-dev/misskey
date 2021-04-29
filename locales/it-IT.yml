@@ -1003,7 +1003,7 @@ _profile:
   username: "Nome utente"
   description: "Bio"
   youCanIncludeHashtags: "Puoi anche includere hashtag."
-  metadata: "Metadati"
+  metadata: "Informazioni aggiuntive"
   metadataEdit: "Modifica informazioni aggiuntive"
   metadataDescription: "Puoi pubblicare fino a quattro informazioni aggiuntive sul profilo."
   metadataLabel: "Etichetta"
