@@ -54,6 +54,7 @@ export default defineComponent({
 			margin: 0 auto;
 
 			> img {
+				display: block;
 				width: 100%;
 				height: 100%;
 				object-fit: contain;
