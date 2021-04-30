@@ -1,6 +1,6 @@
 # Deck
 
-Il deck è una delle interfacce utente disponibili.「カラム」と呼ばれるビューを複数並べて表示させることで、カスタマイズ性が高く、情報量の多いUIが構築できることが特徴です。
+Il deck è una delle interfacce utente disponibili.Ti consente di configurare varie colonne fianco a fianco, con molte possibilità di personalizzazione, per ottenere uno schermo più ricco in contenuti.
 
 ## Aggiungere colonne
 Puoi aggiungere una colonna facendo un clic destro nello sfondo del deck, poi scegliendo "Aggiungi colonna".
