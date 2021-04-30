@@ -750,8 +750,8 @@ shareWithNote: "在帖子中分享"
 _gallery:
   my: "我的图库"
   liked: "喜欢的图片"
-  like: "喜欢❤"
-  unlike: "取消赞"
+  like: "喜欢"
+  unlike: "取消喜欢"
 _email:
   _follow:
     title: "你有新的关注者"
@@ -1278,7 +1278,7 @@ _pages:
   viewSource: "查看源代码"
   viewPage: "查看页面"
   like: "赞"
-  unlike: "取消赞"
+  unlike: "取消喜欢"
   my: "我的页面"
   liked: "喜欢的页面"
   featured: "热门"
