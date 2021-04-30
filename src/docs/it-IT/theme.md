@@ -62,7 +62,7 @@ Puoi configurare lo stile del tema dentro le `props`. Le chiavi diventeranno nom
     * `:{functionname}<{argument}<{color}`
 
 #### Costanti
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+Può essere vantaggioso usare una costante nei casi in cui non vuoi che un valore produca una variabile CSS, perché lo vuoi utilizzare come valore di un'altra variabile CSS. In tal caso, basta aggiungere `$` davanti al nome della chiave affinché non generi variabile CSS.
 
 #### Funzioni
 wip
