@@ -52,11 +52,11 @@ Puoi configurare lo stile del tema dentro le `props`. Le chiavi diventeranno nom
     * Es.: `rgb(0, 255, 0)`
 * Colori `RGBA(r, g, b, a)`
     * Es.: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
+* Chiamare valori di altre chiavi
+    * Inserisci `@{keyname}` per chiamare il valore di un'altra chiave. Bisogna sostituire il testo `{keyname}` col nome della chiave che vuoi chiamare.
     * Es.: `@panel`
 * Costanti (vedi sotto)
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
+    * Inserisci `${constantname}` per chiamare una costante.`{定数名}`は参照したい定数の名前に置き換えます。
     * Es.: `$main`
 * Funzioni (vedi sotto)
     * `:{functionname}<{argument}<{color}`
