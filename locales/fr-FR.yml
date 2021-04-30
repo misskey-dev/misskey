@@ -981,7 +981,7 @@ _sfx:
   noteMy: "Ma note"
   notification: "Notifications"
   chat: "Discuter"
-  chatBg: "Discuter (De fond)"
+  chatBg: "Discussion (arrière-plan)"
   antenna: "Réception de l’antenne"
   channel: "Notifications de canal"
   reversiPutBlack: "Reversi : les pions noirs ont joué"
