@@ -56,7 +56,7 @@ Puoi configurare lo stile del tema dentro le `props`. Le chiavi diventeranno nom
     * Inserisci `@{keyname}` per chiamare il valore di un'altra chiave. Bisogna sostituire il testo `{keyname}` col nome della chiave che vuoi chiamare.
     * Es.: `@panel`
 * Costanti (vedi sotto)
-    * Inserisci `${constantname}` per chiamare una costante.`{定数名}`は参照したい定数の名前に置き換えます。
+    * Inserisci `${constantname}` per chiamare una costante.Bisogna sostituire il testo `{constantname}` col nome della costante che vuoi chiamare.
     * Es.: `$main`
 * Funzioni (vedi sotto)
     * `:{functionname}<{argument}<{color}`
