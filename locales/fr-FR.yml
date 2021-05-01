@@ -796,7 +796,7 @@ _mfm:
   boldDescription: "Il est possible de mettre le texte en exergue en le mettant en gras."
   small: "Diminuer l'emphase"
   smallDescription: "Le contenu peut être affiché en petit et fin."
-  center: "Centrée"
+  center: "Centrer"
   centerDescription: "Le contenu peut être centré"
   inlineCode: "Code (inline)"
   inlineCodeDescription: "Coloration syntaxique des lignes de code."
