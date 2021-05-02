@@ -3,7 +3,7 @@
 Il deck è una delle interfacce utente disponibili.Ti consente di configurare varie colonne fianco a fianco, con molte possibilità di personalizzazione, per ottenere uno schermo più ricco in contenuti.
 
 ## Aggiungere colonne
-Puoi aggiungere una colonna facendo un clic destro nello sfondo del deck, poi scegliendo "Aggiungi colonna".
+Puoi aggiungere una colonna facendo un clic destro nello sfondo del deck, poi selezionando "Aggiungi colonna".
 
 ## Spostare colonne
 カラムは、ドラッグアンドドロップで他のカラムと位置を入れ替えることが出来るほか、カラムメニュー(カラムのヘッダー右クリック)から位置を移動させることもできます。
