@@ -1,8 +1,8 @@
 <template>
-<div class="qiivuoyo">
-	<div class="main" :class="ad.shape" v-if="!showMenu">
+<div class="qiivuoyo" v-if="ad">
+	<div class="main" :class="ad.place" v-if="!showMenu">
 		<a :href="ad.url" target="_blank">
-			<img :src="ad.img">
+			<img :src="ad.imageUrl">
 			<button class="_button menu" @click.prevent.stop="toggleMenu"><span class="fas fa-info-circle"></span></button>
 		</a>
 	</div>
@@ -23,18 +23,22 @@ export default defineComponent({
 		},
 	},
 
-	setup() {
+	setup(props) {
 		const showMenu = ref(false);
 		const toggleMenu = () => {
 			showMenu.value = !showMenu.value;
 		};
 
+		let ads = this.$instance.ads.find(ad => ad.place === props.prefer);
+
+		if (ads.length === 0) {
+			ads = this.$instance.ads.find(ad => ad.place === 'square');
+		}
+
+		const ad = ads.length === 0 ? null : ads[Math.floor(Math.random() * ads.length)];
+
 		return {
-			ad: {
-				shape: 'square',
-				url: '',
-				img: 'https://s3.arkjp.net/misskey/f735d88a-c0b8-4f42-b1d8-03d281282cb4.gif'
-			},
+			ad,
 			showMenu,
 			toggleMenu,
 		};
