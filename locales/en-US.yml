@@ -1069,7 +1069,7 @@ _auth:
   permissionAsk: "This application requires following permissions:"
   pleaseGoBack: "Please go back to the application"
   callback: "Returning back to the application"
-  denied: "Access Denied"
+  denied: "Access denied"
 _antennaSources:
   all: "All notes"
   homeTimeline: "Notes from following users"
