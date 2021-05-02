@@ -946,6 +946,8 @@ _permissions:
   "write:votes": "Votare"
   "read:pages": "Visualizzare pagine"
   "write:pages": "Gestire pagine"
+  "read:page-likes": "Visualizzare i \"Mi piace\" di pagine"
+  "write:page-likes": "Gestire i \"Mi piace\" di pagine"
   "read:user-groups": "Vedi gruppi di utenti"
   "write:user-groups": "Gestisci gruppi di utenti"
   "read:channels": "Visualizza canali"
