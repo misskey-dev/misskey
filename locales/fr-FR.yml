@@ -1026,14 +1026,14 @@ _tutorial:
   step7_2: "Si vous désirez en savoir plus sur Misskey, jetez un œil sur la section {help}."
   step7_3: "Bon courage et amusez-vous bien sur Misskey ! 🚀"
 _2fa:
-  alreadyRegistered: "Cette étape à déjà été complétée"
+  alreadyRegistered: "Configuration déjà achevée."
   registerDevice: "Ajouter un nouvel appareil"
   registerKey: "Enregistrer une clef"
   step1: "Tout d'abord, installez une application d'authentification, telle que {a} ou {b}, sur votre appareil."
   step2: "Ensuite, scannez le code QR affiché sur l’écran."
   step3: "Entrez le jeton affiché sur votre application pour compléter la configuration."
   step4: "À partir de maintenant, ce même jeton vous sera demandé à chacune de vos connexions."
-  securityKeyInfo: "Vous pouvez configurer l'authentification WebAuthN pour sécuriser davantage le processus de connexion avec non seulement la clé de sécurité matérielle qui prend en charge FIDO2, mais également l'authentification par empreinte digitale ou PIN sur votre appareil."
+  securityKeyInfo: "Vous pouvez configurer l'authentification WebAuthN pour sécuriser davantage le processus de connexion grâce à une clé de sécurité matérielle qui prend en charge FIDO2, ou bien en configurant l'authentification par empreinte digitale ou par code PIN sur votre appareil."
 _permissions:
   "read:account": "Afficher les informations du compte"
   "write:account": "Mettre à jour les informations de votre compte"
