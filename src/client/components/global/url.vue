@@ -113,8 +113,6 @@ export default defineComponent({
 	> .icon {
 		padding-left: 2px;
 		font-size: .9em;
-		font-weight: 400;
-		font-style: normal;
 	}
 
 	> .self {
