@@ -954,6 +954,11 @@ _permissions:
   "write:channels": "Gerisci canali"
 _auth:
   shareAccess: "Autorizzare「{name}」ad accedere al tuo account?"
+  shareAccessAsk: "Vuoi davvero consentire l'accesso al tuo account a questa app'?"
+  permissionAsk: "Questa app richiede le seguenti autorizzazioni:"
+  pleaseGoBack: "Si prega di ritornare sulla app"
+  callback: "Ritornando sulla app"
+  denied: "Accesso negato"
 _antennaSources:
   all: "Tutte le note"
   homeTimeline: "Note dagli utenti che segui"
@@ -981,6 +986,7 @@ _widgets:
   digitalClock: "Orologio digitale"
   federation: "Federazione"
   postForm: "Finestra di pubblicazione"
+  slideshow: "Diapositive"
   button: "Pulsante"
   onlineUsers: "Utenti online"
   jobQueue: "Coda di lavoro"
