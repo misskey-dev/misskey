@@ -1028,11 +1028,11 @@ _tutorial:
 _2fa:
   alreadyRegistered: "Cette étape à déjà été complétée"
   registerDevice: "Ajouter un nouvel appareil"
-  registerKey: "S’inscrire la clé"
+  registerKey: "Enregistrer une clef"
   step1: "Tout d'abord, installez une application d'authentification, telle que {a} ou {b}, sur votre appareil."
   step2: "Ensuite, scannez le code QR affiché sur l’écran."
   step3: "Entrez le jeton affiché sur votre application pour compléter la configuration."
-  step4: "Lorsque vous vous connectez, entrez le jeton de la même manière."
+  step4: "À partir de maintenant, ce même jeton vous sera demandé à chacune de vos connexions."
   securityKeyInfo: "Vous pouvez configurer l'authentification WebAuthN pour sécuriser davantage le processus de connexion avec non seulement la clé de sécurité matérielle qui prend en charge FIDO2, mais également l'authentification par empreinte digitale ou PIN sur votre appareil."
 _permissions:
   "read:account": "Afficher les informations du compte"
