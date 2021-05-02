@@ -56,7 +56,7 @@ C'est dans `props` que vous définirez le style du thème. Les clés deviendront
     * Entrer `@{keyname}` pour appeler la valeur d'une autre clé. Remplacer alors `{keyname}` par le nom de la clé que vous souhaitez appeler.
     * Ex. : `@panel`
 * Constantes (voir ci-dessous)
-    * Entrer `${constantname}` pour utiliser la valeur de la constante citée.Remplacer alors `{constantname}` par la nom de la constante que vous souhaitez citer.
+    * Entrer `${constantname}` vous permet d'appeler une constante. Remplacer alors `{constantname}` par le nom de la constante que vous souhaitez appeler.
     * Ex. : `$main`
 * Fonctions (voir ci-dessous)
     * `:{functionname}<{argument}<{color}`
