@@ -1057,7 +1057,7 @@ _permissions:
   "write:votes": "Voter"
   "read:pages": "Voir vos pages"
   "write:pages": "Gérer les pages"
-  "read:page-likes": "Voir les favoris sur les Pages"
+  "read:page-likes": "Voir les mentions « J'aime » des pages"
   "write:page-likes": "Gérer les mentions « J'aime » sur les pages"
   "read:user-groups": "Voir les groupes d'utilisateur·rice·s"
   "write:user-groups": "Éditer les groupes des utilisateur·rice·s"
