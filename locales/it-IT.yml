@@ -991,9 +991,12 @@ _widgets:
   onlineUsers: "Utenti online"
   jobQueue: "Coda di lavoro"
   serverMetric: "Statistiche server"
+  aiscript: "Console AiScript"
 _cw:
   hide: "Nascondere"
   show: "Mostra di più"
+  chars: "{count} caratteri"
+  files: "{count} file"
 _poll:
   noMore: "Hai aggiunto il numero massimo di opzioni."
   canMultipleVote: "Risposte multiple"
