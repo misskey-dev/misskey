@@ -9,6 +9,11 @@
 
 	<form class="_monolithic_" @submit.prevent="onSubmit" v-if="$instance.enableEmail">
 		<div class="_section">
+			<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @update:value="onUsernameChange">
+				<span>{{ $ts.username }}</span>
+				<template #prefix>@</template>
+			</MkInput>
+
 			<MkInput v-model:value="email" type="email" spellcheck="false" autofocus required>
 				<span>{{ $ts.emailAddress }}</span>
 				<template #desc>{{ $ts._forgotPassword.enterEmail }}</template>
@@ -44,6 +49,7 @@ export default defineComponent({
 
 	data() {
 		return {
+			username: '',
 			email: '',
 			processing: false,
 		};
@@ -53,7 +59,8 @@ export default defineComponent({
 		async onSubmit() {
 			this.processing = true;
 			await os.apiWithDialog('request-reset-password', {
-				email: this.email
+				username: this.username,
+				email: this.email,
 			});
 
 			this.$emit('done');

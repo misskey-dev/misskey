@@ -18,6 +18,10 @@ export const meta = {
 	},
 
 	params: {
+		username: {
+			validator: $.str
+		},
+
 		email: {
 			validator: $.str
 		},
@@ -32,6 +36,11 @@ export default define(meta, async (ps, user) => {
 	const profile = await UserProfiles.findOneOrFail({
 		email: ps.email,
 		emailVerified: true
+	});
+
+	await Users.findOneOrFail({
+		id: profile.userId,
+		usernameLower: ps.username.toLowerCase(),
 	});
 
 	const token = rndstr('a-z0-9', 64);

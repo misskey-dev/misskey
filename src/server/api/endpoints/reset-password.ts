@@ -28,6 +28,11 @@ export default define(meta, async (ps, user) => {
 		token: ps.token,
 	});
 
+	// 発行してから3分以上経過していたら無効
+	if (Date.now() - req.createdAt.getTime() > 1000 * 60 * 3) {
+		throw new Error(); // TODO
+	}
+
 	// Generate hash of password
 	const salt = await bcrypt.genSalt(8);
 	const hash = await bcrypt.hash(ps.password, salt);
