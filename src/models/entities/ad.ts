@@ -24,6 +24,11 @@ export class Ad {
 	public place: string;
 
 	@Column('varchar', {
+		length: 32, nullable: false
+	})
+	public priority: string;
+
+	@Column('varchar', {
 		length: 1024, nullable: false
 	})
 	public url: string;

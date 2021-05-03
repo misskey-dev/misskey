@@ -27,7 +27,8 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const query = makePaginationQuery(Ads.createQueryBuilder('ad'), ps.sinceId, ps.untilId);
+	const query = makePaginationQuery(Ads.createQueryBuilder('ad'), ps.sinceId, ps.untilId)
+		.andWhere('ad.expiresAt > :now', { now: new Date() });
 
 	const ads = await query.take(ps.limit!).getMany();
 

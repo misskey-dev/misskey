@@ -87,6 +87,7 @@ export default defineComponent({
 					return [h(MkAd, {
 						class: 'ad',
 						key: i + ':ad',
+						prefer: 'horizontal',
 					}), el];
 				} else {
 					return el;

@@ -19,6 +19,9 @@ export const meta = {
 		place: {
 			validator: $.str
 		},
+		priority: {
+			validator: $.str
+		},
 		expiresAt: {
 			validator: $.num.int()
 		},
@@ -35,6 +38,7 @@ export default define(meta, async (ps) => {
 		expiresAt: new Date(ps.expiresAt),
 		url: ps.url,
 		imageUrl: ps.imageUrl,
+		priority: ps.priority,
 		place: ps.place,
 		memo: ps.memo,
 	});

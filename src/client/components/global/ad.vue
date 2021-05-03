@@ -14,12 +14,17 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { instance } from '@client/instance';
 
 export default defineComponent({
 	props: {
 		prefer: {
 			type: String,
 			required: true
+		},
+		ad: {
+			type: Object,
+			required: false
 		},
 	},
 
@@ -29,13 +34,29 @@ export default defineComponent({
 			showMenu.value = !showMenu.value;
 		};
 
-		let ads = this.$instance.ads.find(ad => ad.place === props.prefer);
+		let ad = null;
 
-		if (ads.length === 0) {
-			ads = this.$instance.ads.find(ad => ad.place === 'square');
+		if (props.ad) {
+			ad = props.ad;
+		} else {
+			let ads = instance.ads.filter(ad => ad.place === props.prefer);
+
+			if (ads.length === 0) {
+				ads = instance.ads.filter(ad => ad.place === 'square');
+			}
+
+			const high = ads.filter(ad => ad.priority === 'high');
+			const middle = ads.filter(ad => ad.priority === 'middle');
+			const low = ads.filter(ad => ad.priority === 'low');
+
+			if (high.length > 0) {
+				ad = high[Math.floor(Math.random() * high.length)];
+			} else if (middle.length > 0) {
+				ad = middle[Math.floor(Math.random() * middle.length)];
+			} else if (low.length > 0) {
+				ad = low[Math.floor(Math.random() * low.length)];
+			}
 		}
-
-		const ad = ads.length === 0 ? null : ads[Math.floor(Math.random() * ads.length)];
 
 		return {
 			ad,
@@ -80,8 +101,10 @@ export default defineComponent({
 		}
 
 		&.horizontal {
+			padding: 8px;
+
 			> a {
-				max-width: 100%;
+				max-width: min(600px, 100%);
 				max-height: min(100px, 100%);
 			}
 		}
