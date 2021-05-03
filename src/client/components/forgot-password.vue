@@ -14,7 +14,7 @@
 				<template #prefix>@</template>
 			</MkInput>
 
-			<MkInput v-model:value="email" type="email" spellcheck="false" autofocus required>
+			<MkInput v-model:value="email" type="email" spellcheck="false" required>
 				<span>{{ $ts.emailAddress }}</span>
 				<template #desc>{{ $ts._forgotPassword.enterEmail }}</template>
 			</MkInput>
