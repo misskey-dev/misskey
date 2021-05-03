@@ -32,16 +32,26 @@ export const meta = {
 	}
 };
 
-export default define(meta, async (ps, user) => {
-	const profile = await UserProfiles.findOneOrFail({
+export default define(meta, async (ps) => {
+	const profile = await UserProfiles.findOne({
 		email: ps.email,
 		emailVerified: true
 	});
 
-	await Users.findOneOrFail({
+	// 合致するメアドが登録されていなかったら無視
+	if (profile == null) {
+		return;
+	}
+
+	const user = await Users.findOne({
 		id: profile.userId,
 		usernameLower: ps.username.toLowerCase(),
 	});
+
+	// 合致するユーザーが登録されていなかったら無視
+	if (user == null) {
+		return;
+	}
 
 	const token = rndstr('a-z0-9', 64);
 
