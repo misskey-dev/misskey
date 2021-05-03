@@ -9,7 +9,7 @@
 
 	<form class="_monolithic_" @submit.prevent="onSubmit" v-if="$instance.enableEmail">
 		<div class="_section">
-			<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required @update:value="onUsernameChange">
+			<MkInput v-model:value="username" type="text" pattern="^[a-zA-Z0-9_]+$" spellcheck="false" autofocus required>
 				<span>{{ $ts.username }}</span>
 				<template #prefix>@</template>
 			</MkInput>
