@@ -3,7 +3,7 @@
 	<MkButton @click="add()" primary style="margin: 0 auto 16px auto;"><i class="fas fa-plus"></i> {{ $ts.add }}</MkButton>
 	<section class="_card _gap ads" v-for="ad in ads">
 		<div class="_content ad">
-			<MkAd v-if="ad.url" :ad="ad"/>
+			<MkAd v-if="ad.url" :specify="ad"/>
 			<MkInput v-model:value="ad.url" type="url">
 				<span>URL</span>
 			</MkInput>
