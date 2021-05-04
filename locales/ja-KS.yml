@@ -643,6 +643,8 @@ goBack: "戻る"
 info: "情報"
 user: "ユーザー"
 administration: "管理"
+expiration: "期限"
+middle: "中"
 _gallery:
   unlike: "良くないわ"
 _email:
