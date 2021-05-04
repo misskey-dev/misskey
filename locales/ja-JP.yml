@@ -7,6 +7,7 @@ search: "検索"
 notifications: "通知"
 username: "ユーザー名"
 password: "パスワード"
+forgotPassword: "パスワードを忘れた"
 fetchingAsApObject: "連合に照会中"
 ok: "OK"
 gotIt: "わかった"
@@ -747,6 +748,11 @@ gallery: "ギャラリー"
 recentPosts: "最近の投稿"
 popularPosts: "人気の投稿"
 shareWithNote: "ノートで共有"
+
+_forgotPassword:
+  enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"
+  ifNoEmail: "メールアドレスを登録していない場合は、管理者までお問い合わせください。"
+  contactAdmin: "このインスタンスではメールがサポートされていないため、パスワードリセットを行う場合は管理者までお問い合わせください。"
 
 _gallery:
   my: "自分の投稿"

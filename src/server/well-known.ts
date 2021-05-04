@@ -61,6 +61,11 @@ router.get('/.well-known/nodeinfo', async ctx => {
 	ctx.body = { links };
 });
 
+/* TODO
+router.get('/.well-known/change-password', async ctx => {
+});
+*/
+
 router.get(webFingerPath, async ctx => {
 	const fromId = (id: User['id']): Record<string, any> => ({
 		id,
