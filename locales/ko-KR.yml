@@ -747,6 +747,8 @@ gallery: "갤러리"
 recentPosts: "최근 포스트"
 popularPosts: "인기 포스트"
 shareWithNote: "노트로 공유"
+expiration: "투표 기한"
+middle: "보통"
 _gallery:
   my: "내 갤러리"
   liked: "좋아요 한 갤러리"
