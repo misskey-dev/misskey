@@ -28,8 +28,8 @@ export default define(meta, async (ps, user) => {
 		token: ps.token,
 	});
 
-	// 発行してから3分以上経過していたら無効
-	if (Date.now() - req.createdAt.getTime() > 1000 * 60 * 3) {
+	// 発行してから30分以上経過していたら無効
+	if (Date.now() - req.createdAt.getTime() > 1000 * 60 * 30) {
 		throw new Error(); // TODO
 	}
 
