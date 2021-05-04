@@ -8,6 +8,7 @@ import { Users, UserProfiles, PasswordResetRequests } from '../../../models';
 import { sendEmail } from '../../../services/send-email';
 import { ApiError } from '../error';
 import { genId } from '@/misc/gen-id';
+import { IsNull } from 'typeorm';
 
 export const meta = {
 	requireCredential: false as const,
@@ -33,23 +34,25 @@ export const meta = {
 };
 
 export default define(meta, async (ps) => {
-	const profile = await UserProfiles.findOne({
-		email: ps.email,
-		emailVerified: true
-	});
-
-	// 合致するメアドが登録されていなかったら無視
-	if (profile == null) {
-		return;
-	}
-
 	const user = await Users.findOne({
-		id: profile.userId,
 		usernameLower: ps.username.toLowerCase(),
+		host: IsNull()
 	});
 
 	// 合致するユーザーが登録されていなかったら無視
 	if (user == null) {
+		return;
+	}
+
+	const profile = await UserProfiles.findOneOrFail(user.id);
+
+	// 合致するメアドが登録されていなかったら無視
+	if (profile.email !== ps.email) {
+		return;
+	}
+
+	// メアドが認証されていなかったら無視
+	if (!profile.emailVerified) {
 		return;
 	}
 
