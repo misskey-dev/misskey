@@ -79,7 +79,7 @@ export default defineComponent({
 			this.ads.unshift({
 				id: null,
 				memo: '',
-				place: null,
+				place: 'square',
 				priority: 'middle',
 				url: '',
 				imageUrl: null,

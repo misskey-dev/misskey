@@ -23,6 +23,11 @@ export default defineComponent({
 			required: false,
 			default: false
 		},
+		ad: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
 	},
 
 	methods: {
@@ -83,10 +88,10 @@ export default defineComponent({
 
 				return [el, separator];
 			} else {
-				if (i === 3) {
+				if (this.ad && item._shouldInsertAd_) {
 					return [h(MkAd, {
 						class: 'ad',
-						key: i + ':ad',
+						key: item.id + ':ad',
 						prefer: 'horizontal',
 					}), el];
 				} else {
