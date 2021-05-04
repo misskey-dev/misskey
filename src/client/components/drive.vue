@@ -614,7 +614,7 @@ export default defineComponent({
 				type: 'label'
 			}, this.folder ? {
 				text: this.$ts.renameFolder,
-				icon: faICursor,
+				icon: 'fas fa-i-cursor',
 				action: () => { this.renameFolder(this.folder); }
 			} : undefined, this.folder ? {
 				text: this.$ts.deleteFolder,

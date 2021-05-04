@@ -247,7 +247,7 @@ export default defineComponent({
 				}
 			}, null, {
 				text: this.$ts.rename,
-				icon: faICursor,
+				icon: 'fas fa-i-cursor',
 				action: this.rename
 			}, null, {
 				text: this.$ts.delete,

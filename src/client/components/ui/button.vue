@@ -139,7 +139,8 @@ export default defineComponent({
 	}
 
 	&.primary {
-		color: #fff;
+		font-weight: bold;
+		color: #fff !important;
 		background: var(--accent);
 
 		&:not(:disabled):hover {
@@ -198,10 +199,6 @@ export default defineComponent({
 		display: inline-block;
 		width: auto;
 		min-width: 100px;
-	}
-
-	&.primary {
-		font-weight: bold;
 	}
 
 	> .ripples {

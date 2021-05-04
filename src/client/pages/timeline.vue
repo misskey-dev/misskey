@@ -18,6 +18,7 @@
 			<button class="_button tab" @click="chooseList" :class="{ active: src === 'list' }" v-tooltip="$ts.lists"><i class="fas fa-list-ul"></i></button>
 		</div>
 	</div>
+	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 	<XTimeline ref="tl"
 		class="_gap"
 		:key="src === 'list' ? `list:${list.id}` : src === 'antenna' ? `antenna:${antenna.id}` : src === 'channel' ? `channel:${channel.id}` : src"
@@ -30,7 +31,6 @@
 		@after="after()"
 		@queue="queueUpdated"
 	/>
-	<div class="new" v-if="queue > 0"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 </div>
 </template>
 

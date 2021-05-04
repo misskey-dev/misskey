@@ -161,15 +161,15 @@
 					</dl>
 				</div>
 				<div class="status">
-					<MkA :to="userPage(user)" :class="{ active: page === 'index' }">
+					<MkA :to="userPage(user)" :class="{ active: page === 'index' }" v-click-anime>
 						<b>{{ number(user.notesCount) }}</b>
 						<span>{{ $ts.notes }}</span>
 					</MkA>
-					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }">
+					<MkA :to="userPage(user, 'following')" :class="{ active: page === 'following' }" v-click-anime>
 						<b>{{ number(user.followingCount) }}</b>
 						<span>{{ $ts.following }}</span>
 					</MkA>
-					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }">
+					<MkA :to="userPage(user, 'followers')" :class="{ active: page === 'followers' }" v-click-anime>
 						<b>{{ number(user.followersCount) }}</b>
 						<span>{{ $ts.followers }}</span>
 					</MkA>
@@ -179,17 +179,21 @@
 
 		<div class="contents">
 			<div class="nav _gap">
-				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link">
+				<MkA :to="userPage(user)" :class="{ active: page === 'index' }" class="link" v-click-anime>
 					<i class="fas fa-comment-alt icon"></i>
 					<span>{{ $ts.notes }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link">
+				<MkA :to="userPage(user, 'clips')" :class="{ active: page === 'clips' }" class="link" v-click-anime>
 					<i class="fas fa-paperclip icon"></i>
 					<span>{{ $ts.clips }}</span>
 				</MkA>
-				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link">
+				<MkA :to="userPage(user, 'pages')" :class="{ active: page === 'pages' }" class="link" v-click-anime>
 					<i class="fas fa-file-alt icon"></i>
 					<span>{{ $ts.pages }}</span>
+				</MkA>
+				<MkA :to="userPage(user, 'gallery')" :class="{ active: page === 'gallery' }" class="link" v-click-anime>
+					<i class="fas fa-icons icon"></i>
+					<span>{{ $ts.gallery }}</span>
 				</MkA>
 			</div>
 
@@ -210,6 +214,7 @@
 			<XFollowList v-else-if="page === 'followers'" type="followers" :user="user" class="_content _gap"/>
 			<XClips v-else-if="page === 'clips'" :user="user" class="_gap"/>
 			<XPages v-else-if="page === 'pages'" :user="user" class="_gap"/>
+			<XGallery v-else-if="page === 'gallery'" :user="user" class="_gap"/>
 		</div>
 	</div>
 	<MkError v-else-if="error" @retry="fetch()"/>
@@ -250,6 +255,7 @@ export default defineComponent({
 		XFollowList: defineAsyncComponent(() => import('./follow-list.vue')),
 		XClips: defineAsyncComponent(() => import('./clips.vue')),
 		XPages: defineAsyncComponent(() => import('./pages.vue')),
+		XGallery: defineAsyncComponent(() => import('./gallery.vue')),
 		XPhotos: defineAsyncComponent(() => import('./index.photos.vue')),
 		XActivity: defineAsyncComponent(() => import('./index.activity.vue')),
 	},
@@ -770,8 +776,7 @@ export default defineComponent({
 		> .nav {
 			display: flex;
 			align-items: center;
-			//font-size: 120%;
-			font-weight: bold;
+			font-size: 90%;
 
 			> .link {
 				flex: 1;
