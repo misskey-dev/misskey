@@ -747,6 +747,8 @@ gallery: "图库"
 recentPosts: "最新发布"
 popularPosts: "热门投稿"
 shareWithNote: "在帖子中分享"
+expiration: "截止时间"
+middle: "中"
 _gallery:
   my: "我的图库"
   liked: "喜欢的图片"
