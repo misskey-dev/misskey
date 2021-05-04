@@ -1,5 +1,5 @@
 <template>
-<div class="yohlumlk">
+<div class="yohlumlk" v-size="{ min: [350, 500] }">
 	<MkAvatar class="avatar" :user="note.user"/>
 	<div class="main">
 		<XNoteHeader class="header" :note="note" :mini="true"/>
@@ -50,18 +50,19 @@ export default defineComponent({
 	display: flex;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
+	overflow: clip;
 	font-size: 0.95em;
 
-	> .avatar {
-
-		@media (min-width: 350px) {
+	&.min-width_350px {
+		> .avatar {
 			margin: 0 10px 0 0;
 			width: 44px;
 			height: 44px;
 		}
+	}
 
-		@media (min-width: 500px) {
+	&.min-width_500px {
+		> .avatar {
 			margin: 0 12px 0 0;
 			width: 48px;
 			height: 48px;
