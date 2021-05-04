@@ -748,6 +748,8 @@ gallery: "Gallery"
 recentPosts: "Recent posts"
 popularPosts: "Popular posts"
 shareWithNote: "Share with note"
+expiration: "Poll ends on"
+middle: "Medium"
 emailNotConfiguredWarning: "Email address not set"
 _forgotPassword:
   enterEmail: "Enter the email address you used to register. A link with which you can reset your password will then be sent to it."
