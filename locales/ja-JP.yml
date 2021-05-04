@@ -748,6 +748,7 @@ gallery: "ギャラリー"
 recentPosts: "最近の投稿"
 popularPosts: "人気の投稿"
 shareWithNote: "ノートで共有"
+emailNotConfiguredWarning: "メールアドレスの設定がされていません。"
 
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"
