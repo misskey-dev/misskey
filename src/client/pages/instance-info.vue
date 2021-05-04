@@ -147,7 +147,6 @@ import * as os from '@client/os';
 import number from '@client/filters/number';
 import bytes from '@client/filters/bytes';
 import * as symbols from '@client/symbols';
-import { url } from '@client/config';
 
 const chartLimit = 90;
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
@@ -449,7 +448,7 @@ export default defineComponent({
 .fnfelxur {
 	padding: 16px;
 
-	> img {
+	> .icon {
 		display: block;
 		margin: auto;
 		height: 64px;

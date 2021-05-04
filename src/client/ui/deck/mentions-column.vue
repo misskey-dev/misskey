@@ -36,7 +36,6 @@ export default defineComponent({
 				endpoint: 'notes/mentions',
 				limit: 10,
 			},
-			faAt
 		}
 	},
 

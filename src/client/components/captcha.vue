@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 type Captcha = {
 	render(container: string | Node, options: {
@@ -32,7 +32,7 @@ declare global {
 export default defineComponent({
 	props: {
 		provider: {
-			type: String,
+			type: String as PropType<CaptchaProvider>,
 			required: true,
 		},
 		sitekey: {
@@ -51,19 +51,25 @@ export default defineComponent({
 	},
 
 	computed: {
-		loaded() {
-			return !!window[this.provider as CaptchaProvider];
+		variable(): string {
+			switch (this.provider) {
+				case 'hcaptcha': return 'hcaptcha';
+				case 'recaptcha': return 'grecaptcha';
+			}
 		},
-		src() {
+		loaded(): boolean {
+			return !!window[this.variable];
+		},
+		src(): string {
 			const endpoint = ({
 				hcaptcha: 'https://hcaptcha.com/1',
 				recaptcha: 'https://www.recaptcha.net/recaptcha',
-			} as Record<PropertyKey, unknown>)[this.provider];
+			} as Record<CaptchaProvider, string>)[this.provider];
 
-			return `${typeof endpoint == 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
+			return `${typeof endpoint === 'string' ? endpoint : 'about:invalid'}/api.js?render=explicit`;
 		},
-		captcha() {
-			return window[this.provider as CaptchaProvider] || {} as unknown as Captcha;
+		captcha(): Captcha {
+			return window[this.variable] || {} as unknown as Captcha;
 		},
 	},
 
@@ -94,7 +100,7 @@ export default defineComponent({
 
 	methods: {
 		reset() {
-			this.captcha?.reset();
+			if (this.captcha?.reset) this.captcha.reset();
 		},
 		requestRender() {
 			if (this.captcha.render && this.$refs.captcha instanceof Element) {

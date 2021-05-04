@@ -12,14 +12,16 @@ export default defineComponent({
 
 		return withDirectives(h('div', {
 			class: 'pxhvhrfw',
-		}, options.map(option => h('button', {
+		}, options.map(option => withDirectives(h('button', {
 			class: ['_button', { active: this.value === option.props.value }],
 			key: option.props.value,
 			disabled: this.value === option.props.value,
 			onClick: () => {
 				this.$emit('update:value', option.props.value);
 			}
-		}, option.children))), [
+		}, option.children), [
+			[resolveDirective('click-anime')]
+		]))), [
 			[resolveDirective('size'), { max: [500] }]
 		]);
 	}

@@ -199,6 +199,7 @@ export default defineComponent({
 			> .fade {
 				display: block;
 				position: absolute;
+				z-index: 10;
 				bottom: 0;
 				left: 0;
 				width: 100%;
