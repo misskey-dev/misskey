@@ -748,6 +748,13 @@ gallery: "ギャラリー"
 recentPosts: "最近の投稿"
 popularPosts: "人気の投稿"
 shareWithNote: "ノートで共有"
+ads: "広告"
+expiration: "期限"
+memo: "メモ"
+priority: "優先度"
+high: "高"
+middle: "中"
+low: "低"
 emailNotConfiguredWarning: "メールアドレスの設定がされていません。"
 
 _forgotPassword:

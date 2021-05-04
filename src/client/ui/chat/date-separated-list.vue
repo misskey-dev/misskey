@@ -42,11 +42,7 @@ export default defineComponent({
 
 			if (
 				i != this.items.length - 1 &&
-				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate() &&
-				!item._prId_ &&
-				!this.items[i + 1]._prId_ &&
-				!item._featuredId_ &&
-				!this.items[i + 1]._featuredId_
+				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate()
 			) {
 				const separator = h('div', {
 					class: 'separator',

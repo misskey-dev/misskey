@@ -60,6 +60,7 @@ import { MutedNote } from './entities/muted-note';
 import { ChannelFollowing } from './entities/channel-following';
 import { ChannelNotePining } from './entities/channel-note-pining';
 import { RegistryItem } from './entities/registry-item';
+import { Ad } from './entities/ad';
 import { PasswordResetRequest } from './entities/password-reset-request';
 
 export const Announcements = getRepository(Announcement);
@@ -123,4 +124,5 @@ export const Channels = getCustomRepository(ChannelRepository);
 export const ChannelFollowings = getRepository(ChannelFollowing);
 export const ChannelNotePinings = getRepository(ChannelNotePining);
 export const RegistryItems = getRepository(RegistryItem);
+export const Ads = getRepository(Ad);
 export const PasswordResetRequests = getRepository(PasswordResetRequest);

@@ -70,6 +70,7 @@ import { Channel } from '../models/entities/channel';
 import { ChannelFollowing } from '../models/entities/channel-following';
 import { ChannelNotePining } from '../models/entities/channel-note-pining';
 import { RegistryItem } from '../models/entities/registry-item';
+import { Ad } from '../models/entities/ad';
 import { PasswordResetRequest } from '@/models/entities/password-reset-request';
 
 const sqlLogger = dbLogger.createSubLogger('sql', 'white', false);
@@ -170,6 +171,7 @@ export const entities = [
 	ChannelFollowing,
 	ChannelNotePining,
 	RegistryItem,
+	Ad,
 	PasswordResetRequest,
 	...charts as any
 ];

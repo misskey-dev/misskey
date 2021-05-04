@@ -200,8 +200,6 @@ export class NoteRepository extends Repository<Note> {
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri || undefined,
 			url: note.url || undefined,
-			_featuredId_: (note as any)._featuredId_ || undefined,
-			_prId_: (note as any)._prId_ || undefined,
 
 			...(opts.detail ? {
 				reply: note.replyId ? this.pack(note.reply || note.replyId, me, {
@@ -448,14 +446,7 @@ export const packedNoteSchema = {
 			optional: false as const, nullable: true as const,
 			description: 'The human readable url of a note. it will be null when the note is local.',
 		},
-		_featuredId_: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
-		},
-		_prId_: {
-			type: 'string' as const,
-			optional: false as const, nullable: true as const,
-		},
+
 		myReaction: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
