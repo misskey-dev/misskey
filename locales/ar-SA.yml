@@ -430,6 +430,8 @@ inUse: "مستخدم"
 info: "عن"
 user: "المستخدمون"
 administration: "إدارة "
+expiration: "ينتهي استطلاع الرأي في"
+middle: "متوسط"
 _email:
   _follow:
     title: "يتابعك"
