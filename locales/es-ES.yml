@@ -665,6 +665,8 @@ goBack: "Deseleccionar"
 info: "Información"
 user: "Usuarios"
 administration: "Administrar"
+expiration: "Termina el"
+middle: "Mediano"
 _gallery:
   unlike: "Quitar me gusta"
 _email:
