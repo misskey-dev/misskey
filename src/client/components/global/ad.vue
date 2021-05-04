@@ -7,7 +7,11 @@
 		</a>
 	</div>
 	<div class="menu" v-else>
-		
+		<div class="body">
+			<div>Ads by {{ host }}</div>
+			<!--<MkButton>{{ $ts.stopThisAd }}</MkButton>-->
+			<button class="_textButton" @click="toggleMenu">{{ $ts.close }}</button>
+		</div>
 	</div>
 </div>
 </template>
@@ -15,8 +19,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { instance } from '@client/instance';
+import { host } from '@client/config';
+import MkButton from '@client/components/ui/button.vue';
 
 export default defineComponent({
+	components: {
+		MkButton
+	},
+
 	props: {
 		prefer: {
 			type: String,
@@ -62,6 +72,7 @@ export default defineComponent({
 			ad,
 			showMenu,
 			toggleMenu,
+			host,
 		};
 	}
 });
@@ -113,6 +124,18 @@ export default defineComponent({
 			> a {
 				max-width: min(100px, 100%);
 			}
+		}
+	}
+
+	> .menu {
+		padding: 8px;
+		text-align: center;
+
+		> .body {
+			padding: 8px;
+			margin: 0 auto;
+			max-width: 400px;
+			border: solid 1px var(--divider);
 		}
 	}
 }
