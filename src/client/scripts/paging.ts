@@ -91,8 +91,10 @@ export default (opts) => ({
 				...params,
 				limit: this.pagination.noPaging ? (this.pagination.limit || 10) : (this.pagination.limit || 10) + 1,
 			}).then(items => {
-				for (const item of items) {
+				for (let i = 0; i < items.length; i++) {
+					const item = items[i];
 					markRaw(item);
+					if (i === 3) item._shouldInsertAd_ = true;
 				}
 				if (!this.pagination.noPaging && (items.length > (this.pagination.limit || 10))) {
 					items.pop();
@@ -128,8 +130,10 @@ export default (opts) => ({
 					untilId: this.pagination.reversed ? this.items[0].id : this.items[this.items.length - 1].id,
 				}),
 			}).then(items => {
-				for (const item of items) {
+				for (let i = 0; i < items.length; i++) {
+					const item = items[i];
 					markRaw(item);
+					if (i === 10) item._shouldInsertAd_ = true;
 				}
 				if (items.length > SECOND_FETCH_LIMIT) {
 					items.pop();

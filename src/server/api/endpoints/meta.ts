@@ -2,8 +2,9 @@ import $ from 'cafy';
 import config from '@/config';
 import define from '../define';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { Emojis, Users } from '../../../models';
+import { Ads, Emojis, Users } from '../../../models';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
+import { MoreThan } from 'typeorm';
 
 export const meta = {
 	desc: {
@@ -190,6 +191,30 @@ export const meta = {
 							optional: false as const, nullable: false as const,
 							format: 'url'
 						}
+					}
+				}
+			},
+			ads: {
+				type: 'array' as const,
+				optional: false as const, nullable: false as const,
+				items: {
+					type: 'object' as const,
+					optional: false as const, nullable: false as const,
+					properties: {
+						place: {
+							type: 'string' as const,
+							optional: false as const, nullable: false as const
+						},
+						url: {
+							type: 'string' as const,
+							optional: false as const, nullable: false as const,
+							format: 'url'
+						},
+						imageUrl: {
+							type: 'string' as const,
+							optional: false as const, nullable: false as const,
+							format: 'url'
+						},
 					}
 				}
 			},
@@ -443,6 +468,12 @@ export default define(meta, async (ps, me) => {
 		}
 	});
 
+	const ads = await Ads.find({
+		where: {
+			expiresAt: MoreThan(new Date())
+		},
+	});
+
 	const response: any = {
 		maintainerName: instance.maintainerName,
 		maintainerEmail: instance.maintainerEmail,
@@ -477,6 +508,12 @@ export default define(meta, async (ps, me) => {
 		logoImageUrl: instance.logoImageUrl,
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: await Emojis.packMany(emojis),
+		ads: ads.map(ad => ({
+			url: ad.url,
+			place: ad.place,
+			priority: ad.priority,
+			imageUrl: ad.imageUrl,
+		})),
 		enableEmail: instance.enableEmail,
 
 		enableTwitterIntegration: instance.enableTwitterIntegration,

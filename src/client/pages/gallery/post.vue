@@ -33,6 +33,7 @@
 					<MkFollowButton v-if="!$i || $i.id != post.user.id" :user="post.user" :inline="true" :transparent="false" :full="true" large class="koudoku"/>
 				</div>
 			</div>
+			<MkAd prefer="horizontal"/>
 			<MkContainer :max-height="300" :foldable="true" class="other">
 				<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
 				<MkPagination :pagination="otherPostsPagination" #default="{items}">

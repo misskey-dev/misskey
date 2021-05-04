@@ -647,6 +647,8 @@ goBack: "Wróć"
 info: "Informacje"
 user: "Użytkownicy"
 administration: "Zarządzanie"
+expiration: "Ankieta kończy się"
+middle: "Średnie"
 _gallery:
   unlike: "Cofnij polubienie"
 _email:

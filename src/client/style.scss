@@ -11,6 +11,8 @@
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
 	}
+
+	//--ad: rgb(255 169 0 / 10%);
 }
 
 ::selection {
@@ -337,7 +339,7 @@ hr {
 }
 
 ._monolithic_ {
-	._section {
+	._section:not(:empty) {
 		box-sizing: border-box;
 		padding: var(--root-margin, 32px);
 	

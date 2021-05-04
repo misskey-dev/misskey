@@ -50,7 +50,7 @@ Configuration files are located in [`/.circleci`](/.circleci).
 * Your PR should include all source files (e.g. `.png`, `.blend`) of your models (for later editing).
 * Your PR must include the glTF binary files (`.glb`) of your models.
 * Add a locale key `room.furnitures.YOUR_ITEM` at [`/locales/ja-JP.yml`](/locales/ja-JP.yml).
-* Add a furniture definition at [`/src/client/app/common/scripts/room/furnitures.json5`](/src/client/app/common/scripts/room/furnitures.json5).
+* Add a furniture definition at [`src/client/scripts/room/furnitures.json5`](src/client/scripts/room/furnitures.json5).
 
 If you have no experience on 3D modeling, we suggest to use the free 3DCG software [Blender](https://www.blender.org/).
 You can find information on glTF 2.0 at [glTF 2.0 — Blender Manual]( https://docs.blender.org/manual/en/dev/addons/io_scene_gltf2.html).
