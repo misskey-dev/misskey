@@ -339,7 +339,7 @@ hr {
 }
 
 ._monolithic_ {
-	._section {
+	._section:not(:empty) {
 		box-sizing: border-box;
 		padding: var(--root-margin, 32px);
 	
