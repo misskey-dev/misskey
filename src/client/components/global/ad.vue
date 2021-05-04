@@ -85,16 +85,16 @@ export default defineComponent({
 	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--ad) 8px, var(--ad) 14px );
 
 	> .main {
+		text-align: center;
+
 		> a {
-			display: block;
+			display: inline-block;
 			position: relative;
-			margin: 0 auto;
 
 			> img {
 				display: block;
-				width: 100%;
-				height: 100%;
 				object-fit: contain;
+				margin: auto;
 			}
 
 			> .menu {
@@ -106,23 +106,26 @@ export default defineComponent({
 		}
 
 		&.square {
-			> a {
+			> a ,
+			> a > img {
 				max-width: min(300px, 100%);
-				max-height: min(300px, 100%);
+				max-height: 300px;
 			}
 		}
 
 		&.horizontal {
 			padding: 8px;
 
-			> a {
+			> a ,
+			> a > img {
 				max-width: min(600px, 100%);
-				max-height: min(100px, 100%);
+				max-height: 100px;
 			}
 		}
 
 		&.vertical {
-			> a {
+			> a ,
+			> a > img {
 				max-width: min(100px, 100%);
 			}
 		}
