@@ -724,6 +724,8 @@ gallery: "Galleria"
 recentPosts: "Le più recenti"
 popularPosts: "Le più visualizzate"
 shareWithNote: "Condividere in nota"
+expiration: "Scadenza"
+middle: "Predefinito"
 _gallery:
   my: "Le mie pubblicazioni"
   liked: "Pubblicazioni che mi piacciono"
