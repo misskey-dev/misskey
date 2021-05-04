@@ -731,6 +731,8 @@ switch: "切換"
 noMaintainerInformationWarning: "尚未設定管理員信息。"
 noBotProtectionWarning: "尚未設定Bot防護。"
 configure: "設定"
+expiration: "期限"
+middle: "中"
 _gallery:
   unlike: "收回喜歡"
 _email:
