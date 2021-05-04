@@ -747,6 +747,8 @@ gallery: "Galerie"
 recentPosts: "Les plus récentes"
 popularPosts: "Les plus consultées"
 shareWithNote: "Partager dans une note"
+expiration: "Fin du sondage"
+middle: "Moyen"
 _gallery:
   my: "Mes publications"
   liked: " Publications que j'ai aimées"
