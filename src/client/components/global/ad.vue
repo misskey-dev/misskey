@@ -14,6 +14,7 @@
 		</div>
 	</div>
 </div>
+<div v-else></div>
 </template>
 
 <script lang="ts">
@@ -32,7 +33,7 @@ export default defineComponent({
 			type: String,
 			required: true
 		},
-		ad: {
+		specify: {
 			type: Object,
 			required: false
 		},
@@ -46,8 +47,8 @@ export default defineComponent({
 
 		let ad = null;
 
-		if (props.ad) {
-			ad = props.ad;
+		if (props.specify) {
+			ad = props.specify;
 		} else {
 			let ads = instance.ads.filter(ad => ad.place === props.prefer);
 

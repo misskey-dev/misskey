@@ -105,6 +105,10 @@ export default defineComponent({
 
 <style lang="scss">
 .sqadhkmv {
+	> *:empty {
+		display: none;
+	}
+
 	> *:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
