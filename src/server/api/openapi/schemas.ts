@@ -20,6 +20,7 @@ import { packedAntennaSchema } from '../../../models/repositories/antenna';
 import { packedClipSchema } from '../../../models/repositories/clip';
 import { packedFederationInstanceSchema } from '../../../models/repositories/federation-instance';
 import { packedQueueCountSchema } from '../../../models/repositories/queue';
+import { packedGalleryPostSchema } from '@/models/repositories/gallery-post';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
@@ -92,4 +93,5 @@ export const schemas = {
 	Antenna: convertSchemaToOpenApiSchema(packedAntennaSchema),
 	Clip: convertSchemaToOpenApiSchema(packedClipSchema),
 	FederationInstance: convertSchemaToOpenApiSchema(packedFederationInstanceSchema),
+	GalleryPost: convertSchemaToOpenApiSchema(packedGalleryPostSchema),
 };
