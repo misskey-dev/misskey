@@ -755,6 +755,11 @@ priority: "优先级"
 high: "高"
 middle: "中"
 low: "低"
+emailNotConfiguredWarning: "电子邮件地址未设置。"
+_forgotPassword:
+  enterEmail: "请输入您用来注册帐户的电子邮件地址。密码重置链接将发送到该地址。"
+  ifNoEmail: "如果您没有使用电子邮件地址注册，请联系管理员。"
+  contactAdmin: "该实例不支持电子邮件。如果您想重设密码，请联系管理员。"
 _gallery:
   my: "我的图库"
   liked: "喜欢的图片"
