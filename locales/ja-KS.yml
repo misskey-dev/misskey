@@ -643,8 +643,12 @@ goBack: "戻る"
 info: "情報"
 user: "ユーザー"
 administration: "管理"
+ads: "広告"
 expiration: "期限"
+memo: "メモ"
+high: "高い"
 middle: "中"
+low: "低い"
 _gallery:
   unlike: "良くないわ"
 _email:
