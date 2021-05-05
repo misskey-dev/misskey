@@ -734,7 +734,7 @@ expiration: "Scadenza"
 memo: "Promemoria"
 priority: "Priorità"
 high: "Alta"
-middle: "Predefinito"
+middle: "Media"
 low: "Bassa"
 emailNotConfiguredWarning: "Non hai impostato nessun indirizzo e-mail."
 _forgotPassword:
