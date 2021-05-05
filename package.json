@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.80.2",
+	"version": "12.80.3",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -255,6 +255,7 @@
 		"xev": "2.0.1"
 	},
 	"devDependencies": {
+		"@redocly/openapi-core": "1.0.0-beta.44",
 		"@types/chai": "4.2.16",
 		"@types/fluent-ffmpeg": "2.1.17",
 		"chai": "4.3.4",

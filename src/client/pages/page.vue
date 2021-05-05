@@ -45,7 +45,7 @@
 				<div><i class="far fa-clock"></i> {{ $ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
 				<div v-if="page.createdAt != page.updatedAt"><i class="far fa-clock"></i> {{ $ts.updatedAt }}: <MkTime :time="page.updatedAt" mode="detail"/></div>
 			</div>
-			<MkAd prefer="horizontal"/>
+			<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 			<MkContainer :max-height="300" :foldable="true" class="other">
 				<template #header><i class="fas fa-clock"></i> {{ $ts.recentPosts }}</template>
 				<MkPagination :pagination="otherPostsPagination" #default="{items}">
