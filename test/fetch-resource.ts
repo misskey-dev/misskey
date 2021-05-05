@@ -13,7 +13,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
 import { async, launchServer, signup, post, request, simpleGet, port } from './utils';
-import * as opeapi from '@redocly/openapi-core';
+import * as openapi from '@redocly/openapi-core';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -76,8 +76,8 @@ describe('Fetch resource', () => {
 		}));
 
 		it('Validate api.json', async(async () => {
-			const config = await opeapi.loadConfig();
-			const result = await opeapi.bundle({
+			const config = await openapi.loadConfig();
+			const result = await openapi.bundle({
 				config,
 				ref: `http://localhost:${port}/api.json`
 			});
