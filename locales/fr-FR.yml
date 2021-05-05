@@ -607,7 +607,7 @@ chatOpenBehavior: "Comportement de la fenêtre de discussion lors de son ouvertu
 behavior: "Comportement"
 sample: "Exemple"
 abuseReports: "Signalements"
-reportAbuse: "Signalements"
+reportAbuse: "Signaler"
 reportAbuseOf: "Signaler {name}"
 fillAbuseReportDescription: "Veuillez expliquer les raisons du signalement. S'il s'agit d'une note précise, veuillez en donner le lien."
 abuseReported: "Le rapport est envoyé. Merci."
