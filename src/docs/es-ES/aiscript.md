@@ -1,4 +1,4 @@
 # AiScript
 
 ## funciones
-デフォルトで値渡しです。
+Pasando valores por defecto

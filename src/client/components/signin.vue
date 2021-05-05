@@ -11,6 +11,7 @@
 			<MkInput v-model:value="password" type="password" :with-password-toggle="true" v-if="!user || user && !user.usePasswordLessLogin" required>
 				<span>{{ $ts.password }}</span>
 				<template #prefix><i class="fas fa-lock"></i></template>
+				<template #desc><button class="_textButton" @click="resetPassword">{{ $ts.forgotPassword }}</button></template>
 			</MkInput>
 			<MkButton type="submit" primary :disabled="signing" style="margin: 0 auto;">{{ signing ? $ts.loggingIn : $ts.login }}</MkButton>
 		</div>
@@ -49,8 +50,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode/';
-import MkButton from './ui/button.vue';
-import MkInput from './ui/input.vue';
+import MkButton from '@client/components/ui/button.vue';
+import MkInput from '@client/components/ui/input.vue';
 import { apiUrl, host } from '@client/config';
 import { byteify, hexify } from '@client/scripts/2fa';
 import * as os from '@client/os';
@@ -197,6 +198,11 @@ export default defineComponent({
 					this.signing = false;
 				});
 			}
+		},
+
+		resetPassword() {
+			os.popup(import('@client/components/forgot-password.vue'), {}, {
+			}, 'closed');
 		}
 	}
 });

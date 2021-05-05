@@ -12,8 +12,10 @@ import url from './global/url.vue';
 import i18n from './global/i18n';
 import loading from './global/loading.vue';
 import error from './global/error.vue';
+import ad from './global/ad.vue';
 
 export default function(app: App) {
+	app.component('I18n', i18n);
 	app.component('Mfm', mfm);
 	app.component('MkA', a);
 	app.component('MkAcct', acct);
@@ -25,5 +27,5 @@ export default function(app: App) {
 	app.component('MkUrl', url);
 	app.component('MkLoading', loading);
 	app.component('MkError', error);
-	app.component('I18n', i18n);
+	app.component('MkAd', ad);
 }

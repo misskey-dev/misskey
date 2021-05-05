@@ -1,7 +1,7 @@
 {
 	"name": "misskey",
 	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.79.2",
+	"version": "12.80.1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -32,7 +32,6 @@
 	"resolutions": {
 		"chokidar": "^3.3.1",
 		"constantinople": "^4.0.1",
-		"gulp/gulp-cli/yargs/yargs-parser": "5.0.0-security.0",
 		"jsonld/rdf-canonize/node-forge": "0.10.0",
 		"lodash": "^4.17.20"
 	},
