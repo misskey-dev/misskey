@@ -13,6 +13,7 @@
 			<div style="margin: 32px 0;">
 				<MkRadio v-model="ad.place" value="square">square</MkRadio>
 				<MkRadio v-model="ad.place" value="horizontal">horizontal</MkRadio>
+				<MkRadio v-model="ad.place" value="horizontal-big">horizontal-big</MkRadio>
 			</div>
 			<div style="margin: 32px 0;">
 				{{ $ts.priority }}
