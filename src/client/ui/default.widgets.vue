@@ -1,7 +1,7 @@
 <template>
 <div class="ddiqwdnk">
 	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
-	<MkAd class="ad" prefer="square"/>
+	<MkAd class="a" prefer="square"/>
 
 	<button v-if="editMode" @click="editMode = false" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-check"></i> {{ $ts.editWidgetsExit }}</button>
 	<button v-else @click="editMode = true" class="_textButton edit" style="font-size: 0.9em;"><i class="fas fa-pencil-alt"></i> {{ $ts.editWidgets }}</button>
@@ -64,7 +64,7 @@ export default defineComponent({
 	padding-bottom: 8px;
 
 	> .widgets,
-	> .ad {
+	> .a {
 		width: 300px;
 	}
 

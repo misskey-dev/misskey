@@ -30,7 +30,7 @@ export default defineComponent({
 
 	props: {
 		prefer: {
-			type: String,
+			type: Array,
 			required: true
 		},
 		specify: {
@@ -50,7 +50,7 @@ export default defineComponent({
 		if (props.specify) {
 			ad = props.specify;
 		} else {
-			let ads = instance.ads.filter(ad => ad.place === props.prefer);
+			let ads = instance.ads.filter(ad => props.prefer.includes(ad.place));
 
 			if (ads.length === 0) {
 				ads = instance.ads.filter(ad => ad.place === 'square');
@@ -127,6 +127,16 @@ export default defineComponent({
 			> a > img {
 				max-width: min(600px, 100%);
 				max-height: 80px;
+			}
+		}
+
+		&.horizontal-big {
+			padding: 8px;
+
+			> a ,
+			> a > img {
+				max-width: min(600px, 100%);
+				max-height: 250px;
 			}
 		}
 

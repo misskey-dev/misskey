@@ -92,7 +92,7 @@ export default defineComponent({
 					return [h(MkAd, {
 						class: 'a', // advertiseの意(ブロッカー対策)
 						key: item.id + ':ad',
-						prefer: 'horizontal',
+						prefer: ['horizontal', 'horizontal-big'],
 					}), el];
 				} else {
 					return el;
