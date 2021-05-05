@@ -90,6 +90,13 @@ export default defineComponent({
 		> a {
 			display: inline-block;
 			position: relative;
+			vertical-align: bottom;
+
+			&:hover {
+				> img {
+					filter: contrast(120%);
+				}
+			}
 
 			> img {
 				display: block;
@@ -119,7 +126,7 @@ export default defineComponent({
 			> a ,
 			> a > img {
 				max-width: min(600px, 100%);
-				max-height: 100px;
+				max-height: 80px;
 			}
 		}
 
