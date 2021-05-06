@@ -6,7 +6,7 @@ import * as childProcess from 'child_process';
 import * as http from 'http';
 import loadConfig from '../src/config/load';
 
-const port = loadConfig().port;
+export const port = loadConfig().port;
 
 export const async = (fn: Function) => (done: Function) => {
 	fn().then(() => {

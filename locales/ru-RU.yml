@@ -747,6 +747,8 @@ gallery: "Галерея"
 recentPosts: "Недавние публикации"
 popularPosts: "Популярные публикации"
 shareWithNote: "Поделиться заметкой"
+expiration: "Опрос длится"
+middle: "Средне"
 _gallery:
   my: "Личная"
   liked: "Понравившееся"

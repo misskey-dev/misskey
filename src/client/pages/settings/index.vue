@@ -10,6 +10,7 @@
 				</div>
 				<FormLink :active="page === 'accounts'" replace to="/settings/accounts"><template #icon><i class="fas fa-users"></i></template>{{ $ts.accounts }}</FormLink>
 			</FormGroup>
+			<FormInfo v-if="emailNotConfigured" warn>{{ $ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ $ts.configure }}</MkA></FormInfo>
 			<FormGroup>
 				<template #label>{{ $ts.basicSettings }}</template>
 				<FormLink :active="page === 'profile'" replace to="/settings/profile"><template #icon><i class="fas fa-user"></i></template>{{ $ts.profile }}</FormLink>
@@ -58,10 +59,13 @@ import FormLink from '@client/components/form/link.vue';
 import FormGroup from '@client/components/form/group.vue';
 import FormBase from '@client/components/form/base.vue';
 import FormButton from '@client/components/form/button.vue';
+import FormInfo from '@client/components/form/info.vue';
 import { scroll } from '@client/scripts/scroll';
 import { signout } from '@client/account';
 import { unisonReload } from '@client/scripts/unison-reload';
 import * as symbols from '@client/symbols';
+import { instance } from '@client/instance';
+import { $i } from '@client/account';
 
 export default defineComponent({
 	components: {
@@ -69,6 +73,7 @@ export default defineComponent({
 		FormLink,
 		FormGroup,
 		FormButton,
+		FormInfo,
 	},
 
 	props: {
@@ -173,6 +178,8 @@ export default defineComponent({
 			}
 		});
 
+		const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
+
 		return {
 			[symbols.PAGE_INFO]: INFO,
 			page,
@@ -182,6 +189,7 @@ export default defineComponent({
 			onInfo,
 			pageProps,
 			component,
+			emailNotConfigured,
 			logout: () => {
 				signout();
 			},

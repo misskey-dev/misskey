@@ -12,7 +12,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, launchServer, signup, post, request, simpleGet } from './utils';
+import { async, launchServer, signup, post, request, simpleGet, port } from './utils';
+import * as openapi from '@redocly/openapi-core';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -72,6 +73,20 @@ describe('Fetch resource', () => {
 			const res = await simpleGet('/api.json');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, JSON);
+		}));
+
+		it('Validate api.json', async(async () => {
+			const config = await openapi.loadConfig();
+			const result = await openapi.bundle({
+				config,
+				ref: `http://localhost:${port}/api.json`
+			});
+
+			for (const problem of result.problems) {
+				console.log(`${problem.message} - ${problem.location[0]?.pointer}`);
+			}
+
+			assert.strictEqual(result.problems.length, 0);
 		}));
 
 		it('GET favicon.ico', async(async () => {

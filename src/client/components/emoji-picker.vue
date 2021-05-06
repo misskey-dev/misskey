@@ -35,6 +35,7 @@
 						class="_button"
 						@click="chosen(emoji, $event)"
 						tabindex="0"
+						:key="emoji"
 					>
 						<MkEmoji :emoji="emoji" :normal="true"/>
 					</button>
@@ -104,7 +105,7 @@ export default defineComponent({
 		return {
 			emojilist: markRaw(emojilist),
 			getStaticImageUrl,
-			pinned: this.$store.state.reactions,
+			pinned: this.$store.reactiveState.reactions,
 			width: this.asReactionPicker ? this.$store.state.reactionPickerWidth : 3,
 			height: this.asReactionPicker ? this.$store.state.reactionPickerHeight : 2,
 			big: this.asReactionPicker ? isDeviceTouch : false,

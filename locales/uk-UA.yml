@@ -689,6 +689,8 @@ goBack: "Назад"
 info: "Інформація"
 user: "Користувачі"
 administration: "Управління"
+expiration: "Опитування закінчується"
+middle: "Середній"
 _gallery:
   unlike: "Не вподобати"
 _email:
