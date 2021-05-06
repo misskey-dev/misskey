@@ -43,7 +43,7 @@ Le code des thèmes est écrit sous forme d'objets JSON5. Les thèmes comprennen
 * `props` ... Définir un style de thème.Voir les explications ci-après.
 
 ### Définir un style de thème
-C'est dans `props` que vous définirez le style de thème. Les propriétés deviendront des variables CSS et les valeurs associées spécifieront le contenu de ces variables. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est clair `light` ce sera l'objet [_light.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est sombre `dark` ce sera l'objet [_dark.json5](https://github.com/syuilo/misskey/blob/develop/src/client/themes/_dark.json5). Cela signifie, par exemple, que s'il n'y pas de propriété `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
+C'est dans `props` que vous définirez le style du thème. Les clés deviendront des noms de variables CSS dont le contenu sera spécifié par les valeurs associées. Par ailleurs, les objets présents par défaut dans `props` sont hérités du thème de base. Ainsi, si le thème de `base` est `clair`, ce sera le fichier [_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5) ; et s'il est `sombre`, le fichier [_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5). En bref, s'il n'y a, par exemple, pas de clé `panel` définie dans les `props` du thème, alors ce sera la valeur `panel` du thème de base qui sera prise en compte.
 
 #### Syntaxe des valeurs
 * Codes de couleur Hex
@@ -52,11 +52,11 @@ C'est dans `props` que vous définirez le style de thème. Les propriétés devi
     * Ex. : `rgb(0, 255, 0)`
 * Couleurs avec les valeurs RVBA : `rgba(r, g, b, a)`
     * Ex. : `rgba(0, 255, 0, 0.5)`
-* Faire référence aux valeurs d'autres propriétés
-    * Entrer `@{keyname}` pour utiliser la valeur de la propriété citée. Remplacer alors `{keyname}` par le nom de la propriété que vous souhaitez citer.
+* Appeler les valeurs d'autres clés
+    * Entrer `@{keyname}` pour appeler la valeur d'une autre clé. Remplacer alors `{keyname}` par le nom de la clé que vous souhaitez appeler.
     * Ex. : `@panel`
 * Constantes (voir ci-dessous)
-    * Entrer `${constantname}` pour utiliser la valeur de la constante citée.Remplacer alors `{constantname}` par la nom de la constante que vous souhaitez citer.
+    * Entrer `${constantname}` vous permet d'appeler une constante. Remplacer alors `{constantname}` par le nom de la constante que vous souhaitez appeler.
     * Ex. : `$main`
 * Fonctions (voir ci-dessous)
     * `:{functionname}<{argument}<{color}`

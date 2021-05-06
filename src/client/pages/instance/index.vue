@@ -23,6 +23,7 @@
 				<FormLink :active="page === 'queue'" replace to="/instance/queue"><template #icon><i class="fas fa-clipboard-list"></i></template>{{ $ts.jobQueue }}</FormLink>
 				<FormLink :active="page === 'files'" replace to="/instance/files"><template #icon><i class="fas fa-cloud"></i></template>{{ $ts.files }}</FormLink>
 				<FormLink :active="page === 'announcements'" replace to="/instance/announcements"><template #icon><i class="fas fa-broadcast-tower"></i></template>{{ $ts.announcements }}</FormLink>
+				<FormLink :active="page === 'ads'" replace to="/instance/ads"><template #icon><i class="fas fa-audio-description"></i></template>{{ $ts.ads }}</FormLink>
 				<FormLink :active="page === 'abuses'" replace to="/instance/abuses"><template #icon><i class="fas fa-exclamation-circle"></i></template>{{ $ts.abuseReports }}</FormLink>
 			</FormGroup>
 			<FormGroup>
@@ -102,6 +103,7 @@ export default defineComponent({
 				case 'queue': return defineAsyncComponent(() => import('./queue.vue'));
 				case 'files': return defineAsyncComponent(() => import('./files.vue'));
 				case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
+				case 'ads': return defineAsyncComponent(() => import('./ads.vue'));
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
 				case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));

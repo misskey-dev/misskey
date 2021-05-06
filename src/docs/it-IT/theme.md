@@ -33,36 +33,36 @@ Il codice dei temi è scritto a forma di oggetti JSON5. I temi contengono gli og
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
-* `desc` ... テーマの説明(オプション)
-* `base` ... 明るいテーマか、暗いテーマか
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
-    * テーマはここで設定されたベーステーマを継承します。
-* `props` ... テーマのスタイル定義。これから説明します。
+* `id` ... Identificativo univoco del tema. È consigliato utilizzare un UUID.
+* `name` ... Nome tema
+* `author` ... Autore/Autrice del tema
+* `desc` ... Descrizione tema (facoltativa)
+* `base` ... Imposta tema chiaro o tema scuro
+    * Scegli `light` per impostare un tema chiaro, e `dark` per impostare un tema scuro.
+    * Il tema erediterà dalle caratteristiche del tema di base impostato qui.
+* `props` ... Imposta uno stile di tema. (Vedi spiegazioni sotto.)
 
 ### Impostare uno stile di tema
-`props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
+Puoi configurare lo stile del tema dentro le `props`. Le chiavi diventeranno nomi di variabili CSS, il cui contenuto verrà definito dai valori associati ad esse. Inoltre, gli oggetti presenti in `props` per impostazione predefinita vengono ereditati dal tema di base. Il tema di base sarà [_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5) per una `base` `chiara`, e [_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5) per una `base` `scura`. Cioè, se non viene definita una chiave `panel` nelle `props` del tema, si terrà conto del valore <0>panel</0> predefinito del tema usato.
 
 #### Sintassi dei valori
-* 16進数で表された色
-    * 例: `#00ff00`
-* `rgb(r, g, b)`形式で表された色
-    * 例: `rgb(0, 255, 0)`
-* `rgb(r, g, b, a)`形式で表された透明度を含む色
-    * 例: `rgba(0, 255, 0, 0.5)`
-* 他のキーの値の参照
-    * `@{キー名}`と書くと他のキーの値の参照になります。`{キー名}`は参照したいキーの名前に置き換えます。
-    * 例: `@panel`
-* 定数(後述)の参照
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
-    * 例: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+* Colori HEX
+    * Es.: `#00ff00`
+* Colori `RGB(r, g, b)`
+    * Es.: `rgb(0, 255, 0)`
+* Colori `RGBA(r, g, b, a)`
+    * Es.: `rgba(0, 255, 0, 0.5)`
+* Chiamare valori di altre chiavi
+    * Inserisci `@{keyname}` per chiamare il valore di un'altra chiave. Bisogna sostituire il testo `{keyname}` col nome della chiave che vuoi chiamare.
+    * Es.: `@panel`
+* Costanti (vedi sotto)
+    * Inserisci `${constantname}` per chiamare una costante.Bisogna sostituire il testo `{constantname}` col nome della costante che vuoi chiamare.
+    * Es.: `$main`
+* Funzioni (vedi sotto)
+    * `:{functionname}<{argument}<{color}`
 
 #### Costanti
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+Può essere vantaggioso usare una costante nei casi in cui non vuoi che un valore produca una variabile CSS, perché lo vuoi utilizzare come valore di un'altra variabile CSS. In tal caso, basta aggiungere `$` davanti al nome della chiave affinché non generi variabile CSS.
 
 #### Funzioni
 wip

@@ -10,8 +10,8 @@
 
 	<div v-else class="cxiknjgy">
 		<slot :items="items"></slot>
-		<div class="more" v-show="more" key="_more_">
-			<MkButton class="button" v-appear="$store.state.enableInfiniteScroll ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
+		<div class="more _gap" v-show="more" key="_more_">
+			<MkButton class="button" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" @click="fetchMore" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary>
 				<template v-if="!moreFetching">{{ $ts.loadMore }}</template>
 				<template v-if="moreFetching"><MkLoading inline/></template>
 			</MkButton>
@@ -38,6 +38,12 @@ export default defineComponent({
 		pagination: {
 			required: true
 		},
+
+		disableAutoLoad: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
 	},
 });
 </script>

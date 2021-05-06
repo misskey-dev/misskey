@@ -1,25 +1,25 @@
-# API Stream
+# API streaming
 
-L'API Stream permet d'implémenter l'exécution d'opérations variées et la réception de diverses informations en temps réel. Cela concerne, par exemple, l'affichage des nouvelles publications dans les fils, la réception de nouveaux messages, les nouveaux abonnements, etc.
+L'API Streaming permet d'implémenter l'exécution d'opérations variées et la réception de diverses informations en temps réel. Cela concerne, par exemple, l'affichage des nouvelles publications dans les fils, la réception de nouveaux messages, les nouveaux abonnements, etc.
 
-## ストリームに接続する
+## Se connecter aux flux
 
-ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
+Pour utiliser l'API de streaming, vous devez d'abord effectuer une connexion **websocket**  au serveur Misskey.
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
+Veuillez vous connecter à l'URL suivante avec le nom de paramètre `i` et inclure les informations d'authentification dans la connexion websocket.Par exemple :
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+Les informations d'identification sont votre clé API ou, en cas de connexion au flux depuis votre application, le jeton d'accès de l'utilisateur.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Pour obtenir des informations sur l'obtention d'accréditations, veuillez consulter <a href="./api">ce document</a>.</p>
 </div>
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。例:
+Vous pouvez omettre les informations d'authentification, mais dans ce cas, vous utiliserez le système sans vous connecter, et les informations que vous pourrez recevoir et les opérations que vous pourrez effectuer seront limitées.Par exemple :
 
 ```
 %WS_URL%/streaming
@@ -27,15 +27,15 @@ L'API Stream permet d'implémenter l'exécution d'opérations variées et la ré
 
 ---
 
-ストリームに接続すると、後述するAPI操作や、投稿の購読を行ったりすることができます。 しかしまだこの段階では、例えばタイムラインへの新しい投稿を受信したりすることはできません。 それを行うには、ストリーム上で、後述する**チャンネル**に接続する必要があります。
+Une fois que vous êtes connecté au flux, vous pouvez utiliser l'API comme décrit ci-dessous, ou vous abonner aux messages. Cependant, à ce stade, vous ne pouvez pas recevoir de nouveaux messages sur votre fil, par exemple. Pour ce faire, vous devez vous connecter à un **canal** sur le flux, comme décrit ci-dessous.
 
-**ストリームでのやり取りはすべてJSONです。**
+**Toutes les interactions dans le flux sont JSON.**
 
 ## Canaux
-MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+L'API de streaming de Misskey possède le concept de canaux.Il s'agit d'un mécanisme permettant de séparer les informations que vous envoyez et recevez. Si vous vous connectez simplement à un flux Misskey, vous ne pourrez pas encore recevoir les messages de votre timeline en temps réel. En vous connectant aux canaux du flux, vous pourrez recevoir diverses informations et en envoyer.
 
-### チャンネルに接続する
-チャンネルに接続するには、次のようなデータをJSONでストリームに送信します:
+### Se connecter à un canal
+Pour se connecter à un canal, envoyez les données suivantes au flux en JSON :
 
 ```json
 {
@@ -50,19 +50,19 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
-* `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
-* `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
-* `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
+Ici,
+* Définissez `channel` au nom du canal auquel vous voulez vous connecter.Les types de canaux sont décrits ci-dessous.
+* `id` est un identifiant arbitraire pour interagir avec ce canal.En effet, le flux contient une variété de messages, et nous devons identifier de quel canal provient le message.Cet ID peut être un UUID ou une sorte de numéro aléatoire.
+* `params` sont les paramètres utilisés pour se connecter au canal.Les différents canaux nécessitent des paramètres différents pour la connexion.Lors de la connexion à un canal qui ne nécessite pas de paramètres, cette propriété peut être omise.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
+    <p><i class="fas fa-info-circle"></i> L'ID est "par connexion de canal", et non par canal. En effet, dans certains cas, plusieurs connexions sont établies sur le même canal avec des paramètres différents.</p>
 </div>
 
-### チャンネルからのメッセージを受け取る
-例えばタイムラインのチャンネルなら、新しい投稿があった時にメッセージを発します。そのメッセージを受け取ることで、タイムラインに新しい投稿がされたことをリアルタイムで知ることができます。
+### Recevoir des messages du canal
+Par exemple, lorsqu'un événement est émis dans l'un des canaux du fil en raison de la publication d'un nouveau message.En recevant ce message, vous saurez en temps réel qu'une nouvelle publication a été faite sur votre fil.
 
-チャンネルがメッセージを発すると、次のようなデータがJSONでストリームに流れてきます:
+Lorsqu'un canal émet un message, les données suivantes sont diffusées en JSON :
 ```json
 {
     type: 'channel',
@@ -76,15 +76,15 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
-* `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
-* `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
-* `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
+Ici,
+* `id` est réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.Cela vous permettra de savoir de quel canal provient ce message.
+* `type` est défini comme le type du message.Le type de message qui sera diffusé dépend du canal.
+* `body` est défini comme le contenu du message.En fonction du canal, le type de message qui sera diffusé dépendra du canal.
 
-### チャンネルに向けてメッセージを送信する
-チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
+### Envoi d'un message à un canal
+Selon le canal, il se peut que vous ne receviez pas seulement des messages, mais que vous puissiez également envoyer certains messages et effectuer certaines opérations.
 
-チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
+Pour envoyer un message à un canal, envoyez les données suivantes au flux en JSON :
 ```json
 {
     type: 'channel',
@@ -98,13 +98,13 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
-* `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
-* `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
+Ici,
+* `id` doit être réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.Cela vous permettra d'identifier le canal auquel ce message est destiné.
+* `type` définit le type du message.Les différents canaux acceptent différents types de messages.
+* `body` est défini comme le contenu du message.Les différents canaux acceptent différents types de messages.
 
-### チャンネルから切断する
-チャンネルから切断するには、次のようなデータをJSONでストリームに送信します:
+### Déconnexion d'un canal
+Pour se déconnecter d'un canal, envoyez les données suivantes au flux en JSON :
 
 ```json
 {
@@ -115,14 +115,14 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
+Ici,
+* `id` doit être réglé sur l'ID que vous avez défini lors de la connexion à ce canal comme décrit ci-dessus.
 
-## ストリームを経由してAPIリクエストする
+## Faire une requête API via le flux
 
-ストリームを経由してAPIリクエストすると、HTTPリクエストを発生させずにAPIを利用できます。そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
+Si vous effectuez une requête d'API via un flux, vous pouvez utiliser l'API sans générer de requête HTTP.Cela peut rendre votre code plus concis et améliorer les performances.
 
-ストリームを経由してAPIリクエストするには、次のようなデータをJSONでストリームに送信します:
+Pour effectuer une demande d'API via un flux, envoyez les données suivantes au flux en JSON :
 ```json
 {
     type: 'api',
@@ -136,18 +136,18 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
-* `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
-* `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
-* `data`には、エンドポイントのパラメータを含めます。
+Ici,
+* `id` doit être défini comme un identifiant unique pour chaque demande d'API afin d'identifier la réponse de l'API.Il peut s'agir de quelque chose comme un UUID ou un simple nombre aléatoire.
+* `endpoint` est le point de terminaison de l'API que vous voulez demander.
+* `data` contient les paramètres de la terminaison.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> APIのエンドポイントやパラメータについてはAPIリファレンスをご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Veuillez vous reporter à la référence de l'API pour les points de terminaison et les paramètres de l'API.</p>
 </div>
 
-### レスポンスの受信
+### Réception des réponses
 
-APIへリクエストすると、レスポンスがストリームから次のような形式で流れてきます。
+Lorsque vous faites une demande à l'API, la réponse viendra du flux dans le format suivant.
 
 ```json
 {
@@ -158,23 +158,23 @@ APIへリクエストすると、レスポンスがストリームから次の�
 }
 ```
 
-ここで、
-* `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
-* `body`には、レスポンスが含まれています。
+Ici,
+* La partie `xxxxxxxxxxxxxxxx` contient le `id` qui a été défini au moment de la demande.Cela vous permet de déterminer à quelle demande il répond.
+* `body` contient la réponse.
 
-## 投稿のキャプチャ
+## Capture de message
 
-Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
+Misskey propose un mécanisme appelé post-capture.Il s'agit de la possibilité de recevoir un flux d'événements pour un message donné.
 
-例えばタイムラインを取得してユーザーに表示したとします。ここで誰かがそのタイムラインに含まれるどれかの投稿に対してリアクションしたとします。
+Par exemple, supposons une situation dans laquelle le fil est affichée pour un utilisateur.Supposons maintenant que quelqu'un réagisse à l'un des messages de ce fil.
 
-しかし、クライアントからするとある投稿にリアクションが付いたことなどは知る由がないため、リアルタイムでリアクションをタイムライン上の投稿に反映して表示するといったことができません。
+Cependant, comme le client n'a aucun moyen de savoir qu'un message a reçu une réaction, il n'est pas possible de refléter la réaction en temps réel sur le message dans le fil.
 
-この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+Pour résoudre ce problème, Misskey fournit un mécanisme de post-capture.Lorsque vous capturez un message, vous recevez des événements liés à ce message, ce qui vous permet de refléter les réactions en temps réel.
 
-### 投稿をキャプチャする
+### Capturer un message
 
-投稿をキャプチャするには、ストリームに次のようなメッセージを送信します:
+Pour capturer un message, envoyez un message comme le suivant au flux :
 
 ```json
 {
@@ -185,12 +185,12 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
-* `id`にキャプチャしたい投稿の`id`を設定します。
+Ici,
+* Définissez `id` comme l'`id` du message que vous voulez capturer.
 
-このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
+Lorsque vous envoyez ce message, vous demandez à Misskey de le saisir, et les événements liés à ce message se succéderont à partir de ce moment-là.
 
-例えば投稿にリアクションが付いたとすると、次のようなメッセージが流れてきます:
+Par exemple, lorsqu'un message suscite une réaction, vous verrez apparaître un message du type suivant :
 
 ```json
 {
@@ -206,20 +206,20 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
-* `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
-* `body`内の`type`に、イベントの種類が設定されます。
-* `body`内の`body`に、イベントの詳細が設定されます。
+Ici,
+* Le `id` dans le `body` est défini comme l'ID du post qui a déclenché l'événement.
+* Le type de l'événement est défini par `type` dans `body`.
+* L'attribut `body` dans `body` contient les informations sur l'événement.
 
-#### イベントの種類
+#### Type d'événements
 
 ##### `reacted`
-その投稿にリアクションがされた時に発生します。
+Cela se produit lorsqu'une réaction est faite à ce message.
 
-* `reaction`に、リアクションの種類が設定されます。
-* `userId`に、リアクションを行ったユーザーのIDが設定されます。
+* `reaction` est défini comme le type de réaction.
+* `userId` sera défini comme l'ID de l'utilisateur qui a fait la réaction.
 
-例:
+Par exemple :
 ```json
 {
     type: 'noteUpdated',
@@ -235,11 +235,11 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 ```
 
 ##### `deleted`
-その投稿が削除された時に発生します。
+Cela se produit lorsque ce message est supprimé.
 
-* `deletedAt`に、削除日時が設定されます。
+* `deletedAt` est défini comme la date et l'heure de la suppression.
 
-例:
+Par exemple :
 ```json
 {
     type: 'noteUpdated',
@@ -254,12 +254,12 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 ```
 
 ##### `pollVoted`
-その投稿に添付されたアンケートに投票された時に発生します。
+Déclenché lors du vote sur un sondage dans ce message.
 
-* `choice`に、選択肢IDが設定されます。
-* `userId`に、投票を行ったユーザーのIDが設定されます。
+* `choice` contient l'ID du choix sélectionné.
+* `userId` sera défini comme l'ID de l'utilisateur qui a voté.
 
-例:
+Par exemple :
 ```json
 {
     type: 'noteUpdated',
@@ -274,11 +274,11 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-### 投稿のキャプチャを解除する
+### Annuler la capture de publication
 
-その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
+Quand une publication n'est plus affichée et que vous n'avez plus besoin de recevoir les événements la concernant, vous pouvez demander l'annulation de la capture.
 
-次のメッセージを送信します:
+Envoyez le message suivant :
 
 ```json
 {
@@ -289,66 +289,66 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
-* `id`にキャプチャを解除したい投稿の`id`を設定します。
+Ici,
+* Définissez `id` comme le `id` du message que vous voulez annuler.
 
-このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
+Une fois que vous aurez envoyé ce message, aucun autre événement lié au message ne sera diffusé.
 
-# チャンネル一覧
+# Liste des canaux
 ## `main`
-アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
+Les informations de base relatives au compte seront transmises ici.Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `renote`
-自分の投稿がRenoteされた時に発生するイベントです。自分自身の投稿をRenoteしたときは発生しません。
+Cet événement est déclenché lorsque votre message est renoté.Cela ne se produit pas lorsque vous renotez votre propre message.
 
 #### `mention`
-誰かからメンションされたときに発生するイベントです。
+Il s'agit d'un événement qui se produit lorsque quelqu'un fait vous mentionne.
 
 #### `readAllNotifications`
-自分宛ての通知がすべて既読になったことを表すイベントです。このイベントを利用して、「通知があることを示すアイコン」のようなものをオフにしたりする等のケースが想定されます。
+Cet événement indique que toutes les notifications qui vous ont été adressées ont été lues.Cet événement peut être utilisé pour désactiver des choses comme "l'icône indiquant qu'il y a une notification" et d'autres cas.
 
 #### `meUpdated`
-自分の情報が更新されたことを表すイベントです。
+Cet événement indique que vos informations ont été mises à jour.
 
 #### `follow`
-自分が誰かをフォローしたときに発生するイベントです。
+Cet événement se produit lorsque vous suivez quelqu'un.
 
 #### `unfollow`
-自分が誰かのフォローを解除したときに発生するイベントです。
+Cet événement se produit lorsque vous retirez quelqu'un de vos suivis.
 
 #### `followed`
-自分が誰かにフォローされたときに発生するイベントです。
+Cet événement se produit lorsque vous êtes suivi par quelqu'un.
 
 ## `homeTimeline`
-ホームタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Vous verrez ce flux d'informations s'afficher sur votre fil personnel.Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
-タイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message arrive sur sur fil.
 
 ## `localTimeline`
-ローカルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Vous verrez l'information affichée sur votre fil local.Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
-ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message apparaît dans le fil local.
 
 ## `hybridTimeline`
-ソーシャルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Vous verrez l'information affichée sur le fil social.Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
-ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message apparaît sur votre fil social.
 
 ## `globalTimeline`
-グローバルタイムラインの投稿情報が流れてきます。このチャンネルにパラメータはありません。
+Vous verrez l'information s'afficher sur le fil global.Il n'y a pas de paramètres pour ce canal.
 
-### 流れてくるイベント一覧
+### Liste des événements envoyés
 
 #### `note`
-グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Cet événement est déclenché lorsqu'un nouveau message arrive sur le fil global.

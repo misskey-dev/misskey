@@ -11,6 +11,8 @@
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
 	}
+
+	//--ad: rgb(255 169 0 / 10%);
 }
 
 ::selection {
@@ -337,7 +339,7 @@ hr {
 }
 
 ._monolithic_ {
-	._section {
+	._section:not(:empty) {
 		box-sizing: border-box;
 		padding: var(--root-margin, 32px);
 	
@@ -522,12 +524,17 @@ hr {
 }
 
 ._anime_bounce {
+	will-change: transform;
   animation: bounce ease 0.7s;
   animation-iteration-count: 1;
   transform-origin: 50% 50%;
 }
 ._anime_bounce_ready {
+	will-change: transform;
 	transform:  scaleX(0.90) scaleY(0.90) ;
+}
+._anime_bounce_standBy {
+	transition: transform 0.1s ease;
 }
 
 @keyframes bounce{

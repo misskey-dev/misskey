@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, TransitionGroup } from 'vue';
+import MkAd from '@client/components/global/ad.vue';
 
 export default defineComponent({
 	props: {
@@ -18,6 +19,11 @@ export default defineComponent({
 			default: false
 		},
 		noGap: {
+			type: Boolean,
+			required: false,
+			default: false
+		},
+		ad: {
 			type: Boolean,
 			required: false,
 			default: false
@@ -58,11 +64,7 @@ export default defineComponent({
 
 			if (
 				i != this.items.length - 1 &&
-				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate() &&
-				!item._prId_ &&
-				!this.items[i + 1]._prId_ &&
-				!item._featuredId_ &&
-				!this.items[i + 1]._featuredId_
+				new Date(item.createdAt).getDate() != new Date(this.items[i + 1].createdAt).getDate()
 			) {
 				const separator = h('div', {
 					class: 'separator',
@@ -86,7 +88,15 @@ export default defineComponent({
 
 				return [el, separator];
 			} else {
-				return el;
+				if (this.ad && item._shouldInsertAd_) {
+					return [h(MkAd, {
+						class: 'a', // advertiseの意(ブロッカー対策)
+						key: item.id + ':ad',
+						prefer: ['horizontal', 'horizontal-big'],
+					}), el];
+				} else {
+					return el;
+				}
 			}
 		}));
 	},
@@ -95,6 +105,10 @@ export default defineComponent({
 
 <style lang="scss">
 .sqadhkmv {
+	> *:empty {
+		display: none;
+	}
+
 	> *:not(:last-child) {
 		margin-bottom: var(--margin);
 	}
