@@ -511,7 +511,7 @@ export default define(meta, async (ps, me) => {
 		ads: ads.map(ad => ({
 			url: ad.url,
 			place: ad.place,
-			priority: ad.priority,
+			ratio: ad.ratio,
 			imageUrl: ad.imageUrl,
 		})),
 		enableEmail: instance.enableEmail,

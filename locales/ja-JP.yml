@@ -756,6 +756,7 @@ high: "高"
 middle: "中"
 low: "低"
 emailNotConfiguredWarning: "メールアドレスの設定がされていません。"
+ratio: "比率"
 
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"

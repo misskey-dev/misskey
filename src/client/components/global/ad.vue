@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { instance } from '@client/instance';
+import { Instance, instance } from '@client/instance';
 import { host } from '@client/config';
 import MkButton from '@client/components/ui/button.vue';
 
@@ -45,32 +45,45 @@ export default defineComponent({
 			showMenu.value = !showMenu.value;
 		};
 
-		let ad = null;
+		const choseAd = (): Instance['ads'][number] | null => {
+			if (props.specify) {
+				return props.specify as Instance['ads'][number];
+			}
 
-		if (props.specify) {
-			ad = props.specify;
-		} else {
 			let ads = instance.ads.filter(ad => props.prefer.includes(ad.place));
 
 			if (ads.length === 0) {
 				ads = instance.ads.filter(ad => ad.place === 'square');
 			}
 
-			const high = ads.filter(ad => ad.priority === 'high');
-			const middle = ads.filter(ad => ad.priority === 'middle');
-			const low = ads.filter(ad => ad.priority === 'low');
+			const lowPriorityAds = ads.filter(ad => ad.ratio === 0);
+			ads = ads.filter(ad => ad.ratio !== 0);
 
-			if (high.length > 0) {
-				ad = high[Math.floor(Math.random() * high.length)];
-			} else if (middle.length > 0) {
-				ad = middle[Math.floor(Math.random() * middle.length)];
-			} else if (low.length > 0) {
-				ad = low[Math.floor(Math.random() * low.length)];
+			if (ads.length === 0) {
+				if (lowPriorityAds.length !== 0) {
+					return lowPriorityAds[Math.floor(Math.random() * lowPriorityAds.length)];
+				} else {
+					return null;
+				}
 			}
-		}
+
+			const totalFactor = ads.reduce((a, b) => a + b.ratio, 0);
+			const r = Math.random() * totalFactor;
+
+			let stackedFactor = 0;
+			for (const ad of ads) {
+				if (r >= stackedFactor && r <= stackedFactor + ad.ratio) {
+					return ad;
+				} else {
+					stackedFactor += ad.ratio;
+				}
+			}
+
+			return null;
+		};
 
 		return {
-			ad,
+			ad: choseAd(),
 			showMenu,
 			toggleMenu,
 			host,
