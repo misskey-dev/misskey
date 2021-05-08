@@ -756,6 +756,7 @@ high: "Haute"
 middle: "Moyen"
 low: "Basse"
 emailNotConfiguredWarning: "Vous n'avez pas configuré d'adresse e-mail."
+ratio: "Ratio"
 _ad:
   back: "Retour"
 _forgotPassword:
