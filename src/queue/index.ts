@@ -1,7 +1,6 @@
 import * as httpSignature from 'http-signature';
 
 import config from '@/config';
-import { User } from '../models/entities/user';
 import { program } from '../argv';
 
 import processDeliver from './processors/deliver';
@@ -11,14 +10,9 @@ import procesObjectStorage from './processors/object-storage';
 import { queueLogger } from './logger';
 import { DriveFile } from '../models/entities/drive-file';
 import { getJobInfo } from './get-job-info';
-import { IActivity } from '../remote/activitypub/type';
 import { dbQueue, deliverQueue, inboxQueue, objectStorageQueue } from './queues';
-
-export type InboxJobData = {
-	activity: IActivity,
-	/** HTTP-Signature */
-	signature: httpSignature.IParsedSignature
-};
+import { ThinUser } from './types';
+import { IActivity } from '@/remote/activitypub/type';
 
 function renderError(e: Error): any {
 	return {
@@ -65,8 +59,9 @@ objectStorageQueue
 	.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
 
-export function deliver(user: { id: User['id']; host: null; }, content: any, to: any) {
+export function deliver(user: ThinUser, content: unknown, to: string | null) {
 	if (content == null) return null;
+	if (to == null) return null;
 
 	const data = {
 		user,
@@ -85,7 +80,7 @@ export function deliver(user: { id: User['id']; host: null; }, content: any, to:
 	});
 }
 
-export function inbox(activity: any, signature: httpSignature.IParsedSignature) {
+export function inbox(activity: IActivity, signature: httpSignature.IParsedSignature) {
 	const data = {
 		activity: activity,
 		signature
@@ -102,7 +97,7 @@ export function inbox(activity: any, signature: httpSignature.IParsedSignature) 
 	});
 }
 
-export function createDeleteDriveFilesJob(user: { id: User['id'] }) {
+export function createDeleteDriveFilesJob(user: ThinUser) {
 	return dbQueue.add('deleteDriveFiles', {
 		user: user
 	}, {
@@ -111,7 +106,7 @@ export function createDeleteDriveFilesJob(user: { id: User['id'] }) {
 	});
 }
 
-export function createExportNotesJob(user: { id: User['id'] }) {
+export function createExportNotesJob(user: ThinUser) {
 	return dbQueue.add('exportNotes', {
 		user: user
 	}, {
@@ -120,7 +115,7 @@ export function createExportNotesJob(user: { id: User['id'] }) {
 	});
 }
 
-export function createExportFollowingJob(user: { id: User['id'] }) {
+export function createExportFollowingJob(user: ThinUser) {
 	return dbQueue.add('exportFollowing', {
 		user: user
 	}, {
@@ -129,7 +124,7 @@ export function createExportFollowingJob(user: { id: User['id'] }) {
 	});
 }
 
-export function createExportMuteJob(user: { id: User['id'] }) {
+export function createExportMuteJob(user: ThinUser) {
 	return dbQueue.add('exportMute', {
 		user: user
 	}, {
@@ -138,7 +133,7 @@ export function createExportMuteJob(user: { id: User['id'] }) {
 	});
 }
 
-export function createExportBlockingJob(user: { id: User['id'] }) {
+export function createExportBlockingJob(user: ThinUser) {
 	return dbQueue.add('exportBlocking', {
 		user: user
 	}, {
@@ -147,7 +142,7 @@ export function createExportBlockingJob(user: { id: User['id'] }) {
 	});
 }
 
-export function createExportUserListsJob(user: { id: User['id'] }) {
+export function createExportUserListsJob(user: ThinUser) {
 	return dbQueue.add('exportUserLists', {
 		user: user
 	}, {
@@ -156,7 +151,7 @@ export function createExportUserListsJob(user: { id: User['id'] }) {
 	});
 }
 
-export function createImportFollowingJob(user: { id: User['id'] }, fileId: DriveFile['id']) {
+export function createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importFollowing', {
 		user: user,
 		fileId: fileId
@@ -166,7 +161,7 @@ export function createImportFollowingJob(user: { id: User['id'] }, fileId: Drive
 	});
 }
 
-export function createImportUserListsJob(user: { id: User['id'] }, fileId: DriveFile['id']) {
+export function createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
 	return dbQueue.add('importUserLists', {
 		user: user,
 		fileId: fileId
