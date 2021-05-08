@@ -737,8 +737,10 @@ high: "Alta"
 middle: "Media"
 low: "Bassa"
 emailNotConfiguredWarning: "Non hai impostato nessun indirizzo e-mail."
+ratio: "Rapporto"
 _ad:
   back: "Indietro"
+  reduceFrequencyOfThisAd: "Visualizza questa pubblicità meno spesso"
 _forgotPassword:
   enterEmail: "Inserisci l'indirizzo di posta elettronica che hai registrato nel tuo profilo. Il collegamento necessario per ripristinare la password verrà inviato a questo indirizzo."
   ifNoEmail: "Se nessun indirizzo e-mail è stato registrato, si prega di contattare l'amministratore·trice dell'istanza."
