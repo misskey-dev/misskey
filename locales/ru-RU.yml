@@ -749,6 +749,8 @@ popularPosts: "Популярные публикации"
 shareWithNote: "Поделиться заметкой"
 expiration: "Опрос длится"
 middle: "Средне"
+_ad:
+  back: "Выход"
 _gallery:
   my: "Личная"
   liked: "Понравившееся"
