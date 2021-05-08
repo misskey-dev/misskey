@@ -9,8 +9,9 @@
 	<div class="menu" v-else>
 		<div class="body">
 			<div>Ads by {{ host }}</div>
-			<!--<MkButton>{{ $ts.stopThisAd }}</MkButton>-->
-			<button class="_textButton" @click="toggleMenu">{{ $ts.close }}</button>
+			<!--<MkButton class="button" primary>{{ $ts._ad.like }}</MkButton>-->
+			<MkButton v-if="ad.ratio !== 0" class="button" @click="reduceFrequency">{{ $ts._ad.reduceFrequencyOfThisAd }}</MkButton>
+			<button class="_textButton" @click="toggleMenu">{{ $ts._ad.back }}</button>
 		</div>
 	</div>
 </div>
@@ -22,6 +23,8 @@ import { defineComponent, ref } from 'vue';
 import { Instance, instance } from '@client/instance';
 import { host } from '@client/config';
 import MkButton from '@client/components/ui/button.vue';
+import { defaultStore } from '@client/store';
+import * as os from '@client/os';
 
 export default defineComponent({
 	components: {
@@ -50,10 +53,15 @@ export default defineComponent({
 				return props.specify as Instance['ads'][number];
 			}
 
-			let ads = instance.ads.filter(ad => props.prefer.includes(ad.place));
+			const allAds = instance.ads.map(ad => defaultStore.state.mutedAds.includes(ad.id) ? {
+				...ad,
+				ratio: 0
+			} : ad);
+
+			let ads = allAds.filter(ad => props.prefer.includes(ad.place));
 
 			if (ads.length === 0) {
-				ads = instance.ads.filter(ad => ad.place === 'square');
+				ads = allAds.filter(ad => ad.place === 'square');
 			}
 
 			const lowPriorityAds = ads.filter(ad => ad.ratio === 0);
@@ -82,11 +90,23 @@ export default defineComponent({
 			return null;
 		};
 
+		const chosen = ref(choseAd());
+
+		const reduceFrequency = () => {
+			if (chosen.value == null) return;
+			if (defaultStore.state.mutedAds.includes(chosen.value.id)) return;
+			defaultStore.push('mutedAds', chosen.value.id);
+			os.success();
+			chosen.value = choseAd();
+			showMenu.value = false;
+		};
+
 		return {
-			ad: choseAd(),
+			ad: chosen,
 			showMenu,
 			toggleMenu,
 			host,
+			reduceFrequency,
 		};
 	}
 });
@@ -170,6 +190,10 @@ export default defineComponent({
 			margin: 0 auto;
 			max-width: 400px;
 			border: solid 1px var(--divider);
+
+			> .button {
+				margin: 8px auto;
+			}
 		}
 	}
 }

@@ -758,6 +758,10 @@ low: "低"
 emailNotConfiguredWarning: "メールアドレスの設定がされていません。"
 ratio: "比率"
 
+_ad:
+  back: "戻る"
+  reduceFrequencyOfThisAd: "この広告の表示頻度を下げる"
+
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"
   ifNoEmail: "メールアドレスを登録していない場合は、管理者までお問い合わせください。"

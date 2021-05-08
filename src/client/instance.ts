@@ -8,6 +8,7 @@ export type Instance = {
 		category: string;
 	}[];
 	ads: {
+		id: string;
 		ratio: number;
 		place: string;
 		url: string;
