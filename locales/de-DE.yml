@@ -754,8 +754,10 @@ high: "Hoch"
 middle: "Mittel"
 low: "Niedrig"
 emailNotConfiguredWarning: "Keine Email-Adresse hinterlegt"
+ratio: "Verhältnis"
 _ad:
   back: "Zurück"
+  reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
 _forgotPassword:
   enterEmail: "Gib die Email-Adresse ein, mit der du dich registriert hast. An diese wird ein Link gesendet, mit der du dein Passwort zurücksetzen kannst."
   ifNoEmail: "Solltest du bei der Registrierung keine Email-Adresse angegeben haben, wende dich bitte an den Administrator."
