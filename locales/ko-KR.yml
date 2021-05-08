@@ -756,6 +756,8 @@ high: "높음"
 middle: "보통"
 low: "낮음"
 emailNotConfiguredWarning: "메일 주소가 설정되어 있지 않습니다."
+_ad:
+  back: "뒤로"
 _forgotPassword:
   enterEmail: "여기에 계정에 등록한 메일 주소를 입력해 주세요. 입력한 메일 주소로 비밀번호 재설정 링크를 발송합니다."
   ifNoEmail: "메일 주소를 등록하지 않은 경우, 관리자에 문의해 주십시오."
