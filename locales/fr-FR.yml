@@ -756,6 +756,8 @@ high: "Haute"
 middle: "Moyen"
 low: "Basse"
 emailNotConfiguredWarning: "Vous n'avez pas configuré d'adresse e-mail."
+_ad:
+  back: "Retour"
 _forgotPassword:
   enterEmail: "Entrez ici l'adresse e-mail que vous avez enregistrée pour votre compte. Un lien vous permettant de réinitialiser votre mot de passe sera envoyé à cette adresse."
   ifNoEmail: "Si vous n'avez pas enregistré d'adresse e-mail, merci de contacter l'administrateur·rice de votre instance."
