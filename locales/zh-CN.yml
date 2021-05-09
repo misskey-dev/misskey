@@ -756,8 +756,10 @@ high: "高"
 middle: "中"
 low: "低"
 emailNotConfiguredWarning: "电子邮件地址未设置。"
+ratio: "比率"
 _ad:
   back: "返回"
+  reduceFrequencyOfThisAd: "减少此广告的频率"
 _forgotPassword:
   enterEmail: "请输入您用来注册帐户的电子邮件地址。密码重置链接将发送到该地址。"
   ifNoEmail: "如果您没有使用电子邮件地址注册，请联系管理员。"
