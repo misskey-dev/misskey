@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import Chart from 'chart.js';
 import number from '../../filters/number';
 
@@ -69,7 +69,7 @@ export default defineComponent({
 
 		Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
 
-		this.chart = new Chart(this.$refs.chart, {
+		this.chart = markRaw(new Chart(this.$refs.chart, {
 			type: 'line',
 			data: {
 				labels: [],
@@ -152,7 +152,7 @@ export default defineComponent({
 					mode: 'index',
 				}
 			}
-		});
+		}));
 
 		this.connection.on('stats', this.onStats);
 		this.connection.on('statsLog', this.onStatsLog);
