@@ -649,6 +649,8 @@ user: "Użytkownicy"
 administration: "Zarządzanie"
 expiration: "Ankieta kończy się"
 middle: "Średnie"
+_ad:
+  back: "Wróć"
 _gallery:
   unlike: "Cofnij polubienie"
 _email:
