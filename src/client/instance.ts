@@ -3,9 +3,16 @@ import { api } from './os';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-type Instance = {
+export type Instance = {
 	emojis: {
 		category: string;
+	}[];
+	ads: {
+		id: string;
+		ratio: number;
+		place: string;
+		url: string;
+		imageUrl: string;
 	}[];
 };
 

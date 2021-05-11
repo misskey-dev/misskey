@@ -8,10 +8,11 @@ import dateFormat = require('dateformat');
 import { getFullApAccount } from '@/misc/convert-host';
 import { Users, UserLists, UserListJoinings } from '../../../models';
 import { In } from 'typeorm';
+import { DbUserJobData } from '@/queue/types';
 
 const logger = queueLogger.createSubLogger('export-user-lists');
 
-export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
+export async function exportUserLists(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
@@ -45,7 +46,7 @@ export async function exportUserLists(job: Bull.Job, done: any): Promise<void> {
 		for (const u of users) {
 			const acct = getFullApAccount(u.username, u.host);
 			const content = `${list.name},${acct}`;
-			await new Promise((res, rej) => {
+			await new Promise<void>((res, rej) => {
 				stream.write(content + '\n', err => {
 					if (err) {
 						logger.error(err);

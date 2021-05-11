@@ -667,6 +667,8 @@ user: "Usuarios"
 administration: "Administrar"
 expiration: "Termina el"
 middle: "Mediano"
+_ad:
+  back: "Deseleccionar"
 _gallery:
   unlike: "Quitar me gusta"
 _email:

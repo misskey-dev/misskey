@@ -226,12 +226,12 @@ export default defineComponent({
 
 .mk-modal {
 	> .bg {
-		z-index: 10000;
+		z-index: 20000;
 	}
 
 	> .content:not(.popup) {
 		position: fixed;
-		z-index: 10000;
+		z-index: 20000;
 		top: 0;
 		bottom: 0;
 		left: 0;
@@ -263,7 +263,7 @@ export default defineComponent({
 
 	> .content.popup {
 		position: absolute;
-		z-index: 10000;
+		z-index: 20000;
 
 		&.fixed {
 			position: fixed;
