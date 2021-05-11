@@ -43,6 +43,7 @@
 			<FormGroup>
 				<template #label>{{ $ts.info }}</template>
 				<FormLink :active="page === 'database'" replace to="/instance/database"><template #icon><i class="fas fa-database"></i></template>{{ $ts.database }}</FormLink>
+				<FormLink :active="page === 'logs'" replace to="/instance/logs"><template #icon><i class="fas fa-stream"></i></template>{{ $ts.logs }}</FormLink>
 			</FormGroup>
 		</FormBase>
 	</div>
@@ -105,6 +106,7 @@ export default defineComponent({
 				case 'announcements': return defineAsyncComponent(() => import('./announcements.vue'));
 				case 'ads': return defineAsyncComponent(() => import('./ads.vue'));
 				case 'database': return defineAsyncComponent(() => import('./database.vue'));
+				case 'logs': return defineAsyncComponent(() => import('./logs.vue'));
 				case 'abuses': return defineAsyncComponent(() => import('./abuses.vue'));
 				case 'settings': return defineAsyncComponent(() => import('./settings.vue'));
 				case 'files-settings': return defineAsyncComponent(() => import('./files-settings.vue'));
