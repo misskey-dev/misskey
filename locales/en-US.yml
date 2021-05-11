@@ -756,6 +756,10 @@ high: "High"
 middle: "Medium"
 low: "Low"
 emailNotConfiguredWarning: "Email address not set"
+ratio: "Ratio"
+_ad:
+  back: "Back"
+  reduceFrequencyOfThisAd: "Show this ad less"
 _forgotPassword:
   enterEmail: "Enter the email address you used to register. A link with which you can reset your password will then be sent to it."
   ifNoEmail: "If you did not use an email during registration, please contact the administrator instead."

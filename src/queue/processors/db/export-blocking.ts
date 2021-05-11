@@ -8,10 +8,11 @@ import dateFormat = require('dateformat');
 import { getFullApAccount } from '@/misc/convert-host';
 import { Users, Blockings } from '../../../models';
 import { MoreThan } from 'typeorm';
+import { DbUserJobData } from '@/queue/types';
 
 const logger = queueLogger.createSubLogger('export-blocking');
 
-export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
+export async function exportBlocking(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);
@@ -61,7 +62,7 @@ export async function exportBlocking(job: Bull.Job, done: any): Promise<void> {
 			}
 
 			const content = getFullApAccount(u.username, u.host);
-			await new Promise((res, rej) => {
+			await new Promise<void>((res, rej) => {
 				stream.write(content + '\n', err => {
 					if (err) {
 						logger.error(err);

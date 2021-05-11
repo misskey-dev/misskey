@@ -9,7 +9,6 @@
 	</div>
 </div>
 <div class="gqnyydlz" :style="{ background: color }" v-else>
-	<i class="fas fa-eye-slash" @click="hide = true"></i>
 	<a
 		:href="image.url"
 		:title="image.name"
@@ -18,6 +17,7 @@
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.name" :title="image.name" :cover="false"/>
 		<div class="gif" v-if="image.type === 'image/gif'">GIF</div>
 	</a>
+	<i class="fas fa-eye-slash" @click="hide = true"></i>
 </div>
 </template>
 

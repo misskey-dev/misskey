@@ -13,12 +13,13 @@ import { createNotification } from '../../create-notification';
 import deleteReaction from './delete';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error';
 import { NoteReaction } from '../../../models/entities/note-reaction';
+import { IdentifiableError } from '@/misc/identifiable-error';
 
 export default async (user: { id: User['id']; host: User['host']; }, note: Note, reaction?: string) => {
 	// TODO: cache
 	reaction = await toDbReaction(reaction, user.host);
 
-	let record: NoteReaction = {
+	const record: NoteReaction = {
 		id: genId(),
 		createdAt: new Date(),
 		noteId: note.id,
@@ -31,17 +32,18 @@ export default async (user: { id: User['id']; host: User['host']; }, note: Note,
 		await NoteReactions.insert(record);
 	} catch (e) {
 		if (isDuplicateKeyValueError(e)) {
-			record = await NoteReactions.findOneOrFail({
+			const exists = await NoteReactions.findOneOrFail({
 				noteId: note.id,
 				userId: user.id,
 			});
 
-			if (record.reaction !== reaction) {
+			if (exists.reaction !== reaction) {
 				// 別のリアクションがすでにされていたら置き換える
 				await deleteReaction(user, note);
+				await NoteReactions.insert(record);
 			} else {
-				// 同じリアクションがすでにされていたら何もしない
-				return;
+				// 同じリアクションがすでにされていたらエラー
+				throw new IdentifiableError('51c42bb4-931a-456b-bff7-e5a8a70dd298');
 			}
 		} else {
 			throw e;

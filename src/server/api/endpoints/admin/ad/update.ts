@@ -29,6 +29,9 @@ export const meta = {
 		priority: {
 			validator: $.str
 		},
+		ratio: {
+			validator: $.num.int().min(0)
+		},
 		expiresAt: {
 			validator: $.num.int()
 		},
@@ -52,6 +55,7 @@ export default define(meta, async (ps, me) => {
 		url: ps.url,
 		place: ps.place,
 		priority: ps.priority,
+		ratio: ps.ratio,
 		memo: ps.memo,
 		imageUrl: ps.imageUrl,
 		expiresAt: new Date(ps.expiresAt),

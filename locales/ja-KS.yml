@@ -649,6 +649,8 @@ memo: "メモ"
 high: "高い"
 middle: "中"
 low: "低い"
+_ad:
+  back: "戻る"
 _gallery:
   unlike: "良くないわ"
 _email:

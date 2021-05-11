@@ -10,6 +10,7 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { toPuny } from '@/misc/convert-host';
 import { Cache } from '@/misc/cache';
 import { Instance } from '../../models/entities/instance';
+import { DeliverJobData } from '../types';
 
 const logger = new Logger('deliver');
 
@@ -17,7 +18,7 @@ let latest: string | null = null;
 
 const suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
 
-export default async (job: Bull.Job) => {
+export default async (job: Bull.Job<DeliverJobData>) => {
 	const { host } = new URL(job.data.to);
 
 	// ブロックしてたら中断
