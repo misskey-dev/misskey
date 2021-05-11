@@ -4,10 +4,11 @@ import { queueLogger } from '../../logger';
 import { deleteFileSync } from '../../../services/drive/delete-file';
 import { Users, DriveFiles } from '../../../models';
 import { MoreThan } from 'typeorm';
+import { DbUserJobData } from '@/queue/types';
 
 const logger = queueLogger.createSubLogger('delete-drive-files');
 
-export async function deleteDriveFiles(job: Bull.Job, done: any): Promise<void> {
+export async function deleteDriveFiles(job: Bull.Job<DbUserJobData>, done: any): Promise<void> {
 	logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 	const user = await Users.findOne(job.data.user.id);

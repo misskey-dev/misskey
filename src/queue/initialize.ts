@@ -1,8 +1,8 @@
-import * as Queue from 'bull';
+import * as Bull from 'bull';
 import config from '@/config';
 
-export function initialize(name: string, limitPerSec = -1) {
-	return new Queue(name, {
+export function initialize<T>(name: string, limitPerSec = -1) {
+	return new Bull<T>(name, {
 		redis: {
 			port: config.redis.port,
 			host: config.redis.host,
