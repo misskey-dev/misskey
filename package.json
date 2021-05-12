@@ -1,0 +1,28 @@
+{
+  "name": "misskey-js",
+  "version": "0.0.0",
+  "description": "Misskey SDK for JavaScript",
+  "main": "./built/index.js",
+  "types": "./built/index.d.ts",
+  "scripts": {
+    "build": "npm run tsc",
+    "tsc": "tsc",
+    "tsd": "tsd",
+    "test": "mocha -r ts-node/register 'test/**/*.ts' && npm run tsd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/misskey-dev/misskey.js.git"
+  },
+  "devDependencies": {
+    "@types/mocha": "8.2.x",
+    "@types/node": "14.14.x",
+    "mocha": "8.3.x",
+    "ts-node": "9.1.x",
+    "tsd": "^0.14.0",
+    "typescript": "4.2.x"
+  },
+  "files": [
+    "built"
+  ]
+}
