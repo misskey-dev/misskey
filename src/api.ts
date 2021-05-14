@@ -1,16 +1,16 @@
 import { Endpoints } from './endpoints';
 
-export class MisskeyClient {
+export class APIClient {
 	public i: { token: string; } | null = null;
 	private apiUrl: string;
 
 	constructor(opts: {
-		apiUrl: MisskeyClient['apiUrl'];
+		apiUrl: APIClient['apiUrl'];
 	}) {
 		this.apiUrl = opts.apiUrl;
 	}
 
-	public api<E extends keyof Endpoints>(
+	public request<E extends keyof Endpoints>(
 		endpoint: E, data: Endpoints[E]['req'] = {}, token?: string | null | undefined
 	): Promise<Endpoints[E]['res']> {
 		const promise = new Promise<Endpoints[E]['res']>((resolve, reject) => {
