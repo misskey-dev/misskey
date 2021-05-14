@@ -20,7 +20,7 @@ export default class Stream extends EventEmitter {
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
 
-	constructor(wsUrl: string, user: { token: string; } | null, options?: {
+	constructor(origin: string, user: { token: string; } | null, options?: {
 	}) {
 		super();
 
@@ -29,7 +29,9 @@ export default class Stream extends EventEmitter {
 			_t: Date.now(),
 		});
 
-		this.stream = new ReconnectingWebsocket(`${wsUrl}?${query}`, '', { minReconnectionDelay: 1 }); // https://github.com/pladaria/reconnecting-websocket/issues/91
+		this.stream = new ReconnectingWebsocket(`${origin.replace('http://', 'ws://').replace('https://', 'wss://')}/streaming?${query}`, '', {
+			minReconnectionDelay: 1 // https://github.com/pladaria/reconnecting-websocket/issues/91
+		});
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
