@@ -8,6 +8,8 @@
     "removeComments": true,
     "strict": true,
     "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
   },
