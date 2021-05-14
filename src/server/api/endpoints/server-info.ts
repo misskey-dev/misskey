@@ -15,21 +15,36 @@ export const meta = {
 };
 
 export default define(meta, async () => {
-	const memStats = await si.mem();
-	const fsStats = await si.fsSize();
+	// const memStats = await si.mem();
+	// const fsStats = await si.fsSize();
+
+	// return {
+	// 	machine: os.hostname(),
+	// 	cpu: {
+	// 		model: os.cpus()[0].model,
+	// 		cores: os.cpus().length
+	// 	},
+	// 	mem: {
+	// 		total: memStats.total
+	// 	},
+	// 	fs: {
+	// 		total: fsStats[0].size,
+	// 		used: fsStats[0].used,
+	// 	},
+	// };
 
 	return {
-		machine: os.hostname(),
+		machine: "喵窝",
 		cpu: {
-			model: os.cpus()[0].model,
-			cores: os.cpus().length
+			model: "nya.one",
+			cores: 2147483647,
 		},
 		mem: {
-			total: memStats.total
+			total: 0
 		},
 		fs: {
-			total: fsStats[0].size,
-			used: fsStats[0].used,
+			total: 0,
+			used: 0,
 		},
-	};
+	}
 });
