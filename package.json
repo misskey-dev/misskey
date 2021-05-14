@@ -8,16 +8,21 @@
     "build": "npm run tsc",
     "tsc": "tsc",
     "tsd": "tsd",
-    "test": "mocha -r ts-node/register 'test/**/*.ts' && npm run tsd"
+    "jest": "jest",
+    "test": "npm run jest && npm run tsd"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/misskey-dev/misskey.js.git"
   },
   "devDependencies": {
-    "@types/mocha": "8.2.x",
+    "@types/jest": "^26.0.23",
     "@types/node": "14.14.x",
-    "mocha": "8.3.x",
+    "fetch-mock-jest": "^1.5.1",
+    "jest": "^26.6.3",
+    "jest-websocket-mock": "^2.2.0",
+    "mock-socket": "^9.0.3",
+    "ts-jest": "^26.5.6",
     "ts-node": "9.1.x",
     "tsd": "^0.14.0",
     "typescript": "4.2.x"
