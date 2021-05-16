@@ -9,3 +9,5 @@ export {
 	Stream,
 	Acct
 };
+
+export * as entities from './types';
