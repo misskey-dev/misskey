@@ -1,5 +1,13 @@
 import { Endpoints } from './endpoints';
 
+export type APIError = {
+	id: string;
+	code: string;
+	message: string;
+	kind: 'client' | 'server';
+	info: Record<string, any>;
+};
+
 export function request<E extends keyof Endpoints>(
 	origin: string,
 	endpoint: E,
