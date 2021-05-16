@@ -1,5 +1,7 @@
 import { Endpoints } from './endpoints';
 
+const MK_API_ERROR = Symbol();
+
 export type APIError = {
 	id: string;
 	code: string;
@@ -7,6 +9,10 @@ export type APIError = {
 	kind: 'client' | 'server';
 	info: Record<string, any>;
 };
+
+export function isAPIError(reason: any): reason is APIError {
+	return reason[MK_API_ERROR] === true;
+}
 
 export function request<E extends keyof Endpoints>(
 	origin: string,
@@ -32,7 +38,10 @@ export function request<E extends keyof Endpoints>(
 			} else if (res.status === 204) {
 				resolve(null);
 			} else {
-				reject(body.error);
+				reject({
+					[MK_API_ERROR]: true,
+					...body.error
+				});
 			}
 		}).catch(reject);
 	});
