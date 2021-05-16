@@ -4,6 +4,9 @@
 coming soon
 
 # Usage
+## Authenticate
+todo
+
 ## API request
 都度インスタンスやトークンを指定する場合
 ``` ts
