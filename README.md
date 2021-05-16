@@ -28,7 +28,15 @@ const meta = await cli.request('meta', { detail: true });
 ```
 
 ## Streaming
-todo
+``` ts
+import * as Misskey from 'misskey-js';
+
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+const mainChannel = stream.useSharedConnection('main');
+mainChannel.on('notification', notification => {
+	console.log('notification received', notification);
+});
+```
 
 ---
 
