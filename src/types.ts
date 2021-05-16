@@ -59,7 +59,7 @@ export type Note = {
 	}[];
 };
 
-export type Instance = {
+export type InstanceMetadata = {
 	emojis: {
 		category: string;
 	}[];

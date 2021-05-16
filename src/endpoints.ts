@@ -1,4 +1,4 @@
-import { ID, Instance, Note, OriginType, Page, ServerInfo, Stats, User, UserSorting } from './types';
+import { ID, InstanceMetadata, Note, OriginType, Page, ServerInfo, Stats, User, UserSorting } from './types';
 
 type TODO = Record<string, any>;
 
@@ -48,7 +48,7 @@ export type Endpoints = {
 	// messaging
 
 	// meta
-	'meta': { req: { detail?: boolean; }; res: Instance; };
+	'meta': { req: { detail?: boolean; }; res: InstanceMetadata; };
 
 	// miauth
 
