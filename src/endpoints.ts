@@ -1,4 +1,4 @@
-import { ID, InstanceMetadata, Note, OriginType, Page, ServerInfo, Stats, User, UserSorting } from './types';
+import { ID, InstanceMetadata, Note, OriginType, Page, ServerInfo, Stats, User, UserSorting } from './entities';
 
 type TODO = Record<string, any>;
 
