@@ -1,39 +1,39 @@
 {
-  "name": "misskey-js",
-  "version": "0.0.0",
-  "description": "Misskey SDK for JavaScript",
-  "main": "./built/index.js",
-  "types": "./built/index.d.ts",
-  "scripts": {
-    "build": "npm run tsc",
-    "tsc": "tsc",
-    "tsd": "tsd",
-    "jest": "jest",
-    "test": "npm run jest && npm run tsd"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/misskey-dev/misskey.js.git"
-  },
-  "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@types/node": "14.14.x",
-    "jest": "^26.6.3",
-    "jest-fetch-mock": "^3.0.3",
-    "jest-websocket-mock": "^2.2.0",
-    "mock-socket": "^9.0.3",
-    "ts-jest": "^26.5.6",
-    "ts-node": "9.1.x",
-    "tsd": "^0.14.0",
-    "typescript": "4.2.x"
-  },
-  "files": [
-    "built"
-  ],
-  "dependencies": {
-    "@vue/reactivity": "^3.0.11",
-    "autobind-decorator": "^2.4.0",
-    "eventemitter3": "^4.0.7",
-    "reconnecting-websocket": "^4.4.0"
-  }
+	"name": "misskey-js",
+	"version": "0.0.0",
+	"description": "Misskey SDK for JavaScript",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"scripts": {
+		"build": "npm run tsc",
+		"tsc": "tsc",
+		"tsd": "tsd",
+		"jest": "jest",
+		"test": "npm run jest && npm run tsd"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/misskey-dev/misskey.js.git"
+	},
+	"devDependencies": {
+		"@types/jest": "^26.0.23",
+		"@types/node": "14.14.x",
+		"jest": "^26.6.3",
+		"jest-fetch-mock": "^3.0.3",
+		"jest-websocket-mock": "^2.2.0",
+		"mock-socket": "^9.0.3",
+		"ts-jest": "^26.5.6",
+		"ts-node": "9.1.x",
+		"tsd": "^0.14.0",
+		"typescript": "4.2.x"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"@vue/reactivity": "^3.0.11",
+		"autobind-decorator": "^2.4.0",
+		"eventemitter3": "^4.0.7",
+		"reconnecting-websocket": "^4.4.0"
+	}
 }
