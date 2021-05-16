@@ -1,4 +1,14 @@
 # misskey.js
+**Strongly-typed official Misskey SDK for browsers/Node.js.**
+
+JavaScript(TypeScript)用の公式MisskeySDKです。ブラウザ/Node.js上で動作します。
+
+以下が提供されています:
+- ユーザー認証
+- APIリクエスト
+- ストリーミング
+- ユーティリティ関数
+- Misskeyの各種モデル(ノート、ユーザー等)の型定義
 
 ## Install
 coming soon
