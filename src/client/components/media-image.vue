@@ -1,6 +1,6 @@
 <template>
 <div class="qjewsnkg" v-if="hide" @click="hide = false">
-	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.name"/>
+	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.name" :alt="image.comment"/>
 	<div class="text">
 		<div>
 			<b><i class="fas fa-exclamation-triangle"></i> {{ $ts.sensitive }}</b>
