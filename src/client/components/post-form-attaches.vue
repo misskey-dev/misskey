@@ -89,6 +89,22 @@ export default defineComponent({
 				file.name = result;
 			});
 		},
+
+		async describe(file) {
+			const { canceled, result } = await os.dialog({
+				title: this.$ts.enterFileDescription,
+				input: {
+					default: this.file.comment !== null ? this.file.comment : ""
+				},
+				allowEmpty: false
+			});
+			if (canceled) return;
+			os.api('drive/files/update', {
+				fileId: file.id,
+				comment: result.length == 0 ? null : result
+			});
+		},
+
 		showFileMenu(file, ev: MouseEvent) {
 			if (this.menu) return;
 			this.menu = os.modalMenu([{
@@ -99,6 +115,10 @@ export default defineComponent({
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
 				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file) }
+			},{
+				text: this.$ts.describeFile,
+				icon: 'fas fa-i-cursor',
+				action: () => { this.describe(file) }
 			}, {
 				text: this.$ts.attachCancel,
 				icon: 'fas fa-times-circle',
