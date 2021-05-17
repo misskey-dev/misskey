@@ -113,6 +113,7 @@ export default define(meta, async (ps, user) => {
 
 	await DriveFiles.update(file.id, {
 		name: file.name,
+		comment: file.comment,
 		folderId: file.folderId,
 		isSensitive: file.isSensitive
 	});
