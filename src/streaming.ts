@@ -101,6 +101,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 		const query = urlQuery({
 			i: user?.token,
+			
+			// To prevent cache of an HTML such as error screen
 			_t: Date.now(),
 		});
 
