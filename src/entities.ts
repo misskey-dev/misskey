@@ -1,5 +1,7 @@
 export type ID = string;
 
+type TODO = Record<string, any>;
+
 export type User = {
 	id: ID;
 	username: string;
@@ -12,6 +14,17 @@ export type User = {
 		name: string;
 		url: string;
 	}[];
+};
+
+export type MeDetailed = User & {
+	avatarId: DriveFile['id'];
+	bannerId: DriveFile['id'];
+	autoAcceptFollowed: boolean;
+	noCrawle: boolean;
+	isExplorable: boolean;
+	hideOnlineStatus: boolean;
+	mutedWords: string[][];
+	[other: string]: any;
 };
 
 export type DriveFile = {
@@ -57,6 +70,74 @@ export type Note = {
 		name: string;
 		url: string;
 	}[];
+};
+
+export type Notification = {
+	id: ID;
+	createdAt: string;
+	isRead: boolean;
+} & ({
+	type: 'reaction';
+	reaction: string;
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'reply';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'renote';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'quote';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'mention';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'pollVote';
+	user: User;
+	userId: User['id'];
+	note: Note;
+} | {
+	type: 'follow';
+	user: User;
+	userId: User['id'];
+} | {
+	type: 'followRequestAccepted';
+	user: User;
+	userId: User['id'];
+} | {
+	type: 'receiveFollowRequest';
+	user: User;
+	userId: User['id'];
+} | {
+	type: 'groupInvited'; // TODO
+} | {
+	type: 'app';
+	body: string;
+	icon: string;
+});
+
+export type MessagingMessage = {
+	id: ID;
+	createdAt: string;
+	file: DriveFile | null;
+	fileId: DriveFile['id'] | null;
+	isRead: boolean;
+	reads: User['id'][];
+	text: string | null;
+	user: User;
+	userId: User['id'];
+	groupId: string; // TODO
 };
 
 export type InstanceMetadata = {
@@ -117,6 +198,14 @@ export type Page = {
 	attachedFiles: any;
 	likedCount: number;
 	isLiked?: boolean;
+};
+
+export type PageEvent = {
+	pageId: Page['id'];
+	event: string;
+	var: any;
+	userId: User['id'];
+	user: User;
 };
 
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';

@@ -7,7 +7,7 @@ describe('Streaming', () => {
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
 		const mainChannelReceived: any[] = [];
 		const main = stream.useSharedConnection('main');
-		main.on('foo', payload => {
+		main.on('meUpdated', payload => {
 			mainChannelReceived.push(payload);
 		});
 		await server.connected;
@@ -21,15 +21,15 @@ describe('Streaming', () => {
 			type: 'channel',
 			body: {
 				id: mainChannelId,
-				type: 'foo',
+				type: 'meUpdated',
 				body: {
-					bar: 'buzz'
+					id: 'foo'
 				}
 			}
 		}));
 
 		expect(mainChannelReceived[0]).toEqual({
-			bar: 'buzz'
+			id: 'foo'
 		});
 	});
 });
