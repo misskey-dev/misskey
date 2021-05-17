@@ -94,7 +94,7 @@ export default defineComponent({
 			const { canceled, result } = await os.dialog({
 				title: this.$ts.enterFileDescription,
 				input: {
-					default: this.file.comment !== null ? this.file.comment : ""
+					default: file.comment !== null ? file.comment : ""
 				},
 				allowEmpty: false
 			});
