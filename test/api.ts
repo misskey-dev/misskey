@@ -44,4 +44,8 @@ describe('API', () => {
 			body: { i: 'TOKEN' }
 		});
 	});
+
+	// TODO: APIエラーのテスト
+
+	// TODO: ネットワークエラーのテスト
 });
