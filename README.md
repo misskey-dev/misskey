@@ -48,18 +48,76 @@ mainChannel.on('notification', notification => {
 });
 ```
 
-### `useSharedConnection(channel: string): SharedConnection`
-使いまわし可能なチャンネル(=パラメータを持たないチャンネル)に接続します。
-このメソッドを用いて接続したチャンネル接続は内部的に使いまわされるため、プログラム上の複数の場所から呼び出してもコネクションを無駄に増やさずに済みます。
+### チャンネルへの接続(使いまわす場合)
+使いまわし可能なチャンネル(=パラメータを持たないチャンネル)に接続するときは、`useSharedConnection`メソッドを使用します。
 
-### `connectToChannel(channel: string, params?: any): NonSharedConnection`
-チャンネルに接続します。返り値はそのチャンネルへのコネクションインスタンスです。
+``` ts
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+
+const mainChannel = stream.useSharedConnection('main');
+```
+
+このメソッドを用いてチャンネルに接続することで、(同じStreamインスタンスを共有している場合)プログラム上の複数個所から呼び出しても内部的にまとめられます。
+
+### チャンネルへの接続(使いまわし不可の場合)
+パラメータを持つチャンネルへの接続は`connectToChannel`メソッドを使用します。
+
+``` ts
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+
+const messagingChannel = stream.connectToChannel('messaging', {
+	otherparty: 'xxxxxxxxxx',
+});
+```
+
+### チャンネルから切断
+`dispose`メソッドを呼び出します。
+
+``` ts
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+
+const mainChannel = stream.useSharedConnection('main');
+
+mainChannel.dispose();
+```
 
 ### メッセージの受信
 チャンネル接続インスタンスはEventEmitterを継承しており、メッセージがサーバーから受信されると受け取ったイベント名でペイロードをemitします。
 
+``` ts
+import * as Misskey from 'misskey-js';
+
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+const mainChannel = stream.useSharedConnection('main');
+mainChannel.on('notification', notification => {
+	console.log('notification received', notification);
+});
+```
+
 ### メッセージの送信
 チャンネル接続インスタンスの`send`メソッドを使用してメッセージをサーバーに送信することができます。
+
+``` ts
+import * as Misskey from 'misskey-js';
+
+const stream = new Misskey.Stream('https://misskey.test', { token: 'TOKEN' });
+const messagingChannel = stream.connectToChannel('messaging', {
+	otherparty: 'xxxxxxxxxx',
+});
+
+messagingChannel.send('read', {
+	id: 'xxxxxxxxxx'
+});
+```
+
+### Reference
+
+#### `useSharedConnection(channel: string): SharedConnection`
+使いまわし可能なチャンネル(=パラメータを持たないチャンネル)に接続します。
+このメソッドを用いて接続したチャンネル接続は内部的に使いまわされるため、プログラム上の複数の場所から呼び出してもコネクションを無駄に増やさずに済みます。
+
+#### `connectToChannel(channel: string, params?: any): NonSharedConnection`
+チャンネルに接続します。返り値はそのチャンネルへのコネクションインスタンスです。
 
 ---
 

@@ -52,7 +52,7 @@ type ChannelDef = {
 			message: (payload: MessagingMessage) => void;
 			deleted: (payload: MessagingMessage['id']) => void;
 			read: (payload: MessagingMessage['id'][]) => void;
-			typing: (payload: User['id']) => void;
+			typers: (payload: User[]) => void;
 		};
 	};
 };
