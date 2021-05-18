@@ -6,10 +6,10 @@ https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOBy
 Postingan dari pengguna yang kamu ikuti
 
 ## Lokal
-全てのローカルユーザーの「ホーム」指定されていない投稿
+Seluruh postingan dari pengguna lokal yang tidak ditandai sebagai "Hanya Beranda"
 
-## ソーシャル
-自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿
+## Sosial
+Postingan dari pengguna yang kamu ikuti beserta dengan semua postingan dari pengguna lokal yang tidak ditandai sebagai "Hanya Beranda"
 
-## グローバル
-全てのローカルユーザーの「ホーム」指定されていない投稿と、サーバーに届いた全てのリモートユーザーの「ホーム」指定されていない投稿
+## Global
+Seluruh postingan dari pengguna lokal yang tidak ditandai sebagai "Hanya Beranda" dan juga pesan yang diterima oleh server yang tidak ditandai sebagai "Hanya Beranda"
