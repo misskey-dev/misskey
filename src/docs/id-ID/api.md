@@ -1,11 +1,11 @@
 # Misskey API
 
-MisskeyAPIを使ってMisskeyクライアント、Misskey連携Webサービス、Bot等(以下「アプリケーション」と呼びます)を開発できます。 ストリーミングAPIもあるので、リアルタイム性のあるアプリケーションを作ることも可能です。
+Dengan menggunakan Misskey API kamu dapat mengembangkan klien Misskey, Webservice yang terintegrasi dengan Misskey, Bots (nantinya akan disebut "Aplikasi" disini), dll. Terdapat juga streaming API, yang memungkinan untuk membuat aplikasi real-time.
 
-APIを使い始めるには、まずアクセストークンを取得する必要があります。 このドキュメントでは、アクセストークンを取得する手順を説明した後、基本的なAPIの使い方を説明します。
+Untuk memulai menggunakin API, kamu harus memiliki access token terlebih dahulu. Halaman ini akan menjelaskan bagaimana untuk mendapatkan access token dan menjelaskan instruksi penggunaan dasar dari Misskey API.
 
-## アクセストークンの取得
-基本的に、APIはリクエストにはアクセストークンが必要となります。 APIにリクエストするのが自分自身なのか、不特定の利用者に使ってもらうアプリケーションなのかによって取得手順は異なります。
+## Mendapatkan access token
+Pada dasarnya, semua request API membutuhkan access token. Metode untuk mendapatkan sebuah access token bermacam-macam bergantung pada kamu sendiri yang mengirim request API atau request tersebut dikirim melalui aplikasi yang dipakai oleh pengguna akhir.
 
 * 前者の場合: [「自分自身のアクセストークンを手動発行する」](#自分自身のアクセストークンを手動発行する)に進む
 * 後者の場合: [「アプリケーション利用者にアクセストークンの発行をリクエストする」](#アプリケーション利用者にアクセストークンの発行をリクエストする)に進む
