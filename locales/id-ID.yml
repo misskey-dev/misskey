@@ -65,17 +65,31 @@ files: "Berkas"
 download: "Unduh"
 driveFileDeleteConfirm: "Hapus {name}? Catatan dengan berkas terkait juga akan terhapus."
 unfollowConfirm: "Berhenti mengikuti {name}?"
+exportRequested: "Kamu telah meminta ekspor. Ini akan memakan waktu sesaat. Setelah ekspor selesai, berkas yang dihasilkan akan ditambahkan ke Drive"
+importRequested: "Kamu telah meminta impor. Ini akan memakan waktu sesaat."
+lists: "Daftar"
+noLists: "Kamu tidak memiliki daftar apapun"
+note: "Note"
+notes: "Note"
 following: "Ikuti"
 followers: "Pengikut"
 followsYou: "Mengikuti Anda"
+createList: "Buat daftar"
+manageLists: "Sunting daftar"
 error: "Galat"
 somethingHappened: "Terjadi kesalahan"
 retry: "Coba lagi"
 pageLoadError: "Gagal memuat halaman."
 pageLoadErrorDescription: "Umumnya disebabkan jaringan atau tembolok perambah. Cobalah bersihkan tembolok peramban lalu tunggu sesaat sebelum mencoba kembali."
+enterListName: "Masukkan nama daftar"
 privacy: "Keleluasaan"
+makeFollowManuallyApprove: "Permintaan ikuti membutuhkan persetujuan"
+defaultNoteVisibility: "Privasi bawaan Note"
 follow: "Ikuti"
+followRequest: "Minta ikuti"
+followRequests: "Permintaan ikuti"
 unfollow: "Berhenti mengikuti"
+followRequestPending: "Permintaan ikuti yang menunggu"
 cantReRenote: "Renote tidak dapat direnote"
 quote: "Kutip"
 pinnedNote: "Note yang disematkan"
@@ -218,6 +232,7 @@ recaptchaSiteKey: "Site key"
 recaptchaSecretKey: "Secret Key"
 antennas: "Antena"
 manageAntennas: "Pengelola Antena"
+userList: "Daftar"
 notFound: "Tidak dapat ditemukan"
 invites: "Undang"
 invitations: "Undang"
@@ -236,6 +251,7 @@ _theme:
   keys:
     mention: "Panggilan"
 _sfx:
+  note: "Note"
   notification: "Notifikasi"
   chat: "Pesan"
 _widgets:
@@ -251,9 +267,29 @@ _exportOrImport:
   followingList: "Ikuti"
   muteList: "Bisukan"
   blockingList: "Blokir"
+  userLists: "Daftar"
 _rooms:
   _roomType:
     default: "Bawaan"
+_pages:
+  script:
+    categories:
+      list: "Daftar"
+    blocks:
+      _join:
+        arg1: "Daftar"
+      _randomPick:
+        arg1: "Daftar"
+      _dailyRandomPick:
+        arg1: "Daftar"
+      _seedRandomPick:
+        arg2: "Daftar"
+      _pick:
+        arg1: "Daftar"
+      _listLen:
+        arg1: "Daftar"
+    types:
+      array: "Daftar"
 _notification:
   youWereFollowed: "Sedang mengikuti"
   _types:
@@ -266,4 +302,5 @@ _deck:
     notifications: "Notifikasi"
     tl: "Linimasa"
     antenna: "Antena"
+    list: "Daftar"
     mentions: "Sebutan"
