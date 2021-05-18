@@ -90,6 +90,11 @@ followRequest: "Minta ikuti"
 followRequests: "Permintaan ikuti"
 unfollow: "Berhenti mengikuti"
 followRequestPending: "Permintaan ikuti yang menunggu"
+enterEmoji: "Masukkan emoji"
+renote: "Renote"
+unrenote: "Hapus renote"
+renoted: "Telah direnote"
+cantRenote: "Postingan ini tidak dapat direnote"
 cantReRenote: "Renote tidak dapat direnote"
 quote: "Kutip"
 pinnedNote: "Note yang disematkan"
@@ -128,6 +133,7 @@ emojiUrl: "URL Emoji"
 addEmoji: "Tambahkan emoji"
 settingGuide: "Pengaturan rekomendasi"
 cacheRemoteFiles: "Tembolokkan berkas remote"
+cacheRemoteFilesDescription: "Ketika pengaturan ini dinonaktifkan, berkas luar akan dimuat langsung dari instansi luar. Menonaktifkan ini akan mengurangi penggunaan penyimpanan, namun dapat menyebabkan meningkatkan lalu lintas bandwidth, karena thumbnail tidak dihasilkan."
 flagAsBot: "Atur akun ini sebagai Bot"
 flagAsCat: "Atur akun ini sebagai kucing"
 autoAcceptFollowed: "Setujui otomatis permintaan mengikuti dari pengguna yang anda ikuti"
@@ -250,6 +256,7 @@ _mfm:
 _theme:
   keys:
     mention: "Panggilan"
+    renote: "Renote"
 _sfx:
   note: "Note"
   notification: "Notifikasi"
@@ -295,6 +302,7 @@ _notification:
   _types:
     follow: "Ikuti"
     mention: "Panggilan"
+    renote: "Renote"
     quote: "Kutip"
     reaction: "Reaksi"
 _deck:
