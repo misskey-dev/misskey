@@ -1,4 +1,4 @@
 # AiScript
 
 ## Fungsi
-デフォルトで値渡しです。
+Secara bawaan, berjalan sebagai pass dari value.
