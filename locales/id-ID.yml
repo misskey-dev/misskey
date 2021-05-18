@@ -366,6 +366,7 @@ smtpHost: "Host"
 smtpUser: "Nama Pengguna"
 smtpPass: "Kata sandi"
 user: "Pengguna"
+expiration: "Batas akhir"
 _email:
   _follow:
     title: "Sedang mengikuti"
@@ -376,6 +377,7 @@ _mfm:
   search: "Pencarian"
 _sidebar:
   icon: "Avatar"
+  hide: "Sembunyikan"
 _theme:
   keys:
     mention: "Panggilan"
@@ -387,9 +389,33 @@ _sfx:
 _widgets:
   notifications: "Notifikasi"
   timeline: "Linimasa"
+  rss: "Pembaca RSS"
+  activity: "Aktivitas"
+  photos: "Foto"
+  digitalClock: "Jam digital"
   federation: "Federasi"
+  postForm: "Buat note"
+  slideshow: "Slideshow"
+  button: "Tombol"
+  onlineUsers: "Pengguna online"
+  jobQueue: "Antrian kerja"
+  serverMetric: "Statistik server"
+  aiscript: "Konsol AiScript"
 _cw:
+  hide: "Sembunyikan"
   show: "Selebihnya"
+  chars: "{count} karakter"
+  files: "{count} berkas"
+_poll:
+  noOnlyOneChoice: "Dibutuhkan sedikitnya dua pilihan"
+  choiceN: "Pilihan {n}"
+  noMore: "Kamu tidak dapat menambahkan pilihan lagi"
+  canMultipleVote: "Bolehkan memilih banyak"
+  expiration: "Batas akhir"
+  infinite: "Selamanya"
+  at: "Berakhir pada..."
+  after: "Berakhir setelah..."
+  deadlineDate: "Tanggal batas akhir"
 _visibility:
   followers: "Pengikut"
 _profile:
@@ -461,7 +487,7 @@ _notification:
   youGotMessagingMessageFromGroup: "Sebuah pesan telah dikirim ke grup {name}"
   youWereFollowed: "Sedang mengikuti"
   youReceivedFollowRequest: "Kamu menerima permintaan mengikuti"
-  yourFollowRequestAccepted: "Permintaan mengikuti telah diterima"
+  yourFollowRequestAccepted: "Permintaan mengikuti kamu telah diterima"
   youWereInvitedToGroup: "Telah diundang ke grup"
   _types:
     all: "Semua"
@@ -472,7 +498,20 @@ _notification:
     quote: "Kutip"
     reaction: "Reaksi"
     pollVote: "Memilih di angket"
+    receiveFollowRequest: "Permintaan mengikuti diterima"
+    followRequestAccepted: "Permintaan mengikuti disetujui"
+    groupInvited: "Diundang ke grup"
+    app: "Pemberitahuan dari aplikasi"
 _deck:
+  alwaysShowMainColumn: "Selalu tampilkan kolom utama"
+  columnAlign: "Luruskan kolom"
+  columnMargin: "Batas antar kolom"
+  columnHeaderHeight: "Tinggi kolom header"
+  addColumn: "Tambahkan kolom"
+  swapLeft: "Pindah ke kiri"
+  swapRight: "Pindah ke kanan"
+  swapUp: "Pindah ke atas"
+  swapDown: "Pindah ke bawah"
   _columns:
     notifications: "Notifikasi"
     tl: "Linimasa"
