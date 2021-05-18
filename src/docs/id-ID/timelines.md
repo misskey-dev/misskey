@@ -1,11 +1,11 @@
-# タイムラインの比較
+# Perbandingan Linimasa
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
-## ホーム
-自分のフォローしているユーザーの投稿
+## Beranda
+Postingan dari pengguna yang kamu ikuti
 
-## ローカル
+## Lokal
 全てのローカルユーザーの「ホーム」指定されていない投稿
 
 ## ソーシャル
