@@ -365,6 +365,7 @@ output: "Keluaran"
 smtpHost: "Host"
 smtpUser: "Nama Pengguna"
 smtpPass: "Kata sandi"
+public: "Publik"
 user: "Pengguna"
 expiration: "Batas akhir"
 _email:
@@ -416,8 +417,37 @@ _poll:
   at: "Berakhir pada..."
   after: "Berakhir setelah..."
   deadlineDate: "Tanggal batas akhir"
+  deadlineTime: "jam"
+  duration: "Durasi"
+  votesCount: "{n} suara"
+  totalVotes: "Total {n} suara"
+  vote: "Beri suara"
+  showResult: "Lihat hasil"
+  voted: "Telah memilih"
+  closed: "Telah berakhir"
+  remainingDays: "Berakhir dalam {d} hari {h} jam"
+  remainingHours: "Berakhir dalam {h} jam {m} menit"
+  remainingMinutes: "Berakhir dalam {m} menit {s} detik"
+  remainingSeconds: "Berakhir dalam {s} detik"
 _visibility:
+  public: "Publik"
+  publicDescription: "Note kamu akan muncul di linimasa global"
+  home: "Beranda"
+  homeDescription: "Posting hanya ke linimasa beranda saja"
   followers: "Pengikut"
+  followersDescription: "Posting hanya ke pengikut saja"
+  specified: "Direct"
+  specifiedDescription: "Posting hanya ke pengguna yang ditentukan saja"
+  localOnly: "Hanya lokal"
+  localOnlyDescription: "Tidak dapat dilihat oleh pengguna luar"
+_postForm:
+  replyPlaceholder: "Balas ke note ini..."
+  quotePlaceholder: "Kutip note ini..."
+  channelPlaceholder: "Posting ke kanal"
+  _placeholders:
+    a: "Sedang apa kamu saat ini?"
+    b: "Apa yang terjadi di sekitarmu?"
+    c: "Apa yang sedang kamu pikirkan?"
 _profile:
   name: "Nama"
   username: "Nama Pengguna"
@@ -429,6 +459,16 @@ _exportOrImport:
 _rooms:
   _roomType:
     default: "Bawaan"
+    washitsu: "Gaya Jepang"
+  _furnitures:
+    milk: "Kardus susu"
+    bed: "Tempat tidur"
+    low-table: "Meja pendek"
+    desk: "Meja tulis"
+    chair: "Kursi"
+    chair2: "Kursi 2"
+    fan: "Kipas angin"
+    pc: "Komputer"
 _pages:
   script:
     categories:
@@ -518,3 +558,4 @@ _deck:
     antenna: "Antena"
     list: "Daftar"
     mentions: "Sebutan"
+    direct: "Direct"
