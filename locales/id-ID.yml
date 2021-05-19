@@ -741,6 +741,8 @@ administration: "Manajemen"
 accounts: "Akun"
 expiration: "Batas akhir"
 middle: "Sedang"
+_ad:
+  back: "Kembali"
 _gallery:
   like: "Suka"
   unlike: "Hapus suka"
@@ -1100,9 +1102,28 @@ _instanceCharts:
   usersTotal: "Jumlah # pengguna kumulatif"
   notes: "Perbedaan # dalam note"
   notesTotal: "Jumlah # note kumulatif"
+  ff: "Perbedaan jumlah # dalam pengikut"
+  ffTotal: "Jumlah # pengikut kumulatif"
+  cacheSize: "Perbedaan dalam ukuran tembolok"
+  cacheSizeTotal: "Total ukuran tembolok kumulatif"
 _timelines:
   home: "Beranda"
+  local: "Lokal"
+  social: "Sosial"
+  global: "Global"
 _rooms:
+  roomOf: "Ruangan {user}"
+  addFurniture: "Letakkan perabotan"
+  translate: "Pindah"
+  rotate: "Putar"
+  exit: "Kembali"
+  remove: "Hapus"
+  clear: "Bersihkan"
+  clearConfirm: "Apakah kamu yakin ingin menghapus semua perabotan di ruanganmu?"
+  leaveConfirm: "Ada perubahan yang belum tersimpan. Apakah kamu ingin pergi?"
+  chooseImage: "Pilih gambar"
+  roomType: "Tipe ruangan"
+  carpetColor: "Warna karpet"
   _roomType:
     default: "Bawaan"
     washitsu: "Gaya Jepang"
@@ -1157,14 +1178,57 @@ _pages:
   editPage: "Sunting halaman"
   readPage: "Lihat sumber kode aktif"
   created: "Halaman berhasil dibuat"
+  updated: "Halaman berhasil diperbaharui!"
+  deleted: "Halaman telah dihapus"
+  pageSetting: "Pengaturan Halaman"
+  nameAlreadyExists: "URL Halaman yang ditentukan sudah ada"
+  invalidNameTitle: "URL Halaman yang ditentukan tidak valid"
+  invalidNameText: "Cek apabila Halaman tidak kosong"
+  editThisPage: "Sunting Halaman ini"
+  viewSource: "Lihat sumber"
+  viewPage: "Lihat Halaman"
+  like: "Suka"
+  unlike: "Hapus suka"
+  my: "Halaman saya"
+  liked: "Halaman yang disukai"
+  featured: "Populer"
+  inspector: "Inspektor"
+  contents: "Konten"
+  content: "Blokir Halaman"
+  variables: "Variabel"
+  title: "Judul"
+  url: "URL Halaman"
+  summary: "Ringkasan Halaman"
+  alignCenter: "Tengah"
   blocks:
     image: "Gambar"
+    _if:
+      variable: "Variabel"
     _post:
       text: "Isi"
+    _textInput:
+      text: "Judul"
+    _textareaInput:
+      text: "Judul"
+    _numberInput:
+      text: "Judul"
+    _switch:
+      text: "Judul"
+    _counter:
+      text: "Judul"
     _button:
+      text: "Judul"
+      action: "Operasi akan dimulai ketika tombol ditekan"
       _action:
+        dialog: "Tampilkan dialog"
         _dialog:
           content: "Isi"
+        resetRandom: "Atur ulang benih acak"
+        pushEvent: "Kirim event"
+        _pushEvent:
+          event: "Nama event"
+    _radioButton:
+      title: "Judul"
   script:
     categories:
       list: "Daftar"
