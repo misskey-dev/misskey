@@ -1506,27 +1506,41 @@ _pages:
       dailyRandom: "Acak (bertahan sehari)"
       _dailyRandom:
         arg1: "Probabilitas"
+      dailyRannum: "Angka acak (bertahan sehari)"
       _dailyRannum:
         arg1: "Nilai minimum"
         arg2: "Nilai maksimum"
+      dailyRandomPick: "Pilih secara acak dari daftar (bertahan sehari)"
       _dailyRandomPick:
         arg1: "Daftar"
+      seedRandom: "Acak (dengan seed)"
       _seedRandom:
+        arg1: "Seed"
         arg2: "Probabilitas"
+      seedRannum: "Angka acak (dengan seed)"
       _seedRannum:
+        arg1: "Seed"
         arg2: "Nilai minimum"
         arg3: "Nilai maksimum"
+      seedRandomPick: "Pilih secara acak dari daftar (dengan seed)"
       _seedRandomPick:
+        arg1: "Seed"
         arg2: "Daftar"
+      DRPWPM: "Pilih secara acak dari daftar berbobot (bertahan sehari)"
       _DRPWPM:
         arg1: "Daftar teks"
+      pick: "Pilih dari daftar"
       _pick:
         arg1: "Daftar"
+        arg2: "Posisi"
+      listLen: "Dapatkan panjangnya dari daftar"
       _listLen:
         arg1: "Daftar"
       number: "Angka"
+      stringToNumber: "Teks ke angka"
       _stringToNumber:
         arg1: "Teks"
+      numberToString: "Angka ke teks"
       _numberToString:
         arg1: "Angka"
       splitStrByLine: "Pisahkan teks dengan baris baru"
@@ -1595,7 +1609,11 @@ _deck:
   swapRight: "Pindah ke kanan"
   swapUp: "Pindah ke atas"
   swapDown: "Pindah ke bawah"
+  stackLeft: "Tumpukkan di kolom kiri"
+  popRight: "Keluarkan di kanan"
+  profile: "Profil"
   _columns:
+    main: "Utama"
     widgets: "Widget"
     notifications: "Notifikasi"
     tl: "Linimasa"
