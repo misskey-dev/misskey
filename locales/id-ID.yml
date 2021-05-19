@@ -726,6 +726,7 @@ _mfm:
   intro: "MFM adalah Misskey-exclusive Markup Language yang dapat digunakan di banyak tempat. Berikut kamu bisa melihat daftar dari syntax MFM yang ada."
   dummy: "Misskey membentangkan dunia Fediverse"
   mention: "Sebutan"
+  hashtag: "Tagar"
   url: "URL"
   urlDescription: "URL dapat ditampilkan."
   link: "Tautan"
@@ -802,13 +803,27 @@ _channel:
   usersCount: "{n} Partisipan"
   notesCount: "{n} Note"
 _sidebar:
+  full: "Penuh"
   icon: "Avatar"
   hide: "Sembunyikan"
+_wordMute:
+  muteWords: "Kata yang dibisukan"
+  muteWordsDescription: "Pisahkan dengan spasi untuk kondisi AND. Pisahkan dengan baris baru untuk kondisi OR."
+  muteWordsDescription2: "Kurung kata kunci dengan garis miring untuk menggunakan regular expressions."
 _theme:
   keys:
+    link: "Tautan"
+    hashtag: "Tagar"
     mention: "Sebutan"
+    mentionMe: "Sebutan (saya)"
     renote: "Renote"
+    modalBg: "Latar belakang modal"
     divider: "Pembagi"
+    scrollbarHandle: "Pegangan bilah gulir"
+    scrollbarHandleHover: "Pegangan bilah gulir (Mengambang)"
+    dateLabelFg: "Teks label tanggal"
+    infoBg: "Latar belakang informasi"
+    infoFg: "Teks informasi"
 _sfx:
   note: "Note"
   notification: "Notifikasi"
