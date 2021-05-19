@@ -1227,20 +1227,59 @@ _pages:
         pushEvent: "Kirim event"
         _pushEvent:
           event: "Nama event"
+          message: "Pesan yang tampil ketika diaktifkan"
+          variable: "Variable untuk kirim"
+          no-variable: "Tidak ada"
+        callAiScript: "Panggil AiScript"
+        _callAiScript:
+          functionName: "Nama fungsi"
+    radioButton: "Pilihan"
     _radioButton:
+      name: "Nama variabel"
       title: "Judul"
+      values: "Daftar pilihan (dipisahkan dengan garis baru)"
+      default: "Nilai bawaan"
   script:
     categories:
+      flow: "Arus kendali"
+      logical: "Operasi logis"
+      operation: "Menghitung"
+      comparison: "Membandingkan"
+      random: "Acak"
+      value: "Nilai"
+      fn: "Fungsi"
+      text: "Operasi teks"
+      convert: "Mengubah"
       list: "Daftar"
     blocks:
+      text: "Teks"
+      multiLineText: "Teks (multibaris)"
+      textList: "Daftar teks"
+      _textList:
+        info: "Pisahkan setiap entri dengan baris baru"
+      strLen: "Panjang teks"
+      _strLen:
+        arg1: "Teks"
+      strPick: "Ekstrak karakter"
+      _strPick:
+        arg1: "Teks"
+        arg2: "Lokasi karakter"
+      strReplace: "Penggantian teks"
+      _strReplace:
+        arg1: "Teks"
+        arg2: "Teks yang akan diganti"
+        arg3: "Diganti dengan"
       _join:
         arg1: "Daftar"
+      random: "Acak"
       _randomPick:
         arg1: "Daftar"
       _dailyRandomPick:
         arg1: "Daftar"
       _seedRandomPick:
         arg2: "Daftar"
+      _DRPWPM:
+        arg1: "Daftar teks"
       _pick:
         arg1: "Daftar"
       _listLen:
