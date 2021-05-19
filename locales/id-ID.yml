@@ -970,12 +970,31 @@ _profile:
   name: "Nama"
   username: "Nama Pengguna"
   description: "Bio"
+  youCanIncludeHashtags: "Kamu juga dapat menambahkan tagar ke dalam bio."
+  metadata: "Informasi tambahan"
+  metadataEdit: "Sunting informasi tambahan"
+  metadataDescription: "Kamu dapat menampilkan hingga 4 bagian informasi tambahan ke dalam profilmu."
+  metadataLabel: "Label"
+  metadataContent: "Isi"
+  changeAvatar: "Ubah avatar"
+  changeBanner: "Ubah header"
 _exportOrImport:
   allNotes: "Semua note"
   followingList: "Ikuti"
   muteList: "Bisukan"
   blockingList: "Blokir"
   userLists: "Daftar"
+_charts:
+  federationInstancesIncDec: "Perbedaan jumlah # instansi yang memfederasi"
+  federationInstancesTotal: "Jumlah # instansi yang memfederasi"
+  usersIncDec: "Perbedaan dalam # pengguna"
+  usersTotal: "Jumlah # pengguna"
+  activeUsers: "Pengguna aktif"
+  notesIncDec: "Perbedaan # dalam note"
+  localNotesIncDec: "Perbedaan # dalam note lokal"
+_instanceCharts:
+  users: "Perbedaan dalam # pengguna"
+  notes: "Perbedaan # dalam note"
 _timelines:
   home: "Beranda"
 _rooms:
@@ -1035,6 +1054,12 @@ _pages:
   created: "Halaman berhasil dibuat"
   blocks:
     image: "Gambar"
+    _post:
+      text: "Isi"
+    _button:
+      _action:
+        _dialog:
+          content: "Isi"
   script:
     categories:
       list: "Daftar"
