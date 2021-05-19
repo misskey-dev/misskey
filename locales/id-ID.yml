@@ -1068,6 +1068,12 @@ _permissions:
   "write:mutes": "Sunting daftar orang yang dibisukan"
   "write:notes": "Buat atau hapus note"
   "read:notifications": "Lihat pemberitahuan"
+  "write:notifications": "Sunting pemberitahuan"
+  "read:reactions": "Lihat reaksi"
+  "write:reactions": "Sunting reaksi"
+  "write:votes": "Beri suara"
+  "read:pages": "Lihat halaman"
+  "write:pages": "Sunting atau hapus halaman"
   "read:page-likes": "Lihat suka pada halaman"
   "write:page-likes": "Sunting suka pada Halaman"
   "read:user-groups": "Lihat grup pengguna"
@@ -1189,7 +1195,9 @@ _charts:
   activeUsers: "Pengguna aktif"
   notesIncDec: "Perbedaan # dalam note"
   localNotesIncDec: "Perbedaan # dalam note lokal"
+  remoteNotesIncDec: "Perbedaan # dalam note luar"
   notesTotal: "Total # note"
+  filesIncDec: "Perbedaan # dalam berkas"
   filesTotal: "Jumlah # berkas"
   storageUsageIncDec: "Perbedaan dalam penggunaan penyimpanan"
   storageUsageTotal: "Jumlah penggunaan penyimpanan"
@@ -1438,40 +1446,76 @@ _pages:
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "Sisa"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "Bulat desimal"
+      _round:
+        arg1: "Angka"
+      eq: "A dan B adalah sama"
       _eq:
         arg1: "A"
         arg2: "B"
+      notEq: "A dan B adalah berbeda"
       _notEq:
         arg1: "A"
         arg2: "B"
+      and: "A DAN B"
       _and:
         arg1: "A"
         arg2: "B"
+      or: "A ATAU B"
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A ikurang dari B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A lebih dari B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A kurang dari sama dengan B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A lebih dari sama dengan B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "Cabang"
       _if:
         arg1: "Jika"
+        arg2: "Jika benar"
+        arg3: "Jika salah"
+      not: "BUKAN"
+      _not:
+        arg1: "NOT"
       random: "Acak"
+      _random:
+        arg1: "Probabilitas"
+      rannum: "Angka acak"
+      _rannum:
+        arg1: "Nilai minimum"
+        arg2: "Nilai maksimum"
+      randomPick: "Pilih secara acak dari daftar"
       _randomPick:
         arg1: "Daftar"
+      dailyRandom: "Acak (bertahan sehari)"
+      _dailyRandom:
+        arg1: "Probabilitas"
+      _dailyRannum:
+        arg1: "Nilai minimum"
+        arg2: "Nilai maksimum"
       _dailyRandomPick:
         arg1: "Daftar"
+      _seedRandom:
+        arg2: "Probabilitas"
+      _seedRannum:
+        arg2: "Nilai minimum"
+        arg3: "Nilai maksimum"
       _seedRandomPick:
         arg2: "Daftar"
       _DRPWPM:
@@ -1480,8 +1524,11 @@ _pages:
         arg1: "Daftar"
       _listLen:
         arg1: "Daftar"
+      number: "Angka"
       _stringToNumber:
         arg1: "Teks"
+      _numberToString:
+        arg1: "Angka"
       splitStrByLine: "Pisahkan teks dengan baris baru"
       _splitStrByLine:
         arg1: "Teks"
