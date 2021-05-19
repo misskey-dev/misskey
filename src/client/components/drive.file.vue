@@ -160,7 +160,8 @@ export default defineComponent({
 				input: {
 					placeholder: this.$ts.inputNewDescription,
 					default: this.file.comment !== null ? this.file.comment : "",
-					allowEmpty: true
+					allowEmpty: true,
+					multiline: true
 				}
 			}).then(({ canceled, result: comment }) => {
 				if (canceled) return;

@@ -94,14 +94,18 @@ export default defineComponent({
 			const { canceled, result } = await os.dialog({
 				title: this.$ts.enterFileDescription,
 				input: {
-					default: file.comment !== null ? file.comment : ""
+					placeholder: this.$ts.inputNewDescription
+					default: file.comment !== null ? file.comment : "",
+					multiline: true
 				},
-				allowEmpty: false
+				allowEmpty: true
 			});
 			if (canceled) return;
 			os.api('drive/files/update', {
 				fileId: file.id,
 				comment: result.length == 0 ? null : result
+			}).then(() => {
+				file.comment = result;
 			});
 		},
 
