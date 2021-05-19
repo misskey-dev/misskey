@@ -887,6 +887,7 @@ _reversi:
   playing: "Sedang bermain"
   isLlotheo: "Pemain dengan batu paling sedikitlah yang menang (Llotheo)"
   loopedMap: "Peta melingkar"
+  canPutEverywhere: "Keping dapat ditaruh dimana saja"
 _instanceTicker:
   none: "Jangan tampilkan"
   remote: "Tampilkan untuk pengguna luar"
@@ -1146,6 +1147,9 @@ _charts:
   notesIncDec: "Perbedaan # dalam note"
   localNotesIncDec: "Perbedaan # dalam note lokal"
   notesTotal: "Total # note"
+  filesTotal: "Jumlah # berkas"
+  storageUsageIncDec: "Perbedaan dalam penggunaan penyimpanan"
+  storageUsageTotal: "Jumlah penggunaan penyimpanan"
 _instanceCharts:
   requests: "Permintaan"
   users: "Perbedaan dalam # pengguna"
@@ -1156,6 +1160,8 @@ _instanceCharts:
   ffTotal: "Jumlah # pengikut kumulatif"
   cacheSize: "Perbedaan dalam ukuran tembolok"
   cacheSizeTotal: "Total ukuran tembolok kumulatif"
+  files: "Perbedaan dalam # berkas"
+  filesTotal: "Jumlah # berkas kumulatif"
 _timelines:
   home: "Beranda"
   local: "Lokal"
@@ -1250,21 +1256,54 @@ _pages:
   url: "URL Halaman"
   summary: "Ringkasan Halaman"
   alignCenter: "Tengah"
+  hideTitleWhenPinned: "Sembunyikan judul halaman saat disematkan ke profil"
+  font: "Font"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans-serif"
+  eyeCatchingImageSet: "Setel gambar yang menarik"
+  eyeCatchingImageRemove: "Hapus gambar yang menarik"
+  chooseBlock: "Tambahkan blokir"
+  selectType: "Pilih jenis"
+  enterVariableName: "Mohon masukkan nama untuk variabel kamu"
+  variableNameIsAlreadyUsed: "Nama ini sudah digunakan oleh variabel lain"
+  contentBlocks: "Konten"
+  inputBlocks: "Masukan"
+  specialBlocks: "Khusus"
   blocks:
+    text: "Teks"
+    textarea: "Area teks"
+    section: "Bagian"
     image: "Gambar"
+    button: "Tombol"
+    if: "Jika"
     _if:
       variable: "Variabel"
+    post: "Buat note"
     _post:
       text: "Isi"
+      attachCanvasImage: "Posting dengan kanvas sebagai gambar"
+      canvasId: "ID Kanvas"
+    textInput: "Masukan teks"
     _textInput:
+      name: "Nama variabel"
       text: "Judul"
+      default: "Nilai bawaan"
+    textareaInput: "Masukan teks multibaris"
     _textareaInput:
+      name: "Nama variabel"
       text: "Judul"
+      default: "Nilai bawaan"
+    numberInput: "Masukan angka"
     _numberInput:
+      name: "Nama variabel"
       text: "Judul"
+      default: "Nilai bawaan"
     _switch:
+      name: "Nama variabel"
       text: "Judul"
+      default: "Nilai bawaan"
     _counter:
+      name: "Nama variabel"
       text: "Judul"
     _button:
       text: "Judul"
@@ -1369,6 +1408,8 @@ _pages:
       _gtEq:
         arg1: "A"
         arg2: "B"
+      _if:
+        arg1: "Jika"
       random: "Acak"
       _randomPick:
         arg1: "Daftar"
@@ -1382,6 +1423,8 @@ _pages:
         arg1: "Daftar"
       _listLen:
         arg1: "Daftar"
+      _stringToNumber:
+        arg1: "Teks"
       splitStrByLine: "Pisahkan teks dengan baris baru"
       _splitStrByLine:
         arg1: "Teks"
