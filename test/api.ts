@@ -45,7 +45,26 @@ describe('API', () => {
 		});
 	});
 
-	// TODO: APIエラーのテスト
+	test('error', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockResponse(async (req) => {
+			return {
+				status: 500,
+				body: JSON.stringify({
+					message: 'Internal error occurred. Please contact us if the error persists.',
+					code: 'INTERNAL_ERROR',
+					id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
+					kind: 'server',
+				})
+			};
+		});
+
+		try {
+			await request('https://misskey.test', 'i', {}, 'TOKEN');
+		} catch (e) {
+			expect(e.id).toEqual('5d37dbcb-891e-41ca-a3d6-e690c97775ac');
+		}
+	});
 
 	// TODO: ネットワークエラーのテスト
 });
