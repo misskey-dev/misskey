@@ -739,10 +739,27 @@ quickAction: "Aksi cepat"
 user: "Pengguna"
 administration: "Manajemen"
 accounts: "Akun"
+switch: "Beralih"
+noMaintainerInformationWarning: "Informasi pengelola belum disetel."
+noBotProtectionWarning: "Proteksi bot belum disetel."
+configure: "Setel"
+postToGallery: "Posting ke galeri"
+gallery: "Galeri"
+recentPosts: "Postingan terbaru"
+popularPosts: "Postingan populer"
+shareWithNote: "Bagikan dengan note"
+ads: "Iklan"
 expiration: "Batas akhir"
+memo: "Memo"
+priority: "Prioritas"
+high: "Tinggi"
 middle: "Sedang"
+low: "Rendah"
+emailNotConfiguredWarning: "Alamat surel tidak disetel."
+ratio: "Rasio"
 _ad:
   back: "Kembali"
+  reduceFrequencyOfThisAd: "Tampilkan iklan ini lebih sedikit"
 _gallery:
   like: "Suka"
   unlike: "Hapus suka"
@@ -1269,8 +1286,56 @@ _pages:
         arg1: "Teks"
         arg2: "Teks yang akan diganti"
         arg3: "Diganti dengan"
+      strReverse: "Balikkan teks"
+      _strReverse:
+        arg1: "Teks"
+      join: "Rangkaian teks"
       _join:
         arg1: "Daftar"
+        arg2: "Pemisah"
+      add: "Tambah"
+      _add:
+        arg1: "A"
+        arg2: "B"
+      subtract: "Kurangi"
+      _subtract:
+        arg1: "A"
+        arg2: "B"
+      multiply: "Kali"
+      _multiply:
+        arg1: "A"
+        arg2: "B"
+      divide: "Bagi"
+      _divide:
+        arg1: "A"
+        arg2: "B"
+      _mod:
+        arg1: "A"
+        arg2: "B"
+      _eq:
+        arg1: "A"
+        arg2: "B"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
+      _and:
+        arg1: "A"
+        arg2: "B"
+      _or:
+        arg1: "A"
+        arg2: "B"
+      _lt:
+        arg1: "A"
+        arg2: "B"
+      _gt:
+        arg1: "A"
+        arg2: "B"
+      _ltEq:
+        arg1: "A"
+        arg2: "B"
+      _gtEq:
+        arg1: "A"
+        arg2: "B"
       random: "Acak"
       _randomPick:
         arg1: "Daftar"
@@ -1351,6 +1416,7 @@ _deck:
   swapUp: "Pindah ke atas"
   swapDown: "Pindah ke bawah"
   _columns:
+    widgets: "Widget"
     notifications: "Notifikasi"
     tl: "Linimasa"
     antenna: "Antena"
