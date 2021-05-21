@@ -1,14 +1,14 @@
-import { ID, InstanceMetadata, Note, OriginType, Page, ServerInfo, Stats, User, UserSorting } from './entities';
+import { Ad, Announcement, Antenna, App, AuthSession, Clip, DriveFile, DriveFolder, GalleryPost, InstanceMetadata, Note, OriginType, Page, ServerInfo, Stats, User, UserGroup, UserList, UserSorting } from './entities';
 
 type TODO = Record<string, any>;
 
-type ShowUserReq = { username: string; host?: string; } | { userId: ID; };
+type ShowUserReq = { username: string; host?: string; } | { userId: User['id']; };
 
 export type Endpoints = {
 	// admin
 	'admin/abuse-user-reports': { req: TODO; res: TODO; };
-	'admin/delete-all-files-of-a-user': { req: TODO; res: TODO; };
-	'admin/delete-logs': { req: TODO; res: TODO; };
+	'admin/delete-all-files-of-a-user': { req: { userId: User['id']; }; res: null; };
+	'admin/delete-logs': { req: null; res: null; };
 	'admin/get-index-stats': { req: TODO; res: TODO; };
 	'admin/get-table-stats': { req: TODO; res: TODO; };
 	'admin/invite': { req: TODO; res: TODO; };
@@ -29,11 +29,11 @@ export type Endpoints = {
 	'admin/vacuum': { req: TODO; res: TODO; };
 	'admin/accounts/create': { req: TODO; res: TODO; };
 	'admin/ad/create': { req: TODO; res: TODO; };
-	'admin/ad/delete': { req: TODO; res: TODO; };
+	'admin/ad/delete': { req: { id: Ad['id']; }; res: null; };
 	'admin/ad/list': { req: TODO; res: TODO; };
 	'admin/ad/update': { req: TODO; res: TODO; };
 	'admin/announcements/create': { req: TODO; res: TODO; };
-	'admin/announcements/delete': { req: TODO; res: TODO; };
+	'admin/announcements/delete': { req: { id: Announcement['id'] }; res: null; };
 	'admin/announcements/list': { req: TODO; res: TODO; };
 	'admin/announcements/update': { req: TODO; res: TODO; };
 	'admin/drive/clean-remote-files': { req: TODO; res: TODO; };
@@ -46,7 +46,7 @@ export type Endpoints = {
 	'admin/emoji/list': { req: TODO; res: TODO; };
 	'admin/emoji/remove': { req: TODO; res: TODO; };
 	'admin/emoji/update': { req: TODO; res: TODO; };
-	'admin/federation/delete-all-files': { req: TODO; res: TODO; };
+	'admin/federation/delete-all-files': { req: { host: string; }; res: null; };
 	'admin/federation/refresh-remote-instance-metadata': { req: TODO; res: TODO; };
 	'admin/federation/remove-all-following': { req: TODO; res: TODO; };
 	'admin/federation/update-instance': { req: TODO; res: TODO; };
@@ -63,29 +63,29 @@ export type Endpoints = {
 	'admin/relays/remove': { req: TODO; res: TODO; };
 
 	// announcements
-	'announcements': { req: { limit?: number; withUnreads?: boolean; sinceId?: ID; untilId?: ID; }; res: TODO; };
+	'announcements': { req: { limit?: number; withUnreads?: boolean; sinceId?: Announcement['id']; untilId?: Announcement['id']; }; res: Announcement[]; };
 
 	// antennas
-	'antennas/create': { req: TODO; res: TODO; };
-	'antennas/delete': { req: TODO; res: TODO; };
-	'antennas/list': { req: TODO; res: TODO; };
-	'antennas/notes': { req: TODO; res: TODO; };
-	'antennas/show': { req: TODO; res: TODO; };
-	'antennas/update': { req: TODO; res: TODO; };
+	'antennas/create': { req: TODO; res: Antenna; };
+	'antennas/delete': { req: { antennaId: Antenna['id']; }; res: null; };
+	'antennas/list': { req: null; res: Antenna[]; };
+	'antennas/notes': { req: { antennaId: Antenna['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
+	'antennas/show': { req: { antennaId: Antenna['id']; }; res: Antenna; };
+	'antennas/update': { req: TODO; res: Antenna; };
 
 	// ap
 	'ap/get': { req: TODO; res: TODO; };
 	'ap/show': { req: TODO; res: TODO; };
 
 	// app
-	'app/create': { req: TODO; res: TODO; };
-	'app/show': { req: TODO; res: TODO; };
+	'app/create': { req: TODO; res: App; };
+	'app/show': { req: { appId: App['id']; }; res: App; };
 
 	// auth
-	'auth/accept': { req: TODO; res: TODO; };
-	'auth/session/generate': { req: TODO; res: TODO; };
-	'auth/session/show': { req: TODO; res: TODO; };
-	'auth/session/userkey': { req: TODO; res: TODO; };
+	'auth/accept': { req: { token: string; }; res: null; };
+	'auth/session/generate': { req: { appSecret: string; }; res: { token: string; url: string; }; };
+	'auth/session/show': { req: { token: string; }; res: AuthSession; };
+	'auth/session/userkey': { req: { appSecret: string; token: string; }; res: { accessToken: string; user: User }; };
 
 	// blocking
 	'blocking/create': { req: TODO; res: TODO; };
@@ -121,7 +121,7 @@ export type Endpoints = {
 	// clips
 	'clips/add-note': { req: TODO; res: TODO; };
 	'clips/create': { req: TODO; res: TODO; };
-	'clips/delete': { req: TODO; res: TODO; };
+	'clips/delete': { req: { clipId: Clip['id']; }; res: null; };
 	'clips/list': { req: TODO; res: TODO; };
 	'clips/notes': { req: TODO; res: TODO; };
 	'clips/show': { req: TODO; res: TODO; };
@@ -133,7 +133,7 @@ export type Endpoints = {
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
 	'drive/files/create': { req: TODO; res: TODO; };
-	'drive/files/delete': { req: TODO; res: TODO; };
+	'drive/files/delete': { req: { fileId: DriveFile['id']; }; res: null; };
 	'drive/files/find-by-hash': { req: TODO; res: TODO; };
 	'drive/files/find': { req: TODO; res: TODO; };
 	'drive/files/show': { req: TODO; res: TODO; };
@@ -141,11 +141,17 @@ export type Endpoints = {
 	'drive/files/upload-from-url': { req: TODO; res: TODO; };
 	'drive/folders': { req: TODO; res: TODO; };
 	'drive/folders/create': { req: TODO; res: TODO; };
-	'drive/folders/delete': { req: TODO; res: TODO; };
+	'drive/folders/delete': { req: { folderId: DriveFolder['id']; }; res: null; };
 	'drive/folders/find': { req: TODO; res: TODO; };
 	'drive/folders/show': { req: TODO; res: TODO; };
 	'drive/folders/update': { req: TODO; res: TODO; };
 	'drive/stream': { req: TODO; res: TODO; };
+
+	// endpoint
+	'endpoint': { req: { endpoint: string; }; res: { params: { name: string; type: string; }[]; }; };
+
+	// endpoints
+	'endpoints': { req: null; res: string[]; };
 
 	// federation
 	'federation/dns': { req: TODO; res: TODO; };
@@ -169,7 +175,7 @@ export type Endpoints = {
 	'gallery/popular': { req: TODO; res: TODO; };
 	'gallery/posts': { req: TODO; res: TODO; };
 	'gallery/posts/create': { req: TODO; res: TODO; };
-	'gallery/posts/delete': { req: TODO; res: TODO; };
+	'gallery/posts/delete': { req: { postId: GalleryPost['id'] }; res: null; };
 	'gallery/posts/like': { req: TODO; res: TODO; };
 	'gallery/posts/show': { req: TODO; res: TODO; };
 	'gallery/posts/unlike': { req: TODO; res: TODO; };
@@ -198,7 +204,7 @@ export type Endpoints = {
 	'i/apps': { req: TODO; res: TODO; };
 	'i/authorized-apps': { req: TODO; res: TODO; };
 	'i/change-password': { req: TODO; res: TODO; };
-	'i/delete-account': { req: TODO; res: TODO; };
+	'i/delete-account': { req: { password: string; }; res: null; };
 	'i/export-blocking': { req: TODO; res: TODO; };
 	'i/export-following': { req: TODO; res: TODO; };
 	'i/export-mute': { req: TODO; res: TODO; };
@@ -230,7 +236,7 @@ export type Endpoints = {
 	'i/signin-history': { req: TODO; res: TODO; };
 	'i/unpin': { req: TODO; res: TODO; };
 	'i/update-email': { req: TODO; res: TODO; };
-	'i/update': { req: TODO; res: TODO; };
+	'i/update': { req: TODO; res: User; };
 	'i/user-group-invites': { req: TODO; res: TODO; };
 	'i/2fa/done': { req: TODO; res: TODO; };
 	'i/2fa/key-done': { req: TODO; res: TODO; };
@@ -255,21 +261,21 @@ export type Endpoints = {
 
 	// mute
 	'mute/create': { req: TODO; res: TODO; };
-	'mute/delete': { req: TODO; res: TODO; };
+	'mute/delete': { req: { userId: User['id'] }; res: null; };
 	'mute/list': { req: TODO; res: TODO; };
 
 	// my
 	'my/apps': { req: TODO; res: TODO; };
 
 	// notes
-	'notes': { req: { limit?: number; sinceId?: ID; untilId?: ID; }; res: Note[]; };
+	'notes': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/children': { req: TODO; res: TODO; };
 	'notes/clips': { req: TODO; res: TODO; };
 	'notes/conversation': { req: TODO; res: TODO; };
 	'notes/create': { req: TODO; res: { createdNote: Note }; };
-	'notes/delete': { req: { noteId: ID; }; res: null; };
+	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/favorites/create': { req: TODO; res: TODO; };
-	'notes/favorites/delete': { req: TODO; res: TODO; };
+	'notes/favorites/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/featured': { req: TODO; res: TODO; };
 	'notes/global-timeline': { req: TODO; res: TODO; };
 	'notes/hybrid-timeline': { req: TODO; res: TODO; };
@@ -279,18 +285,18 @@ export type Endpoints = {
 	'notes/polls/vote': { req: TODO; res: TODO; };
 	'notes/reactions': { req: TODO; res: TODO; };
 	'notes/reactions/create': { req: TODO; res: TODO; };
-	'notes/reactions/delete': { req: TODO; res: TODO; };
+	'notes/reactions/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/renotes': { req: TODO; res: TODO; };
 	'notes/replies': { req: TODO; res: TODO; };
 	'notes/search-by-tag': { req: TODO; res: TODO; };
 	'notes/search': { req: TODO; res: TODO; };
-	'notes/show': { req: { noteId: ID; }; res: Note; };
+	'notes/show': { req: { noteId: Note['id']; }; res: Note; };
 	'notes/state': { req: TODO; res: TODO; };
 	'notes/timeline': { req: TODO; res: TODO; };
 	'notes/unrenote': { req: TODO; res: TODO; };
 	'notes/user-list-timeline': { req: TODO; res: TODO; };
 	'notes/watching/create': { req: TODO; res: TODO; };
-	'notes/watching/delete': { req: TODO; res: TODO; };
+	'notes/watching/delete': { req: { noteId: Note['id']; }; res: null; };
 
 	// notifications
 	'notifications/create': { req: TODO; res: TODO; };
@@ -298,15 +304,15 @@ export type Endpoints = {
 	'notifications/read': { req: TODO; res: TODO; };
 
 	// page-push
-	'page-push': { req: { pageId: ID; event: string; var?: any; }; res: null; };
+	'page-push': { req: { pageId: Page['id']; event: string; var?: any; }; res: null; };
 
 	// pages
 	'pages/create': { req: TODO; res: Page; };
-	'pages/delete': { req: { pageId: ID; }; res: null; };
+	'pages/delete': { req: { pageId: Page['id']; }; res: null; };
 	'pages/featured': { req: null; res: Page[]; };
-	'pages/like': { req: { pageId: ID; }; res: null; };
-	'pages/show': { req: { pageId?: ID; name?: string; username?: string; }; res: Page; };
-	'pages/unlike': { req: { pageId: ID; }; res: null; };
+	'pages/like': { req: { pageId: Page['id']; }; res: null; };
+	'pages/show': { req: { pageId?: Page['id']; name?: string; username?: string; }; res: Page; };
+	'pages/unlike': { req: { pageId: Page['id']; }; res: null; };
 	'pages/update': { req: TODO; res: null; };
 
 	// ping
@@ -348,7 +354,7 @@ export type Endpoints = {
 	'users/gallery/posts': { req: TODO; res: TODO; };
 	'users/get-frequently-replied-users': { req: TODO; res: TODO; };
 	'users/groups/create': { req: TODO; res: TODO; };
-	'users/groups/delete': { req: TODO; res: TODO; };
+	'users/groups/delete': { req: { groupId: UserGroup['id'] }; res: null; };
 	'users/groups/invitations/accept': { req: TODO; res: TODO; };
 	'users/groups/invitations/reject': { req: TODO; res: TODO; };
 	'users/groups/invite': { req: TODO; res: TODO; };
@@ -359,7 +365,7 @@ export type Endpoints = {
 	'users/groups/transfer': { req: TODO; res: TODO; };
 	'users/groups/update': { req: TODO; res: TODO; };
 	'users/lists/create': { req: TODO; res: TODO; };
-	'users/lists/delete': { req: TODO; res: TODO; };
+	'users/lists/delete': { req: { listId: UserList['id'] }; res: null; };
 	'users/lists/list': { req: TODO; res: TODO; };
 	'users/lists/pull': { req: TODO; res: TODO; };
 	'users/lists/push': { req: TODO; res: TODO; };
@@ -372,6 +378,6 @@ export type Endpoints = {
 	'users/report-abuse': { req: TODO; res: TODO; };
 	'users/search-by-username-and-host': { req: TODO; res: TODO; };
 	'users/search': { req: TODO; res: TODO; };
-	'users/show': { req: ShowUserReq; res: User; } | { req: { userIds: ID[]; }; res: User[]; };
+	'users/show': { req: ShowUserReq; res: User; } | { req: { userIds: User['id'][]; }; res: User[]; };
 	'users/stats': { req: TODO; res: TODO; };
 };

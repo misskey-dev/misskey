@@ -1,4 +1,5 @@
 export type ID = string;
+export type DateString = string;
 
 type TODO = Record<string, any>;
 
@@ -16,6 +17,10 @@ export type User = {
 	}[];
 };
 
+export type UserGroup = TODO;
+
+export type UserList = TODO;
+
 export type MeDetailed = User & {
 	avatarId: DriveFile['id'];
 	bannerId: DriveFile['id'];
@@ -29,7 +34,7 @@ export type MeDetailed = User & {
 
 export type DriveFile = {
 	id: ID;
-	createdAt: string;
+	createdAt: DateString;
 	isSensitive: boolean;
 	name: string;
 	thumbnailUrl: string;
@@ -41,9 +46,13 @@ export type DriveFile = {
 	properties: Record<string, any>;
 };
 
+export type DriveFolder = TODO;
+
+export type GalleryPost = TODO;
+
 export type Note = {
 	id: ID;
-	createdAt: string;
+	createdAt: DateString;
 	text: string | null;
 	cw: string | null;
 	user: User;
@@ -58,7 +67,7 @@ export type Note = {
 	myReaction?: string;
 	reactions: Record<string, number>;
 	poll?: {
-		expiresAt: string | null;
+		expiresAt: DateString | null;
 		multiple: boolean;
 		choices: {
 			isVoted: boolean;
@@ -74,7 +83,7 @@ export type Note = {
 
 export type Notification = {
 	id: ID;
-	createdAt: string;
+	createdAt: DateString;
 	isRead: boolean;
 } & ({
 	type: 'reaction';
@@ -129,7 +138,7 @@ export type Notification = {
 
 export type MessagingMessage = {
 	id: ID;
-	createdAt: string;
+	createdAt: DateString;
 	file: DriveFile | null;
 	fileId: DriveFile['id'] | null;
 	isRead: boolean;
@@ -180,8 +189,8 @@ export type Stats = {
 
 export type Page = {
 	id: ID;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: DateString;
+	updatedAt: DateString;
 	userId: User['id'];
 	user: User;
 	content: Record<string, any>[];
@@ -207,6 +216,45 @@ export type PageEvent = {
 	userId: User['id'];
 	user: User;
 };
+
+export type Announcement = {
+	id: ID;
+	createdAt: DateString;
+	updatedAt: DateString | null;
+	text: string;
+	title: string;
+	imageUrl: string | null;
+	isRead?: boolean;
+};
+
+export type Antenna = {
+	id: ID;
+	createdAt: DateString;
+	name: string;
+	keywords: string[][]; // TODO
+	excludeKeywords: string[][]; // TODO
+	src: 'home' | 'all' | 'users' | 'list' | 'group';
+	userListId: ID | null; // TODO
+	userGroupId: ID | null; // TODO
+	users: string[]; // TODO
+	caseSensitive: boolean;
+	notify: boolean;
+	withReplies: boolean;
+	withFile: boolean;
+	hasUnreadNote: boolean;
+};
+
+export type App = TODO;
+
+export type AuthSession = {
+	id: ID;
+	app: App;
+	token: string;
+};
+
+export type Ad = TODO;
+
+export type Clip = TODO;
 
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
