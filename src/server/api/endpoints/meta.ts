@@ -509,9 +509,10 @@ export default define(meta, async (ps, me) => {
 		maxNoteTextLength: Math.min(instance.maxNoteTextLength, DB_MAX_NOTE_TEXT_LENGTH),
 		emojis: await Emojis.packMany(emojis),
 		ads: ads.map(ad => ({
+			id: ad.id,
 			url: ad.url,
 			place: ad.place,
-			priority: ad.priority,
+			ratio: ad.ratio,
 			imageUrl: ad.imageUrl,
 		})),
 		enableEmail: instance.enableEmail,

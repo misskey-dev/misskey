@@ -114,6 +114,7 @@ export default defineComponent({
 				overflow: hidden;
 				font-size: 0.9em;
 				color: var(--fg);
+				padding-right: 8px;
 
 				> .a {
 					display: block;
@@ -129,6 +130,9 @@ export default defineComponent({
 					font-size: 75%;
 					opacity: 0.7;
 					line-height: $bodyInfoHieght;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 			}
 

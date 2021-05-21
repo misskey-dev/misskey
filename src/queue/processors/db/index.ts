@@ -1,4 +1,5 @@
 import * as Bull from 'bull';
+import { DbJobData } from '@/queue/types';
 import { deleteDriveFiles } from './delete-drive-files';
 import { exportNotes } from './export-notes';
 import { exportFollowing } from './export-following';
@@ -17,10 +18,10 @@ const jobs = {
 	exportUserLists,
 	importFollowing,
 	importUserLists
-} as any;
+} as Record<string, Bull.ProcessCallbackFunction<DbJobData> | Bull.ProcessPromiseFunction<DbJobData>>;
 
-export default function(dbQueue: Bull.Queue) {
+export default function(dbQueue: Bull.Queue<DbJobData>) {
 	for (const [k, v] of Object.entries(jobs)) {
-		dbQueue.process(k, v as any);
+		dbQueue.process(k, v);
 	}
 }

@@ -1,2 +1,2 @@
 # Ikuti
-ユーザーをフォローすると、タイムラインにそのユーザーの投稿が表示されるようになります。ただし、他のユーザーに対する返信は含まれません。 ユーザーをフォローするには、ユーザーページの「フォロー」ボタンをクリックします。フォローを解除するには、もう一度クリックします。
+Jika kamu mengikuti seorang pengguna, postingan dari pengguna tersebut akan muncul pada linimasa kamu.Akan tetapi, balasan dari mereka kepada pengguna lain tidak akan ditampilkan. Untuk mengikuti seorang pengguna, klik tombol "Ikuti" pada halaman pengguna mereka.Untuk berhenti mengikuti seorang pengguna, klik tombol tersebut sekali lagi.

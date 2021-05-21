@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :manual-showing="manualShowing" :src="src" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
+<MkModal ref="modal" :manual-showing="manualShowing" :src="src" :front="true" @click="$refs.modal.close()" @opening="opening" @close="$emit('close')" @closed="$emit('closed')">
 	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" @chosen="chosen" ref="picker"/>
 </MkModal>
 </template>

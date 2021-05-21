@@ -23,10 +23,16 @@ export class Ad {
 	})
 	public place: string;
 
+	// 今は使われていないが将来的に活用される可能性はある
 	@Column('varchar', {
 		length: 32, nullable: false
 	})
 	public priority: string;
+
+	@Column('integer', {
+		default: 1, nullable: false
+	})
+	public ratio: number;
 
 	@Column('varchar', {
 		length: 1024, nullable: false

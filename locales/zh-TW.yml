@@ -733,6 +733,8 @@ noBotProtectionWarning: "尚未設定Bot防護。"
 configure: "設定"
 expiration: "期限"
 middle: "中"
+_ad:
+  back: "返回"
 _gallery:
   unlike: "收回喜歡"
 _email:
