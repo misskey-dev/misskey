@@ -1,6 +1,6 @@
 <template>
 <transition :name="$store.state.animation ? popup ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? popup ? 500 : 300 : 0" appear @after-leave="onClosed" @enter="$emit('opening')" @after-enter="childRendered">
-	<div v-show="manualShowing != null ? manualShowing : showing" class="mk-modal" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+	<div v-show="manualShowing != null ? manualShowing : showing" class="qzhlnise" :class="{ front }" v-hotkey.global="keymap" :style="{ pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div class="bg _modalBg" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div class="content" :class="{ popup, fixed, top: position === 'top' }" @click.self="onBgClick" ref="content">
 			<slot></slot>
@@ -41,6 +41,11 @@ export default defineComponent({
 		},
 		position: {
 			required: false
+		},
+		front: {
+			type: Boolean,
+			required: false,
+			default: false,
 		}
 	},
 	emits: ['opening', 'click', 'esc', 'close', 'closed'],
@@ -224,14 +229,14 @@ export default defineComponent({
 	}
 }
 
-.mk-modal {
+.qzhlnise {
 	> .bg {
-		z-index: 20000;
+		z-index: 10000;
 	}
 
 	> .content:not(.popup) {
 		position: fixed;
-		z-index: 20000;
+		z-index: 10000;
 		top: 0;
 		bottom: 0;
 		left: 0;
@@ -263,10 +268,24 @@ export default defineComponent({
 
 	> .content.popup {
 		position: absolute;
-		z-index: 20000;
+		z-index: 10000;
 
 		&.fixed {
 			position: fixed;
+		}
+	}
+
+	&.front {
+		> .bg {
+			z-index: 20000;
+		}
+
+		> .content:not(.popup) {
+			z-index: 20000;
+		}
+
+		> .content.popup {
+			z-index: 20000;
 		}
 	}
 }

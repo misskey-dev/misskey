@@ -71,6 +71,7 @@ export function deliver(user: ThinUser, content: unknown, to: string | null) {
 
 	return deliverQueue.add(data, {
 		attempts: config.deliverJobMaxAttempts || 12,
+		timeout: 1 * 60 * 1000,	// 1min
 		backoff: {
 			type: 'exponential',
 			delay: 60 * 1000
@@ -88,6 +89,7 @@ export function inbox(activity: IActivity, signature: httpSignature.IParsedSigna
 
 	return inboxQueue.add(data, {
 		attempts: config.inboxJobMaxAttempts || 8,
+		timeout: 5 * 60 * 1000,	// 5min
 		backoff: {
 			type: 'exponential',
 			delay: 60 * 1000

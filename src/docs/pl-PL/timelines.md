@@ -8,7 +8,7 @@ Wpisy użytkowników, których obserwujesz
 ## Lokalne
 全てのローカルユーザーの「ホーム」指定されていない投稿
 
-## ソーシャル
+## Społeczność
 自分のフォローしているユーザーの投稿と、全てのローカルユーザーの「ホーム」指定されていない投稿
 
 ## Globalne
