@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 import Chart from 'chart.js';
 import XModalWindow from '@client/components/ui/modal-window.vue';
 import MkUsersDialog from '@client/components/users-dialog.vue';
@@ -280,7 +280,7 @@ export default defineComponent({
 			}
 
 			Chart.defaults.global.defaultFontColor = getComputedStyle(document.documentElement).getPropertyValue('--fg');
-			this.chartInstance = new Chart(this.canvas, {
+			this.chartInstance = markRaw(new Chart(this.canvas, {
 				type: 'line',
 				data: {
 					labels: new Array(chartLimit).fill(0).map((_, i) => this.getDate(i).toLocaleString()).slice().reverse(),
@@ -331,7 +331,7 @@ export default defineComponent({
 						mode: 'index',
 					}
 				}
-			});
+			}));
 		},
 
 		getDate(ago: number) {

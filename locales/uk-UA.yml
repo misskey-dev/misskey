@@ -691,6 +691,8 @@ user: "Користувачі"
 administration: "Управління"
 expiration: "Опитування закінчується"
 middle: "Середній"
+_ad:
+  back: "Назад"
 _gallery:
   unlike: "Не вподобати"
 _email:

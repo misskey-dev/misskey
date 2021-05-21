@@ -15,12 +15,17 @@
 				<MkRadio v-model="ad.place" value="horizontal">horizontal</MkRadio>
 				<MkRadio v-model="ad.place" value="horizontal-big">horizontal-big</MkRadio>
 			</div>
+			<!--
 			<div style="margin: 32px 0;">
 				{{ $ts.priority }}
 				<MkRadio v-model="ad.priority" value="high">{{ $ts.high }}</MkRadio>
 				<MkRadio v-model="ad.priority" value="middle">{{ $ts.middle }}</MkRadio>
 				<MkRadio v-model="ad.priority" value="low">{{ $ts.low }}</MkRadio>
 			</div>
+			-->
+			<MkInput v-model:value="ad.ratio" type="number">
+				<span>{{ $ts.ratio }}</span>
+			</MkInput>
 			<MkInput v-model:value="ad.expiresAt" type="date">
 				<span>{{ $ts.expiration }}</span>
 			</MkInput>
@@ -82,6 +87,7 @@ export default defineComponent({
 				memo: '',
 				place: 'square',
 				priority: 'middle',
+				ratio: 1,
 				url: '',
 				imageUrl: null,
 				expiresAt: null,

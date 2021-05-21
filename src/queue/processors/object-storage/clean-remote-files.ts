@@ -7,7 +7,7 @@ import { MoreThan, Not, IsNull } from 'typeorm';
 
 const logger = queueLogger.createSubLogger('clean-remote-files');
 
-export default async function cleanRemoteFiles(job: Bull.Job, done: any): Promise<void> {
+export default async function cleanRemoteFiles(job: Bull.Job<{}>, done: any): Promise<void> {
 	logger.info(`Deleting cached remote files...`);
 
 	let deletedCount = 0;
