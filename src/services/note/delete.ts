@@ -35,7 +35,7 @@ export default async function(user: User, note: Note, quiet = false) {
 		});
 
 		//#region ローカルの投稿なら削除アクティビティを配送
-		if (Users.isLocalUser(user)) {
+		if (Users.isLocalUser(user) && !note.localOnly) {
 			let renote: Note | undefined;
 
 			// if deletd note is renote
