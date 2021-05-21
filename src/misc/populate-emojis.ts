@@ -5,6 +5,8 @@ import { Note } from '../models/entities/note';
 import { Cache } from './cache';
 import { isSelfHost, toPunyNullable } from './convert-host';
 import { decodeReaction } from './reaction-lib';
+import config from '@/config';
+import { query } from '@/prelude/url';
 
 const cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
 
@@ -59,9 +61,12 @@ export async function populateEmoji(emojiName: string, noteUserHost: string | nu
 
 	if (emoji == null) return null;
 
+	const isLocal = emojiName.endsWith('@.');
+	const url = isLocal ? emoji.url : `${config.url}/proxy/image.png?${query({url: emoji.url})}`;
+
 	return {
 		name: emojiName,
-		url: emoji.url,
+		url,
 	};
 }
 
