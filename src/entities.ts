@@ -19,7 +19,12 @@ export type User = {
 
 export type UserGroup = TODO;
 
-export type UserList = TODO;
+export type UserList = {
+	id: ID;
+	createdAt: DateString;
+	name: string;
+	userIds: User['id'][];
+};
 
 export type MeDetailed = User & {
 	avatarId: DriveFile['id'];
