@@ -1,5 +1,5 @@
 ---
-_lang_: "Bahasa Jepang"
+_lang_: "Bahasa Indonesia"
 headlineMisskey: "Jaringan terhubung melalui note"
 introMisskey: "Selamat datang! Misskey adalah perangkat mikroblog tercatu bersifat sumber terbuka.\nMulailah menuliskan catatan, bagikan peristiwa terkini, serta ceritakan segala tentangmu.📡\nTunjukkan juga reaksimu pada catatan pengguna lain.👍\nMari jelajahi dunia baru🚀"
 monthAndDay: "{day} {month}"
@@ -1551,7 +1551,7 @@ _pages:
       fn: "Fungsi"
       _fn:
         slots: "Slot"
-        slots-info: "Pisahkan setiap slow dengan baris baru"
+        slots-info: "Pisahkan setiap slot dengan baris baru"
         arg1: "Keluaran"
       for: "Ulangi"
       _for:
