@@ -977,9 +977,9 @@ _theme:
     infoFg: "Teks informasi"
     infoWarnBg: "Latar belakang peringatan"
     infoWarnFg: "Teks peringatan"
-    cwBg: "Latar belakang tombol CW"
-    cwFg: "Teks tombol CW"
-    cwHoverBg: "Latar belakang tombol CW (Mengambang)"
+    cwBg: "Latar belakang tombol Sembunyikan Konten"
+    cwFg: "Teks tombol Sembunyikan Konten"
+    cwHoverBg: "Latar belakang tombol Sembunyikan Konten (Mengambang)"
     toastBg: "Latar belakang pemberitahuan"
     toastFg: "Teks pemberitahuan"
     buttonBg: "Latar belakang tombol"
@@ -1122,7 +1122,7 @@ _widgets:
   aiscript: "Konsol AiScript"
 _cw:
   hide: "Sembunyikan"
-  show: "Selebihnya"
+  show: "Lihat konten"
   chars: "{count} karakter"
   files: "{count} berkas"
 _poll:
