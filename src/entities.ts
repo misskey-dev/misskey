@@ -1,7 +1,7 @@
 export type ID = string;
 export type DateString = string;
 
-type TODO = Record<string, any>;
+type TODO = Record<string, any> | null;
 
 export type User = {
 	id: ID;
