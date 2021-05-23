@@ -108,14 +108,12 @@ export default define(meta, async (ps, me) => {
 		if (!safeForSql(ps.tag)) return;
 		query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
 	} else {
-		let i = 0;
 		query.andWhere(new Brackets(qb => {
 			for (const tags of ps.query!) {
 				qb.orWhere(new Brackets(qb => {
 					for (const tag of tags) {
 						if (!safeForSql(tag)) return;
 						qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
-						i++;
 					}
 				}));
 			}
