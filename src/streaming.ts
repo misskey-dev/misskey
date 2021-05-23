@@ -115,6 +115,15 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
+	public useChannel<C extends keyof ChannelDef>(channel: C, params?: any): Connection<ChannelDef[C]['events']> {
+		if (params) {
+			return this.connectToChannel(channel, params);
+		} else {
+			return this.useSharedConnection(channel);
+		}
+	}
+
+	@autobind
 	public useSharedConnection<C extends keyof ChannelDef>(channel: C, name?: string): SharedConnection<ChannelDef[C]['events']> {
 		let pool = this.sharedConnectionPools.find(p => p.channel === channel);
 

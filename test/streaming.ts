@@ -2,11 +2,11 @@ import WS from 'jest-websocket-mock';
 import Stream from '../src/streaming';
 
 describe('Streaming', () => {
-	test('useSharedConnection', async () => {
+	test('useChannel', async () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
 		const mainChannelReceived: any[] = [];
-		const main = stream.useSharedConnection('main');
+		const main = stream.useChannel('main');
 		main.on('meUpdated', payload => {
 			mainChannelReceived.push(payload);
 		});
@@ -35,11 +35,15 @@ describe('Streaming', () => {
 		server.close();
 	});
 
-	test('SharedConnection#dispose', async () => {
+	test('useChannel with parameters', async () => {
+		// TODO
+	});
+
+	test('Connection#dispose', async () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
 		const mainChannelReceived: any[] = [];
-		const main = stream.useSharedConnection('main');
+		const main = stream.useChannel('main');
 		main.on('meUpdated', payload => {
 			mainChannelReceived.push(payload);
 		});
@@ -68,4 +72,6 @@ describe('Streaming', () => {
 	});
 
 	// TODO: SharedConnection#dispose して一定時間経ったら disconnect メッセージがサーバーに送られてくるかのテスト
+
+	// TODO: チャンネル接続が使いまわされるかのテスト
 });
