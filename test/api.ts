@@ -1,4 +1,4 @@
-import { request } from '../src/api';
+import { APIClient } from '../src/api';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
 enableFetchMocks();
@@ -21,16 +21,22 @@ describe('API', () => {
 		fetchMock.mockResponse(async (req) => {
 			const body = await req.json();
 			if (req.method == 'POST' && req.url == 'https://misskey.test/api/i') {
-				if (typeof body.i != 'string') {
+				if (body.i === 'TOKEN') {
+					return JSON.stringify({ id: 'foo' });
+				} else {
 					return { status: 400 };
 				}
-				return JSON.stringify({ id: 'foo' });
 			} else {
 				return { status: 404 };
 			}
 		});
 
-		const res = await request('https://misskey.test', 'i', {}, 'TOKEN');
+		const cli = new APIClient({
+			origin: 'https://misskey.test',
+			credential: 'TOKEN',
+		});
+
+		const res = await cli.request('i');
 
 		// validate response
 		expect(res).toEqual({
@@ -60,11 +66,18 @@ describe('API', () => {
 		});
 
 		try {
-			await request('https://misskey.test', 'i', {}, 'TOKEN');
+			const cli = new APIClient({
+				origin: 'https://misskey.test',
+				credential: 'TOKEN',
+			});
+	
+			await cli.request('i');
 		} catch (e) {
 			expect(e.id).toEqual('5d37dbcb-891e-41ca-a3d6-e690c97775ac');
 		}
 	});
 
 	// TODO: ネットワークエラーのテスト
+
+	// TODO: JSON以外が返ってきた場合のハンドリング
 });

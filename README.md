@@ -18,21 +18,13 @@ coming soon
 todo
 
 ## API request
-都度インスタンスやトークンを指定する場合
-``` ts
-import * as Misskey from 'misskey-js';
-
-const meta = await Misskey.api.request('https://misskey.test', 'meta', { detail: true }, 'TOKEN');
-```
-
-最初にインスタンスやトークンを指定し、以後のリクエストでその情報を使いまわす場合
 ``` ts
 import * as Misskey from 'misskey-js';
 
 const cli = new Misskey.api.APIClient({
-	origin: 'https://misskey.test'
+	origin: 'https://misskey.test',
+	credential: 'TOKEN',
 });
-cli.i = { token: 'TOKEN' };
 
 const meta = await cli.request('meta', { detail: true });
 ```
