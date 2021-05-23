@@ -99,6 +99,11 @@ Please see the [Contribution Guide](./CONTRIBUTING.md).
 
 To receive updates of this repo, follow [@repo@misskey.io](https://misskey.io/@repo) on fediverse.
 
+Related projects
+----------------------------------------------------------------
+- [misskey.js](https://github.com/misskey-dev/misskey.js) - Misskey SDK for JavaScript
+- [mfm.js](https://github.com/misskey-dev/mfm.js) - MFM parser
+
 :heart: Backers
 ----------------------------------------------------------------
 <!-- PATREON_START -->
