@@ -51,7 +51,7 @@ describe('API', () => {
 		});
 	});
 
-	test('error', async () => {
+	test('api error', async () => {
 		fetchMock.resetMocks();
 		fetchMock.mockResponse(async (req) => {
 			return {
@@ -80,7 +80,40 @@ describe('API', () => {
 		}
 	});
 
-	// TODO: ネットワークエラーのテスト
+	test('network error', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockAbort();
 
-	// TODO: JSON以外が返ってきた場合のハンドリング
+		try {
+			const cli = new APIClient({
+				origin: 'https://misskey.test',
+				credential: 'TOKEN',
+			});
+	
+			await cli.request('i');
+		} catch (e) {
+			expect(isAPIError(e)).toEqual(false);
+		}
+	});
+
+	test('json parse error', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockResponse(async (req) => {
+			return {
+				status: 500,
+				body: '<html>I AM NOT JSON</html>'
+			};
+		});
+
+		try {
+			const cli = new APIClient({
+				origin: 'https://misskey.test',
+				credential: 'TOKEN',
+			});
+	
+			await cli.request('i');
+		} catch (e) {
+			expect(isAPIError(e)).toEqual(false);
+		}
+	});
 });
