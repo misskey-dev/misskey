@@ -276,11 +276,11 @@ export type Endpoints = {
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/favorites/create': { req: TODO; res: TODO; };
 	'notes/favorites/delete': { req: { noteId: Note['id']; }; res: null; };
-	'notes/featured': { req: TODO; res: TODO; };
-	'notes/global-timeline': { req: TODO; res: TODO; };
-	'notes/hybrid-timeline': { req: TODO; res: TODO; };
-	'notes/local-timeline': { req: TODO; res: TODO; };
-	'notes/mentions': { req: TODO; res: TODO; };
+	'notes/featured': { req: TODO; res: Note[]; };
+	'notes/global-timeline': { req: TODO; res: Note[]; };
+	'notes/hybrid-timeline': { req: TODO; res: Note[]; };
+	'notes/local-timeline': { req: TODO; res: Note[]; };
+	'notes/mentions': { req: TODO; res: Note[]; };
 	'notes/polls/recommendation': { req: TODO; res: TODO; };
 	'notes/polls/vote': { req: TODO; res: TODO; };
 	'notes/reactions': { req: TODO; res: TODO; };
@@ -292,7 +292,7 @@ export type Endpoints = {
 	'notes/search': { req: TODO; res: TODO; };
 	'notes/show': { req: { noteId: Note['id']; }; res: Note; };
 	'notes/state': { req: TODO; res: TODO; };
-	'notes/timeline': { req: TODO; res: TODO; };
+	'notes/timeline': { req: TODO; res: Note[]; };
 	'notes/unrenote': { req: TODO; res: TODO; };
 	'notes/user-list-timeline': { req: TODO; res: TODO; };
 	'notes/watching/create': { req: TODO; res: TODO; };
