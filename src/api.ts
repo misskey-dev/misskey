@@ -14,10 +14,20 @@ export function isAPIError(reason: any): reason is APIError {
 	return reason[MK_API_ERROR] === true;
 }
 
+export type FetchLike = (input: string, init?: {
+		method?: string;
+		body?: string;
+		credentials?: RequestCredentials;
+		cache?: RequestCache;
+	}) => Promise<{
+		status: number;
+		json(): Promise<any>;
+	}>;
+
 export class APIClient {
 	public origin: string;
 	public credential: string | null | undefined;
-	public fetch: (typeof fetch);
+	public fetch: FetchLike;
 
 	constructor(opts: {
 		origin: APIClient['origin'];
