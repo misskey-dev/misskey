@@ -104,22 +104,25 @@ export default define(meta, async (ps, me) => {
 	generateVisibilityQuery(query, me);
 	if (me) generateMutedUserQuery(query, me);
 
-	if (ps.tag) {
-		if (!safeForSql(ps.tag)) return;
-		query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
-	} else {
-		let i = 0;
-		query.andWhere(new Brackets(qb => {
-			for (const tags of ps.query!) {
-				qb.orWhere(new Brackets(qb => {
-					for (const tag of tags) {
-						if (!safeForSql(tag)) return;
-						qb.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
-						i++;
-					}
-				}));
-			}
-		}));
+	try {
+		if (ps.tag) {
+			if (!safeForSql(ps.tag)) throw 'Injection';
+			query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
+		} else {
+			query.andWhere(new Brackets(qb => {
+				for (const tags of ps.query!) {
+					qb.orWhere(new Brackets(qb => {
+						for (const tag of tags) {
+							if (!safeForSql(tag)) throw 'Injection';
+							qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
+						}
+					}));
+				}
+			}));
+		}
+	} catch (e) {
+		if (e === 'Injection') return [];
+		throw e;
 	}
 
 	if (ps.reply != null) {
