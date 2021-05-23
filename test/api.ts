@@ -1,4 +1,4 @@
-import { APIClient } from '../src/api';
+import { APIClient, isAPIError } from '../src/api';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
 enableFetchMocks();
@@ -57,10 +57,12 @@ describe('API', () => {
 			return {
 				status: 500,
 				body: JSON.stringify({
-					message: 'Internal error occurred. Please contact us if the error persists.',
-					code: 'INTERNAL_ERROR',
-					id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
-					kind: 'server',
+					error: {
+						message: 'Internal error occurred. Please contact us if the error persists.',
+						code: 'INTERNAL_ERROR',
+						id: '5d37dbcb-891e-41ca-a3d6-e690c97775ac',
+						kind: 'server',
+					},
 				})
 			};
 		});
@@ -73,6 +75,7 @@ describe('API', () => {
 	
 			await cli.request('i');
 		} catch (e) {
+			expect(isAPIError(e)).toEqual(true);
 			expect(e.id).toEqual('5d37dbcb-891e-41ca-a3d6-e690c97775ac');
 		}
 	});
