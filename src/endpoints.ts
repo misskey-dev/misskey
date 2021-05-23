@@ -1,7 +1,9 @@
 import {
 	Ad, Announcement, Antenna, App, AuthSession, Clip, DriveFile, DriveFolder, GalleryPost, InstanceMetadata,
-	Note, OriginType, Page, ServerInfo, Stats, TODO, User, UserGroup, UserList, UserSorting
+	Note, OriginType, Page, ServerInfo, Stats, User, UserGroup, UserList, UserSorting
 } from './entities';
+
+type TODO = Record<string, any> | null;
 
 type ShowUserReq = { username: string; host?: string; } | { userId: User['id']; };
 
