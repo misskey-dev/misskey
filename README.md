@@ -11,7 +11,9 @@ JavaScript(TypeScript)用の公式MisskeySDKです。ブラウザ/Node.js上で�
 - Misskeyの各種モデル(ノート、ユーザー等)の型定義
 
 ## Install
-coming soon
+```
+npm i misskey-js
+```
 
 # Usage
 ## Authenticate
