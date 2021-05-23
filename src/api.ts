@@ -33,14 +33,12 @@ export class APIClient {
 		endpoint: E, data: Endpoints[E]['req'] = {}, credential?: string | null | undefined,
 	): Promise<Endpoints[E]['res']> {
 		const promise = new Promise<Endpoints[E]['res']>((resolve, reject) => {
-			// Append a credential
-			if (this.credential) (data as Record<string, any>).i = this.credential;
-			if (credential) (data as Record<string, any>).i = credential;
-	
-			// Send request
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
-				body: JSON.stringify(data),
+				body: JSON.stringify({
+					...data,
+					i: credential !== undefined ? credential : this.credential
+				}),
 				credentials: 'omit',
 				cache: 'no-cache'
 			}).then(async (res) => {

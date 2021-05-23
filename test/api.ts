@@ -51,6 +51,42 @@ describe('API', () => {
 		});
 	});
 
+	test('インスタンスの credential が指定されていても引数で credential が null ならば null としてリクエストされる', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockResponse(async (req) => {
+			const body = await req.json();
+			if (req.method == 'POST' && req.url == 'https://misskey.test/api/i') {
+				if (typeof body.i === 'string') {
+					return JSON.stringify({ id: 'foo' });
+				} else {
+					return {
+						status: 401,
+						body: JSON.stringify({
+							error: {
+								message: 'Credential required.',
+								code: 'CREDENTIAL_REQUIRED',
+								id: '1384574d-a912-4b81-8601-c7b1c4085df1',
+							}
+						})
+					};
+				}
+			} else {
+				return { status: 404 };
+			}
+		});
+
+		try {
+			const cli = new APIClient({
+				origin: 'https://misskey.test',
+				credential: 'TOKEN',
+			});
+	
+			await cli.request('i', {}, null);
+		} catch (e) {
+			expect(isAPIError(e)).toEqual(true);
+		}
+	});
+
 	test('api error', async () => {
 		fetchMock.resetMocks();
 		fetchMock.mockResponse(async (req) => {
