@@ -1,4 +1,4 @@
 # AiScript
 
-## 関数
-デフォルトで値渡しです。
+## Fungsi
+Secara bawaan, berjalan sebagai pass dari value.
