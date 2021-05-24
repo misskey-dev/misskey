@@ -476,7 +476,7 @@ export async function updateFeatured(userId: User['id']) {
 	// Resolve and regist Notes
 	const limit = promiseLimit<Note | null>(2);
 	const featuredNotes = await Promise.all(items
-		.filter(item => getApType(item) === 'Service')
+		.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 
