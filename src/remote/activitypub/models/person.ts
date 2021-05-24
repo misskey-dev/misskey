@@ -4,7 +4,7 @@ import * as promiseLimit from 'promise-limit';
 import config from '@/config';
 import Resolver from '../resolver';
 import { resolveImage } from './image';
-import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue } from '../type';
+import { isCollectionOrOrderedCollection, isCollection, IPerson, getApId, getOneApHrefNullable, IObject, isPropertyValue, IApPropertyValue, getApType } from '../type';
 import { fromHtml } from '../../../mfm/from-html';
 import { htmlToMfm } from '../misc/html-to-mfm';
 import { resolveNote, extractEmojis } from './note';
@@ -137,7 +137,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
-	const isBot = object.type === 'Service';
+	const isBot = getApType(object) === 'Service';
 
 	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -337,7 +337,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 		emojis: emojiNames,
 		name: person.name,
 		tags,
-		isBot: object.type === 'Service',
+		isBot: getApType(object) === 'Service',
 		isCat: (person as any).isCat === true,
 		isLocked: !!person.manuallyApprovesFollowers,
 		isExplorable: !!person.discoverable,
@@ -476,7 +476,7 @@ export async function updateFeatured(userId: User['id']) {
 	// Resolve and regist Notes
 	const limit = promiseLimit<Note | null>(2);
 	const featuredNotes = await Promise.all(items
-		.filter(item => item.type === 'Note')
+		.filter(item => getApType(item) === 'Service')
 		.slice(0, 5)
 		.map(item => limit(() => resolveNote(item, resolver))));
 

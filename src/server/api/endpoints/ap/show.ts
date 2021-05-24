@@ -10,7 +10,7 @@ import { Users, Notes } from '../../../../models';
 import { Note } from '../../../../models/entities/note';
 import { User } from '../../../../models/entities/user';
 import { fetchMeta } from '@/misc/fetch-meta';
-import { validActor, validPost } from '../../../../remote/activitypub/type';
+import { isActor, isPost, getApId } from '../../../../remote/activitypub/type';
 
 export const meta = {
 	tags: ['federation'],
@@ -154,16 +154,16 @@ async function fetchAny(uri: string) {
 	}
 
 	// それでもみつからなければ新規であるため登録
-	if (validActor.includes(object.type)) {
-		const user = await createPerson(object.id);
+	if (isActor(object)) {
+		const user = await createPerson(getApId(object));
 		return {
 			type: 'User',
 			object: await Users.pack(user, null, { detail: true })
 		};
 	}
 
-	if (validPost.includes(object.type)) {
-		const note = await createNote(object.id, undefined, true);
+	if (isPost(object)) {
+		const note = await createNote(getApId(object), undefined, true);
 		return {
 			type: 'Note',
 			object: await Notes.pack(note!, null, { detail: true })
