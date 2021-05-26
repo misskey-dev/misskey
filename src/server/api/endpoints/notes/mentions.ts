@@ -60,8 +60,8 @@ export default define(meta, async (ps, user) => {
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 		.andWhere(new Brackets(qb => { qb
-			.where(`:meId = ANY(note.mentions)`, { meId: user.id })
-			.orWhere(`:meId = ANY(note.visibleUserIds)`, { meId: user.id });
+			.where(`'{"${user.id}"}' <@ note.mentions`)
+			.orWhere(`'{"${user.id}"}' <@ note.visibleUserIds`);
 		}))
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('note.reply', 'reply')
