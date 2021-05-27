@@ -14,8 +14,7 @@
 		</div>
 		<header v-if="title"><Mfm :text="title"/></header>
 		<div class="body" v-if="text"><Mfm :text="text"/></div>
-		<MkInput v-if="input && !input.multiline" v-model:value="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></MkInput>
-		<textarea v-else-if="input && input.multiline" v-model="inputValue" :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
+		<MkInput v-if="input" v-model:value="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder" @keydown="onInputKeydown"></MkInput>
 		<MkSelect v-if="select" v-model:value="selectedValue" autofocus>
 			<template v-if="select.items">
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
@@ -143,11 +142,9 @@ export default defineComponent({
 
 		onInputKeydown(e) {
 			if (e.which === 13) { // Enter
-				if (this.input && (!this.input.multiline || e.ctrlKey)) {
-					e.preventDefault();
-					e.stopPropagation();
-					this.ok();
-				}
+				e.preventDefault();
+				e.stopPropagation();
+				this.ok();
 			}
 		}
 	}
@@ -209,31 +206,6 @@ export default defineComponent({
 
 		> * {
 			margin: 0 8px;
-		}
-	}
-
-	> textarea {
-		display: block;
-		box-sizing: border-box;
-		padding: 0 24px;
-		margin: 0;
-		width: 100%;
-		font-size: 16px;
-		border: none;
-		border-radius: 0;
-		background: transparent;
-		color: var(--fg);
-		font-family: inherit;
-		max-width: 100%;
-		min-width: 100%;
-		min-height: 90px;
-
-		&:focus {
-			outline: none;
-		}
-
-		&:disabled {
-			opacity: 0.5;
 		}
 	}
 }
