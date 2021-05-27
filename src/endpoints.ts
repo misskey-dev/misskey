@@ -108,18 +108,18 @@ export type Endpoints = {
 	'channels/update': { req: TODO; res: TODO; };
 
 	// charts
-	'charts/active-users': { req: TODO; res: TODO; };
-	'charts/drive': { req: TODO; res: TODO; };
-	'charts/federation': { req: TODO; res: TODO; };
-	'charts/hashtag': { req: TODO; res: TODO; };
-	'charts/instance': { req: TODO; res: TODO; };
-	'charts/network': { req: TODO; res: TODO; };
-	'charts/notes': { req: TODO; res: TODO; };
-	'charts/user/drive': { req: TODO; res: TODO; };
-	'charts/user/following': { req: TODO; res: TODO; };
-	'charts/user/notes': { req: TODO; res: TODO; };
-	'charts/user/reactions': { req: TODO; res: TODO; };
-	'charts/users': { req: TODO; res: TODO; };
+	'charts/active-users': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/drive': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/federation': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/hashtag': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/instance': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/network': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/notes': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/user/drive': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
+	'charts/user/following': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
+	'charts/user/notes': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
+	'charts/user/reactions': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
+	'charts/users': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
 
 	// clips
 	'clips/add-note': { req: TODO; res: TODO; };
