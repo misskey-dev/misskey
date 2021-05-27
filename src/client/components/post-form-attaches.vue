@@ -91,21 +91,22 @@ export default defineComponent({
 		},
 
 		async describe(file) {
-			const { canceled, result } = await os.dialog({
-				title: this.$ts.enterFileDescription,
+			os.popup(import("@client/components/media-caption.vue"), {
+				title: this.$ts.describeFile,
 				input: {
-					placeholder: this.$ts.inputNewDescription
+					placeholder: this.$ts.inputNewDescription,
 					default: file.comment !== null ? file.comment : "",
-					multiline: true
 				},
-				allowEmpty: true
-			});
-			if (canceled) return;
-			os.api('drive/files/update', {
-				fileId: file.id,
-				comment: result.length == 0 ? null : result
-			}).then(() => {
-				file.comment = result;
+				image: file
+			}, {
+				done: result => {
+					if (!result || result.canceled) return;
+					let comment = result.result;
+					os.api('drive/files/update', {
+						fileId: file.id,
+						comment: comment.length == 0 ? null : comment
+					});
+				}
 			});
 		},
 

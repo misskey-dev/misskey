@@ -155,20 +155,22 @@ export default defineComponent({
 		},
 
 		describe() {
-			os.dialog({
+			os.popup(import("@client/components/media-caption.vue"), {
 				title: this.$ts.describeFile,
 				input: {
 					placeholder: this.$ts.inputNewDescription,
 					default: this.file.comment !== null ? this.file.comment : "",
-					allowEmpty: true,
-					multiline: true
+				},
+				image: this.file
+			}, {
+				done: result => {
+					if (!result || result.canceled) return;
+					let comment = result.result;
+					os.api('drive/files/update', {
+						fileId: this.file.id,
+						comment: comment.length == 0 ? null : comment
+					});
 				}
-			}).then(({ canceled, result: comment }) => {
-				if (canceled) return;
-				os.api('drive/files/update', {
-					fileId: this.file.id,
-					comment: comment.length == 0 ? null : comment
-				});
 			});
 		},
 

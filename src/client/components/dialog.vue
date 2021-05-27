@@ -143,7 +143,7 @@ export default defineComponent({
 
 		onInputKeydown(e) {
 			if (e.which === 13) { // Enter
-				if (!(this.input && this.input.multiline && e.shiftKey)) {
+				if (this.input && (!this.input.multiline || e.ctrlKey)) {
 					e.preventDefault();
 					e.stopPropagation();
 					this.ok();
