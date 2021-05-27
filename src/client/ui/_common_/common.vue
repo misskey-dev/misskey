@@ -43,7 +43,7 @@ export default defineComponent({
 		};
 
 		if ($i) {
-			const connection = stream.useSharedConnection('main', 'UI');
+			const connection = stream.useChannel('main', 'UI');
 			connection.on('notification', onNotification);
 		}
 

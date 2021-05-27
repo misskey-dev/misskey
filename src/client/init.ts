@@ -163,8 +163,6 @@ fetchInstance().then(() => {
 	initializeSw();
 });
 
-stream.init($i);
-
 const app = createApp(await (
 	window.location.search === '?zen' ? import('@client/ui/zen.vue') :
 	!$i                               ? import('@client/ui/visitor.vue') :
@@ -296,7 +294,7 @@ if ($i) {
 		}
 	}
 
-	const main = stream.useSharedConnection('main', 'System');
+	const main = stream.useChannel('main', 'System');
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {
@@ -356,10 +354,6 @@ if ($i) {
 	main.on('unreadChannel', () => {
 		updateAccount({ hasUnreadChannel: true });
 		sound.play('channel');
-	});
-
-	main.on('readAllAnnouncements', () => {
-		updateAccount({ hasUnreadAnnouncement: false });
 	});
 
 	// トークンが再生成されたとき

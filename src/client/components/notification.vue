@@ -109,7 +109,7 @@ export default defineComponent({
 
 			this.readObserver.observe(this.$el);
 
-			this.connection = os.stream.useSharedConnection('main');
+			this.connection = os.stream.useChannel('main');
 			this.connection.on('readAllNotifications', () => this.readObserver.unobserve(this.$el));
 		}
 	},
