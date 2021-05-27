@@ -3,7 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { stringify } from 'querystring';
 import { markRaw } from '@vue/reactivity';
-import { MeDetailed, MessagingMessage, Note, Notification, PageEvent, User } from './entities';
+import { DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User } from './entities';
 
 function urlQuery(obj: {}): string {
 	return stringify(Object.entries(obj)
@@ -25,6 +25,21 @@ type ChannelDef = {
 			unfollow: (payload: User) => void; // 自分が他人をフォロー解除したとき
 			meUpdated: (payload: MeDetailed) => void;
 			pageEvent: (payload: PageEvent) => void;
+			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
+			readAllNotifications: () => void;
+			unreadNotification: () => void;
+			unreadMention: () => void;
+			readAllUnreadMentions: () => void;
+			unreadSpecifiedNote: () => void;
+			readAllUnreadSpecifiedNotes: () => void;
+			readAllMessagingMessages: () => void;
+			unreadMessagingMessage: () => void;
+			readAllAntennas: () => void;
+			unreadAntenna: () => void;
+			readAllAnnouncements: () => void;
+			readAllChannels: () => void;
+			unreadChannel: () => void;
+			myTokenRegenerated: () => void;
 		};
 	};
 	homeTimeline: {

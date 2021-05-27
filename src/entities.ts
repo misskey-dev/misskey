@@ -156,7 +156,11 @@ export type MessagingMessage = {
 
 export type InstanceMetadata = {
 	emojis: {
+		id: string;
+		name: string;
+		url: string;
 		category: string;
+		aliases: string[];
 	}[];
 	ads: {
 		id: ID;
