@@ -107,7 +107,7 @@ export default defineComponent({
 						comment: comment.length == 0 ? null : comment
 					});
 				}
-			});
+			}, 'closed');
 		},
 
 		showFileMenu(file, ev: MouseEvent) {

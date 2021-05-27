@@ -1,23 +1,25 @@
 <template>
-	<MkModal ref="modal" @click="done(true)" @closed="$emit('closed')" class="modal">
-		<div class="fullwidth">
-			<div class="mk-dialog">
-				<header v-if="title"><Mfm :text="title"/></header>
-				<textarea autofocus v-model="inputValue" :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
-				<div class="buttons" v-if="(showOkButton || showCancelButton)">
-					<MkButton inline @click="ok" primary>{{ $ts.ok }}</MkButton>
-					<MkButton inline @click="cancel" >{{ $ts.cancel }}</MkButton>
+	<MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
+		<div class="container">
+			<div class="fullwidth top-caption">
+				<div class="mk-dialog">
+					<header v-if="title"><Mfm :text="title"/></header>
+					<textarea autofocus v-model="inputValue" :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
+					<div class="buttons" v-if="(showOkButton || showCancelButton)">
+						<MkButton inline @click="ok" primary>{{ $ts.ok }}</MkButton>
+						<MkButton inline @click="cancel" >{{ $ts.cancel }}</MkButton>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="xubzgfga fullwidth">
-			<header>{{ image.name }}</header>
-			<img :src="image.url" :alt="image.comment" :title="image.comment" @click="$refs.modal.close()"/>
-			<footer>
-				<span>{{ image.type }}</span>
-				<span>{{ bytes(image.size) }}</span>
-				<span v-if="image.properties && image.properties.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
-			</footer>
+			<div class="xubzgfga fullwidth">
+				<header>{{ image.name }}</header>
+				<img :src="image.url" :alt="image.comment" :title="image.comment" @click="$refs.modal.close()"/>
+				<footer>
+					<span>{{ image.type }}</span>
+					<span>{{ bytes(image.size) }}</span>
+					<span v-if="image.properties && image.properties.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
+				</footer>
+			</div>
 		</div>
 	</MkModal>
 </template>
@@ -123,11 +125,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.modal {
+.container {
+	display: flex;
+	width: 100%;
+	height: 100%;
 	flex-direction: row;
+}
+@media (max-width: 850px) {
+	.container {
+		flex-direction: column;
+	}
+	.top-caption {
+		padding-bottom: 8px;
+	}
 }
 .fullwidth {
 	width: 100%;
+	margin: auto;
 }
 .mk-dialog {
 	position: relative;
@@ -138,8 +152,7 @@ export default defineComponent({
 	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
-	margin-left: auto;
-	margin-right: auto;
+	margin: auto;
 
 	> header {
 		margin: 0 0 8px 0;
