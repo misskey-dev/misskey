@@ -294,7 +294,7 @@ if ($i) {
 		}
 	}
 
-	const main = stream.useChannel('main', 'System');
+	const main = stream.useChannel('main', null, 'System');
 
 	// 自分の情報が更新されたとき
 	main.on('meUpdated', i => {
