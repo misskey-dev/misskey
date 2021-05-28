@@ -103,9 +103,9 @@ export default define(meta, async (ps, user) => {
 		query.setParameters(followingQuery.getParameters());
 	}
 
-	if (ps.includeTypes?.length > 0) {
+	if (ps.includeTypes && ps.includeTypes.length > 0) {
 		query.andWhere(`notification.type IN (:...includeTypes)`, { includeTypes: ps.includeTypes });
-	} else if (ps.excludeTypes?.length > 0) {
+	} else if (ps.excludeTypes && ps.excludeTypes.length > 0) {
 		query.andWhere(`notification.type NOT IN (:...excludeTypes)`, { excludeTypes: ps.excludeTypes });
 	}
 
