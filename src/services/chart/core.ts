@@ -93,7 +93,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 	}
 
 	@autobind
-	private static convertFlattenColumnsToObject(x: Record<string, number>) {
+	private static convertFlattenColumnsToObject(x: Record<string, any>): Record<string, any> {
 		const obj = {} as any;
 		for (const k of Object.keys(x).filter(k => k.startsWith(Chart.columnPrefix))) {
 			// now k is ___x_y_z
@@ -285,8 +285,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 		const latest = await this.getLatestLog(group);
 
 		if (latest != null) {
-			const obj = Chart.convertFlattenColumnsToObject(
-				latest as Record<string, any>);
+			const obj = Chart.convertFlattenColumnsToObject(latest) as T;
 
 			// 空ログデータを作成
 			data = this.getNewLog(obj);
@@ -474,13 +473,13 @@ export default abstract class Chart<T extends Record<string, any>> {
 				const log = logs.find(l => isTimeSame(new Date(l.date * 1000), current));
 
 				if (log) {
-					const data = Chart.convertFlattenColumnsToObject(log as Record<string, any>);
-					chart.unshift(Chart.countUniqueFields(data));
+					const data = Chart.convertFlattenColumnsToObject(log);
+					chart.unshift(Chart.countUniqueFields(data) as T);
 				} else {
 					// 隙間埋め
 					const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
-					const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
-					chart.unshift(Chart.countUniqueFields(this.getNewLog(data)));
+					const data = latest ? Chart.convertFlattenColumnsToObject(latest) as T : null;
+					chart.unshift(Chart.countUniqueFields(this.getNewLog(data)) as T);
 				}
 			}
 		} else if (span === 'day') {
@@ -497,14 +496,14 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 				if (log) {
 					if (logsForEachDays[currentDayIndex]) {
-						logsForEachDays[currentDayIndex].unshift(Chart.convertFlattenColumnsToObject(log));
+						logsForEachDays[currentDayIndex].unshift(Chart.convertFlattenColumnsToObject(log) as T);
 					} else {
-						logsForEachDays[currentDayIndex] = [Chart.convertFlattenColumnsToObject(log)];
+						logsForEachDays[currentDayIndex] = [Chart.convertFlattenColumnsToObject(log) as T];
 					}
 				} else {
 					// 隙間埋め
 					const latest = logs.find(l => isTimeBefore(new Date(l.date * 1000), current));
-					const data = latest ? Chart.convertFlattenColumnsToObject(latest as Record<string, any>) : null;
+					const data = latest ? Chart.convertFlattenColumnsToObject(latest) as T : null;
 					const newLog = this.getNewLog(data);
 					if (logsForEachDays[currentDayIndex]) {
 						logsForEachDays[currentDayIndex].unshift(newLog);
@@ -516,7 +515,7 @@ export default abstract class Chart<T extends Record<string, any>> {
 
 			for (const logs of logsForEachDays) {
 				const log = this.aggregate(logs);
-				chart.unshift(Chart.countUniqueFields(log));
+				chart.unshift(Chart.countUniqueFields(log) as T);
 			}
 		}
 
