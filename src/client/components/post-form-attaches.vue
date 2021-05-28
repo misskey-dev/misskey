@@ -120,7 +120,7 @@ export default defineComponent({
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
 				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file) }
-			},{
+			}, {
 				text: this.$ts.describeFile,
 				icon: 'fas fa-i-cursor',
 				action: () => { this.describe(file) }
