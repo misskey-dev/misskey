@@ -5,6 +5,7 @@ import define from '../../define';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 import { Notifications, Followings, Mutings, Users } from '../../../../models';
 import { notificationTypes } from '../../../../types';
+import read from '@/services/note/read';
 
 export const meta = {
 	desc: {
@@ -114,6 +115,12 @@ export default define(meta, async (ps, user) => {
 	// Mark all as read
 	if (notifications.length > 0 && ps.markAsRead) {
 		readNotification(user.id, notifications.map(x => x.id));
+	}
+
+	const notes = notifications.filter(notification => ['mention', 'reply', 'quote'].includes(notification.type)).map(notification => notification.note!);
+
+	if (notes.length > 0) {
+		read(user.id, notes);
 	}
 
 	return await Notifications.packMany(notifications, user.id);
