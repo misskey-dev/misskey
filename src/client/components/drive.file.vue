@@ -155,11 +155,11 @@ export default defineComponent({
 		},
 
 		describe() {
-			os.popup(import("@client/components/media-caption.vue"), {
+			os.popup(import('@client/components/media-caption.vue'), {
 				title: this.$ts.describeFile,
 				input: {
 					placeholder: this.$ts.inputNewDescription,
-					default: this.file.comment !== null ? this.file.comment : "",
+					default: this.file.comment !== null ? this.file.comment : '',
 				},
 				image: this.file
 			}, {
