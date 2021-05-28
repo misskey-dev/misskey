@@ -11,7 +11,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="xubzgfga fullwidth">
+			<div class="hdrwpsaf fullwidth">
 				<header>{{ image.name }}</header>
 				<img :src="image.url" :alt="image.comment" :title="image.comment" @click="$refs.modal.close()"/>
 				<footer>
@@ -193,7 +193,7 @@ export default defineComponent({
 		}
 	}
 }
-.xubzgfga {
+.hdrwpsaf {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
