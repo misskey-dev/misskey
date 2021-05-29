@@ -267,7 +267,8 @@ async function upload(key: string, stream: fs.ReadStream | Buffer, type: string,
 
 async function deleteOldFile(user: IRemoteUser) {
 	const q = DriveFiles.createQueryBuilder('file')
-		.where('file.userId = :userId', { userId: user.id });
+		.where('file.userId = :userId', { userId: user.id })
+		.andWhere('file.isLink = FALSE');
 
 	if (user.avatarId) {
 		q.andWhere('file.id != :avatarId', { avatarId: user.avatarId });
