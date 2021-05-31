@@ -87,6 +87,10 @@ export default defineComponent({
 				text: this.file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
 				icon: this.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
 				action: this.toggleSensitive
+			}, {
+				text: this.$ts.describeFile,
+				icon: 'fas fa-i-cursor',
+				action: this.describe
 			}, null, {
 				text: this.$ts.copyUrl,
 				icon: 'fas fa-link',
@@ -148,6 +152,26 @@ export default defineComponent({
 					name: name
 				});
 			});
+		},
+
+		describe() {
+			os.popup(import('@client/components/media-caption.vue'), {
+				title: this.$ts.describeFile,
+				input: {
+					placeholder: this.$ts.inputNewDescription,
+					default: this.file.comment !== null ? this.file.comment : '',
+				},
+				image: this.file
+			}, {
+				done: result => {
+					if (!result || result.canceled) return;
+					let comment = result.result;
+					os.api('drive/files/update', {
+						fileId: this.file.id,
+						comment: comment.length == 0 ? null : comment
+					});
+				}
+			}, 'closed');
 		},
 
 		toggleSensitive() {
