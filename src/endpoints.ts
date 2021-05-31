@@ -1,5 +1,6 @@
 import {
-	Ad, Announcement, Antenna, App, AuthSession, Clip, DriveFile, DriveFolder, GalleryPost, InstanceMetadata,
+	Ad, Announcement, Antenna, App, AuthSession, Clip, DetailedInstanceMetadata, DriveFile, DriveFolder, GalleryPost, InstanceMetadata,
+	LiteInstanceMetadata,
 	Note, OriginType, Page, ServerInfo, Stats, User, UserGroup, UserList, UserSorting
 } from './entities';
 
@@ -257,7 +258,15 @@ export type Endpoints = {
 	'messaging/messages/read': { req: TODO; res: TODO; };
 
 	// meta
-	'meta': { req: { detail?: boolean; }; res: InstanceMetadata; }; // TODO: 「detail が true なら DetailedInstanceMetadata を返す」のような型付けをしたい
+	'meta': { req: { detail?: boolean; }; res: {
+		$switch: {
+			$cases: [[
+				{ detail: true; },
+				DetailedInstanceMetadata,
+			]];
+			$default: LiteInstanceMetadata;
+		};
+	}; };
 
 	// miauth
 	'miauth/gen-token': { req: TODO; res: TODO; };

@@ -24,6 +24,10 @@ export type FetchLike = (input: string, init?: {
 		json(): Promise<any>;
 	}>;
 
+type IsNeverType<T> = [T] extends [never] ? true : false;
+
+type StrictExtract<Union, Cond> = Cond extends Union ? Union : never;
+
 export class APIClient {
 	public origin: string;
 	public credential: string | null | undefined;
@@ -39,14 +43,19 @@ export class APIClient {
 		this.fetch = opts.fetch || fetch;
 	}
 
-	public request<E extends keyof Endpoints>(
-		endpoint: E, data: Endpoints[E]['req'] = {}, credential?: string | null | undefined,
-	): Promise<Endpoints[E]['res']> {
+	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
+		endpoint: E, params: P, credential?: string | null | undefined,
+	): Promise<Endpoints[E]['res'] extends { $switch: { $cases: [any, any][]; $default: any; }; }
+		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][number], [P, any]>> extends true
+			? Endpoints[E]['res']['$switch']['$default']
+			: StrictExtract<Endpoints[E]['res']['$switch']['$cases'][number], [P, any]>[1]
+		: Endpoints[E]['res']>
+	{
 		const promise = new Promise<Endpoints[E]['res']>((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
 				body: JSON.stringify({
-					...data,
+					...params,
 					i: credential !== undefined ? credential : this.credential
 				}),
 				credentials: 'omit',
