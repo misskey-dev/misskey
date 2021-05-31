@@ -60,7 +60,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 			if (res.status === 200) {
 				resolve(body);
 				if (debug) {
-					log!.res = markRaw(body);
+					log!.res = markRaw(JSON.parse(JSON.stringify(body)));
 					log!.state = 'success';
 				}
 			} else if (res.status === 204) {
