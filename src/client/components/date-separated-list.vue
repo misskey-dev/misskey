@@ -1,11 +1,11 @@
 <script lang="ts">
-import { defineComponent, h, TransitionGroup } from 'vue';
+import { defineComponent, h, PropType, TransitionGroup } from 'vue';
 import MkAd from '@client/components/global/ad.vue';
 
 export default defineComponent({
 	props: {
 		items: {
-			type: Array,
+			type: Array as PropType<{ id: string; createdAt: string; _shouldInsertAd_: boolean; }[]>,
 			required: true,
 		},
 		direction: {

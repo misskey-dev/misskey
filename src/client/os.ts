@@ -3,16 +3,16 @@
 import { Component, defineAsyncComponent, markRaw, reactive, Ref, ref } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import insertTextAtCursor from 'insert-text-at-cursor';
+import * as Misskey from 'misskey-js';
 import * as Sentry from '@sentry/browser';
-import Stream from '@client/scripts/stream';
-import { apiUrl, debug } from '@client/config';
+import { apiUrl, debug, url } from '@client/config';
 import MkPostFormDialog from '@client/components/post-form-dialog.vue';
 import MkWaitingDialog from '@client/components/waiting-dialog.vue';
 import { resolve } from '@client/router';
 import { $i } from '@client/account';
 import { defaultStore } from '@client/store';
 
-export const stream = markRaw(new Stream());
+export const stream = markRaw(new Misskey.Stream(url, $i));
 
 export const pendingApiRequestsCount = ref(0);
 let apiRequestsCount = 0; // for debug
@@ -20,7 +20,11 @@ export const apiRequests = ref([]); // for debug
 
 export const windows = new Map();
 
-export function api(endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) {
+const apiClient = new Misskey.api.APIClient({
+	origin: url,
+});
+
+export const api = ((endpoint: string, data: Record<string, any> = {}, token?: string | null | undefined) => {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -56,7 +60,7 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 			if (res.status === 200) {
 				resolve(body);
 				if (debug) {
-					log!.res = markRaw(body);
+					log!.res = markRaw(JSON.parse(JSON.stringify(body)));
 					log!.state = 'success';
 				}
 			} else if (res.status === 204) {
@@ -90,17 +94,15 @@ export function api(endpoint: string, data: Record<string, any> = {}, token?: st
 	promise.then(onFinally, onFinally);
 
 	return promise;
-}
+}) as typeof apiClient.request;
 
-export function apiWithDialog(
+export const apiWithDialog = ((
 	endpoint: string,
 	data: Record<string, any> = {},
 	token?: string | null | undefined,
-	onSuccess?: (res: any) => void,
-	onFailure?: (e: Error) => void,
-) {
+) => {
 	const promise = api(endpoint, data, token);
-	promiseDialog(promise, onSuccess, onFailure ? onFailure : (e) => {
+	promiseDialog(promise, null, (e) => {
 		dialog({
 			type: 'error',
 			text: e.message + '\n' + (e as any).id,
@@ -108,7 +110,7 @@ export function apiWithDialog(
 	});
 
 	return promise;
-}
+}) as typeof api;
 
 export function promiseDialog<T extends Promise<any>>(
 	promise: T,

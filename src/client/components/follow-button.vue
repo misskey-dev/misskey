@@ -71,7 +71,7 @@ export default defineComponent({
 	},
 
 	mounted() {
-		this.connection = os.stream.useSharedConnection('main');
+		this.connection = os.stream.useChannel('main');
 
 		this.connection.on('follow', this.onFollowChange);
 		this.connection.on('unfollow', this.onFollowChange);
