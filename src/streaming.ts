@@ -133,11 +133,11 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
-	public useChannel<C extends keyof ChannelDef>(channel: C, params?: any): Connection<ChannelDef[C]['events']> {
+	public useChannel<C extends keyof ChannelDef>(channel: C, params?: any, name?: string): Connection<ChannelDef[C]['events']> {
 		if (params) {
 			return this.connectToChannel(channel, params);
 		} else {
-			return this.useSharedConnection(channel);
+			return this.useSharedConnection(channel, name);
 		}
 	}
 
