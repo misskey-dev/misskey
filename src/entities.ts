@@ -154,7 +154,30 @@ export type MessagingMessage = {
 	groupId: string; // TODO
 };
 
-export type InstanceMetadata = {
+export type LiteInstanceMetadata = {
+	maintainerName: string | null;
+	maintainerEmail: string | null;
+	version: string;
+	name: string | null;
+	uri: string;
+	description: string | null;
+	tosUrl: string | null;
+	disableRegistration: boolean;
+	disableLocalTimeline: boolean;
+	disableGlobalTimeline: boolean;
+	driveCapacityPerLocalUserMb: number;
+	driveCapacityPerRemoteUserMb: number;
+	enableHcaptcha: boolean;
+	hcaptchaSiteKey: string | null;
+	enableRecaptcha: boolean;
+	recaptchaSiteKey: string | null;
+	swPublickey: string | null;
+	maxNoteTextLength: number;
+	enableEmail: boolean;
+	enableTwitterIntegration: boolean;
+	enableGithubIntegration: boolean;
+	enableDiscordIntegration: boolean;
+	enableServiceWorker: boolean;
 	emojis: {
 		id: string;
 		name: string;
@@ -170,6 +193,12 @@ export type InstanceMetadata = {
 		imageUrl: string;
 	}[];
 };
+
+export type DetailedInstanceMetadata = LiteInstanceMetadata & {
+	features: Record<string, any>;
+};
+
+export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 
 export type ServerInfo = {
 	machine: string;

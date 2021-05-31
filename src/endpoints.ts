@@ -257,7 +257,7 @@ export type Endpoints = {
 	'messaging/messages/read': { req: TODO; res: TODO; };
 
 	// meta
-	'meta': { req: { detail?: boolean; }; res: InstanceMetadata; };
+	'meta': { req: { detail?: boolean; }; res: InstanceMetadata; }; // TODO: 「detail が true なら DetailedInstanceMetadata を返す」のような型付けをしたい
 
 	// miauth
 	'miauth/gen-token': { req: TODO; res: TODO; };
