@@ -350,6 +350,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+@use "sass:math";
+
 .xqnhankfuuilcwvhgsopeqncafzsquya {
 	text-align: center;
 
