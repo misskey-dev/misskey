@@ -392,7 +392,7 @@ export default defineComponent({
 				}
 
 				&:last-child {
-					margin-right: -math.div($gap / 2);
+					margin-right: -math.div($gap, 2);
 				}
 			}
 		}
