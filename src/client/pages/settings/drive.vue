@@ -235,7 +235,7 @@ export default defineComponent({
 
 			> div {
 				height: $size;
-				border-radius: math.div($size / 2);
+				border-radius: math.div($size, 2);
 			}
 		}
 	}
