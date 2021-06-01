@@ -388,11 +388,11 @@ export default defineComponent({
 				font-size: 0.8em;
 
 				&:first-child {
-					margin-left: -math.div($gap, 2);
+					margin-left: -(math.div($gap, 2));
 				}
 
 				&:last-child {
-					margin-right: -math.div($gap, 2);
+					margin-right: -(math.div($gap, 2));
 				}
 			}
 		}
@@ -413,11 +413,11 @@ export default defineComponent({
 					font-size: 12px;
 
 					&:first-child {
-						margin-top: -math.div($gap, 2);
+						margin-top: -(math.div($gap, 2));
 					}
 
 					&:last-child {
-						margin-bottom: -math.div($gap, 2);
+						margin-bottom: -(math.div($gap, 2));
 					}
 				}
 			}
