@@ -44,14 +44,14 @@ export class APIClient {
 	}
 
 	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
-		endpoint: E, params: P, credential?: string | null | undefined,
+		endpoint: E, params: P = {} as P, credential?: string | null | undefined,
 	): Promise<Endpoints[E]['res'] extends { $switch: { $cases: [any, any][]; $default: any; }; }
 		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][number], [P, any]>> extends true
 			? Endpoints[E]['res']['$switch']['$default']
 			: StrictExtract<Endpoints[E]['res']['$switch']['$cases'][number], [P, any]>[1]
 		: Endpoints[E]['res']>
 	{
-		const promise = new Promise<Endpoints[E]['res']>((resolve, reject) => {
+		const promise = new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
 				method: 'POST',
 				body: JSON.stringify({
@@ -76,6 +76,6 @@ export class APIClient {
 			}).catch(reject);
 		});
 	
-		return promise;
+		return promise as any;
 	}
 }
