@@ -56,8 +56,6 @@ const forceExitAfter = timeout => () => {
  * @param {string} signalOrEvent The exit signal or event name received on the process.
  */
 async function shutdownHandler(signalOrEvent) {
-	if (process.env.NODE_ENV === 'test') return process.exit(0);
-
 	console.warn(`Shutting down: received [${signalOrEvent}] signal`);
 
 	for (const listener of shutdownListeners) {
