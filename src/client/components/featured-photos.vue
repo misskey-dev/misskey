@@ -1,7 +1,5 @@
 <template>
-<div class="xfbouadm" v-if="meta" :style="{ backgroundImage: `url(${ meta.backgroundImageUrl })` }">
-
-</div>
+<div class="xfbouadm" v-if="meta" :style="{ backgroundImage: `url(${ meta.bannerUrl })` }"></div>
 </template>
 
 <script lang="ts">
