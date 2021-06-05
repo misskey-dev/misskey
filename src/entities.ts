@@ -294,5 +294,18 @@ export type Ad = TODO;
 
 export type Clip = TODO;
 
+export type NoteFavorite = {
+	id: ID;
+	createdAt: DateString;
+	noteId: Note['id'];
+	note: Note;
+};
+
+export type FollowRequest = {
+	id: ID;
+	follower: User;
+	followee: User;
+};
+
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';

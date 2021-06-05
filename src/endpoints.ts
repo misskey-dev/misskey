@@ -1,7 +1,7 @@
 import {
-	Ad, Announcement, Antenna, App, AuthSession, Clip, DetailedInstanceMetadata, DriveFile, DriveFolder, GalleryPost, InstanceMetadata,
+	Ad, Announcement, Antenna, App, AuthSession, Clip, DetailedInstanceMetadata, DriveFile, DriveFolder, FollowRequest, GalleryPost, InstanceMetadata,
 	LiteInstanceMetadata,
-	Note, OriginType, Page, ServerInfo, Stats, User, UserGroup, UserList, UserSorting
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserGroup, UserList, UserSorting
 } from './entities';
 
 type TODO = Record<string, any> | null;
@@ -12,7 +12,7 @@ export type Endpoints = {
 	// admin
 	'admin/abuse-user-reports': { req: TODO; res: TODO; };
 	'admin/delete-all-files-of-a-user': { req: { userId: User['id']; }; res: null; };
-	'admin/delete-logs': { req: null; res: null; };
+	'admin/delete-logs': { req: {}; res: null; };
 	'admin/get-index-stats': { req: TODO; res: TODO; };
 	'admin/get-table-stats': { req: TODO; res: TODO; };
 	'admin/invite': { req: TODO; res: TODO; };
@@ -72,7 +72,7 @@ export type Endpoints = {
 	// antennas
 	'antennas/create': { req: TODO; res: Antenna; };
 	'antennas/delete': { req: { antennaId: Antenna['id']; }; res: null; };
-	'antennas/list': { req: null; res: Antenna[]; };
+	'antennas/list': { req: {}; res: Antenna[]; };
 	'antennas/notes': { req: { antennaId: Antenna['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'antennas/show': { req: { antennaId: Antenna['id']; }; res: Antenna; };
 	'antennas/update': { req: TODO; res: Antenna; };
@@ -109,18 +109,135 @@ export type Endpoints = {
 	'channels/update': { req: TODO; res: TODO; };
 
 	// charts
-	'charts/active-users': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
-	'charts/drive': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
-	'charts/federation': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/active-users': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: {
+		local: {
+			users: number[];
+		};
+		remote: {
+			users: number[];
+		};
+	}; };
+	'charts/drive': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: {
+		local: {
+			decCount: number[];
+			decSize: number[];
+			incCount: number[];
+			incSize: number[];
+			totalCount: number[];
+			totalSize: number[];
+		};
+		remote: {
+			decCount: number[];
+			decSize: number[];
+			incCount: number[];
+			incSize: number[];
+			totalCount: number[];
+			totalSize: number[];
+		};
+	}; };
+	'charts/federation': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: {
+		instance: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+		};
+	}; };
 	'charts/hashtag': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
-	'charts/instance': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/instance': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; host: string; }; res: {
+		drive: {
+			decFiles: number[];
+			decUsage: number[];
+			incFiles: number[];
+			incUsage: number[];
+			totalFiles: number[];
+			totalUsage: number[];
+		};
+		followers: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+		};
+		following: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+		};
+		notes: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+			diffs: {
+				normal: number[];
+				renote: number[];
+				reply: number[];
+			};
+		};
+		requests: {
+			failed: number[];
+			received: number[];
+			succeeded: number[];
+		};
+		users: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+		};
+	}; };
 	'charts/network': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
-	'charts/notes': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
-	'charts/user/drive': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
+	'charts/notes': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: {
+		local: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+			diffs: {
+				normal: number[];
+				renote: number[];
+				reply: number[];
+			};
+		};
+		remote: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+			diffs: {
+				normal: number[];
+				renote: number[];
+				reply: number[];
+			};
+		};
+	}; };
+	'charts/user/drive': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: {
+		decCount: number[];
+		decSize: number[];
+		incCount: number[];
+		incSize: number[];
+		totalCount: number[];
+		totalSize: number[];
+	}; };
 	'charts/user/following': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
-	'charts/user/notes': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
+	'charts/user/notes': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: {
+		dec: number[];
+		inc: number[];
+		total: number[];
+		diffs: {
+			normal: number[];
+			renote: number[];
+			reply: number[];
+		};
+	}; };
 	'charts/user/reactions': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; userId: User['id']; }; res: TODO; };
-	'charts/users': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: TODO; };
+	'charts/users': { req: { span: 'day' | 'hour'; limit?: number; offset?: number | null; }; res: {
+		local: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+		};
+		remote: {
+			dec: number[];
+			inc: number[];
+			total: number[];
+		};
+	}; };
 
 	// clips
 	'clips/add-note': { req: TODO; res: TODO; };
@@ -132,7 +249,7 @@ export type Endpoints = {
 	'clips/update': { req: TODO; res: TODO; };
 
 	// drive
-	'drive': { req: null; res: { capacity: number; usage: number; }; };
+	'drive': { req: {}; res: { capacity: number; usage: number; }; };
 	'drive/files': { req: TODO; res: TODO; };
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
@@ -155,7 +272,7 @@ export type Endpoints = {
 	'endpoint': { req: { endpoint: string; }; res: { params: { name: string; type: string; }[]; }; };
 
 	// endpoints
-	'endpoints': { req: null; res: string[]; };
+	'endpoints': { req: {}; res: string[]; };
 
 	// federation
 	'federation/dns': { req: TODO; res: TODO; };
@@ -167,12 +284,12 @@ export type Endpoints = {
 	'federation/users': { req: TODO; res: TODO; };
 
 	// following
-	'following/create': { req: TODO; res: TODO; };
-	'following/delete': { req: TODO; res: TODO; };
-	'following/requests/accept': { req: TODO; res: TODO; };
-	'following/requests/cancel': { req: TODO; res: TODO; };
-	'following/requests/list': { req: TODO; res: TODO; };
-	'following/requests/reject': { req: TODO; res: TODO; };
+	'following/create': { req: { userId: User['id'] }; res: User; };
+	'following/delete': { req: { userId: User['id'] }; res: User; };
+	'following/requests/accept': { req: { userId: User['id'] }; res: null; };
+	'following/requests/cancel': { req: { userId: User['id'] }; res: User; };
+	'following/requests/list': { req: {}; res: FollowRequest[]; };
+	'following/requests/reject': { req: { userId: User['id'] }; res: null; };
 
 	// gallery
 	'gallery/featured': { req: TODO; res: TODO; };
@@ -194,7 +311,7 @@ export type Endpoints = {
 	'games/reversi/match/cancel': { req: TODO; res: TODO; };
 
 	// get-online-users-count
-	'get-online-users-count': { req: TODO; res: TODO; };
+	'get-online-users-count': { req: {}; res: { count: number; }; };
 
 	// hashtags
 	'hashtags/list': { req: TODO; res: TODO; };
@@ -204,7 +321,7 @@ export type Endpoints = {
 	'hashtags/users': { req: TODO; res: TODO; };
 
 	// i
-	'i': { req: TODO; res: User; };
+	'i': { req: {}; res: User; };
 	'i/apps': { req: TODO; res: TODO; };
 	'i/authorized-apps': { req: TODO; res: TODO; };
 	'i/change-password': { req: TODO; res: TODO; };
@@ -214,7 +331,7 @@ export type Endpoints = {
 	'i/export-mute': { req: TODO; res: TODO; };
 	'i/export-notes': { req: TODO; res: TODO; };
 	'i/export-user-lists': { req: TODO; res: TODO; };
-	'i/favorites': { req: TODO; res: TODO; };
+	'i/favorites': { req: TODO; res: NoteFavorite[]; };
 	'i/gallery/likes': { req: TODO; res: TODO; };
 	'i/gallery/posts': { req: TODO; res: TODO; };
 	'i/get-word-muted-notes-count': { req: TODO; res: TODO; };
@@ -281,7 +398,7 @@ export type Endpoints = {
 
 	// notes
 	'notes': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
-	'notes/children': { req: TODO; res: TODO; };
+	'notes/children': { req: { noteId: Note['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/clips': { req: TODO; res: TODO; };
 	'notes/conversation': { req: TODO; res: TODO; };
 	'notes/create': { req: TODO; res: { createdNote: Note }; };
@@ -292,7 +409,7 @@ export type Endpoints = {
 	'notes/global-timeline': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'notes/hybrid-timeline': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'notes/local-timeline': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
-	'notes/mentions': { req: TODO; res: Note[]; };
+	'notes/mentions': { req: { following?: boolean; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/polls/recommendation': { req: TODO; res: TODO; };
 	'notes/polls/vote': { req: TODO; res: TODO; };
 	'notes/reactions': { req: TODO; res: TODO; };
@@ -305,14 +422,14 @@ export type Endpoints = {
 	'notes/show': { req: { noteId: Note['id']; }; res: Note; };
 	'notes/state': { req: TODO; res: TODO; };
 	'notes/timeline': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
-	'notes/unrenote': { req: TODO; res: TODO; };
+	'notes/unrenote': { req: { noteId: Note['id']; }; res: null; };
 	'notes/user-list-timeline': { req: TODO; res: TODO; };
 	'notes/watching/create': { req: TODO; res: TODO; };
 	'notes/watching/delete': { req: { noteId: Note['id']; }; res: null; };
 
 	// notifications
 	'notifications/create': { req: TODO; res: TODO; };
-	'notifications/mark-all-as-read': { req: TODO; res: TODO; };
+	'notifications/mark-all-as-read': { req: {}; res: null; };
 	'notifications/read': { req: TODO; res: TODO; };
 
 	// page-push
@@ -321,7 +438,7 @@ export type Endpoints = {
 	// pages
 	'pages/create': { req: TODO; res: Page; };
 	'pages/delete': { req: { pageId: Page['id']; }; res: null; };
-	'pages/featured': { req: null; res: Page[]; };
+	'pages/featured': { req: {}; res: Page[]; };
 	'pages/like': { req: { pageId: Page['id']; }; res: null; };
 	'pages/show': { req: { pageId?: Page['id']; name?: string; username?: string; }; res: Page; };
 	'pages/unlike': { req: { pageId: Page['id']; }; res: null; };
@@ -347,10 +464,10 @@ export type Endpoints = {
 	'room/update': { req: TODO; res: TODO; };
 
 	// stats
-	'stats': { req: null; res: Stats; };
+	'stats': { req: {}; res: Stats; };
 
 	// server-info
-	'server-info': { req: null; res: ServerInfo; };
+	'server-info': { req: {}; res: ServerInfo; };
 
 	// sw
 	'sw/register': { req: TODO; res: TODO; };
@@ -378,7 +495,7 @@ export type Endpoints = {
 	'users/groups/update': { req: TODO; res: TODO; };
 	'users/lists/create': { req: { name: string; }; res: UserList; };
 	'users/lists/delete': { req: { listId: UserList['id']; }; res: null; };
-	'users/lists/list': { req: null; res: UserList[]; };
+	'users/lists/list': { req: {}; res: UserList[]; };
 	'users/lists/pull': { req: { listId: UserList['id']; userId: User['id']; }; res: null; };
 	'users/lists/push': { req: { listId: UserList['id']; userId: User['id']; }; res: null; };
 	'users/lists/show': { req: { listId: UserList['id']; }; res: UserList; };
