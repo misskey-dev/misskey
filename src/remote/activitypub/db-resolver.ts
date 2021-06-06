@@ -98,7 +98,7 @@ export default class DbResolver {
 
 		if (user == null) return null;
 
-		const key = await UserPublickeys.findOneOrFail(user.id);
+		const key = await UserPublickeys.findOne(user.id);
 
 		return {
 			user,
@@ -127,7 +127,7 @@ export default class DbResolver {
 
 export type AuthUser = {
 	user: IRemoteUser;
-	key: UserPublickey;
+	key?: UserPublickey;
 };
 
 type UriParseResult = {
