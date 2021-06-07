@@ -105,6 +105,12 @@ export class Meta {
 		length: 512,
 		nullable: true
 	})
+	public backgroundImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 512,
+		nullable: true
+	})
 	public logoImageUrl: string | null;
 
 	@Column('varchar', {
