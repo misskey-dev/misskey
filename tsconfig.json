@@ -4,7 +4,6 @@
 		"module": "commonjs",
 		"declaration": true,
 		"outDir": "./built/",
-		"rootDir": "./src/",
 		"removeComments": true,
 		"strict": true,
 		"strictFunctionTypes": true,

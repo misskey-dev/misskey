@@ -8,7 +8,7 @@ describe('API', () => {
 			credential: 'TOKEN'
 		});
 		const res = await cli.request('meta', { detail: true });
-		expectType<Misskey.entities.InstanceMetadata>(res);
+		expectType<Misskey.entities.DetailedInstanceMetadata>(res);
 	});
 
 	test('conditional respose type', async () => {
