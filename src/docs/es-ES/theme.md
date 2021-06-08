@@ -6,7 +6,7 @@ Eligiendo un tema, se puede cambiar la apariencia del cliente de Misskey
 Configuración > Tema
 
 ## Crear tema
-テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
+El código del tema se guarda como un archivo JSON5. Un ejemplo de tema se puede ver aquí:
 ``` js
 {
     id: '17587283-dd92-4a2c-a22c-be0637c9e22a',
@@ -33,12 +33,12 @@ Configuración > Tema
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
-* `desc` ... テーマの説明(オプション)
-* `base` ... 明るいテーマか、暗いテーマか
-    * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
+* `id` ... Clave única del tema.Se recomienda un código UUID
+* `name` ... Nombre del tema
+* `author` ... Autor del tema
+* `desc` ... Descripción del tema (opcional)
+* `base` ... Si es un tema claro u oscuro
+    * Si se elige `light`, será un tema claro. Si se elige `dark`, será un tema oscuro.
     * テーマはここで設定されたベーステーマを継承します。
 * `props` ... テーマのスタイル定義。これから説明します。
 
