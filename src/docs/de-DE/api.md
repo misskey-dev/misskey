@@ -13,7 +13,7 @@ Generell benötigen alle API-Anfragen einen Zugriffstoken. Die Methode, wie ein 
 ### Einen Zugriffstoken für das eigene Benutzerkonto generieren
 In Einstellungen > API kann ein Zugriffstoken für das eigene Benutzerkonto generiert werden.
 
-[Fahre mit "Verwendung der API" fort.](#APIの使い方)
+[Fahre mit "Verwendung der API" fort.](#Verwendung-der-API)
 
 ### Einen Benutzer zur Generierung eines Zugangstokens für eine Anwendung auffordern
 Um einen in einer Anwendung zu verwendenden Zugriffstoken für ein Benutzerkonto zu erhalten, fordere die Generierung eines solchen durch den unten beschrieben Prozess an.
@@ -49,7 +49,7 @@ In der Antwort enthaltene Attribute:
 * `token` ... Zugriffstoken des Nutzers
 * `user` ... Benutzerdaten
 
-[Fahre mit "Verwendung der API" fort.](#APIの使い方)
+[Fahre mit "Verwendung der API" fort.](#Verwendung-der-API)
 
 ## Verwendung der API
 **Alle API-Anfragen sind POST-Anfragen, und alle Anfragen bzw. Antworten sind JSON-Objekte.REST wird nicht unterstützt.** Der Zugriffstoken muss unter dem `i`-Parameter beinhaltet werden.

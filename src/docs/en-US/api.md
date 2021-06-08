@@ -7,13 +7,13 @@ To starting using the API, you first need to get an access token. This page will
 ## Obtaining an access token
 Fundamentally, all API requests require an access token. The method of acquiring such an access token will vary depending on whether you yourself are sending API requests or requests are being sent through an application used by an end-user.
 
-* In case of the former:  Move on to [ "Manually issuing an access token for your own account" ](#自分自身のアクセストークンを手動発行する)
-* In case of the latter: Move on to [ "Requesting the application user to generate an access token" ](#アプリケーション利用者にアクセストークンの発行をリクエストする)
+* In case of the former:  Move on to [ "Manually issuing an access token for your own account" ](#Manually-issuing-your-own-access-token)
+* In case of the latter: Move on to [ "Requesting the application user to generate an access token" ](#Requesting-the-application-user-to-generate-an-access-token)
 
 ### Manually issuing your own access token
 You can create an access token for your own account in Settings > API.
 
-[Proceed to using the API.](#APIの使い方)
+[Proceed to using the API.](#Using-the-API)
 
 ### Requesting the application user to generate an access token
 To obtain an access token of the end user's account for your app, request permissions for it via the below process.
@@ -49,7 +49,7 @@ Properties included in the response:
 * `token` ... Access token of the user
 * `user` ... User data
 
-[Proceed to using the API.](#APIの使い方)
+[Proceed to using the API.](#Using-the-API)
 
 ## Using the API
 **All API requests are POST, and all request and response data is formatted in JSON.There is no REST support.** The access token must be included in the request parameter called `i`.

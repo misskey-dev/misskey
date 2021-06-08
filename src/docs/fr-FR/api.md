@@ -7,13 +7,13 @@ Pour pouvoir vous servir de l'API, il vous faudra d'abord obtenir un jeton d'acc
 ## Obtenir le jeton d'accès
 Une requête d'API, par essence, nécessite un jeton d'accès. La procédure d'acquisition du jeton diffère selon que vous effectuez la requête vous-même, ou qu'elle est envoyée via une application par un utilisateur final non défini.
 
-* Dans le premier cas : allez à [« Générer manuellement un jeton d'accès pour son propre compte »](#自分自身のアクセストークンを手動発行する).
-* Dans le second cas : allez à [« Demander la génération du jeton d'accès via un utilisateur d'application »](#アプリケーション利用者にアクセストークンの発行をリクエストする).
+* Dans le premier cas : allez à [« Générer manuellement un jeton d'accès pour son propre compte »](#Générer-manuellement-un-jeton-d'accès-pour-son-propre-compte).
+* Dans le second cas : allez à [« Demander la génération du jeton d'accès via un utilisateur d'application »](#Demander-la-génération-du-jeton-d'accès-via-un-utilisateur-d'application).
 
 ### Générer manuellement un jeton d'accès pour son propre compte
 Vous pouvez générer votre propre jeton d'accès en allant dans { Paramètres > API }.
 
-[Continuer avec « Utiliser l'API ».](#APIの使い方)
+[Continuer avec « Utiliser l'API ».](#Utiliser-l'API)
 
 ### Demander la génération du jeton d'accès via un utilisateur d'application
 Pour obtenir un jeton d'accès pour le compte utilisateur final de votre application, suivez la procédure de génération ci-dessous.
@@ -49,7 +49,7 @@ Propriétés incluses dans la réponse :
 * `token` :  jeton d'accès de l'utilisateur
 * `user` :  données de l'utilisateur
 
-[Continuer avec « Utiliser l'API ».](#APIの使い方)
+[Continuer avec « Utiliser l'API ».](#Utiliser-l'API)
 
 ## Utiliser l'API
 **L'API utilise seulement la méthode POST, et toutes les requêtes / réponses sont au format JSON. REST n'est pas pris en charge. ** Le jeton d'accès s'insère dans le paramètre de requête nommé `i`.

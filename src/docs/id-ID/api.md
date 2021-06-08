@@ -7,7 +7,7 @@ Untuk memulai menggunakin API, kamu harus memiliki access token terlebih dahulu.
 ## Mendapatkan access token
 Pada dasarnya, semua request API membutuhkan access token. Metode untuk mendapatkan sebuah access token bermacam-macam bergantung pada kamu sendiri yang mengirim request API atau request tersebut dikirim melalui aplikasi yang dipakai oleh pengguna akhir.
 
-* Apabila kamu pengguna lama: Langsung saja menuju [ "Menerbitkan access token untuk akun kamu sendiri secara manual" ](#自分自身のアクセストークンを手動発行する)
+* Apabila kamu pengguna lama: Langsung saja menuju [ "Menerbitkan access token untuk akun kamu sendiri secara manual" ](#Menerbitkan-access-token-untuk-akun-kamu-sendiri-secara-manual)
 * Apabila kamu pengguna baru: Langsung saja menuju [ "Meminta aplikasi pengguna untuk menghasilkan access token" ](#アプリケーション利用者にアクセストークンの発行をリクエストする)
 
 ### Menerbitkan access token untuk akun kamu sendiri secara manual
