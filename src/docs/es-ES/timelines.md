@@ -1,4 +1,4 @@
-# タイムラインの比較
+# Comparación de las lineas de tiempo
 
 https://docs.google.com/spreadsheets/d/1lxQ2ugKrhz58Bg96HTDK_2F98BUritkMyIiBkOByjHA/edit?usp=sharing
 
