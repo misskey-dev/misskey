@@ -14,6 +14,7 @@ import { InboxJobData } from '../types';
 import DbResolver from '../../remote/activitypub/db-resolver';
 import { resolvePerson } from '../../remote/activitypub/models/person';
 import { LdSignature } from '../../remote/activitypub/misc/ld-signature';
+import mrfs from '@/config/mrf';
 
 const logger = new Logger('inbox');
 
@@ -39,6 +40,11 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	const keyIdLower = signature.keyId.toLowerCase();
 	if (keyIdLower.startsWith('acct:')) {
 		return `Old keyId is no longer supported. ${keyIdLower}`;
+	}
+
+	for (const mrf of mrfs) {
+		const res = mrf({activity});
+		if (res === false) return 'Rejected by MRF';
 	}
 
 	// TDOO: キャッシュ

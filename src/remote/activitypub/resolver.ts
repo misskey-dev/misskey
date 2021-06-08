@@ -4,6 +4,7 @@ import { ILocalUser } from '../../models/entities/user';
 import { getInstanceActor } from '../../services/instance-actor';
 import { signedGet } from './request';
 import { IObject, isCollectionOrOrderedCollection, ICollection, IOrderedCollection } from './type';
+import mrfs from '@/config/mrf';
 
 export default class Resolver {
 	private history: Set<string>;
@@ -58,6 +59,11 @@ export default class Resolver {
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		)) {
 			throw new Error('invalid response');
+		}
+
+		for (const mrf of mrfs) {
+			const res = mrf({activity: object});
+			if (res === false) throw new Error('Rejected by MRF');
 		}
 
 		return object;
