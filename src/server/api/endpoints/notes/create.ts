@@ -125,7 +125,6 @@ export const meta = {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
 				ref: 'Note',
-				description: '作成した投稿'
 			}
 		}
 	},

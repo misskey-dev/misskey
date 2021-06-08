@@ -51,14 +51,12 @@ export const packedChannelSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this Channel.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Channel was created.'
 		},
 		lastNotedAt: {
 			type: 'string' as const,
@@ -68,7 +66,6 @@ export const packedChannelSchema = {
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The name of the Channel.'
 		},
 		description: {
 			type: 'string' as const,

@@ -20,7 +20,6 @@ export const meta = {
 			available: {
 				type: 'boolean' as const,
 				optional: false as const, nullable: false as const,
-				description: 'Returns true if the username is not used.'
 			}
 		}
 	}

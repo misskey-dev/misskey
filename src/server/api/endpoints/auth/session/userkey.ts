@@ -25,14 +25,12 @@ export const meta = {
 			accessToken: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'ユーザーのアクセストークン',
 			},
 
 			user: {
 				type: 'object' as const,
 				optional: false as const, nullable: false as const,
 				ref: 'User',
-				description: '認証したユーザー'
 			},
 		}
 	},

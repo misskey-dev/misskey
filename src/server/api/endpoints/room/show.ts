@@ -59,7 +59,6 @@ export const meta = {
 						props: {
 							type: 'object' as const,
 							optional: true as const, nullable: false as const,
-							description: 'Properties vary depending on the furniture'
 						},
 						position: {
 							type: 'object' as const,

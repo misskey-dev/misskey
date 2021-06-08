@@ -36,7 +36,6 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				format: 'id',
-				description: 'New copied emoji ID'
 			}
 		}
 	}

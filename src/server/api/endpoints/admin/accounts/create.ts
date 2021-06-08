@@ -23,7 +23,6 @@ export const meta = {
 			token: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'Token to access this user.'
 			}
 		}
 	}

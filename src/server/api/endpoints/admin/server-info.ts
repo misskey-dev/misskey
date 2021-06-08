@@ -20,23 +20,19 @@ export const meta = {
 			machine: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'The name of the running server'
 			},
 			os: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'OS used by the server',
 				example: 'linux'
 			},
 			node: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'Version of Node.js'
 			},
 			psql: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'Version of Postgresql'
 			},
 			cpu: {
 				type: 'object' as const,
@@ -45,12 +41,10 @@ export const meta = {
 					model: {
 						type: 'string' as const,
 						optional: false as const, nullable: false as const,
-						description: 'The name of the CPU you are using'
 					},
 					cores: {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
-						description: 'Number of CPU cores used (number of logical processors)'
 					}
 				}
 			},
@@ -62,7 +56,6 @@ export const meta = {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
 						format: 'bytes',
-						description: 'RAM capacity.'
 					}
 				}
 			},
@@ -74,13 +67,11 @@ export const meta = {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
 						format: 'bytes',
-						description: 'Total storage capacity.'
 					},
 					used: {
 						type: 'number' as const,
 						optional: false as const, nullable: false as const,
 						format: 'bytes',
-						description: 'Amount of storage used'
 					}
 				}
 			},
@@ -91,7 +82,6 @@ export const meta = {
 					interface: {
 						type: 'string' as const,
 						optional: false as const, nullable: false as const,
-						description: 'The interface name of your network.',
 						example: 'eth0'
 					}
 				}

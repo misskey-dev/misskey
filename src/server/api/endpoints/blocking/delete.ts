@@ -53,7 +53,6 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				format: 'id',
-				description: 'The unique identifier for this blocking.',
 				example: 'xxxxxxxxxx',
 			},
 			name: {

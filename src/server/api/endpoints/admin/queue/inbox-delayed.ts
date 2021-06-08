@@ -21,11 +21,9 @@ export const meta = {
 				anyOf: [
 					{
 						type: 'string' as const,
-						description: 'FQDN to fediverse server'
 					},
 					{
 						type: 'number' as const,
-						description: 'Delayed queue counts'
 					}
 				]
 			}

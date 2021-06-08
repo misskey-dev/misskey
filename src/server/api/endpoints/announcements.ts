@@ -40,40 +40,33 @@ export const meta = {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
 					format: 'id',
-					description: 'The unique identifier for this Announcement.',
 					example: 'xxxxxxxxxx',
 				},
 				createdAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
 					format: 'date-time',
-					description: 'The date that the Announcement was created.'
 				},
 				updatedAt: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
 					format: 'date-time',
-					description: 'The date that the Announcement was updated.'
 				},
 				text: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					description: 'Announcement text.'
 				},
 				title: {
 					type: 'string' as const,
 					optional: false as const, nullable: false as const,
-					description: 'Announcement title.'
 				},
 				imageUrl: {
 					type: 'string' as const,
 					optional: false as const, nullable: true as const,
-					description: 'Announcement image.'
 				},
 				isRead: {
 					type: 'boolean' as const,
 					optional: false as const, nullable: false as const,
-					description: 'Indicates that you have read this announcement'
 				}
 			}
 		}

@@ -24,13 +24,11 @@ export const meta = {
 			token: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'セッションのトークン'
 			},
 			url: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				format: 'url',
-				description: 'セッションのURL'
 			},
 		}
 	},

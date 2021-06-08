@@ -5,7 +5,6 @@ export const logSchema = {
 	count: {
 		type: 'number' as const,
 		optional: false as const, nullable: false as const,
-		description: 'リアクションされた数',
 	},
 };
 
