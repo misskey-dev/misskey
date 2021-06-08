@@ -40,9 +40,9 @@ El código del tema se guarda como un archivo JSON5. Un ejemplo de tema se puede
 * `base` ... Si es un tema claro u oscuro
     * Si se elige `light`, será un tema claro. Si se elige `dark`, será un tema oscuro.
     * Aquí el tema hereda los valores por defecto del tema base elegido
-* `props` ... テーマのスタイル定義。これから説明します。
+* `props` ... Definición del estilo del tema. Esto se explica en lo siguiente.
 
-### テーマのスタイル定義
+### Definición del estilo del tema
 `props`下にはテーマのスタイルを定義します。 キーがCSSの変数名になり、バリューで中身を指定します。 なお、この`props`オブジェクトはベーステーマから継承されます。 ベーステーマは、このテーマの`base`が`light`なら[_light.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_light.json5)で、`dark`なら[_dark.json5](https://github.com/misskey-dev/misskey/blob/develop/src/client/themes/_dark.json5)です。 つまり、このテーマ内の`props`に`panel`というキーが無くても、そこにはベーステーマの`panel`があると見なされます。
 
 #### バリューで使える構文
