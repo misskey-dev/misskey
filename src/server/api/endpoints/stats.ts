@@ -5,11 +5,6 @@ import { federationChart, driveChart } from '../../../services/chart';
 export const meta = {
 	requireCredential: false as const,
 
-	desc: {
-		'ja-JP': 'インスタンスの統計を取得します。',
-		'en-US': 'Get the instance\'s statistics'
-	},
-
 	tags: ['meta'],
 
 	params: {

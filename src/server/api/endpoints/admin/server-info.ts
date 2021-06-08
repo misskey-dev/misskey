@@ -8,11 +8,6 @@ export const meta = {
 	requireCredential: true as const,
 	requireModerator: true,
 
-	desc: {
-		'ja-JP': 'サーバー情報を表示します。',
-		'en-US': 'Show server information.'
-	},
-
 	tags: ['admin', 'meta'],
 
 	params: {

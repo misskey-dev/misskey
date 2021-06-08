@@ -5,11 +5,6 @@ import { DriveFolders } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブのフォルダ一覧を取得します。',
-		'en-US': 'Get folders of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,

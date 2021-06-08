@@ -15,19 +15,11 @@ import { isActor, isPost, getApId } from '../../../../remote/activitypub/type';
 export const meta = {
 	tags: ['federation'],
 
-	desc: {
-		'ja-JP': 'URIを指定してActivityPubオブジェクトを参照します。',
-		'en-US': 'Browse to the ActivityPub object by specifying the URI.'
-	},
-
 	requireCredential: false as const,
 
 	params: {
 		uri: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'ActivityPubオブジェクトのURI'
-			}
 		},
 	},
 

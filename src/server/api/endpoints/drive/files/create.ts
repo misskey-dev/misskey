@@ -8,11 +8,6 @@ import { ApiError } from '../../../error';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブにファイルをアップロードします。',
-		'en-US': 'Upload a file to drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -30,36 +25,23 @@ export const meta = {
 		folderId: {
 			validator: $.optional.nullable.type(ID),
 			default: null as any,
-			desc: {
-				'ja-JP': 'フォルダID'
-			}
 		},
 
 		name: {
 			validator: $.optional.nullable.str,
 			default: null as any,
-			desc: {
-				'ja-JP': 'ファイル名（拡張子があるなら含めて）'
-			}
 		},
 
 		isSensitive: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
-			desc: {
-				'ja-JP': 'このメディアが「閲覧注意」(NSFW)かどうか',
-				'en-US': 'Whether this media is NSFW'
-			}
 		},
 
 		force: {
 			validator: $.optional.either($.bool, $.str),
 			default: false,
 			transform: (v: any): boolean => v === true || v === 'true',
-			desc: {
-				'ja-JP': 'true にすると、同じハッシュを持つファイルが既にアップロードされていても強制的にファイルを作成します。',
-			}
 		}
 	},
 

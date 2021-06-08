@@ -6,11 +6,6 @@ import { UserGroup } from '../../../../../models/entities/user-group';
 import { UserGroupJoining } from '../../../../../models/entities/user-group-joining';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザーグループを作成します。',
-		'en-US': 'Create a user group.'
-	},
-
 	tags: ['groups'],
 
 	requireCredential: true as const,

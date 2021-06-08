@@ -6,10 +6,6 @@ import { generateMutedUserQueryForUsers } from '../../common/generate-muted-user
 import { generateBlockQueryForUsers } from '../../common/generate-block-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'おすすめのユーザー一覧を取得します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: true as const,

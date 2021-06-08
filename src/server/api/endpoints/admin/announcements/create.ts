@@ -4,11 +4,6 @@ import { Announcements } from '../../../../../models';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アナウンスを作成します。',
-		'en-US': 'Create a announcement.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

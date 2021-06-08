@@ -10,10 +10,6 @@ import rndstr from 'rndstr';
 import { publishBroadcastStream } from '../../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'カスタム絵文字を追加します。'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

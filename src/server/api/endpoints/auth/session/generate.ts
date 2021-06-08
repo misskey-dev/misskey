@@ -11,18 +11,9 @@ export const meta = {
 
 	requireCredential: false as const,
 
-	desc: {
-		'ja-JP': 'アプリを認証するためのトークンを作成します。',
-		'en-US': 'Generate a token for authorize application.'
-	},
-
 	params: {
 		appSecret: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'アプリケーションのシークレットキー',
-				'en-US': 'The secret key of your application.'
-			}
 		}
 	},
 

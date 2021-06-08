@@ -5,11 +5,6 @@ import { AbuseUserReports } from '../../../../models';
 import { makePaginationQuery } from '../../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '通報一覧を表示します。',
-		'en-US': 'Show list of abuse user reports.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

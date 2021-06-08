@@ -11,18 +11,10 @@ export const meta = {
 	params: {
 		appSecret: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'アプリケーションのシークレットキー',
-				'en-US': 'The secret key of your application.'
-			}
 		},
 
 		token: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'セッションのトークン',
-				'en-US': 'The token of a session.'
-			}
 		}
 	},
 

@@ -6,11 +6,6 @@ import { makePaginationQuery } from '../../../common/make-pagination-query';
 import { ID } from '@/misc/cafy-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'リモートのカスタム絵文字一覧を取得します。',
-		'en-US': 'Gets a list of remote custom emojis.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

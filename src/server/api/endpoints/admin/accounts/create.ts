@@ -3,11 +3,6 @@ import { Users } from '../../../../../models';
 import { signup } from '../../../common/signup';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アカウントを作成します。',
-		'en-US': 'Create a account.'
-	},
-
 	tags: ['admin'],
 
 	params: {

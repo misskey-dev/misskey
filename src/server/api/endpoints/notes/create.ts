@@ -23,10 +23,6 @@ setInterval(() => {
 }, 3000);
 
 export const meta = {
-	desc: {
-		'ja-JP': '投稿します。'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -42,16 +38,10 @@ export const meta = {
 		visibility: {
 			validator: $.optional.str.or(noteVisibilities as unknown as string[]),
 			default: 'public',
-			desc: {
-				'ja-JP': '投稿の公開範囲'
-			}
 		},
 
 		visibleUserIds: {
 			validator: $.optional.arr($.type(ID)).unique().min(0),
-			desc: {
-				'ja-JP': '(投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー'
-			}
 		},
 
 		text: {
@@ -61,92 +51,56 @@ export const meta = {
 					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH	// DB limit
 			),
 			default: null as any,
-			desc: {
-				'ja-JP': '投稿内容'
-			}
 		},
 
 		cw: {
 			validator: $.optional.nullable.str.pipe(Notes.validateCw),
-			desc: {
-				'ja-JP': 'コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。'
-			}
 		},
 
 		viaMobile: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'モバイルデバイスからの投稿か否か。'
-			}
 		},
 
 		localOnly: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'ローカルのみに投稿か否か。'
-			}
 		},
 
 		noExtractMentions: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': '本文からメンションを展開しないか否か。'
-			}
 		},
 
 		noExtractHashtags: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': '本文からハッシュタグを展開しないか否か。'
-			}
 		},
 
 		noExtractEmojis: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': '本文からカスタム絵文字を展開しないか否か。'
-			}
 		},
 
 		fileIds: {
 			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
-			desc: {
-				'ja-JP': '添付するファイル'
-			}
 		},
 
 		mediaIds: {
 			validator: $.optional.arr($.type(ID)).unique().range(1, 4),
 			deprecated: true,
-			desc: {
-				'ja-JP': '添付するファイル (このパラメータは廃止予定です。代わりに fileIds を使ってください。)'
-			}
 		},
 
 		replyId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': '返信対象'
-			}
 		},
 
 		renoteId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'Renote対象'
-			}
 		},
 
 		channelId: {
 			validator: $.optional.nullable.type(ID),
-			desc: {
-				'ja-JP': 'チャンネル'
-			}
 		},
 
 		poll: {
@@ -159,9 +113,6 @@ export const meta = {
 				expiresAt: $.optional.nullable.num.int(),
 				expiredAfter: $.optional.nullable.num.int().min(1)
 			}).strict(),
-			desc: {
-				'ja-JP': 'アンケート'
-			},
 			ref: 'poll'
 		}
 	},

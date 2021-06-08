@@ -5,11 +5,6 @@ import { Announcements, AnnouncementReads } from '../../../models';
 import { makePaginationQuery } from '../common/make-pagination-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アナウンスを表示します。',
-		'en-US': 'Show announcements.'
-	},
-
 	tags: ['meta'],
 
 	requireCredential: false as const,

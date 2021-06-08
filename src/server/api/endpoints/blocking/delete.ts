@@ -8,11 +8,6 @@ import { getUser } from '../../common/getters';
 import { Blockings, Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのブロックを解除します。',
-		'en-US': 'Unblock a user.'
-	},
-
 	tags: ['account'],
 
 	limit: {
@@ -27,10 +22,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 

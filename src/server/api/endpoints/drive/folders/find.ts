@@ -18,9 +18,6 @@ export const meta = {
 		parentId: {
 			validator: $.optional.nullable.type(ID),
 			default: null as any,
-			desc: {
-				'ja-JP': 'フォルダID'
-			}
 		},
 	},
 

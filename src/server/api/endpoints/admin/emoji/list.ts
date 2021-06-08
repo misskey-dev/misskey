@@ -6,11 +6,6 @@ import { ID } from '@/misc/cafy-id';
 import { Emoji } from '../../../../../models/entities/emoji';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'カスタム絵文字一覧を取得します。',
-		'en-US': 'List custom emojis.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

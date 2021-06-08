@@ -10,44 +10,23 @@ export const meta = {
 
 	requireCredential: false as const,
 
-	desc: {
-		'ja-JP': 'アプリを作成します。',
-		'en-US': 'Create a application.'
-	},
-
 	params: {
 		name: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'アプリの名前',
-				'en-US': 'Name of application'
-			}
 		},
 
 		description: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'アプリの説明',
-				'en-US': 'Description of application'
-			}
 		},
 
 		permission: {
 			validator: $.arr($.str).unique(),
-			desc: {
-				'ja-JP': 'このアプリに割り当てる権限（権限については"Permissions"を参照）',
-				'en-US': 'Permissions assigned to this app (see "Permissions" for the permissions)'
-			}
 		},
 
 		// TODO: Check it is valid url
 		callbackUrl: {
 			validator: $.optional.nullable.str,
 			default: null as any,
-			desc: {
-				'ja-JP': 'アプリ認証時にコールバックするURL',
-				'en-US': 'URL to call back at app authentication'
-			}
 		},
 	},
 

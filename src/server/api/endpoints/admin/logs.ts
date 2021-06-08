@@ -4,11 +4,6 @@ import { Logs } from '../../../../models';
 import { Brackets } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ログを表示します。',
-		'en-US': 'Show logs.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

@@ -7,11 +7,6 @@ import { DB_MAX_NOTE_TEXT_LENGTH } from '@/misc/hard-limits';
 import { MoreThan } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'インスタンス情報を取得します。',
-		'en-US': 'Get the information of this instance.'
-	},
-
 	tags: ['meta'],
 
 	requireCredential: false as const,
