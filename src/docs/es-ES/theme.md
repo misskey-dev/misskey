@@ -56,12 +56,12 @@ Debajo de `props`, se define el estilo del tema. La clave es el nombre de las va
     * Escribiendo `@{nombre de clave}` se hace referencia al valor de la otra clave.Reemplace `{nombre de clave}` por el nombre de la clave al cual quiera hacer referencia.
     * Ej: `@panel`
 * Referencia a una constante (ver más abajo)
-    * `${定数名}`と書くと定数の参照になります。`{定数名}`は参照したい定数の名前に置き換えます。
-    * 例: `$main`
-* 関数(後述)
-    * `:{関数名}<{引数}<{色}`
+    * Escribiendo `${nombre de la constante}` se hace referencia a la constante.Reemplace `{nombre de la constante}` por la constante al cual quiera hacer referencia.
+    * Ej: `$main`
+* Funciones (ver más abajo)
+    * `:{nombre de la función}<{parámetros}<{color}`
 
-#### Constante
+#### Constantes
 「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
 
 #### funciones
