@@ -39,7 +39,7 @@ El código del tema se guarda como un archivo JSON5. Un ejemplo de tema se puede
 * `desc` ... Descripción del tema (opcional)
 * `base` ... Si es un tema claro u oscuro
     * Si se elige `light`, será un tema claro. Si se elige `dark`, será un tema oscuro.
-    * テーマはここで設定されたベーステーマを継承します。
+    * Aquí el tema hereda los valores por defecto del tema base elegido
 * `props` ... テーマのスタイル定義。これから説明します。
 
 ### テーマのスタイル定義
