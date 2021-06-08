@@ -50,7 +50,7 @@ export const meta = {
 					&& length(text.trim()) <= maxNoteTextLength
 					&& Array.from(text.trim()).length <= DB_MAX_NOTE_TEXT_LENGTH	// DB limit
 			),
-			default: null as any,
+			default: null,
 		},
 
 		cw: {

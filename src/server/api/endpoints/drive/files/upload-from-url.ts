@@ -26,7 +26,7 @@ export const meta = {
 
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as any,
+			default: null,
 		},
 
 		isSensitive: {
@@ -36,12 +36,12 @@ export const meta = {
 
 		comment: {
 			validator: $.optional.nullable.str,
-			default: null as any,
+			default: null,
 		},
 
 		marker: {
 			validator: $.optional.nullable.str,
-			default: null as any,
+			default: null,
 		},
 
 		force: {

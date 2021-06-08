@@ -24,12 +24,12 @@ export const meta = {
 	params: {
 		folderId: {
 			validator: $.optional.nullable.type(ID),
-			default: null as any,
+			default: null,
 		},
 
 		name: {
 			validator: $.optional.nullable.str,
-			default: null as any,
+			default: null,
 		},
 
 		isSensitive: {

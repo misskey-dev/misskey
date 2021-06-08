@@ -14,12 +14,12 @@ export const meta = {
 	params: {
 		query: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
 		},
 
 		host: {
 			validator: $.optional.nullable.str,
-			default: null as any
+			default: null
 		},
 
 		limit: {

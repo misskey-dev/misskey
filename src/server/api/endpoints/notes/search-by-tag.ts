@@ -23,12 +23,12 @@ export const meta = {
 
 		reply: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
+			default: null,
 		},
 
 		renote: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
+			default: null,
 		},
 
 		withFiles: {
@@ -37,7 +37,7 @@ export const meta = {
 
 		poll: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
+			default: null,
 		},
 
 		sinceId: {

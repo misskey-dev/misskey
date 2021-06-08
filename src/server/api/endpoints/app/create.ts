@@ -26,7 +26,7 @@ export const meta = {
 		// TODO: Check it is valid url
 		callbackUrl: {
 			validator: $.optional.nullable.str,
-			default: null as any,
+			default: null,
 		},
 	},
 
