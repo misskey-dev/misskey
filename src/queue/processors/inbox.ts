@@ -122,8 +122,12 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	}
 
 	for (const mrf of mrfs) {
-		const res = mrf({activity});
-		if (res === false) return 'Rejected by MRF policy';
+		try {
+			const res = mrf({activity});
+			if (res === false) return 'Rejected by MRF policy';
+		} catch (e) {
+			logger.warn(`Error processing MRF: ${e.message || e.name || e}`);
+		}
 	}
 
 	// Update stats

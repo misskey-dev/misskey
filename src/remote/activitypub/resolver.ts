@@ -61,8 +61,14 @@ export default class Resolver {
 			throw new Error('invalid response');
 		}
 
+		// TODO: Notes may not come in as Create
 		for (const mrf of mrfs) {
-			const res = mrf({activity: object});
+			let res;
+			try {
+				res = mrf({activity: object});
+			} catch (e) {
+				continue;
+			}
 			if (res === false) throw new Error('Rejected by MRF');
 		}
 
