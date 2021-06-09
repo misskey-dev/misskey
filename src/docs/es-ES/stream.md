@@ -6,15 +6,15 @@ Usando la API de streaming, se puede recibir en tiempo real toda clase de inform
 
 Para usar la API de streaming, primero hay que conectar un **websocket** al servidor de Misskey
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
+Conecte el websocket a la URL mencionada abajo, incluyendo la información de autenticación en el parámetro `i`Ej:
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+La información de autenticación hace referencia a tu propia clave de la API, o al token de acceso del usuario cuando se conecta al stream desde la aplicación
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Para obtener la información de la autenticación, consulte <a href="./api">Este documento</a></p>
 </div>
 
 ---
