@@ -42,11 +42,6 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		return `Old keyId is no longer supported. ${keyIdLower}`;
 	}
 
-	for (const mrf of mrfs) {
-		const res = mrf({activity});
-		if (res === false) return 'Rejected by MRF';
-	}
-
 	// TDOO: キャッシュ
 	const dbResolver = new DbResolver();
 
@@ -126,6 +121,11 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 		}
 	}
 
+	for (const mrf of mrfs) {
+		const res = mrf({activity});
+		if (res === false) return 'Rejected by MRF policy';
+	}
+
 	// Update stats
 	registerOrFetchInstanceDoc(authUser.user.host).then(i => {
 		Instances.update(i.id, {
@@ -140,6 +140,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 	});
 
 	// アクティビティを処理
+	await perform(authUser.user, activity);
 	await perform(authUser.user, activity);
 	return `ok`;
 };
