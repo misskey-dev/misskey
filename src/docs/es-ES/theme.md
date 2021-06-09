@@ -62,7 +62,7 @@ Debajo de `props`, se define el estilo del tema. La clave es el nombre de las va
     * `:{nombre de la función}<{parámetros}<{color}`
 
 #### Constantes
-「CSS変数として出力はしたくないが、他のCSS変数の値として使いまわしたい」値があるときは、定数を使うと便利です。 キー名を`$`で始めると、そのキーはCSS変数として出力されません。
+Cuando hay un valor que no se quiere generar como variable CSS pero sí se quiere reutilizar como valor de otra variable CSS, es conveniente usar constantes. Cuando a un nombre de clave se le añade como prefijo `$`, esa clave no será generada como una variable CSS.
 
 #### funciones
 wip
