@@ -19,7 +19,7 @@ La información de autenticación hace referencia a tu propia clave de la API, o
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。例:
+La información de autenticación puede omitirse, pero en ese caso de uso sin un login, se restringirá la información que puede ser recibida y las operaciones posibles,Ej:
 
 ```
 %WS_URL%/streaming
