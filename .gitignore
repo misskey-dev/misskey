@@ -13,6 +13,9 @@ report.*.json
 /.config/*
 !/.config/example.yml
 !/.config/docker_example.env
+!/.config/mrf
+/.config/mrf/*
+!/.config/mrf/*.example
 
 # misskey
 /build
