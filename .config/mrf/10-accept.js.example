@@ -1,0 +1,13 @@
+// Reject all activities except those from a list
+let accept = ["friends.com", "coolppl.net"]
+const { URL } = require("url");
+
+
+module.exports = function ({activity}) {
+	const actor = activity.actor || activity.attributedTo || (activity.object && activity.object.attributedTo);
+	const host = new URL(actor).hostname;
+	if (!accept.includes(host)) {
+		// Return false to reject
+		return false;
+	}
+}

@@ -1,0 +1,25 @@
+// Remove activities from certain hosts from the global timeline.
+const hosts = ["jokesters.xyz"];
+
+
+const { URL } = require("url");
+const {isPublic} = require("../../built/remote/activitypub/audience.js");
+
+module.exports = function ({activity}) {
+	if (activity.type === "Create" && typeof activity.object == "object" && activity.object.to !== undefined && activity.object.cc !== undefined) {
+		const actor = activity.actor || activity.object.attributedTo;
+		const host = new URL(actor).hostname;
+		if (hosts.includes(host)) {
+			let to = activity.object.to;
+			let cc = activity.object.cc;
+			if (!Array.isArray(to)) to = [to];
+			if (!Array.isArray(cc)) cc = [cc];
+
+			let wasPublic = activity.object.to.length;
+			activity.object.to = activity.object.to.filter(v => !isPublic(v));
+			if (activity.object.to.length !== wasPublic) {
+				activity.object.cc.push("https://www.w3.org/ns/activitystreams#Public");
+			}
+		}
+	}
+}
