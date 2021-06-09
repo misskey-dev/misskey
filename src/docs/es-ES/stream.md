@@ -1,10 +1,10 @@
-# ストリーミングAPI
+# API de Streaming
 
-ストリーミングAPIを使うと、リアルタイムで様々な情報(例えばタイムラインに新しい投稿が流れてきた、メッセージが届いた、フォローされた、など)を受け取ったり、様々な操作を行ったりすることができます。
+Usando la API de streaming, se puede recibir en tiempo real toda clase de información (por ejemplo, los posts nuevos que pasaron por la linea de tiempo, los mensajes recibidos, las notificaciones de seguimiento, etc.) y manejar varias operaciones en estas.
 
-## ストリームに接続する
+## Conectarse a streams
 
-ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
+Para usar la API de streaming, primero hay que conectar un **websocket** al servidor de Misskey
 
 以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
 ```
