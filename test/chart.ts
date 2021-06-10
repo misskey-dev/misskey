@@ -12,61 +12,28 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
-import { async } from './utils';
+import { async, initTestDb } from './utils';
 import TestChart from '../src/services/chart/charts/classes/test';
 import TestGroupedChart from '../src/services/chart/charts/classes/test-grouped';
 import TestUniqueChart from '../src/services/chart/charts/classes/test-unique';
 import * as _TestChart from '../src/services/chart/charts/schemas/test';
 import * as _TestGroupedChart from '../src/services/chart/charts/schemas/test-grouped';
 import * as _TestUniqueChart from '../src/services/chart/charts/schemas/test-unique';
-import { Connection, getConnection, createConnection } from 'typeorm';
-import config from '../src/config';
 import Chart from '../src/services/chart/core';
-import { initDb } from '../src/db/postgre';
-
-async function initChartDb() {
-	try {
-		const conn = await getConnection();
-		await conn.close();
-	} catch (e) {}
-
-	return await createConnection({
-		type: 'postgres',
-		host: config.db.host,
-		port: config.db.port,
-		username: config.db.user,
-		password: config.db.pass,
-		database: config.db.db,
-		synchronize: true,
-		dropSchema: true,
-		entities: [
-			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
-			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema),
-			Chart.schemaToEntity(_TestUniqueChart.name, _TestUniqueChart.schema)
-		]
-	});
-}
 
 describe('Chart', () => {
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
-	let clock: lolex.InstalledClock;
-	let connection: Connection;
+	let clock: lolex.Clock;
 
-	before(done => {
-		initChartDb().then(c => {
-			connection = c;
-			done();
-		});
-	});
+	beforeEach(async(async () => {
+		await initTestDb(false, [
+			Chart.schemaToEntity(_TestChart.name, _TestChart.schema),
+			Chart.schemaToEntity(_TestGroupedChart.name, _TestGroupedChart.schema),
+			Chart.schemaToEntity(_TestUniqueChart.name, _TestUniqueChart.schema)
+		]);
 
-	after(async(async () => {
-		await connection.close();
-		await initDb(true, undefined, true);
-	}));
-
-	beforeEach(done => {
 		testChart = new TestChart();
 		testGroupedChart = new TestGroupedChart();
 		testUniqueChart = new TestUniqueChart();
@@ -74,13 +41,10 @@ describe('Chart', () => {
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0))
 		});
-		done();
-	});
+	}));
 
 	afterEach(async(async () => {
 		clock.uninstall();
-		await connection.dropDatabase();
-		await connection.synchronize();
 	}));
 
 	it('Can updates', async(async () => {
