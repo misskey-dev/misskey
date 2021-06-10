@@ -15,7 +15,7 @@ import { initDb } from '../src/db/postgre';
 
 describe('ActivityPub', () => {
 	before(async () => {
-		await initDb();
+		await initDb();	// TODO: 後で #7566 とマージ
 	});
 
 	describe('Parse minimum object', () => {
