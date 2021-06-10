@@ -24,13 +24,13 @@ import config from '../src/config';
 import Chart from '../src/services/chart/core';
 import { initDb } from '../src/db/postgre';
 
-function initChartDb() {
+async function initChartDb() {
 	try {
-		const conn = getConnection();
-		return Promise.resolve(conn);
+		const conn = await getConnection();
+		await conn.close();
 	} catch (e) {}
 
-	return createConnection({
+	return await createConnection({
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
