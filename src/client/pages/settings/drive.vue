@@ -220,6 +220,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+@use "sass:math";
+
 .uawsfosz {
 	> div {
 		padding: 24px;
@@ -227,12 +230,12 @@ export default defineComponent({
 		> .meter {
 			$size: 12px;
 			background: rgba(0, 0, 0, 0.1);
-			border-radius: ($size / 2);
+			border-radius: math.div($size, 2);
 			overflow: hidden;
 
 			> div {
 				height: $size;
-				border-radius: ($size / 2);
+				border-radius: math.div($size, 2);
 			}
 		}
 	}

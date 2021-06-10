@@ -12,7 +12,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadFile, launchServer } from './utils';
+import { async, signup, request, post, uploadFile, launchServer, shutdownServer } from './utils';
 
 describe('users/notes', () => {
 	let p: childProcess.ChildProcess;
@@ -37,8 +37,8 @@ describe('users/notes', () => {
 		});
 	}));
 
-	after(() => {
-		p.kill();
+	after(async() => {
+		await shutdownServer(p);
 	});
 
 	it('ファイルタイプ指定 (jpg)', async(async () => {

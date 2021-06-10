@@ -15,11 +15,6 @@ import { IRemoteUser } from '../../../../../models/entities/user';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿のアンケートに投票します。',
-		'en-US': 'Vote poll of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -29,10 +24,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		},
 
 		choice: {

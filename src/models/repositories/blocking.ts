@@ -41,14 +41,12 @@ export const packedBlockingSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this blocking.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the blocking was created.'
 		},
 		blockeeId: {
 			type: 'string' as const,
@@ -59,7 +57,6 @@ export const packedBlockingSchema = {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
 			ref: 'User',
-			description: 'The blockee.'
 		},
 	}
 };

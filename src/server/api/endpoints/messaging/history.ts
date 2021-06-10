@@ -5,11 +5,6 @@ import { MessagingMessages, Mutings, UserGroupJoinings } from '../../../../model
 import { Brackets } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'トークの履歴を取得します。',
-		'en-US': 'Show messaging history.'
-	},
-
 	tags: ['messaging'],
 
 	requireCredential: true as const,

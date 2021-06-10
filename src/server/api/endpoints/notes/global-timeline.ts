@@ -11,18 +11,11 @@ import { generateRepliesQuery } from '../../common/generate-replies-query';
 import { generateMutedNoteQuery } from '../../common/generate-muted-note-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'グローバルタイムラインを取得します。'
-	},
-
 	tags: ['notes'],
 
 	params: {
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'ファイルが添付された投稿に限定するか否か'
-			}
 		},
 
 		limit: {

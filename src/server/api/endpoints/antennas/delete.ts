@@ -6,11 +6,6 @@ import { Antennas } from '../../../../models';
 import { publishInternalEvent } from '../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アンテナを削除します。',
-		'en-US': 'Delete a antenna.'
-	},
-
 	tags: ['antennas'],
 
 	requireCredential: true as const,

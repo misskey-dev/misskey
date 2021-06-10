@@ -3,11 +3,6 @@ import define from '../../define';
 import { MessagingMessages, UserGroupJoinings } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'トークメッセージをすべて既読にします。',
-		'en-US': 'Mark all talk messages as read.'
-	},
-
 	tags: ['account', 'messaging'],
 
 	requireCredential: true as const,

@@ -3,11 +3,6 @@ import { fetchMeta } from '@/misc/fetch-meta';
 import { DriveFiles } from '../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ドライブの情報を取得します。',
-		'en-US': 'Get drive information.'
-	},
-
 	tags: ['drive', 'account'],
 
 	requireCredential: true as const,

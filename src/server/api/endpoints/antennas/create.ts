@@ -7,11 +7,6 @@ import { ApiError } from '../../error';
 import { publishInternalEvent } from '../../../../services/stream';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'アンテナを作成します。',
-		'en-US': 'Create a antenna.'
-	},
-
 	tags: ['antennas'],
 
 	requireCredential: true as const,

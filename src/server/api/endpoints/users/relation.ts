@@ -4,10 +4,6 @@ import { ID } from '@/misc/cafy-id';
 import { Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザー間のリレーションを取得します。'
-	},
-
 	tags: ['users'],
 
 	requireCredential: true as const,
@@ -15,9 +11,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.either($.type(ID), $.arr($.type(ID)).unique()),
-			desc: {
-				'ja-JP': 'ユーザーID (配列でも可)'
-			}
 		}
 	},
 

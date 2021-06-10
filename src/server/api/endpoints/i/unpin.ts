@@ -6,10 +6,6 @@ import { ApiError } from '../../error';
 import { Users } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿のピン留めを解除します。'
-	},
-
 	tags: ['account', 'notes'],
 
 	requireCredential: true as const,
@@ -19,10 +15,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID'
-			}
 		}
 	},
 
