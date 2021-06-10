@@ -12,7 +12,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadFile, launchServer, shutdownServer } from './utils';
+import { async, signup, request, post, uploadFile, startServer, shutdownServer } from './utils';
 import { Note } from '../src/models/entities/note';
 import { initDb } from '../src/db/postgre';
 
@@ -23,12 +23,13 @@ describe('Note', () => {
 	let alice: any;
 	let bob: any;
 
-	before(launchServer(g => p = g, async () => {
+	before(async () => {
+		p = await startServer();
 		const connection = await initDb(true);
 		Notes = connection.getRepository(Note);
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
-	}));
+	});
 
 	after(async () => {
 		await shutdownServer(p);

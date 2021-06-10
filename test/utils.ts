@@ -147,6 +147,29 @@ export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProce
 	};
 }
 
+export function startServer(timeout = 30 * 1000): Promise<childProcess.ChildProcess> {
+	return new Promise((res, rej) => {
+		const t = setTimeout(() => {
+			p.kill(SIGKILL);
+			rej('timeout to start');
+		}, timeout);
+
+		const p = childProcess.spawn('node', [__dirname + '/../index.js'], {
+			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+			env: { NODE_ENV: 'test', PATH: process.env.PATH }
+		});
+
+		p.on('error', e => rej(e));
+
+		p.on('message', message => {
+			if (message === 'ok') {
+				clearTimeout(t);
+				res(p);
+			}
+		});
+	});
+}
+
 export function shutdownServer(p: childProcess.ChildProcess, timeout = 20 * 1000) {
 	return new Promise((res, rej) => {
 		const t = setTimeout(() => {
