@@ -1,25 +1,25 @@
-# ストリーミングAPI
+# API de Streaming
 
-ストリーミングAPIを使うと、リアルタイムで様々な情報(例えばタイムラインに新しい投稿が流れてきた、メッセージが届いた、フォローされた、など)を受け取ったり、様々な操作を行ったりすることができます。
+Usando la API de streaming, se puede recibir en tiempo real toda clase de información (por ejemplo, los posts nuevos que pasaron por la linea de tiempo, los mensajes recibidos, las notificaciones de seguimiento, etc.) y manejar varias operaciones en estas.
 
-## ストリームに接続する
+## Conectarse a streams
 
-ストリーミングAPIを利用するには、まずMisskeyサーバーに**websocket**接続する必要があります。
+Para usar la API de streaming, primero hay que conectar un **websocket** al servidor de Misskey
 
-以下のURLに、`i`というパラメータ名で認証情報を含めて、websocket接続してください。例:
+Conecte el websocket a la URL mencionada abajo, incluyendo la información de autenticación en el parámetro `i`Ej:
 ```
 %WS_URL%/streaming?i=xxxxxxxxxxxxxxx
 ```
 
-認証情報は、自分のAPIキーや、アプリケーションからストリームに接続する際はユーザーのアクセストークンのことを指します。
+La información de autenticación hace referencia a tu propia clave de la API, o al token de acceso del usuario cuando se conecta al stream desde la aplicación
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> 認証情報の取得については、<a href="./api">こちらのドキュメント</a>をご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> Para obtener la información de la autenticación, consulte <a href="./api">Este documento</a></p>
 </div>
 
 ---
 
-認証情報は省略することもできますが、その場合非ログインでの利用ということになり、受信できる情報や可能な操作は限られます。例:
+La información de autenticación puede omitirse, pero en ese caso de uso sin un login, se restringirá la información que puede ser recibida y las operaciones posibles,Ej:
 
 ```
 %WS_URL%/streaming
@@ -50,7 +50,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Aquí
 * `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
 * `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
 * `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
@@ -76,7 +76,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Aquí
 * `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
 * `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
 * `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
@@ -98,7 +98,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Aquí
 * `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
 * `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
 * `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
@@ -115,7 +115,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Aquí
 * `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
 
 ## ストリームを経由してAPIリクエストする
@@ -136,7 +136,7 @@ MisskeyのストリーミングAPIにはチャンネルという概念があり�
 }
 ```
 
-ここで、
+Aquí
 * `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
 * `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
 * `data`には、エンドポイントのパラメータを含めます。
@@ -158,7 +158,7 @@ APIへリクエストすると、レスポンスがストリームから次の�
 }
 ```
 
-ここで、
+Aquí
 * `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
 * `body`には、レスポンスが含まれています。
 
@@ -185,7 +185,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Aquí
 * `id`にキャプチャしたい投稿の`id`を設定します。
 
 このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
@@ -206,7 +206,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Aquí
 * `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
 * `body`内の`type`に、イベントの種類が設定されます。
 * `body`内の`body`に、イベントの詳細が設定されます。
@@ -219,7 +219,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 * `reaction`に、リアクションの種類が設定されます。
 * `userId`に、リアクションを行ったユーザーのIDが設定されます。
 
-例:
+Ej:
 ```json
 {
     type: 'noteUpdated',
@@ -239,7 +239,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 
 * `deletedAt`に、削除日時が設定されます。
 
-例:
+Ej:
 ```json
 {
     type: 'noteUpdated',
@@ -259,7 +259,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 * `choice`に、選択肢IDが設定されます。
 * `userId`に、投票を行ったユーザーのIDが設定されます。
 
-例:
+Ej:
 ```json
 {
     type: 'noteUpdated',
@@ -289,7 +289,7 @@ Misskeyは投稿のキャプチャと呼ばれる仕組みを提供していま�
 }
 ```
 
-ここで、
+Aquí
 * `id`にキャプチャを解除したい投稿の`id`を設定します。
 
 このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
