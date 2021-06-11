@@ -52,7 +52,7 @@ Para conectarse a los canales, hay que enviar al stream en formato JSON los sigu
 
 Aquí
 * En `channel` ingrese el nombre del canal al que quiere conectarse. Más abajo se menciona una lista de canales.
-* `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
+* En `id` ingrese un ID al azar para el intercambio de información con aquel canal. ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
 * `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
 
 <div class="ui info">
