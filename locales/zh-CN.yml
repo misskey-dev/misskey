@@ -1094,9 +1094,9 @@ _auth:
 _antennaSources:
   all: "所有帖子"
   homeTimeline: "已关注用户的帖子"
-  users: "来自特定用户的帖子"
+  users: "来自指定用户的帖子"
   userList: "来自指定列表中的帖子"
-  userGroup: "来自特定组中用户的帖子"
+  userGroup: "来自指定群组中用户的帖子"
 _weekday:
   sunday: "星期日"
   monday: "星期一"
@@ -1122,7 +1122,7 @@ _widgets:
   button: "按钮"
   onlineUsers: "在线用户"
   jobQueue: "作业队列"
-  serverMetric: "服务器指标"
+  serverMetric: "服务器监控"
   aiscript: "AiScript控制台"
 _cw:
   hide: "隐藏"
@@ -1135,7 +1135,7 @@ _poll:
   noMore: "无法再添加更多了"
   canMultipleVote: "允许多个投票"
   expiration: "截止时间"
-  infinite: "无限期"
+  infinite: "不限时间"
   at: "指定日期"
   after: "指定时间"
   deadlineDate: "截止日期"
@@ -1174,7 +1174,7 @@ _postForm:
     e: "请写下来吧"
     f: "等待您的发布..."
 _profile:
-  name: "名称"
+  name: "昵称"
   username: "用户名"
   description: "个人简介"
   youCanIncludeHashtags: "您可以包含一个哈希标签。"
@@ -1287,7 +1287,7 @@ _rooms:
 _pages:
   newPage: "创建页面"
   editPage: "编辑页面"
-  readPage: "查看源"
+  readPage: "查看页面"
   created: "页面已创建"
   updated: "页面已更新"
   deleted: "该页面已被删除"
