@@ -22,7 +22,7 @@ export default defineComponent({
 	methods: {
 		search() {
 			const engine = this.$store.state.webSearchEngine ||
-				'https://www.google.com/search?q={{query}}';
+				'https://www.bing.com/search?q={{query}}';
 			const url = engine.replace('{{query}}', this.query)
 			window.open(url, '_blank');
 		}

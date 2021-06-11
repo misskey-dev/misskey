@@ -1,0 +1,16 @@
+{
+		id: 'a668dc96-9384-4888-8109-a1272a546a50',
+		base: 'light',
+		desc: '猫屋浅色主题',
+		name: 'nekolight',
+		props: {
+						bg: '#fff5fc',
+						fg: '#2f2773',
+						link: '#ffd8a1',
+						navFg: '#96baf3',
+						accent: '#ffb7c5',
+						hashtag: '#b0d0ff',
+						navHoverFg: '#ffb7c5',
+						},
+		author: '@Shyamean4151',
+}

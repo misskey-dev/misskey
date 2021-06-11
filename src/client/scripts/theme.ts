@@ -19,11 +19,14 @@ export const builtinThemes = [
 	require('@client/themes/l-apricot.json5'),
 	require('@client/themes/l-rainy.json5'),
 	require('@client/themes/l-vivid.json5'),
+	require('@client/themes/l-neko.json5'),
 
 	require('@client/themes/d-dark.json5'),
 	require('@client/themes/d-persimmon.json5'),
 	require('@client/themes/d-astro.json5'),
 	require('@client/themes/d-black.json5'),
+	require('@client/themes/d-neko.json5'),
+
 ] as Theme[];
 
 let timeout = null;

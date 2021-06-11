@@ -11389,6 +11389,40 @@ vue@3.1.1:
     "@vue/runtime-dom" "3.1.1"
     "@vue/shared" "3.1.1"
 
+
+video.js@7.11.8, "video.js@^6 || ^7":
+  version "7.11.8"
+  resolved "https://registry.yarnpkg.com/video.js/-/video.js-7.11.8.tgz#1fa27c56f30a436b06b44f21560f223e264aec51"
+  integrity sha512-iQmNYB+pdgu8b45Za1AKSa5J7uDyHIqfJy+picw4voKfjErXK/BEvs+A3f99Ck7SCZU4cmMmX/s17AwaaNs+1w==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+    "@videojs/http-streaming" "2.6.4"
+    "@videojs/xhr" "2.5.1"
+    global "4.3.2"
+    keycode "^2.2.0"
+    remove "^0.1.5"
+    rollup-plugin-replace "^2.2.0"
+    safe-json-parse "4.0.0"
+    videojs-font "3.2.0"
+    videojs-vtt.js "^0.15.2"
+
+videojs-font@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/videojs-font/-/videojs-font-3.2.0.tgz#212c9d3f4e4ec3fa7345167d64316add35e92232"
+  integrity sha512-g8vHMKK2/JGorSfqAZQUmYYNnXmfec4MLhwtEFS+mMs2IDY398GLysy6BH6K+aS1KMNu/xWZ8Sue/X/mdQPliA==
+
+videojs-vtt.js@^0.15.2:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/videojs-vtt.js/-/videojs-vtt.js-0.15.3.tgz#84260393b79487fcf195d9372f812d7fab83a993"
+  integrity sha512-5FvVsICuMRx6Hd7H/Y9s9GDeEtYcXQWzGMS+sl4UX3t/zoHp3y+isSfIPRochnTH7h+Bh1ILyC639xy9Z6kPag==
+  dependencies:
+    global "^4.3.1"
+
+viewerjs@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.9.1.tgz#559a37c0efee1ad03cd577c7779667615a9f6592"
+  integrity sha512-ivllTQh63M0nRvphzX8pgmz+TJsgLUs6o4gseh5kKsJ3eqb+IJzJInrfyqrLNgpDhiHloz2Fv70ZZeQK8VeaeQ==
+
 vuedraggable@4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-4.0.1.tgz#3bcaab0808b7944030b7d9a29f9a63d59dfa12c5"

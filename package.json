@@ -1,11 +1,11 @@
 {
-	"name": "misskey",
-	"author": "syuilo <syuilotan@yahoo.co.jp>",
-	"version": "12.83.0",
+	"name": "misskey-neko",
+	"author": "syuilo <syuilotan@yahoo.co.jp> / shyamean4151 <yi@neko.ci>",
+	"version": "12.83.0-neko-rc1",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/shyameam4151/misskey.git"
 	},
 	"main": "./index.js",
 	"private": true,
@@ -241,6 +241,8 @@
 		"uuid": "8.3.2",
 		"v-debounce": "0.1.2",
 		"vanilla-tilt": "1.7.0",
+		"video.js": "7.11.8",
+		"viewerjs": "1.9.1",
 		"vue": "3.1.1",
 		"vue-color": "2.8.1",
 		"vue-json-pretty": "1.7.1",
