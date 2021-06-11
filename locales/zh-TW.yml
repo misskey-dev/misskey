@@ -813,7 +813,9 @@ _mfm:
   blockMath: "數學公式(方塊)"
   quote: "引用"
   emoji: "自訂表情符號"
+  emojiDescription: "您可以通過將自定義表情符號名稱括在冒號中來顯示自定義表情符號。 "
   search: "搜尋"
+  searchDescription: "您可以顯示所輸入的搜索框。"
   flip: "翻轉"
   flipDescription: "將內容上下或左右翻轉。"
   jelly: "動畫(果凍)"
@@ -906,10 +908,12 @@ _theme:
   constant: "常數"
   defaultValue: "預設值"
   color: "顏色"
+  refProp: "查看屬性 "
   key: "按鍵"
   func: "函数"
   funcKind: "功能類型"
   argument: "參數"
+  basedProp: "要基於的屬性的名稱 "
   alpha: "透明度"
   darken: "暗度"
   lighten: "亮度"
@@ -1076,6 +1080,7 @@ _widgets:
   button: "按鈕"
   onlineUsers: "線上的用戶"
   jobQueue: "佇列"
+  serverMetric: "服務器指標 "
 _cw:
   hide: "隱藏"
   show: "瀏覽更多"
@@ -1104,6 +1109,7 @@ _poll:
   remainingSeconds: "{s}秒後截止"
 _visibility:
   public: "公開"
+  publicDescription: "發布給所有用戶 "
   home: "首頁"
   followers: "追隨者"
   specified: "指定使用者"
@@ -1326,6 +1332,7 @@ _pages:
         pushEvent: "發送事件"
         _pushEvent:
           event: "事件名稱"
+          variable: "要發送的變數"
           no-variable: "沒有"
         callAiScript: "調用AiScript"
         _callAiScript:
@@ -1334,6 +1341,7 @@ _pages:
     _radioButton:
       name: "變數名稱"
       title: "標題"
+      values: "由換行符分隔的選項"
       default: "預設值"
   script:
     categories:
