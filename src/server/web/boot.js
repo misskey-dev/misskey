@@ -110,12 +110,12 @@
 	// eslint-disable-next-line no-inner-declarations
 	function renderError(code, details) {
 		document.documentElement.innerHTML = `
-			<h1>⚠エラーが発生しました</h1>
-			<p>問題が解決しない場合は管理者までお問い合わせください。以下のオプションを試すこともできます:</p>
+			<h1>⚠有严重错误发生了！</h1>
+			<p>请先尝试以下方法，如果问题依旧无法解决，请联系管理员!</p>
 			<ul>
-				<li><a href="/cli">簡易クライアント</a>を起動</li>
-				<li><a href="/bios">BIOS</a>で修復を試みる</li>
-				<li><a href="/flush">キャッシュをクリア</a>する</li>
+				<li>😞尝试修复<a href="/bios">BIOS</a>，非专业人士请勿尝试</li>
+				<li>😃尝试<a href="/flush">刷新缓存</a></li>
+				<li>😉尝试使用最新版Chrome,Firefox,Chromium,Edge,Safari等浏览器</li>
 			</ul>
 			<hr>
 			<code>ERROR CODE: ${code}</code>
@@ -138,7 +138,7 @@
 		if (meta.version != v) {
 			localStorage.setItem('v', meta.version);
 			alert(
-				'Misskeyの新しいバージョンがあります。ページを再度読み込みします。' +
+				'Misskey的新版本出来了，此页面需要重载！😃' +
 				'\n\n' +
 				'New version of Misskey available. The page will be reloaded.');
 			refresh();
