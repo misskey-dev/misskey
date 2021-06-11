@@ -1006,6 +1006,7 @@ _tutorial:
 _2fa:
   alreadyRegistered: "此設備已經被註冊過了"
   registerDevice: "註冊裝置"
+  registerKey: "註冊鍵"
   step1: "首先，在您的設備上安裝二步驗證程式，例如{a}或{b}。"
   step2: "然後，掃描螢幕上的QR code。"
 _permissions:
@@ -1088,6 +1089,7 @@ _poll:
   expiration: "期限"
   infinite: "無期限"
   at: "結束時間"
+  after: "進度指定 "
   deadlineDate: "截止日期"
   deadlineTime: "小時"
   duration: "時長"
@@ -1215,6 +1217,7 @@ _rooms:
     cube: "立方體"
     tv: "電視"
     pinguin: "企鵝蠟像"
+    rubik-cube: "魔術方塊"
     poster-h: "海報(橫向)"
     poster-v: "海報(直向)"
     sofa: " 沙發"
@@ -1479,6 +1482,8 @@ _pages:
       aiScriptVar: "AiScript的變數"
       fn: "函数"
       _fn:
+        slots: "欄位"
+        slots-info: "用換行符分隔每個欄位"
         arg1: "輸出"
       _for:
         arg1: "重複次數"
@@ -1489,13 +1494,16 @@ _pages:
       boolean: "標記"
       array: "清單"
       stringArray: "字串列表"
+    emptySlot: "空欄位"
     enviromentVariables: "環境變數"
     pageVariables: "頁面元素"
+    argVariables: "輸入欄位"
 _relayStatus:
   requesting: "等待核准"
   accepted: "已通過核准"
   rejected: "已拒絕"
 _notification:
+  fileUploaded: "上傳檔案成功。"
   youGotMention: "{name}提及到您"
   youGotReply: "{name}回覆了您"
   youGotQuote: "{name}引用了您"
