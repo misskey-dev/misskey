@@ -777,7 +777,7 @@ _email:
   _follow:
     title: "你有新的关注者"
   _receiveFollowRequest:
-    title: "收到关注请求"
+    title: "收到了关注请求"
 _plugin:
   install: "安装插件"
   installWarn: "请不要安装不可信的插件。"
