@@ -27,11 +27,11 @@ La información de autenticación puede omitirse, pero en ese caso de uso sin un
 
 ---
 
-ストリームに接続すると、後述するAPI操作や、投稿の購読を行ったりすることができます。 しかしまだこの段階では、例えばタイムラインへの新しい投稿を受信したりすることはできません。 それを行うには、ストリーム上で、後述する**チャンネル**に接続する必要があります。
+Al conectarse al stream, se pueden ejecutar las operaciones de la API mencionadas abajo y la suscripción de posts. Sin embargo en esta fase, todavía no es posible recibir los posts nuevos llegando a la linea de tiempo. Para hacer eso, es necesario conectarse a los **canales** mencionados más abajo.
 
-**ストリームでのやり取りはすべてJSONです。**
+**Todos los envíos y recibimientos de información con el stream son JSONs**
 
-## Canal
+## Canales
 MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
 
 ### チャンネルに接続する
