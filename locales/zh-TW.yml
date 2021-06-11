@@ -1361,6 +1361,8 @@ _pages:
       strReplace: "替換字串"
       _strReplace:
         arg1: "字串"
+        arg2: "替換前"
+        arg3: "替換後"
       strReverse: "倒轉字串"
       _strReverse:
         arg1: "字串"
@@ -1427,6 +1429,7 @@ _pages:
       _if:
         arg1: "如果"
         arg2: "如果"
+        arg3: "除此以外 "
       not: "否"
       _not:
         arg1: "否"
@@ -1437,10 +1440,13 @@ _pages:
       _rannum:
         arg1: "下限"
         arg2: "上限"
+      randomPick: "從列表中隨機選擇 "
       _randomPick:
         arg1: "清單"
+      dailyRandom: "隨機(使用者每日變化 )"
       _dailyRandom:
         arg1: "機率"
+      dailyRannum: "亂數(使用者每日變化)"
       _dailyRannum:
         arg1: "下限"
         arg2: "上限"
@@ -1485,6 +1491,7 @@ _pages:
         slots: "欄位"
         slots-info: "用換行符分隔每個欄位"
         arg1: "輸出"
+      for: "重複 "
       _for:
         arg1: "重複次數"
         arg2: "處理"
