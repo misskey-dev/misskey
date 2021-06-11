@@ -32,10 +32,10 @@ Al conectarse al stream, se pueden ejecutar las operaciones de la API mencionada
 **Todos los envíos y recibimientos de información con el stream son JSONs**
 
 ## Canales
-En la API de streaming de Misskey, hay un concepto llamado "canales". これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+En la API de streaming de Misskey, hay un concepto llamado "canal". Es una estructura para separar la información enviada y recibida. Solo con conectarse al stream de Misskey, aún no es posible recibir los posts de la linea de tiempo en tiempo real. Al conectarse al canal en el stream, se puede enviar y recibir variada información relacionada a los canales.
 
-### チャンネルに接続する
-チャンネルに接続するには、次のようなデータをJSONでストリームに送信します:
+### Conectarse a canales
+Para conectarse a los canales, hay que enviar al stream en formato JSON los siguientes datos.
 
 ```json
 {
@@ -51,7 +51,7 @@ En la API de streaming de Misskey, hay un concepto llamado "canales". これは�
 ```
 
 Aquí
-* `channel`には接続したいチャンネル名を設定します。チャンネルの種類については後述します。
+* En `channel` ingrese el nombre del canal al que quiere conectarse. Más abajo se menciona una lista de canales.
 * `id`にはそのチャンネルとやり取りするための任意のIDを設定します。ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
 * `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
 
