@@ -1286,6 +1286,7 @@ _pages:
     post: "發佈窗口"
     _post:
       text: "内容"
+      attachCanvasImage: "附加相簿圖像 "
       canvasId: "畫布ID"
     textInput: "插入字串"
     _textInput:
@@ -1310,6 +1311,7 @@ _pages:
     note: "嵌式貼文"
     _note:
       id: "貼文ID"
+      idDescription: "您也可以粘貼筆記 URL 並進行設置。 "
       detailed: "顯示詳細內容"
     switch: "開關"
     _switch:
@@ -1326,12 +1328,14 @@ _pages:
       colored: "彩色"
       action: "按下按鈕後發生的行為"
       _action:
+        dialog: "顯示對話框 "
         _dialog:
           content: "内容"
         resetRandom: "重設亂數"
         pushEvent: "發送事件"
         _pushEvent:
           event: "事件名稱"
+          message: "按下時顯示的消息 "
           variable: "要發送的變數"
           no-variable: "沒有"
         callAiScript: "調用AiScript"
@@ -1359,6 +1363,8 @@ _pages:
       text: "字串"
       multiLineText: "字串(多行)"
       textList: "字串串列"
+      _textList:
+        info: "請分開每個換行符 "
       strLen: "字串長度"
       _strLen:
         arg1: "字串"
@@ -1458,6 +1464,7 @@ _pages:
       _dailyRannum:
         arg1: "下限"
         arg2: "上限"
+      dailyRandomPick: "從列表中隨機選擇（使用者每日變化 ） "
       _dailyRandomPick:
         arg1: "清單"
       seedRandom: "隨機抽選種子碼"
