@@ -32,7 +32,7 @@ Al conectarse al stream, se pueden ejecutar las operaciones de la API mencionada
 **Todos los envíos y recibimientos de información con el stream son JSONs**
 
 ## Canales
-MisskeyのストリーミングAPIにはチャンネルという概念があります。これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
+En la API de streaming de Misskey, hay un concepto llamado "canales". これは、送受信する情報を分離するための仕組みです。 Misskeyのストリームに接続しただけでは、まだリアルタイムでタイムラインの投稿を受信したりはできません。 ストリーム上でチャンネルに接続することで、様々な情報を受け取ったり情報を送信したりすることができるようになります。
 
 ### チャンネルに接続する
 チャンネルに接続するには、次のようなデータをJSONでストリームに送信します:
