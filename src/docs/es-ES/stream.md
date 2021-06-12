@@ -139,13 +139,13 @@ Para hacer pedidos a la API a través del stream, se envía al stream en formato
 Aquí
 * En `id` se requiere ingresar un ID único por cada pedido a la API, para distinguir las respuestas de la API. Puede ser un UUID o un número aleatorio.
 * En `endpoint` ingrese el endpoint de la API a la que quiere hacer el pedido.
-* `data`には、エンドポイントのパラメータを含めます。
+* En `data` incluya los parámetros del endpoint 
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> APIのエンドポイントやパラメータについてはAPIリファレンスをご確認ください。</p>
+    <p><i class="fas fa-info-circle"></i> En cuanto a los endpoint de la API y los parámetros, consulte las referencias de la API.</p>
 </div>
 
-### レスポンスの受信
+### Recibiendo respuestas
 
 APIへリクエストすると、レスポンスがストリームから次のような形式で流れてきます。
 
