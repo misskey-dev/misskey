@@ -190,7 +190,7 @@ Aquí
 
 Al enviarse el mensaje, se convierte en un pedido de captura a Misskey. Luego, los eventos relacionados a ese post serán emitidos.
 
-例えば投稿にリアクションが付いたとすると、次のようなメッセージが流れてきます:
+Por ejemplo, suponiendo que se reacciona a un post, se emite el siguiente mensaje:
 
 ```json
 {
@@ -207,11 +207,11 @@ Al enviarse el mensaje, se convierte en un pedido de captura a Misskey. Luego, l
 ```
 
 Aquí
-* `body`内の`id`に、イベントを発生させた投稿のIDが設定されます。
-* `body`内の`type`に、イベントの種類が設定されます。
-* `body`内の`body`に、イベントの詳細が設定されます。
+* En el `id` dentro del `body`, viene el ID del post que causó el evento.
+* En el `type` dentro del `body`, viene el tipo del evento.
+* En el `body` dentro del `body`, vienen los detalles del evento.
 
-#### イベントの種類
+#### Tipos de eventos
 
 ##### `reacted`
 その投稿にリアクションがされた時に発生します。
