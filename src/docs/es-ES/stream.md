@@ -77,7 +77,7 @@ Cuando el canal envía un mensaje, se envía al stream en formato JSON los sigui
 ```
 
 Aquí
-* `id`には前述したそのチャンネルに接続する際に設定したIDが設定されています。これで、このメッセージがどのチャンネルからのものなのか知ることができます。
+* En `id` se incluye el ID usado para conectarse al canal mencionado más arriba. これで、このメッセージがどのチャンネルからのものなのか知ることができます。
 * `type`にはメッセージの種類が設定されます。チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
 * `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
 
