@@ -1,6 +1,8 @@
 # misskey.js
 **Strongly-typed official Misskey SDK for browsers/Node.js.**
 
+[![Test](https://github.com/misskey-dev/misskey.js/actions/workflows/test.yml/badge.svg)](https://github.com/misskey-dev/misskey.js/actions/workflows/test.yml)
+
 [![NPM](https://nodei.co/npm/misskey-js.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/misskey-js)
 
 JavaScript(TypeScript)用の公式MisskeySDKです。ブラウザ/Node.js上で動作します。
