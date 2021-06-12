@@ -52,8 +52,8 @@ Para conectarse a los canales, hay que enviar al stream en formato JSON los sigu
 
 Aquí
 * En `channel` ingrese el nombre del canal al que quiere conectarse. Más abajo se menciona una lista de canales.
-* En `id` ingrese un ID al azar para el intercambio de información con aquel canal. ストリームでは様々なメッセージが流れるので、そのメッセージがどのチャンネルからのものなのか識別する必要があるからです。このIDは、UUIDや、乱数のようなもので構いません。
-* `params`はチャンネルに接続する際のパラメータです。チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
+* En `id` ingrese un ID al azar para el intercambio de información con aquel canal. Como en el stream pasan varios mensajes, es necesario identificar de qué canales son esos mensajes. Este ID puede ser un UUID o un número al azar.
+* `params` son los parámetros para conectarse al canal. チャンネルによって接続時に必要とされるパラメータは異なります。パラメータ不要のチャンネルに接続する際は、このプロパティは省略可能です。
 
 <div class="ui info">
     <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
