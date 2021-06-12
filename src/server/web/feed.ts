@@ -26,7 +26,7 @@ export default async function(user: User) {
 		id: author.link,
 		title: `${author.name} (@${user.username}@${config.host})`,
 		updated: notes[0].createdAt,
-		generator: 'Misskey',
+		generator: 'Misskey-Neko',
 		description: `${user.notesCount} Notes, ${user.followingCount} Following, ${user.followersCount} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 		link: author.link,
 		image: user.avatarUrl ? user.avatarUrl : undefined,
@@ -45,7 +45,7 @@ export default async function(user: User) {
 		const file = files.find(file => file.type.startsWith('image/'));
 
 		feed.addItem({
-			title: `New note by ${author.name}`,
+			title: `${author.name}┋${note.text}`,
 			link: `${config.url}/notes/${note.id}`,
 			date: note.createdAt,
 			description: note.cw || undefined,

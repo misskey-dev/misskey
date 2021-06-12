@@ -32,7 +32,7 @@
 				<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 				<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 			</span>
-			<span class="localOnly" v-if="note.localOnly"><i class="fas fa-biohazard"></i></span>
+			<span class="localOnly" v-if="note.localOnly"><i class="far fa-unlink"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">

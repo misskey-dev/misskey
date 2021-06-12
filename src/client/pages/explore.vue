@@ -8,13 +8,13 @@
 		<XUserList v-if="query" class="_gap" :pagination="searchPagination" ref="search"/>
 
 		<div class="localfedi7 _block _isolated" v-if="meta && stats && tag == null" :style="{ backgroundImage: meta.bannerUrl ? `url(${meta.bannerUrl})` : null }">
-			<header><span>{{ $t('explore', { host: meta.name || 'Misskey' }) }}</span></header>
+			<header><span>{{ $t('explore', { host: meta.name || 'Misskey-Neko' }) }}</span></header>
 			<div><span>{{ $t('exploreUsersCount', { count: num(stats.originalUsersCount) }) }}</span></div>
 		</div>
 
 		<template v-if="tag == null">
 			<MkFolder class="_gap" persist-key="explore-pinned-users">
-				<template #header><i class="fas fa-bookmark fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.pinnedUsers }}</template>
+				<template #header><i class="fas fa-paw fa-fw" style="margin-right: 0.5em;"></i>{{ $ts.pinnedUsers }}</template>
 				<XUserList :pagination="pinnedUsers"/>
 			</MkFolder>
 			<MkFolder class="_gap" persist-key="explore-popular-users">

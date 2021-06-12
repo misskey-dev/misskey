@@ -46,8 +46,8 @@
 					<header>
 						<MkUserName class="name" :user="user"/>
 						<span class="acct">@{{ acct(user) }}</span>
-						<span class="staff" v-if="user.isAdmin"><i class="fas fa-bookmark"></i></span>
-						<span class="staff" v-if="user.isModerator"><i class="far fa-bookmark"></i></span>
+						<span class="staff" v-if="user.isAdmin"><i class="fas fa-paw" style="color: #ffb7c5;"></i></span>
+						<span class="staff" v-if="user.isModerator"><i class="fas fa-badge-check" style="color: #faff72;"></i></span>
 						<span class="punished" v-if="user.isSilenced"><i class="fas fa-microphone-slash"></i></span>
 						<span class="punished" v-if="user.isSuspended"><i class="fas fa-snowflake"></i></span>
 					</header>

@@ -1,10 +1,10 @@
 {
-	"short_name": "Misskey",
-	"name": "Misskey",
+	"short_name": "Misskey-Neko",
+	"name": "暖ロリ猫の家",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#313a42",
-	"theme_color": "#86b300",
+	"background_color": "#96baf3",
+	"theme_color": "#ffb7c5",
 	"icons": [
 		{
 			"src": "/static-assets/icons/192.png",
