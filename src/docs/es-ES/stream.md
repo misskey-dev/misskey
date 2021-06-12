@@ -82,9 +82,9 @@ Aquí
 * En `body` se incluye el contenido del mensaje. Dependiendo del canal, varía qué contenido de mensajes pasan.
 
 ### Enviar mensajes al canal
-チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
+Dependiendo del canal, se puede no solo recibir mensajes, sino también mandar mensajes a dicho canal, y realizar algunas operaciones.
 
-チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
+Para mandar un mensaje al canal, se envía al stream en formato JSON los siguientes datos.
 ```json
 {
     type: 'channel',
@@ -99,12 +99,12 @@ Aquí
 ```
 
 Aquí
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。これで、このメッセージがどのチャンネルに向けたものなのか識別させることができます。
-* `type`にはメッセージの種類を設定します。チャンネルによって、どのような種類のメッセージを受け付けるかは異なります。
-* `body`にはメッセージの内容を設定します。チャンネルによって、どのような内容のメッセージを受け付けるかは異なります。
+* En `id` ingrese el ID usado para conectarse al canal mencionado más arriba. Con esto se puede identificar a qué canales fueron dirigidos los mensajes.
+* En `type` ingrese el tipo del mensaje. Dependiendo del canal, varía qué tipo de mensajes serán aceptados.
+* En `body` ingrese el contenido del mensaje. Dependiendo del canal, varía qué contenidos de mensajes serán aceptados.
 
-### チャンネルから切断する
-チャンネルから切断するには、次のようなデータをJSONでストリームに送信します:
+### Desconectarse del canal
+Para desconectarse de un canal, se envía al stream en formato JSON los siguientes datos.
 
 ```json
 {
@@ -116,7 +116,7 @@ Aquí
 ```
 
 Aquí
-* `id`には前述したそのチャンネルに接続する際に設定したIDを設定します。
+* En `id` ingrese el ID usado para conectarse al canal mencionado más arriba.
 
 ## ストリームを経由してAPIリクエストする
 
