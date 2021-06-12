@@ -78,10 +78,10 @@ Cuando el canal envía un mensaje, se envía al stream en formato JSON los sigui
 
 Aquí
 * En `id` se incluye el ID usado para conectarse al canal mencionado más arriba. Con esto se puede conocer a qué canales pertenecen los mensajes.
-* En `type` se incluye el tipo del mensaje. チャンネルによって、どのような種類のメッセージが流れてくるかは異なります。
-* `body`にはメッセージの内容が設定されます。チャンネルによって、どのような内容のメッセージが流れてくるかは異なります。
+* En `type` se incluye el tipo del mensaje. Dependiendo del canal, varía qué tipo de mensajes pasan.
+* En `body` se incluye el contenido del mensaje. Dependiendo del canal, varía qué contenido de mensajes pasan.
 
-### チャンネルに向けてメッセージを送信する
+### Enviar mensajes al canal
 チャンネルによっては、メッセージを受け取るだけでなく、こちらから何かメッセージを送信し、何らかの操作を行える場合があります。
 
 チャンネルにメッセージを送信するには、次のようなデータをJSONでストリームに送信します:
