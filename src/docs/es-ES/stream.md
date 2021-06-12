@@ -214,7 +214,7 @@ Aquí
 #### Tipos de eventos
 
 ##### `reacted`
-その投稿にリアクションがされた時に発生します。
+Ocurre cuando se añade una reacción a un post.
 
 * `reaction`に、リアクションの種類が設定されます。
 * `userId`に、リアクションを行ったユーザーのIDが設定されます。
