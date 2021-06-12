@@ -138,7 +138,7 @@ Para hacer pedidos a la API a través del stream, se envía al stream en formato
 
 Aquí
 * En `id` se requiere ingresar un ID único por cada pedido a la API, para distinguir las respuestas de la API. Puede ser un UUID o un número aleatorio.
-* `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
+* En `endpoint` ingrese el endpoint de la API a la que quiere hacer el pedido.
 * `data`には、エンドポイントのパラメータを含めます。
 
 <div class="ui info">
