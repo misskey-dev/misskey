@@ -313,42 +313,42 @@ Un evento que ocurre cuando todas tus notificaciones fueron marcadas como leída
 Un evento que ocurre cuando tu información de perfil es actualizada.
 
 #### `follow`
-Un evento que ocurre cuando tú sigues a alguien
+Un evento que ocurre cuando tú sigues a alguien.
 
 #### `unfollow`
-自分が誰かのフォローを解除したときに発生するイベントです。
+Un evento que ocurre cuando dejas de seguir a alguien.
 
 #### `followed`
-自分が誰かにフォローされたときに発生するイベントです。
+Un evento que ocurre cuando alguien te sigue.
 
 ## `homeTimeline`
-ホームタイムラインの投稿情報が流れてきます。Este canal no tiene parámetros.
+Se emite la información subida a la linea de tiempo del inicio. Este canal no tiene parámetros.
 
 ### Lista de eventos emitidos
 
 #### `note`
-タイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Un evento que ocurre cuando se emite un nuevo post en la linea de tiempo.
 
 ## `localTimeline`
-ローカルタイムラインの投稿情報が流れてきます。Este canal no tiene parámetros.
+Se emite la información subida a la linea de tiempo local. Este canal no tiene parámetros.
 
 ### Lista de eventos emitidos
 
 #### `note`
-ローカルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Un evento que ocurre cuando se emite un nuevo post en la linea de tiempo local.
 
 ## `hybridTimeline`
-ソーシャルタイムラインの投稿情報が流れてきます。Este canal no tiene parámetros.
+Se emite la información subida a la linea de tiempo social. Este canal no tiene parámetros.
 
 ### Lista de eventos emitidos
 
 #### `note`
-ソーシャルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Un evento que ocurre cuando se emite un nuevo post en la linea de tiempo social.
 
 ## `globalTimeline`
-グローバルタイムラインの投稿情報が流れてきます。Este canal no tiene parámetros.
+Se emite la información subida a la linea de tiempo global. Este canal no tiene parámetros.
 
 ### Lista de eventos emitidos
 
 #### `note`
-グローバルタイムラインに新しい投稿が流れてきたときに発生するイベントです。
+Un evento que ocurre cuando se emite un nuevo post en la linea de tiempo global.
