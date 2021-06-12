@@ -12,21 +12,21 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { connectStream, signup, request, post, launchServer } from './utils';
+import { connectStream, signup, request, post, startServer, shutdownServer, initTestDb } from './utils';
 import { Following } from '../src/models/entities/following';
-import { initDb } from '../src/db/postgre';
 
 describe('Streaming', () => {
 	let p: childProcess.ChildProcess;
 	let Followings: any;
 
-	beforeEach(launchServer(g => p = g, async () => {
-		const connection = await initDb(true);
+	beforeEach(async () => {
+		p = await startServer();
+		const connection = await initTestDb(true);
 		Followings = connection.getRepository(Following);
-	}));
+	});
 
-	afterEach(() => {
-		p.kill();
+	afterEach(async () => {
+		await shutdownServer(p);
 	});
 
 	const follow = async (follower: any, followee: any) => {
