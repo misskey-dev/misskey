@@ -147,7 +147,7 @@ Aquí
 
 ### Recibiendo respuestas
 
-APIへリクエストすると、レスポンスがストリームから次のような形式で流れてきます。
+Al hacer un pedido a la API, llegará desde el stream una respuesta en el siguiente formato.
 
 ```json
 {
@@ -159,10 +159,10 @@ APIへリクエストすると、レスポンスがストリームから次の�
 ```
 
 Aquí
-* `xxxxxxxxxxxxxxxx`の部分には、リクエストの際に設定された`id`が含まれています。これにより、どのリクエストに対するレスポンスなのか判別することができます。
-* `body`には、レスポンスが含まれています。
+* En la porción que dice `xxxxxxxxxxxxxxxx` viene el `id` ingresado en el momento de hacer el pedido. Con esto, se puede distinguir a qué pedido corresponde la respuesta.
+* En `body` vienen los datos de la respuesta.
 
-## 投稿のキャプチャ
+## Capturar posts
 
 Misskeyは投稿のキャプチャと呼ばれる仕組みを提供しています。これは、指定した投稿のイベントをストリームで受け取る機能です。
 
