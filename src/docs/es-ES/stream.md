@@ -118,9 +118,9 @@ Para desconectarse de un canal, se envía al stream en formato JSON los siguient
 Aquí
 * En `id` ingrese el ID usado para conectarse al canal mencionado más arriba.
 
-## ストリームを経由してAPIリクエストする
+## Hacer pedidos a la API a través del stream
 
-ストリームを経由してAPIリクエストすると、HTTPリクエストを発生させずにAPIを利用できます。そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
+Al hacer pedidos a la API a través del stream, se puede usar la API sin que se genere un pedido HTTP. そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
 
 ストリームを経由してAPIリクエストするには、次のようなデータをJSONでストリームに送信します:
 ```json
