@@ -162,7 +162,7 @@ Aquí
 * En la porción que dice `xxxxxxxxxxxxxxxx` viene el `id` ingresado en el momento de hacer el pedido. Con esto, se puede distinguir a qué pedido corresponde la respuesta.
 * En `body` vienen los datos de la respuesta.
 
-## Capturar posts
+## Captura de posts
 
 Misskey ofrece una construcción llamada "captura de posts". Es una función para recibir en el stream los eventos de un post seleccionado.
 
@@ -170,11 +170,11 @@ Por ejemplo, supongamos que se obtiene la linea de tiempo y se la muestra al usu
 
 Sin embargo, como desde el cliente no hay forma de conocer las reacciones añadidas a cierto post, las reacciones no pueden reflejarse en el post en la linea de tiempo en tiempo real.
 
-Para solucionar este problema, Misskey prepara un mecanismo de captura de posts. 投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+Para solucionar este problema, Misskey prepara un mecanismo de captura de posts. Cuando se captura un post, se pueden reflejar las reacciones en tiempo real para poder recibir los eventos relacionados al post.
 
-### 投稿をキャプチャする
+### Capturar posts
 
-投稿をキャプチャするには、ストリームに次のようなメッセージを送信します:
+Para capturar posts, se envía al stream el siguiente mensaje.
 
 ```json
 {
@@ -186,9 +186,9 @@ Para solucionar este problema, Misskey prepara un mecanismo de captura de posts.
 ```
 
 Aquí
-* `id`にキャプチャしたい投稿の`id`を設定します。
+* En `id` ingrese el `id` del post que se desea capturar.
 
-このメッセージを送信すると、Misskeyにキャプチャを要請したことになり、以後、その投稿に関するイベントが流れてくるようになります。
+Al enviarse el mensaje, se convierte en un pedido de captura a Misskey. Luego, los eventos relacionados a ese post serán emitidos.
 
 例えば投稿にリアクションが付いたとすると、次のようなメッセージが流れてきます:
 
