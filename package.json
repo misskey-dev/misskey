@@ -32,9 +32,7 @@
 	"resolutions": {
 		"mfm-js/twemoji-parser": "13.1.x",
 		"chokidar": "^3.3.1",
-		"constantinople": "^4.0.1",
-		"jsonld/rdf-canonize/node-forge": "0.10.0",
-		"lodash": "^4.17.20"
+		"lodash": "^4.17.21"
 	},
 	"dependencies": {
 		"@babel/plugin-transform-runtime": "7.14.3",
