@@ -164,7 +164,7 @@ Aquí
 
 ## Capturar posts
 
-Misskey ofrece una construcción llamada "captura de posts". これは、指定した投稿のイベントをストリームで受け取る機能です。
+Misskey ofrece una construcción llamada "captura de posts". Es una función para recibir en el stream los eventos de un post seleccionado.
 
 例えばタイムラインを取得してユーザーに表示したとします。ここで誰かがそのタイムラインに含まれるどれかの投稿に対してリアクションしたとします。
 
