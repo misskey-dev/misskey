@@ -216,8 +216,8 @@ Aquí
 ##### `reacted`
 Ocurre cuando se añade una reacción a un post.
 
-* `reaction`に、リアクションの種類が設定されます。
-* `userId`に、リアクションを行ったユーザーのIDが設定されます。
+* En `reaction` viene el tipo de reacción.
+* En `userId` viene el ID del usuario que hizo la reacción.
 
 Ej:
 ```json
@@ -235,9 +235,9 @@ Ej:
 ```
 
 ##### `deleted`
-その投稿が削除された時に発生します。
+Ocurre cuando ese post fue eliminado.
 
-* `deletedAt`に、削除日時が設定されます。
+* En `deletedAt` viene la fecha y hora en que fue eliminado.
 
 Ej:
 ```json
@@ -254,10 +254,10 @@ Ej:
 ```
 
 ##### `pollVoted`
-その投稿に添付されたアンケートに投票された時に発生します。
+Ocurre cuando se hizo un voto a una encuesta incluida en el post.
 
-* `choice`に、選択肢IDが設定されます。
-* `userId`に、投票を行ったユーザーのIDが設定されます。
+* En `choice` viene el ID de la opción elegida.
+* En `userId` viene el ID del usuario que hizo el voto.
 
 Ej:
 ```json
