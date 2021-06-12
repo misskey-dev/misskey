@@ -255,8 +255,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 */
 	@autobind
 	public close() {
-		this.stream.removeEventListener('open', this.onOpen);
-		this.stream.removeEventListener('message', this.onMessage);
+		this.stream.close();
 	}
 }
 

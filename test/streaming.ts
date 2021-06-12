@@ -32,12 +32,14 @@ describe('Streaming', () => {
 			id: 'foo'
 		});
 
+		stream.close();
 		server.close();
 	});
 
+	/* TODO
 	test('useChannel with parameters', async () => {
-		// TODO
 	});
+	*/
 
 	test('Connection#dispose', async () => {
 		const server = new WS('wss://misskey.test/streaming');
@@ -68,6 +70,7 @@ describe('Streaming', () => {
 
 		expect(mainChannelReceived.length).toEqual(0);
 
+		stream.close();
 		server.close();
 	});
 
