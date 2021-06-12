@@ -274,11 +274,11 @@ Ej:
 }
 ```
 
-### 投稿のキャプチャを解除する
+### Cancelar la captura del post
 
-その投稿がもう画面に表示されなくなったりして、その投稿に関するイベントをもう受け取る必要がなくなったときは、キャプチャの解除を申請してください。
+Cuando el post ya no sea mostrado en pantalla y ya no sea necesario recibir los eventos relacionados a este, pida cancelar la captura.
 
-次のメッセージを送信します:
+Envíe el siguiente mensaje:
 
 ```json
 {
@@ -290,11 +290,11 @@ Ej:
 ```
 
 Aquí
-* `id`にキャプチャを解除したい投稿の`id`を設定します。
+* En `id` ingrese el `id` del post que se desea dejar de capturar.
 
-このメッセージを送信すると、以後、その投稿に関するイベントは流れてこないようになります。
+Al mandar este mensaje, ya no se emitirán los eventos relacionados a dicho post.
 
-# チャンネル一覧
+# Lista de canales
 ## `main`
 アカウントに関する基本的な情報が流れてきます。このチャンネルにパラメータはありません。
 
