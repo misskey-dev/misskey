@@ -56,13 +56,13 @@ Aquí
 * `params` son los parámetros para conectarse al canal. Los parámetros requeridos al momento de conectarse varían según el canal. Si se conecta a un canal que no requiere parámetros, esta propiedad puede omitirse.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> El ID no es por canal sino "por conexión al canal". なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
+    <p><i class="fas fa-info-circle"></i> El ID no es por canal sino "por conexión al canal". Porque hay casos en que se pueden hacer múltiples conexiones con parámetros distintos al mismo canal. </p>
 </div>
 
-### チャンネルからのメッセージを受け取る
-例えばタイムラインのチャンネルなら、新しい投稿があった時にメッセージを発します。そのメッセージを受け取ることで、タイムラインに新しい投稿がされたことをリアルタイムで知ることができます。
+### Recibir mensajes del canal
+Por ejemplo, cuando hay nuevos posts en el canal, envía un mensaje. Al recibir ese mensaje, se puede conocer en tiempo real que hay nuevos posts en la linea de tiempo.
 
-チャンネルがメッセージを発すると、次のようなデータがJSONでストリームに流れてきます:
+Cuando el canal envía un mensaje, se envía al stream en formato JSON los siguientes datos.
 ```json
 {
     type: 'channel',
