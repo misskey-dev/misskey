@@ -56,7 +56,7 @@ Aquí
 * `params` son los parámetros para conectarse al canal. Los parámetros requeridos al momento de conectarse varían según el canal. Si se conecta a un canal que no requiere parámetros, esta propiedad puede omitirse.
 
 <div class="ui info">
-    <p><i class="fas fa-info-circle"></i> IDはチャンネルごとではなく「チャンネルの接続ごと」です。なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
+    <p><i class="fas fa-info-circle"></i> El ID no es por canal sino "por conexión al canal". なぜなら、同じチャンネルに異なるパラメータで複数接続するケースもあるからです。</p>
 </div>
 
 ### チャンネルからのメッセージを受け取る
