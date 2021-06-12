@@ -120,9 +120,9 @@ Aquí
 
 ## Hacer pedidos a la API a través del stream
 
-Al hacer pedidos a la API a través del stream, se puede usar la API sin que se genere un pedido HTTP. そのため、コードを簡潔にできたり、パフォーマンスの向上を見込めるかもしれません。
+Al hacer pedidos a la API a través del stream, se puede usar la API sin que se genere un pedido HTTP. Para eso, probablemente se pueda hacer el código más conciso y mejorar el rendimiento.
 
-ストリームを経由してAPIリクエストするには、次のようなデータをJSONでストリームに送信します:
+Para hacer pedidos a la API a través del stream, se envía al stream en formato JSON los siguientes datos.
 ```json
 {
     type: 'api',
@@ -137,7 +137,7 @@ Al hacer pedidos a la API a través del stream, se puede usar la API sin que se 
 ```
 
 Aquí
-* `id`には、APIのレスポンスを識別するための、APIリクエストごとの一意なIDを設定する必要があります。UUIDや、簡単な乱数のようなもので構いません。
+* En `id` se requiere ingresar un ID único por cada pedido a la API, para distinguir las respuestas de la API. Puede ser un UUID o un número aleatorio.
 * `endpoint`には、あなたがリクエストしたいAPIのエンドポイントを指定します。
 * `data`には、エンドポイントのパラメータを含めます。
 
