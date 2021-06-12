@@ -166,11 +166,11 @@ Aquí
 
 Misskey ofrece una construcción llamada "captura de posts". Es una función para recibir en el stream los eventos de un post seleccionado.
 
-例えばタイムラインを取得してユーザーに表示したとします。ここで誰かがそのタイムラインに含まれるどれかの投稿に対してリアクションしたとします。
+Por ejemplo, supongamos que se obtiene la linea de tiempo y se la muestra al usuario. Y ahí, supongamos que alguien reaccionó a un post incluido en esa linea de tiempo.
 
-しかし、クライアントからするとある投稿にリアクションが付いたことなどは知る由がないため、リアルタイムでリアクションをタイムライン上の投稿に反映して表示するといったことができません。
+Sin embargo, como desde el cliente no hay forma de conocer las reacciones añadidas a cierto post, las reacciones no pueden reflejarse en el post en la linea de tiempo en tiempo real.
 
-この問題を解決するために、Misskeyは投稿のキャプチャ機構を用意しています。投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
+Para solucionar este problema, Misskey prepara un mecanismo de captura de posts. 投稿をキャプチャすると、その投稿に関するイベントを受け取ることができるため、リアルタイムでリアクションを反映させたりすることが可能になります。
 
 ### 投稿をキャプチャする
 
