@@ -12,7 +12,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { async, signup, request, post, uploadFile, launchServer, shutdownServer } from './utils';
+import { async, signup, request, post, uploadFile, startServer, shutdownServer } from './utils';
 
 describe('users/notes', () => {
 	let p: childProcess.ChildProcess;
@@ -22,7 +22,8 @@ describe('users/notes', () => {
 	let pngNote: any;
 	let jpgPngNote: any;
 
-	before(launchServer(g => p = g, async () => {
+	before(async () => {
+		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		const jpg = await uploadFile(alice, __dirname + '/resources/Lenna.jpg');
 		const png = await uploadFile(alice, __dirname + '/resources/Lenna.png');
@@ -35,7 +36,7 @@ describe('users/notes', () => {
 		jpgPngNote = await post(alice, {
 			fileIds: [jpg.id, png.id]
 		});
-	}));
+	});
 
 	after(async() => {
 		await shutdownServer(p);
