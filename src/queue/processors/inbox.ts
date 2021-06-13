@@ -95,7 +95,7 @@ export default async (job: Bull.Job<InboxJobData>): Promise<string> => {
 			}
 
 			if (authUser.key == null) {
-				throw `skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした`;
+				return `skip: LD-SignatureのユーザーはpublicKeyを持っていませんでした`;
 			}
 
 			// LD-Signature検証
