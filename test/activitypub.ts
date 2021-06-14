@@ -11,11 +11,11 @@ process.env.NODE_ENV = 'test';
 
 import rndstr from 'rndstr';
 import * as assert from 'assert';
-import { initDb } from '../src/db/postgre';
+import { initTestDb } from './utils';
 
 describe('ActivityPub', () => {
 	before(async () => {
-		await initDb();	// TODO: 後で #7566 とマージ
+		await initTestDb();
 	});
 
 	describe('Parse minimum object', () => {
