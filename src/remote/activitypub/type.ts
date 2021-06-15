@@ -3,7 +3,7 @@ export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
 	'@context': string | obj | obj[];
-	type: string | unknown[];
+	type: string | string[];
 	id?: string;
 	summary?: string;
 	published?: string;

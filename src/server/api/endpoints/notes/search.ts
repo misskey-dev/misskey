@@ -10,11 +10,6 @@ import { generateVisibilityQuery } from '../../common/generate-visibility-query'
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': '投稿を検索します。',
-		'en-US': 'Search notes.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: false as const,

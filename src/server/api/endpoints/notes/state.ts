@@ -4,11 +4,6 @@ import define from '../../define';
 import { NoteFavorites, NoteWatchings } from '../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿の状態を取得します。',
-		'en-US': 'Get state of a note.'
-	},
-
 	tags: ['notes'],
 
 	requireCredential: true as const,
@@ -16,10 +11,6 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿のID',
-				'en-US': 'Target note ID.'
-			}
 		}
 	},
 

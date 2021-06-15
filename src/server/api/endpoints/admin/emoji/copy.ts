@@ -9,11 +9,6 @@ import { ID } from '@/misc/cafy-id';
 import uploadFromUrl from '../../../../../services/drive/upload-from-url';
 
 export const meta = {
-	desc: {
-		'ja-JP': '選択したカスタム絵文字をコピーします。',
-		'en-US': 'Copies the selected custom emoji.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -41,7 +36,6 @@ export const meta = {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
 				format: 'id',
-				description: 'New copied emoji ID'
 			}
 		}
 	}

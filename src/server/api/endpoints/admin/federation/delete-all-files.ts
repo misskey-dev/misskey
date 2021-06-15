@@ -4,11 +4,6 @@ import { deleteFile } from '../../../../../services/drive/delete-file';
 import { DriveFiles } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したドメインのファイルを全て削除します。',
-		'en-US': 'Deletes all files in the specified domain.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

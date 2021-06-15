@@ -5,7 +5,6 @@ export const logSchema = {
 	users: {
 		type: 'array' as const,
 		optional: false as const, nullable: false as const,
-		description: '投稿したユーザー',
 		items: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,

@@ -8,11 +8,6 @@ import { notificationTypes } from '../../../../types';
 import read from '@/services/note/read';
 
 export const meta = {
-	desc: {
-		'ja-JP': '通知一覧を取得します。',
-		'en-US': 'Get notifications.'
-	},
-
 	tags: ['account', 'notifications'],
 
 	requireCredential: true as const,

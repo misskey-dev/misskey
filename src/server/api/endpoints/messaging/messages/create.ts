@@ -9,11 +9,6 @@ import { UserGroup } from '../../../../../models/entities/user-group';
 import { createMessage } from '../../../../../services/messages/create';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'トークメッセージを送信します。',
-		'en-US': 'Create a message of messaging.'
-	},
-
 	tags: ['messaging'],
 
 	requireCredential: true as const,
@@ -23,18 +18,10 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		groupId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '対象のグループのID',
-				'en-US': 'Target group ID'
-			}
 		},
 
 		text: {

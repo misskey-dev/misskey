@@ -5,11 +5,6 @@ import { Apps } from '../../../../models';
 export const meta = {
 	tags: ['account', 'app'],
 
-	desc: {
-		'ja-JP': '自分のアプリケーション一覧を取得します。',
-		'en-US': 'Get my apps'
-	},
-
 	requireCredential: true as const,
 
 	params: {

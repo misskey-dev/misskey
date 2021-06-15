@@ -10,70 +10,42 @@ import { safeForSql } from '@/misc/safe-for-sql';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定されたタグが付けられた投稿を取得します。'
-	},
-
 	tags: ['notes', 'hashtags'],
 
 	params: {
 		tag: {
 			validator: $.optional.str,
-			desc: {
-				'ja-JP': 'タグ'
-			}
 		},
 
 		query: {
 			validator: $.optional.arr($.arr($.str)),
-			desc: {
-				'ja-JP': 'クエリ'
-			}
 		},
 
 		reply: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
-			desc: {
-				'ja-JP': '返信に限定するか否か'
-			}
+			default: null,
 		},
 
 		renote: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
-			desc: {
-				'ja-JP': 'Renoteに限定するか否か'
-			}
+			default: null,
 		},
 
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
-			}
 		},
 
 		poll: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
-			desc: {
-				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
-			}
+			default: null,
 		},
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
-			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
-			}
 		},
 
 		limit: {

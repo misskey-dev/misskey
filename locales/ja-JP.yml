@@ -326,6 +326,7 @@ driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのド
 inMb: "メガバイト単位"
 iconUrl: "アイコン画像のURL (faviconなど)"
 bannerUrl: "バナー画像のURL"
+backgroundImageUrl: "背景画像のURL"
 basicInfo: "基本情報"
 pinnedUsers: "ピン留めユーザー"
 pinnedUsersDescription: "「みつける」ページなどにピン留めしたいユーザーを改行で区切って記述します。"

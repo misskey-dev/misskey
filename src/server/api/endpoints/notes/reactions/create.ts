@@ -6,11 +6,6 @@ import { getNote } from '../../../common/getters';
 import { ApiError } from '../../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した投稿にリアクションします。',
-		'en-US': 'React to a note.'
-	},
-
 	tags: ['reactions', 'notes'],
 
 	requireCredential: true as const,
@@ -20,16 +15,10 @@ export const meta = {
 	params: {
 		noteId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象の投稿'
-			}
 		},
 
 		reaction: {
 			validator: $.str,
-			desc: {
-				'ja-JP': 'リアクションの種類'
-			}
 		}
 	},
 

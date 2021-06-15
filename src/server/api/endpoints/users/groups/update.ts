@@ -5,11 +5,6 @@ import { ApiError } from '../../../error';
 import { UserGroups } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーグループを更新します。',
-		'en-US': 'Update a user group'
-	},
-
 	tags: ['groups'],
 
 	requireCredential: true as const,
@@ -19,18 +14,10 @@ export const meta = {
 	params: {
 		groupId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象となるユーザーグループのID',
-				'en-US': 'ID of target user group'
-			}
 		},
 
 		name: {
 			validator: $.str.range(1, 100),
-			desc: {
-				'ja-JP': 'このユーザーグループの名前',
-				'en-US': 'name of this user group'
-			}
 		}
 	},
 
