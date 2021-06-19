@@ -11,7 +11,7 @@ describe('API', () => {
 		expectType<Misskey.entities.DetailedInstanceMetadata>(res);
 	});
 
-	test('conditional respose type', async () => {
+	test('conditional respose type (meta)', async () => {
 		const cli = new Misskey.api.APIClient({
 			origin: 'https://misskey.test',
 			credential: 'TOKEN'
@@ -25,5 +25,18 @@ describe('API', () => {
 
 		const res3 = await cli.request('meta', { });
 		expectType<Misskey.entities.LiteInstanceMetadata>(res3);
+	});
+
+	test('conditional respose type (users/show)', async () => {
+		const cli = new Misskey.api.APIClient({
+			origin: 'https://misskey.test',
+			credential: 'TOKEN'
+		});
+
+		const res = await cli.request('users/show', { userId: 'xxxxxxxx' });
+		expectType<Misskey.entities.UserDetailed>(res);
+
+		const res2 = await cli.request('users/show', { userIds: ['xxxxxxxx'] });
+		expectType<Misskey.entities.UserDetailed[]>(res2);
 	});
 });

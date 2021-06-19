@@ -1,7 +1,8 @@
 import {
-	Ad, Announcement, Antenna, App, AuthSession, Clip, DetailedInstanceMetadata, DriveFile, DriveFolder, FollowRequest, GalleryPost, InstanceMetadata,
+	Ad, Announcement, Antenna, App, AuthSession, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, FollowRequest, GalleryPost, InstanceMetadata,
 	LiteInstanceMetadata,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserGroup, UserList, UserSorting
+	MeDetailed,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting
 } from './entities';
 
 type TODO = Record<string, any> | null;
@@ -340,24 +341,24 @@ export type Endpoints = {
 	'i/notifications': { req: TODO; res: TODO; };
 	'i/page-likes': { req: TODO; res: TODO; };
 	'i/pages': { req: TODO; res: TODO; };
-	'i/pin': { req: TODO; res: TODO; };
+	'i/pin': { req: { noteId: Note['id']; }; res: MeDetailed; };
 	'i/read-all-messaging-messages': { req: TODO; res: TODO; };
 	'i/read-all-unread-notes': { req: TODO; res: TODO; };
 	'i/read-announcement': { req: TODO; res: TODO; };
-	'i/regenerate-token': { req: TODO; res: TODO; };
-	'i/registry/get-all': { req: TODO; res: TODO; };
-	'i/registry/get-detail': { req: TODO; res: TODO; };
-	'i/registry/get': { req: TODO; res: TODO; };
-	'i/registry/keys-with-type': { req: TODO; res: TODO; };
-	'i/registry/keys': { req: TODO; res: TODO; };
-	'i/registry/remove': { req: TODO; res: TODO; };
-	'i/registry/scopes': { req: TODO; res: TODO; };
-	'i/registry/set': { req: TODO; res: TODO; };
+	'i/regenerate-token': { req: { password: string; }; res: null; };
+	'i/registry/get-all': { req: { scope?: string[]; }; res: Record<string, any>; };
+	'i/registry/get-detail': { req: { key: string; scope?: string[]; }; res: { updatedAt: DateString; value: any; }; };
+	'i/registry/get': { req: { key: string; scope?: string[]; }; res: any; };
+	'i/registry/keys-with-type': { req: { scope?: string[]; }; res: Record<string, 'null' | 'array' | 'number' | 'string' | 'boolean' | 'object'>; };
+	'i/registry/keys': { req: { scope?: string[]; }; res: string[]; };
+	'i/registry/remove': { req: { key: string; scope?: string[]; }; res: null; };
+	'i/registry/scopes': { req: {}; res: string[][]; };
+	'i/registry/set': { req: { key: string; value: any; scope?: string[]; }; res: null; };
 	'i/revoke-token': { req: TODO; res: TODO; };
 	'i/signin-history': { req: TODO; res: TODO; };
 	'i/unpin': { req: TODO; res: TODO; };
 	'i/update-email': { req: TODO; res: TODO; };
-	'i/update': { req: TODO; res: User; };
+	'i/update': { req: TODO; res: MeDetailed; };
 	'i/user-group-invites': { req: TODO; res: TODO; };
 	'i/2fa/done': { req: TODO; res: TODO; };
 	'i/2fa/key-done': { req: TODO; res: TODO; };
@@ -401,7 +402,24 @@ export type Endpoints = {
 	'notes/children': { req: { noteId: Note['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/clips': { req: TODO; res: TODO; };
 	'notes/conversation': { req: TODO; res: TODO; };
-	'notes/create': { req: TODO; res: { createdNote: Note }; };
+	'notes/create': { req: {
+		visibility?: 'public' | 'home' | 'followers' | 'specified',
+		visibleUserIds?: User['id'][];
+		text?: null | string;
+		cw?: null | string;
+		viaMobile?: boolean;
+		localOnly?: boolean;
+		fileIds?: DriveFile['id'][];
+		replyId?: null | Note['id'];
+		renoteId?: null | Note['id'];
+		channelId?: null | Channel['id'];
+		poll?: null | {
+			choices: string[];
+			multiple?: boolean;
+			expiresAt?: null | number;
+			expiredAfter?: null | number;
+		};
+	}; res: { createdNote: Note }; };
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/favorites/create': { req: TODO; res: TODO; };
 	'notes/favorites/delete': { req: { noteId: Note['id']; }; res: null; };
@@ -413,7 +431,7 @@ export type Endpoints = {
 	'notes/polls/recommendation': { req: TODO; res: TODO; };
 	'notes/polls/vote': { req: TODO; res: TODO; };
 	'notes/reactions': { req: TODO; res: TODO; };
-	'notes/reactions/create': { req: TODO; res: TODO; };
+	'notes/reactions/create': { req: { noteId: Note['id']; reaction: string; }; res: null; };
 	'notes/reactions/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/renotes': { req: TODO; res: TODO; };
 	'notes/replies': { req: TODO; res: TODO; };
@@ -500,13 +518,21 @@ export type Endpoints = {
 	'users/lists/push': { req: { listId: UserList['id']; userId: User['id']; }; res: null; };
 	'users/lists/show': { req: { listId: UserList['id']; }; res: UserList; };
 	'users/lists/update': { req: { listId: UserList['id']; name: string; }; res: UserList; };
-	'users/notes': { req: TODO; res: TODO; };
+	'users/notes': { req: { userId: User['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'users/pages': { req: TODO; res: TODO; };
 	'users/recommendation': { req: TODO; res: TODO; };
 	'users/relation': { req: TODO; res: TODO; };
 	'users/report-abuse': { req: TODO; res: TODO; };
 	'users/search-by-username-and-host': { req: TODO; res: TODO; };
 	'users/search': { req: TODO; res: TODO; };
-	'users/show': { req: ShowUserReq; res: User; } | { req: { userIds: User['id'][]; }; res: User[]; };
+	'users/show': { req: ShowUserReq | { userIds: User['id'][]; }; res: {
+		$switch: {
+			$cases: [[
+				{ userIds: User['id'][]; },
+				UserDetailed[],
+			]];
+			$default: UserDetailed;
+		};
+	}; };
 	'users/stats': { req: TODO; res: TODO; };
 };

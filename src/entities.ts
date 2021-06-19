@@ -3,7 +3,10 @@ export type DateString = string;
 
 type TODO = Record<string, any>;
 
-export type User = {
+// NOTE: 極力この型を使うのは避け、UserLite か UserDetailed か明示するように
+export type User = UserLite | UserDetailed;
+
+export type UserLite = {
 	id: ID;
 	username: string;
 	host: string | null;
@@ -17,6 +20,12 @@ export type User = {
 	}[];
 };
 
+export type UserDetailed = UserLite & {
+	isLocked: boolean;
+	pinnedNotes: Note[];
+	// TODO
+};
+
 export type UserGroup = TODO;
 
 export type UserList = {
@@ -26,7 +35,7 @@ export type UserList = {
 	userIds: User['id'][];
 };
 
-export type MeDetailed = User & {
+export type MeDetailed = UserDetailed & {
 	avatarId: DriveFile['id'];
 	bannerId: DriveFile['id'];
 	autoAcceptFollowed: boolean;
@@ -305,6 +314,11 @@ export type FollowRequest = {
 	id: ID;
 	follower: User;
 	followee: User;
+};
+
+export type Channel = {
+	id: ID;
+	// TODO
 };
 
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
