@@ -1,4 +1,4 @@
-import { Endpoints } from './endpoints';
+import { Endpoints } from './api.types';
 import Stream from './streaming';
 import { Acct } from './acct';
 
