@@ -27,8 +27,8 @@
 					</MkPagination>
 				</div>
 				<div class="powered-by" v-if="poweredBy">
-					<b><MkA to="/">{{ host }}</MkA></b>
-					<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
+					<b><MkA to="/">Instance:{{ host }}</MkA></b>
+					<small>Powered by <a href="https://github.com/shyamean4151/misskey-neko" target="_blank">Misskey-Neko</a></small>
 				</div>
 			</template>
 		</div>

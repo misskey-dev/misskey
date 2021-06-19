@@ -49,7 +49,7 @@
 						<i v-else-if="appearNote.visibility === 'followers'" class="fas fa-unlock"></i>
 						<i v-else-if="appearNote.visibility === 'specified'" class="fas fa-envelope"></i>
 					</span>
-					<span class="localOnly" v-if="appearNote.localOnly"><i class="far fa-unlink"></i></span>
+					<span class="localOnly" v-if="appearNote.localOnly"><i class="far fa-unlink" style="color: #5f5f5f;"></i></span>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>

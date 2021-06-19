@@ -1,11 +1,11 @@
 {
 	"name": "misskey-neko",
 	"author": "syuilo <syuilotan@yahoo.co.jp> / shyamean4151 <yi@neko.ci>",
-	"version": "12.83.0-neko-rc1",
+	"version": "12.83.0-neko-rc2",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/shyameam4151/misskey.git"
+		"url": "https://github.com/shyameam4151/misskey-neko.git"
 	},
 	"main": "./index.js",
 	"private": true,

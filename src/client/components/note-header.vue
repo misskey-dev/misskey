@@ -6,7 +6,7 @@
 	<span class="is-bot" v-if="note.user.isBot">bot</span>
 	<span class="username"><MkAcct :user="note.user"/></span>
 	<span class="admin" v-if="note.user.isAdmin"><i class="fas fa-paw" style="color: #ffb7c5;"></i></span>
-	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-badge-check" style="color: #faff72"></i></span>
+	<span class="moderator" v-if="!note.user.isAdmin && note.user.isModerator"><i class="far fa-badge-check" style="color: #faff72;"></i></span>
 	<div class="info">
 		<span class="mobile" v-if="note.viaMobile"><i class="fas fa-mobile-alt"></i></span>
 		<MkA class="created-at" :to="notePage(note)">
@@ -17,7 +17,7 @@
 			<i v-else-if="note.visibility === 'followers'" class="fas fa-unlock"></i>
 			<i v-else-if="note.visibility === 'specified'" class="fas fa-envelope"></i>
 		</span>
-		<span class="localOnly" v-if="note.localOnly"><i class="far fa-unlink"></i></span>
+		<span class="localOnly" v-if="note.localOnly"><i class="far fa-unlink" style="color: #5f5f5f;"></i></span>
 	</div>
 </header>
 </template>
