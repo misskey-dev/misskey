@@ -321,5 +321,20 @@ export type Channel = {
 	// TODO
 };
 
+export type Following = {
+	id: ID;
+	createdAt: DateString;
+	followerId: User['id'];
+	followeeId: User['id'];
+};
+
+export type FollowingFolloweePopulated = Following & {
+	followee: UserDetailed;
+};
+
+export type FollowingFollowerPopulated = Following & {
+	follower: UserDetailed;
+};
+
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
