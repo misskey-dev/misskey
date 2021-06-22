@@ -1,7 +1,7 @@
 # Laman
 
 ## Variabel
-Kamu bisa buat laman dinamis menggunakan variabel. Dengan menulis <b>{ nama-variabel }</b> di teksmu, nilai variabel tersebut bisa disematkan. Contohnya, jika nilai suatu variabel thing di dalam teks <b>Hello {thing} world!</b> adalah <b>ai</b>, maka teksnya akan berubah menjadi <b>Hello ai world!</b>
+Kamu bisa buat laman dinamis menggunakan variabel. Dengan menulis <b>{ nama-variabel }</b> di teksmu, nilai variabel tersebut bisa disematkan.Contohnya, jika nilai suatu variabel thing di dalam teks <b>Hello {thing} world!</b> adalah <b>ai</b>, maka teksnya akan berubah menjadi <b>Hello ai world!</b>
 
 Variabel dievaluasi dari atas ke bawah, makanya tidak mungkin merujuk variabel sebelum dideklarasikan.Contohnya, saat mendeklarasikan tiga variable <b>A, B, C</b> dalam urutan seperti itu, merujuk <b>A</b> atau <b>B</b> dari dalam <b>C</b> itu mungkin, tapi merujuk <b>B</b> atau <b>C</b> dari dalam <b>A<0> tidak.</p> 
 
