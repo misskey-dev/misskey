@@ -18,6 +18,11 @@ logout: "Sair"
 users: "Usuários"
 showMore: "Mostrar Mais"
 youGotNewFollower: "Você tem um novo seguidor"
+followRequestAccepted: "Pedido de seguir aceito"
+note: "Observação"
+notes: "Observações"
+renote: "Repostar"
+renoted: "Repostado"
 smtpUser: "Nome de usuário"
 smtpPass: "Senha"
 user: "Usuários"
@@ -26,7 +31,11 @@ _email:
     title: "Você tem um novo seguidor"
 _mfm:
   search: "Pesquisar"
+_theme:
+  keys:
+    renote: "Repostar"
 _sfx:
+  note: "Observações"
   notification: "Notificações"
 _widgets:
   notifications: "Notificações"
@@ -35,6 +44,8 @@ _profile:
   username: "Nome de usuário"
 _notification:
   youWereFollowed: "Você tem um novo seguidor"
+  _types:
+    renote: "Repostar"
 _deck:
   _columns:
     notifications: "Notificações"
