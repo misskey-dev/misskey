@@ -1,11 +1,11 @@
 # Tema
 
-テーマを設定して、Misskeyクライアントの見た目を変更できます。
+Kamu bisa mengubah tampilan klien Misskey dengan mengatur temanya.
 
-## テーマの設定
-設定 > テーマ
+## Pengaturan tema
+Pengaturan > Tema
 
-## テーマを作成する
+## Membuat tema
 テーマコードはJSON5で記述されたテーマオブジェクトです。 テーマは以下のようなオブジェクトです。
 ``` js
 {
@@ -33,9 +33,9 @@
 
 ```
 
-* `id` ... テーマの一意なID。UUIDをおすすめします。
-* `name` ... テーマ名
-* `author` ... テーマの作者
+* `id` ... ID tema unik.Dianjurkan menggunakan UUID.
+* `name` ... Nama tema
+* `author` ... Pembuat tema
 * `desc` ... テーマの説明(オプション)
 * `base` ... 明るいテーマか、暗いテーマか
     * `light`にすると明るいテーマになり、`dark`にすると暗いテーマになります。
