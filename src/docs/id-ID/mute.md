@@ -2,12 +2,12 @@
 
 Jika membisukan seorang pengguna, konten berikut yang berkaitan dengan pengguna tersebut tidak akan ditampilkan lagi di Misskey.
 
-* タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
-* そのユーザーからの通知
-* メッセージ履歴一覧内の、そのユーザーとのメッセージ履歴
+* Kiriman pengguna pada linimasa atau pada hasil penelusuran (termasuk nota ulang atau balasan yang terkait dengan kiriman tersebut)
+* Pemberitahuan dari pengguna tersebut
+* Riwayat obrolan dengan pengguna tersebut di daftar riwayat obrolan
 
-ユーザーをミュートするには、対象のユーザーのユーザーページに表示されている「ミュート」ボタンを押します。
+Untuk membisukan seorang pengguna, tekan tombol "Bisukan" yang ada di laman profil pengguna tersebut.
 
-ミュートを行ったことは相手に通知されず、ミュートされていることを知ることもできません。
+Pengguna yang dibisukan tidak akan diberitahu bahwa ia telah dibisukan, dan juga tidak akan tahu siapa yang membisukannya.
 
-設定>ミュート から、自分がミュートしているユーザー一覧を確認することができます。
+Untuk megkonfirmasi daftar pengguna yang telah dibisukan, bisa lihat di pengaturan dengan menuju Pengaturan > Bisu / Blok.
