@@ -1,8 +1,8 @@
 # Bisukan
 
-Jika membisukan seorang pengguna, konten berikut yang berkaitan dengan pengguna tersebut tidak akan ditampilkan lagi di Misskey.
+Apabila membisukan seorang pengguna, konten berikut yang berkaitan dengan pengguna tersebut tidak akan ditampilkan lagi di Misskey.
 
-* Kiriman pengguna pada linimasa atau pada hasil penelusuran (termasuk nota ulang atau balasan yang terkait dengan kiriman tersebut)
+* Kiriman pengguna pada linimasa atau hasil penelusuran (termasuk Renote atau balasan yang terkait dengan kiriman tersebut)
 * Pemberitahuan dari pengguna tersebut
 * Riwayat obrolan dengan pengguna tersebut di daftar riwayat obrolan
 
