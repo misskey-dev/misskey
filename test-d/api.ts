@@ -25,6 +25,9 @@ describe('API', () => {
 
 		const res3 = await cli.request('meta', { });
 		expectType<Misskey.entities.LiteInstanceMetadata>(res3);
+
+		const res4 = await cli.request('meta', { detail: true as boolean });
+		expectType<Misskey.entities.LiteInstanceMetadata | Misskey.entities.DetailedInstanceMetadata>(res4);
 	});
 
 	test('conditional respose type (users/show)', async () => {
