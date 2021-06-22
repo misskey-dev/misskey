@@ -14,8 +14,16 @@ basicSettings: "Configurações básicas"
 otherSettings: "Outras configurações"
 profile: "Perfil"
 timeline: "Timeline"
+logout: "Sair"
+users: "Usuários"
+showMore: "Mostrar Mais"
+youGotNewFollower: "Você tem um novo seguidor"
 smtpUser: "Nome de usuário"
 smtpPass: "Senha"
+user: "Usuários"
+_email:
+  _follow:
+    title: "Você tem um novo seguidor"
 _mfm:
   search: "Pesquisar"
 _sfx:
@@ -25,6 +33,8 @@ _widgets:
   timeline: "Timeline"
 _profile:
   username: "Nome de usuário"
+_notification:
+  youWereFollowed: "Você tem um novo seguidor"
 _deck:
   _columns:
     notifications: "Notificações"
