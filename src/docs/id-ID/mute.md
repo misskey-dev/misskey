@@ -1,6 +1,6 @@
 # Bisukan
 
-ユーザーをミュートすると、そのユーザーに関する次のコンテンツがMisskeyに表示されなくなります:
+Jika membisukan seorang pengguna, konten berikut yang berkaitan dengan pengguna tersebut tidak akan ditampilkan lagi di Misskey.
 
 * タイムラインや投稿の検索結果内の、そのユーザーの投稿(およびそれらの投稿に対する返信やRenote)
 * そのユーザーからの通知
