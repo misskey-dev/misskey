@@ -338,5 +338,34 @@ export type FollowingFollowerPopulated = Following & {
 	follower: UserDetailed;
 };
 
+export type Instance = {
+	id: ID;
+	caughtAt: DateString;
+	host: string;
+	usersCount: number;
+	notesCount: number;
+	followingCount: number;
+	followersCount: number;
+	driveUsage: number;
+	driveFiles: number;
+	latestRequestSentAt: DateString | null;
+	latestStatus: number | null;
+	latestRequestReceivedAt: DateString | null;
+	lastCommunicatedAt: DateString;
+	isNotResponding: boolean;
+	isSuspended: boolean;
+	softwareName: string | null;
+	softwareVersion: string | null;
+	openRegistrations: boolean | null;
+	name: string | null;
+	description: string | null;
+	maintainerName: string | null;
+	maintainerEmail: string | null;
+	iconUrl: string | null;
+	faviconUrl: string | null;
+	themeColor: string | null;
+	infoUpdatedAt: DateString | null;
+};
+
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';

@@ -1,5 +1,5 @@
 import {
-	Ad, Announcement, Antenna, App, AuthSession, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, InstanceMetadata,
+	Ad, Announcement, Antenna, App, AuthSession, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance, InstanceMetadata,
 	LiteInstanceMetadata,
 	MeDetailed,
 	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting
@@ -251,17 +251,17 @@ export type Endpoints = {
 
 	// drive
 	'drive': { req: {}; res: { capacity: number; usage: number; }; };
-	'drive/files': { req: TODO; res: TODO; };
+	'drive/files': { req: { folderId?: DriveFolder['id'] | null; type?: DriveFile['type'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFile[]; };
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
 	'drive/files/create': { req: TODO; res: TODO; };
 	'drive/files/delete': { req: { fileId: DriveFile['id']; }; res: null; };
 	'drive/files/find-by-hash': { req: TODO; res: TODO; };
 	'drive/files/find': { req: TODO; res: TODO; };
-	'drive/files/show': { req: TODO; res: TODO; };
+	'drive/files/show': { req: { fileId?: DriveFile['id']; url?: string; }; res: DriveFile; };
 	'drive/files/update': { req: TODO; res: TODO; };
 	'drive/files/upload-from-url': { req: TODO; res: TODO; };
-	'drive/folders': { req: TODO; res: TODO; };
+	'drive/folders': { req: { folderId?: DriveFolder['id'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFolder[]; };
 	'drive/folders/create': { req: TODO; res: TODO; };
 	'drive/folders/delete': { req: { folderId: DriveFolder['id']; }; res: null; };
 	'drive/folders/find': { req: TODO; res: TODO; };
@@ -276,13 +276,29 @@ export type Endpoints = {
 	'endpoints': { req: {}; res: string[]; };
 
 	// federation
-	'federation/dns': { req: TODO; res: TODO; };
+	'federation/dns': { req: { host: string; }; res: {
+		a: string[];
+		aaaa: string[];
+		cname: string[];
+		txt: string[];
+	}; };
 	'federation/followers': { req: { host: string; limit?: number; sinceId?: Following['id']; untilId?: Following['id']; }; res: FollowingFolloweePopulated[]; };
 	'federation/following': { req: { host: string; limit?: number; sinceId?: Following['id']; untilId?: Following['id']; }; res: FollowingFolloweePopulated[]; };
-	'federation/instances': { req: TODO; res: TODO; };
-	'federation/show-instance': { req: TODO; res: TODO; };
-	'federation/update-remote-user': { req: TODO; res: TODO; };
-	'federation/users': { req: TODO; res: TODO; };
+	'federation/instances': { req: {
+		host?: string | null;
+		blocked?: boolean | null;
+		notResponding?: boolean | null;
+		suspended?: boolean | null;
+		federating?: boolean | null;
+		subscribing?: boolean | null;
+		publishing?: boolean | null;
+		limit?: number;
+		offset?: number;
+		sort?: '+pubSub' | '-pubSub' | '+notes' | '-notes' | '+users' | '-users' | '+following' | '-following' | '+followers' | '-followers' | '+caughtAt' | '-caughtAt' | '+lastCommunicatedAt' | '-lastCommunicatedAt' | '+driveUsage' | '-driveUsage' | '+driveFiles' | '-driveFiles';
+	}; res: Instance[]; };
+	'federation/show-instance': { req: { host: string; }; res: Instance; };
+	'federation/update-remote-user': { req: { userId: User['id']; }; res: null; };
+	'federation/users': { req: { host: string; limit?: number; sinceId?: User['id']; untilId?: User['id']; }; res: UserDetailed[]; };
 
 	// following
 	'following/create': { req: { userId: User['id'] }; res: User; };
