@@ -1,4 +1,4 @@
-import { DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User } from './entities';
+import { CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User } from './entities';
 
 export type ChannelDef = {
 	main: {
@@ -79,4 +79,11 @@ export type NoteUpdatedEvent = {
 		choice: number;
 		userId: User['id'];
 	};
+};
+
+export type BroadcasrEvents = {
+	noteUpdated: (payload: NoteUpdatedEvent) => void;
+	emojiAdded: (payload: {
+		emoji: CustomEmoji;
+	}) => void;
 };

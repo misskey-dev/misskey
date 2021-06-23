@@ -163,6 +163,14 @@ export type MessagingMessage = {
 	groupId: string; // TODO
 };
 
+export type CustomEmoji = {
+	id: string;
+	name: string;
+	url: string;
+	category: string;
+	aliases: string[];
+};
+
 export type LiteInstanceMetadata = {
 	maintainerName: string | null;
 	maintainerEmail: string | null;
@@ -187,13 +195,7 @@ export type LiteInstanceMetadata = {
 	enableGithubIntegration: boolean;
 	enableDiscordIntegration: boolean;
 	enableServiceWorker: boolean;
-	emojis: {
-		id: string;
-		name: string;
-		url: string;
-		category: string;
-		aliases: string[];
-	}[];
+	emojis: CustomEmoji[];
 	ads: {
 		id: ID;
 		ratio: number;

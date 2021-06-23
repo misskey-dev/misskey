@@ -3,7 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { stringify } from 'querystring';
 import { markRaw } from '@vue/reactivity';
-import { ChannelDef, NoteUpdatedEvent } from './streaming.types';
+import { BroadcasrEvents, ChannelDef } from './streaming.types';
 
 function urlQuery(obj: {}): string {
 	return stringify(Object.entries(obj)
@@ -14,8 +14,7 @@ function urlQuery(obj: {}): string {
 type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
-	noteUpdated: (payload: NoteUpdatedEvent) => void;
-};
+} & BroadcasrEvents;
 
 /**
  * Misskey stream connection
