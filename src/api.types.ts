@@ -1,8 +1,8 @@
 import {
-	Ad, Announcement, Antenna, App, AuthSession, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance, InstanceMetadata,
+	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance, InstanceMetadata,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin
 } from './entities';
 
 type TODO = Record<string, any> | null;
@@ -79,8 +79,14 @@ export type Endpoints = {
 	'antennas/update': { req: TODO; res: Antenna; };
 
 	// ap
-	'ap/get': { req: TODO; res: TODO; };
-	'ap/show': { req: TODO; res: TODO; };
+	'ap/get': { req: { uri: string; }; res: Record<string, any>; };
+	'ap/show': { req: { uri: string; }; res: {
+		type: 'Note';
+		object: Note;
+	} | {
+		type: 'User';
+		object: UserDetailed;
+	}; };
 
 	// app
 	'app/create': { req: TODO; res: App; };
@@ -93,9 +99,9 @@ export type Endpoints = {
 	'auth/session/userkey': { req: { appSecret: string; token: string; }; res: { accessToken: string; user: User }; };
 
 	// blocking
-	'blocking/create': { req: TODO; res: TODO; };
-	'blocking/delete': { req: TODO; res: TODO; };
-	'blocking/list': { req: TODO; res: TODO; };
+	'blocking/create': { req: { userId: User['id'] }; res: UserDetailed; };
+	'blocking/delete': { req: { userId: User['id'] }; res: UserDetailed; };
+	'blocking/list': { req: { limit?: number; sinceId?: Blocking['id']; untilId?: Blocking['id']; }; res: Blocking[]; };
 
 	// channels
 	'channels/create': { req: TODO; res: TODO; };
@@ -257,17 +263,17 @@ export type Endpoints = {
 	'drive/files/create': { req: TODO; res: TODO; };
 	'drive/files/delete': { req: { fileId: DriveFile['id']; }; res: null; };
 	'drive/files/find-by-hash': { req: TODO; res: TODO; };
-	'drive/files/find': { req: TODO; res: TODO; };
+	'drive/files/find': { req: { name: string; folderId?: DriveFolder['id'] | null; }; res: DriveFile[]; };
 	'drive/files/show': { req: { fileId?: DriveFile['id']; url?: string; }; res: DriveFile; };
-	'drive/files/update': { req: TODO; res: TODO; };
-	'drive/files/upload-from-url': { req: TODO; res: TODO; };
+	'drive/files/update': { req: { fileId: DriveFile['id']; folderId?: DriveFolder['id'] | null; name?: string; isSensitive?: boolean; comment?: string | null; }; res: DriveFile; };
+	'drive/files/upload-from-url': { req: { url: string; folderId?: DriveFolder['id'] | null; isSensitive?: boolean; comment?: string | null; marker?: string | null; force?: boolean; }; res: null; };
 	'drive/folders': { req: { folderId?: DriveFolder['id'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFolder[]; };
-	'drive/folders/create': { req: TODO; res: TODO; };
+	'drive/folders/create': { req: { name?: string; parentId?: DriveFolder['id'] | null; }; res: DriveFolder; };
 	'drive/folders/delete': { req: { folderId: DriveFolder['id']; }; res: null; };
-	'drive/folders/find': { req: TODO; res: TODO; };
-	'drive/folders/show': { req: TODO; res: TODO; };
-	'drive/folders/update': { req: TODO; res: TODO; };
-	'drive/stream': { req: TODO; res: TODO; };
+	'drive/folders/find': { req: { name: string; parentId?: DriveFolder['id'] | null; }; res: DriveFolder[]; };
+	'drive/folders/show': { req: { folderId: DriveFolder['id']; }; res: DriveFolder; };
+	'drive/folders/update': { req: { folderId: DriveFolder['id']; name?: string; parentId?: DriveFolder['id'] | null; }; res: DriveFolder; };
+	'drive/stream': { req: { type?: DriveFile['type'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFile[]; };
 
 	// endpoint
 	'endpoint': { req: { endpoint: string; }; res: { params: { name: string; type: string; }[]; }; };
@@ -348,13 +354,21 @@ export type Endpoints = {
 	'i/export-mute': { req: TODO; res: TODO; };
 	'i/export-notes': { req: TODO; res: TODO; };
 	'i/export-user-lists': { req: TODO; res: TODO; };
-	'i/favorites': { req: TODO; res: NoteFavorite[]; };
+	'i/favorites': { req: { limit?: number; sinceId?: NoteFavorite['id']; untilId?: NoteFavorite['id']; }; res: NoteFavorite[]; };
 	'i/gallery/likes': { req: TODO; res: TODO; };
 	'i/gallery/posts': { req: TODO; res: TODO; };
 	'i/get-word-muted-notes-count': { req: TODO; res: TODO; };
 	'i/import-following': { req: TODO; res: TODO; };
 	'i/import-user-lists': { req: TODO; res: TODO; };
-	'i/notifications': { req: TODO; res: TODO; };
+	'i/notifications': { req: {
+		limit?: number;
+		sinceId?: Notification['id'];
+		untilId?: Notification['id'];
+		following?: boolean;
+		markAsRead?: boolean;
+		includeTypes?: Notification['type'][];
+		excludeTypes?: Notification['type'][];
+	}; res: Notification[]; };
 	'i/page-likes': { req: TODO; res: TODO; };
 	'i/pages': { req: TODO; res: TODO; };
 	'i/pin': { req: { noteId: Note['id']; }; res: MeDetailed; };
@@ -371,10 +385,39 @@ export type Endpoints = {
 	'i/registry/scopes': { req: {}; res: string[][]; };
 	'i/registry/set': { req: { key: string; value: any; scope?: string[]; }; res: null; };
 	'i/revoke-token': { req: TODO; res: TODO; };
-	'i/signin-history': { req: TODO; res: TODO; };
-	'i/unpin': { req: TODO; res: TODO; };
-	'i/update-email': { req: TODO; res: TODO; };
-	'i/update': { req: TODO; res: MeDetailed; };
+	'i/signin-history': { req: { limit?: number; sinceId?: Signin['id']; untilId?: Signin['id']; }; res: Signin[]; };
+	'i/unpin': { req: { noteId: Note['id']; }; res: MeDetailed; };
+	'i/update-email': { req: {
+		password: string;
+		email?: string | null;
+	}; res: MeDetailed; };
+	'i/update': { req: {
+		name?: string | null;
+		description?: string | null;
+		lang?: string | null;
+		location?: string | null;
+		birthday?: string | null;
+		avatarId?: DriveFile['id'] | null;
+		bannerId?: DriveFile['id'] | null;
+		fields?: {
+			name: string;
+			value: string;
+		}[];
+		isLocked?: boolean;
+		isExplorable?: boolean;
+		hideOnlineStatus?: boolean;
+		carefulBot?: boolean;
+		autoAcceptFollowed?: boolean;
+		noCrawle?: boolean;
+		isBot?: boolean;
+		isCat?: boolean;
+		injectFeaturedNote?: boolean;
+		receiveAnnouncementEmail?: boolean;
+		alwaysMarkNsfw?: boolean;
+		mutedWords?: string[][];
+		mutingNotificationTypes?: Notification['type'][];
+		emailNotificationTypes?: string[];
+	}; res: MeDetailed; };
 	'i/user-group-invites': { req: TODO; res: TODO; };
 	'i/2fa/done': { req: TODO; res: TODO; };
 	'i/2fa/key-done': { req: TODO; res: TODO; };
@@ -445,26 +488,26 @@ export type Endpoints = {
 	'notes/local-timeline': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'notes/mentions': { req: { following?: boolean; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/polls/recommendation': { req: TODO; res: TODO; };
-	'notes/polls/vote': { req: TODO; res: TODO; };
-	'notes/reactions': { req: TODO; res: TODO; };
+	'notes/polls/vote': { req: { noteId: Note['id']; choice: number; }; res: null; };
+	'notes/reactions': { req: { noteId: Note['id']; type?: string | null; limit?: number; }; res: NoteReaction[]; };
 	'notes/reactions/create': { req: { noteId: Note['id']; reaction: string; }; res: null; };
 	'notes/reactions/delete': { req: { noteId: Note['id']; }; res: null; };
-	'notes/renotes': { req: TODO; res: TODO; };
-	'notes/replies': { req: TODO; res: TODO; };
+	'notes/renotes': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; noteId: Note['id']; }; res: Note[]; };
+	'notes/replies': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; noteId: Note['id']; }; res: Note[]; };
 	'notes/search-by-tag': { req: TODO; res: TODO; };
 	'notes/search': { req: TODO; res: TODO; };
 	'notes/show': { req: { noteId: Note['id']; }; res: Note; };
 	'notes/state': { req: TODO; res: TODO; };
 	'notes/timeline': { req: { limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'notes/unrenote': { req: { noteId: Note['id']; }; res: null; };
-	'notes/user-list-timeline': { req: TODO; res: TODO; };
+	'notes/user-list-timeline': { req: { listId: UserList['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'notes/watching/create': { req: TODO; res: TODO; };
 	'notes/watching/delete': { req: { noteId: Note['id']; }; res: null; };
 
 	// notifications
-	'notifications/create': { req: TODO; res: TODO; };
+	'notifications/create': { req: { body: string; header?: string | null; icon?: string | null; }; res: null; };
 	'notifications/mark-all-as-read': { req: {}; res: null; };
-	'notifications/read': { req: TODO; res: TODO; };
+	'notifications/read': { req: { notificationId: Notification['id']; }; res: null; };
 
 	// page-push
 	'page-push': { req: { pageId: Page['id']; event: string; var?: any; }; res: null; };
@@ -479,7 +522,7 @@ export type Endpoints = {
 	'pages/update': { req: TODO; res: null; };
 
 	// ping
-	'ping': { req: TODO; res: TODO; };
+	'ping': { req: {}; res: { pong: number; }; };
 
 	// pinned-users
 	'pinned-users': { req: TODO; res: TODO; };
@@ -488,7 +531,7 @@ export type Endpoints = {
 	'promo/read': { req: TODO; res: TODO; };
 
 	// request-reset-password
-	'request-reset-password': { req: TODO; res: TODO; };
+	'request-reset-password': { req: { username: string; email: string; }; res: null; };
 
 	// reset-password
 	'reset-password': { req: { token: string; password: string; }; res: null; };

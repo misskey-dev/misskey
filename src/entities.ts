@@ -95,6 +95,13 @@ export type Note = {
 	}[];
 };
 
+export type NoteReaction = {
+	id: ID;
+	createdAt: DateString;
+	user: UserLite;
+	type: string;
+};
+
 export type Notification = {
 	id: ID;
 	createdAt: DateString;
@@ -338,6 +345,13 @@ export type FollowingFollowerPopulated = Following & {
 	follower: UserDetailed;
 };
 
+export type Blocking = {
+	id: ID;
+	createdAt: DateString;
+	blockeeId: User['id'];
+	blockee: UserDetailed;
+};
+
 export type Instance = {
 	id: ID;
 	caughtAt: DateString;
@@ -365,6 +379,14 @@ export type Instance = {
 	faviconUrl: string | null;
 	themeColor: string | null;
 	infoUpdatedAt: DateString | null;
+};
+
+export type Signin = {
+	id: ID;
+	createdAt: DateString;
+	ip: string;
+	headers: Record<string, any>;
+	success: boolean;
 };
 
 export type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
