@@ -38,16 +38,73 @@ describe('API', () => {
 
 		const res = await cli.request('i');
 
-		// validate response
 		expect(res).toEqual({
 			id: 'foo'
 		});
 
-		// validate fetch call
 		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
 			url: 'https://misskey.test/api/i',
 			method: 'POST',
 			body: { i: 'TOKEN' }
+		});
+	});
+
+	test('with params', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockResponse(async (req) => {
+			const body = await req.json();
+			if (req.method == 'POST' && req.url == 'https://misskey.test/api/notes/show') {
+				if (body.i === 'TOKEN' && body.noteId === 'aaaaa') {
+					return JSON.stringify({ id: 'foo' });
+				} else {
+					return { status: 400 };
+				}
+			} else {
+				return { status: 404 };
+			}
+		});
+
+		const cli = new APIClient({
+			origin: 'https://misskey.test',
+			credential: 'TOKEN',
+		});
+
+		const res = await cli.request('notes/show', { noteId: 'aaaaa' });
+
+		expect(res).toEqual({
+			id: 'foo'
+		});
+
+		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
+			url: 'https://misskey.test/api/notes/show',
+			method: 'POST',
+			body: { i: 'TOKEN', noteId: 'aaaaa' }
+		});
+	});
+
+	test('204 No Content で null が返る', async () => {
+		fetchMock.resetMocks();
+		fetchMock.mockResponse(async (req) => {
+			if (req.method == 'POST' && req.url == 'https://misskey.test/api/reset-password') {
+				return { status: 204 };
+			} else {
+				return { status: 404 };
+			}
+		});
+
+		const cli = new APIClient({
+			origin: 'https://misskey.test',
+			credential: 'TOKEN',
+		});
+
+		const res = await cli.request('reset-password', { token: 'aaa', password: 'aaa' });
+
+		expect(res).toEqual(null);
+
+		expect(getFetchCall(fetchMock.mock.calls[0])).toEqual({
+			url: 'https://misskey.test/api/reset-password',
+			method: 'POST',
+			body: { i: 'TOKEN', token: 'aaa', password: 'aaa' }
 		});
 	});
 
