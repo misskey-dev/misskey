@@ -8,7 +8,7 @@
 		"build": "npm run tsc",
 		"tsc": "tsc",
 		"tsd": "tsd",
-		"jest": "jest --detectOpenHandles",
+		"jest": "jest --coverage --detectOpenHandles",
 		"test": "npm run jest && npm run tsd"
 	},
 	"repository": {
