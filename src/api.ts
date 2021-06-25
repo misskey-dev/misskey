@@ -28,6 +28,12 @@ type IsNeverType<T> = [T] extends [never] ? true : false;
 
 type StrictExtract<Union, Cond> = Cond extends Union ? Union : never;
 
+type IsCaseMatched<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
+	IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>> extends false ? true : false;
+
+type GetCaseResult<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
+	StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>[1];
+
 export class APIClient {
 	public origin: string;
 	public credential: string | null | undefined;
@@ -46,17 +52,18 @@ export class APIClient {
 	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
 		endpoint: E, params: P = {} as P, credential?: string | null | undefined,
 	): Promise<Endpoints[E]['res'] extends { $switch: { $cases: [any, any][]; $default: any; }; }
-		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][0], [P, any]>> extends false
-			? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][0], [P, any]>[1]
-			: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][1], [P, any]>> extends false
-				? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][1], [P, any]>[1]
-				: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][2], [P, any]>> extends false
-					? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][2], [P, any]>[1]
-					: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][3], [P, any]>> extends false
-						? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][3], [P, any]>[1]
-						: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][4], [P, any]>> extends false
-							? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][4], [P, any]>[1]
-							: Endpoints[E]['res']['$switch']['$default']
+		?
+			IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> :
+			IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1> :
+			IsCaseMatched<E, P, 2> extends true ? GetCaseResult<E, P, 2> :
+			IsCaseMatched<E, P, 3> extends true ? GetCaseResult<E, P, 3> :
+			IsCaseMatched<E, P, 4> extends true ? GetCaseResult<E, P, 4> :
+			IsCaseMatched<E, P, 5> extends true ? GetCaseResult<E, P, 5> :
+			IsCaseMatched<E, P, 6> extends true ? GetCaseResult<E, P, 6> :
+			IsCaseMatched<E, P, 7> extends true ? GetCaseResult<E, P, 7> :
+			IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8> :
+			IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9> :
+			Endpoints[E]['res']['$switch']['$default']
 		: Endpoints[E]['res']>
 	{
 		const promise = new Promise((resolve, reject) => {
