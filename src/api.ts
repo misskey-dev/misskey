@@ -46,9 +46,17 @@ export class APIClient {
 	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
 		endpoint: E, params: P = {} as P, credential?: string | null | undefined,
 	): Promise<Endpoints[E]['res'] extends { $switch: { $cases: [any, any][]; $default: any; }; }
-		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][number], [P, any]>> extends true
-			? Endpoints[E]['res']['$switch']['$default']
-			: StrictExtract<Endpoints[E]['res']['$switch']['$cases'][number], [P, any]>[1]
+		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][0], [P, any]>> extends false
+			? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][0], [P, any]>[1]
+			: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][1], [P, any]>> extends false
+				? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][1], [P, any]>[1]
+				: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][2], [P, any]>> extends false
+					? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][2], [P, any]>[1]
+					: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][3], [P, any]>> extends false
+						? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][3], [P, any]>[1]
+						: IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][4], [P, any]>> extends false
+							? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][4], [P, any]>[1]
+							: Endpoints[E]['res']['$switch']['$default']
 		: Endpoints[E]['res']>
 	{
 		const promise = new Promise((resolve, reject) => {

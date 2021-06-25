@@ -440,6 +440,12 @@ export type Endpoints = {
 			$cases: [[
 				{ detail: true; },
 				DetailedInstanceMetadata,
+			], [
+				{ detail: false; },
+				LiteInstanceMetadata,
+			], [
+				{ detail: boolean; },
+				LiteInstanceMetadata | DetailedInstanceMetadata,
 			]];
 			$default: LiteInstanceMetadata;
 		};
