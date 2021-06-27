@@ -4,7 +4,7 @@ Aquí se cuenta la forma de desarrollar un Bot compatible con la característica
 1. Conéctese al stream `games/reversi` con los siguientes parámetros
     * `i`: clave API de la cuenta del bot
 
-2. 対局への招待が来たら、ストリームから`invited`イベントが流れてくる
+2. Cuando llegue una invitación al juego, aparecerá un evento `invited` desde el stream
     * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
 
 3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
