@@ -3,7 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import ReconnectingWebsocket from 'reconnecting-websocket';
 import { stringify } from 'querystring';
 import { markRaw } from '@vue/reactivity';
-import { BroadcasrEvents, ChannelDef } from './streaming.types';
+import { BroadcasrEvents, Channels } from './streaming.types';
 
 function urlQuery(obj: {}): string {
 	return stringify(Object.entries(obj)
@@ -49,7 +49,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
-	public useChannel<C extends keyof ChannelDef>(channel: C, params?: any, name?: string): Connection<ChannelDef[C]['events']> {
+	public useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): Connection<Channels[C]> {
 		if (params) {
 			return this.connectToChannel(channel, params);
 		} else {
@@ -58,7 +58,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
-	public useSharedConnection<C extends keyof ChannelDef>(channel: C, name?: string): SharedConnection<ChannelDef[C]['events']> {
+	private useSharedConnection<C extends keyof Channels>(channel: C, name?: string): SharedConnection<Channels[C]> {
 		let pool = this.sharedConnectionPools.find(p => p.channel === channel);
 
 		if (pool == null) {
@@ -82,7 +82,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
-	public connectToChannel<C extends keyof ChannelDef>(channel: C, params?: any): NonSharedConnection<ChannelDef[C]['events']> {
+	private connectToChannel<C extends keyof Channels>(channel: C, params: Channels[C]['params']): NonSharedConnection<Channels[C]> {
 		const connection = markRaw(new NonSharedConnection(this, channel, params));
 		this.nonSharedConnections.push(connection);
 		return connection;
@@ -177,6 +177,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 let idCounter = 0;
 
+// TODO: これらのクラスを Stream クラスの内部クラスにすれば余計なメンバをpublicにしないで済むかも？
 class Pool {
 	public channel: string;
 	public id: string;
@@ -246,7 +247,7 @@ class Pool {
 	}
 }
 
-abstract class Connection<Events extends Record<string, any> = any> extends EventEmitter<Events> {
+abstract class Connection<Channel extends Channels[keyof Channels] = any> extends EventEmitter<Channel['events']> {
 	public channel: string;
 	protected stream: Stream;
 	public abstract id: string;
@@ -280,7 +281,7 @@ abstract class Connection<Events extends Record<string, any> = any> extends Even
 	public abstract dispose(): void;
 }
 
-class SharedConnection<Events = any> extends Connection<Events> {
+class SharedConnection<Channel extends Channels[keyof Channels] = any> extends Connection<Channel> {
 	private pool: Pool;
 
 	public get id(): string {
@@ -307,11 +308,11 @@ class SharedConnection<Events = any> extends Connection<Events> {
 	}
 }
 
-class NonSharedConnection<Events = any> extends Connection<Events> {
+class NonSharedConnection<Channel extends Channels[keyof Channels] = any> extends Connection<Channel> {
 	public id: string;
-	protected params: any;
+	protected params: Channel['params'];
 
-	constructor(stream: Stream, channel: string, params?: any) {
+	constructor(stream: Stream, channel: string, params: Channel['params']) {
 		super(stream, channel);
 
 		this.params = params;

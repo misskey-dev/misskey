@@ -1,7 +1,8 @@
-import { CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User } from './entities';
+import { CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User, UserGroup } from './entities';
 
-export type ChannelDef = {
+export type Channels = {
 	main: {
+		params: null;
 		events: {
 			notification: (payload: Notification) => void;
 			mention: (payload: Note) => void;
@@ -30,26 +31,34 @@ export type ChannelDef = {
 		};
 	};
 	homeTimeline: {
+		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
 	};
 	localTimeline: {
+		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
 	};
 	hybridTimeline: {
+		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
 	};
 	globalTimeline: {
+		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
 	};
 	messaging: {
+		params: {
+			otherparty?: User['id'] | null;
+			group?: UserGroup['id'] | null;
+		};
 		events: {
 			message: (payload: MessagingMessage) => void;
 			deleted: (payload: MessagingMessage['id']) => void;
