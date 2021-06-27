@@ -38,6 +38,7 @@ export default defineComponent({
 	data() {
 		return {
 			notes: [],
+			isScrolling: false,
 		}
 	},
 
@@ -45,24 +46,52 @@ export default defineComponent({
 		os.api('notes/featured').then(notes => {
 			this.notes = notes;
 		});
+	},
+
+	updated() {
+		if (this.$refs.scroll.clientHeight > window.innerHeight) {
+			this.isScrolling = true;
+		}
 	}
 });
 </script>
 
 <style lang="scss" scoped>
+@keyframes scroll {
+	0% {
+		transform: translate3d(0, 0, 0);
+	}
+	5% {
+		transform: translate3d(0, 0, 0);
+	}
+	75% {
+		transform: translate3d(0, calc(-100% + 90vh), 0);
+	}
+	90% {
+		transform: translate3d(0, calc(-100% + 90vh), 0);
+	}
+}
+
 .civpbkhh {
 	text-align: right;
 
-	> .note {
-		margin: 16px 0 16px auto;
+	> .scrollbox {
+		&.scroll {
+			animation: scroll 45s linear infinite;
+		}
 
-		> .content {
-			padding: 16px;
-			margin: 0 0 0 auto;
-			max-width: max-content;
-			border-radius: 16px;
-			> .richcontent {
-				min-width: 250px;
+		> .note {
+			margin: 16px 0 16px auto;
+
+			> .content {
+				padding: 16px;
+				margin: 0 0 0 auto;
+				max-width: max-content;
+				border-radius: 16px;
+
+				> .richcontent {
+					min-width: 250px;
+				}
 			}
 		}
 	}
