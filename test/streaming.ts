@@ -36,10 +36,40 @@ describe('Streaming', () => {
 		server.close();
 	});
 
-	/* TODO
 	test('useChannel with parameters', async () => {
+		const server = new WS('wss://misskey.test/streaming');
+		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
+		const messagingChannelReceived: any[] = [];
+		const messaging = stream.useChannel('messaging', { otherparty: 'aaa' });
+		messaging.on('message', payload => {
+			messagingChannelReceived.push(payload);
+		});
+		await server.connected;
+		const msg = JSON.parse(await server.nextMessage as string);
+		const messagingChannelId = msg.body.id;
+		expect(msg.type).toEqual('connect');
+		expect(msg.body.channel).toEqual('messaging');
+		expect(msg.body.params).toEqual({ otherparty: 'aaa' });
+		expect(messagingChannelId != null).toEqual(true);
+
+		server.send(JSON.stringify({
+			type: 'channel',
+			body: {
+				id: messagingChannelId,
+				type: 'message',
+				body: {
+					id: 'foo'
+				}
+			}
+		}));
+
+		expect(messagingChannelReceived[0]).toEqual({
+			id: 'foo'
+		});
+
+		stream.close();
+		server.close();
 	});
-	*/
 
 	test('Connection#dispose', async () => {
 		const server = new WS('wss://misskey.test/streaming');
