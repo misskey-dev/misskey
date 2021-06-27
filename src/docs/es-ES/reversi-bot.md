@@ -5,9 +5,9 @@ Aquí se cuenta la forma de desarrollar un Bot compatible con la característica
     * `i`: clave API de la cuenta del bot
 
 2. Cuando llegue una invitación al juego, aparecerá un evento `invited` desde el stream
-    * イベントの中身に、`parent`という名前で対局へ誘ってきたユーザーの情報が含まれている
+    * En el contenido del evento, en la sección `parent` viene la información del usuario que hizo la invitación
 
-3. `games/reversi/match`へ、`user_id`として`parent`の`id`が含まれたリクエストを送信する
+3. Envíe un pedido a `games/reversi/match` incluyendo el `id` del `parent` como `user_id`
 
 4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
     * `i`: clave API de la cuenta del bot
