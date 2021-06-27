@@ -9,9 +9,9 @@ Aquí se cuenta la forma de desarrollar un Bot compatible con la característica
 
 3. Envíe un pedido a `games/reversi/match` incluyendo el `id` del `parent` como `user_id`
 
-4. 上手くいくとゲーム情報が返ってくるので、`games/reversi-game`ストリームへ、以下のパラメータを付けて接続する:
+4. Si todo anda bien, la respuesta será la información del juego. Luego conéctese al stream `games/reversi-game` con los siguientes parámetros:
     * `i`: clave API de la cuenta del bot
-    * `game`: `game`の`id`
+    * `game`:`id` del `game`
 
 5. この間、相手がゲームの設定を変更するとその都度`update-settings`イベントが流れてくるので、必要であれば何かしらの処理を行う
 
