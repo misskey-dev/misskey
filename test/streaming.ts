@@ -71,6 +71,28 @@ describe('Streaming', () => {
 		server.close();
 	});
 
+	test('ちゃんとチャンネルごとにidが異なる', async () => {
+		const server = new WS('wss://misskey.test/streaming');
+		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
+
+		stream.useChannel('messaging', { otherparty: 'aaa' });
+		stream.useChannel('messaging', { otherparty: 'bbb' });
+
+		await server.connected;
+
+		const msg = JSON.parse(await server.nextMessage as string);
+		const messagingChannelId = msg.body.id;
+		const msg2 = JSON.parse(await server.nextMessage as string);
+		const messagingChannelId2 = msg2.body.id;
+
+		expect(messagingChannelId != null).toEqual(true);
+		expect(messagingChannelId2 != null).toEqual(true);
+		expect(messagingChannelId).not.toEqual(messagingChannelId2);
+
+		stream.close();
+		server.close();
+	});
+
 	test('Connection#dispose', async () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
