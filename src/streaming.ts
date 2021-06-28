@@ -269,12 +269,9 @@ abstract class Connection<Channel extends Channels[keyof Channels] = any> extend
 	}
 
 	@autobind
-	public send(id: string, typeOrPayload: any, payload?: any) {
-		const type = payload === undefined ? typeOrPayload.type : typeOrPayload;
-		const body = payload === undefined ? typeOrPayload.body : payload;
-
+	public send<T extends keyof Channel['receives']>(type: T, body: Channel['receives'][T]) {
 		this.stream.send('ch', {
-			id: id,
+			id: this.id,
 			type: type,
 			body: body
 		});
@@ -297,11 +294,6 @@ class SharedConnection<Channel extends Channels[keyof Channels] = any> extends C
 
 		this.pool = pool;
 		this.pool.inc();
-	}
-
-	@autobind
-	public send(typeOrPayload: any, payload?: any) {
-		super.send(this.pool.id, typeOrPayload, payload);
 	}
 
 	@autobind
@@ -332,11 +324,6 @@ class NonSharedConnection<Channel extends Channels[keyof Channels] = any> extend
 			id: this.id,
 			params: this.params
 		});
-	}
-
-	@autobind
-	public send(typeOrPayload: any, payload?: any) {
-		super.send(this.id, typeOrPayload, payload);
 	}
 
 	@autobind
