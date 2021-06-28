@@ -25,6 +25,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
 	private nonSharedConnections: NonSharedConnection[] = [];
+	private idCounter = 0;
 
 	constructor(origin: string, user: { token: string; } | null, options?: {
 		WebSocket?: any;
@@ -49,6 +50,11 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 
 	@autobind
+	private genId(): string {
+		return (++this.idCounter).toString();
+	}
+
+	@autobind
 	public useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): Connection<Channels[C]> {
 		if (params) {
 			return this.connectToChannel(channel, params);
@@ -62,7 +68,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		let pool = this.sharedConnectionPools.find(p => p.channel === channel);
 
 		if (pool == null) {
-			pool = new Pool(this, channel);
+			pool = new Pool(this, channel, this.genId());
 			this.sharedConnectionPools.push(pool);
 		}
 
@@ -83,7 +89,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 	@autobind
 	private connectToChannel<C extends keyof Channels>(channel: C, params: Channels[C]['params']): NonSharedConnection<Channels[C]> {
-		const connection = markRaw(new NonSharedConnection(this, channel, params));
+		const connection = markRaw(new NonSharedConnection(this, channel, this.genId(), params));
 		this.nonSharedConnections.push(connection);
 		return connection;
 	}
@@ -175,9 +181,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	}
 }
 
-let idCounter = 0;
-
 // TODO: これらのクラスを Stream クラスの内部クラスにすれば余計なメンバをpublicにしないで済むかも？
+// もしくは @internal を使う？ https://www.typescriptlang.org/tsconfig#stripInternal
 class Pool {
 	public channel: string;
 	public id: string;
@@ -186,11 +191,10 @@ class Pool {
 	private disposeTimerId: any;
 	private isConnected = false;
 
-	constructor(stream: Stream, channel: string) {
+	constructor(stream: Stream, channel: string, id: string) {
 		this.channel = channel;
 		this.stream = stream;
-
-		this.id = (++idCounter).toString();
+		this.id = id;
 
 		this.stream.on('_disconnected_', this.onStreamDisconnected);
 	}
@@ -312,11 +316,11 @@ class NonSharedConnection<Channel extends Channels[keyof Channels] = any> extend
 	public id: string;
 	protected params: Channel['params'];
 
-	constructor(stream: Stream, channel: string, params: Channel['params']) {
+	constructor(stream: Stream, channel: string, id: string, params: Channel['params']) {
 		super(stream, channel);
 
 		this.params = params;
-		this.id = (++idCounter).toString();
+		this.id = id;
 
 		this.connect();
 	}
