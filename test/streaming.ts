@@ -93,6 +93,27 @@ describe('Streaming', () => {
 		server.close();
 	});
 
+	test('Connection#send', async () => {
+		const server = new WS('wss://misskey.test/streaming');
+		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
+
+		const messaging = stream.useChannel('messaging', { otherparty: 'aaa' });
+		messaging.send('read', { id: 'aaa' });
+
+		await server.connected;
+		const connectMsg = JSON.parse(await server.nextMessage as string);
+		const channelId = connectMsg.body.id;
+		const msg = JSON.parse(await server.nextMessage as string);
+
+		expect(msg.type).toEqual('ch');
+		expect(msg.body.id).toEqual(channelId);
+		expect(msg.body.type).toEqual('read');
+		expect(msg.body.body).toEqual({ id: 'aaa' });
+
+		stream.close();
+		server.close();
+	});
+
 	test('Connection#dispose', async () => {
 		const server = new WS('wss://misskey.test/streaming');
 		const stream = new Stream('https://misskey.test', { token: 'TOKEN' });
