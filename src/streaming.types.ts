@@ -1,5 +1,7 @@
 import { CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User, UserGroup } from './entities';
 
+type FIXME = any;
+
 export type Channels = {
 	main: {
 		params: null;
@@ -29,30 +31,35 @@ export type Channels = {
 			unreadChannel: () => void;
 			myTokenRegenerated: () => void;
 		};
+		receives: null;
 	};
 	homeTimeline: {
 		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
+		receives: null;
 	};
 	localTimeline: {
 		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
+		receives: null;
 	};
 	hybridTimeline: {
 		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
+		receives: null;
 	};
 	globalTimeline: {
 		params: null;
 		events: {
 			note: (payload: Note) => void;
 		};
+		receives: null;
 	};
 	messaging: {
 		params: {
@@ -64,6 +71,35 @@ export type Channels = {
 			deleted: (payload: MessagingMessage['id']) => void;
 			read: (payload: MessagingMessage['id'][]) => void;
 			typers: (payload: User[]) => void;
+		};
+		receives: {
+			read: {
+				id: MessagingMessage['id'];
+			};
+		};
+	};
+	serverStats: {
+		params: null;
+		events: {
+			stats: (payload: FIXME) => void;
+		};
+		receives: {
+			requestLog: {
+				id: string | number;
+				length: number;
+			};
+		};
+	};
+	queueStats: {
+		params: null;
+		events: {
+			stats: (payload: FIXME) => void;
+		};
+		receives: {
+			requestLog: {
+				id: string | number;
+				length: number;
+			};
 		};
 	};
 };
