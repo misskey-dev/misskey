@@ -79,7 +79,7 @@ async function postProcess(file: DriveFile, isExpired = false) {
 			url: file.uri,
 			thumbnailUrl: null,
 			webpublicUrl: null,
-			size: 0,
+			storedInternal: false,
 			// ローカルプロキシ用
 			accessKey: uuid(),
 			thumbnailAccessKey: 'thumbnail-' + uuid(),

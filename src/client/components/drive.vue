@@ -139,7 +139,7 @@ export default defineComponent({
 			});
 		}
 
-		this.connection = os.stream.useSharedConnection('drive');
+		this.connection = os.stream.useChannel('drive');
 
 		this.connection.on('fileCreated', this.onStreamDriveFileCreated);
 		this.connection.on('fileUpdated', this.onStreamDriveFileUpdated);
@@ -301,7 +301,7 @@ export default defineComponent({
 				}
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
-				os.api('drive/files/upload_from_url', {
+				os.api('drive/files/upload-from-url', {
 					url: url,
 					folderId: this.folder ? this.folder.id : undefined
 				});

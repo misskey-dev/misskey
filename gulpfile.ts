@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as gulp from 'gulp';
-import * as rimraf from 'rimraf';
+import rimraf from 'rimraf';
 const replace = require('gulp-replace');
 const terser = require('gulp-terser');
 const cssnano = require('gulp-cssnano');

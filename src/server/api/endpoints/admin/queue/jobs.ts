@@ -3,11 +3,6 @@ import $ from 'cafy';
 import define from '../../../define';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ジョブ一覧を表示します。',
-		'en-US': 'Display the job list.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

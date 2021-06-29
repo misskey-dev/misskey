@@ -33,19 +33,16 @@ export const packedUserListSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this UserList.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the UserList was created.'
 		},
 		name: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
-			description: 'The name of the UserList.'
 		},
 		userIds: {
 			type: 'array' as const,

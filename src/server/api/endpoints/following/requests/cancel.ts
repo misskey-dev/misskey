@@ -7,11 +7,6 @@ import { getUser } from '../../../common/getters';
 import { Users } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '自分が作成した、指定したフォローリクエストをキャンセルします。',
-		'en-US': 'Cancel a follow request.'
-	},
-
 	tags: ['following', 'account'],
 
 	requireCredential: true as const,
@@ -21,10 +16,6 @@ export const meta = {
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		}
 	},
 

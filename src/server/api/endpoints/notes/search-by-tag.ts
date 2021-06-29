@@ -10,70 +10,42 @@ import { safeForSql } from '@/misc/safe-for-sql';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定されたタグが付けられた投稿を取得します。'
-	},
-
 	tags: ['notes', 'hashtags'],
 
 	params: {
 		tag: {
 			validator: $.optional.str,
-			desc: {
-				'ja-JP': 'タグ'
-			}
 		},
 
 		query: {
 			validator: $.optional.arr($.arr($.str)),
-			desc: {
-				'ja-JP': 'クエリ'
-			}
 		},
 
 		reply: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
-			desc: {
-				'ja-JP': '返信に限定するか否か'
-			}
+			default: null,
 		},
 
 		renote: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
-			desc: {
-				'ja-JP': 'Renoteに限定するか否か'
-			}
+			default: null,
 		},
 
 		withFiles: {
 			validator: $.optional.bool,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
-			}
 		},
 
 		poll: {
 			validator: $.optional.nullable.bool,
-			default: null as any,
-			desc: {
-				'ja-JP': 'アンケートが添付された投稿に限定するか否か'
-			}
+			default: null,
 		},
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
-			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
-			}
 		},
 
 		limit: {
@@ -104,22 +76,25 @@ export default define(meta, async (ps, me) => {
 	generateVisibilityQuery(query, me);
 	if (me) generateMutedUserQuery(query, me);
 
-	if (ps.tag) {
-		if (!safeForSql(ps.tag)) return;
-		query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
-	} else {
-		let i = 0;
-		query.andWhere(new Brackets(qb => {
-			for (const tags of ps.query!) {
-				qb.orWhere(new Brackets(qb => {
-					for (const tag of tags) {
-						if (!safeForSql(tag)) return;
-						qb.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
-						i++;
-					}
-				}));
-			}
-		}));
+	try {
+		if (ps.tag) {
+			if (!safeForSql(ps.tag)) throw 'Injection';
+			query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
+		} else {
+			query.andWhere(new Brackets(qb => {
+				for (const tags of ps.query!) {
+					qb.orWhere(new Brackets(qb => {
+						for (const tag of tags) {
+							if (!safeForSql(tag)) throw 'Injection';
+							qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
+						}
+					}));
+				}
+			}));
+		}
+	} catch (e) {
+		if (e === 'Injection') return [];
+		throw e;
 	}
 
 	if (ps.reply != null) {

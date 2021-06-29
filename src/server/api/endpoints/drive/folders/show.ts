@@ -5,11 +5,6 @@ import { ApiError } from '../../../error';
 import { DriveFolders } from '../../../../../models';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したドライブのフォルダの情報を取得します。',
-		'en-US': 'Get specified folder of drive.'
-	},
-
 	tags: ['drive'],
 
 	requireCredential: true as const,
@@ -19,10 +14,6 @@ export const meta = {
 	params: {
 		folderId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のフォルダID',
-				'en-US': 'Target folder ID'
-			}
 		}
 	},
 

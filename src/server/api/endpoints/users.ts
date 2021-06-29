@@ -4,11 +4,6 @@ import { Users } from '../../../models';
 import { generateMutedUserQueryForUsers } from '../common/generate-muted-user-query';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'ユーザー一覧を表示します。',
-		'en-US': 'Display the user list.'
-	},
-
 	tags: ['users'],
 
 	requireCredential: false as const,

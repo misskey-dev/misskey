@@ -61,7 +61,7 @@ export default defineComponent({
 				if (this.connection) {
 					this.connection.dispose();
 				}
-				this.connection = os.stream.connectToChannel('gamesReversiGame', {
+				this.connection = os.stream.useChannel('gamesReversiGame', {
 					gameId: this.game.id
 				});
 				this.connection.on('started', this.onStarted);

@@ -4,11 +4,6 @@ import { RegistrationTickets } from '../../../../models';
 import { genId } from '@/misc/gen-id';
 
 export const meta = {
-	desc: {
-		'ja-JP': '招待コードを発行します。',
-		'en-US': 'Issue an invitation code.'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,
@@ -23,7 +18,6 @@ export const meta = {
 			code: {
 				type: 'string' as const,
 				optional: false as const, nullable: false as const,
-				description: 'Give this code to the applicant for registration.',
 				example: '2ERUA5VR',
 				maxLength: 8,
 				minLength: 8

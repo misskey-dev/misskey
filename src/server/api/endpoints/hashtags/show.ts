@@ -5,10 +5,6 @@ import { Hashtags } from '../../../../models';
 import { normalizeForSearch } from '@/misc/normalize-for-search';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したハッシュタグの情報を取得します。',
-	},
-
 	tags: ['hashtags'],
 
 	requireCredential: false as const,
@@ -16,10 +12,6 @@ export const meta = {
 	params: {
 		tag: {
 			validator: $.str,
-			desc: {
-				'ja-JP': '対象のハッシュタグ(#なし)',
-				'en-US': 'Target hashtag. (no # prefixed)'
-			}
 		}
 	},
 

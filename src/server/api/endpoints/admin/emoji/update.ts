@@ -6,10 +6,6 @@ import { getConnection } from 'typeorm';
 import { ApiError } from '../../../error';
 
 export const meta = {
-	desc: {
-		'ja-JP': 'カスタム絵文字を更新します。'
-	},
-
 	tags: ['admin'],
 
 	requireCredential: true as const,

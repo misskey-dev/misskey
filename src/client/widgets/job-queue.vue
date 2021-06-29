@@ -65,7 +65,7 @@ export default defineComponent({
 	extends: widget,
 	data() {
 		return {
-			connection: os.stream.useSharedConnection('queueStats'),
+			connection: os.stream.useChannel('queueStats'),
 			inbox: {
 				activeSincePrevTick: 0,
 				active: 0,

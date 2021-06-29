@@ -281,14 +281,12 @@ export const packedNoteSchema = {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'id',
-			description: 'The unique identifier for this Note.',
 			example: 'xxxxxxxxxx',
 		},
 		createdAt: {
 			type: 'string' as const,
 			optional: false as const, nullable: false as const,
 			format: 'date-time',
-			description: 'The date that the Note was created on Misskey.'
 		},
 		text: {
 			type: 'string' as const,
@@ -426,7 +424,6 @@ export const packedNoteSchema = {
 		reactions: {
 			type: 'object' as const,
 			optional: false as const, nullable: false as const,
-			description: 'Key is either Unicode emoji or custom emoji, value is count of that emoji reaction.',
 		},
 		renoteCount: {
 			type: 'number' as const,
@@ -439,18 +436,15 @@ export const packedNoteSchema = {
 		uri: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
-			description: 'The URI of a note. it will be null when the note is local.',
 		},
 		url: {
 			type: 'string' as const,
 			optional: false as const, nullable: true as const,
-			description: 'The human readable url of a note. it will be null when the note is local.',
 		},
 
 		myReaction: {
 			type: 'object' as const,
 			optional: true as const, nullable: true as const,
-			description: 'Key is either Unicode emoji or custom emoji, value is count of that emoji reaction.',
 		},
 	},
 };

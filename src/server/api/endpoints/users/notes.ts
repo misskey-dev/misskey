@@ -10,95 +10,56 @@ import { generateMutedUserQuery } from '../../common/generate-muted-user-query';
 import { Brackets } from 'typeorm';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定したユーザーのタイムラインを取得します。'
-	},
-
 	tags: ['users', 'notes'],
 
 	params: {
 		userId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '対象のユーザーのID',
-				'en-US': 'Target user ID'
-			}
 		},
 
 		includeReplies: {
 			validator: $.optional.bool,
 			default: true,
-
-			desc: {
-				'ja-JP': 'リプライを含めるか否か'
-			}
 		},
 
 		limit: {
 			validator: $.optional.num.range(1, 100),
 			default: 10,
-			desc: {
-				'ja-JP': '最大数'
-			}
 		},
 
 		sinceId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより新しい投稿を取得します'
-			}
 		},
 
 		untilId: {
 			validator: $.optional.type(ID),
-			desc: {
-				'ja-JP': '指定すると、その投稿を基点としてより古い投稿を取得します'
-			}
 		},
 
 		sinceDate: {
 			validator: $.optional.num,
-			desc: {
-				'ja-JP': '指定した時間を基点としてより新しい投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
-			}
 		},
 
 		untilDate: {
 			validator: $.optional.num,
-			desc: {
-				'ja-JP': '指定した時間を基点としてより古い投稿を取得します。数値は、1970年1月1日 00:00:00 UTC から指定した日時までの経過時間をミリ秒単位で表します。'
-			}
 		},
 
 		includeMyRenotes: {
 			validator: $.optional.bool,
 			default: true,
-			desc: {
-				'ja-JP': 'Renoteを含めるかどうか'
-			}
 		},
 
 		withFiles: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'true にすると、ファイルが添付された投稿だけ取得します'
-			}
 		},
 
 		fileType: {
 			validator: $.optional.arr($.str),
-			desc: {
-				'ja-JP': '指定された種類のファイルが添付された投稿のみを取得します'
-			}
 		},
 
 		excludeNsfw: {
 			validator: $.optional.bool,
 			default: false,
-			desc: {
-				'ja-JP': 'true にすると、NSFW指定されたファイルを除外します(fileTypeが指定されている場合のみ有効)'
-			}
 		},
 	},
 

@@ -92,6 +92,7 @@ export default defineComponent({
 			version,
 			url,
 			stats: null,
+			meta: null,
 			fetchStats: () => os.api('stats', {}),
 			fetchServerInfo: () => os.api('admin/server-info', {}),
 			fetchJobs: () => os.api('admin/queue/deliver-delayed', {}),

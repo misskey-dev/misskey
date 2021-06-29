@@ -6,11 +6,6 @@ import { MessagingMessages } from '../../../../../models';
 import { readUserMessagingMessage, readGroupMessagingMessage } from '../../../common/read-messaging-message';
 
 export const meta = {
-	desc: {
-		'ja-JP': '指定した自分宛てのトークメッセージを既読にします。',
-		'en-US': 'Mark as read a message of messaging.'
-	},
-
 	tags: ['messaging'],
 
 	requireCredential: true as const,
@@ -20,10 +15,6 @@ export const meta = {
 	params: {
 		messageId: {
 			validator: $.type(ID),
-			desc: {
-				'ja-JP': '既読にするメッセージのID',
-				'en-US': 'The ID of a message that you want to mark as read'
-			}
 		}
 	},
 
