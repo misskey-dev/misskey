@@ -2,7 +2,7 @@ import {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance, InstanceMetadata,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage
 } from './entities';
 
 type TODO = Record<string, any> | null;
@@ -428,11 +428,11 @@ export type Endpoints = {
 	'i/2fa/unregister': { req: TODO; res: TODO; };
 
 	// messaging
-	'messaging/history': { req: TODO; res: TODO; };
-	'messaging/messages': { req: TODO; res: TODO; };
-	'messaging/messages/create': { req: TODO; res: TODO; };
-	'messaging/messages/delete': { req: TODO; res: TODO; };
-	'messaging/messages/read': { req: TODO; res: TODO; };
+	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
+	'messaging/messages': { req: { userId?: User['id']; groupId?: UserGroup['id']; limit?: number; sinceId?: MessagingMessage['id']; untilId?: MessagingMessage['id']; markAsRead?: boolean; }; res: MessagingMessage[]; };
+	'messaging/messages/create': { req: { userId?: User['id']; groupId?: UserGroup['id']; text?: string; fileId?: DriveFile['id']; }; res: MessagingMessage; };
+	'messaging/messages/delete': { req: { messageId: MessagingMessage['id']; }; res: null; };
+	'messaging/messages/read': { req: { messageId: MessagingMessage['id']; }; res: null; };
 
 	// meta
 	'meta': { req: { detail?: boolean; }; res: {
